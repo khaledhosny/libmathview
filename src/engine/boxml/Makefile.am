@@ -19,7 +19,8 @@ libboxml_la_SOURCES = \
   BoxMLLayoutElement.cc \
   BoxMLAtElement.cc \
   BoxMLSpaceElement.cc \
-  BoxMLInkElement.cc
+  BoxMLInkElement.cc \
+  $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
@@ -43,16 +44,17 @@ noinst_HEADERS = \
   BoxMLLayoutElement.hh \
   BoxMLAtElement.hh \
   BoxMLSpaceElement.hh \
-  BoxMLInkElement.hh
+  BoxMLInkElement.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/formatter/areamodel \
-  -I$(top_srcdir)/src/formatter/boxml_graphic_device
+  -I$(top_srcdir)/src/formatter/boxml_graphic_device \
+  $(NULL)
 
-# engine/mathml for the operator dictionary in Globals

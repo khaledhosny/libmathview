@@ -40,8 +40,8 @@ public:
   static SmartPtr<ShaperManager> create(void)
   { return new ShaperManager(); }
 
-  SmartPtr<const class Area> shape(const class MathFormattingContext&, const UCS4String&) const;
-  SmartPtr<const class Area> shapeStretchy(const class MathFormattingContext&, const UCS4String&,
+  SmartPtr<const class Area> shape(const class FormattingContext&, const UCS4String&) const;
+  SmartPtr<const class Area> shapeStretchy(const class FormattingContext&, const UCS4String&,
 					   const scaled& = 0, const scaled& = 0) const;
   
   unsigned registerShaper(const SmartPtr<class Shaper>&);

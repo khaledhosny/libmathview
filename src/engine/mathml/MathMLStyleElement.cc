@@ -30,7 +30,7 @@
 #include "MathMLStyleElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLStyleElement::MathMLStyleElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -41,7 +41,7 @@ MathMLStyleElement::~MathMLStyleElement()
 { }
 
 AreaRef
-MathMLStyleElement::format(MathFormattingContext& ctxt)
+MathMLStyleElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -54,7 +54,7 @@ MathMLStyleElement::format(MathFormattingContext& ctxt)
 	ctxt.setSizeMultiplier(ToNumber(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, scriptminsize))
-	ctxt.setMinSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getMinSize()));
+	ctxt.setMinSize(ctxt.MGD()->evaluate(ctxt, ToLength(value), ctxt.getMinSize()));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, scriptlevel))
 	{
@@ -121,7 +121,7 @@ MathMLStyleElement::format(MathFormattingContext& ctxt)
       for (unsigned i = 0; i < (sizeof(spaceId) / sizeof(AttributeId)); i++)
 	if (spaceId[i])
 	  if (SmartPtr<Value> value = getAttributeValue(*spaceId[i]))
-	    ctxt.setMathSpace(MathFormattingContext::NEGATIVE_VERYVERYTHICK_SPACE + i, ToLength(value));
+	    ctxt.setMathSpace(FormattingContext::NEGATIVE_VERYVERYTHICK_SPACE + i, ToLength(value));
 
       // the following attributes, thought not directly supported by <mstyle>
       // must be parsed here since they are always inherited by other elements
@@ -137,12 +137,12 @@ MathMLStyleElement::format(MathFormattingContext& ctxt)
 	      default: assert(false); break;
 	      }
 	  else
-	    ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
+	    ctxt.setSize(ctxt.MGD()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
 	}
 
       AreaRef res = getChild()->format(ctxt);
-      if (color != oldColor) res = ctxt.getDevice()->getFactory()->color(res, color);
-      if (background != oldBackground) res = ctxt.getDevice()->getFactory()->background(res, background);
+      if (color != oldColor) res = ctxt.MGD()->getFactory()->color(res, color);
+      if (background != oldBackground) res = ctxt.MGD()->getFactory()->background(res, background);
       setArea(res);
       ctxt.pop();
       resetDirtyLayout();

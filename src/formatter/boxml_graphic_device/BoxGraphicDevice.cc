@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "BoxGraphicDevice.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxMLElement.hh"
 #include "AreaFactory.hh"
 
@@ -36,77 +36,19 @@ BoxGraphicDevice::~BoxGraphicDevice()
 { }
 
 scaled
-BoxGraphicDevice::evaluate(const BoxFormattingContext& context,
-			   const Length& length, const scaled& defaultValue) const
-{
-  switch (length.type)
-    {
-    case Length::UNDEFINED_UNIT:
-      return defaultValue;
-    case Length::PURE_UNIT:
-      // error?
-      return defaultValue * length.value;
-    case Length::INFINITY_UNIT:
-      return scaled::max();
-    case Length::LT_UNIT:
-      return defaultLineThickness(context) * length.value;
-    case Length::EM_UNIT:
-      return em(context) * length.value;
-    case Length::EX_UNIT:
-      return ex(context) * length.value;
-    case Length::PX_UNIT:
-      return scaled((72.27 * length.value) / dpi(context));
-    case Length::IN_UNIT:
-      return scaled(72.27 * length.value);
-    case Length::CM_UNIT:
-      return scaled(72.27 * (length.value / 2.54));
-    case Length::MM_UNIT:
-      return scaled(72.27 * (length.value / 25.4));
-    case Length::PT_UNIT:
-      return scaled(length.value);
-    case Length::PC_UNIT:
-      return scaled(12 * 72.27 * length.value);
-    case Length::PERCENTAGE_UNIT:
-      return (defaultValue * length.value) / 100.0;
-    default:
-      assert(false);
-      return defaultValue;
-    }
-}
-
-double
-BoxGraphicDevice::dpi(const BoxFormattingContext&) const
-{
-  return 72.0;
-}
-
-scaled
-BoxGraphicDevice::em(const BoxFormattingContext& context) const
-{
-  return context.getSize();
-}
-
-scaled
-BoxGraphicDevice::ex(const BoxFormattingContext& context) const
+BoxGraphicDevice::ex(const FormattingContext& context) const
 {
   return string(context, "x", scaled::min())->box().height;
 }
 
-scaled
-BoxGraphicDevice::defaultLineThickness(const BoxFormattingContext& context) const
-{
-  // at least 1px thick
-  return std::max(context.getSize() / 10, scaled(72.27 / dpi(context)));
-}
-
 AreaRef
-BoxGraphicDevice::wrapper(const BoxFormattingContext&, const AreaRef& area) const
+BoxGraphicDevice::wrapper(const FormattingContext&, const AreaRef& area) const
 {
   return area;
 }
 
 AreaRef
-BoxGraphicDevice::dummy(const BoxFormattingContext&) const
+BoxGraphicDevice::dummy(const FormattingContext&) const
 {
   //assert(false);
   return getFactory()->horizontalSpace(scaled::zero());

@@ -6,7 +6,6 @@ noinst_LTLIBRARIES = libmathml_graphic_device.la
 #libmathml_graphic_device_la_LIBADD =
 
 libmathml_graphic_device_la_SOURCES = \
-  MathFormattingContext.cc \
   MathGraphicDevice.cc \
   Shaper.cc \
   ShaperManager.cc \
@@ -17,7 +16,6 @@ libmathml_graphic_device_la_SOURCES = \
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
-  MathFormattingContext.hh \
   MathGraphicDevice.hh \
   GlyphSpec.hh \
   Shaper.hh \

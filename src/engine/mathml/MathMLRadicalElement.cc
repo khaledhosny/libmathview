@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "MathMLRadicalElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLRadicalElement::MathMLRadicalElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -36,7 +36,7 @@ MathMLRadicalElement::~MathMLRadicalElement()
 { }
 
 AreaRef
-MathMLRadicalElement::format(MathFormattingContext& ctxt)
+MathMLRadicalElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -50,9 +50,9 @@ MathMLRadicalElement::format(MathFormattingContext& ctxt)
 	  ctxt.addScriptLevel(2);
 	  indexArea = getIndex()->format(ctxt);
 	}
-      AreaRef res = ctxt.getDevice()->radical(ctxt, baseArea, indexArea);
+      AreaRef res = ctxt.MGD()->radical(ctxt, baseArea, indexArea);
 
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();

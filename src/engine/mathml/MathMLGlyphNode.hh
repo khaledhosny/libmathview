@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLGlyphNode_hh
-#define MathMLGlyphNode_hh
+#ifndef __MathMLGlyphNode_hh__
+#define __MathMLGlyphNode_hh__
 
 #include "MathMLTextNode.hh"
 
@@ -35,21 +35,14 @@ public:
   static SmartPtr<MathMLGlyphNode> create(const String& family, const String& index, const String& alt)
   { return new MathMLGlyphNode(family, index, alt); }
 
-#if 0
-  virtual void 	   Setup(class RenderingEnvironment&);
-  virtual void 	   DoLayout(const class FormattingContext&);
-#endif
-  virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void 	   Render(const DrawingArea&);
-#endif
+  virtual AreaRef format(class FormattingContext&);
 
   virtual unsigned GetLogicalContentLength(void) const;
 
-protected:
+private:
   String family;
   String index;
   String alt;
 };
 
-#endif // MathMLGlyphNode_hh
+#endif // __MathMLGlyphNode_hh__

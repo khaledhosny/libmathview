@@ -31,7 +31,7 @@
 #include "MathMLOperatorElement.hh"
 #include "Variant.hh"
 #include "MathMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -42,7 +42,7 @@ MathMLPaddedElement::~MathMLPaddedElement()
 { }
 
 AreaRef
-MathMLPaddedElement::format(MathFormattingContext& ctxt)
+MathMLPaddedElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -61,16 +61,16 @@ MathMLPaddedElement::format(MathFormattingContext& ctxt)
 	    {
 	      std::vector<AreaRef> h;
 	      h.reserve(2);
-	      h.push_back(ctxt.getDevice()->getFactory()->horizontalSpace(lspace));
+	      h.push_back(ctxt.MGD()->getFactory()->horizontalSpace(lspace));
 	      h.push_back(childArea);
-	      res = ctxt.getDevice()->getFactory()->horizontalArray(h);
+	      res = ctxt.MGD()->getFactory()->horizontalArray(h);
 	    }
 	  else
 	    res = childArea;
 
-	  res = ctxt.getDevice()->getFactory()->box(res, BoundingBox(width, height, depth));
+	  res = ctxt.MGD()->getFactory()->box(res, BoundingBox(width, height, depth));
 	  res = formatEmbellishment(this, ctxt, res);
-	  res = ctxt.getDevice()->wrapper(ctxt, res);
+	  res = ctxt.MGD()->wrapper(ctxt, res);
 
 	  setArea(res);
 	}
@@ -84,7 +84,7 @@ MathMLPaddedElement::format(MathFormattingContext& ctxt)
 }
 
 void
-MathMLPaddedElement::parseLengthDimension(const MathFormattingContext& ctxt,
+MathMLPaddedElement::parseLengthDimension(const FormattingContext& ctxt,
 					  const SmartPtr<Value>& value,
 					  LengthDimension& dim,
 					  TokenId pseudoUnitId)
@@ -150,9 +150,9 @@ MathMLPaddedElement::parseLengthDimension(const MathFormattingContext& ctxt,
 
 	      Length::Unit unitId = toUnitId(v);
 	      if (unitId != Length::UNDEFINED_UNIT)
-		dim.unit = ctxt.getDevice()->evaluate(ctxt, Length(1.0, unitId), scaled::zero());
+		dim.unit = ctxt.MGD()->evaluate(ctxt, Length(1.0, unitId), scaled::zero());
 	      else
-		dim.unit = ctxt.getDevice()->evaluate(ctxt, toLength(v, ctxt), scaled::zero());
+		dim.unit = ctxt.MGD()->evaluate(ctxt, toLength(v, ctxt), scaled::zero());
 	    }
 	}
     }
@@ -161,7 +161,7 @@ MathMLPaddedElement::parseLengthDimension(const MathFormattingContext& ctxt,
 }
 
 scaled
-MathMLPaddedElement::evalLengthDimension(const MathFormattingContext& ctxt,
+MathMLPaddedElement::evalLengthDimension(const FormattingContext& ctxt,
 					 const SmartPtr<Value>& value,
 					 TokenId pseudoUnitId,
 					 const scaled& orig,

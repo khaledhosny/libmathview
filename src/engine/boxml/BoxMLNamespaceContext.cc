@@ -24,12 +24,8 @@
 
 #include "defs.h"
 #include "View.hh"
-#include "Clock.hh"
-#include "AbstractLogger.hh"
-#include "BoxFormattingContext.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "BoxGraphicDevice.hh"
-#include "BoxMLElement.hh"
 
 BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,
 					     const SmartPtr<BoxGraphicDevice>& d)
@@ -39,23 +35,6 @@ BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,
 BoxMLNamespaceContext::~BoxMLNamespaceContext()
 { }
 
-AreaRef
-BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
-{
-  SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(el);
-  assert(elem);
-  if (elem->dirtyLayout())
-    {
-      BoxFormattingContext ctxt(device);
-      scaled l = device->evaluate(ctxt, Length(getView()->getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
-      //ctxt.setSize(device->evaluate(ctxt, Length(14, Length::PT_UNIT), scaled::zero()));
-      ctxt.setSize(l);
-      Clock perf;
-      perf.Start();
-      elem->format(ctxt);
-      perf.Stop();
-      getView()->getLogger()->out(LOG_INFO, "formatting time: %dms", perf());
-    }
-  return elem->getArea();
-}
-
+SmartPtr<BoxGraphicDevice>
+BoxMLNamespaceContext::getGraphicDevice() const
+{ return device; }

@@ -35,10 +35,10 @@ protected:
 public:
   static SmartPtr<BoxMLDecorElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
-  virtual AreaRef format(class BoxFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
 private:
-  static AreaRef decorate(class BoxFormattingContext&,
+  static AreaRef decorate(class FormattingContext&,
 			  const AreaRef&, const scaled&,
 			  const class RGBColor&, const String&);
 };

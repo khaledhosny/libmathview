@@ -36,14 +36,7 @@ public:
   static SmartPtr<MathMLStringNode> create(const String& s)
   { return new MathMLStringNode(s); }
 
-  virtual AreaRef  format(class MathFormattingContext&);
-
-  virtual bool     HasDecimalPoint(void) const;
-  virtual bool     IsString(void) const;
-
-#if 0
-  virtual scaled   GetDecimalPointEdge(void) const;
-#endif
+  virtual AreaRef  format(class FormattingContext&);
 
   virtual unsigned GetLogicalContentLength(void) const;
   virtual String   GetRawContent(void) const;

@@ -41,7 +41,7 @@ public:
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
-  virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
+  virtual void shape(class ShapingContext&) const;
 
   void setPangoContext(const GObjectPtr<PangoContext>& c) { context = c; }
   GObjectPtr<PangoContext> getPangoContext(void) const { return context; }
@@ -58,7 +58,7 @@ protected:
   static const PangoTextAttributes& getTextAttributes(MathVariant);
   static const PangoTextAttributes& getDefaultTextAttributes(void);
   PangoLayout* createPangoLayout(const gchar*, glong, const scaled&, const PangoTextAttributes&) const;
-  AreaRef shapeString(const class MathFormattingContext&, const gunichar*, glong) const;
+  AreaRef shapeString(const class ShapingContext&, const gunichar*, unsigned) const;
 
 private:
   GObjectPtr<PangoContext> context;

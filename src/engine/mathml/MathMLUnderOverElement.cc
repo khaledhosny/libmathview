@@ -30,7 +30,7 @@
 #include "ValueConversion.hh"
 #include "traverseAux.hh"
 #include "MathGraphicDevice.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathMLAttributeSignatures.hh"
 
 MathMLUnderOverElement::MathMLUnderOverElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -41,7 +41,7 @@ MathMLUnderOverElement::~MathMLUnderOverElement()
 { }
 
 AreaRef
-MathMLUnderOverElement::format(MathFormattingContext& ctxt)
+MathMLUnderOverElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -85,7 +85,7 @@ MathMLUnderOverElement::format(MathFormattingContext& ctxt)
       AreaRef res;
       if (baseOp && baseOp->HasMovableLimits() && !ctxt.getDisplayStyle())
 	{
-	  res = ctxt.getDevice()->script(ctxt, baseArea, underArea, Length(), overArea, Length());
+	  res = ctxt.MGD()->script(ctxt, baseArea, underArea, Length(), overArea, Length());
 	}
       else
 	{
@@ -122,13 +122,13 @@ MathMLUnderOverElement::format(MathFormattingContext& ctxt)
 	      ctxt.pop();
 	    }
 
-	  res = ctxt.getDevice()->underOver(ctxt, baseArea,
+	  res = ctxt.MGD()->underOver(ctxt, baseArea,
 					    underArea, accentUnder,
 					    overArea, accent);
 	}
 
       res = formatEmbellishment(this, ctxt, res);
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       resetDirtyLayout();
     }

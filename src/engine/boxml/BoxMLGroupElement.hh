@@ -34,9 +34,9 @@ protected:
 public:
   static SmartPtr<BoxMLGroupElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
-  virtual AreaRef format(class BoxFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
-  void formatContent(class BoxFormattingContext&, std::vector<AreaRef>&);
+  void formatContent(class FormattingContext&, std::vector<AreaRef>&);
 };
 
 #endif // __BoxMLGroupElement_hh__

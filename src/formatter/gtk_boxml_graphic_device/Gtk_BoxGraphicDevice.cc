@@ -27,7 +27,7 @@
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_BoxGraphicDevice.hh"
 #include "Gtk_RenderingContext.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxMLElement.hh"
 
 Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice()
@@ -46,13 +46,13 @@ Gtk_BoxGraphicDevice::getFactory() const
 }
 
 AreaRef
-Gtk_BoxGraphicDevice::dummy(const BoxFormattingContext& context) const
+Gtk_BoxGraphicDevice::dummy(const FormattingContext& context) const
 {
   return getFactory()->color(string(context, StringOfUCS4String(UCS4String(1, 0xfffd)), 0), RGBColor::RED());
 }
 
 AreaRef
-Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
+Gtk_BoxGraphicDevice::string(const FormattingContext& context,
 			     const String& str, const scaled& width) const
 {
   if (str.length() == 0)
@@ -87,7 +87,7 @@ Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
 #include "scaledAux.hh"
 
 AreaRef
-Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
+Gtk_BoxGraphicDevice::paragraph(const FormattingContext& context,
 				const BoxedParagraph& p,
 				const scaled& width) const
 {
@@ -201,9 +201,9 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
 #endif
 
 AreaRef
-Gtk_BoxGraphicDevice::wrapper(const BoxFormattingContext& context,
+Gtk_BoxGraphicDevice::wrapper(const FormattingContext& context,
 			      const AreaRef& base) const
 {
-  return factory->wrapper(base, base->box(), context.getElement());
+  return factory->wrapper(base, base->box(), context.getBoxMLElement());
 }
 

@@ -24,12 +24,12 @@
 
 #include <cassert>
 
-#include "ShapingResult.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_PangoShaper.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
 #include "MathVariantMap.hh"
+#include "ShapingContext.hh"
 
 struct HStretchyChar
 {
@@ -108,61 +108,61 @@ Gtk_PangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned
 }
 
 void
-Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
+Gtk_PangoShaper::shape(ShapingContext& context) const
 {
-  const GlyphSpec spec = result.getSpec();
+  const GlyphSpec& spec = context.getSpec();
   switch (spec.getFontId())
     {
     case H_STRETCHY_INDEX:
-      result.pushArea(1, shapeStretchyCharH(ctxt, spec, result.getHSpan()));
+      context.pushArea(1, shapeStretchyCharH(context));
       break;
     case V_STRETCHY_INDEX:
-      result.pushArea(1, shapeStretchyCharV(ctxt, spec, result.getVSpan()));
+      context.pushArea(1, shapeStretchyCharV(context));
       break;
     default:
-      result.pushArea(1, shapeChar(ctxt, spec));
+      context.pushArea(1, shapeChar(context));
       break;
     }
 }
 
 AreaRef
-Gtk_PangoShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
+Gtk_PangoShaper::shapeChar(const ShapingContext& context) const
 {
   gchar buffer[6];
-  gint length = g_unichar_to_utf8(spec.getGlyphId(), buffer);
+  gint length = g_unichar_to_utf8(context.getSpec().getGlyphId(), buffer);
 
-  PangoLayout* layout = createPangoLayout(buffer, length, ctxt.getSize(),
-					  getTextAttributes(MathVariant(spec.getFontId() - MAPPED_BASE_INDEX + NORMAL_VARIANT)));
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
+  PangoLayout* layout = createPangoLayout(buffer, length, context.getSize(),
+					  getTextAttributes(MathVariant(context.getSpec().getFontId() - MAPPED_BASE_INDEX + NORMAL_VARIANT)));
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
   assert(factory);
   return factory->pangoLayoutLine(layout);
 }
 
 AreaRef
-Gtk_PangoShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
+Gtk_PangoShaper::shapeStretchyCharH(const ShapingContext& context) const
 {
-  const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
+  const HStretchyChar* charSpec = &hMap[context.getSpec().getGlyphId()];
 
-  const AreaRef normal = (charSpec->ch != 0) ? shapeString(ctxt, &charSpec->ch, 1) : 0;
-  const AreaRef left = (charSpec->left != 0) ? shapeString(ctxt, &charSpec->left, 1) : 0;
-  const AreaRef glue = (charSpec->glue != 0) ? shapeString(ctxt, &charSpec->glue, 1) : 0;
-  const AreaRef right = (charSpec->right != 0) ? shapeString(ctxt, &charSpec->right, 1) : 0;
+  const AreaRef normal = (charSpec->ch != 0) ? shapeString(context, &charSpec->ch, 1) : 0;
+  const AreaRef left = (charSpec->left != 0) ? shapeString(context, &charSpec->left, 1) : 0;
+  const AreaRef glue = (charSpec->glue != 0) ? shapeString(context, &charSpec->glue, 1) : 0;
+  const AreaRef right = (charSpec->right != 0) ? shapeString(context, &charSpec->right, 1) : 0;
 
-  return composeStretchyCharH(ctxt.getDevice()->getFactory(), normal, left, glue, right, span);
+  return composeStretchyCharH(context.getFactory(), normal, left, glue, right, context.getHSpan());
 }
 
 AreaRef
-Gtk_PangoShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
+Gtk_PangoShaper::shapeStretchyCharV(const ShapingContext& context) const
 {
-  const scaled span = strictSpan - (1 * ctxt.getSize()) / 10;
+  const scaled span = context.getVSpan() - (1 * context.getSize()) / 10;
 
-  const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
+  const VStretchyChar* charSpec = &vMap[context.getSpec().getGlyphId()];
 
-  AreaRef normal = (charSpec->ch != 0) ? shapeString(ctxt, &charSpec->ch, 1) : 0;
-  AreaRef top = (charSpec->top != 0) ? shapeString(ctxt, &charSpec->top, 1) : 0;
-  AreaRef glue = (charSpec->glue != 0) ? shapeString(ctxt, &charSpec->glue, 1) : 0;
-  AreaRef middle = (charSpec->middle != 0) ? shapeString(ctxt, &charSpec->middle, 1) : 0;
-  AreaRef bottom = (charSpec->bottom != 0) ? shapeString(ctxt, &charSpec->bottom, 1) : 0;
+  AreaRef normal = (charSpec->ch != 0) ? shapeString(context, &charSpec->ch, 1) : 0;
+  AreaRef top = (charSpec->top != 0) ? shapeString(context, &charSpec->top, 1) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? shapeString(context, &charSpec->glue, 1) : 0;
+  AreaRef middle = (charSpec->middle != 0) ? shapeString(context, &charSpec->middle, 1) : 0;
+  AreaRef bottom = (charSpec->bottom != 0) ? shapeString(context, &charSpec->bottom, 1) : 0;
 
-  return composeStretchyCharV(ctxt.getDevice()->getFactory(), normal, top, glue, middle, bottom, span);
+  return composeStretchyCharV(context.getFactory(), normal, top, glue, middle, bottom, span);
 }

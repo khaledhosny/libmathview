@@ -39,9 +39,9 @@ public:
   { return new Gtk_BoxGraphicDevice(); }
 
   virtual SmartPtr<class AreaFactory> getFactory(void) const;
-  virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const;
-  virtual AreaRef dummy(const class BoxFormattingContext&) const;
-  virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const;
+  virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const;
+  virtual AreaRef dummy(const class FormattingContext&) const;
+  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef&) const;
 
 private:
   GObjectPtr<PangoContext> pango_context;

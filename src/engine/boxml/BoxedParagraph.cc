@@ -24,7 +24,7 @@
 
 #include "String.hh"
 #include "BoxedParagraph.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxMLElement.hh"
 
 BoxedParagraph::BoxedParagraph()
@@ -32,7 +32,7 @@ BoxedParagraph::BoxedParagraph()
 { }
 
 void
-BoxedParagraph::append(const BoxFormattingContext& ctxt, const String& s)
+BoxedParagraph::append(const FormattingContext& ctxt, const String& s)
 {
   if (!content.empty()) content.append(' ');
   object.push_back(Object(ctxt, getIndex(), s, 0));
@@ -40,14 +40,14 @@ BoxedParagraph::append(const BoxFormattingContext& ctxt, const String& s)
 }
 
 void
-BoxedParagraph::append(const BoxFormattingContext& ctxt, const AreaRef& area)
+BoxedParagraph::append(const FormattingContext& ctxt, const AreaRef& area)
 {
   if (!content.empty()) content.append(' ');
   object.push_back(Object(ctxt, getIndex(), objectReplacement, area));
   content.append(objectReplacement.data(), objectReplacement.length());
 }
 
-BoxedParagraph::Object::Object(const BoxFormattingContext& ctxt,
+BoxedParagraph::Object::Object(const FormattingContext& ctxt,
 			       int start,
 			       const UTF8String& s,
 			       const AreaRef& a)

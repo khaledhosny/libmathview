@@ -28,7 +28,7 @@
 #include "Element.hh"
 #include "ElementFactory.hh"
 #include "AttributeSignature.hh"
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 #include "NamespaceContext.hh"
 
 Element::Element(const SmartPtr<NamespaceContext>& c) : context(c)
@@ -91,7 +91,7 @@ void
 Element::setAttribute(const SmartPtr<Attribute>& attr)
 {
   assert(attr);
-  if (!attributes) attributes = AttributeList::create();
+  if (!attributes) attributes = AttributeSet::create();
   if (attributes->set(attr)) setDirtyLayout();
 }
 
@@ -157,7 +157,7 @@ Element::setDirtyLayout()
 {
   if (!dirtyLayout())
     {
-      setFlagDown(FDirtyLayout);
+      //setFlagDown(FDirtyLayout);
       setFlag(FDirtyLayout);
       setFlagUp(FDirtyLayout);
     }
@@ -205,3 +205,15 @@ Element::getNamespaceContext() const
 SmartPtr<AbstractLogger>
 Element::getLogger() const
 { return getNamespaceContext()->getView()->getLogger(); }
+
+AreaRef
+Element::format(class FormattingContext&)
+{
+  if (dirtyLayout())
+    {
+      setArea(0);
+      resetDirtyLayout();
+    }
+
+  return getArea();
+}

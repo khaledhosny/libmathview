@@ -40,20 +40,20 @@ public:
   static SmartPtr<MathMLOperatorDictionary> create(void) { return new MathMLOperatorDictionary; }
 
   void add(const class AbstractLogger&,
-	   const String&, const String&, const SmartPtr<class AttributeList>&);
+	   const String&, const String&, const SmartPtr<class AttributeSet>&);
   void search(const String&,
-	      SmartPtr<class AttributeList>&,
-	      SmartPtr<class AttributeList>&,
-	      SmartPtr<class AttributeList>&) const;
+	      SmartPtr<class AttributeSet>&,
+	      SmartPtr<class AttributeSet>&,
+	      SmartPtr<class AttributeSet>&) const;
 
 private:
   void unload(void);
 
   struct FormDefaults
   {
-    SmartPtr<class AttributeList> prefix;
-    SmartPtr<class AttributeList> infix;
-    SmartPtr<class AttributeList> postfix;
+    SmartPtr<class AttributeSet> prefix;
+    SmartPtr<class AttributeSet> infix;
+    SmartPtr<class AttributeSet> postfix;
   };
 
   typedef HASH_MAP_NS::hash_map<String,FormDefaults,StringHash,StringEq> Dictionary;

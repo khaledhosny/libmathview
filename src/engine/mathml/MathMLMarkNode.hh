@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLMarkNode_hh
-#define MathMLMarkNode_hh
+#ifndef __MathMLMarkNode_hh__
+#define __MathMLMarkNode_hh__
 
 #include "token.hh"
 #include "MathMLTextNode.hh"
@@ -36,17 +36,12 @@ public:
   static SmartPtr<MathMLMarkNode> create(TokenId t)
   { return new MathMLMarkNode(t); }
   
-  virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-#endif
+  virtual AreaRef format(class FormattingContext&);
 
   TokenId GetAlignmentEdge(void) const { return edge; }
 
-protected:
+private:
   TokenId edge;
 };
 
-#endif // MathMLMarkNode_hh
+#endif // __MathMLMarkNode_hh__

@@ -20,12 +20,12 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLSpaceNode_hh
-#define MathMLSpaceNode_hh
+#ifndef __MathMLSpaceNode_hh__
+#define __MathMLSpaceNode_hh__
 
 #include "MathMLTextNode.hh"
 
-class MathMLSpaceNode: public MathMLTextNode
+class MathMLSpaceNode : public MathMLTextNode
 {
 protected:
   MathMLSpaceNode(int);
@@ -35,17 +35,9 @@ public:
   static SmartPtr<MathMLSpaceNode> create(int s = 0)
   { return SmartPtr<MathMLSpaceNode>(new MathMLSpaceNode(s)); }
 
-  virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void     Setup(class RenderingEnvironment&);
-  virtual void     DoLayout(const class FormattingContext&);
-  virtual void     Render(const DrawingArea&);
-#endif
-
+  virtual AreaRef format(class FormattingContext&);
   virtual unsigned GetLogicalContentLength(void) const;
   virtual String   GetRawContent(void) const;
-
-  virtual bool     IsSpace(void) const;
 };
 
-#endif // MathMLSpaceNode_hh
+#endif // __MathMLSpaceNode_hh__

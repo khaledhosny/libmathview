@@ -24,13 +24,13 @@
 
 #include "BoxMLMathMLAdapter.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "View.hh"
 
 #include "MathMLElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathGraphicDevice.hh"
 
@@ -46,29 +46,16 @@ BoxMLMathMLAdapter::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLMathMLAdapter(context); }
 
 AreaRef
-BoxMLMathMLAdapter::format(BoxFormattingContext& ctxt)
+BoxMLMathMLAdapter::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
       if (SmartPtr<MathMLElement> child = getChild())
-	{
-	  SmartPtr<MathMLNamespaceContext> contentContext = child->getMathMLNamespaceContext();
-	  assert(contentContext);
-
-	  MathFormattingContext mCtxt(contentContext->getGraphicDevice());
-	  mCtxt.setSize(ctxt.getSize());
-	  mCtxt.setActualSize(ctxt.getSize());
-	  mCtxt.setColor(ctxt.getColor());
-	  mCtxt.setBackground(ctxt.getBackground());
-
-	  AreaRef res = child->format(mCtxt);
-	  res = ctxt.getDevice()->wrapper(ctxt, res);
-	  setArea(res);
-	}
+	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
       else
-	setArea(ctxt.getDevice()->dummy(ctxt));
+	setArea(ctxt.BGD()->dummy(ctxt));
       
       ctxt.pop();
       resetDirtyLayout();

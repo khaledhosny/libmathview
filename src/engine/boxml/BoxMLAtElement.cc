@@ -24,7 +24,7 @@
 
 #include "BoxMLAtElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 
@@ -40,19 +40,19 @@ BoxMLAtElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLAtElement(context); }
 
 AreaRef
-BoxMLAtElement::format(BoxFormattingContext& ctxt)
+BoxMLAtElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      x = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, At, x)), ctxt.getSize());
-      y = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, At, y)), ctxt.getSize());
+      x = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, At, x)), ctxt.getSize());
+      y = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, At, y)), ctxt.getSize());
 
       if (getChild())
 	{
 	  AreaRef res = getChild()->format(ctxt);
-	  res = ctxt.getDevice()->wrapper(ctxt, res);
+	  res = ctxt.BGD()->wrapper(ctxt, res);
 	  setArea(res);
 	}
       else

@@ -36,7 +36,7 @@ protected:
 public:
   static SmartPtr<BoxMLMathMLAdapter> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
-  virtual AreaRef format(class BoxFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   SmartPtr<MathMLElement> getChild(void) const { return content.getChild(); }
   void setChild(const SmartPtr<MathMLElement>& child) { content.setChild(this, child); }

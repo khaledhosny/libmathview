@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "MathMLErrorElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLErrorElement::MathMLErrorElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -36,7 +36,7 @@ MathMLErrorElement::~MathMLErrorElement()
 { }
 
 AreaRef
-MathMLErrorElement::format(MathFormattingContext& ctxt)
+MathMLErrorElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -44,7 +44,7 @@ MathMLErrorElement::format(MathFormattingContext& ctxt)
       if (ctxt.getColor() == RGBColor::RED()) ctxt.setColor(RGBColor::BLUE());
       else ctxt.setColor(RGBColor::RED());
       AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
-      setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
+      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : 0);
       ctxt.pop();
       resetDirtyLayout();
     }

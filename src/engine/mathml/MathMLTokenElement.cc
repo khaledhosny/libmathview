@@ -27,7 +27,7 @@
 #include "MathML.hh"
 #include "AreaFactory.hh"
 #include "BoundingBoxAux.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLGlyphNode.hh"
 #include "MathMLIdentifierElement.hh"
@@ -57,7 +57,7 @@ MathMLTokenElement::append(const String& s)
 }
 
 AreaRef
-MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
+MathMLTokenElement::formatAux(FormattingContext& ctxt)
 {
   RGBColor oldColor = ctxt.getColor();
   RGBColor oldBackground = ctxt.getBackground();
@@ -73,7 +73,7 @@ MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
 	  default: assert(false); break;
 	  }
       else
-	ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
+	ctxt.setSize(ctxt.MGD()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
     } 
   
   if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathvariant))
@@ -92,32 +92,37 @@ MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
 
   std::vector<AreaRef> c;
   c.reserve(getSize());
+#if 0
+  std::transform(content.begin(), content.end(), std::back_inserter(c),
+		 std::bind2nd(FormatAdapter<FormattingContext,MathMLTextNode,AreaRef>(), &ctxt));
+#else
   for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     c.push_back((*p)->format(ctxt));
+#endif
 
   AreaRef res;
-  if (c.size() == 0) res = ctxt.getDevice()->dummy(ctxt);
+  if (c.size() == 0) res = ctxt.MGD()->dummy(ctxt);
   else if (c.size() == 1) res = c[0];
-  else res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+  else res = ctxt.MGD()->getFactory()->horizontalArray(c);
 
   if (oldColor != newColor)
-    res = ctxt.getDevice()->getFactory()->color(res, newColor);
+    res = ctxt.MGD()->getFactory()->color(res, newColor);
 
   if (!newBackground.transparent && newBackground != oldBackground)
-    res = ctxt.getDevice()->getFactory()->background(res, newBackground);
+    res = ctxt.MGD()->getFactory()->background(res, newBackground);
 
   return res;
 }
 
 AreaRef
-MathMLTokenElement::format(MathFormattingContext& ctxt)
+MathMLTokenElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
-      setArea(ctxt.getDevice()->wrapper(ctxt, formatAux(ctxt)));
+      setArea(ctxt.MGD()->wrapper(ctxt, formatAux(ctxt)));
       ctxt.pop();
       resetDirtyLayout();
     }
@@ -128,6 +133,7 @@ MathMLTokenElement::format(MathFormattingContext& ctxt)
 bool
 MathMLTokenElement::IsNonMarking() const
 {
+#if 0
   for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator text = content.begin();
        text != content.end();
        text++)
@@ -137,6 +143,8 @@ MathMLTokenElement::IsNonMarking() const
     }
 
   return true;
+#endif
+  return false;
 }
 
 #if 0

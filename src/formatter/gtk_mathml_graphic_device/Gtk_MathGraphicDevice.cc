@@ -32,6 +32,7 @@
 #include "Gtk_AdobeShaper.hh"
 #include "SpaceShaper.hh"
 #include "MathMLElement.hh"
+#include "FormattingContext.hh"
 
 Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
   : gtk_factory(Gtk_AreaFactory::create())
@@ -62,8 +63,8 @@ Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
 { }
 
 AreaRef
-Gtk_MathGraphicDevice::wrapper(const MathFormattingContext& context,
+Gtk_MathGraphicDevice::wrapper(const FormattingContext& context,
 			       const AreaRef& base) const
 {
-  return gtk_factory->wrapper(base, base->box(), context.getElement());
+  return gtk_factory->wrapper(base, base->box(), context.getMathMLElement());
 }

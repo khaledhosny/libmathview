@@ -34,7 +34,7 @@
 #include "MathMLRowElement.hh"
 #include "MathMLSpaceElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLRowElement::MathMLRowElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -55,7 +55,7 @@ MathMLRowElement::create(const SmartPtr<class MathMLNamespaceContext>& context)
 }
 
 AreaRef
-MathMLRowElement::format(MathFormattingContext& ctxt)
+MathMLRowElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -89,7 +89,7 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 
       AreaRef res;
       if (row.size() == 1) res = row[0];
-      else res = ctxt.getDevice()->getFactory()->horizontalArray(row);
+      else res = ctxt.MGD()->getFactory()->horizontalArray(row);
       BoundingBox rowBox = res->box();
 
       if (stretchy)
@@ -109,11 +109,11 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 	  ctxt.setStretchOperator(0);
 
 	  if (row.size() == 1) res = row[0];
-	  else res = ctxt.getDevice()->getFactory()->horizontalArray(row);
+	  else res = ctxt.MGD()->getFactory()->horizontalArray(row);
 	}
 
       res = formatEmbellishment(this, ctxt, res);
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();

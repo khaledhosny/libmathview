@@ -26,7 +26,7 @@
 #include <list>
 
 #include "Attribute.hh"
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 
 template <class Model>
 class TemplateRefinementContext
@@ -58,7 +58,7 @@ public:
   push(const typename Model::Element& elem)
   {
     assert(elem);
-    context.push_front(Context(elem, AttributeList::create()));
+    context.push_front(Context(elem, AttributeSet::create()));
   }
 
   void pop(void)
@@ -70,10 +70,10 @@ public:
 private:
   struct Context
   {
-    Context(const typename Model::Element& el, const SmartPtr<AttributeList> al) : elem(el), attributes(al) { }
+    Context(const typename Model::Element& el, const SmartPtr<AttributeSet> al) : elem(el), attributes(al) { }
 
     typename Model::Element elem;
-    SmartPtr<AttributeList> attributes;
+    SmartPtr<AttributeSet> attributes;
   };
 
   std::list<Context> context;

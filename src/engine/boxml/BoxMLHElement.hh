@@ -34,7 +34,7 @@ protected:
 public:
   static SmartPtr<BoxMLHElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
-  virtual AreaRef format(class BoxFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
   virtual scaled getStep(void) const { return step; }
 
 private:

@@ -39,12 +39,12 @@ public:
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
-  virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
+  virtual void shape(class ShapingContext&) const;
 
 protected:
-  AreaRef shapeChar(const class MathFormattingContext&, const GlyphSpec&) const;
-  AreaRef shapeStretchyCharH(const class MathFormattingContext&, const GlyphSpec&, const scaled&) const;
-  AreaRef shapeStretchyCharV(const class MathFormattingContext&, const GlyphSpec&, const scaled&) const;
+  AreaRef shapeChar(const class ShapingContext&) const;
+  AreaRef shapeStretchyCharH(const class ShapingContext&) const;
+  AreaRef shapeStretchyCharV(const class ShapingContext&) const;
 };
 
 #endif // __Gtk_PangoShaper_hh__

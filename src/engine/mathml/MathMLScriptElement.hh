@@ -45,7 +45,7 @@ public:
   SmartPtr<MathMLElement> getSubScript(void) const { return subScript.getChild(); }
   SmartPtr<MathMLElement> getSuperScript(void) const { return superScript.getChild(); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);

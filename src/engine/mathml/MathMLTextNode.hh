@@ -34,19 +34,10 @@ protected:
   virtual ~MathMLTextNode();
 
 public:
-  virtual AreaRef format(class MathFormattingContext&) = 0;
+  virtual AreaRef format(class FormattingContext&) = 0;
 
   virtual String   GetRawContent(void) const { return String(); }
   virtual unsigned GetLogicalContentLength(void) const { return 0; }
-
-  virtual bool 	   IsText(void) const;  
-  virtual bool     HasDecimalPoint(void) const;
-  void             SetSpacing(int);
-  void             AddSpacing(int);
-  int              GetSpacing(void) const { return spacing; }
-
-protected:
-  int spacing : 13;     // overall spacing after the node
 };
 
 #endif // __MathMLTextNode_hh__

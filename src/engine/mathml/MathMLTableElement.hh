@@ -243,6 +243,7 @@ protected:
   void         ReleaseAuxStructures(void);
 #endif
 
+#if 0
   // table layout
   void         DoHorizontalLayout(const class FormattingContext&);
   void         DoHorizontalMinimumLayout(void);
@@ -262,6 +263,7 @@ protected:
   void         DoLabelsLayout(const class FormattingContext&);
   void         AdjustTableLayoutWithLabels(const class FormattingContext&);
   void         SetLabelPosition(unsigned, const scaled&, const scaled&);
+#endif
 
   // table invariants
   void         EnforceHorizontalInvariants(void);

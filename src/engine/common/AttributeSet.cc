@@ -27,7 +27,7 @@
 
 #include <cassert>
 
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 #include "AttributeSignature.hh"
 
 struct IsPredicate
@@ -40,14 +40,14 @@ struct IsPredicate
   }
 };
 
-AttributeList::AttributeList()
+AttributeSet::AttributeSet()
 { }
 
-AttributeList::~AttributeList()
+AttributeSet::~AttributeSet()
 { }
 
 bool
-AttributeList::set(const SmartPtr<Attribute>& attr)
+AttributeSet::set(const SmartPtr<Attribute>& attr)
 {
   assert(attr);
 #if 1
@@ -86,14 +86,14 @@ AttributeList::set(const SmartPtr<Attribute>& attr)
 }
 
 SmartPtr<Attribute>
-AttributeList::get(const AttributeId& id) const
+AttributeSet::get(const AttributeId& id) const
 {
   Map::const_iterator p = content.find(id);
   return (p != content.end()) ? p->second : 0;
 }
 
 bool
-AttributeList::remove(const AttributeId& id)
+AttributeSet::remove(const AttributeId& id)
 {
   Map::iterator p = content.find(id);
   if (p != content.end())

@@ -38,7 +38,7 @@ public:
   static SmartPtr<MathMLFractionElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLFractionElement(view); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   virtual void   setFlagDown(Flags);
   virtual void   resetFlagDown(Flags);

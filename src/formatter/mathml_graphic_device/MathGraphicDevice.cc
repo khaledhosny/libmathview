@@ -28,6 +28,7 @@
 #include "MathMLElement.hh"
 #include "MathGraphicDevice.hh"
 #include "MathVariantMap.hh"
+#include "FormattingContext.hh"
 
 MathGraphicDevice::MathGraphicDevice()
   : shaperManager(ShaperManager::create())
@@ -38,78 +39,14 @@ MathGraphicDevice::~MathGraphicDevice()
   shaperManager->unregisterShapers();
 }
 
-double
-MathGraphicDevice::dpi(const MathFormattingContext&) const
-{
-  return 72.0;
-}
-
 scaled
-MathGraphicDevice::evaluate(const MathFormattingContext& context,
-			    const Length& length, const scaled& defaultValue) const
-{
-  switch (length.type)
-    {
-    case Length::UNDEFINED_UNIT:
-      return defaultValue;
-    case Length::PURE_UNIT:
-      // error?
-      return defaultValue * length.value;
-    case Length::INFINITY_UNIT:
-      return scaled::max();
-    case Length::LT_UNIT:
-      return defaultLineThickness(context) * length.value;
-    case Length::EM_UNIT:
-      return em(context) * length.value;
-    case Length::EX_UNIT:
-      return ex(context) * length.value;
-    case Length::PX_UNIT:
-      return scaled((72.27 * length.value) / dpi(context));
-    case Length::IN_UNIT:
-      return scaled(72.27 * length.value);
-    case Length::CM_UNIT:
-      return scaled(72.27 * (length.value / 2.54));
-    case Length::MM_UNIT:
-      return scaled(72.27 * (length.value / 25.4));
-    case Length::PT_UNIT:
-      return scaled(length.value);
-    case Length::PC_UNIT:
-      return scaled(12 * 72.27 * length.value);
-    case Length::PERCENTAGE_UNIT:
-      return (defaultValue * length.value) / 100.0;
-    default:
-      if (length.type >= Length::NEGATIVE_VERYVERYTHICK_SPACE &&
-	  length.type <= Length::VERYVERYTHICK_SPACE)
-	{
-	  Length newLength =
-	    context.getMathSpace(MathFormattingContext::NEGATIVE_VERYVERYTHICK_SPACE +
-				 length.type - Length::NEGATIVE_VERYVERYTHICK_SPACE);
-	  assert(newLength.type < Length::NEGATIVE_VERYVERYTHICK_SPACE ||
-		 newLength.type > Length::VERYVERYTHICK_SPACE);
-	  return evaluate(context, newLength, defaultValue);
-	}
-      else
-	{
-	  assert(false);
-	  return defaultValue;
-	}
-    }
-}
-
-scaled
-MathGraphicDevice::em(const MathFormattingContext& context) const
-{
-  return context.getSize();
-}
-
-scaled
-MathGraphicDevice::ex(const MathFormattingContext& context) const
+MathGraphicDevice::ex(const FormattingContext& context) const
 {
   return string(context, "x")->box().height;
 }
 
 scaled
-MathGraphicDevice::axis(const MathFormattingContext& context) const
+MathGraphicDevice::axis(const FormattingContext& context) const
 {
   const BoundingBox pbox = string(context, "+")->box();
   // the + is a better choice rather than x because its vertical extent
@@ -119,21 +56,14 @@ MathGraphicDevice::axis(const MathFormattingContext& context) const
   return (pbox.height - pbox.depth) / 2;
 }
 
-scaled
-MathGraphicDevice::defaultLineThickness(const MathFormattingContext& context) const
-{
-  // at least 1px thick
-  return std::max(context.getSize() / 10, scaled(72.27 / dpi(context)));
-}
-
 AreaRef
-MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) const
+MathGraphicDevice::wrapper(const FormattingContext&, const AreaRef& area) const
 {
   return factory->box(area, area->box());
 }
 
 AreaRef
-MathGraphicDevice::dummy(const MathFormattingContext& context) const
+MathGraphicDevice::dummy(const FormattingContext& context) const
 {
   return getFactory()->color(string(context, StringOfUCS4String(UCS4String(1, 0xfffd))), RGBColor::RED());
 }
@@ -144,17 +74,16 @@ typedef HASH_MAP_NS::hash_map<CachedShapedStringKey, AreaRef, CachedShapedString
 typedef HASH_MAP_NS::hash_map<CachedShapedStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStretchyStringCache;
 
 AreaRef
-MathGraphicDevice::string(const MathFormattingContext& context,
+MathGraphicDevice::string(const FormattingContext& context,
 			  const String& str) const
 {
   if (str.length() == 0)
     return dummy(context);
-  else if (context.getElement() == context.getStretchOperator())
+  else if (context.getMathMLElement() == context.getStretchOperator())
     {
       static ShapedStretchyStringCache cache;
       CachedShapedStretchyStringKey key(str, context.getSize(), context.getStretchH(), context.getStretchV());
-      ShapedStretchyStringCache::const_iterator p = cache.find(key);
-#if 0
+#if 1
       std::pair<ShapedStringCache::iterator, bool> r = cache.insert(std::make_pair(key, AreaRef(0)));
       if (r.second)
 	{
@@ -168,6 +97,7 @@ MathGraphicDevice::string(const MathFormattingContext& context,
       else
 	return r.first->second;
 #else
+      ShapedStretchyStringCache::const_iterator p = cache.find(key);
       if (p != cache.end())
 	return p->second;
       else
@@ -185,7 +115,7 @@ MathGraphicDevice::string(const MathFormattingContext& context,
       static ShapedStringCache cache;
       CachedShapedStringKey key(str, context.getSize());
 
-#if 0
+#if 1
       std::pair<ShapedStringCache::iterator, bool> r = cache.insert(std::make_pair(key, AreaRef(0)));
       if (r.second)
 	{
@@ -211,7 +141,7 @@ MathGraphicDevice::string(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::stretchStringV(const MathFormattingContext& context,
+MathGraphicDevice::stretchStringV(const FormattingContext& context,
 				  const String& str,
 				  const scaled& height,
 				  const scaled& depth) const
@@ -220,7 +150,7 @@ MathGraphicDevice::stretchStringV(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::glyph(const MathFormattingContext& context,
+MathGraphicDevice::glyph(const FormattingContext& context,
 			 const String& alt,
 			 const String& fontFamily,
 			 unsigned long index) const
@@ -229,7 +159,7 @@ MathGraphicDevice::glyph(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::fraction(const MathFormattingContext& context,
+MathGraphicDevice::fraction(const FormattingContext& context,
 			    const AreaRef& numerator,
 			    const AreaRef& denominator,
 			    const Length& lineThickness) const
@@ -251,7 +181,7 @@ MathGraphicDevice::fraction(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
+MathGraphicDevice::bevelledFraction(const FormattingContext& context,
 				    const AreaRef& numerator,
 				    const AreaRef& denominator,
 				    const Length& lineThickness) const
@@ -269,7 +199,7 @@ MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::radical(const MathFormattingContext& context,
+MathGraphicDevice::radical(const FormattingContext& context,
 			   const AreaRef& base,
 			   const AreaRef& index) const
 {
@@ -296,7 +226,7 @@ MathGraphicDevice::radical(const MathFormattingContext& context,
 }
 
 void
-MathGraphicDevice::calculateDefaultScriptShift(const MathFormattingContext& context,
+MathGraphicDevice::calculateDefaultScriptShift(const FormattingContext& context,
 					       const BoundingBox& baseBox,
 					       const BoundingBox& subScriptBox,
 					       const BoundingBox& superScriptBox,
@@ -342,7 +272,7 @@ MathGraphicDevice::calculateDefaultScriptShift(const MathFormattingContext& cont
 }
 
 void
-MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context,
+MathGraphicDevice::calculateScriptShift(const FormattingContext& context,
 					const BoundingBox& baseBox,
 					const BoundingBox& subScriptBox,
 					const Length& subScriptMinShift,
@@ -357,7 +287,7 @@ MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::script(const MathFormattingContext& context,
+MathGraphicDevice::script(const FormattingContext& context,
 			  const AreaRef& base,
 			  const AreaRef& subScript,
 			  const Length& subScriptMinShift,
@@ -395,7 +325,7 @@ MathGraphicDevice::script(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::multiScripts(const MathFormattingContext& context,
+MathGraphicDevice::multiScripts(const FormattingContext& context,
 				const AreaRef& base,
 				const std::vector<AreaRef>& subScripts,
 				const std::vector<AreaRef>& preSubScripts,
@@ -477,7 +407,7 @@ MathGraphicDevice::multiScripts(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::underOver(const MathFormattingContext& context,
+MathGraphicDevice::underOver(const FormattingContext& context,
 			     const AreaRef& base,
 			     const AreaRef& underScript, bool accentUnder,
 			     const AreaRef& overScript, bool accent) const
@@ -492,7 +422,7 @@ MathGraphicDevice::underOver(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::enclose(const MathFormattingContext& context,
+MathGraphicDevice::enclose(const FormattingContext& context,
 			   const AreaRef& base,
 			   const String& notation) const
 {

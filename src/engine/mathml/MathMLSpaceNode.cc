@@ -21,53 +21,22 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
 
-#include "BoundingBox.hh"
+#include <cassert>
+
 #include "MathMLSpaceNode.hh"
 
 MathMLSpaceNode::MathMLSpaceNode(int s)
-{
-  SetSpacing(s);
-}
+{ }
 
 MathMLSpaceNode::~MathMLSpaceNode()
-{
-}
-
-#if 0
-void
-MathMLSpaceNode::Setup(class RenderingEnvironment&)
-{
-  // if the box is set to be null then a possible spacing is not added
-  // or, better, it is added, but the box remains null
-  box.set(0, 0, 0);
-}
-
-void
-MathMLSpaceNode::DoLayout(const FormattingContext&)
-{
-}
-#endif
+{ }
 
 AreaRef
-MathMLSpaceNode::format(MathFormattingContext&)
+MathMLSpaceNode::format(FormattingContext&)
 {
   assert(false);
   return 0;
-}
-
-#if 0
-void
-MathMLSpaceNode::Render(const DrawingArea&)
-{
-}
-#endif
-
-bool
-MathMLSpaceNode::IsSpace() const
-{
-  return true;
 }
 
 unsigned

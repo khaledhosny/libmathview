@@ -26,7 +26,7 @@
 
 #include "MathMLmathElement.hh"
 #include "ValueConversion.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
 
@@ -38,7 +38,7 @@ MathMLmathElement::~MathMLmathElement()
 { }
 
 AreaRef
-MathMLmathElement::format(MathFormattingContext& ctxt)
+MathMLmathElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -49,7 +49,7 @@ MathMLmathElement::format(MathFormattingContext& ctxt)
       ctxt.setDisplayStyle(ToTokenId(value) == T_BLOCK);
 
       AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
-      if (res) res = ctxt.getDevice()->wrapper(ctxt, res);
+      if (res) res = ctxt.MGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

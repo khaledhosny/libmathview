@@ -27,7 +27,7 @@
 #include "AreaFactory.hh"
 #include "MathMLPhantomElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLPhantomElement::MathMLPhantomElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -45,7 +45,7 @@ MathMLPhantomElement::IsSpaceLike() const
 }
 
 AreaRef
-MathMLPhantomElement::format(MathFormattingContext& ctxt)
+MathMLPhantomElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -53,7 +53,7 @@ MathMLPhantomElement::format(MathFormattingContext& ctxt)
       AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       
       if (res)
-	res = ctxt.getDevice()->wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, ctxt.getDevice()->getFactory()->hide(res)));
+	res = ctxt.MGD()->wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, ctxt.MGD()->getFactory()->hide(res)));
       else
 	res = 0;
       setArea(res);

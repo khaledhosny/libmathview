@@ -25,83 +25,10 @@
 #include <cassert>
 
 #include "MathMLTextNode.hh"
-#include "MathMLElement.hh"
-
-// A MathMLTextNode is used to represent an UNBREAKABLE chunk of
-// text and/or space. This means that TextNode is an Atom.
-// The breakability of the chunk is somehow determined by the
-// node content
 
 MathMLTextNode::MathMLTextNode()
-{
-  SetSpacing(0);
-}
+{ }
 
 MathMLTextNode::~MathMLTextNode()
-{
-}
+{ }
 
-bool
-MathMLTextNode::IsText() const
-{
-  return true;
-}
-
-#if 0
-void
-MathMLTextNode::SetPosition(const scaled& x, const scaled& y)
-{
-  position.x = x;
-  position.y = y;
-}
-#endif
-
-void
-MathMLTextNode::SetSpacing(int s)
-{
-  spacing = s;
-}
-
-void
-MathMLTextNode::AddSpacing(int ds)
-{
-  spacing += ds;
-}
-
-#if 0
-bool
-MathMLTextNode::IsInside(const scaled& x, const scaled& y) const
-{
-  return
-    x >= position.x &&
-    y >= position.y - box.height &&
-    x <= position.x + box.width &&
-    y <= position.y + box.depth;
-}
-
-scaled
-MathMLTextNode::GetLeftEdge() const
-{
-  return GetX();
-}
-
-scaled
-MathMLTextNode::GetRightEdge() const
-{
-  return GetX() + box.width;
-}
-#endif
-
-bool
-MathMLTextNode::HasDecimalPoint() const
-{
-  return false;
-}
-
-#if 0
-scaled
-MathMLTextNode::GetDecimalPointEdge() const
-{
-  return 0;
-}
-#endif

@@ -37,7 +37,7 @@ protected:
 public:
   static SmartPtr<MathMLRowElement> create(const SmartPtr<class MathMLNamespaceContext>& view);
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   virtual bool IsSpaceLike(void) const;
 

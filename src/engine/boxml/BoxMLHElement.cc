@@ -25,7 +25,7 @@
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLHElement.hh"
 #include "BoxMLVElement.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -42,7 +42,7 @@ BoxMLHElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLHElement(context); }
 
 AreaRef
-BoxMLHElement::format(BoxFormattingContext& ctxt)
+BoxMLHElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -62,14 +62,14 @@ BoxMLHElement::format(BoxFormattingContext& ctxt)
 	    assert(area);
 	    switch (align)
 	      {
-	      case T_TOP: area = ctxt.getDevice()->getFactory()->top(area); break;
-	      case T_BOTTOM: area = ctxt.getDevice()->getFactory()->bottom(area); break;
-	      case T_CENTER: area = ctxt.getDevice()->getFactory()->middle(area); break;
+	      case T_TOP: area = ctxt.BGD()->getFactory()->top(area); break;
+	      case T_BOTTOM: area = ctxt.BGD()->getFactory()->bottom(area); break;
+	      case T_CENTER: area = ctxt.BGD()->getFactory()->middle(area); break;
 	      case T_BASELINE:
 		{
 		  //std::cout << "making step of " << step.getValue() << std::endl;
 		  if (step != scaled::zero())
-		    area = ctxt.getDevice()->getFactory()->shift(area, step);
+		    area = ctxt.BGD()->getFactory()->shift(area, step);
 		  step += (*p)->getStep();
 		}
 		break;
@@ -85,9 +85,9 @@ BoxMLHElement::format(BoxFormattingContext& ctxt)
       if (c.size() == 1)
 	res = c[0];
       else
-	res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+	res = ctxt.BGD()->getFactory()->horizontalArray(c);
 
-      res = ctxt.getDevice()->wrapper(ctxt, res);
+      res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

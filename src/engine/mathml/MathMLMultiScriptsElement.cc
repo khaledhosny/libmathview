@@ -28,7 +28,7 @@
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
@@ -40,7 +40,7 @@ MathMLMultiScriptsElement::~MathMLMultiScriptsElement()
 { }
 
 void
-MathMLMultiScriptsElement::formatScripts(MathFormattingContext& ctxt,
+MathMLMultiScriptsElement::formatScripts(FormattingContext& ctxt,
 					 const std::vector<SmartPtr<MathMLElement> >::const_iterator& begin,
 					 const std::vector<SmartPtr<MathMLElement> >::const_iterator& end,
 					 std::vector<AreaRef>& area)
@@ -54,7 +54,7 @@ MathMLMultiScriptsElement::formatScripts(MathFormattingContext& ctxt,
 }
 
 AreaRef
-MathMLMultiScriptsElement::format(MathFormattingContext& ctxt)
+MathMLMultiScriptsElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -89,12 +89,12 @@ MathMLMultiScriptsElement::format(MathFormattingContext& ctxt)
       std::vector<AreaRef> preSuperScriptArea;
       formatScripts(ctxt, preSuperScript.begin(), preSuperScript.end(), preSuperScriptArea);
 
-      AreaRef res = ctxt.getDevice()->multiScripts(ctxt,
+      AreaRef res = ctxt.MGD()->multiScripts(ctxt,
 						   baseArea,
 						   subScriptArea, preSubScriptArea, subScriptShift,
 						   superScriptArea, preSuperScriptArea, superScriptShift);
       res = formatEmbellishment(this, ctxt, res);
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();

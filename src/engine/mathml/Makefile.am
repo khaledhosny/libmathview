@@ -4,12 +4,6 @@ NULL =
 noinst_LTLIBRARIES = libmathml.la
 
 libmathml_la_SOURCES = \
-  traverseAux.cc \
-  MathMLTableContentFactory.cc \
-  MathMLValueConversion.cc \
-  mathVariantAux.cc \
-  MathMLNamespaceContext.cc \
-  MathMLOperatorDictionary.cc \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
@@ -22,33 +16,41 @@ libmathml_la_SOURCES = \
   MathMLEncloseElement.cc \
   MathMLErrorElement.cc \
   MathMLFractionElement.cc \
+  MathMLFunctionApplicationNode.cc \
   MathMLGlyphNode.cc \
   MathMLIdentifierElement.cc \
+  MathMLInferredRowElement.cc \
+  MathMLInvisibleTimesNode.cc \
   MathMLLinearContainerElement.cc \
   MathMLMarkNode.cc \
   MathMLMultiScriptsElement.cc \
+  MathMLNamespaceContext.cc \
   MathMLNode.cc \
   MathMLNormalizingContainerElement.cc \
   MathMLNumberElement.cc \
+  MathMLOperatorDictionary.cc \
   MathMLOperatorElement.cc \
   MathMLPaddedElement.cc \
   MathMLPhantomElement.cc \
   MathMLRadicalElement.cc \
   MathMLRowElement.cc \
-  MathMLInferredRowElement.cc \
   MathMLScriptElement.cc \
   MathMLSpaceElement.cc \
-  MathMLSpaceNode.cc \
   MathMLStringLitElement.cc \
   MathMLStringNode.cc \
   MathMLStyleElement.cc \
   MathMLTableCellElement.cc \
+  MathMLTableContentFactory.cc \
   MathMLTableElement.cc \
   MathMLTextElement.cc \
   MathMLTextNode.cc \
   MathMLTokenElement.cc \
   MathMLUnderOverElement.cc \
-  MathMLmathElement.cc
+  MathMLValueConversion.cc \
+  MathMLmathElement.cc \
+  mathVariantAux.cc \
+  traverseAux.cc \
+  $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
@@ -58,16 +60,12 @@ mathview_HEADERS = \
   $(NULL)
 
 noinst_HEADERS = \
-  traverseAux.hh \
-  MathMLTableContentFactory.hh \
   MathML.hh \
-  MathMLValueConversion.hh \
-  mathVariantAux.hh \
-  MathMLAdapters.hh \
-  MathMLAttributeParsers.hh \
   MathMLActionElement.hh \
+  MathMLAdapters.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \
+  MathMLAttributeParsers.hh \
   MathMLAttributeParsers.hh \
   MathMLAttributeSignatures.hh \
   MathMLBinContainerElement.hh \
@@ -77,8 +75,11 @@ noinst_HEADERS = \
   MathMLEncloseElement.hh \
   MathMLErrorElement.hh \
   MathMLFractionElement.hh \
+  MathMLFunctionApplicationNode.hh \
   MathMLGlyphNode.hh \
   MathMLIdentifierElement.hh \
+  MathMLInferredRowElement.hh \
+  MathMLInvisibleTimesNode.hh \
   MathMLLinearContainerElement.hh \
   MathMLMarkNode.hh \
   MathMLMultiScriptsElement.hh \
@@ -90,20 +91,23 @@ noinst_HEADERS = \
   MathMLPhantomElement.hh \
   MathMLRadicalElement.hh \
   MathMLRowElement.hh \
-  MathMLInferredRowElement.hh \
   MathMLScriptElement.hh \
   MathMLSpaceElement.hh \
-  MathMLSpaceNode.hh \
   MathMLStringLitElement.hh \
   MathMLStringNode.hh \
   MathMLStyleElement.hh \
   MathMLTableCellElement.hh \
+  MathMLTableContentFactory.hh \
   MathMLTableElement.hh \
   MathMLTextElement.hh \
   MathMLTextNode.hh \
   MathMLTokenElement.hh \
   MathMLUnderOverElement.hh \
-  MathMLmathElement.hh
+  MathMLValueConversion.hh \
+  MathMLmathElement.hh \
+  mathVariantAux.hh \
+  traverseAux.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_srcdir)/auto \

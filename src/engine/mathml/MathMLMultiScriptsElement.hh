@@ -54,14 +54,14 @@ public:
   SmartPtr<MathMLElement> getPreSubScript(unsigned i) const { return preSubScript.getChild(i); }
   SmartPtr<MathMLElement> getPreSuperScript(unsigned i) const { return preSuperScript.getChild(i); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
-  static void formatScripts(class MathFormattingContext&,
+  static void formatScripts(class FormattingContext&,
 			    const std::vector<SmartPtr<MathMLElement> >::const_iterator&,
 			    const std::vector<SmartPtr<MathMLElement> >::const_iterator&,
 			    std::vector<AreaRef>&);

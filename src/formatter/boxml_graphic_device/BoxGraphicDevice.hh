@@ -23,13 +23,11 @@
 #ifndef __BoxGraphicDevice_hh__
 #define __BoxGraphicDevice_hh__
 
-#include "Object.hh"
 #include "Area.hh"
-#include "Length.hh"
 #include "String.hh"
-#include "scaled.hh"
+#include "GraphicDevice.hh"
 
-class BoxGraphicDevice : public Object
+class BoxGraphicDevice : public GraphicDevice
 {
 protected:
   BoxGraphicDevice(void);
@@ -40,15 +38,11 @@ public:
 
   // Length evaluation, fundamental properties
 
-  virtual scaled evaluate(const class BoxFormattingContext&, const Length&, const scaled&) const;
-  virtual double dpi(const class BoxFormattingContext&) const;
-  virtual scaled em(const class BoxFormattingContext&) const;
-  virtual scaled ex(const class BoxFormattingContext&) const;
-  virtual scaled defaultLineThickness(const class BoxFormattingContext&) const;
+  virtual scaled ex(const class FormattingContext&) const;
 
-  virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const = 0;
-  virtual AreaRef dummy(const class BoxFormattingContext&) const;
-  virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const = 0;
+  virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const = 0;
+  virtual AreaRef dummy(const class FormattingContext&) const;
+  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef&) const = 0;
 };
 
 #endif // __BoxGraphicDevice_hh__

@@ -38,8 +38,6 @@ public:
   String getNamespaceURI(void) const { return namespaceURI; }
   SmartPtr<class View> getView(void) const;
 
-  virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const = 0;
-
 private:
   const String namespaceURI;
   WeakPtr<class View> view;

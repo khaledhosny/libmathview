@@ -24,12 +24,12 @@
 
 #include <cassert>
 
-#include "ShapingResult.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_RenderingContext.hh"
 #include "MathMLElement.hh"
 #include "MathGraphicDevice.hh"
+#include "ShapingContext.hh"
 
 Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper()
 { }
@@ -52,16 +52,30 @@ Gtk_DefaultPangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, u
 }
 
 void
-Gtk_DefaultPangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
+Gtk_DefaultPangoShaper::shape(ShapingContext& context) const
 {
-  const GlyphSpec spec = result.getSpec();
-  const unsigned n = result.chunkSize();
+  const unsigned n = context.chunkSize();
   assert(n > 0);
   // is it worth specializing this to the case when n == 1????
   gunichar* uni_buffer = new gunichar[n];
-  for (unsigned i = 0; i < n; i++) uni_buffer[i] = result.data()[i];
-  result.pushArea(n, shapeString(ctxt, uni_buffer, n));
+  for (unsigned i = 0; i < n; i++) uni_buffer[i] = context.data()[i];
+  context.pushArea(n, shapeString(context, uni_buffer, n));
   delete [] uni_buffer;
+}
+
+AreaRef
+Gtk_DefaultPangoShaper::shapeString(const ShapingContext& context, const gunichar* uni_buffer, unsigned n) const
+{
+  glong length;
+  gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
+  PangoLayout* layout = createPangoLayout(buffer, length,
+					  context.getSize(),
+					  getDefaultTextAttributes());
+  g_free(buffer);
+
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
+  assert(factory);
+  return factory->pangoLayoutLine(layout);
 }
 
 const Gtk_DefaultPangoShaper::PangoTextAttributes&
@@ -162,25 +176,3 @@ Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, con
   return layout;
 }
 
-AreaRef
-Gtk_DefaultPangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* uni_buffer, glong n) const
-{
-  assert(context);
-
-  glong length;
-  gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
-
-  // FIXME: I bet there are some leaks here, but using GObjectPtr just
-  // gives a segfault!!!
-  //GObjectPtr<PangoLayout> layout = pango_layout_new(context);
-  PangoLayout* layout = createPangoLayout(buffer, length,
-					  ctxt.getSize(),
-					  getDefaultTextAttributes());
-  g_free(buffer);
-
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
-  assert(factory);
-  return factory->pangoLayoutLine(layout);
-
-  //g_free(buffer);
-}

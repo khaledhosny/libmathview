@@ -33,7 +33,7 @@ protected:
 
 public:
   AreaRef formatEmbellishment(const SmartPtr<class MathMLElement>&,
-			      const class MathFormattingContext&,
+			      const class FormattingContext&,
 			      const AreaRef&) const;
 };
 

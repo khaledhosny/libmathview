@@ -33,7 +33,7 @@ protected:
   virtual ~BoxMLBinContainerElement();
 
 public:
-  virtual AreaRef format(class BoxFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
   virtual scaled getStep(void) const;
 
   SmartPtr<BoxMLElement> getChild(void) const { return content.getChild(); }

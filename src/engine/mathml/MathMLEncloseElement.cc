@@ -26,7 +26,7 @@
 
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
@@ -39,7 +39,7 @@ MathMLEncloseElement::~MathMLEncloseElement()
 { }
 
 AreaRef
-MathMLEncloseElement::format(MathFormattingContext& ctxt)
+MathMLEncloseElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -51,12 +51,12 @@ MathMLEncloseElement::format(MathFormattingContext& ctxt)
 	  res = getChild()->format(ctxt);
 	  SmartPtr<ValueSequence> type = ToSequence(GET_ATTRIBUTE_VALUE(MathML, Enclose, notation));
 	  for (unsigned i = 0; i < type->getSize(); i++)
-	    res = ctxt.getDevice()->enclose(ctxt, res, ToString(type->getValue(i)));
+	    res = ctxt.MGD()->enclose(ctxt, res, ToString(type->getValue(i)));
 	}
       else
 	res = 0;
 
-      setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
+      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : 0);
       ctxt.pop();
       resetDirtyLayout();
     }

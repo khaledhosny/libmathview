@@ -24,55 +24,26 @@
 
 #include <cassert>
 
+#include "MathMLElement.hh"
 #include "MathMLStringNode.hh"
-#include "MathMLTokenElement.hh"
-#include "ShaperManager.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLStringNode::MathMLStringNode(const String& c)
   : content(c)
-{
-}
+{ }
 
 MathMLStringNode::~MathMLStringNode()
-{
-}
-
-bool
-MathMLStringNode::IsString() const
-{
-  return true;
-}
+{ }
 
 AreaRef
-MathMLStringNode::format(MathFormattingContext& ctxt)
-{
-  return ctxt.getDevice()->string(ctxt, content);
-}
-
-bool
-MathMLStringNode::HasDecimalPoint() const
-{
-  return false;
-}
-
-#if 0
-scaled
-MathMLStringNode::GetDecimalPointEdge() const
-{
-  return GetX();
-}
-#endif
+MathMLStringNode::format(FormattingContext& ctxt)
+{ return ctxt.MGD()->string(ctxt, content); }
 
 unsigned
 MathMLStringNode::GetLogicalContentLength() const
-{
-  return content.length();
-}
+{ return content.length(); }
 
 String
 MathMLStringNode::GetRawContent() const
-{
-  return content;
-}
+{ return content; }

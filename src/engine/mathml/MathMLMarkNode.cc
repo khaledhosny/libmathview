@@ -25,60 +25,16 @@
 #include <cassert>
 
 #include "MathMLMarkNode.hh"
-#include "ValueConversion.hh"
 
 MathMLMarkNode::MathMLMarkNode(TokenId e)
-{
-  edge = e;
-}
+{ edge = e; }
 
 MathMLMarkNode::~MathMLMarkNode()
-{
-}
-
-#if 0
-void
-MathMLMarkNode::Setup(RenderingEnvironment& env)
-{
-#if 0
-  // next a tricky operation. A token can contain a <malignmark>
-  // element which has an attribute (edge) possibily inherited from
-  // the rendering environment.
-  // This is the price for having a more natural token element with just
-  // text nodes as content... otherwise we would have frames.
-  static AttributeSignature sig = { ATTR_EDGE, alignMarkEdgeParser, "left", NULL };
-
-  if (SmartPtr<MathMLAttribute> attribute = env.GetAttribute(ATTR_EDGE))
-    // ok, we have to do something only in case the attribute edge
-    // wasn't explicitly set inside the mark (see Parser.cc)
-    if (edge == MARK_ALIGN_NOTVALID)
-      if (SmartPtr<Value> value = attribute->getParsedValue(&sig))
-	edge = ToMarkAlignId(value);
-
-  // since left is the default value for the edge attribute,
-  // we set to left even in case the value is wrong
-  if (edge == MARK_ALIGN_NOTVALID) edge = MARK_ALIGN_LEFT;
-#endif
-  // FIXME
-}
-
-void
-MathMLMarkNode::DoLayout(const FormattingContext&)
-{
-  box.unset();
-}
-#endif
+{ }
 
 AreaRef
-MathMLMarkNode::format(MathFormattingContext&)
+MathMLMarkNode::format(FormattingContext&)
 {
   assert(false);
   return 0;
 }
-
-#if 0
-void
-MathMLMarkNode::Render(const DrawingArea&)
-{
-}
-#endif

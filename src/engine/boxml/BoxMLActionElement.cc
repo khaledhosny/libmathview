@@ -28,7 +28,7 @@
 #include "BoxMLAttributeSignatures.hh"
 #include "ValueConversion.hh"
 #include "BoxMLActionElement.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 
 BoxMLActionElement::BoxMLActionElement(const SmartPtr<BoxMLNamespaceContext>& context)
@@ -43,7 +43,7 @@ BoxMLActionElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLActionElement(context); }
 
 AreaRef
-BoxMLActionElement::format(BoxFormattingContext& ctxt)
+BoxMLActionElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -74,10 +74,10 @@ BoxMLActionElement::format(BoxFormattingContext& ctxt)
       if (SmartPtr<BoxMLElement> elem = getChild(selection))
 	res = elem->format(ctxt);
       else
-	res = ctxt.getDevice()->dummy(ctxt);
+	res = ctxt.BGD()->dummy(ctxt);
       assert(res);
 
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.BGD()->wrapper(ctxt, res));
       ctxt.pop();
 
       resetDirtyLayout();

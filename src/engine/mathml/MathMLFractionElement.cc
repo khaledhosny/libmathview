@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "AreaFactory.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFractionElement.hh"
@@ -41,7 +41,7 @@ MathMLFractionElement::~MathMLFractionElement()
 { }
 
 AreaRef
-MathMLFractionElement::format(MathFormattingContext& ctxt)
+MathMLFractionElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -89,31 +89,31 @@ MathMLFractionElement::format(MathFormattingContext& ctxt)
       ctxt.pop();
 
       if (bevelled)
-	res = ctxt.getDevice()->bevelledFraction(ctxt, num, denom, thickness);
+	res = ctxt.MGD()->bevelledFraction(ctxt, num, denom, thickness);
       else
 	{
 	  switch (numAlign)
 	    {
 	    case T_LEFT: break; // nothing to do
-	    case T_CENTER: num = ctxt.getDevice()->getFactory()->center(num); break;
-	    case T_RIGHT: num = ctxt.getDevice()->getFactory()->right(num); break;
+	    case T_CENTER: num = ctxt.MGD()->getFactory()->center(num); break;
+	    case T_RIGHT: num = ctxt.MGD()->getFactory()->right(num); break;
 	    default: assert(false);
 	    }
 
 	  switch (denomAlign)
 	    {
 	    case T_LEFT: break; // nothing to do
-	    case T_CENTER: denom = ctxt.getDevice()->getFactory()->center(denom); break;
-	    case T_RIGHT: denom = ctxt.getDevice()->getFactory()->right(denom); break;
+	    case T_CENTER: denom = ctxt.MGD()->getFactory()->center(denom); break;
+	    case T_RIGHT: denom = ctxt.MGD()->getFactory()->right(denom); break;
 	    default: assert(false);
 	    }
 	
-	  res = ctxt.getDevice()->fraction(ctxt, num, denom, thickness);
+	  res = ctxt.MGD()->fraction(ctxt, num, denom, thickness);
 	}
 
       res = formatEmbellishment(this, ctxt, res);
 
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();

@@ -24,19 +24,13 @@
 
 #include "BoxMLElement.hh"
 #include "BoxGraphicDevice.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 
-BoxFormattingContext::BoxFormattingContext(const SmartPtr<BoxGraphicDevice>& d)
+FormattingContext::FormattingContext(const SmartPtr<BoxGraphicDevice>& d)
   : device(d)
 {
   setSize(device->evaluate(*this, Length(10.0, Length::PT_UNIT), scaled::zero()));
   setColor(RGBColor::BLACK());
   setBackground(RGBColor::WHITE());
-}
-
-SmartPtr<BoxGraphicDevice>
-BoxFormattingContext::getDevice() const
-{
-  return device;
 }
 

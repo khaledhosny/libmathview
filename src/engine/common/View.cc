@@ -34,9 +34,10 @@
 #include "BoxMLNamespaceContext.hh"
 #endif // ENABLE_BOXML
 #include "AreaId.hh"
-#include "scaled.hh"
-#include "Area.hh"
 #include "AbstractLogger.hh"
+#include "FormattingContext.hh"
+#include "MathGraphicDevice.hh"
+#include "BoxGraphicDevice.hh"
 
 View::View() : defaultFontSize(10), freezeCounter(0)
 { }
@@ -110,7 +111,30 @@ View::getBuilder() const
 
 AreaRef
 View::formatElement(const SmartPtr<Element>& elem) const
-{ return elem ? elem->getNamespaceContext()->format(elem) : 0; }
+{
+  if (!elem) return 0;
+
+  if (elem->dirtyLayout())
+    {
+#if ENABLE_BOXML
+      FormattingContext ctxt(mathmlContext->getGraphicDevice(),
+			     boxmlContext->getGraphicDevice());
+#else
+      FormattingContext ctxt(mathmlContext->getGraphicDevice());
+#endif // ENABLE_BOXML
+      Length defaultSize(getDefaultFontSize(), Length::PT_UNIT);
+      scaled l = mathmlContext->getGraphicDevice()->evaluate(ctxt, defaultSize, scaled::zero());
+      ctxt.setSize(l);
+      ctxt.setActualSize(ctxt.getSize());
+      Clock perf;
+      perf.Start();
+      elem->format(ctxt);
+      perf.Stop();
+      getLogger()->out(LOG_INFO, "formatting time: %dms", perf());
+    }
+
+  return elem->getArea();
+}
 
 SmartPtr<Element>
 View::getRootElement() const

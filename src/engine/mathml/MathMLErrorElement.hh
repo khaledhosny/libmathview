@@ -35,7 +35,7 @@ public:
   static SmartPtr<MathMLErrorElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLErrorElement(view); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 };
 
 #endif // __MathMLErrorElement_hh__

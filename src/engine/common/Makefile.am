@@ -8,12 +8,13 @@ libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libengine_common_la_SOURCES = \
   Configuration.cc \
   Attribute.cc \
-  AttributeList.cc \
+  AttributeSet.cc \
   AttributeSignature.cc \
   NamespaceContext.cc \
   View.cc \
   Node.cc \
-  Element.cc
+  Element.cc \
+  $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
@@ -26,7 +27,7 @@ mathview_HEADERS = \
 noinst_HEADERS = \
   Adapters.hh \
   Attribute.hh \
-  AttributeList.hh \
+  AttributeSet.hh \
   AttributeSignature.hh \
   BinContainerTemplate.hh \
   CommonStringParsers.hh \
@@ -40,10 +41,14 @@ noinst_HEADERS = \
 INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/formatter/common \
+  -I$(top_srcdir)/src/formatter/mathml_graphic_device \
+  -I$(top_srcdir)/src/formatter/boxml_graphic_device \
   -I$(top_srcdir)/src/formatter/areamodel \
-  -I$(top_srcdir)/src/formatter/gtk_areamodel
+  $(NULL)
 

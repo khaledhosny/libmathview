@@ -24,68 +24,22 @@
 
 #include <cassert>
 
-#include "MathMLElement.hh"
 #include "MathMLGlyphNode.hh"
-#include "MathMLTokenElement.hh"
 
 MathMLGlyphNode::MathMLGlyphNode(const String& f, const String& i, const String& a)
   : family(f), index(i), alt(a)
-{
-}
+{ }
 
 MathMLGlyphNode::~MathMLGlyphNode()
-{
-}
-
-#if 0
-void
-MathMLGlyphNode::Setup(RenderingEnvironment& env)
-{
-//   FontAttributes glyphAttributes = env.GetFontAttributes();
-//   glyphAttributes.family = fontFamily;
-//   glyphAttributes.mode = FONT_MODE_ANY;
-  //font = env.charMapper.GetFont(glyphAttributes);
-}
-
-void
-MathMLGlyphNode::DoLayout(const FormattingContext&)
-{
-#if 0
-  if (font) font->CharBox(nch, box);
-  else box.unset();
-#endif
-}
-#endif
+{ }
 
 AreaRef
-MathMLGlyphNode::format(MathFormattingContext&)
+MathMLGlyphNode::format(FormattingContext&)
 {
   assert(false);
   return 0;
 }
 
-#if 0
-void
-MathMLGlyphNode::Render(const DrawingArea& area)
-{
-#if 0
-  if (font)
-    {
-      assert(GetParent());
-      assert(is_a<MathMLTokenElement>(GetParent()));
-      SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
-      assert(token);
-
-      const GraphicsContext* gc = token->GetForegroundGC();
-
-      area.DrawChar(gc, font, GetX(), GetY(), nch);
-    }
-#endif
-}
-#endif
-
 unsigned
 MathMLGlyphNode::GetLogicalContentLength() const
-{
-  return 1;
-}
+{ return 1; }

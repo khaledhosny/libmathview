@@ -34,8 +34,6 @@ protected:
   virtual ~MathMLElement();
 
 public:
-  virtual AreaRef format(class MathFormattingContext&);
-
   virtual bool IsSpaceLike(void) const;
 
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);

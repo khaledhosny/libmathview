@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "MathMLDummyElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLDummyElement::MathMLDummyElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -36,12 +36,12 @@ MathMLDummyElement::~MathMLDummyElement()
 { }
 
 AreaRef
-MathMLDummyElement::format(MathFormattingContext& ctxt)
+MathMLDummyElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
-      setArea(ctxt.getDevice()->dummy(ctxt));
+      setArea(ctxt.MGD()->dummy(ctxt));
       ctxt.pop();
     }
 

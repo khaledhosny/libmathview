@@ -24,7 +24,7 @@
 
 #include "BoxMLDecorElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -41,13 +41,13 @@ BoxMLDecorElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLDecorElement(context); }
 
 AreaRef
-BoxMLDecorElement::decorate(BoxFormattingContext& ctxt,
+BoxMLDecorElement::decorate(FormattingContext& ctxt,
 			    const AreaRef& child,
 			    const scaled& thickness,
 			    const RGBColor& color,
 			    const String& type)
 {
-  SmartPtr<AreaFactory> factory = ctxt.getDevice()->getFactory();
+  SmartPtr<AreaFactory> factory = ctxt.BGD()->getFactory();
   std::vector<AreaRef> c;
   c.reserve(3);
 
@@ -87,7 +87,7 @@ BoxMLDecorElement::decorate(BoxFormattingContext& ctxt,
 }
 
 AreaRef
-BoxMLDecorElement::format(BoxFormattingContext& ctxt)
+BoxMLDecorElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -95,9 +95,9 @@ BoxMLDecorElement::format(BoxFormattingContext& ctxt)
 
       SmartPtr<ValueSequence> type = ToSequence(GET_ATTRIBUTE_VALUE(BoxML, Decor, type));
       SmartPtr<Value> color = GET_ATTRIBUTE_VALUE(BoxML, Decor, color);
-      const scaled thickness = ctxt.getDevice()->evaluate(ctxt,
+      const scaled thickness = ctxt.BGD()->evaluate(ctxt,
 							  ToLength(GET_ATTRIBUTE_VALUE(BoxML, Decor, thickness)),
-							  ctxt.getDevice()->defaultLineThickness(ctxt));
+							  ctxt.BGD()->defaultLineThickness(ctxt));
       RGBColor col;
       if (color && IsTokenId(color) && ToTokenId(color) == T_TRANSPARENT)
 	col = RGBColor(0, 0, 0, true);
@@ -110,7 +110,7 @@ BoxMLDecorElement::format(BoxFormattingContext& ctxt)
 	  for (unsigned i = 0; i < type->getSize(); i++)
 	    res = decorate(ctxt, res, thickness, col, ToString(type->getValue(i)));
 
-	  res = ctxt.getDevice()->wrapper(ctxt, res);
+	  res = ctxt.BGD()->wrapper(ctxt, res);
 	  setArea(res);
 	}
       else

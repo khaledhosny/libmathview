@@ -27,7 +27,7 @@
 #include "Attribute.hh"
 #include "AbstractLogger.hh"
 #include "MathMLOperatorDictionary.hh"
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 
 MathMLOperatorDictionary::MathMLOperatorDictionary()
 { }
@@ -38,7 +38,7 @@ MathMLOperatorDictionary::~MathMLOperatorDictionary()
 void
 MathMLOperatorDictionary::add(const AbstractLogger& logger,
 			      const String& opName, const String& form,
-			      const SmartPtr<AttributeList>& defaults)
+			      const SmartPtr<AttributeSet>& defaults)
 {
   FormDefaults& formDefaults = items[opName];
   if (form == "prefix")
@@ -71,9 +71,9 @@ MathMLOperatorDictionary::unload()
 
 void
 MathMLOperatorDictionary::search(const String& opName,
-				 SmartPtr<AttributeList>& prefix,
-				 SmartPtr<AttributeList>& infix,
-				 SmartPtr<AttributeList>& postfix) const
+				 SmartPtr<AttributeSet>& prefix,
+				 SmartPtr<AttributeSet>& infix,
+				 SmartPtr<AttributeSet>& postfix) const
 {
   prefix = infix = postfix = 0;
 

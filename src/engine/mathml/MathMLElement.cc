@@ -24,7 +24,7 @@
 
 #include <cassert>
 
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 #include "MathMLElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLNamespaceContext.hh"
@@ -36,18 +36,6 @@ MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& context) : 
 
 MathMLElement::~MathMLElement()
 { }
-
-AreaRef
-MathMLElement::format(MathFormattingContext& ctxt)
-{
-  if (dirtyLayout())
-    {
-      setArea(0);
-      resetDirtyLayout();
-    }
-
-  return getArea();
-}
 
 bool
 MathMLElement::IsSpaceLike() const

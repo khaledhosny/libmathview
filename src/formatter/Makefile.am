@@ -30,6 +30,7 @@ libformatter_la_LIBADD = \
   $(top_builddir)/src/formatter/mathml_graphic_device/libmathml_graphic_device.la \
   $(top_builddir)/src/formatter/gtk_areamodel/libgtk_areamodel.la \
   $(top_builddir)/src/formatter/areamodel/libareamodel.la \
+  $(top_builddir)/src/formatter/common/libcommon.la \
   $(MAYBE_BOXML_LIBADD)
 
 libformatter_la_SOURCES =

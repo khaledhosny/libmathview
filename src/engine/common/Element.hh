@@ -56,6 +56,8 @@ public:
   void setArea(const AreaRef& a) { area = a; }
   AreaRef getArea(void) const { return area; }
 
+  virtual AreaRef format(class FormattingContext&);
+
   virtual void setDirtyStructure(void);
   void resetDirtyStructure(void) { resetFlag(FDirtyStructure); }
   bool dirtyStructure(void) const { return getFlag(FDirtyStructure); }
@@ -92,7 +94,7 @@ private:
   WeakPtr<class NamespaceContext> context;
   WeakPtr<Element> parent;
   std::bitset<FUnusedFlag> flags;
-  SmartPtr<class AttributeList> attributes;
+  SmartPtr<class AttributeSet> attributes;
   AreaRef area;
 };
 

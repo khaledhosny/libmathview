@@ -34,7 +34,7 @@ protected:
   virtual ~MathMLBinContainerElement();
 
 public:
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   SmartPtr<MathMLElement> getChild(void) const { return content.getChild(); }
   void setChild(const SmartPtr<MathMLElement>& child) { content.setChild(this, child); }

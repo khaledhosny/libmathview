@@ -24,7 +24,7 @@
 
 #include "BoxMLLayoutElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "BoxMLAtElement.hh"
@@ -43,15 +43,15 @@ BoxMLLayoutElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLLayoutElement(context); }
 
 AreaRef
-BoxMLLayoutElement::format(BoxFormattingContext& ctxt)
+BoxMLLayoutElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      scaled width = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, width)), ctxt.getSize());
-      scaled height = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, height)), ctxt.getSize());
-      scaled depth = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, depth)), ctxt.getSize());
+      scaled width = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, width)), ctxt.getSize());
+      scaled height = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, height)), ctxt.getSize());
+      scaled depth = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, depth)), ctxt.getSize());
 
       scaled step = 0;
       std::vector<BoxedLayoutArea::XYArea> c;
@@ -65,8 +65,8 @@ BoxMLLayoutElement::format(BoxFormattingContext& ctxt)
 	    c.push_back(BoxedLayoutArea::XYArea(elem->getX(), elem->getY(), area));
 	  }
 
-      AreaRef res = ctxt.getDevice()->getFactory()->boxedLayout(BoundingBox(width, height, depth), c);
-      res = ctxt.getDevice()->wrapper(ctxt, res);
+      AreaRef res = ctxt.BGD()->getFactory()->boxedLayout(BoundingBox(width, height, depth), c);
+      res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

@@ -43,6 +43,14 @@ struct RefineAdapter
   { elem->refine(*context); }
 };
 
+template <typename C, typename T, typename R, typename TPtr = SmartPtr<T> >
+struct FormatAdapter
+  : public std::binary_function<TPtr,C*,R>
+{
+  R operator()(const TPtr& elem, C* context) const
+  { return elem->format(*context); }
+};
+
 template <typename T, typename TPtr = SmartPtr<T> >
 struct SetFlagDownAdapter
   : public std::binary_function<TPtr, typename T::Flags,void>

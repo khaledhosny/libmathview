@@ -20,8 +20,8 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathML_hh
-#define MathML_hh
+#ifndef __MathML_hh__
+#define __MathML_hh__
 
 #include "MathMLActionElement.hh"
 #include "MathMLAlignGroupElement.hh"
@@ -32,8 +32,11 @@
 #include "MathMLEncloseElement.hh"
 #include "MathMLErrorElement.hh"
 #include "MathMLFractionElement.hh"
+#include "MathMLFunctionApplicationNode.hh"
 #include "MathMLGlyphNode.hh"
 #include "MathMLIdentifierElement.hh"
+#include "MathMLInferredRowElement.hh"
+#include "MathMLInvisibleTimesNode.hh"
 #include "MathMLMarkNode.hh"
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLNode.hh"
@@ -44,7 +47,6 @@
 #include "MathMLPhantomElement.hh"
 #include "MathMLRadicalElement.hh"
 #include "MathMLRowElement.hh"
-#include "MathMLInferredRowElement.hh"
 #include "MathMLScriptElement.hh"
 #include "MathMLSpaceElement.hh"
 #include "MathMLSpaceNode.hh"
@@ -59,4 +61,4 @@
 #include "MathMLUnderOverElement.hh"
 #include "MathMLmathElement.hh"
 
-#endif // MathML_hh
+#endif // __MathML_hh__

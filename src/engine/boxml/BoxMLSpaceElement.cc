@@ -25,7 +25,7 @@
 #include "View.hh"
 #include "BoxMLSpaceElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -42,28 +42,28 @@ BoxMLSpaceElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLSpaceElement(context); }
 
 AreaRef
-BoxMLSpaceElement::makeSpaceArea(BoxFormattingContext& ctxt)
+BoxMLSpaceElement::makeSpaceArea(FormattingContext& ctxt)
 {
-  scaled width = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, width)), 0);
-  scaled height = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, height)), 0);
-  scaled depth = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, depth)), 0);
+  scaled width = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, width)), 0);
+  scaled height = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, height)), 0);
+  scaled depth = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, depth)), 0);
 
   std::vector<AreaRef> c;
   c.reserve(2);
-  c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(height, depth));
-  c.push_back(ctxt.getDevice()->getFactory()->horizontalSpace(width));
-  return ctxt.getDevice()->getFactory()->horizontalArray(c);
+  c.push_back(ctxt.BGD()->getFactory()->verticalSpace(height, depth));
+  c.push_back(ctxt.BGD()->getFactory()->horizontalSpace(width));
+  return ctxt.BGD()->getFactory()->horizontalArray(c);
 }
 
 AreaRef
-BoxMLSpaceElement::format(BoxFormattingContext& ctxt)
+BoxMLSpaceElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
       AreaRef res = makeSpaceArea(ctxt);
-      res = ctxt.getDevice()->wrapper(ctxt, res);
+      res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

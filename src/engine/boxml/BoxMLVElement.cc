@@ -24,7 +24,7 @@
 
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLVElement.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -44,7 +44,7 @@ BoxMLVElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 #include "BoundingBoxAux.hh"
 
 AreaRef
-BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
+BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 				   const std::vector<AreaRef>& content,
 				   const scaled& minLineSpacing,
 				   int enter, int exit, TokenId align,
@@ -64,8 +64,8 @@ BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
       switch (align)
 	{
 	case T_LEFT: break;
-	case T_CENTER: area = ctxt.getDevice()->getFactory()->center(area); break;
-	case T_RIGHT: area = ctxt.getDevice()->getFactory()->right(area); break;
+	case T_CENTER: area = ctxt.BGD()->getFactory()->center(area); break;
+	case T_RIGHT: area = ctxt.BGD()->getFactory()->right(area); break;
 	default:
 	  assert(false);
 	  break;
@@ -76,7 +76,7 @@ BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
 	  if (prevArea)
 	    {
 	      if (prevHeight + areaBox.depth < minLineSpacing)
-		c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
+		c.push_back(ctxt.BGD()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
 	    }
 	  prevHeight = areaBox.height;
 	  prevArea = area;
@@ -92,16 +92,16 @@ BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
   switch (c.size())
     {
     case 0:
-      res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+      res = ctxt.BGD()->getFactory()->horizontalArray(c);
       break;
     case 1:
       res = c[0];
       break;
     default:
-      res = ctxt.getDevice()->getFactory()->verticalArray(c, enter_index);
+      res = ctxt.BGD()->getFactory()->verticalArray(c, enter_index);
       if (enter != exit)
 	{
-	  AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit_index);
+	  AreaRef res1 = ctxt.BGD()->getFactory()->verticalArray(c, exit_index);
 	  assert(res->box().defined());
 	  assert(res1->box().defined());
 	  step = res->box().height - res1->box().height;
@@ -126,7 +126,7 @@ BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
 }
 
 AreaRef
-BoxMLVElement::format(BoxFormattingContext& ctxt)
+BoxMLVElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -135,7 +135,7 @@ BoxMLVElement::format(BoxFormattingContext& ctxt)
       TokenId align = ToTokenId(GET_ATTRIBUTE_VALUE(BoxML, V, align));
       int enter = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, enter));
       int exit = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, exit));
-      scaled minLineSpacing = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
+      scaled minLineSpacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
 
       if (enter < 0) enter = content.getSize() + enter + 1;
       if (exit < 0) exit = content.getSize() + exit + 1;
@@ -151,7 +151,7 @@ BoxMLVElement::format(BoxFormattingContext& ctxt)
 	if (*p) c.push_back((*p)->format(ctxt));
 
       AreaRef res = formatVerticalArray(ctxt, c, minLineSpacing, enter, exit, align, step);
-      res = ctxt.getDevice()->wrapper(ctxt, res);
+      res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

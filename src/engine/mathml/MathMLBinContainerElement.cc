@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "MathMLBinContainerElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -36,13 +36,13 @@ MathMLBinContainerElement::~MathMLBinContainerElement()
 { }
 
 AreaRef
-MathMLBinContainerElement::format(MathFormattingContext& ctxt)
+MathMLBinContainerElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
       AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
-      setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
+      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : 0);
       ctxt.pop();
 
       resetDirtyLayout();

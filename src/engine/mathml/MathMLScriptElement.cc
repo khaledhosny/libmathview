@@ -27,7 +27,7 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLScriptElement.hh"
 #include "ValueConversion.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
 
@@ -39,7 +39,7 @@ MathMLScriptElement::~MathMLScriptElement()
 { }
 
 AreaRef
-MathMLScriptElement::format(MathFormattingContext& ctxt)
+MathMLScriptElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -77,11 +77,11 @@ MathMLScriptElement::format(MathFormattingContext& ctxt)
 	    }
 	}
 
-      AreaRef res = ctxt.getDevice()->script(ctxt, baseArea,
+      AreaRef res = ctxt.MGD()->script(ctxt, baseArea,
 					     subScriptArea, subScriptShift,
 					     superScriptArea, superScriptShift);
       res = formatEmbellishment(this, ctxt, res);
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();

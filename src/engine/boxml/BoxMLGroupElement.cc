@@ -23,7 +23,7 @@
 #include <config.h>
 
 #include "BoxMLGroupElement.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxMLAttributeSignatures.hh"
 
 BoxMLGroupElement::BoxMLGroupElement(const SmartPtr<BoxMLNamespaceContext>& context)
@@ -38,7 +38,7 @@ BoxMLGroupElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLGroupElement(context); }
 
 AreaRef
-BoxMLGroupElement::format(BoxFormattingContext& ctxt)
+BoxMLGroupElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -52,7 +52,7 @@ BoxMLGroupElement::format(BoxFormattingContext& ctxt)
 }
 
 void
-BoxMLGroupElement::formatContent(BoxFormattingContext& ctxt, std::vector<AreaRef>& areas)
+BoxMLGroupElement::formatContent(FormattingContext& ctxt, std::vector<AreaRef>& areas)
 {
   ctxt.push(this);
   for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();

@@ -25,7 +25,7 @@
 #include "View.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLTextElement.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -42,7 +42,7 @@ BoxMLTextElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLTextElement(context); }
 
 AreaRef
-BoxMLTextElement::format(BoxFormattingContext& ctxt)
+BoxMLTextElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -52,7 +52,7 @@ BoxMLTextElement::format(BoxFormattingContext& ctxt)
       ctxt.push(this);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, size))
-	ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
+	ctxt.setSize(ctxt.BGD()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, color))
 	ctxt.setColor(ToRGB(value));
@@ -65,22 +65,22 @@ BoxMLTextElement::format(BoxFormattingContext& ctxt)
 	if (IsTokenId(value))
 	  width = scaled::min();
 	else
-	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::max());
+	  width = ctxt.BGD()->evaluate(ctxt, ToLength(value), scaled::max());
       else
 	width = scaled::min();
 
       RGBColor newColor = ctxt.getColor();
       RGBColor newBackground = ctxt.getBackground();
 
-      AreaRef res = ctxt.getDevice()->string(ctxt, content, width);
+      AreaRef res = ctxt.BGD()->string(ctxt, content, width);
 
       if (oldColor != newColor)
-	res = ctxt.getDevice()->getFactory()->color(res, newColor);
+	res = ctxt.BGD()->getFactory()->color(res, newColor);
 
       if (!newBackground.transparent && newBackground != oldBackground)
-	res = ctxt.getDevice()->getFactory()->background(res, newBackground);
+	res = ctxt.BGD()->getFactory()->background(res, newBackground);
 
-      res = ctxt.getDevice()->wrapper(ctxt, res);
+      res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

@@ -33,8 +33,6 @@ protected:
 
 public:
   virtual scaled getStep(void) const;
-
-  virtual AreaRef format(class BoxFormattingContext&) = 0;
 };
 
 #endif // __BoxMLElement_hh__

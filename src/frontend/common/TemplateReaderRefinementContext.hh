@@ -26,7 +26,7 @@
 #include <list>
 
 #include "Attribute.hh"
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 
 template <class Reader>
 class TemplateReaderRefinementContext
@@ -72,7 +72,7 @@ private:
   {
     typedef std::pair<String, String> RawAttribute;
 
-    Context(const SmartPtr<Reader>& reader) : attributes(AttributeList::create())
+    Context(const SmartPtr<Reader>& reader) : attributes(AttributeSet::create())
     {
       for (int index = 0; index < reader->getAttributeCount(); index++)
 	{
@@ -92,7 +92,7 @@ private:
     }
 
     std::vector<std::pair<String, String> > rawAttributes;
-    SmartPtr<AttributeList> attributes;
+    SmartPtr<AttributeSet> attributes;
   };
 
   std::list<Context> context;

@@ -27,7 +27,7 @@
 #include "Configuration.hh"
 #include "ValueConversion.hh"
 #include "Attribute.hh"
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 #include "AttributeSignature.hh"
 #include "MathMLAttributeSignatures.hh"
 #include "MathMLOperatorDictionary.hh"
@@ -143,7 +143,7 @@ struct TemplateSetup
 
   static void
   getAttribute(const typename Model::Element& node, const AttributeSignature& signature,
-	       const SmartPtr<AttributeList>& aList)
+	       const SmartPtr<AttributeSet>& aList)
   {
     assert(aList);
 
@@ -163,7 +163,7 @@ struct TemplateSetup
       
 	if (!opName.empty())
 	  {
-	    SmartPtr<AttributeList> defaults = AttributeList::create();
+	    SmartPtr<AttributeSet> defaults = AttributeSet::create();
 	  
 	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
 	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);

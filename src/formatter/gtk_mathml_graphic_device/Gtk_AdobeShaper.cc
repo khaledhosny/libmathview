@@ -27,7 +27,6 @@
 #include <gdk/gdkx.h>
 #include <pango/pangox.h>
 
-#include "ShapingResult.hh"
 #include "Gtk_AdobeShaper.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_PangoFontManager.hh"
@@ -37,6 +36,7 @@
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
+#include "ShapingContext.hh"
 
 static struct {
   guint8 index;
@@ -363,25 +363,25 @@ Gtk_AdobeShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
 }
 
 void
-Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
+Gtk_AdobeShaper::shape(ShapingContext& context) const
 {
-  for (unsigned n = result.chunkSize(); n > 0; n--)
+  for (unsigned n = context.chunkSize(); n > 0; n--)
     {
       AreaRef res;
-      GlyphSpec spec = result.getSpec();
+      const GlyphSpec& spec = context.getSpec();
 
       if (spec.getGlyphId() & H_STRETCHY_BIT)
-	res = shapeStretchyCharH(ctxt, spec, result.getHSpan());
+	res = shapeStretchyCharH(context);
       else if (spec.getGlyphId() & V_STRETCHY_BIT)
-	res = shapeStretchyCharV(ctxt, spec, result.getVSpan());
+	res = shapeStretchyCharV(context);
 
       // If we get here then either the character was not required
       // to stretch, or one of the stretchying methods has failed,
       // hence we shape it with no stretchying
-      if (!res) res = shapeChar(ctxt, spec);
+      if (!res) res = shapeChar(context);
       if (!res) break;
 
-      result.pushArea(1, res);
+      context.pushArea(1, res);
     }
 }
 
@@ -454,42 +454,45 @@ Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 }
 
 AreaRef
-Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
+Gtk_AdobeShaper::shapeChar(const ShapingContext& context) const
 {
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
   assert(factory);
-  return getGlyphArea(factory, spec.getFontId(), spec.getGlyphId() & GLYPH_INDEX_MASK, ctxt.getSize());
+  return getGlyphArea(factory, 
+		      context.getSpec().getFontId(), 
+		      context.getSpec().getGlyphId() & GLYPH_INDEX_MASK,
+		      context.getSize());
 }
 
 AreaRef
-Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
+Gtk_AdobeShaper::shapeStretchyCharH(const ShapingContext& context) const
 {
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
   assert(factory);
 
-  const scaled size = ctxt.getSize();
+  const scaled size = context.getSize();
 
-  const HStretchyChar* charSpec = &hMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
+  const HStretchyChar* charSpec = &hMap[context.getSpec().getGlyphId() & GLYPH_INDEX_MASK];
 
   AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size) : 0;
   AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->left, size) : 0;
   AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
   AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->right, size) : 0;
 
-  return composeStretchyCharH(factory, normal, left, glue, right, span);
+  return composeStretchyCharH(factory, normal, left, glue, right, context.getHSpan());
 }
 
 AreaRef
-Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
+Gtk_AdobeShaper::shapeStretchyCharV(const ShapingContext& context) const
 { 
-  const scaled span = strictSpan - (1 * ctxt.getSize()) / 10;
+  const scaled span = context.getVSpan() - (1 * context.getSize()) / 10;
 
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
   assert(factory);
 
-  const scaled size = ctxt.getSize();
+  const scaled size = context.getSize();
 
-  const VStretchyChar* charSpec = &vMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
+  const VStretchyChar* charSpec = &vMap[context.getSpec().getGlyphId() & GLYPH_INDEX_MASK];
 
   AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size) : 0;
   AreaRef top = (charSpec->top != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->top, size) : 0;

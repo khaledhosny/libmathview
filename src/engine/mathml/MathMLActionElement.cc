@@ -28,7 +28,7 @@
 #include "MathMLAttributeSignatures.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
@@ -42,7 +42,7 @@ MathMLActionElement::~MathMLActionElement()
 { }
 
 AreaRef
-MathMLActionElement::format(MathFormattingContext& ctxt)
+MathMLActionElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -73,10 +73,10 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
       if (SmartPtr<MathMLElement> elem = getChild(selection))
 	res = elem->format(ctxt);
       else
-	res = ctxt.getDevice()->dummy(ctxt);
+	res = ctxt.MGD()->dummy(ctxt);
       assert(res);
 
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
       ctxt.pop();
 
       resetDirtyLayout();

@@ -37,7 +37,7 @@ public:
   static SmartPtr<Gtk_MathGraphicDevice> create(void)
   { return new Gtk_MathGraphicDevice(); }
 
-  virtual AreaRef wrapper(const MathFormattingContext&, const AreaRef&) const;
+  virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
 
 private:
   SmartPtr<class Gtk_AreaFactory> gtk_factory;

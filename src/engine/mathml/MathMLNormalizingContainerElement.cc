@@ -24,7 +24,7 @@
 
 #include <cassert>
 
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLNormalizingContainerElement.hh"
 #include "MathMLInferredRowElement.hh"
@@ -37,13 +37,13 @@ MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
 { }
 
 AreaRef
-MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
+MathMLNormalizingContainerElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
       AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
-      if (res) res = ctxt.getDevice()->wrapper(ctxt, res);
+      if (res) res = ctxt.MGD()->wrapper(ctxt, res);
       setArea(res);
       ctxt.pop();
       resetDirtyLayout();

@@ -29,7 +29,7 @@
 #include "MathMLSpaceElement.hh"
 #include "MathMLValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
 MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -42,7 +42,7 @@ MathMLSpaceElement::~MathMLSpaceElement()
 { }
 
 AreaRef
-MathMLSpaceElement::format(MathFormattingContext& ctxt)
+MathMLSpaceElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -50,17 +50,17 @@ MathMLSpaceElement::format(MathFormattingContext& ctxt)
 
       scaled width;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, width))
-	width = ctxt.getDevice()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
+	width = ctxt.MGD()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
       else
 	assert(false);
 
       scaled height;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, height))
-	height = ctxt.getDevice()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
+	height = ctxt.MGD()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
 
       scaled depth;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, depth))
-	depth = ctxt.getDevice()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
+	depth = ctxt.MGD()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
 
       
 #if 0
@@ -80,8 +80,8 @@ MathMLSpaceElement::format(MathFormattingContext& ctxt)
 	setArea(0);
       else
 	{
-	  AreaRef res = ctxt.getDevice()->getFactory()->box(ctxt.getDevice()->getFactory()->horizontalSpace(scaled::zero()), BoundingBox(width, height, depth));
-	  setArea(ctxt.getDevice()->wrapper(ctxt, res));
+	  AreaRef res = ctxt.MGD()->getFactory()->box(ctxt.MGD()->getFactory()->horizontalSpace(scaled::zero()), BoundingBox(width, height, depth));
+	  setArea(ctxt.MGD()->wrapper(ctxt, res));
 	}
 
       ctxt.pop();

@@ -24,9 +24,6 @@
 
 #include "defs.h"
 #include "View.hh"
-#include "Clock.hh"
-#include "AbstractLogger.hh"
-#include "MathMLElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathGraphicDevice.hh"
 
@@ -37,28 +34,6 @@ MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<View>& v,
 
 MathMLNamespaceContext::~MathMLNamespaceContext()
 { }
-
-#include <iostream>
-
-AreaRef
-MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
-{
-  SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(el);
-  assert(elem);
-  if (elem->dirtyLayout())
-    {
-      MathFormattingContext ctxt(device);
-      scaled l = device->evaluate(ctxt, Length(getView()->getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
-      ctxt.setSize(l);
-      ctxt.setActualSize(ctxt.getSize());
-      Clock perf;
-      perf.Start();
-      elem->format(ctxt);
-      perf.Stop();
-      getView()->getLogger()->out(LOG_INFO, "formatting time: %dms", perf());
-    }
-  return elem->getArea();
-}
 
 SmartPtr<MathGraphicDevice>
 MathMLNamespaceContext::getGraphicDevice() const

@@ -28,7 +28,7 @@
 #include "BoxMLParagraphElement.hh"
 #include "BoxMLVElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -48,7 +48,7 @@ BoxMLParagraphElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLParagraphElement(context); }
 
 AreaRef
-BoxMLParagraphElement::format(BoxFormattingContext& ctxt)
+BoxMLParagraphElement::format(FormattingContext& ctxt)
 {
   std::cerr << "sto per formattare il par " << dirtyLayout() << std::endl;
 
@@ -56,15 +56,15 @@ BoxMLParagraphElement::format(BoxFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      const scaled availableWidth = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Text, width)), 0);
-      const scaled minLineSpacing = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
+      const scaled availableWidth = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Text, width)), 0);
+      const scaled minLineSpacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
 
       scaled width;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, width))
 	if (IsTokenId(value))
 	  width = scaled::min();
 	else
-	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::max());
+	  width = ctxt.BGD()->evaluate(ctxt, ToLength(value), scaled::max());
       else
 	width = scaled::min();
 
@@ -78,8 +78,8 @@ BoxMLParagraphElement::format(BoxFormattingContext& ctxt)
 	  else
 	    paragraph.append(ctxt, (*p)->format(ctxt));
 
-      AreaRef res = ctxt.getDevice()->paragraph(ctxt, paragraph, width);
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      AreaRef res = ctxt.BGD()->paragraph(ctxt, paragraph, width);
+      setArea(ctxt.BGD()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();

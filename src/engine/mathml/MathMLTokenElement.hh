@@ -45,7 +45,7 @@ public:
   void swapContent(std::vector< SmartPtr<MathMLTextNode> >& newContent) { content.swapContent(this, newContent); }
   const std::vector< SmartPtr<class MathMLTextNode> >& getContent(void) const { return content.getContent(); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   bool           IsNonMarking(void) const;
 
@@ -57,7 +57,7 @@ private:
   LinearContainerTemplate<MathMLTokenElement,class MathMLTextNode> content;
 
 protected:
-  AreaRef formatAux(class MathFormattingContext&);
+  AreaRef formatAux(class FormattingContext&);
   
   void AddItalicCorrection(void);
 };

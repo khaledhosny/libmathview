@@ -25,7 +25,7 @@
 #include "View.hh"
 #include "BoxMLInkElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "BoxFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
@@ -42,7 +42,7 @@ BoxMLInkElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLInkElement(context); }
 
 AreaRef
-BoxMLInkElement::format(BoxFormattingContext& ctxt)
+BoxMLInkElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -56,9 +56,9 @@ BoxMLInkElement::format(BoxFormattingContext& ctxt)
       RGBColor newColor = ctxt.getColor();
 
       AreaRef res = makeSpaceArea(ctxt);
-      res = ctxt.getDevice()->getFactory()->ink(res);
-      if (oldColor != newColor) res = ctxt.getDevice()->getFactory()->color(res, newColor);
-      res = ctxt.getDevice()->wrapper(ctxt, res);
+      res = ctxt.BGD()->getFactory()->ink(res);
+      if (oldColor != newColor) res = ctxt.BGD()->getFactory()->color(res, newColor);
+      res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

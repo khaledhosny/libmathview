@@ -35,12 +35,12 @@ class BoxedParagraph
 public:
   BoxedParagraph(void);
 
-  void append(const class BoxFormattingContext&, const String&);
-  void append(const class BoxFormattingContext&, const AreaRef&);
+  void append(const class FormattingContext&, const String&);
+  void append(const class FormattingContext&, const AreaRef&);
 
   struct Object
   {
-    Object(const class BoxFormattingContext&, int, const String&, const AreaRef&);
+    Object(const class FormattingContext&, int, const String&, const AreaRef&);
 
     int start_index;
     int end_index;

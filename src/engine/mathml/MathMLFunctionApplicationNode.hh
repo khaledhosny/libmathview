@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,33 +17,31 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __AttributeList_hh__
-#define __AttributeList_hh__
+#ifndef __MathMLFunctionApplicationNode_hh__
+#define __MathMLFunctionApplicationNode_hh__
 
-#include <map>
+#include "MathMLTextNode.hh"
 
-#include "Attribute.hh"
-
-class AttributeList : public Object
+class MathMLFunctionApplicationNode : public MathMLTextNode
 {
 protected:
-  AttributeList(void);
-  ~AttributeList();
+  MathMLFunctionApplicationNode(void) { }
+  virtual ~MathMLFunctionApplicationNode() { }
 
 public:
-  static SmartPtr<AttributeList> create(void)
-  { return new AttributeList(); }
+  static SmartPtr<MathMLFunctionApplicationNode> create(void)
+  { return SmartPtr<MathMLFunctionApplicationNode>(new MathMLFunctionApplicationNode()); }
 
-  bool set(const SmartPtr<Attribute>&);
-  bool remove(const AttributeId&);
-  SmartPtr<Attribute> get(const AttributeId&) const;
+  static String getContent(void);
+  virtual AreaRef format(class FormattingContext&);
+  virtual unsigned GetLogicalContentLength(void) const { return 1; }
+  virtual String GetRawContent(void) const;
 
 private:
-  typedef std::map<AttributeId, SmartPtr<Attribute> > Map;
-  Map content;
+  static String getSpace(const class FormattingContext&);
 };
 
-#endif // __AttributeList_hh__
+#endif // __MathMLFunctionApplicationNode_hh__

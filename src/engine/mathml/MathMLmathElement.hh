@@ -35,7 +35,7 @@ public:
   static SmartPtr<MathMLmathElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLmathElement(view); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 };
 
 #endif // __MathMLmathElement_hh__

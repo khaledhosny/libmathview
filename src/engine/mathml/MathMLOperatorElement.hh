@@ -38,7 +38,7 @@ public:
   static SmartPtr<MathMLOperatorElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLOperatorElement(view); }
 
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class FormattingContext&);
 
   bool         IsStretchy(void) const { return stretchy != 0; }
   bool         IsAccent(void) const { return accent != 0; }
@@ -61,8 +61,8 @@ public:
 
 private:
   TokenId inferOperatorForm(void);
-  SmartPtr<Value> getOperatorAttributeValue(const class AttributeSignature&, const SmartPtr<class AttributeList>&) const;
-  void parseLimitValue(const SmartPtr<Value>&, const class MathFormattingContext&, float&, scaled&);
+  SmartPtr<Value> getOperatorAttributeValue(const class AttributeSignature&, const SmartPtr<class AttributeSet>&) const;
+  void parseLimitValue(const SmartPtr<Value>&, const class FormattingContext&, float&, scaled&);
 
   unsigned largeOp : 1;
   unsigned forcedFence : 1;

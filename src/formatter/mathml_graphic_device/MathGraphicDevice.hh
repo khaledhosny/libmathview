@@ -23,16 +23,11 @@
 #ifndef __MathGraphicDevice_hh__
 #define __MathGraphicDevice_hh__
 
-#include "Area.hh"
+#include "GraphicDevice.hh"
 #include "AreaFactory.hh"
-#include "Length.hh"
-#include "MathFormattingContext.hh"
-#include "Object.hh"
 #include "ShaperManager.hh"
-#include "String.hh"
-#include "scaled.hh"
 
-class MathGraphicDevice : public Object
+class MathGraphicDevice : public GraphicDevice
 {
 protected:
   MathGraphicDevice(void);
@@ -45,36 +40,31 @@ public:
 
   // Length evaluation, fundamental properties
 
-  virtual double dpi(const MathFormattingContext& context) const;
-  virtual scaled evaluate(const MathFormattingContext& context,
-			  const Length& length, const scaled& defaultValue) const;
-  virtual scaled em(const MathFormattingContext& context) const;
-  virtual scaled ex(const MathFormattingContext& context) const;
-  virtual scaled axis(const MathFormattingContext& context) const;
-  virtual scaled defaultLineThickness(const MathFormattingContext& context) const;
+  virtual scaled axis(const class FormattingContext&) const;
+  virtual scaled ex(const class FormattingContext&) const;
 
   // token formatting
 
-  virtual AreaRef string(const MathFormattingContext& context, const String& str) const;
-  virtual AreaRef glyph(const MathFormattingContext& context,
+  virtual AreaRef string(const class FormattingContext&, const String& str) const;
+  virtual AreaRef glyph(const class FormattingContext&,
 			const String& alt, const String& fontFamily,
 			unsigned long index) const;
 
   // layout schemata
 
-  virtual AreaRef fraction(const MathFormattingContext& context,
+  virtual AreaRef fraction(const class FormattingContext&,
 			   const AreaRef& numerator, const AreaRef& denominator,
 			   const Length& lineThickness) const;
-  virtual AreaRef bevelledFraction(const MathFormattingContext& context,
+  virtual AreaRef bevelledFraction(const class FormattingContext&,
 				   const AreaRef& numerator, const AreaRef& denominator,
 				   const Length& lineThickness) const;
-  virtual AreaRef radical(const MathFormattingContext& context,
+  virtual AreaRef radical(const class FormattingContext&,
 			  const AreaRef& radicand, const AreaRef& index) const;
-  virtual AreaRef script(const MathFormattingContext& context,
+  virtual AreaRef script(const class FormattingContext&,
 			 const AreaRef& base,
 			 const AreaRef& subScript, const Length& subScriptShift,
 			 const AreaRef& superScript, const Length& superScriptShift) const;
-  virtual AreaRef multiScripts(const MathFormattingContext& context,
+  virtual AreaRef multiScripts(const class FormattingContext&,
 			       const AreaRef& base,
 			       const std::vector<AreaRef>& subScripts,
 			       const std::vector<AreaRef>& preSubScripts,
@@ -82,30 +72,30 @@ public:
 			       const std::vector<AreaRef>& superScripts,
 			       const std::vector<AreaRef>& preSuperScripts,
 			       const Length& superScriptShift) const;
-  virtual AreaRef underOver(const MathFormattingContext& context,
+  virtual AreaRef underOver(const class FormattingContext&,
 			    const AreaRef& base,
 			    const AreaRef& underScript, bool accentUnder,
 			    const AreaRef& overScript, bool accent) const;
-  virtual AreaRef enclose(const MathFormattingContext& context,
+  virtual AreaRef enclose(const class FormattingContext&,
 			  const AreaRef& base,
 			  const String& notation) const;
 
   // extra methods
 
-  virtual AreaRef wrapper(const MathFormattingContext& context, const AreaRef& area) const;
-  virtual AreaRef dummy(const MathFormattingContext& context) const;
+  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef& area) const;
+  virtual AreaRef dummy(const class FormattingContext& context) const;
 
 protected:
-  virtual AreaRef stretchStringV(const MathFormattingContext& context,
+  virtual AreaRef stretchStringV(const class FormattingContext&,
 				 const String& str,
 				 const scaled& height,
 				 const scaled& depth) const;
-  virtual void calculateDefaultScriptShift(const MathFormattingContext& context,
+  virtual void calculateDefaultScriptShift(const class FormattingContext&,
 					   const BoundingBox& baseBox,
 					   const BoundingBox& subScriptBox,
 					   const BoundingBox& superScriptBox,
 					   scaled& v, scaled& u) const;
-  virtual void calculateScriptShift(const MathFormattingContext& context,
+  virtual void calculateScriptShift(const class FormattingContext&,
 				    const BoundingBox& baseBox,
 				    const BoundingBox& subScriptBox,
 				    const Length& subScriptMinShift,

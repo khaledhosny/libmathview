@@ -34,9 +34,9 @@
 #include "MathMLRowElement.hh"
 #include "MathMLValueConversion.hh"
 #include "traverseAux.hh"
-#include "MathFormattingContext.hh"
+#include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
-#include "AttributeList.hh"
+#include "AttributeSet.hh"
 #include "MathMLAttributeSignatures.hh"
 
 #define GET_OPERATOR_ATTRIBUTE_VALUE(ns,el,name,def) getOperatorAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name),def)
@@ -52,7 +52,7 @@ MathMLOperatorElement::~MathMLOperatorElement()
 { }
 
 AreaRef
-MathMLOperatorElement::format(MathFormattingContext& ctxt)
+MathMLOperatorElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -64,15 +64,15 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       else
 	form = inferOperatorForm();
 
-      SmartPtr<AttributeList> prefix;
-      SmartPtr<AttributeList> infix;
-      SmartPtr<AttributeList> postfix;
+      SmartPtr<AttributeSet> prefix;
+      SmartPtr<AttributeSet> infix;
+      SmartPtr<AttributeSet> postfix;
 
       String operatorName = GetRawContent();
       if (SmartPtr<MathMLOperatorDictionary> dictionary = getNamespaceContext()->getView()->getOperatorDictionary())
 	dictionary->search(operatorName, prefix, infix, postfix);
 
-      SmartPtr<AttributeList> defaults;
+      SmartPtr<AttributeSet> defaults;
       if      (form == T_PREFIX && prefix) defaults = prefix;
       else if (form == T_INFIX && infix) defaults = infix;
       else if (form == T_POSTFIX && postfix) defaults = postfix;
@@ -91,7 +91,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	{
 	  SmartPtr<Value> resValue = Resolve(value, ctxt);
 	  if (ctxt.getScriptLevel() <= 0)
-	    lSpace = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+	    lSpace = ctxt.MGD()->evaluate(ctxt, ToLength(resValue), scaled::zero());
 	  else
 	    lSpace = scaled::zero();
 	}
@@ -102,7 +102,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	{
 	  SmartPtr<Value> resValue = Resolve(value, ctxt);
 	  if (ctxt.getScriptLevel() <= 0)
-	    rSpace = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+	    rSpace = ctxt.MGD()->evaluate(ctxt, ToLength(resValue), scaled::zero());
 	  else
 	    rSpace = scaled::zero();
 	}
@@ -159,7 +159,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 
 	  //std::cerr << "minimum area bounding box = " << minBox << std::endl;
 
-	  const scaled axis = ctxt.getDevice()->axis(ctxt);
+	  const scaled axis = ctxt.MGD()->axis(ctxt);
 	  const scaled height = ctxt.getStretchToHeight() - axis;
 	  const scaled depth = ctxt.getStretchToDepth() + axis;
 
@@ -222,7 +222,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	      
 	      const scaled sh = (aHeight - aDepth - opBox.height + opBox.depth) / 2;
 
-	      res = ctxt.getDevice()->getFactory()->shift(res, sh);
+	      res = ctxt.MGD()->getFactory()->shift(res, sh);
 	    }
 	}
       else
@@ -231,7 +231,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       //std::cerr << "formatting operator, is top? " << (getCoreOperatorTop() != 0) << " has dirty something" << dirtyAttribute() << dirtyLayout() << std::endl;
 
       res = formatEmbellishment(this, ctxt, res);
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+      setArea(ctxt.MGD()->wrapper(ctxt, res));
 
       ctxt.pop();
 
@@ -243,7 +243,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 
 void
 MathMLOperatorElement::parseLimitValue(const SmartPtr<Value>& value,
-				       const MathFormattingContext& ctxt,
+				       const FormattingContext& ctxt,
 				       float& multiplier,
 				       scaled& size)
 {
@@ -253,7 +253,7 @@ MathMLOperatorElement::parseLimitValue(const SmartPtr<Value>& value,
     { // it must be a named math space
       SmartPtr<Value> resValue = Resolve(value, ctxt);
       multiplier = -1;
-      size = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+      size = ctxt.MGD()->evaluate(ctxt, ToLength(resValue), scaled::zero());
     }
   else if (IsNumber(value))
     multiplier = std::max(EPSILON, ToNumber(value));
@@ -270,14 +270,14 @@ MathMLOperatorElement::parseLimitValue(const SmartPtr<Value>& value,
       else
 	{
 	  multiplier = -1;
-	  size = ctxt.getDevice()->evaluate(ctxt, siz, scaled::zero());
+	  size = ctxt.MGD()->evaluate(ctxt, siz, scaled::zero());
 	}
     }
 }
 
 SmartPtr<Value>
 MathMLOperatorElement::getOperatorAttributeValue(const AttributeSignature& signature,
-						 const SmartPtr<AttributeList>& defaults) const
+						 const SmartPtr<AttributeSet>& defaults) const
 {
   // 1st attempt, the attribute may be set for the current operator
   if (SmartPtr<Value> value = getAttributeValueNoDefault(signature))

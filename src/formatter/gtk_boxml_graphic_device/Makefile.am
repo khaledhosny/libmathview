@@ -19,6 +19,7 @@ INCLUDES = \
   $(GTK_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/formatter/common \
