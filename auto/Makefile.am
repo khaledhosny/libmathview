@@ -4,6 +4,13 @@ NULL =
 noinst_PROGRAMS =
 if COND_GMETADOM
 noinst_PROGRAMS += dumpEntitiesTable
+
+entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
+	./dumpEntitiesTable $< >$@
+
+else
+entitiesTable.inc:
+	cp entitiesTable.inc_ entitiesTable.inc
 endif
 
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
@@ -24,6 +31,7 @@ EXTRA_DIST = \
   Char.hh.in \
   token.dec \
   token.def \
+  entitiesTable.inc_ \
   $(NULL)
 
 DISTCLEANFILES = $(AUTOFILES)
@@ -47,9 +55,6 @@ token.def: token-list.xml list-to-def.xsl
 	$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
 endif
 
-entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
-	./dumpEntitiesTable $< >$@
-
 config.dirs: Makefile
 	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@
 	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@
@@ -59,4 +64,3 @@ INCLUDES = \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_builddir)
-
