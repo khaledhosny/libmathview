@@ -1,0 +1,10 @@
+gtkmathview (0.2.2-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Stefano Zacchiroli <zacchiro@cs.unibo.it>  Sun, 21 Jan 2001 17:48:44 +0100
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address "zacchiro@cs.unibo.it"
+End:

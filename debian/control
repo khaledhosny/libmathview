@@ -1,0 +1,28 @@
+Source: gtkmathview
+Section: devel
+Priority: optional
+Maintainer: Stefano Zacchiroli <zacchiro@cs.unibo.it>
+Build-Depends: debhelper (>> 2.0.0)
+Standards-Version: 3.2.1
+
+Package: libgtkmathview0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: A GTK widget for rendering MathML documents.
+ 'gtkmathview' is a GTK widget for rendering MathML documents.
+ This package include the shared library.
+
+Package: libgtkmathview-dev
+Architecture: any
+Depends: libgtkmathview0 (= ${Source-Version}), libc6-dev
+Description: A GTK widget for rendering MathML documents.
+ 'gtkmathview' is a GTK widget for rendering MathML documents.
+ This package includes the development support files.
+
+Package: libgtkmathview-bin
+Architecture: any
+Depends: libgtkmathview0 (= ${Source-Version}), libc6-dev
+Description: A GTK widget for rendering MathML documents.
+ 'gtkmathview' is a GTK widget for rendering MathML documents.
+ This package includes the runtime support files.
+

@@ -1,0 +1,27 @@
+This package was debianized by Stefano Zacchiroli <zacchiro@cs.unibo.it> on
+Sun, 21 Jan 2001 17:48:44 +0100.
+
+It was packed from source obtained via cvs, with this CVSROOT:
+	:pserver:anonymous@phd.cs.unibo.it:/home/lpadovan/PHELM/
+
+Upstream Author(s): Luca Padovani <luca.padovani@cs.unibo.it>
+
+Copyright:
+ GtkMathView is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+ 
+ GtkMathView is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with GtkMathView; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ 
+ For details, see the GtkMathView World-Wide-Web page,
+ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+ <luca.padovani@cs.unibo.it>
+
