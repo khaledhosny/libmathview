@@ -36,7 +36,7 @@
 #include "MathGraphicDevice.hh"
 
 static struct {
-  DOM::Char8 index;
+  unsigned char index;
   DOM::Char16 ch;
 } symbolMap[] = {
   { 0x20, 0x0020 },  // SPACE // space

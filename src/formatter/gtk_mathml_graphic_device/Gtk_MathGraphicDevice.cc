@@ -39,7 +39,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
   pangoShaper->setPangoContext(gtk_widget_create_pango_context(widget));
   getShaperManager()->registerShaper(pangoShaper);
   getShaperManager()->registerShaper(SpaceShaper::create());
-  getShaperManager()->registerShaper(Gtk_AdobeShaper::create());
+  //getShaperManager()->registerShaper(Gtk_AdobeShaper::create());
 }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
@@ -141,12 +141,13 @@ Gtk_MathGraphicDevice::radical(const MathFormattingContext& context,
   v.push_back(factory->verticalSpace(RULE, 0));
   v.push_back(factory->horizontalLine(RULE, context.getColor()));
 
+  AreaRef baseArea = factory->verticalArray(v, 0);
+
   std::vector<AreaRef> h;
-  h.reserve(index ? 4 : 3);
+  h.reserve(index ? 3 : 2);
   if (index) h.push_back(index);
-  h.push_back(rootArea);
-  h.push_back(factory->horizontalSpace(RULE));
-  h.push_back(factory->verticalArray(v, 0));
+  h.push_back(factory->shift(rootArea, baseArea->box().height - rootArea->box().height));
+  h.push_back(baseArea);
 
   return factory->horizontalArray(h);
 }

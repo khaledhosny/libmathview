@@ -195,7 +195,7 @@ MathMLView::getRootArea() const
 	  Clock perf;
 	  MathFormattingContext ctxt(context->device);
 	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  ctxt.setSize(context->device->evaluate(ctxt, Length(14, Length::PT_UNIT), scaled::zero()));
+	  ctxt.setSize(context->device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
 	  ctxt.setActualSize(ctxt.getSize());
 	  root->format(ctxt);
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
