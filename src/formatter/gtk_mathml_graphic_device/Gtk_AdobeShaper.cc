@@ -513,8 +513,6 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const Gly
   return composeStretchyCharH(factory, normal, left, glue, right, span);
 }
 
-#include "scaledAux.hh"
-
 AreaRef
 Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
 { 
@@ -522,8 +520,6 @@ Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const Gly
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-
-  std::cerr << "shapeStretchyCharV span = " << span << std::endl;
 
   const scaled size = ctxt.getSize();
 
