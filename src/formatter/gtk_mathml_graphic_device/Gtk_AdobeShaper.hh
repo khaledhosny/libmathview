@@ -53,11 +53,12 @@ protected:
   PangoFont* getPangoFont(unsigned, const scaled&, PangoXSubfont&) const;
   XftFont* getXftFont(unsigned, const scaled&) const;
 
+  virtual AreaRef createGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+
   AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
 
-  void getGlyphExtents(PangoFont*, PangoGlyphString*, PangoRectangle*) const;
   AreaRef shapeChar(const class MathFormattingContext&, const class GlyphSpec&) const;
   AreaRef shapeStretchyCharV(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;
   AreaRef shapeStretchyCharH(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;

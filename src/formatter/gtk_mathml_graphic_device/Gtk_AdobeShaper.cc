@@ -461,6 +461,15 @@ Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 }
 
 AreaRef
+Gtk_AdobeShaper::createGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
+				 unsigned fi, unsigned gi,
+				 const scaled& size) const
+{
+  return createPangoGlyphArea(factory, fi, gi, size);
+  // return createXftGlyphArea(factory, fi, gi, size);
+}
+
+AreaRef
 Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 			      unsigned fi, unsigned gi,
 			      const scaled& size) const
@@ -471,8 +480,7 @@ Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   if (p != areaCache[fi].end())
     return p->second;
 
-  AreaRef res = createPangoGlyphArea(factory, fi, gi, size);
-  // AreaRef res = createXftGlyphArea(factory, fi, gi, size);
+  AreaRef res = createGlyphArea(factory, fi, gi, size);
   assert(res);
   areaCache[fi][key] = res;
 
@@ -485,15 +493,6 @@ Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& s
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
   return getGlyphArea(factory, spec.getFontId(), spec.getGlyphId() & GLYPH_INDEX_MASK, ctxt.getSize());
-}
-
-void
-Gtk_AdobeShaper::getGlyphExtents(PangoFont* font, PangoGlyphString* gs, PangoRectangle* rect) const
-{
-  assert(font);
-  assert(gs);
-  assert(rect);
-  pango_glyph_string_extents(gs, font, rect, NULL);
 }
 
 AreaRef
