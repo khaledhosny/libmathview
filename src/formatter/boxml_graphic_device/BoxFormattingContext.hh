@@ -57,7 +57,7 @@ public:
   void push(const SmartPtr<class BoxMLElement>& el)
   {
     FormattingContext::push();
-    set(ELEMENT, Variant< SmartPtr<class BoxMLElement> >::create(el));
+    set(ELEMENT, el);
   }
   
 private:

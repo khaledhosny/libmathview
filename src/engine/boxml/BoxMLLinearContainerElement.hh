@@ -29,7 +29,7 @@
 class BoxMLLinearContainerElement : public BoxMLElement
 {
 protected:
-  BoxMLLinearContainerElement(const SmartPtr<class View>&);
+  BoxMLLinearContainerElement(const SmartPtr<class BoxMLNamespaceContext>&);
   virtual ~BoxMLLinearContainerElement();
 
 public:

@@ -29,11 +29,11 @@
 class BoxMLObjectElement : public BoxMLElement
 {
 protected:
-  BoxMLObjectElement(const SmartPtr<class View>&);
+  BoxMLObjectElement(const SmartPtr<class BoxMLNamespaceContext>&);
   virtual ~BoxMLObjectElement();
 
 public:
-  static SmartPtr<BoxMLObjectElement> create(const SmartPtr<class View>&);
+  static SmartPtr<BoxMLObjectElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);

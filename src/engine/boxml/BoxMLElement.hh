@@ -23,13 +23,12 @@
 #ifndef __BoxMLElement_hh__
 #define __BoxMLElement_hh__
 
-#include "View.hh"
 #include "Element.hh"
 
 class BoxMLElement : public Element
 {
 protected:
-  BoxMLElement(const SmartPtr<class View>&);
+  BoxMLElement(const SmartPtr<class BoxMLNamespaceContext>&);
   virtual ~BoxMLElement();
 
 public:

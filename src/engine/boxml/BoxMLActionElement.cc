@@ -31,18 +31,16 @@
 #include "ValueConversion.hh"
 #include "BoxMLActionElement.hh"
 
-BoxMLActionElement::BoxMLActionElement(const SmartPtr<View>& view)
-  : BoxMLLinearContainerElement(view)
+BoxMLActionElement::BoxMLActionElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLLinearContainerElement(context)
 { }
 
 BoxMLActionElement::~BoxMLActionElement()
 { }
 
 SmartPtr<BoxMLActionElement>
-BoxMLActionElement::create(const SmartPtr<View>& view)
-{
-  return new BoxMLActionElement(view);
-}
+BoxMLActionElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLActionElement(context); }
 
 void
 BoxMLActionElement::refine(class AbstractRefinementContext& context)

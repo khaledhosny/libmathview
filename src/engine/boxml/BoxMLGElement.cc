@@ -31,18 +31,16 @@
 #include "ValueConversion.hh"
 #include "BoxMLAtElement.hh"
 
-BoxMLGElement::BoxMLGElement(const SmartPtr<View>& view)
-  : BoxMLLinearContainerElement(view)
+BoxMLGElement::BoxMLGElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLLinearContainerElement(context)
 { }
 
 BoxMLGElement::~BoxMLGElement()
 { }
 
 SmartPtr<BoxMLGElement>
-BoxMLGElement::create(const SmartPtr<View>& view)
-{
-  return new BoxMLGElement(view);
-}
+BoxMLGElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLGElement(context); }
 
 void
 BoxMLGElement::refine(class AbstractRefinementContext& context)

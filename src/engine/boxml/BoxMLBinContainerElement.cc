@@ -26,8 +26,8 @@
 #include "ChildList.hh"
 #include "BoxMLBinContainerElement.hh"
 
-BoxMLBinContainerElement::BoxMLBinContainerElement(const SmartPtr<View>& view)
-  : BoxMLElement(view)
+BoxMLBinContainerElement::BoxMLBinContainerElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLElement(context)
 { }
 
 BoxMLBinContainerElement::~BoxMLBinContainerElement()

@@ -28,11 +28,11 @@
 class BoxMLboxElement : public BoxMLBinContainerElement
 {
 protected:
-  BoxMLboxElement(const SmartPtr<class View>&);
+  BoxMLboxElement(const SmartPtr<class BoxMLNamespaceContext>&);
   virtual ~BoxMLboxElement();
 
 public:
-  static SmartPtr<BoxMLboxElement> create(const SmartPtr<class View>& view)
+  static SmartPtr<BoxMLboxElement> create(const SmartPtr<class BoxMLNamespaceContext>& view)
   { return new BoxMLboxElement(view); }
 };
 

@@ -93,11 +93,12 @@ public:
   void setDisplayStyle(bool b) { set<bool>(DISPLAY_STYLE, b); }
   double getSizeMultiplier(void) const { return get<double>(SIZE_MULT); }
   void setSizeMultiplier(double f) { set<double>(SIZE_MULT, f); }
-  SmartPtr<class MathMLElement> getElement(void) const { return get< SmartPtr<class MathMLElement> >(ELEMENT); }
+  SmartPtr<class MathMLElement> getElement(void) const { return get<SmartPtr<class MathMLElement> >(ELEMENT); }
   Length getMathSpace(int i) const { return get<Length>(ZERO_SPACE + i); }
   void setMathSpace(int i, const Length& l) { set<Length>(ZERO_SPACE + i, l); }
   SmartPtr<class MathMLElement> getStretchOperator(void) const { return get< SmartPtr<class MathMLElement> >(STRETCH_OP); }
   void setStretchOperator(const SmartPtr<class MathMLElement>& op) { set< SmartPtr<class MathMLElement> >(STRETCH_OP, op); }
+
   scaled getStretchToWidth(void) const { return get<scaled>(STRETCH_TO_WIDTH); }
   void setStretchToWidth(const scaled& w) { set<scaled>(STRETCH_TO_WIDTH, w); }
   scaled getStretchToHeight(void) const { return get<scaled>(STRETCH_TO_HEIGHT); }
@@ -112,7 +113,7 @@ public:
   void push(const SmartPtr<class MathMLElement>& el)
   {
     FormattingContext::push();
-    set(ELEMENT, Variant< SmartPtr<class MathMLElement> >::create(el));
+    set(ELEMENT, el);
   }
   
 private:

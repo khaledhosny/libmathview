@@ -25,8 +25,8 @@
 #include "View.hh"
 #include "BoxMLElement.hh"
 
-BoxMLElement::BoxMLElement(const SmartPtr<View>& view)
-  : Element(view)
+BoxMLElement::BoxMLElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : Element()
 { }
 
 BoxMLElement::~BoxMLElement()

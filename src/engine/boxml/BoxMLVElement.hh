@@ -28,11 +28,11 @@
 class BoxMLVElement : public BoxMLLinearContainerElement
 {
 protected:
-  BoxMLVElement(const SmartPtr<class View>&);
+  BoxMLVElement(const SmartPtr<class BoxMLNamespaceContext>&);
   virtual ~BoxMLVElement();
 
 public:
-  static SmartPtr<BoxMLVElement> create(const SmartPtr<class View>&);
+  static SmartPtr<BoxMLVElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);

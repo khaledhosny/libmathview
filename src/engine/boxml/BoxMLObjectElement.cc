@@ -29,18 +29,16 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-BoxMLObjectElement::BoxMLObjectElement(const SmartPtr<View>& view)
-  : BoxMLElement(view)
+BoxMLObjectElement::BoxMLObjectElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLElement(context)
 { }
 
 BoxMLObjectElement::~BoxMLObjectElement()
 { }
 
 SmartPtr<BoxMLObjectElement>
-BoxMLObjectElement::create(const SmartPtr<View>& view)
-{
-  return new BoxMLObjectElement(view);
-}
+BoxMLObjectElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLObjectElement(context); }
 
 void
 BoxMLObjectElement::construct()

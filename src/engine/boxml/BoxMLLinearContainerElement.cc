@@ -28,8 +28,8 @@
 #include "ChildList.hh"
 #include "BoxMLLinearContainerElement.hh"
 
-BoxMLLinearContainerElement::BoxMLLinearContainerElement(const SmartPtr<View>& view)
-  : BoxMLElement(view)
+BoxMLLinearContainerElement::BoxMLLinearContainerElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLElement(context)
 { }
 
 BoxMLLinearContainerElement::~BoxMLLinearContainerElement()

@@ -29,18 +29,16 @@
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
-BoxMLSpaceElement::BoxMLSpaceElement(const SmartPtr<View>& view)
-  : BoxMLElement(view)
+BoxMLSpaceElement::BoxMLSpaceElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLElement(context)
 { }
 
 BoxMLSpaceElement::~BoxMLSpaceElement()
 { }
 
 SmartPtr<BoxMLSpaceElement>
-BoxMLSpaceElement::create(const SmartPtr<View>& view)
-{
-  return new BoxMLSpaceElement(view);
-}
+BoxMLSpaceElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLSpaceElement(context); }
 
 void
 BoxMLSpaceElement::refine(class AbstractRefinementContext& context)

@@ -22,11 +22,11 @@
 
 #include <config.h>
 
-#include "View.hh"
+#include "BoxMLNamespaceContext.hh"
 #include "BoxMLboxElement.hh"
 
-BoxMLboxElement::BoxMLboxElement(const SmartPtr<class View>& view)
-  : BoxMLBinContainerElement(view)
+BoxMLboxElement::BoxMLboxElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLBinContainerElement(context)
 { }
 
 BoxMLboxElement::~BoxMLboxElement()

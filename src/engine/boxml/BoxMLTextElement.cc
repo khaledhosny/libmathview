@@ -30,18 +30,16 @@
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
-BoxMLTextElement::BoxMLTextElement(const SmartPtr<View>& view)
-  : BoxMLElement(view)
+BoxMLTextElement::BoxMLTextElement(const SmartPtr<BoxMLNamespaceContext>& context)
+  : BoxMLElement(context)
 { }
 
 BoxMLTextElement::~BoxMLTextElement()
 { }
 
 SmartPtr<BoxMLTextElement>
-BoxMLTextElement::create(const SmartPtr<View>& view)
-{
-  return new BoxMLTextElement(view);
-}
+BoxMLTextElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLTextElement(context); }
 
 void
 BoxMLTextElement::construct()
