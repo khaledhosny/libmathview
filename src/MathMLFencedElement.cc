@@ -84,7 +84,7 @@ MathMLFencedElement::Setup(RenderingEnvironment* env)
   else closeFence = NULL;
   delete value;
 
-  value = GetAttributeValue(ATTR_SEPARATORS, env);
+  value = GetAttributeValue(ATTR_SEPARATORS, env, false);
   if (value != NULL && value->ToString() != NULL) separators = value->ToString()->Clone();
   else separators = NULL;
   delete value;
