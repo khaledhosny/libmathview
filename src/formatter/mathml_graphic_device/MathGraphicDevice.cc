@@ -129,6 +129,6 @@ MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) co
 AreaRef
 MathGraphicDevice::dummy(const MathFormattingContext&) const
 {
-  assert(false);
-  return 0;
+  //assert(false);
+  return getFactory()->horizontalSpace(scaled::zero());
 }

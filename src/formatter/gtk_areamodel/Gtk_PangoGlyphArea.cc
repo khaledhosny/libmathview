@@ -71,7 +71,7 @@ Gtk_PangoGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y
 		  context.getGC(),
 		  font,
 		  Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
-		  Gtk_RenderingContext::toGtkPixels(context.getYOrigin() - y),
+		  Gtk_RenderingContext::toGtkPixels(-context.getYOrigin() - y),
 		  glyphs);
 }
 

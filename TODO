@@ -10,4 +10,8 @@
 * implement line factory
 * implement PS area model
 * implement MGD for TeX fonts
+* make debugging methods in Areas optional
+* runtime selection of backend
+* runtime selection of reader
+* implement cursor
 

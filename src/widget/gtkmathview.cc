@@ -51,6 +51,7 @@
 #include "MathMLView.hh"
 
 #include "Gtk_MathGraphicDevice.hh"
+#include "Gtk_RenderingContext.hh"
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250
@@ -96,6 +97,7 @@ struct _GtkMathView {
 #endif
 
   MathMLView*    view;
+  Gtk_RenderingContext* renderingContext;
 };
 
 struct _GtkMathViewClass {
@@ -166,31 +168,6 @@ static SmartPtr<MathMLViewContext> viewContext;
 /* widget implementation */
 
 static void
-paint_widget_area(GtkMathView* math_view, gint x, gint y, gint width, gint height)
-{
-  GtkWidget* widget;
-
-  g_return_if_fail(math_view);
-  g_return_if_fail(math_view->area);
-  g_return_if_fail(math_view->view);
-
-  if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
-
-  widget = math_view->area;
-
-  //printf("sto per cancellare: %d %d %d %d\n", x, y,width, height);
-  gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, x, y, width, height);
-
-  Rectangle rect;
-  rect.x = px2sp(x + math_view->top_x);
-  rect.y = px2sp(y + math_view->top_y);
-  rect.width = px2sp(width);
-  rect.height = px2sp(height);
-
-  math_view->view->render(&rect);
-}
-
-static void
 paint_widget(GtkMathView* math_view)
 {
   GtkWidget* widget;
@@ -198,10 +175,25 @@ paint_widget(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->area != NULL);
 
+  if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
+
   widget = math_view->area;
 
   setup_adjustments(math_view);
-  paint_widget_area(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
+
+  gint width = widget->allocation.width;
+  gint height = widget->allocation.height;
+  gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
+
+  Rectangle rect(px2sp(math_view->top_x), px2sp(math_view->top_y), px2sp(width), px2sp(height));
+  math_view->renderingContext->setRegion(rect);
+
+  math_view->view->render(*math_view->renderingContext, &rect);
+
+  gdk_draw_pixmap(widget->window,
+		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+		  math_view->pixmap,
+		  0, 0, 0, 0, width, height);
 }
 
 static void
@@ -209,16 +201,12 @@ hadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
 {
   g_return_if_fail(adj != NULL);
   g_return_if_fail(math_view != NULL);
-  //g_return_if_fail(math_view->drawing_area != NULL);
-
-  //  printf("val: %f upper: %f lower: %f ps: %f upper-ps: %f\n", adj->value, adj->upper, adj->lower, adj->page_size, adj->upper - adj->page_size);
 
   if (adj->value > adj->upper - adj->page_size) adj->value = adj->upper - adj->page_size;
   if (adj->value < adj->lower) adj->value = adj->lower;
 
   math_view->old_top_x = math_view->top_x;
   math_view->top_x = static_cast<int>(adj->value);
-  // math_view->drawing_area->SetTopX(px2sp(static_cast<int>(adj->value)));
 
   if (math_view->old_top_x != math_view->top_x)
     paint_widget(math_view);
@@ -235,7 +223,6 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
 
   math_view->old_top_y = math_view->top_y;
   math_view->top_y = static_cast<int>(adj->value);
-  // math_view->drawing_area->SetTopY(px2sp(static_cast<int>(adj->value)));
 
   if (math_view->old_top_y != math_view->top_y)
     paint_widget(math_view);
@@ -361,8 +348,8 @@ gtk_math_view_init(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
 
   math_view->pixmap          = NULL;
-  // math_view->drawing_area    = NULL;
   math_view->view            = 0;
+  math_view->renderingContext = 0;
   math_view->freeze_counter  = 0;
   math_view->select_state    = SELECT_STATE_NO;
   math_view->button_pressed  = FALSE;
@@ -429,21 +416,8 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
   view->ref();
   math_view->view = view;
 
-#if 0
-  GraphicsContextValues values;
-  values.foreground = Globals::configuration.GetForeground();
-  values.background = Globals::configuration.GetBackground();
-  values.lineStyle  = LINE_STYLE_SOLID;
-  values.lineWidth  = px2sp(1);
-
-  math_view->drawing_area = new Gtk_DrawingArea(values, px2sp(MARGIN), px2sp(MARGIN),
-						GTK_WIDGET(math_view->area),
-						Globals::configuration.GetSelectForeground(),
-						Globals::configuration.GetSelectBackground());
-  math_view->drawing_area->SetPixmap(math_view->pixmap);
-#endif
-
-  view->setDrawable(math_view->pixmap);
+  math_view->renderingContext = new Gtk_RenderingContext;
+  math_view->renderingContext->setDrawable(math_view->pixmap);
 
   return GTK_WIDGET(math_view);
 }
@@ -467,9 +441,13 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->view = 0;
     }
 
+  if (math_view->renderingContext)
+    {
+      delete math_view->renderingContext;
+      math_view->renderingContext = 0;
+    }
+
   if (--new_counter == 0) viewContext = 0;
-  // delete math_view->drawing_area;
-  // math_view->drawing_area = 0;
 
   if (math_view->hadjustment != NULL)
     {
@@ -564,7 +542,6 @@ gtk_math_view_button_press_event(GtkWidget* widget,
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view, FALSE);
-  // g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (event->button == 1)
     {
@@ -641,7 +618,6 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view, FALSE);
-  // g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (event->x < 0) {
     math_view->hadjustment->value -= math_view->hadjustment->step_increment;
@@ -725,15 +701,10 @@ gtk_math_view_configure_event(GtkWidget* widget,
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view, FALSE);
-  // g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (math_view->pixmap != NULL) g_object_unref(math_view->pixmap);
   math_view->pixmap = gdk_pixmap_new(widget->window, event->width, event->height, -1);
-  // math_view->drawing_area->SetSize(px2sp(event->width), px2sp(event->height));
-#if 1
-  // math_view->drawing_area->SetPixmap(math_view->pixmap);
-#endif
-  math_view->view->setDrawable(math_view->pixmap);
+  math_view->renderingContext->setDrawable(math_view->pixmap);
   paint_widget(math_view);
 
   return TRUE;
@@ -845,10 +816,9 @@ setup_adjustments(GtkMathView* math_view)
 
   BoundingBox box = math_view->view->getBoundingBox();
 
-#if 0
   if (math_view->hadjustment != NULL) {
     gint width = sp2ipx(box.width) + 2 * MARGIN;
-    gint page_width = sp2ipx(math_view->drawing_area->GetWidth());
+    gint page_width = math_view->area->allocation.width;
     
     if (math_view->top_x > width - page_width)
       math_view->top_x = std::max(0, width - page_width);
@@ -858,14 +828,13 @@ setup_adjustments(GtkMathView* math_view)
 
   if (math_view->vadjustment != NULL) {
     gint height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
-    gint page_height = sp2ipx(math_view->drawing_area->GetHeight());
+    gint page_height = math_view->area->allocation.height;
 
     if (math_view->top_y > height - page_height)
       math_view->old_top_y = math_view->top_y = std::max(0, height - page_height);
 
     setup_adjustment(math_view->vadjustment, height, page_height);
   }
-#endif
 }
 
 #if 0

@@ -35,6 +35,8 @@ struct Rectangle {
   Rectangle(void) { }
   Rectangle(const scaled& x0, const scaled& y0, const BoundingBox& box)
     : x(x0), y(y0 - box.height), width(box.width), height(box.verticalExtent()) { }
+  Rectangle(const scaled& x0, const scaled& y0, const scaled& width0, const scaled& height0)
+    : x(x0), y(y0), width(width0), height(height0) { }
 
   void Zero(void) { x = y = width = height = 0; }
 

@@ -86,7 +86,7 @@ Gtk_XftGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) 
 		context.getXftColor(),
 		font,
 		Gtk_RenderingContext::toXftPixels(x - context.getXOrigin()),
-		Gtk_RenderingContext::toXftPixels(y - context.getYOrigin()),
+		Gtk_RenderingContext::toXftPixels(-context.getYOrigin() - y),
 		&glyph, 1);
 }
 

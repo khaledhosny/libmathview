@@ -52,11 +52,14 @@ BoxMLObjectElement::construct()
 	{
 	  // Beware that ChildList will select text nodes if the namespace "*" 
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  DOM::Node node = children.item(0);
-	  assert(node);
-	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  SmartPtr<Element> el = getFormattingNode(node);
-	  setChild(el);
+	  if (DOM::Node node = children.item(0))
+	    {
+	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
+	      SmartPtr<Element> el = getFormattingNode(node);
+	      setChild(el);
+	    }
+	  else
+	    setChild(0);
 	}
 #endif // HAVE_GMETADOM
 
@@ -85,8 +88,10 @@ BoxMLObjectElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      assert(getChild());
-      setArea(getChild()->format(ctxt));
+      if (SmartPtr<Element> child = getChild())
+	setArea(child->format(ctxt));
+      else
+	setArea(ctxt.getDevice()->dummy(ctxt));
       
       ctxt.pop();
       resetDirtyLayout();

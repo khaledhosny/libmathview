@@ -187,8 +187,6 @@ Gtk_MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context
   u = std::max(u, evaluate(context, superScriptMinShift, u));
 }
 
-#include "scaledAux.hh"
-
 AreaRef
 Gtk_MathGraphicDevice::script(const MathFormattingContext& context,
 			      const AreaRef& base,
@@ -282,5 +280,5 @@ Gtk_MathGraphicDevice::wrapper(const MathFormattingContext& context,
 			       const AreaRef& base) const
 {
   BoundingBox box = base->box();
-  return base->fit(box.width, box.height, box.depth);
+  return getFactory()->box(base, box);
 }

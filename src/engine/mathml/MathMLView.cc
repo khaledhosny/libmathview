@@ -44,11 +44,13 @@ MathMLView::~MathMLView()
 {
 }
 
+#if 0
 void
 MathMLView::setDrawable(const GObjectPtr<GdkDrawable>& d)
 {
   renderingContext.setDrawable(d);
 }
+#endif
 
 bool
 MathMLView::freeze()
@@ -174,8 +176,6 @@ MathMLView::getRectangle() const
     return Rectangle();
 }
 
-#include "BoundingBoxAux.hh"
-
 void
 MathMLView::layout() const
 {
@@ -208,10 +208,9 @@ MathMLView::layout() const
 	  Clock perf;
 	  MathFormattingContext ctxt(context->device);
 	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  ctxt.setSize(context->device->evaluate(ctxt, Length(48, Length::PT_UNIT), scaled::zero()));
+	  ctxt.setSize(context->device->evaluate(ctxt, Length(14, Length::PT_UNIT), scaled::zero()));
 	  ctxt.setActualSize(ctxt.getSize());
 	  root->format(ctxt);
-std::cout << root->getArea()->box() << std::endl;
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 	}
 
@@ -221,10 +220,9 @@ std::cout << root->getArea()->box() << std::endl;
 }
 
 void
-MathMLView::render(const Rectangle* rect)
+MathMLView::render(RenderingContext& ctxt, const Rectangle* rect)
 {
   layout();
-  //SetDirty(rect);
 
   if (root)
     {
@@ -234,19 +232,9 @@ MathMLView::render(const Rectangle* rect)
       if (AreaRef area = root->getArea())
 	{
 	  BoundingBox box = area->box();
-	  renderingContext.setRegion(Rectangle(0, Gtk_RenderingContext::fromGtkPixels(300), box));
-
-	  area->render(renderingContext, scaled::zero(), box.height);
+	  area->render(ctxt, scaled::zero(), -box.height);
 	}
       perf.Stop();
-      Globals::logger(LOG_INFO, "rendering time: %dms (visited %d)", perf(), MathMLStringNode::visited);
+      Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }
-
-  renderingContext.update();
-
-#if 0
-  // WHAT ABOUT THESE?
-  if (rect) area->Update(*rect);
-  else area->Update();
-#endif
 }

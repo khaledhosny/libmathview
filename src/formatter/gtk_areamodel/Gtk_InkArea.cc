@@ -31,8 +31,6 @@ Gtk_InkArea::clone() const
   return new Gtk_InkArea(getChild());
 }
 
-#include "BoundingBoxAux.hh"
-
 void
 Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
@@ -43,7 +41,7 @@ Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 		     context.getGC(),
 		     TRUE,
 		     Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
-		     Gtk_RenderingContext::toGtkPixels(context.getYOrigin() - (y + box.height)),
+		     Gtk_RenderingContext::toGtkPixels(-context.getYOrigin() - y + box.height),
 		     Gtk_RenderingContext::toGtkPixels(box.width),
 		     Gtk_RenderingContext::toGtkPixels(box.height + box.depth));
 }
