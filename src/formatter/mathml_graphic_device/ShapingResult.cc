@@ -43,6 +43,13 @@ ShapingResult::getShaperId() const
   return spec[index].getShaperId();
 }
 
+GlyphSpec
+ShapingResult::getSpec(int n) const
+{
+  assert(index + n < spec.size());
+  return spec[index + n];
+}
+
 const DOM::Char32*
 ShapingResult::data() const
 {

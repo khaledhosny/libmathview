@@ -23,19 +23,25 @@
 #ifndef __Gtk_AdobeShaper_hh__
 #define __Gtk_AdobeShaper_hh__
 
-#include "AShaper.hh"
+#include <X11/Xft/Xft.h>
 
-class Gtk_AdobeShaper : public AShaper
+#include "Shaper.hh"
+
+class Gtk_AdobeShaper : public Shaper
 {
 public:
   Gtk_AdobeShaper(void) { }
   virtual ~Gtk_AdobeShaper() { }
 
-  virtual registerChars(class ShaperManager&, unsigned shaperId) const;
-  virtual AreaRef shapeChar(DOM::Char32 ch, const GlyphSpec& spec, unsigned size) const;
-  virtual AreaRef combineWith(const AreaRef& base, DOM::Char32 ch) const;
-  virtual AreaRef stretchH(const AreaRef& base, const scaled& hSpan) const;
-  virtual AreaRef stretchV(const AreaRef& base, const scaled& vSpan) const;
+  virtual void registerChars(class ShaperManager&, unsigned shaperId) const;
+  virtual unsigned shape(class ShapingResult&) const;
+
+protected:
+  XftFont* getFont(unsigned, const scaled&) const;
+  void getGlyphExtents(XftFont*, FT_UInt, XGlyphInfo*) const;
+  bool shapeChar(class ShapingResult&, const class GlyphSpec&) const;
+  bool shapeStretchyCharV(class ShapingResult&, const class GlyphSpec&) const;
+  bool shapeStretchyCharH(class ShapingResult&, const class GlyphSpec&) const;
 };
 
 #endif // __Gtk_AdobeShaper_hh__

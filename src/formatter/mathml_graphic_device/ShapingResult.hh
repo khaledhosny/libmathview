@@ -53,6 +53,7 @@ public:
 
   void advance(int = 1);
   const DOM::Char32* data(void) const;
+  GlyphSpec getSpec(int = 1) const;
   DOM::Char32 prevChar(void) const;
   DOM::Char32 nextChar(void) const;
   DOM::UCS4String prevString(int = -1) const;
