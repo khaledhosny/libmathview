@@ -824,7 +824,8 @@ gtk_math_view_load(GtkMathView* math_view, const gchar* name)
 
   setup_adjustments(math_view);
   reset_adjustments(math_view);
-  paint_widget(math_view);
+
+  if (GTK_WIDGET_MAPPED(GTK_WIDGET(math_view))) paint_widget(math_view);
 
   return TRUE;
 }
