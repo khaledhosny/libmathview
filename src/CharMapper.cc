@@ -32,7 +32,9 @@
 #include "MathEngine.hh"
 #include "CharMapper.hh"
 #include "FontManager.hh"
+#include "StringUnicode.hh"
 #include "EntitiesTable.hh"
+#include "AttributeParser.hh"
 #include "MathMLParseFile.hh"
 
 #ifdef ENABLE_PROFILE
@@ -84,38 +86,26 @@ CharMapper::GetStretch(Char ch) const
 const AFont*
 CharMapper::GetFont(const FontAttributes& fa) const
 {
-#if 0
-  const AFont* font = fontManager.GetFont(fa, NULL);
-  if (font != NULL) fontManager.MarkAsUsed(font);
-  return font;
-#endif
   unsigned bestEval = 0;
   const AFont* bestFont = NULL;
+  FontDescriptor* bestDesc = NULL;
 
   FontAttributes myfa(fa);
 
   do {
-    for (Iterator<FontDescriptor*> i(fonts); i.More(); i.Next()) {
+    for (Iterator<FontDescriptor*> i(fonts); i.More() && bestEval > 0; i.Next()) {
       assert(i() != NULL);
 
       if (i()->fontMap != NULL) {
 	unsigned eval = i()->attributes.Compare(myfa);
-
-	if (eval > bestEval) {
-	  const AFont* font = fontManager.GetFont(myfa, &i()->extraAttributes);
-#if 0
-	  myfa.Dump();
-	  printf("comparing with (%d)\n ", eval);
-	  i()->attributes.Dump();
-	  MathEngine::logger(LOG_DEBUG, "best was %d now %d %p\n", bestEval, eval, font);
-#endif
-	  if (font != NULL) {
-	    bestEval = eval;
-	    bestFont = font;
-	  }
+	if (eval < bestEval && fontManager.IsAvailable(myfa, &i()->extraAttributes)) {
+	  bestEval = eval;
+	  bestDesc = i();
 	}
       }
     }
+
+    if (bestDesc != NULL) bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
   } while (bestFont == NULL && myfa.DownGrade());
 
   if (bestFont != NULL) fontManager.MarkAsUsed(bestFont);
@@ -166,32 +156,48 @@ CharMapper::FontifyStretchyChar(FontifiedChar& fMap, const FontAttributes& fa, C
 bool
 CharMapper::FontifyCharAux(FontifiedChar& fMap, const FontAttributes& fa, Char ch, bool stretchy) const
 {
-  unsigned bestEval = 0;
+  unsigned bestEval = UINT_MAX;
   const AFont* bestFont = NULL;
   const CharMap* bestCharMap = NULL;
+  FontDescriptor* bestDesc = NULL;
 
   FontAttributes myfa(fa);
-  //MathEngine::logger(LOG_DEBUG, "requested font attributes:");
-  //myfa.Dump();
+#if 0
+  MathEngine::logger(LOG_DEBUG, "requested font attributes:");
+  myfa.Dump();
+#endif
 
   do {
-    for (Iterator<FontDescriptor*> i(fonts); i.More(); i.Next()) {
+    for (Iterator<FontDescriptor*> i(fonts); i.More() && bestEval > 0; i.Next()) {
       assert(i() != NULL);
 
+      // NOTE: the order of the following tests is very important for
+      // performances. Basically, there are 3 tests to be done:
+      // 1) whether this font can render the requested char
+      // 2) whether this font is better than a previously found font
+      // 3) whether this font is available with the current font manager
+      // The order for the tests should be choosen with the most-likely-to-fail
+      // test first, and so on for the other. This must be weighted in order to consider
+      // the computational cost for performing the test. For example, the
+      // charMap is a very cheap test and it is likely to fail on a pretty wide range
+      // of fonts, especially for mathematical symbols. By contrast, `eval' has
+      // a complex procedure to be computed, but once a good font is found, then all
+      // the other are not considered any more. Finally, the availability of the
+      // font is a call to a virtual function.
       if (i()->fontMap != NULL) {
-	unsigned eval = i()->attributes.Compare(myfa);
 	const CharMap* charMap = i()->fontMap->GetCharMap(ch, stretchy);
-
-	if (charMap != NULL && eval > bestEval) {
-	  const AFont* font = fontManager.GetFont(myfa, &i()->extraAttributes);
-	  if (font != NULL) {
+	if (charMap != NULL) {
+	  unsigned eval = i()->attributes.Compare(myfa);
+	  if (eval < bestEval && fontManager.IsAvailable(myfa, &i()->extraAttributes)) {
 	    bestEval = eval;
-	    bestFont = font;
 	    bestCharMap = charMap;
+	    bestDesc = i();
 	  }
 	}
       }
     }
+
+    if (bestDesc != NULL) bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
   } while (bestFont == NULL && myfa.DownGrade());
 
   //MathEngine::logger(LOG_DEBUG, "attributes:");
@@ -205,6 +211,8 @@ CharMapper::FontifyCharAux(FontifiedChar& fMap, const FontAttributes& fa, Char c
     return false;
   }
 
+  // with the current implementation, the following operation seems to be
+  // useless, since only needed fonts are actually loaded.
   fontManager.MarkAsUsed(bestFont);
 
   fMap.charMap = bestCharMap;
@@ -322,7 +330,13 @@ CharMapper::ParseFont(mDOMNodeRef node)
 	else if (mdom_string_eq(value, DOM_CONST_STRING("math")))
 	  desc->attributes.mode = FONT_MODE_MATH;
       } else if (mdom_string_eq(name, DOM_CONST_STRING("size"))) {
-	assert(NOT_IMPLEMENTED);
+	StringC sName(C_CONST_STRING(value));
+	StringTokenizer st(sName);
+	const Value* v = numberUnitParser(st);
+	if (v != NULL) {
+	  desc->attributes.size = v->ToNumberUnit();
+	  delete v;
+	}
       } else {
 	mDOMStringRef cName = mdom_string_dup(name);
 	desc->extraAttributes.AddProperty(C_CONST_STRING(cName), C_CONST_STRING(value));

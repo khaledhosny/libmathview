@@ -23,8 +23,6 @@
 #ifndef AttributeParser_hh
 #define AttributeParser_hh
 
-#include <config.h>
-
 #include "StringTokenizer.hh"
 #include "MathMLObject.hh"
 #include "Value.hh"

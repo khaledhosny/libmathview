@@ -98,7 +98,7 @@ MathMLMultiScriptsElement::Setup(RenderingEnvironment* env)
 }
 
 void
-MathMLMultiScriptsElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLMultiScriptsElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
 {
   if (!HasDirtyLayout(id, availWidth)) return;
 

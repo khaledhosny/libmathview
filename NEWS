@@ -1,3 +1,9 @@
+18 May 2001
+
+	improvements in the font-search procedure
+	now the search matches the newarest font w.r.t. size (so that
+	LaTeX fonts are handled at the best)
+
 10 May 2001
 
 	gtkmathview is now a module into the GNOME CVS repository at

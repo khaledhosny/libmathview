@@ -23,10 +23,6 @@
 #ifndef StringUnicode_hh
 #define StringUnicode_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "String.hh"
 #include "StringU.hh"
 
@@ -35,6 +31,4 @@ typedef StringU<Char16> StringU16;
 typedef StringU<Char32> StringU32;
 typedef StringU32       StringUnicode;
 
-#endif
-
-
+#endif // StringUnicode_hh

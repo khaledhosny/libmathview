@@ -53,7 +53,7 @@ MathMLPhantomElement::IsBreakable() const
 }
 
 void
-MathMLPhantomElement::Render(const DrawingArea& area)
+MathMLPhantomElement::Render(const DrawingArea&)
 {
   if (!HasDirtyChildren()) return;
 

@@ -40,6 +40,18 @@ Gtk_FontManager::~Gtk_FontManager()
 {
 }
 
+bool
+Gtk_FontManager::IsAvailable(const FontAttributes& fa,
+			     const ExtraFontAttributes* efa) const
+{
+  if (efa != NULL) {
+    const char* type = efa->GetProperty("type");
+    if (type == NULL || strcmp(type, "x")) return false;
+  }
+
+  return true;
+}
+
 const AFont*
 Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
 				  const ExtraFontAttributes* efa) const
@@ -61,7 +73,7 @@ Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
 
   if (efa != NULL) {
     const char* type = efa->GetProperty("type");
-    if (type != NULL && strcmp(type, "x")) return NULL;
+    assert(type != NULL && strcmp(type, "x") == 0);
 
     foundry = efa->GetProperty("x-foundry");
     family = efa->GetProperty("x-family");

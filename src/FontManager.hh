@@ -31,7 +31,7 @@ public:
   FontManager(void);
   virtual ~FontManager();
 
-  void IsAvailable(const FontAttributes&, const class ExtraFontAttributes* = 0) const;
+  virtual bool IsAvailable(const FontAttributes&, const class ExtraFontAttributes* = 0) const = 0;
   const class AFont* GetFont(const FontAttributes&, const class ExtraFontAttributes* = 0) const;
   void MarkAsUsed(const class AFont*) const;
 

@@ -34,6 +34,7 @@ public:
   T1_FontManager(void);
   virtual ~T1_FontManager();
 
+  virtual bool IsAvailable(const FontAttributes&, const ExtraFontAttributes* = 0) const;
   void SetLogLevel(int);
 
 protected:

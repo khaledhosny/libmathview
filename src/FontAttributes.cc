@@ -84,8 +84,51 @@ FontAttributes::Compare(const FontAttributes& fa) const
 {
   unsigned eval = 0;
 
-  if (mode != FONT_MODE_ANY && fa.mode != FONT_MODE_ANY && mode != fa.mode) return 0;
+  if (mode != FONT_MODE_ANY && fa.mode != FONT_MODE_ANY && mode != fa.mode)
+    return UINT_MAX;
 
+  if (HasStyle()) {
+    if (fa.HasStyle()) {
+      if (style != fa.style) return UINT_MAX;
+    } else {
+      eval++;
+    }
+  } else {
+    if (fa.HasStyle()) eval++;
+  }
+
+  if (HasWeight()) {
+    if (fa.HasWeight()) {
+      if (weight != fa.weight) return UINT_MAX;
+    } else {
+      eval++;
+    }
+  } else {
+    if (fa.HasWeight()) eval++;
+  }
+
+  if (HasFamily()) {
+    if (fa.HasFamily()) {
+      if (strcmp(family, fa.family)) return UINT_MAX;
+    } else {
+      eval++;
+    }
+  } else {
+    if (fa.HasFamily()) eval++;
+  }
+
+  if (HasSize()) {
+    if (fa.HasSize()) {
+      scaled d = scaledAbs(size.ToScaledPoints() - fa.size.ToScaledPoints());
+      eval += truncFloat(sp2pt(d));
+    } else {
+      eval++;
+    }
+  } else {
+    if (fa.HasSize()) eval++;
+  }
+
+#if 0
   if (!HasStyle() && !fa.HasStyle()) eval += 2;
   else if (HasStyle() && fa.HasStyle()) {
     if (style == fa.style) eval += 2;
@@ -104,11 +147,14 @@ FontAttributes::Compare(const FontAttributes& fa) const
     else eval += 2;
   } else eval++;
 
-  if (!HasSize() && !fa.HasSize()) eval += 2;
+  if (!HasSize() && !fa.HasSize()) eval += 18;
   else if (HasSize() && fa.HasSize()) {
-    if (scaledEq(size.ToScaledPoints(), fa.size.ToScaledPoints())) eval += 2;
-    else return 0;
-  } else eval++;
+    scaled s1 = size.ToScaledPoints();
+    scaled s2 = fa.size.ToScaledPoints();
+    scaled d = scaledAbs(s1 - s2);
+    if (d < pt2sp(24)) eval += 24 - truncFloat(sp2pt(d));    
+  } else eval += 10;
+#endif
 
   return eval;
 }
@@ -120,7 +166,8 @@ FontAttributes::Dump() const
   const char* s[] = { "_", "normal", "italic" };
   const char* m[] = { "*", "text", "math" };
 
-  MathEngine::logger(LOG_DEBUG, "font(%s,%s,%s,%s)",
+  MathEngine::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s,%s)",
+		     HasSize() ? truncFloat(sp2pt(size.ToScaledPoints())) : -1,
 		     HasFamily() ? family : "_", w[weight + 1], s[style + 1], m[mode]);
 }
 

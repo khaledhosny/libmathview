@@ -60,28 +60,33 @@ T1_FontManager::~T1_FontManager()
   firstTime = true;
 }
 
+bool
+T1_FontManager::IsAvailable(const FontAttributes& fa,
+			    const ExtraFontAttributes* efa) const
+{
+  if (efa == NULL) return false;
+
+  const char* type = efa->GetProperty("type");
+  if (type == NULL || (strcmp(type, "type1") && strcmp(type, "ps"))) return false;
+
+  const char* fileName = efa->GetProperty("ps-file");
+  if (fileName == NULL) return false;
+
+  return true;
+}
+
 const AFont*
 T1_FontManager::SearchNativeFont(const FontAttributes& fa,
 				 const ExtraFontAttributes* efa) const
 {
-  // FIXME: maybe with the new version of t1lib it can be done like
-  // for Gtk_FontManager, because it is not necessary any more to know
-  // the file name from the config file. Maybe.
-  if (efa == NULL) return NULL;
+  assert(efa != NULL);
 
   const char* type = efa->GetProperty("type");
-  if (type == NULL) {
-    MathEngine::logger(LOG_ERROR, "could not determine font type (check the font configuration file)");
-    return NULL;
-  }
-
-  if (strcmp(type, "type1") && strcmp(type, "ps")) return NULL;
+  assert(type != NULL);
+  assert(strcmp(type, "type1") == 0 || strcmp(type, "ps") == 0);
 
   const char* fileName = efa->GetProperty("ps-file");
-  if (fileName == NULL) {
-    MathEngine::logger(LOG_WARNING, "Type1 font `%s' has no file attribute", fa.family);
-    return NULL;
-  }
+  assert(fileName != NULL);
 
   int n = T1_Get_no_fonts();
   int i;

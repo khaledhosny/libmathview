@@ -33,17 +33,17 @@ struct FontAttributes {
   FontAttributes(void);
   FontAttributes(const FontAttributes&, const FontAttributes&);
 
-  bool     HasMode(void) const { return (mode != FONT_MODE_ANY); }
-  bool     HasFamily(void) const { return (family != 0); }
-  bool     HasStyle(void) const { return (style != FONT_STYLE_NOTVALID); }
-  bool     HasWeight(void) const { return (weight != FONT_WEIGHT_NOTVALID); }
-  bool     HasSize(void) const { return !size.IsNull(); }
-  bool     Equals(const FontAttributes&) const;
+  bool HasMode(void) const { return (mode != FONT_MODE_ANY); }
+  bool HasFamily(void) const { return (family != 0); }
+  bool HasStyle(void) const { return (style != FONT_STYLE_NOTVALID); }
+  bool HasWeight(void) const { return (weight != FONT_WEIGHT_NOTVALID); }
+  bool HasSize(void) const { return !size.IsNull(); }
+  bool Equals(const FontAttributes&) const;
   unsigned Compare(const FontAttributes&) const;
-  void     Dump(void) const;
-  void     Null(void);
+  void Dump(void) const;
+  void Null(void);
 
-  bool     DownGrade(void);
+  bool DownGrade(void);
 
   const char*  family;
   UnitValue    size; // cannot be < 0

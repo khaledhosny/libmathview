@@ -26,18 +26,103 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 
 <font-configuration>
   <font type="ps" mode="text" map="tex-cmrom"
-	family="serif" style="normal" weight="normal"
+	family="serif" style="normal" weight="normal" size="5pt"
+	ps-file="cmr5.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="normal" size="6pt"
+	ps-file="cmr6.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="normal" size="7pt"
+	ps-file="cmr7.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="normal" size="8pt"
+	ps-file="cmr8.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="normal" size="9pt"
+	ps-file="cmr9.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="normal" size="10pt"
 	ps-file="cmr10.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmrom"
-	family="serif" style="normal" weight="bold"
+	family="serif" style="normal" weight="normal" size="12pt"
+	ps-file="cmr12.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="normal" size="17pt"
+	ps-file="cmr17.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="bold" size="5pt"
+	ps-file="cmbx5.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="bold" size="6pt"
+	ps-file="cmbx6.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="bold" size="7pt"
+	ps-file="cmbx7.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="bold" size="8pt"
+	ps-file="cmbx8.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="bold" size="9pt"
+	ps-file="cmbx9.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="normal" weight="bold" size="10pt"
 	ps-file="cmb10.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmrom"
-	family="serif" style="italic" weight="normal"
+	family="serif" style="normal" weight="bold" size="12pt"
+	ps-file="cmbx12.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="italic" weight="normal" size="7pt"
+	ps-file="cmti7.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="italic" weight="normal" size="8pt"
+	ps-file="cmti8.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="italic" weight="normal" size="9pt"
+	ps-file="cmti9.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="italic" weight="normal" size="10pt"
 	ps-file="cmti10.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="serif" style="italic" weight="normal" size="12pt"
+	ps-file="cmti12.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmrom"
@@ -46,13 +131,53 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	/>
 
   <font type="ps" mode="text" map="tex-cmrom"
-	family="sans-serif" style="normal" weight="normal"
+	family="sans-serif" style="normal" weight="normal" size="8pt"
+	ps-file="cmss8.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="normal" weight="normal" size="9pt"
+	ps-file="cmss9.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="normal" weight="normal" size="10pt"
 	ps-file="cmss10.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmrom"
-	family="sans-serif" style="italic" weight="normal"
+	family="sans-serif" style="normal" weight="normal" size="12pt"
+	ps-file="cmss12.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="normal" weight="normal" size="17pt"
+	ps-file="cmss17.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="italic" weight="normal" size="8pt"
+	ps-file="cmssi8.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="italic" weight="normal" size="9pt"
+	ps-file="cmssi9.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="italic" weight="normal" size="10pt"
 	ps-file="cmssi10.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="italic" weight="normal" size="12pt"
+	ps-file="cmssi12.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmrom"
+	family="sans-serif" style="italic" weight="normal" size="17pt"
+	ps-file="cmssi17.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmrom"
@@ -61,8 +186,23 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	/>
 
   <font type="ps" mode="text" map="tex-cmti"
-	family="monospace" style="normal" weight="normal"
+	family="monospace" style="normal" weight="normal" size="8pt"
+	ps-file="cmtt8.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmti"
+	family="monospace" style="normal" weight="normal" size="9pt"
+	ps-file="cmtt9.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmti"
+	family="monospace" style="normal" weight="normal" size="10pt"
 	ps-file="cmtt10.pfb"
+	/>
+
+  <font type="ps" mode="text" map="tex-cmti"
+	family="monospace" style="normal" weight="normal" size="12pt"
+	ps-file="cmtt12.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmti"
@@ -70,14 +210,54 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	ps-file="cmitt10.pfb"
 	/>
   
-  <font type="ps" mode="text" map="tex-cmtex"
-	family="monospace" style="normal" weight="normal"
+  <font type="ps" mode="math" map="tex-cmtex"
+	family="monospace" style="normal" weight="normal" size="8pt"
+	ps-file="cmtex8.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmtex"
+	family="monospace" style="normal" weight="normal" size="9pt"
+	ps-file="cmtex9.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmtex"
+	family="monospace" style="normal" weight="normal" size="10pt"
 	ps-file="cmtex10.pfb"
 	/>
 
   <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal"
+	family="serif" style="italic" weight="normal" size="5pt"
+	ps-file="cmmi5.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmmi"
+	family="serif" style="italic" weight="normal" size="6pt"
+	ps-file="cmmi6.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmmi"
+	family="serif" style="italic" weight="normal" size="7pt"
+	ps-file="cmmi7.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmmi"
+	family="serif" style="italic" weight="normal" size="8pt"
+	ps-file="cmmi8.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmmi"
+	family="serif" style="italic" weight="normal" size="9pt"
+	ps-file="cmmi9.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmmi"
+	family="serif" style="italic" weight="normal" size="10pt"
 	ps-file="cmmi10.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmmi"
+	family="serif" style="italic" weight="normal" size="12pt"
+	ps-file="cmmi12.pfb"
 	/>
 
   <font type="ps" mode="math" map="tex-cmmi"
@@ -86,7 +266,32 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	/>
 
   <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal"
+	weight="normal" size="5pt"
+	ps-file="cmsy5.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmsy"
+	weight="normal" size="6pt"
+	ps-file="cmsy6.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmsy"
+	weight="normal" size="7pt"
+	ps-file="cmsy7.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmsy"
+	weight="normal" size="8pt"
+	ps-file="cmsy8.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmsy"
+	weight="normal" size="9pt"
+	ps-file="cmsy9.pfb"
+	/>
+
+  <font type="ps" mode="math" map="tex-cmsy"
+	weight="normal" size="10pt"
 	ps-file="cmsy10.pfb"
 	/>
 

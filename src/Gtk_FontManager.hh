@@ -23,10 +23,6 @@
 #ifndef Gtk_FontManager_hh
 #define Gtk_FontManager_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Container.hh"
 #include "FontManager.hh"
 #include "FontAttributes.hh"
@@ -36,9 +32,11 @@ public:
   Gtk_FontManager(void);
   virtual ~Gtk_FontManager();
 
+  virtual bool IsAvailable(const FontAttributes&, const ExtraFontAttributes* = 0) const;
+
 protected:
   virtual const class AFont* SearchNativeFont(const FontAttributes&,
 					      const ExtraFontAttributes*) const;
 };
 
-#endif
+#endif // Gtk_FontManager_hh
