@@ -431,6 +431,7 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 
   math_view->renderingContext = new Gtk_RenderingContext;
 
+  math_view->renderingContext->setWidget(math_view->area);
   //math_view->renderingContext->setDrawable(math_view->pixmap);
   //math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
   //math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);

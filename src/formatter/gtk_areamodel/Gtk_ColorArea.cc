@@ -30,9 +30,14 @@ Gtk_ColorArea::render(RenderingContext& context, const scaled& x, const scaled& 
 {
   Gtk_RenderingContext& c = dynamic_cast<Gtk_RenderingContext&>(context);
 
-  GdkColor oldColor;
-  c.getForegroundColor(oldColor);
-  c.setForegroundColor(getColor());
-  getChild()->render(context, x, y);
-  c.setForegroundColor(oldColor);
+  if (c.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
+    {
+      GdkColor oldColor;
+      c.getForegroundColor(oldColor);
+      c.setForegroundColor(getColor());
+      getChild()->render(context, x, y);
+      c.setForegroundColor(oldColor);
+    }
+  else
+    getChild()->render(context, x, y);    
 }

@@ -56,6 +56,10 @@ void
 Gtk_RenderingContext::setWidget(const GObjectPtr<GtkWidget>& widget)
 {
   gtk_widget = widget;
+  if (gtk_widget)
+    gdk_colormap = gtk_widget_get_colormap(gtk_widget);
+  else
+    gdk_colormap = 0;
 }
 
 void
@@ -78,7 +82,6 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
   gdk_drawable = drawable;
   if (gdk_drawable)
     {
-      gdk_colormap = gdk_rgb_get_colormap();
       for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
       
@@ -92,6 +95,5 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
     {
       for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = 0;
-      gdk_colormap = 0;
     }
 }
