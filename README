@@ -7,7 +7,10 @@ Full documentation is available on-line at
 	http://cs.unibo.it/~lpadovan/mml-widget/
 
 In the same page you can also find instruction to subscribe to the
-GtkMathView mailing list.
+GtkMathView mailing list. For subscriptions, send an e-mail with
+empty subject and empty body to the following address:
+
+	gtkmathview-subscribe@cs.unibo.it
 
 This code is released under the GPL (see COPYING for more details).
 
