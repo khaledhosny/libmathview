@@ -99,6 +99,7 @@ extern "C" {
   gboolean   GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
   gboolean   GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView*, GtkMathViewModelDocument);
   gboolean   GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewModelId);
+  GtkMathViewModelDocument GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView*);
 #endif
   void       GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView*, GtkMathViewModelId);

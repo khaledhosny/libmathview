@@ -1216,6 +1216,22 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
   GTKMATHVIEW_METHOD_NAME(unload)(math_view);
   return FALSE;
 }
+
+extern "C" GdomeDocument*
+GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, NULL);
+
+  if (math_view->current_doc)
+    {
+      GdomeException exc = 0;
+      gdome_doc_ref(math_view->current_doc, &exc);
+      g_assert(exc == 0);
+      return math_view->current_doc;
+    }
+  else
+    return NULL;
+}
 #elif GTKMATHVIEW_USES_LIBXML2
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
@@ -1272,6 +1288,13 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
 
   GTKMATHVIEW_METHOD_NAME(unload)(math_view);
   return FALSE;
+}
+
+extern "C" xmlDoc*
+GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, NULL);
+  return math_view->current_doc;
 }
 #elif GTKMATHVIEW_USES_LIBXML2_READER
 extern "C" gboolean

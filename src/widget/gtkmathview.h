@@ -37,6 +37,7 @@
 #define gtk_math_view_select               GTKMATHVIEW_METHOD_NAME(select)
 #define gtk_math_view_unselect             GTKMATHVIEW_METHOD_NAME(unselect)
 #define gtk_math_view_is_selected          GTKMATHVIEW_METHOD_NAME(is_selected)
+#define gtk_math_view_get_document         GTKMATHVIEW_METHOD_NAME(get_document)
 #define gtk_math_view_get_element_at       GTKMATHVIEW_METHOD_NAME(get_element_at)
 #define gtk_math_view_get_element_extents  GTKMATHVIEW_METHOD_NAME(get_element_extents)
 #define gtk_math_view_get_element_length   GTKMATHVIEW_METHOD_NAME(get_element_length)
