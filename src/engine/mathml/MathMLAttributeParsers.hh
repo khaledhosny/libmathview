@@ -139,7 +139,7 @@ typedef ParseString Parse_MathML_Fenced_close;
 typedef ParseString Parse_MathML_Fenced_separators;
 
 // Enclose
-typedef ParseString Parse_MathML_Enclose_notation;
+typedef ParseKeyword Parse_MathML_Enclose_notation;
 
 // Script
 typedef ParseLength Parse_MathML_Script_subscriptshift;

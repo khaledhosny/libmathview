@@ -440,20 +440,6 @@ MathGraphicDevice::underOver(const MathFormattingContext& context,
 }
 
 AreaRef
-MathGraphicDevice::longDivision(const MathFormattingContext& context,
-				const AreaRef& base) const
-{
-  return base;
-}
-
-AreaRef
-MathGraphicDevice::actuarial(const MathFormattingContext& context,
-			     const AreaRef& base) const
-{
-  return base;
-}
-
-AreaRef
 MathGraphicDevice::enclose(const MathFormattingContext& context,
 			   const AreaRef& base,
 			   const String& notation) const

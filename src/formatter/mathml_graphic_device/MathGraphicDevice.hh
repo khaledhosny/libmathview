@@ -86,10 +86,6 @@ public:
 			    const AreaRef& base,
 			    const AreaRef& underScript, bool accentUnder,
 			    const AreaRef& overScript, bool accent) const;
-  virtual AreaRef longDivision(const MathFormattingContext& context,
-			       const AreaRef& base) const;
-  virtual AreaRef actuarial(const MathFormattingContext& context,
-			    const AreaRef& base) const;
   virtual AreaRef enclose(const MathFormattingContext& context,
 			  const AreaRef& base,
 			  const String& notation) const;
