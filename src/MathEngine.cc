@@ -89,7 +89,9 @@ MathEngine::InitGlobalData(const char* confPath)
   if (dit.More()) {
     while (dit.More()) {
       assert(dit() != NULL);
-      dictionary.Load(dit()->ToStaticC());
+      if (!dictionary.Load(dit()->ToStaticC())) {
+	MathEngine::logger(LOG_WARNING, "could not load `%s'", dit()->ToStaticC());
+      }
       dit.Next();
     }
   } else {
@@ -125,7 +127,9 @@ MathEngine::Init(class DrawingArea* a, class FontManager* fm)
   if (cit.More()) {
     while (cit.More()) {
       assert(cit() != NULL);
-      charMapper->Load(cit()->ToStaticC());
+      if (!charMapper->Load(cit()->ToStaticC())) {
+	MathEngine::logger(LOG_WARNING, "could not load `%s'", cit()->ToStaticC());
+      }
       cit.Next();
     }
   } else {

@@ -8,6 +8,8 @@ Options:
 	[--libs]
 	[--cflags]
 	[--prefix]
+	[--exec-prefix]
+	[--config-path]
 EOF
 	exit $1
 }
@@ -33,7 +35,13 @@ while test $# -gt 0; do
       echo_libs=yes
       ;;
     --prefix)
-      echo $prefix
+      echo_prefix=yes
+      ;;
+    --exec-prefix)
+      echo_exec_prefix=yes
+      ;;
+    --config-path)
+      echo_config_path=yes
       ;;
     *)
       usage 1 1>&2
@@ -50,3 +58,14 @@ if test "$echo_libs" = "yes"; then
     echo -L$libdir -lgtkmathview
 fi      
 
+if test "$echo_prefix" = "yes"; then
+    echo $prefix
+fi
+
+if test "$echo_exec_prefix" = "yes"; then
+    echo $exec_prefix
+fi
+
+if test "$echo_config_path" = "yes"; then
+    echo $pkgincludedir/math-engine-configuration.xml
+fi

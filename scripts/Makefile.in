@@ -64,11 +64,13 @@ CC = @CC@
 CXX = @CXX@
 DLLTOOL = @DLLTOOL@
 HAVE_PFB2PFA = @HAVE_PFB2PFA@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 MATHVIEW_VERSION = @MATHVIEW_VERSION@
 MATHVIEW_VERSION_INFO = @MATHVIEW_VERSION_INFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -92,7 +94,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -210,10 +212,12 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-gtkmathview-config:
+gtkmathview-config: gtkmathview-config.in
 	@echo "#!/bin/sh" >gtkmathview-config
 	@echo >>gtkmathview-config
 	@echo VERSION=\"$(VERSION)\" >>gtkmathview-config
+	@echo prefix=\"$(prefix)\" >>gtkmathview-config
+	@echo exec_prefix=\"$(exec_prefix)\" >>gtkmathview-config
 	@echo libdir=\"$(libdir)\" >>gtkmathview-config
 	@echo pkglibdir=\"$(pkglibdir)\" >>gtkmathview-config
 	@echo includedir=\"$(includedir)\" >>gtkmathview-config

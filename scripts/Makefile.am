@@ -14,10 +14,12 @@ EXTRA_DIST = gtkmathview-config.in $(noinst_SCRIPTS)
 
 CLEANFILES = gtkmathview-config
 
-gtkmathview-config:
+gtkmathview-config: gtkmathview-config.in
 	@echo "#!/bin/sh" >gtkmathview-config
 	@echo >>gtkmathview-config
 	@echo VERSION=\"$(VERSION)\" >>gtkmathview-config
+	@echo prefix=\"$(prefix)\" >>gtkmathview-config
+	@echo exec_prefix=\"$(exec_prefix)\" >>gtkmathview-config
 	@echo libdir=\"$(libdir)\" >>gtkmathview-config
 	@echo pkglibdir=\"$(pkglibdir)\" >>gtkmathview-config
 	@echo includedir=\"$(includedir)\" >>gtkmathview-config

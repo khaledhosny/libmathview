@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#define MATHML2PS_VERSION "0.0.2"
+#define MATHML2PS_VERSION "0.0.3"
 
 #include <assert.h>
 #include <getopt.h>
@@ -51,7 +51,8 @@ enum CommandLineOptionId {
   OPTION_UNIT,
   OPTION_MARGINS,
   OPTION_FONT_SIZE,
-  OPTION_DISABLE_COLORS
+  OPTION_DISABLE_COLORS,
+  OPTION_CONFIG
 };
 
 static char appName[64];
@@ -63,6 +64,7 @@ static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = 10;
 static bool   colors = true;
+static const char* configPath = NULL;
 
 extern void* parseMathMLFile(char*);
 
@@ -88,6 +90,7 @@ Usage: mathml2ps [options] file ...\n\n\
   -m, --margins=<left>x<top>     Left x Top margins\n\
   -f, --font-size=<n>            Default font size (in points, default=10)\n\
   --disable-colors               Disable colors\n\
+  --config=<path>                Configuration file path\n\
   --verbose[=0-3]                Display messages\n\
 ";
 
@@ -187,6 +190,7 @@ main(int argc, char *argv[])
       { "margins",       required_argument, NULL, OPTION_MARGINS },
       { "font-size",     required_argument, NULL, OPTION_FONT_SIZE },
       { "disable-colors",no_argument,       NULL, OPTION_DISABLE_COLORS },
+      { "config",        required_argument, NULL, OPTION_CONFIG },
 
       { NULL,            no_argument, NULL, 0 }
     };
@@ -239,6 +243,10 @@ main(int argc, char *argv[])
       colors = false;
       break;
 
+    case OPTION_CONFIG:
+      configPath = optarg;
+      break;
+
     case '?':
       break;
 
@@ -254,9 +262,7 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_LIBT1
   if (optind < argc) {
-    MathEngine::entitiesTable.LoadInternalTable();
-    MathEngine::dictionary.Load("/usr/local/share/gtkmathview/dictionary.xml");
-    MathEngine::dictionary.Load("config/dictionary.xml");
+    MathEngine::InitGlobalData(configPath);
 
     MathMLParser parser(argv[optind]);
     MathMLDocument* document = parser.Parse();

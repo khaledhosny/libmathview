@@ -64,11 +64,13 @@ CC = @CC@
 CXX = @CXX@
 DLLTOOL = @DLLTOOL@
 HAVE_PFB2PFA = @HAVE_PFB2PFA@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 MATHVIEW_VERSION = @MATHVIEW_VERSION@
 MATHVIEW_VERSION_INFO = @MATHVIEW_VERSION_INFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -161,7 +163,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/AFont.P .deps/AttributeParser.P \
 .deps/AttributeSignature.P .deps/BoundingBox.P .deps/Char.P \
