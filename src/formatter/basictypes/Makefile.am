@@ -23,6 +23,7 @@ noinst_HEADERS = \
   RGBColorAux.hh \
   BoundingBox.hh \
   BoundingBoxAux.hh \
+  Rectangle.hh \
   Value.hh \
   Variant.hh \
   ScopedHashMap.hh \
