@@ -250,12 +250,12 @@ fi
 AC_SUBST(T1_CFLAGS)
 AC_SUBST(T1_LIBS)
 
-if test "(" $t1lib = "no" ")" -a "(" $export_PS = "yes" ")"; then
+if test "(" $t1lib = "no" ")" -a "(" "x$export_PS" = "xyes" ")"; then
 	AC_MSG_WARN(cannot export to PostScript if t1lib is not available)
 	export_PS=no
 fi
 
-if test $export_PS = "auto"; then
+if test "x$export_PS" = "xauto"; then
 	export_PS=yes
 fi
 

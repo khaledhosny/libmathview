@@ -11,7 +11,6 @@ BUGS
 + a box having a step within a paragraph is aligned correctly,
   but the text that follows the box is not. HARD! perhaps we should
   change/remove things like exit entry point?
-- paragraph and other boxes are slightly misaligned
 - units like cm are wrong (can be the dpi?)
 - applying the variant map before shaping is problematic when
   using the PangoShaper because Pango doesn't know about variant
@@ -21,6 +20,12 @@ BUGS
 
 ARCH IMPROVEMENTS
 
++ make the dummy elements have some content (or an attribute)
+  and parameterize their rendering with that content
++ change the clone method for areas so that it checks if the
+  content is unchanged, and possibly implement the replace this
+  way
++ implement auxiliary methods for searching into the area model
 + The BoxML/MathML embedding mechanism is still ad-hoc and works
   only for MathML inside BoxML
 + remove the linker from Element. What is the most sensible
@@ -46,6 +51,7 @@ ARCH IMPROVEMENTS
 
 MISSING
 
++ justification of paragraphs
 + make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
