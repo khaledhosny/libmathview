@@ -294,12 +294,12 @@ if test $export_PS = "auto"; then
 	export_PS=yes
 fi
 
-CFLAGS="$CFLAGS -W -Wall -O0"
-CXXFLAGS="$CXXFLAGS -W -Wall -O0"
+CFLAGS="$CFLAGS -W -Wall"
+CXXFLAGS="$CXXFLAGS -W -Wall"
 
 if test $profile = yes; then
-	CFLAFS="$CFLAGS -p"
-	CXXFLAGS="$CXXFLAGS -p"
+	CFLAFS="$CFLAGS -O0 -pg"
+	CXXFLAGS="$CXXFLAGS -O0 -pg"
 	AC_DEFINE(ENABLE_PROFILE,,[Define to 1 to let the widget collect some information for profiling purposes])
 fi
 
@@ -310,7 +310,6 @@ AC_CONFIG_FILES([
  config/math-engine-configuration.xml
  scripts/Makefile
  src/Makefile
- src/scaled.hh
  src/formatter/Makefile
  src/formatter/basictypes/Makefile
  src/formatter/basictypes/mathvariants/Makefile
