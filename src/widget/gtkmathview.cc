@@ -95,16 +95,7 @@ struct _GtkMathView {
   GdomeElement*  current_elem;
 #endif
 
-//   FontManagerId  font_manager_id;
-//   FontManager*     font_manager;
-//   Gtk_AreaFactory* area_factory;
-//   ShaperManager*   shaper_manager;
-//   Gtk_PangoShaper* shaper_pango;
-//   Gtk_AdobeShaper* shaper_adobe;
-
-  // Gtk_DrawingArea* drawing_area;
-
-  MathMLView* view;
+  MathMLView*    view;
 };
 
 struct _GtkMathViewClass {
@@ -229,42 +220,8 @@ hadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   math_view->top_x = static_cast<int>(adj->value);
   // math_view->drawing_area->SetTopX(px2sp(static_cast<int>(adj->value)));
 
-  if (math_view->old_top_x != math_view->top_x) {
-#if 0
-    gint change = abs(math_view->old_top_x - math_view->top_x));
-    GtkWidget* widget = math_view->area;
-    if (change < widget->allocation.width) {
-      if (math_view->old_top_x < math_view->top_x) {
-	// the window scrolled right
-	gdk_draw_pixmap(math_view->pixmap,
-			widget->style->white_gc,
-			math_view->pixmap,
-			change, 0, 0, 0,
-			widget->allocation.width - change,
-			widget->allocation.height);
-
-	paint_widget_area(math_view,
-			  widget->allocation.width - change, 0,
-			  change, widget->allocation.height);
-      } else {
-	// the window scrolled left
-	gdk_draw_pixmap(math_view->pixmap,
-			widget->style->white_gc,
-			math_view->pixmap,
-			0, 0, change, 0,
-			widget->allocation.width - change,
-			widget->allocation.height);
-
-	paint_widget_area(math_view,
-			  0, 0,
-			  change, widget->allocation.height);
-      }
-      
-      gtk_widget_draw(math_view->area, NULL);
-    } else
-#endif
-      paint_widget(math_view);
-  }
+  if (math_view->old_top_x != math_view->top_x)
+    paint_widget(math_view);
 }
 
 static void
@@ -280,42 +237,8 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   math_view->top_y = static_cast<int>(adj->value);
   // math_view->drawing_area->SetTopY(px2sp(static_cast<int>(adj->value)));
 
-  if (math_view->old_top_y != math_view->top_y) {
-#if 0
-    gint change = abs(math_view->old_top_y - math_view->top_y);
-    GtkWidget* widget = math_view->area;
-    if (change < widget->allocation.height) {
-      if (math_view->old_top_y < math_view->top_y) {
-	// the window scrolled down
-	gdk_draw_pixmap(math_view->pixmap,
-			widget->style->white_gc,
-			math_view->pixmap,
-			0, change, 0, 0,
-			widget->allocation.width,
-			widget->allocation.height - change);
-
-	paint_widget_area(math_view,
-			  0, widget->allocation.height - change,
-			  widget->allocation.width, change);
-      } else {
-	// the window scrolled up
-	gdk_draw_pixmap(math_view->pixmap,
-			widget->style->white_gc,
-			math_view->pixmap,
-			0, 0, 0, change,
-			widget->allocation.width,
-			widget->allocation.height - change);
-
-	paint_widget_area(math_view,
-			  0, 0,
-			  widget->allocation.width, change);
-      }
-
-      gtk_widget_draw(math_view->area, NULL);
-    } else
-#endif
-      paint_widget(math_view);
-  }
+  if (math_view->old_top_y != math_view->top_y)
+    paint_widget(math_view);
 }
 
 extern "C" GType
