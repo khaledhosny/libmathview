@@ -5,10 +5,8 @@
 
 BUGS
 
-* re-implement methods for rectangle/bounding box in gtkmathview
 * make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
-* make vbox resistant when ref is outside the valid range
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
 
