@@ -87,7 +87,7 @@ public:
       }
   }
 
-  const std::vector<T> getContent(void) const { return content; }
+  const std::vector<T>& getContent(void) const { return content; }
 
   template <typename UnaryFunction>
   UnaryFunction for_each(UnaryFunction f) const

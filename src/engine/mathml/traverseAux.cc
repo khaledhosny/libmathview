@@ -182,8 +182,8 @@ findMathMLElement(const SmartPtr<MathMLView>& view, const DOM::Element& node)
     {
       while (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
 	{
-	  if (row->GetSize() != 1) break;
-	  elem = row->GetChild(0);
+	  if (row->getSize() != 1) break;
+	  elem = row->getChild(0);
 	}
       return elem;
     }
@@ -198,8 +198,8 @@ findRightmostChild(const SmartPtr<MathMLElement>& elem)
 {
   if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
     {
-      if (row->GetSize() == 0) return elem;
-      else return findRightmostChild(row->GetChild(row->GetSize() - 1));
+      if (row->getSize() == 0) return elem;
+      else return findRightmostChild(row->getChild(row->getSize() - 1));
     }
   else
     return elem;
@@ -210,8 +210,8 @@ findLeftmostChild(const SmartPtr<MathMLElement>& elem)
 {
   if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
     {
-      if (row->GetSize() == 0) return elem;
-      else return findLeftmostChild(row->GetChild(0));
+      if (row->getSize() == 0) return elem;
+      else return findLeftmostChild(row->getChild(0));
     }
   else
     return elem;
@@ -225,9 +225,9 @@ findRightSibling(const SmartPtr<MathMLElement>& elem)
   else if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent()))
     {
       std::vector< SmartPtr<MathMLElement> >::const_iterator p =
-	std::find(row->GetContent().begin(), row->GetContent().end(), elem);
-      assert(p != row->GetContent().end());
-      if (p + 1 != row->GetContent().end()) return findLeftmostChild(*(p + 1));
+	std::find(row->getContent().begin(), row->getContent().end(), elem);
+      assert(p != row->getContent().end());
+      if (p + 1 != row->getContent().end()) return findLeftmostChild(*(p + 1));
       else return findRightSibling(row);
     }
   else
@@ -242,9 +242,9 @@ findLeftSibling(const SmartPtr<MathMLElement>& elem)
   else if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent()))
     {
       std::vector< SmartPtr<MathMLElement> >::const_iterator p =
-	std::find(row->GetContent().begin(), row->GetContent().end(), elem);
-      assert(p != row->GetContent().end());
-      if (p != row->GetContent().begin()) return findRightmostChild(*(p - 1));
+	std::find(row->getContent().begin(), row->getContent().end(), elem);
+      assert(p != row->getContent().end());
+      if (p != row->getContent().begin()) return findRightmostChild(*(p - 1));
       else return findLeftSibling(row);
     }
   else

@@ -169,7 +169,7 @@ SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt, Shaping
 	if (coreOp->IsFence()) return;
 
       if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(next))
-	if (SmartPtr<MathMLOperatorElement> coreOp = smart_cast<MathMLOperatorElement>(row->GetChild(0)))
+	if (SmartPtr<MathMLOperatorElement> coreOp = smart_cast<MathMLOperatorElement>(row->getChild(0)))
 	  if (coreOp->IsFence()) return;
 
       pushSpace(ctxt, result, 5);

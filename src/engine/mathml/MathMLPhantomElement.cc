@@ -31,32 +31,17 @@
 
 MathMLPhantomElement::MathMLPhantomElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
-{
-}
+{ }
 
 MathMLPhantomElement::~MathMLPhantomElement()
-{
-}
+{ }
 
 bool
 MathMLPhantomElement::IsSpaceLike() const
 {
-  assert(child);
-  return child->IsSpaceLike();
+  assert(getChild());
+  return getChild()->IsSpaceLike();
 }
-
-#if 0
-void
-MathMLPhantomElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      MathMLNormalizingContainerElement::DoLayout(ctxt);
-      DoEmbellishmentLayout(this, box);
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
 
 AreaRef
 MathMLPhantomElement::format(MathFormattingContext& ctxt)
@@ -64,7 +49,7 @@ MathMLPhantomElement::format(MathFormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      AreaRef res = child ? child->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       
       if (res)
 	res = ctxt.getDevice()->wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, ctxt.getDevice()->getFactory()->hide(res)));
@@ -79,29 +64,8 @@ MathMLPhantomElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
-#if 0
-void
-MathMLPhantomElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-  SetEmbellishmentPosition(this, x, y);
-  if (GetChild()) GetChild()->SetPosition(x, y);
-}
-
-void
-MathMLPhantomElement::Render(const DrawingArea&)
-{
-  ResetDirty();
-}
-#endif
-
 SmartPtr<MathMLOperatorElement>
 MathMLPhantomElement::GetCoreOperator()
 {
-  if (GetChild()) return GetChild()->GetCoreOperator();
-  else return 0;
+  return getChild() ? getChild()->GetCoreOperator() : 0;
 }

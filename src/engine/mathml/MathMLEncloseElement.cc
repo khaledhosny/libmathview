@@ -144,8 +144,8 @@ MathMLEncloseElement::format(MathFormattingContext& ctxt)
       ctxt.push(this);
       String notation = ToString(GET_ATTRIBUTE_VALUE(MathML, Enclose, notation));
       AreaRef res;
-      if (child)
-	res = ctxt.getDevice()->enclose(ctxt, child->format(ctxt), notation);
+      if (getChild())
+	res = ctxt.getDevice()->enclose(ctxt, getChild()->format(ctxt), notation);
       else
 	res = 0;
       setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);

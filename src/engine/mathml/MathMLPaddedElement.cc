@@ -229,6 +229,5 @@ MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
 SmartPtr<MathMLOperatorElement>
 MathMLPaddedElement::GetCoreOperator()
 {
-  if (GetChild()) return GetChild()->GetCoreOperator();
-  else return 0;
+  return getChild() ? getChild()->GetCoreOperator() : 0;
 }

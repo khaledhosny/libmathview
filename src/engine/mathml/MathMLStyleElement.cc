@@ -253,8 +253,8 @@ MathMLStyleElement::Render(const DrawingArea& area)
 bool
 MathMLStyleElement::IsSpaceLike() const
 {
-  assert(child);
-  return child->IsSpaceLike();
+  assert(getChild());
+  return getChild()->IsSpaceLike();
 }
 
 void
@@ -266,6 +266,5 @@ MathMLStyleElement::setDirtyAttribute()
 SmartPtr<MathMLOperatorElement>
 MathMLStyleElement::GetCoreOperator()
 {
-  if (GetChild()) return GetChild()->GetCoreOperator();
-  else return 0;
+  return getChild() ? getChild()->GetCoreOperator() : 0;
 }

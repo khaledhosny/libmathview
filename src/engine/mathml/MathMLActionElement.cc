@@ -113,9 +113,9 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
 	  if (action == "toggle")
 	    {
 	      int selection = ToInteger(GET_ATTRIBUTE_VALUE(MathML, Action, selection));
-	      if (selection > 0 && selection < GetSize())
+	      if (selection > 0 && selection < getSize())
 		{
-		  SmartPtr<MathMLElement> elem = GetChild(selection - 1);
+		  SmartPtr<MathMLElement> elem = getChild(selection - 1);
 		  assert(elem);
 		  res = elem->format(ctxt);
 		}
@@ -123,9 +123,9 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
 	  else
 	    {
 	      Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
-	      if (GetSize() > 0)
+	      if (getSize() > 0)
 		{
-		  SmartPtr<MathMLElement> elem = GetChild(0);
+		  SmartPtr<MathMLElement> elem = getChild(0);
 		  assert(elem);
 		  res = elem->format(ctxt);
 		}
@@ -168,15 +168,15 @@ MathMLActionElement::Render(const DrawingArea& area)
 SmartPtr<MathMLElement>
 MathMLActionElement::GetSelectedElement() const
 {
-  return (selection < content.size()) ? content[selection] : SmartPtr<MathMLElement>(0);
+  return (selection < getSize()) ? getChild(selection) : SmartPtr<MathMLElement>(0);
 }
 
 void
 MathMLActionElement::SetSelectedIndex(unsigned i)
 {
-  if (content.size() > 0 && selection != (i - 1) % content.size())
+  if (getSize() > 0 && selection != (i - 1) % getSize())
     {
-      selection = (i - 1) % content.size();
+      selection = (i - 1) % getSize();
       if (SmartPtr<MathMLElement> elem = GetSelectedElement())
 	{
 	  elem->setDirtyLayout();
@@ -191,7 +191,7 @@ MathMLActionElement::SetSelectedIndex(unsigned i)
 unsigned
 MathMLActionElement::GetSelectedIndex() const
 {
-  return (content.size() > 0) ? selection + 1 : 0;
+  return (getSize() > 0) ? selection + 1 : 0;
 }
 
 #if 0

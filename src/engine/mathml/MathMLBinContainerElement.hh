@@ -41,17 +41,8 @@ public:
   SmartPtr<MathMLElement> getChild(void) const { return content.getChild(); }
   void setChild(const SmartPtr<MathMLElement>& child) { content.setChild(this, child); }
 
-  virtual void setFlagDown(Flags f)
-  {
-    MathMLContainerElement::setFlagDown(f);
-    content.setFlagDown(f);
-  }
-
-  virtual void resetFlagDown(Flags)
-  {
-    MathMLContainerElement::resetFlagDown(f);
-    content.resetFlagDown(f);
-  }
+  virtual void setFlagDown(Flags);
+  virtual void resetFlagDown(Flags);
 
 protected:
   BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > content;

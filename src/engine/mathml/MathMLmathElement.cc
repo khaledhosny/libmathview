@@ -78,7 +78,7 @@ MathMLmathElement::format(MathFormattingContext& ctxt)
 	  ctxt.setDisplayStyle(ToTokenId(value) == T_DISPLAY);
 	} 
 
-      AreaRef res = GetChild() ? GetChild()->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       if (res) res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 

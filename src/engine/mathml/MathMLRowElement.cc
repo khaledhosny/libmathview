@@ -39,12 +39,10 @@
 
 MathMLRowElement::MathMLRowElement(const SmartPtr<class MathMLView>& view)
   : MathMLLinearContainerElement(view)
-{
-}
+{ }
 
 MathMLRowElement::~MathMLRowElement()
-{
-}
+{ }
 
 SmartPtr<MathMLRowElement>
 MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
@@ -56,39 +54,6 @@ MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
 #endif
 }
 
-#if 0
-void
-MathMLRowElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      MathMLLinearContainerElement::Setup(env);
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      box.unset();
-      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
-	   elem != content.end();
-	   elem++)
-	if (*elem)
-	  {
-	    (*elem)->DoLayout(ctxt);
-	    box.append((*elem)->GetBoundingBox());
-	  }
-
-      DoStretchyLayout();
-      DoEmbellishmentLayout(this, box);
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
-
 AreaRef
 MathMLRowElement::format(MathFormattingContext& ctxt)
 {
@@ -98,9 +63,9 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 
       bool stretchy = false;
       std::vector< SmartPtr<MathMLOperatorElement> > erow;
-      erow.reserve(content.size());
+      erow.reserve(getSize());
       std::vector<AreaRef> row;
-      row.reserve(content.size());
+      row.reserve(getSize());
       for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
@@ -128,8 +93,8 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 	      {
 		const int i = op - erow.begin();
 		ctxt.setStretchOperator(*op);
-		content[i]->setDirtyLayout();
-		row[i] = content[i]->format(ctxt);
+		getChild(i)->setDirtyLayout();
+		row[i] = getChild(i)->format(ctxt);
 	      }
 	  ctxt.setStretchOperator(0);
 
@@ -184,25 +149,6 @@ MathMLRowElement::DoStretchyLayout()
 	    (*elem)->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, 0));
 	  }
     }
-}
-
-void
-MathMLRowElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-  SetEmbellishmentPosition(this, x, y);
-  for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    if (*elem)
-      {
-	(*elem)->SetPosition(x, y);
-	x += (*elem)->GetBoundingBox().width;
-      }
 }
 #endif
 

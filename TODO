@@ -8,6 +8,7 @@
 * implement AreaCanvas
 * implement PS area model
 * implement MGD for TeX fonts
+* implement shaper for TeX fonts
 * implement shaper for Mathematica fonts
 * make debugging methods in Areas optional (or remove them)
 * runtime selection of backend
@@ -19,7 +20,6 @@
 * re-implement methods for rectangle/bounding box in gtkmathview
 * implement support for stretchy operators
 * fix Configuration/Globals files 
-* implement square root
 * add space in munderover between base and script
 * implement embedding mechanism from MathML (semantics?)
 * generalize embedding mechanism from BoxML (now MathML only)

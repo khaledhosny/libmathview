@@ -57,18 +57,18 @@ MathMLNormalizingContainerElement::construct()
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 	  SmartPtr<MathMLElement> elem = getFormattingNode(node);
 	  assert(elem);
-	  SetChild(elem);
+	  setChild(elem);
 	}
       else 
 	{
 	  SmartPtr<MathMLRowElement> row;
-	  if (GetChild() && is_a<MathMLRowElement>(GetChild()) && !GetChild()->getDOMElement())
+	  if (getChild() && is_a<MathMLRowElement>(getChild()) && !getChild()->getDOMElement())
 	    // this must be an inferred mrow
-	    row = smart_cast<MathMLRowElement>(GetChild());
+	    row = smart_cast<MathMLRowElement>(getChild());
 	  else
 	    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
 	  assert(row && !row->getDOMElement());
-	  SetChild(row);
+	  setChild(row);
 
 	  std::vector< SmartPtr<MathMLElement> > newContent;
 	  newContent.reserve(n);
@@ -79,36 +79,18 @@ MathMLNormalizingContainerElement::construct()
 	      newContent.push_back(elem);
 	    }
 
-	  row->SwapChildren(newContent);
+	  row->swapContent(newContent);
 	}
 #else
-      if (!GetChild()) SetChild(MathMLRowElement::create());
+      if (!getChild()) setChild(MathMLRowElement::create());
 #endif
 
-      assert(GetChild());
-      GetChild()->construct();
+      assert(getChild());
+      getChild()->construct();
 
       resetDirtyStructure();
     }
 }
-
-#if 0
-void
-MathMLNormalizingContainerElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      if (child)
-	{
-	  child->DoLayout(ctxt);
-	  box = child->GetBoundingBox();
-	}
-      else
-	box.unset();
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
 
 AreaRef
 MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
@@ -116,7 +98,7 @@ MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      AreaRef res = child ? child->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       if (res) res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
       ctxt.pop();
@@ -126,19 +108,6 @@ MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
-#if 0
-void
-MathMLNormalizingContainerElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      RenderBackground(area);
-      if (child) child->Render(area);
-      ResetDirty();
-    }
-}
-#endif
-
 void
 MathMLNormalizingContainerElement::setDirtyStructure()
 {
@@ -146,6 +115,6 @@ MathMLNormalizingContainerElement::setDirtyStructure()
   // if the structure of this element gets dirty, and there is
   // an inferred mrow, then the mrow itself has a dirty strcuture,
   // even if it has no corresponding DOM element
-  if (child && !child->getDOMElement() && is_a<MathMLRowElement>(child))
-    child->setDirtyStructure();
+  if (getChild() && !getChild()->getDOMElement() && is_a<MathMLRowElement>(getChild()))
+    getChild()->setDirtyStructure();
 }

@@ -70,12 +70,12 @@ MathMLFractionElement::construct()
 
 	  if (n > 0)
 	    setNumerator(getFormattingNode(children.item(0)));
-	  else if (!numerator || !is_a<MathMLDummyElement>(numerator))
+	  else if (!getNumerator() || !is_a<MathMLDummyElement>(getNumerator()))
 	    setNumerator(getFactory()->createDummyElement(getView()));
 
 	  if (n > 1)
 	    setDenominator(getFormattingNode(children.item(1)));
-	  else if (!denominator || !is_a<MathMLDummyElement>(denominator))
+	  else if (!getDenominator() || !is_a<MathMLDummyElement>(getDenominator()))
 	    setDenominator(getFactory()->createDummyElement(getView()));
 	}
 #endif
@@ -201,6 +201,5 @@ MathMLFractionElement::resetFlagDown(Flags f)
 SmartPtr<MathMLOperatorElement>
 MathMLFractionElement::GetCoreOperator()
 {
-  if (numerator) return numerator->GetCoreOperator();
-  else return 0;
+  return getNumerator() ? getNumerator()->GetCoreOperator() : 0;
 }

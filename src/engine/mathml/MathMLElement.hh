@@ -31,6 +31,8 @@
 #include "SmartPtr.hh"
 #include "token.hh"
 
+#include "Element.hh"
+
 // MathMLElement: base class for every MathML Element
 class MathMLElement : public MathMLFrame
 {

@@ -49,12 +49,12 @@ public:
 
   SmartPtr<MathMLElement> getNumerator(void) const { return numerator.getChild(); }
   SmartPtr<MathMLElement> getDenominator(void) const { return denominator.getChild(); }
-  void getNumerator(const SmartPtr<MathMLElement>& child) { numerator.setChild(this, child); }
-  void getDenominator(const SmartPtr<MathMLElement>&) { denominator.setChild(this, child); }
+  void setNumerator(const SmartPtr<MathMLElement>& child) { numerator.setChild(this, child); }
+  void setDenominator(const SmartPtr<MathMLElement>& child) { denominator.setChild(this, child); }
 
 private:
-  BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > numerator;
-  BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > denominator;
+  BinContainerTemplate<MathMLFractionElement, SmartPtr<MathMLElement> > numerator;
+  BinContainerTemplate<MathMLFractionElement, SmartPtr<MathMLElement> > denominator;
 };
 
 #endif // __MathMLFractionElement_hh__

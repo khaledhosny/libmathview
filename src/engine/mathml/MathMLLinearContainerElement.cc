@@ -83,7 +83,7 @@ MathMLLinearContainerElement::construct()
 		  // elements only
 		}
 	    }
-	  content.swapContent(newContent);
+	  swapContent(newContent);
 	}
 #endif // HAVE_GMETADOM
       

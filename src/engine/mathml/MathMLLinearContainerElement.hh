@@ -45,6 +45,8 @@ public:
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
 
+  void swapContent(std::vector<SmartPtr<MathMLElement> >& newContent) { content.swapContent(this, newContent); }
+
   // the content can be accessed directly, but only in a read-only
   // way, because other operation involves SetParent and other
   // memory-management issues
@@ -53,6 +55,7 @@ public:
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
 
+protected:
   LinearContainerTemplate<MathMLLinearContainerElement, SmartPtr<MathMLElement> > content;
 };
 

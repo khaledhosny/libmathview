@@ -64,7 +64,7 @@ MathMLErrorElement::format(MathFormattingContext& ctxt)
       ctxt.push(this);
       if (ctxt.getColor() == RGBColor::RED()) ctxt.setColor(RGBColor::BLUE());
       else ctxt.setColor(RGBColor::RED());
-      AreaRef res = child ? child->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
       ctxt.pop();
       resetDirtyLayout();

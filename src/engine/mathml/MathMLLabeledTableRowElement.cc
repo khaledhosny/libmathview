@@ -57,15 +57,15 @@ MathMLLabeledTableRowElement::construct()
 	    {
 	      SmartPtr<MathMLElement> elem = getFormattingNode(children.item(0));
 	      assert(elem);
-	      SetLabel(elem);
+	      setLabel(elem);
 	    }
-	  else if (!is_a<MathMLDummyElement>(label))
-	    SetLabel(0);
+	  else if (!is_a<MathMLDummyElement>(getLabel()))
+	    setLabel(0);
 	}
 #endif // HAVE_GMETADOM
 
-      if (!label) SetLabel(getFactory()->createDummyElement(getView()));
-      label->construct();
+      if (!getLabel()) setLabel(getFactory()->createDummyElement(getView()));
+      getLabel()->construct();
 
       resetDirtyStructure();
     }

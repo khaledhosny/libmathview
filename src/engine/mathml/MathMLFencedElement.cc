@@ -72,17 +72,17 @@ MathMLFencedElement::construct()
 #endif // HAVE_GMETADOM
 
       SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
-      outerRow->Append(getFactory()->createOperatorElement(getView()));
-      if (content.size() == 1) outerRow->Append(content[0]);
+      outerRow->appendChild(getFactory()->createOperatorElement(getView()));
+      if (content.size() == 1) outerRow->appendChild(content[0]);
       else if (content.size() > 1)
 	{
 	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
-	  innerRow->SwapChildren(content);
-	  outerRow->Append(innerRow);
+	  innerRow->swapContent(content);
+	  outerRow->appendChild(innerRow);
 	}
-      outerRow->Append(getFactory()->createOperatorElement(getView()));
+      outerRow->appendChild(getFactory()->createOperatorElement(getView()));
 
-      SetChild(outerRow);
+      setChild(outerRow);
       outerRow->construct();
 
       resetDirtyStructure();
@@ -102,10 +102,10 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
       String closeFence = ToString(GET_ATTRIBUTE_VALUE(MathML, Fenced, close));
       String separators = ToString(GET_ATTRIBUTE_VALUE(MathML, Fenced, separators));
 
-      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(GetChild());
+      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(getChild());
       assert(outerRow);
 
-      SmartPtr<MathMLOperatorElement> open = smart_cast<MathMLOperatorElement>(outerRow->GetChild(0));
+      SmartPtr<MathMLOperatorElement> open = smart_cast<MathMLOperatorElement>(outerRow->getChild(0));
       assert(open);
       open->SetSize(0);
       open->Append(openFence);
@@ -113,15 +113,15 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
 
       if (nArgs > 1)
 	{
-	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(outerRow->GetChild(1));
+	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(outerRow->getChild(1));
 	  assert(innerRow && !innerRow->getDOMElement());
 	  for (unsigned i = 0; i < nArgs - 1; i++)
 	    {
 	      if (separators.empty())
-		innerRow->SetChild(i * 2 + 1, 0);
+		innerRow->setChild(i * 2 + 1, 0);
 	      else
 		{
-		  SmartPtr<MathMLOperatorElement> sep = smart_cast<MathMLOperatorElement>(innerRow->GetChild(i * 2 + 1));
+		  SmartPtr<MathMLOperatorElement> sep = smart_cast<MathMLOperatorElement>(innerRow->getChild(i * 2 + 1));
 		  unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
 		  sep->SetSize(0);
 		  sep->Append(separators.substr(offset, 1));
@@ -130,7 +130,7 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
 	    }
 	}
 
-      SmartPtr<MathMLOperatorElement> close = smart_cast<MathMLOperatorElement>(outerRow->GetChild((nArgs > 0) ? 2 : 1));
+      SmartPtr<MathMLOperatorElement> close = smart_cast<MathMLOperatorElement>(outerRow->getChild((nArgs > 0) ? 2 : 1));
       assert(close);
       close->SetSize(0);
       close->Append(closeFence);

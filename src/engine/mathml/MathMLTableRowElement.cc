@@ -67,7 +67,7 @@ MathMLTableRowElement::construct()
 	      assert(elem);
 	      newContent.push_back(elem);
 	    }
-	  SwapChildren(newContent);
+	  swapContent(newContent);
 	}
 #endif
       

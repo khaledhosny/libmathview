@@ -84,3 +84,17 @@ MathMLBinContainerElement::format(MathFormattingContext& ctxt)
 
   return getArea();
 }
+
+void
+MathMLBinContainerElement::setFlagDown(Flags f)
+{
+  MathMLContainerElement::setFlagDown(f);
+  content.setFlagDown(f);
+}
+
+void
+MathMLBinContainerElement::resetFlagDown(Flags f)
+{
+    MathMLContainerElement::resetFlagDown(f);
+    content.resetFlagDown(f);
+}

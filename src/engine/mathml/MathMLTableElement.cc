@@ -87,12 +87,12 @@ MathMLTableElement::construct()
 		  // ISSUE WARNING
 		}
 	    }
-	  SwapChildren(newContent);
+	  swapContent(newContent);
 	}
 #endif // HAVE_GMETADOM
 
-      if (content.size() == 0)
-	Append(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement(getView())));
+      if (getSize() == 0)
+	appendChild(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement(getView())));
 
       std::for_each(content.begin(), content.end(), ConstructAdaptor());
 

@@ -73,7 +73,7 @@ MathMLSemanticsElement::construct()
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
-	    SetChild(e);
+	    setChild(e);
 	  else
 	    {
 	      ChildList children(getDOMElement(), MATHML_NS_URI, "annotation-xml");
@@ -85,52 +85,26 @@ MathMLSemanticsElement::construct()
 		    {
 		      ChildList children(elem, MATHML_NS_URI, "*");
 		      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
-			SetChild(e);
-		      else if (!is_a<MathMLDummyElement>(GetChild()))
-			SetChild(getFactory()->createDummyElement(getView()));
+			setChild(e);
+		      else if (!is_a<MathMLDummyElement>(getChild()))
+			setChild(getFactory()->createDummyElement(getView()));
 		      break;
 		    }
 		}
-	      if (!is_a<MathMLDummyElement>(GetChild()))
-		SetChild(getFactory()->createDummyElement(getView()));
+	      if (!is_a<MathMLDummyElement>(getChild()))
+		setChild(getFactory()->createDummyElement(getView()));
 	    }
 	}
 #endif
 
-      if (GetChild()) GetChild()->construct();
+      if (getChild()) getChild()->construct();
 
       resetDirtyStructure();
     }
 }
 
-#if 0
-void
-MathMLSemanticsElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      MathMLBinContainerElement::DoLayout(ctxt);
-      DoEmbellishmentLayout(this, box);
-      resetDirtyLayout(ctxt);
-    }
-}
-
-void
-MathMLSemanticsElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-  SetEmbellishmentPosition(this, x, y);
-  if (GetChild()) GetChild()->SetPosition(x, y);
-}
-#endif
-
 SmartPtr<MathMLOperatorElement>
 MathMLSemanticsElement::GetCoreOperator()
 {
-  if (GetChild()) return GetChild()->GetCoreOperator();
-  else return 0;
+  return getChild() ? getChild()->GetCoreOperator() : 0;
 }
