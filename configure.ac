@@ -29,7 +29,7 @@ AC_ARG_ENABLE(
 	debug,
 	[  --enable-debug[=ARG]    include debugging debug [default=yes]],
 	enable_debug=$enableval,
-	enable_debug=yes
+	enable_debug=no
 )
 
 AC_ARG_ENABLE(
