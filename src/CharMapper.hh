@@ -23,7 +23,12 @@
 #ifndef CharMapper_hh
 #define CharMapper_hh
 
+#if defined(HAVE_MINIDOM)
 #include "minidom.h"
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "CharMap.hh"
 #include "FontAttributes.hh"
 
@@ -32,7 +37,8 @@
 #define CHAR_MAP_HASH_MASK       (CHAR_MAP_HASH_TABLE_SIZE - 1)
 #define CHAR_HASH(ch)            ((ch) & CHAR_MAP_HASH_MASK)
 
-class CharMapper {
+class CharMapper
+{
 public:
   CharMapper(class FontManager&);
   ~CharMapper();
@@ -68,6 +74,7 @@ private:
 
   bool FontifyCharAux(FontifiedChar&, const FontAttributes&, Char, bool = false) const;
 
+#if defined(HAVE_MINIDOM)
   void ParseFontConfiguration(mDOMNodeRef);
   void ParseFont(mDOMNodeRef);
   void ParseMap(mDOMNodeRef);
@@ -77,6 +84,17 @@ private:
   void ParseStretchy(mDOMNodeRef, FontMap*);
   void ParseStretchySimple(mDOMNodeRef, CharMap*);
   void ParseStretchyCompound(mDOMNodeRef, CharMap*);
+#elif defined(HAVE_GMETADOM)
+  void ParseFontConfiguration(const GMetaDOM::Element&);
+  void ParseFont(const GMetaDOM::Element&);
+  void ParseMap(const GMetaDOM::Element&);
+  void ParseRange(const GMetaDOM::Element&, FontMap*);
+  void ParseMulti(const GMetaDOM::Element&, FontMap*);
+  void ParseSingle(const GMetaDOM::Element&, FontMap*);
+  void ParseStretchy(const GMetaDOM::Element&, FontMap*);
+  void ParseStretchySimple(const GMetaDOM::Element&, CharMap*);
+  void ParseStretchyCompound(const GMetaDOM::Element&, CharMap*);
+#endif // HAVE_GMETADOM
 
   void PatchConfiguration(void);
   const FontMap* SearchMapping(const char*) const;

@@ -31,20 +31,33 @@
 #include <wchar.h>
 #endif
 
+#if defined(HAVE_MINIDOM)
+#include "minidom.h"
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "String.hh"
 #include "MathML.hh"
-#include "minidom.h"
 #include "stringAux.hh"
 #include "MathMLizer.hh"
 #include "MathEngine.hh"
 #include "StringUnicode.hh"
 #include "MathMLParseFile.hh"
 
+#if defined(HAVE_MINIDOM)
 MathMLizer::MathMLizer(mDOMDocRef d)
 {
   assert(d != NULL);
   doc = d;
 }
+#elif defined(HAVE_GMETADOM)
+MathMLizer::MathMLizer(GMetaDOM::Document& d)
+{
+  assert(d != 0);
+  doc = d;
+}
+#endif // HAVE_GMETADOM
 
 MathMLizer::~MathMLizer()
 {
@@ -54,7 +67,11 @@ MathMLDocument*
 MathMLizer::operator() ()
 {
   MathMLDocument* document = new MathMLDocument(doc);
+#if defined(HAVE_MINIDOM)
   MathMLizeNode(mdom_doc_get_root_node(doc), document);
+#elif defined(HAVE_GMETADOM)
+  MathMLizeNode(doc.get_documentElement(), document);
+#endif
   return document;
 }
 
@@ -62,9 +79,15 @@ MathMLizer::operator() ()
 // node -> source node in the DOM tree
 // parent -> parent (parsed) node
 void
+#if defined(HAVE_MINIDOM)
 MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
+#elif defined(HAVE_GMETADOM)
+MathMLizer::MathMLizeNode(GMetaDOM::Node& node, MathMLContainerElement* parent)
+#endif
 {
+#if defined(HAVE_MINIDOM)
   assert(node != NULL);
+#endif
   assert(parent != NULL);
 
   // TODO: namespaces
@@ -73,6 +96,7 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
   //  return;
   //}
 
+#if defined(HAVE_MINIDOM)
   if (!mdom_node_is_element(node)) {
     MathEngine::logger(LOG_WARNING, "skipping unrecognized node (type %d)\n", mdom_node_get_type(node));
     return;
@@ -80,6 +104,17 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
 
   TagId tag = TagIdOfName(C_CONST_STRING(mdom_node_get_name(node)));
   MathMLElement* elem = NULL;
+#elif defined(HAVE_GMETADOM)
+  if (node.get_nodeType() != GMetaDOM::Node::ELEMENT_NODE) {
+    MathEngine::logger(LOG_WARNING, "skipping unrecognized node (type %d)\n", node.get_nodeType());
+    return;
+  }
+
+  char* s_tag = node.get_nodeName().c_str();
+  TagId tag = TagIdOfName(s_tag);
+  g_free(s_tag);
+  MathMLElement* elem = NULL;
+#endif // HAVE_GMETADOM
 
   switch (tag) {
   case TAG_MATH:
@@ -196,19 +231,30 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
   else if (elem->IsToken()) MathMLizeTokenContent(node, TO_TOKEN(elem));
 }
 
+#if defined(HAVE_MINIDOM)
 void
 MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* parent)
 {
   assert(node != NULL);
   assert(parent != NULL);
 
-  mDOMNodeRef p = mdom_node_get_first_child(node);
-  while (p != NULL) {
+  for (mDOMNodeRef p = mdom_node_get_first_child(node);
+       p != NULL;
+       p = mdom_node_get_next_sibling(p)) {
     if (mdom_node_is_text(p)) {
       mDOMStringRef content = mdom_node_get_content(p);
       String* text = allocString(content);
       assert(text != NULL);
       mdom_string_free(content);
+#elif defined(HAVE_GMETADOM)
+  assert(parent != NULL);
+
+  for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
+    if (p.get_nodeType() == GMetaDOM::Node::TEXT_NODE) {
+      GMetaDOM::DOMString content = p.get_nodeValue();
+      String* text = allocString(content);
+      assert(text != NULL);
+#endif // HAVE_GMETADOM
 
       text->CollapseSpaces();
       text->TrimSpacesLeft();
@@ -221,8 +267,6 @@ MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* 
       delete text;
     } else
       MathMLizeNode(p, parent);
-
-    p = mdom_node_get_next_sibling(p);
   }
 }
 
@@ -232,8 +276,9 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
   assert(parent != NULL);
 
   String* sContent = NULL;
-  mDOMNodeRef p = mdom_node_get_first_child(node);
-  while (p != NULL) {
+  for (mDOMNodeRef p = mdom_node_get_first_child(node);
+       p != NULL;
+       p = mdom_node_get_next_sibling(p)) {
     if (mdom_node_is_text(p)) {
       // ok, we have a chunk of text
       mDOMStringRef content = mdom_node_get_content(p);
@@ -316,8 +361,6 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
 	break;
       }
     }
-
-    p = mdom_node_get_next_sibling(p);
   }
   
   if (sContent != NULL) {

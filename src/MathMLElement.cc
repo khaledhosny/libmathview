@@ -43,10 +43,18 @@ int MathMLElement::counter = 0;
 // It implements the basic skeleton of every such element, moreover it handles
 // the attributes and provides some facility functions to access and parse
 // attributes.
+#if defined(HAVE_MINIDOM)
 MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
+#elif defined(HAVE_GMETADOM)
+MathMLElement::MathMLElement(GMetaDOM::Element n, TagId t)
 {
   node = n;
+
+#if defined(HAVE_MINIDOM)
   if (node != NULL) mdom_node_set_user_data(node, this);
+#elif defined(HAVE_GMETADOM)
+  if (node != 0) node.setUserData(0);
+#endif
 
   tag  = t;
 
@@ -64,7 +72,11 @@ MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
 MathMLElement::~MathMLElement()
 {
   //MathEngine::logger(LOG_DEBUG, "destroying `%s' (DOM %p)", NameOfTagId(IsA()), node);
+#if defined(HAVE_MINIDOM)
   if (node != NULL) mdom_node_set_user_data(node, NULL);
+#elif defined(HAVE_GMETADOM)
+  if (node != 0) node.setUserData(0);
+#endif
 
   delete layout;
   delete shape;
@@ -137,14 +149,20 @@ MathMLElement::GetAttribute(AttributeId id,
   // if this element is not connected with a DOM element
   // then it cannot have attributes. This may happen for
   // elements inferred with normalization
+#if defined(HAVE_MINIDOM)
   if (node != NULL) {
-    mDOMStringRef value = mdom_node_get_attribute(node,
-						  DOM_CONST_STRING(NameOfAttributeId(id)));
+    mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
     if (value != NULL) {
       sValue = allocString(value);
       mdom_string_free(value);
     }
   }
+#elif defined(HAVE_GMETADOM)
+  if (node != 0) {
+    GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
+    if (!value.isEmpty()) sValue = allocString(value);
+  }
+#endif // HAVE_GMETADOM
 
   if (sValue == NULL && env != NULL) {
     const MathMLAttribute* attr = env->GetAttribute(id);
@@ -168,6 +186,7 @@ MathMLElement::GetAttributeValue(AttributeId id,
 
   const String* sValue = NULL;
 
+#if defined(HAVE_MINIDOM)
   if (node != NULL) {
     mDOMStringRef value = mdom_node_get_attribute(node,
 						  DOM_CONST_STRING(NameOfAttributeId(id)));
@@ -176,6 +195,12 @@ MathMLElement::GetAttributeValue(AttributeId id,
       mdom_string_free(value);
     }
   }
+#elif defined(HAVE_GMETADOM)
+  if (node != 0) {
+    mDOMStringRef value = node.getAttribute(NameOfAttributeId(id));
+    if (!value.isEmpty()) sValue = allocString(value);
+  }
+#endif // HAVE_GMETADOM
 
   if (sValue != NULL) {
     AttributeParser parser = aSignature->GetParser();
@@ -237,6 +262,7 @@ MathMLElement::Resolve(const Value* value,
 bool
 MathMLElement::IsSet(AttributeId id) const
 {
+#if defined(HAVE_MINIDOM)
   if (node == NULL) return false;
 
   mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
@@ -247,6 +273,10 @@ MathMLElement::IsSet(AttributeId id) const
   }
 
   return false;
+#elif defined(HAVE_GMETADOM)
+  if (node == 0) return false;
+  return node.hasAttribute(NameOfAttributeId(id));
+#endif // HAVE_GMETADOM
 }
 
 void
@@ -513,10 +543,18 @@ MathMLElement::ReleaseGCs()
 bool
 MathMLElement::HasLink() const
 {
+#if defined(HAVE_MINIDOM)
   mDOMNodeRef p = GetDOMNode();
 
   while (p != NULL && !mdom_node_has_attribute(p, DOM_CONST_STRING("href")))
     p = mdom_node_get_parent(p);
 
   return p != NULL;
+#elif defined(HAVE_GMETADOM)
+  GMetaDOM::Element p = GetDOMNode();
+
+  while (p != 0 && !p.hasAttribute("href")) p = p.get_parentNode();
+
+  return p != 0;
+#endif // HAVE_GMETADOM
 }

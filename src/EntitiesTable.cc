@@ -21,6 +21,9 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#if defined(HAVE MINIDOM)
+
 #include <assert.h>
 #include <stdio.h>
 
@@ -123,3 +126,5 @@ EntitiesTable::GetErrorEntityContent() const
 {
   return GetEntityContent(XML_ERROR_ENTITY);
 }
+
+#endif // HAVE_MINIDOM
