@@ -63,18 +63,17 @@ Gtk_PangoLayoutArea::rightEdge() const
 void
 Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  printf("passo di qui %p\n", &c);
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
-  printf("before %p %d %d\n",
-	 &context,
-	 Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
-	 Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()));
+//   printf("before %p %d %d %d %d\n",
+// 	 &context,
+// 	 x.getValue(), context.getXOrigin().getValue(),
+// 	 Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
+// 	 Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()));
   gdk_draw_layout(context.getDrawable(),
 		  context.getGC(),
 		  Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
 		  Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()),
 		  layout);
-  printf("after!\n");
 }
 
 DOM::Element

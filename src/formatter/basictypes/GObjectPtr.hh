@@ -29,7 +29,7 @@ class GObjectPtr
 public:
   GObjectPtr(P* p = 0) : ptr(p) { }
   GObjectPtr(const GObjectPtr& p) : ptr(p.ptr) { if (ptr) g_object_ref(ptr); }
-  ~GObjectPtr() { if (ptr) g_object_unref(ptr); }
+  ~GObjectPtr() { /*if (ptr) g_object_unref(ptr);*/ }
 
   GObjectPtr& operator=(const GObjectPtr& p)
   { 

@@ -66,7 +66,6 @@ GUISOURCES = \
 libgtkmathview_la_SOURCES = \
   AttributeParser.cc \
   AttributeSignature.cc \
-  BoundingBox.cc \
   Char.cc \
   Clock.cc \
   Configuration.cc \
@@ -167,7 +166,6 @@ noinst_HEADERS = \
   Adaptors.hh \
   AttributeParser.hh \
   AttributeSignature.hh \
-  BoundingBox.hh \
   Char.hh \
   CharMap.hh \
   CharMapper.hh \

@@ -56,6 +56,7 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLIdentifierElement.hh"
 #include "FormattingContext.hh"
+#include "BoundingBoxAux.hh"
 
 // TEMPORARY TRIMMING ROUTINES
 

@@ -53,7 +53,7 @@ Gtk_PangoShaper::shape(ShapingResult& result) const
   glong length;
   gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
   assert(buffer);
-  assert((glong) n == length);
+  //assert((glong) n == length);
   delete [] uni_buffer;
 
   // FIXME: I bet there are some leaks here, but using GObjectPtr just
@@ -75,7 +75,7 @@ Gtk_PangoShaper::shape(ShapingResult& result) const
   //g_free(buffer);
   // g_free(sizeAttr); // ????
 
-  result.advance(length);
+  result.advance(n);
 
   return length;
 }
