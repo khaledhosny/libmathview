@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "defs.h"
 
@@ -298,7 +299,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 
   gtk_object_class_add_signals(object_class, &selection_changed_signal, 1);
 
-  MathEngine::InitGlobalData();
+  MathEngine::InitGlobalData(getenv("MATHENGINECONF"));
 }
 
 static void
@@ -364,8 +365,7 @@ gtk_math_view_new(GtkAdjustment* hadj, GtkAdjustment* vadj)
 
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
-
-  math_view->interface = new MathEngine;
+  math_view->interface = new MathEngine();
 
   gtk_math_view_set_font_manager_type(math_view, FONT_MANAGER_GTK);
 
@@ -1026,8 +1026,8 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
   math_view->font_manager_id = id;
 
   GraphicsContextValues values;
-  values.foreground = DEFAULT_FOREGROUND;
-  values.background = DEFAULT_BACKGROUND;
+  values.foreground = MathEngine::configuration.GetForeground();
+  values.background = MathEngine::configuration.GetBackground();
   values.lineStyle  = LINE_STYLE_SOLID;
   values.lineWidth  = px2sp(1);
 
@@ -1037,8 +1037,8 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
     math_view->font_manager = new PS_T1_FontManager;
     math_view->drawing_area = new T1_Gtk_DrawingArea(values, px2sp(5), px2sp(5),
 						     GTK_WIDGET(math_view->area),
-						     DEFAULT_SELECT_FOREGROUND,
-						     DEFAULT_SELECT_BACKGROUND);
+						     MathEngine::configuration.GetSelectForeground(),
+						     MathEngine::configuration.GetSelectBackground());
     math_view->drawing_area->SetPixmap(math_view->pixmap);
     break;
 #else
@@ -1049,8 +1049,8 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
     math_view->font_manager = new Gtk_FontManager;
     math_view->drawing_area = new Gtk_DrawingArea(values, px2sp(5), px2sp(5),
 						  GTK_WIDGET(math_view->area),
-						  DEFAULT_SELECT_FOREGROUND,
-						  DEFAULT_SELECT_BACKGROUND);
+						  MathEngine::configuration.GetSelectForeground(),
+						  MathEngine::configuration.GetSelectBackground());
     math_view->drawing_area->SetPixmap(math_view->pixmap);
     break;
   default:

@@ -22,37 +22,26 @@
 
 #include <config.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "config.dirs"
 
 #include "Clock.hh"
 #include "Parser.hh"
+#include "Iterator.hh"
 #include "MathEngine.hh"
 #include "CharMapper.hh"
+#include "StringUnicode.hh"
 #include "MathMLDocument.hh"
 #include "T1_Gtk_DrawingArea.hh"
 #include "RenderingEnvironment.hh"
 
 EntitiesTable      MathEngine::entitiesTable;
 OperatorDictionary MathEngine::dictionary;
+Configuration      MathEngine::configuration;
 Logger             MathEngine::logger;
 bool               MathEngine::kerning = false;
-
-void
-MathEngine::InitGlobalData()
-{
-  static volatile bool firstTime = true;
-  assert(firstTime);
-
-  bool res;
-
-  //res = entitiesTable.Load("/usr/local/share/gtkmathview/entities-table.xml", false);
-  //if (!res) res = entitiesTable.Load("config/entities-table.xml", true);
-  entitiesTable.LoadInternalTable();
-
-  res = dictionary.Load("/usr/local/share/gtkmathview/dictionary.xml");
-  dictionary.Load("config/dictionary.xml");
-
-  firstTime = false;
-}
 
 MathEngine::MathEngine()
 {
@@ -60,7 +49,7 @@ MathEngine::MathEngine()
   fontManager = NULL;
   charMapper = NULL;
 
-  defaultFontSize = DEFAULT_FONT_SIZE;
+  defaultFontSize = configuration.GetFontSize();
   antiAliasing = false;
   kerning = false;
 
@@ -75,6 +64,52 @@ MathEngine::~MathEngine()
 }
 
 void
+MathEngine::InitGlobalData(const char* confPath)
+{
+  static volatile bool firstTime = true;
+  assert(firstTime);
+
+  bool res = false;
+  if (confPath != NULL) res = configuration.Load(confPath);
+  if (!res) res = configuration.Load("config/math-engine-configuration.xml");
+  if (!res) res = configuration.Load(PKGDATADIR"/math-engine-configuration.xml");
+  if (!res) {
+    logger(LOG_ERROR, "could not find configuration file");
+    exit(-1);
+  }
+
+  // the entities table and the dictionary are static members of MathEngine,
+  // so they have to be configured once only
+  
+  //res = entitiesTable.Load("/usr/local/share/gtkmathview/entities-table.xml", false);
+  //if (!res) res = entitiesTable.Load("config/entities-table.xml", true);
+  entitiesTable.LoadInternalTable();
+  
+  Iterator<String*> dit(configuration.GetDictionaries());
+  if (dit.More()) {
+    while (dit.More()) {
+      assert(dit() != NULL);
+      dictionary.Load(dit()->ToStaticC());
+      dit.Next();
+    }
+  } else {
+    bool res = dictionary.Load("config/dictionary.xml");
+    if (!res) dictionary.Load(PKGDATADIR"/dictionary.xml");
+  }
+
+  if (getenv("T1LIB_CONFIG") == NULL && configuration.GetT1ConfigFiles().GetSize() == 1) {
+    StringC s("T1LIB_CONFIG=");
+    assert(configuration.GetT1ConfigFiles().GetFirst() != NULL);
+    s.Append(*configuration.GetT1ConfigFiles().GetFirst());
+
+    char *cs = strdup(s.ToStaticC());
+    putenv(cs);
+  }
+
+  firstTime = false;
+}
+
+void
 MathEngine::Init(class DrawingArea* a, class FontManager* fm)
 {
   assert(a != NULL);
@@ -85,8 +120,18 @@ MathEngine::Init(class DrawingArea* a, class FontManager* fm)
 
   if (charMapper != NULL) delete charMapper;
   charMapper = new CharMapper(*fm);
-  charMapper->Load("/usr/local/share/gtkmathview/font-configuration.xml");
-  charMapper->Load("config/font-configuration.xml");
+
+  Iterator<String*> cit(configuration.GetFonts());
+  if (cit.More()) {
+    while (cit.More()) {
+      assert(cit() != NULL);
+      charMapper->Load(cit()->ToStaticC());
+      cit.Next();
+    }
+  } else {
+    bool res = charMapper->Load("config/font-configuration.xml");
+    if (!res) charMapper->Load(PKGDATADIR"/font-configuration.xml");
+  }
 }
 
 bool

@@ -76,6 +76,9 @@
 /* Define to compile with t1lib for Type 1 fonts */
 #undef HAVE_LIBT1
 
+/* Define if iconv has a const second argument */
+#undef ICONV_CONST
+
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 

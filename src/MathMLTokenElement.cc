@@ -254,11 +254,12 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
       MathEngine::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
       env->SetColor(ToRGB(value));
     } else
-      if (HasLink()) env->SetColor(DEFAULT_LINK_COLOR);
+      if (HasLink()) env->SetColor(MathEngine::configuration.GetLinkForeground());
   }
 
   value = GetAttributeValue(ATTR_MATHBACKGROUND, NULL, false);
   if (value != NULL) env->SetBackgroundColor(ToRGB(value));
+  else if (HasLink()) env->SetBackgroundColor(MathEngine::configuration.GetLinkBackground());
 
   color      = env->GetColor();
   background = env->GetBackgroundColor();

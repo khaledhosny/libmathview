@@ -79,8 +79,12 @@ String* allocString(mDOMConstStringRef str)
    * pointer any more, so we have to make a duplicate of the string since
    * it can be modified. What's going on?
    */
+#ifdef ICONV_CONST
+  const char* inbuf = s;
+#else // !ICONV_CONST
   char* inbuf = strdup(s);
   char* inbuf0 = inbuf;
+#endif // ICONV_CONST
   char* outbuf = reinterpret_cast<char*>(buffer);
   char* outbuf0 = outbuf;
   size_t nConv = 0;
@@ -129,7 +133,9 @@ String* allocString(mDOMConstStringRef str)
   if (res == NULL) res = new StringC("?");
 
   /* see the note above */
+#ifndef ICONV_CONST
   free(inbuf0);
+#endif // !ICONV_CONST
 
   return res;
 }

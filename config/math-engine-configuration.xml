@@ -25,9 +25,12 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <math-engine-configuration>
-  <data-dir>/usr/local/share/gtkmathview/</data-dir>
+  <dictionary-path>config/dictionary.xml</dictionary-path>
+  <entities-table-path>auto/entities-table.xml</entities-table-path>
+  <font-configuration-path>config/font-configuration.xml</font-configuration-path>
+  <t1-config-file>config/t1.config</t1-config-file>
   <font-size     size="14pt"/>
-  <default-color foreground="black" background="white"/>
-  <link-color    foreground="black" background="#"/>
-  <select-color  foreground="" background=""/>
+  <color         foreground="black" background="white"/>
+  <link-color    foreground="green" background="white"/>
+  <select-color  foreground="white" background="blue"/>
 </math-engine-configuration>

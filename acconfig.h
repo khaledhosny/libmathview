@@ -54,6 +54,9 @@
 /* Define to compile with t1lib for Type 1 fonts */
 #undef HAVE_LIBT1
 
+/* Define if iconv has a const second argument */
+#undef ICONV_CONST
+
 @BOTTOM@
 
 #endif /* config_h */

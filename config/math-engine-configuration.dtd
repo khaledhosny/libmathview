@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="iso8859-1"?>
-<!ELEMENT math-engine-configuration (data-dir|color|font-size|link-color|select-color)>
+<!ELEMENT math-engine-configuration
+  (dictionary-path|font-configuration-path|entities-table-path|
+   t1-config-path|
+   color|font-size|link-color|select-color)*
+>
 
-<!ELEMENT data-dir #PCDATA>
+<!ELEMENT dictionary-path #PCDATA>
+
+<!ELEMENT font-configuration-path #PCDATA>
+
+<!ELEMENT entities-table-path #PCDATA>
+
+<!ELEMENT t1-config-path #PCDATA>
 
 <!ELEMENT font-size EMPTY>
 <!ATTLIST font-size

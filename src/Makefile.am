@@ -49,6 +49,7 @@ libgtkmathview_la_SOURCES = \
   BoundingBox.cc \
   Char.cc \
   Clock.cc \
+  Configuration.cc \
   DocumentElement.cc \
   EntitiesTable.cc \
   FontifiedString.cc \
@@ -140,6 +141,7 @@ noinst_HEADERS = \
   CharMap.hh \
   CharMapper.hh \
   Clock.hh \
+  Configuration.hh \
   Container.hh \
   Container.icc \
   Coords.hh \
@@ -230,3 +232,4 @@ noinst_HEADERS = \
   $(PSHEADERS)
 
 INCLUDES = -I$(srcdir)/../auto/
+

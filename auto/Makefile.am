@@ -2,7 +2,8 @@
 AUTOFILES = \
   attribute.dec attribute.def \
   keyword.dec keyword.def \
-  tag.dec tag.def
+  tag.dec tag.def \
+  config.dirs
 
 EXTRA_DIST = keyword.list stretchy.list entitiesTable.inc $(AUTOFILES)
 
@@ -29,4 +30,7 @@ attribute.dec: keyword.list
 
 attribute.def: keyword.list
 	@$(SCRIPTDIR)/makekeywords def Attribute ATTR attribute.def
+
+config.dirs:
+	echo "#define PKGDATADIR \""$(pkgdatadir)"\"" >config.dirs
 

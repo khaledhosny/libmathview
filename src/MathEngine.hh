@@ -28,6 +28,7 @@
 #include "scaled.hh"
 #include "Logger.hh"
 #include "RGBValue.hh"
+#include "Configuration.hh"
 #include "EntitiesTable.hh"
 #include "OperatorDictionary.hh"
 
@@ -75,10 +76,11 @@ public:
   void        SetKerning(bool);
   static bool GetKerning(void) { return kerning; }
 
-  static void InitGlobalData(void);
+  static void InitGlobalData(const char*);
 
   static EntitiesTable      entitiesTable;
   static OperatorDictionary dictionary;
+  static Configuration      configuration;
   static Logger             logger;
 
 private:

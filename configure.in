@@ -74,6 +74,27 @@ AC_C_CONST
 AC_C_BIGENDIAN
 AC_TYPE_PID_T
 
+dnl Check for iconv with const pointer as second argument
+AC_LANG_C
+AC_LANG_CPLUSPLUS
+AC_MSG_CHECKING(whether iconv has a const argument)
+AC_TRY_COMPILE(
+	[#include <iconv.h>],
+	[
+		const char* inbuf;
+		iconv_t     cd;
+		iconv(cd, &inbuf, 0, 0, 0);
+	],
+	[
+		AC_DEFINE(ICONV_CONST)
+		AC_MSG_RESULT(yes)
+	],
+	[
+		AC_MSG_RESULT(no)
+	]
+)
+AC_LANG_RESTORE
+
 dnl Checks for libraries
 AC_CHECK_LIB(minidom, mdom_node_get_type,
 	[

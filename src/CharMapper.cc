@@ -202,12 +202,12 @@ CharMapper::Load(const char* fileName)
   if (doc == NULL) return false;
 
   mDOMNodeRef root = mdom_doc_get_root_node(doc);
-  if (root == NULL || root->name == NULL) {
+  if (root == NULL || mdom_node_get_name(root) == NULL) {
     mdom_doc_free(doc);
     return false;
   }
 
-  if (mdom_string_eq(root->name, DOM_CONST_STRING("font-configuration")))
+  if (mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("font-configuration")))
     ParseFontConfiguration(root);
   
   mdom_doc_free(doc);
