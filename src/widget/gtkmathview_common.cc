@@ -1387,7 +1387,7 @@ GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-  math_view->view->resetRootElement();
+  math_view->view->unload();
   gtk_math_view_release_document_resources(math_view);
   gtk_math_view_paint(math_view);
 }

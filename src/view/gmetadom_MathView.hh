@@ -37,7 +37,7 @@ protected:
 public:
   static SmartPtr<gmetadom_MathView> create(void) { return new gmetadom_MathView(); }
 
-  void unload(void);
+  virtual void unload(void);
   bool loadURI(const String&);
   bool loadBuffer(const String&);
   bool loadDocument(const GdomeSmartDOM::Document&);

@@ -36,6 +36,7 @@ protected:
   virtual ~View();
 
 public:
+  virtual void unload(void) = 0;
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);
   bool thaw(void);

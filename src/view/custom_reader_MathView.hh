@@ -37,7 +37,7 @@ protected:
 public:
   static SmartPtr<custom_reader_MathView> create(void) { return new custom_reader_MathView(); }
 
-  void unload(void);
+  virtual void unload(void);
   bool loadReader(const c_customXmlReader*, c_customModelUserData);
 
   bool notifyStructureChanged(c_customModelElementId) const;

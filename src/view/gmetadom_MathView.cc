@@ -44,6 +44,9 @@ void
 gmetadom_MathView::unload()
 {
   resetRootElement();
+  currentDoc = DOM::Document();
+  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(getBuilder()))
+    builder->setRootModelElement(DOM::Element());
 }
 
 bool

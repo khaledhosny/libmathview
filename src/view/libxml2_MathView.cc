@@ -48,6 +48,8 @@ libxml2_MathView::unload()
   if (docOwner && currentDoc) xmlFreeDoc(currentDoc);
   currentDoc = 0;
   docOwner = false;
+  if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(getBuilder()))
+    builder->setRootModelElement(0);
 }
 
 bool

@@ -36,7 +36,7 @@ protected:
 public:
   static SmartPtr<libxml2_reader_MathView> create(void) { return new libxml2_reader_MathView(); }
 
-  void unload(void);
+  virtual void unload(void);
   bool loadReader(xmlTextReaderPtr);
 
   bool notifyStructureChanged(void*) const;
