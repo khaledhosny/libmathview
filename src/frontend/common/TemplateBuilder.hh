@@ -248,6 +248,7 @@ protected:
 	    String encoding = Model::getAttribute(e, "encoding");
 	    if (encoding == "MathML-Presentation")
 	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
+#if ENABLE_BOXML
 	    else if (encoding == "BoxML")
 	      {
 		// this element can probably be associated with the model element
@@ -258,6 +259,7 @@ protected:
 		adapter->resetDirtyAttribute();
 		return adapter;
 	      }
+#endif
 	  }
 	iter.next();
       }
@@ -361,9 +363,6 @@ protected:
     construct(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<MathMLElement>&)
     { }
   };
-
-  struct MathMLBoxMLAdapterBuilder : public MathMLElementBuilder
-  { typedef MathMLBoxMLAdapter type; };
 
   struct MathMLBinContainerElementBuilder : public MathMLElementBuilder
   {
@@ -993,6 +992,9 @@ protected:
     construct(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>& elem)
     { }
   };
+
+  struct MathMLBoxMLAdapterBuilder : public MathMLElementBuilder
+  { typedef MathMLBoxMLAdapter type; };
 
   struct BoxMLMathMLAdapterBuilder : public BoxMLElementBuilder
   { typedef BoxMLMathMLAdapter type; };
