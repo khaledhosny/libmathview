@@ -5,4 +5,6 @@ config.cache
 config.log
 config.status
 t1lib.log
-
+libtool
+stamp-h
+Makefile

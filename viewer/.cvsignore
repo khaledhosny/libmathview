@@ -2,3 +2,4 @@
 .libs
 viewer
 viewer.debug
+Makefile
