@@ -81,10 +81,20 @@ MathMLSemanticsElement::construct()
 		{
 		  DOM::Element elem = children.item(i);
 		  assert(elem);
-		  if (elem.getAttribute("encoding") == "MathML-Presentation")
+		  String encoding = elem.getAttribute("encoding");
+		  if (encoding == "MathML-Presentation")
 		    {
 		      ChildList children(elem, MATHML_NS_URI, "*");
-		      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
+		      if (SmartPtr<Element> e = getFormattingNode(children.item(0)))
+			setChild(e);
+		      else if (!is_a<MathMLDummyElement>(getChild()))
+			setChild(getFactory()->createDummyElement(getView()));
+		      break;
+		    }
+		  else if (encoding == "BoxML")
+		    {
+		      ChildList children(elem, BOXML_NS_URI, "*");
+		      if (SmartPtr<Element> e = getFormattingNode(children.item(0)))
 			setChild(e);
 		      else if (!is_a<MathMLDummyElement>(getChild()))
 			setChild(getFactory()->createDummyElement(getView()));
