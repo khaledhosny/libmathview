@@ -20,12 +20,13 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLLinearContainerElement_hh
-#define MathMLLinearContainerElement_hh
+#ifndef __MathMLLinearContainerElement_hh__
+#define __MathMLLinearContainerElement_hh__
 
 #include <vector>
 
 #include "MathMLContainerElement.hh"
+#include "LinearContainerTemplate.hh"
 
 class MathMLLinearContainerElement : public MathMLContainerElement
 {
@@ -34,41 +35,25 @@ protected:
   virtual ~MathMLLinearContainerElement();
 
 public:
-  unsigned     GetSize(void) const { return content.size(); }
-  void         SetSize(unsigned);
-  SmartPtr<MathMLElement> GetChild(unsigned) const;
-  void         SetChild(unsigned, const SmartPtr<MathMLElement>&);
-  virtual void Append(const SmartPtr<MathMLElement>&);
-#if 0
-  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
-#endif
-  void         SwapChildren(std::vector< SmartPtr<MathMLElement> >&);
+  unsigned getSize(void) const { return content.getSize(); }
+  void setSize(unsigned size) { content.setSize(this, size); }
+
+  SmartPtr<MathMLElement> getChild(unsigned i) const { return content.getChild(i); }
+  void setChild(unsigned i, const SmartPtr<MathMLElement>& child) { content.setChild(this, i, child); }
+  void appendChild(const SmartPtr<MathMLElement>& child) { content.appendChild(this, child); }
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-  virtual void ReleaseGCs(void);
-  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
-
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-#endif
 
   // the content can be accessed directly, but only in a read-only
   // way, because other operation involves SetParent and other
   // memory-management issues
-  const std::vector< SmartPtr<MathMLElement> >& GetContent(void) const { return content; }
+  const std::vector< SmartPtr<MathMLElement> >& getContent(void) const { return content.getContent(); }
 
-#if 0
-  virtual void SetDirty(const Rectangle* = 0);
-#endif
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
 
-  std::vector< SmartPtr<MathMLElement> > content;
+  LinearContainerTemplate<MathMLLinearContainerElement, SmartPtr<MathMLElement> > content;
 };
 
-#endif // MathMLLinearContainerElement_hh
+#endif // __MathMLLinearContainerElement_hh__

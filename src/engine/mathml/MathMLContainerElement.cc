@@ -28,6 +28,5 @@
 
 MathMLContainerElement::MathMLContainerElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
-{
-}
+{ }
 

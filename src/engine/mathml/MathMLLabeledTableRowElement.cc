@@ -37,12 +37,10 @@
 
 MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const SmartPtr<MathMLView>& view)
   : MathMLTableRowElement(view)
-{
-}
+{ }
 
 MathMLLabeledTableRowElement::~MathMLLabeledTableRowElement()
-{
-}
+{ }
 
 void
 MathMLLabeledTableRowElement::construct()
@@ -94,29 +92,12 @@ void
 MathMLLabeledTableRowElement::setFlagDown(Flags f)
 {
   MathMLLinearContainerElement::setFlagDown(f);
-  if (label) label->setFlagDown(f);
+  label.setFlagDown(f);
 }
 
 void
 MathMLLabeledTableRowElement::resetFlagDown(Flags f)
 {
   MathMLLinearContainerElement::resetFlagDown(f);
-  if (label) label->resetFlagDown(f);  
-}
-
-SmartPtr<MathMLElement>
-MathMLLabeledTableRowElement::GetLabel(void) const
-{
-  return label;
-}
-
-void
-MathMLLabeledTableRowElement::SetLabel(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != label)
-    {
-      if (elem) elem->setParent(this);
-      label = elem;
-      setDirtyLayout();
-    }
+  label.resetFlagDown(f);
 }

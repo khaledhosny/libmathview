@@ -32,24 +32,10 @@
 
 MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)
-{
-}
+{ }
 
 MathMLBinContainerElement::~MathMLBinContainerElement()
-{
-}
-
-#if 0
-void
-MathMLBinContainerElement::construct(AbstractConstructionContext& ctxt)
-{
-  if (dirtyStructure())
-    {
-      setChild(ctxt.getElement(getChild()));
-      resetDirtyStructure();
-    }
-}
-#endif
+{ }
 
 void
 MathMLBinContainerElement::construct()
@@ -64,11 +50,11 @@ MathMLBinContainerElement::construct()
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 	  SmartPtr<MathMLElement> elem = getFormattingNode(node);
 	  assert(elem);
-	  SetChild(elem);
+	  setChild(elem);
 	}
 #endif // HAVE_GMETADOM
 
-      if (child) child->construct();
+      if (getChild()) getChild()->construct();
       resetDirtyStructure();
     }
 }
@@ -78,40 +64,10 @@ MathMLBinContainerElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      if (child) child->refine(context);
+      if (getChild()) getChild()->refine(context);
       MathMLContainerElement::refine(context);
     }  
 }
-
-#if 0
-void
-MathMLBinContainerElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      background = env.GetBackgroundColor();
-      if (child) child->Setup(env);
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLBinContainerElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      if (child)
-	{
-	  child->DoLayout(ctxt);
-	  box = child->GetBoundingBox();
-	}
-      else
-	box.unset();
-
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
 
 AreaRef
 MathMLBinContainerElement::format(MathFormattingContext& ctxt)
@@ -119,7 +75,7 @@ MathMLBinContainerElement::format(MathFormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      AreaRef res = child ? child->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
       ctxt.pop();
 
@@ -127,116 +83,4 @@ MathMLBinContainerElement::format(MathFormattingContext& ctxt)
     }
 
   return getArea();
-}
-
-#if 0
-void
-MathMLBinContainerElement::SetPosition(const scaled& x, const scaled& y)
-{
-  MathMLContainerElement::SetPosition(x, y);
-  if (child) child->SetPosition(x, y);
-}
-
-void
-MathMLBinContainerElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      RenderBackground(area);
-      if (child) child->Render(area);
-      ResetDirty();
-    }
-}
-
-SmartPtr<MathMLElement>
-MathMLBinContainerElement::Inside(const scaled& x, const scaled& y)
-{
-  if (IsInside(x, y))
-    {
-      if (child)
-	if (SmartPtr<MathMLElement> inside = child->Inside(x, y)) return inside;
-      return this;
-    }
-  else
-    return 0;
-}
-
-void
-MathMLBinContainerElement::SetDirty(const Rectangle* rect)
-{
-//   dirtyBackground =
-//     (GetParent()
-//      && ((GetParent()->IsSelected() != IsSelected())
-// 	 || (GetParent()->GetBackgroundColor() != GetBackgroundColor()))) ? 1 : 0;
-
-  //if (IsDirty() || HasDirtyChildren()) return;
-  if (!rect || GetRectangle().Overlaps(*rect))
-    {
-      SetFlag(FDirty);
-      //SetFlagUp(FDirtyP);
-      if (child) child->SetDirty(rect);
-    }
-}
-
-scaled
-MathMLBinContainerElement::GetLeftEdge() const
-{
-  if (child) return child->GetLeftEdge();
-  else return 0;
-}
-
-scaled
-MathMLBinContainerElement::GetRightEdge() const
-{
-  if (child) return child->GetRightEdge();
-  else return 0;
-}
-
-void
-MathMLBinContainerElement::ReleaseGCs()
-{
-  MathMLElement::ReleaseGCs();
-  if (child) child->ReleaseGCs();
-}
-#endif
-
-#if 0
-void
-MathMLBinContainerElement::Remove(const SmartPtr<MathMLElement>&)
-{
-  assert(0);
-}
-
-void
-MathMLBinContainerElement::Replace(const SmartPtr<MathMLElement>& oldElem,
-				   const SmartPtr<MathMLElement>& newElem)
-{
-  assert(oldElem == child);
-  SetChild(newElem);
-}
-#endif
-
-void
-MathMLBinContainerElement::SetChild(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != child)
-    {
-      child = elem;
-      if (child) child->setParent(this);
-      setDirtyLayout();
-    }
-}
-
-void
-MathMLBinContainerElement::setFlagDown(Flags f)
-{
-  MathMLElement::SetFlag(f);
-  if (child) child->setFlagDown(f);
-}
-
-void
-MathMLBinContainerElement::resetFlagDown(Flags f)
-{
-  MathMLElement::ResetFlag(f);
-  if (child) child->resetFlagDown(f);
 }

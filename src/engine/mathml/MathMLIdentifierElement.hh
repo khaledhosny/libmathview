@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLIdentifierElement_hh
-#define MathMLIdentifierElement_hh
+#ifndef __MathMLIdentifierElement_hh__
+#define __MathMLIdentifierElement_hh__
 
 #include "MathMLTokenElement.hh"
 
@@ -36,4 +36,4 @@ public:
   { return new MathMLIdentifierElement(view); }
 };
 
-#endif // MathMLIdentifierElement_hh
+#endif // __MathMLIdentifierElement_hh__

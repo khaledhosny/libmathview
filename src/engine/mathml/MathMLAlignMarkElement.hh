@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLAlignMarkElement_hh
-#define MathMLAlignMarkElement_hh
+#ifndef __MathMLAlignMarkElement_hh__
+#define __MathMLAlignMarkElement_hh__
 
 #include "token.hh"
 #include "MathMLElement.hh"
@@ -37,15 +37,8 @@ public:
   { return new MathMLAlignMarkElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-#endif
 
   virtual bool IsSpaceLike(void) const;
-#if 0
-  virtual void SetDirty(const Rectangle* = NULL);
-#endif
 
   TokenId GetAlignmentEdge(void) const { return edge; }
 
@@ -53,4 +46,4 @@ protected:
   TokenId edge;
 };
 
-#endif // MathMLAlignMarkElement_hh
+#endif // __MathMLAlignMarkElement_hh__

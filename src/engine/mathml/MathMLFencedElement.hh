@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLFencedElement_hh
-#define MathMLFencedElement_hh
+#ifndef __MathMLFencedElement_hh__
+#define __MathMLFencedElement_hh__
 
 #include "MathMLBinContainerElement.hh"
 
@@ -37,9 +37,6 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-#endif
 
 private:
   bool normalized;
@@ -50,4 +47,4 @@ private:
   unsigned nArgs;
 };
 
-#endif // MathMLFencedElement_hh
+#endif // __MathMLFencedElement_hh__

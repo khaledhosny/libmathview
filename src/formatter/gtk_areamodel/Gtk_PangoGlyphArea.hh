@@ -47,6 +47,7 @@ public:
 private:
   PangoFont* font;
   PangoGlyphString* glyphs;
+  BoundingBox bbox;
 };
 
 #endif // __Gtk_PangoGlyphArea_hh__

@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLAlignGroupElement_hh
-#define MathMLAlignGroupElement_hh
+#ifndef __MathMLAlignGroupElement_hh__
+#define __MathMLAlignGroupElement_hh__
 
 #include "MathMLElement.hh"
 
@@ -34,10 +34,6 @@ protected:
 public:
   static SmartPtr<MathMLAlignGroupElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLAlignGroupElement(view); }
-
-#if 0
-  virtual void DoLayout(const class FormattingContext&);
-#endif
 
   void SetWidth(const scaled&);
   void SetDecimalPoint(const SmartPtr<class MathMLTokenElement>&);
@@ -58,4 +54,4 @@ private:
   SmartPtr<class MathMLTokenElement>     decimalPoint;
 };
 
-#endif // MathMLAlignGroupElement_hh
+#endif // __MathMLAlignGroupElement_hh__

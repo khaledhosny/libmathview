@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLActionElement_hh
-#define MathMLActionElement_hh
+#ifndef __MathMLActionElement_hh__
+#define __MathMLActionElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLLinearContainerElement.hh"
@@ -39,17 +39,7 @@ public:
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const DrawingArea&);
 
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-
-  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
-#endif
   SmartPtr<MathMLElement> GetSelectedElement(void) const;
 
   unsigned GetSelectedIndex(void) const;
@@ -61,4 +51,4 @@ private:
   unsigned selection;
 };
 
-#endif // MathMLActionElement_hh
+#endif // __MathMLActionElement_hh__

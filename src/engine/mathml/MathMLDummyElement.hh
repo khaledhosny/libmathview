@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLDummyElement_hh
-#define MathMLDummyElement_hh
+#ifndef __MathMLDummyElement_hh__
+#define __MathMLDummyElement_hh__
 
 #include "MathMLElement.hh"
 
@@ -36,11 +36,6 @@ public:
   { return new MathMLDummyElement(view); }
 
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-#endif
 };
 
-#endif // MathMLDummyElement_hh
+#endif // __MathMLDummyElement_hh__

@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLErrorElement_hh
-#define MathMLErrorElement_hh
+#ifndef __MathMLErrorElement_hh__
+#define __MathMLErrorElement_hh__
 
 #include "MathMLNormalizingContainerElement.hh"
 
@@ -35,10 +35,7 @@ public:
   static SmartPtr<MathMLErrorElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLErrorElement(view); }
 
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-#endif
   virtual AreaRef format(class MathFormattingContext&);
 };
 
-#endif // MathMLErrorElement_hh
+#endif // __MathMLErrorElement_hh__

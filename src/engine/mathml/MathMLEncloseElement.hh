@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLEncloseElement_hh
-#define MathMLEncloseElement_hh
+#ifndef __MathMLEncloseElement_hh__
+#define __MathMLEncloseElement_hh__
 
 #include "RGBColor.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -39,12 +39,6 @@ public:
   //virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const DrawingArea&);
-#endif
 
 protected:
   void NormalizeRadicalElement(const SmartPtr<class MathMLDocument>&);
@@ -57,4 +51,4 @@ protected:
   RGBColor color;
 };
 
-#endif // MathMLEncloseElement_hh
+#endif // __MathMLEncloseElement_hh__

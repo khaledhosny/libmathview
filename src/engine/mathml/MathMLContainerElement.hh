@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLContainerElement_hh
-#define MathMLContainerElement_hh
+#ifndef __MathMLContainerElement_hh__
+#define __MathMLContainerElement_hh__
 
 #include "MathMLElement.hh"
 
@@ -30,21 +30,6 @@ class MathMLContainerElement : public MathMLElement
 {
 protected:
   MathMLContainerElement(const SmartPtr<class MathMLView>&);
-
-public:
-#if 0
-  virtual void Render(const DrawingArea&) = 0;
-  virtual void ReleaseGCs(void) = 0;
-  virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&) = 0;
-
-  virtual scaled GetLeftEdge(void) const = 0;
-  virtual scaled GetRightEdge(void) const = 0;
-#endif
-
-#if 0
-  virtual void Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&) = 0;
-  void Remove(const SmartPtr<class MathMLElement>& el) { Replace(el, 0); }
-#endif
 };
 
-#endif // MathMLContainerElement_hh
+#endif // __MathMLContainerElement_hh__

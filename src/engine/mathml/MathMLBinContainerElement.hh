@@ -20,10 +20,11 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLBinContainerElement_hh
-#define MathMLBinContainerElement_hh
+#ifndef __MathMLBinContainerElement_hh__
+#define __MathMLBinContainerElement_hh__
 
 #include "MathMLContainerElement.hh"
+#include "BinContainerTemplate.hh"
 
 // base class for every non-empty MathML container element
 class MathMLBinContainerElement : public MathMLContainerElement
@@ -36,33 +37,24 @@ public:
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const DrawingArea&);
-  virtual void ReleaseGCs(void);
-  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 
-  virtual void SetDirty(const Rectangle* = 0);
+  SmartPtr<MathMLElement> getChild(void) const { return content.getChild(); }
+  void setChild(const SmartPtr<MathMLElement>& child) { content.setChild(this, child); }
 
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-#endif
+  virtual void setFlagDown(Flags f)
+  {
+    MathMLContainerElement::setFlagDown(f);
+    content.setFlagDown(f);
+  }
 
-#if 0
-  virtual void Remove(const SmartPtr<MathMLElement>&);
-  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
-#endif
-
-  SmartPtr<MathMLElement> GetChild(void) const { return child; }
-  void SetChild(const SmartPtr<MathMLElement>&);
-
-  virtual void setFlagDown(Flags);
-  virtual void resetFlagDown(Flags);
+  virtual void resetFlagDown(Flags)
+  {
+    MathMLContainerElement::resetFlagDown(f);
+    content.resetFlagDown(f);
+  }
 
 protected:
-  SmartPtr<MathMLElement> child;
+  BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > content;
 };
 
-#endif // MathMLContainerElement_hh
+#endif // __MathMLContainerElement_hh__

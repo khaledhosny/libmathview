@@ -20,11 +20,12 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLFractionElement_hh
-#define MathMLFractionElement_hh
+#ifndef __MathMLFractionElement_hh__
+#define __MathMLFractionElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
+#include "BinContainerTemplate.hh"
 
 class MathMLFractionElement
   : public MathMLContainerElement, public MathMLEmbellishment
@@ -40,53 +41,20 @@ public:
   virtual void   construct(void);
   virtual void   refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void   Setup(RenderingEnvironment&);
-  virtual void   DoLayout(const class FormattingContext&);
-  virtual void   SetPosition(const scaled&, const scaled&);
-#endif
+
   virtual void   setFlagDown(Flags);
   virtual void   resetFlagDown(Flags);
 
-#if 0
-  virtual void   Render(const DrawingArea&);
-
-  virtual void   Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&);
-
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-  virtual void   ReleaseGCs(void);
-  virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&);
-#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
-  SmartPtr<MathMLElement> GetNumerator(void) const { return numerator; }
-  SmartPtr<MathMLElement> GetDenominator(void) const { return denominator; }
-  void SetNumerator(const SmartPtr<MathMLElement>&);
-  void SetDenominator(const SmartPtr<MathMLElement>&);
+  SmartPtr<MathMLElement> getNumerator(void) const { return numerator.getChild(); }
+  SmartPtr<MathMLElement> getDenominator(void) const { return denominator.getChild(); }
+  void getNumerator(const SmartPtr<MathMLElement>& child) { numerator.setChild(this, child); }
+  void getDenominator(const SmartPtr<MathMLElement>&) { denominator.setChild(this, child); }
 
 private:
-  SmartPtr<MathMLElement> numerator;
-  SmartPtr<MathMLElement> denominator;
-
-  scaled axis;
-  scaled numShift;
-  scaled denomShift;
-#ifdef TEXISH_MATHML
-  scaled numMinShift;
-  scaled denomMinShift;
-  scaled defaultRuleThickness;
-#else
-  scaled minShift;
-#endif // TEXISH_MATHML
-  scaled lineThickness;
-
-  TokenId numAlign;
-  TokenId denomAlign;
-  bool displayStyle;
-  RGBColor color;
-
-  bool bevelled;
+  BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > numerator;
+  BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > denominator;
 };
 
-#endif // MathMLFractionElement_hh
+#endif // __MathMLFractionElement_hh__

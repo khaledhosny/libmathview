@@ -20,10 +20,11 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLLabeledTableRowElement_hh
-#define MathMLLabeledTableRowElement_hh
+#ifndef __MathMLLabeledTableRowElement_hh__
+#define __MathMLLabeledTableRowElement_hh__
 
 #include "MathMLTableRowElement.hh"
+#include "BinContainerTemplate.hh"
 
 class MathMLLabeledTableRowElement : public MathMLTableRowElement
 {
@@ -35,23 +36,17 @@ public:
   static SmartPtr<MathMLLabeledTableRowElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLLabeledTableRowElement(view); }
 
-  void SetLabel(const SmartPtr<MathMLElement>&);
-  virtual SmartPtr<MathMLElement> GetLabel(void) const;
+  void setLabel(const SmartPtr<MathMLElement>& child) { label.setChild(this, child); }
+  virtual SmartPtr<MathMLElement> getLabel(void) const { return label.getChild(); }
 
   virtual void construct(void);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-#endif
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
-#if 0
-  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
-#endif
 
   friend class MathMLTableElement;
 
 private:
-  SmartPtr<MathMLElement> label;
+  BinContainerTemplate<MathMLLabeledTableRowElement, SmartPtr<MathMLElement> > label;
 };
 
-#endif // MathMLLabeledTableRowElement_hh
+#endif // __MathMLLabeledTableRowElement_hh__

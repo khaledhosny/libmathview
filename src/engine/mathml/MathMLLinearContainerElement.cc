@@ -35,12 +35,10 @@
 
 MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathMLView>& view)
   : MathMLContainerElement(view)
-{
-}
+{ }
 
 MathMLLinearContainerElement::~MathMLLinearContainerElement()
-{
-}
+{ }
 
 #if 0
 void
@@ -85,7 +83,7 @@ MathMLLinearContainerElement::construct()
 		  // elements only
 		}
 	    }
-	  SwapChildren(newContent);
+	  content.swapContent(newContent);
 	}
 #endif // HAVE_GMETADOM
       
@@ -107,196 +105,16 @@ MathMLLinearContainerElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#if 0
-void
-MathMLLinearContainerElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      background = env.GetBackgroundColor();
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetupAdaptor(), &env));
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLLinearContainerElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(DoLayoutAdaptor(), &ctxt));
-      resetDirtyLayout(ctxt);
-    }
-}
-
-void
-MathMLLinearContainerElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      RenderBackground(area);
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(RenderAdaptor(), &area));
-      ResetDirty();
-    }
-}
-
-SmartPtr<MathMLElement>
-MathMLLinearContainerElement::Inside(const scaled& x, const scaled& y)
-{
-  if (IsInside(x, y)) 
-    {
-      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
-	   elem != content.end(); elem++)
-	{
-	  SmartPtr<MathMLElement> inside = (*elem)->Inside(x, y);
-	  if (inside) return inside;
-	}
-      
-      return this;
-    }
-  else
-    return 0;
-}
-
-void
-MathMLLinearContainerElement::ReleaseGCs()
-{
-  MathMLElement::ReleaseGCs();
-  for_each_if(content.begin(), content.end(), NotNullPredicate(), ReleaseGCsAdaptor());
-}
-#endif
-
-void
-MathMLLinearContainerElement::SetSize(unsigned size)
-{
-  assert(size <= content.size());
-  if (size != content.size())
-    {
-      for (unsigned i = size; i < content.size(); i++) SetChild(i, 0);
-      content.resize(size);
-      setDirtyLayout();
-    }
-}
-
-SmartPtr<MathMLElement>
-MathMLLinearContainerElement::GetChild(unsigned i) const
-{
-  return (i < GetSize()) ? content[i] : 0;
-}
-
-void
-MathMLLinearContainerElement::SetChild(unsigned i, const SmartPtr<MathMLElement>& elem)
-{
-  assert(i <= GetSize());
-
-  if (i == GetSize()) Append(elem);
-  else if (content[i] != elem)
-    {
-      if (elem) elem->setParent(this);
-      content[i] = elem;
-      setDirtyLayout();
-    }
-}
-
-void
-MathMLLinearContainerElement::Append(const SmartPtr<MathMLElement>& elem)
-{
-  assert(elem);
-  elem->setParent(this);
-  content.push_back(elem);
-  setDirtyLayout();
-}
-
-#if 0
-void
-MathMLLinearContainerElement::Replace(const SmartPtr<MathMLElement>& oldElem,
-				      const SmartPtr<MathMLElement>& newElem)
-{
-  assert(oldElem);
-  std::vector< SmartPtr<MathMLElement> >::iterator old = find(content.begin(), content.end(), oldElem);
-  assert(old != content.end());
-  SetChild(old - content.begin(), newElem);
-}
-#endif
-
-void
-MathMLLinearContainerElement::SwapChildren(std::vector< SmartPtr<MathMLElement> >& newContent)
-{
-  if (newContent != content)
-    {
-#if 0
-      // reset parent should be done first because the same elements
-      // may be present in the following loop as well
-      for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	if (*p) (*p)->Unlink();
-#endif
-
-      for (std::vector< SmartPtr<MathMLElement> >::iterator p = newContent.begin();
-	   p != newContent.end();
-	   p++)
-	if (*p) (*p)->setParent(this);
-
-      content.swap(newContent);
-      setDirtyLayout();
-    }
-}
-
-#if 0
-scaled
-MathMLLinearContainerElement::GetLeftEdge() const
-{
-  scaled edge = 0;
-  
-  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    {
-      if (elem == content.begin()) edge = (*elem)->GetLeftEdge();
-      else edge = std::min(edge, (*elem)->GetX() + (*elem)->GetLeftEdge());
-    }
-
-  return edge;
-}
-
-scaled
-MathMLLinearContainerElement::GetRightEdge() const
-{
-  scaled edge = 0;
-
-  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    {
-      if (elem == content.begin()) edge = (*elem)->GetRightEdge();
-      else edge = std::max(edge, (*elem)->GetX() + (*elem)->GetRightEdge());
-    }
-
-  return edge;
-}
-
-void
-MathMLLinearContainerElement::SetDirty(const Rectangle* rect)
-{
-  if (!rect || GetRectangle().Overlaps(*rect))
-    {
-      SetFlag(FDirty);
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
-    }
-}
-#endif
-
 void
 MathMLLinearContainerElement::setFlagDown(Flags f)
 {
-  MathMLElement::setFlagDown(f);
-  for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetFlagDownAdaptor(), f));
+  MathMLContainerElement::setFlagDown(f);
+  content.setFlagDown(f);
 }
 
 void
 MathMLLinearContainerElement::resetFlagDown(Flags f)
 {
-  MathMLElement::resetFlagDown(f);
-  for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(ResetFlagDownAdaptor(), f));
+  MathMLContainerElement::resetFlagDown(f);
+  content.resetFlagDown(f);
 }
