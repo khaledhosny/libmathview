@@ -33,6 +33,6 @@ INCLUDES = \
   $(XFT_CFLAGS) \
   $(GTK_CFLAGS) \
   $(DOM_CFLAGS) \
-  -I$(top_srcdir)/src/formatter/basictypes \
+  -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/formatter/areamodel
 

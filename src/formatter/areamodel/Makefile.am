@@ -63,5 +63,5 @@ pkginclude_HEADERS = \
 
 INCLUDES = \
   $(DOM_CFLAGS) \
-  -I$(top_srcdir)/src/formatter/basictypes
+  -I$(top_srcdir)/src/common
 

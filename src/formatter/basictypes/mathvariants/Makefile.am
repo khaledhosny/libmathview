@@ -33,6 +33,7 @@ libmathvariants_la_LIBADD = \
 
 INCLUDES = \
   $(DOM_CFLAGS) \
+  -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/formatter/basictypes
 
 %_gen.cc : $(srcdir)/xml/%.xml extract.xsl
