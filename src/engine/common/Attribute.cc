@@ -21,19 +21,18 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include <cassert>
 
 #include "Attribute.hh"
 #include "AttributeSignature.hh"
 
 Attribute::Attribute(const AttributeSignature& sig, const String& v)
   : signature(sig), unparsedValue(v)
-{
-}
+{ }
 
 Attribute::~Attribute()
-{
-}
+{ }
 
 SmartPtr<Value>
 Attribute::getValue() const

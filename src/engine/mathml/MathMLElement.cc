@@ -49,20 +49,10 @@ MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v)
   setDirtyStructure();
   setDirtyAttribute();
   setDirtyLayout();
-
-#if 0
-  fGC[0] = fGC[1] = NULL;
-  bGC[0] = bGC[1] = NULL;
-  
-  background = RGBColor::BLACK();
-#endif
 }
 
 MathMLElement::~MathMLElement()
 {
-#if 0
-  ReleaseGCs();
-#endif
   setDOMElement(DOM::Element(0)); // it is important to invoke this method!
 }
 
@@ -103,13 +93,11 @@ MathMLElement::refineAttribute(const AbstractRefinementContext& context, const A
 
   if (attr)
     {
-      if (!attributes) attributes = AttributeList::create();
       if (attributes->set(attr)) setDirtyLayout();
     }
   else
-    if (attributes)
-      if (attributes->remove(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
-	setDirtyLayout();
+    if (attributes->remove(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
+      setDirtyLayout();
 }
 
 SmartPtr<MathMLView>
@@ -198,24 +186,6 @@ MathMLElement::refine(class AbstractRefinementContext&)
   resetDirtyAttribute();
 }
 
-#if 0
-void
-MathMLElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      background = env.GetBackgroundColor();
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt)) resetDirtyLayout(ctxt);
-}
-#endif
-
 AreaRef
 MathMLElement::format(MathFormattingContext& ctxt)
 {
@@ -228,51 +198,11 @@ MathMLElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
-#if 0
-void
-MathMLElement::RenderBackground(const DrawingArea& area)
-{
-  // FIXME ???? true????
-  if (true||bGC[Selected()] == NULL)
-    {
-      GraphicsContextValues values;
-      values.background = values.foreground = Selected() ? area.GetSelectionBackground() : background;
-      bGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
-    }
-
-  if (DirtyBackground()) area.Clear(bGC[Selected()], GetX(), GetY(), GetBoundingBox());
-}
-
-void
-MathMLElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      RenderBackground(area);
-      ResetDirty();
-    }
-}
-#endif
-
 bool
 MathMLElement::IsSpaceLike() const
 {
   return false;
 }
-
-#if 0
-bool
-MathMLElement::IsInside(const scaled& x, const scaled& y) const
-{
-  return GetRectangle().IsInside(x, y);
-}
-
-SmartPtr<MathMLElement>
-MathMLElement::Inside(const scaled& x, const scaled& y)
-{
-  return IsInside(x, y) ? this : 0;
-}
-#endif
 
 unsigned
 MathMLElement::GetDepth() const
@@ -288,27 +218,6 @@ MathMLElement::GetDepth() const
 
   return depth;
 }
-
-#if 0
-scaled
-MathMLElement::GetLeftEdge() const
-{
-  return GetX();
-}
-
-scaled
-MathMLElement::GetRightEdge() const
-{
-  return GetX();
-}
-
-void
-MathMLElement::ReleaseGCs()
-{
-  fGC[0] = fGC[1] = NULL;
-  bGC[0] = bGC[1] = NULL;
-}
-#endif
 
 bool
 MathMLElement::hasLink() const
@@ -391,43 +300,6 @@ MathMLElement::SetFlag(Flags f)
   flags.set(f);
 }
 
-#if 0
-void
-MathMLElement::SetDirty(const Rectangle* rect)
-{
-  // FIXME ???true???
-  if (true || !Dirty())
-    {
-      
-      if (!rect || GetRectangle().Overlaps(*rect))
-	{
-	  SetFlag(FDirty);
-	  //SetFlagUp(FDirtyP);
-	}
-    }
-}
-
-void
-MathMLElement::SetSelected()
-{
-  if (!Selected())
-    {
-      setFlagDown(FSelected);
-      SetDirty();
-    }
-}
-
-void
-MathMLElement::ResetSelected()
-{
-  if (Selected())
-    {
-      resetFlagDown(FSelected);
-      SetDirty();
-    }
-}
-#endif
-
 void
 MathMLElement::SetFlagUp(Flags f)
 {
@@ -454,28 +326,6 @@ MathMLElement::resetFlagDown(Flags f)
   ResetFlag(f);
 }
 
-#if 0
-void
-MathMLElement::Unlink()
-{
-  // if the element is connected to another element, we remove it
-  // from there first. This is to ensure that no node of the tree is shared
-  if (SmartPtr<MathMLContainerElement> oldP = smart_cast<MathMLContainerElement>(GetParent()))
-    {
-      MathMLNode::setParent(0); // this is to break the recursion!
-      oldP->Remove(this);
-    }
-}
-
-void
-MathMLElement::Link(const SmartPtr<MathMLElement>& p)
-{
-  assert(p);
-  assert(!GetParent());
-  setParent(p);
-}
-#endif
-
 // FIXME: when we'll have a real Node class we could move
 // these operations in it and make setParent non-virtual
 void
@@ -488,13 +338,6 @@ MathMLElement::setParent(const SmartPtr<MathMLElement>& p)
       if (dirtyAttribute()) SetFlagUp(FDirtyAttributeP);
       if (p->dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
       if (dirtyLayout()) SetFlagUp(FDirtyLayout);
-#if 0
-      if (Dirty()) SetFlagUp(FDirty);
-#endif
       if (p->dirtyLayout()) setFlagDown(FDirtyLayout);
-#if 0
-      if (p->Dirty()) setFlagDown(FDirty);
-      if (p->Selected()) setFlagDown(FSelected);
-#endif
     }
 }

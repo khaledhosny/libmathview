@@ -41,12 +41,10 @@ struct IsPredicate
 };
 
 AttributeList::AttributeList()
-{
-}
+{ }
 
 AttributeList::~AttributeList()
-{
-}
+{ }
 
 bool
 AttributeList::set(const SmartPtr<Attribute>& attr)
@@ -56,9 +54,9 @@ AttributeList::set(const SmartPtr<Attribute>& attr)
     std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature())));
   if (p != content.end())
     {
-      bool res = attr->equal(*p);
+      bool eq = attr->equal(*p);
       *p = attr;
-      return res;
+      return !eq;
     }
   else
     {

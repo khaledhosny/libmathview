@@ -1,5 +1,5 @@
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
-  <maction>
+  <maction actiontype="toggle">
    <mrow>
     <mo>&int;</mo>
     <mo>&ApplyFunction;</mo>
@@ -29,7 +29,7 @@
       </mrow>
     </mfrac>
    </mrow>
-   <mtable frame="solid" framespacing=".5em .5em"><mtr><mtd><mtext>...</mtext></mtd></mtr></mtable>
+   <mtext>AH AH AH</mtext>
   </maction>
   <mo fontstyle="italic">d</mo>
   <mi>x</mi>

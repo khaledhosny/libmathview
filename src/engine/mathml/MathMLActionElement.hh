@@ -40,11 +40,6 @@ public:
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
-  SmartPtr<MathMLElement> GetSelectedElement(void) const;
-
-  unsigned GetSelectedIndex(void) const;
-  void     SetSelectedIndex(unsigned);
-
   virtual SmartPtr<MathMLOperatorElement> getCoreOperator(void);
 
 private:
