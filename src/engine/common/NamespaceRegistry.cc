@@ -20,28 +20,40 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __NamespaceFactory_hh__
-#define __NamespaceFactory_hh__
+#include <config.h>
 
-#include "Object.hh"
-#include "HashMap.hh"
-#include "String.hh"
-#include "SmartPtr.hh"
+#include "NamespaceRegistry.hh"
+#include "namespaceContext.hh"
 
-class NamespaceFactory : public Object
+NamespaceRegistry::NamespaceRegistry()
+{ }
+
+NamespaceRegistry::~NamespaceRegistry()
+{ }
+
+bool
+NamespaceRegistry::add(const SmartPtr<NamespaceContext>& context)
 {
-public:
-  NamespaceFactory(void);
-  virtual ~NamespaceFactory();
+  if (map.find(context->getURI()) != map.end())
+    return false;
 
-  bool registerFactory(const String& namespaceURI, const SmartPtr<class ElementFactory>& factory);
-  bool unregisterFactory(const String& namespaceURI);
+  map[context->getURI()] = context;
+  return true;
+}
 
-  SmartPtr<class ElementFactory> getFactory(const String& namespaceURI) const;
+bool
+NamespaceRegistry::remove(const String& namespaceURI)
+{
+  if (map.find(namespaceURI) == map.end())
+    return false;
 
-private:
-  typedef HASH_MAP_NS::hash_map<String,SmartPtr<class ElementFactory>,StringHash,StringEq> ElementFactoryMap;
-  ElementFactoryMap map;
-};
+  map.erase(namespaceURI);
+  return true;
+}
 
-#endif // __NamespaceFactory_hh__
+SmartPtr<NamespaceContext>
+NamespaceRegistry::get(const String& namespaceURI) const
+{
+  ElementFactoryMap::const_iterator p = map.find(namespaceURI);
+  return (p != map.end()) ? (*p).second : 0;
+}

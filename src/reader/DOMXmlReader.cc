@@ -22,23 +22,23 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "DOMXmlReader.hh"
 
-DOMXmlReader::DOMXmlReader(DOM::Node& n) : node(n), fresh(true)
-{
-}
+DOMXmlReader::DOMXmlReader() : fresh(true)
+{ }
 
 DOMXmlReader::~DOMXmlReader()
-{
-}
+{ }
 
 void
-DOMXmlReader::setNode(const DOM::Node& p, const DOM::Node& n, bool f)
+DOMXmlReader::setStatus(const DOM::Node& p, const DOM::Node& n, bool f)
 {
-  prev = p;
+  parent = p;
   node = n;
   fresh = f;
-  aMap = 0;
+  aMap = DOM::NamedNodeMap();
 }
 
 DOM::NamedNodeMap
@@ -100,21 +100,21 @@ String
 DOMXmlReader::getAttribute(const String& name) const
 {
   assert(valid());
-  return getAttributes().getNamedItem(name);
+  return getAttributes().getNamedItem(name).get_nodeValue();
 }
 
 String
-DOMXmlReader::getAttributeNS(const String& ns, const String name) const
+DOMXmlReader::getAttributeNS(const String& ns, const String& name) const
 {
   assert(valid());
-  return getAttributes().getNamedItemNS(name);
+  return getAttributes().getNamedItemNS(ns, name).get_nodeValue();
 }
 
 String
 DOMXmlReader::getAttributeNo(unsigned index) const
 {
   assert(valid());
-  return getAttributes().item(index);
+  return getAttributes().item(index).get_nodeValue();
 }
 
 unsigned
@@ -131,22 +131,33 @@ DOMXmlReader::more() const
 }
 
 void
-DOMXmlReader::firstChild()
+DOMXmlReader::skip()
 {
   assert(node);
-  setNode(node, node.get_firstChild(), true);
+  assert(fresh);
+  setStatus(parent, node, false);
 }
 
 void
-DOMXmlReader::parentNode()
+DOMXmlReader::down()
 {
-  assert(prev);
-  setNode(prev.get_parentNode(), prev, false);
+  assert(node);
+  assert(fresh);
+  setStatus(node, node.get_firstChild(), true);
 }
 
 void
-DOMXmlReader::nextSibling()
+DOMXmlReader::up()
+{
+  assert(parent);
+  assert(!node);
+  setStatus(parent.get_parentNode(), parent, false);
+}
+
+void
+DOMXmlReader::next()
 {
   assert(node);
-  setNode(prev, node.get_nextSibling(), true);
+  assert(!fresh);
+  setStatus(parent, node.get_nextSibling(), true);
 }

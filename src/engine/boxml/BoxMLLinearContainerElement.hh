@@ -56,7 +56,7 @@ public:
   }
 
 protected:
-  LinearContainerTemplate<BoxMLLinearContainerElement, SmartPtr<BoxMLElement> > content;
+  LinearContainerTemplate<BoxMLLinearContainerElement,BoxMLElement> content;
 };
 
 #endif // __BoxMLLinearContainerElement_hh__

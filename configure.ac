@@ -311,6 +311,7 @@ AC_CONFIG_FILES([
  scripts/Makefile
  src/Makefile
  src/common/Makefile
+ src/reader/Makefile
  src/formatter/Makefile
  src/formatter/basictypes/Makefile
  src/formatter/basictypes/mathvariants/Makefile

@@ -55,7 +55,7 @@ public:
   }
 
 private:
-  BinContainerTemplate<BoxMLBinContainerElement, SmartPtr<BoxMLElement> > content;
+  BinContainerTemplate<BoxMLBinContainerElement,BoxMLElement> content;
 };
 
 #endif // __BoxMLBinContainerElement_hh__

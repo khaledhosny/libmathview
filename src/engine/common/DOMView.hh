@@ -20,44 +20,51 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __View_hh__
-#define __View_hh__
+#ifndef __DOMView_hh__
+#define __DOMView_hh__
 
 #include "View.hh"
-#include "Element.hh"
-#include "Rectangle.hh"
 
-class View : public Object
+class DOMView : public View
 {
 protected:
-  View(void);
-  virtual ~View();
+  DOMView(void);
+  virtual ~DOMView();
 
 public:
-  bool frozen(void) const { return freezeCounter > 0; }
-  virtual bool freeze(void);
-  virtual bool thaw(void);
+  static SmartPtr<DOMView> create(void) { return new DOMView(); }
 
-  void setOrigin(const scaled& x, const scaled& y) { x0 = x; y0 = y; }
-  void getOriginX(void) const { return x0; }
-  void getOriginY(void) const { return y0; }
+  void setRoot(const DOM::Element&);
+  DOM::Element getRoot(void) const { return root; }
 
-  SmartPtr<Element> getElementAt(const scaled&, const scaled&) const;
-  bool getElementExtents(const SmartPtr<Element>&, scaled&, scaled&, BoundingBox&) const;
-  AreaRef getRootArea(void) const;
-  BoundingBox getBoundingBox(void) const;
-  Rectangle getRectangle(void) const;
-  virtual void render(class RenderingContext&) const;
-
-  virtual SmartPtr<Element> getRootElement(void) const = 0;
-
-  // SmartPtr<Element> getElement(class AbstractReader&) const = 0;
+  virtual SmartPtr<Element> getRootElement(void) const;
 
 private:
-  SmartPtr<class NamespaceRegistry> registry;
-  unsigned freezeCounter;
-  scaled x0;
-  scaled y0;
+  class DOMSubtreeModifiedListener : public DOM::EventListener
+  {
+  public:
+    DOMSubtreeModifiedListener(const SmartPtr<DOMView>& v) : view(v) { };
+    virtual ~DOMSubtreeModifiedListener() { };
+    virtual void handleEvent(const DOM::Event&);
+
+  private:
+    SmartPtr<DOMView> view;
+  };
+
+  class DOMAttrModifiedListener : public DOM::EventListener
+  {
+  public:
+    DOMAttrModifiedListener(const SmartPtr<DOMView>& v) : view(v) { };
+    virtual ~DOMAttrModifiedListener() { };
+    virtual void handleEvent(const DOM::Event&);
+
+  private:
+    SmartPtr<DOMView> view;
+  };
+
+  DOMSubtreeModifiedListener* subtreeModifiedListener;
+  DOMAttrModifiedListener* attrModifiedListener;
+  DOM::Element root;
 };
 
-#endif // __View_hh__
+#endif // __DOMView_hh__

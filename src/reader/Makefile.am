@@ -1,7 +1,13 @@
 
-lib_LTLIBRARY = libreader.la
+lib_LTLIBRARIES = libreader.la
 
 libreader_la_SOURCES = \
+  DOMXmlReader.cc
 
 noinst_HEADERS = \
-  AbstractXmlReader.hh
+  AbstractReader.hh \
+  DOMXmlReader.hh
+
+INCLUDES = \
+  $(DOM_CFLAGS) \
+  -I$(top_srcdir)/src/common

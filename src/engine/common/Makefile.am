@@ -12,8 +12,10 @@ libengine_common_la_SOURCES = \
   AttributeList.cc \
   AttributeSignature.cc \
   RefinementContext.cc \
-  NamespaceFactory.cc \
+  NamespaceRegistry.cc \
+  NamespaceContext.cc \
   ElementFactory.cc \
+  View.cc \
   Element.cc \
   Linker.cc
 
@@ -25,10 +27,10 @@ noinst_HEADERS = \
   RefinementContext.hh \
   BinContainerTemplate.hh \
   LinearContainerTemplate.hh \
-  NamespaceFactory.hh \
+  NamespaceRegistry.hh \
+  NamespaceContext.hh \
   ElementFactory.hh \
   View.hh \
-  ViewContext.hh \
   Element.hh \
   Linker.hh
 

@@ -24,13 +24,16 @@
 #define __DOMXmlReader_hh__
 
 #include "DOM.hh"
-#include "AbstractXmlReader.hh"
+#include "AbstractReader.hh"
 
-class DOMXmlReader : public AbstractXmlReader
+class DOMXmlReader : public AbstractReader
 {
 public:
-  DOMXmlReader(DOM::Document& doc);
+  DOMXmlReader(void);
   virtual ~DOMXmlReader();
+
+  void reset(const DOM::Node& n) { setStatus(DOM::Node(), n, true); }
+  bool valid(void) const;
 
   virtual String name(void) const;
   virtual String localName(void) const;
@@ -45,11 +48,21 @@ public:
 
   virtual unsigned nodeType(void) const;
 
-  virtual next(void);
-  virtual nextSibling(void);
+  virtual bool more(void) const;
+  virtual void skip(void);
+  virtual void down(void);
+  virtual void up(void);
+  virtual void next(void);
+
+protected:
+  DOM::NamedNodeMap getAttributes(void) const;
+  void setStatus(const DOM::Node&, const DOM::Node&, bool);
 
 private:
+  DOM::Node parent;
   DOM::Node node;
+  mutable DOM::NamedNodeMap aMap;
+  bool fresh;
 };
 
 #endif // __DOMXmlReader_hh__

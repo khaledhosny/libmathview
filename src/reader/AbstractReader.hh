@@ -20,12 +20,12 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __AbstractXmlReader_hh__
-#define __AbstractXmlReader_hh__
+#ifndef __AbstractReader_hh__
+#define __AbstractReader_hh__
 
 #include "String.hh"
 
-class AbstractXmlReader
+class AbstractReader
 {
 public:
   virtual String name(void) const = 0;
@@ -47,4 +47,4 @@ public:
   virtual void nextSibling(void) = 0;
 };
 
-#endif // __AbstractXmlReader_hh__
+#endif // __AbstractReader_hh__

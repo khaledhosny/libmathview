@@ -20,40 +20,33 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __NamespaceContext_hh__
+#define __NamespaceContext_hh__
 
-#include "NamespaceFactory.hh"
-#include "ElementFactory.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
+#include "WeakPtr.hh"
+#include "String.hh"
 
-NamespaceFactory::NamespaceFactory()
-{ }
-
-NamespaceFactory::~NamespaceFactory()
-{ }
-
-bool
-NamespaceFactory::registerFactory(const String& namespaceURI, const SmartPtr<ElementFactory>& factory)
+class NamespaceContext : public Object
 {
-  if (map.find(namespaceURI) != map.end())
-    return false;
+protected:
+  NamespaceContext(const String& ns) : namespaceURI(ns);
+  virtual ~NamespaceContext();
 
-  map[namespaceURI] = factory;
-  return true;
-}
+public:
+  String getNamespaceURI(void) const { return namespaceURI; }
+  SmartPtr<class View> getView(void) const;
 
-bool
-NamespaceFactory::unregisterFactory(const String& namespaceURI)
-{
-  if (map.find(namespaceURI) == map.end())
-    return false;
+  virtual SmartPtr<class ElementFactory> getFactory(void) const = 0;
+  //virtual SmartPtr<class Element> construct(class AbstractReader&) const = 0;
+  virtual SmartPtr<class Element> construct(const DOM::Element&) const = 0;
+  virtual void refine(const SmartPtr<class Element>&, class AbstractRefinementContext&) const = 0;
+  virtual SmartPtr<const class Area> getArea(const SmartPtr<class Element>&) const = 0;
 
-  map.erase(namespaceURI);
-  return true;
-}
+private:
+  WeakPtr<class View> view;
+  const String namespaceURI;
+};
 
-SmartPtr<ElementFactory>
-NamespaceFactory::getFactory(const String& namespaceURI) const
-{
-  ElementFactoryMap::const_iterator p = map.find(namespaceURI);
-  return (p != map.end()) ? (*p).second : 0;
-}
+#endif // __NamespaceContext_hh__

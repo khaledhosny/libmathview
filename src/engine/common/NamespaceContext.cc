@@ -20,42 +20,19 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __BoxMLObjectElement_hh__
-#define __BoxMLObjectElement_hh__
+#include <config.h>
 
-#include "BoxMLElement.hh"
-#include "BinContainerTemplate.hh"
+#include "View.hh"
+#include "NamespaceContext.hh"
 
-class BoxMLObjectElement : public BoxMLElement
+NamespaceContext::NamespaceContext()
+{ }
+
+NamespaceContext::~NamespaceContext()
+{ }
+
+SmartPtr<View>
+NamespaceContext::getView() const
 {
-protected:
-  BoxMLObjectElement(const SmartPtr<class View>&);
-  virtual ~BoxMLObjectElement();
-
-public:
-  static SmartPtr<BoxMLObjectElement> create(const SmartPtr<class View>&);
-
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class MathFormattingContext&);
-
-  SmartPtr<Element> getChild(void) const { return content.getChild(); }
-  void setChild(const SmartPtr<Element>& child) { content.setChild(this, child); }
-
-  virtual void setFlagDown(Flags f)
-  {
-    BoxMLElement::setFlagDown(f);
-    content.setFlagDown(f);
-  }
-
-  virtual void resetFlagDown(Flags f)
-  {
-    BoxMLElement::resetFlagDown(f);
-    content.resetFlagDown(f);
-  }
-
-private:
-  BinContainerTemplate<BoxMLObjectElement,Element> content;
-};
-
-#endif // __BoxMLObjectElement_hh__
+  return static_cast<View*>(view);
+}
