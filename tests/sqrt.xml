@@ -1,0 +1,15 @@
+<math>
+  <msqrt>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>1</mn>
+	<mo>+</mo>
+	<msup>
+	  <mi>x</mi>
+	  <mn>2</mn>
+	</msup>
+      </mrow>
+    </mfrac>
+  </msqrt>
+</math>

@@ -1,0 +1,15 @@
+<math>
+	<mi color="Black" fontweight="bold">andrea</mi>
+	<mstyle background="#e0e0e0" fontsize="15pt">
+		<mi color="Blue" fontstyle="italic">claudio</mi>
+		<mstyle background="Black">
+			<mi color="Yellow" fontsize="150%">irene</mi>
+		</mstyle>
+		<mi color="Navy" fontfamily="sans-serif">luca</mi>
+		<mi color="Red">questa e' una prova</mi>
+	</mstyle>
+	<mspace width="1cm"/>
+	<mi>i</mi>
+	<mspace width="2cm"/>
+	<mi>sin</mi>
+</math>

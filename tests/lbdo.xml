@@ -1,0 +1,428 @@
+<html>
+<body>
+<math>
+<mstyle fontfamily="typewriter">
+<mtext>
+\documentclass[a4paper,draft,11pt]{article}
+
+\usepackage{italian}
+\usepackage{latexsym}
+
+\setlength{\oddsidemargin}{2cm}
+\setlength{\evensidemargin}{2cm}
+\setlength{\topmargin}{0cm}
+\setlength{\headsep}{0cm}
+\setlength{\headheight}{0cm}
+\setlength{\textheight}{22cm}
+\setlength{\textwidth}{12cm}
+
+\newcommand{\isa}{\le_\mathrm{ISA}}
+\newcommand{\eqdef}{\stackrel{\mathrm{def}}{=}}
+\newcommand{\mst}{t^\mathit{ms}}
+\newcommand{\rtt}{t^\mathit{rt}}
+\newcommand{\ctr}[1]{\makebox(0,0){#1}}
+
+\newtheorem{definition}{Definizione}
+\newtheorem{proposition}{Proposizione}
+\newtheorem{example}{Esempio}
+
+\begin{document}
+
+\section{Objects with Multiple Most Specific Classes}
+
+In questa sezione confronteremo il meccanismo dei ruoli cosi come e stato visto per Galileo
+con l'analogo meccanismo studiato per Chimera da Elisa Bertino e Giovanna Guerrini.
+
+\subsection{Fondamenti}
+
+Prima di procedere al confronto vero e proprio, descriviamo brevemente come Chimera gestisce
+ruoli multipli in una gerarchia di classi. In effetti l'idea di ``ruolo'' \`e piuttosto
+implicita nel modello di Chimera, e viene sostituito dal termine ``classe pi\`u specifica''.
+
+La differenza importante rispetto ad altri linguaggi di programmazione \`e che un oggetto
+pu\`o appartenere non a una, ma potenzialmente a pi\`u classi, purch\'e queste abbiano
+un progenitore comune (cio\`e appartengano alla stessa gerarchia).
+In altre parole, un singolo oggetto
+pu\`o avere diverse specializzazioni e ciascuna specializzazione \`e comparabile ad un ruolo
+in Galileo, seppur con alcune differenze che andremo ad analizzare pi\`u avanti.
+
+Sostanzialmente, cos\`\i\ come il tipo di un oggetto \`e costituito dall'insieme delle classi
+pi\`u specializzate a cui appartiene, le caratteristiche e soprattutto il comportamento
+dello stesso oggetto sono date dall'``insieme'' delle caratteristiche e comportamenti delle
+singole classi.
+
+D'ora in avanti useremo la notazione $\mst(X)$ per indicare
+l'insieme dinamico delle classi pi\`u specifiche (ruoli) a cui appartiene l'oggetto $X$
+(anche se in Chimera non si parla esplicitamente di ruoli, per comodit\`a continueremo ad 
+utilizzare tale termine). In particolare, l'insieme $\mst(X)$ gode della seguente propriet\`a:
+\begin{eqnarray}
+\forall c_1, c_2 \in \mst(X),~ c_1 \not= c_2 \Longrightarrow c_1 \not\isa c_2 \wedge
+	c_2 \not\isa c_1 \label{equazione-mst}.
+\end{eqnarray}
+
+\begin{example}
+Ogni aereo necessita periodicamente di una fase di revisione. Supponiamo che
+\texttt{aereo} sia un riferimento ad un oggetto di tipo \texttt{Aereo} che ha acquisito
+il ruolo \texttt{Charter} e si trova in revisione, allora si scriver\`a che
+$\mst(\texttt{aereo}) = \{ \texttt{Charter}, \texttt{InRevisione}\, \}$. Notare che,
+nonostante \texttt{aereo} appartenga anche alle classi \texttt{InAttivit\`a} e
+\texttt{Passeggeri} tali classi non compaiono tra quelle pi\`u specifiche.
+\end{example}
+
+%Rispetto a Galileo, inoltre, \`e concessa la possibilit\`a di avere ereditariet\`a multipla,
+%seppur con una restrizione: le super-classi devono entrambe avere un progenitore comune,
+%e questo assicura che non si possano creare nuove classi a partire da genitori appartenenti
+%a componenti connesse differenti. Essendo tuttavia questa caratteristica non supportata
+%da Galileo, non la analizzeremo approfonditamente nel corso della sezione.
+
+Nell'articolo di Bertino e Guerrini non vengono
+descritte le modalit\`a con cui un oggetto pu\`o perdere o acquisire ruoli, tuttavia emerge
+una importante differenza (sia concettuale che implementativa) riguardo al modo con cui
+ci si riferisce ad un oggetto: in Galileo, per un singolo oggetto, possono esistere
+diversi riferimenti, ciascuno dei quali si ``aggancia'' ad un particolare ruolo. \`E
+comunque compito del linguaggio garantire l'identit\`a di riferimenti a ruoli diversi dello
+stesso oggetto, e ci\`o viene realizzato attraverso la \textit{type history}.
+
+In Chimera
+non esistono riferimenti ai particolari ruoli di un oggetto, ovvero per ogni oggetto
+esiste un unico riferimento simbolico. Nel momento in cui, in una espressione, \`e necessario
+riferirsi all'oggetto (o ad una particolare specializzazione/ruolo) \`e obbligatorio
+indicare, attraverso una \textit{type formula}, la classe che si intende utilizzare
+per quella particolare espressione. Indicheremo quindi con $t^s(X)$ tale classe, o tipo
+statico di $X$.
+
+\begin{example}
+Dato lo stesso oggetto \texttt{aereo} dell'esempio precedente, nell'espressione
+\[
+	\texttt{DiLinea(aereo), aereo.m(\dots)}
+\]
+si ha $t^s(\texttt{aereo}) = \texttt{DiLinea}$. In Galileo ci sono due modi
+per accedere all'oggetto \texttt{aereo} nella stessa maniera:
+\begin{enumerate}
+\item Attraverso un riferimento al ruolo specifico: ad esempio, supponiamo che
+	il ruolo \texttt{DiLinea} sia stato acquisito attraverso l'espressione
+\[
+	\texttt{let aereoDiLinea := inDiLinea( aereo, [ \dots\ ] );}
+\]
+	allora si pu\`o scrivere:
+\[
+	\texttt{aereoDiLinea.m(\dots);}
+\]
+\texttt{aereoDiLinea} \`e un riferimento ad un ruolo specifico dell'oggetto
+\texttt{aereo}.
+\item Attraverso l'operatore \texttt{As} (sempre supponendo che l'oggetto
+	\texttt{aereo} abbia gi\`a acquisito il ruolo \texttt{DiLinea}):
+\[
+	\texttt{(aereo As DiLinea).m(\dots);}
+\]
+\end{enumerate}
+\end{example}
+
+\subsection{L'ordine totale $\preceq$}
+
+Una delle caratteristiche essenziali dei linguaggi a oggetti \`e la possibilit\`a di
+avere il cosiddetto \textit{late binding}. In altre parole, quando in una espressione
+si invia un messaggio ad un oggetto (di solito, con la notazione $X.m$, in cui $X$ \`e
+l'oggetto -- o riferimento all'oggetto -- che riceve il messaggio $m$) la particolare
+implementazione del messaggio da chiamare viene stabilita a runtime. Per questo si dice
+che il \textit{binding} tra il messaggio e l'attuale implementazione richiamata \`e
+``ritardato'' o dinamico.
+
+Nei linguaggi a oggetti pi\`u comuni il binding viene realizzato ``leggendo'', a tempo
+di esecuzione, il tipo dinamico dell'oggetto e risolvendo la chiamata
+a favore dell'implementazione nel tipo letto.
+
+Nei linguaggi con ruoli nasce immediatamente una importante questione, dal momento che
+il tipo dinamico $\mst(X)$ sar\`a, in generale, un insieme di tipi, al che non \`e
+pi\`u cos\`\i\ immediato stabilire \textit{quale} metodo invocare a seguito dell'invio
+di un messaggio. Tuttavia la presenza di pi\`u ruoli, oltre che servire per modellare
+facilmente entit\`a del mondo reale che evolvono nel tempo, ha un'importante risvolto:
+l'oggetto esibisce una ``preferenza'' a comportarsi in un modo dipendente dai
+ruoli acquisiti (e a volte anche da \textit{come} ha acquisito i ruoli).
+
+Volendo essere formali, quello che si sta cercando di ottenere \`e un \textit{ordinamento}
+tra i ruoli tale per cui, quando ci si trova in una situazione ambigua, cio\`e quando
+si invoca un metodo in un oggetto che appartiene a pi\`u ruoli specifici, il ruolo pi\`u
+``piccolo'' viene scelto come ``preferito'' e utilizzato per risolvere la chiamata.
+
+In realt\`a le classi sono gi\`a correlate da una relazione d'ordine, cio\`e
+l'ordinamento usuale dovuto al sottotipaggio, cos\`\i\ possiamo dire ad esempio che
+\texttt{DiLinea} $\isa$ \texttt{InAttivit\`a}.
+Tuttavia tale ordinamento \`e parziale, mentre a noi interessa proprio correlare tra
+loro le classi ``sorelle'' (come ad esempio \texttt{InAttivit\`a} e \texttt{InRevisione}),
+per disambiguare chiamate a metodi ridefiniti in entrambe. Per questo motivo Bertino e
+Guerrini definiscono un ordinamento $\preceq$ \textit{totale} derivato
+dall'usuale ordinamento $\isa$, ma arricchito da un ordinamento totale
+ISA-indipendente $\sqsubseteq$.
+
+L'ordine totale $\preceq$ \`e definito come segue:
+\begin{definition}
+Siano $c_1$ e $c_2$ due classi appartenenti alla stessa gerarchia,
+allora $c_1 \preceq c_2$ se
+\begin{enumerate}
+\item $c_1 \isa c_2$, cio\`e $c_1$ \`e una sottoclasse di $c_2$, oppure
+\item $c_1 \not\isa c_2, c_2 \not\isa c_1,$ e $c_1 \sqsubseteq c_2$, cio\`e $c_1$ non
+	\`e sottoclasse di $c_2$, n\'e $c_2$ \`e sottoclasse di $c_1$, per\`o $c_1$
+	precede $c_2$ nell'ordinamento totale $\sqsubseteq$.
+\end{enumerate}
+\end{definition}
+Intuitivamente, quando si invia un messaggio $m$ ad un oggetto $X$ si invoca il
+metodo per $m$ contenuto nella classe \textit{pi\`u piccola} (secondo
+l'ordinamento totale $\preceq$) tra quelle in
+$\mst(X)$ (questa operazione verr\`a formalizzata e meglio specificata pi\`u
+avanti).
+
+In realt\`a ogni gerarchia di classi $\mathcal{H}_i$ avr\`a un suo ordinamento
+$\sqsubseteq_i$ e, di conseguenza, un $\preceq_i$ distinto. Nel seguito faremo
+l'assunzione di lavorare sempre all'interno di una stessa gerarchia, in modo
+da poter omettere i pedici $i$.
+
+\subsubsection*{Note sull'ordinamento ISA-indipendente $\sqsubseteq$}
+
+Come si nota dalla definizione, l'ordinamento parziale $\isa$, ove definito, domina 
+l'ordinamento totale $\sqsubseteq$, tuttavia quest'ultimo deve rispettare dei
+precisi vincoli di consistenza con $\isa$ per evitare situazioni incoerenti.
+
+\begin{figure}
+\label{fig-coerenza}
+\setlength{\unitlength}{0.5em}
+\begin{center}
+\begin{picture}(13, 10)
+\put( 6,  9){\ctr{$c_0$}}
+\put( 1,  1){\ctr{$c_1$}}
+\put( 9,  5){\ctr{$c_2$}}
+\put( 6,  1){\ctr{$c_3$}}
+\put(12,  1){\ctr{$c_4$}}
+\put( 2,  2){\vector( 1, 2){3}}
+\put( 8,  6){\vector(-1, 2){1}}
+\put( 7,  2){\vector( 1, 2){1}}
+\put(11,  2){\vector(-1, 2){1}}
+\end{picture}
+\caption{Coerenza di $\sqsubseteq$.}
+\end{center}
+\end{figure}
+
+Per chiarire la situazione prendiamo in considerazione la gerarchia di
+figura \ref{fig-coerenza} e supponiamo che l'ordinamento $\sqsubseteq$ sia
+definito cos\`\i:
+\[
+	c_0 \sqsubseteq c_2 \sqsubseteq c_1 \sqsubseteq c_3 \sqsubseteq c_4.
+\]
+Per le regole di sottotipaggio si ha
+\[
+	c_3 \preceq c_2
+\]
+e, per l'ordinamento $\sqsubseteq$, 
+\[
+	c_2 \preceq c_1 \preceq c_3
+\]
+che evidentemente \`e assurdo. Per tale motivo
+si impone un vincolo di consistenza su $\sqsubseteq$, formalizzato come
+segue:
+\begin{definition}
+Un ordine totale $\sqsubseteq$ su una gerarchia $\mathcal{H}$ di classi \`e detto consistente
+con l'ordine (parziale) $\isa$ se $\forall c_1, c_2 \in \mathcal{H}$ t.c. $c_1 \isa c_2$
+non esiste una classe $c \in \mathcal{H}$ tale che le seguenti condizioni siano
+soddisfatte:
+\begin{itemize}
+\item $c_1 \not\isa c$ e $c \not\isa c_1$,
+\item $c_2 \not\isa c$ e $c \not\isa c_2$,
+\item $c_2 \sqsubseteq c \sqsubseteq c_1$.
+\end{itemize}
+\end{definition}
+
+L'ordinamento totale $\preceq$ appena definito permette dunque di stabilire formalmente
+quale sia la classe ``preferita'' in un insieme di classi, semplicemente identificandola
+nella classe ``pi\`u piccola''. Da notare che questa definizione \`e consistente con
+quanto avviene nei linguaggi a oggetti tradizionali (senza ruoli), in cui la classe
+preferita coincide con il tipo dinamico (unico) dell'oggetto.
+
+A questo punto diviene cruciale la definizione dell'ordinamento $\sqsubseteq$,
+variando il quale si ottengono diverse strategie di binding con i metodi.
+
+\subsubsection*{L'ordine totale di Galileo}
+
+Per introdurre l'argomento prendiamo in esame il linguaggio Galileo, e cerchiamo
+di definire un'ordinamento totale tra le classi che rispecchi il pi\`u possibile
+la semantica di Galileo, in cui l'invio di un messaggio viene risolto invocando
+il metodo pi\`u specializzato. Consideriamo quindi il seguente ordinamento tra
+le classi:
+\begin{definition}
+$c_1~\sqsubseteq_G~c_2 \iff$ il ruolo $c_1$ \`e stato acquisito dopo il ruolo $c_2$.
+\end{definition}
+
+Tale definizione, solo accennata nel lavoro di Bertino e Guerrini, va corredata da una
+prova di consistenza:
+\begin{proposition}
+L'ordinamento totale $\sqsubseteq_G$ \`e consistente con l'ordinamento parziale $\isa$.
+\newline
+Dimostrazione. Supponiamo che esistano 3 classi (ruoli) $c, c_1, c_2$ tali
+che $c_1 \not= c_2$, $c_1 \isa c_2$ e inoltre $c$ soddisfi le 3 condizioni della
+definizione di consistenza.
+
+Da $c_2 \sqsubseteq_G c \sqsubseteq_G c_1$ si ha che il ruolo $c_2$
+\`e stato acquisito dopo il ruolo $c$ che a sua volta \`e stato acquisito dopo il
+ruolo $c_1$. D'altronde, $c_1$ \`e una sottoclasse di $c_2$, per cui prima di
+acquisire il ruolo $c_1$ l'oggetto ha acquisito il ruolo $c_2$\footnote{Notare che,
+nel caso in cui l'oggetto non abbia il ruolo $c_2$, all'atto del'acquisizione di
+$c_1$ Galileo fa acquisire in ordine tutti i ruoli antenati di $c_1$, tra cui
+$c_2$ stesso.}, ovvero $c_1 \sqsubseteq_G c_2$ il che \`e assurdo.\hfill$\Box$
+\end{proposition}
+
+\begin{example}
+Sia dato un oggetto \texttt{aereo} che ha assunto, nell'ordine, i ruoli
+\texttt{InAttivit\`a}, \texttt{Passeggeri} ed infine \texttt{DiLinea}, considerando
+l'ordinamento $\sqsubseteq_G$ si ha:
+\[
+	\texttt{DiLinea} \preceq \texttt{Passeggeri} \preceq
+	\texttt{InAttivit\`a} \preceq \texttt{Aereo}
+\]
+\end{example}
+
+In realt\`a l'ordinamento $\sqsubseteq_G$ non cattura esattamente la
+regola di dispatching di Galileo, e infatti in Galileo non sempre \`e il
+ruolo pi\`u recente che risponde ad un messaggio. Analizzeremo in dettaglio
+il comportamento di Galileo insieme alle regole di dispatching di Chimera
+in \ref{dispatching}.
+
+\subsubsection*{Un esempio ordinamento totale alternativo}
+
+Nell'articolo di Bertino e Guerrini viene preso in esame un ordinamento totale
+alternativo dato dall'ordine di definizione delle classi:
+
+\begin{definition}
+$c_1~\sqsubseteq_D~c_2 \iff$ la classe $c_1$ \`e stata definita dopo
+la classe $c_2$.
+\end{definition}
+
+Anche $\sqsubseteq_D$ \`e consistente (la prova segue facilmente quella fornita
+per la consistenza di $\sqsubseteq_G$) e presenta alcune caratteristiche
+interessanti: essendo un ordinamento definito \textit{staticamente} (cio\`e che non
+varia nel tempo) sembrerebbe a prima
+vista non ideale, soprattutto considerando che i ruoli sono stati introdotti
+proprio per modellare situazioni in cui gli oggetti si evolvono nel tempo.
+Ma questa evoluzione, in pratica, si manifesta, per ogni oggetto $X$,  come una
+variazione dell'insieme $\mst(X)$, di conseguenza al variare di $\mst(X)$ varier\`a
+anche la classe \textit{pi\`u piccola} in $\mst(X)$, ovvero il comportamento
+``preferito'' di $X$.
+
+Inoltre, l'ordinamento di Galileo potrebbe essere, in alcune circostanze,
+troppo \textit{preciso}, ovvero potrebbero esistere situazioni in cui non
+\`e tanto importante l'ordine con cui i ruoli sono stati acquisiti, quanto
+semplicemente il fatto che essi \textit{sono} stati acquisiti.
+Per esempio, potrebbe non essere rilevante il fatto che \texttt{DiLinea}
+sia stato acquisito prima o dopo \texttt{Passeggeri}, mentre \`e certamente
+rilevante il fatto che \texttt{InRevisione} sia acquisito dopo
+di \texttt{InAttivit\`a}.
+
+\subsection{Regole di dispatching dei metodi}
+\label{dispatching}
+
+Veniamo dunque alla formalizzazione del meccanismo di dispatching dei messaggi
+in Chimera, una volta definito l'ordinamento $\preceq$, in modo da
+operare un confronto serrato con l'analogo sistema in Galileo. Tale meccanismo
+si appoggia sia al tipo dinamico di $X$, costituito dall'insieme
+$\mst(X)$, sia al tipo statico $t^s(X)$.
+
+Dunque, in Chimera l'invocazione
+$o.m(v_1,\dots,v_n)$ viene risolta come segue:
+\begin{itemize}
+\item se $t^s(o) \in \mst(o)$, allora viene scelta l'implementazione di $m$ in $t^s(o)$,
+\item se $t^s(o) \not\in \mst(o)$, sia $A \eqdef \{ c~|~c \in \mst(o) \wedge c \isa t^s(o) \}$,
+	allora viene scelta l'implementazione di $m$ in	$\mathit{min}_\preceq A$.
+\end{itemize}
+In realt\`a la distinzione di questi due casi \`e inutile, in quanto se abbiamo che
+$t^s(o)~\in~\mst(o)$, allora l'insieme $A$ si riduce a un singoletto:
+\[
+	A = \{ t^s(o) \}
+\]
+Infatti, supponiamo per assurdo che ci sia una classe $c \in A$ e $c \not= t^s(o)$,
+ma allora $c \isa t^s(o)$ e $c \in \mst(o)$, e ci\`o va contro la propriet\`a
+\ref{equazione-mst} definita all'inizio.
+
+Notiamo quindi che, a differenza di quanto detto finora, non vengono considerati
+proprio \textit{tutti} i ruoli in $\mst(X)$, ma solo quelli che sono sottotipi
+di $t^s(X)$, il che \`e ragionevole.
+Ovviamente non \`e detto che il metodo $m$ sia implementato proprio nella classe
+cos\`\i\ determinata (potrebbe essere stato ereditato da una superclasse), ma la classe
+determinata \`e quella da cui parte la ricerca (verso l'alto).
+
+In Galileo, abbiamo detto, viene favorito l'ultimo ruolo acquisito in cui
+compare una specializzazione del metodo invocato,
+e la motivazione di questo fatto ci viene data dalla stessa
+implementazione del meccanismo: la \textit{type history} rappresenta la storia
+dei ruoli acquisiti di un oggetto, ordinati partendo dal primo ruolo acquisito
+fino all'ultimo.
+Quando si effettua la ricerca di un metodo entrano in gioco la type history
+ed il tipo runtime $\rtt(r)$ del riferimento usato per accedere all'oggetto. In Chimera non
+esiste il concetto di tipo runtime, inteso come tipo dinamico del riferimento, visto che
+non \`e possibile avere riferimenti ``interni'' a specifici ruoli dell'oggetto.
+
+Al momento dell'invocazione di un metodo $m$
+si scorre la type history all'indietro, partendo quindi dall'ultimo ruolo acquisito,
+e si invoca la prima implementazione di $m$ incontrata in una classe $t$ della
+type history tale che $t \isa \rtt(r)$. Se $m$ non viene trovato si prosegue, come
+usuale, alle superclassi fino alla radice (\textit{upward lookup}).
+
+Analizziamo allora un esempio in cui in Galileo non \`e l'ultimo ruolo acquisito a rispondere
+ad un metodo $m$:
+
+\begin{example}
+Consideriamo ancora un oggetto \texttt{aereo} che ha acquisito, nell'ordine,
+i ruoli \texttt{InAttivit\`a} e \texttt{InRevisione}. In pi\`u, supponiamo che in
+\texttt{Aereo}
+sia definito un metodo $m$ e che lo stesso metodo venga specializzato in \texttt{InAttivit\`a},
+ma non in \texttt{InRevisione}. In Galileo, la chiamata a
+\[
+	\texttt{aereo.m(\dots);}
+\]
+innesca il meccanismo di \emph{double lookup}. Il primo ruolo preso in esame
+\`e \texttt{InRevisione}, che tuttavia non contiene (propriamente) il metodo
+$m$, per cui si passa al ruolo precedente, \texttt{InAttivit\`a}, \emph{che
+avendo ridefinito $m$ \`e il ruolo che di fatto risponde al messaggio},
+anche se \`e \texttt{InRevisione} l'ultimo ruolo acquisito.
+
+In Chimera la chiamata (analoga)
+\[
+	\texttt{Aereo(aereo), aereo.m(\dots);}
+\]
+viene risolta invocando
+l'implementazione di $m$ in \texttt{InRevisione} (metodo che \texttt{InRevisione} 
+eredita da \texttt{Aereo}), in quanto, considerando l'ordinamento $\sqsubseteq_G$,
+si ha che \texttt{InRevisione} $\preceq$ \texttt{InAttivit\`a}.
+\end{example}
+
+In generale, in Chimera non \`e possibile definire un ordinamento ISA-indipendente $\sqsubseteq$
+che catturi esattamente la semantica di Galileo, perch\'e in Galileo il ruolo che
+risponde ad un messaggio dipende non solo dall'ordine di acquisizione del ruolo stesso,
+ma anche dal particolare metodo invocato, mentre in Chimera l'ordinamento prende
+in considerazione come unit\`a di selezione solo la classe.
+
+\subsection{Conclusioni}
+
+Riassumendo, in questa sezione abbiamo confrontato il meccanismo dei ruoli in
+Galileo con quello delle classi pi\`u specifiche in Chimera. Le differenze
+pi\`u significative possono essere riassunte come segue:
+\begin{itemize}
+\item In Chimera non \`e possibile avere riferimenti ``interni'' a ruoli specifici
+	dell'oggetto. Ogni volta che l'oggetto \`e referenziato occorre precisare
+	il contesto, ovvero il tipo statico con cui avviene l'accesso.
+\item L'identit\`a dei ruoli in Galileo si basa sulla \textit{type history},
+	mentre in Chimera il problema non si pone, visto che il riferimento
+	a un oggetto \`e unico.
+\item Il meccanismo per stabilire la classe ``preferita'' in Chimera
+	non indica una strategia particolare, ma si basa su un ordinamento totale delle
+	classi consistente con l'ordine parziale di sottotipaggio. Per quanto generale,
+	tale meccanismo non
+	\`e in grado di catturare esattamente la semantica di Galileo.
+\item In Chimera non esiste (per il momento) un sistema per avere \emph{binding
+	statico} dei metodi, che in Galileo si ottiene utilizzando congiuntamente
+	l'operatore \texttt{As} con \texttt{!}.
+\end{itemize}
+
+\end{document}
+</mtext>
+</mstyle>
+</math>
+</body>
+</html>

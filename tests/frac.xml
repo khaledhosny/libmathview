@@ -1,0 +1,22 @@
+
+<math>
+  <mfrac>
+    <mrow>
+      <mphantom>
+        <mo>(</mo>
+      </mphantom>
+      <mn>1</mn>
+      <mphantom>
+        <mo>)</mo>
+      </mphantom>
+    </mrow>
+    <mrow>
+      <mn>1</mn>
+      <mo>+</mo>
+      <msup>
+        <mi>x</mi>
+	<mn>2</mn>
+      </msup>
+    </mrow>
+  </mfrac>
+</math>

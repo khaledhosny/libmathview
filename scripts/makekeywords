@@ -1,0 +1,50 @@
+#!/bin/bash2
+
+if [ ! $# == 4 ]; then
+	echo Usage: makekeywords \{ def \| dec \} enum-type-name search-for output-file;
+	exit 0;
+fi
+
+KW=`cat keyword.list | grep ^$3 | cut -f 2`
+TOKEN=`cat keyword.list | tr -s ' ' ',' | tr -s '\t' ',' | tr -s ',' ',' | grep ^$3 | cut -d ',' -f 2,3`
+SUFFIX=$3_
+
+rm -f $4
+
+if [ $1 == "def" ]; then
+
+    echo -n Making $2 definitions\ 
+
+    echo static struct \{          >>$4
+    echo "  ""$2"Id id\;           >>$4
+    echo "  "const char\* name\;   >>$4
+    echo "  "const Value\* value\; >>$4  
+    echo \} s"$2"Token[] = \{      >>$4
+    echo { "$SUFFIX"NOTVALID, 0 }, >>$4
+    for i in $TOKEN
+    do
+	TOKENID=`echo $i | cut -d ',' -f 1`
+	TOKENNAME=`echo $i | cut -d ',' -f 2`
+	echo { $SUFFIX$TOKENID, $TOKENNAME, NULL }, >>$4
+	echo -n .
+    done
+    echo { "$SUFFIX"NOT_LISTED_ABOVE_AND_WITHOUT_TRAILING_COMMA, 0, NULL } >>$4
+    echo }\; >>$4
+    echo
+
+else
+
+    echo -n Making $2 declarations\ 
+
+    echo enum "$2"Id {      >>$4
+    echo "$SUFFIX"NOTVALID, >>$4
+    for i in $KW
+    do
+	    echo $SUFFIX$i, >>$4
+	    echo -n .
+    done
+    echo "$SUFFIX"NOT_LISTED_ABOVE_AND_WITHOUT_TRAILING_COMMA >>$4
+    echo }\; >>$4
+    echo
+
+fi

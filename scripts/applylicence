@@ -1,0 +1,33 @@
+#!/bin/sh
+
+FILES=`find . -name "*.cc"`
+for i in $FILES
+do
+	cp doc/LICENCEcc /tmp/f
+	$1/cutlicence.pl <$i >>/tmp/f
+	mv /tmp/f $i
+done
+
+FILES=`find . -name "*.hh"`
+for i in $FILES
+do
+	cp doc/LICENCEcc /tmp/f
+	$1/cutlicence.pl <$i >>/tmp/f
+	mv /tmp/f $i
+done
+
+FILES=`find . -name "*.c"`
+for i in $FILES
+do
+	cp doc/LICENCEc /tmp/f
+	$1/cutlicence.pl <$i >>/tmp/f
+	mv /tmp/f $i
+done
+
+FILES=`find . -name "*.h"`
+for i in $FILES
+do
+	cp doc/LICENCEc /tmp/f
+	$1/cutlicence.pl <$i >>/tmp/f
+	mv /tmp/f $i
+done

@@ -1,0 +1,161 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(src/MathMLObject.cc)
+
+MATHVIEW_MAJOR_VERSION=0
+MATHVIEW_MINOR_VERSION=2
+MATHVIEW_MICRO_VERSION=0
+MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
+MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
+
+AC_SUBST(MATHVIEW_VERSION)
+AC_SUBST(MATHVIEW_VERSION_INFO)
+
+AC_ARG_ENABLE(
+	checks,
+	[  --enable-checks[=ARG]   include debugging checks [default=yes]],
+	[
+		if test $enableval = yes; then
+			AC_DEFINE(ENABLE_CHECKS)
+		fi
+	],
+	AC_DEFINE(ENABLE_CHECKS)
+)
+
+AC_ARG_ENABLE(
+	floating,
+	[  --enable-floating[=ARG] use floating point arithmentics for internal
+                          computations [default=yes]],
+	[
+		if test $enableval = yes; then
+			AC_DEFINE(FLOATING_SCALED)
+		fi
+	],
+	AC_DEFINE(FLOATING_SCALED)
+)
+
+AC_ARG_WITH(
+	libxml2,
+	[  --with-libxml2[=ARG]    compile with libxml 2.x library [default=auto]],
+	libxml2=$withval,
+	libxml2=auto
+)
+
+AC_ARG_WITH(
+	t1lib,
+	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
+	t1lib=$withval,
+	t1lib=auto
+)
+
+AC_ARG_ENABLE(
+	export-PS,
+	[  --enable-export-PS[=ARG] enable support for exporting PostScript [default=auto]],
+	export_PS=$enableval,
+	export_PS=auto
+)
+
+dnl Aumomake configuration
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
+dnl AC_DISABLE_SHARED
+AM_PROG_LIBTOOL
+
+dnl Checks for programs.
+AC_LANG_C
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_LN_S
+AC_ISC_POSIX
+AC_CHECK_PROG(HAVE_PFB2PFA, pfb2pfa, yes, no)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADER(wctype.h,,AC_MSG_ERROR(could not find required header file `wctype.h'))
+AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file `iconv.h'))
+AC_CHECK_HEADERS(unistd.h)
+AC_FUNC_VFORK
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_BIGENDIAN
+AC_TYPE_PID_T
+
+dnl Checks for libraries.
+dnl WARNING: libraries are checked at the end and in this order
+dnl since any found library is included in subsequent checks by
+dnl the configure script.
+AC_CHECK_LIB(xml, xmlParseDocument,
+	[
+		CFLAGS="$CFLAGS `xml-config --cflags`"
+		CXXFLAGS="$CXXFLAGS `xml-config --cflags`"
+		LIBS="$LIBS `xml-config --libs`"
+	],
+	,
+	`xml-config --libs`
+)
+
+dnl if the user gave no explicit libxml2 option, try to guess its value
+if test $libxml2 = "auto"; then
+	AC_MSG_CHECKING(for libxml version 2)
+	AC_TRY_COMPILE(
+		[#include <parser.h>],
+		[
+			xmlEntity e;
+			e.etype = e.etype;
+		],
+		[
+			AC_DEFINE(HAVE_LIBXML2)
+			AC_MSG_RESULT(maybe)
+		],
+		AC_MSG_RESULT(no)
+	)
+elif test $libxml2 = "yes"; then
+	AC_DEFINE(HAVE_LIBXML2)
+fi
+
+AC_CHECK_LIB(gtk, gtk_window_new,
+	[		
+		CFLAGS="$CFLAGS `gtk-config --cflags`"
+		CXXFLAGS="$CXXFLAGS `gtk-config --cflags`"
+		LIBS="$LIBS `gtk-config --libs`"
+	],
+	,
+	`gtk-config --libs`
+)
+
+if test $t1lib = "auto"; then
+	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no")
+fi
+
+if test $t1lib = "yes"; then
+	LIBS="-lt1x -lt1 $LIBS"
+	AC_DEFINE(HAVE_LIBT1)
+fi
+
+if test "(" $t1lib = "no" ")" -a "(" $export_PS = "yes" ")"; then
+	AC_MSG_WARN(cannot export to PostScript if t1lib is not available)
+	export_PS=no
+fi
+
+if test "(" $export_PS = "auto" ")" -a "(" $HAVE_PFB2PFA = "no" ")"; then
+	AC_MSG_WARN(cannot export to PostScript if 'pfb2pfa' is not installed)
+	export_PS=no
+else
+	export_PS=yes
+fi
+
+CFLAGS="$CFLAGS -Wall"
+CXXFLAGS="$CXXFLAGS -Wall"
+
+AC_OUTPUT([
+Makefile
+config/Makefile
+scripts/Makefile
+src/Makefile
+auto/Makefile
+doc/Makefile
+viewer/Makefile
+randomath/Makefile
+mathml2ps/Makefile
+])

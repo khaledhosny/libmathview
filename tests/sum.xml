@@ -1,0 +1,38 @@
+<math display="inline">
+  <mtext>
+  bl bla bla bla bla bla bla
+  </mtext>
+  <msqrt>
+  <mrow>
+  <munderover>
+    <mo movablelimits="false">&Sum;</mo>
+    <mrow>
+      <mi>n</mi>
+      <mo>=</mo>
+      <mfrac>
+        <mn>100</mn>
+	<mn>10</mn>
+      </mfrac>
+    </mrow>
+    <mrow>
+      <mo>+</mo>
+      <mi>&infin;</mi>
+    </mrow>
+  </munderover>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
+      <mn>1</mn>
+      <mo>+</mo>
+      <msup>
+        <mi>n</mi>
+	<mn>2</mn>
+      </msup>
+    </mrow>
+  </mfrac>
+  </mrow>
+  </msqrt>
+  <mtext>
+  bl bla bla bla bla bla bla
+  </mtext>
+</math>

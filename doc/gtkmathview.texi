@@ -1,0 +1,523 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename gtkmathview.info
+@settitle GtkMathView Reference Manual
+@c %**end of header
+@setchapternewpage off
+@include version.texi
+
+
+@ifinfo
+This file documents GtkMathView, a GTK widget for rendering MathML documents.
+
+Copyright @copyright{} 2000 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX
+and print the results, provided the printed document
+carries a copying permission notice identical to this
+one except for the removal of this paragraph (this
+paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled ``Copying'' and ``GNU General Public License''
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+@end ifinfo
+
+
+@titlepage
+@title GtkMathView Reference Manual
+@subtitle A GTK Widget for Rendering MathML Documents
+@subtitle Version @value{VERSION}
+@subtitle @value{UPDATED}
+@author by Luca Padovani
+
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2000 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled ``Copying'' and ``GNU General Public License''
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+@end titlepage
+
+
+@node    Top, Overview, (dir), (dir)
+@comment node-name, next,         previous, up
+@menu
+* Overview::        General information about GtkMathView.
+* Download::        References to get the source code.
+* Usage::           Compiling and installation instructions.
+* Interface::       Summary of the interface.
+* Configuration::   How to tune-up the widget.
+* Bugs::            How to report a bug.
+@end menu
+
+
+@node     Overview, Download, Top, Top
+@comment  node-name,    next,  previous,  up
+@chapter  Overview
+@noindent
+GtkMathView is a C++ rendering engine for MathML (see @url{http://www.w3.org/Math})
+documents. This module is meant to be part of the
+Helm project (see @url{http://www.cs.unibo.it/helm/}), but
+the widget is independent from it and easily
+embeddable within GTK applications. This library is
+covered by the GNU General Public Licence (@emph{not}
+the GNU LGPL, this means that the library cannot be linked against commercial
+applications. See the file COPYING included in the distribution for more details).
+
+@noindent
+For questions, comments, suggestions, bug reports, contributions, please
+contact the author at the following email address: @email{luca.padovani@@cs.unibo.it}
+
+
+@node     Download, Usage, Overview, Top
+@comment  node-name,  next,  previous,  up
+@chapter  Download
+@noindent
+The complete source code of the GtkMathView widget, along with this
+documentation, can be obtained directly from the author's page located
+at @url{http://cs.unibo.it/~lpadovan/mml-widget/}.
+
+
+@node     Usage, Interface, Download, Top
+@comment  node-name,  next,  previous,  up
+@chapter  Usage
+@menu
+* Requirements::     Auxiliary packages to compile and run GtkMathView.
+* Installing::       How to compile the source code of the widget.
+* Compile and Link:: How to link against your source code.
+* Font setup::       Preparing a font configuration file.
+@end menu
+
+
+@node     Requirements, Installing, Usage, Usage
+@comment  node-name,  next,  previous,  up
+@section  Requirements
+@noindent
+To compile and use the widget you need the following packages
+installed on your system:
+
+@itemize @bullet
+@item
+@code{GTK} (version 1.2) @url{http://www.gtk.org}, of course.
+@item
+@code{libxml} @url{http://xmlsoft.org}, be careful
+because all current Linux distributions come with version 1.x of libxml
+@emph{which is not compatible} with version 2. If you need both you will have to
+customize the installation of libxml2 so that it does not produce
+conflicts with previous versions. From version 0.1.1 of the widget it has
+been added backward "compatibility" with version 1.8.x of libxml, however
+this compatibility is not fully effective due to some bugs of libxml. It is
+recommended to upgrade to version 2. See file INSTALL for more details.
+@item
+@code{gcc/g++} (version 2.95.3, this is the version I currently use, but the widget
+will probably compile and run without problems even with some previous versions).
+@end itemize
+
+@itemize @bullet
+@item
+@code{t1lib} (version 1.0.1) @url{ftp://ftp.neuroinformatik.ruhr-uni-bochum.de/pub/software/t1lib/}
+Actually, this library is not required, however, if you have it, you will
+be able to use Type1 fonts independently from the X font server. Furthermore,
+you will be able to render anti-aliased text and exploit kerning information,
+if available. This library is also needed in the case you want to export MathML
+to PostScript.
+Finally, the configuration script is usually able to autodetect the library,
+if installed, however you will have to configure some files and environment
+variables. See the section about font installation below.
+@end itemize
+
+@node     Installing, Compile and Link, Requirements, Usage
+@comment  node-name,  next,  previous,  up
+@section  Installing
+@noindent
+See the INSTALL file included in the source distribution for
+detailed compiling and installation instructions. After installation
+you will have the following files:
+
+@itemize @bullet
+@item
+@code{/usr/local/bin/gtkmathview-config} this is the configuration
+script. Use @code{gtkmathview-config --cflags} to get compilation flags
+of source files using the widget. Use @code{gtkmathview --libs} to get
+linking flags and libraries to be linked with your object files.
+@item
+@code{/usr/local/include/gtkmathview/} include files (you have to include
+@code{gtkmathview.h} and @code{minidom.h} if you plan to access the DOM
+tree underlying the widget).
+@item
+@code{/usr/local/lib/} libraries. Unless you
+gave @code{configure} one of @code{--disable-static} or
+@code{--disable-shared} you will find in this directory both static and shared
+versions of the widget.
+@item
+@code{/usr/local/info/}, the info file. You can browse it
+with the command @code{info -f /usr/local/info/gtkmathview.info}.
+@item
+@code{/usr/local/share/gtkmathview/} some configuration files (fonts and
+operator dictionary) along with their DTDs.
+@end itemize
+
+
+@node     Compile and Link, Font setup, Installing, Usage
+@comment  node-name,  next,  previous,  up
+@section  Compile and Link
+
+@noindent
+To compile a source file which uses the widget use the command
+
+@example
+gcc -c filename.c -l... -I... `gtkmathview-config --cflags`
+@end example
+
+@noindent
+The widget is compiled by default to generate both static and shared object file.
+It can be linked dynamically against your applications with
+the command:
+
+@example
+gcc -o appname *.o `xml-config --libs` `gtk-config --libs` `gtkmathview-config --libs`
+@end example
+
+
+@node     Font setup,     , Compile and Link, Usage
+@comment  node-name,  next,  previous,  up
+@section  Font setup
+@noindent
+The widget is designed to use the best fonts available on the
+system. As of today the font configuration file (@code{font-configuration.xml}) is
+designed to use the fonts that comes with the X distribution, in
+particular `times' for plain text and `symbol' for mathematical
+symbols. In addition to this, the configuration file includes the
+description of fonts coming along with @emph{Mathematica} and some of the
+LaTeX fonts.
+
+On September 8th it has been released the first version of free fonts from
+the STIX project. You can download them freely at
+
+@example
+ftp://ftp.elsevier.nl/pub/styles/esstix/esstix.zip
+@end example
+
+@noindent
+However, the file @code{font-configuration.xml} must be properly setup to recognize these
+fonts. As of today I have no time to seek for each single glyph name, so
+if someone has enough patience and wants to contribute here is a very long
+work for him/her.
+
+@noindent
+@strong{A special note about True Type fonts}: recent X servers can render
+a wide variety of fonts, including True Type fonts usually shipped with
+Microsoft Windows and friends. These fonts often have more flexible scaling
+capabilities and you could find the final rendering really improved by their use.
+Since their handling is almost completely hidden inside the X font server,
+the widget needs not any special configuration to use them, apart from a proper
+setting of the font configuration file (@code{font-configuration.xml}). In particular,
+True Type versions of Mathematica fonts are available as well, but be careful,
+because some of the fonts provided still have problems with the X server,
+and in some cases the mapping of character is different from a Type1 font
+to the related True Type version.
+
+@noindent
+@strong{Type1 fonts and the t1lib library}: starting from version 0.2.0,
+the rendering engine can use the t1lib library to render Type1 fonts.
+The support for this library is still under development (well, as anything else),
+here are some tips to configure the engine so that you can use Type1 fonts
+(please, consult the t1lib documentation at library's home page for firther details).
+
+@noindent
+First of all, you have to setup a little configuration file for the t1lib library.
+Call this file @code{t1.config} and place it somewhere in your home directory.
+Here is a sample file:
+
+@example
+#
+#
+ENCODING=.
+AFM=/usr/share/texmf/fonts/afm/
+TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:/usr/X11R6/lib/X11/fonts/Type1/:.
+@end example
+
+@noindent
+In particular, you have to specify where your Type1 fonts resides (@code{TYPE1}) along
+with their metrics (@code{AFM}). Metric information in optional, since it can be (mostly)
+recovered by the font file itself. However, it is needed if you want to exploit for
+instance kerning.
+
+@noindent
+Next, you have to setup an environment variable @code{T1LIB_CONFIG} with the full path to this
+configuration file. For example, if you use @code{bash}:
+
+@example
+export T1LIB_CONFIG=./config/t1.config
+@end example
+
+@noindent
+And, if you use @code{tcsh}:
+
+@example
+setenv T1LIB_CONFIG ./config/t1.config
+@end example
+
+@noindent
+Now you are ready to use Type1 fonts. See the method @code{gtk_math_view_new} below.
+
+
+@node     Interface, Configuration, Usage, Top
+@comment  node-name,  next,  previous,  up
+@chapter  Interface to the  Widget
+@noindent
+
+Macro: @code{GTK_TYPE_MATH_VIEW}
+@quotation
+used to get the GTK type for the @code{GtkMathView} class. You don't
+usually need tu use this macro, unless you are subclassing @code{gtkmathview}.
+@end quotation
+
+Macro: @code{GTK_MATH_VIEW(object)}
+@quotation
+used to cast a GtK widget to a @code{GtkMathView} class. Remember that
+all methods working with the widget takes a pointer to @code{GtkMathView}.
+@end quotation
+
+Macro: @code{GTK_MATH_VIEW_CLASS(klass)}
+@quotation
+used to cast a Gtk class to a @code{GtkMathView} class. This macro is used internally,
+so you probably don't need it.
+@end quotation
+
+Macro: @code{GTK_IS_MATH_VIEW(object)}
+@quotation
+used to test wether a Gtk object is indeed a @code{GtkMathView} object.
+You can use it before casting to @code{GtkMathView}.
+@end quotation
+
+Method: @code{GtkType gtk_math_view_get_type(void)}
+@quotation
+allocates a new Gtk type for the class @code{GtkMathView}. Used internally.
+@end quotation
+
+Method: @code{GtkWidget* gtk_math_view_new(GtkAdjustment* h_adj, GtkAdjustment* v_adj, gboolean t1)}
+@quotation
+this is the main constructor for @code{GtkMathView}. It allocates a new @code{GtkMathView}
+object. You can pass a couple of adjustments fro the scrolling bars, or just @code{NULL} in the
+case you want the widget to allocate its own scrolling bars.
+The last parameter is used to tell @code{GtkMathView} whether it has to use a Type1 font
+manager (@code{TRUE}) or the (more stable) Gtk font manager (@code{FALSE}).
+@end quotation
+
+Method: @code{gboolean gtk_math_view_load(GtkMathView* widget, const gchar* file_name)}
+@quotation
+load a MathML document into the widget and render it. If the loading succeed then @code{TRUE}
+is returned, @code{FALSE} otherwise.
+@end quotation
+
+Method: @code{void gtk_math_view_unload(GtkMathView*)}
+@quotation
+unload a document from the widget, release all resources related to the document
+itself. This is automatically invoked if you load two subsequent documents, so you don't need
+to call this method explicitly.
+@end quotation
+
+Method: @code{mDOMNodeRef gtk_math_view_get_selection(GtkMathView* widget)}
+@quotation
+return the DOM reference of the node currently selected
+in the document, or @code{NULL} if there is no document or there is no selection
+@end quotation
+
+Method: @code{void gtk_math_view_set_selection(GtkMathView* widget, mDOMNodeRef node)}
+@quotation
+forces the selection of the document to be the subtree rooted at @code{node}.
+Nothing happens if @code{node} turns out not to be a node rendered by the widget
+(for example, if it is a content element). If @code{node} is set to
+@code{NULL} then the currently selected subtree, if any, will be de-selected.
+@end quotation
+
+Method: @code{guint gtk_math_view_get_width(GtkMathView* widget)}
+@quotation
+return the width of the drawable area of the widget. Please note that
+this not necessarily is equal to the whole widget width, due to the inner frame.
+@end quotation
+
+Method: @code{guint gtk_math_view_get_height(GtkMathView* widget)}
+@quotation
+return the height of the drawable area of the widget. Same arguments as
+for @code{gtk_math_view_get_width}.
+@end quotation
+
+Method: @code{void gtk_math_view_get_top(GtkMathView* widget, guint* top_x, guint* top_y)}
+@quotation
+return in @code{top_x} and @code{top_y} the coordinates (in pixels) of the upper left displayed
+corner of the document. Either @code{top_x} or @code{top_y} may be @code{NULL},
+if you are interested in only one of the two values.
+@end quotation
+
+Method: @code{void gtk_math_view_set_top(GtkMathView* widget, guint top_x, guint top_y)}
+@quotation
+set the coordinates (in pixels) of the upper left displayed corner of the
+document.
+@end quotation
+
+Method: @code{void gtk_math_view_set_adjustments(GtkMathView* widget, GtkAdjustment* h_adj, GtkAdjustment* v_adj)}
+@quotation
+set the horizontal and vertical adjustments for the widget.
+@end quotation
+
+Method: @code{GtkAdjustment* gtk_math_view_get_hadjustment(GtkMathView* widget)}
+@quotation
+return a pointer to the horizontal adjustment of the widget.
+@end quotation
+
+Method: @code{GtkAdjustment* gtk_math_view_get_vadjustment(GtkMathView* widget)}
+@quotation
+return a pointer to the vertical adjustment of the widget.
+@end quotation
+
+Method: @code{GdkPixmap* gtk_math_view_get_buffer(GtkMathView* widget)}
+@quotation
+return a pointer to the @code{GdkPixmap} used by the widget as the backbuffer.
+@end quotation
+
+Method: @code{GtkFrame* gtk_math_view_get_frame(GtkMathView* widget)}
+@quotation
+return a pointer to the @code{GtkFrame} used by the widget to draw
+the border around the drawable area. You can set the border style and thickness
+with the proper methods for this objects.
+@end quotation
+
+Method: @code{void gtk_math_view_set_font_size(GtkMathView* widget, guint size)}
+@quotation
+set the default font size (in points) for displaying documents.
+@end quotation
+
+Method: @code{guint gtk_math_view_get_font_size(GtkMathView* widget)}
+@quotation
+return the default font size (in points) for displaying documents.
+@end quotation
+
+Method: @code{void gtk_math_view_set_anti_aliasing(GtkMathView* widget, gboolean b)}
+@quotation
+this is used to enable/disable anti-aliasing for rendering text.
+This function is available with Type1 fonts only, if you are using
+the @code{T1_FontManager} in conjunction with the @code{T1_Gtk_DrawingArea}.
+@end quotation
+
+Method: @code{gboolean gtk_math_view_get_anti_aliasing(GtkMathView* widget)}
+@quotation
+return @code{TRUE} if anti-aliasing is enabled (even if it is
+not supported), @code{FALSE} otherwise.
+@end quotation
+
+Method: @code{void gtk_math_view_set_kerning(GtkMathView* widget, gboolean b)}
+@quotation
+enable/disable kerning. This is available for Type1 fonts only
+(see the same conditions as for the @code{gtk_math_view_set_anti_aliasing}).
+Moreover, kerning is usually available only if the rquested font has a
+corresponding metrics file (AFM).
+@end quotation
+
+Method: @code{gboolean gtk_math_view_get_kerning(GtkMathView* widget)}
+@quotation
+return @code{TRUE} if kerning is enabled (even if it is not
+supported), @code{FALSE} otherwise.
+@end quotation
+
+Method: @code{void gtk_math_view_log_set_verbosity(GtkMathView* widget, gint level)}
+@quotation
+set the level of verbosity for displayed messages. @code{level}
+can be an integer from @code{0} (very few messages, in case of error only)
+to @code{3} (all messages). Useful for debugging purposes.
+@end quotation
+
+Method: @code{gint gtk_math_view_log_get_verbosity(GtkMathView* widget)}
+@quotation
+return the current level of verbosity.
+@end quotation
+
+Method: @code{void gtk_math_view_export_to_postscript(GtkMathView* widget, FILE* f)}
+@quotation
+write a rendered document to the file @code{f} in PostScript format. This method
+is still unstable, so use it with care.
+@end quotation
+
+Signal: @code{"clicked" void user_function(GtkMathView* widget, mDOMNodeRef node)}
+@quotation
+emitted every time the user clicks on an element with a valid DOM reference node.
+The node is passed as a parameter to the function.
+@end quotation
+
+Signal: @code{"jump" void user_function(GtkMathView* widget, mDOMNodeRef node)}
+@quotation
+emitted subsequently a "clicked" signal, if the @code{node} has at least one
+attribute named @code{href}.
+@end quotation
+
+Signal: @code{"selection_changed" void user_function(GtkMathView* widget, mDOMNodeRef node)}
+@quotation
+emitted when the selected subtree changes. @code{node} is the root node of the newly
+selected subtree.
+@end quotation
+
+
+@node     Configuration, Bugs, Interface, Top
+@comment  node-name,  next,  previous,  up
+@chapter  Configuration
+@noindent
+
+To be written.
+
+
+@node     Bugs,  , Configuration, Top
+@comment  node-name,  next,  previous,  up
+@chapter  Bugs and Contributions
+@noindent
+Of course, I appreciate any kind of contribution. The most basic (and, maybe, frequent)
+one is bug report, sending me an email (@email{luca.padovani@@cs.unibo.it})
+with a short description of the problem encountered, a list of the error messages
+or failed assertions and the simplest MathML document that causes the trouble.
+
+@noindent
+Furthermore, the widget is still not complete, it lacks the proper handling
+of some MathML elements and attributes, and I think that there are several
+improvements which can be done. A note about this: the widget is based
+on the MathML 2 Working Draft, which is not
+yet confirmed as standard at the moment of writing, however it is assumed to be a
+rather stable version.
+
+@summarycontents
+@contents
+@bye

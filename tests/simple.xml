@@ -1,0 +1,9 @@
+<document>
+  <math>
+    <mtext>ciao da luca Padovani, questa e' una prova per vedere se l'andata a capo funziona</mtext>
+    <mtext fontsize="150%">questa e' una stringa leggermente piu' grande</mtext>
+    <mstyle fontweight="bold">
+      <mtext>questo e' un mtext dentro uno stile diverso che imposta il carattere bold</mtext>
+    </mstyle>
+  </math>
+</document>

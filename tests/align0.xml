@@ -1,0 +1,71 @@
+<mtable groupalign="{ right center left decimalpoint }">
+  <mtr>
+    <mtd>
+      <mrow>
+        <maligngroup/>
+        <mtext>This is&Space;</mtext>
+	<mtext color="red">right&Space;</mtext>
+        <mtext>aligned</mtext>
+	<mo>,</mo>
+        <maligngroup/>
+        <mtext>This is&Space;</mtext>
+	<mtext color="red">centered</mtext>
+	<mo>,</mo>
+        <maligngroup/>
+        <mtext>This is&Space;</mtext>
+	<mtext color="red">left&Space;</mtext>
+        <mtext>aligned</mtext>
+	<mo>,</mo>
+        <maligngroup/>
+	<mn color="blue">1234.5678</mn>
+	<mo>,</mo>
+	<maligngroup/>
+	<mtext>
+	  mark is &RightArrow;<malignmark/>&LeftArrow; here, did you know?
+	</mtext>	
+      </mrow>
+    </mtd>
+  </mtr>
+  <mtr>
+    <mtd>
+      <mrow>
+        <maligngroup/>
+	<mtext color="red">right</mtext>
+        <maligngroup/>
+	<mtext color="red">centered</mtext>
+        <maligngroup/>
+	<mtext color="red">left</mtext>
+        <maligngroup/>
+	<mn color="blue">0.001</mn>
+	<maligngroup/>
+	<mtext>
+	  right &RightArrow;<malignmark/>&LeftArrow; here!
+	</mtext>	
+      </mrow>
+    </mtd>
+  </mtr>
+  <mtr groupalign="{ right left }">
+    <mtd>
+      <mrow>        
+        <maligngroup/>
+	<mtext>still right...</mtext>
+	<maligngroup/>
+	<mtext>Overridden to left</mtext>
+	<maligngroup/>
+	<mtext>still left...</mtext>
+      </mrow>
+    </mtd>
+  </mtr>
+  <mtr>
+    <mtd>
+      <mrow>
+        <mtext color="green">Ooops!</mtext>
+        <maligngroup/>
+	<maligngroup/>
+        <maligngroup/>
+	<maligngroup/>
+	<mn color="blue">3.14</mn>
+      </mrow>
+    </mtd>
+  </mtr>
+</mtable>

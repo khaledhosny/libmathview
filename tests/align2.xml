@@ -1,0 +1,41 @@
+<math>
+  <mtable frame="solid" rowalign="center" groupalign="{ right }" rowlines="solid">
+    <mtr>
+      <mtd><maligngroup/><mtext>This-is-right-aligned</mtext></mtd>
+    </mtr>
+    <mtr>
+      <mrow>
+        <maligngroup/>
+        <mo>(</mo>
+        <mtable alignmentscope="false true">
+	  <mtr>
+	    <mtd><mn>1<malignmark edge="right"/></mn></mtd>
+	    <mtd><mn>0</mn></mtd>
+	    <mtd><mn>0</mn></mtd>
+	  </mtr>
+	  <mtr>
+	    <mtd><mn>0</mn></mtd>
+	    <mtd><mn>1</mn></mtd>
+	    <mtd><mn>0</mn></mtd>
+	  </mtr>
+	  <mtr>
+	    <mtd><mn>0</mn></mtd>
+	    <mtd><mn>0</mn></mtd>
+	    <mtd><mn>1</mn></mtd>
+	  </mtr>
+	</mtable>
+	<mo>)</mo>
+      </mrow>
+    </mtr>
+    <mtr>
+      <mtd>
+        <mtext color="blue">
+	The two cells above contains one alignment group. However, the second cell
+	is made of an mrow element and a 3x3 table, with alignment scope disabled
+	for the first column, so that a malignmark element has effect on the
+	surrounding table.
+	</mtext>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>

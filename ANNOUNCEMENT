@@ -1,0 +1,181 @@
+		   GtkMathView v0.1.0 Announcement
+		   -------------------------------
+
+I'm glad to announce the first release of GtkMathView, a GTK widget
+for rendering MathML documents. It is meant to be a standalone,
+light-weight component and not a full browser.  GTK applications can
+use the widget as a window for displaying mathematical formulas and
+doing simple interactions.
+
+At present, the widget is actively used as part of the HELM project
+(see http://www.cs.unibo.it/helm).
+
+This is both an announcement and a call for contribution. Despite the
+low-numbered version, the widget recognizes most of MathML 2 (Draft)
+elements and attributes (actually, only the handling of labeled rows
+in a table is missing). Here are some of the features of GtkMathView:
+
+- breaking of long expressions
+- support for stretchy operators
+- configurable support for additional fonts
+- configurable support for the operator dictionary
+- configurable support for entities
+- selection of MathML subtrees
+
+However, the code is far from being heavily tested, and I think there
+are many bugs. For these reasons, anyone interested can contribute
+with bug reports, suggestions and active development of the code, the
+documentation, the configuration scripts. With your support, I expect
+to release the 1.0 version in a few weeks.
+
+Here is the home-page of the widget:
+
+	http://www.cs.unibo.it/~lpadovan/mml-widget/
+
+You will find the source package and the online version of the manual
+(included in the distribution). The package includes detailed
+information for compiling and running the widget, as well as the
+source code of a minimal browser and some (sample) configuration
+files.
+
+To test the widget, write a MathML document (simply enclose a MathML
+expression within a <math> element) and run the minimal browser on it.
+(See at the bottom of this file for an example).
+
+A note about the license: the widget is covered by the GNU GPL license
+(NOT the GNU LGPL).
+
+Waiting for your feedback,
+
+	Luca Padovani <luca.padovani@cs.unibo.it>
+
+<!-- test.xml: cut here -->
+<math display="block">
+  <mrow>
+    <mo>&int;</mo>
+    <mo>&ApplyFunction;</mo>
+    <mfrac>
+      <mrow>
+        <mrow>
+          <mi>a</mi>
+	  <mo>&InvisibleTimes;</mo>
+	  <mi>x</mi>
+	</mrow>
+	<mo>+</mo>
+	<mi>b</mi>
+      </mrow>
+      <mrow>
+        <msup>
+	  <mi>x</mi>
+	  <mn>2</mn>
+	</msup>
+	<mo>+</mo>
+	<mrow>
+	  <mi>p</mi>
+	  <mo>&InvisibleTimes;</mo>
+	  <mi>x</mi>
+	</mrow>
+	<mo>+</mo>
+	<mi>q</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo>&DifferentialD;</mo>
+  <mi>x</mi>
+  <mo>=</mo>
+  <mrow>
+    <mrow>
+      <mfrac><mi>a</mi><mn>2</mn></mfrac>
+      <mo>&InvisibleTimes;</mo>
+      <mrow>
+        <mi>ln</mi>
+	<mo>&ApplyFunction;</mo>
+	<mrow>
+	  <mo>(</mo>
+	  <mrow>
+	    <msup><mi>x</mi><mn>2</mn></msup>
+	    <mo>+</mo>
+	    <mrow>
+	      <mi>p</mi>
+	      <mo>&InvisibleTimes;</mo>
+	      <mi>x</mi>
+	    </mrow>
+	    <mo>+</mo>
+	    <mi>q</mi>
+	  </mrow>
+	  <mo>)</mo>
+	</mrow>
+      </mrow>
+    </mrow>
+    <mo>+</mo>
+    <mrow>
+      <mfrac>
+        <mrow>
+	  <mrow>
+	    <mn>2</mn>
+	    <mo>&InvisibleTimes;</mo>
+	    <mi>b</mi>
+	  </mrow>
+	  <mo>-</mo>
+	  <mrow>
+	    <mi>a</mi>
+	    <mo>&InvisibleTimes;</mo>
+	    <mi>p</mi>
+	  </mrow>
+	</mrow>
+	<msqrt>
+	  <mrow>
+	    <mrow>
+	      <mn>4</mn>
+	      <mo>&InvisibleTimes;</mo>
+	      <mi>q</mi>
+	    </mrow>
+	    <mo>-</mo>
+	    <msup>
+	      <mi>p</mi>
+	      <mn>2</mn>
+	    </msup>
+	  </mrow>
+	</msqrt>
+      </mfrac>
+      <mo>&InvisibleTimes;</mo>
+      <mrow>
+        <mi>arctg</mi>
+	<mo>&ApplyFunction;</mo>
+	<mfrac>
+	  <mrow>
+	    <mrow>
+	      <mn>2</mn>
+	      <mo>&InvisibleTimes;</mo>
+	      <mi>x</mi>
+	    </mrow>
+	    <mo>+</mo>
+	    <mi>p</mi>
+	  </mrow>
+	  <msqrt>
+	    <mrow>
+	      <mrow>
+	        <mn>4</mn>
+		<mo>&InvisibleTimes;</mo>
+		<mi>q</mi>
+	      </mrow>
+	      <mo>-</mo>
+	      <msup>
+	        <mi>p</mi>
+		<mn>2</mn>
+	      </msup>
+	    </mrow>
+	  </msqrt>
+	</mfrac>
+      </mrow>
+    </mrow>
+    <mo>+</mo>
+    <mi>c</mi>
+  </mrow>  
+</math>
+<!-- test.xml: cut here -->
+
+
+
+
+

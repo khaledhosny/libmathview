@@ -1,0 +1,10 @@
+<math>
+  <mtable groupalign="center">
+    <mtr>
+      <mtd><mtext>This-cell-has-no-alignment-group</mtext></mtd>
+    </mtr>
+    <mtr>
+      <mtd><maligngroup/><mtext>center</mtext></mtd>
+    </mtr>
+  </mtable>
+</math>

@@ -1,0 +1,10 @@
+<math>
+  <mtable>
+    <mtr><mtd><mtext>normal table row</mtext></mtd></mtr>
+    <mlabeledtr><mtd><mtext>labeled row... with no label!</mtext></mtd></mlabeledtr>
+    <mlabeledtr columnalign="right center"
+		rowalign="top baseline">
+      <mtd><mtext>labeled row, with overriding attributes</mtext></mtd>
+    </mlabeledtr>
+  </mtable>
+</math>

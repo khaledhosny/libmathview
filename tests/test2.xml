@@ -1,0 +1,40 @@
+<math display="block">
+  <mrow>
+    <mrow>
+      <mo><mchar name="int"/></mo>
+      <mo>&ApplyFunction;</mo>
+      <mrow>
+        <mi fontweight="bold" fontstyle="normal">B</mi>
+	<mo>&InvisibleTimes;</mo>
+	<mrow>
+	  <mo fontstyle="italic" rspace="veryverythinmathspace">d</mo>
+	  <mi fontweight="bold" fontstyle="normal">s</mi>
+	</mrow>
+      </mrow>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <msub>
+        <mi><mchar name="mu"/></mi>
+	<mn>0</mn>
+      </msub>
+      <msub>
+        <mi><mchar name="epsi"/></mi>
+	<mn>0</mn>
+      </msub>
+      <mfrac>
+        <mrow>
+	  <mo fontstyle="italic" rspace="veryverythinmathspace">d</mo>
+	  <msub>
+	    <mi fontweight="bold" fontstyle="normal"><mchar name="Phi"/></mi>
+	    <mi>E</mi>
+	  </msub>
+	</mrow>
+        <mrow>
+	  <mo fontstyle="italic" rspace="veryverythinmathspace">d</mo>
+	  <mi>t</mi>
+	</mrow>
+      </mfrac>
+    </mrow>
+  </mrow>
+</math>

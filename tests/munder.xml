@@ -1,0 +1,23 @@
+<math mode="display" display="block" xmlns="&mathml;">
+  <munder>
+    <mo>&sum;</mo>
+    <mrow>
+      <mfrac linethickness="0">
+        <mrow>
+          <mn>0</mn>
+          <mo>&leq;</mo>
+          <mi>i</mi>
+          <mo>&leq;</mo>
+          <mi>m</mi>
+        </mrow>
+        <mrow>
+          <mn>0</mn>
+          <mo>&lt;</mo>
+          <mi>j</mi>
+          <mo>&lt;</mo>
+          <mi>n</mi>
+        </mrow>
+      </mfrac>
+    </mrow>
+  </munder>
+</math>

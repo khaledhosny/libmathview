@@ -1,0 +1,51 @@
+<math>
+  <mfrac>
+    <mrow>
+      <mroot>
+        <mrow>
+          <mn>1</mn>
+      <mo>+</mo>
+      <mi>x</mi>
+    </mrow>
+    <mrow>
+      <mo symmetric="false">(</mo>
+      <mrow>
+        <mn>1</mn>
+	<mo>+</mo>
+	<msup>
+	  <mi>x</mi>
+	  <mn>2</mn>
+	</msup>
+      </mrow>
+      <mo symmetric="false">)</mo>
+    </mrow>
+  </mroot>
+  <mo>+</mo>
+  <mroot>
+    <mi>x</mi>
+    <mn>3</mn>
+  </mroot>
+  <mo>+</mo>
+  <msqrt>
+    <mi>x</mi>
+  </msqrt>
+  </mrow>
+  <mrow>
+    <mn>1</mn>
+    <mo>+</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>3</mn>
+    </msup>
+  </mrow>
+  </mfrac>
+  <mo>=</mo>
+  <mi><mchar name="alpha"/></mi>
+</math>

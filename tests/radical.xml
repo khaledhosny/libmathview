@@ -1,0 +1,14 @@
+<math>
+  <mstyle fontsize="1em">
+  <mroot>
+    <mtable frame="solid">
+      <mtr><mtd><mspace width="1em" height="1em"/></mtd></mtr>
+    </mtable>
+    <mstyle color="red">
+      <mtable frame="solid">
+        <mtr><mtd><mspace width="0em" height="0.2em"/></mtd></mtr>
+      </mtable>
+    </mstyle>
+  </mroot>
+  </mstyle>
+</math>

@@ -1,0 +1,16 @@
+<math>
+  <!-- example of forbidden table-->
+  <mtable frame="solid" columnlines="solid" rowlines="solid" columnalign="right" rowalign="bottom">
+    <mtr>
+      <mi>ciao</mi>
+      <mtd rowspan="2">
+        <mi>O</mi>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd columnspan="2">
+        <mi>ciao</mi>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>

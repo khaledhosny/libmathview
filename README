@@ -1,0 +1,18 @@
+	
+			     GtkMathView
+	     A GTK Widget for Rendering MathML Documents
+
+Full documentation is available on-line at
+
+	http://cs.unibo.it/~lpadovan/mml-widget/
+
+This code is released under the GPL (see COPYING for more details).
+
+See the file INSTALL for information about compiling, installing and
+linking the package.
+
+Starting from version 0.2.0 two programs are included with the
+distribution. `viewer' is a simple viewer for MathML documents,
+`mathml2ps' is a first attempt to convert a MathML formula to PostScript.
+
+Luca Padovani <luca.padovani@cs.unibo.it>

@@ -1,0 +1,76 @@
+<math>
+    <mtable frame="solid" columnlines="solid" rowlines="solid" equalrows="false" equalcolumns="false"
+    columnwidth="fit">
+    <mtr>
+      <mtd columnspan="2" rowalign="center">
+        <mi>...as</mi>
+	<mi color="Red" fontweight="bold">you</mi>
+	<mi> can see...</mi>
+      </mtd>
+      <mtd rowspan="2" rowalign="bottom" columnalign="right">
+        <mi fontweight="bold" fontsize="10pt">illegal</mi>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd rowspan="2" rowalign="bottom" columnalign="right">
+        <mstyle fontsize="10pt" color="Navy">
+          <mtable frame="solid">
+            <mi>row span=2</mi>
+	    <mi>row align=bottom</mi>
+	    <mi>column align=right</mi>
+	  </mtable>
+	</mstyle>
+      </mtd>
+      <mtd columnspan="2" rowalign="center" columnalign="left">
+        <mtable frame="solid" framespacing="0 0" columnspacing="0" rowspacing="0">
+	  <mtr>
+	    <mstyle background="#f08000"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#e08010"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#d08020"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#c08030"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#b08040"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#a08050"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#908060"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#808070"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#708080"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#608090"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#5080a0"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#4080b0"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#3080c0"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#2080d0"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#1080e0"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mstyle background="#0080f0"><mspace width="3mm" height="1cm"/></mstyle>
+	  </mtr>
+	</mtable>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd>
+        <mstyle fontsize="10pt" background="#c0c0c0">
+          <mrow>
+	    <mi>A row...</mi>
+	    <mspace width="1cm" height="1cm"/>
+	    <mi>with 1cm*1cm space</mi>
+	  </mrow>
+	</mstyle>
+      </mtd>
+      <mtd>
+        <mstyle fontsize="14pt" background="Teal">
+	  <mtable columnwidth="fit" frame="dashed" columnlines="solid" columnalign="right">
+	    <mtr>
+	      <mtd>
+	        <mi color="White">1</mi>
+	      </mtd>
+	      <mtd>
+	        <mi color="White">2</mi>
+	      </mtd>
+	      <mtd columnalign="left">
+	        <mi color="White">fit</mi>
+	      </mtd>
+	    </mtr>
+	  </mtable>
+	</mstyle>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>

@@ -1,0 +1,18 @@
+<math>
+  <mfenced>
+    <mi>ciao</mi>
+    <mi>x</mi>
+    <mi>da</mi>
+    <mi>Luca</mi>
+    <mtable>
+      <mtr>
+        <mi>a</mi>
+	<mi>b</mi>
+      </mtr>
+      <mtr>
+        <mi>c</mi>
+      </mtr>
+    </mtable>
+  </mfenced>
+</math>
+

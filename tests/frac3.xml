@@ -1,0 +1,19 @@
+<math>
+  <mstyle fontsize="60pt">
+  <mfrac>
+  <mn>1</mn>
+  <mrow>
+  <mn>1</mn>
+  <mo>-</mo>
+  <mfrac>
+  <mn>1</mn>
+  <mrow>
+  <mn>1</mn>
+  <mo>+</mo>
+  <mi>x</mi>
+  </mrow>
+  </mfrac>
+  </mrow>
+  </mfrac>
+  </mstyle>
+</math>

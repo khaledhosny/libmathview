@@ -1,0 +1,17 @@
+<math>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
+      <mn>1</mn>
+      <mo>+</mo>
+      <mfrac>
+        <mn>1</mn>
+	<mrow>
+	  <mn>1</mn>
+	  <mo>+</mo>
+	  <mn>1</mn>
+	</mrow>
+      </mfrac>
+    </mrow>
+  </mfrac>
+</math>

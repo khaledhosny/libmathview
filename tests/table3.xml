@@ -1,0 +1,11 @@
+<math>
+    <mtable frame="solid" columnlines="solid" equalcolumns="true"
+    columnwidth="auto" columnspacing="0"
+    >
+      <mtr>
+        <mi>un</mi>
+	<mi>grande</mi>
+	<mi>ciao</mi>
+      </mtr>
+    </mtable>
+</math>

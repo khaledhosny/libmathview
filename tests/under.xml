@@ -1,0 +1,17 @@
+<math>
+  <munder>
+    <mi>x</mi>
+    <mo accent="true">_</mo>
+  </munder>
+  <mo>+</mo>
+  <mover>
+    <mi>x</mi>
+    <mo accent="true">_</mo>
+  </mover>
+  <mo>+</mo>
+  <munderover>
+    <mi>x</mi>
+    <mo accent="true">_</mo>
+    <mo accent="true">_</mo>
+  </munderover>
+</math>

@@ -1,0 +1,17 @@
+<math>
+  <mi><mchar name="alpha"/></mi>
+  <mo>+</mo>
+  <merror>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>1</mn>
+	<mo>+</mo>
+	<msup>
+	  <mi>x</mi>
+	  <mn>2</mn>
+	</msup>
+      </mrow>
+    </mfrac>
+  </merror>
+</math>

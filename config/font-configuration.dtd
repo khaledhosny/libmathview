@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso8859-1"?>
+<!ELEMENT font-configuration (font|map)*>
+
+<!ELEMENT font EMPTY>
+<!ATTLIST font
+  type      (x|ps) #REQUIRED
+
+  mode      (any|text|math) #IMPLIED
+
+  family    CDATA #IMPLIED
+  style     (normal|italic) #IMPLIED
+  weight    (normal|bold) #IMPLIED
+  size      CDATA #IMPLIED
+
+  mapping   CDATA #IMPLIED
+
+  x-foundry  CDATA #IMPLIED
+  x-family   CDATA #IMPLIED
+  x-weight   CDATA #IMPLIED
+  x-slant    CDATA #IMPLIED
+  x-width    CDATA #IMPLIED
+  x-style    CDATA #IMPLIED
+  x-pixels   CDATA #IMPLIED
+  x-points   CDATA #IMPLIED
+  x-hres     CDATA #IMPLIED
+  x-vres     CDATA #IMPLIED
+  x-spacing  CDATA #IMPLIED
+  x-avgwidth CDATA #IMPLIED
+  x-registry CDATA #IMPLIED
+  x-encoding CDATA #IMPLIED
+
+  ps-name   CDATA #IMPLIED
+  ps-file   CDATA #IMPLIED
+>
+
+<!ELEMENT map (single|range|multi|stretchy)*>
+<!ATTLIST map
+  id      CDATA #REQUIRED
+>
+
+<!ELEMENT single EMPTY>
+<!ATTLIST single
+  name CDATA #IMPLIED
+  code CDATA #IMPLIED
+  index CDATA #IMPLIED
+>
+
+<!ELEMENT range EMPTY>
+<!ATTLIST range
+  first CDATA #REQUIRED
+  last  CDATA #REQUIRED
+  offset CDATA #REQUIRED
+>
+
+<!ELEMENT multi EMPTY>
+<!ATTLIST multi
+  first CDATA #REQUIRED
+  last  CDATA #REQUIRED
+  index CDATA #REQUIRED
+>  
+
+<!ELEMENT stretchy (simple, compound?)>
+<!ATTLIST stretchy
+  name CDATA #IMPLIED
+  code CDATA #IMPLIED
+  direction (vertical|horizontal) #REQUIRED
+>
+
+<!ELEMENT simple EMPTY>
+<!ATTLIST simple index CDATA #REQUIRED>
+
+<!ELEMENT compound EMPTY>
+<!ATTLIST compound index CDATA #REQUIRED>

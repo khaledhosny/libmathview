@@ -1,0 +1,17 @@
+<math display="block">
+  <mo maxsize="infinity">(</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
+      <mn>1</mn>
+      <mo>+</mo>
+      <msup>
+        <mi>x</mi>
+	<mn>2</mn>
+      </msup>
+    </mrow>
+  </mfrac>
+  <mo maxsize="2">)</mo>
+</math>
+      
+      

@@ -1,0 +1,92 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/*
+ * Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
+ * 
+ * This file is part of GtkMathView, a Gtk widget for MathML.
+ * 
+ * GtkMathView is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * GtkMathView is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with GtkMathView; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * 
+ * For details, see the GtkMathView World-Wide-Web page,
+ * http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+ * <luca.padovani@cs.unibo.it>
+ */
+
+#ifndef config_h
+#define config_h
+
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
+#undef HAVE_SYS_WAIT_H
+
+/* Define if you have <vfork.h>.  */
+#undef HAVE_VFORK_H
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef pid_t
+
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define vfork as fork if vfork does not work.  */
+#undef vfork
+
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
+
+/* Is FLOATING_SCALED is defined use floating-points arithmetics
+ * for scaled values (slower, larger, better precision). Otherwise
+ * use fixed point arithmetics (faster, smaller).
+ */
+#undef FLOATING_SCALED
+
+#ifndef FLOATING_SCALED
+#define FIXED_SCALED
+#endif
+
+/* If defined the widget will perform a huge amount
+ * of validity checks while running
+ */
+#undef ENABLE_CHECKS
+
+#ifdef ENABLE_CHECKS
+#define DEBUG
+#else
+#define NDEBUG
+#endif
+
+/* Define to compile with libxml 2.x (recommended) */
+#undef HAVE_LIBXML2
+
+/* Define to compile with t1lib for Type 1 fonts */
+#undef HAVE_LIBT1
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
+
+#endif /* config_h */

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+op=`fgrep stretchy auto/dictionary.xml |fgrep true|cut -d '"' -f 2|tr -d "&;(){}[]|/"`;
+
+for i in $op
+do
+        code=`fgrep " $i " entities/*.ent | cut -d '"' -f 2|tr -d "&;"|tr -s '#' '0'`;
+	echo "$code, // $i"	    
+done
+
