@@ -121,6 +121,8 @@ MathMLFractionElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, Fraction, numalign);
       REFINE_ATTRIBUTE(context, Fraction, denomalign);
       REFINE_ATTRIBUTE(context, Fraction, bevelled);
+      if (GetNumerator()) GetNumerator()->refine(context);
+      if (GetDenominator()) GetDenominator()->refine(context);
       MathMLContainerElement::refine(context);
     }
 }

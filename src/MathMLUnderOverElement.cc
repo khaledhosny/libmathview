@@ -160,6 +160,9 @@ MathMLUnderOverElement::refine(AbstractRefinementContext& context)
     {
       REFINE_ATTRIBUTE(context, UnderOver, accentunder);
       REFINE_ATTRIBUTE(context, UnderOver, accent);
+      if (GetBase()) GetBase()->refine(context);
+      if (GetUnderScript()) GetUnderScript()->refine(context);
+      if (GetOverScript()) GetOverScript()->refine(context);
       MathMLContainerElement::refine(context);
     }
 }

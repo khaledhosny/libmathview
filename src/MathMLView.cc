@@ -201,7 +201,8 @@ MathMLView::layout() const
 	  Clock perf;
 	  MathFormattingContext ctxt(context->device);
 	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  ctxt.setSize(context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero()));
+	  ctxt.setSize(context->device->evaluate(ctxt, Length(48, Length::PT_UNIT), scaled::zero()));
+	  ctxt.setActualSize(ctxt.getSize());
 	  root->format(ctxt);
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 	}
@@ -225,6 +226,8 @@ MathMLView::render(const Rectangle* rect)
       if (AreaRef area = root->getArea())
 	{
 	  BoundingBox box = area->box();
+	  renderingContext.setRegion(Rectangle(0, Gtk_RenderingContext::fromGtkPixels(300), box));
+
 	  area->render(renderingContext, scaled::zero(), box.height);
 	}
       perf.Stop();

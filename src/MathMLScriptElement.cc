@@ -35,6 +35,8 @@
 #include "ValueConversion.hh"
 #include "defs.h"
 #include "traverseAux.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLScriptElement::MathMLScriptElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)
@@ -169,6 +171,9 @@ MathMLScriptElement::refine(AbstractRefinementContext& context)
     {
       REFINE_ATTRIBUTE(context, Script, subscriptshift);
       REFINE_ATTRIBUTE(context, Script, superscriptshift);
+      if (GetBase()) GetBase()->refine(context);
+      if (GetSubScript()) GetSubScript()->refine(context);
+      if (GetSuperScript()) GetSuperScript()->refine(context);
       MathMLContainerElement::refine(context);
     }
 }
@@ -269,6 +274,58 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLScriptElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+
+      assert(base);
+      AreaRef baseArea = base->format(ctxt);
+
+      ctxt.addScriptLevel(1);
+      ctxt.setDisplayStyle(false);
+
+      Length subScriptShift;
+      AreaRef subScriptArea;
+      if (subScript)
+	{
+	  subScriptArea = subScript->format(ctxt);
+
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, subscriptshift))
+	    {
+	      assert(IsLength(value));
+	      subScriptShift = ToLength(value);
+	    }
+	}
+
+      Length superScriptShift;
+      AreaRef superScriptArea;
+      if (superScript)
+	{
+	  superScriptArea = superScript->format(ctxt);
+
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, superscriptshift))
+	    {
+	      assert(IsLength(value));
+	      superScriptShift = ToLength(value);
+	    }
+	}
+
+      AreaRef res = ctxt.getDevice()->script(ctxt, baseArea,
+					     subScriptArea, subScriptShift,
+					     superScriptArea, superScriptShift);
+      res = formatEmbellishment(this, ctxt, res);
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+
+      ctxt.pop();
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

@@ -97,15 +97,48 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
 
+      bool stretchy = false;
+      std::vector< SmartPtr<MathMLOperatorElement> > erow;
+      erow.reserve(content.size());
       std::vector<AreaRef> row;
       row.reserve(content.size());
       for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
-	row.push_back((*elem)->format(ctxt));
+	{
+	  row.push_back((*elem)->format(ctxt));
+	  SmartPtr<MathMLOperatorElement> coreOp = (*elem)->GetCoreOperatorTop();
+	  // WARNING: we can check for IsStretchy only *after* format because it is
+	  // at that time that the flags in the operator get set (see MathMLOperatorElement)
+	  if (coreOp && !coreOp->IsStretchy()) coreOp = 0;
+	  stretchy = stretchy || coreOp;
+	  erow.push_back(coreOp);
+	}
 
       AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(row);
-      setArea(formatEmbellishment(this, ctxt, res));
+      BoundingBox rowBox = res->box();
+
+      if (stretchy)
+	{
+	  ctxt.setStretchToHeight(rowBox.height);
+	  ctxt.setStretchToDepth(rowBox.depth);
+	  for (std::vector< SmartPtr<MathMLOperatorElement> >::const_iterator op = erow.begin();
+	       op != erow.end();
+	       op++)
+	    if (*op)
+	      {
+		const int i = op - erow.begin();
+		ctxt.setStretchOperator(*op);
+		content[i]->SetDirtyLayout();
+		row[i] = content[i]->format(ctxt);
+	      }
+	  ctxt.setStretchOperator(0);
+
+	  res = ctxt.getDevice()->getFactory()->horizontalArray(row);
+	}
+
+      res = formatEmbellishment(this, ctxt, res);
+      setArea(res);
 
       ctxt.pop();
       ResetDirtyLayout();
