@@ -30,7 +30,7 @@ protected:
   // to create directly instances of this class. We want to be sure
   // that all the instances are created dynamically, because of the
   // memory management
-  Object(void) { refCounter = 0; }
+  Object(void) : refCounter(0) { }
 
   // Having a protected destructor makes it impossible for users
   // to call delete on an object of this class. Thus they are

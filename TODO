@@ -51,6 +51,7 @@ ARCH IMPROVEMENTS
 
 PERFORMANCE IMPROVEMENTS
 
+? make builder maps static members of the TemplateBuilder class
 - share Gtk_MathGraphicDevice along with all the shapers.
   Unfortunately these need the widget.
 - implement caching mechanism for pango shaper
