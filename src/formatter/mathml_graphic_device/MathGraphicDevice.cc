@@ -70,7 +70,7 @@ MathGraphicDevice::evaluate(const MathFormattingContext& context,
     case Length::CM_UNIT:
       return scaled(72.27 * (length.value / 2.54));
     case Length::MM_UNIT:
-      return scaled(72.27 * (length.value / 254.0));
+      return scaled(72.27 * (length.value / 25.4));
     case Length::PT_UNIT:
       return scaled(length.value);
     case Length::PC_UNIT:
@@ -129,8 +129,7 @@ MathGraphicDevice::defaultLineThickness(const MathFormattingContext& context) co
 AreaRef
 MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) const
 {
-  BoundingBox box = area->box();
-  return factory->box(area->fit(box.width, box.height, box.depth), box);
+  return factory->box(area, area->box());
 }
 
 AreaRef

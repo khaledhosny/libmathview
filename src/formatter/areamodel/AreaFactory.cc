@@ -49,7 +49,8 @@ AreaRef
 AreaFactory::verticalLine(const scaled& thickness, const RGBColor& c) const
 {
   std::vector<AreaRef> v;
-  v.reserve(2);
+  v.reserve(3);
+  v.push_back(verticalFiller());
   v.push_back(horizontalSpace(thickness));
   v.push_back(verticalFiller());
   return color(ink(verticalArray(v, 1)), c);

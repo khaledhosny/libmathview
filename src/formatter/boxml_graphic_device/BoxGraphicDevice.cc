@@ -61,7 +61,7 @@ BoxGraphicDevice::evaluate(const BoxFormattingContext& context,
     case Length::CM_UNIT:
       return scaled(72.27 * (length.value / 2.54));
     case Length::MM_UNIT:
-      return scaled(72.27 * (length.value / 254.0));
+      return scaled(72.27 * (length.value / 25.4));
     case Length::PT_UNIT:
       return scaled(length.value);
     case Length::PC_UNIT:

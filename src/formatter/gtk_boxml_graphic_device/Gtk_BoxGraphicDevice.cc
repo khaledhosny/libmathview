@@ -204,7 +204,6 @@ AreaRef
 Gtk_BoxGraphicDevice::wrapper(const BoxFormattingContext& context,
 			      const AreaRef& base) const
 {
-  BoundingBox box = base->box();
-  return factory->wrapper(base->fit(box.width, box.height, box.depth), box, context.getElement());
+  return factory->wrapper(base, base->box(), context.getElement());
 }
 
