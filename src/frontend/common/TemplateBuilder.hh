@@ -810,26 +810,18 @@ protected:
     static const SmartPtr<Value>
     refineAlignAttribute(const SmartPtr<Value>& cellAlign,
 			 const SmartPtr<Value>& rowAlign,
-			 const SmartPtr<Value>& tableAlign,
-			 unsigned columnIndex)
+			 const SmartPtr<Value>& tableAlign)
     {
 #if 1
-      if (cellAlign)
-	return cellAlign;
-      else if (rowAlign)
-	return GetComponent(rowAlign, columnIndex);
-      else if (tableAlign)
-	return GetComponent(tableAlign, columnIndex);
-      else
-	return 0;
+      if (cellAlign) return cellAlign;
+      else if (rowAlign) return rowAlign;
+      else if (tableAlign) return tableAlign;
+      else return 0;
 #else
       // Because of a bug in GCC-3.4 the following code, which is
       // syntactically and semantically correct, does not compile
       // and the compiler issues a misleading error message
-      return
-	(cellAlign ? cellAlign : 
-	 (rowAlign ? GetComponent(rowAlign, columnIndex) :
-	  (tableAlign ? GetComponent(tableAlign, columnIndex) : 0)));
+      return (cellAlign ? cellAlign : (rowAlign ? rowAlign : (tableAlign ? tableAlign : 0)));
 #endif
     }
 
@@ -886,9 +878,18 @@ protected:
 		  // now rowIndex and columnIndex are final values
 		  cellElem->setPosition(rowIndex, columnIndex);
 
-		  const SmartPtr<Value> rowAlign = refineAlignAttribute(cellRowAlign, rowRowAlign, tableRowAlign, columnIndex);
-		  const SmartPtr<Value> columnAlign = refineAlignAttribute(cellColumnAlign, rowColumnAlign, tableColumnAlign, columnIndex);
-		  const SmartPtr<Value> groupAlign = refineAlignAttribute(cellGroupAlign, rowGroupAlign, tableGroupAlign, columnIndex);
+		  const SmartPtr<Value> rowAlign =
+		    refineAlignAttribute(cellRowAlign,
+					 rowRowAlign,
+					 GetComponent(tableRowAlign, rowIndex));
+		  const SmartPtr<Value> columnAlign =
+		    refineAlignAttribute(cellColumnAlign,
+					 GetComponent(rowColumnAlign, columnIndex),
+					 GetComponent(tableColumnAlign, columnIndex));
+		  const SmartPtr<Value> groupAlign =
+		    refineAlignAttribute(cellGroupAlign,
+					 GetComponent(rowGroupAlign, columnIndex),
+					 GetComponent(tableGroupAlign, columnIndex));
 
 		  cellElem->setAlignment(ToTokenId(rowAlign), ToTokenId(columnAlign));
 		  //cellElem->setGroupAlignment(groupAlign);

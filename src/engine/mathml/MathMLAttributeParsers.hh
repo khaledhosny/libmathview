@@ -184,7 +184,7 @@ typedef ParseLengthOrNamedSpace Parse_MathML_Table_minlabelspacing;
 
 // TableRow
 typedef ParseVerticalAlign Parse_MathML_TableRow_rowalign;
-typedef ParseOneOrMore<ParseColumnWidthSpec> Parse_MathML_TableRow_columnalign;
+typedef ParseOneOrMore<ParseHorizontalAlign> Parse_MathML_TableRow_columnalign;
 typedef ParseGroupAlignmentListList Parse_MathML_TableRow_groupalign;
 
 // TableCell

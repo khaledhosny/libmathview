@@ -196,14 +196,17 @@ ToRGB(const SmartPtr<Value>& value)
 SmartPtr<Value>
 GetComponent(const SmartPtr<Value>& value, int i, int j)
 {
-  if (i < 0)
-    return value;
+  if (value)
+    if (i < 0)
+      return value;
+    else
+      {
+	SmartPtr<ValueSequence> vSeq = smart_cast<ValueSequence>(value);
+	assert(vSeq);
+	assert(vSeq->getSize() > 0);
+	return GetComponent(vSeq->getValue(std::min(i, static_cast<int>(vSeq->getSize() - 1))), j, -1);
+      }
   else
-    {
-      SmartPtr<ValueSequence> vSeq = smart_cast<ValueSequence>(value);
-      assert(vSeq);
-      assert(vSeq->getSize() > 0);
-      return GetComponent(vSeq->getValue(std::min(i, static_cast<int>(vSeq->getSize() - 1))), j, -1);
-    }
+    return 0;
 }
 
