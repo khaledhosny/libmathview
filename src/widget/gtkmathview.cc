@@ -430,7 +430,8 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
   math_view->view = view;
 
   math_view->renderingContext = new Gtk_RenderingContext;
-  math_view->renderingContext->setDrawable(math_view->pixmap);
+
+  //math_view->renderingContext->setDrawable(math_view->pixmap);
   //math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
   //math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);
 
@@ -718,8 +719,14 @@ gtk_math_view_configure_event(GtkWidget* widget,
   if (math_view->pixmap != NULL) g_object_unref(math_view->pixmap);
   math_view->pixmap = gdk_pixmap_new(widget->window, event->width, event->height, -1);
   math_view->renderingContext->setDrawable(math_view->pixmap);
-  math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
-  math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);
+
+  Gtk_RenderingContext* rc = math_view->renderingContext;
+  rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
+  rc->setForegroundColor(DEFAULT_SELECT_FOREGROUND);
+  rc->setBackgroundColor(DEFAULT_SELECT_BACKGROUND);
+  rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
+  rc->setForegroundColor(DEFAULT_FOREGROUND);
+  rc->setBackgroundColor(DEFAULT_BACKGROUND);
   paint_widget(math_view);
 
   return TRUE;

@@ -29,7 +29,7 @@
 #include "Gtk_RenderingContext.hh"
 
 Gtk_RenderingContext::Gtk_RenderingContext()
-  : selection(false), xft_draw(0)
+  : style(NORMAL_STYLE), xft_draw(0)
 { }
 
 Gtk_RenderingContext::~Gtk_RenderingContext()
@@ -40,6 +40,8 @@ Gtk_RenderingContext::~Gtk_RenderingContext()
 void
 Gtk_RenderingContext::releaseResources()
 {
+  // should free the gc's? 
+
   if (xft_draw)
     {
       // It seems that by using XftDrawDestroy the drawable will be destroyed
@@ -77,7 +79,7 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
   if (gdk_drawable)
     {
       gdk_colormap = gdk_rgb_get_colormap();
-      for (unsigned i = 0; i <= MAX_SELECTION_LEVEL; i++)
+      for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
       
       xft_draw = XftDrawCreate(GDK_DISPLAY(),
@@ -88,7 +90,7 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
     }
   else
     {
-      for (unsigned i = 0; i <= MAX_SELECTION_LEVEL; i++)
+      for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = 0;
       gdk_colormap = 0;
     }

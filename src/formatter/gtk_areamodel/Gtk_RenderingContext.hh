@@ -36,52 +36,42 @@
 class Gtk_RenderingContext : public RenderingContext
 {
 protected:
-  enum ColorIndex { FOREGROUND, BACKGROUND };
+  enum ColorIndex { FOREGROUND_INDEX, BACKGROUND_INDEX, MAX_INDEX };
 
 public:
+  enum ColorStyle { NORMAL_STYLE, SELECTED_STYLE, MAX_STYLE };
+
   Gtk_RenderingContext(void);
   virtual ~Gtk_RenderingContext();
 
-  void setForegroundColor(const RGBColor& c, int i = 0) { setColor<FOREGROUND, gdk_gc_set_foreground>(c, i); }
-  void setBackgroundColor(const RGBColor& c, int i = 0) { setColor<BACKGROUND, gdk_gc_set_background>(c, i); }
-  void setForegroundColor(GdkColor& c, int i = 0) { setColor<FOREGROUND, gdk_gc_set_foreground>(c, i); }
-  void setBackgroundColor(GdkColor& c, int i = 0) { setColor<BACKGROUND, gdk_gc_set_background>(c, i); }
+  void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
+  void setBackgroundColor(const RGBColor& c) { setColor<BACKGROUND_INDEX, gdk_gc_set_background>(c); }
+  void setForegroundColor(GdkColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
+  void setBackgroundColor(GdkColor& c) { setColor<BACKGROUND_INDEX, gdk_gc_set_background>(c); }
 
   // the return value is passed as an argument so that
   // we can use overloading
-  void getForegroundColor(RGBColor& c, int i = 0) { getColor<RGBColor, FOREGROUND>(c, i); }
-  void getBackgroundColor(RGBColor& c, int i = 0) { getColor<RGBColor, BACKGROUND>(c, i); }
-  void getForegroundColor(GdkColor& c, int i = 0) { getColor<GdkColor, FOREGROUND>(c, i); }
-  void getBackgroundColor(GdkColor& c, int i = 0) { getColor<GdkColor, BACKGROUND>(c, i); }
+  void getForegroundColor(RGBColor& c) { getColor<RGBColor, FOREGROUND_INDEX>(c); }
+  void getBackgroundColor(RGBColor& c) { getColor<RGBColor, BACKGROUND_INDEX>(c); }
+  void getForegroundColor(GdkColor& c) { getColor<GdkColor, FOREGROUND_INDEX>(c); }
+  void getBackgroundColor(GdkColor& c) { getColor<GdkColor, BACKGROUND_INDEX>(c); }
 
   void setWidget(const GObjectPtr<GtkWidget>&);
   GObjectPtr<GtkWidget> getWidget(void) const { return gtk_widget; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
-  GObjectPtr<GdkGC> getGC(void) const
-  {
-    assert(selection >= 0 && selection <= MAX_SELECTION_LEVEL);
-    return data[selection].gdk_gc;
-  }
+  GObjectPtr<GdkGC> getGC(void) const { return data[getStyle()].gdk_gc; }
 
   XftDraw* getXftDraw(void) const { return xft_draw; }
 
-  const XftColor* getXftForegroundColor(int i = 0) const { return getXftColor<FOREGROUND>(i); }
-  const XftColor* getXftBackgroundColor(int i = 0) const { return getXftColor<BACKGROUND>(i); }
+  const XftColor* getXftForegroundColor(void) const { return getXftColor<FOREGROUND_INDEX>(); }
+  const XftColor* getXftBackgroundColor(void) const { return getXftColor<BACKGROUND_INDEX>(); }
 
   void update(void) const;
   void update(const Rectangle&) const;
 
-  int getSelection(void) const { return selection; }
-  int setSelection(int s)
-  {
-    int oldSelection = selection;
-    selection = s;
-    return oldSelection;
-  }
-  int addSelection(int ds) { return setSelection(selection + ds); }
-  int select(void) { return selection++; }
-  int unselect(void) { return selection--; }
+  void setStyle(ColorStyle s) { style = s; }
+  ColorStyle getStyle(void) const { return style; }
 
   static int toGtkPixels(const scaled& s)
   { return static_cast<int>(s.toFloat() * (72.27 / 72.0)); }
@@ -115,42 +105,28 @@ public:
   { return fromGtkY(y); }
 
 protected:
-  enum { MAX_SELECTION_LEVEL = 1 };
+  template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+  void setColor(const RGBColor& c)
+  { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
 
   template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
-  void setColor(const RGBColor& c, int i)
-  {
-    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
-    data[i].setColor<index,set>(c, gdk_colormap);
-  }
-
-  template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
-  void setColor(GdkColor& c, int i)
-  {
-    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
-    data[i].setColor<index,set>(c);
-  }
+  void setColor(GdkColor& c)
+  { data[getStyle()].setColor<index,set>(c); }
 
   template <typename C, ColorIndex index>
-  void getColor(C& c, int i) const
-  {
-    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
-    data[i].getColor<index>(c);
-  }
+  void getColor(C& c) const
+  { data[getStyle()].getColor<index>(c); }
 
   template <ColorIndex index>
-  const XftColor* getXftColor(int i) const
-  {
-    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
-    return data[i].getXftColor<index>();
-  }
+  const XftColor* getXftColor(void) const
+  { return data[getStyle()].getXftColor<index>(); }
 
   struct ContextData
   {
     GObjectPtr<GdkGC> gdk_gc;
-    RGBColor color[2];
-    GdkColor gdk_color[2];
-    XftColor xft_color[2];
+    RGBColor color[MAX_INDEX];
+    GdkColor gdk_color[MAX_INDEX];
+    XftColor xft_color[MAX_INDEX];
     
     template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
     void setColor(const RGBColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
@@ -206,8 +182,8 @@ protected:
 
   void releaseResources(void);
 
-  int selection;
-  ContextData data[1 + MAX_SELECTION_LEVEL];
+  ColorStyle style;
+  ContextData data[MAX_STYLE];
 
   // GTK-specific fields
   GObjectPtr<GtkWidget> gtk_widget;

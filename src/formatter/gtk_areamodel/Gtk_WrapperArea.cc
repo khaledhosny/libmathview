@@ -47,14 +47,28 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
 
   //std::cerr << "WRAPPER::RENDER " << this << " " << selected << std::endl;
 
-  int oldSelection = context.addSelection(selected);
-  if (oldSelection != context.getSelection())
+
+  Gtk_RenderingContext::ColorStyle old_style = context.getStyle();
+
+  switch (old_style)
+    {
+    case Gtk_RenderingContext::NORMAL_STYLE:
+      if (selected == 1) context.setStyle(Gtk_RenderingContext::SELECTED_STYLE);
+      break;
+    case Gtk_RenderingContext::SELECTED_STYLE:
+      if (selected == -1) context.setStyle(Gtk_RenderingContext::NORMAL_STYLE);
+      break;
+    default:
+      break;
+    }
+
+  if (old_style != context.getStyle())
     {
       GdkColor old_foregroundColor;
       GdkColor backgroundColor;
-      context.getForegroundColor(old_foregroundColor, context.getSelection());
-      context.getBackgroundColor(backgroundColor, context.getSelection());
-      context.setForegroundColor(backgroundColor, context.getSelection());
+      context.getForegroundColor(old_foregroundColor);
+      context.getBackgroundColor(backgroundColor);
+      context.setForegroundColor(backgroundColor);
 
       BoundingBox bbox = box();
       gdk_draw_rectangle(context.getDrawable(),
@@ -65,10 +79,12 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
 			 Gtk_RenderingContext::toGtkPixels(bbox.width) + 1,
 			 Gtk_RenderingContext::toGtkPixels(bbox.height + bbox.depth) + 1);
 
-      context.setForegroundColor(old_foregroundColor, context.getSelection());
+      context.setForegroundColor(old_foregroundColor);
     }
+
   getChild()->render(context, x, y);
-  context.setSelection(oldSelection);
+
+  context.setStyle(old_style);
 }
 
 #define PIX(x) (Gtk_RenderingContext::toGtkPixels(x))
