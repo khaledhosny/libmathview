@@ -1,6 +1,13 @@
 
 noinst_LTLIBRARIES = libcommon.la
 
+EXTRA_DIST = \
+  Char.hh.in \
+  Char.hh
+
+# Char.hh should not be distributed but omitting it makes
+# distcheck fail.
+
 libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libcommon_la_SOURCES = \
@@ -51,5 +58,7 @@ noinst_HEADERS = \
 
 INCLUDES = \
   $(GLIB_CFLAGS) \
-  -I$(top_srcdir)/auto
+  -I$(top_srcdir)/auto \
+  -I$(top_srcdir)/src/common
+
 

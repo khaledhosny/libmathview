@@ -354,6 +354,8 @@ AC_CONFIG_FILES([
  config/Makefile
  config/math-engine-configuration.xml
  scripts/Makefile
+ auto/Makefile
+ auto/config.dirs
  src/Makefile
  src/common/Makefile
  src/common/Char.hh
@@ -377,10 +379,8 @@ AC_CONFIG_FILES([
  src/formatter/boxml_graphic_device/Makefile
  src/formatter/gtk_boxml_graphic_device/Makefile
  src/widget/Makefile
- auto/Makefile
- auto/config.dirs
- doc/Makefile
  viewer/Makefile
+ doc/Makefile
  gtkmathview.pc
 ])
 AC_OUTPUT

@@ -7,6 +7,7 @@ libfrontend_common_la_SOURCES = \
 noinst_HEADERS = \
   Builder.hh \
   TemplateBuilder.hh \
+  TemplateSetup.hh \
   Reader.hh
 
 INCLUDES = \

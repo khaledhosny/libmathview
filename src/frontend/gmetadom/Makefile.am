@@ -5,8 +5,6 @@ libfrontend_gmetadom_la_SOURCES = \
   MathMLEntitiesTable.cc \
   gmetadom_Model.cc \
   gmetadom_Setup.cc \
-  gmetadom_RefinementContext.cc \
-  gmetadom_Linker.cc \
   gmetadom_Builder.cc
 
 noinst_HEADERS = \
@@ -14,8 +12,6 @@ noinst_HEADERS = \
   gmetadom.hh \
   gmetadom_Model.hh \
   gmetadom_Setup.hh \
-  gmetadom_RefinementContext.hh \
-  gmetadom_Linker.hh \
   gmetadom_Builder.hh
 
 INCLUDES = \

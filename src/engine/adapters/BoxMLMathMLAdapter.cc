@@ -28,7 +28,6 @@
 #include "BoxGraphicDevice.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "View.hh"
-#include "NamespaceRegistry.hh"
 
 #include "MathMLElement.hh"
 #include "MathFormattingContext.hh"

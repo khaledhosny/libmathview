@@ -24,7 +24,7 @@
 #define __gmetadom_Builder_hh__
 
 #include "gmetadom.hh"
-#include "gmetadom_Linker.hh"
+#include "gmetadom_Model.hh"
 #include "Builder.hh"
 #include "String.hh"
 
@@ -43,7 +43,7 @@ public:
   SmartPtr<Element> findElement(const DOM::Element& p) const { return linker.assoc(p); }
 
 protected:
-  gmetadom_Linker& getLinker(void) const { return linker; }
+  gmetadom_Model::Linker& getLinker(void) const { return linker; }
   DOM::Node findSelfOrAncestorModelNode(const SmartPtr<Element>&) const;
   SmartPtr<Element> findSelfOrAncestorElement(const DOM::Node&) const;
   void notifySubtreeModified(const DOM::Node&) const;
@@ -74,7 +74,7 @@ protected:
 private:
   DOMSubtreeModifiedListener* subtreeModifiedListener;
   DOMAttrModifiedListener* attrModifiedListener;
-  mutable gmetadom_Linker linker;
+  mutable gmetadom_Model::Linker linker;
   DOM::Element root;
 };
 

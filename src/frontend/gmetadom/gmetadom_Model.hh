@@ -23,19 +23,22 @@
 #ifndef __gmetadom_Model_hh__
 #define __gmetadom_Model_hh__
 
+#include <cassert>
+
 #include "gmetadom.hh"
 #include "String.hh"
+
+#include "TemplateLinker.hh"
+#include "TemplateRefinementContext.hh"
 
 struct gmetadom_Model
 {
   typedef DOM::GdomeString String;
   typedef DOM::Node Node;
   typedef DOM::Element Element;
-//   typedef DOMX::NodeIterator NodeIterator;
-//   typedef DOMX::ElementIterator ElementIterator;
-  typedef class gmetadom_Linker Linker;
+  typedef TemplateLinker<gmetadom_Model> Linker;
   typedef class gmetadom_Builder Builder;
-  typedef class gmetadom_RefinementContext RefinementContext;
+  typedef class TemplateRefinementContext<gmetadom_Model> RefinementContext;
 
   static DOM::Document parseXML(const ::String&, bool = false);
   static bool nodeIsBlank(const Node&);
@@ -79,7 +82,7 @@ struct gmetadom_Model
 
   protected:
     DOM::Element
-    findValidNode(const DOM::Node& p0)
+    findValidNode(const DOM::Node& p0) const
     {
       for (DOM::Node p = p0; p; p = p.get_nextSibling())
 	if (valid(p)) return p;
@@ -90,6 +93,15 @@ struct gmetadom_Model
     DOM::Element currentElement;
     DOM::GdomeString namespaceURI;
     DOM::GdomeString name;
+  };
+
+  struct Hash
+  {
+    size_t operator()(const DOM::Element& el) const
+    {
+      assert(el);
+      return reinterpret_cast<size_t>(el.id());
+    }
   };
 
 };

@@ -20,6 +20,9 @@ EXTRA_DIST = \
   entitiesTable.inc \
   $(AUTOFILES)
 
+# config.dirs should not be distributed but omitting it makes
+# distcheck fail.
+
 DISTCLEANFILES = $(AUTOFILES)
 
 noinst_HEADERS = $(AUTOFILES)

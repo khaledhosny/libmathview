@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include "gmetadom_Builder.hh"
-#include "gmetadom_RefinementContext.hh"
 #include "gmetadom_Model.hh"
 #include "TemplateBuilder.hh"
 
