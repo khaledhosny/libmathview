@@ -461,26 +461,32 @@ MathMLTableCellElement::IsStretchyOperator() const
 void
 MathMLTableCellElement::setDirtyStructure()
 {
+#if 0
   SmartPtr<MathMLTableRowElement> row = getParent<MathMLTableRowElement>();
   assert(row);
   row->setDirtyStructure();
   MathMLNormalizingContainerElement::setDirtyStructure();
+#endif
 }
 
 void
 MathMLTableCellElement::setDirtyAttribute()
 {
+#if 0
   SmartPtr<MathMLTableRowElement> row = getParent<MathMLTableRowElement>();
   assert(row);
   row->setDirtyAttribute();
   MathMLNormalizingContainerElement::setDirtyAttribute();
+#endif
 }
 
 void
 MathMLTableCellElement::setDirtyLayout()
 {
+#if 0
   SmartPtr<MathMLTableRowElement> row = getParent<MathMLTableRowElement>();
   assert(row);
   row->setDirtyLayout();
   MathMLNormalizingContainerElement::setDirtyLayout();
+#endif
 }

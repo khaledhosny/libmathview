@@ -47,9 +47,7 @@ libmathml_la_SOURCES = \
   MathMLTextNode.cc \
   MathMLTokenElement.cc \
   MathMLUnderOverElement.cc \
-  MathMLmathElement.cc \
-  tableSetup.cc \
-  tableLayout.cc
+  MathMLmathElement.cc
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
