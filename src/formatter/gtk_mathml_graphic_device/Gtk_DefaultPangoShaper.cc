@@ -55,6 +55,7 @@ Gtk_DefaultPangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& 
 {
   const GlyphSpec spec = result.getSpec();
   const unsigned n = result.chunkSize();
+  assert(n > 0);
   // is it worth specializing this to the case when n == 1????
   gunichar* uni_buffer = new gunichar[n];
   for (unsigned i = 0; i < n; i++) uni_buffer[i] = result.data()[i];

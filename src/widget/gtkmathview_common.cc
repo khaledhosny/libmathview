@@ -250,7 +250,7 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 
       gint x;
       gint y;
-      GtkMathViewBox gbox;
+      GtkMathViewBoundingBox gbox;
       if (GTKMATHVIEW_METHOD_NAME(get_element_location)(math_view, math_view->cursor_elem,
 							&x, &y, &gbox))
 	{
@@ -1381,7 +1381,7 @@ GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView* math_view, gint* width, gint* hei
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, GtkMathViewBox* gbox)
+GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, GtkMathViewBoundingBox* gbox)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1462,7 +1462,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-					      gint* x, gint* y, GtkMathViewBox* gbox)
+					      gint* x, gint* y, GtkMathViewBoundingBox* gbox)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1491,7 +1491,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathVie
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-					   gint index, gint* x, gint* y, GtkMathViewBox* gbox)
+					   gint index, gint* x, gint* y, GtkMathViewBoundingBox* gbox)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);

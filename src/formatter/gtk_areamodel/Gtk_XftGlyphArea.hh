@@ -26,9 +26,9 @@
 #include <ft2build.h>
 #include <X11/Xft/Xft.h>
 
-#include "SimpleArea.hh"
+#include "GlyphArea.hh"
 
-class Gtk_XftGlyphArea : public SimpleArea
+class Gtk_XftGlyphArea : public GlyphArea
 {
 protected:
   Gtk_XftGlyphArea(XftFont* font, FT_UInt glyph);

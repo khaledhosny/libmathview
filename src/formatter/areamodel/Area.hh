@@ -42,12 +42,13 @@ public:
   virtual scaled leftEdge(void) const = 0;
   virtual scaled rightEdge(void) const = 0;
   virtual void strength(int&, int&, int&) const = 0;
-  virtual int length(void) const { return 0; }
   virtual unsigned size(void) const { return 0; }
   virtual AreaRef node(unsigned) const = 0;
   virtual void origin(unsigned, scaled&, scaled&) const = 0;
   virtual int lengthTo(unsigned) const = 0;
-  //virtual AreaRef replace(unsigned, const AreaRef&) const = 0;
+  virtual int length(void) const { return 0; }
+  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const { return false; }
+  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const { return false; }
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const = 0;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const = 0;

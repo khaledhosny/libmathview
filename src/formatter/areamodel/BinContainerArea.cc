@@ -122,3 +122,14 @@ BinContainerArea::replace(unsigned i, const AreaRef& newChild) const
   return (child == newChild) ? this : clone(newChild);
 }
 
+bool
+BinContainerArea::indexOfPosition(const scaled& x, const scaled& y, int& index) const
+{ return child->indexOfPosition(x, y, index); }
+
+bool
+BinContainerArea::positionOfIndex(int index, scaled& x, scaled& y, BoundingBox& bbox) const
+{ return child->positionOfIndex(index, x, y, bbox); }
+
+int
+BinContainerArea::length() const
+{ return child->length(); }

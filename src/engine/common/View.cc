@@ -168,20 +168,31 @@ View::getElementExtents(const SmartPtr<Element>& elem, scaled& x, scaled& y, Bou
 }
 
 bool
+View::getElementLength(const SmartPtr<Element>& elem, int& length) const
+{
+  assert(elem);
+  if (getRootArea())
+    if (AreaRef elemArea = elem->getArea())
+      {
+	length = elemArea->length();
+	return true;
+      }
+
+  return false;
+}
+
+bool
 View::getCharAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem, int& index) const
 {
-  if (AreaRef rootArea = getRootArea())
+  if (getElementAt(x, y, elem))
     {
-      BoundingBox box = rootArea->box();
-      AreaId id(rootArea);
-      if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
-	for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
-	  if (SmartPtr<const WrapperArea> area = smart_cast<const WrapperArea>(*p))
-	    if ((elem = area->getElement()))
-	      {
-		index = 0; // FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		return true;
-	      }
+      scaled ex;
+      scaled ey;
+      BoundingBox ebox;
+      if (getElementExtents(elem, ex, ey, ebox))
+	if (AreaRef elemArea = elem->getArea())
+	  if (elemArea->indexOfPosition(x - ex, y - ey, index))
+	    return true;
     }
   
   return false;
@@ -193,15 +204,8 @@ View::getCharExtents(const SmartPtr<Element>& elem, int index, scaled& x, scaled
   assert(elem);
   if (getRootArea()) // just to be sure the tree has been formatted
     if (AreaRef elemArea = elem->getArea())
-      {
-	AreaId elemId(elemArea);
-	if (elemArea->searchByIndex(elemId, index))
-	  {
-	    elemId.getOrigin(x, y);
-	    box = elemId.getArea()->box();
-	    return true;
-	  }
-      }
+      if (elemArea->positionOfIndex(index, x, y, box))
+	return true;
 							    
   return false;
 }

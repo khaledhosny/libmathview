@@ -62,6 +62,7 @@ public:
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
   bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
   bool getElementAt(const scaled&, const scaled&, SmartPtr<class Element>&) const;
+  bool getElementLength(const SmartPtr<class Element>&, int&) const;
   bool getCharExtents(const SmartPtr<class Element>&, int, scaled&, scaled&, BoundingBox&) const;
   bool getCharAt(const scaled&, const scaled&, SmartPtr<class Element>&, int&) const;
 

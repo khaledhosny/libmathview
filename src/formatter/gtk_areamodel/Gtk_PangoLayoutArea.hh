@@ -42,6 +42,9 @@ public:
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const;
+  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const;
+  virtual int length(void) const;
 
 protected:
   GObjectPtr<PangoLayout> layout;

@@ -60,28 +60,10 @@ ShapingResult::data() const
 AreaRef
 ShapingResult::area(const SmartPtr<AreaFactory>& factory) const
 {
-#if 0
-  if (res.size() == source.length())
-#endif
-    if (res.size() == 1) 
-      return res[0];
-    else
-      return factory->horizontalArray(res);
-#if 0
+  if (res.size() == 1) 
+    return res[0];
   else
-    {
-      std::vector<AreaRef> content;
-      content.reserve(source.length());
-      AreaRef empty = factory->horizontalSpace(scaled::zero());
-      for (unsigned i = 0; i < res.size(); i++)
-	{
-	  for (unsigned j = 0; j < res_n[i] - 1; j++)
-	    content.push_back(empty);
-	  content.push_back(res[i]);
-	}
-      return factory->horizontalArray(content);
-    }
-#endif
+    return factory->glyphString(res, res_n);
 }
 
 Char32

@@ -26,9 +26,9 @@
 #include <pango/pango.h>
 
 #include "GObjectPtr.hh"
-#include "SimpleArea.hh"
+#include "GlyphArea.hh"
 
-class Gtk_PangoGlyphArea : public SimpleArea
+class Gtk_PangoGlyphArea : public GlyphArea
 {
 protected:
   Gtk_PangoGlyphArea(PangoFont*, PangoGlyphString*);

@@ -83,3 +83,34 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 		  Gtk_RenderingContext::toGtkY(y + bbox.height),
 		  layout);
 }
+
+bool
+Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, int& index) const
+{
+  int trailing;
+  return (pango_layout_xy_to_index(layout,
+				   Gtk_RenderingContext::toGtkX(x),
+				   Gtk_RenderingContext::toGtkY(y + bbox.height),
+				   &index,
+				   &trailing));
+}
+
+bool
+Gtk_PangoLayoutArea::positionOfIndex(int index, scaled& x, scaled& y, BoundingBox& bbox) const
+{
+  PangoRectangle rect;
+  pango_layout_index_to_pos(layout, index, &rect);
+  
+  x = Gtk_RenderingContext::fromPangoPixels(rect.x);
+  y = Gtk_RenderingContext::fromPangoPixels(rect.y);
+  bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
+		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
+		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
+  return true;
+}
+
+unsigned
+Gtk_PangoLayoutArea::length() const
+{
+  return g_utf8_strlen(pango_layout_get_text(layout), -1);
+}

@@ -40,12 +40,11 @@ extern "C" {
 #define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
-  struct _GtkMathViewBox {
+  typedef struct _GtkMathViewBoundingBox {
     gint width;
     gint height;
     gint depth;
-  };
-  typedef struct _GtkMathViewBox    GtkMathViewBox;
+  } GtkMathViewBoundingBox;
 
   typedef struct _GtkMathView       GtkMathView;
   typedef struct _GtkMathViewClass  GtkMathViewClass;
@@ -85,11 +84,11 @@ extern "C" {
   void           GTKMATHVIEW_METHOD_NAME(select)(GtkMathView*, GtkMathViewElementId);
   void           GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewElementId);
   gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewElementId);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, GtkMathViewBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, GtkMathViewBoundingBox*);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewElementId*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView*, GtkMathViewElementId, gint*, gint*, GtkMathViewBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView*, GtkMathViewElementId, gint*, gint*, GtkMathViewBoundingBox*);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewElementId*, gint*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView*, GtkMathViewElementId, gint, gint*, gint*, GtkMathViewBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView*, GtkMathViewElementId, gint, gint*, gint*, GtkMathViewBoundingBox*);
   void           GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewElementId, gint);
   void           GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewElementId*, gint*);
   void           GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, gboolean);

@@ -45,6 +45,9 @@ public:
   virtual void origin(unsigned, scaled&, scaled&) const;
   virtual int lengthTo(unsigned) const;
   virtual AreaRef replace(unsigned, const AreaRef&) const;
+  virtual int length(void) const;
+  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const;
+  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;

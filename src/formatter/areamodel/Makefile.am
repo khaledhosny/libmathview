@@ -28,7 +28,9 @@ libareamodel_la_SOURCES = \
   HorizontalArrayArea.cc \
   LinearContainerArea.cc \
   WrapperArea.cc \
-  SimpleArea.cc
+  SimpleArea.cc \
+  GlyphArea.cc \
+  GlyphStringArea.cc
 
 noinst_HEADERS = \
   Area.hh \
@@ -57,7 +59,9 @@ noinst_HEADERS = \
   VerticalArrayArea.hh \
   BoxArea.hh \
   HorizontalArrayArea.hh \
-  VerticalFillerArea.hh
+  VerticalFillerArea.hh \
+  GlyphArea.hh \
+  GlyphStringArea.hh
 
 INCLUDES = \
   -I$(top_srcdir)/src/common \

@@ -29,6 +29,7 @@
 #include "HorizontalArrayArea.hh"
 #include "HorizontalFillerArea.hh"
 #include "HorizontalSpaceArea.hh"
+#include "GlyphStringArea.hh"
 #include "IdArea.hh"
 #include "IgnoreArea.hh"
 #include "InkArea.hh"
@@ -58,6 +59,8 @@ public:
   { return HideArea::create(area); }
   virtual SmartPtr<HorizontalArrayArea> horizontalArray(const std::vector<AreaRef>& content) const
   { return HorizontalArrayArea::create(content); }
+  virtual SmartPtr<HorizontalArrayArea> glyphString(const std::vector<AreaRef>& content, const std::vector<int>& counters) const
+  { return GlyphStringArea::create(content, counters); }
   virtual SmartPtr<VerticalArrayArea> verticalArray(const std::vector<AreaRef>& content, unsigned ref) const
   { return VerticalArrayArea::create(content, ref); }
   virtual SmartPtr<OverlapArrayArea> overlapArray(const std::vector<AreaRef>& content) const
