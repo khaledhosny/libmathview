@@ -39,7 +39,7 @@ protected:
 
 public:
   void ref(void) const { refCounter++; }
-  void unref(void) const { if (--refCounter == 0) delete this; }
+  void unref(void) const { /* if (--refCounter == 0) delete this; */ }
 
 private:
   mutable unsigned refCounter;

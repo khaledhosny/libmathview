@@ -30,12 +30,12 @@
 class Gtk_MathGraphicDevice : public MathGraphicDevice
 {
 protected:
-  Gtk_MathGraphicDevice(GtkWidget*);
+  Gtk_MathGraphicDevice(void);
   virtual ~Gtk_MathGraphicDevice();
 
 public:
-  static SmartPtr<Gtk_MathGraphicDevice> create(GtkWidget* widget)
-  { return new Gtk_MathGraphicDevice(widget); }
+  static SmartPtr<Gtk_MathGraphicDevice> create(void)
+  { return new Gtk_MathGraphicDevice(); }
 
   virtual AreaRef wrapper(const MathFormattingContext&, const AreaRef&) const;
 

@@ -112,6 +112,10 @@ struct _GtkMathViewClass
   AbstractLogger* logger;
   Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
+  Gtk_MathGraphicDevice* math_graphic_device;
+#if defined(ENABLE_BOXML)
+  Gtk_BoxGraphicDevice* box_graphic_device;
+#endif // ENABLE_BOXML
 };
 
 struct _GtkMathView
@@ -500,12 +504,36 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(logger, configuration);
   dictionary->ref();
   math_view_class->dictionary = dictionary;
+
+  SmartPtr<Gtk_MathGraphicDevice> mathGraphicDevice = Gtk_MathGraphicDevice::create();
+  mathGraphicDevice->ref();
+  math_view_class->math_graphic_device = mathGraphicDevice;
+
+#if defined(ENABLE_BOXML)
+  SmartPtr<Gtk_BoxGraphicDevice> boxGraphicDevice = Gtk_BoxGraphicDevice::create();
+  boxGraphicDevice->ref();
+  math_view_class->box_graphic_device = boxGraphicDevice;
+#endif // ENABLE_BOXML
 }
 
 static void
 gtk_math_view_base_class_finalize(GtkMathViewClass* math_view_class)
 {
   g_return_if_fail(math_view_class != NULL);
+
+#if defined(ENABLE_BOXML)
+  if (math_view_class->box_graphic_device)
+    {
+      math_view_class->box_graphic_device->unref();
+      math_view_class->box_graphic_device = 0;
+    }
+#endif // ENABLE_BOXML
+
+  if (math_view_class->math_graphic_device)
+    {
+      math_view_class->math_graphic_device->unref();
+      math_view_class->math_graphic_device = 0;
+    }
 
   if (math_view_class->dictionary)
     {
@@ -747,11 +775,9 @@ gtk_math_view_init(GtkMathView* math_view)
 
   view->setLogger(math_view_class->logger);
   view->setOperatorDictionary(math_view_class->dictionary);
-  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view,
-								 Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view))));
+  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->math_graphic_device));
 #if ENABLE_BOXML
-  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view,
-							       Gtk_BoxGraphicDevice::create(GTK_WIDGET(math_view))));
+  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, math_view_class->box_graphic_device));
 #endif // ENABLE_BOXML
 
   math_view->renderingContext = new Gtk_RenderingContext;

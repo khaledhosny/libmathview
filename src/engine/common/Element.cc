@@ -31,8 +31,6 @@
 #include "AttributeList.hh"
 #include "NamespaceContext.hh"
 
-//#include <iostream>
-
 Element::Element(const SmartPtr<NamespaceContext>& c) : context(c)
 {
   assert(context);
@@ -52,7 +50,6 @@ Element::setParent(const SmartPtr<Element>& p)
   parent = static_cast<Element*>(p);
   if (p)
     {
-      //std::cerr << "Element::setParent " << this << " " << static_cast<Element*>(p) << " dirtyAttribute=" << dirtyAttribute() << std::endl;
       // WARNING: the setFlagUp is smart so it does not propagate the flag
       // if the flag is already set.
       // the setFlagDown however doesn't check for the status of the flag

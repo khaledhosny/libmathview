@@ -101,6 +101,13 @@ AC_ARG_WITH(
         ]
 )
 
+AC_ARG_WITH(
+	mpatrol,
+	[  --with-mpatrol[=ARG]  enable MPatrol [default=no]],
+	enable_mpatrol=$withval,
+	enable_mpatrol=no
+)
+
 dnl Automake configuration
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
@@ -408,6 +415,10 @@ if test $profile = yes; then
 	CFLAFS="$CFLAGS -O0 -pg"
 	CXXFLAGS="$CXXFLAGS -O0 -pg"
 	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
+fi
+
+if test "x$enable_mpatrol" = "xyes"; then
+	AM_WITH_MPATROL
 fi
 
 AC_CONFIG_FILES([

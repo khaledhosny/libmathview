@@ -33,12 +33,13 @@
 #include "SpaceShaper.hh"
 #include "MathMLElement.hh"
 
-Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
+Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
   : gtk_factory(Gtk_AreaFactory::create())
 {
   setFactory(gtk_factory);
 
-  GObjectPtr<PangoContext> context = gtk_widget_create_pango_context(widget);
+  //GObjectPtr<PangoContext> context = gtk_widget_create_pango_context(widget);
+  GObjectPtr<PangoContext> context = gdk_pango_context_get();
   SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
   defaultPangoShaper->setPangoContext(context);
   getShaperManager()->registerShaper(defaultPangoShaper);

@@ -42,13 +42,9 @@ SmartPtr<BoxMLActionElement>
 BoxMLActionElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLActionElement(context); }
 
-//#include <iostream>
-
 AreaRef
 BoxMLActionElement::format(BoxFormattingContext& ctxt)
 {
-  //std::cerr << "BoxMLActionElement::format " << this << " " << selection << " " << getSize() << " dirty? " << dirtyAttribute() << std::endl;
-
   if (dirtyLayout())
     {
       ctxt.push(this);

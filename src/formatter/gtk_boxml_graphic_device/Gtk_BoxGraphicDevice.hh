@@ -31,12 +31,12 @@
 class Gtk_BoxGraphicDevice : public BoxGraphicDevice
 {
 protected:
-  Gtk_BoxGraphicDevice(GtkWidget*);
+  Gtk_BoxGraphicDevice(void);
   virtual ~Gtk_BoxGraphicDevice();
 
 public:
-  static SmartPtr<Gtk_BoxGraphicDevice> create(GtkWidget* widget)
-  { return new Gtk_BoxGraphicDevice(widget); }
+  static SmartPtr<Gtk_BoxGraphicDevice> create(void)
+  { return new Gtk_BoxGraphicDevice(); }
 
   virtual SmartPtr<class AreaFactory> getFactory(void) const;
   virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const;

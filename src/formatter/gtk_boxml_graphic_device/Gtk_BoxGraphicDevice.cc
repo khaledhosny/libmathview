@@ -30,10 +30,10 @@
 #include "BoxFormattingContext.hh"
 #include "BoxMLElement.hh"
 
-Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice(GtkWidget* widget)
+Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice()
 {
   factory = Gtk_AreaFactory::create();
-  pango_context = gtk_widget_create_pango_context(widget);
+  pango_context = gdk_pango_context_get();
 }
 
 Gtk_BoxGraphicDevice::~Gtk_BoxGraphicDevice()
