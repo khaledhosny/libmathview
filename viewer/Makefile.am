@@ -45,8 +45,8 @@ test_embedding_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
   $(GTK_LIBS) \
-  $(T1_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(T1_LIBS) \
   $(NULL)
 
 test_loading_SOURCES = test_loading.c

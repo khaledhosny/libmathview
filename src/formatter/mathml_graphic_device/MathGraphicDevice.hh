@@ -30,10 +30,11 @@
 class MathGraphicDevice : public GraphicDevice
 {
 protected:
-  MathGraphicDevice(void);
+  MathGraphicDevice(const SmartPtr<class AbstractLogger>&);
   virtual ~MathGraphicDevice();
 
 public:
+  SmartPtr<class AbstractLogger> getLogger(void) const;
   void setFactory(const SmartPtr<AreaFactory>& f) { factory = f; }
   SmartPtr<AreaFactory> getFactory(void) const { return factory; }
   SmartPtr<ShaperManager> getShaperManager(void) const { return shaperManager; }
@@ -106,6 +107,7 @@ protected:
 				    scaled& v, scaled& u) const;
 
 private:
+  SmartPtr<class AbstractLogger> logger;
   SmartPtr<AreaFactory> factory;
   SmartPtr<ShaperManager> shaperManager;
 };

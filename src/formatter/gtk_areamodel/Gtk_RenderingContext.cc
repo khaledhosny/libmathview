@@ -86,9 +86,8 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
       assert(xvisual != NULL);
 
       T1_AASetBitsPerPixel(visual->depth);
-      logger->out(LOG_DEBUG, "t1lib: X11 depth = %d ", visual->depth);
-      logger->out(LOG_DEBUG, "t1lib: X11 AAGetLevel = %d", T1_AAGetLevel());
-      logger->out(LOG_DEBUG, "t1lib: X11 AAGetBitsPerPixel = %d", T1_AAGetBitsPerPixel());
+      logger->out(LOG_DEBUG, "t1lib: X11 depth = %d AAGetLevel = %d AAGetBitsPerPixel = %d", 
+		  visual->depth, T1_AAGetLevel(), T1_AAGetBitsPerPixel());
       T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
 #endif // HAVE_LIBT1
     }

@@ -516,7 +516,7 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   dictionary->ref();
   math_view_class->dictionary = dictionary;
 
-  SmartPtr<Gtk_MathGraphicDevice> mathGraphicDevice = Gtk_MathGraphicDevice::create();
+  SmartPtr<Gtk_MathGraphicDevice> mathGraphicDevice = Gtk_MathGraphicDevice::create(logger, configuration);
   mathGraphicDevice->ref();
   math_view_class->math_graphic_device = mathGraphicDevice;
 

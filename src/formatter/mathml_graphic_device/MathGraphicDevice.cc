@@ -24,19 +24,26 @@
 
 #include <cassert>
 
+#include "AbstractLogger.hh"
 #include "AreaFactory.hh"
 #include "MathMLElement.hh"
 #include "MathGraphicDevice.hh"
 #include "MathVariantMap.hh"
 #include "FormattingContext.hh"
 
-MathGraphicDevice::MathGraphicDevice()
-  : shaperManager(ShaperManager::create())
+MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& l)
+  : logger(l), shaperManager(ShaperManager::create())
 { }
 
 MathGraphicDevice::~MathGraphicDevice()
 {
   shaperManager->unregisterShapers();
+}
+
+SmartPtr<AbstractLogger>
+MathGraphicDevice::getLogger() const
+{
+  return logger;
 }
 
 scaled

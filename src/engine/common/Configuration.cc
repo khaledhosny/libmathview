@@ -26,3 +26,4 @@
 
 Configuration::~Configuration()
 { }
+

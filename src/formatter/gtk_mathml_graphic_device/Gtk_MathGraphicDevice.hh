@@ -30,12 +30,12 @@
 class Gtk_MathGraphicDevice : public MathGraphicDevice
 {
 protected:
-  Gtk_MathGraphicDevice(void);
+  Gtk_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
   virtual ~Gtk_MathGraphicDevice();
 
 public:
-  static SmartPtr<Gtk_MathGraphicDevice> create(void)
-  { return new Gtk_MathGraphicDevice(); }
+  static SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
+						const SmartPtr<class Configuration>&);
 
   virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
 

@@ -136,6 +136,14 @@ struct TemplateSetup
 		conf.setSelectBackground(b);
 	      }
 	  }
+	else if (name == "shaper")
+	  {
+	    const String shaperName = Model::getAttribute(elem, "name");
+	    if (shaperName.empty() || shaperName.length() == 0)
+	      logger.out(LOG_WARNING, "malformed `shaper' element, unspecified or empty `name' attribute");
+	    else
+	      conf.addShaper(shaperName);
+	  }
 	else
 	  logger.out(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
       } 

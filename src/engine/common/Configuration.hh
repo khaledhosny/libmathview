@@ -49,11 +49,23 @@ protected:
   virtual ~Configuration();
 
 public:
+  class ConfiguredShaper
+  {
+  public:
+    ConfiguredShaper(const String& n) : name(n) { }
+    String getName(void) const { return name; }
+  private:
+    String name;
+  };
+
   static SmartPtr<Configuration> create(void)
   { return new Configuration(); }
 
   void addDictionary(const String& s) { dictionaries.push_back(s); }
   const std::vector<String>& getDictionaries(void) const { return dictionaries; }
+
+  void addShaper(const String& name) { shapers.push_back(ConfiguredShaper(name)); }
+  const std::vector<ConfiguredShaper>& getShapers(void) const { return shapers; }
 
   bool getDrawMissingGlyphs(void) const { return drawMissingGlyphs; }
   void setDrawMissingGlyphs(bool b) { drawMissingGlyphs = b; }
@@ -78,6 +90,7 @@ public:
 
 private:
   std::vector<std::string> dictionaries;
+  std::vector<ConfiguredShaper> shapers;
 
   bool drawMissingGlyphs;
   int verbosity;

@@ -24,6 +24,8 @@
 
 #include <cassert>
 
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_XftFontManager.hh"
@@ -38,42 +40,66 @@
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
 
-#include <iostream>
-
-Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
-  : gtk_factory(Gtk_AreaFactory::create())
+Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+  : MathGraphicDevice(l), gtk_factory(Gtk_AreaFactory::create())
 {
   setFactory(gtk_factory);
 
-  //GObjectPtr<PangoContext> context = gtk_widget_create_pango_context(widget);
   GObjectPtr<PangoContext> context = gdk_pango_context_get();
-  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
-  defaultPangoShaper->setPangoContext(context);
-  getShaperManager()->registerShaper(defaultPangoShaper);
-
-  getShaperManager()->registerShaper(SpaceShaper::create());
-
+  SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
 #if HAVE_LIBT1
   SmartPtr<T1FontManager> t1FontManager = T1FontManager::create();
-  SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
-  cmShaper->setFontManager(t1FontManager);
-  getShaperManager()->registerShaper(cmShaper);
 #endif // HAVE_LIBT1
 
-#if 0
-  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
-  pangoShaper->setPangoContext(context);
-  getShaperManager()->registerShaper(pangoShaper);
-#elif 0
-  SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
-  SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-  adobeShaper->setFontManager(xftFontManager);
-  //getShaperManager()->registerShaper(adobeShaper);
-#endif
+  for (std::vector<Configuration::ConfiguredShaper>::const_iterator p = conf->getShapers().begin();
+       p != conf->getShapers().end();
+       p++)
+    {
+      const String name = p->getName();
+      if (name == "pango-default")
+	{
+	  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
+	  defaultPangoShaper->setPangoContext(context);
+	  getShaperManager()->registerShaper(defaultPangoShaper);
+	}
+      else if (name == "space")
+	getShaperManager()->registerShaper(SpaceShaper::create());
+      else if (name == "pango")
+	{
+	  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
+	  pangoShaper->setPangoContext(context);
+	  getShaperManager()->registerShaper(pangoShaper);
+	}
+      else if (name == "adobe")
+	{
+	  SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
+	  adobeShaper->setFontManager(xftFontManager);
+	  //getShaperManager()->registerShaper(adobeShaper);
+	}
+      else if (name == "computer-modern")
+	{
+#if HAVE_LIBT1
+	  SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
+	  cmShaper->setFontManager(t1FontManager);
+	  getShaperManager()->registerShaper(cmShaper);
+#else
+	  getLogger()->out(LOG_WARNING, "t1lib support has not been compiled in, ");
+#endif // HAVE_LIBT1
+	}
+      else
+	getLogger()->out(LOG_WARNING, "unknown shaper `%s' (ignored)", name.c_str());
+    }
 }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
 { }
+
+SmartPtr<Gtk_MathGraphicDevice>
+Gtk_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
+			      const SmartPtr<Configuration>& conf)
+{ 
+  return new Gtk_MathGraphicDevice(logger, conf);
+}
 
 AreaRef
 Gtk_MathGraphicDevice::wrapper(const FormattingContext& context,
