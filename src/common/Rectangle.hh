@@ -20,13 +20,14 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef Rectangle_hh
-#define Rectangle_hh
+#ifndef __Rectangle_hh__
+#define __Rectangle_hh__
 
 #include "scaled.hh"
 #include "BoundingBox.hh"
 
-struct Rectangle {
+struct Rectangle
+{
   scaled x;
   scaled y;
   scaled width;
@@ -38,23 +39,23 @@ struct Rectangle {
   Rectangle(const scaled& x0, const scaled& y0, const scaled& width0, const scaled& height0)
     : x(x0), y(y0), width(width0), height(height0) { }
 
-  void Zero(void) { x = y = width = height = 0; }
+  void zero(void) { x = y = width = height = 0; }
 
-  bool Overlaps(const Rectangle& rect) const {
-    return Overlaps(rect.x, rect.y, rect.width, rect.height);
-  }
+  bool overlaps(const Rectangle& rect) const
+  { return overlaps(rect.x, rect.y, rect.width, rect.height); }
 
-  bool Overlaps(const scaled& x0, const scaled& y0, const scaled& w0, const scaled& h0) const
+  bool overlaps(const scaled& x0, const scaled& y0, const scaled& w0, const scaled& h0) const
   { return x <= x0 + w0 && x + width >= x0 && y <= y0 + h0 && y + height >= y0; }
 
-  bool IsNull(void) const { return (width == scaled(0)) || (height == scaled(0)); }
+  bool isNull(void) const
+  { return (width == scaled(0)) || (height == scaled(0)); }
 
-  bool IsInside(const scaled& x0, const scaled& y0) const
+  bool isInside(const scaled& x0, const scaled& y0) const
   { return x <= x0 && x0 <= x + width && y <= y0 && y0 <= y + height; }
 
-  void Union(const Rectangle&);
+  void merge(const Rectangle&);
 
-  void Dump(void) const;
+  void dump(void) const;
 };
 
-#endif
+#endif // __Rectangle_hh__

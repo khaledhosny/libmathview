@@ -30,7 +30,7 @@
 #include "Rectangle.hh"
 
 void
-Rectangle::Union(const Rectangle& r)
+Rectangle::merge(const Rectangle& r)
 {
   scaled maxX = std::max(x + width, r.x + r.width);
   scaled maxY = std::max(y + height, r.y + r.height);
@@ -41,7 +41,7 @@ Rectangle::Union(const Rectangle& r)
 }
 
 void
-Rectangle::Dump() const
+Rectangle::dump() const
 {
   printf("[%d,%d,%d,%d]", sp2ipx(x), sp2ipx(y), sp2ipx(width), sp2ipx(height));
 }
