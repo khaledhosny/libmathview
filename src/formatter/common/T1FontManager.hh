@@ -39,10 +39,10 @@ public:
   static SmartPtr<T1FontManager> create(void)
   { return new T1FontManager(); }
 
-  bool loadFont(const String&) const;
   SmartPtr<class T1Font> getT1Font(const String&, const scaled&) const;
 
 protected:
+  int loadFont(const String&) const;
   SmartPtr<class T1Font> createT1Font(const String&, const scaled&) const;
 
 private:

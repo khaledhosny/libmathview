@@ -45,7 +45,7 @@ public:
 
   // token formatting
 
-  virtual AreaRef string(const class FormattingContext&, const String& str) const;
+  AreaRef string(const class FormattingContext&, const String& str) const;
   virtual AreaRef glyph(const class FormattingContext&,
 			const String& alt, const String& fontFamily,
 			unsigned long index) const;
@@ -86,10 +86,12 @@ public:
   virtual AreaRef dummy(const class FormattingContext& context) const;
 
 protected:
-  virtual AreaRef stretchStringV(const class FormattingContext&,
-				 const String& str,
-				 const scaled& height,
-				 const scaled& depth) const;
+  AreaRef stretchedString(const class FormattingContext&, const String& str) const;
+  AreaRef unstretchedString(const class FormattingContext&, const String& str) const;
+  AreaRef stretchStringV(const class FormattingContext&,
+			 const String& str,
+			 const scaled& height,
+			 const scaled& depth) const;
   virtual void calculateDefaultScriptShift(const class FormattingContext&,
 					   const BoundingBox& baseBox,
 					   const BoundingBox& subScriptBox,

@@ -42,7 +42,7 @@ MathMLStringNode::format(FormattingContext& ctxt)
 
 unsigned
 MathMLStringNode::GetLogicalContentLength() const
-{ return content.length(); }
+{ return UCS4StringOfUTF8String(content).length(); }
 
 String
 MathMLStringNode::GetRawContent() const

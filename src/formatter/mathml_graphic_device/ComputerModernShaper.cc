@@ -46,16 +46,17 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x002C, 0x3B },  // COMMA
     { 0x002E, 0x3A },  // FULL STOP
     { 0x002F, 0x3D },  // SOLIDUS
-    { 0x0030, 0x30 },  // DIGIT ZERO
-    { 0x0031, 0x31 },  // DIGIT ONE
-    { 0x0032, 0x32 },  // DIGIT TWO
-    { 0x0033, 0x33 },  // DIGIT THREE
-    { 0x0034, 0x34 },  // DIGIT FOUR
-    { 0x0035, 0x35 },  // DIGIT FIVE
-    { 0x0036, 0x36 },  // DIGIT SIX
-    { 0x0037, 0x37 },  // DIGIT SEVEN
-    { 0x0038, 0x38 },  // DIGIT EIGHT
-    { 0x0039, 0x39 },  // DIGIT NINE
+    // these are funny (short) digits and we don't want them
+//     { 0x0030, 0x30 },  // DIGIT ZERO
+//     { 0x0031, 0x31 },  // DIGIT ONE
+//     { 0x0032, 0x32 },  // DIGIT TWO
+//     { 0x0033, 0x33 },  // DIGIT THREE
+//     { 0x0034, 0x34 },  // DIGIT FOUR
+//     { 0x0035, 0x35 },  // DIGIT FIVE
+//     { 0x0036, 0x36 },  // DIGIT SIX
+//     { 0x0037, 0x37 },  // DIGIT SEVEN
+//     { 0x0038, 0x38 },  // DIGIT EIGHT
+//     { 0x0039, 0x39 },  // DIGIT NINE
     { 0x003C, 0x3C },  // LESS-THAN SIGN
     { 0x003E, 0x3E },  // GREATER-THAN SIGN
     { 0x0041, 0x41 },  // LATIN CAPITAL LETTER A
@@ -550,11 +551,32 @@ enum FontIndex
 
 #include <iostream>
 
+const char*
+ComputerModernShaper::nameOfFont(FontNameId name)
+{
+  switch (name)
+    {
+    case FN_NIL: return 0;
+    case FN_CMR: return "cmr";
+    case FN_CMB: return "cmb";
+    case FN_CMBXTI: return "cmbxti";
+    case FN_CMTI: return "cmti";
+    case FN_CMSS: return "cmss";
+    case FN_CMSSI: return "cmssi";
+    case FN_CMSSBX: return "cmssbx";
+    case FN_CMTT: return "cmtt";
+    case FN_CMSY: return "cmsy";
+    case FN_CMBSY: return "cmbsy";
+    case FN_CMMI: return "cmmi";
+    case FN_CMMIB: return "cmmib";
+    case FN_CMEX: return "cmex";
+    default: return "???";
+    }
+}
+
 void
 ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
-  std::cerr << "REGISTERING COMPUTER-MODERN SHAPER" << std::endl;
-
   assert(sm);
 
   for (unsigned j = 0; j < sizeof(variantDesc) / sizeof(FontDesc); j++)
@@ -571,6 +593,7 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       const Char32 vch = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
       sm->registerChar(ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMMI, cmmMap[i].index));
       if (vch != ch) sm->registerChar(vch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMMIB, cmmMap[i].index));
+      fprintf(stderr, "registering %04x and %04x in %02x\n", ch, vch, cmmMap[i].index);
     }
 
   for (unsigned i = 0; cmsMap[i].ch; i++)
@@ -633,6 +656,8 @@ ComputerModernShaper::shape(ShapingContext& context) const
 AreaRef
 ComputerModernShaper::shapeChar(const ShapingContext& context, FontNameId name) const
 {
+  fprintf(stderr, "shaping char %04x in font %s glyph %02x size %d\n",
+	  context.thisChar(), nameOfFont(name), context.getSpec().getGlyphId(), context.getSize().getValue());
   return getGlyphArea(context.getFactory(), name, context.getSpec().getGlyphId(), context.getSize());
 }
 
@@ -644,11 +669,15 @@ ComputerModernShaper::shapeStretchyCharV(const ShapingContext& context) const
   const scaled span = context.getVSpan() - (1 * size) / 10; // use tex formula
   const VStretchyChar& charSpec = vMap[context.getSpec().getGlyphId()];
 
+  fprintf(stderr, "shaping stretchy char %04x span %d\n", context.thisChar(), span.getValue());
+
   AreaRef normal = 0;
   for (unsigned i = 0; i < 5; i++)
     if ((normal = getGlyphArea(factory, charSpec.normal[i], size)))
       if (normal->box().verticalExtent() >= span)
 	return normal;
+
+  fprintf(stderr, "no normal found\n");
 
   AreaRef top = getGlyphArea(factory, charSpec.top, size);
   AreaRef glue = getGlyphArea(factory, charSpec.glue, size);

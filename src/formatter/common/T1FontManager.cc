@@ -51,7 +51,7 @@ T1FontManager::~T1FontManager()
   // should free the structures
 }
 
-bool
+int
 T1FontManager::loadFont(const String& name) const
 {
   const int n = T1_GetNoFonts();
@@ -61,7 +61,7 @@ T1FontManager::loadFont(const String& name) const
   const int fontId = T1_AddFont(const_cast<char*>(name.c_str())); // DANGER, const cast
   if (fontId >= 0) T1_LoadFont(fontId);
   std::cerr << "loading font " << name << " => " << fontId << std::endl;
-  return fontId >= 0;
+  return fontId;
 }
 
 SmartPtr<T1Font>
@@ -71,7 +71,12 @@ T1FontManager::createT1Font(const String& name, const scaled& size) const
   for (int i = 0; i < n; i++)
     if (name == T1_GetFontFileName(i))
       return T1Font::create(i, size);
-  return 0;
+
+  const int fontId = loadFont(name);
+  if (fontId >= 0)
+    return T1Font::create(fontId, size);
+  else
+    return 0;
 }
 
 SmartPtr<T1Font>
