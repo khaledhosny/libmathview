@@ -53,9 +53,10 @@ AreaId::pop_back()
 {
   assert(!pathV.empty());
   pathV.pop_back();
-  while (areaV.size() > pathV.size()) areaV.pop_back();
-  while (originV.size() > pathV.size()) originV.pop_back();
-  while (lengthV.size() > pathV.size()) lengthV.pop_back();
+  const unsigned pathSize = pathV.size();
+  if (areaV.size() > pathSize) areaV.resize(pathSize);
+  if (originV.size() > pathSize) originV.resize(pathSize);
+  if (lengthV.size() > pathSize) lengthV.resize(pathSize);
 }
 
 AreaRef
@@ -135,11 +136,20 @@ void
 AreaId::validateAreas() const
 {
   AreaRef prev = root;
+  PathVector::const_iterator p = pathV.begin() + areaV.size();
+  while (p < pathV.end())
+    {
+      areaV.push_back(prev->node(*p));
+      prev = areaV.back();
+      p++;
+    }
+#if 0
   while (areaV.size() < pathV.size())
     {
       areaV.push_back(prev->node(pathV[areaV.size()]));
       prev = areaV[areaV.size() - 1];
     }
+#endif
 }
 
 void
@@ -148,6 +158,17 @@ AreaId::validateOrigins() const
   validateAreas();
 
   AreaRef prev = root;
+  PathVector::const_iterator p = pathV.begin() + originV.size();
+  AreaVector::const_iterator q = areaV.begin() + originV.size();
+  while (p < pathV.end())
+    {
+      Point o;
+      prev->origin(*p, o);
+      originV.push_back(o);
+      prev = *q++;
+      p++;
+    }
+#if 0
   while (originV.size() < areaV.size())
     {
       Point o;
@@ -155,6 +176,7 @@ AreaId::validateOrigins() const
       originV.push_back(o);
       prev = areaV[originV.size() - 1];
     }
+#endif
 }
 
 void
@@ -163,9 +185,19 @@ AreaId::validateLengths() const
   validateAreas();
 
   AreaRef prev = root;
+  PathVector::const_iterator p = pathV.begin() + lengthV.size();
+  AreaVector::const_iterator q = areaV.begin() + lengthV.size();
+  while (p < pathV.end())
+    {
+      lengthV.push_back(prev->lengthTo(*p));
+      prev = *q++;
+      p++;
+    }
+#if 0
   while (lengthV.size() < areaV.size())
     {
       lengthV.push_back(prev->lengthTo(pathV[lengthV.size()]));
       prev = areaV[lengthV.size() - 1];
     }
+#endif
 }
