@@ -50,6 +50,8 @@ BoxMLNamespaceContext::construct(const DOM::Element& el) const
   assert(el);
   if (SmartPtr<BoxMLElement> elem = getLinker()->get<BoxMLElement>(el, getFactory()))
     {
+      std::cerr << "this time root is " << static_cast<BoxMLElement*>(elem) << " " << elem->dirtyStructure() << " " << elem->dirtyLayout() << std::endl;
+
       if (elem->dirtyStructure())
 	{
 	  Clock perf;
@@ -69,6 +71,8 @@ BoxMLNamespaceContext::construct(const DOM::Element& el) const
 	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
 	}
 
+      std::cerr << "this time root is " << static_cast<BoxMLElement*>(elem) << " " << elem->dirtyStructure() << " " << elem->dirtyLayout() << std::endl;
+
       return elem;
     }
 
@@ -80,6 +84,7 @@ BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
 {
   SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(el);
   assert(elem);
+  std::cerr << "request for formatting BOX root " << elem->dirtyStructure() << std::endl;
   if (elem->dirtyLayout())
     {
       BoxFormattingContext ctxt(device);
@@ -92,6 +97,7 @@ BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
       perf.Stop();
       Globals::logger(LOG_INFO, "formatting time: %dms", perf());
     }
+  std::cerr << "DONE FORMATTING ROOT " << elem->dirtyStructure() << std::endl;
   return elem->getArea();
 }
 

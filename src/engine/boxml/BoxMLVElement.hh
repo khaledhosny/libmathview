@@ -24,6 +24,7 @@
 #define __BoxMLVElement_hh__
 
 #include "BoxMLLinearContainerElement.hh"
+#include "token.hh"
 
 class BoxMLVElement : public BoxMLLinearContainerElement
 {
@@ -36,6 +37,11 @@ public:
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class BoxFormattingContext&);
+
+  static AreaRef formatVerticalArray(class BoxFormattingContext&,
+				     const std::vector<AreaRef>&,
+				     const scaled&, int, int, TokenId,
+				     scaled&);
 
   virtual scaled getStep(void) const { return step; }
 

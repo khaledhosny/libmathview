@@ -20,32 +20,19 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_BoxGraphicDevice_hh__
-#define __Gtk_BoxGraphicDevice_hh__
+#ifndef __Rope_hh__
+#define __Rope_hh__
 
-#include <gtk/gtk.h>
+// !!! BEGIN WARNING: rope is not part of the STL !!!
+#if defined(HAVE_EXT_ROPE)
+#include <ext/rope>
+#define ROPE_NS __gnu_cxx
+#elif defined(HAVE_ROPE)
+#include <rope>
+#define ROPE_NS std
+#else
+#error "no implementation of rope could be found"
+#endif
+// !!! END WARNING: rope is not part of the STL !!!
 
-#include "BoxGraphicDevice.hh"
-#include "GObjectPtr.hh"
-
-class Gtk_BoxGraphicDevice : public BoxGraphicDevice
-{
-protected:
-  Gtk_BoxGraphicDevice(GtkWidget*);
-  virtual ~Gtk_BoxGraphicDevice();
-
-public:
-  static SmartPtr<Gtk_BoxGraphicDevice> create(GtkWidget* widget)
-  { return new Gtk_BoxGraphicDevice(widget); }
-
-  virtual SmartPtr<class AreaFactory> getFactory(void) const;
-  virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const;
-  virtual AreaRef paragraph(const class BoxFormattingContext&, const String&, const BoxLayout&, const scaled&) const;
-  virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const;
-
-private:
-  GObjectPtr<PangoContext> pango_context;
-  SmartPtr<class Gtk_AreaFactory> factory;
-};
-
-#endif // __Gtk_MathGraphicDevice_hh__
+#endif // __Rope_hh__

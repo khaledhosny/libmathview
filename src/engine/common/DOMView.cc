@@ -114,13 +114,15 @@ DOMView::getRootElement() const
   if (rootDOMElement)
     {
       if (SmartPtr<NamespaceContext> context = getRegistry()->get(rootDOMElement.get_namespaceURI()))
-	return context->construct(rootDOMElement);
+	rootElement = context->construct(rootDOMElement);
       else
 	// warning???
-	return 0;
+	rootElement = 0;
     }
   else
-    return 0;
+    rootElement = 0;
+
+  return rootElement;
 }
 
 SmartPtr<Linker>

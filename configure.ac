@@ -196,6 +196,8 @@ AC_TRY_COMPILE(
 
 AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
+AC_CHECK_HEADERS(rope)
+AC_CHECK_HEADERS(ext/rope)
 
 AC_LANG_POP(C++)
 

@@ -46,9 +46,10 @@ public:
   virtual scaled ex(const class BoxFormattingContext&) const;
   virtual scaled defaultLineThickness(const class BoxFormattingContext&) const;
 
-  // token formatting
+  typedef std::vector< std::pair<unsigned,AreaRef> > BoxLayout;
 
-  virtual AreaRef string(const class BoxFormattingContext&, const String&) const = 0;
+  virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const = 0;
+  virtual AreaRef paragraph(const class BoxFormattingContext&, const String&, const BoxLayout&, const scaled&) const = 0;
   virtual AreaRef dummy(const class BoxFormattingContext&) const;
   virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const = 0;
 };

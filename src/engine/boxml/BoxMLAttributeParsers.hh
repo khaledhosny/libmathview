@@ -28,6 +28,7 @@
 typedef ParseColor Parse_BoxML_Text_color;
 typedef ParseColor Parse_BoxML_Text_background;
 typedef ParseLength Parse_BoxML_Text_size;
+typedef ParseChoice<ParseLength, ParseToken<T_AUTO> > Parse_BoxML_Text_width;
 typedef ParseColor Parse_BoxML_Ink_color;
 typedef ParseLength Parse_BoxML_Space_width;
 typedef ParseLength Parse_BoxML_Space_height;

@@ -57,6 +57,88 @@ BoxMLVElement::refine(AbstractRefinementContext& context)
 #include "BoundingBoxAux.hh"
 
 AreaRef
+BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
+				   const std::vector<AreaRef>& content,
+				   const scaled& minLineSpacing,
+				   int enter, int exit, TokenId align,
+				   scaled& step)
+{
+  int enter_index = 0;
+  int exit_index = 0;
+  AreaRef prevArea = 0;
+  scaled prevHeight;
+  std::vector<AreaRef> c;
+  c.reserve(content.size());
+  for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin();
+       p != content.rend();
+       p++)
+    {
+      AreaRef area = *p;
+      switch (align)
+	{
+	case T_LEFT: area = ctxt.getDevice()->getFactory()->left(area); break;
+	case T_CENTER: area = ctxt.getDevice()->getFactory()->center(area); break;
+	case T_RIGHT: area = ctxt.getDevice()->getFactory()->right(area); break;
+	default:
+	  assert(false);
+	  break;
+	}
+
+      if (BoundingBox areaBox = area->box())
+	{
+	  if (prevArea)
+	    {
+	      if (prevHeight + areaBox.depth < minLineSpacing)
+		c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
+	    }
+	  prevHeight = areaBox.height;
+	  prevArea = area;
+
+	  if (enter-- == 0) enter_index = c.size();
+	  if (exit-- == 0) exit_index = c.size();
+	  c.push_back(area);
+	}
+    }
+
+  step = 0;
+  AreaRef res;
+  switch (c.size())
+    {
+    case 0:
+      res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+      break;
+    case 1:
+      res = c[0];
+      break;
+    default:
+      res = ctxt.getDevice()->getFactory()->verticalArray(c, enter_index);
+      if (enter != exit)
+	{
+	  AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit_index);
+	  assert(res->box().defined());
+	  assert(res1->box().defined());
+	  step = res->box().height - res1->box().height;
+
+#if 0
+	  for (unsigned i = 0; i < c.size(); i++)
+	    {
+	      std::cerr << "AREA " << i << " HAS BOX = " << c[i]->box() << std::endl;
+	    }
+
+	  std::cerr << enter_index << "/" << exit_index << " ************ " << res->box().height << " //// " << res1->box().height << std::endl;
+#endif
+	}
+      break;
+    }
+
+#if 0
+  std::cerr << "==================== " << this << " STEP IS " << step << std::endl;
+#endif
+
+  return res;
+}
+
+AreaRef
 BoxMLVElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
@@ -74,79 +156,14 @@ BoxMLVElement::format(BoxFormattingContext& ctxt)
       enter = content.getSize() - std::min(std::max(enter, 1), (int) content.getSize());
       exit = content.getSize() - std::min(std::max(exit, 1), (int) content.getSize());
 
-      int enter_index = 0;
-      int exit_index = 0;
-      AreaRef prevArea = 0;
-      scaled prevHeight;
       std::vector<AreaRef> c;
       c.reserve(content.getSize());
-      for (std::vector< SmartPtr<BoxMLElement> >::const_reverse_iterator p = content.rbegin();
-	   p != content.rend();
+      for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
+	   p != content.end();
 	   p++)
-	if (*p)
-	  {
-	    AreaRef area = (*p)->format(ctxt);
-	    switch (align)
-	      {
-	      case T_LEFT: area = ctxt.getDevice()->getFactory()->left(area); break;
-	      case T_CENTER: area = ctxt.getDevice()->getFactory()->center(area); break;
-	      case T_RIGHT: area = ctxt.getDevice()->getFactory()->right(area); break;
-	      default:
-		assert(false);
-		break;
-	      }
+	if (*p) c.push_back((*p)->format(ctxt));
 
-	    if (BoundingBox areaBox = area->box())
-	      {
-		if (prevArea)
-		  {
-		    if (prevHeight + areaBox.depth < minLineSpacing)
-		      c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
-		  }
-		prevHeight = areaBox.height;
-		prevArea = area;
-
-		if (enter-- == 0) enter_index = c.size();
-		if (exit-- == 0) exit_index = c.size();
-		c.push_back(area);
-	      }
-	  }
-
-      step = 0;
-      AreaRef res;
-      switch (c.size())
-	{
-	case 0:
-	  res = ctxt.getDevice()->getFactory()->horizontalArray(c);
-	  break;
-	case 1:
-	  res = c[0];
-	  break;
-	default:
-	  res = ctxt.getDevice()->getFactory()->verticalArray(c, enter_index);
-	  if (enter != exit)
-	    {
-	      AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit_index);
-	      assert(res->box().defined());
-	      assert(res1->box().defined());
-	      step = res->box().height - res1->box().height;
-
-#if 0
-	      for (unsigned i = 0; i < c.size(); i++)
-		{
-		  std::cerr << "AREA " << i << " HAS BOX = " << c[i]->box() << std::endl;
-		}
-
-	      std::cerr << enter_index << "/" << exit_index << " ************ " << res->box().height << " //// " << res1->box().height << std::endl;
-#endif
-	    }
-	  break;
-	}
-
-#if 0
-      std::cerr << "==================== " << this << " STEP IS " << step << std::endl;
-#endif
-
+      AreaRef res = formatVerticalArray(ctxt, c, minLineSpacing, enter, exit, align, step);
       res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 

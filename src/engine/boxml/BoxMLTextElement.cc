@@ -47,36 +47,37 @@ BoxMLTextElement::construct()
 {
   if (dirtyStructure())
     {
-      String newContent = "";
-
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
-	for (DOM::Node p = getDOMElement().get_firstChild(); 
-	     p;
-	     p = p.get_nextSibling()) 
-	  {
-	    if (p.get_nodeType() == DOM::Node::TEXT_NODE)
-	      {
-		// ok, we have a chunk of text
-		String s = collapseSpaces(fromDOMString(p.get_nodeValue()));
+	{
+	  String newContent = "";
+
+	  for (DOM::Node p = getDOMElement().get_firstChild(); 
+	       p;
+	       p = p.get_nextSibling()) 
+	    {
+	      if (p.get_nodeType() == DOM::Node::TEXT_NODE)
+		{
+		  // ok, we have a chunk of text
+		  String s = collapseSpaces(fromDOMString(p.get_nodeValue()));
 	      
-		// ...but spaces at the at the beginning (end) are deleted only if this
-		// is the very first (last) chunk in the token.
-		if (!p.get_previousSibling()) content = trimSpacesLeft(s);
-		if (!p.get_nextSibling()) content = trimSpacesRight(s);
+		  // ...but spaces at the at the beginning (end) are deleted only if this
+		  // is the very first (last) chunk in the token.
+		  if (!p.get_previousSibling()) content = trimSpacesLeft(s);
+		  if (!p.get_nextSibling()) content = trimSpacesRight(s);
 	      
-		newContent += s;
-	      }
-	    else
-	      {
-		std::string s_name = p.get_nodeName();
-		Globals::logger(LOG_WARNING, "node `%s' inside text (ignored)\n", s_name.c_str());
-	      }
-	  }
+		  newContent += s;
+		}
+	      else
+		{
+		  std::string s_name = p.get_nodeName();
+		  Globals::logger(LOG_WARNING, "node `%s' inside text (ignored)\n", s_name.c_str());
+		}
+	    }
+
+	  setContent(newContent);
+	}
 #endif // HAVE_GMETADOM
-
-      setContent(newContent);
-
       resetDirtyStructure();
     }
 }
@@ -89,6 +90,7 @@ BoxMLTextElement::refine(class AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, BoxML, Text, size);
       REFINE_ATTRIBUTE(context, BoxML, Text, color);
       REFINE_ATTRIBUTE(context, BoxML, Text, background);
+      REFINE_ATTRIBUTE(context, BoxML, Text, width);
       BoxMLElement::refine(context);
     }
 }
@@ -112,10 +114,19 @@ BoxMLTextElement::format(BoxFormattingContext& ctxt)
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, background))
 	ctxt.setBackground(ToRGB(value));
 
+      scaled width;
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, width))
+	if (IsTokenId(value))
+	  width = scaled::min();
+	else
+	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::max());
+      else
+	width = scaled::min();
+
       RGBColor newColor = ctxt.getColor();
       RGBColor newBackground = ctxt.getBackground();
 
-      AreaRef res = ctxt.getDevice()->string(ctxt, content);
+      AreaRef res = ctxt.getDevice()->string(ctxt, content, width);
 
       if (oldColor != newColor)
 	res = ctxt.getDevice()->getFactory()->color(res, newColor);

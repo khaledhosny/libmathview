@@ -55,6 +55,7 @@ Linker::get(const DOM::Element& elem, const SmartPtr<ElementFactory>& factory)
     return res;
   else if (factory)
     {
+      std::cerr << "***************************************" << std::endl;
       SmartPtr<Element> res = factory->createElement(nodeLocalName(elem));
       assert(res);
       res->setLinker(this);

@@ -75,6 +75,7 @@ private:
   DOMSubtreeModifiedListener* subtreeModifiedListener;
   DOMAttrModifiedListener* attrModifiedListener;
   DOM::Element rootDOMElement;
+  mutable SmartPtr<class Element> rootElement;
 };
 
 #endif // __DOMView_hh__

@@ -37,7 +37,7 @@ BoxGraphicDevice::~BoxGraphicDevice()
 
 scaled
 BoxGraphicDevice::evaluate(const BoxFormattingContext& context,
-			    const Length& length, const scaled& defaultValue) const
+			   const Length& length, const scaled& defaultValue) const
 {
   switch (length.type)
     {
@@ -89,7 +89,7 @@ BoxGraphicDevice::em(const BoxFormattingContext& context) const
 scaled
 BoxGraphicDevice::ex(const BoxFormattingContext& context) const
 {
-  return string(context, "x")->box().height;
+  return string(context, "x", scaled::min())->box().height;
 }
 
 scaled

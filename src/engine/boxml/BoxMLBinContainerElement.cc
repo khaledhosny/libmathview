@@ -74,7 +74,7 @@ BoxMLBinContainerElement::format(BoxFormattingContext& ctxt)
     {
       if (SmartPtr<BoxMLElement> child = getChild())
 	setArea(child->format(ctxt));
-      resetDirtyAttribute();
+      resetDirtyLayout();
     }
 
   return getArea();

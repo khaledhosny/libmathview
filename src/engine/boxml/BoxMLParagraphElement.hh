@@ -20,32 +20,27 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_BoxGraphicDevice_hh__
-#define __Gtk_BoxGraphicDevice_hh__
+#ifndef __BoxMLParagraphElement_hh__
+#define __BoxMLParagraphElement_hh__
 
-#include <gtk/gtk.h>
+#include "BoxMLLinearContainerElement.hh"
 
-#include "BoxGraphicDevice.hh"
-#include "GObjectPtr.hh"
-
-class Gtk_BoxGraphicDevice : public BoxGraphicDevice
+class BoxMLParagraphElement : public BoxMLLinearContainerElement
 {
 protected:
-  Gtk_BoxGraphicDevice(GtkWidget*);
-  virtual ~Gtk_BoxGraphicDevice();
+  BoxMLParagraphElement(const SmartPtr<class BoxMLNamespaceContext>&);
+  virtual ~BoxMLParagraphElement();
 
 public:
-  static SmartPtr<Gtk_BoxGraphicDevice> create(GtkWidget* widget)
-  { return new Gtk_BoxGraphicDevice(widget); }
+  static SmartPtr<BoxMLParagraphElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
-  virtual SmartPtr<class AreaFactory> getFactory(void) const;
-  virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const;
-  virtual AreaRef paragraph(const class BoxFormattingContext&, const String&, const BoxLayout&, const scaled&) const;
-  virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const;
+  virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class BoxFormattingContext&);
+
+  virtual scaled getStep(void) const { return step; }
 
 private:
-  GObjectPtr<PangoContext> pango_context;
-  SmartPtr<class Gtk_AreaFactory> factory;
+  scaled step;
 };
 
-#endif // __Gtk_MathGraphicDevice_hh__
+#endif // __BoxMLParagraphElement_hh__

@@ -28,6 +28,7 @@
 DECLARE_ATTRIBUTE(BoxML, Text, color);
 DECLARE_ATTRIBUTE(BoxML, Text, background);
 DECLARE_ATTRIBUTE(BoxML, Text, size);
+DECLARE_ATTRIBUTE(BoxML, Text, width);
 DECLARE_ATTRIBUTE(BoxML, Ink, color);
 DECLARE_ATTRIBUTE(BoxML, Space, width);
 DECLARE_ATTRIBUTE(BoxML, Space, height);

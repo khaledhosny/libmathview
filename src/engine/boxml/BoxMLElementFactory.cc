@@ -43,6 +43,7 @@ BoxMLElementFactory::BoxMLElementFactory()
     { "box",           &BoxMLElementFactory::createboxElement },
     { "action",        &BoxMLElementFactory::createActionElement },
     { "obj",           &BoxMLElementFactory::createObjectElement },
+    { "par",           &BoxMLElementFactory::createParagraphElement },
     { "",              0 }
   };
 

@@ -28,6 +28,7 @@
 DEFINE_ATTRIBUTE(BoxML, Text, "color", color, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, Text, "background", background, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, Text, "size", size, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(BoxML, Text, "width", width, true, false, false, false, "auto");
 DEFINE_ATTRIBUTE(BoxML, Ink, "color", color, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, Space, "width", width, true, false, false, false, "0pt");
 DEFINE_ATTRIBUTE(BoxML, Space, "height", height, true, false, false, false, "0pt");

@@ -41,6 +41,7 @@ public:
 
 protected:
   SmartPtr<BoxMLElement> getFormattingNode(const DOM::Element&) const;
+  SmartPtr<class BoxMLElementFactory> getFactory(void) const;
 
 private:
   WeakPtr<class BoxMLNamespaceContext> context;

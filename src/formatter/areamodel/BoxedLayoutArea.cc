@@ -48,7 +48,7 @@ BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const 
   for (std::vector<XYArea>::const_iterator p = content.begin();
        p != content.end();
        p++)
-    p->area->render(context, x + p->dx, p->dy);
+    p->area->render(context, x + p->dx, y + p->dy);
 }
 
 bool
@@ -57,7 +57,7 @@ BoxedLayoutArea::find(class SearchingContext& context, const scaled& x, const sc
   for (std::vector<XYArea>::const_iterator p = content.begin();
        p != content.end();
        p++)
-    if (p->area->find(context, x + p->dx, p->dy))
+    if (p->area->find(context, x + p->dx, y + p->dy))
       return true;
 
   return false;

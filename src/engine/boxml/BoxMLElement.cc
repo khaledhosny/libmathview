@@ -47,6 +47,10 @@ void
 BoxMLElement::construct()
 { resetDirtyStructure(); }
 
+SmartPtr<BoxMLElementFactory>
+BoxMLElement::getFactory() const
+{ return context->getFactory(); }
+
 void
 BoxMLElement::refine(class AbstractRefinementContext&)
 { resetDirtyAttribute(); }
