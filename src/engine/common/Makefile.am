@@ -14,7 +14,6 @@ libengine_common_la_SOURCES = \
   RefinementContext.cc \
   NamespaceRegistry.cc \
   NamespaceContext.cc \
-  ElementFactory.cc \
   View.cc \
   DOMView.cc \
   Node.cc \

@@ -131,5 +131,5 @@ DOMView::getDOMElementExtents(const DOM::Element& el, scaled& x, scaled& y, Boun
 DOM::Element
 DOMView::getDOMElementAt(const scaled& x, const scaled& y) const
 {
-  findDOMElement(getElementAt(x, y));
+  return findDOMElement(getElementAt(x, y));
 }

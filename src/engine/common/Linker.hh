@@ -39,10 +39,12 @@ public:
   static SmartPtr<Linker> create(void) { return new Linker(); }
 
   SmartPtr<class Element> get(const DOM::Element&) const;
-  void add(const DOM::Element&, const SmartPtr<class Element>&);
+  SmartPtr<class Element> get(const DOM::Element&, const SmartPtr<class ElementFactory>&);
   bool remove(const DOM::Element&);
   
 protected:
+  void add(const DOM::Element&, const SmartPtr<class Element>&);
+
   struct DOM_hash : public std::unary_function<DOM::Node,size_t>
   {
     size_t operator()(const DOM::Node& node) const
@@ -53,7 +55,7 @@ protected:
   };
 
   typedef HASH_MAP_NS::hash_map<DOM::Node,WeakPtr<class Element>,DOM_hash> DOMNodeMap;
-  mutable DOMNodeMap nodeMap;
+  DOMNodeMap nodeMap;
 };
 
 #endif // __Linker_hh__

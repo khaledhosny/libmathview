@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "Clock.hh"
 #include "View.hh"
 #include "Element.hh"
 #include "NamespaceRegistry.hh"
@@ -194,6 +195,8 @@ View::getRectangle() const
     return Rectangle();
 }
 
+#endif
+
 void
 View::render(RenderingContext& ctxt) const
 {
@@ -204,8 +207,6 @@ View::render(RenderingContext& ctxt) const
       BoundingBox box = rootArea->box();
       rootArea->render(ctxt, -x0, -box.height - y0);
       perf.Stop();
-      Globals::logger(LOG_INFO, "rendering time: %dms", perf());
+      std::cerr << "rendering time: " << perf() << "ms" << std::endl;
     }
 }
-
-#endif

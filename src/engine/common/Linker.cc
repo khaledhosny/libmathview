@@ -24,8 +24,10 @@
 
 #include <cassert>
 
+#include "gmetadom.hh"
 #include "Linker.hh"
 #include "Element.hh"
+#include "ElementFactory.hh"
 
 Linker::Linker()
 { }
@@ -37,10 +39,29 @@ SmartPtr<Element>
 Linker::get(const DOM::Element& elem) const
 {
   assert(elem);
+  DOMNodeMap::const_iterator p = nodeMap.find(elem);
+  if (p != nodeMap.end())
+    return static_cast<Element*>((*p).second);
+  else
+    return 0;
+}
 
-  DOMNodeMap::iterator p = nodeMap.find(elem);
-  if (p != nodeMap.end()) return static_cast<Element*>((*p).second);
-  else return 0;
+SmartPtr<Element>
+Linker::get(const DOM::Element& elem, const SmartPtr<ElementFactory>& factory)
+{
+  assert(elem);
+
+  if (SmartPtr<Element> e = get(elem))
+    return e;
+  else
+    {
+      SmartPtr<Element> res = factory->createElement(nodeLocalName(elem));
+      assert(res);
+      res->setLinker(this);
+      res->setDOMElement(elem);
+      add(elem, res);
+      return res;
+    }
 }
 
 #if 0

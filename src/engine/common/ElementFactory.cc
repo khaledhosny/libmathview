@@ -27,23 +27,6 @@
 #include "gmetadom.hh"
 #include "Linker.hh"
 
-SmartPtr<Element>
-ElementFactory::getElement(const DOM::Element& elem) const
-{
-  assert(elem);
-
-  if (SmartPtr<Element> el = linker->get(elem))
-    return el;
-
-  SmartPtr<Element> res = createElement(nodeLocalName(elem));
-  assert(res);
-
-  res->setDOMElement(elem); // formatting node -> DOM node
-  res->link(linker, elem); // DOM node -> formatting node
-
-  return res;
-}
-
 SmartPtr<Linker>
 ElementFactory::getLinker() const
 {

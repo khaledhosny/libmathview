@@ -31,20 +31,22 @@
 class NamespaceContext : public Object
 {
 protected:
-  NamespaceContext(const String&);
+  NamespaceContext(const String&, const SmartPtr<class View>&, const SmartPtr<class Linker>&);
   virtual ~NamespaceContext();
 
 public:
   String getNamespaceURI(void) const { return namespaceURI; }
   SmartPtr<class View> getView(void) const;
+  SmartPtr<class Linker> getLinker(void) const;
 
   // virtual SmartPtr<class Element> construct(class AbstractReader&) const = 0;
   virtual SmartPtr<class Element> construct(const DOM::Element&) const = 0;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const = 0;
 
 private:
-  WeakPtr<class View> view;
   const String namespaceURI;
+  WeakPtr<class View> view;
+  SmartPtr<class Linker> linker;
 };
 
 #endif // __NamespaceContext_hh__

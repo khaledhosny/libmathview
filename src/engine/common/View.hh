@@ -54,6 +54,8 @@ public:
   bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
   SmartPtr<class Element> getElementAt(const scaled&, const scaled&) const;
 
+  void render(class RenderingContext&) const;
+
 private:
   SmartPtr<class NamespaceRegistry> registry;
   SmartPtr<class Element> rootElement;

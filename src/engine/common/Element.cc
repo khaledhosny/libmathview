@@ -184,14 +184,11 @@ Element::setDOMElement(const DOM::Element& el)
 }
 
 void
-Element::link(const SmartPtr<Linker>& l, const DOM::Element& el)
+Element::setLinker(const SmartPtr<Linker>& l)
 {
   assert(l);
-  assert(el);
   assert(!linker);
   linker = l;
-  linker->add(el, this);
-  setDOMElement(el);
 }
 
 void

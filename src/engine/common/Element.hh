@@ -90,9 +90,9 @@ public:
   DOM::Element getDOMElement(void) const { return elem; }
   void setDOMElement(const DOM::Element&);
 protected:
-  void link(const SmartPtr<class Linker>&, const DOM::Element&);
+  void setLinker(const SmartPtr<class Linker>&);
   void unlink(void);
-  friend class ElementFactory;
+  friend class Linker;
 #endif // HAVE_GMEATDOM
 
 private:

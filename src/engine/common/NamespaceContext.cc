@@ -24,8 +24,12 @@
 
 #include "View.hh"
 #include "NamespaceContext.hh"
+#include "Linker.hh"
 
-NamespaceContext::NamespaceContext(const String& ns) : namespaceURI(ns)
+NamespaceContext::NamespaceContext(const String& ns,
+				   const SmartPtr<View>& v,
+				   const SmartPtr<Linker>& l)
+  : namespaceURI(ns), view(v), linker(l)
 { }
 
 NamespaceContext::~NamespaceContext()
@@ -35,4 +39,10 @@ SmartPtr<View>
 NamespaceContext::getView() const
 {
   return static_cast<View*>(view);
+}
+
+SmartPtr<Linker>
+NamespaceContext::getLinker() const
+{
+  return linker;
 }
