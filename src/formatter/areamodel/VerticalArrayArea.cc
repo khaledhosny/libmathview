@@ -31,7 +31,8 @@
 VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, unsigned r)
   : LinearContainerArea(children), refArea(r)
 {
-  assert(content.size() > 0 && refArea < content.size());
+  assert(content.size() > 0);
+  assert(refArea < content.size());
 }
 
 SmartPtr<Area>
