@@ -1,0 +1,13 @@
+#!/bin/sh
+
+i=0
+
+while test $i -le 100;
+do
+	echo test $i...
+	./randomath/randomath $i 12 >/tmp/t$i.xml
+	./mathml2ps/mathml2ps.debug /tmp/t$i.xml >/dev/null
+	mv gmon.out gmon.$i.out
+	i=`expr $i + 1`
+done
+
