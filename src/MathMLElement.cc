@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include <cassert>
-#include <stdio.h>
 
 #include "Globals.hh"
 #include "traverseAux.hh"
@@ -36,6 +35,7 @@
 #include "MathMLOperatorElement.hh"
 #include "RenderingEnvironment.hh"
 #include "FormattingContext.hh"
+#include "AbstractRefinementContext.hh"
 #include "Variant.hh"
 
 #ifdef DEBUG
@@ -80,162 +80,67 @@ MathMLElement::~MathMLElement()
   ReleaseGCs();
 }
 
-// GetAttributeSignatureAux: this is an auxiliary function used to retrieve
-// the signature of the attribute with id ID given an array of attribute
-// signatures.
-const AttributeSignature*
-MathMLElement::GetAttributeSignatureAux(AttributeId id,
-					AttributeSignature sig[]) const
-{
-  for (unsigned i = 0; sig[i].GetAttributeId() != ATTR_NOTVALID; i++)
-    if (sig[i].GetAttributeId() == id) return &sig[i];
-
-  return NULL;
-}
-
-// GetAttributeSignature: return the attribute signature of ID.
-// Here are the attributes common to all (presentation) elements of MathML
-const AttributeSignature*
-MathMLElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature sig[] = {
-    { ATTR_ID,         NULL, NULL, NULL },
-    { ATTR_CLASS,      NULL, NULL, NULL },
-    { ATTR_OTHER,      NULL, NULL, NULL },
-
-    { ATTR_NOTVALID,   NULL, NULL, NULL }
-  };
-
-  return GetAttributeSignatureAux(id, sig);
-}
-
-String
-MathMLElement::GetDefaultAttribute(AttributeId id) const
-{
-  const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature);
-  return aSignature->GetDefaultValue();
-}
-
 SmartPtr<Value>
-MathMLElement::GetDefaultAttributeValue(AttributeId id) const
+MathMLElement::getAttributeValueNoDefault(const MathMLAttributeSignature& signature) const
 {
-  const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature);
-  return aSignature->GetDefaultParsedValue();
-}
-
-String
-MathMLElement::GetAttribute(AttributeId id, bool searchDefault) const
-{
-  // if this element is not connected with a DOM element
-  // then it cannot have attributes. This may happen for
-  // elements inferred with normalization
-#if defined(HAVE_GMETADOM)
-  if (node && node.hasAttribute(NameOfAttributeId(id)))
-    return fromDOMString(node.getAttribute(NameOfAttributeId(id)));
-#endif // HAVE_GMETADOM
-
-  if (searchDefault) return GetDefaultAttribute(id);
-  assert(false);
-  return "";
-}
-
-String
-MathMLElement::GetAttribute(AttributeId id,
-			    const RenderingEnvironment& env,
-			    bool searchDefault) const
-{
-  // if this element is not connected with a DOM element
-  // then it cannot have attributes. This may happen for
-  // elements inferred with normalization
-#if defined(HAVE_GMETADOM)
-  if (node && node.hasAttribute(NameOfAttributeId(id)))
-    return fromDOMString(node.getAttribute(NameOfAttributeId(id)));
-#endif // HAVE_GMETADOM
-
-  if (SmartPtr<MathMLAttribute> attr = env.GetAttribute(id))
-    return attr->getValue();
-
-  if (searchDefault) return GetDefaultAttribute(id);
-  assert(false);
-  return "";
-}
-
-SmartPtr<Value>
-MathMLElement::GetAttributeValue(AttributeId id, bool searchDefault) const
-{
-  SmartPtr<Value> value;
-
-  const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature);
-
-#if defined(HAVE_GMETADOM)
-  if (node && node.hasAttribute(NameOfAttributeId(id)))
-    {
-      AttributeParser parser = aSignature->GetParser();
-      assert(parser);
-
-      StringTokenizer st(fromDOMString(node.getAttribute(NameOfAttributeId(id))));
-      value = parser(st);
-
-      if (!value)
-	Globals::logger(LOG_WARNING, "in element `%s' parsing error in attribute `%s'",
-			NameOfTagId(IsA()), NameOfAttributeId(id));
-    }
-#endif // HAVE_GMETADOM
-
-  if (!value && searchDefault) value = GetDefaultAttributeValue(id);
-
-  return value;
-}
-
-SmartPtr<Value>
-MathMLElement::GetAttributeValue(AttributeId id, 
-				 const RenderingEnvironment& env,
-				 bool searchDefault) const
-{
-  if (SmartPtr<Value> value = GetAttributeValue(id, false))
-    return value;
-
-  const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature);
-  
-  if (SmartPtr<MathMLAttribute> attr = env.GetAttribute(id))
-    if (SmartPtr<Value> value = attr->getParsedValue(aSignature))
+  if (attributes)
+    if (SmartPtr<Value> value = attributes->getValue(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
       return value;
-
-  if (searchDefault)
-    return GetDefaultAttributeValue(id);
 
   return 0;
 }
 
 SmartPtr<Value>
-MathMLElement::Resolve(const SmartPtr<Value>& value,
-		       const RenderingEnvironment& env,
-		       int i, int j)
+MathMLElement::getAttributeValue(const MathMLAttributeSignature& signature) const
 {
-  assert(value);
+  if (attributes)
+    if (SmartPtr<Value> value = getAttributeValueNoDefault(signature))
+      return value;
 
-  SmartPtr<Value> realValue = GetComponent(value, i, j);
-  assert(realValue);
+  return signature.getDefaultValue();
+}
 
-  if (IsKeyword(value))
-    return Variant<UnitValue>::create(env.GetMathSpace(ToNamedSpaceId(value)));
+void
+MathMLElement::refineAttribute(const AbstractRefinementContext& context, const MathMLAttributeSignature& signature)
+{
+  if (!attributes) attributes = MathMLAttributeList::create();
+
+  SmartPtr<MathMLAttribute> attr;
+
+  if (signature.fromElement)
+    if (DOM::Element elem = GetDOMElement())
+      if (elem.hasAttribute(signature.name))
+	attr = MathMLAttribute::create(signature, elem.getAttribute(signature.name));
+
+  if (!attr && signature.fromContext)
+    attr = context.get(signature);
+
+  if (attr)
+    {
+      if (!attributes) attributes = MathMLAttributeList::create();
+      if (attributes->set(attr)) SetDirtyLayout();
+    }
   else
-    return realValue;
+    if (attributes)
+      if (attributes->remove(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
+	SetDirtyLayout();
 }
 
 bool
 MathMLElement::IsSet(AttributeId id) const
 {
 #if defined(HAVE_GMETADOM)
-  if (!node) return false;
-  return node.hasAttribute(NameOfAttributeId(id));
+  return node && node.hasAttribute(NameOfAttributeId(id));
 #else // HAVE_GMETADOM
   return false;
 #endif
+}
+
+void
+MathMLElement::refine(AbstractRefinementContext& ctxt)
+{
+  // nothing to refine
+  // reset flag
 }
 
 void
@@ -257,9 +162,7 @@ MathMLElement::DoLayout(const FormattingContext& ctxt)
 void
 MathMLElement::RenderBackground(const DrawingArea& area)
 {
-//   if (IsA() == TAG_MSTYLE)
-//     printf("=== %s %d %06x\n", NameOfTagId(IsA()), DirtyBackground(), background);
-
+  // FIXME ???? true????
   if (true||bGC[Selected()] == NULL)
     {
       GraphicsContextValues values;
@@ -369,72 +272,6 @@ MathMLElement::IsA() const
   return res;
 }
 
-#if 0
-void
-MathMLElement::SetDirtyStructure()
-{
-  dirtyStructure = 1;
-  
-  SmartPtr<MathMLElement> parent = GetParent();
-  while (parent)
-    {
-      parent->childWithDirtyStructure = 1;
-      parent = parent->GetParent();
-    }
-}
-
-void
-MathMLElement::SetDirtyAttribute()
-{
-  dirtyAttribute = 1;
-
-  SmartPtr<MathMLElement> parent = GetParent();
-  while (parent)
-    {
-      parent->childWithDirtyAttribute = 1;
-      parent = parent->GetParent();
-    }
-}
-
-void
-MathMLElement::SetDirtyChildren()
-{
-  if (HasDirtyChildren()) return;
-  dirtyChildren = 1;
-  for (SmartPtr<MathMLElement> elem = GetParent(); 
-       elem && !elem->HasDirtyChildren(); 
-       elem = elem->GetParent())
-    elem->dirtyChildren = 1;
-}
-
-void
-MathMLElement::SetDirtyLayout(bool)
-{
-  if (HasDirtyLayout()) return;
-  dirtyLayout = 1;
-  for (SmartPtr<MathMLElement> elem = GetParent(); 
-       elem && !elem->dirtyLayout; 
-       elem = elem->GetParent())
-    elem->dirtyLayout = 1;
-}
-
-void
-MathMLElement::SetSelected()
-{
-  if (IsSelected()) return;
-  selected = 1;
-  SetDirty();
-}
-
-void
-MathMLElement::ResetSelected()
-{
-  if (!IsSelected()) return;
-  SetDirty();
-  selected = 0;
-}
-#endif
-
 void
 MathMLElement::SetDirtyStructure()
 {
@@ -484,15 +321,9 @@ MathMLElement::SetFlag(Flags f)
 void
 MathMLElement::SetDirty(const Rectangle* rect)
 {
+  // FIXME ???true???
   if (true || !Dirty())
     {
-//       if (rect)
-// 	{
-// 	  printf("%s setdirty ", NameOfTagId(IsA()));
-// 	  GetRectangle().Dump();
-// 	  rect->Dump();
-// 	  printf(" overlap %d\n", GetRectangle().Overlaps(*rect));
-// 	}
       
       if (!rect || GetRectangle().Overlaps(*rect))
 	{
@@ -550,10 +381,6 @@ MathMLElement::ResetFlagDown(Flags f)
 
 void
 MathMLElement::Unlink()
-{ Link(0); }
-
-void
-MathMLElement::Link(const SmartPtr<MathMLElement>& p)
 {
   // if the element is connected to another element, we remove it
   // from there first. This is to ensure that no node of the tree is shared
@@ -562,6 +389,13 @@ MathMLElement::Link(const SmartPtr<MathMLElement>& p)
       MathMLNode::SetParent(0); // this is to break the recursion!
       oldP->Remove(this);
     }
+}
+
+void
+MathMLElement::Link(const SmartPtr<MathMLElement>& p)
+{
+  assert(p);
+  assert(!GetParent());
   SetParent(p);
 }
 

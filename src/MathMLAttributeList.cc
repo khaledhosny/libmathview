@@ -29,14 +29,15 @@
 #include <stddef.h>
 
 #include "MathMLAttributeList.hh"
+#include "MathMLAttributeSignature.hh"
 
 struct IsPredicate
-  : public std::binary_function<SmartPtr<MathMLAttribute>,AttributeId,bool>
+  : public std::binary_function<SmartPtr<MathMLAttribute>,MathMLAttributeId,bool>
 {
-  bool operator()(const SmartPtr<MathMLAttribute>& attr, AttributeId id) const
+  bool operator()(const SmartPtr<MathMLAttribute>& attr, const MathMLAttributeId& id) const
   {
     assert(attr);
-    return attr->isA() == id;
+    return ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()) == id;
   }
 };
 
@@ -53,7 +54,7 @@ MathMLAttributeList::set(const SmartPtr<MathMLAttribute>& attr)
 {
   assert(attr);
   std::vector< SmartPtr<MathMLAttribute> >::iterator p =
-    std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), attr->isA()));
+    std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature())));
   if (p != content.end())
     {
       bool res = attr->equal(*p);
@@ -68,15 +69,24 @@ MathMLAttributeList::set(const SmartPtr<MathMLAttribute>& attr)
 }
 
 SmartPtr<MathMLAttribute>
-MathMLAttributeList::get(AttributeId id) const
+MathMLAttributeList::get(const MathMLAttributeId& id) const
 {
   std::vector< SmartPtr<MathMLAttribute> >::const_iterator p =
     std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));
   return (p != content.end()) ? *p : 0;
 }
 
+SmartPtr<Value>
+MathMLAttributeList::getValue(const MathMLAttributeId& id) const
+{
+  if (SmartPtr<MathMLAttribute> attr = get(id))
+    return attr->getValue();
+  else
+    return 0;
+}
+
 bool
-MathMLAttributeList::remove(AttributeId id)
+MathMLAttributeList::remove(const MathMLAttributeId& id)
 {
   std::vector< SmartPtr<MathMLAttribute> >::iterator p =
     std::remove_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));

@@ -65,6 +65,7 @@ ATTRIBUTE_PARSER(fontWeightParser);
 ATTRIBUTE_PARSER(fontStyleParser);
 ATTRIBUTE_PARSER(groupAlignListListParser);
 ATTRIBUTE_PARSER(groupAlignListParser);
+ATTRIBUTE_PARSER(groupAlignParser);
 ATTRIBUTE_PARSER(lineTypeParser);
 ATTRIBUTE_PARSER(lineTypeListParser);
 ATTRIBUTE_PARSER(rowAlignParser);

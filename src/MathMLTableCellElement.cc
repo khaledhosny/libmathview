@@ -1,28 +1,28 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stddef.h>
+
+#include <cassert>
 
 #include "frameAux.hh"
 #include "Globals.hh"
@@ -62,22 +62,18 @@ MathMLTableCellElement::~MathMLTableCellElement()
 {
 }
 
-const AttributeSignature*
-MathMLTableCellElement::GetAttributeSignature(AttributeId id) const
+void
+MathMLTableCellElement::refine(AbstractRefinementContext& context)
 {
-  static AttributeSignature sig[] = {
-    { ATTR_ROWSPAN,         unsignedIntegerParser,    "1", NULL },
-    { ATTR_COLUMNSPAN,      unsignedIntegerParser,    "1", NULL },
-    { ATTR_ROWALIGN,        rowAlignParser,           NULL, NULL },
-    { ATTR_COLUMNALIGN,     columnAlignParser,        NULL, NULL },
-    { ATTR_GROUPALIGN,      groupAlignListParser,     NULL, NULL },
-    { ATTR_NOTVALID,        NULL,                     NULL, NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLElement::GetAttributeSignature(id);
-
-  return signature;
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, TableCell, rowspan);
+      REFINE_ATTRIBUTE(context, TableCell, columnspan);
+      REFINE_ATTRIBUTE(context, TableCell, rowalign);
+      REFINE_ATTRIBUTE(context, TableCell, columnalign);
+      REFINE_ATTRIBUTE(context, TableCell, groupalign);
+      MathMLNormalizingContainerElement::refine(context);
+    }
 }
 
 void
@@ -219,7 +215,7 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
 {
   SmartPtr<Value> value;
 
-  value = GetAttributeValue(ATTR_ROWSPAN, env);
+  value = GET_ATTRIBUTE_VALUE(TableCell, rowspan);
   rowSpan = ToInteger(value);
   if (rowSpan <= 0)
     {
@@ -227,7 +223,7 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
       rowSpan = 1;
     }
 
-  value = GetAttributeValue(ATTR_COLUMNSPAN, env);
+  value = GET_ATTRIBUTE_VALUE(TableCell, columnspan);
   columnSpan = ToInteger(value);
   if (columnSpan <= 0)
     {
@@ -245,13 +241,13 @@ MathMLTableCellElement::Setup(RenderingEnvironment& env)
       // the cell field is null
       if (cell)
 	{
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_ROWALIGN, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableCell, rowalign))
 	    cell->rowAlign = ToRowAlignId(value);
 
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLUMNALIGN, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableCell, columnalign))
 	    cell->columnAlign = ToColumnAlignId(value);
 
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_GROUPALIGN, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableCell, groupalign))
 	    for (unsigned k = 0; k < cell->nAlignGroup; k++)
 	      {
 		SmartPtr<Value> p = GetComponent(value, k);

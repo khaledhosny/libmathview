@@ -1,31 +1,30 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
 
-#include <algorithm>
+#include <cassert>
 
-#include <assert.h>
-#include <stddef.h>
+#include <algorithm>
 
 #include "Adaptors.hh"
 #include "ChildList.hh"
@@ -54,22 +53,16 @@ MathMLTableRowElement::~MathMLTableRowElement()
 {
 }
 
-const AttributeSignature*
-MathMLTableRowElement::GetAttributeSignature(AttributeId id) const
+void
+MathMLTableRowElement::refine(AbstractRefinementContext& context)
 {
-  static AttributeSignature sig[] = {
-    //{ ATTR_ROWALIGN,        rowAlignListParser,       NULL },
-    { ATTR_ROWALIGN,        rowAlignParser,           NULL, NULL },
-    { ATTR_COLUMNALIGN,     columnAlignListParser,    NULL, NULL },
-    { ATTR_GROUPALIGN,      groupAlignListListParser, NULL, NULL },
-
-    { ATTR_NOTVALID,        NULL,                     NULL, NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLElement::GetAttributeSignature(id);
-
-  return signature;
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, TableRow, rowalign);
+      REFINE_ATTRIBUTE(context, TableRow, columnalign);
+      REFINE_ATTRIBUTE(context, TableRow, groupalign);
+      MathMLLinearContainerElement::refine(context);
+    }
 }
 
 void
@@ -139,13 +132,13 @@ MathMLTableRowElement::SetupAux(RenderingEnvironment& env, bool labeledRow)
       SmartPtr<MathMLTableElement> mtable = smart_cast<MathMLTableElement>(GetParent());
       assert(mtable);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLUMNALIGN, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableRow, columnalign))
 	mtable->SetupColumnAlignAux(value, rowIndex, 1, labeledRow);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_ROWALIGN, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableRow, rowalign))
 	mtable->SetupRowAlignAux(value, rowIndex, labeledRow);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_GROUPALIGN, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableRow, groupalign))
 	mtable->SetupGroupAlignAux(value, rowIndex, 1);
 
       MathMLLinearContainerElement::Setup(env);
@@ -154,17 +147,6 @@ MathMLTableRowElement::SetupAux(RenderingEnvironment& env, bool labeledRow)
     }
 #endif
 }
-
-#if 0
-void
-MathMLTableRowElement::SetDirty(const Rectangle* rect)
-{
-  // this method is needed because a table row does not have a
-  // valid shape, its sole purpose is to call recursively SetDirty on
-  // its children
-  std::for_each(content.begin(), content.end(), std::bind2nd(SetDirtyAdaptor(), rect));
-}
-#endif
 
 bool
 MathMLTableRowElement::IsInside(const scaled& x, const scaled& y) const

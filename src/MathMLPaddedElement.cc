@@ -1,23 +1,23 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
@@ -48,41 +48,18 @@ MathMLPaddedElement::~MathMLPaddedElement()
 {
 }
 
-const AttributeSignature*
-MathMLPaddedElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature sig[] =
-  {
-    { ATTR_WIDTH,    paddedWidthParser, NULL,  NULL },
-    { ATTR_LSPACE,   paddedValueParser, "0em", NULL },
-    { ATTR_HEIGHT,   paddedValueParser, NULL,  NULL },
-    { ATTR_DEPTH,    paddedValueParser, NULL,  NULL },
-    { ATTR_NOTVALID, NULL,              NULL,  NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);  
-  if (signature == NULL) signature = MathMLNormalizingContainerElement::GetAttributeSignature(id);
-
-  return signature;
-}
-
-#if 0
 void
-MathMLPaddedElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLPaddedElement::refine(AbstractRefinementContext& context)
 {
-  if (DirtyStructure())
+  if (DirtyAttribute() || DirtyAttributeP())
     {
-      MathMLNormalizingContainerElement::Normalize(doc);
-      if (SmartPtr<MathMLOperatorElement> coreOp = GetCoreOperator())
-	{
-	  SmartPtr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
-	  assert(eOp && eOp->GetParent() == this);
-	  eOp->Lift(doc);
-	}
-      ResetDirtyStructure();
+      REFINE_ATTRIBUTE(context, Padded, width);
+      REFINE_ATTRIBUTE(context, Padded, lspace);
+      REFINE_ATTRIBUTE(context, Padded, height);
+      REFINE_ATTRIBUTE(context, Padded, depth);
+      MathMLNormalizingContainerElement::refine(context);
     }
 }
-#endif
 
 void
 MathMLPaddedElement::Setup(RenderingEnvironment& env)
@@ -91,16 +68,16 @@ MathMLPaddedElement::Setup(RenderingEnvironment& env)
     {
       width.valid = lSpace.valid = height.valid = depth.valid = false;
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_WIDTH, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, width))
 	ParseLengthDimension(env, value, width, KW_WIDTH);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_LSPACE))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, lspace))
 	ParseLengthDimension(env, value, lSpace, KW_LSPACE);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_HEIGHT, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, height))
 	ParseLengthDimension(env, value, height, KW_HEIGHT);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_DEPTH, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, depth))
 	ParseLengthDimension(env, value, depth, KW_DEPTH);
 
       MathMLNormalizingContainerElement::Setup(env);
@@ -245,15 +222,6 @@ MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
   else if (dim.sign == +1) return orig + res;
   else return res;
 }
-
-#if 0
-void
-MathMLPaddedElement::SetDirty(const Rectangle* rect)
-{
-  assert(child);
-  child->SetDirty(rect);
-}
-#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLPaddedElement::GetCoreOperator()

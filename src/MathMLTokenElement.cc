@@ -1,36 +1,35 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef HAVE_WCTYPE_H
-#include <wctype.h>
-#endif
-#ifdef HAVE_WCHAR_H
-#include <wchar.h>
-#endif
+#include <cassert>
+
+// #ifdef HAVE_WCTYPE_H
+// #include <wctype.h>
+// #endif
+// #ifdef HAVE_WCHAR_H
+// #include <wchar.h>
+// #endif
 
 #include "AFont.hh"
 #include "frameAux.hh"
@@ -52,42 +51,6 @@
 #include "FormattingContext.hh"
 #include "BoundingBoxAux.hh"
 
-// // TEMPORARY TRIMMING ROUTINES
-
-// template <class T>
-// void
-// trimSpacesLeft(std::basic_string<T>& s)
-// {
-//   std::basic_string<T>::iterator i = s.begin();
-//   while (i != s.end() && isXmlSpace(*i)) i++;
-//   s.erase(s.begin(), i);
-// }
-
-// template <class T>
-// void
-// trimSpacesRight(std::basic_string<T>& s)
-// {
-//   std::basic_string<T>::iterator i = s.end();
-//   do i--; while (i != s.begin() && isXmlSpace(*i)) ;
-//   s.erase(i + 1, s.end());
-// }
-
-// template <class T>
-// void
-// collapseSpaces(std::basic_string<T>& s)
-// {
-//   unsigned i = 0;
-//   while (i < s.length()) {
-//     if (isXmlSpace(s[i])) {
-//       s[i++] = L' ';
-//       std::basic_string<T>::iterator j = s.begin() + i;
-//       while (j < s.end() && isXmlSpace(*j)) j++;
-//       s.erase(s.begin() + i, j);
-//     } else
-//       i++;
-//   }
-// }
-
 MathMLTokenElement::MathMLTokenElement()
 {
 }
@@ -103,27 +66,22 @@ MathMLTokenElement::~MathMLTokenElement()
 {
 }
 
-const AttributeSignature*
-MathMLTokenElement::GetAttributeSignature(AttributeId id) const
+void
+MathMLTokenElement::refine(AbstractRefinementContext& context)
 {
-  static AttributeSignature sig[] = {
-    { ATTR_FONTSIZE,       numberUnitParser,  NULL, NULL },
-    { ATTR_FONTWEIGHT,     fontWeightParser,  NULL, NULL },
-    { ATTR_FONTSTYLE,      fontStyleParser,   NULL, NULL },
-    { ATTR_FONTFAMILY,     stringParser,      NULL, NULL },
-    { ATTR_COLOR,          colorParser,       NULL, NULL },
-    { ATTR_MATHVARIANT,    mathVariantParser, NULL, NULL },
-    { ATTR_MATHSIZE,       mathSizeParser,    NULL, NULL },
-    { ATTR_MATHCOLOR,      colorParser,       NULL, NULL },
-    { ATTR_MATHBACKGROUND, colorParser,       NULL, NULL },
-    
-    { ATTR_NOTVALID,       NULL,              NULL, NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLElement::GetAttributeSignature(id);
-
-  return signature;
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, Token, fontsize);
+      REFINE_ATTRIBUTE(context, Token, fontweight);
+      REFINE_ATTRIBUTE(context, Token, fontstyle);
+      REFINE_ATTRIBUTE(context, Token, fontfamily);
+      REFINE_ATTRIBUTE(context, Token, color);
+      REFINE_ATTRIBUTE(context, Token, mathvariant);
+      REFINE_ATTRIBUTE(context, Token, mathsize);
+      REFINE_ATTRIBUTE(context, Token, mathcolor);
+      REFINE_ATTRIBUTE(context, Token, mathbackground);
+      MathMLElement::refine(context);
+    }
 }
 
 void
@@ -292,218 +250,6 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
     }
 }
 
-#if 0
-void
-MathMLTokenElement::SetMathSize(const Length& l)
-{
-  if (mathSize != l)
-    {
-      mathSize = l;
-      SetDirtyLayout();
-    }
-}
-
-void
-MathMLTokenElement::UnsetMathSize()
-{
-  if (mathSize.defined())
-    {
-      mathSize.unset();
-      SetDirtyLayout();
-    }
-}
-
-void
-MathMLTokenElement::SetMathSize(const SmartPtr<Value>& v)
-{
-  if (SmartPtr< Variant<Length> > vLength = smart_cast< Variant<Length> >(v))
-    SetMathSize(vLength->getValue());
-  else
-    UnsetMathSize();
-}
-
-void
-MathMLTokenElement::SetMathVariant(MathVariant v)
-{
-  if (mathVariant != v)
-    {
-      mathVariant = v;
-      SetDirtyLayout();
-    }
-}
-
-void
-MathMLTokenElement::Refine(RefinementContext& ctxt)
-{
-  if (DirtyAttribute())
-    {
-      if (DOM::GdomeString s = GetAttributeValue("mathsize", ctxt))
-	{
-	  if (HasAttribute("fontsize"))
-	    ctxt.logger().warning("attribute `mathsize' overrides deprecated attribute `fontsize'");
-
-	  if (SmartPtr<Value> v = parseTokenMathSize(s))
-	    SetMathSize(v);
-	  else
-	    ctxt.logger().warning("error while parsing attribute `mathsize' (ignored)");
-	}
-      else if (DOM::GdomeString s = GetAttributeValue("fontsize", ctxt))
-	{
-	  ctxt.logger().warning("attribute `fontsize' is deprecated");
-	  if (SmartPtr<Value> v = parseTokenFontSize(s))
-	    SetFontSize(v);
-	  else
-	    ctxt.logger().warning("error while parsing deprecated attribute `fontsize' (ignored)");
-	}
-      else
-	UnsetMathSize();
-
-      if (DOM::GdomeString s = GetAttributeValue("mathvariant", ctxt))
-	{
-	  if (SmartPtr<Value> v = parseTokenMathVariant(s))
-	    SetMathVariant(v);
-	  else
-	    ctxt.logger().warning("error while parsing attribute `mathvariant' (ignored)");
-
-	  if (HasAttribute("fontfamily") || HasAttribute("fontweight") || HasAttribute("fontstyle"))
-	    ctxt.logger().warning("attribute `mathvariant' overrides deprecated attributes `fontfamily', `fontweight', and `fontstyle'");
-	}
-      else
-	{
-	  DOM::GdomeString sFamily = GetAttributeValue("fontfamily", ctxt);
-	  DOM::GdomeString sWeight = GetAttributeValue("fontweight", ctxt);
-	  DOM::GdomeString sStyle = GetAttributeValue("fontstyle", ctxt);
-
-	  SmartPtr<Value> vFamily;
-	  SmartPtr<Value> vWeight;
-	  SmartPtr<Value> vStyle;
-
-	  if (sFamily)
-	    {
-	      ctxt.logger().warning("attribute `fontfamily' is deprecated");
-	      vFamily = parseTokenFontFamily(sFamily);
-	      if (!vFamily)
-		ctxt.logger().warning("error while parsing attribute `fontfamily' (ignored)");
-	    }
-
-	  if (sWeight)
-	    {
-	      ctxt.logger().warning("attribute `fontweight' is deprecated");
-	      vWeight = parseTokenFontWeight(sWeight);
-	      if (!vWeight)
-		ctxt.logger().warning("error while parsing `fontweight' attribute (ignored)");
-	    }
-
-	  if (sStyle)
-	    {
-	      ctxt.logger().warning("attribute `fontstyle' is deprecated");
-	      vStyle = parseTokenFontStyle(sStyle);
-	      if (!vStyle)
-		ctxt.logger().warning("error while parsing attribute `fontstyle' (ignored)");
-	    }
-
-	  if (vFamily || vWeight || vStyle)
-	    {
-	      SetMathVariant(parseTokenFontAttributes(vFamily, vWeight, vStyle));
-	    }
-	  else
-	    UnsetMathVariant();
-	}
-
-      if (DOM::GdomeString s = GetAttributeValue("mathcolor", ctxt))
-	{
-	  if (HasAttribute("color"))
-	    ctxt.logger().warning("attribute `mathcolor' overrides deprecated attribute `color'");
-
-	  if (SmartPtr<Value> v = parseTokenMathColor(s))
-	    SetMathColor(v);
-	  else
-	    ctxt.logger().warning("error while parsing attribute `mathcolor' (ignored)");
-	}
-      else if (DOM::GdomeString s = GetAttributeValue("color", ctxt))
-	{
-	  ctxt.logger().warning("attribute `color' is deprecated");
-	  if (SmartPtr<Value> v = parseTokenFontColor(s))
-	    SetColor(v);
-	  else
-	    ctxt.logger().warning("error while parsing deprecated attribute `color' (ignored)");
-	}
-      else
-	UnsetMathColor();
-
-      if (DOM::GdomeString s = GetAttribute("mathbackground", ctxt))
-	{
-	  if (SmartPtr<Value> v = parseTokenMathBackground(s))
-	    SetMathBackground(v);
-	  else
-	    ctxt.logger().warning("error while parsing attribute `mathbackground' (ignored)");
-	}
-      else
-	UnsetMathBackground();
-
-      for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = GetContent().begin();
-	   p != GetContent().end();
-	   p++)
-	{
-	  assert(*p);
-	  (*p)->Refine(ctxt);
-	}
-
-      ResetDirtyAttribute();
-    }
-}
-
-void
-MathMLTokenElement::RefineAttribute(RefinementContext& ctxt,
-				    const char* name,
-				    bool from_element,
-				    bool from_context,
-				    const char* default,
-				    bool deprecated)
-{
-  assert(name);
-
-  DOM::GdomeString s;
-
-  if (from_element)
-    {
-      DOM::Element el = GetDOMElement();
-      if (el && el.hasAttribute(name)) s = el.getAttribute(name);
-    }
-
-  if (!s && from_context)
-    s = ctxt.getAttribute(name);
-
-  if (!s) s = default;
-
-  if (s && deprecated)
-    ctxt.logger().warning("attribute `" + name + "' is deprecated");
-
-  SetAttribute(name, s);
-}
-
-void
-MathMLTokenElement::Refine(RefinementContext& ctxt)
-{
-  if (DirtyAttribute())
-    {
-      RefineAttribute(ctxt, "fontsize", true, true, 0, true);
-      RefineAttribute(ctxt, "mathsize", true, true, 0);
-      RefineAttribute(ctxt, "fontfamily", true, true, 0, true);
-      RefineAttribute(ctxt, "fontweight", true, true, 0, true);
-      RefineAttribute(ctxt, "fontstyle", true, true, 0, true);
-      RefineAttribute(ctxt, "mathvariant", true, true, "normal");
-      RefineAttribute(ctxt, "color", true, true, 0, true);
-      RefineAttribute(ctxt, "mathcolor", true, true, 0);
-      RefineAttribute(ctxt, "mathbackground", true, true, 0);
-
-      MathMLElement::Refine(ctxt);
-
-      ResetDirtyAttribute();
-    }
-}
-#endif
-
 void
 MathMLTokenElement::Setup(RenderingEnvironment& env)
 {
@@ -515,7 +261,7 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	  !is_a<MathMLOperatorElement>(SmartPtr<MathMLElement>(this)))
 	env.SetFontMode(FONT_MODE_TEXT);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHSIZE, env, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathsize))
 	{
 	  if (IsSet(ATTR_FONTSIZE))
 	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
@@ -531,13 +277,13 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	  else
 	    env.SetFontSize(ToNumberUnit(value));
 	} 
-      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTSIZE, env, false))
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontsize))
 	{
 	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
 	  env.SetFontSize(ToNumberUnit(value));
 	}
   
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHVARIANT, env, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathvariant))
 	{
 	  assert(IsKeyword(value));
 
@@ -552,19 +298,19 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	}
       else
 	{
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTFAMILY, env, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontfamily))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
 	      env.SetFontFamily(ToString(value));
 	    }
 
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTWEIGHT, env, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontweight))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
 	      env.SetFontWeight(ToFontWeightId(value));
 	    }
 
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTSTYLE, env, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontstyle))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
 	      env.SetFontStyle(ToFontStyleId(value));
@@ -581,13 +327,13 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	    }
 	}
       
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHCOLOR, env, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathcolor))
 	{
 	  if (IsSet(ATTR_COLOR))
 	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
 	  env.SetColor(ToRGB(value));
 	} 
-      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLOR, env, false))
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, color))
 	{
 	  Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
 	  env.SetColor(ToRGB(value));
@@ -595,7 +341,7 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
       else
 	if (HasLink()) env.SetColor(Globals::configuration.GetLinkForeground());
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHBACKGROUND, env, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathbackground))
 	env.SetBackgroundColor(ToRGB(value));
       else if (HasLink() && !Globals::configuration.HasTransparentLinkBackground())
 	env.SetBackgroundColor(Globals::configuration.GetLinkBackground());

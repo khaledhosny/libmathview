@@ -1,29 +1,28 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
 
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
 
 #include "Globals.hh"
 #include "ChildList.hh"
@@ -69,6 +68,16 @@ MathMLBinContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
       if (child) child->Normalize(doc);
       ResetDirtyStructure();
     }
+}
+
+void
+MathMLBinContainerElement::refine(AbstractRefinementContext& context)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      if (child) child->refine(context);
+      MathMLContainerElement::refine(context);
+    }  
 }
 
 void
@@ -146,37 +155,6 @@ MathMLBinContainerElement::SetDirty(const Rectangle* rect)
       if (child) child->SetDirty(rect);
     }
 }
-
-#if 0
-void
-MathMLBinContainerElement::SetDirtyLayout(bool children)
-{
-  MathMLElement::SetDirtyLayout(children);
-  if (children && child) child->SetDirtyLayout(children);
-}
-
-void
-MathMLBinContainerElement::SetSelected()
-{
-  if (IsSelected()) return;
-
-  selected = 1;
-  if (child) child->SetSelected();
-
-  SetDirty();
-}
-
-void
-MathMLBinContainerElement::ResetSelected()
-{
-  if (!IsSelected()) return;
-
-  SetDirty();
-
-  if (child) child->ResetSelected();
-  selected = 0;
-}
-#endif
 
 scaled
 MathMLBinContainerElement::GetLeftEdge() const

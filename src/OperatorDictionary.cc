@@ -29,18 +29,20 @@
 #include "MathMLParseFile.hh"
 #include "OperatorDictionary.hh"
 #include "MathMLAttributeList.hh"
+#include "MathMLAttributeSignature.hh"
 
 #if defined(HAVE_GMETADOM)
 
 void
-getAttribute(const DOM::Element& node, const char* attr, const SmartPtr<MathMLAttributeList>& aList)
+getAttribute(const DOM::Element& node, const MathMLAttributeSignature& signature,
+	     const SmartPtr<MathMLAttributeList>& aList)
 {
   assert(aList);
 
-  DOM::GdomeString attrVal = node.getAttribute(attr);
+  DOM::GdomeString attrVal = node.getAttribute(toDOMString(signature.name));
   if (attrVal.empty()) return;
 
-  aList->set(MathMLAttribute::create(AttributeIdOfName(attr), fromDOMString(attrVal)));
+  aList->set(MathMLAttribute::create(signature, fromDOMString(attrVal)));
 }
 
 #endif // HAVE_GMETADOM
@@ -83,23 +85,19 @@ OperatorDictionary::Load(const char* fileName)
 	if (!opName.empty()) {
 	  SmartPtr<MathMLAttributeList> defaults = MathMLAttributeList::create();
 
-	  getAttribute(op, "form", defaults);
-	  getAttribute(op, "fence", defaults);
-	  getAttribute(op, "separator", defaults);
-	  getAttribute(op, "lspace", defaults);
-	  getAttribute(op, "rspace", defaults);
-#if defined(ENABLE_EXTENSIONS)
-	  getAttribute(op, "tspace", defaults);
-	  getAttribute(op, "bspace", defaults);
-#endif // ENABLE_EXTENSIONS
-	  getAttribute(op, "stretchy", defaults);
-	  getAttribute(op, "direction", defaults);
-	  getAttribute(op, "symmetric", defaults);
-	  getAttribute(op, "maxsize", defaults);
-	  getAttribute(op, "minsize", defaults);
-	  getAttribute(op, "largeop", defaults);
-	  getAttribute(op, "movablelimits", defaults);
-	  getAttribute(op, "accent", defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, form), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, fence), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, separator), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, lspace), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, rspace), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, stretchy), defaults);
+	  //getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, direction), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, symmetric), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, maxsize), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, minsize), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, largeop), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, movablelimits), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, accent), defaults);
 
 	  FormDefaults& formDefaults = items[opName];
 	  if (elem.getAttribute("form") == "prefix")

@@ -96,6 +96,7 @@ RenderingEnvironment::Drop()
   level.pop_front();
 }
 
+#if 0
 SmartPtr<MathMLAttribute>
 RenderingEnvironment::GetAttribute(AttributeId id) const
 {
@@ -113,6 +114,7 @@ RenderingEnvironment::GetAttribute(AttributeId id) const
 
   return 0;
 }
+#endif
 
 void
 RenderingEnvironment::SetDisplayStyle(bool b)

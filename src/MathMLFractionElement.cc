@@ -1,27 +1,28 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include <cassert>
 
 #include "Globals.hh"
 #include "ChildList.hh"
@@ -47,23 +48,6 @@ MathMLFractionElement::~MathMLFractionElement()
 {
   SetNumerator(0);
   SetDenominator(0);
-}
-
-const AttributeSignature*
-MathMLFractionElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature sig[] = {
-    { ATTR_LINETHICKNESS, lineThicknessParser, "1",      NULL },
-    { ATTR_NUMALIGN,      fracAlignParser,     "center", NULL },
-    { ATTR_DENOMALIGN,    fracAlignParser,     "center", NULL },
-    { ATTR_BEVELLED,      booleanParser,       "false",  NULL },
-    { ATTR_NOTVALID,      NULL,                NULL,     NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLContainerElement::GetAttributeSignature(id);
-
-  return signature;
 }
 
 void
@@ -131,6 +115,19 @@ MathMLFractionElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 }
 
 void
+MathMLFractionElement::refine(AbstractRefinementContext& context)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, Fraction, linethickness);
+      REFINE_ATTRIBUTE(context, Fraction, numalign);
+      REFINE_ATTRIBUTE(context, Fraction, denomalign);
+      REFINE_ATTRIBUTE(context, Fraction, bevelled);
+      MathMLContainerElement::refine(context);
+    }
+}
+
+void
 MathMLFractionElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
@@ -138,69 +135,67 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
       color = env.GetColor();
       background = env.GetBackgroundColor();
 
-      SmartPtr<Value> value;
-
 #ifdef TEXISH_MATHML
       defaultRuleThickness = env.GetRuleThickness();
 #else
       scaled defaultRuleThickness = env.GetRuleThickness();
 #endif // TEXISH_MATHML
-
-      value = GetAttributeValue(ATTR_LINETHICKNESS, env, true);
-      if (value) {
-	if (IsKeyword(value))
-	  {
-	    switch (ToKeywordId(value))
-	      {
-	      case KW_THIN:
-		lineThickness = defaultRuleThickness / 2;
-		break;
-	      case KW_MEDIUM:
-		lineThickness = defaultRuleThickness;
-		break;
-	      case KW_THICK:
-		lineThickness = defaultRuleThickness * 2;
-		break;
-	      default:
-		assert(IMPOSSIBLE);
-		break;
-	      }
-	  }
-	else
-	  {
-	    assert(IsSequence(value));
-	    SmartPtr<Value> number = GetComponent(value, 0);
-	    SmartPtr<Value> unit = GetComponent(value, 1);
-
-	    assert(number);
-	    assert(unit);
-
-	    if (IsEmpty(unit))
-	      lineThickness = defaultRuleThickness * ToNumber(number);
-	    else
-	      {
-		assert(IsKeyword(unit));
-		UnitId unitId = ToUnitId(unit);
-		if (unitId == UNIT_PERCENTAGE)
-		  lineThickness = defaultRuleThickness * ToNumber(number) / 100;
-		else
-		  {
-		    UnitValue unitValue(ToNumber(number), unitId);
-		    lineThickness = env.ToScaledPoints(unitValue);
-		  }
-	      }
-	  }
-	
-	lineThickness = std::max(scaled(0), lineThickness);
-      }
-
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_NUMALIGN, env, true))
+      
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, linethickness))
+	{
+	  if (IsKeyword(value))
+	    {
+	      switch (ToKeywordId(value))
+		{
+		case KW_THIN:
+		  lineThickness = defaultRuleThickness / 2;
+		  break;
+		case KW_MEDIUM:
+		  lineThickness = defaultRuleThickness;
+		  break;
+		case KW_THICK:
+		  lineThickness = defaultRuleThickness * 2;
+		  break;
+		default:
+		  assert(IMPOSSIBLE);
+		  break;
+		}
+	    }
+	  else
+	    {
+	      assert(IsSequence(value));
+	      SmartPtr<Value> number = GetComponent(value, 0);
+	      SmartPtr<Value> unit = GetComponent(value, 1);
+	      
+	      assert(number);
+	      assert(unit);
+	      
+	      if (IsEmpty(unit))
+		lineThickness = defaultRuleThickness * ToNumber(number);
+	      else
+		{
+		  assert(IsKeyword(unit));
+		  UnitId unitId = ToUnitId(unit);
+		  if (unitId == UNIT_PERCENTAGE)
+		    lineThickness = defaultRuleThickness * ToNumber(number) / 100;
+		  else
+		    {
+		      UnitValue unitValue(ToNumber(number), unitId);
+		      lineThickness = env.ToScaledPoints(unitValue);
+		    }
+		}
+	    }
+	  
+	  lineThickness = std::max(scaled(0), lineThickness);
+	}
+      
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, numalign))
 	numAlign = ToFractionAlignId(value);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_DENOMALIGN, env, true))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, denomalign))
 	denomAlign = ToFractionAlignId(value);
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_BEVELLED, env, true))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, bevelled))
 	bevelled = ToBoolean(value);
 
       color = env.GetColor();
@@ -296,8 +291,6 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
-
-#include "BoundingBoxAux.hh"
 
 void
 MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
@@ -399,46 +392,6 @@ MathMLFractionElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
-
-#if 0
-void
-MathMLFractionElement::SetDirty(const Rectangle* rect)
-{
-  if (!IsDirty() && !HasDirtyChildren())
-    {
-      MathMLElement::SetDirty(rect);
-      if (numerator) numerator->SetDirty(rect);
-      if (denominator) denominator->SetDirty(rect);
-    }
-}
-
-void
-MathMLFractionElement::SetDirtyLayout(bool children)
-{
-  MathMLElement::SetDirtyLayout(children);
-  if (children)
-    {
-      if (numerator) numerator->SetDirtyLayout(children);
-      if (denominator) denominator->SetDirtyLayout(children);
-    }
-}
-
-void
-MathMLFractionElement::SetSelected()
-{
-  MathMLContainerElement::SetSelected();
-  if (numerator) numerator->SetSelected();
-  if (denominator) denominator->SetSelected();
-}
-
-void
-MathMLFractionElement::ResetSelected()
-{
-  MathMLContainerElement::ResetSelected();
-  if (numerator) numerator->ResetSelected();
-  if (denominator) denominator->ResetSelected();
-}
-#endif
 
 void
 MathMLFractionElement::SetFlagDown(Flags f)

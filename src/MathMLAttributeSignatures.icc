@@ -1,0 +1,128 @@
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
+// This file is part of GtkMathView, a Gtk widget for MathML.
+// 
+// GtkMathView is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// GtkMathView is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with GtkMathView; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// 
+// For details, see the GtkMathView World-Wide-Web page,
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
+// <luca.padovani@cs.unibo.it>
+
+DEFINE_ATTRIBUTE(Action, "actiontype", actiontype, stringParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Action, "selection", selection, integerParser, true, true, false, false, "1");
+DEFINE_ATTRIBUTE(AlignGroup, "groupalign", groupalign, groupAlignParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(AlignMark, "edge", edge, alignMarkEdgeParser, true, true, false, false, "left");
+DEFINE_ATTRIBUTE(Element, "id", id, stringParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Element, "class", class, stringParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Element, "other", other, stringParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Enclose, "notation", notation, stringParser, true, true, false, false, "longdiv");
+DEFINE_ATTRIBUTE(Fenced, "open", open, fenceParser, true, true, false, false, "(");
+DEFINE_ATTRIBUTE(Fenced, "close", close, fenceParser, true, true, false, false, ")");
+DEFINE_ATTRIBUTE(Fenced, "separators", separators, separatorsParser, true, true, false, true, ",");
+DEFINE_ATTRIBUTE(Fraction, "linethickness", linethickness, lineThicknessParser, true, true, false, false, "1");
+DEFINE_ATTRIBUTE(Fraction, "numalign", numalign, fracAlignParser, true, true, false, false, "center");
+DEFINE_ATTRIBUTE(Fraction, "denomalign", denomalign, fracAlignParser, true, true, false, false, "center");
+DEFINE_ATTRIBUTE(Fraction, "bevelled", bevelled, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Script, "subscriptshift", subscriptshift, numberUnitParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Script, "superscriptshift", superscriptshift, numberUnitParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Operator, "form", form, operatorFormParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Operator, "fence", fence, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Operator, "separator", separator, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Operator, "lspace", lspace, spaceParser, true, true, false, false, "thickmathspace");
+DEFINE_ATTRIBUTE(Operator, "rspace", rspace, spaceParser, true, true, false, false, "thickmathspace");
+DEFINE_ATTRIBUTE(Operator, "stretchy", stretchy, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Operator, "symmetric", symmetric, booleanParser, true, true, false, false, "true");
+DEFINE_ATTRIBUTE(Operator, "maxsize", maxsize, operatorMaxSizeParser, true, true, false, false, "infinity");
+DEFINE_ATTRIBUTE(Operator, "minsize", minsize, operatorMinSizeParser, true, true, false, false, "1");
+DEFINE_ATTRIBUTE(Operator, "largeop", largeop, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Operator, "movablelimits", movablelimits, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Operator, "accent", accent, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Padded, "width", width, paddedWidthParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Padded, "lspace", lspace, paddedValueParser, true, false, false, false, "0em");
+DEFINE_ATTRIBUTE(Padded, "height", height, paddedValueParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Padded, "depth", depth, paddedValueParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Space, "width", width, spaceParser, true, true, false, false, "0em");
+DEFINE_ATTRIBUTE(Space, "height", height, numberUnitParser, true, true, false, false, "0ex");
+DEFINE_ATTRIBUTE(Space, "depth", depth, numberUnitParser, true, true, false, false, "0ex");
+DEFINE_ATTRIBUTE(Space, "linebreak", linebreak, lineBreakParser, true, true, false, false, "auto");
+DEFINE_ATTRIBUTE(StringLit, "lquote", lquote, stringParser, true, true, false, false, "\"");
+DEFINE_ATTRIBUTE(StringLit, "rquote", rquote, stringParser, true, true, false, false, "\"");
+DEFINE_ATTRIBUTE(Style, "scriptlevel", scriptlevel, scriptLevelParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "displaystyle", displaystyle, booleanParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "scriptsizemultiplier", scriptsizemultiplier, numberParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "scriptminsize", scriptminsize, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "color", color, colorParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "background", background, backgroundParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "veryverythinmathspace", veryverythinmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "verythinmathspace", verythinmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "thinmathspace", thinmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "mediummathspace", mediummathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "thickmathspace", thickmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "verythickmathspace", verythickmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "veryverythickmathspace", veryverythickmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativeveryverythinmathspace", negativeveryverythinmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativeverythinmathspace", negativeverythinmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativethinmathspace", negativethinmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativemediummathspace", negativemediummathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativethickmathspace", negativethickmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativeverythickmathspace", negativeverythickmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "negativeveryverythickmathspace", negativeveryverythickmathspace, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "fontsize", fontsize, numberUnitParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "fontweight", fontweight, fontWeightParser, true, false, true, false, 0);
+DEFINE_ATTRIBUTE(Style, "fontstyle", fontstyle, fontStyleParser, true, false, true, false, 0);
+DEFINE_ATTRIBUTE(Style, "fontfamily", fontfamily, stringParser, true, false, true, false, 0);
+DEFINE_ATTRIBUTE(Style, "mathvariant", mathvariant, mathVariantParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "mathsize", mathsize, mathSizeParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "mathcolor", mathcolor, colorParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "mathbackground", mathbackground, colorParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(TableCell, "rowspan", rowspan, unsignedIntegerParser, true, true, false, false, "1");
+DEFINE_ATTRIBUTE(TableCell, "columnspan", columnspan, unsignedIntegerParser, true, true, false, false, "1");
+DEFINE_ATTRIBUTE(TableCell, "rowalign", rowalign, rowAlignParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(TableCell, "columnalign", columnalign, columnAlignParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(TableCell, "groupalign", groupalign, groupAlignListParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(TableRow, "rowalign", rowalign, rowAlignParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(TableRow, "columnalign", columnalign, columnAlignParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(TableRow, "groupalign", groupalign, groupAlignListParser, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Table, "align", align, tableAlignParser, true, true, false, false, "axis");
+DEFINE_ATTRIBUTE(Table, "rowalign", rowalign, rowAlignListParser, true, false, false, false, "baseline");
+DEFINE_ATTRIBUTE(Table, "columnalign", columnalign, columnAlignListParser, true, false, false, false, "center");
+DEFINE_ATTRIBUTE(Table, "groupalign", groupalign, groupAlignListListParser, true, false, false, false, "{ left }");
+DEFINE_ATTRIBUTE(Table, "alignmentscope", alignmentscope, booleanListParser, true, true, false, false, "true");
+DEFINE_ATTRIBUTE(Table, "columnwidth", columnwidth, columnWidthListParser, true, true, false, false, "auto");
+DEFINE_ATTRIBUTE(Table, "rowspacing", rowspacing, numberUnitListParser, true, true, false, false, "1.0ex");
+DEFINE_ATTRIBUTE(Table, "columnspacing", columnspacing, spaceListParser, true, true, false, false, "0.8em");
+DEFINE_ATTRIBUTE(Table, "rowlines", rowlines, lineTypeListParser, true, true, false, false, "none");
+DEFINE_ATTRIBUTE(Table, "columnlines", columnlines, lineTypeListParser, true, true, false, false, "none");
+DEFINE_ATTRIBUTE(Table, "frame", frame, lineTypeParser, true, true, false, false, "none");
+DEFINE_ATTRIBUTE(Table, "framespacing", framespacing, tableFrameSpacingParser, true, true, false, false, "0.4em 0.5ex");
+DEFINE_ATTRIBUTE(Table, "equalrows", equalrows, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Table, "equalcolumns", equalcolumns, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Table, "displaystyle", displaystyle, booleanParser, true, true, false, false, "false");
+DEFINE_ATTRIBUTE(Table, "side", side, tableSideParser, true, true, false, false, "right");
+DEFINE_ATTRIBUTE(Table, "minlabelspacing", minlabelspacing, numberUnitParser, true, true, false, false, "0.8em");
+DEFINE_ATTRIBUTE(Table, "width", width, tableWidthParser, true, false, false, false, "auto");
+DEFINE_ATTRIBUTE(Token, "fontsize", fontsize, numberUnitParser, true, true, true, false, 0);
+DEFINE_ATTRIBUTE(Token, "fontweight", fontweight, fontWeightParser, true, true, true, false, 0);
+DEFINE_ATTRIBUTE(Token, "fontstyle", fontstyle, fontStyleParser, true, true, true, false, 0);
+DEFINE_ATTRIBUTE(Token, "fontfamily", fontfamily, stringParser, true, true, true, false, 0);
+DEFINE_ATTRIBUTE(Token, "color", color, colorParser, true, true, true, false, 0);
+DEFINE_ATTRIBUTE(Token, "mathvariant", mathvariant, mathVariantParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Token, "mathsize", mathsize, mathSizeParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Token, "mathcolor", mathcolor, colorParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(Token, "mathbackground", mathbackground, colorParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(UnderOver, "accentunder", accentunder, booleanParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(UnderOver, "accent", accent, booleanParser, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(math, "mode", mode, modeParser, true, false, false, false, "inline");
+DEFINE_ATTRIBUTE(math, "display", display, displayParser, true, false, false, false, "inline");

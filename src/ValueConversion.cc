@@ -27,6 +27,7 @@
 #include "defs.h"
 #include "String.hh"
 #include "ValueConversion.hh"
+#include "RenderingEnvironment.hh"
 
 bool
 IsEmpty(const SmartPtr<Value>& value)
@@ -340,3 +341,19 @@ GetComponent(const SmartPtr<Value>& value, int i, int j)
       return GetComponent(vSeq->getValue(std::min(i, static_cast<int>(vSeq->getSize() - 1))), j, -1);
     }
 }
+
+SmartPtr<Value>
+Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env,
+	int i, int j)
+{
+  assert(value);
+
+  SmartPtr<Value> realValue = GetComponent(value, i, j);
+  assert(realValue);
+
+  if (IsKeyword(value))
+    return Variant<UnitValue>::create(env.GetMathSpace(ToNamedSpaceId(value)));
+  else
+    return realValue;
+}
+

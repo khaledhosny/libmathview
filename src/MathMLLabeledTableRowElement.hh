@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2002, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://www.cs.unibo.it/helm/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #ifndef MathMLLabeledTableRowElement_hh
@@ -29,7 +29,7 @@
 
 #include "MathMLTableRowElement.hh"
 
-class MathMLLabeledTableRowElement: public MathMLTableRowElement
+class MathMLLabeledTableRowElement : public MathMLTableRowElement
 {
 protected:
   MathMLLabeledTableRowElement(void);
@@ -51,7 +51,6 @@ public:
 
   virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
-  //virtual void SetDirty(const Rectangle*);
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);

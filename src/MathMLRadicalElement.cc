@@ -1,28 +1,28 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stddef.h>
+
+#include <cassert>
 
 #include "unidefs.h"
 #include "Globals.hh"
@@ -236,56 +236,6 @@ MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
     }
 #endif
 }
-
-#if 0
-void
-MathMLRadicalElement::SetDirty(const Rectangle* rect)
-{
-  if (!IsDirty() && !HasDirtyChildren())
-    {
-      MathMLElement::SetDirty(rect);
-      if (radicand) radicand->SetDirty(rect);
-      if (index) index->SetDirty(rect);  
-    }
-}
-
-void
-MathMLRadicalElement::SetDirtyLayout(bool children)
-{
-  MathMLElement::SetDirtyLayout(children);
-  if (children)
-    {
-      if (radicand) radicand->SetDirtyLayout(children);
-      if (index) index->SetDirtyLayout(children);
-    }
-}
-
-void
-MathMLRadicalElement::SetSelected()
-{
-  if (IsSelected()) return;
-
-  selected = 1;
-
-  if (radicand) radicand->SetSelected();
-  if (index) index->SetSelected();
-
-  SetDirty();
-}
-
-void
-MathMLRadicalElement::ResetSelected()
-{
-  if (!IsSelected()) return;
-  
-  SetDirty();
-
-  if (radicand) radicand->ResetSelected();
-  if (index) index->ResetSelected();
-
-  selected = 0;
-}
-#endif
 
 void
 MathMLRadicalElement::SetFlagDown(Flags f)

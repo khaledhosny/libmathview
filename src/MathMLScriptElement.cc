@@ -1,28 +1,28 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stddef.h>
+
+#include <cassert>
 
 #include "defs.h"
 #include "ChildList.hh"
@@ -49,30 +49,6 @@ MathMLScriptElement::MathMLScriptElement(const DOM::Element& node)
 
 MathMLScriptElement::~MathMLScriptElement()
 {
-}
-
-const AttributeSignature*
-MathMLScriptElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature subSig[] = {
-    { ATTR_SUBSCRIPTSHIFT, numberUnitParser, NULL, NULL },
-    { ATTR_NOTVALID,       NULL,             NULL, NULL }
-  };
-
-  static AttributeSignature supSig[] = {
-    { ATTR_SUPERSCRIPTSHIFT, numberUnitParser, NULL, NULL },
-    { ATTR_NOTVALID,         NULL,             NULL, NULL }
-  };
-
-  const AttributeSignature* signature = NULL;
-  if (IsA() == TAG_MSUB || IsA() == TAG_MSUBSUP || IsA() == TAG_MMULTISCRIPTS)
-    signature = GetAttributeSignatureAux(id, subSig);
-  if ((IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP || IsA() == TAG_MMULTISCRIPTS) && signature == NULL)
-    signature = GetAttributeSignatureAux(id, supSig);
-
-  if (signature == NULL) signature = MathMLContainerElement::GetAttributeSignature(id);
-
-  return signature;
 }
 
 void
@@ -192,6 +168,17 @@ MathMLScriptElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 }
 
 void
+MathMLScriptElement::refine(AbstractRefinementContext& context)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, Script, subscriptshift);
+      REFINE_ATTRIBUTE(context, Script, superscriptshift);
+      MathMLContainerElement::refine(context);
+    }
+}
+
+void
 MathMLScriptElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
@@ -209,7 +196,7 @@ MathMLScriptElement::Setup(RenderingEnvironment& env)
 	{
 	  subScript->Setup(env);
 
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_SUBSCRIPTSHIFT, env, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, subscriptshift))
 	    {
 	      assert(IsNumberUnit(value));
 	      UnitValue unitValue = ToNumberUnit(value);
@@ -222,7 +209,7 @@ MathMLScriptElement::Setup(RenderingEnvironment& env)
 	{
 	  superScript->Setup(env);
 
-	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_SUPERSCRIPTSHIFT, env, false))
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, superscriptshift))
 	    {
 	      assert(IsNumberUnit(value));
 	      UnitValue unitValue = ToNumberUnit(value);
@@ -359,32 +346,6 @@ MathMLScriptElement::GetCoreOperator()
   if (base) return base->GetCoreOperator();
   else return 0;
 }
-
-#if 0
-void
-MathMLScriptElement::SetDirty(const Rectangle* rect)
-{
-  if (!IsDirty() && !HasDirtyChildren())
-    {
-      MathMLElement::SetDirty(rect);
-      if (base) base->SetDirty(rect);
-      if (subScript) subScript->SetDirty(rect);
-      if (superScript) superScript->SetDirty(rect);
-    }
-}
-
-void
-MathMLScriptElement::SetDirtyLayout(bool children)
-{
-  MathMLElement::SetDirtyLayout(children);
-  if (children)
-    {
-      if (base) base->SetDirtyLayout(children);
-      if (subScript) subScript->SetDirtyLayout(children);
-      if (superScript) superScript->SetDirtyLayout(children);
-    }
-}
-#endif
 
 void
 MathMLScriptElement::SetFlagDown(Flags f)

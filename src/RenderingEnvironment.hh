@@ -55,9 +55,6 @@ public:
   void     SetDocument(const SmartPtr<class MathMLDocument>&);
   SmartPtr<class MathMLDocument> GetDocument(void) const;
 
-  // attributes retrieving
-  SmartPtr<MathMLAttribute> GetAttribute(AttributeId) const;
-
   // attributes facilities
   void     SetDisplayStyle(bool);
   bool     GetDisplayStyle(void) const;

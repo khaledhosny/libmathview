@@ -63,7 +63,6 @@ GUISOURCES = \
 
 libgtkmathview_la_SOURCES = \
   AttributeParser.cc \
-  AttributeSignature.cc \
   Clock.cc \
   Configuration.cc \
   EntitiesTable.cc \
@@ -78,6 +77,7 @@ libgtkmathview_la_SOURCES = \
   MathMLAlignMarkElement.cc \
   MathMLAttribute.cc \
   MathMLAttributeList.cc \
+  MathMLAttributeSignature.cc \
   MathMLContainerElement.cc \
   MathMLBinContainerElement.cc \
   MathMLLinearContainerElement.cc \
@@ -149,7 +149,6 @@ noinst_HEADERS = \
   AFont.hh \
   Adaptors.hh \
   AttributeParser.hh \
-  AttributeSignature.hh \
   Clock.hh \
   Configuration.hh \
   Coords.hh \

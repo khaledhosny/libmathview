@@ -30,6 +30,7 @@
 #include "MathMLActionElement.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLRenderingEngine.hh"
+#include "RefinementContext.hh"
 #include "FormattingContext.hh"
 #include "ShaperManager.hh"
 
@@ -172,10 +173,15 @@ MathMLRenderingEngine::Layout() const
 
       if (document->DirtyAttribute() || document->DirtyAttributeP())
 	{
+	  Clock perf;
+	  RefinementContext rc;
+	  perf.Start();
+	  document->refine(rc);
+	  perf.Stop();
+	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
 	  UnitValue size(defaultFontSize, UNIT_PT);
 	  RenderingEnvironment env(areaFactory, *shaperManager);
 	  env.SetFontSize(size);
-	  Clock perf;
 	  perf.Start();
 	  document->Setup(env);
 	  perf.Stop();

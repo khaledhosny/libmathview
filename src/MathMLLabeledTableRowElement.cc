@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2002, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,12 +17,12 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://www.cs.unibo.it/helm/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stddef.h>
+
+#include <cassert>
 
 #include "ChildList.hh"
 #include "Globals.hh"
@@ -92,15 +92,6 @@ MathMLLabeledTableRowElement::Inside(const scaled& x, const scaled& y)
   if (label && (inside = label->Inside(x, y))) return inside;
   return 0;
 }
-
-#if 0
-void
-MathMLLabeledTableRowElement::SetDirty(const Rectangle* rect)
-{
-  MathMLTableRowElement::SetDirty(rect);
-  if (label) label->SetDirty(rect);
-}
-#endif
 
 void
 MathMLLabeledTableRowElement::SetFlagDown(Flags f)

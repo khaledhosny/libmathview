@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "MathMLMarkNode.hh"
-#include "AttributeSignature.hh"
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
 
@@ -41,6 +40,7 @@ MathMLMarkNode::~MathMLMarkNode()
 void
 MathMLMarkNode::Setup(RenderingEnvironment& env)
 {
+#if 0
   // next a tricky operation. A token can contain a <malignmark>
   // element which has an attribute (edge) possibily inherited from
   // the rendering environment.
@@ -58,6 +58,8 @@ MathMLMarkNode::Setup(RenderingEnvironment& env)
   // since left is the default value for the edge attribute,
   // we set to left even in case the value is wrong
   if (edge == MARK_ALIGN_NOTVALID) edge = MARK_ALIGN_LEFT;
+#endif
+  // FIXME
 }
 
 void

@@ -20,27 +20,35 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#include <config.h>
+#ifndef __RefinementContext_hh__
+#define __RefinementContext_hh__
 
-#include "MathMLTextElement.hh"
+#include <list>
 
-MathMLTextElement::MathMLTextElement()
+#include "MathMLAttribute.hh"
+#include "MathMLAttributeList.hh"
+#include "AbstractRefinementContext.hh"
+
+class RefinementContext : public AbstractRefinementContext
 {
-}
+public:
+  RefinementContext(void) { }
+  virtual ~RefinementContext() { }
 
-#if defined(HAVE_GMETADOM)
-MathMLTextElement::MathMLTextElement(const DOM::Element& node)
-  : MathMLTokenElement(node)
-{
-}
-#endif
+  virtual SmartPtr<MathMLAttribute> get(const class MathMLAttributeSignature&) const;
+  virtual void push(const DOM::Element&);
+  virtual void pop(void);
 
-MathMLTextElement::~MathMLTextElement()
-{
-}
+private:
+  struct Context
+  {
+    Context(const DOM::Element& el, const SmartPtr<MathMLAttributeList> al) : elem(el), attributes(al) { }
 
-bool
-MathMLTextElement::IsSpaceLike(void) const
-{
-  return true;
-}
+    DOM::Element elem;
+    SmartPtr<MathMLAttributeList> attributes;
+  };
+
+  std::list<Context> context;
+};
+
+#endif // __RefinementContext_hh__

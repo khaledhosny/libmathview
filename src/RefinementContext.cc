@@ -22,25 +22,40 @@
 
 #include <config.h>
 
-#include "MathMLTextElement.hh"
+#include <cassert>
 
-MathMLTextElement::MathMLTextElement()
+#include "RefinementContext.hh"
+
+SmartPtr<MathMLAttribute>
+RefinementContext::get(const MathMLAttributeSignature& sig) const
 {
+  for (std::list<Context>::const_iterator p = context.begin(); p != context.end(); p++)
+    {
+      const Context& c = *p;
+
+      if (SmartPtr<MathMLAttribute> attr = c.attributes->get(ATTRIBUTE_ID_OF_SIGNATURE(sig)))
+	return attr;
+      else if (c.elem.hasAttribute(sig.name))
+	{
+	  SmartPtr<MathMLAttribute> attr = MathMLAttribute::create(sig, c.elem.getAttribute(sig.name));
+	  c.attributes->set(attr);
+	  return attr;
+	}
+    }
+
+  return 0;
 }
 
-#if defined(HAVE_GMETADOM)
-MathMLTextElement::MathMLTextElement(const DOM::Element& node)
-  : MathMLTokenElement(node)
+void
+RefinementContext::push(const DOM::Element& elem)
 {
-}
-#endif
-
-MathMLTextElement::~MathMLTextElement()
-{
+  assert(elem);
+  context.push_front(Context(elem, MathMLAttributeList::create()));
 }
 
-bool
-MathMLTextElement::IsSpaceLike(void) const
+void
+RefinementContext::pop()
 {
-  return true;
+  assert(!context.empty());
+  context.pop_front();
 }

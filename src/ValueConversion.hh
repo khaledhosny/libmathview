@@ -60,5 +60,6 @@ UnitValue       ToNumberUnit(const SmartPtr<Value>&);
 BreakId         ToBreakId(const SmartPtr<Value>&);
 
 SmartPtr<Value> GetComponent(const SmartPtr<Value>&, int = -1, int = -1);
+SmartPtr<Value> Resolve(const SmartPtr<Value>&, const class RenderingEnvironment&, int i = -1, int j = -1);
 
 #endif // __ValueConversion_hh__

@@ -1,34 +1,35 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stddef.h>
+
+#include <cassert>
 
 #include "Globals.hh"
 #include "ChildList.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLFencedElement.hh"
 #include "MathMLOperatorElement.hh"
+#include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
 
@@ -49,34 +50,101 @@ MathMLFencedElement::~MathMLFencedElement()
 {
 }
 
-const AttributeSignature*
-MathMLFencedElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature sig[] = {
-    { ATTR_OPEN,       fenceParser,      "(",  NULL },
-    { ATTR_CLOSE,      fenceParser,      ")",  NULL },
-    { ATTR_SEPARATORS, separatorsParser, ",",  NULL },
-    { ATTR_NOTVALID,   NULL,             NULL, NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLBinContainerElement::GetAttributeSignature(id);
-
-  return signature;
-}
-
 void
-MathMLFencedElement::Normalize(const SmartPtr<MathMLDocument>&)
+MathMLFencedElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
-      // normalization is delayed after setup, because it depends on
-      // the value of some attributes
-      // maybe it can be optimized if it knows that none of its children were
-      // added or removed, because that way it can just propagate the
-      // normalization method
-      normalized = false;
+      std::vector< SmartPtr<MathMLElement> > content;
+
+#if defined(HAVE_GMETADOM)
+      if (GetDOMElement())
+	{
+	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  nArgs = children.get_length();
+
+	  if (nArgs > 1) content.reserve(2 * nArgs - 1);
+	  for (unsigned i = 0; i < nArgs; i++)
+	    {
+	      DOM::Node node = children.item(i);
+	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
+
+	      if (SmartPtr<MathMLElement> elem = doc->getFormattingNode(node))
+		content.push_back(elem);
+	      else
+		content.push_back(MathMLDummyElement::create());
+
+	      if (i + 1 < nArgs) content.push_back(MathMLOperatorElement::create());
+	    }
+	}
+#endif // HAVE_GMETADOM
+
+      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
+      outerRow->Append(MathMLOperatorElement::create());
+      if (content.size() == 1) outerRow->Append(content[0]);
+      else if (content.size() > 1)
+	{
+	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
+	  innerRow->SwapChildren(content);
+	  outerRow->Append(innerRow);
+	}
+      outerRow->Append(MathMLOperatorElement::create());
+
+      SetChild(outerRow);
+      outerRow->Normalize(doc);
+
       ResetDirtyStructure();
+    }
+}
+
+void
+MathMLFencedElement::refine(AbstractRefinementContext& context)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, Fenced, open);
+      REFINE_ATTRIBUTE(context, Fenced, close);
+      REFINE_ATTRIBUTE(context, Fenced, separators);
+
+      String openFence = ToString(GET_ATTRIBUTE_VALUE(Fenced, open));
+      String closeFence = ToString(GET_ATTRIBUTE_VALUE(Fenced, close));
+      String separators = ToString(GET_ATTRIBUTE_VALUE(Fenced, separators));
+
+      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(GetChild());
+      assert(outerRow);
+
+      SmartPtr<MathMLOperatorElement> open = smart_cast<MathMLOperatorElement>(outerRow->GetChild(0));
+      assert(open);
+      open->SetSize(0);
+      open->Append(openFence);
+      open->SetFence();
+
+      if (nArgs > 1)
+	{
+	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(outerRow->GetChild(1));
+	  assert(innerRow && !innerRow->GetDOMElement());
+	  for (unsigned i = 0; i < nArgs - 1; i++)
+	    {
+	      if (separators.empty())
+		innerRow->SetChild(i * 2 + 1, 0);
+	      else
+		{
+		  SmartPtr<MathMLOperatorElement> sep = smart_cast<MathMLOperatorElement>(innerRow->GetChild(i * 2 + 1));
+		  unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
+		  sep->SetSize(0);
+		  sep->Append(separators.substr(offset, 1));
+		  sep->SetSeparator();
+		}
+	    }
+	}
+
+      SmartPtr<MathMLOperatorElement> close = smart_cast<MathMLOperatorElement>(outerRow->GetChild((nArgs > 0) ? 2 : 1));
+      assert(close);
+      close->SetSize(0);
+      close->Append(closeFence);
+      close->SetFence();
+
+      MathMLBinContainerElement::refine(context);
     }
 }
 
@@ -85,114 +153,26 @@ MathMLFencedElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_OPEN, env))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fenced, open))
 	openFence = ToString(value);
       else
 	openFence.clear();
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_CLOSE, env))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fenced, close))
 	closeFence = ToString(value);
       else
 	closeFence.clear();
 
       SmartPtr<Value> value;
       if (GetDOMElement() && GetDOMElement().hasAttribute("separators"))
-	value = GetAttributeValue(ATTR_SEPARATORS, env, false);
+	value = GET_ATTRIBUTE_VALUE(Fenced, separators);
       else
-	value = GetAttributeValue(ATTR_SEPARATORS, env);
+	value = GET_ATTRIBUTE_VALUE(Fenced, separators);
       if (value) separators = ToString(value);
       else separators.clear();
 
-      DelayedNormalize(env.GetDocument());
       MathMLBinContainerElement::Setup(env);
 
       ResetDirtyAttribute();
-    }
-}
-
-void
-MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
-{
-  if (!normalized)
-    {
-#if defined(HAVE_GMETADOM)
-      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
-      unsigned nChildren = children.get_length();
-
-      for (unsigned i = 0; i < nChildren; i++)
-	{
-	  DOM::Node node = children.item(i);
-	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
-	  assert(elem);
-	  // we detach the element from its parent, which can be an
-	  // element created by mfenced when it expanded
-	  elem->Unlink();
-	}
-#endif // HAVE_GMETADOM
-
-      SmartPtr<MathMLRowElement> mainRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
-      assert(mainRow);
-
-      SmartPtr<MathMLRowElement> mrow = 0;
-      SmartPtr<MathMLOperatorElement> fence = 0;
-
-      if (!openFence.empty())
-	{
-	  fence = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
-	  assert(fence);
-	  fence->Append(openFence);
-	  fence->SetFence();
-	  mainRow->Append(fence);
-	}
-
-#if defined(HAVE_GMETADOM)
-      bool moreArguments = nChildren > 1;
-
-      if (moreArguments) mrow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
-      else mrow = mainRow;
-      assert(mrow);
-
-      for (unsigned i = 0; i < nChildren; i++)
-	{
-	  DOM::Node node = children.item(i);
-	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  SmartPtr<MathMLElement> arg = doc->getFormattingNode(node);
-	  assert(arg);
-
-	  mrow->Append(arg);
-
-	  if (!separators.empty() && i < nChildren - 1)
-	    {
-	      unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
-	      String sep = separators.substr(offset, 1);
-
-	      SmartPtr<MathMLOperatorElement> separator = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
-	      assert(separator);
-	      separator->SetSeparator();
-	      separator->Append(sep);
-	      mrow->Append(separator);
-	    }
-	}
-
-      if (moreArguments) mainRow->Append(mrow);
-#endif // HAVE_GMETADOM
-
-      if (!closeFence.empty())
-	{
-	  fence = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
-	  assert(fence);
-	  fence->Append(closeFence);
-	  fence->SetFence();
-	  mainRow->Append(fence);
-	}
-
-      SetChild(mainRow);
-      mainRow->Normalize(doc);
-      // the mainRow will typically have the dirtyStructure flag set,
-      // hence we have to clean it again
-      ResetDirtyStructure();
-
-      normalized = true;
     }
 }

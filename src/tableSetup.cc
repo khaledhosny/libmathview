@@ -260,7 +260,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment& env)
 
   column = new TableColumn[nColumns];
 
-  SmartPtr<Value> value = GetAttributeValue(ATTR_COLUMNWIDTH, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, columnwidth);
 
   for (i = 0; i < nColumns; i++)
     {
@@ -293,7 +293,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment& env)
 	}
     }
 
-  value = GetAttributeValue(ATTR_COLUMNSPACING, env);
+  value = GET_ATTRIBUTE_VALUE(Table, columnspacing);
 
   for (i = 0; i < nColumns; i++)
     {
@@ -318,7 +318,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment& env)
 void
 MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment& env)
 {
-  SmartPtr<Value> value = GetAttributeValue(ATTR_ALIGNMENTSCOPE, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, alignmentscope);
   assert(value);
 
   for (unsigned j = 0; j < nColumns; j++)
@@ -334,7 +334,7 @@ MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment& env)
 void
 MathMLTableElement::SetupColumnAlign(RenderingEnvironment& env)
 {
-  SmartPtr<Value> value = GetAttributeValue(ATTR_COLUMNALIGN, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, columnalign);
   SetupColumnAlignAux(value, 0, nRows);
 }
 
@@ -403,7 +403,7 @@ MathMLTableElement::SetupRows(RenderingEnvironment& env)
       i++;
     }
 
-  SmartPtr<Value> value = GetAttributeValue(ATTR_ROWSPACING, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, rowspacing);
   assert(value);
 
   for (i = 0; i < nRows; i++)
@@ -429,7 +429,7 @@ MathMLTableElement::SetupRows(RenderingEnvironment& env)
 void
 MathMLTableElement::SetupRowAlign(RenderingEnvironment& env)
 {
-  SmartPtr<Value> value = GetAttributeValue(ATTR_ROWALIGN, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, rowalign);
   assert(value);
 
   for (unsigned i = 0; i < nRows; i++)
@@ -530,7 +530,7 @@ MathMLTableElement::SetupGroups()
 void
 MathMLTableElement::SetupGroupAlign(RenderingEnvironment& env)
 {
-  SmartPtr<Value> value = GetAttributeValue(ATTR_GROUPALIGN, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, groupalign);
   SetupGroupAlignAux(value, 0, nRows);
 }
 
@@ -584,7 +584,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // align
 
-  SmartPtr<Value> value = GetAttributeValue(ATTR_ALIGN, env);
+  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Table, align);
   assert(value);
 
   SmartPtr<Value> p = GetComponent(value, 0);
@@ -611,7 +611,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // rowlines
 
-  value = GetAttributeValue(ATTR_ROWLINES, env);
+  value = GET_ATTRIBUTE_VALUE(Table, rowlines);
   assert(value);
 
   for (unsigned i = 0; i < nRows; i++)
@@ -623,7 +623,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // columnlines
 
-  value = GetAttributeValue(ATTR_COLUMNLINES, env);
+  value = GET_ATTRIBUTE_VALUE(Table, columnlines);
   assert(value);
 
   for (unsigned j = 0; j < nColumns; j++)
@@ -635,13 +635,13 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // frame
 
-  value = GetAttributeValue(ATTR_FRAME, env);
+  value = GET_ATTRIBUTE_VALUE(Table, frame);
   assert(value);
   frame = ToLineId(value);
 
   // width
 
-  value = GetAttributeValue(ATTR_WIDTH, env);
+  value = GET_ATTRIBUTE_VALUE(Table, width);
   assert(value);
 
   if (IsKeyword(value))
@@ -667,7 +667,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // framespacing
 
-  value = GetAttributeValue(ATTR_FRAMESPACING, env);
+  value = GET_ATTRIBUTE_VALUE(Table, framespacing);
   assert(value);
 
   p = Resolve(value, env, 0);
@@ -708,19 +708,19 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // equalrows
 
-  equalRows = ToBoolean(GetAttributeValue(ATTR_EQUALROWS, env));
+  equalRows = ToBoolean(GET_ATTRIBUTE_VALUE(Table, equalrows));
 
   // equalcolumns
 
-  equalColumns = ToBoolean(GetAttributeValue(ATTR_EQUALCOLUMNS, env));
+  equalColumns = ToBoolean(GET_ATTRIBUTE_VALUE(Table, equalcolumns));
 
   // displaystyle
 
-  displayStyle = ToBoolean(GetAttributeValue(ATTR_DISPLAYSTYLE, env));
+  displayStyle = ToBoolean(GET_ATTRIBUTE_VALUE(Table, displaystyle));
 
   // side
 
-  value = GetAttributeValue(ATTR_SIDE, env);
+  value = GET_ATTRIBUTE_VALUE(Table, side);
   assert(value);
 
   switch (ToKeywordId(value))
@@ -734,7 +734,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   // minlabelspacing
 
-  value = GetAttributeValue(ATTR_MINLABELSPACING, env);
+  value = GET_ATTRIBUTE_VALUE(Table, minlabelspacing);
   assert(value && IsNumberUnit(value));
 
   unitValue = ToNumberUnit(value);

@@ -1,23 +1,23 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
@@ -58,66 +58,26 @@ MathMLOperatorElement::~MathMLOperatorElement()
 {
 }
 
-const AttributeSignature*
-MathMLOperatorElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature sig[] = {
-    { ATTR_FORM,      	  operatorFormParser, 	 NULL,             NULL },
-    { ATTR_FENCE,     	  booleanParser,      	 "false",          NULL },
-    { ATTR_SEPARATOR, 	  booleanParser,      	 "false",          NULL },
-    { ATTR_LSPACE,    	  spaceParser,    	 "thickmathspace", NULL },
-    { ATTR_RSPACE,    	  spaceParser,    	 "thickmathspace", NULL },
-#ifdef ENABLE_EXTENSIONS
-    { ATTR_TSPACE,        numberUnitParser,      "0ex",            NULL },
-    { ATTR_BSPACE,        numberUnitParser,      "0ex",            NULL },
-#endif // ENABLE_EXTENSIONS
-    { ATTR_STRETCHY,  	  booleanParser,      	 "false",          NULL },
-    { ATTR_SYMMETRIC, 	  booleanParser,      	 "true",           NULL },
-    { ATTR_MAXSIZE,   	  operatorMaxSizeParser, "infinity",       NULL },
-    { ATTR_MINSIZE,   	  operatorMinSizeParser, "1",              NULL },
-    { ATTR_LARGEOP,       booleanParser,         "false",          NULL },
-    { ATTR_MOVABLELIMITS, booleanParser,         "false",          NULL },
-    { ATTR_ACCENT,        booleanParser,         "false",          NULL },
-    { ATTR_NOTVALID,      NULL,                  NULL,             NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLTokenElement::GetAttributeSignature(id);
-
-  return signature;
-}
-
-#if 0
 void
-MathMLOperatorElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLOperatorElement::refine(AbstractRefinementContext& context)
 {
-  if (DirtyStructure())
+  if (DirtyAttribute() || DirtyAttributeP())
     {
-#if 0
-      if (!eOp)
-	{
-	  SmartPtr<MathMLElement> op = MathMLEmbellishedOperatorElement::create(this);
-	  assert(op);
-	  eOp = smart_cast<MathMLEmbellishedOperatorElement>(op);
-	}
-      assert(eOp);
-
-      // now we have to substitute the root of the embellished operator
-      // with the embellished operator object just created
-      assert(is_a<MathMLContainerElement>(GetParent()));
-      SmartPtr<MathMLContainerElement> pContainer = smart_cast<MathMLContainerElement>(GetParent());
-      assert(pContainer);
-      pContainer->Replace(this, eOp);
-      eOp->SetChild(this);
-#if defined(HAVE_GMETADOM)
-      doc->setFormattingNode(GetDOMElement(), eOp);
-#endif
-#endif
-
-      MathMLTokenElement::Normalize(doc);
+      REFINE_ATTRIBUTE(context, Operator, form);
+      REFINE_ATTRIBUTE(context, Operator, fence);
+      REFINE_ATTRIBUTE(context, Operator, separator);
+      REFINE_ATTRIBUTE(context, Operator, lspace);
+      REFINE_ATTRIBUTE(context, Operator, rspace);
+      REFINE_ATTRIBUTE(context, Operator, stretchy);
+      REFINE_ATTRIBUTE(context, Operator, symmetric);
+      REFINE_ATTRIBUTE(context, Operator, maxsize);
+      REFINE_ATTRIBUTE(context, Operator, minsize);
+      REFINE_ATTRIBUTE(context, Operator, largeop);
+      REFINE_ATTRIBUTE(context, Operator, movablelimits);
+      REFINE_ATTRIBUTE(context, Operator, accent);
+      MathMLTokenElement::refine(context);
     }
 }
-#endif
 
 void
 MathMLOperatorElement::Setup(RenderingEnvironment& env)
@@ -126,7 +86,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
     {
       axis = env.GetAxis();
 
-      if (SmartPtr<Value> value = GetAttributeValue(ATTR_FORM, env, false))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Operator, form))
 	form = ToFormId(value);
       else
 	form = InferOperatorForm();
@@ -146,13 +106,13 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       else if (prefix) defaults = prefix;
       else defaults = 0;
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_FENCE, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, fence))
 	if (!ForcedFence()) fence = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_SEPARATOR, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, separator))
 	if (!ForcedSeparator()) separator = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_LSPACE, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, lspace))
 	{
 	  SmartPtr<Value> resValue = Resolve(value, env);
 	  if (env.GetScriptLevel() <= 0)
@@ -163,7 +123,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       else
 	assert(IMPOSSIBLE);
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_RSPACE, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, rspace))
 	{
 	  SmartPtr<Value> resValue = Resolve(value, env);
 	  if (env.GetScriptLevel() <= 0)
@@ -174,21 +134,13 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       else
 	assert(IMPOSSIBLE);
 
-#ifdef ENABLE_EXTENSIONS
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_TSPACE, env))
-	tSpace = env.ToScaledPoints(ToNumberUnit(value));
-
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_BSPACE, env))
-	bSpace = env.ToScaledPoints(ToNumberUnit(value));
-#endif // ENABLE_EXTENSIONS
-
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_STRETCHY, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, stretchy))
 	stretchy = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_SYMMETRIC, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, symmetric))
 	if (!ForcedSymmetric()) symmetric = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_MAXSIZE, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, maxsize))
 	if (ToKeywordId(value) == KW_INFINITY)
 	  infiniteMaxSize = 1;
 	else
@@ -197,23 +149,23 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 	    ParseLimitValue(value, env, maxMultiplier, maxSize);
 	  }
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_MINSIZE, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, minsize))
 	ParseLimitValue(value, env, minMultiplier, minSize);
       else
 	assert(IMPOSSIBLE);
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_MOVABLELIMITS, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, movablelimits))
 	movableLimits = ToBoolean(value) ? 1 : 0;
       else
 	assert(IMPOSSIBLE);
 
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_ACCENT, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, accent))
 	accent = ToBoolean(value) ? 1 : 0;
       else
 	assert(IMPOSSIBLE);
 
       bool largeOp = false;
-      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_LARGEOP, env))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, largeop))
 	largeOp = ToBoolean(value);
 
       MathMLTokenElement::Setup(env);
@@ -440,13 +392,12 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
 }
 
 SmartPtr<Value>
-MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
-						 const RenderingEnvironment& env) const
+MathMLOperatorElement::getOperatorAttributeValue(const MathMLAttributeSignature& signature) const
 {
   //printf("`%s': searching for attribute `%s'\n", NameOfTagId(IsA()), NameOfAttributeId(id));
 
   // 1st attempt, the attribute may be set for the current operator
-  if (SmartPtr<Value> value = GetAttributeValue(id, env, false))
+  if (SmartPtr<Value> value = getAttributeValueNoDefault(signature))
     return value;
 
   if (defaults)
@@ -454,20 +405,13 @@ MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
       // no, it is not explicitly set, but this operator has an entry in
       // the operator dictionary, so let's see if the attribute has a
       // default value
-      if (SmartPtr<MathMLAttribute> attribute = defaults->get(id))
-	{
-	  const AttributeSignature* aSignature = GetAttributeSignature(id);
-	  assert(aSignature);
-	  if (SmartPtr<Value> value = attribute->getParsedValue(aSignature))
-	    return value;
-	}
-
-      //if (value != NULL) printf("found in dictionary\n");
+      if (SmartPtr<Value> value = defaults->getValue(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
+	return value;
     }
 
   // if the attribute hasn't still a value, then take its default
   // for the mo element
-  if (SmartPtr<Value> value = GetAttributeValue(id))
+  if (SmartPtr<Value> value = signature.getDefaultValue())
     return value;
   
   assert(false);

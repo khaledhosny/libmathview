@@ -1,23 +1,23 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
@@ -74,46 +74,6 @@ MathMLRowElement::create(const DOM::Element& el)
 #endif
 }
 
-#if 0
-// Row must redefine Normalize because it can be inferred
-// when a Row is inferred, it has no DOm node attached, hence
-// the LinearContainer::Normalize would stop normalizing
-void
-MathMLRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
-{
-  if (DirtyStructure())
-    {
-      // editing is supported with DOM only
-#if defined(HAVE_GMETADOM)
-      if (GetDOMElement() || (GetParent() && GetParent()->GetDOMElement()))
-	{
-	  ChildList children(GetDOMElement() ? GetDOMElement() : GetParent()->GetDOMElement(),
-			     MATHML_NS_URI, "*");
-	  unsigned n = children.get_length();
-
-	}
-
-      //assert(GetDOMElement() || !GetParent() || !GetParent()->GetDOMElement() || GetSize() != 1);
-#endif // HAVE_GMETADOM
-
-      // it is better to normalize elements only after all the rendering
-      // interfaces have been collected, because the structure might change
-      // depending on the actual number of children
-      //std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
-      std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
-#if 0
-      for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	{
-	  (*p)->Normalize(doc);
-	}
-#endif
-      ResetDirtyStructure();
-    }
-}
-#endif
-
 void
 MathMLRowElement::Setup(RenderingEnvironment& env)
 {
@@ -133,10 +93,11 @@ MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
       for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
-	{
-	  (*elem)->DoLayout(ctxt);
-	  box.append((*elem)->GetBoundingBox());
-	}
+	if (*elem)
+	  {
+	    (*elem)->DoLayout(ctxt);
+	    box.append((*elem)->GetBoundingBox());
+	  }
 
       DoStretchyLayout();
       DoEmbellishmentLayout(this, box);
@@ -152,8 +113,6 @@ MathMLRowElement::DoStretchyLayout()
 
   BoundingBox rowBox;
   BoundingBox opBox;
-  rowBox.unset();
-  opBox.unset();
 
   for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
@@ -163,7 +122,7 @@ MathMLRowElement::DoStretchyLayout()
 	opBox.append(op->GetMinBoundingBox());
 	nStretchy++;      
       } 
-    else
+    else if (*elem)
       {
 	rowBox.append((*elem)->GetBoundingBox());
 	nOther++;
@@ -202,10 +161,11 @@ MathMLRowElement::SetPosition(const scaled& x0, const scaled& y0)
   for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
        elem++)
-    {
-      (*elem)->SetPosition(x, y);
-      x += (*elem)->GetBoundingBox().width;
-    }
+    if (*elem)
+      {
+	(*elem)->SetPosition(x, y);
+	x += (*elem)->GetBoundingBox().width;
+      }
 }
 
 bool
@@ -227,15 +187,11 @@ MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
   for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
-    {
-      SmartPtr<const MathMLElement> p = *elem;
-
-      if (!p->IsSpaceLike())
-	{
-	  if (p == eOp) position = rowLength;
-	  rowLength++;
-	}
-    }
+    if (*elem && !(*elem)->IsSpaceLike())
+      {
+	if (*elem == eOp) position = rowLength;
+	rowLength++;
+      }
     
   if (rowLength > 1) 
     {
@@ -246,27 +202,6 @@ MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
   return res;
 }
 
-#if 0
-SmartPtr<class MathMLOperatorElement>
-MathMLRowElement::GetCoreOperator()
-{
-  SmartPtr<MathMLElement> core = 0;
-
-  for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    {
-      if (!(*elem)->IsSpaceLike())
-	{
-	  if (!core) core = *elem;
-	  else return 0;
-	}
-    }
-
-  return core ? core->GetCoreOperator() : SmartPtr<class MathMLOperatorElement>(0);
-}
-#endif
-
 SmartPtr<class MathMLOperatorElement>
 MathMLRowElement::GetCoreOperator()
 {
@@ -275,7 +210,7 @@ MathMLRowElement::GetCoreOperator()
   for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
-    if (!(*elem)->IsSpaceLike())
+    if ((*elem) && !(*elem)->IsSpaceLike())
       {
 	if (!candidate) candidate = *elem;
 	else return 0;

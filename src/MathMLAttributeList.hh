@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "MathMLAttribute.hh"
+#include "MathMLAttributeSignature.hh"
 
 class MathMLAttributeList : public Object
 {
@@ -38,8 +39,9 @@ public:
   { return new MathMLAttributeList(); }
 
   bool set(const SmartPtr<MathMLAttribute>&);
-  bool remove(AttributeId);
-  SmartPtr<MathMLAttribute> get(AttributeId) const;
+  bool remove(const MathMLAttributeId&);
+  SmartPtr<MathMLAttribute> get(const MathMLAttributeId&) const;
+  SmartPtr<Value> getValue(const MathMLAttributeId&) const;
 
 private:
   std::vector< SmartPtr<MathMLAttribute> > content;

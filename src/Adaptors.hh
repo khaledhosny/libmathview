@@ -35,6 +35,13 @@ struct NormalizeAdaptor
   { elem->Normalize(doc); }
 };
 
+struct RefineAdaptor
+  : public std::binary_function<SmartPtr<MathMLElement>,class AbstractRefinementContext*,void>
+{
+  void operator()(const SmartPtr<MathMLElement>& elem, class AbstractRefinementContext* context) const
+  { elem->refine(*context); }
+};
+
 struct SetupAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,class RenderingEnvironment*,void>
 {

@@ -1,23 +1,23 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #ifndef MathMLElement_hh
@@ -33,7 +33,7 @@
 #include "MathMLFrame.hh"
 #include "BoundingBox.hh"
 #include "DrawingArea.hh"
-#include "AttributeSignature.hh"
+#include "MathMLAttributeList.hh"
 #include "FormattingContext.hh"
 
 // MathMLElement: base class for every MathML Element
@@ -53,8 +53,8 @@ public:
   void Link(const SmartPtr<MathMLElement>&);
   void Unlink(void);
 
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(const SmartPtr<class MathMLDocument>&) = 0;
+  virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&); // setup attributes
   virtual void DoLayout(const class FormattingContext&);
   virtual void RenderBackground(const DrawingArea&);
@@ -65,15 +65,12 @@ public:
   const class GraphicsContext* GetForegroundGC(void) const { return fGC[Selected()]; }
   const class GraphicsContext* GetBackgroundGC(void) const { return bGC[Selected()]; }
 
-  // attributes
-  String GetDefaultAttribute(AttributeId) const;
-  SmartPtr<Value> GetDefaultAttributeValue(AttributeId) const;
-  String GetAttribute(AttributeId, bool = true) const;
-  String GetAttribute(AttributeId, const RenderingEnvironment&, bool = true) const;
-  SmartPtr<Value> GetAttributeValue(AttributeId, bool = true) const;
-  SmartPtr<Value> GetAttributeValue(AttributeId, const RenderingEnvironment&, bool = true) const;
-  SmartPtr<Value> ParseAttribute(AttributeId, const String&) const;
-  static SmartPtr<Value> Resolve(const SmartPtr<Value>&, const RenderingEnvironment&, int = -1, int = -1);
+protected:
+  SmartPtr<Value> getAttributeValue(const class MathMLAttributeSignature&) const;
+  SmartPtr<Value> getAttributeValueNoDefault(const class MathMLAttributeSignature&) const;
+  void refineAttribute(const class AbstractRefinementContext&, const class MathMLAttributeSignature&);
+
+public:
   bool IsSet(AttributeId) const;
 
   // some queries
@@ -106,10 +103,6 @@ public:
   bool DirtyLayout(const class FormattingContext&) const { return DirtyLayout(); }
   void ResetDirtyLayout(const FormattingContext& ctxt)
   { if (ctxt.GetLayoutType() == LAYOUT_AUTO) ResetDirtyLayout(); }
-
-protected:
-  const AttributeSignature* GetAttributeSignatureAux(AttributeId,
-						     AttributeSignature[]) const;
 
 public:
   virtual void SetDirtyStructure(void);
@@ -156,6 +149,7 @@ public:
 
 private:
   std::bitset<FUnusedFlag> flags;
+  SmartPtr<MathMLAttributeList> attributes;
 
 protected:
   const class GraphicsContext* fGC[2];

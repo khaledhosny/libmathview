@@ -1,32 +1,31 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
 
+#include <cassert>
+
 #include <algorithm>
 #include <functional>
-
-#include <assert.h>
-#include <stdio.h>
 
 #include "defs.h"
 #include "for_each_if.h"
@@ -88,6 +87,16 @@ MathMLLinearContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
       // depending on the actual number of children
       for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
       ResetDirtyStructure();
+    }
+}
+
+void
+MathMLLinearContainerElement::refine(AbstractRefinementContext& context)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(RefineAdaptor(), &context));
+      MathMLContainerElement::refine(context);
     }
 }
 
@@ -186,7 +195,7 @@ MathMLLinearContainerElement::SetChild(unsigned i, const SmartPtr<MathMLElement>
 void
 MathMLLinearContainerElement::Append(const SmartPtr<MathMLElement>& elem)
 {
-  assert(!elem->GetParent());
+  assert(elem && !elem->GetParent());
   elem->Link(this);
   content.push_back(elem);
   SetDirtyLayout();
@@ -212,15 +221,12 @@ MathMLLinearContainerElement::SwapChildren(std::vector< SmartPtr<MathMLElement> 
       for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
 	   p != content.end();
 	   p++)
-	(*p)->Unlink();
+	if (*p) (*p)->Unlink();
 
       for (std::vector< SmartPtr<MathMLElement> >::iterator p = newContent.begin();
 	   p != newContent.end();
 	   p++)
-	{
-	  assert(*p);
-	  (*p)->Link(this);
-	}
+	if (*p) (*p)->Link(this);
 
       content.swap(newContent);
       SetDirtyLayout();

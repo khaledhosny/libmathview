@@ -1,32 +1,31 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
 
+#include <cassert>
+
 #include <algorithm>
 #include <functional>
-
-#include <assert.h>
-#include <stddef.h>
 
 #include "defs.h"
 #include "Adaptors.hh"
@@ -62,35 +61,31 @@ MathMLTableElement::Init()
   dGC[0] = dGC[1] = NULL;
 }
 
-const AttributeSignature*
-MathMLTableElement::GetAttributeSignature(AttributeId id) const
+void
+MathMLTableElement::refine(AbstractRefinementContext& context)
 {
-  static AttributeSignature sig[] = {
-    { ATTR_ALIGN,           tableAlignParser,         "axis",        NULL },
-    { ATTR_ROWALIGN,        rowAlignListParser,       "baseline",    NULL },
-    { ATTR_COLUMNALIGN,     columnAlignListParser,    "center",      NULL },
-    { ATTR_GROUPALIGN,      groupAlignListListParser, "{ left }",    NULL },
-    { ATTR_ALIGNMENTSCOPE,  booleanListParser,        "true",        NULL },
-    { ATTR_COLUMNWIDTH,     columnWidthListParser,    "auto",        NULL },
-    { ATTR_ROWSPACING,      numberUnitListParser,     "1.0ex",       NULL },
-    { ATTR_COLUMNSPACING,   spaceListParser,          "0.8em",       NULL },
-    { ATTR_ROWLINES,        lineTypeListParser,       "none",        NULL },
-    { ATTR_COLUMNLINES,     lineTypeListParser,       "none",        NULL },
-    { ATTR_FRAME,           lineTypeParser,           "none",        NULL },
-    { ATTR_FRAMESPACING,    tableFrameSpacingParser,  "0.4em 0.5ex", NULL },
-    { ATTR_EQUALROWS,       booleanParser,            "false",       NULL },
-    { ATTR_EQUALCOLUMNS,    booleanParser,            "false",       NULL },
-    { ATTR_DISPLAYSTYLE,    booleanParser,            "false",       NULL },
-    { ATTR_SIDE,            tableSideParser,          "right",       NULL },
-    { ATTR_MINLABELSPACING, numberUnitParser,         "0.8em",       NULL },
-    { ATTR_WIDTH,           tableWidthParser,         "auto",        NULL },
-    { ATTR_NOTVALID,        NULL,                     NULL,          NULL }
-  };
-
-  const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
-  if (signature == NULL) signature = MathMLLinearContainerElement::GetAttributeSignature(id);
-
-  return signature;
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, Table, align);
+      REFINE_ATTRIBUTE(context, Table, rowalign);
+      REFINE_ATTRIBUTE(context, Table, columnalign);
+      REFINE_ATTRIBUTE(context, Table, groupalign);
+      REFINE_ATTRIBUTE(context, Table, alignmentscope);
+      REFINE_ATTRIBUTE(context, Table, columnwidth);
+      REFINE_ATTRIBUTE(context, Table, rowspacing);
+      REFINE_ATTRIBUTE(context, Table, columnspacing);
+      REFINE_ATTRIBUTE(context, Table, rowlines);
+      REFINE_ATTRIBUTE(context, Table, columnlines);
+      REFINE_ATTRIBUTE(context, Table, frame);
+      REFINE_ATTRIBUTE(context, Table, framespacing);
+      REFINE_ATTRIBUTE(context, Table, equalrows);
+      REFINE_ATTRIBUTE(context, Table, equalcolumns);
+      REFINE_ATTRIBUTE(context, Table, displaystyle);
+      REFINE_ATTRIBUTE(context, Table, side);
+      REFINE_ATTRIBUTE(context, Table, minlabelspacing);
+      REFINE_ATTRIBUTE(context, Table, width);
+      MathMLLinearContainerElement::refine(context);
+    }
 }
 
 MathMLTableElement::~MathMLTableElement()
@@ -382,38 +377,6 @@ MathMLTableElement::Inside(const scaled& x, const scaled& y)
 
   return MathMLLinearContainerElement::Inside(x, y);
 }
-
-#if 0
-// SetDirty: Tables redefine this method for optimization. In fact,
-// if the table has no lines it behaves just as a container, and
-// only the cells covered by "rect" are effectively rendered again,
-// not the whole table.
-void
-MathMLTableElement::SetDirty(const Rectangle* rect)
-{
-  bool hasLines = false;
-
-  for (unsigned i = 0; !hasLines && i < nRows; i++)
-    hasLines = row[i].lineType != TABLE_LINE_NONE;
-
-  for (unsigned j = 0; !hasLines && j < nColumns; j++)
-    hasLines = column[j].lineType != TABLE_LINE_NONE;
-
-  dirtyBackground =
-    (GetParent() && (GetParent()->Selected() != Selected())) ? 1 : 0;
-
-  if (IsDirty()) return;
-  if (rect != NULL && !GetRectangle().Overlaps(*rect)) return;
-
-  if (hasLines) {
-    dirty = 1;
-    SetDirtyChildren();
-  }
-
-  std::for_each(content.begin(), content.end(),
-		std::bind2nd(SetDirtyAdaptor(), rect));
-}
-#endif
 
 void
 MathMLTableElement::ReleaseGCs()

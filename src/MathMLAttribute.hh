@@ -28,26 +28,27 @@
 #include "Value.hh"
 #include "keyword.hh"
 #include "String.hh"
+#include "MathMLAttributeSignature.hh"
 
 class MathMLAttribute : public Object
 {
 protected:
-  MathMLAttribute(AttributeId, const String&);
+  MathMLAttribute(const class MathMLAttributeSignature&, const String&);
   virtual ~MathMLAttribute();
 
 public:
-  static SmartPtr<MathMLAttribute> create(AttributeId id, const String& value)
-  { return new MathMLAttribute(id, value); }
+  static SmartPtr<MathMLAttribute> create(const class MathMLAttributeSignature& sig, const String& value)
+  { return new MathMLAttribute(sig, value); }
 
-  const String getValue(void) const { return value; }
-  SmartPtr<Value> getParsedValue(const struct AttributeSignature* = 0) const;
+  const class MathMLAttributeSignature& getSignature(void) const { return signature; }
+  String getUnparsedValue(void) const { return unparsedValue; }
+  SmartPtr<Value> getValue(void) const;
   bool equal(const SmartPtr<MathMLAttribute>&) const;
-  AttributeId isA(void) const { return id; }
 
 private:
-  AttributeId id;
-  String value;
-  mutable SmartPtr<Value> parsedValue;
+  const class MathMLAttributeSignature& signature;
+  String unparsedValue;
+  mutable SmartPtr<Value> value;
 };
 
 #endif // MathMLAttribute_hh
