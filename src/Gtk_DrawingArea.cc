@@ -101,25 +101,6 @@ Gtk_DrawingArea::SetPixmap(GdkPixmap* pixmap)
 }
 
 void
-Gtk_DrawingArea::SetTop(const scaled& x, const scaled& y)
-{
-  x0 = x;
-  y0 = y;
-}
-
-void
-Gtk_DrawingArea::SetTopX(const scaled& x)
-{
-  x0 = x;
-}
-
-void
-Gtk_DrawingArea::SetTopY(const scaled& y)
-{
-  y0 = y;
-}
-
-void
 Gtk_DrawingArea::DrawLine(const GraphicsContext* gc,
 			  const scaled& x1, const scaled& y1,
 			  const scaled& x2, const scaled& y2) const

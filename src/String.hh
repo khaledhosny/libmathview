@@ -63,10 +63,6 @@ public:
   Char GetBiggestChar(void) const;
   Char GetBiggestChar(unsigned, unsigned) const;
 
-#ifdef DEBUG
-  static int GetCounter(void) { return counter; }
-#endif
-
   struct Hash : public std::unary_function< class String*, size_t >
   { size_t operator()(const class String*) const; };
 
@@ -75,10 +71,6 @@ public:
 
 private:
   void ToCAux(char*) const;
-
-#ifdef DEBUG
-  static int counter;
-#endif
 };
 
 typedef String* StringPtr;

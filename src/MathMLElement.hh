@@ -85,6 +85,11 @@ public:
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsInside(const scaled&, const scaled&) const;
   bool           HasLink(void) const;
+  bool           Exposed(const DrawingArea& area) const
+  { return area.Exposed(GetX(), 
+			GetY() - GetBoundingBox().height, 
+			GetBoundingBox().horizontalExtent(),
+			GetBoundingBox().verticalExtent()); }
   RGBValue     	 GetBackgroundColor(void) const { return background; }
   unsigned     	 GetDepth(void) const;
   virtual scaled GetLeftEdge(void) const;

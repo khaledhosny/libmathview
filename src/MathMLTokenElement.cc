@@ -760,7 +760,7 @@ MathMLTokenElement::SetContentPosition(const scaled& x0, const scaled& y)
 void
 MathMLTokenElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
 

@@ -49,7 +49,6 @@ public:
   virtual void Update(const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
   virtual void Update(void) const;
 
-  void SetTop(const scaled&, const scaled&);
   void MoveTo(const scaled&, const scaled&) const;
   void DrawLineTo(const GraphicsContext*, const scaled&, const scaled&) const;
   void DrawLineToDelta(const GraphicsContext*, const scaled&, const scaled&) const;
@@ -68,9 +67,17 @@ public:
   scaled GetXMargin(void) const { return mx; }
   scaled GetYMargin(void) const { return my; }
 
+  void   SetTop(const scaled& x, const scaled& y) { x0 = x; y0 = y; }
+  void   SetTopX(const scaled& x) { x0 = x; }
+  void   SetTopY(const scaled&) { y0 = y; }
   void   SetSize(const scaled&, const scaled&);
+  scaled GetTopX(void) const { return x0; }
+  scaled GetTopY(void) const { return y0; }
   scaled GetWidth(void) const { return width; }
   scaled GetHeight(void) const { return height; }
+  bool   Exposed(const scaled&, const scaled&, const scaled&, const scaled&) const;
+  //bool   Exposed(const scaled& x, const scaled& y, const scaled& w, const scaled& h) const
+  //{ return (x >= x0 || x + w <= x0 + width) && (y >= y0 || y + h <= y0 + height); }
 
   const GraphicsContextValues& GetDefaultGraphicsContextValues(void) const { return defaultValues; }
   RGBValue GetSelectionForeground(void) const { return selectionForeground; }
@@ -80,6 +87,8 @@ protected:
   mutable scaled x; // current x point for drawing lines
   mutable scaled y; // current y point for drawing lines
 
+  scaled x0; // x-coordinate of the top-left corner
+  scaled y0; // y-coordinate of the top-left corner
   scaled width;  // drawing area total width
   scaled height; // drawing area total height
 

@@ -49,6 +49,8 @@ public:
   virtual unsigned GetLogicalContentLength(void) const;
   virtual String*  GetRawContent(void) const;
 
+  static unsigned visited;
+
 private:
   DOM::GdomeString content;
   AreaRef area;

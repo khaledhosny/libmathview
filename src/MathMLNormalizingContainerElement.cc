@@ -114,7 +114,7 @@ MathMLNormalizingContainerElement::DoLayout(const class FormattingContext& ctxt)
 void
 MathMLNormalizingContainerElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       if (child) child->Render(area);

@@ -109,7 +109,7 @@ MathMLBinContainerElement::SetPosition(const scaled& x, const scaled& y)
 void
 MathMLBinContainerElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       if (child) child->Render(area);
@@ -130,29 +130,29 @@ MathMLBinContainerElement::Inside(const scaled& x, const scaled& y)
     return 0;
 }
 
+void
+MathMLBinContainerElement::SetDirty(const Rectangle* rect)
+{
+//   dirtyBackground =
+//     (GetParent()
+//      && ((GetParent()->IsSelected() != IsSelected())
+// 	 || (GetParent()->GetBackgroundColor() != GetBackgroundColor()))) ? 1 : 0;
+
+  //if (IsDirty() || HasDirtyChildren()) return;
+  if (!rect || GetRectangle().Overlaps(*rect))
+    {
+      SetFlag(FDirty);
+      //SetFlagUp(FDirtyP);
+      if (child) child->SetDirty(rect);
+    }
+}
+
 #if 0
 void
 MathMLBinContainerElement::SetDirtyLayout(bool children)
 {
   MathMLElement::SetDirtyLayout(children);
   if (children && child) child->SetDirtyLayout(children);
-}
-
-void
-MathMLBinContainerElement::SetDirty(const Rectangle* rect)
-{
-  dirtyBackground =
-    (GetParent()
-     && ((GetParent()->IsSelected() != IsSelected())
-	 || (GetParent()->GetBackgroundColor() != GetBackgroundColor()))) ? 1 : 0;
-
-  if (IsDirty() || HasDirtyChildren()) return;
-  //if (rect != NULL && !GetRectangle().Overlaps(*rect)) return;
-
-  //dirty = 1;
-  //SetDirtyChildren();
-
-  if (child) child->SetDirty(rect);
 }
 
 void

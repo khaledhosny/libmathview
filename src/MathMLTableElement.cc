@@ -270,7 +270,7 @@ MathMLTableElement::RenderTableBackground(const DrawingArea& area)
 void
 MathMLTableElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       MathMLLinearContainerElement::Render(area);
 

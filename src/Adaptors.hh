@@ -63,7 +63,6 @@ struct ResetFlagDownAdaptor
   { elem->ResetFlagDown(f); }
 };
 
-#if 0
 struct SetDirtyAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,const class Rectangle*,void>
 {
@@ -71,6 +70,7 @@ struct SetDirtyAdaptor
   { elem->SetDirty(rect); }
 };
 
+#if 0
 struct SetDirtyLayoutAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,bool,void>
 {

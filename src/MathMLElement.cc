@@ -306,7 +306,7 @@ MathMLElement::RenderBackground(const DrawingArea& area)
 void
 MathMLElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       ResetDirty();
@@ -519,10 +519,18 @@ MathMLElement::SetDirty(const Rectangle* rect)
 {
   if (true || !Dirty())
     {
+//       if (rect)
+// 	{
+// 	  printf("%s setdirty ", NameOfTagId(IsA()));
+// 	  GetRectangle().Dump();
+// 	  rect->Dump();
+// 	  printf(" overlap %d\n", GetRectangle().Overlaps(*rect));
+// 	}
+      
       if (!rect || GetRectangle().Overlaps(*rect))
 	{
-	  SetFlagDown(FDirty);
-	  SetFlagUp(FDirtyP);
+	  SetFlag(FDirty);
+	  //SetFlagUp(FDirtyP);
 	}
     }
 }

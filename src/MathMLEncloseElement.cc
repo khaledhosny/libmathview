@@ -166,7 +166,7 @@ MathMLEncloseElement::SetPosition(const scaled& x, const scaled& y)
 void
 MathMLEncloseElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       MathMLNormalizingContainerElement::Render(area);
 

@@ -48,9 +48,9 @@ public:
   virtual void ReleaseGCs(void);
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 
+  virtual void SetDirty(const Rectangle* = 0);
 #if 0
   virtual void SetDirtyLayout(bool = false);
-  virtual void SetDirty(const Rectangle* = NULL);
   virtual void SetSelected(void);
   virtual void ResetSelected(void);
 #endif

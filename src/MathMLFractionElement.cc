@@ -360,7 +360,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
 void
 MathMLFractionElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       if (fGC[Selected()] == NULL)
 	{

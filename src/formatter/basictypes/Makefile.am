@@ -23,6 +23,7 @@ noinst_HEADERS = \
   fixed.hh \
   scaled.hh \
   scaledAux.hh \
+  AbstractString.hh \
   Length.hh \
   LengthAux.hh \
   RGBColor.hh \

@@ -301,7 +301,7 @@ MathMLRadicalElement::ResetFlagDown(Flags f)
 void
 MathMLRadicalElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       if (fGC[Selected()] == NULL) {
 	GraphicsContextValues values;

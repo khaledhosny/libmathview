@@ -505,7 +505,7 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
 void
 MathMLMultiScriptsElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       assert(base);

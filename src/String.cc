@@ -34,23 +34,11 @@
 #include "String.hh"
 #include "Globals.hh"
 
-#ifdef DEBUG
-int String::counter = 0;
-#endif
-
 String::String()
-{
-#ifdef DEBUG
-  counter++;
-#endif
-}
+{ }
 
 String::~String()
-{
-#ifdef DEBUG
-  counter--;
-#endif
-}
+{ }
 
 void
 String::Dump() const

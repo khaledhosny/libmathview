@@ -33,6 +33,8 @@
 #include "ShaperManager.hh"
 #include "Gtk_RenderingContext.hh"
 
+unsigned MathMLStringNode::visited = 0;
+
 MathMLStringNode::MathMLStringNode(const DOM::GdomeString& c)
 {
   content = c;
@@ -40,7 +42,6 @@ MathMLStringNode::MathMLStringNode(const DOM::GdomeString& c)
 
 MathMLStringNode::~MathMLStringNode()
 {
-  delete content;
 }
 
 bool
@@ -77,7 +78,9 @@ MathMLStringNode::Render(const DrawingArea& a)
   rc.setDrawable(gtk_area.GetPixmap());
   
   assert(area);
-  area->render(rc, GetX(), GetY());
+  area->render(rc, GetX() - a.GetTopX(), GetY() - a.GetTopY());
+
+  visited++;
 }
 
 bool

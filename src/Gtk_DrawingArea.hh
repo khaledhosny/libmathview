@@ -46,20 +46,10 @@ public:
 
   virtual void Realize(void);
 
-  scaled GetTopX(void) const { return x0; }
-  scaled GetTopY(void) const { return y0; }
-
-  void SetTop(const scaled&, const scaled&);
-  void SetTopX(const scaled&);
-  void SetTopY(const scaled&);
   void SetPixmap(GdkPixmap*);
-
   GdkPixmap* GetPixmap(void) const { return gdk_pixmap; }
 
 protected:
-  scaled x0; // x-coordinate of the top-left corner
-  scaled y0; // y-coordinate of the top-left corner
-
   GtkWidget* gtk_widget;
   GdkPixmap* gdk_pixmap;
 };

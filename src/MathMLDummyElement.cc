@@ -70,7 +70,7 @@ MathMLDummyElement::DoLayout(const FormattingContext& ctxt)
 void
 MathMLDummyElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       if (fGC[Selected()] == NULL)

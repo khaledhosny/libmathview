@@ -152,7 +152,6 @@ allocString(const DOM::GdomeString& str)
     if (s4[i] > big) big = s4[i];
 
   String* res = NULL;
-
   if (isPlain(big)) {
     DOM::UTF8String s = str;
     res = new StringU<Char8>(s.data(), s.length());

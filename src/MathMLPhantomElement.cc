@@ -94,7 +94,7 @@ MathMLPhantomElement::SetPosition(const scaled& x0, const scaled& y0)
 void
 MathMLPhantomElement::Render(const DrawingArea&)
 {
-  if (Dirty()) ResetDirty();
+  ResetDirty();
 }
 
 SmartPtr<MathMLOperatorElement>

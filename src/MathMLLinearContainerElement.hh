@@ -64,6 +64,7 @@ public:
   // memory-management issues
   const std::vector< SmartPtr<MathMLElement> >& GetContent(void) const { return content; }
 
+  virtual void SetDirty(const Rectangle* = 0);
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
 

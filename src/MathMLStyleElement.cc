@@ -317,7 +317,7 @@ MathMLStyleElement::SetPosition(const scaled& x0, const scaled& y0)
 void
 MathMLStyleElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
 #if 0 
       if (IsDirty()) {

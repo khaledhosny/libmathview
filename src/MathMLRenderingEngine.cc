@@ -81,7 +81,7 @@ MathMLRenderingEngine::Init(class DrawingArea* a, class FontManager* fm,
       document->ReleaseGCs();
       document->SetDirtyAttributeD();
       document->SetDirtyLayout();
-      document->SetDirty();
+      //document->SetDirty();
     }
 
   area = a;
@@ -230,8 +230,11 @@ MathMLRenderingEngine::Layout() const
 void
 MathMLRenderingEngine::SetDirty(const Rectangle* rect) const
 {
-  if (document) document->SetDirty(rect);
+  //if (document) document->SetDirty(rect);
 }
+
+#include "MathMLStringNode.hh"
+#include "scaledConv.hh"
 
 void
 MathMLRenderingEngine::Render(const Rectangle* rect) const
@@ -239,15 +242,16 @@ MathMLRenderingEngine::Render(const Rectangle* rect) const
   assert(area);
 
   Layout();
-  SetDirty(rect);
+  //SetDirty(rect);
 
-  if (document && document->Dirty())
+  if (document)
     {
       Clock perf;
       perf.Start();
+      MathMLStringNode::visited = 0;
       document->Render(*area);
       perf.Stop();
-      Globals::logger(LOG_INFO, "rendering time: %dms", perf());
+      Globals::logger(LOG_INFO, "rendering time: %dms (visited %d)", perf(), MathMLStringNode::visited);
     }
 
   if (rect) area->Update(*rect);
@@ -299,7 +303,7 @@ MathMLRenderingEngine::SetDefaultFontSize(unsigned size)
     {
       document->SetDirtyAttributeD();
       document->SetDirtyLayout();
-      document->SetDirty();
+      //document->SetDirty();
     }
 }
 

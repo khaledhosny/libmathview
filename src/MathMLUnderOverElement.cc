@@ -497,7 +497,7 @@ MathMLUnderOverElement::SetPosition(const scaled& x0, const scaled& y0)
 void
 MathMLUnderOverElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       assert(base);

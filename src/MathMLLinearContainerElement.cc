@@ -114,7 +114,7 @@ MathMLLinearContainerElement::DoLayout(const FormattingContext& ctxt)
 void
 MathMLLinearContainerElement::Render(const DrawingArea& area)
 {
-  if (Dirty())
+  if (Exposed(area))
     {
       RenderBackground(area);
       for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(RenderAdaptor(), &area));
@@ -256,6 +256,16 @@ MathMLLinearContainerElement::GetRightEdge() const
     }
 
   return edge;
+}
+
+void
+MathMLLinearContainerElement::SetDirty(const Rectangle* rect)
+{
+  if (!rect || GetRectangle().Overlaps(*rect))
+    {
+      SetFlag(FDirty);
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
+    }
 }
 
 void
