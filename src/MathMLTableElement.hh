@@ -166,6 +166,7 @@ protected:
   void 	       SetupAlignMarks(void);
   void 	       SetupTableAttributes(class RenderingEnvironment*);
   void 	       AlignTable(scaled, BoundingBox&);
+  void         ReleaseAuxStructures(void);
 
   // table layout
   void         DoHorizontalLayout(LayoutId, BreakId, scaled);

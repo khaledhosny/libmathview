@@ -20,9 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 #include <stdio.h>
@@ -58,43 +56,50 @@ ValueSequence::~ValueSequence()
   Init();
 }
 
-void ValueSequence::Init()
+void
+ValueSequence::Init()
 {
   size = 0;
   value = NULL;
 }
 
-void ValueSequence::AddValue(const Value* v)
+void
+ValueSequence::AddValue(const Value* v)
 {
   SetSize(size + 1);
   value[size - 1] = v;
 }
 
-const Value* ValueSequence::GetFirstValue() const
+const Value*
+ValueSequence::GetFirstValue() const
 {
   assert(size > 0);
   return value[0];
 }
 
-const Value* ValueSequence::GetLastValue() const
+const Value*
+ValueSequence::GetLastValue() const
 {
   assert(size > 0);
   return value[size - 1];
 }
 
-const Value* ValueSequence::GetValue(unsigned i) const
+const Value*
+ValueSequence::GetValue(unsigned i) const
 {
   assert(i < size);
   return value[i];
 }
 
-const Value* ValueSequence::GetLastValue(unsigned i) const
+const Value*
+ValueSequence::GetLastValue(unsigned i) const
 {
   assert(size > 0);
   return (i < size) ? value[i] : value[size - 1];
 }
 
-void ValueSequence::SetSize(unsigned newSize)
+void
+ValueSequence::SetSize(unsigned newSize)
 {
   if (newSize == 0) {
     if (value != NULL) delete [] value;
@@ -113,7 +118,8 @@ void ValueSequence::SetSize(unsigned newSize)
   size = newSize;
 }
 
-void ValueSequence::Dump() const
+void
+ValueSequence::Dump() const
 {
   for (unsigned i = 0; i < size; i++) {
     putchar(' ');

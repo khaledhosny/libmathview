@@ -23,10 +23,6 @@
 #ifndef ValueSequence_hh
 #define ValueSequence_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Value.hh"
 
 class ValueSequence {

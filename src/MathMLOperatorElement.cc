@@ -141,6 +141,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
   value = GetAttributeValue(ATTR_FORM, env, false);
   if (value != NULL) form = ToFormId(value);
   else form = InferOperatorForm();
+  delete value;
 
   const MathMLAttributeList* prefix  = NULL;
   const MathMLAttributeList* infix   = NULL;
@@ -160,10 +161,12 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
   value = GetOperatorAttributeValue(ATTR_FENCE, env);
   assert(value != NULL && value->IsBoolean());
   if (!ForcedFence()) fence = value->ToBoolean() ? 1 : 0;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_SEPARATOR, env);
   assert(value != NULL && value->IsBoolean());
   if (!ForcedSeparator()) separator = value->ToBoolean() ? 1 : 0;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_LSPACE, env);
   assert(value != NULL);
@@ -171,6 +174,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
   assert(resValue != NULL && resValue->IsNumberUnit());
   lSpace = env->ToScaledPoints(resValue->ToNumberUnit());
   delete resValue;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_RSPACE, env);
   assert(value != NULL);
@@ -178,14 +182,17 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
   assert(resValue != NULL && resValue->IsNumberUnit());
   rSpace = env->ToScaledPoints(resValue->ToNumberUnit());
   delete resValue;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_STRETCHY, env);
   assert(value != NULL && value->IsBoolean());
   stretchy = value->ToBoolean() ? 1 : 0;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_SYMMETRIC, env);
   assert(value != NULL && value->IsBoolean());
   if (!ForcedSymmetric()) symmetric = value->ToBoolean() ? 1 : 0;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_MAXSIZE, env);
   assert(value != NULL);
@@ -194,22 +201,27 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
     infiniteMaxSize = 0;
     ParseLimitValue(value, env, maxMultiplier, maxSize);
   }
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_MINSIZE, env);
   assert(value != NULL);
   ParseLimitValue(value, env, minMultiplier, minSize);
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_MOVABLELIMITS, env);
   assert(value != NULL && value->IsBoolean());
   movableLimits = value->ToBoolean() ? 1 : 0;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_ACCENT, env);
   assert(value != NULL && value->IsBoolean());
   accent = value->ToBoolean() ? 1 : 0;
+  delete value;
 
   value = GetOperatorAttributeValue(ATTR_LARGEOP, env);
   assert(value != NULL && value->IsBoolean());
   bool largeOp = value->ToBoolean();
+  delete value;
 
   MathMLTokenElement::Setup(env);
 

@@ -96,6 +96,7 @@ extern "C" {
     void (*clicked)           (GtkMathView*, mDOMNodeRef);
     void (*jump)              (GtkMathView*, mDOMNodeRef);
     void (*selection_changed) (GtkMathView*, mDOMNodeRef);
+    void (*element_changed)   (GtkMathView*, mDOMNodeRef);
   };
 
   GtkType    	 gtk_math_view_get_type(void);

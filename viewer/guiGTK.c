@@ -40,11 +40,15 @@ static GtkMenuItem* kerning_item;
 static GtkMenuItem* anti_aliasing_item;
 static GtkMenuItem* font_size_item;
 
+static gchar* doc_name = NULL;
+
 static guint statusbar_context;
 
 static void create_widget_set(void);
 static GtkWidget* get_main_menu(void);
 static void file_open(GtkWidget*, gpointer);
+static void file_re_open(GtkWidget*, gpointer);
+static void file_close(GtkWidget*, gpointer);
 static void options_font_size(GtkWidget*, guint);
 static void options_font_manager(GtkWidget*, guint);
 static void options_verbosity(GtkWidget*, guint);
@@ -56,7 +60,9 @@ static void export_to_ps(GtkWidget*);
 static GtkItemFactoryEntry menu_items[] = {
   { "/_File",                         NULL,         NULL,          0, "<Branch>" },
   { "/File/_Open...",                 "<control>O", file_open,     0, NULL },
+  { "/File/_Reopen",                  NULL,         file_re_open,  0, NULL },
   { "/File/_Export to PostScript...", NULL,         export_to_ps,  0, NULL },
+  { "/File/_Close",                   "<control>W", file_close,    0, NULL },
   { "/File/sep1",                     NULL,         NULL,          0, "<Separator>" },
   { "/File/_Quit",                    "<control>Q", gtk_main_quit, 0, NULL },
 
@@ -155,6 +161,11 @@ GUI_load_document(const char* name)
     return -1;
   }
 
+  if (name != doc_name) {
+    if (doc_name != NULL) g_free(doc_name);
+    doc_name = g_strdup(name);
+  }
+
   gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
   if (strlen(name) > 40) name += strlen(name) - 40;
   gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, name);
@@ -173,6 +184,12 @@ GUI_unload_document()
   math_view = GTK_MATH_VIEW(main_area);
 
   gtk_math_view_unload(math_view);
+
+  if (doc_name != NULL) g_free(doc_name);
+  doc_name = NULL;
+
+  gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
+  gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, "");
 }
 
 void
@@ -187,6 +204,20 @@ store_filename(GtkFileSelection* selector, GtkWidget* user_data)
   gchar* selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
   if (selected_filename != NULL)
     GUI_load_document(selected_filename);
+}
+
+static void
+file_close(GtkWidget* widget, gpointer data)
+{
+  GUI_unload_document();
+}
+
+static void
+file_re_open(GtkWidget* widget, gpointer data)
+{
+  if (doc_name != NULL) {
+    GUI_load_document(doc_name);
+  }
 }
 
 static void
@@ -363,6 +394,14 @@ export_to_ps(GtkWidget* widget)
 }
 
 static void
+element_changed(GtkMathView* math_view, mDOMNodeRef node)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  printf("element changed: %p\n", node);
+}
+
+static void
 selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
@@ -404,6 +443,10 @@ create_widget_set()
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "selection_changed", GTK_SIGNAL_FUNC (selection_changed),
+			     (gpointer) main_area);
+
+  gtk_signal_connect_object (GTK_OBJECT (main_area),
+			     "element_changed", GTK_SIGNAL_FUNC (element_changed),
 			     (gpointer) main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area), "jump", GTK_SIGNAL_FUNC(jump), NULL);

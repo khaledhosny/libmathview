@@ -68,14 +68,17 @@ MathMLSpaceElement::Setup(RenderingEnvironment* env)
   value = GetAttributeValue(ATTR_WIDTH);
   assert(value != NULL && value->IsNumberUnit());
   width = env->ToScaledPoints(value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_HEIGHT);
   assert(value != NULL && value->IsNumberUnit());
   height = env->ToScaledPoints(value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_DEPTH);
   assert(value != NULL && value->IsNumberUnit());
   depth = env->ToScaledPoints(value->ToNumberUnit());
+  delete value;
 
   if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH)) {
     value = GetAttributeValue(ATTR_LINEBREAK);
@@ -103,6 +106,7 @@ MathMLSpaceElement::Setup(RenderingEnvironment* env)
       assert(IMPOSSIBLE);
       break;
     }
+    delete value;
   }
 }
 

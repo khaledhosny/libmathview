@@ -180,6 +180,7 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
       env->SetFontSize(value->ToNumberUnit());
     }
   }
+  delete value;
   
   value = GetAttributeValue(ATTR_MATHVARIANT, NULL, false);
   if (value != NULL) {
@@ -218,18 +219,22 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
 
     if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
       MathEngine::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+
+    delete value;
   } else {
     value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
     if (value != NULL) {
       env->SetFontFamily(value->ToString());
     } else
       env->SetFontFamily("serif");
+    delete value;
 
     value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
     if (value != NULL) {
       env->SetFontWeight(ToFontWeightId(value));
     } else
       env->SetFontWeight(FONT_WEIGHT_NORMAL);
+    delete value;
 
     value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
     if (value != NULL) {
@@ -241,6 +246,7 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
 	env->SetFontMode(FONT_MODE_TEXT);
       }
     }
+    delete value;
   }
 
   value = GetAttributeValue(ATTR_MATHCOLOR, NULL, false);
@@ -256,10 +262,12 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
     } else
       if (HasLink()) env->SetColor(MathEngine::configuration.GetLinkForeground());
   }
+  delete value;
 
   value = GetAttributeValue(ATTR_MATHBACKGROUND, NULL, false);
   if (value != NULL) env->SetBackgroundColor(ToRGB(value));
   else if (HasLink()) env->SetBackgroundColor(MathEngine::configuration.GetLinkBackground());
+  delete value;
 
   color      = env->GetColor();
   background = env->GetBackgroundColor();

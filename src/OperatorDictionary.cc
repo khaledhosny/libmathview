@@ -55,15 +55,7 @@ OperatorDictionary::OperatorDictionary()
 
 OperatorDictionary::~OperatorDictionary()
 {
-  while (defaults.GetSize() > 0) {
-    const MathMLAttributeList* aList = defaults.RemoveFirst();
-    delete aList;
-  }
-
-  while (items.GetSize() > 0) {
-    const OperatorDictionaryItem* item = items.RemoveFirst();
-    delete item;
-  }
+  Unload();
 }
 
 bool
@@ -130,6 +122,20 @@ OperatorDictionary::Load(const char* fileName)
   mdom_doc_free(doc);
 
   return true;
+}
+
+void
+OperatorDictionary::Unload()
+{
+  while (defaults.GetSize() > 0) {
+    const MathMLAttributeList* aList = defaults.RemoveFirst();
+    delete aList;
+  }
+
+  while (items.GetSize() > 0) {
+    const OperatorDictionaryItem* item = items.RemoveFirst();
+    delete item;
+  }
 }
 
 const MathMLAttributeList*

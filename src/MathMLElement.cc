@@ -35,6 +35,10 @@
 #include "MathMLAttributeList.hh"
 #include "RenderingEnvironment.hh"
 
+#ifdef DEBUG
+int MathMLElement::counter = 0;
+#endif // DEBUG
+
 // MathMLElement: this is the base class for every MathML presentation element.
 // It implements the basic skeleton of every such element, moreover it handles
 // the attributes and provides some facility functions to access and parse
@@ -51,16 +55,25 @@ MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
 
   fGC[0] = fGC[1] = NULL;
   bGC[0] = bGC[1] = NULL;
+
+#ifdef DEBUG
+  counter++;
+#endif //DEBUG
 }
 
 MathMLElement::~MathMLElement()
 {
+  //MathEngine::logger(LOG_DEBUG, "destroying `%s' (DOM %p)", NameOfTagId(IsA()), node);
   if (node != NULL) mdom_node_set_user_data(node, NULL);
 
   delete layout;
   delete shape;
 
   ReleaseGCs();
+
+#ifdef DEBUG
+  counter--;
+#endif // DEBUG
 }
 
 // GetAttributeSignatureAux: this is an auxiliary function used to retrieve
@@ -175,6 +188,9 @@ MathMLElement::GetAttributeValue(AttributeId id,
       MathEngine::logger(LOG_WARNING, "in element `%s' parsing error in attribute `%s'",
 			 NameOfTagId(IsA()), NameOfAttributeId(id));
     }
+
+    delete sValue;
+    sValue = NULL;
   } else if (env != NULL) {
     const MathMLAttribute* attr = env->GetAttribute(id);    
     if (attr != NULL) value = attr->GetParsedValue(aSignature);

@@ -23,10 +23,6 @@
 #ifndef Gtk_GraphicsContext_hh
 #define Gtk_GraphicsContext_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <gdk/gdk.h>
 
 #include "GraphicsContext.hh"
@@ -38,8 +34,16 @@ public:
 
   GdkGC* GetNativeGraphicsContext(void) const { return gdk_gc; }
 
+#ifdef DEBUG
+  static int GetCounter(void) { return counter; }
+#endif // DEBUG
+
 private:
   GdkGC* gdk_gc;
+
+#ifdef DEBUG
+  static int counter;
+#endif // DEBUG
 };
 
 #define TO_GTK_GRAPHICS_CONTEXT(gc) (dynamic_cast<const Gtk_GraphicsContext*>(gc))

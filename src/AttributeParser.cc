@@ -28,7 +28,8 @@
 #include "ValueSequence.hh"
 #include "ValueConversion.hh"
 
-const Value* keywordParser(KeywordId id, StringTokenizer& st)
+const Value*
+keywordParser(KeywordId id, StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
   const Value* res = NULL;
@@ -42,7 +43,8 @@ const Value* keywordParser(KeywordId id, StringTokenizer& st)
   return res;
 }
 
-const Value* integerParser(StringTokenizer& st)
+const Value*
+integerParser(StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
   const Value* res = NULL;
@@ -57,7 +59,8 @@ const Value* integerParser(StringTokenizer& st)
   return res;
 }
 
-const Value* unsignedIntegerParser(StringTokenizer& st)
+const Value*
+unsignedIntegerParser(StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
   const Value* res = NULL;
@@ -72,9 +75,8 @@ const Value* unsignedIntegerParser(StringTokenizer& st)
   return res;
 }
 
-const Value* sequenceParser(AttributeParser parser[],
-			    unsigned n,
-			    StringTokenizer& st)
+const Value*
+sequenceParser(AttributeParser parser[], unsigned n, StringTokenizer& st)
 {
   assert(parser != NULL);
   assert(n > 1);
@@ -94,9 +96,8 @@ const Value* sequenceParser(AttributeParser parser[],
   return res;
 }
 
-const Value* alternativeParser(AttributeParser parser[],
-			       unsigned n,
-			       StringTokenizer& st)
+const Value*
+alternativeParser(AttributeParser parser[], unsigned n, StringTokenizer& st)
 {
   assert(parser != NULL);
 
@@ -111,9 +112,8 @@ const Value* alternativeParser(AttributeParser parser[],
   return res;
 }
 
-const Value* alternativeParser(KeywordId id[],
-			       unsigned n,
-			       StringTokenizer& st)
+const Value*
+alternativeParser(KeywordId id[], unsigned n, StringTokenizer& st)
 {
   assert(id != NULL);
 
@@ -128,11 +128,9 @@ const Value* alternativeParser(KeywordId id[],
   return res;
 }
 
-const Value* listParser(AttributeParser start,
-			AttributeParser parser,
-			AttributeParser end,
-			StringTokenizer& st,
-			bool possiblyEmpty)
+const Value*
+listParser(AttributeParser start, AttributeParser parser, AttributeParser end,
+	   StringTokenizer& st, bool possiblyEmpty)
 {
   assert(parser != NULL);
 
@@ -177,7 +175,8 @@ const Value* listParser(AttributeParser start,
   return res;
 }
 
-const Value* optionParser(AttributeParser parser, StringTokenizer& st)
+const Value*
+optionParser(AttributeParser parser, StringTokenizer& st)
 {
   assert(parser != NULL);
 
@@ -187,7 +186,8 @@ const Value* optionParser(AttributeParser parser, StringTokenizer& st)
   return res;
 }
 
-const Value* numberParser(StringTokenizer& st)
+const Value*
+numberParser(StringTokenizer& st)
 {
   float n;
   unsigned mark = st.GetMark();
@@ -202,7 +202,8 @@ const Value* numberParser(StringTokenizer& st)
   return res;
 }
 
-const Value* unsignedNumberParser(StringTokenizer& st)
+const Value*
+unsignedNumberParser(StringTokenizer& st)
 {
   float n;
   unsigned mark = st.GetMark();
@@ -217,19 +218,22 @@ const Value* unsignedNumberParser(StringTokenizer& st)
   return res;
 }
 
-const Value* unitParser(StringTokenizer& st)
+const Value*
+unitParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_EM, KW_EX, KW_PT, KW_PC, KW_PX, KW_IN, KW_CM, KW_MM };
 
   return alternativeParser(id, 8, st);
 }
 
-const Value* percentageParser(StringTokenizer& st)
+const Value*
+percentageParser(StringTokenizer& st)
 {
   return keywordParser(KW_PERCENTAGE, st);
 }
 
-const Value* unitPercentageParser(StringTokenizer& st)
+const Value*
+unitPercentageParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     unitParser,
@@ -239,12 +243,14 @@ const Value* unitPercentageParser(StringTokenizer& st)
   return alternativeParser(parser, 2, st);
 }
 
-const Value* unitOptionParser(StringTokenizer& st)
+const Value*
+unitOptionParser(StringTokenizer& st)
 {
   return optionParser(unitPercentageParser, st);
 }
 
-const Value* numberUnitParser(StringTokenizer& st)
+const Value*
+numberUnitParser(StringTokenizer& st)
 {
   float n;
   unsigned mark = st.GetMark();
@@ -267,42 +273,49 @@ const Value* numberUnitParser(StringTokenizer& st)
   return res;
 }
 
-const Value* numberUnitOptionParser(StringTokenizer& st)
+const Value*
+numberUnitOptionParser(StringTokenizer& st)
 {
   AttributeParser parser[] = { numberParser, unitOptionParser };
 
   return sequenceParser(parser, 2, st);
 }
 
-const Value* numberUnitListParser(StringTokenizer& st)
+const Value*
+numberUnitListParser(StringTokenizer& st)
 {
   return listParser(NULL, numberUnitParser, NULL, st);
 }
 
-const Value* booleanParser(StringTokenizer& st)
+const Value*
+booleanParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_TRUE, KW_FALSE };
   return alternativeParser(id, 2, st);
 }
 
-const Value* booleanListParser(StringTokenizer& st)
+const Value*
+booleanListParser(StringTokenizer& st)
 {
   return listParser(NULL, booleanParser, NULL, st);
 }
 
-const Value* fontWeightParser(StringTokenizer& st)
+const Value*
+fontWeightParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_NORMAL, KW_BOLD };
   return alternativeParser(id, 2, st);
 }
 
-const Value* fontStyleParser(StringTokenizer& st)
+const Value*
+fontStyleParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_NORMAL, KW_ITALIC };
   return alternativeParser(id, 2, st);
 }
 
-const Value* stringParser(StringTokenizer& st)
+const Value*
+stringParser(StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
 
@@ -316,7 +329,8 @@ const Value* stringParser(StringTokenizer& st)
   return NULL;
 }
 
-const Value* colorParser(StringTokenizer& st)
+const Value*
+colorParser(StringTokenizer& st)
 {
   KeywordId id[] = {
     KW_BLACK, KW_SILVER, KW_GRAY, KW_WHITE, KW_MAROON, KW_RED, KW_PURPLE,
@@ -349,7 +363,8 @@ const Value* colorParser(StringTokenizer& st)
   return NULL;
 }
 
-const Value* backgroundParser(StringTokenizer& st)
+const Value*
+backgroundParser(StringTokenizer& st)
 {
   const Value* res = keywordParser(KW_TRANSPARENT, st);
   if (res == NULL) res = colorParser(st);
@@ -357,19 +372,22 @@ const Value* backgroundParser(StringTokenizer& st)
   return res;
 }
 
-const Value* alignParser(StringTokenizer& st)
+const Value*
+alignParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_TOP, KW_BOTTOM, KW_CENTER, KW_BASELINE, KW_AXIS };
 
   return alternativeParser(id, 5, st);
 }
 
-const Value* integerOptionParser(StringTokenizer& st)
+const Value*
+integerOptionParser(StringTokenizer& st)
 {
   return optionParser(integerParser, st);
 }
 
-const Value* tableAlignParser(StringTokenizer& st)
+const Value*
+tableAlignParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     alignParser,
@@ -379,64 +397,72 @@ const Value* tableAlignParser(StringTokenizer& st)
   return sequenceParser(parser, 2, st);
 }
 
-const Value* rowAlignParser(StringTokenizer& st)
+const Value*
+rowAlignParser(StringTokenizer& st)
 {
   return alignParser(st);
 }
 
-const Value* rowAlignListParser(StringTokenizer& st)
+const Value*
+rowAlignListParser(StringTokenizer& st)
 {
   return listParser(NULL, alignParser, NULL, st);
 }
 
-const Value* columnAlignParser(StringTokenizer& st)
+const Value*
+columnAlignParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_CENTER, KW_RIGHT };
 
   return alternativeParser(id, 3, st);
 }
 
-const Value* columnAlignListParser(StringTokenizer& st)
+const Value*
+columnAlignListParser(StringTokenizer& st)
 {
   return listParser(NULL, columnAlignParser, NULL, st);
 }
 
-const Value* groupAlignParser(StringTokenizer& st)
+const Value*
+groupAlignParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_CENTER, KW_RIGHT, KW_DECIMALPOINT };
 
   return alternativeParser(id, 4, st);
 }
 
-const Value* groupAlignListParser(StringTokenizer& st)
+const Value*
+groupAlignListParser(StringTokenizer& st)
 {
   return listParser(NULL, groupAlignParser, NULL, st);
 }
 
-const Value* leftBraceParser(StringTokenizer& st)
+const Value*
+leftBraceParser(StringTokenizer& st)
 {
   return keywordParser(KW_LBRACE, st);
 }
 
-const Value* rightBraceParser(StringTokenizer& st)
+const Value*
+rightBraceParser(StringTokenizer& st)
 {
   return keywordParser(KW_RBRACE, st);
 }
 
-const Value* bracedGroupAlignListParser(StringTokenizer& st)
+const Value*
+bracedGroupAlignListParser(StringTokenizer& st)
 {
-  return listParser(leftBraceParser,
-		    groupAlignParser,
-		    rightBraceParser,
-		    st);
+  return listParser(leftBraceParser, groupAlignParser, rightBraceParser, st);
 }
 
-const Value* groupAlignListListParser(StringTokenizer& st)
+const Value*
+groupAlignListListParser(StringTokenizer& st)
 {
   return listParser(NULL, bracedGroupAlignListParser, NULL, st);
 }
 
-const Value* namedSpaceParser(StringTokenizer& st)
+const Value*
+namedSpaceParser(StringTokenizer& st)
 {
   KeywordId id[] = {
     KW_VERYVERYTHINMATHSPACE,
@@ -451,7 +477,8 @@ const Value* namedSpaceParser(StringTokenizer& st)
   return alternativeParser(id, 7, st);
 }
 
-const Value* spaceParser(StringTokenizer& st)
+const Value*
+spaceParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     namedSpaceParser,
@@ -461,12 +488,14 @@ const Value* spaceParser(StringTokenizer& st)
   return alternativeParser(parser, 2, st);
 }
 
-const Value* spaceListParser(StringTokenizer& st)
+const Value*
+spaceListParser(StringTokenizer& st)
 {
   return listParser(NULL, spaceParser, NULL, st);
 }
 
-const Value* columnWidthParser(StringTokenizer& st)
+const Value*
+columnWidthParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_AUTO, KW_FIT };
 
@@ -476,24 +505,28 @@ const Value* columnWidthParser(StringTokenizer& st)
   return value;
 }
 
-const Value* columnWidthListParser(StringTokenizer& st)
+const Value*
+columnWidthListParser(StringTokenizer& st)
 {
   return listParser(NULL, columnWidthParser, NULL, st);
 }
 
-const Value* lineTypeParser(StringTokenizer& st)
+const Value*
+lineTypeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_NONE, KW_SOLID, KW_DASHED };
 
   return alternativeParser(id, 3, st);
 }
 
-const Value* lineTypeListParser(StringTokenizer& st)
+const Value*
+lineTypeListParser(StringTokenizer& st)
 {
   return listParser(NULL, lineTypeParser, NULL, st);
 }
 
-const Value* tableFrameSpacingParser(StringTokenizer& st)
+const Value*
+tableFrameSpacingParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     spaceParser,
@@ -503,7 +536,8 @@ const Value* tableFrameSpacingParser(StringTokenizer& st)
   return sequenceParser(parser, 2, st);
 }
 
-const Value* tableWidthParser(StringTokenizer& st)
+const Value*
+tableWidthParser(StringTokenizer& st)
 {
   const Value* res = keywordParser(KW_AUTO, st);
 
@@ -512,26 +546,30 @@ const Value* tableWidthParser(StringTokenizer& st)
   return numberUnitParser(st);
 }
 
-const Value* tableSideParser(StringTokenizer& st)
+const Value*
+tableSideParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_RIGHT, KW_LEFTOVERLAP, KW_RIGHTOVERLAP };
 
   return alternativeParser(id, 4, st);
 }
 
-const Value* plusMinusParser(StringTokenizer& st)
+const Value*
+plusMinusParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_PLUS, KW_MINUS };
 
   return alternativeParser(id, 2, st);
 }
 
-const Value* plusMinusOptionParser(StringTokenizer& st)
+const Value*
+plusMinusOptionParser(StringTokenizer& st)
 {
   return optionParser(plusMinusParser, st);
 }
   
-const Value* scriptLevelParser(StringTokenizer& st)
+const Value*
+scriptLevelParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     plusMinusOptionParser,
@@ -541,14 +579,16 @@ const Value* scriptLevelParser(StringTokenizer& st)
   return sequenceParser(parser, 2, st);
 }
 
-const Value* operatorFormParser(StringTokenizer& st)
+const Value*
+operatorFormParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_PREFIX, KW_INFIX, KW_POSTFIX };
 
   return alternativeParser(id, 3, st);
 }
 
-const Value* operatorMinSizeParser(StringTokenizer& st)
+const Value*
+operatorMinSizeParser(StringTokenizer& st)
 {
   const Value* res = namedSpaceParser(st);
   if (res != NULL) return res;
@@ -561,7 +601,8 @@ const Value* operatorMinSizeParser(StringTokenizer& st)
   return sequenceParser(parser, 2, st);
 }
 
-const Value* operatorMaxSizeParser(StringTokenizer& st)
+const Value*
+operatorMaxSizeParser(StringTokenizer& st)
 {
   const Value* res = keywordParser(KW_INFINITY, st);
   if (res != NULL) return res;
@@ -569,13 +610,15 @@ const Value* operatorMaxSizeParser(StringTokenizer& st)
   return operatorMinSizeParser(st);
 }
 
-const Value* fenceParser(StringTokenizer& st)
+const Value*
+fenceParser(StringTokenizer& st)
 {
   const Value* value = new Value(st.GetString().Clone());
   return value;
 }
 
-const Value* separatorsParser(StringTokenizer& st)
+const Value*
+separatorsParser(StringTokenizer& st)
 {
   String* sep = st.GetString().Clone();
   sep->DeleteSpaces();
@@ -591,12 +634,14 @@ const Value* separatorsParser(StringTokenizer& st)
   return value;
 }
 
-const Value* fracAlignParser(StringTokenizer& st)
+const Value*
+fracAlignParser(StringTokenizer& st)
 {
   return columnAlignParser(st);
 }
 
-const Value* lineThicknessParser(StringTokenizer& st)
+const Value*
+lineThicknessParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_THIN, KW_MEDIUM, KW_THICK };
 
@@ -606,19 +651,22 @@ const Value* lineThicknessParser(StringTokenizer& st)
   return numberUnitOptionParser(st);
 }
 
-const Value* pseudoUnitParser(StringTokenizer& st)
+const Value*
+pseudoUnitParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_WIDTH, KW_LSPACE, KW_HEIGHT, KW_DEPTH };
 
   return alternativeParser(id, 4, st);
 }
 
-const Value* pseudoUnitOptionParser(StringTokenizer& st)
+const Value*
+pseudoUnitOptionParser(StringTokenizer& st)
 {
   return optionParser(pseudoUnitParser, st);
 }
 
-const Value* percentagePseudoUnitParser(StringTokenizer& st)
+const Value*
+percentagePseudoUnitParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     percentageParser,
@@ -628,7 +676,8 @@ const Value* percentagePseudoUnitParser(StringTokenizer& st)
   return sequenceParser(parser, 2, st);
 }
 
-const Value* dimensionParser(StringTokenizer& st)
+const Value*
+dimensionParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     percentagePseudoUnitParser,
@@ -639,7 +688,8 @@ const Value* dimensionParser(StringTokenizer& st)
   return alternativeParser(parser, 3, st);
 }
 
-const Value* paddedWidthDimensionParser(StringTokenizer& st)
+const Value*
+paddedWidthDimensionParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     dimensionParser,
@@ -649,7 +699,8 @@ const Value* paddedWidthDimensionParser(StringTokenizer& st)
   return alternativeParser(parser, 2, st);
 }
 
-const Value* paddedWidthParser(StringTokenizer& st)
+const Value*
+paddedWidthParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     plusMinusOptionParser,
@@ -660,7 +711,8 @@ const Value* paddedWidthParser(StringTokenizer& st)
   return sequenceParser(parser, 3, st);
 }
 
-const Value* paddedValueParser(StringTokenizer& st)
+const Value*
+paddedValueParser(StringTokenizer& st)
 {
   AttributeParser parser[] = {
     plusMinusOptionParser,
@@ -671,21 +723,24 @@ const Value* paddedValueParser(StringTokenizer& st)
   return sequenceParser(parser, 3, st);
 }
 
-const Value* modeParser(StringTokenizer& st)
+const Value*
+modeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_DISPLAY, KW_INLINE };
 
   return alternativeParser(id, 2, st);
 }
 
-const Value* displayParser(StringTokenizer& st)
+const Value*
+displayParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_BLOCK, KW_INLINE };
 
   return alternativeParser(id, 2, st);
 }
 
-const Value* lineBreakParser(StringTokenizer& st)
+const Value*
+lineBreakParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_AUTO, KW_NEWLINE, KW_INDENTINGNEWLINE,
 		     KW_NOBREAK, KW_BADBREAK, KW_GOODBREAK };
@@ -693,21 +748,24 @@ const Value* lineBreakParser(StringTokenizer& st)
   return alternativeParser(id, 6, st);
 }
 
-const Value* alignMarkEdgeParser(StringTokenizer& st)
+const Value*
+alignMarkEdgeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_RIGHT };
 
   return alternativeParser(id, 2, st);
 }
 
-const Value* notationParser(StringTokenizer& st)
+const Value*
+notationParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LONGDIV, KW_ACTUARIAL, KW_RADICAL };
 
   return alternativeParser(id, 3, st);
 }
 
-const Value* mathVariantParser(StringTokenizer& st)
+const Value*
+mathVariantParser(StringTokenizer& st)
 {
   KeywordId id[] = {
     KW_NORMAL, KW_BOLD, KW_ITALIC, KW_BOLD_ITALIC, KW_DOUBLE_STRUCK, KW_BOLD_FRAKTUR,
@@ -717,7 +775,8 @@ const Value* mathVariantParser(StringTokenizer& st)
   return alternativeParser(id, 14, st);
 }
 
-const Value* mathSizeParser(StringTokenizer& st)
+const Value*
+mathSizeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_SMALL, KW_NORMAL, KW_BIG };
 

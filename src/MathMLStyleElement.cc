@@ -97,12 +97,15 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_DISPLAYSTYLE, NULL, false);
   if (value != NULL) env->SetDisplayStyle(value->ToBoolean());
+  delete value;
 
   value = GetAttributeValue(ATTR_SCRIPTSIZEMULTIPLIER, NULL, false);
   if (value != NULL) env->SetScriptSizeMultiplier(value->ToNumber());
+  delete value;
 
   value = GetAttributeValue(ATTR_SCRIPTMINSIZE, NULL, false);
   if (value != NULL) env->SetScriptMinSize(value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_SCRIPTLEVEL, NULL, false);
   if (value != NULL) {
@@ -128,9 +131,11 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
       env->AddScriptLevel(sign * scriptLevel);
     }
   }
-  
+  delete value;
+
   value = GetAttributeValue(ATTR_COLOR, NULL, false);
   if (value != NULL) env->SetColor(ToRGB(value));
+  delete value;
 
   RGBValue oldBackground = env->GetBackgroundColor();
   value = GetAttributeValue(ATTR_BACKGROUND, NULL, false);
@@ -139,42 +144,54 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
   }
   background = env->GetBackgroundColor();
   differentBackground = background != oldBackground;
+  delete value;
 
   value = GetAttributeValue(ATTR_VERYVERYTHINMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_VERYVERYTHIN, value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_VERYTHINMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_VERYTHIN, value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_THINMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_THIN, value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_MEDIUMMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_MEDIUM, value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_THICKMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_THICK, value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_VERYTHINMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_VERYTHICK, value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_VERYVERYTHICKMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_VERYVERYTHICK, value->ToNumberUnit());
+  delete value;
 
   // the following attributes, thought not directly supported by <mstyle>
   // must be parsed here since they are always inherited by other elements
 
   value = GetAttributeValue(ATTR_FONTSIZE, NULL, false);
   if (value != NULL) env->SetFontSize(value->ToNumberUnit());
+  delete value;
 
   value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
   if (value != NULL) env->SetFontFamily(value->ToString());
+  delete value;
 
   value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
   if (value != NULL) env->SetFontWeight(ToFontWeightId(value));
+  delete value;
 
   value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
   if (value != NULL) env->SetFontStyle(ToFontStyleId(value));
+  delete value;
 
   MathMLNormalizingContainerElement::Setup(env);
 

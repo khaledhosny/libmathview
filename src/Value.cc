@@ -20,9 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 #include <stdio.h>
@@ -33,9 +31,63 @@
 #ifdef DEBUG
 #  define DEBUGVALUE counter++
 int Value::counter = 0;
+int Value::cached = 0;
 #else
 #  define DEBUGVALUE
 #endif
+
+Value* Value::firstFree = NULL;
+
+void*
+Value::operator new(size_t size)
+{
+  if (firstFree == NULL)
+    return reinterpret_cast<Value*>(new char[size]);
+  else {
+    Value* v = firstFree;
+    firstFree = v->next;
+    return v;
+  }
+}
+
+void
+Value::operator delete(void* p, size_t)
+{
+  assert(p != NULL);
+  (static_cast<Value*>(p))->next = firstFree;
+  firstFree = static_cast<Value*>(p);
+#ifdef DEBUG
+  counter--;
+#endif
+}
+
+void
+Value::Flush()
+{
+  Value* v = firstFree;
+
+  while (v != NULL) {
+    Value* next = v->next;
+    ::delete v;
+    v = next;
+  }
+
+  firstFree = NULL;
+}
+
+#ifdef DEBUG
+void
+Value::AddCached()
+{
+  cached++;
+}
+
+void
+Value::RemoveCached()
+{
+  cached--;
+}
+#endif // DEBUG
 
 Value::Value()
 {
@@ -124,9 +176,6 @@ Value::~Value()
   }
 
   type = VALUE_EMPTY;
-#ifdef DEBUG
-  counter--;
-#endif
 }
 
 Char Value::ToChar() const

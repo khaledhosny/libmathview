@@ -58,6 +58,7 @@ MathMLAlignMarkElement::Setup(RenderingEnvironment* env)
   assert(value->IsKeyword());
   if   (value->IsKeyword(KW_RIGHT)) edge = MARK_ALIGN_RIGHT;
   else edge = MARK_ALIGN_LEFT;
+  delete value;
 }
 
 void

@@ -76,10 +76,7 @@ MathMLTableElement::GetAttributeSignature(AttributeId id) const
 
 MathMLTableElement::~MathMLTableElement()
 {
-  // FIXME: more stuff to be freed
-
-  delete dGC[0];
-  delete dGC[1];
+  ReleaseAuxStructures();
 }
 
 void

@@ -35,7 +35,12 @@ AttributeSignature::GetDefaultParsedValue(void) const
     defaultParsedValue = parser(st);
     // a default value cannot be wrong
     assert(defaultParsedValue != NULL);
+#ifdef DEBUG
+    // this is to notify that this value is cached and will be never freed
+    Value::AddCached();
+#endif
   }
 
-  return defaultParsedValue;
+  // the value must be cloned, because outside it is always freed
+  return new Value(*defaultParsedValue);
 }

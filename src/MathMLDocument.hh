@@ -35,6 +35,10 @@ public:
   virtual ~MathMLDocument();
 
   MathMLElement* GetRoot(void) const;
+  mDOMDocRef     GetDOMDocument(void) const { return DOMdoc; }
+
+protected:
+  mDOMDocRef DOMdoc;
 };
 
 typedef MathMLDocument* MathMLDocumentPtr;

@@ -23,10 +23,6 @@
 #ifndef AttributeSignature_hh
 #define AttributeSignature_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Value.hh"
 #include "String.hh"
 #include "AttributeParser.hh"
@@ -43,4 +39,4 @@ struct AttributeSignature {
   const Value*    GetDefaultParsedValue(void) const;
 };
 
-#endif
+#endif // AttributeSignature_hh

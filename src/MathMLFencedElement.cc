@@ -37,10 +37,14 @@ MathMLFencedElement::MathMLFencedElement(mDOMNodeRef node) :
   MathMLNormalizingContainerElement(node, TAG_MFENCED)
 {
   normalized = false;
+  openFence = closeFence = separators = NULL;
 }
 
 MathMLFencedElement::~MathMLFencedElement()
 {
+  delete openFence;
+  delete closeFence;
+  delete separators;
 }
 
 const AttributeSignature*
@@ -69,14 +73,17 @@ MathMLFencedElement::Setup(RenderingEnvironment* env)
   value = GetAttributeValue(ATTR_OPEN, env);
   if (value != NULL && value->ToString() != NULL) openFence = value->ToString()->Clone();
   else openFence = NULL;
+  delete value;
 
   value = GetAttributeValue(ATTR_CLOSE, env);
   if (value != NULL && value->ToString() != NULL) closeFence = value->ToString()->Clone();
   else closeFence = NULL;
+  delete value;
 
   value = GetAttributeValue(ATTR_SEPARATORS, env);
   if (value != NULL && value->ToString() != NULL) separators = value->ToString()->Clone();
   else separators = NULL;
+  delete value;
 
   if (!normalized) {
     NormalizeFencedElement();

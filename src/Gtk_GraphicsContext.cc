@@ -20,9 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 
@@ -30,14 +28,24 @@
 
 #include "Gtk_GraphicsContext.hh"
 
+#ifdef DEBUG
+int Gtk_GraphicsContext::counter = 0;
+#endif // DEBUG
+
 Gtk_GraphicsContext::Gtk_GraphicsContext(const GraphicsContextValues& v, GdkGC* gc) :
   GraphicsContext(v)
 {
   assert(gc != NULL);
   gdk_gc = gc;
+#ifdef DEBUG
+  counter++;
+#endif // DEBUG
 }
 
 Gtk_GraphicsContext::~Gtk_GraphicsContext()
 {
   gtk_gc_release(gdk_gc);
+#ifdef DEBUG
+  counter--;
+#endif // DEBUG
 }

@@ -60,6 +60,7 @@ MathEngine::MathEngine()
 
 MathEngine::~MathEngine()
 {
+  Unload();
   delete charMapper;
 }
 
@@ -144,6 +145,8 @@ MathEngine::Load(const char* fileName)
 {
   assert(fileName != NULL);
 
+  Unload();
+
   Clock perf;
   perf.Start();
   MathMLParser *parser = new MathMLParser(fileName);
@@ -173,11 +176,15 @@ MathEngine::Load(const char* fileName)
 void
 MathEngine::Unload()
 {
-  delete document;
+  if (document != NULL) {
+    mDOMDocRef doc = document->GetDOMDocument();
+    delete document;
+    MathEngine::logger(LOG_DEBUG, "unloading the DOM tree");
+    mdom_unload(doc);
+    document = NULL;  
+  }
 
-  document = NULL;  
   root = NULL;
-
   selectionFirst = selectionRoot = selection = NULL;
 }
 
@@ -236,8 +243,7 @@ MathEngine::SetDirty(const Rectangle* rect)
 void
 MathEngine::Render(const Rectangle* rect)
 {
-  if (root == NULL) return;
-  root->SetDirty(rect);
+  if (root != NULL) root->SetDirty(rect);
   Update(rect);
 }
 
@@ -246,15 +252,16 @@ MathEngine::Update(const Rectangle* rect)
 {
   assert(area != NULL);
 
-  if (root == NULL) return;
+  if (root != NULL) {
+    Clock perf;
+    perf.Start();
+    root->Render(*area);
+    perf.Stop();
+    logger(LOG_INFO, "rendering time: %dms", perf());
+  }
 
-  Clock perf;
-  perf.Start();
-  root->Render(*area);
   if (rect != NULL) area->Update(*rect);
   else area->Update();
-  perf.Stop();
-  logger(LOG_INFO, "rendering time: %dms", perf());
 }
 
 void
@@ -269,9 +276,9 @@ MathEngine::GetDocumentBoundingBox(BoundingBox& box) const
 }
 
 void
-MathEngine::SetSelectionFirst(scaled x, scaled y)
+MathEngine::SetSelectionFirst(MathMLElement* elem)
 {
-  selectionFirst = GetElementAt(x, y);
+  selectionFirst = elem;
 }
 
 MathMLElement*
@@ -308,11 +315,9 @@ MathEngine::SelectMinimumTree(MathMLElement* first, MathMLElement* last)
 }
 
 void
-MathEngine::SetSelectionLast(scaled x, scaled y)
+MathEngine::SetSelectionLast(MathMLElement* selectionLast)
 {
   if (selectionFirst == NULL) return;
-
-  MathMLElement* selectionLast = GetElementAt(x, y);
   if (selectionLast == NULL) return;
 
   selectionRoot = SelectMinimumTree(selectionFirst, selectionLast);
@@ -347,6 +352,12 @@ MathEngine::GetElementAt(scaled x, scaled y) const
   // the case of Gtk_DrawingArea) or not (PS_DrawingArea). The caller must
   // properly adjust x and y before calling this method
   return root->Inside(x, y);
+}
+
+void
+MathEngine::SetElement(MathMLElement* elem)
+{
+  element = elem;
 }
 
 void

@@ -23,10 +23,6 @@
 #ifndef Value_hh
 #define Value_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "String.hh"
 #include "keyword.hh"
 #include "UnitValue.hh"
@@ -48,11 +44,18 @@ enum ValueType {
   VALUE_SEQUENCE
 };
 
-
 class ValueSequence;
   
 class Value {
 public:
+  void* operator new(size_t);
+  void operator delete(void*, size_t);
+  static void Flush(void);
+#ifdef DEBUG
+  static void AddCached(void);
+  static void RemoveCached(void);
+#endif
+
   Value(void);
   Value(bool);
   Value(int);
@@ -114,6 +117,7 @@ public:
 
 #ifdef DEBUG
   static int GetCounter(void) { return counter; }
+  static int GetCached(void) { return cached; }
 #endif
 
 private:
@@ -129,13 +133,17 @@ private:
     RGBValue             rgbVal;
     const String*        stringVal;
     const ValueSequence* seqVal;
+    Value*               next;
   };
 
 #ifdef DEBUG
   static int counter;
+  static int cached;
 #endif
+
+  static Value* firstFree;
 };
 
 typedef const Value* ValuePtr;
 
-#endif
+#endif // Value_hh

@@ -47,7 +47,8 @@ String::~String()
 #endif
 }
 
-void String::Dump() const
+void
+String::Dump() const
 {
   for (unsigned i = 0; i < GetLength(); i++) {
     Char ch = GetChar(i);
@@ -58,7 +59,8 @@ void String::Dump() const
   putchar('\n');
 }
 
-char* String::ToC() const
+char*
+String::ToC() const
 {
   char* res = new char[GetLength() + 1];
   assert(res != NULL);
@@ -68,7 +70,8 @@ char* String::ToC() const
   return res;
 }
 
-const char* String::ToStaticC() const
+const char*
+String::ToStaticC() const
 {
   static char temp_string[256];
 
@@ -79,7 +82,8 @@ const char* String::ToStaticC() const
   return temp_string;
 }
 
-void String::ToCAux(char *dest) const
+void
+String::ToCAux(char *dest) const
 {
   assert(dest != NULL);
 
@@ -93,7 +97,8 @@ void String::ToCAux(char *dest) const
   dest[GetLength()] = '\0';
 }
 
-bool String::Equal(const String& s) const
+bool
+String::Equal(const String& s) const
 {
   if (GetLength() != s.GetLength()) return false;
 
@@ -103,7 +108,8 @@ bool String::Equal(const String& s) const
   return true;
 }
 
-bool String::Equal(const char* s) const
+bool
+String::Equal(const char* s) const
 {
   assert(s != NULL);
 
@@ -116,7 +122,8 @@ bool String::Equal(const char* s) const
   return true;
 }
 
-void String::ToLowerCase()
+void
+String::ToLowerCase()
 {
   for (unsigned i = 0; i < GetLength(); i++) {
     Char ch = GetChar(i);
@@ -125,7 +132,8 @@ void String::ToLowerCase()
   }
 }
 
-Char String::GetBiggestChar() const
+Char
+String::GetBiggestChar() const
 {
   Char big = 0;
 
@@ -137,7 +145,8 @@ Char String::GetBiggestChar() const
   return big;
 }
 
-Char String::GetBiggestChar(unsigned offset, unsigned length) const
+Char
+String::GetBiggestChar(unsigned offset, unsigned length) const
 {
   assert(offset + length <= GetLength());
 

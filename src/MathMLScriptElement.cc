@@ -95,6 +95,8 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
       assert(!unitValue.IsPercentage());
 
       subMinShift = env->ToScaledPoints(unitValue);
+
+      delete value;
     }
   }
 
@@ -109,6 +111,8 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
       assert(!unitValue.IsPercentage());
 
       superMinShift = env->ToScaledPoints(unitValue);
+
+      delete value;
     }
   }
 

@@ -65,15 +65,19 @@ MathMLPaddedElement::Setup(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_WIDTH, NULL, false);
   if (value != NULL) ParseLengthDimension(env, value, width, KW_WIDTH);
+  delete value;
 
   value = GetAttributeValue(ATTR_LSPACE, NULL, true);
   if (value != NULL) ParseLengthDimension(env, value, lSpace, KW_LSPACE);
+  delete value;
 
   value = GetAttributeValue(ATTR_HEIGHT, NULL, false);
   if (value != NULL) ParseLengthDimension(env, value, height, KW_HEIGHT);
+  delete value;
 
   value = GetAttributeValue(ATTR_DEPTH, NULL, false);
   if (value != NULL) ParseLengthDimension(env, value, depth, KW_DEPTH);
+  delete value;
 
   MathMLNormalizingContainerElement::Setup(env);
 }

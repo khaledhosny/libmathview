@@ -186,9 +186,11 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_ROWSPAN, env);
   rowSpan = value->ToInteger();
+  delete value;
 
   value = GetAttributeValue(ATTR_COLUMNSPAN, env);
   columnSpan = value->ToInteger();
+  delete value;
 }
 
 void
@@ -200,9 +202,11 @@ MathMLTableCellElement::Setup(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_ROWALIGN, NULL, false);
   if (value != NULL) cell->rowAlign = ToRowAlignId(value);
+  delete value;
 
   value = GetAttributeValue(ATTR_COLUMNALIGN, NULL, false);
   if (value != NULL) cell->columnAlign = ToColumnAlignId(value);
+  delete value;
 
   value = GetAttributeValue(ATTR_GROUPALIGN, NULL, false);
   if (value != NULL) {
@@ -211,6 +215,7 @@ MathMLTableCellElement::Setup(RenderingEnvironment* env)
       cell->aGroup[k].alignment = ToGroupAlignId(p);
     }
   }
+  delete value;
 
   MathMLNormalizingContainerElement::Setup(env);
 }

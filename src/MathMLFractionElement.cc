@@ -124,14 +124,25 @@ MathMLFractionElement::Setup(RenderingEnvironment* env)
     lineThickness = scaledMax(0, lineThickness);
   }
 
+  delete value;
+
   value = GetAttributeValue(ATTR_NUMALIGN, env, true);
-  if (value != NULL) numAlign = ToFractionAlignId(value);
+  if (value != NULL) {
+    numAlign = ToFractionAlignId(value);
+    delete value;
+  }
 
   value = GetAttributeValue(ATTR_DENOMALIGN, env, true);
-  if (value != NULL) denomAlign = ToFractionAlignId(value);
+  if (value != NULL) {
+    denomAlign = ToFractionAlignId(value);
+    delete value;
+  }
 
   value = GetAttributeValue(ATTR_BEVELLED, env, true);
-  if (value != NULL) bevelled = value->ToBoolean();
+  if (value != NULL) {
+    bevelled = value->ToBoolean();
+    delete value;
+  }
 
   color = env->GetColor();
 

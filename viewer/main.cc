@@ -23,8 +23,9 @@
 #include <config.h>
 #include <assert.h>
 #include <getopt.h>
-#include <stdio.h>
 #include <stdlib.h>
+
+#include <iostream>
 
 #include "defs.h"
 #include "guiGTK.h"
@@ -32,9 +33,13 @@
 #include "String.hh"
 #include "MathEngine.hh"
 #include "MathMLTokenElement.hh"
+#ifdef DEBUG
+#include "Gtk_GraphicsContext.hh"
+#endif // DEBUG
 
 enum CommandLineOptionId {
   OPTION_VERSION = 256,
+  OPTION_DEBUG,
   OPTION_HELP,
   OPTION_VERBOSE
 };
@@ -48,17 +53,10 @@ extern void *parseMathMLFile(char *);
 
 static void printVersion()
 {
-#ifdef HAVE_IOSTREAM
-  cout << appName << " - written by Luca Padovani (C) 2000." << endl;
-#ifdef DEBUG
-  cout << "Compiled " << __DATE__ << ' ' << __TIME__ << endl;
-#endif
-#else
   printf("%s - written by Luca Padovani (C) 2000.\n", appName);
 #ifdef DEBUG
   printf("Compiled %s %s\n", __DATE__, __TIME__);
-#endif
-#endif
+#endif // DEBUG
   exit(0);
 }
 
@@ -66,24 +64,33 @@ static void
 printHelp()
 {
   static char* helpMsg = "\
-Usage: viewer [options] file ...\n\n\
+Usage: mathmlviewer [options] file ...\n\n\
   -v, --version                 Output version information\n\
+  -d, --debug                   Debug mode\n\
   -h, --help                    This small usage guide\n\
   --verbose[=0-3]               Display messages\n\
 ";
 
-#ifdef HAVE_IOSTREAM
-  cout << helpMsg << endl;
-#else
   printf("%s\n", helpMsg);
-#endif
-
-  exit(0);
 }
+
+#ifdef DEBUG
+static void
+checkCounters()
+{
+  MathEngine::dictionary.Unload();
+  MathEngine::logger(LOG_DEBUG, "Elements : %d", MathMLElement::GetCounter());
+  MathEngine::logger(LOG_DEBUG, "GCs      : %d", Gtk_GraphicsContext::GetCounter());
+  MathEngine::logger(LOG_DEBUG, "Strings  : %d", String::GetCounter());
+  MathEngine::logger(LOG_DEBUG, "Values   : %d (cached %d)", Value::GetCounter(), Value::GetCached());
+}
+#endif // DEBUG
 
 int
 main(int argc, char *argv[])
 {
+  bool debugMode = false;
+
   sprintf(appName, "MathML Viewer v%s", VERSION);
 
   while (TRUE) {
@@ -91,13 +98,14 @@ main(int argc, char *argv[])
     static struct option long_options[] =
     {
       { "version", 	 no_argument, NULL, OPTION_VERSION },
+      { "debug",         no_argument, NULL, OPTION_DEBUG },
       { "help",    	 no_argument, NULL, OPTION_HELP },
       { "verbose",       optional_argument, NULL, OPTION_VERBOSE },
 
       { NULL,            no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vh", long_options, &option_index);
+    int c = getopt_long(argc, argv, "vdh", long_options, &option_index);
 
     if (c == -1) break;
 
@@ -107,9 +115,15 @@ main(int argc, char *argv[])
       printVersion();
       break;
 
+    case OPTION_DEBUG:
+    case 'd':
+      debugMode = true;
+      break;
+
     case OPTION_HELP:
     case 'h':
       printHelp();
+      exit(0);
       break;
 
     case OPTION_VERBOSE:
@@ -121,30 +135,35 @@ main(int argc, char *argv[])
       break;
 
     default:
-#ifdef HAVE_IOSTREAM
-      cout << "*** getopt returned " << c << " value" << endl;
-#else
-      printf("*** getopt returned %o value\n", c);
-#endif
+      printf("*** getopt returned %c value\n", c);
       break;
     }
   }
 
+#ifdef DEBUG
+  atexit(checkCounters);
+#endif // DEBUG
+
   if (optind < argc) {
     GUI_init(&argc, &argv, appName, 500, 500);
 
-    if (GUI_load_document(argv[optind]) < 0)
-#ifdef HAVE_IOSTREAM
-      cout << "viewer: fatal error: cannot load document `" << argv[optind] << '\'' << endl;
-#else      
-      printf("viewer: fatal error: cannot load document `%s'\n", argv[optind]);
-#endif
-    else {
-      GUI_run();
-      GUI_uninit();
-      GUI_unload_document();
+    while (optind < argc) {
+
+      if (GUI_load_document(argv[optind]) < 0)
+	printf("mathmlviewer: fatal error: cannot load document `%s'\n", argv[optind]);
+
+      if (debugMode) optind++;
+      else {
+	GUI_run();
+	break;
+      }
     }
+
+    GUI_uninit();
+    GUI_unload_document();
   } else printHelp();
+
+  Value::Flush();
 
   exit(0);
 }

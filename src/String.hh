@@ -23,10 +23,6 @@
 #ifndef String_hh
 #define String_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "defs.h"
 #include "Char.hh"
 

@@ -144,7 +144,7 @@ been added backward "compatibility" with version 1.8.x of libxml, however
 this compatibility is not fully effective due to some bugs of libxml. It is
 recommended to upgrade to version 2. See file INSTALL for more details.
 @item
-@code{minidom} (version 0.0.1) @url{http://cs.unibo.it/~lpadovan/mml-widget},
+@code{minidom} (version 0.1.1) @url{http://cs.unibo.it/~lpadovan/mml-widget},
 this is a minimal, partial implementation of the DOM used by the widget as
 an abstract interface to @code{libxml}. It will be eventually replaced by
 GDOME when there will be a package for it.
@@ -155,6 +155,7 @@ will probably compile and run without problems even with some previous versions)
 
 @itemize @bullet
 @item
+@comment FIXME: update the link for t1lib
 @code{t1lib} (version 1.0.1) @url{ftp://ftp.neuroinformatik.ruhr-uni-bochum.de/pub/software/t1lib/}
 Actually, this library is not required, however, if you have it, you will
 be able to use Type1 fonts independently from the X font server. Furthermore,
@@ -173,7 +174,7 @@ variables. See the section about font installation below.
 Keep in mind that the widget will not compile if @code{minidom} is
 not installed.
 See the INSTALL file included in the source distribution for
-detailed compiling and installation instructions. After installation
+detailed compilation and installation instructions. After installation
 you will have the following files:
 
 @itemize @bullet
@@ -547,6 +548,12 @@ emitted when the selected subtree changes. @code{node} is the root node of the n
 selected subtree.
 @end quotation
 
+@noindent
+Signal: @code{"element_changed" void user_function(GtkMathView* widget, mDOMNodeRef node)}
+@quotation
+emitted when the mouse pointer moves on a different element. @code{node} is the
+node of the newly pointed element.
+@end quotation
 
 @node     Configuration, Bugs, Interface, Top
 @comment  node-name,  next,  previous,  up
@@ -579,7 +586,9 @@ previous settings for the same operator.
 @item
 @code{entities-table-path} This element contains a full path to
 an XML file with some entities definitions. The widget has an internal
-table with all the entities defined in the MathML 2.0 specification.
+table with all the entities defined in the MathML 2.0 specification so,
+unless you disabled it inside the source code, the entities won't be
+loaded from this file.
 
 @item
 @code{font-configuration-path} This element contains a full path to

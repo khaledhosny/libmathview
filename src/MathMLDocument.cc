@@ -24,11 +24,14 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "MathEngine.hh"
 #include "MathMLDocument.hh"
 #include "DocumentElement.hh"
 
 MathMLDocument::MathMLDocument(mDOMDocRef doc) : MathMLContainerElement(NULL)
 {
+  assert(doc != NULL);
+  DOMdoc = doc;
 }
 
 MathMLDocument::~MathMLDocument()

@@ -67,7 +67,7 @@ MathMLScriptCommonElement::Setup(RenderingEnvironment* env)
   ruleThickness = env->GetRuleThickness();
   sppex = subMinShift = superMinShift = env->GetAxis();
   scriptAxis    = env->GetAxis();
-  scriptSpacing = env->ToScaledPoints(env->GetMathSpace(MATH_SPACE_THIN));
+  scriptSpacing = env->ToScaledPoints(env->GetMathSpace(MATH_SPACE_VERYVERYTHIN));
   background    = env->GetBackgroundColor();
 }
 

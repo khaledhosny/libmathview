@@ -23,10 +23,6 @@
 #ifndef StringTokenizer_hh
 #define StringTokenizer_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "MathMLAttribute.hh"
 #include "UnitValue.hh"
 #include "RGBValue.hh"

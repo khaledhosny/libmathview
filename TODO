@@ -45,3 +45,6 @@ Bugs
 * mathvariant and similar attributes don't work in mstyle
 * what if there is a horizontal stretchy operator with minsize specified in a mrow?
 * getStretchyOperator does not always work properly, please check
+* GraphicsContext is never released??? (XGC is shared (maybe), but those
+  used by the widget? Yes, they are shared as well, and released when DrawingArea is
+  destroyed)

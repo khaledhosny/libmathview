@@ -23,8 +23,6 @@
 #ifndef MathMLElement_hh
 #define MathMLElement_hh
 
-#include <config.h>
-
 #include "minidom.h"
 #include "keyword.hh"
 #include "MathMLFrame.hh"
@@ -96,6 +94,10 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
+#ifdef DEBUG
+  static int GetCounter(void) { return counter; }
+#endif // DEBUG
+
 protected:
   void ResetLayout(void);
   const AttributeSignature* GetAttributeSignatureAux(AttributeId,
@@ -115,6 +117,10 @@ protected:
 private:
   mDOMNodeRef node; // reference to the DOM node
   TagId       tag;
+
+#ifdef DEBUG
+  static int counter;
+#endif // DEBUG
 };
 
 typedef MathMLElement* MathMLElementPtr;

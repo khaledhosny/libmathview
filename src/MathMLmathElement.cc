@@ -76,6 +76,8 @@ MathMLmathElement::Setup(RenderingEnvironment* env)
     else env->SetDisplayStyle(false);
   }
 
+  delete value;
+
   if (IsSet(ATTR_MODE) && IsSet(ATTR_DISPLAY))
     MathEngine::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
 

@@ -23,8 +23,6 @@
 #ifndef MathMLAttribute_hh
 #define MathMLAttribute_hh
 
-#include <config.h>
-
 #include "Value.hh"
 #include "String.hh"
 #include "keyword.hh"

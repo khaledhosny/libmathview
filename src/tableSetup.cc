@@ -20,9 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 #include <stddef.h>
@@ -38,28 +36,7 @@
 void
 MathMLTableElement::Setup(RenderingEnvironment* env)
 {
-  if (row != NULL) {
-    delete [] row;
-    row = NULL;
-  }
-
-  if (column != NULL) {
-    delete [] column;
-    column = NULL;
-  }
-
-  if (cell != NULL) {
-    for (unsigned i = 0; i < nRows; i++) {
-      for (unsigned j = 0; j < nColumns; j++) {
-	delete [] cell[i][j].aGroup;
-      }
-      delete [] cell[i];
-    }
-
-    delete [] cell;
-    cell = NULL;
-  }
-
+  ReleaseAuxStructures();
   assert(env != NULL);
 
   SetupCellSpanning(env);
@@ -304,6 +281,8 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 
     delete v;
   }
+  
+  delete value;
 
   value = GetAttributeValue(ATTR_COLUMNSPACING, env);
 
@@ -323,6 +302,8 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 
     delete v;
   }
+
+  delete value;
 }
 
 void
@@ -338,6 +319,8 @@ MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment* env)
       if (cell[i][j].mtd != NULL)
 	cell[i][j].mtd->SetAlignmentScope(p->ToBoolean());
   }
+
+  delete value;
 }
 
 void
@@ -345,6 +328,7 @@ MathMLTableElement::SetupColumnAlign(RenderingEnvironment* env)
 {
   const Value* value = GetAttributeValue(ATTR_COLUMNALIGN, env);
   SetupColumnAlignAux(value, 0, nRows);
+  delete value;
 }
 
 void
@@ -427,6 +411,8 @@ MathMLTableElement::SetupRows(RenderingEnvironment* env)
       row[i].fixedSpacing = env->ToScaledPoints(unitValue);
     }
   }
+
+  delete value;
 }
 
 void
@@ -439,6 +425,8 @@ MathMLTableElement::SetupRowAlign(RenderingEnvironment* env)
     const Value* p = value->Get(i);
     SetupRowAlignAux(p, i);
   }
+
+  delete value;
 }
 
 void
@@ -529,6 +517,7 @@ MathMLTableElement::SetupGroupAlign(RenderingEnvironment* env)
 {
   const Value* value = GetAttributeValue(ATTR_GROUPALIGN, env);
   SetupGroupAlignAux(value, 0, nRows);
+  delete value;
 }
 
 void
@@ -598,6 +587,8 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
   if (p->IsEmpty()) rowNumber = 0;
   else rowNumber = p->ToInteger();
 
+  delete value;
+
   // rowlines
 
   value = GetAttributeValue(ATTR_ROWLINES, env);
@@ -609,6 +600,8 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
 
     row[i].lineType = ToLineId(p);
   }
+
+  delete value;
 
   // columnlines
 
@@ -622,11 +615,14 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
     column[j].lineType = ToLineId(p);
   }
 
+  delete value;
+
   // frame
 
   value = GetAttributeValue(ATTR_FRAME, env);
   assert(value != NULL);
   frame = ToLineId(value);
+  delete value;
 
   // width
 
@@ -646,6 +642,8 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
       fixedWidth = env->ToScaledPoints(unitValue);
     }
   }
+
+  delete value;
 
   // framespacing
 
@@ -685,23 +683,28 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
     frameHorizontalFixedSpacing = frameVerticalFixedSpacing = 0;
   }
 
+  delete value;
+
   // equalrows
 
   value = GetAttributeValue(ATTR_EQUALROWS, env);
   assert(value != NULL && value->IsBoolean());
   equalRows = value->ToBoolean();
+  delete value;
 
   // equalcolumns
 
   value = GetAttributeValue(ATTR_EQUALCOLUMNS, env);
   assert(value != NULL && value->IsBoolean());
   equalColumns = value->ToBoolean();
+  delete value;
 
   // displaystyle
 
   value = GetAttributeValue(ATTR_DISPLAYSTYLE, env);
   assert(value != NULL && value->IsBoolean());
   displayStyle = value->ToBoolean();
+  delete value;
 
   // side
 
@@ -713,6 +716,8 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
   else if (value->IsKeyword(KW_LEFTOVERLAP)) side = TABLE_SIDE_LEFTOVERLAP;
   else if (value->IsKeyword(KW_RIGHTOVERLAP)) side = TABLE_SIDE_RIGHTOVERLAP;
   else assert(IMPOSSIBLE);
+
+  delete value;
 
   // minlabelspacing
 
@@ -726,5 +731,33 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
   } else {
     minLabelSpacingType  = SPACING_FIXED;
     minLabelFixedSpacing = env->ToScaledPoints(unitValue);
+  }
+
+  delete value;
+}
+
+void
+MathMLTableElement::ReleaseAuxStructures()
+{
+  if (row != NULL) {
+    delete [] row;
+    row = NULL;
+  }
+
+  if (column != NULL) {
+    delete [] column;
+    column = NULL;
+  }
+
+  if (cell != NULL) {
+    for (unsigned i = 0; i < nRows; i++) {
+      for (unsigned j = 0; j < nColumns; j++) {
+	delete [] cell[i][j].aGroup;
+      }
+      delete [] cell[i];
+    }
+
+    delete [] cell;
+    cell = NULL;
   }
 }

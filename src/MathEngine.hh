@@ -52,8 +52,11 @@ public:
 
   bool  IsOnLink(scaled, scaled) const;
 
-  void                 SetSelectionFirst(scaled, scaled);
-  void                 SetSelectionLast(scaled, scaled);
+  void                 SetElement(class MathMLElement*);
+  class MathMLElement* GetElement(void) const { return element; }
+
+  void                 SetSelectionFirst(class MathMLElement*);
+  void                 SetSelectionLast(class MathMLElement*);
   class MathMLElement* GetSelectionRoot(void) const { return selectionRoot; }
   void                 ResetSelectionRoot(void);
   void                 SetSelection(class MathMLElement*);
@@ -93,6 +96,8 @@ private:
 
   class MathMLDocument* document;
   class MathMLElement*  root;
+
+  class MathMLElement*  element; // the element the pointer is on
 
   class MathMLElement*  selectionFirst;
   class MathMLElement*  selectionRoot;

@@ -37,6 +37,9 @@ MathMLAttribute::MathMLAttribute(AttributeId i, const String* v)
 MathMLAttribute::~MathMLAttribute()
 {
   delete value;
+#ifdef DEBUG
+  if (parsedValue != NULL) Value::RemoveCached();
+#endif // DEBUG
   delete parsedValue;
 }
 
@@ -52,9 +55,17 @@ MathMLAttribute::GetParsedValue(const AttributeSignature* aSignature) const
 
     StringTokenizer st(*value);
     parsedValue = parser(st);
+#ifdef DEBUG
+    if (parsedValue != NULL) Value::AddCached();
+#endif // DEBUG
   }
 
-  return parsedValue;
+  // the value must be cloned because outside they are always freed.
+  // It's ugly and inefficient, but don't know how to do better without
+  // garbage collector (yes, reference counter could be a solution,
+  // but would imply one more field inside Value and the bookeeping
+  // of the information)
+  return (parsedValue != NULL) ? new Value(*parsedValue) : NULL;
 }
 
 bool

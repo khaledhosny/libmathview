@@ -80,6 +80,7 @@ MathMLEncloseElement::Setup(RenderingEnvironment* env)
   else if (value->IsKeyword(KW_ACTUARIAL)) notation = NOTATION_ACTUARIAL;
   else if (value->IsKeyword(KW_RADICAL)) notation = NOTATION_RADICAL;
   else assert(IMPOSSIBLE);
+  delete value;
 
   spacing = env->ToScaledPoints(env->GetMathSpace(MATH_SPACE_MEDIUM));
   lineThickness = env->GetRuleThickness();

@@ -23,10 +23,6 @@
 #ifndef OperatorDictionary_hh
 #define OperatorDictionary_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "String.hh"
 #include "Container.hh"
 
@@ -36,6 +32,7 @@ public:
   ~OperatorDictionary();
 
   bool Load(const char*);
+  void Unload(void);
   void Search(const String*,
 	      const class MathMLAttributeList**,
 	      const class MathMLAttributeList**,
