@@ -22,48 +22,48 @@
 
 #include <config.h>
 
-#include "for_each_if.h"
-#include "Adaptors.hh"
-#include "BoxMLGElement.hh"
+#include "BoxMLLayoutElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "BoxMLAtElement.hh"
+#include "BoxedLayoutArea.hh"
+#include "AreaFactory.hh"
 
-BoxMLGElement::BoxMLGElement(const SmartPtr<BoxMLNamespaceContext>& context)
+BoxMLLayoutElement::BoxMLLayoutElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLLinearContainerElement(context)
 { }
 
-BoxMLGElement::~BoxMLGElement()
+BoxMLLayoutElement::~BoxMLLayoutElement()
 { }
 
-SmartPtr<BoxMLGElement>
-BoxMLGElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
-{ return new BoxMLGElement(context); }
+SmartPtr<BoxMLLayoutElement>
+BoxMLLayoutElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLLayoutElement(context); }
 
 void
-BoxMLGElement::refine(class AbstractRefinementContext& context)
+BoxMLLayoutElement::refine(class AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      REFINE_ATTRIBUTE(context, BoxML, G, width);
-      REFINE_ATTRIBUTE(context, BoxML, G, height);
-      REFINE_ATTRIBUTE(context, BoxML, G, depth);
+      REFINE_ATTRIBUTE(context, BoxML, Layout, width);
+      REFINE_ATTRIBUTE(context, BoxML, Layout, height);
+      REFINE_ATTRIBUTE(context, BoxML, Layout, depth);
       BoxMLLinearContainerElement::refine(context);
     }
 }
 
 AreaRef
-BoxMLGElement::format(MathFormattingContext& ctxt)
+BoxMLLayoutElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      scaled width = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, G, width)), ctxt.getSize());
-      scaled height = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, G, height)), ctxt.getSize());
-      scaled depth = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, G, depth)), ctxt.getSize());
+      scaled width = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, width)), ctxt.getSize());
+      scaled height = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, height)), ctxt.getSize());
+      scaled depth = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, depth)), ctxt.getSize());
 
       scaled step = 0;
       std::vector<BoxedLayoutArea::XYArea> c;

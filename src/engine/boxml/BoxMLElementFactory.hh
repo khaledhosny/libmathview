@@ -50,9 +50,11 @@ public:
   DEFINE_FACTORY_METHOD(Space);
   DEFINE_FACTORY_METHOD(Text);
   DEFINE_FACTORY_METHOD(V);
-  DEFINE_FACTORY_METHOD(Box);
+  DEFINE_FACTORY_METHOD(Group);
+  DEFINE_FACTORY_METHOD(box);
   DEFINE_FACTORY_METHOD(Action);
   DEFINE_FACTORY_METHOD(Object);
+  //DEFINE_FACTORY_METHOD(Dummy);
 
 private:
   typedef SmartPtr<BoxMLElement> (BoxMLElementFactory::* FactoryMethod)(void) const;

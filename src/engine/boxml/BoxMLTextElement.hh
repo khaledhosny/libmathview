@@ -36,7 +36,7 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class BoxFormattingContext&);
 
   void setContent(const String&);
   String getContent(void) const { return content; }

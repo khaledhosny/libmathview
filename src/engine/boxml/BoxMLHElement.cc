@@ -22,14 +22,13 @@
 
 #include <config.h>
 
-#include "for_each_if.h"
-#include "Adaptors.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLHElement.hh"
 #include "BoxMLVElement.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
+#include "AreaFactory.hh"
 
 BoxMLHElement::BoxMLHElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLLinearContainerElement(context)
@@ -53,7 +52,7 @@ BoxMLHElement::refine(class AbstractRefinementContext& context)
 }
 
 AreaRef
-BoxMLHElement::format(MathFormattingContext& ctxt)
+BoxMLHElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {

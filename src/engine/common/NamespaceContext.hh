@@ -43,10 +43,14 @@ public:
   virtual SmartPtr<class Element> construct(const DOM::Element&) const = 0;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const = 0;
 
+  unsigned getDefaultFontSize(void) const { return defaultFontSize; }
+  void setDefaultFontSize(unsigned);
+
 private:
   const String namespaceURI;
   WeakPtr<class View> view;
   SmartPtr<class Linker> linker;
+  unsigned defaultFontSize;
 };
 
 #endif // __NamespaceContext_hh__

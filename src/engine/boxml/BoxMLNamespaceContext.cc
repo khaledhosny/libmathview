@@ -29,6 +29,7 @@
 #include "BoxMLNamespaceContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "BoxMLElementFactory.hh"
+#include "BoxMLElement.hh"
 #include "Linker.hh"
 
 BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,
@@ -80,10 +81,9 @@ BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
   if (elem->dirtyLayout())
     {
       BoxFormattingContext ctxt(device);
-      scaled l = device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
+      scaled l = device->evaluate(ctxt, Length(getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
       //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
       ctxt.setSize(l);
-      ctxt.setActualSize(ctxt.getSize());
       Clock perf;
       perf.Start();
       elem->format(ctxt);

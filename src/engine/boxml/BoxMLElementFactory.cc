@@ -40,7 +40,7 @@ BoxMLElementFactory::BoxMLElementFactory()
     { "space",         &BoxMLElementFactory::createSpaceElement },
     { "text",          &BoxMLElementFactory::createTextElement },
     { "v",             &BoxMLElementFactory::createVElement },
-    { "box",           &BoxMLElementFactory::createBoxElement },
+    { "box",           &BoxMLElementFactory::createboxElement },
     { "action",        &BoxMLElementFactory::createActionElement },
     { "obj",           &BoxMLElementFactory::createObjectElement },
     { "",              0 }
@@ -60,7 +60,8 @@ BoxMLElementFactory::createBoxMLElement(const String& name) const
   if (p != factoryMethodMap.end())
     return (this->*((*p).second))();
   else
-    return createDummyElement();
+    //return createDummyElement();
+    return 0;
 }
 
 SmartPtr<Element>

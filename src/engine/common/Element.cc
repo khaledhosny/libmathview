@@ -27,6 +27,7 @@
 #include "AttributeSignature.hh"
 #include "AttributeList.hh"
 #include "Linker.hh"
+#include "AbstractRefinementContext.hh"
 
 Element::Element()
 {
@@ -181,6 +182,23 @@ Element::setDOMElement(const DOM::Element& el)
 {
   assert(!elem);
   elem = el;
+}
+
+void
+Element::refineAttribute(const AbstractRefinementContext& context, const AttributeSignature& signature)
+{
+  SmartPtr<Attribute> attr;
+  
+  if (signature.fromElement)
+    if (DOM::Element el = getDOMElement())
+      if (el.hasAttribute(signature.name))
+	attr = Attribute::create(signature, el.getAttribute(signature.name));
+
+  if (!attr && signature.fromContext)
+    attr = context.get(signature);
+
+  if (attr) setAttribute(attr);
+  else removeAttribute(signature);
 }
 
 void

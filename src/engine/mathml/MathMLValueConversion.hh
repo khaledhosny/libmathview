@@ -20,27 +20,14 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __BoxMLVElement_hh__
-#define __BoxMLVElement_hh__
+#ifndef __MathMLValueConversion_hh__
+#define __MathMLValueConversion_hh__
 
-#include "BoxMLLinearContainerElement.hh"
+#include "ValueConversion.hh"
+#include "MathVariant.hh"
 
-class BoxMLVElement : public BoxMLLinearContainerElement
-{
-protected:
-  BoxMLVElement(const SmartPtr<class BoxMLNamespaceContext>&);
-  virtual ~BoxMLVElement();
+MathVariant toMathVariant(TokenId);
+MathVariant toMathVariant(const SmartPtr<Value>&);
+SmartPtr<Value> Resolve(const SmartPtr<Value>&, const class MathFormattingContext&, int i = -1, int j = -1);
 
-public:
-  static SmartPtr<BoxMLVElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
-
-  virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class BoxFormattingContext&);
-
-  virtual scaled getStep(void) const { return step; }
-
-private:
-  scaled step;
-};
-
-#endif // __BoxMLVElement_hh__
+#endif // __MathMLValueConversion_hh__

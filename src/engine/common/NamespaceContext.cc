@@ -25,6 +25,7 @@
 #include "View.hh"
 #include "NamespaceContext.hh"
 #include "Linker.hh"
+#include "Element.hh"
 
 NamespaceContext::NamespaceContext(const String& ns,
 				   const SmartPtr<View>& v,
@@ -46,3 +47,19 @@ NamespaceContext::getLinker() const
 {
   return linker;
 }
+
+void
+NamespaceContext::setDefaultFontSize(unsigned size)
+{
+  assert(size > 0);
+  if (defaultFontSize != size)
+    {
+      defaultFontSize = size;
+      if (SmartPtr<Element> elem = getView()->getRootElement())
+	{
+	  elem->setDirtyAttributeD();
+	  elem->setDirtyLayout();	  
+	}
+    }
+}
+

@@ -26,7 +26,7 @@
 
 #include <algorithm>
 
-#include "Adaptors.hh"
+#include "Adapters.hh"
 #include "ChildList.hh"
 #include "Globals.hh"
 #include "ValueConversion.hh"
@@ -71,7 +71,7 @@ MathMLTableRowElement::construct()
 	}
 #endif
       
-      std::for_each(content.begin(), content.end(), ConstructAdaptor());
+      std::for_each(content.begin(), content.end(), ConstructAdapter<MathMLElement>());
 
       resetDirtyStructure();
     }

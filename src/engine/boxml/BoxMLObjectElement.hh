@@ -36,8 +36,7 @@ public:
   static SmartPtr<BoxMLObjectElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class BoxFormattingContext&);
 
   SmartPtr<Element> getChild(void) const { return content.getChild(); }
   void setChild(const SmartPtr<Element>& child) { content.setChild(this, child); }
@@ -55,6 +54,7 @@ public:
   }
 
 private:
+  SmartPtr<class NamespaceContext> contentContext;
   BinContainerTemplate<BoxMLObjectElement,Element> content;
 };
 

@@ -25,9 +25,10 @@
 #include "View.hh"
 #include "BoxMLInkElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
+#include "AreaFactory.hh"
 
 BoxMLInkElement::BoxMLInkElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLSpaceElement(context)
@@ -51,7 +52,7 @@ BoxMLInkElement::refine(class AbstractRefinementContext& context)
 }
 
 AreaRef
-BoxMLInkElement::format(MathFormattingContext& ctxt)
+BoxMLInkElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {

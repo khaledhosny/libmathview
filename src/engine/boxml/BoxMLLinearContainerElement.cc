@@ -24,7 +24,7 @@
 
 #include "defs.h"
 #include "for_each_if.h"
-#include "Adaptors.hh"
+#include "Adapters.hh"
 #include "ChildList.hh"
 #include "BoxMLLinearContainerElement.hh"
 
@@ -56,7 +56,7 @@ BoxMLLinearContainerElement::construct()
 	      DOM::Node node = children.item(i);
 	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 
-	      SmartPtr<MathMLElement> el = getFormattingNode(node);
+	      SmartPtr<BoxMLElement> el = getFormattingNode(node);
 	      //std::cout << "created formatting node " << is_a<MathMLElement>(el) << std::endl;
 	      
 	      if (SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(el))
@@ -72,7 +72,7 @@ BoxMLLinearContainerElement::construct()
       // it is better to normalize elements only after all the rendering
       // interfaces have been collected, because the structure might change
       // depending on the actual number of children
-      content.for_each(ConstructAdaptor());
+      content.for_each(ConstructAdapter<BoxMLElement>());
       resetDirtyStructure();
     }
 }
@@ -82,7 +82,7 @@ BoxMLLinearContainerElement::refine(class AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      content.for_each(std::bind2nd(RefineAdaptor(), &context));
+      content.for_each(std::bind2nd(RefineAdapter<AbstractRefinementContext,BoxMLElement>(), &context));
       BoxMLElement::refine(context);
     }
 }

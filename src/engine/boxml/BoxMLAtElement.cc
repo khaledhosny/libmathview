@@ -24,8 +24,8 @@
 
 #include "BoxMLAtElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
 
 BoxMLAtElement::BoxMLAtElement(const SmartPtr<BoxMLNamespaceContext>& context)
@@ -51,7 +51,7 @@ BoxMLAtElement::refine(class AbstractRefinementContext& context)
 }
 
 AreaRef
-BoxMLAtElement::format(MathFormattingContext& ctxt)
+BoxMLAtElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {

@@ -28,14 +28,14 @@
 class BoxMLInkElement : public BoxMLSpaceElement
 {
 protected:
-  BoxMLInkElement(const SmartPtr<class MathMLView>&);
+  BoxMLInkElement(const SmartPtr<class BoxMLNamespaceContext>&);
   virtual ~BoxMLInkElement();
 
 public:
-  static SmartPtr<BoxMLInkElement> create(const SmartPtr<class MathMLView>&);
+  static SmartPtr<BoxMLInkElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class BoxFormattingContext&);
 };
 
 #endif // __BoxMLInkElement_hh__

@@ -29,7 +29,7 @@
 
 #include "defs.h"
 #include "for_each_if.h"
-#include "Adaptors.hh"
+#include "Adapters.hh"
 #include "ChildList.hh"
 #include "MathMLLinearContainerElement.hh"
 
@@ -90,7 +90,9 @@ MathMLLinearContainerElement::construct()
       // it is better to normalize elements only after all the rendering
       // interfaces have been collected, because the structure might change
       // depending on the actual number of children
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), ConstructAdaptor());
+      for_each_if(content.begin(), content.end(),
+		  NotNullPredicate<MathMLElement>(),
+		  ConstructAdapter<MathMLElement>());
       resetDirtyStructure();
     }
 }
@@ -100,7 +102,9 @@ MathMLLinearContainerElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(RefineAdaptor(), &context));
+      for_each_if(content.begin(), content.end(),
+		  NotNullPredicate<MathMLElement>(),
+		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
       MathMLContainerElement::refine(context);
     }
 }

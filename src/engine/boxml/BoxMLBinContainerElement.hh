@@ -35,7 +35,7 @@ protected:
 public:
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class MathFormattingContext&);
+  virtual AreaRef format(class BoxFormattingContext&);
 
   virtual scaled getStep(void) const;
 

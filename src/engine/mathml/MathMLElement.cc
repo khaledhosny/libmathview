@@ -103,23 +103,6 @@ MathMLElement::getCoreOperatorTop()
 }
 
 #if defined(HAVE_GMETADOM)
-void
-MathMLElement::refineAttribute(const AbstractRefinementContext& context, const AttributeSignature& signature)
-{
-  SmartPtr<Attribute> attr;
-  
-  if (signature.fromElement)
-    if (DOM::Element el = getDOMElement())
-      if (el.hasAttribute(signature.name))
-	attr = Attribute::create(signature, el.getAttribute(signature.name));
-
-  if (!attr && signature.fromContext)
-    attr = context.get(signature);
-
-  if (attr) setAttribute(attr);
-  else removeAttribute(signature);
-}
-
 TokenId
 MathMLElement::IsA() const
 {
@@ -154,10 +137,4 @@ MathMLElement::getNamespaceContext() const
 
 SmartPtr<MathMLElement>
 MathMLElement::getFormattingNode(const DOM::Element& el) const
-{
-  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(context->getLinker()->get(el, context->getFactory())))
-    return elem;
-
-  assert(false);
-  return 0;
-}
+{ return context->getLinker()->get<MathMLElement>(el, context->getFactory()); }

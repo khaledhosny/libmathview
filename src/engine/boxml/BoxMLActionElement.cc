@@ -24,12 +24,13 @@
 
 #include "Globals.hh"
 #include "for_each_if.h"
-#include "Adaptors.hh"
+#include "Adapters.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 #include "BoxMLActionElement.hh"
+#include "AbstractRefinementContext.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 
 BoxMLActionElement::BoxMLActionElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLLinearContainerElement(context)
@@ -43,7 +44,7 @@ BoxMLActionElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLActionElement(context); }
 
 void
-BoxMLActionElement::refine(class AbstractRefinementContext& context)
+BoxMLActionElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
@@ -54,7 +55,7 @@ BoxMLActionElement::refine(class AbstractRefinementContext& context)
 }
 
 AreaRef
-BoxMLActionElement::format(MathFormattingContext& ctxt)
+BoxMLActionElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {

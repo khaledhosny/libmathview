@@ -28,7 +28,7 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "Adaptors.hh"
+#include "MathMLAdapters.hh"
 #include "ChildList.hh"
 #include "traverseAux.hh"
 #include "MathMLRowElement.hh"

@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "Adaptors.hh"
+#include "Adapters.hh"
 #include "ChildList.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
@@ -137,10 +137,14 @@ MathMLMultiScriptsElement::construct()
 #endif // HAVE_GMETADOM
 
       if (getBase()) getBase()->construct();
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate(), ConstructAdaptor());
-      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate(), ConstructAdaptor());
-      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate(), ConstructAdaptor());
-      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate(), ConstructAdaptor());
+      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
+		  ConstructAdapter<MathMLElement>());
+      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate<MathMLElement>(),
+		  ConstructAdapter<MathMLElement>());
+      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate<MathMLElement>(),
+		  ConstructAdapter<MathMLElement>());
+      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate<MathMLElement>(),
+		  ConstructAdapter<MathMLElement>());
 
       resetDirtyStructure();
     }
@@ -154,10 +158,14 @@ MathMLMultiScriptsElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, MathML, MultiScripts, subscriptshift);
       REFINE_ATTRIBUTE(context, MathML, MultiScripts, superscriptshift);
       if (getBase()) getBase()->refine(context);
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(RefineAdaptor(), &context));
-      for_each_if(superScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(RefineAdaptor(), &context));
-      for_each_if(preSubScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(RefineAdaptor(), &context));
-      for_each_if(preSuperScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(RefineAdaptor(), &context));
+      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
+		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
+      for_each_if(superScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
+		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
+      for_each_if(preSubScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
+		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
+      for_each_if(preSuperScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
+		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
       MathMLContainerElement::refine(context);
     }
 }

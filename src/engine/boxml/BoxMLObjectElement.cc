@@ -26,8 +26,11 @@
 #include "ChildList.hh"
 #include "BoxMLObjectElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
+#include "BoxMLNamespaceContext.hh"
+#include "View.hh"
+#include "NamespaceRegistry.hh"
 
 BoxMLObjectElement::BoxMLObjectElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLElement(context)
@@ -48,26 +51,30 @@ BoxMLObjectElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  // Beware that ChildList will select text nodes if the namespace "*" 
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  if (DOM::Node node = children.item(0))
+	  DOM::Node p = getDOMElement().get_firstChild();
+	  while (p && p.get_nodeType() != DOM::Node::ELEMENT_NODE)
+	    p = p.get_nextSibling();
+
+	  if (p)
 	    {
-	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	      SmartPtr<Element> el = getFormattingNode(node);
-	      setChild(el);
+	      contentContext = getNamespaceContext()->getView()->getRegistry()->get(p.get_namespaceURI());
+	      if (contentContext)
+		setChild(contentContext->construct(p));
+	      else
+		// cannot handle this namespace
+		setChild(0);
 	    }
 	  else
+	    // found no child
 	    setChild(0);
 	}
 #endif // HAVE_GMETADOM
-
-      if (SmartPtr<Element> child = getChild())
-	child->construct();
 
       resetDirtyStructure();
     }
 }
 
+#if 0
 void
 BoxMLObjectElement::refine(AbstractRefinementContext& context)
 {
@@ -78,16 +85,20 @@ BoxMLObjectElement::refine(AbstractRefinementContext& context)
       BoxMLElement::refine(context);
     }
 }
+#endif
 
 AreaRef
-BoxMLObjectElement::format(MathFormattingContext& ctxt)
+BoxMLObjectElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
       if (SmartPtr<Element> child = getChild())
-	setArea(ctxt.getDevice()->wrapper(ctxt, child->format(ctxt)));
+	{
+	  assert(contentContext);
+	  setArea(contentContext->format(getChild()));
+	}
       else
 	setArea(ctxt.getDevice()->dummy(ctxt));
       

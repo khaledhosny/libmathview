@@ -39,7 +39,7 @@
 #include "MathMLStringNode.hh"
 #include "MathMLTextElement.hh"
 #include "MathMLTokenElement.hh"
-#include "ValueConversion.hh"
+#include "MathMLValueConversion.hh"
 #include "mathVariantAux.hh"
 #include "traverseAux.hh"
 #include "MathMLAttributeSignatures.hh"

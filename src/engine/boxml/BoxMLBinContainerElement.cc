@@ -68,7 +68,7 @@ BoxMLBinContainerElement::refine(AbstractRefinementContext& context)
 }
 
 AreaRef
-BoxMLBinContainerElement::format(MathFormattingContext& ctxt)
+BoxMLBinContainerElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {

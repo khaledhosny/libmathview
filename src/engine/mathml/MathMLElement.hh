@@ -46,13 +46,11 @@ public:
 
 #if defined(HAVE_GMETADOM)
   SmartPtr<MathMLElement> getFormattingNode(const DOM::Element& el) const;
-  void refineAttribute(const class AbstractRefinementContext& context, const class AttributeSignature& signature);
   bool IsSet(TokenId) const;
   TokenId IsA(void) const;
 #endif // HAVE_GMETADOM
 
-protected:
-  SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
+  virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
   SmartPtr<class MathMLElementFactory> getFactory(void) const;
 
 private:

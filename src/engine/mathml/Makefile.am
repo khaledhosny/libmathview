@@ -5,7 +5,7 @@ libmathml_la_SOURCES = \
   Configuration.cc \
   Globals.cc \
   traverseAux.cc \
-  ValueConversion.cc \
+  MathMLValueConversion.cc \
   mathVariantAux.cc \
   MathMLElementFactory.cc \
   MathMLNamespaceContext.cc \
@@ -62,8 +62,9 @@ noinst_HEADERS = \
   Configuration.hh \
   Globals.hh \
   traverseAux.hh \
-  ValueConversion.hh \
+  MathMLValueConversion.hh \
   mathVariantAux.hh \
+  MathMLAdapters.hh \
   MathMLElementFactory.hh \
   MathMLNamespaceContext.hh \
   MathMLOperatorDictionary.hh \

@@ -26,9 +26,10 @@
 #include "Globals.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLTextElement.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
+#include "AreaFactory.hh"
 
 BoxMLTextElement::BoxMLTextElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLElement(context)
@@ -88,12 +89,12 @@ BoxMLTextElement::refine(class AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, BoxML, Text, size);
       REFINE_ATTRIBUTE(context, BoxML, Text, color);
       REFINE_ATTRIBUTE(context, BoxML, Text, background);
-      MathMLElement::refine(context);
+      BoxMLElement::refine(context);
     }
 }
 
 AreaRef
-BoxMLTextElement::format(MathFormattingContext& ctxt)
+BoxMLTextElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -107,13 +108,9 @@ BoxMLTextElement::format(MathFormattingContext& ctxt)
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, color))
 	ctxt.setColor(ToRGB(value));
-      else if (hasLink())
-	ctxt.setColor(Globals::configuration.GetLinkForeground());
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, background))
 	ctxt.setBackground(ToRGB(value));
-      else if (hasLink() && !Globals::configuration.HasTransparentLinkBackground())
-	ctxt.setBackground(Globals::configuration.GetLinkBackground());
 
       RGBColor newColor = ctxt.getColor();
       RGBColor newBackground = ctxt.getBackground();

@@ -26,7 +26,7 @@
 
 #include "defs.h"
 #include "MathMLSpaceElement.hh"
-#include "ValueConversion.hh"
+#include "MathMLValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"

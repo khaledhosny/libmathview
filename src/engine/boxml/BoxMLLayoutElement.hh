@@ -20,27 +20,22 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __BoxMLVElement_hh__
-#define __BoxMLVElement_hh__
+#ifndef __BoxMLLayoutElement_hh__
+#define __BoxMLLayoutElement_hh__
 
 #include "BoxMLLinearContainerElement.hh"
 
-class BoxMLVElement : public BoxMLLinearContainerElement
+class BoxMLLayoutElement : public BoxMLLinearContainerElement
 {
 protected:
-  BoxMLVElement(const SmartPtr<class BoxMLNamespaceContext>&);
-  virtual ~BoxMLVElement();
+  BoxMLLayoutElement(const SmartPtr<class BoxMLNamespaceContext>&);
+  virtual ~BoxMLLayoutElement();
 
 public:
-  static SmartPtr<BoxMLVElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
+  static SmartPtr<BoxMLLayoutElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class BoxFormattingContext&);
-
-  virtual scaled getStep(void) const { return step; }
-
-private:
-  scaled step;
 };
 
-#endif // __BoxMLVElement_hh__
+#endif // __BoxMLLayoutElement_hh__

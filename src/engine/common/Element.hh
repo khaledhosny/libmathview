@@ -88,9 +88,11 @@ public:
   bool getFlag(Flags f) const { return flags.test(f); }
 
 #if defined(HAVE_GMETADOM)
+public:
   DOM::Element getDOMElement(void) const { return elem; }
   void setDOMElement(const DOM::Element&);
 protected:
+  void refineAttribute(const class AbstractRefinementContext&, const class AttributeSignature&);
   void setLinker(const SmartPtr<class Linker>&);
   void unlink(void);
   friend class Linker;

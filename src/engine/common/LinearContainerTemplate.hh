@@ -26,7 +26,7 @@
 #include <vector>
 
 #include "for_each_if.h"
-#include "Adaptors.hh"
+#include "Adapters.hh"
 
 template <class E, class T, class TPtr = SmartPtr<T> >
 class LinearContainerTemplate
@@ -92,7 +92,7 @@ public:
 
   template <typename UnaryFunction>
   UnaryFunction for_each(UnaryFunction f) const
-  { return for_each_if(content.begin(), content.end(), NotNullPredicate(), f); }
+  { return for_each_if(content.begin(), content.end(), NotNullPredicate<T,TPtr>(), f); }
 
   typename std::vector<TPtr>::const_iterator begin(void) const
   { return content.begin(); }
@@ -107,10 +107,10 @@ public:
   { return content.rend(); }
 
   void setFlagDown(Element::Flags f)
-  { for_each(std::bind2nd(SetFlagDownAdaptor(), f)); }
+  { for_each(std::bind2nd(SetFlagDownAdapter<T,TPtr>(), f)); }
 
   void resetFlagDown(Element::Flags f)
-  { for_each(std::bind2nd(ResetFlagDownAdaptor(), f)); }
+  { for_each(std::bind2nd(ResetFlagDownAdapter<T,TPtr>(), f)); }
 
 private:
   std::vector<TPtr> content;

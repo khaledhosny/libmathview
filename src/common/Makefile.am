@@ -18,7 +18,8 @@ libcommon_la_SOURCES = \
   BoundingBox.cc \
   BoundingBoxAux.cc \
   LengthAux.cc \
-  String.cc
+  String.cc \
+  ValueConversion.cc
 
 noinst_HEADERS = \
   Clock.hh \
@@ -40,6 +41,7 @@ noinst_HEADERS = \
   BoundingBoxAux.hh \
   Rectangle.hh \
   Value.hh \
+  ValueConversion.hh \
   Variant.hh \
   HashMap.hh \
   ScopedHashMap.hh \

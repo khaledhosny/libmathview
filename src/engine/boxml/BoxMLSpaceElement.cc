@@ -25,9 +25,10 @@
 #include "View.hh"
 #include "BoxMLSpaceElement.hh"
 #include "BoxMLAttributeSignatures.hh"
-#include "MathFormattingContext.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 #include "ValueConversion.hh"
+#include "AreaFactory.hh"
 
 BoxMLSpaceElement::BoxMLSpaceElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLElement(context)
@@ -48,12 +49,12 @@ BoxMLSpaceElement::refine(class AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, BoxML, Space, width);
       REFINE_ATTRIBUTE(context, BoxML, Space, height);
       REFINE_ATTRIBUTE(context, BoxML, Space, depth);
-      MathMLElement::refine(context);
+      BoxMLElement::refine(context);
     }
 }
 
 AreaRef
-BoxMLSpaceElement::makeSpaceArea(MathFormattingContext& ctxt)
+BoxMLSpaceElement::makeSpaceArea(BoxFormattingContext& ctxt)
 {
   scaled width = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, width)), 0);
   scaled height = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Space, height)), 0);
@@ -67,7 +68,7 @@ BoxMLSpaceElement::makeSpaceArea(MathFormattingContext& ctxt)
 }
 
 AreaRef
-BoxMLSpaceElement::format(MathFormattingContext& ctxt)
+BoxMLSpaceElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {

@@ -24,8 +24,9 @@
 #define __BoxML_hh__
 
 #include "BoxMLAtElement.hh"
-#include "BoxMLGElement.hh"
+#include "BoxMLLayoutElement.hh"
 #include "BoxMLHElement.hh"
+#include "BoxMLGroupElement.hh"
 #include "BoxMLInkElement.hh"
 #include "BoxMLSpaceElement.hh"
 #include "BoxMLTextElement.hh"

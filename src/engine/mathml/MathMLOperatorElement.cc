@@ -27,7 +27,7 @@
 #include "Globals.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
-#include "ValueConversion.hh"
+#include "MathMLValueConversion.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathFormattingContext.hh"

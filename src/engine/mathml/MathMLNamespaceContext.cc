@@ -37,26 +37,11 @@ MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<View>& v,
 					       const SmartPtr<MathGraphicDevice>& d)
   : NamespaceContext(MATHML_NS_URI, v, l), factory(f), device(d)
 {
-  defaultFontSize = Globals::configuration.GetFontSize();
+  setDefaultFontSize(Globals::configuration.GetFontSize());
 }
 
 MathMLNamespaceContext::~MathMLNamespaceContext()
 { }
-
-void
-MathMLNamespaceContext::setDefaultFontSize(unsigned size)
-{
-  assert(size > 0);
-  if (defaultFontSize != size)
-    {
-      defaultFontSize = size;
-      if (SmartPtr<Element> elem = getView()->getRootElement())
-	{
-	  elem->setDirtyAttributeD();
-	  elem->setDirtyLayout();	  
-	}
-    }
-}
 
 SmartPtr<Element>
 MathMLNamespaceContext::construct(const DOM::Element& el) const
@@ -97,7 +82,7 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
   if (elem->dirtyLayout())
     {
       MathFormattingContext ctxt(device);
-      scaled l = device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
+      scaled l = device->evaluate(ctxt, Length(getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
       //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
       ctxt.setSize(l);
       ctxt.setActualSize(ctxt.getSize());

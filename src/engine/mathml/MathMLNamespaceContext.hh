@@ -42,9 +42,6 @@ public:
 						 const SmartPtr<class MathGraphicDevice>& device)
   { return new MathMLNamespaceContext(view, linker, factory, device); }
 
-  unsigned getDefaultFontSize(void) const { return defaultFontSize; }
-  void setDefaultFontSize(unsigned);
-
   SmartPtr<class MathMLElementFactory> getFactory(void) const;
   SmartPtr<class MathGraphicDevice> getGraphicDevice(void) const;
 
@@ -54,7 +51,6 @@ public:
 private:
   SmartPtr<class MathMLElementFactory> factory;
   SmartPtr<class MathGraphicDevice> device;
-  unsigned defaultFontSize;
 };
 
 #endif // __MathMLNamespaceContext_hh__

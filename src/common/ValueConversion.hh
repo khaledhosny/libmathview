@@ -30,7 +30,6 @@
 #include "token.hh"
 #include "RGBColor.hh"
 #include "String.hh"
-#include "MathVariant.hh"
 
 bool IsEmpty(const SmartPtr<Value>&);
 bool IsTokenId(const SmartPtr<Value>&);
@@ -49,13 +48,9 @@ RGBColor ToRGB(const SmartPtr<Value>&);
 TokenId ToTokenId(const SmartPtr<Value>&);
 Length::Unit toUnitId(TokenId);
 Length::Unit toUnitId(const SmartPtr<Value>&);
-MathVariant toMathVariant(TokenId);
-MathVariant toMathVariant(const SmartPtr<Value>&);
 Length ToLength(const SmartPtr<Value>&);
 RGBColor ToRGBColor(const SmartPtr<Value>&);
-// MathFormattingContext::PropertyId toMathSpaceId(TokenId);
 
 SmartPtr<Value> GetComponent(const SmartPtr<Value>&, int = -1, int = -1);
-SmartPtr<Value> Resolve(const SmartPtr<Value>&, const class MathFormattingContext&, int i = -1, int j = -1);
 
 #endif // __ValueConversion_hh__

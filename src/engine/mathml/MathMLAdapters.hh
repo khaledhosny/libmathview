@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,25 +17,20 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __BoxMLGElement_hh__
-#define __BoxMLGElement_hh__
+#ifndef __MathMLAdapters_hh__
+#define __MathMLAdapters_hh__
 
-#include "BoxMLLinearContainerElement.hh"
+#include <functional>
+#include "MathMLElement.hh"
 
-class BoxMLGElement : public BoxMLLinearContainerElement
+struct IsSpaceLikePredicate
+  : public std::unary_function<SmartPtr<MathMLElement>,bool>
 {
-protected:
-  BoxMLGElement(const SmartPtr<class BoxMLNamespaceContext>&);
-  virtual ~BoxMLGElement();
-
-public:
-  static SmartPtr<BoxMLGElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
-
-  virtual void refine(class AbstractRefinementContext&);
-  virtual AreaRef format(class MathFormattingContext&);
+  bool operator()(const SmartPtr<MathMLElement>& elem) const
+  { return elem->IsSpaceLike(); }
 };
 
-#endif // __BoxMLGElement_hh__
+#endif // __MathMLAdapters_hh__

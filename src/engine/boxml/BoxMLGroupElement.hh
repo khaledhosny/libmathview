@@ -29,7 +29,7 @@ class BoxMLGroupElement : public BoxMLLinearContainerElement
 {
 protected:
   BoxMLGroupElement(const SmartPtr<class BoxMLNamespaceContext>&);
-  virtual ~BoxMLNamespaceContext();
+  virtual ~BoxMLGroupElement();
 
 public:
   static SmartPtr<BoxMLGroupElement> create(const SmartPtr<class BoxMLNamespaceContext>&);

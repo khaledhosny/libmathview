@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "Adaptors.hh"
+#include "Adapters.hh"
 #include "ChildList.hh"
 #include "MathMLElementFactory.hh"
 #include "MathMLTableCellElement.hh"
@@ -94,7 +94,7 @@ MathMLTableElement::construct()
       if (getSize() == 0)
 	appendChild(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement()));
 
-      std::for_each(content.begin(), content.end(), ConstructAdaptor());
+      std::for_each(content.begin(), content.end(), ConstructAdapter<MathMLElement>());
 
       resetDirtyStructure();
     }

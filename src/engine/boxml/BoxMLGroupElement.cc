@@ -23,6 +23,8 @@
 #include <config.h>
 
 #include "BoxMLGroupElement.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxMLAttributeSignatures.hh"
 
 BoxMLGroupElement::BoxMLGroupElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLLinearContainerElement(context)
@@ -36,15 +38,15 @@ BoxMLGroupElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      REFINE_ATTRIBUTE(context, BoxML, Group, size);
-      REFINE_ATTRIBUTE(context, BoxML, Group, color);
-      REFINE_ATTRIBUTE(context, BoxML, Group, background);
+      REFINE_ATTRIBUTE(context, BoxML, Text, size);
+      REFINE_ATTRIBUTE(context, BoxML, Text, color);
+      REFINE_ATTRIBUTE(context, BoxML, Text, background);
       BoxMLLinearContainerElement::refine(context);
     }
 }
 
 AreaRef
-BoxMLGroupElement::format(BoxFormattingContext& context)
+BoxMLGroupElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
@@ -67,6 +69,6 @@ BoxMLGroupElement::formatContent(BoxFormattingContext& ctxt, std::vector<AreaRef
     if (SmartPtr<BoxMLGroupElement> group = smart_cast<BoxMLGroupElement>(*p))
       group->formatContent(ctxt, areas);
     else
-      areas.push_back((*p)->format(context));
+      areas.push_back((*p)->format(ctxt));
   ctxt.pop();
 }
