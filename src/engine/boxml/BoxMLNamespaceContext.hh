@@ -24,32 +24,25 @@
 #define __BoxMLNamespaceContext_hh__
 
 #include "NamespaceContext.hh"
-#include "BoxFormattingContext.hh"
 
 class BoxMLNamespaceContext : public NamespaceContext
 {
 protected:
   BoxMLNamespaceContext(const SmartPtr<class View>&,
-			const SmartPtr<class Linker>&,
-			const SmartPtr<class BoxMLElementFactory>&,
 			const SmartPtr<class BoxGraphicDevice>&);
   virtual ~BoxMLNamespaceContext();
 
 public:
   static SmartPtr<BoxMLNamespaceContext> create(const SmartPtr<class View>& view,
-						const SmartPtr<class Linker>& linker,
-						const SmartPtr<class BoxMLElementFactory>& factory,
 						const SmartPtr<class BoxGraphicDevice>& device)
-  { return new BoxMLNamespaceContext(view, linker, factory, device); }
+  { return new BoxMLNamespaceContext(view, device); }
 
-  SmartPtr<class BoxMLElementFactory> getFactory(void) const;
   SmartPtr<class BoxGraphicDevice> getGraphicDevice(void) const;
 
-  virtual SmartPtr<class Element> construct(const DOM::Element&) const;
+  //virtual SmartPtr<class Element> construct(const DOM::Element&) const;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const;
 
 private:
-  SmartPtr<class BoxMLElementFactory> factory;
   SmartPtr<class BoxGraphicDevice> device;
 };
 

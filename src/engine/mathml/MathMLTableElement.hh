@@ -197,8 +197,10 @@ public:
   static SmartPtr<MathMLTableElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTableElement(view); }
 
+#if 0
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#endif
 #if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

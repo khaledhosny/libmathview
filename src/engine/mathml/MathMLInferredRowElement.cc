@@ -20,12 +20,17 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __MathMLParseFile_hh__
-#define __MathMLParseFile_hh__
+#include <config.h>
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-DOM::Document MathMLParseFile(const char*, bool);
-#endif
+#include "MathMLInferredRowElement.hh"
 
-#endif // __MathMLParseFile_hh__
+MathMLInferredRowElement::MathMLInferredRowElement(const SmartPtr<MathMLNamespaceContext>& ctxt)
+  : MathMLRowElement(ctxt)
+{ }
+
+MathMLInferredRowElement::~MathMLInferredRowElement()
+{ }
+
+SmartPtr<MathMLInferredRowElement>
+MathMLInferredRowElement::create(const SmartPtr<MathMLNamespaceContext>& ctxt)
+{ return new MathMLInferredRowElement(ctxt); }

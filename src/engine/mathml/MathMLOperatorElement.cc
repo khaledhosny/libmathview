@@ -45,9 +45,9 @@ MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceConte
 }
 
 MathMLOperatorElement::~MathMLOperatorElement()
-{
-}
+{ }
 
+#if 0
 void
 MathMLOperatorElement::refine(AbstractRefinementContext& context)
 {
@@ -68,6 +68,7 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
       MathMLTokenElement::refine(context);
     }
 }
+#endif
 
 //#include "scaledAux.hh"
 //#include "BoundingBoxAux.hh"
@@ -90,7 +91,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       SmartPtr<AttributeList> postfix;
 
       String operatorName = GetRawContent();
-      Globals::dictionary.Search(operatorName, prefix, infix, postfix);
+      Globals::dictionary.search(operatorName, prefix, infix, postfix);
 
       SmartPtr<AttributeList> defaults;
       if      (form == T_PREFIX && prefix) defaults = prefix;

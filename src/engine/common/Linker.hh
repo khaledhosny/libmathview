@@ -23,7 +23,7 @@
 #ifndef __Linker_hh__
 #define __Linker_hh__
 
-#include "DOM.hh"
+#include "gmetadom.hh"
 #include "HashMap.hh"
 #include "SmartPtr.hh"
 #include "WeakPtr.hh"

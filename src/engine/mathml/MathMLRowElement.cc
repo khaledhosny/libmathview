@@ -29,7 +29,6 @@
 #include <stddef.h>
 
 #include "MathMLAdapters.hh"
-#include "ChildList.hh"
 #include "traverseAux.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLSpaceElement.hh"

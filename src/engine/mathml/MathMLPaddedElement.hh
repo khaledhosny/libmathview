@@ -37,7 +37,7 @@ public:
   static SmartPtr<MathMLPaddedElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLPaddedElement(view); }
 
-  virtual void refine(class AbstractRefinementContext&);
+  //virtual void refine(class AbstractRefinementContext&);
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:

@@ -29,7 +29,6 @@
 #include "ValueConversion.hh"
 #include "MathMLStyleElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "AbstractRefinementContext.hh"
 #include "MathMLAttributeSignatures.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
@@ -40,40 +39,6 @@ MathMLStyleElement::MathMLStyleElement(const SmartPtr<class MathMLNamespaceConte
 
 MathMLStyleElement::~MathMLStyleElement()
 { }
-
-void
-MathMLStyleElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Style, scriptlevel);
-      REFINE_ATTRIBUTE(context, MathML, Style, displaystyle);
-      REFINE_ATTRIBUTE(context, MathML, Style, scriptsizemultiplier);
-      REFINE_ATTRIBUTE(context, MathML, Style, scriptminsize);
-      REFINE_ATTRIBUTE(context, MathML, Style, mathcolor);
-      REFINE_ATTRIBUTE(context, MathML, Style, mathbackground);
-      REFINE_ATTRIBUTE(context, MathML, Style, color);
-      REFINE_ATTRIBUTE(context, MathML, Style, background);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativeveryverythickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativeverythickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativethickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativemediummathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativethinmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativeverythinmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, negativeveryverythinmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, veryverythinmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, verythinmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, thinmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, mediummathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, thickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, verythickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, veryverythickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, mathsize);
-      context.push(getDOMElement());
-      MathMLNormalizingContainerElement::refine(context);
-      context.pop();
-    }
-}
 
 AreaRef
 MathMLStyleElement::format(MathFormattingContext& ctxt)

@@ -34,7 +34,7 @@ protected:
 public:
   static SmartPtr<BoxMLActionElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
   
-  virtual void refine(class AbstractRefinementContext&);
+  //virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class BoxFormattingContext&);
 
   virtual scaled getStep(void) const;

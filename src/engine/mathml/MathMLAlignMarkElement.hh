@@ -36,7 +36,7 @@ public:
   static SmartPtr<MathMLAlignMarkElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLAlignMarkElement(view); }
 
-  virtual void refine(class AbstractRefinementContext&);
+  //virtual void refine(class AbstractRefinementContext&);
 
   virtual bool IsSpaceLike(void) const;
 

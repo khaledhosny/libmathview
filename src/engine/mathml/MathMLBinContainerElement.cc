@@ -24,8 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
-#include "ChildList.hh"
 #include "MathMLBinContainerElement.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
@@ -36,52 +34,6 @@ MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathML
 
 MathMLBinContainerElement::~MathMLBinContainerElement()
 { }
-
-#if 0
-void
-MathMLBinContainerElement::construct(ConstructionContext& ctxt)
-{
-  if (dirtyStructure())
-    {
-      ctxt.getReader().firstChild();
-      setChild(ctxt.getNode(getChild()));
-      ctxt.getReader().parentNode();
-      resetDirtyStructure();
-    }
-}
-#endif
-
-void
-MathMLBinContainerElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-      if (children.get_length() > 0)
-	{
-	  DOM::Node node = children.item(0);
-	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  SmartPtr<MathMLElement> elem = getFormattingNode(node);
-	  assert(elem);
-	  setChild(elem);
-	}
-#endif // HAVE_GMETADOM
-
-      if (getChild()) getChild()->construct();
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLBinContainerElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      if (getChild()) getChild()->refine(context);
-      MathMLContainerElement::refine(context);
-    }  
-}
 
 AreaRef
 MathMLBinContainerElement::format(MathFormattingContext& ctxt)

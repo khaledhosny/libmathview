@@ -48,6 +48,7 @@ SmartPtr<BoxMLParagraphElement>
 BoxMLParagraphElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLParagraphElement(context); }
 
+#if 0
 void
 BoxMLParagraphElement::refine(AbstractRefinementContext& context)
 {
@@ -59,6 +60,7 @@ BoxMLParagraphElement::refine(AbstractRefinementContext& context)
       BoxMLLinearContainerElement::refine(context);
     }
 }
+#endif
 
 AreaRef
 BoxMLParagraphElement::format(BoxFormattingContext& ctxt)

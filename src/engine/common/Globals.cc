@@ -26,9 +26,6 @@
 #include <string.h>
 
 #include "Globals.hh"
-#include "token.hh"
-
-#include "config.dirs"
 
 namespace Globals {
 
@@ -37,40 +34,6 @@ namespace Globals {
   Logger             logger;
 
   static bool drawMissingCharacter = true;
-  static bool done = false;
-
-  void
-  InitGlobalData(const char* confPath)
-  {
-    assert(!done);
-
-    initTokens();
-
-    bool res = false;
-    if (confPath != NULL) res = configuration.Load(confPath);
-    if (!res) res = configuration.Load(PKGDATADIR"/math-engine-configuration.xml");
-    if (!res) res = configuration.Load("config/math-engine-configuration.xml");
-    if (!res) {
-      logger(LOG_ERROR, "could not find configuration file");
-      exit(-1);
-    }
-
-    if (!configuration.GetDictionaries().empty())
-      for (std::vector<std::string>::const_iterator dit = configuration.GetDictionaries().begin();
-	   dit != configuration.GetDictionaries().end();
-	   dit++)
-	{
-	  logger(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	  if (!dictionary.Load((*dit).c_str()))
-	    logger(LOG_WARNING, "could not load `%s'", (*dit).c_str());
-	}
-    else {
-      bool res = dictionary.Load("config/dictionary.xml");
-      if (!res) dictionary.Load(PKGDATADIR"/dictionary.xml");
-    }
-
-    done = true;
-  }
 
   void
   SetVerbosity(int level)

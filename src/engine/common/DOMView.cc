@@ -26,10 +26,14 @@
 #include "Element.hh"
 #include "Linker.hh"
 #include "NamespaceRegistry.hh"
-#include "NamespaceContext.hh"
+#include "MathMLNamespaceContext.hh"
+#include "BoxMLNamespaceContext.hh"
 
-DOMView::DOMView() : linker(Linker::create())
-{ }
+DOMView::DOMView()
+{
+  builder.setNamespaceContexts(getMathMLNamespaceContext(),
+			       getBoxMLNamespaceContext());
+}
 
 DOMView::~DOMView()
 { }
@@ -37,7 +41,8 @@ DOMView::~DOMView()
 SmartPtr<Element>
 DOMView::findElement(const DOM::Element& el) const
 {
-  return linker->get(el);
+  //return linker->get(el);
+  return 0;
 }
 
 SmartPtr<Element>
@@ -63,6 +68,7 @@ DOMView::findDOMElement(const SmartPtr<Element>& elem) const
   return p ? p->getDOMElement() : DOM::Element(0);
 }
 
+#if 0
 void
 DOMView::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
 {
@@ -86,10 +92,12 @@ DOMView::DOMAttrModifiedListener::handleEvent(const DOM::Event& ev)
   if (SmartPtr<Element> elem = view->findSelfOrAncestorElement(DOM::Element(me.get_target())))
     elem->setDirtyAttribute();
 }
+#endif
 
 void
 DOMView::setRootDOMElement(const DOM::Element& elem)
 {
+#if 0
   if (rootDOMElement == elem) return;
 
   if (rootDOMElement)
@@ -123,15 +131,20 @@ DOMView::setRootDOMElement(const DOM::Element& elem)
       et.addEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
       et.addEventListener("DOMAttrModified", *attrModifiedListener, false);
     }
+#endif
+  builder.setRootDOMElement(elem);
 }
 
 SmartPtr<Element>
 DOMView::getRootElement() const
 {
+#if 0
   if (rootDOMElement)
     {
       if (SmartPtr<NamespaceContext> context = getRegistry()->get(rootDOMElement.get_namespaceURI()))
-	rootElement = context->construct(rootDOMElement);
+	//rootElement = context->construct(rootDOMElement);
+	// build the document with the appropriate builder
+	rootElement = 0;
       else
 	// warning???
 	rootElement = 0;
@@ -140,13 +153,17 @@ DOMView::getRootElement() const
     rootElement = 0;
 
   return rootElement;
+#endif
+  return builder.getRootElement();
 }
 
+#if 0
 SmartPtr<Linker>
 DOMView::getLinker() const
 {
   return linker;
 }
+#endif
 
 bool
 DOMView::getDOMElementExtents(const DOM::Element& el, scaled& x, scaled& y, BoundingBox& box) const

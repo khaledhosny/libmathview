@@ -27,6 +27,7 @@
 #include <sstream>
 
 #include "defs.h"
+#include "config.dirs"
 
 // don't know why this is needed!!!
 #define PANGO_ENABLE_BACKEND
@@ -38,6 +39,9 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkdrawingarea.h>
 
+#include "gmetadom_Builder.hh"
+#include "gmetadom_Setup.hh"
+
 #include "Globals.hh"
 #include "Rectangle.hh"
 #include "scaledConv.hh"
@@ -46,13 +50,9 @@
 #include "MathMLElement.hh"
 #include "NamespaceRegistry.hh"
 #include "MathMLActionElement.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLNamespaceContext.hh"
-#include "BoxMLElementFactory.hh"
 #include "BoxMLNamespaceContext.hh"
-#include "DOMView.hh"
-#include "Linker.hh"
-#include "MathMLParseFile.hh"
+#include "View.hh"
 
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_BoxGraphicDevice.hh"
@@ -103,7 +103,7 @@ struct _GtkMathView {
   GdomeElement*  cursor_elem;
 #endif
 
-  DOMView*       view;
+  View*          view;
   Gtk_RenderingContext* renderingContext;
 };
 
@@ -173,11 +173,13 @@ static guint element_over_signal = 0;
 /* auxiliary C++ functions */
 
 static SmartPtr<const Gtk_WrapperArea>
-findGtkWrapperArea(const SmartPtr<DOMView>& view, const DOM::Element& node)
+findGtkWrapperArea(const SmartPtr<View>& view, const DOM::Element& node)
 {
+#if 0
   if (SmartPtr<Element> elem = view->findElement(node))
     if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
       return area;
+#endif
   return 0;
 }
 
@@ -280,10 +282,44 @@ gtk_math_view_get_type(void)
       (GInstanceInitFunc) gtk_math_view_init,
     };
     math_view_type = g_type_register_static(GTK_TYPE_EVENT_BOX, "GtkMathView",
-		    &math_view_info, (GTypeFlags) 0);
+					    &math_view_info, (GTypeFlags) 0);
   }
 
   return math_view_type;
+}
+
+static void
+initGlobalData(const char* confPath)
+{
+  static bool done = false;
+  assert(!done);
+
+  initTokens();
+
+  bool res = false;
+  if (confPath != NULL) res = loadConfiguration(Globals::configuration, confPath);
+  if (!res) res = loadConfiguration(Globals::configuration, PKGDATADIR"/math-engine-configuration.xml");
+  if (!res) res = loadConfiguration(Globals::configuration, "config/math-engine-configuration.xml");
+  if (!res) {
+    Globals::logger(LOG_ERROR, "could not find configuration file");
+    exit(-1);
+  }
+
+  if (!Globals::configuration.getDictionaries().empty())
+    for (std::vector<std::string>::const_iterator dit = Globals::configuration.getDictionaries().begin();
+	 dit != Globals::configuration.getDictionaries().end();
+	 dit++)
+      {
+	Globals::logger(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
+	if (!loadOperatorDictionary(Globals::dictionary, (*dit).c_str()))
+	  Globals::logger(LOG_WARNING, "could not load `%s'", (*dit).c_str());
+      }
+  else {
+    bool res = loadOperatorDictionary(Globals::dictionary, "config/dictionary.xml");
+    if (!res) loadOperatorDictionary(Globals::dictionary, PKGDATADIR"/dictionary.xml");
+  }
+
+  done = true;
 }
 
 static void
@@ -373,7 +409,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 		 gtk_marshal_NONE__POINTER_INT,
 		 G_TYPE_NONE, 2 , GTK_TYPE_POINTER,GTK_TYPE_INT);
 	
-  Globals::InitGlobalData(getenv("MATHENGINECONF"));
+  initGlobalData(getenv("MATHENGINECONF"));
 }
 
 static void
@@ -409,26 +445,11 @@ gtk_math_view_init(GtkMathView* math_view)
   assert(viewContext);
 #endif
 
-  SmartPtr<DOMView> view = DOMView::create();
+  SmartPtr<View> view = View::create(gmetadom_Builder::create(),
+				     Gtk_MathGraphicDevice::create(math_view->area),
+				     Gtk_BoxGraphicDevice::create(math_view->area));
   view->ref();
   math_view->view = view;
-
-  SmartPtr<MathMLElementFactory> mmlFactory = MathMLElementFactory::create();
-  SmartPtr<MathMLNamespaceContext> mmlContext =
-    MathMLNamespaceContext::create(view,
-				   view->getLinker(),
-				   mmlFactory,
-				   Gtk_MathGraphicDevice::create(math_view->area));
-  mmlFactory->setContext(mmlContext);
-  SmartPtr<BoxMLElementFactory> bmlFactory = BoxMLElementFactory::create();
-  SmartPtr<BoxMLNamespaceContext> bmlContext =
-    BoxMLNamespaceContext::create(view,
-				  view->getLinker(),
-				  bmlFactory,
-				  Gtk_BoxGraphicDevice::create(math_view->area));
-  bmlFactory->setContext(bmlContext);
-  view->getRegistry()->add(mmlContext);
-  view->getRegistry()->add(bmlContext);
 
   math_view->renderingContext = new Gtk_RenderingContext;
   math_view->renderingContext->setWidget(math_view->area);
@@ -791,11 +812,11 @@ gtk_math_view_configure_event(GtkWidget* widget,
 
   Gtk_RenderingContext* rc = math_view->renderingContext;
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
-  rc->setForegroundColor(Globals::configuration.GetSelectForeground());
-  rc->setBackgroundColor(Globals::configuration.GetSelectBackground());
+  rc->setForegroundColor(Globals::configuration.getSelectForeground());
+  rc->setBackgroundColor(Globals::configuration.getSelectBackground());
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(Globals::configuration.GetForeground());
-  rc->setBackgroundColor(Globals::configuration.GetBackground());
+  rc->setForegroundColor(Globals::configuration.getForeground());
+  rc->setBackgroundColor(Globals::configuration.getBackground());
   paint_widget(math_view);
 
   return TRUE;
@@ -935,7 +956,7 @@ gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (DOM::Document doc = MathMLParseFile(name, true))
+  if (DOM::Document doc = parseXMLFile(name, true))
     {
       GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
       g_assert(d != NULL);
@@ -971,7 +992,8 @@ gtk_math_view_load_root(GtkMathView* math_view, GdomeElement* elem)
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
-  math_view->view->setRootDOMElement(DOM::Element(elem));
+  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
+    builder->setRootDOMElement(DOM::Element(elem));
 
   reset_adjustments(math_view);
   paint_widget(math_view);
@@ -1078,9 +1100,9 @@ gtk_math_view_set_font_size(GtkMathView* math_view, guint size)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view);
   g_return_if_fail(size > 0);
-  if (SmartPtr<NamespaceContext> ctxt = math_view->view->getRegistry()->get(MATHML_NS_URI))
+  if (SmartPtr<NamespaceContext> ctxt = math_view->view->getMathMLNamespaceContext())
     ctxt->setDefaultFontSize(size);
-  if (SmartPtr<NamespaceContext> ctxt = math_view->view->getRegistry()->get(BOXML_NS_URI))
+  if (SmartPtr<NamespaceContext> ctxt = math_view->view->getBoxMLNamespaceContext())
     ctxt->setDefaultFontSize(size);
   paint_widget(math_view);
 }
@@ -1090,7 +1112,7 @@ gtk_math_view_get_font_size(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view, 0);
   g_return_val_if_fail(math_view->view, 0);
-  SmartPtr<NamespaceContext> ctxt = math_view->view->getRegistry()->get(MATHML_NS_URI);
+  SmartPtr<NamespaceContext> ctxt = math_view->view->getMathMLNamespaceContext();
   assert(ctxt);
   return ctxt->getDefaultFontSize();
 }
@@ -1160,6 +1182,7 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GdomeElemen
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
+#if 0
   DOM::Element el;
   if (math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
 				       Gtk_RenderingContext::fromGtkY(y), el))
@@ -1168,6 +1191,7 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GdomeElemen
       return TRUE;
     }
   else
+#endif
     return FALSE;
 }
 
@@ -1182,6 +1206,7 @@ gtk_math_view_get_element_location(GtkMathView* math_view, GdomeElement* elem,
   scaled sx;
   scaled sy;
   BoundingBox box;
+#if 0
   if (math_view->view->getDOMElementExtents(DOM::Element(elem), sx, sy, box))
     {
       if (x) *x = Gtk_RenderingContext::toGtkX(sx);
@@ -1197,6 +1222,7 @@ gtk_math_view_get_element_location(GtkMathView* math_view, GdomeElement* elem,
       return TRUE;
     }
   else
+#endif
     return FALSE;
 }
 
@@ -1209,6 +1235,7 @@ gtk_math_view_get_char_at(GtkMathView* math_view, gint x, gint y,
   
   DOM::Element el;
   int idx;
+#if 0
   if (math_view->view->getCharAt(Gtk_RenderingContext::fromGtkX(x),
 				 Gtk_RenderingContext::fromGtkY(y),
 				 el, idx))
@@ -1218,6 +1245,7 @@ gtk_math_view_get_char_at(GtkMathView* math_view, gint x, gint y,
       return TRUE;
     }
   else
+#endif
     return FALSE;
 }
 
@@ -1233,6 +1261,7 @@ gtk_math_view_get_char_location(GtkMathView* math_view, GdomeElement* elem,
   scaled sx;
   scaled sy;
   BoundingBox box;
+#if 0
   if (math_view->view->getCharExtents(DOM::Element(elem), index, sx, sy, box))
     {
       if (x) *x = Gtk_RenderingContext::toGtkX(sx);
@@ -1248,6 +1277,7 @@ gtk_math_view_get_char_location(GtkMathView* math_view, GdomeElement* elem,
       return TRUE;
     }
   else
+#endif
     return FALSE;
 }
 

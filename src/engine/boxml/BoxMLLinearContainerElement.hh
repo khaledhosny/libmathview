@@ -39,9 +39,12 @@ public:
   SmartPtr<BoxMLElement> getChild(unsigned i) const { return content.getChild(i); }
   void setChild(unsigned i, const SmartPtr<BoxMLElement>& child) { content.setChild(this, i, child); }
   void appendChild(const SmartPtr<BoxMLElement>& child) { content.appendChild(this, child); }
+  void swapContent(std::vector<SmartPtr<BoxMLElement> >& newContent) { content.swapContent(this, newContent); }
 
+#if 0
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#endif
 
   virtual void setFlagDown(Flags f)
   {

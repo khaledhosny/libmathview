@@ -38,7 +38,7 @@ public:
   static SmartPtr<MathMLOperatorElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLOperatorElement(view); }
 
-  virtual void refine(class AbstractRefinementContext&);
+  //virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
   bool         IsStretchy(void) const { return stretchy != 0; }

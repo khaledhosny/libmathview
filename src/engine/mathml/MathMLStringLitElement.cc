@@ -36,9 +36,9 @@ MathMLStringLitElement::MathMLStringLitElement(const SmartPtr<class MathMLNamesp
 }
 
 MathMLStringLitElement::~MathMLStringLitElement()
-{
-}
+{ }
 
+#if 0
 void
 MathMLStringLitElement::refine(AbstractRefinementContext& context)
 {
@@ -49,6 +49,7 @@ MathMLStringLitElement::refine(AbstractRefinementContext& context)
       MathMLTokenElement::refine(context);
     }
 }
+#endif
 
 #if 0
 void

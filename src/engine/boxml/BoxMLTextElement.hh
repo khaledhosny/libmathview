@@ -34,8 +34,10 @@ protected:
 public:
   static SmartPtr<BoxMLTextElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
+#if 0
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#endif
   virtual AreaRef format(class BoxFormattingContext&);
 
   void setContent(const String&);

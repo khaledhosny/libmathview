@@ -22,15 +22,6 @@
 
 #include <config.h>
 
-#include <cassert>
-
-#include <algorithm>
-#include <functional>
-
-#include "defs.h"
-#include "for_each_if.h"
-#include "Adapters.hh"
-#include "ChildList.hh"
 #include "MathMLLinearContainerElement.hh"
 
 MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathMLNamespaceContext>& context)
@@ -39,85 +30,6 @@ MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathML
 
 MathMLLinearContainerElement::~MathMLLinearContainerElement()
 { }
-
-#if 0
-void
-MathMLLinearContainerElement::construct(AbstractConstructionContext& ctxt)
-{
-  if (dirtyStructure())
-    {
-      ctxt.getReader().firstChild();
-
-#if 0
-      std::vector< SmartPtr<MathMLElement> > newContent;
-      while (SmartPtr<MathMLElement> elem = ctxt.getNode(getChild(i), false))
-	newContent.push_back(elem);
-      swapContent(elem);
-#else
-      unsigned i = 0;
-      while (SmartPtr<Element> elem = ctxt.getElement(getChild(i), false))
-	setChild(i++, elem);
-      setSize(i);
-#endif
-      ctxt.getReader().parentNode();
-      resetDirtyStructure();
-    }
-}
-#endif
-
-void
-MathMLLinearContainerElement::construct()
-{
-  if (dirtyStructure())
-    {
-      // editing is supported with DOM only
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  unsigned n = children.get_length();
-
-	  std::vector< SmartPtr<MathMLElement> > newContent;
-	  newContent.reserve(n);
-	  for (unsigned i = 0; i < n; i++)
-	    {
-	      DOM::Node node = children.item(i);
-	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-
-	      if (SmartPtr<MathMLElement> elem = getFormattingNode(node))
-		newContent.push_back(elem);
-	      else
-		{
-		  // it might be that we get a NULL. In that case it would probably make
-		  // sense to create a dummy element, because we filtered MathML
-		  // elements only
-		}
-	    }
-	  swapContent(newContent);
-	}
-#endif // HAVE_GMETADOM
-      
-      // it is better to normalize elements only after all the rendering
-      // interfaces have been collected, because the structure might change
-      // depending on the actual number of children
-      for_each_if(content.begin(), content.end(),
-		  NotNullPredicate<MathMLElement>(),
-		  ConstructAdapter<MathMLElement>());
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLLinearContainerElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      for_each_if(content.begin(), content.end(),
-		  NotNullPredicate<MathMLElement>(),
-		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
-      MathMLContainerElement::refine(context);
-    }
-}
 
 void
 MathMLLinearContainerElement::setFlagDown(Flags f)

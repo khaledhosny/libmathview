@@ -41,6 +41,7 @@ SmartPtr<BoxMLSpaceElement>
 BoxMLSpaceElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLSpaceElement(context); }
 
+#if 0
 void
 BoxMLSpaceElement::refine(class AbstractRefinementContext& context)
 {
@@ -52,6 +53,7 @@ BoxMLSpaceElement::refine(class AbstractRefinementContext& context)
       BoxMLElement::refine(context);
     }
 }
+#endif
 
 AreaRef
 BoxMLSpaceElement::makeSpaceArea(BoxFormattingContext& ctxt)

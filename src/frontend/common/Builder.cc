@@ -22,101 +22,20 @@
 
 #include <config.h>
 
-#include "defs.h"
 #include "Builder.hh"
-#include "Attribute.hh"
-#include "Element.hh"
+#include "MathMLNamespaceContext.hh"
+#include "BoxMLNamespaceContext.hh"
 
 Builder::Builder()
-{
-  ns_map[MATHML_NS_URI] = MATHML_NS_ID;
-  ns_map[BOXML_NS_URI] = BOXML_NS_ID;
-}
+{ }
 
 Builder::~Builder()
-{
-}
+{ }
 
 void
-Builder::registerElementBuilder(const String& ns, const String& tag, const SmartPtr<ElementBuilder>& b)
+Builder::setNamespaceContexts(const SmartPtr<MathMLNamespaceContext>& mmlContext,
+			      const SmartPtr<BoxMLNamespaceContext>& bmlContext)
 {
-  NamespaceMap::const_iterator p = ns_map.find(ns);
-  if (p != ns_map.end()) builder[p->second][tag] = b;
+  mathmlContext = mmlContext;
+  boxmlContext = bmlContext;
 }
-
-void
-Builder::registerDummyElementBuilder(const String& ns, const SmartPtr<ElementBuilder>& builder)
-{
-  NamespaceMap::const_iterator p = ns_map.find(ns);
-  if (p != ns_map.end()) dummyBuilder[p->second] = builder;
-}
-
-void
-Builder::refineAttribute(const SmartPtr<Element>& el, const AttributeSignature& signature) const
-{
-  SmartPtr<Attribute> attr;
-  
-  if (signature.fromElement)
-    attr = getAttribute(signature);
-
-  if (!attr && signature.fromContext)
-    attr = getAttributeFromContext(signature);
-
-  if (attr) el->setAttribute(attr);
-  else el->removeAttribute(signature);
-}
-
-SmartPtr<Element>
-Builder::getElement()
-{
-  if (SmartPtr<Element> elem = getElementNoCreate())
-    return elem;
-  else
-    return getDummyElement();
-}
-
-SmartPtr<Element>
-Builder::getElementNoCreate()
-{
-  if (more())
-    {
-      const SmartPtr<ElementBuilder> builder = getElementBuilder();
-
-      SmartPtr<Element> elem = getCachedElement();
-      if (!elem) elem = builder->create();
-
-      if (elem->dirtyAttribute() || elem->dirtyAttributeP())
-	{
-	  builder->refine(*this, elem);
-	  elem->resetDirtyAttribute(); // should not reset dirtyAttributeP
-	}
-
-      beginContent();
-      if (elem->dirtyStructure() || elem->dirtyAttributeP())
-	{
-	  builder->update(*this, elem);
-	  elem->resetDirtyStructure();
-	  elem->resetDirtyAttribute(); // should be resetDirtyAttributeP
-	}
-      endContent();
-
-      return elem;
-    }
-  else
-    return 0;
-}
-
-SmartPtr<Builder::ElementBuilder>
-Builder::getDummyElementBuilder(const String& ns) const
-{
-  NamespaceMap::const_iterator p = ns_map.find(ns);
-  return (p != ns_map.end()) ? getDummyElementBuilder(p->second) : 0;
-}
-
-SmartPtr<Builder::ElementBuilder>
-Builder::getDummyElementBuilder(NamespaceID nsID) const
-{
-  assert(nsID >= 0 && nsID < LAST_NS_ID);
-  return dummyBuilder[nsID];
-}
-

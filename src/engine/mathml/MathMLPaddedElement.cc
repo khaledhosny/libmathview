@@ -39,6 +39,7 @@ MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLNamespaceCon
 MathMLPaddedElement::~MathMLPaddedElement()
 { }
 
+#if 0
 void
 MathMLPaddedElement::refine(AbstractRefinementContext& context)
 {
@@ -49,31 +50,6 @@ MathMLPaddedElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, MathML, Padded, height);
       REFINE_ATTRIBUTE(context, MathML, Padded, depth);
       MathMLNormalizingContainerElement::refine(context);
-    }
-}
-
-#if 0
-void
-MathMLPaddedElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      width.valid = lSpace.valid = height.valid = depth.valid = false;
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, width))
-	ParseLengthDimension(env, value, width, T_WIDTH);
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, lspace))
-	ParseLengthDimension(env, value, lSpace, T_LSPACE);
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, height))
-	ParseLengthDimension(env, value, height, T_HEIGHT);
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, depth))
-	ParseLengthDimension(env, value, depth, T_DEPTH);
-
-      MathMLNormalizingContainerElement::Setup(env);
-      resetDirtyAttribute();
     }
 }
 #endif

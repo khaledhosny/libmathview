@@ -2,15 +2,11 @@
 noinst_LTLIBRARIES = libmathml.la
 
 libmathml_la_SOURCES = \
-  Configuration.cc \
-  Globals.cc \
   traverseAux.cc \
   MathMLValueConversion.cc \
   mathVariantAux.cc \
-  MathMLElementFactory.cc \
   MathMLNamespaceContext.cc \
   MathMLOperatorDictionary.cc \
-  MathMLEntitiesTable.cc \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
@@ -22,7 +18,6 @@ libmathml_la_SOURCES = \
   MathMLEmbellishment.cc \
   MathMLEncloseElement.cc \
   MathMLErrorElement.cc \
-  MathMLFencedElement.cc \
   MathMLFractionElement.cc \
   MathMLGlyphNode.cc \
   MathMLIdentifierElement.cc \
@@ -35,12 +30,11 @@ libmathml_la_SOURCES = \
   MathMLNumberElement.cc \
   MathMLOperatorElement.cc \
   MathMLPaddedElement.cc \
-  MathMLParseFile.cc \
   MathMLPhantomElement.cc \
   MathMLRadicalElement.cc \
   MathMLRowElement.cc \
+  MathMLInferredRowElement.cc \
   MathMLScriptElement.cc \
-  MathMLSemanticsElement.cc \
   MathMLSpaceElement.cc \
   MathMLSpaceNode.cc \
   MathMLStringLitElement.cc \
@@ -58,17 +52,13 @@ libmathml_la_SOURCES = \
   tableLayout.cc
 
 noinst_HEADERS = \
-  Configuration.hh \
-  Globals.hh \
   traverseAux.hh \
   MathML.hh \
   MathMLValueConversion.hh \
   mathVariantAux.hh \
   MathMLAdapters.hh \
-  MathMLElementFactory.hh \
   MathMLNamespaceContext.hh \
   MathMLOperatorDictionary.hh \
-  MathMLEntitiesTable.hh \
   MathMLAttributeParsers.hh \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
@@ -82,7 +72,6 @@ noinst_HEADERS = \
   MathMLEmbellishment.hh \
   MathMLEncloseElement.hh \
   MathMLErrorElement.hh \
-  MathMLFencedElement.hh \
   MathMLFractionElement.hh \
   MathMLGlyphNode.hh \
   MathMLIdentifierElement.hh \
@@ -95,12 +84,11 @@ noinst_HEADERS = \
   MathMLNumberElement.hh \
   MathMLOperatorElement.hh \
   MathMLPaddedElement.hh \
-  MathMLParseFile.hh \
   MathMLPhantomElement.hh \
   MathMLRadicalElement.hh \
   MathMLRowElement.hh \
+  MathMLInferredRowElement.hh \
   MathMLScriptElement.hh \
-  MathMLSemanticsElement.hh \
   MathMLSpaceElement.hh \
   MathMLSpaceNode.hh \
   MathMLStringLitElement.hh \
@@ -116,10 +104,10 @@ noinst_HEADERS = \
   MathMLmathElement.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants/ \
   -I$(top_srcdir)/src/formatter/areamodel \

@@ -39,7 +39,7 @@ SmartPtr<Value>
 AttributeSignature::parseValue(const String& v) const
 {
   assert(parser);
-  UCS4String s = toUCS4String(v);
+  UCS4String s = UCS4StringOfString(v);
   UCS4String::const_iterator next;
   return parser(s.begin(), s.end(), next);
 }

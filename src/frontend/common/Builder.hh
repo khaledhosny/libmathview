@@ -24,61 +24,23 @@
 #define __Builder_hh__
 
 #include "Object.hh"
-#include "HashMap.hh"
 #include "SmartPtr.hh"
-#include "String.hh"
 
-class Builder
+class Builder : public Object
 {
-public:
+protected:
   Builder(void);
   virtual ~Builder();
 
-  enum NamespaceID {
-    NOTVALID_NS_ID = -1,
-    MATHML_NS_ID,
-    BOXML_NS_ID,
+public:
+  virtual SmartPtr<class Element> getRootElement(void) const = 0;
 
-    LAST_NS_ID
-  };
-
-  struct ElementBuilder : public Object
-  {
-    virtual SmartPtr<class Element> create(void) const = 0;
-    virtual void refine(const Builder&, const SmartPtr<class Element>&) const = 0;
-    virtual void update(const Builder&, const SmartPtr<class Element>&) const = 0;
-  };
-
-  void registerElementBuilder(const String&, const String&, const SmartPtr<ElementBuilder>&);
-  void registerDummyElementBuilder(const String&, const SmartPtr<ElementBuilder>&);
-  SmartPtr<class Element> getElement(void);
-
-  virtual bool more(void) const = 0;
-  virtual void beginContent(void) = 0;
-  virtual void endContent(void) = 0;
-  virtual void pushRefinementContext(void) = 0;
-  virtual void dropRefinementContext(void) = 0;
-  virtual NamespaceID getElementNamespaceID(void) const = 0;
-  virtual String getElementNamespace(void) const = 0;
-  virtual String getElementTag(void) const = 0;
-  virtual SmartPtr<class Attribute> getAttribute(const class AttributeSignature&) const = 0;
+  void setNamespaceContexts(const SmartPtr<class MathMLNamespaceContext>&,
+			    const SmartPtr<class BoxMLNamespaceContext>&);
 
 protected:
-  virtual SmartPtr<class Element> getCachedElement(void) const = 0;
-  virtual SmartPtr<class Element> getDummyElement(void) const = 0;
-  virtual SmartPtr<class Attribute> getAttributeFromContext(const class AttributeSignature&) const = 0;
-  virtual SmartPtr<ElementBuilder> getElementBuilder(void) const = 0;
-
-  void refineAttribute(const SmartPtr<class Element>&, const class AttributeSignature&) const;
-  SmartPtr<class Element> getElementNoCreate(void);
-  SmartPtr<ElementBuilder> getDummyElementBuilder(const String&) const;
-  SmartPtr<ElementBuilder> getDummyElementBuilder(NamespaceID) const;
-
-private:
-  typedef HASH_MAP_NS::hash_map<String,NamespaceID,StringHash,StringEq> NamespaceMap;
-  NamespaceMap ns_map;
-  HASH_MAP_NS::hash_map<String,SmartPtr<ElementBuilder>,StringHash,StringEq> builder[LAST_NS_ID];
-  SmartPtr<ElementBuilder> dummyBuilder[LAST_NS_ID];
+  SmartPtr<class MathMLNamespaceContext> mathmlContext;
+  SmartPtr<class BoxMLNamespaceContext> boxmlContext;
 };
 
 #endif // __Builder_hh__

@@ -24,6 +24,7 @@
 #define __TemplateStringScanners_hh__
 
 #include "RGBColor.hh"
+#include "String.hh"
 
 class Scan
 {
@@ -37,7 +38,7 @@ public:
   static String
   toString(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
   {
-    return fromUCS4String(UCS4String(begin, end));
+    return StringOfUCS4String(UCS4String(begin, end));
   }
 };
 

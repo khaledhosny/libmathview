@@ -130,6 +130,7 @@ UCS4String
 UCS4StringOfUTF8String(const UTF8String& s)
 { return DESTofSOURCE<gunichar, gchar, UCS4String, UTF8String, &g_utf8_to_ucs4>(s); }
 
+#if 0
 UTF16String
 UTF16StringOfUCS4String(const UCS4String& s)
 { return DESTofSOURCE<gunichar2, gunichar, UTF16String, UCS4String, &g_ucs4_to_utf16>(s); }
@@ -137,4 +138,4 @@ UTF16StringOfUCS4String(const UCS4String& s)
 UCS4String
 UCS4StringOfUTF16String(const UTF16String& s)
 { return DESTofSOURCE<gunichar, gunichar2, UCS4String, UTF16String, &g_utf16_to_ucs4>(s); }
-
+#endif

@@ -37,6 +37,7 @@
 #include "AttributeSignature.hh"
 #include "MathMLAttributeSignatures.hh"
 #include "MathMLOperatorDictionary.hh"
+#include "MathMLEntitiesTable.hh"
 
 DOM::Document
 parseXMLFile(const char* filename, bool subst)

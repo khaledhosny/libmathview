@@ -34,7 +34,7 @@ protected:
   virtual ~MathMLNormalizingContainerElement();
 
 public:
-  virtual void construct(void);
+  //virtual void construct(void);
   virtual AreaRef format(class MathFormattingContext&);
 
   virtual void setDirtyStructure(void);

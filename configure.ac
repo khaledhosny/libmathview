@@ -111,7 +111,6 @@ AC_PROG_CXX
 AC_PROG_LN_S
 AC_ISC_POSIX
 AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
-AC_CHECK_PROG(HAVE_GLIB_CONFIG, glib-config, yes, no)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -135,8 +134,26 @@ AC_TRY_COMPILE(
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-AC_C_CHAR_UNSIGNED
 AC_C_BIGENDIAN
+AC_C_CHAR_UNSIGNED
+AC_CHECK_SIZEOF(unsigned char, 1)
+AC_CHECK_SIZEOF(unsigned short, 2)
+AC_CHECK_SIZEOF(unsigned int, 4)
+AC_CHECK_SIZEOF(unsigned long, 4)
+AC_CHECK_SIZEOF(unsigned long long, 8)
+AC_CHECK_SIZEOF(wchar_t, 8)
+if test "x$ac_cv_c_char_unsigned" = "xyes"; then
+   AC_SUBST(CHAR_UNSIGNED, "1")
+else
+   AC_SUBST(CHAR_UNSIGNED, "0")
+fi
+AC_SUBST(GTKMATHVIEW_SIZEOF_CHAR, "$ac_cv_sizeof_unsigned_char")
+AC_SUBST(GTKMATHVIEW_SIZEOF_SHORT, "$ac_cv_sizeof_unsigned_short")
+AC_SUBST(GTKMATHVIEW_SIZEOF_INT, "$ac_cv_sizeof_unsigned_int")
+AC_SUBST(GTKMATHVIEW_SIZEOF_LONG, "$ac_cv_sizeof_unsigned_long")
+AC_SUBST(GTKMATHVIEW_SIZEOF_LONG_LONG, "$ac_cv_sizeof_unsigned_long_long")
+AC_SUBST(GTKMATHVIEW_SIZEOF_WCHAR_T, "$ac_cv_sizeof_wchar_t")
+
 
 dnl Check for iconv with const pointer as second argument
 AC_MSG_CHECKING(whether iconv has a const argument)
@@ -161,6 +178,65 @@ AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
 AC_CHECK_HEADERS(rope)
 AC_CHECK_HEADERS(ext/rope)
+
+AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
+AC_TRY_COMPILE(
+	[#include <string>],
+	[
+		std::basic_string<char> s1;
+		std::basic_string<wchar_t> s2;
+	],
+	[
+		AC_MSG_RESULT(yes)
+		STD_TRAITS="yes"
+	],
+	[
+		AC_MSG_RESULT(no)
+		STD_TRAITS="no"
+	]
+)
+AC_SUBST(STD_TRAITS)
+
+AC_MSG_CHECKING([whether the C++ compiler supports non-standard character traits])
+AC_TRY_COMPILE(
+	[#include <string>],
+	[
+		std::basic_string<unsigned short> s1;
+		std::basic_string<unsigned int> s2;
+		std::basic_string<unsigned long> s3;
+	],
+	[
+		AC_MSG_RESULT(yes)
+		ALL_TRAITS="1"
+	],
+	[
+		AC_MSG_RESULT(no)
+		ALL_TRAITS="0"
+	]
+)
+AC_SUBST(ALL_TRAITS)
+
+AC_MSG_CHECKING([whether the C++ compiler supports template specialization])
+AC_TRY_COMPILE(
+	[
+		#include <string>
+
+		namespace std
+		{
+			template<> struct char_traits<unsigned short> { };
+		}
+	],
+	[ ],
+	[
+		AC_MSG_RESULT(yes)
+		TRAIT_SPEC="1"
+	],
+	[
+		AC_MSG_RESULT(no)
+		TRAIT_SPEC="0"
+	]
+)
+AC_SUBST(TRAIT_SPEC)
 
 AC_LANG_POP(C++)
 
@@ -209,6 +285,10 @@ AC_CHECK_LIB(iberty, getopt_long,
 AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,,[Define to 1 if you have getopt_long]))
 
 AC_LANG([C])
+
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.0,, AC_MSG_ERROR(could not fint GLIB))
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
 
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0,, AC_MSG_ERROR(could not find GTK))
 AC_SUBST(GTK_CFLAGS)
@@ -276,10 +356,15 @@ AC_CONFIG_FILES([
  scripts/Makefile
  src/Makefile
  src/common/Makefile
+ src/common/Char.hh
+ src/frontend/Makefile
+ src/frontend/common/Makefile
+ src/frontend/gmetadom/Makefile
  src/engine/Makefile
  src/engine/common/Makefile
  src/engine/boxml/Makefile
  src/engine/mathml/Makefile
+ src/engine/adapters/Makefile
  src/formatter/Makefile
  src/formatter/basictypes/Makefile
  src/formatter/common/Makefile

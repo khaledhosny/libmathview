@@ -20,25 +20,23 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __MathMLSemanticsElement_hh__
-#define __MathMLSemanticsElement_hh__
+#ifndef __AbstractRefinementContext_hh__
+#define __AbstractRefinementContext_hh__
 
-#include "MathMLEmbellishment.hh"
-#include "MathMLBinContainerElement.hh"
+#include "gmetadom.hh"
+#include "SmartPtr.hh"
+#include "String.hh"
 
-class MathMLSemanticsElement
-  : public MathMLBinContainerElement, public MathMLEmbellishment
+class AbstractRefinementContext
 {
 protected:
-  MathMLSemanticsElement(const SmartPtr<class MathMLNamespaceContext>&);
-  virtual ~MathMLSemanticsElement();
+  AbstractRefinementContext(void) { }
+  virtual ~AbstractRefinementContext() { }
 
 public:
-  static SmartPtr<MathMLSemanticsElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
-  { return new MathMLSemanticsElement(view); }
-
-  virtual void construct(void);
-  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
+  virtual SmartPtr<class Attribute> get(const class AttributeSignature&) const = 0;
+  virtual void push(const DOM::Element&) = 0;
+  virtual void pop(void) = 0;
 };
 
-#endif // __MathMLSemanticsElement_hh__
+#endif // __AbstractRefinementContext_hh__

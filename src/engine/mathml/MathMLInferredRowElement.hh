@@ -20,13 +20,19 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __gmetadom_Setup_hh__
-#define __gmetadom_Setup_hh__
+#ifndef __MathMLInferredRowElement_hh__
+#define __MathMLInferredRowElement_hh__
 
-#include "gmetadom.hh"
+#include "MathMLRowElement.hh"
 
-DOM::Document parseXMLFile(const char*, bool = false);
-bool loadConfiguration(class Configuration&, const char*);
-bool loadOperatorDictionary(class MathMLOperatorDictionary&, const char*);
+class MathMLInferredRowElement : public MathMLRowElement
+{
+protected:
+  MathMLInferredRowElement(const SmartPtr<class MathMLNamespaceContext>&);
+  virtual ~MathMLInferredRowElement();
 
-#endif // __gmetadom_Setup_hh__
+public:
+  static SmartPtr<MathMLInferredRowElement> create(const SmartPtr<class MathMLNamespaceContext>& view);
+};
+
+#endif // __MathMLInferredRowElement_hh__

@@ -27,14 +27,11 @@
 #include <algorithm>
 
 #include "Adapters.hh"
-#include "ChildList.hh"
 #include "Globals.hh"
 #include "ValueConversion.hh"
-#include "MathMLDummyElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
-#include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
 
 MathMLTableRowElement::MathMLTableRowElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -44,9 +41,9 @@ MathMLTableRowElement::MathMLTableRowElement(const SmartPtr<class MathMLNamespac
 }
 
 MathMLTableRowElement::~MathMLTableRowElement()
-{
-}
+{ }
 
+#if 0
 void
 MathMLTableRowElement::construct()
 {
@@ -88,6 +85,7 @@ MathMLTableRowElement::refine(AbstractRefinementContext& context)
       MathMLLinearContainerElement::refine(context);
     }
 }
+#endif
 
 #if 0
 void

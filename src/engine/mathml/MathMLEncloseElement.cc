@@ -38,6 +38,7 @@ MathMLEncloseElement::MathMLEncloseElement(const SmartPtr<MathMLNamespaceContext
 MathMLEncloseElement::~MathMLEncloseElement()
 { }
 
+#if 0
 void
 MathMLEncloseElement::refine(AbstractRefinementContext& context)
 {
@@ -47,6 +48,7 @@ MathMLEncloseElement::refine(AbstractRefinementContext& context)
       MathMLNormalizingContainerElement::refine(context);
     }
 }
+#endif
 
 AreaRef
 MathMLEncloseElement::format(MathFormattingContext& ctxt)

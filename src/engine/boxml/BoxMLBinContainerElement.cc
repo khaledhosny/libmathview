@@ -22,8 +22,6 @@
 
 #include <config.h>
 
-#include "defs.h"
-#include "ChildList.hh"
 #include "BoxMLBinContainerElement.hh"
 
 BoxMLBinContainerElement::BoxMLBinContainerElement(const SmartPtr<BoxMLNamespaceContext>& context)
@@ -32,40 +30,6 @@ BoxMLBinContainerElement::BoxMLBinContainerElement(const SmartPtr<BoxMLNamespace
 
 BoxMLBinContainerElement::~BoxMLBinContainerElement()
 { }
-
-void
-BoxMLBinContainerElement::construct()
-{
-  if (dirtyStructure())
-    {
-      // editing is supported with DOM only
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  ChildList children(getDOMElement(), BOXML_NS_URI, "*");
-	  if (DOM::Node node = children.item(0))
-	    if (SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(getFormattingNode(node)))
-	      setChild(elem);
-	}
-#endif // HAVE_GMETADOM
-
-      if (SmartPtr<BoxMLElement> child = getChild())
-	child->construct();
-
-      resetDirtyStructure();
-    }
-}
-
-void
-BoxMLBinContainerElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      if (SmartPtr<BoxMLElement> child = getChild())
-	child->refine(context);
-      resetDirtyAttribute();
-    }
-}
 
 AreaRef
 BoxMLBinContainerElement::format(BoxFormattingContext& ctxt)

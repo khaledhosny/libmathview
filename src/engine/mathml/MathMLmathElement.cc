@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "MathMLmathElement.hh"
 #include "ValueConversion.hh"
 #include "MathFormattingContext.hh"
@@ -38,17 +37,6 @@ MathMLmathElement::MathMLmathElement(const SmartPtr<class MathMLNamespaceContext
 MathMLmathElement::~MathMLmathElement()
 { }
 
-void
-MathMLmathElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, math, mode);
-      REFINE_ATTRIBUTE(context, MathML, math, display);
-      MathMLNormalizingContainerElement::refine(context);
-    }
-}
-
 AreaRef
 MathMLmathElement::format(MathFormattingContext& ctxt)
 {
@@ -56,25 +44,9 @@ MathMLmathElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      if (IsSet(T_MODE))
-	{
-	  Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
-	  if (IsSet(T_DISPLAY))
-	    Globals::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
-	}
-
-      if (IsSet(T_DISPLAY))
-	{
-	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, math, display);
-	  assert(value);
-	  ctxt.setDisplayStyle(ToTokenId(value) == T_BLOCK);
-	}
-      else
-	{
-	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, math, mode);
-	  assert(value);
-	  ctxt.setDisplayStyle(ToTokenId(value) == T_DISPLAY);
-	} 
+      SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, math, display);
+      assert(value);
+      ctxt.setDisplayStyle(ToTokenId(value) == T_BLOCK);
 
       AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
       if (res) res = ctxt.getDevice()->wrapper(ctxt, res);

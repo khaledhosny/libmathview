@@ -39,5 +39,6 @@ entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 INCLUDES = \
   @DOM_CFLAGS@ \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_builddir)
 

@@ -24,18 +24,9 @@
 
 #include <cassert>
 
-#include <algorithm>
-#include <functional>
-
 #include "Adapters.hh"
-#include "ChildList.hh"
-#include "Globals.hh"
-#include "MathMLDummyElement.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLNamespaceContext.hh"
-#include "for_each_if.h"
 #include "MathMLAttributeSignatures.hh"
 
 MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathMLNamespaceContext>& context)
@@ -44,131 +35,6 @@ MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathML
 
 MathMLMultiScriptsElement::~MathMLMultiScriptsElement()
 { }
-
-void
-MathMLMultiScriptsElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-      unsigned i = 0;
-      unsigned nScripts = 0;
-      unsigned nPreScripts = 0;
-      unsigned n = children.get_length();
-      bool preScripts = false;
-
-      while (i < n)
-	{
-	  DOM::Node node = children.item(i);
-
-	  if (i == 0)
-	    {
-	      SmartPtr<MathMLElement> elem;
-	      if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
-		{
-		  elem = getFormattingNode(node);
-		  i++;
-		}
-	      if (elem) setBase(elem);
-	      else if (!is_a<MathMLDummyElement>(getBase())) setBase(getFactory()->createDummyElement());
-	    }
-	  else if (nodeLocalName(node) == "mprescripts")
-	    {
-	      if (preScripts)
-		Globals::logger(LOG_WARNING, "multiple <mprescripts> elements in mmultiscript");
-	      else
-		preScripts = true;
-	      i++;
-	    }
-	  else if (!preScripts)
-	    {
-	      SmartPtr<MathMLElement> sub;
-	      SmartPtr<MathMLElement> sup;
-
-	      if (nodeLocalName(node) != "none")
-		sub = getFormattingNode(node);
-	      i++;
-	      
-	      if (i < n)
-		{
-		  node = children.item(i);
-		  if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
-		    sup = getFormattingNode(node);
-		  if (nodeLocalName(node) != "mprescripts") i++;
-		}
-
-	      if (sub || sup)
-		{
-		  setSubScript(nScripts, sub);
-		  setSuperScript(nScripts, sup);
-		  nScripts++;
-		}
-	    }
-	  else
-	    {
-	      SmartPtr<MathMLElement> sub;
-	      SmartPtr<MathMLElement> sup;
-
-	      if (nodeLocalName(node) != "none")
-		sub = getFormattingNode(node);
-	      i++;
-	      
-	      if (i < n)
-		{
-		  node = children.item(i);
-		  if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
-		    sup = getFormattingNode(node);
-		  if (nodeLocalName(node) != "mprescripts") i++;
-		}
-
-	      if (sub || sup)
-		{
-		  setPreSubScript(nPreScripts, sub);
-		  setPreSuperScript(nPreScripts, sup);
-		  nPreScripts++;
-		}
-	    }
-	}
-      
-      if (n == 0 && !is_a<MathMLDummyElement>(getBase())) setBase(getFactory()->createDummyElement());
-      setScriptsSize(nScripts);
-      setPreScriptsSize(nPreScripts);
-#endif // HAVE_GMETADOM
-
-      if (getBase()) getBase()->construct();
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
-		  ConstructAdapter<MathMLElement>());
-      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate<MathMLElement>(),
-		  ConstructAdapter<MathMLElement>());
-      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate<MathMLElement>(),
-		  ConstructAdapter<MathMLElement>());
-      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate<MathMLElement>(),
-		  ConstructAdapter<MathMLElement>());
-
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLMultiScriptsElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, MultiScripts, subscriptshift);
-      REFINE_ATTRIBUTE(context, MathML, MultiScripts, superscriptshift);
-      if (getBase()) getBase()->refine(context);
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
-		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
-      for_each_if(superScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
-		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
-      for_each_if(preSubScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
-		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
-      for_each_if(preSuperScript.begin(), subScript.end(), NotNullPredicate<MathMLElement>(),
-		  std::bind2nd(RefineAdapter<AbstractRefinementContext,MathMLElement>(), &context));
-      MathMLContainerElement::refine(context);
-    }
-}
 
 AreaRef
 MathMLMultiScriptsElement::format(MathFormattingContext& ctxt)
@@ -182,32 +48,6 @@ MathMLMultiScriptsElement::format(MathFormattingContext& ctxt)
 }
 
 #if 0
-void
-MathMLMultiScriptsElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      background = env.GetBackgroundColor();
-
-      assert(base);
-      base->Setup(env);
-
-      env.Push();
-      env.AddScriptLevel(1);
-      env.SetDisplayStyle(false);
-
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(SetupAdaptor(), &env));
-      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate(), std::bind2nd(SetupAdaptor(), &env));
-      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate(), std::bind2nd(SetupAdaptor(), &env));
-      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate(), std::bind2nd(SetupAdaptor(), &env));
-
-      ScriptSetup(env);
-      env.Drop();
-
-      resetDirtyAttribute();
-    }
-}
-
 void
 MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 {

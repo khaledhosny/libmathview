@@ -33,8 +33,10 @@ protected:
   virtual ~BoxMLBinContainerElement();
 
 public:
+#if 0
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#endif
   virtual AreaRef format(class BoxFormattingContext&);
 
   virtual scaled getStep(void) const;

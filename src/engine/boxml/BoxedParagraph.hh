@@ -25,7 +25,6 @@
 
 #include <vector>
 
-#include "DOM.hh"
 #include "Area.hh"
 #include "RGBColor.hh"
 #include "String.hh"
@@ -45,7 +44,7 @@ public:
 
     int start_index;
     int end_index;
-    DOM::UTF8String str;
+    UTF8String str;
     AreaRef area;
     RGBColor foreground;
     RGBColor background;
@@ -57,12 +56,12 @@ public:
   std::vector<Object>::const_iterator begin(void) const { return object.begin(); }
   std::vector<Object>::const_iterator end(void) const { return object.end(); }
 
-  DOM::UTF8String getContent(void) const { return DOM::UTF8String(content.begin(), content.end()); }
+  UTF8String getContent(void) const { return UTF8String(content.begin(), content.end()); }
 
 private:
-  const DOM::UTF8String objectReplacement;
+  const UTF8String objectReplacement;
   std::vector<Object> object;
-  ROPE_NS::rope<DOM::UTF8String::value_type> content;
+  ROPE_NS::rope<Char8> content;
 };
 
 #endif // __BoxedParagraph_hh__

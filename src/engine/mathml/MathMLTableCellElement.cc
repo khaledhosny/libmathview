@@ -44,9 +44,9 @@ MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLNamesp
 }
 
 MathMLTableCellElement::~MathMLTableCellElement()
-{
-}
+{ }
 
+#if 0
 void
 MathMLTableCellElement::refine(AbstractRefinementContext& context)
 {
@@ -60,6 +60,7 @@ MathMLTableCellElement::refine(AbstractRefinementContext& context)
       MathMLNormalizingContainerElement::refine(context);
     }
 }
+#endif
 
 #if 0
 void

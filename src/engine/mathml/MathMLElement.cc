@@ -24,17 +24,12 @@
 
 #include <cassert>
 
-#include "AbstractRefinementContext.hh"
-#include "Globals.hh"
 #include "AttributeList.hh"
 #include "MathMLElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLStyleElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
 #include "Variant.hh"
-#include "traverseAux.hh"
-#include "MathMLElementFactory.hh"
 
 MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& c) : context(c)
 {
@@ -43,29 +38,6 @@ MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& c) : contex
 
 MathMLElement::~MathMLElement()
 { }
-
-#if 0
-void
-MathMLElement::construct(AbstractConstructionContext&)
-{
-  // nothing to construct
-  resetDirtyStructure();
-}
-#endif
-
-void
-MathMLElement::construct()
-{
-  // nothing to construct
-  resetDirtyStructure();
-}
-
-void
-MathMLElement::refine(class AbstractRefinementContext&)
-{
-  // nothing to refine
-  resetDirtyAttribute();
-}
 
 AreaRef
 MathMLElement::format(MathFormattingContext& ctxt)
@@ -103,29 +75,6 @@ MathMLElement::getCoreOperatorTop()
   return 0;
 }
 
-#if defined(HAVE_GMETADOM)
-TokenId
-MathMLElement::IsA() const
-{
-  if (DOM::Element el = getDOMElement())
-    return tokenIdOfString(std::string(nodeLocalName(el)).c_str());
-  else
-    return T__NOTVALID;
-}
-
-bool
-MathMLElement::IsSet(TokenId id) const
-{
-  return getDOMElement() && getDOMElement().hasAttribute(stringOfTokenId(id));
-}
-#endif // HAVE_GMETADOM
-
-SmartPtr<MathMLElementFactory>
-MathMLElement::getFactory() const
-{
-  return context->getFactory();
-}
-
 SmartPtr<NamespaceContext>
 MathMLElement::getNamespaceContext() const
 { return static_cast<MathMLNamespaceContext*>(context); }
@@ -134,10 +83,3 @@ SmartPtr<MathMLNamespaceContext>
 MathMLElement::getMathMLNamespaceContext() const
 { return static_cast<MathMLNamespaceContext*>(context); }
 
-#include "DOMView.hh"
-#include "Linker.hh"
-#include "MathMLElementFactory.hh"
-
-SmartPtr<MathMLElement>
-MathMLElement::getFormattingNode(const DOM::Element& el) const
-{ return context->getLinker()->get<MathMLElement>(el, context->getFactory()); }

@@ -25,55 +25,21 @@
 #include "View.hh"
 #include "Globals.hh"
 #include "Clock.hh"
-#include "RefinementContext.hh"
+#include "BoxFormattingContext.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "BoxGraphicDevice.hh"
 #include "BoxMLElementFactory.hh"
 #include "BoxMLElement.hh"
-#include "Linker.hh"
 
 BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,
-					     const SmartPtr<Linker>& l,
-					     const SmartPtr<BoxMLElementFactory>& f,
 					     const SmartPtr<BoxGraphicDevice>& d)
-  : NamespaceContext(BOXML_NS_URI, v, l), factory(f), device(d)
+  : NamespaceContext(BOXML_NS_URI, v), device(d)
 {
-  setDefaultFontSize(Globals::configuration.GetFontSize());
+  setDefaultFontSize(Globals::configuration.getFontSize());
 }
 
 BoxMLNamespaceContext::~BoxMLNamespaceContext()
 { }
-
-SmartPtr<Element>
-BoxMLNamespaceContext::construct(const DOM::Element& el) const
-{
-  assert(el);
-  if (SmartPtr<BoxMLElement> elem = getLinker()->get<BoxMLElement>(el, getFactory()))
-    {
-      if (elem->dirtyStructure())
-	{
-	  Clock perf;
-	  perf.Start();
-	  elem->construct();
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "construction time: %dms", perf());
-	}
-
-      if (elem->dirtyAttribute() || elem->dirtyAttributeP())
-	{
-	  RefinementContext rc;
-	  Clock perf;
-	  perf.Start();
-	  elem->refine(rc);
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
-	}
-
-      return elem;
-    }
-
-  return 0;
-}
 
 AreaRef
 BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
@@ -95,8 +61,3 @@ BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
   return elem->getArea();
 }
 
-SmartPtr<BoxMLElementFactory>
-BoxMLNamespaceContext::getFactory() const
-{
-  return factory;
-}

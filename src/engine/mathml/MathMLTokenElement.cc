@@ -24,12 +24,11 @@
 
 #include <cassert>
 
-#include "ChildList.hh"
+#include "MathML.hh"
 #include "BoundingBoxAux.hh"
 #include "Globals.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLGlyphNode.hh"
 #include "MathMLIdentifierElement.hh"
 #include "MathMLMarkNode.hh"
@@ -55,91 +54,6 @@ void
 MathMLTokenElement::append(const String& s)
 {
   content.appendChild(this, MathMLStringNode::create(s));
-}
-
-void
-MathMLTokenElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  ChildList children(getDOMElement(), "*", "*");
-	  unsigned n = children.get_length();
-
-	  std::vector<SmartPtr<MathMLTextNode> > newContent;
-	  newContent.reserve(n);
-	  for (unsigned i = 0; i < n; i++)
-	    {
-	      DOM::Node node = children.item(i);
-	      switch (node.get_nodeType())
-		{
-		case DOM::Node::TEXT_NODE:
-		  {
-		    // ok, we have a chunk of text
-		    String s = collapseSpaces(fromDOMString(node.get_nodeValue()));
-
-		    // ...but spaces at the at the beginning (end) are deleted only if this
-		    // is the very first (last) chunk in the token.
-		    if (!node.get_previousSibling()) s = trimSpacesLeft(s);
-		    if (!node.get_nextSibling()) s = trimSpacesRight(s);
-
-		    newContent.push_back(MathMLStringNode::create(s));
-		  }
-		break;
-
-		case DOM::Node::ELEMENT_NODE:
-		  {	    
-		    if (node.get_namespaceURI() == MATHML_NS_URI)
-		      {
-			if (nodeLocalName(node) == "mglyph")
-			  {
-			    if (SmartPtr<MathMLTextNode> text = substituteMGlyphElement(node))
-			      newContent.push_back(text);
-			  }
-			else if (nodeLocalName(node) == "malignmark")
-			  {
-			    if (SmartPtr<MathMLTextNode> text = substituteAlignMarkElement(node))
-			      newContent.push_back(text);
-			  }
-			else
-			  {
-			    std::string s_name = nodeLocalName(node);
-			    Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
-			  }
-		      } 
-		    else
-		      {
-			std::string s_name = node.get_nodeName();
-			Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
-		      }
-		  }
-		break;
-		
-		default:
-		  break;
-		}
-	    }
-	  swapContent(newContent);
-	}
-#endif // HAVE_GMETADOM
-
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLTokenElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Token, mathvariant);
-      REFINE_ATTRIBUTE(context, MathML, Token, mathsize);
-      REFINE_ATTRIBUTE(context, MathML, Token, mathcolor);
-      REFINE_ATTRIBUTE(context, MathML, Token, mathbackground);
-      MathMLElement::refine(context);
-    }
 }
 
 AreaRef
@@ -252,52 +166,6 @@ MathMLTokenElement::AddItalicCorrection()
   if (!isFence) return;
 }
 #endif
-
-SmartPtr<MathMLTextNode>
-MathMLTokenElement::substituteMGlyphElement(const DOM::Element& node)
-{
-  assert(node);
-
-  DOM::GdomeString alt        = node.getAttribute("alt");
-  DOM::GdomeString fontFamily = node.getAttribute("fontfamily");
-  DOM::GdomeString index      = node.getAttribute("index");
-
-  if (alt.empty() || fontFamily.empty() || index.empty()) {
-    Globals::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
-    return MathMLStringNode::create("?");
-  }
-
-  SmartPtr<MathMLGlyphNode> glyph = MathMLGlyphNode::create(fromDOMString(fontFamily),
-							    fromDOMString(index),
-							    fromDOMString(alt));
-
-  return glyph;
-}
-
-SmartPtr<MathMLTextNode>
-MathMLTokenElement::substituteAlignMarkElement(const DOM::Element& node)
-{
-  assert(node);
-
-  DOM::GdomeString edge = node.getAttribute("edge");
-
-  TokenId align = T__NOTVALID;
-
-  if (!edge.empty())
-    {
-      if      (edge == "left") align = T_LEFT;
-      else if (edge == "right") align = T_RIGHT;
-      else
-	{
-	  std::string s_edge = edge;
-	  Globals::logger(LOG_WARNING,
-			  "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
-			  s_edge.c_str());
-	}
-    }
-
-  return MathMLMarkNode::create(align);
-}
 
 String
 MathMLTokenElement::GetRawContent() const

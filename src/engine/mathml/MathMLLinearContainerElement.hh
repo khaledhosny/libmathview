@@ -41,16 +41,16 @@ public:
   SmartPtr<MathMLElement> getChild(unsigned i) const { return content.getChild(i); }
   void setChild(unsigned i, const SmartPtr<MathMLElement>& child) { content.setChild(this, i, child); }
   void appendChild(const SmartPtr<MathMLElement>& child) { content.appendChild(this, child); }
-
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
-
   void swapContent(std::vector<SmartPtr<MathMLElement> >& newContent) { content.swapContent(this, newContent); }
-
   // the content can be accessed directly, but only in a read-only
   // way, because other operation involves SetParent and other
   // memory-management issues
   const std::vector< SmartPtr<MathMLElement> >& getContent(void) const { return content.getContent(); }
+
+#if 0
+  virtual void construct(void);
+  virtual void refine(class AbstractRefinementContext&);
+#endif
 
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);

@@ -20,13 +20,41 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __gmetadom_Setup_hh__
-#define __gmetadom_Setup_hh__
+#ifndef __BoxMLMathMLAdapter_hh__
+#define __BoxMLMathMLAdapter_hh__
 
-#include "gmetadom.hh"
+#include "BoxMLElement.hh"
+#include "MathMLElement.hh"
+#include "BinContainerTemplate.hh"
 
-DOM::Document parseXMLFile(const char*, bool = false);
-bool loadConfiguration(class Configuration&, const char*);
-bool loadOperatorDictionary(class MathMLOperatorDictionary&, const char*);
+class BoxMLMathMLAdapter : public BoxMLElement
+{
+protected:
+  BoxMLMathMLAdapter(const SmartPtr<class BoxMLNamespaceContext>&);
+  virtual ~BoxMLMathMLAdapter();
 
-#endif // __gmetadom_Setup_hh__
+public:
+  static SmartPtr<BoxMLMathMLAdapter> create(const SmartPtr<class BoxMLNamespaceContext>&);
+
+  virtual AreaRef format(class BoxFormattingContext&);
+
+  SmartPtr<MathMLElement> getChild(void) const { return content.getChild(); }
+  void setChild(const SmartPtr<MathMLElement>& child) { content.setChild(this, child); }
+
+  virtual void setFlagDown(Flags f)
+  {
+    BoxMLElement::setFlagDown(f);
+    content.setFlagDown(f);
+  }
+
+  virtual void resetFlagDown(Flags f)
+  {
+    BoxMLElement::resetFlagDown(f);
+    content.resetFlagDown(f);
+  }
+
+private:
+  BinContainerTemplate<BoxMLMathMLAdapter, MathMLElement> content;
+};
+
+#endif // __BoxMLMathMLAdapter_hh__

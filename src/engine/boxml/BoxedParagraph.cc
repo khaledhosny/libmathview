@@ -22,12 +22,13 @@
 
 #include <config.h>
 
+#include "String.hh"
 #include "BoxedParagraph.hh"
 #include "BoxFormattingContext.hh"
 #include "BoxMLElement.hh"
 
 BoxedParagraph::BoxedParagraph()
-  : objectReplacement(fromUCS4String(DOM::UCS4String(1, 0xfffc)))
+  : objectReplacement(StringOfUCS4String(UCS4String(1, 0xfffc)))
 { }
 
 void
@@ -48,7 +49,7 @@ BoxedParagraph::append(const BoxFormattingContext& ctxt, const AreaRef& area)
 
 BoxedParagraph::Object::Object(const BoxFormattingContext& ctxt,
 			       int start,
-			       const DOM::UTF8String& s,
+			       const UTF8String& s,
 			       const AreaRef& a)
   : start_index(start), end_index(start + s.length()), str(s), area(a),
     foreground(ctxt.getColor()),

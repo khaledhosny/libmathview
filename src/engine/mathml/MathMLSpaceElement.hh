@@ -35,7 +35,7 @@ public:
   static SmartPtr<MathMLSpaceElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLSpaceElement(view); }
 
-  virtual void    refine(class AbstractRefinementContext&);
+  //virtual void    refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
   virtual bool    IsSpace(void) const;

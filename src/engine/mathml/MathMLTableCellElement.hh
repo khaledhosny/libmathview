@@ -35,7 +35,7 @@ public:
   static SmartPtr<MathMLTableCellElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTableCellElement(view); }
 
-  virtual void refine(class AbstractRefinementContext&);
+  //virtual void refine(class AbstractRefinementContext&);
 
   void SetAlignmentScope(bool b) { alignmentScope = b; }
 

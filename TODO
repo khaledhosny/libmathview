@@ -42,9 +42,12 @@ ARCH IMPROVEMENTS
   intuitively at increasing indices the cursor should go forward (that
   is right or down depending on the container)
 + decouple strings from DOM::strings
++ cleanup Globals.cc (move into Configuration?)
 - the default font size now need to be set on two different 
   namespacecontexts, ugly. (see gtkmathview.cc)
+  Put the default font size in the view
 - fix Configuration/Globals files 
+  create a class for them and refer them from the View
 - move mathvariant files into src/common
 - not sure the Origin information should go in the view
 

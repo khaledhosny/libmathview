@@ -54,8 +54,10 @@ public:
   SmartPtr<MathMLElement> getPreSubScript(unsigned i) const { return preSubScript.getChild(i); }
   SmartPtr<MathMLElement> getPreSuperScript(unsigned i) const { return preSuperScript.getChild(i); }
 
+#if 0
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#endif
   virtual AreaRef format(class MathFormattingContext&);
 
   virtual void setFlagDown(Flags);

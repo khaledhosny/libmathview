@@ -24,12 +24,10 @@
 
 #include <cassert>
 
-#include "ChildList.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "ValueConversion.hh"
@@ -41,67 +39,6 @@ MathMLFractionElement::MathMLFractionElement(const SmartPtr<class MathMLNamespac
 
 MathMLFractionElement::~MathMLFractionElement()
 { }
-
-#if 0
-void
-MathMLFractionElement::construct(AbstractConstructionContext& ctxt)
-{
-  if (dirtyStructure())
-    {
-      ctxt.getReader().firstChild();
-      setNumerator(ctxt.getNode(getNumerator()));
-      setDenominator(ctxt.getNode(getDenominator()));
-      ctxt.getReader().parentNode();
-      resetDirtyStructure();
-    }
-}
-#endif
-
-void
-MathMLFractionElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  assert(IsA() == T_MFRAC);
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  unsigned n = children.get_length();
-
-	  if (n > 0)
-	    setNumerator(getFormattingNode(children.item(0)));
-	  else if (!getNumerator() || !is_a<MathMLDummyElement>(getNumerator()))
-	    setNumerator(getFactory()->createDummyElement());
-
-	  if (n > 1)
-	    setDenominator(getFormattingNode(children.item(1)));
-	  else if (!getDenominator() || !is_a<MathMLDummyElement>(getDenominator()))
-	    setDenominator(getFactory()->createDummyElement());
-	}
-#endif
-
-      if (getNumerator()) getNumerator()->construct();
-      if (getDenominator()) getDenominator()->construct();
-
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLFractionElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Fraction, linethickness);
-      REFINE_ATTRIBUTE(context, MathML, Fraction, numalign);
-      REFINE_ATTRIBUTE(context, MathML, Fraction, denomalign);
-      REFINE_ATTRIBUTE(context, MathML, Fraction, bevelled);
-      if (getNumerator()) getNumerator()->refine(context);
-      if (getDenominator()) getDenominator()->refine(context);
-      MathMLContainerElement::refine(context);
-    }
-}
 
 AreaRef
 MathMLFractionElement::format(MathFormattingContext& ctxt)

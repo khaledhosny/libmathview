@@ -30,11 +30,13 @@
 class View : public Object
 {
 protected:
-  View(void);
+  View(const SmartPtr<class Builder>&);
   virtual ~View();
 
 public:
-  //static SmartPtr<View> create(void) { return new View(); }
+  static SmartPtr<View> create(const SmartPtr<class Builder>&,
+			       const SmartPtr<class MathGraphicDevice>&,
+			       const SmartPtr<class BoxGraphicDevice>&);
 
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);
@@ -44,10 +46,11 @@ public:
   scaled getOriginX(void) const { return x0; }
   scaled getOriginY(void) const { return y0; }
 
-  SmartPtr<class NamespaceRegistry> getRegistry(void) const;
+  SmartPtr<class Builder> getBuilder(void) const;
+  SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
+  SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
 
-  virtual SmartPtr<class Element> getRootElement(void) const = 0;
-
+  SmartPtr<class Element> getRootElement(void) const;
   SmartPtr<const class Area> getRootArea(void) const;
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
   bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
@@ -58,7 +61,9 @@ public:
   void render(class RenderingContext&) const;
 
 private:
-  SmartPtr<class NamespaceRegistry> registry;
+  SmartPtr<class Builder> builder;
+  SmartPtr<class MathMLNamespaceContext> mathmlContext;
+  SmartPtr<class BoxMLNamespaceContext> boxmlContext;
   unsigned freezeCounter;
   scaled x0;
   scaled y0;

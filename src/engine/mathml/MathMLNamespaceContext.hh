@@ -29,26 +29,20 @@ class MathMLNamespaceContext : public NamespaceContext
 {
 protected:
   MathMLNamespaceContext(const SmartPtr<class View>&,
-			 const SmartPtr<class Linker>&,
-			 const SmartPtr<class MathMLElementFactory>&,
 			 const SmartPtr<class MathGraphicDevice>&);
   virtual ~MathMLNamespaceContext();
 
 public:
   static SmartPtr<MathMLNamespaceContext> create(const SmartPtr<class View>& view,
-						 const SmartPtr<class Linker>& linker,
-						 const SmartPtr<class MathMLElementFactory>& factory,
 						 const SmartPtr<class MathGraphicDevice>& device)
-  { return new MathMLNamespaceContext(view, linker, factory, device); }
+  { return new MathMLNamespaceContext(view, device); }
 
-  SmartPtr<class MathMLElementFactory> getFactory(void) const;
   SmartPtr<class MathGraphicDevice> getGraphicDevice(void) const;
 
-  virtual SmartPtr<class Element> construct(const DOM::Element&) const;
+  //virtual SmartPtr<class Element> construct(const DOM::Element&) const;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const;
 
 private:
-  SmartPtr<class MathMLElementFactory> factory;
   SmartPtr<class MathGraphicDevice> device;
 };
 

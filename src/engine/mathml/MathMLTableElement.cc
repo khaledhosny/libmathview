@@ -27,9 +27,8 @@
 #include <algorithm>
 #include <functional>
 
+#include "RGBColor.hh"
 #include "Adapters.hh"
-#include "ChildList.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLNamespaceContext.hh"
@@ -59,6 +58,7 @@ MathMLTableElement::~MathMLTableElement()
 #endif
 }
 
+#if 0
 void
 MathMLTableElement::construct()
 {
@@ -126,6 +126,7 @@ MathMLTableElement::refine(AbstractRefinementContext& context)
       MathMLLinearContainerElement::refine(context);
     }
 }
+#endif
 
 #if 0
 void

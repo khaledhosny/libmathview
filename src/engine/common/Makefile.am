@@ -4,19 +4,18 @@ noinst_LTLIBRARIES = libengine_common.la
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libengine_common_la_SOURCES = \
+  Globals.cc \
   Attribute.cc \
   AttributeList.cc \
   AttributeSignature.cc \
-  RefinementContext.cc \
-  NamespaceRegistry.cc \
   NamespaceContext.cc \
   View.cc \
-  DOMView.cc \
   Node.cc \
-  Element.cc \
-  Linker.cc
+  Element.cc
 
 noinst_HEADERS = \
+  Globals.hh \
+  Configuration.hh \
   Adapters.hh \
   Attribute.hh \
   AttributeList.hh \
@@ -24,21 +23,20 @@ noinst_HEADERS = \
   CommonStringParsers.hh \
   TemplateStringParsers.hh \
   TemplateStringScanners.hh \
-  AbstractRefinementContext.hh \
-  RefinementContext.hh \
   BinContainerTemplate.hh \
   LinearContainerTemplate.hh \
-  NamespaceRegistry.hh \
   NamespaceContext.hh \
   ElementFactory.hh \
   View.hh \
-  DOMView.hh \
   Node.hh \
-  Element.hh \
-  Linker.hh
+  Element.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/engine/boxml \
+  -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/formatter/gtk_areamodel
+

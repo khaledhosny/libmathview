@@ -41,6 +41,7 @@ SmartPtr<BoxMLHElement>
 BoxMLHElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLHElement(context); }
 
+#if 0
 void
 BoxMLHElement::refine(class AbstractRefinementContext& context)
 {
@@ -50,6 +51,7 @@ BoxMLHElement::refine(class AbstractRefinementContext& context)
       BoxMLLinearContainerElement::refine(context);
     }
 }
+#endif
 
 AreaRef
 BoxMLHElement::format(BoxFormattingContext& ctxt)

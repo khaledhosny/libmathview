@@ -25,54 +25,19 @@
 #include "View.hh"
 #include "Globals.hh"
 #include "Clock.hh"
-#include "RefinementContext.hh"
+#include "MathMLElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathGraphicDevice.hh"
-#include "MathMLElementFactory.hh"
-#include "Linker.hh"
 
 MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<View>& v,
-					       const SmartPtr<Linker>& l,
-					       const SmartPtr<MathMLElementFactory>& f,
 					       const SmartPtr<MathGraphicDevice>& d)
-  : NamespaceContext(MATHML_NS_URI, v, l), factory(f), device(d)
+  : NamespaceContext(MATHML_NS_URI, v), device(d)
 {
-  setDefaultFontSize(Globals::configuration.GetFontSize());
+  setDefaultFontSize(Globals::configuration.getFontSize());
 }
 
 MathMLNamespaceContext::~MathMLNamespaceContext()
 { }
-
-SmartPtr<Element>
-MathMLNamespaceContext::construct(const DOM::Element& el) const
-{
-  assert(el);
-  if (SmartPtr<MathMLElement> elem = getLinker()->get<MathMLElement>(el, getFactory()))
-    {
-      if (elem->dirtyStructure())
-	{
-	  Clock perf;
-	  perf.Start();
-	  elem->construct();
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "construction time: %dms", perf());
-	}
-
-      if (elem->dirtyAttribute() || elem->dirtyAttributeP())
-	{
-	  RefinementContext rc;
-	  Clock perf;
-	  perf.Start();
-	  elem->refine(rc);
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
-	}
-
-      return elem;
-    }
-
-  return 0;
-}
 
 AreaRef
 MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
@@ -94,10 +59,6 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
     }
   return elem->getArea();
 }
-
-SmartPtr<MathMLElementFactory>
-MathMLNamespaceContext::getFactory() const
-{ return factory; }
 
 SmartPtr<MathGraphicDevice>
 MathMLNamespaceContext::getGraphicDevice() const

@@ -1,3 +1,3 @@
 
-SUBDIRS = common engine formatter widget
+SUBDIRS = common frontend engine formatter widget
 

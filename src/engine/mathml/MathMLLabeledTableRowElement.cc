@@ -24,10 +24,8 @@
 
 #include <cassert>
 
-#include "ChildList.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLLabeledTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
@@ -42,54 +40,6 @@ MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const SmartPtr<MathML
 MathMLLabeledTableRowElement::~MathMLLabeledTableRowElement()
 { }
 
-#if 0
-void
-MathMLLabeledTableRowElement::construct(AbstractConstructionContext& ctxt)
-{
-  if (dirtyStructure())
-    {
-      ctxt.getReader().firstChild();
-
-      if (ctxt.getReader().more() && ctxt.getReader().name() != "mtr")
-	setLabel(ctxt.getNode(getLabel()));
-
-      constructTableRow();
-
-      ctxt.getReader().parentNode();
-      resetDirtyStructure();
-    }
-}
-#endif
-
-void
-MathMLLabeledTableRowElement::construct()
-{
-  if (dirtyStructure())
-    {
-      MathMLTableRowElement::construct();
-
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  if (children.item(0) && nodeLocalName(children.item(0)) != "mtr")
-	    {
-	      SmartPtr<MathMLElement> elem = getFormattingNode(children.item(0));
-	      assert(elem);
-	      setLabel(elem);
-	    }
-	  else if (!is_a<MathMLDummyElement>(getLabel()))
-	    setLabel(0);
-	}
-#endif // HAVE_GMETADOM
-
-      if (!getLabel()) setLabel(getFactory()->createDummyElement());
-      getLabel()->construct();
-
-      resetDirtyStructure();
-    }
-}
-
 void
 MathMLLabeledTableRowElement::setFlagDown(Flags f)
 {
@@ -103,3 +53,4 @@ MathMLLabeledTableRowElement::resetFlagDown(Flags f)
   MathMLLinearContainerElement::resetFlagDown(f);
   label.resetFlagDown(f);
 }
+

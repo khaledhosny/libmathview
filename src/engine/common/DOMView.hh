@@ -23,8 +23,9 @@
 #ifndef __DOMView_hh__
 #define __DOMView_hh__
 
-#include "DOM.hh"
 #include "View.hh"
+#include "gmetadom.hh"
+#include "gmetadom_Builder.hh"
 
 class DOMView : public View
 {
@@ -35,7 +36,9 @@ protected:
 public:
   static SmartPtr<DOMView> create(void) { return new DOMView(); }
 
+#if 0
   SmartPtr<class Linker> getLinker(void) const;
+#endif
 
   DOM::Element findDOMElement(const SmartPtr<class Element>&) const;
   SmartPtr<class Element> findElement(const DOM::Element&) const;
@@ -44,7 +47,7 @@ public:
   virtual SmartPtr<class Element> getRootElement(void) const;
 
   void setRootDOMElement(const DOM::Element&);
-  DOM::Element getRootDOMElement(void) const { return rootDOMElement; }
+  DOM::Element getRootDOMElement(void) const { return builder.getRootDOMElement(); }
 
   bool getDOMElementExtents(const DOM::Element&, scaled&, scaled&, BoundingBox&) const;
   bool getDOMElementAt(const scaled&, const scaled&, DOM::Element&) const;
@@ -52,6 +55,7 @@ public:
   bool getCharAt(const scaled&, const scaled&, DOM::Element&, int&) const;
 
 private:
+#if 0
   class DOMSubtreeModifiedListener : public DOM::EventListener
   {
   public:
@@ -77,7 +81,8 @@ private:
   SmartPtr<class Linker> linker;
   DOMSubtreeModifiedListener* subtreeModifiedListener;
   DOMAttrModifiedListener* attrModifiedListener;
-  DOM::Element rootDOMElement;
+#endif
+  gmetadom_Builder builder;
   mutable SmartPtr<class Element> rootElement;
 };
 

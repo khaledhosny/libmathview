@@ -2,11 +2,18 @@
 noinst_LTLIBRARIES = libfrontend_gmetadom.la
 
 libfrontend_gmetadom_la_SOURCES = \
+  gmetadom.cc \
+  RefinementContext.cc \
+  MathMLEntitiesTable.cc \
   gmetadomIterators.cc \
   gmetadom_Setup.cc \
   gmetadom_Builder.cc
 
 noinst_HEADERS = \
+  gmetadom.hh \
+  AbstractRefinementContext.hh \
+  RefinementContext.hh \
+  MathMLEntitiesTable.hh \
   gmetadomIterators.hh \
   gmetadom_Setup.hh \
   gmetadom_Builder.hh

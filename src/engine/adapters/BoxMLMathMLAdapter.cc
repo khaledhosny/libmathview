@@ -22,9 +22,7 @@
 
 #include <config.h>
 
-#include "defs.h"
-#include "ChildList.hh"
-#include "BoxMLObjectElement.hh"
+#include "BoxMLMathMLAdapter.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxFormattingContext.hh"
 #include "BoxGraphicDevice.hh"
@@ -37,67 +35,25 @@
 #include "MathMLNamespaceContext.hh"
 #include "MathGraphicDevice.hh"
 
-BoxMLObjectElement::BoxMLObjectElement(const SmartPtr<BoxMLNamespaceContext>& context)
+BoxMLMathMLAdapter::BoxMLMathMLAdapter(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLElement(context)
 { }
 
-BoxMLObjectElement::~BoxMLObjectElement()
+BoxMLMathMLAdapter::~BoxMLMathMLAdapter()
 { }
 
-SmartPtr<BoxMLObjectElement>
-BoxMLObjectElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
-{ return new BoxMLObjectElement(context); }
-
-#if 0
-void
-BoxMLObjectElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  DOM::Node p = getDOMElement().get_firstChild();
-	  while (p && p.get_nodeType() != DOM::Node::ELEMENT_NODE)
-	    p = p.get_nextSibling();
-
-	  if (p)
-	    if (SmartPtr<NamespaceContext> contentContext =
-		getNamespaceContext()->getView()->getRegistry()->get(p.get_namespaceURI()))
-	      setChild(contentContext->construct(p));
-	    else
-	      // cannot handle this namespace
-	      setChild(0);
-	  else
-	    // found no child
-	    setChild(0);
-	}
-#endif // HAVE_GMETADOM
-
-      resetDirtyStructure();
-    }
-}
-
-void
-BoxMLObjectElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      if (SmartPtr<MathMLElement> child = smart_cast<MathMLElement>(getChild()))
-	child->refine(context);
-      BoxMLElement::refine(context);
-    }
-}
-#endif
+SmartPtr<BoxMLMathMLAdapter>
+BoxMLMathMLAdapter::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLMathMLAdapter(context); }
 
 AreaRef
-BoxMLObjectElement::format(BoxFormattingContext& ctxt)
+BoxMLMathMLAdapter::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      if (SmartPtr<MathMLElement> child = smart_cast<MathMLElement>(getChild()))
+      if (SmartPtr<MathMLElement> child = getChild())
 	{
 	  SmartPtr<MathMLNamespaceContext> contentContext = child->getMathMLNamespaceContext();
 	  assert(contentContext);

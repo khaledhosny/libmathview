@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2002, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,29 +17,30 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
+// http://www.cs.unibo.it/helm/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __MathMLFencedElement_hh__
-#define __MathMLFencedElement_hh__
+#ifndef __Globals_hh__
+#define __Globals_hh__
 
-#include "MathMLBinContainerElement.hh"
+#include "Logger.hh"
+#include "Configuration.hh"
+#include "MathMLOperatorDictionary.hh"
 
-class MathMLFencedElement : public MathMLBinContainerElement
-{
-protected:
-  MathMLFencedElement(const SmartPtr<class MathMLNamespaceContext>&);
-  virtual ~MathMLFencedElement();
+namespace Globals {
 
-public:
-  static SmartPtr<MathMLFencedElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
-  { return new MathMLFencedElement(view); }
+  extern MathMLOperatorDictionary dictionary;
+  extern Configuration      configuration;
+  extern Logger             logger;
 
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
+  void InitGlobalData(const char*);
 
-private:
-  unsigned nArgs;
-};
+  void SetVerbosity(int);
+  int  GetVerbosity(void);
+  bool DrawMissingCharacter(void);
+  void DrawMissingCharacter(bool);
+  
+}
 
-#endif // __MathMLFencedElement_hh__
+#endif // __Globals_hh__
+

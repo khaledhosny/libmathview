@@ -24,10 +24,7 @@
 
 #include <cassert>
 
-#include "ChildList.hh"
 #include "Globals.hh"
-#include "MathMLDummyElement.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
 #include "MathMLNamespaceContext.hh"
@@ -44,77 +41,6 @@ MathMLUnderOverElement::MathMLUnderOverElement(const SmartPtr<class MathMLNamesp
 
 MathMLUnderOverElement::~MathMLUnderOverElement()
 { }
-
-void
-MathMLUnderOverElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  assert(IsA() == T_MUNDER || IsA() == T_MOVER || IsA() == T_MUNDEROVER);
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  
-	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
-	    setBase(e);
-	  else if (!is_a<MathMLDummyElement>(getBase()))
-	    setBase(getFactory()->createDummyElement());
-
-	  switch (IsA())
-	    {
-	    case T_MUNDER:
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		setUnderScript(e);
-	      else if (!is_a<MathMLDummyElement>(getUnderScript()))
-		setUnderScript(getFactory()->createDummyElement());
-	      setOverScript(0);
-	      break;
-	    case T_MOVER:
-	      setUnderScript(0);
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		setOverScript(e);
-	      else if (!is_a<MathMLDummyElement>(getOverScript()))
-		setOverScript(getFactory()->createDummyElement());
-	      break;
-	    case T_MUNDEROVER:
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		setUnderScript(e);
-	      else if (!is_a<MathMLDummyElement>(getUnderScript()))
-		setUnderScript(getFactory()->createDummyElement());
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
-		setOverScript(e);
-	      else if (!is_a<MathMLDummyElement>(getOverScript()))
-		setOverScript(getFactory()->createDummyElement());
-	      break;
-	    default:
-	      assert(0);
-	    }
-	}
-#endif // HAVE_GMETADOM
-
-      assert(getBase());
-      getBase()->construct();
-      if (getUnderScript()) getUnderScript()->construct();
-      if (getOverScript()) getOverScript()->construct();
-
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLUnderOverElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, UnderOver, accentunder);
-      REFINE_ATTRIBUTE(context, MathML, UnderOver, accent);
-      if (getBase()) getBase()->refine(context);
-      if (getUnderScript()) getUnderScript()->refine(context);
-      if (getOverScript()) getOverScript()->refine(context);
-      MathMLContainerElement::refine(context);
-    }
-}
 
 AreaRef
 MathMLUnderOverElement::format(MathFormattingContext& ctxt)

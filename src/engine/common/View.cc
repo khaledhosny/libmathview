@@ -25,22 +25,37 @@
 #include "Clock.hh"
 #include "View.hh"
 #include "Element.hh"
-#include "NamespaceRegistry.hh"
-#include "NamespaceContext.hh"
+#include "Builder.hh"
+#include "MathMLNamespaceContext.hh"
+#include "BoxMLNamespaceContext.hh"
 #include "AreaId.hh"
 #include "scaled.hh"
 #include "scaledConv.hh"
 // FIXME:
 #include "Gtk_WrapperArea.hh"
 
-View::View()
-{
-  registry = NamespaceRegistry::create();
-  freezeCounter = 0;
-}
+View::View(const SmartPtr<Builder>& b)
+
+  : builder(b), freezeCounter(0)
+{ }
 
 View::~View()
 { }
+
+SmartPtr<View>
+View::create(const SmartPtr<Builder>& builder,
+	     const SmartPtr<MathGraphicDevice>& mgd,
+	     const SmartPtr<BoxGraphicDevice>& bgd)
+{
+  SmartPtr<View> view = new View(builder);
+  // the following fields cannot be initialized within the constructor
+  // because there the reference counter is still 0, so it is
+  // harmful to pass this as pointer
+  view->mathmlContext = MathMLNamespaceContext::create(view, mgd);
+  view->boxmlContext = BoxMLNamespaceContext::create(view, bgd);
+  view->getBuilder()->setNamespaceContexts(view->mathmlContext, view->boxmlContext);
+  return view;
+}
 
 bool
 View::freeze()
@@ -55,9 +70,17 @@ View::thaw()
   return --freezeCounter == 0;
 }
 
+SmartPtr<Builder>
+View::getBuilder() const
+{ return builder; }
+
 AreaRef
 View::getElementArea(const SmartPtr<Element>& elem) const
 { return elem ? elem->getNamespaceContext()->format(elem) : 0; }
+
+SmartPtr<Element>
+View::getRootElement() const
+{ return builder->getRootElement(); }
 
 AreaRef
 View::getRootArea() const
@@ -140,11 +163,13 @@ View::getCharExtents(const SmartPtr<Element>& elem, int index, scaled& x, scaled
   return false;
 }
 
-SmartPtr<NamespaceRegistry>
-View::getRegistry(void) const
-{
-  return registry;
-}
+SmartPtr<MathMLNamespaceContext>
+View::getMathMLNamespaceContext(void) const
+{ return mathmlContext; }
+
+SmartPtr<BoxMLNamespaceContext>
+View::getBoxMLNamespaceContext(void) const
+{ return boxmlContext; }
 
 void
 View::render(RenderingContext& ctxt) const

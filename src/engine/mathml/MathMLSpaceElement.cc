@@ -38,21 +38,7 @@ MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLNamespaceConte
 }
 
 MathMLSpaceElement::~MathMLSpaceElement()
-{
-}
-
-void
-MathMLSpaceElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Space, width);
-      REFINE_ATTRIBUTE(context, MathML, Space, height);
-      REFINE_ATTRIBUTE(context, MathML, Space, depth);
-      REFINE_ATTRIBUTE(context, MathML, Space, linebreak);
-      MathMLElement::refine(context);
-    }
-}
+{ }
 
 AreaRef
 MathMLSpaceElement::format(MathFormattingContext& ctxt)
@@ -79,6 +65,8 @@ MathMLSpaceElement::format(MathFormattingContext& ctxt)
 	depth = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
 
       
+#if 0
+      // fixme this should detect the presence of attributes in a different way
       if (!IsSet(T_WIDTH) && !IsSet(T_HEIGHT) && !IsSet(T_DEPTH))
 	{
 	  lineBreak = true;
@@ -87,6 +75,7 @@ MathMLSpaceElement::format(MathFormattingContext& ctxt)
 	    breakability = ToTokenId(GET_ATTRIBUTE_VALUE(MathML, Space, linebreak));
 	}
       else
+#endif
 	lineBreak = false;
 
       if (lineBreak)

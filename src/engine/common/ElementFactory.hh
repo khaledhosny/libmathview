@@ -23,7 +23,6 @@
 #ifndef __ElementFactory_hh__
 #define __ElementFactory_hh__
 
-#include "DOM.hh"
 #include "String.hh"
 #include "Object.hh"
 

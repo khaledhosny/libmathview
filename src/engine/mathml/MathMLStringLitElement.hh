@@ -35,7 +35,7 @@ public:
   static SmartPtr<MathMLStringLitElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLStringLitElement(view); }
 
-  virtual void refine(class AbstractRefinementContext&);
+  //virtual void refine(class AbstractRefinementContext&);
 
 protected:
   SmartPtr<class MathMLTextNode> lQuote;

@@ -45,8 +45,6 @@ public:
   void swapContent(std::vector< SmartPtr<MathMLTextNode> >& newContent) { content.swapContent(this, newContent); }
   const std::vector< SmartPtr<class MathMLTextNode> >& getContent(void) const { return content.getContent(); }
 
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
   bool           IsNonMarking(void) const;
@@ -59,8 +57,6 @@ private:
 
 protected:
   AreaRef formatAux(class MathFormattingContext&);
-  static SmartPtr<class MathMLTextNode> substituteMGlyphElement(const DOM::Element&);
-  static SmartPtr<class MathMLTextNode> substituteAlignMarkElement(const DOM::Element&);
   
   void AddItalicCorrection(void);
 };

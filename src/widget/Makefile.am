@@ -14,6 +14,7 @@ libgtkmathview_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
   $(DOM_LIBS) \
+  $(top_builddir)/src/engine/adapters/libadapters.la \
   $(top_builddir)/src/engine/mathml/libmathml.la \
   $(top_builddir)/src/engine/boxml/libboxml.la \
   $(top_builddir)/src/engine/common/libengine_common.la \
@@ -24,6 +25,8 @@ libgtkmathview_la_LIBADD = \
   $(top_builddir)/src/formatter/gtk_areamodel/libgtk_areamodel.la \
   $(top_builddir)/src/formatter/areamodel/libareamodel.la \
   $(top_builddir)/src/formatter/basictypes/mathvariants/libmathvariants.la \
+  $(top_builddir)/src/frontend/gmetadom/libfrontend_gmetadom.la \
+  $(top_builddir)/src/frontend/common/libfrontend_common.la \
   $(top_builddir)/src/common/libcommon.la
 
 libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
@@ -39,6 +42,8 @@ INCLUDES = \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \

@@ -34,8 +34,10 @@ protected:
   virtual ~MathMLBinContainerElement();
 
 public:
+#if 0
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#endif
   virtual AreaRef format(class MathFormattingContext&);
 
   SmartPtr<MathMLElement> getChild(void) const { return content.getChild(); }

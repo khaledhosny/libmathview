@@ -30,7 +30,7 @@
 
 typedef std::basic_string<Char> String;
 typedef std::basic_string<Char8> UTF8String;
-typedef std::basic_string<Char16> UTF16String;
+//typedef std::basic_string<Char16> UTF16String;
 typedef std::basic_string<Char32> UCS4String;
 
 inline bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
@@ -43,15 +43,20 @@ String toLowerCase(const String&);
 
 UTF8String UTF8StringOfUCS4String(const UCS4String&);
 UCS4String UCS4StringOfUTF8String(const UTF8String&);
+#if 0
 UTF16String UTF16StringOfUCS4String(const UCS4String&);
 UCS4String UCS4StringOfUTF16String(const UTF16String&);
+#endif
 
 #if CHAR8 == 1
 inline String StringOfUCS4String(const UCS4String& s) { return UTF8StringOfUCS4String(s); }
 inline UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF8String(s); }
 #elif CHAR16 == 1
+#error "UTF16 encoding is not supported"
+#if 0
 inline String StringOfUCS4String(const UCS4String& s) { return UTF16StringOfUCS4String(s); }
 inline UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF16String(s); }
+#endif
 #elif CHAR32 == 1
 inline String StringOfUCS4String(const UCS4String& s) { return s; }
 inline UCS4String UCS4StringOfString(const String& s) { return s; }

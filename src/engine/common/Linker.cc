@@ -55,7 +55,7 @@ Linker::get(const DOM::Element& elem, const SmartPtr<ElementFactory>& factory)
     return res;
   else if (factory)
     {
-      SmartPtr<Element> res = factory->createElement(nodeLocalName(elem));
+      SmartPtr<Element> res = factory->createElement(DOMX::nodeLocalName(elem));
       assert(res);
       res->setLinker(this);
       res->setDOMElement(elem);

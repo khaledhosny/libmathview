@@ -24,15 +24,9 @@
 
 #include <cassert>
 
-#include "ChildList.hh"
-#include "MathMLDummyElement.hh"
-#include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLScriptElement.hh"
-#include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
-#include "defs.h"
-//#include "traverseAux.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
@@ -43,76 +37,6 @@ MathMLScriptElement::MathMLScriptElement(const SmartPtr<class MathMLNamespaceCon
 
 MathMLScriptElement::~MathMLScriptElement()
 { }
-
-void
-MathMLScriptElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  assert(IsA() == T_MSUB || IsA() == T_MSUP || IsA() == T_MSUBSUP);
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  
-	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
-	    setBase(e);
-	  else if (!is_a<MathMLDummyElement>(getBase()))
-	    setBase(getFactory()->createDummyElement());
-
-	  switch (IsA())
-	    {
-	    case T_MSUB:
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		setSubScript(e);
-	      else if (!is_a<MathMLDummyElement>(getSubScript()))
-		setSubScript(getFactory()->createDummyElement());
-	      setSuperScript(0);
-	      break;
-	    case T_MSUP:
-	      setSubScript(0);
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		setSuperScript(e);
-	      else if (!is_a<MathMLDummyElement>(getSuperScript()))
-		setSuperScript(getFactory()->createDummyElement());
-	      break;
-	    case T_MSUBSUP:
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		setSubScript(e);
-	      else if (!is_a<MathMLDummyElement>(getSubScript()))
-		setSubScript(getFactory()->createDummyElement());
-	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
-		setSuperScript(e);
-	      else if (!is_a<MathMLDummyElement>(getSuperScript()))
-		setSuperScript(getFactory()->createDummyElement());
-	      break;
-	    default:
-	      assert(false);
-	    }
-	}
-#endif
-
-      if (getBase()) getBase()->construct();
-      if (getSubScript()) getSubScript()->construct();
-      if (getSuperScript()) getSuperScript()->construct();
-
-      resetDirtyStructure();
-    }
-}
-
-void
-MathMLScriptElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Script, subscriptshift);
-      REFINE_ATTRIBUTE(context, MathML, Script, superscriptshift);
-      if (getBase()) getBase()->refine(context);
-      if (getSubScript()) getSubScript()->refine(context);
-      if (getSuperScript()) getSuperScript()->refine(context);
-      MathMLContainerElement::refine(context);
-    }
-}
 
 AreaRef
 MathMLScriptElement::format(MathFormattingContext& ctxt)

@@ -38,6 +38,7 @@ MathMLAlignMarkElement::~MathMLAlignMarkElement()
 {
 }
 
+#if 0
 void
 MathMLAlignMarkElement::refine(AbstractRefinementContext& context)
 {
@@ -47,6 +48,7 @@ MathMLAlignMarkElement::refine(AbstractRefinementContext& context)
       MathMLElement::refine(context);
     }
 }
+#endif
 
 #if 0
 void

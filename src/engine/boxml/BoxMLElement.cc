@@ -25,8 +25,6 @@
 #include "View.hh"
 #include "BoxMLElement.hh"
 #include "BoxMLNamespaceContext.hh"
-#include "Linker.hh"
-#include "BoxMLElementFactory.hh"
 
 BoxMLElement::BoxMLElement(const SmartPtr<BoxMLNamespaceContext>& c)
   : context(c)
@@ -42,20 +40,4 @@ BoxMLElement::getStep() const
 SmartPtr<NamespaceContext>
 BoxMLElement::getNamespaceContext() const
 { return static_cast<NamespaceContext*>(context); }
-
-void
-BoxMLElement::construct()
-{ resetDirtyStructure(); }
-
-SmartPtr<BoxMLElementFactory>
-BoxMLElement::getFactory() const
-{ return context->getFactory(); }
-
-void
-BoxMLElement::refine(class AbstractRefinementContext&)
-{ resetDirtyAttribute(); }
-
-SmartPtr<BoxMLElement>
-BoxMLElement::getFormattingNode(const DOM::Element& el) const
-{ return context->getLinker()->get<BoxMLElement>(el, context->getFactory()); }
 

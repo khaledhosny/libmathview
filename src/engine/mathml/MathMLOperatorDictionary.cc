@@ -25,129 +25,55 @@
 
 #include "Globals.hh"
 #include "Attribute.hh"
-#include "MathMLParseFile.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "AttributeList.hh"
-#include "AttributeSignature.hh"
-#include "MathMLAttributeSignatures.hh"
-
-#if defined(HAVE_GMETADOM)
-
-void
-getAttribute(const DOM::Element& node, const AttributeSignature& signature,
-	     const SmartPtr<AttributeList>& aList)
-{
-  assert(aList);
-
-  DOM::GdomeString attrVal = node.getAttribute(toDOMString(signature.name));
-  if (attrVal.empty()) return;
-
-  aList->set(Attribute::create(signature, fromDOMString(attrVal)));
-}
-
-#endif // HAVE_GMETADOM
-
-//
 
 MathMLOperatorDictionary::MathMLOperatorDictionary()
-{
-}
+{ }
 
 MathMLOperatorDictionary::~MathMLOperatorDictionary()
 {
-  Unload();
-}
-
-#if defined(HAVE_GMETADOM)
-
-bool
-MathMLOperatorDictionary::Load(const char* fileName)
-{
-  try {
-    DOM::Document doc = MathMLParseFile(fileName, true);
-
-    DOM::Element root = doc.get_documentElement();
-    if (!root) {
-      Globals::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
-      return false;
-    }
-
-    if (root.get_nodeName() != "dictionary") {
-      Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
-      return false;
-    }
-
-    for (DOM::Node op = root.get_firstChild(); op; op = op.get_nextSibling()) {
-      if (op.get_nodeType() == DOM::Node::ELEMENT_NODE && op.get_nodeName() == "operator") {
-	DOM::Element elem = op;
-	String opName = fromDOMString(elem.getAttribute("name"));
-
-	if (!opName.empty()) {
-	  SmartPtr<AttributeList> defaults = AttributeList::create();
-
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
-
-	  FormDefaults& formDefaults = items[opName];
-	  if (elem.getAttribute("form") == "prefix")
-	    if (formDefaults.prefix)
-	      Globals::logger(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
-			      opName.c_str());
-	    else
-	      formDefaults.prefix = defaults;
-	  else if (elem.getAttribute("form") == "infix")
-	    if (formDefaults.prefix)
-	      Globals::logger(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
-			      opName.c_str());
-	    else
-	      formDefaults.infix = defaults;
-	  else if (elem.getAttribute("form") == "postfix")
-	    if (formDefaults.prefix)
-	      Globals::logger(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
-			      opName.c_str());
-	    else
-	      formDefaults.postfix = defaults;
-	  else
-	    Globals::logger(LOG_WARNING, 
-			    "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
-			    opName.c_str());
-	} else {
-	  Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
-	}
-      } else if (!DOM::nodeIsBlank(op)) {
-	std::string s_name = op.get_nodeName();
-	Globals::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName, s_name.c_str());
-      }
-    }
-
-    return true;
-  } catch (DOM::DOMException) {
-    return false;
-  }
-}
-
-#endif // HAVE_GMETADOM
-
-void
-MathMLOperatorDictionary::Unload()
-{
+  unload();
 }
 
 void
-MathMLOperatorDictionary::Search(const String& opName,
-			   SmartPtr<AttributeList>& prefix,
-			   SmartPtr<AttributeList>& infix,
-			   SmartPtr<AttributeList>& postfix) const
+MathMLOperatorDictionary::add(const String& opName, const String& form,
+			      const SmartPtr<AttributeList>& defaults)
+{
+  FormDefaults& formDefaults = items[opName];
+  if (form == "prefix")
+    if (formDefaults.prefix)
+      Globals::logger(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
+		      opName.c_str());
+    else
+      formDefaults.prefix = defaults;
+  else if (form == "infix")
+    if (formDefaults.prefix)
+      Globals::logger(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
+		      opName.c_str());
+    else
+      formDefaults.infix = defaults;
+  else if (form == "postfix")
+    if (formDefaults.prefix)
+      Globals::logger(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
+		      opName.c_str());
+    else
+      formDefaults.postfix = defaults;
+  else
+    Globals::logger(LOG_WARNING, 
+		    "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
+		    opName.c_str());
+}
+
+void
+MathMLOperatorDictionary::unload()
+{ }
+
+void
+MathMLOperatorDictionary::search(const String& opName,
+				 SmartPtr<AttributeList>& prefix,
+				 SmartPtr<AttributeList>& infix,
+				 SmartPtr<AttributeList>& postfix) const
 {
   prefix = infix = postfix = 0;
 

@@ -35,14 +35,15 @@ public:
   MathMLOperatorDictionary(void);
   ~MathMLOperatorDictionary();
 
-  bool Load(const char*);
-  void Unload(void);
-  void Search(const String&,
+  void add(const String&, const String&, const SmartPtr<class AttributeList>&);
+  void search(const String&,
 	      SmartPtr<class AttributeList>&,
 	      SmartPtr<class AttributeList>&,
 	      SmartPtr<class AttributeList>&) const;
 
 private:
+  void unload(void);
+
   struct FormDefaults
   {
     SmartPtr<class AttributeList> prefix;

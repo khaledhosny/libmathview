@@ -25,7 +25,6 @@
 
 #include <bitset>
 
-#include "DOM.hh"
 #include "Node.hh"
 #include "WeakPtr.hh"
 #include "Area.hh"
@@ -88,26 +87,11 @@ public:
   virtual void resetFlagDown(Flags);
   bool getFlag(Flags f) const { return flags.test(f); }
 
-#if defined(HAVE_GMETADOM)
-public:
-  DOM::Element getDOMElement(void) const { return elem; }
-  void setDOMElement(const DOM::Element&);
-protected:
-  void refineAttribute(const class AbstractRefinementContext&, const class AttributeSignature&);
-  void setLinker(const SmartPtr<class Linker>&);
-  void unlink(void);
-  friend class Linker;
-#endif // HAVE_GMEATDOM
-
 private:
   WeakPtr<Element> parent;
   std::bitset<FUnusedFlag> flags;
   SmartPtr<class AttributeList> attributes;
   AreaRef area;
-#if defined(HAVE_GMETADOM)
-  DOM::Element elem;
-  SmartPtr<class Linker> linker;
-#endif // HAVE_GMEATDOM
 };
 
 #endif // __Element_hh__

@@ -28,7 +28,6 @@
 #include "BoxMLAttributeSignatures.hh"
 #include "ValueConversion.hh"
 #include "BoxMLActionElement.hh"
-#include "AbstractRefinementContext.hh"
 #include "BoxFormattingContext.hh"
 #include "BoxGraphicDevice.hh"
 
@@ -42,17 +41,6 @@ BoxMLActionElement::~BoxMLActionElement()
 SmartPtr<BoxMLActionElement>
 BoxMLActionElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLActionElement(context); }
-
-void
-BoxMLActionElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, Action, selection);
-      REFINE_ATTRIBUTE(context, BoxML, Action, actiontype);
-      BoxMLLinearContainerElement::refine(context);
-    }
-}
 
 AreaRef
 BoxMLActionElement::format(BoxFormattingContext& ctxt)

@@ -35,12 +35,9 @@ public:
   virtual scaled getStep(void) const;
   virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
 
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class BoxFormattingContext&) = 0;
 
 protected:
-  SmartPtr<BoxMLElement> getFormattingNode(const DOM::Element&) const;
   SmartPtr<class BoxMLElementFactory> getFactory(void) const;
 
 private:

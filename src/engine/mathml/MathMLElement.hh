@@ -35,20 +35,12 @@ protected:
   virtual ~MathMLElement();
 
 public:
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
   virtual bool IsSpaceLike(void) const;
 
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
   SmartPtr<class MathMLOperatorElement> getCoreOperatorTop(void);
-
-#if defined(HAVE_GMETADOM)
-  SmartPtr<MathMLElement> getFormattingNode(const DOM::Element& el) const;
-  bool IsSet(TokenId) const;
-  TokenId IsA(void) const;
-#endif // HAVE_GMETADOM
 
   virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;

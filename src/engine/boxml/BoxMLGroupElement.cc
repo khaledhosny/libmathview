@@ -33,6 +33,11 @@ BoxMLGroupElement::BoxMLGroupElement(const SmartPtr<BoxMLNamespaceContext>& cont
 BoxMLGroupElement::~BoxMLGroupElement()
 { }
 
+SmartPtr<BoxMLGroupElement>
+BoxMLGroupElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
+{ return new BoxMLGroupElement(context); }
+
+#if 0
 void
 BoxMLGroupElement::refine(AbstractRefinementContext& context)
 {
@@ -44,6 +49,7 @@ BoxMLGroupElement::refine(AbstractRefinementContext& context)
       BoxMLLinearContainerElement::refine(context);
     }
 }
+#endif
 
 AreaRef
 BoxMLGroupElement::format(BoxFormattingContext& ctxt)
