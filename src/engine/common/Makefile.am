@@ -17,6 +17,7 @@ libengine_common_la_SOURCES = \
   ElementFactory.cc \
   View.cc \
   DOMView.cc \
+  Node.cc \
   Element.cc \
   Linker.cc
 
@@ -33,6 +34,7 @@ noinst_HEADERS = \
   ElementFactory.hh \
   View.hh \
   DOMView.hh \
+  Node.hh \
   Element.hh \
   Linker.hh
 

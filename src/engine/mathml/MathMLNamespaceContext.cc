@@ -85,3 +85,25 @@ MathMLNamespaceContext::construct(const DOM::Element& el) const
 
   return 0;
 }
+
+AreaRef
+MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
+{
+  SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(el);
+  assert(elem);
+  if (elem->dirtyLayout())
+    {
+      Clock perf;
+      perf.Start();
+      elem->format(context);
+      perf.Stop();
+      Globals::logger(LOG_INFO, "formatting time: %dms", perf());
+    }
+  return elem->getArea();
+}
+
+SmartPtr<MathMLElementFactory>
+MathMLNamespaceContext::getFactory() const
+{
+  return factory;
+}

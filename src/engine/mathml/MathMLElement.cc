@@ -136,9 +136,28 @@ MathMLElement::IsSet(TokenId id) const
 }
 #endif // HAVE_GMETADOM
 
+SmartPtr<MathMLElementFactory>
+MathMLElement::getFactory() const
+{
+  return context->getFactory();
+}
+
 SmartPtr<NamespaceContext>
 MathMLElement::getNamespaceContext() const
 {
   return static_cast<MathMLNamespaceContext*>(context);
 }
 
+#include "DOMView.hh"
+#include "Linker.hh"
+#include "MathMLElementFactory.hh"
+
+SmartPtr<MathMLElement>
+MathMLElement::getFormattingNode(const DOM::Element& el) const
+{
+  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(getFactory()->getElement(el)))
+    return elem;
+
+  assert(false);
+  return 0;
+}

@@ -31,6 +31,7 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
+#include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 

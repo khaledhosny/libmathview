@@ -40,12 +40,21 @@ DOMView::findElement(const DOM::Element& el) const
   return linker->get(el);
 }
 
+DOM::Element
+DOMView::findDOMElement(const SmartPtr<Element>& elem) const
+{
+  SmartPtr<Element> p(elem);
+  while (p && !p->getDOMElement())
+    p = p->getParent();
+
+  return p ? p->getDOMElement() : DOM::Element(0);
+}
+
 void
 DOMView::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
 {
   DOM::MutationEvent me(ev);
   assert(me);
-
   if (SmartPtr<Element> elem = view->findElement(DOM::Element(me.get_target())))
     {
       elem->setDirtyStructure();
@@ -108,4 +117,19 @@ SmartPtr<Linker>
 DOMView::getLinker() const
 {
   return linker;
+}
+
+bool
+DOMView::getDOMElementExtents(const DOM::Element& el, scaled& x, scaled& y, BoundingBox& box) const
+{
+  if (SmartPtr<Element> elem = findElement(el))
+    return getElementExtents(elem, x, y, box);
+  else
+    return false;
+}
+
+DOM::Element
+DOMView::getDOMElementAt(const scaled& x, const scaled& y) const
+{
+  findDOMElement(getElementAt(x, y));
 }

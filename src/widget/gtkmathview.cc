@@ -44,11 +44,11 @@
 #include "gtkmathview.h"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
+#include "NamespaceRegistry.hh"
 #include "MathMLActionElement.hh"
-#include "MathMLDOMLinker.hh"
-#include "MathMLFormattingEngineFactory.hh"
-#include "MathMLViewContext.hh"
-#include "MathMLView.hh"
+#include "MathMLElementFactory.hh"
+#include "MathMLNamespaceContext.hh"
+#include "DOMView.hh"
 
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_RenderingContext.hh"
@@ -97,7 +97,7 @@ struct _GtkMathView {
   GdomeElement*  current_elem;
 #endif
 
-  MathMLView*    view;
+  DOMView*       view;
   Gtk_RenderingContext* renderingContext;
 };
 
@@ -164,14 +164,13 @@ static guint select_end_signal = 0;
 static guint select_abort_signal = 0;
 static guint element_over_signal = 0;
 static guint new_counter = 0;
-static SmartPtr<MathMLViewContext> viewContext;
 
 /* auxiliary C++ functions */
 
 static SmartPtr<const Gtk_WrapperArea>
-findGtkWrapperArea(const SmartPtr<MathMLView>& view, const DOM::Element& node)
+findGtkWrapperArea(const SmartPtr<DOMView>& view, const DOM::Element& node)
 {
-  if (SmartPtr<MathMLElement> elem = findMathMLElement(view, node))
+  if (SmartPtr<Element> elem = view->findElement(node))
     if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
       return area;
   return 0;
@@ -201,7 +200,9 @@ paint_widget(GtkMathView* math_view)
   math_view->view->setOrigin(Gtk_RenderingContext::fromGtkX(math_view->top_x - MARGIN),
 			     Gtk_RenderingContext::fromGtkY(math_view->top_y - MARGIN));
 
-  math_view->view->render(*math_view->renderingContext);
+  math_view->view->getRootArea()->render(*math_view->renderingContext,
+					 math_view->view->getOriginX(),
+					 math_view->view->getOriginY());
 
   gdk_draw_pixmap(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
@@ -419,15 +420,24 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
+#if 0
   if (new_counter++ == 0)
     viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
 					    MathMLFormattingEngineFactory::create(),
 					    Gtk_MathGraphicDevice::create(math_view->area));
   assert(viewContext);
+#endif
 
-  SmartPtr<MathMLView> view = MathMLView::create(viewContext);
+  SmartPtr<DOMView> view = DOMView::create();
   view->ref();
   math_view->view = view;
+
+  SmartPtr<MathMLElementFactory> mmlFactory = MathMLElementFactory::create();
+  SmartPtr<MathMLNamespaceContext> mmlContext =
+    MathMLNamespaceContext::create(mmlFactory,
+				   Gtk_MathGraphicDevice::create(math_view->area));
+  mmlFactory->setContext(mmlContext);
+  view->getRegistry()->add(mmlContext);
 
   math_view->renderingContext = new Gtk_RenderingContext;
 
@@ -464,7 +474,9 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->renderingContext = 0;
     }
 
+#if 0
   if (--new_counter == 0) viewContext = 0;
+#endif
 
   if (math_view->hadjustment != NULL)
     {
@@ -544,9 +556,12 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
   g_assert(math_view);
   g_assert(math_view->view);
 
-  BoundingBox box = math_view->view->getBoundingBox();
-  requisition->width = sp2ipx(box.horizontalExtent()) + 2 * MARGIN;
-  requisition->height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
+  if (AreaRef rootArea = math_view->view->getRootArea())
+    {
+      BoundingBox box = rootArea->box();
+      requisition->width = sp2ipx(box.horizontalExtent()) + 2 * MARGIN;
+      requisition->height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
+    }
 }
 
 static gint
@@ -837,7 +852,9 @@ setup_adjustments(GtkMathView* math_view)
   g_return_if_fail(math_view->area != NULL);
   g_return_if_fail(math_view->view);
 
-  BoundingBox box = math_view->view->getBoundingBox();
+  BoundingBox box;
+  if (AreaRef rootArea = math_view->view->getRootArea())
+    box = rootArea->box();
 
   if (math_view->hadjustment != NULL) {
     gint width = sp2ipx(box.width) + 2 * MARGIN;
@@ -900,7 +917,7 @@ gtk_math_view_set_root(GtkMathView* math_view, GdomeElement* elem)
   g_return_if_fail(math_view);
   g_return_if_fail(math_view->view);
 
-  math_view->view->setRoot(DOM::Element(elem));
+  math_view->view->setRootDOMElement(DOM::Element(elem));
 
   reset_adjustments(math_view);
   paint_widget(math_view);
@@ -998,7 +1015,9 @@ gtk_math_view_set_font_size(GtkMathView* math_view, guint size)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view);
   g_return_if_fail(size > 0);
-  math_view->view->setDefaultFontSize(size);
+  SmartPtr<MathMLNamespaceContext> ctxt = smart_cast<MathMLNamespaceContext>(math_view->view->getRegistry()->get(MATHML_NS_URI));
+  assert(ctxt);
+  ctxt->setDefaultFontSize(size);
   paint_widget(math_view);
 }
 
@@ -1007,7 +1026,9 @@ gtk_math_view_get_font_size(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view, 0);
   g_return_val_if_fail(math_view->view, 0);
-  return math_view->view->getDefaultFontSize();
+  SmartPtr<MathMLNamespaceContext> ctxt = smart_cast<MathMLNamespaceContext>(math_view->view->getRegistry()->get(MATHML_NS_URI));
+  assert(ctxt);
+  return ctxt->getDefaultFontSize();
 }
 
 extern "C" void
@@ -1075,9 +1096,9 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->view != NULL, NULL);
 
-  SmartPtr<MathMLElement> at = math_view->view->getElementAt(Gtk_RenderingContext::fromGtkX(x),
-							     Gtk_RenderingContext::fromGtkY(y));
-  return gdome_cast_el(findDOMNode(at).gdome_object());
+  DOM::Element at = math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
+						     Gtk_RenderingContext::fromGtkY(y));
+  return gdome_cast_el(at.gdome_object());
 }
 
 extern "C" gboolean
@@ -1091,7 +1112,7 @@ gtk_math_view_get_element_location(GtkMathView* math_view, GdomeElement* elem,
   scaled sx;
   scaled sy;
   BoundingBox box;
-  if (math_view->view->getElementExtents(DOM::Element(elem), sx, sy, box))
+  if (math_view->view->getDOMElementExtents(DOM::Element(elem), sx, sy, box))
     {
       if (x) *x = Gtk_RenderingContext::toGtkX(sx);
       if (y) *y = Gtk_RenderingContext::toGtkY(sy);

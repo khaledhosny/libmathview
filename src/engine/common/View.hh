@@ -44,6 +44,8 @@ public:
   scaled getOriginX(void) const { return x0; }
   scaled getOriginY(void) const { return y0; }
 
+  SmartPtr<class NamespaceRegistry> getRegistry(void) const;
+
   void setRootElement(const SmartPtr<class Element>&);
   SmartPtr<class Element> getRootElement(void) const;
 
@@ -51,9 +53,6 @@ public:
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
   bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
   SmartPtr<class Element> getElementAt(const scaled&, const scaled&) const;
-
-protected:
-  SmartPtr<class NamespaceRegistry> getRegistry(void) const;
 
 private:
   SmartPtr<class NamespaceRegistry> registry;

@@ -25,54 +25,60 @@
 
 #include "MathML.hh"
 #include "HashMap.hh"
+#include "MathMLNamespaceContext.hh"
 #include "ElementFactory.hh"
+
+#define DEFINE_FACTORY_METHOD(n) SmartPtr<MathMLElement> create##n##Element(void) const { return MathML##n##Element::create(static_cast<MathMLNamespaceContext*>(context)); }
 
 class MathMLElementFactory : public ElementFactory
 {
 protected:
-  MathMLElementFactory(const SmartPtr<class MathMLNamespaceContext>&);
+  MathMLElementFactory(void);
   virtual ~MathMLElementFactory();
 
 public:
-  static SmartPtr<MathMLElementFactory> create(const SmartPtr<class MathMLNamespaceContext>& context)
-  { return new MathMLElementFactory(context); }
+  static SmartPtr<MathMLElementFactory> create(void)
+  { return new MathMLElementFactory(); }
 
+  SmartPtr<MathMLElement> createMathMLElement(const String& name) const;
   virtual SmartPtr<Element> createElement(const String& name) const;
 
-  SmartPtr<MathMLElement> createMathElement(void) const { return MathMLmathElement::create(context); }
-  SmartPtr<MathMLElement> createIdentifierElement(void) const { return MathMLIdentifierElement::create(context); }
-  SmartPtr<MathMLElement> createNumberElement(void) const { return MathMLNumberElement::create(context); }
-  SmartPtr<MathMLElement> createOperatorElement(void) const { return MathMLOperatorElement::create(context); }
-  SmartPtr<MathMLElement> createTextElement(void) const { return MathMLTextElement::create(context); }
-  SmartPtr<MathMLElement> createSpaceElement(void) const { return MathMLSpaceElement::create(context); }
-  SmartPtr<MathMLElement> createStringLitElement(void) const { return MathMLStringLitElement::create(context); }
-  SmartPtr<MathMLElement> createRowElement(void) const { return MathMLRowElement::create(context); }
-  SmartPtr<MathMLElement> createFractionElement(void) const { return MathMLFractionElement::create(context); }
-  SmartPtr<MathMLElement> createRadicalElement(void) const { return MathMLRadicalElement::create(context); }
-  SmartPtr<MathMLElement> createStyleElement(void) const { return MathMLStyleElement::create(context); }
-  SmartPtr<MathMLElement> createErrorElement(void) const { return MathMLErrorElement::create(context); }
-  SmartPtr<MathMLElement> createPaddedElement(void) const { return MathMLPaddedElement::create(context); }
-  SmartPtr<MathMLElement> createPhantomElement(void) const { return MathMLPhantomElement::create(context); }
-  SmartPtr<MathMLElement> createFencedElement(void) const { return MathMLFencedElement::create(context); }
-  SmartPtr<MathMLElement> createScriptElement(void) const { return MathMLScriptElement::create(context); }
-  SmartPtr<MathMLElement> createUnderOverElement(void) const { return MathMLUnderOverElement::create(context); }
-  SmartPtr<MathMLElement> createMultiScriptsElement(void) const { return MathMLMultiScriptsElement::create(context); }
-  SmartPtr<MathMLElement> createTableElement(void) const { return MathMLTableElement::create(context); }
-  SmartPtr<MathMLElement> createTableRowElement(void) const { return MathMLTableRowElement::create(context); }
-  SmartPtr<MathMLElement> createLabeledTableRowElement(void) const { return MathMLLabeledTableRowElement::create(context); }
-  SmartPtr<MathMLElement> createTableCellElement(void) const { return MathMLTableCellElement::create(context); }
-  SmartPtr<MathMLElement> createAlignGroupElement(void) const { return MathMLAlignGroupElement::create(context); }
-  SmartPtr<MathMLElement> createAlignMarkElement(void) const { return MathMLAlignMarkElement::create(context); }
-  SmartPtr<MathMLElement> createActionElement(void) const { return MathMLActionElement::create(context); }
-  SmartPtr<MathMLElement> createEncloseElement(void) const { return MathMLEncloseElement::create(context); }
-  SmartPtr<MathMLElement> createSemanticsElement(void) const { return MathMLSemanticsElement::create(context); }
-  SmartPtr<MathMLElement> createDummyElement(void) const { return MathMLDummyElement::create(context); }
+  DEFINE_FACTORY_METHOD(math);
+  DEFINE_FACTORY_METHOD(Identifier);
+  DEFINE_FACTORY_METHOD(Number);
+  DEFINE_FACTORY_METHOD(Operator);
+  DEFINE_FACTORY_METHOD(Text);
+  DEFINE_FACTORY_METHOD(Space);
+  DEFINE_FACTORY_METHOD(StringLit);
+  DEFINE_FACTORY_METHOD(Row);
+  DEFINE_FACTORY_METHOD(Fraction);
+  DEFINE_FACTORY_METHOD(Radical);
+  DEFINE_FACTORY_METHOD(Style);
+  DEFINE_FACTORY_METHOD(Error);
+  DEFINE_FACTORY_METHOD(Padded);
+  DEFINE_FACTORY_METHOD(Phantom);
+  DEFINE_FACTORY_METHOD(Fenced);
+  DEFINE_FACTORY_METHOD(Script);
+  DEFINE_FACTORY_METHOD(UnderOver);
+  DEFINE_FACTORY_METHOD(MultiScripts);
+  DEFINE_FACTORY_METHOD(Table);
+  DEFINE_FACTORY_METHOD(TableRow);
+  DEFINE_FACTORY_METHOD(LabeledTableRow);
+  DEFINE_FACTORY_METHOD(TableCell);
+  DEFINE_FACTORY_METHOD(AlignGroup);
+  DEFINE_FACTORY_METHOD(AlignMark);
+  DEFINE_FACTORY_METHOD(Action);
+  DEFINE_FACTORY_METHOD(Enclose);
+  DEFINE_FACTORY_METHOD(Semantics);
+  DEFINE_FACTORY_METHOD(Dummy);
+
+  void setContext(const SmartPtr<MathMLNamespaceContext>&);
 
 private:
   typedef SmartPtr<MathMLElement> (MathMLElementFactory::* FactoryMethod)(void) const;
   typedef HASH_MAP_NS::hash_map<String,FactoryMethod,StringHash,StringEq> FactoryMethodMap;
   FactoryMethodMap factoryMethodMap;  
-  SmartPtr<MathMLNamespaceContext> context;
+  WeakPtr<MathMLNamespaceContext> context;
 };
 
 #endif // __MathMLElementFactory_hh__

@@ -26,15 +26,14 @@
 #include "Linker.hh"
 #include "MathMLElementFactory.hh"
 
-MathMLElementFactory::MathMLElementFactory(const SmartPtr<MathMLNamespaceContext>& c)
-  : context(c)
+MathMLElementFactory::MathMLElementFactory()
 {
   static struct
   {
     String tag;
     FactoryMethod create;
   } tab[] = {
-    { "math",          &MathMLElementFactory::createMathElement },
+    { "math",          &MathMLElementFactory::createmathElement },
     { "mi",            &MathMLElementFactory::createIdentifierElement },
     { "mn",            &MathMLElementFactory::createNumberElement },
     { "mo",            &MathMLElementFactory::createOperatorElement },
@@ -90,8 +89,9 @@ MathMLElementFactory::MathMLElementFactory(const SmartPtr<MathMLNamespaceContext
 MathMLElementFactory::~MathMLElementFactory()
 { }
 
-SmartPtr<Element>
-MathMLElementFactory::createElement(const String& name) const
+
+SmartPtr<MathMLElement>
+MathMLElementFactory::createMathMLElement(const String& name) const
 {
   FactoryMethodMap::const_iterator p = factoryMethodMap.find(name);
   if (p != factoryMethodMap.end())
@@ -100,3 +100,12 @@ MathMLElementFactory::createElement(const String& name) const
     return createDummyElement();
 }
 
+SmartPtr<Element>
+MathMLElementFactory::createElement(const String& name) const
+{ return createMathMLElement(name); }
+
+void
+MathMLElementFactory::setContext(const SmartPtr<MathMLNamespaceContext>& c)
+{
+  context = static_cast<MathMLNamespaceContext*>(c);
+}

@@ -37,9 +37,14 @@ public:
 
   SmartPtr<class Linker> getLinker(void) const;
 
+  DOM::Element findDOMElement(const SmartPtr<class Element>&) const;
   SmartPtr<class Element> findElement(const DOM::Element&) const;
+
   void setRootDOMElement(const DOM::Element&);
   DOM::Element getRootDOMElement(void) const { return rootDOMElement; }
+
+  bool getDOMElementExtents(const DOM::Element&, scaled&, scaled&, BoundingBox&) const;
+  DOM::Element getDOMElementAt(const scaled&, const scaled&) const;
 
 private:
   class DOMSubtreeModifiedListener : public DOM::EventListener

@@ -28,7 +28,7 @@
 #include "MathMLRowElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLView.hh"
+//#include "MathMLView.hh"
 #include "Linker.hh"
 // the following are needed for the dynamic casts
 #include "MathMLScriptElement.hh"
@@ -40,8 +40,6 @@
 #include "MathMLPhantomElement.hh"
 #include "MathMLPaddedElement.hh"
 
-#if 0
-
 SmartPtr<MathMLElement>
 findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& op)
 {
@@ -49,13 +47,15 @@ findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& op)
 
   while (root && root->getParent())
     {
-      SmartPtr<MathMLElement> newRoot = op->getParent()->getCoreOperator();
-      if (newRoot != root) break;
-      else root = op->getParent();
+      SmartPtr<MathMLElement> newRoot = smart_cast<MathMLElement>(root->getParent());
+      if (newRoot->getCoreOperator() != op) return root;
+      root = newRoot;
     }
 
   return root;
 }
+
+#if 0
 
 SmartPtr<MathMLElement>
 findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& root)
@@ -166,6 +166,7 @@ findActionElement(const SmartPtr<MathMLElement>& elem)
 
 #if defined(HAVE_GMETADOM)
 
+#if 0
 DOM::Element
 findDOMNode(const SmartPtr<MathMLElement>& elem)
 {
@@ -178,7 +179,6 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
   else return DOM::Element(0);
 }
 
-#if 0
 SmartPtr<MathMLElement>
 findMathMLElement(const SmartPtr<const MathMLView>& view, const DOM::Element& node)
 {
@@ -222,7 +222,6 @@ findLeftmostChild(const SmartPtr<MathMLElement>& elem)
     return elem;
 }
 
-#if 0
 SmartPtr<MathMLElement>
 findRightSibling(const SmartPtr<MathMLElement>& elem)
 {
@@ -237,7 +236,7 @@ findRightSibling(const SmartPtr<MathMLElement>& elem)
       else return findRightSibling(row);
     }
   else
-    return findRightSibling(elem->getParent());
+    return findRightSibling(smart_cast<MathMLElement>(elem->getParent()));
 }
 
 SmartPtr<MathMLElement>
@@ -254,6 +253,5 @@ findLeftSibling(const SmartPtr<MathMLElement>& elem)
       else return findLeftSibling(row);
     }
   else
-    return findLeftSibling(elem->getParent());
+    return findLeftSibling(smart_cast<MathMLElement>(elem->getParent()));
 }
-#endif

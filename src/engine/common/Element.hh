@@ -89,7 +89,7 @@ public:
 #if defined(HAVE_GMETADOM)
   DOM::Element getDOMElement(void) const { return elem; }
   void setDOMElement(const DOM::Element&);
-private:
+protected:
   void link(const SmartPtr<class Linker>&, const DOM::Element&);
   void unlink(void);
   friend class ElementFactory;

@@ -1,3 +1,3 @@
 
-SUBDIRS = common boxml mathml
+SUBDIRS = common mathml
 
