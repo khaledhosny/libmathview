@@ -27,6 +27,7 @@
 
 #include "String.hh"
 #include "GlyphSpec.hh"
+#include "Area.hh"
 
 class ShapingContext
 {
