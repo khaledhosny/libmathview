@@ -31,19 +31,19 @@
 
 struct HStretchyChar
 {
-  DOM::Char16 ch;
-  DOM::Char16 left;
-  DOM::Char16 glue;
-  DOM::Char16 right;
+  gunichar ch;
+  gunichar left;
+  gunichar glue;
+  gunichar right;
 };
 
 struct VStretchyChar
 {
-  DOM::Char16 ch;
-  DOM::Char16 top;
-  DOM::Char16 glue;
-  DOM::Char16 middle;
-  DOM::Char16 bottom;
+  gunichar ch;
+  gunichar top;
+  gunichar glue;
+  gunichar middle;
+  gunichar bottom;
 };
 
 static HStretchyChar hMap[] =
@@ -64,9 +64,13 @@ static VStretchyChar vMap[] =
     { 0x007d, 0x23ab, 0x23aa, 0x23ac, 0x23ad }, // RIGHT CURLY BRACKET
     { 0x2191, 0x2191, 0x23d0, 0x0000, 0x0000 }, // UP ARROW
     { 0x2193, 0x0000, 0x23d0, 0x0000, 0x2193 }, // BOTTOM ARROW
-    { 0x222b, 0x2320, 0x23ae, 0x0000, 0x2321 },
+    { 0x222b, 0x2320, 0x23ae, 0x0000, 0x2321 }, // INTEGRAL
     { 0,      0,      0,      0,      0 }
   };
+
+#define NORMAL_INDEX 0
+#define H_STRETCHY_INDEX 1
+#define V_STRETCHY_INDEX 2
 
 Gtk_PangoShaper::Gtk_PangoShaper()
 { }
@@ -75,11 +79,17 @@ Gtk_PangoShaper::~Gtk_PangoShaper()
 { }
 
 void
-Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>&, unsigned)
+Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>& sm, unsigned shaperId)
 {
-  // this method is empty because the Pango shaper is supposed to
+  // normal characters are not registered because the Pango shaper is supposed to
   // be the default shaper. It will be called anyway as soon as there's a
   // Unicode char that cannot be shaped otherwise
+
+  for (unsigned i = 0; hMap[i].ch != 0; i++)
+    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, H_STRETCHY_INDEX, i));
+
+  for (unsigned i = 0; vMap[i].ch != 0; i++)
+    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, V_STRETCHY_INDEX, i));
 }
 
 void
@@ -91,18 +101,41 @@ Gtk_PangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned
 void
 Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
+  const GlyphSpec spec = result.getSpec();
+  std::cout << "PANGO SHAPER request for " << result.thisChar() << " font id = " << spec.getFontId() << std::endl;
+  switch (spec.getFontId())
+    {
+    case NORMAL_INDEX:
+      {
+	const unsigned n = result.chunkSize();
+	gunichar* uni_buffer = new gunichar[n];
+	for (unsigned i = 0; i < n; i++) uni_buffer[i] = result.data()[i];
+	result.pushArea(n, shapeString(ctxt, uni_buffer, n));
+	delete [] uni_buffer;
+      }
+      break;
+    case H_STRETCHY_INDEX:
+      result.pushArea(1, shapeStretchyCharH(ctxt, spec, result.getHSpan()));
+      break;
+    case V_STRETCHY_INDEX:
+      result.pushArea(1, shapeStretchyCharV(ctxt, spec, result.getVSpan()));
+      break;
+    default:
+      assert(false);
+      break;
+    }
+}
+
+AreaRef
+Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* uni_buffer, glong n) const
+{
   assert(context);
 
-  unsigned n = result.chunkSize();
-  gunichar* uni_buffer = new gunichar[n];
-  for (unsigned i = 0; i < n; i++) uni_buffer[i] = result.data()[i];
   glong length;
   gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
-  assert(buffer);
   //assert((glong) n == length);
-  delete [] uni_buffer;
 
-  MathVariant variant = ctxt.getVariant();
+  const MathVariant variant = ctxt.getVariant();
 
   // FIXME: I bet there are some leaks here, but using GObjectPtr just
   // gives a segfault!!!
@@ -156,8 +189,39 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-  result.pushArea(n, factory->pangoLayout(layout));
+  return factory->pangoLayout(layout);
 
   //g_free(buffer);
   // g_free(sizeAttr); // ????
+}
+
+AreaRef
+Gtk_PangoShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
+{
+  const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
+
+  const AreaRef normal = (charSpec->ch != 0) ? shapeString(ctxt, &charSpec->ch, 1) : 0;
+  const AreaRef left = (charSpec->left != 0) ? shapeString(ctxt, &charSpec->left, 1) : 0;
+  const AreaRef glue = (charSpec->glue != 0) ? shapeString(ctxt, &charSpec->glue, 1) : 0;
+  const AreaRef right = (charSpec->right != 0) ? shapeString(ctxt, &charSpec->right, 1) : 0;
+
+  return composeStretchyCharH(ctxt.getDevice()->getFactory(), normal, left, glue, right, span);
+}
+
+AreaRef
+Gtk_PangoShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
+{
+  const scaled span = strictSpan - (1 * ctxt.getSize()) / 10;
+
+  std::cerr << "PASSO DO QUI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+
+  const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
+
+  AreaRef normal = (charSpec->ch != 0) ? shapeString(ctxt, &charSpec->ch, 1) : 0;
+  AreaRef top = (charSpec->top != 0) ? shapeString(ctxt, &charSpec->top, 1) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? shapeString(ctxt, &charSpec->glue, 1) : 0;
+  AreaRef middle = (charSpec->middle != 0) ? shapeString(ctxt, &charSpec->middle, 1) : 0;
+  AreaRef bottom = (charSpec->bottom != 0) ? shapeString(ctxt, &charSpec->bottom, 1) : 0;
+
+  return composeStretchyCharV(ctxt.getDevice()->getFactory(), normal, top, glue, middle, bottom, span);
 }

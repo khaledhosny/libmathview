@@ -43,8 +43,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
 }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
-{
-}
+{ }
 
 SmartPtr<AreaFactory>
 Gtk_MathGraphicDevice::getFactory() const

@@ -130,8 +130,11 @@ GlyphSpec
 ShaperManager::mapStretchy(DOM::Char32 ch) const
 {
   assert(ch <= BIGGEST_CHAR);
+  return glyphSpec[ch | STRETCHY_FLAG];
+#if 0
   GlyphSpec spec = glyphSpec[ch | STRETCHY_FLAG];
   return spec.getShaperId() ? spec : map(ch);
+#endif
 }
 
 SmartPtr<class Shaper>
