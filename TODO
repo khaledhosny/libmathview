@@ -5,7 +5,6 @@
 
 BUGS
 * selection of math inside boxes crashes
-* again problems with colors
 * par without width attribute -> assert false
 + step in a boxml paragraph is wrong
 + make it possible for the content of a bin/linear container to

@@ -131,11 +131,7 @@ protected:
     template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
     void setColor(const RGBColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
     {
-      // this optimization doesn't seem to work very well, the true disables it
-      // for now
-      if (true || c.red != color[index].red ||
-	  c.green != color[index].green ||
-	  c.blue != color[index].blue)
+      if (c != color[index])
 	{
 	  color[index] = c;
 

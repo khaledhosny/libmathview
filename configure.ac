@@ -48,36 +48,6 @@ if test "x$enable_breaks" = "xyes"; then
 fi
 
 AC_ARG_WITH(
-	scaled-type,
-	[  --with-scaled-type[=TYPE] define the type for scaled points [default=float]],
-	SCALED_TYPE=$withval,
-	SCALED_TYPE="float"
-)
-AC_SUBST(SCALED_TYPE)
-
-AC_ARG_ENABLE(
-	texish,
-	[  --enable-texish[=ARG]   enable TeX like layout when possible [default=no]],
-	texish_mathml=$enableval,
-	texish_mathml=no
-)
-
-if test "x$texish_mathml" = "xyes"; then
-   AC_DEFINE(TEXISH_MATHML,,[Define to 1 if you want some formatting to be done using TeX layout algorithm])
-fi
-
-AC_ARG_ENABLE(
-	extensions,
-	[  --enable-extensions[=ARG] enable MathML extensions [default=yes]],
-	enable_extensions=$enableval,
-	enable_extensions=yes
-)
-
-if test "x$enable_extensions" = "xyes"; then
-   AC_DEFINE(ENABLE_EXTENSIONS,,[Define to 1 to allow some extensions to MathML (new attributes)])
-fi
-
-AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
 	t1lib=$withval,
@@ -96,13 +66,6 @@ AC_ARG_WITH(
         ]
 )
 
-AC_ARG_ENABLE(
-	export-PS,
-	[  --enable-export-PS[=ARG] enable support for exporting PostScript [default=auto]],
-	export_PS=$enableval,
-	export_PS=auto
-)
-
 dnl Automake configuration
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
@@ -111,7 +74,7 @@ AM_PROG_LIBTOOL
 
 dnl config.h top and bottom
 AH_TOP([
-/* Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+/* Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
  *
  * This file is part of GtkMathView, a Gtk widget for MathML.
  * 

@@ -32,7 +32,7 @@ Gtk_ColorArea::render(RenderingContext& context, const scaled& x, const scaled& 
 
   if (c.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
     {
-      GdkColor oldColor;
+      RGBColor oldColor; // dunno why asking for the GdkColor, which would save a color allocation, doesn't work
       c.getForegroundColor(oldColor);
       c.setForegroundColor(getColor());
       getChild()->render(context, x, y);
