@@ -37,7 +37,14 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
   assert(elem);
   if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
     {
-      assert(!top->dirtyAttribute());
+      // left/right paddings are calculated during formatting, so these
+      // quantities should be requested only AFTER that the operator has
+      // been formatted. Checking for top->dirtyLayout() is not
+      // quite right, though, in the case the operator itself is the
+      // top core operator (see MathMLOperatorElement), because the
+      // dirtyLayout flag is reset only after the formatEmbellishment
+      // method is called
+      // assert(!top->dirtyLayout());
       scaled leftPadding = top->getLeftPadding();
       scaled rightPadding = top->getRightPadding();
       if (leftPadding != scaled::zero() || rightPadding != scaled::zero())
