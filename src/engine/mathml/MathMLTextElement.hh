@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLTextElement_hh
-#define MathMLTextElement_hh
+#ifndef __MathMLTextElement_hh__
+#define __MathMLTextElement_hh__
 
 #include "MathMLTokenElement.hh"
 
@@ -38,4 +38,4 @@ public:
   virtual bool IsSpaceLike(void) const;
 };
 
-#endif // MathMLTextElement_hh
+#endif // __MathMLTextElement_hh__

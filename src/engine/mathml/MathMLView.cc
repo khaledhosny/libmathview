@@ -65,7 +65,6 @@ MathMLView::setDefaultFontSize(unsigned size)
   assert(size > 0);
   if (defaultFontSize != size)
     {
-      std::cerr << "setting default font size to " << size << std::endl;
       defaultFontSize = size;
       if (root)
 	{

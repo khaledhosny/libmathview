@@ -1009,10 +1009,8 @@ gtk_math_view_select(GtkMathView* math_view, GdomeElement* elem)
   g_return_if_fail(math_view->view);
   g_return_if_fail(elem);
 
-  //std::cerr << "SELECTING SOMETHING " << std::endl;
   if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, DOM::Element(elem)))
     {
-      //std::cerr << "OKKKKKKKKKKKKKK " << area << std::endl;
       area->setSelected(1);
       paint_widget(math_view);
     }

@@ -23,9 +23,11 @@
 * add space in munderover between base and script
 * generalize embedding mechanism from BoxML (now MathML only)
 * move mathvariant files into src/common
-* use templates for the MathML model as it is for the BoxML model
 * make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
 * mmultiscripts
 * mpadded
+* mo not selectable???
+* mstyle
+* token
 

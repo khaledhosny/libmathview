@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLmathElement_hh
-#define MathMLmathElement_hh
+#ifndef __MathMLmathElement_hh__
+#define __MathMLmathElement_hh__
 
 #include "MathMLNormalizingContainerElement.hh"
 
@@ -39,4 +39,4 @@ public:
   virtual AreaRef format(class MathFormattingContext&);
 };
 
-#endif // MathMLmathElement_hh
+#endif // __MathMLmathElement_hh__
