@@ -119,7 +119,6 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LN_S
 AC_ISC_POSIX
-AC_CHECK_PROG(HAVE_COLORGCC, colorgcc, yes, no)
 AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
 AC_CHECK_PROG(HAVE_GLIB_CONFIG, glib-config, yes, no)
 
@@ -336,11 +335,6 @@ fi
 
 if test $export_PS = "auto"; then
 	export_PS=yes
-fi
-
-if test $HAVE_COLORGCC = "yes"; then
-	CC=colorgcc
-	CXX=colorgcc
 fi
 
 CFLAGS="$CFLAGS -W -Wall -O0"
