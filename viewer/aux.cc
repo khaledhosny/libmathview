@@ -308,8 +308,12 @@ MathMLParseFile(const char* filename, bool subst)
     DOM::Document res(doc);
     gdome_di_unref(di, &exc);
     assert(exc == 0);
-    gdome_doc_unref(doc, &exc);
-    assert(exc == 0);
+    // workaround otherwise the document is deallocated. This is likely
+    // due to a bug in the document-mkref, where livenodes is set to 0
+    // instead of 1. See also the workaround in that file, not sure it is
+    // correct!!!!!!
+    //gdome_doc_unref(doc, &exc);
+    //assert(exc == 0);
     
     return res;
   }

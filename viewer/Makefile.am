@@ -27,5 +27,6 @@ INCLUDES = \
   -I$(top_builddir) \
   -I$(top_srcdir)/src/ \
   -I$(top_srcdir)/src/formatter/basictypes/ \
+  -I$(top_srcdir)/src/formatter/areamodel/ \
   -I$(top_srcdir)/auto/
 
