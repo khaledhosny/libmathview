@@ -21,11 +21,15 @@ struct TemplateReaderModel
 
   typedef SmartPtr<Reader> Node;
   typedef SmartPtr<Reader> Element;
+  typedef SmartPtr<Reader> Document;
   typedef TemplateReaderNodeIterator<Reader> NodeIterator;
   typedef TemplateReaderElementIterator<Reader> ElementIterator;
   typedef TemplateReaderRefinementContext<Reader> RefinementContext;
 
-  static SmartPtr<Reader> parseXML(const String& path, bool subst = false) { return Reader::create(path, subst); }
+  static SmartPtr<Reader> document(const String& path, bool subst = false) { return Reader::create(path, subst); }
+
+  static SmartPtr<Reader> getDocumentElement(const SmartPtr<Reader>& reader) { return reader; }
+
   static void             reset(const SmartPtr<Reader>& reader) { reader->reset(); }
   static SmartPtr<Reader> asNode(const SmartPtr<Reader>& reader) { return reader; }
   static SmartPtr<Reader> asElement(const SmartPtr<Reader>& reader) { return reader; }

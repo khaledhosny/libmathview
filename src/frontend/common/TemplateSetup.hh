@@ -179,14 +179,15 @@ struct TemplateSetup
   load(Class& obj, const String& description, const String& rootTag, const String& path)
   {
     Globals::logger(LOG_DEBUG, "loading %s from `%s'...", description.c_str(), path.c_str());
-    if (typename Model::Element root = Model::parseXML(path, subst))
-      if (Model::getNodeName(Model::asNode(root)) == rootTag)
-	{
-	  parse(obj, root);
-	  return true;
-        }
-      else 
-	Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
+    if (typename Model::Document doc = Model::document(path, subst))
+      if (typename Model::Element root = Model::getDocumentElement(doc))
+	if (Model::getNodeName(Model::asNode(root)) == rootTag)
+	  {
+	    parse(obj, root);
+	    return true;
+	  }
+	else 
+	  Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
     return false;
   }
 };

@@ -41,6 +41,7 @@ struct libxml2_Model
 
   typedef xmlNode* Node;
   typedef xmlElement* Element;
+  typedef xmlDoc* Document;
   typedef TemplateLinker<libxml2_Model> Linker;
   typedef TemplateNodeIterator<libxml2_Model> NodeIterator;
   typedef TemplateElementIterator<libxml2_Model> ElementIterator;
@@ -49,7 +50,9 @@ struct libxml2_Model
 
   // method for parsing a model
   // MUST be available
-  static xmlElement* parseXML(const String&, bool = false);
+  static xmlDoc* document(const String&, bool = false);
+
+  static Element getDocumentElement(const Document&);
 
   // methods for casting an element to a node and viceversa
   static Node asNode(const Element& el) { return (Node) el; }

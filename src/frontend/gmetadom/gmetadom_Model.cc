@@ -29,18 +29,15 @@
 #include "gmetadom_Model.hh"
 #include "MathMLEntitiesTable.hh"
 
-DOM::Element
-gmetadom_Model::parseXML(const String& path, bool subst)
+DOM::Document
+gmetadom_Model::document(const String& path, bool subst)
 {
-  DOM::Element root;
+  DOM::Document res;
 
   Clock perf;
   perf.Start();
   if (!subst)
-    {
-      if (DOM::Document res = DOM::DOMImplementation().createDocumentFromURI(path.c_str()))
-	root = res.get_documentElement();
-    } 
+    res = DOM::DOMImplementation().createDocumentFromURI(path.c_str());
   else
     {
       GdomeDOMImplementation* di = gdome_di_mkref();
@@ -65,18 +62,16 @@ gmetadom_Model::parseXML(const String& path, bool subst)
 	  return DOM::Document(0);
 	}
 
-      DOM::Document res(doc);
+      res = DOM::Document(doc);
       gdome_di_unref(di, &exc);
       assert(exc == 0);
       gdome_doc_unref(doc, &exc);
       assert(exc == 0);
-    
-      root = res.get_documentElement();
     }
   perf.Stop();
   Globals::logger(LOG_INFO, "parsing time: %dms", perf());
 
-  return root;
+  return res;
 }
 
 String

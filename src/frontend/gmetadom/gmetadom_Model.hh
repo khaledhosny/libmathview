@@ -42,6 +42,7 @@ struct gmetadom_Model
 
   typedef DOM::Node Node;
   typedef DOM::Element Element;
+  typedef DOM::Document Document;
   typedef TemplateLinker<gmetadom_Model> Linker;
   typedef TemplateNodeIterator<gmetadom_Model> NodeIterator;
   typedef TemplateElementIterator<gmetadom_Model> ElementIterator;
@@ -50,11 +51,14 @@ struct gmetadom_Model
 
   // method for parsing a model
   // MUST be available
-  static DOM::Element parseXML(const String&, bool = false);
+  static DOM::Document document(const String&, bool = false);
 
   // conversion methods
   static DOM::Element asNode(const DOM::Element& el) { return el; }
   static DOM::Node asElement(const DOM::Node& n) { return n; }
+
+  // method for retrieving the root element of a document
+  static DOM::Element getDocumentElement(const DOM::Document& doc) { return doc.get_documentElement(); }
 
   // methods for querying nodes and elements
   // MUST be available for TemplateBuilder and TemplateSetup to work

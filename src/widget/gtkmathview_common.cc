@@ -1105,18 +1105,19 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (DOM::Element root = gmetadom_Model::parseXML(name, true))
-    {
-      GdomeElement* r = gdome_cast_el(root.gdome_object());
-      g_assert(r != NULL);
-      const bool res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, r);
-      GdomeException exc = 0;
-      gdome_el_unref(r, &exc);
-      g_assert(exc == 0);
-      return res;
-    }
-  else
-    return FALSE;
+  if (DOM::Document doc = gmetadom_Model::document(name, true))
+    if (DOM::Element root = gmetadom_Model::getDocumentElement(doc))
+      {
+	GdomeElement* r = gdome_cast_el(root.gdome_object());
+	g_assert(r != NULL);
+	const bool res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, r);
+	GdomeException exc = 0;
+	gdome_el_unref(r, &exc);
+	g_assert(exc == 0);
+	return res;
+      }
+
+  return FALSE;
 }
 
 extern "C" gboolean
@@ -1157,10 +1158,11 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (xmlElement* root = libxml2_Model::parseXML(name, true))
-    return GTKMATHVIEW_METHOD_NAME(load_root)(math_view, root);
-  else
-    return FALSE;
+  if (xmlDoc* doc = libxml2_Model::document(name, true))
+    if (xmlElement* root = libxml2_Model::getDocumentElement(doc))
+      return GTKMATHVIEW_METHOD_NAME(load_root)(math_view, root);
+
+  return FALSE;
 }
 
 extern "C" gboolean
@@ -1196,12 +1198,14 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (SmartPtr<libxmlXmlReader> reader = libxml2_reader_Model::parseXML(name, true))
-    if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(math_view->view->getBuilder()))
-      {
-	builder->setReader(reader);
-	return TRUE;
-      }
+  if (SmartPtr<libxmlXmlReader> reader = libxml2_reader_Model::document(name, true))
+    if (SmartPtr<libxmlXmlReader> reader = libxml2_reader_Model::getDocumentElement(doc))
+      if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(math_view->view->getBuilder()))
+	{
+	  builder->setReader(reader);
+	  return TRUE;
+	}
+
   return FALSE;
 }
 #endif // GTKMATHVIEW_USES_LIBXML2_READER

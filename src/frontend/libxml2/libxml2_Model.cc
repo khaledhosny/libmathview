@@ -28,19 +28,23 @@
 
 #include <iostream>
 
-xmlElement*
-libxml2_Model::parseXML(const String& path, bool)
+xmlDoc*
+libxml2_Model::document(const String& path, bool)
 {
-  xmlElement* root = 0;
-
   Clock perf;
   perf.Start();
-  if (xmlDoc* doc = xmlParseFile(path.c_str()))
-    root = reinterpret_cast<xmlElement*>(xmlDocGetRootElement(doc));
+  xmlDoc* doc = xmlParseFile(path.c_str());
   perf.Stop();
   Globals::logger(LOG_INFO, "parsing time: %dms", perf());
 
-  return root;
+  return doc;
+}
+
+xmlElement*
+libxml2_Model::getDocumentElement(const Document& doc)
+{
+  assert(doc);
+  return reinterpret_cast<xmlElement*>(xmlDocGetRootElement(doc));
 }
 
 String
