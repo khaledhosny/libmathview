@@ -998,7 +998,7 @@ gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
     {
       GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
       g_assert(d != NULL);
-      bool res = gtk_math_view_load_doc(math_view, d);
+      const bool res = gtk_math_view_load_doc(math_view, d);
       GdomeException exc = 0;
       gdome_doc_unref(d, &exc);
       g_assert(exc == 0);
@@ -1016,12 +1016,12 @@ gtk_math_view_load_doc(GtkMathView* math_view, GdomeDocument* doc)
   GdomeException exc = 0;
   GdomeElement* root = gdome_doc_documentElement(doc, &exc);
   if (exc != 0) return FALSE;
-  gtk_math_view_load_root(math_view, root);
+  const bool res = gtk_math_view_load_root(math_view, root);
 
   gdome_el_unref(root, &exc);
   if (exc != 0) return FALSE;
 
-  return TRUE;
+  return res;
 }
 
 extern "C" gboolean
@@ -1032,6 +1032,8 @@ gtk_math_view_load_root(GtkMathView* math_view, GtkMathView_Model_Element elem)
 
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
     builder->setRootModelElement(DOM::Element(elem));
+  else
+    return FALSE;
 
   reset_adjustments(math_view);
   paint_widget(math_view);
@@ -1069,6 +1071,8 @@ gtk_math_view_load_root(GtkMathView* math_view, GtkMathView_Model_Element elem)
 
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(math_view->view->getBuilder()))
     builder->setRootModelElement(elem);
+  else
+    return FALSE;
 
   reset_adjustments(math_view);
   paint_widget(math_view);
