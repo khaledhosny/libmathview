@@ -348,9 +348,12 @@ MathMLFractionElement::format(MathFormattingContext& ctxt)
 	
 	  res = ctxt.getDevice()->fraction(ctxt, num, denom, thickness);
 	}
-      setArea(ctxt.getDevice()->wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, res)));
-      ctxt.pop();
 
+      res = formatEmbellishment(this, ctxt, res);
+
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+
+      ctxt.pop();
       ResetDirtyLayout();
     }
 
