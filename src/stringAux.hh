@@ -23,10 +23,21 @@
 #ifndef stringAux_hh
 #define stringAux_hh
 
-#include "minidom.h"
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "String.hh"
 
+#if defined(HAVE_MINIDOM)
 String* allocString(mDOMConstStringRef);
+#elif defined(HAVE_GMETADOM)
+String* allocString(const GMetaDOM::DOMString&);
+#endif
+
 String* allocString(const String&, unsigned, unsigned);
 
-#endif
+#endif // stringAux_hh
+

@@ -67,22 +67,17 @@
 /* Define to compile with libxml 2.x (recommended) */
 #undef HAVE_LIBXML2
 
+/* Define to compile with GMetaDOM (recommended) */
+#undef HAVE_GMETADOM
+
+/* Define to compile with minidom (deprecated) */
+#undef HAVE_MINIDOM
+
 /* Define to compile with t1lib for Type 1 fonts */
 #undef HAVE_LIBT1
 
 /* Define if iconv has a const second argument */
 #undef ICONV_CONST
-
-#undef ICONV_UTF8
-#undef ICONV_UCS4
-
-#ifndef ICONV_UTF8
-#define ICONV_UTF8 "UTF-8"
-#endif
-
-#ifndef ICONV_UCS4
-#define ICONV_UCS4 "UCS-4"
-#endif
 
 /* Define if you have getopt_long */
 #undef HAVE_GETOPT_LONG

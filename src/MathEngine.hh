@@ -23,6 +23,11 @@
 #ifndef MathEngine_hh
 #define MathEngine_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMEATDOM)
+#endif
+
 #include "scaled.hh"
 #include "Logger.hh"
 #include "RGBValue.hh"
@@ -38,7 +43,11 @@ public:
   void  Init(class DrawingArea*, class FontManager*);
 
   bool  Load(const char*);
+#if defined(HAVE_MINIDOM)
   bool  Load(mDOMDocRef);
+#elif defined(HAVE_GMETADOM)
+  bool  Load(GMetaDOM::Document&);
+#endif
   void  Unload(void);
 
   void  Setup(void);

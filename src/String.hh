@@ -75,4 +75,4 @@ private:
 
 typedef String* StringPtr;
 
-#endif
+#endif // String_hh

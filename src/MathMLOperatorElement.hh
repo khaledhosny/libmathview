@@ -23,12 +23,22 @@
 #ifndef MathMLOperatorElement_hh
 #define MathMLOperatorElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "CharMap.hh"
 #include "MathMLTokenElement.hh"
 
 class MathMLOperatorElement: public MathMLTokenElement {
 public:
+#if defined(HAVE_MINIDOM)
   MathMLOperatorElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLOperatorElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void Normalize(void);

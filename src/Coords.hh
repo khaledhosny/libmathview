@@ -23,10 +23,6 @@
 #ifndef Coords_hh
 #define Coords_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "scaled.hh"
 
 struct Coords {
@@ -34,4 +30,4 @@ struct Coords {
   scaled y;
 };
 
-#endif
+#endif // Coords_hh

@@ -32,6 +32,8 @@
 #include "OperatorDictionary.hh"
 #include "MathMLAttributeList.hh"
 
+#if defined(HAVE_MINIDOM)
+
 void
 getAttribute(mDOMNodeRef node, const char* attr, MathMLAttributeList* aList)
 {
@@ -47,6 +49,24 @@ getAttribute(mDOMNodeRef node, const char* attr, MathMLAttributeList* aList)
   mdom_string_free(attrVal);
 }
 
+#elif defined(HAVE_GMETADOM)
+
+void
+getAttribute(GMetaDOM::Element& node, const char* attr, MathMLAttributeList* aList)
+{
+  assert(aList != NULL);
+
+  GMetaDOM::DOMString attrVal = node.getAttribute(attr);
+  if (attrVal.isEmpty()) return;
+
+  MathMLAttribute* attribute =
+    new MathMLAttribute(AttributeIdOfName(attr), allocString(attrVal));
+
+  aList->Append(attribute);
+}
+
+#endif // HAVE_GMETADOM
+
 //
 
 OperatorDictionary::OperatorDictionary()
@@ -57,6 +77,8 @@ OperatorDictionary::~OperatorDictionary()
 {
   Unload();
 }
+
+#if defined(HAVE_MINIDOM)
 
 bool
 OperatorDictionary::Load(const char* fileName)
@@ -127,6 +149,77 @@ OperatorDictionary::Load(const char* fileName)
 
   return true;
 }
+
+#elif defined(HAVE_GMETADOM)
+
+bool
+OperatorDictionary::Load(const char* fileName)
+{
+  try {
+    GMetaDOM::Document doc = MathMLParseFile(fileName, true);
+
+    GMetaDOM::Element root = doc.get_documentElement();
+    if (root == 0) {
+      MathEngine::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
+      return false;
+    }
+
+    if (root.get_nodeName() != "dictionary") {
+      MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
+      return false;
+    }
+
+    for (GMetaDOM::Node op = root.get_firstChild(); op != 0; op = op.get_nextSibling()) {
+      if (op.get_nodeType() == GMetaDOM::Node::ELEMENT_NODE && op.get_nodeName() == "operator") {
+	GMetaDOM::DOMString opName = op.getAttribute("name");
+	if (!opName.isEmpty()) {
+	  const String* opString = allocString(opName);
+	  MathMLAttributeList* def = new MathMLAttributeList;
+
+	  getAttribute(op, "form", def);
+	  getAttribute(op, "fence", def);
+	  getAttribute(op, "separator", def);
+	  getAttribute(op, "lspace", def);
+	  getAttribute(op, "rspace", def);
+#ifdef ENABLE_EXTENSIONS
+	  getAttribute(op, "tspace", def);
+	  getAttribute(op, "bspace", def);
+#endif // ENABLE_EXTENSIONS
+	  getAttribute(op, "stretchy", def);
+	  getAttribute(op, "direction", def);
+	  getAttribute(op, "symmetric", def);
+	  getAttribute(op, "maxsize", def);
+	  getAttribute(op, "minsize", def);
+	  getAttribute(op, "largeop", def);
+	  getAttribute(op, "movablelimits", def);
+	  getAttribute(op, "accent", def);
+
+	  const MathMLAttributeList* defaults = AlreadyDefined(*def);
+	  if (defaults == NULL) defaults = def;
+	  else delete def;
+
+	  OperatorDictionaryItem* item = new OperatorDictionaryItem;
+	  item->name     = opString;
+	  item->defaults = defaults;
+
+	  items.AddFirst(item);
+	} else {
+	  MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
+	}
+      } else if (!GMetaDOMAux::nodeIsBlank(op)) {
+	char* s_name = op.get_nodeName().c_str();
+	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName, s_name);
+	g_free(s_name);
+      }
+    }
+
+    return true;
+  } catch (GMetaDOM::DOMException) {
+    return false;
+  }
+}
+
+#endif // HAVE_GMETADOM
 
 void
 OperatorDictionary::Unload()

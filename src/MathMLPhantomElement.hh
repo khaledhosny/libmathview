@@ -23,13 +23,22 @@
 #ifndef MathMLPhantomElement_hh
 #define MathMLPhantomElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLPhantomElement: public MathMLNormalizingContainerElement {
+class MathMLPhantomElement: public MathMLNormalizingContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLPhantomElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLPhantomElement(GMetaDOM::Element&);
+#endif
   virtual void Render(const DrawingArea&);
   virtual ~MathMLPhantomElement();
 

@@ -23,15 +23,24 @@
 #ifndef MathMLNormalizingContainerElement_hh
 #define MathMLNormalizingContainerElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLContainerElement.hh"
 
 // base class for MathML elements that infer an mrow when the number of
 // children is not 1
-class MathMLNormalizingContainerElement: public MathMLContainerElement {
+class MathMLNormalizingContainerElement: public MathMLContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLNormalizingContainerElement(mDOMNodeRef, TagId tag = TAG_NOTVALID);
+#elif defined(HAVE_GMETADOM)
+  MathMLNormalizingContainerElement(GMetaDOM::Element&, TagId tag = TAG_NOTVALID);
+#endif
   virtual void Normalize(void);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual void SetPosition(scaled, scaled);

@@ -23,13 +23,22 @@
 #ifndef MathMLFencedElement_hh
 #define MathMLFencedElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLFencedElement: public MathMLNormalizingContainerElement {
+class MathMLFencedElement: public MathMLNormalizingContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLFencedElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLFencedElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

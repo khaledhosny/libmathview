@@ -23,8 +23,12 @@
 #ifndef MathMLParseFile_hh
 #define MathMLParseFile_hh
 
-#include "minidom.h"
-
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
 mDOMDocRef MathMLParseFile(const char*, bool);
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+GMetaDOM::Document MathMLParseFile(const char*, bool);
+#endif
 
 #endif

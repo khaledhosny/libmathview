@@ -23,11 +23,22 @@
 #ifndef MathMLRadicalElement_hh
 #define MathMLRadicalElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLRadicalElement : public MathMLNormalizingContainerElement {
+class MathMLRadicalElement : public MathMLNormalizingContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLRadicalElement(mDOMNodeRef, TagId);
+#elif defined(HAVE_GMETADOM)
+  MathMLRadicalElement(GMetaDOM::Element&, TagId);
+#endif
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

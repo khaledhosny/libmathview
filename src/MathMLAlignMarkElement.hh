@@ -23,14 +23,23 @@
 #ifndef MathMLAlignMarkElement_hh
 #define MathMLAlignMarkElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "keyword.hh"
 #include "MathMLElement.hh"
 
-class MathMLAlignMarkElement: public MathMLElement {
+class MathMLAlignMarkElement: public MathMLElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLAlignMarkElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLAlignMarkElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

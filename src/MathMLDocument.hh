@@ -23,13 +23,22 @@
 #ifndef MathMLDocument_hh
 #define MathMLDocument_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLContainerElement.hh"
 
-class MathMLDocument: public MathMLContainerElement {
+class MathMLDocument: public MathMLContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLDocument(mDOMDocRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLDocument(GMetaDOM::Document&);
+#endif
   virtual void Normalize(void);
   virtual bool IsDocument(void) const;
   virtual ~MathMLDocument();

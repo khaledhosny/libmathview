@@ -23,10 +23,6 @@
 #ifndef FontMapper_hh
 #define FontMapper_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stddef.h>
 
 #include "Char.hh"
@@ -64,4 +60,4 @@ private:
   mutable const FontMap* lastFound;
 };
 
-#endif
+#endif // FontMapper_hh

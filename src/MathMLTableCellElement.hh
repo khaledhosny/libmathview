@@ -23,14 +23,23 @@
 #ifndef MathMLTableCellElement_hh
 #define MathMLTableCellElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLTableElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLTableCellElement: public MathMLNormalizingContainerElement {
+class MathMLTableCellElement: public MathMLNormalizingContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLTableCellElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLTableCellElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual void SetPosition(scaled, scaled);

@@ -23,7 +23,11 @@
 #ifndef Configuration_hh
 #define Configuration_hh
 
+#if defined(HAVE_MINIDOM)
 #include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "scaled.hh"
 #include "String.hh"
@@ -58,8 +62,13 @@ public:
   RGBValue GetSelectBackground(void) const { return HasSelectColor() ? selectBackground : DEFAULT_SELECT_BACKGROUND; }
 
 private:
+#if defined(HAVE_MINIDOM)
   void ParseConfiguration(mDOMNodeRef);
   bool ParseColor(mDOMNodeRef, RGBValue&, RGBValue&);
+#elif defined(HAVE_GMETADOM)
+  void ParseConfiguration(const GMetaDOM::Element&);
+  bool ParseColor(const GMetaDOM::Element&, RGBValue&, RGBValue&);
+#endif // HAVE_GMETADOM
 
   Container<String*> dictionaries;
   Container<String*> fonts;

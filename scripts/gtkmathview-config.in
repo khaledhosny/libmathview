@@ -51,7 +51,7 @@ while test $# -gt 0; do
 done
 
 if test "$echo_cflags" = "yes"; then
-    echo -I$pkgincludedir
+    echo -DHAVE_$domimplementation -I$pkgincludedir
 fi
 
 if test "$echo_libs" = "yes"; then

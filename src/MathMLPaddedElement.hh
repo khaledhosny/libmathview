@@ -23,13 +23,22 @@
 #ifndef MathMLPaddedElement_hh
 #define MathMLPaddedElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLPaddedElement: public MathMLNormalizingContainerElement {
+class MathMLPaddedElement: public MathMLNormalizingContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLPaddedElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLPaddedElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

@@ -23,12 +23,23 @@
 #ifndef MathMLContainerElement_hh
 #define MathMLContainerElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLElement.hh"
 
 // base class for every non-empty MathML container element
-class MathMLContainerElement: public MathMLElement {
+class MathMLContainerElement: public MathMLElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLContainerElement(mDOMNodeRef, TagId = TAG_NOTVALID);
+#elif defined(HAVE_GMETADOM)
+  MathMLContainerElement(GMetaDOM::Element&, TagId = TAG_NOTVALID);
+#endif
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);
   virtual void DoLayout(LayoutId, Layout&);

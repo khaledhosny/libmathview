@@ -23,7 +23,10 @@
 #ifndef EntitiesTable_hh
 #define EntitiesTable_hh
 
-#include "minidom.h"
+#if defined(HAVE_MINIDOM)
+
+#include <minidom.h>
+
 #include "String.hh"
 
 class EntitiesTable {
@@ -41,5 +44,7 @@ public:
 private:
   mDOMDocRef repository;
 };
+
+#endif // HAVE_MINIDOM
 
 #endif // EntitiesTable_hh

@@ -23,10 +23,6 @@
 #ifndef StringU_hh
 #define StringU_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "String.hh"
 #include "Char.hh"
 
@@ -76,6 +72,4 @@ private:
   CharX*   data;
 };
 
-#endif
-
-
+#endif // StringU_hh

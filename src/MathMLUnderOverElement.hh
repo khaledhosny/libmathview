@@ -23,12 +23,23 @@
 #ifndef MathMLUnderOverElement_hh
 #define MathMLUnderOverElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
 
-class MathMLUnderOverElement : public MathMLContainerElement, public MathMLScriptCommonElement {
+class MathMLUnderOverElement : public MathMLContainerElement, public MathMLScriptCommonElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLUnderOverElement(mDOMNodeRef, TagId);
+#elif defined(HAVE_GMETADOM)
+  MathMLUnderOverElement(GMetaDOM::Element&, TagId);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

@@ -23,10 +23,6 @@
 #ifndef MathML_hh
 #define MathML_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "DocumentElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignGroupElement.hh"
@@ -67,5 +63,5 @@
 #include "MathMLUnderOverElement.hh"
 #include "MathMLmathElement.hh"
 
-#endif
+#endif // MathML_hh
 

@@ -270,6 +270,105 @@ MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* 
   }
 }
 
+#if defined(HAVE_MINIDOM)
+void
+MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
+{
+  assert(parent != NULL);
+
+  String* sContent = NULL;
+  for (mDOMNodeRef p = mdom_node_get_first_child(node);
+       p != NULL;
+       p = mdom_node_get_next_sibling(p)) {
+    if (mdom_node_is_text(p)) {
+      // ok, we have a chunk of text
+      mDOMStringRef content = mdom_node_get_content(p);
+      String* s = allocString(content);
+      assert(s != NULL);
+      mdom_string_free(content);
+
+      // white-spaces are always collapsed...
+      s->CollapseSpaces();
+
+      // ...but spaces at the at the beginning (end) are deleted only if this
+      // is the very first (last) chunk in the token.
+      if (mdom_node_is_first(p)) s->TrimSpacesLeft();
+      if (mdom_node_is_last(p)) s->TrimSpacesRight();
+
+      if (sContent == NULL)
+	sContent = s;
+      else {
+	sContent->Append(*s);
+	delete s;
+      }
+    } else if (mdom_node_is_entity_ref(p)) {
+      String* s = NULL;
+      // first of all we try to perform the substitution, maybe this entity has been
+      // defined inside the document itself
+      mDOMStringRef content = mdom_node_get_content(p);
+      if (content != NULL) {
+	s = allocString(content);
+	mdom_string_free(content);
+      }
+
+      // if the entity is unknown, maybe it's one of the predefined entities of MathML
+      if (s == NULL) s = MathEngine::entitiesTable.GetEntityContent(mdom_node_get_name(p));
+
+      if (s == NULL) {
+	MathEngine::logger(LOG_WARNING, "cannot resolve entity reference `%s', a `?' will be used instead", mdom_node_get_name(p));
+	s = MathEngine::entitiesTable.GetErrorEntityContent();
+      }
+      assert(s != NULL);
+
+      if (sContent == NULL)
+	sContent = s;
+      else {
+	sContent->Append(*s);
+	delete s;
+      }
+    } else if (mdom_node_is_element(p)) {
+      if (sContent != NULL) {
+	parent->Append(sContent);
+	delete sContent;
+	sContent = NULL;
+      }
+
+      TagId tag = TagIdOfName(C_CONST_STRING(mdom_node_get_name(p)));
+
+      switch (tag) {
+      case TAG_MCHAR:
+	{
+	  MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element. It is recognized for backward compatibility only!");
+	  String* content = SubstituteMCharElement(p);
+	  if (content != NULL) parent->Append(content);
+	  delete content;
+	}
+	break;
+      case TAG_MGLYPH:
+	{
+	  MathMLTextNode* text = SubstituteMGlyphElement(p);
+	  if (text != NULL) parent->Append(text);
+	}
+	break;
+      case TAG_MALIGNMARK:
+	{
+	  MathMLTextNode* text = SubstituteAlignMarkElement(p);
+	  if (text != NULL) parent->Append(text);
+	}
+	break;
+      default:
+	MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)\n",
+			   mdom_node_get_name(node));
+	break;
+      }
+    }
+  }
+  
+  if (sContent != NULL) {
+    parent->Append(sContent);
+    delete sContent;
+  }
+}
 void
 MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
 {
@@ -369,6 +468,87 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
   }
 }
 
+#elif defined(HAVE_GMETADOM)
+
+void
+MathMLizer::MathMLizeTokenContent(GMetaDOM::Element& node, MathMLTokenElement* parent)
+{
+  assert(parent != NULL);
+
+  String* sContent = NULL;
+  for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
+    switch (p.get_nodeType()) {
+    case GMetaDOM::Node::TEXT_NODE:
+      // ok, we have a chunk of text
+      GMetaDOM::DOMString content = p.get_nodeValue();
+      String* s = allocString(content);
+      assert(s != NULL);
+      
+      // white-spaces are always collapsed...
+      s->CollapseSpaces();
+
+      // ...but spaces at the at the beginning (end) are deleted only if this
+      // is the very first (last) chunk in the token.
+      if (p.get_previousSibling() == 0) s->TrimSpacesLeft();
+      if (p.get_netSibling() == 0) s->TrimSpacesRight();
+
+      if (sContent == NULL)
+	sContent = s;
+      else {
+	sContent->Append(*s);
+	delete s;
+      }
+      break;
+
+    case GMetaDOM::Node::ELEMENT_NODE:
+      if (sContent != NULL) {
+	parent->Append(sContent);
+	delete sContent;
+	sContent = NULL;
+      }
+
+      char* s_name = p.get_nodeName().c_str();
+      TagId tag = TagIdOfName(s_name);
+      g_free(s_name);
+
+      switch (tag) {
+      case TAG_MCHAR:
+	{
+	  MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element. It is recognized for backward compatibility only!");
+	  String* content = SubstituteMCharElement(p);
+	  if (content != NULL) parent->Append(content);
+	  delete content;
+	}
+	break;
+      case TAG_MGLYPH:
+	{
+	  MathMLTextNode* text = SubstituteMGlyphElement(p);
+	  if (text != NULL) parent->Append(text);
+	}
+	break;
+      case TAG_MALIGNMARK:
+	{
+	  MathMLTextNode* text = SubstituteAlignMarkElement(p);
+	  if (text != NULL) parent->Append(text);
+	}
+	break;
+      default:
+	MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)\n",
+			   mdom_node_get_name(node));
+	break;
+      }
+      break;
+    }
+  }
+  
+  if (sContent != NULL) {
+    parent->Append(sContent);
+    delete sContent;
+  }
+}
+#endif // HAVE_GMETADOM
+
+#if defined(HAVE_MINIDOM)
 String*
 MathMLizer::SubstituteMCharElement(mDOMNodeRef node)
 {
@@ -394,6 +574,9 @@ MathMLizer::SubstituteMCharElement(mDOMNodeRef node)
 
   return content;
 }
+#endif // HAVE_MINIDOM
+
+#if defined(HAVE_MINIDOM)
 
 MathMLTextNode*
 MathMLizer::SubstituteMGlyphElement(mDOMNodeRef node)
@@ -453,3 +636,60 @@ MathMLizer::SubstituteAlignMarkElement(mDOMNodeRef node)
 
   return new MathMLMarkNode(align);
 }
+
+#elif defined(HAVE_GMETADOM)
+
+MathMLTextNode*
+MathMLizer::SubstituteMGlyphElement(GMetaDOM::Element& node)
+{
+  GMetaDOM::DOMString alt        = node.getAttribute("alt");
+  GMetaDOM::DOMString fontFamily = node.getAttribute("fontfamily");
+  GMetaDOM::DOMString index      = node.getAttribute("index");
+
+  if (alt.isEmpty() || fontFamily.isEmpty() || index.isEmpty()) {
+    MathEngine::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
+    return new MathMLCharNode('?');
+  }
+
+  char* s_index = index.c_str();
+  char* endPtr;
+  unsigned nch = strtoul(s_index, &endPtr, 10);
+  g_free(s_index);
+
+  if (endPtr == NULL || *endPtr != '\0') {
+    MathEngine::logger(LOG_WARNING, "malformed `mglyph' element (parsing error in `index' attribute)\n");
+    nch = '?';
+  }
+
+  char* s_alt = alt.c_str();
+  char* s_fontFamily = fontFamily.c_str();
+  MathMLGlyphNode* glyph = new MathMLGlyphNode(s_alt, s_fontFamily, nch);
+  g_free(s_alt);
+  g_free(s_fontFamily);
+
+  return glyph;
+}
+
+MathMLTextNode*
+MathMLizer::SubstituteAlignMarkElement(GMetaDOM::Element& node)
+{
+  GMetaDOM::DOMString edge = node.getAttribute("edge");
+
+  MarkAlignType align = MARK_ALIGN_NOTVALID;
+
+  if (!edge.isEmpty()) {
+    if      (edge == "left") align = MARK_ALIGN_LEFT;
+    else if (edge == "right") align = MARK_ALIGN_RIGHT;
+    else {
+      char* s_edge = edge.c_str();
+      MathEngine::logger(LOG_WARNING,
+			 "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
+			 s_edge);
+      g_free(s_edge);
+    }
+  }
+
+  return new MathMLMarkNode(align);
+}
+
+#endif // HAVE_GMETADOM

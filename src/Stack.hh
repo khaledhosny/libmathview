@@ -23,10 +23,6 @@
 #ifndef Stack_hh
 #define Stack_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Container.hh"
 
 template <class Type>
@@ -38,4 +34,4 @@ public:
   void Drop(void) { Pop(); }
 };
 
-#endif
+#endif // Stack_hh

@@ -22,11 +22,17 @@
 
 #include <config.h>
 
+#if defined(HAVE_MINIDOM)
 #include "minidom.h"
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "MathMLParseFile.hh"
 
+#if defined(HAVE_MINIDOM)
 static mDOMEntityRef
 myVeryPrivateGetEntity(void* user_data, mDOMConstStringRef name)
 {
@@ -46,3 +52,13 @@ MathMLParseFile(const char* filename, bool subst)
   return mdom_load(filename, subst, myVeryPrivateGetEntity);
 }
 
+#elif defined(HAVE_GMETADOM)
+
+GMetaDOM::Document
+MathMLParseFile(const char* filename, bool subst)
+{
+  GMetaDOM::DOMImplementation di;
+  return di.parseDocument(filename);
+}
+
+#endif // HAVE_GMETADOM

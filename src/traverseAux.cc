@@ -207,6 +207,8 @@ findActionElement(MathMLElement* elem)
   return (elem != NULL) ? TO_ACTION(elem) : NULL;
 }
 
+#if defined(HAVE_MINIDOM)
+
 mDOMNodeRef
 findDOMNode(MathMLElement* elem)
 {
@@ -241,6 +243,43 @@ findMathMLElement(mDOMNodeRef node)
   return elem;
 }
 
+#elif defined(HAVE_GMETADOM)
+
+GMetaDOM::Element
+findDOMNode(MathMLElement* elem)
+{
+  while (elem != NULL && elem->GetDOMNode() == 0) elem = elem->GetParent();
+  return (elem != NULL) ? elem->GetDOMNode() : 0;
+}
+
+MathMLElement*
+getMathMLElement(GMetaDOM::Element& node)
+{
+  // WARNING: the following is a very dangerous operation. It relies
+  // of the assumption that the user will NEVER modify the user data field
+  // in the DOM tree elements!!!
+  MathMLElement* elem = (MathMLElement*) node.getUserData();
+  assert(elem != NULL);
+  assert(elem->GetDOMNode() == node);
+  return elem;
+}
+
+MathMLElement*
+findMathMLElement(GMetaDOM::Element& node)
+{
+  MathMLElement* elem = getMathMLElement(node);
+  assert(elem != NULL);
+
+  while (elem->IsA() == TAG_MROW && TO_CONTAINER(elem)->content.GetSize() == 1) {
+    elem = TO_CONTAINER(elem)->content.GetFirst();
+    assert(elem != NULL);
+  }
+
+  return elem;
+}
+
+#endif // HAVE_GMETADOM
+
 MathMLElement*
 findRightmostChild(MathMLElement* elem)
 {
@@ -260,6 +299,8 @@ findLeftmostChild(MathMLElement* elem)
   if (row->content.GetSize() == 0) return elem;
   else return findLeftmostChild(row->content.GetFirst());
 }
+
+#if defined(HAVE_MINIDOM)
 
 MathMLElement*
 findRightSibling(MathMLElement* elem)
@@ -288,3 +329,35 @@ findLeftSibling(MathMLElement* elem)
   if (p != NULL) return findRightmostChild(findMathMLElement(p));
   else return findLeftmostChild(findLeftSibling(elem->GetParent()));
 }
+
+#elif defined(HAVE_GMETADOM)
+
+MathMLElement*
+findRightSibling(MathMLElement* elem)
+{
+  GMetaDOM::Node p = findDOMNode(elem);
+  if (p == 0) return NULL;
+
+  for (p = p.get_nextSibling();
+       p != 0 && p.getUserData() == NULL;
+       p = p.get_nextSibling()) ;
+  
+  if (p != 0) return findLeftmostChild(findMathMLElement(p));
+  else return findRightmostChild(findRightSibling(elem->GetParent()));
+}
+
+MathMLElement*
+findLeftSibling(MathMLElement* elem)
+{
+  GMetaDOM::Node p = findDOMNode(elem);
+  if (p == NULL) return NULL;
+
+  for (p = p.get_previousSibling();
+       p != 0 && p.getUserData() == NULL;
+       p = p.get_previousSibling()) ;
+
+  if (p != 0) return findRightmostChild(findMathMLElement(p));
+  else return findLeftmostChild(findLeftSibling(elem->GetParent()));
+}
+
+#endif // HAVE_GMETADOM

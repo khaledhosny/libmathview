@@ -23,12 +23,11 @@
 #ifndef MathMLStringNode_hh
 #define MathMLStringNode_hh
 
-#include <config.h>
-
 #include "MathMLTextNode.hh"
 #include "FontifiedString.hh"
 
-class MathMLStringNode: public MathMLTextNode {
+class MathMLStringNode: public MathMLTextNode
+{
 public:
   MathMLStringNode(const String*);
   virtual void Setup(class RenderingEnvironment*);
@@ -50,4 +49,4 @@ private:
 
 #define TO_STRING(node) (dynamic_cast<MathMLStringNode*>(node))
 
-#endif
+#endif // MathMLStringNode_hh

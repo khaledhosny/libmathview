@@ -23,7 +23,11 @@
 #ifndef MathMLEncloseElement_hh
 #define MathMLEncloseElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "RGBValue.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -34,9 +38,14 @@ enum NotationType {
   NOTATION_RADICAL
 };
 
-class MathMLEncloseElement: public MathMLNormalizingContainerElement {
+class MathMLEncloseElement: public MathMLNormalizingContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLEncloseElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLEncloseElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

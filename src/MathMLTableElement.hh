@@ -23,6 +23,12 @@
 #ifndef MathMLTableElement_hh
 #define MathMLTableElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLTableRowElement.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLAlignGroupElement.hh"
@@ -123,9 +129,14 @@ struct RowLabel {
   ColumnAlignId  columnAlign;
 };
 
-class MathMLTableElement: public MathMLContainerElement {
+class MathMLTableElement: public MathMLContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLTableElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLTableElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);

@@ -26,7 +26,8 @@
 #include "String.hh"
 #include "MathMLFrame.hh"
 
-class MathMLTextNode: public MathMLFrame {
+class MathMLTextNode: public MathMLFrame
+{
 public:
   MathMLTextNode(void);
   virtual void 	  Setup(class RenderingEnvironment*) = 0;

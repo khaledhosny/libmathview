@@ -23,11 +23,22 @@
 #ifndef MathMLFractionElement_hh
 #define MathMLFractionElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLContainerElement.hh"
 
-class MathMLFractionElement: public MathMLContainerElement {
+class MathMLFractionElement: public MathMLContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLFractionElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLFractionElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

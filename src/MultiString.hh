@@ -23,10 +23,6 @@
 #ifndef MultiString_hh
 #define MultiString_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 class MultiString {
 public:
   MultiString(void);

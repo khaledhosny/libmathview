@@ -23,15 +23,26 @@
 #ifndef MathMLTokenElement_hh
 #define MathMLTokenElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "RGBValue.hh"
 #include "FontAttributes.hh"
 #include "MathMLContainerElement.hh"
 
 // base class for token element. Token elemens can contain character data
 // and a very limited set of other MathML elements (e.g. <malignmark>)
-class MathMLTokenElement : public MathMLElement {
+class MathMLTokenElement : public MathMLElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLTokenElement(mDOMNodeRef, TagId t = TAG_NOTVALID);
+#elif defined(HAVE_GMETADOM)
+  MathMLTokenElement(GMetaDOM::Element&, TagId t = TAG_NOTVALID);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void 	 Setup(class RenderingEnvironment*);
   virtual void 	 DoLayout(LayoutId, class Layout&);

@@ -23,11 +23,22 @@
 #ifndef MathMLRowElement_hh
 #define MathMLRowElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLContainerElement.hh"
 
-class MathMLRowElement: public MathMLContainerElement {
+class MathMLRowElement: public MathMLContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLRowElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLRowElement(GMetaDOM::Element&);
+#endif
   // virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoLayout(LayoutId, class Layout&);

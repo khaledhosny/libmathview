@@ -85,6 +85,7 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
 
   MathMLAttributeList attributes;
 
+#if defined(HAVE_MINIDOM)
   for (mDOMAttrRef attribute = mdom_node_get_first_attribute(GetDOMNode());
        attribute != NULL;
        attribute = mdom_attr_get_next_sibling(attribute)) {
@@ -96,7 +97,24 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
       mdom_string_free(value);
     }
   }
-  
+#elif defined(HAVE_GMETADOM)
+  GMetaDOM::NamedNodeMap nnm = GetDOMNode().get_attributes();
+
+  for (unsigned i = 0; i < nnm.length(); i++) {
+    GMetaDOM::Node attribute = nnm.item(i);
+
+    char* s_name = attribute.get_nodeName().c_str();
+    AttributeId id = AttributeIdOfName(s_name);
+    g_free(s_name);
+
+    if (id != ATTR_NOTVALID) {
+      GMetaDOM::DOMString value = attribute.get_nodeValue();
+      String* sValue = allocString(value);
+      attributes.Append(new MathMLAttribute(id, sValue));
+    }
+  }
+#endif // HAVE_GMETADOM
+
   env->Push(&attributes);
 
   const Value* value = NULL;

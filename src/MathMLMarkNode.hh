@@ -23,12 +23,11 @@
 #ifndef MathMLMarkNode_hh
 #define MathMLMarkNode_hh
 
-#include <config.h>
-
 #include "keyword.hh"
 #include "MathMLTextNode.hh"
 
-class MathMLMarkNode: public MathMLTextNode {
+class MathMLMarkNode: public MathMLTextNode
+{
 public:
   MathMLMarkNode(MarkAlignType = MARK_ALIGN_NOTVALID);
   virtual void Setup(class RenderingEnvironment*);

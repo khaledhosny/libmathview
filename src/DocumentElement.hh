@@ -23,13 +23,21 @@
 #ifndef DocumentElement_hh
 #define DocumentElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLContainerElement.hh"
 
 class DocumentElement : public MathMLContainerElement {
 public:
+#if defined(HAVE_MINIDOM)
   DocumentElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  DocumentElement(GMetaDOM::Element);
+#endif
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual void SetPosition(scaled, scaled);

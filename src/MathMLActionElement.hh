@@ -23,11 +23,21 @@
 #ifndef MathMLActionElement_hh
 #define MathMLActionElement_hh
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "MathMLContainerElement.hh"
 
 class MathMLActionElement : public MathMLContainerElement {
 public:
+#if defined(HAVE_MINIDOM)
   MathMLActionElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLActionElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

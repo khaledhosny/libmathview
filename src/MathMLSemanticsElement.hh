@@ -23,13 +23,22 @@
 #ifndef MathMLSemanticsElement_hh
 #define MathMLSemanticsElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLContainerElement.hh"
 
-class MathMLSemanticsElement: public MathMLContainerElement {
+class MathMLSemanticsElement: public MathMLContainerElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLSemanticsElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLSemanticsElement(GMetaDOM::Element&);
+#endif
   virtual void Normalize(void);
   virtual ~MathMLSemanticsElement();
 

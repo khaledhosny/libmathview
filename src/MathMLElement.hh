@@ -23,7 +23,12 @@
 #ifndef MathMLElement_hh
 #define MathMLElement_hh
 
-#include "minidom.h"
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "keyword.hh"
 #include "MathMLFrame.hh"
 #include "BoundingBox.hh"
@@ -31,9 +36,14 @@
 #include "AttributeSignature.hh"
 
 // MathMLElement: base class for every MathML Element
-class MathMLElement: public MathMLFrame {
+class MathMLElement: public MathMLFrame
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLElement(mDOMNodeRef = NULL, TagId = TAG_NOTVALID);
+#elif defined(HAVE_GMETADOM)
+  MathMLElement(GMetaDOM::Element& = 0, TagId = TAG_NOTVALID);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*); // setup attributes
@@ -80,7 +90,11 @@ public:
 
   // some queries
   TagId        	 IsA(void) const { return tag; }
+#if defined(HAVE_MINIDOM)
   mDOMNodeRef    GetDOMNode(void) const { return node; }
+#elif defined(HAVE_GMETADOM)
+  GMetaDOM::Element GetDOMNode(void) const { return node; }
+#endif
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsExpanding(void) const;
   virtual bool 	 IsInside(scaled, scaled) const;
@@ -122,7 +136,11 @@ protected:
   RGBValue background; // background color
 
 private:
+#if defined(HAVE_MINIDOM)
   mDOMNodeRef node; // reference to the DOM node
+#elif defined(HAVE_GMETADOM)
+  GMetaDOM::Element node; // reference to the DOM node
+#endif
   TagId       tag;
 
 #ifdef DEBUG

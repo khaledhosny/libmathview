@@ -23,8 +23,6 @@
 #ifndef MathMLGlyphNode_hh
 #define MathMLGlyphNode_hh
 
-#include <config.h>
-
 #include "MathMLTextNode.hh"
 
 class MathMLGlyphNode: public MathMLTextNode {

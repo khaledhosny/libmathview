@@ -52,4 +52,4 @@ struct BoundingBox {
   void Dump(void) const;
 };
 
-#endif
+#endif // BoundingBox_hh

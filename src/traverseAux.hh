@@ -23,7 +23,11 @@
 #ifndef traverseAux_hh
 #define traverseAux_hh
 
+#if defined(HAVE_MINIDOM)
 #include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "CharMap.hh"
 
@@ -33,9 +37,15 @@ class MathMLOperatorElement* findStretchyOperator(class MathMLElement*);
 class MathMLOperatorElement* findStretchyOperator(class MathMLElement*, StretchId);
 class MathMLElement*         findCommonAncestor(class MathMLElement*, class MathMLElement*);
 class MathMLActionElement*   findActionElement(class MathMLElement*);
+#if defined(HAVE_MINIDOM)
 mDOMNodeRef                  findDOMNode(class MathMLElement*);
 class MathMLElement*         getMathMLElement(mDOMNodeRef);
 class MathMLElement*         findMathMLElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+GMetaDOM::Element&           findDOMNode(class MathMLElement*);
+class MathMLElement*         getMathMLElement(const GMetaDOM::Element&);
+class MathMLElement*         findMathMLElement(const GMetaDOM::Element&);
+#endif
 class MathMLElement*         findRightmostChild(class MathMLElement*);
 class MathMLElement*         findLeftmostChild(class MathMLElement*);
 class MathMLElement*         findRightSibling(class MathMLElement*);

@@ -25,7 +25,8 @@
 
 #include "MathMLObject.hh"
 
-class MathMLNode: public MathMLObject {
+class MathMLNode: public MathMLObject
+{
 public:
   MathMLNode(void);
   virtual bool IsNode(void) const;

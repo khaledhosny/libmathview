@@ -25,7 +25,8 @@
 
 #include "MathMLTextNode.hh"
 
-class MathMLSpaceNode: public MathMLTextNode {
+class MathMLSpaceNode: public MathMLTextNode
+{
 public:
   MathMLSpaceNode(int = 0, BreakId = BREAK_AUTO);
   virtual void Setup(class RenderingEnvironment*);

@@ -25,7 +25,8 @@
 
 #include "MathMLSpaceNode.hh"
 
-class MathMLInvisibleTimesNode: public MathMLSpaceNode {
+class MathMLInvisibleTimesNode: public MathMLSpaceNode
+{
 public:
   MathMLInvisibleTimesNode(void);
   virtual void Setup(class RenderingEnvironment*);

@@ -23,10 +23,6 @@
 #ifndef StringFactory_hh
 #define StringFactory_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Container.hh"
 
 class StringFactory {
@@ -41,4 +37,4 @@ private:
   Container<const class String*> content;
 };
 
-#endif
+#endif // StringFactory_hh

@@ -23,10 +23,6 @@
 #ifndef Array_hh
 #define Array_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 template <class Type>
 class Array {
 public:
@@ -49,4 +45,5 @@ private:
 
 #include "Array.icc"
 
-#endif
+#endif // Array_hh
+

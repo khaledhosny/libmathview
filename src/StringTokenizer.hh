@@ -63,4 +63,4 @@ private:
   unsigned offset;
 };
 
-#endif
+#endif // StringTokenizer_hh

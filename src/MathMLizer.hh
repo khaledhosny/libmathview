@@ -23,17 +23,27 @@
 #ifndef MathMLizer_hh
 #define MathMLizer_hh
 
-#include "minidom.h"
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "keyword.hh"
 
 class MathMLizer {
 public:
+#if defined(HAVE_MINIDOM)
   MathMLizer(mDOMDocRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLizer(GMetaDOM::Element&);
+#endif
   ~MathMLizer();
 
   class MathMLDocument* operator()(void);
 
 protected:
+#if defined(HAVE_MINIDOM)
   void MathMLizeNode(mDOMNodeRef, class MathMLContainerElement*);
   void MathMLizeContainerContent(mDOMNodeRef, class MathMLContainerElement*);
   void MathMLizeTokenContent(mDOMNodeRef, class MathMLTokenElement*);
@@ -41,8 +51,17 @@ protected:
   class MathMLTextNode* SubstituteMGlyphElement(mDOMNodeRef);
   class MathMLTextNode* SubstituteAlignMarkElement(mDOMNodeRef);
 
-  const char* fileName;
   mDOMDocRef  doc;
+#elif defined(HAVE_GMETADOM)
+  void MathMLizeNode(GMetaDOM::Element&, class MathMLContainerElement*);
+  void MathMLizeContainerContent(GMetaDOM::Element&, class MathMLContainerElement*);
+  void MathMLizeTokenContent(GMetaDOM::Element&, class MathMLTokenElement*);
+  class MathMLTextNode* SubstituteMGlyphElement(GMetaDOM::Element&);
+  class MathMLTextNode* SubstituteAlignMarkElement(GMetaDOM::Element&);
+
+  GMetaDOM::Document doc;
+#endif
+  const char* fileName;
 };
 
 #endif // MathMLizer_hh

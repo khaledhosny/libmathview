@@ -21,11 +21,7 @@
 // <luca.padovani@cs.unibo.it>
 
 #ifndef ValueConversion_hh
-#define ValueConversion_hh_hh
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#define ValueConversion_hh
 
 #include "AFont.hh"
 #include "Value.hh"
@@ -42,4 +38,4 @@ RGBValue      	ToRGB(const Value*);
 OperatorFormId  ToFormId(const Value*);
 FractionAlignId ToFractionAlignId(const Value*);
 
-#endif
+#endif // ValueConversion_hh

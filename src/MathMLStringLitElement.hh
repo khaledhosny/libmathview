@@ -23,13 +23,22 @@
 #ifndef MathMLStringLitElement_hh
 #define MathMLStringLitElement_hh
 
-#include <config.h>
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
 
 #include "MathMLTokenElement.hh"
 
-class MathMLStringLitElement : public MathMLTokenElement {
+class MathMLStringLitElement : public MathMLTokenElement
+{
 public:
+#if defined(HAVE_MINIDOM)
   MathMLStringLitElement(mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  MathMLStringLitElement(GMetaDOM::Element&);
+#endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLStringLitElement();

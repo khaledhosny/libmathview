@@ -24,6 +24,7 @@ gtkmathview-config: gtkmathview-config.in
 	@echo pkglibdir=\"$(pkglibdir)\" >>gtkmathview-config
 	@echo includedir=\"$(includedir)\" >>gtkmathview-config
 	@echo pkgincludedir=\"$(pkgincludedir)\" >>gtkmathview-config
+	@echo domimplementation=\"$(DOMIMPLEMENTATION)\" >>gtkmathview-config
 	@echo >>gtkmathview-config
 	@cat $(srcdir)/gtkmathview-config.in >>gtkmathview-config
 	@chmod a+x gtkmathview-config

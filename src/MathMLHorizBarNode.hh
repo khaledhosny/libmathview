@@ -26,7 +26,8 @@
 #include "CharMap.hh"
 #include "MathMLCharNode.hh"
 
-class MathMLHorizBarNode: public MathMLCharNode {
+class MathMLHorizBarNode: public MathMLCharNode
+{
 public:
   MathMLHorizBarNode(Char);
   virtual void 	 Setup(class RenderingEnvironment*);
