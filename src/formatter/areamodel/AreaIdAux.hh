@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,30 +17,16 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __AreaIdFactory_hh__
-#define __AreaIdFactory_hh__
+#ifndef __AreaIdAux_hh__
+#define __AreaIdAux_hh__
 
-#include <vector>
+#include <iostream>
 
 #include "AreaId.hh"
 
-class AreaIdFactory
-{
-public:
-  AreaIdFactory(void) { };
+std::ostream& operator<<(std::ostream&, const AreaId&);
 
-  void   append(unsigned);
-  void   backtrack(void);
-  AreaId id(void) const;
-
-  class InvalidId { };
-
-private:
-  std::vector<unsigned> path;
-};
-
-#endif // __AreaIdFactory_hh__
-
+#endif // __AreaIdAux_hh__

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,30 +17,19 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
-#include <cassert>
+#include "AreaIdAux.hh"
 
-#include "AreaIdFactory.hh"
-
-void
-AreaIdFactory::append(unsigned step)
+std::ostream&
+operator<<(std::ostream& os, const AreaId& box)
 {
-  path.push_back(step);
+  for (AreaId::PathVector::const_iterator p = box.getPath().begin();
+       p != box.getPath().end();
+       p++)
+    os << "/" << (*p);
 }
 
-void
-AreaIdFactory::backtrack()
-{
-  assert(!path.empty());
-  path.pop_back();
-}
-
-AreaId
-AreaIdFactory::id() const
-{
-  return AreaId(path.begin(), path.end());
-}

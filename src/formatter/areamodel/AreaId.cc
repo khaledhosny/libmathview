@@ -77,8 +77,13 @@ AreaId::getOrigin(scaled& x, scaled& y, int index) const
   validateOrigins();
   if (index >= 0)
     getOriginAux(index, x, y);
-  else
+  else if (!origin.empty())
     getOriginAux(origin.size() + index - 1, x, y);
+  else
+    {
+      assert(index == -1 || index == 0);
+      x = y = scaled::zero();
+    }
 }
 
 void
