@@ -68,10 +68,10 @@ DOMView::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
 {
   DOM::MutationEvent me(ev);
   assert(me);
-  std::cerr << "RECEIVING SUBTREE MODIFIED" << std::endl;
+  //std::cerr << "RECEIVING SUBTREE MODIFIED" << std::endl;
   if (SmartPtr<Element> elem = view->findSelfOrAncestorElement(DOM::Element(me.get_target())))
     {
-      std::cerr << "FOUND LINKED ELEMENT" << std::endl;
+      //std::cerr << "FOUND LINKED ELEMENT" << std::endl;
       elem->setDirtyStructure();
       elem->setDirtyAttributeD();
     }
