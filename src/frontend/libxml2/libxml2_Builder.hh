@@ -45,7 +45,10 @@ public:
   SmartPtr<Element> findSelfOrAncestorElement(xmlNode*) const;
 
 protected:
-  libxml2_Model::Linker& getLinker(void) const { return linker; }
+  // methods for accessing the linker
+  SmartPtr<Element> linkerAssoc(xmlElement* el) const { return linker.assoc(el); }
+  void linkerAdd(xmlElement* el, const SmartPtr<Element>& elem) const { linker.add(el, elem); }
+
   void notifySubtreeModified(xmlNode*) const;
   void notifyAttributeChanged(xmlNode*, const String&) const;
 

@@ -31,7 +31,9 @@ gmetadom_Setup::loadOperatorDictionary(MathMLOperatorDictionary& dictionary, con
 {
   try
     {
-      return TemplateSetup<gmetadom_Model>::load<MathMLOperatorDictionary,true>(dictionary, "operator dictionary", "dictionary", path);
+      return TemplateSetup<gmetadom_Model>::load<MathMLOperatorDictionary, true>(dictionary,
+										 "operator dictionary",
+										 "dictionary", path);
     }
   catch (DOM::DOMException e)
     {
@@ -46,7 +48,9 @@ gmetadom_Setup::loadConfiguration(Configuration& conf, const String& path)
 {
   try
     {
-      return TemplateSetup<gmetadom_Model>::load<Configuration,false>(conf, "configuration", "math-engine-configuration", path);
+      return TemplateSetup<gmetadom_Model>::load<Configuration, false>(conf,
+								       "configuration", 
+								       "math-engine-configuration", path);
     }
   catch (DOM::DOMException e)
     {

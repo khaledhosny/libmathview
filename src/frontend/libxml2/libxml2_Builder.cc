@@ -41,7 +41,7 @@ SmartPtr<Element>
 libxml2_Builder::findSelfOrAncestorElement(xmlNode* el) const
 {
   for (xmlNode* p = el; p; p = p->parent)
-    if (SmartPtr<Element> elem = getLinker().assoc(libxml2_Model::asElement(p)))
+    if (SmartPtr<Element> elem = linker.assoc(libxml2_Model::asElement(p)))
       return elem;
   return 0;
 }
@@ -50,7 +50,7 @@ xmlNode*
 libxml2_Builder::findSelfOrAncestorModelNode(const SmartPtr<Element>& elem) const
 {
   for (SmartPtr<Element> p(elem); p; p = p->getParent())
-    if (xmlElement* el = getLinker().assoc(p))
+    if (xmlElement* el = linker.assoc(p))
       return (xmlNode*) el;
   return 0;
 }

@@ -39,7 +39,7 @@ SmartPtr<Element>
 gmetadom_Builder::findSelfOrAncestorElement(const DOM::Node& el) const
 {
   for (DOM::Node p = el; p; p = p.get_parentNode())
-    if (SmartPtr<Element> elem = getLinker().assoc(p))
+    if (SmartPtr<Element> elem = linker.assoc(p))
       return elem;
   return 0;
 }
@@ -48,7 +48,7 @@ DOM::Node
 gmetadom_Builder::findSelfOrAncestorModelNode(const SmartPtr<Element>& elem) const
 {
   for (SmartPtr<Element> p(elem); p; p = p->getParent())
-    if (DOM::Node el = getLinker().assoc(p))
+    if (DOM::Node el = linker.assoc(p))
       return el;
   return DOM::Node(0);
 }

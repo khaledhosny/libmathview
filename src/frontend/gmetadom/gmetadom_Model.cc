@@ -24,16 +24,22 @@
 
 #include <cassert>
 
+#include "Clock.hh"
+#include "Globals.hh"
 #include "gmetadom_Model.hh"
 #include "MathMLEntitiesTable.hh"
 
-DOM::Document
+DOM::Element
 gmetadom_Model::parseXML(const String& path, bool subst)
 {
+  DOM::Element root;
+
+  Clock perf;
+  perf.Start();
   if (!subst)
     {
-      DOM::DOMImplementation di;
-      return di.createDocumentFromURI(path.c_str());
+      if (DOM::Document res = DOM::DOMImplementation().createDocumentFromURI(path.c_str()))
+	root = res.get_documentElement();
     } 
   else
     {
@@ -65,8 +71,12 @@ gmetadom_Model::parseXML(const String& path, bool subst)
       gdome_doc_unref(doc, &exc);
       assert(exc == 0);
     
-      return res;
+      root = res.get_documentElement();
     }
+  perf.Stop();
+  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+
+  return root;
 }
 
 String

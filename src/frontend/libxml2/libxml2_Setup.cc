@@ -29,12 +29,16 @@
 bool
 libxml2_Setup::loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const String& path)
 {
-  return TemplateSetup<libxml2_Model>::load<MathMLOperatorDictionary,true>(dictionary, "operator dictionary", "dictionary", path);
+  return TemplateSetup<libxml2_Model>::load<MathMLOperatorDictionary, true>(dictionary,
+									    "operator dictionary",
+									    "dictionary", path);
 }
 
 bool
 libxml2_Setup::loadConfiguration(Configuration& conf, const String& path)
 {
-  return TemplateSetup<libxml2_Model>::load<Configuration,false>(conf, "configuration", "math-engine-configuration", path);
+  return TemplateSetup<libxml2_Model>::load<Configuration, false>(conf,
+								  "configuration",
+								  "math-engine-configuration", path);
 }
 

@@ -1,7 +1,7 @@
 
-noinst_LTLIBRARIES = libfrontend_gmetadom.la
+noinst_LTLIBRARIES = libmathview_frontend_gmetadom.la
 
-libfrontend_gmetadom_la_SOURCES = \
+libmathview_frontend_gmetadom_la_SOURCES = \
   MathMLEntitiesTable.cc \
   gmetadom_Model.cc \
   gmetadom_Setup.cc \

@@ -1,7 +1,7 @@
 
-noinst_LTLIBRARIES = libfrontend_libxml2.la
+noinst_LTLIBRARIES = libmathview_frontend_libxml2.la
 
-libfrontend_libxml2_la_SOURCES = \
+libmathview_frontend_libxml2_la_SOURCES = \
   libxml2_Model.cc \
   libxml2_Setup.cc \
   libxml2_Builder.cc
@@ -12,7 +12,7 @@ noinst_HEADERS = \
   libxml2_Builder.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
+  $(XML_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \

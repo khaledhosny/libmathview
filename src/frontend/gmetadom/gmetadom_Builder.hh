@@ -45,7 +45,10 @@ public:
   SmartPtr<Element> findSelfOrAncestorElement(const DOM::Node&) const;
 
 protected:
-  gmetadom_Model::Linker& getLinker(void) const { return linker; }
+  // methods for accessing the linker
+  SmartPtr<Element> linkerAssoc(const DOM::Element& el) const { return linker.assoc(el); }
+  void linkerAdd(const DOM::Element& el, const SmartPtr<Element>& elem) const { linker.add(el, elem); }
+
   void notifySubtreeModified(const DOM::Node&) const;
   void notifyAttributeChanged(const DOM::Node&, const String&) const;
 

@@ -22,14 +22,25 @@
 
 #include <config.h>
 
+#include "Clock.hh"
+#include "Globals.hh"
 #include "libxml2_Model.hh"
 
 #include <iostream>
 
-xmlNode*
+xmlElement*
 libxml2_Model::parseXML(const String& path, bool)
 {
-  return reinterpret_cast<xmlNode*>(xmlParseFile(path.c_str()));
+  xmlElement* root = 0;
+
+  Clock perf;
+  perf.Start();
+  if (xmlDoc* doc = xmlParseFile(path.c_str()))
+    root = reinterpret_cast<xmlElement*>(xmlDocGetRootElement(doc));
+  perf.Stop();
+  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+
+  return root;
 }
 
 String
@@ -77,7 +88,7 @@ libxml2_Model::getElementValue(const Element& el)
 }
 
 String
-libxml2_Model::getNamespaceURI(const Node& n)
+libxml2_Model::getNodeNamespaceURI(const Node& n)
 {
   assert(n);
   if (n->ns)

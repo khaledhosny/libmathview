@@ -49,7 +49,7 @@ struct libxml2_Model
 
   // method for parsing a model
   // MUST be available
-  static xmlNode* parseXML(const String&, bool = false);
+  static xmlElement* parseXML(const String&, bool = false);
 
   // methods for casting an element to a node and viceversa
   static Node asNode(const Element& el) { return (Node) el; }
@@ -60,7 +60,7 @@ struct libxml2_Model
   static unsigned getNodeType(const Node& n) { return n->type; }
   static String getNodeName(const Node&);
   static String getNodeValue(const Node&);
-  static String getNamespaceURI(const Node&);
+  static String getNodeNamespaceURI(const Node&);
 
   // methods for querying elements
   // MUST be available for TemplateBuilder and TemplateSetup to work

@@ -50,7 +50,7 @@ struct gmetadom_Model
 
   // method for parsing a model
   // MUST be available
-  static DOM::Document parseXML(const String&, bool = false);
+  static DOM::Element parseXML(const String&, bool = false);
 
   // conversion methods
   static DOM::Element asNode(const DOM::Element& el) { return el; }
@@ -63,7 +63,7 @@ struct gmetadom_Model
   static String getNodeName(const Node&);
   static String getNodeValue(const Node& n) { return n.get_nodeValue(); }
   static String getElementValue(const Element&);
-  static String getNamespaceURI(const Node& n)
+  static String getNodeNamespaceURI(const Node& n)
   { if (DOM::GdomeString ns = n.get_namespaceURI()) return ns; else return String(); }
   // MUST be implemented if the default RefinementContext is used
   static bool hasAttribute(const Element& el, const String& name) { return el.hasAttribute(name); }
