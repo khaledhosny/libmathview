@@ -1,5 +1,12 @@
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mfenced>
+  <mfenced open="[[" close="))" separators=",;:.">
+    <mi>ciao</mi>
+    <mi>da</mi>
+    <mi>luca</mi>
+    <mi>ciao</mi>
+    <mi>ciao</mi>
+    <mi>ciao</mi>
+    <mi>ciao</mi>
     <mi>ciao</mi>
   </mfenced>
 </math>

@@ -53,13 +53,10 @@ static GtkWidget* get_main_menu(void);
 static void file_open(GtkWidget*, gpointer);
 static void file_re_open(GtkWidget*, gpointer);
 static void file_close(GtkWidget*, gpointer);
-static void options_font_manager(GtkWidget*, FontManagerId);
 static void options_set_font_size(GtkWidget*, gpointer);
 static void options_change_font_size(GtkWidget*, gboolean);
 static void options_verbosity(GtkWidget*, guint);
 static void options_selection(GtkWidget*, gboolean);
-static void options_anti_aliasing(GtkWidget*, gpointer);
-static void options_transparency(GtkWidget*, gpointer);
 static void selection_delete(GtkWidget*, gpointer);
 static void selection_parent(GtkWidget*, gpointer);
 static void selection_reset(GtkWidget*, gpointer);
@@ -84,9 +81,6 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Default Font Size/sep1", NULL, NULL,                  0,  "<Separator>" },
   { "/Options/Default Font Size/Larger", "<control>2", options_change_font_size, TRUE, NULL },
   { "/Options/Default Font Size/Smaller", "<control>1", options_change_font_size, FALSE, NULL },
-  { "/Options/Font Manager",           NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Font Manager/_GTK",      NULL, options_font_manager,  FONT_MANAGER_GTK, "<RadioItem>" },
-  { "/Options/Font Manager/_Type 1",   NULL, options_font_manager,  FONT_MANAGER_T1, "/Options/Font Manager/GTK" },
   { "/Options/Verbosity",              NULL, NULL,                  0,  "<Branch>" },
   { "/Options/Verbosity/_Errors",      NULL, options_verbosity,     0,  "<RadioItem>" },
   { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors" },
@@ -95,9 +89,6 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>" },
   { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>" },
   { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure" },
-  { "/Options/sep2",                   NULL, NULL,                  0,  "<Separator>" },
-  { "/Options/_Anti Aliasing",         NULL, options_anti_aliasing, 0,  "<ToggleItem>" },
-  { "/Options/_Transparency",          NULL, options_transparency,  0,  "<ToggleItem>" },
 
   { "/_Help" ,        NULL,         NULL,          0, "<LastBranch>" },
   { "/Help/About...", NULL,         help_about,    0, NULL }
@@ -176,6 +167,8 @@ GUI_uninit()
 int
 GUI_load_document(const char* name)
 {
+  GdomeException exc = 0;
+  GdomeElement* root;
   GtkMathView* math_view;
 
   g_return_val_if_fail(name != NULL, -1);
@@ -184,10 +177,15 @@ GUI_load_document(const char* name)
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  if (!gtk_math_view_load_uri(math_view, name)) {
+  root = load_document(name);
+  if (!root) {
     load_error_msg(name);
     return -1;
   }
+
+  gtk_math_view_set_root(math_view, root);
+  gdome_el_unref(root, &exc);
+  g_assert(exc == 0);
 
   if (name != doc_name) {
     if (doc_name != NULL) g_free(doc_name);
@@ -211,7 +209,7 @@ GUI_unload_document()
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  gtk_math_view_unload(math_view);
+  gtk_math_view_set_root(math_view, 0);
 
   if (doc_name != NULL) g_free(doc_name);
   doc_name = NULL;
@@ -224,37 +222,6 @@ void
 GUI_run()
 {
   gtk_main();
-}
-
-void
-GUI_set_font_manager(FontManagerId id)
-{
-  gboolean t1;
-  GtkMathView* math_view;
-
-  g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
-  g_return_if_fail(main_area != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(main_area));
-
-  t1 = id == FONT_MANAGER_T1;
-
-  math_view = GTK_MATH_VIEW(main_area);
-
-  gtk_math_view_freeze(math_view);
-
-  if (id != gtk_math_view_get_font_manager_type(math_view))
-    gtk_math_view_set_font_manager_type(math_view, id);
-
-  gtk_widget_set_sensitive(anti_aliasing_item, t1);
-  gtk_widget_set_sensitive(transparency_item, t1);
-
-  if (t1)
-    {
-      gtk_math_view_set_anti_aliasing(math_view, GTK_CHECK_MENU_ITEM(anti_aliasing_item)->active);
-      gtk_math_view_set_transparency(math_view, GTK_CHECK_MENU_ITEM(transparency_item)->active);
-    }
-
-  gtk_math_view_thaw(math_view);
 }
 
 static void
@@ -308,27 +275,6 @@ file_open(GtkWidget* widget, gpointer data)
   /* Display that dialog */
      
   gtk_widget_show (fs);
-}
-
-static void
-options_font_manager(GtkWidget* widget, FontManagerId id)
-{
-  g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
-  GUI_set_font_manager(id);
-}
-
-static void
-options_anti_aliasing(GtkWidget* widget, gpointer data)
-{
-  gboolean aa = gtk_math_view_get_anti_aliasing(GTK_MATH_VIEW(main_area));
-  gtk_math_view_set_anti_aliasing(GTK_MATH_VIEW(main_area), !aa);
-}
-
-static void
-options_transparency(GtkWidget* widget, gpointer data)
-{
-  gboolean t = gtk_math_view_get_transparency(GTK_MATH_VIEW(main_area));
-  gtk_math_view_set_transparency(GTK_MATH_VIEW(main_area), !t);
 }
 
 static void
@@ -792,9 +738,6 @@ create_widget_set()
   statusbar_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_bar), "filename");
 
   gtk_widget_show(main_vbox);
-
-  if (gtk_math_view_get_anti_aliasing(GTK_MATH_VIEW(main_area)))
-    gtk_menu_item_activate(anti_aliasing_item);
 }
 
 GtkWidget*
@@ -813,12 +756,6 @@ get_main_menu()
   gtk_item_factory_create_items(item_factory, nmenu_items, menu_items, NULL);
 
   gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
-
-  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Anti Aliasing");
-  anti_aliasing_item = GTK_MENU_ITEM(menu_item);
-
-  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Transparency");
-  transparency_item = GTK_MENU_ITEM(menu_item);
 
   return gtk_item_factory_get_widget(item_factory, "<main>");
 }

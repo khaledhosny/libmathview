@@ -273,3 +273,52 @@ delete_element(GdomeElement* elem)
   parent.removeChild(p);
 }
 
+static const GdomeEntitiesTableEntry mathmlEntities[] = {
+#include "../auto/entitiesTable.inc"
+  { NULL, NULL, NULL, NULL }
+};
+
+static DOM::Document
+MathMLParseFile(const char* filename, bool subst)
+{
+  if (!subst) {
+    DOM::DOMImplementation di;
+    return di.createDocumentFromURI(filename);
+  } else {
+    GdomeDOMImplementation* di = gdome_di_mkref();
+    assert(di != NULL);
+    GdomeException exc = 0;
+    GdomeDocument* doc = gdome_di_createDocFromURIWithEntitiesTable(di,
+						    filename,
+						    mathmlEntities,
+						    GDOME_LOAD_PARSING | GDOME_LOAD_SUBSTITUTE_ENTITIES,
+						    &exc);
+    if (exc != 0) {
+      gdome_di_unref(di, &exc);
+      gdome_doc_unref(doc, &exc);
+      return DOM::Document(0);
+    }
+
+    if (doc == 0) {
+      // FIXME: this should be signalled as an exception, I think
+      gdome_di_unref(di, &exc);
+      return DOM::Document(0);
+    }
+
+    DOM::Document res(doc);
+    gdome_di_unref(di, &exc);
+    assert(exc == 0);
+    gdome_doc_unref(doc, &exc);
+    assert(exc == 0);
+    
+    return res;
+  }
+}
+
+extern "C" GdomeElement*
+load_document(const char* uri)
+{
+  DOM::DOMImplementation di;
+  DOM::Document doc = MathMLParseFile(uri, true);
+  return gdome_cast_el(doc.get_documentElement().gdome_object());
+}

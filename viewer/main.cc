@@ -36,13 +36,11 @@
 #include "guiGTK.h"
 #include "String.hh"
 #include "Globals.hh"
-#include "MathMLRenderingEngine.hh"
 #include "MathMLTokenElement.hh"
 #ifdef DEBUG
 #include "Gtk_GraphicsContext.hh"
 #endif // DEBUG
 #ifdef ENABLE_PROFILE
-#include "CharMapper.hh"
 #endif // ENABLE_PROFILE
 
 enum CommandLineOptionId {
@@ -93,15 +91,6 @@ checkCounters()
   Globals::logger(LOG_DEBUG, "Values   : %d (cached %d)", Value::GetCounter(), Value::GetCached());
 }
 #endif // DEBUG
-
-#ifdef ENABLE_PROFILE
-static void
-checkProfileCounters()
-{
-  Globals::logger(LOG_DEBUG, "Total : %d", CharMapper::GetChars());
-  Globals::logger(LOG_DEBUG, "alnum : %d", CharMapper::GetAlnumChars());
-}
-#endif // ENABLE_PROFILE
 
 int
 main(int argc, char *argv[])
@@ -162,10 +151,6 @@ main(int argc, char *argv[])
   atexit(checkCounters);
 #endif // DEBUG
 
-#ifdef ENABLE_PROFILE
-  atexit(checkProfileCounters);
-#endif // ENABLE_PROFILE
-
   if (optind < argc) {
     GUI_init(&argc, &argv, appName, 500, 600);
 
@@ -183,8 +168,6 @@ main(int argc, char *argv[])
 
     GUI_uninit();
   } else printHelp();
-
-  Value::Flush();
 
   exit(0);
 }

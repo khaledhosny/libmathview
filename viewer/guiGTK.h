@@ -44,8 +44,6 @@ extern "C" {
   /* main: this is the main event loop, to be called when the program is ready to run */
   void GUI_run(void);
 
-  void GUI_set_font_manager(FontManagerId);
-
 #ifdef __cplusplus
 }
 #endif
