@@ -61,38 +61,37 @@ BoxMLActionElement::format(BoxFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      AreaRef res;
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Action, selection))
+	selection = ToInteger(value) - 1;
+      else
+	selection = 0;
+
       if (SmartPtr<Value> vAction = GET_ATTRIBUTE_VALUE(BoxML, Action, actiontype))
 	{
 	  String action = ToString(vAction);
-	  
+
 	  if (action == "toggle")
 	    {
-	      int selection = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, Action, selection));
-	      if (selection > 0 && selection <= getSize())
-		{
-		  SmartPtr<BoxMLElement> elem = getChild(selection - 1);
-		  assert(elem);
-		  res = elem->format(ctxt);
-		}
+	      // nothing to do, selecting the element is just fine
+	      // but we want to have cycling
+	      selection %= getSize();
 	    }
 	  else
-	    {
-	      Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
-	      if (getSize() > 0)
-		{
-		  SmartPtr<BoxMLElement> elem = getChild(0);
-		  assert(elem);
-		  res = elem->format(ctxt);
-		}
-	    }
+	    Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
 	}
       else
 	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
+
+      AreaRef res;
+      if (SmartPtr<BoxMLElement> elem = getChild(selection))
+	res = elem->format(ctxt);
+      else
+	res = ctxt.getDevice()->dummy(ctxt);
       assert(res);
+
       setArea(ctxt.getDevice()->wrapper(ctxt, res));
-      
       ctxt.pop();
+
       resetDirtyLayout();
     }
 
