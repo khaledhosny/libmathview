@@ -88,12 +88,6 @@ Configuration::ParseConfiguration(const DOM::Element& node)
 	  Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
 	  dictionaries.push_back(path);
 	}
-      } else if (name == "font-configuration-path") {
-	std::string path = elementValue(elem);
-	if (!path.empty()) {
-	  Globals::logger(LOG_DEBUG, "found font configuration path `%s'", path.c_str());
-	  fonts.push_back(path);
-	}
       } else if (name == "entities-table-path") {
 	std::string path = elementValue(elem);
 	if (!path.empty()) {

@@ -13,14 +13,6 @@ EXTRA_DIST = \
   entities-table.in \
   entities-table.dtd \
   entities-table.xml \
-  font-configuration.dtd \
-  font-configuration.xml \
-  font-configuration-adobe.xml \
-  font-configuration-bh.xml \
-  font-configuration-tex.xml \
-  font-configuration-wri.xml \
-  font-configuration-euclid.xml \
-  font-configuration-mt.xml \
   math-engine-configuration.xml.in \
   math-engine-configuration.dtd \
   math-engine-configuration.xml \
@@ -34,14 +26,6 @@ pkgdata_DATA = \
   dictionary-combining.xml \
   entities-table.dtd \
   entities-table.xml \
-  font-configuration.dtd \
-  font-configuration.xml \
-  font-configuration-adobe.xml \
-  font-configuration-bh.xml \
-  font-configuration-tex.xml \
-  font-configuration-wri.xml \
-  font-configuration-euclid.xml \
-  font-configuration-mt.xml \
   math-engine-configuration.dtd \
   math-engine-configuration.xml \
   t1.config

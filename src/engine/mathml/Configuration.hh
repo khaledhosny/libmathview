@@ -43,7 +43,6 @@ public:
   bool Load(const char*);
 
   const std::vector<String>& GetDictionaries(void) const { return dictionaries; }
-  const std::vector<String>& GetFonts(void) const { return fonts; }
   const std::vector<String>& GetEntities(void) const { return entities; }
   const std::vector<String>& GetT1ConfigFiles(void) const { return t1Configs; }
 
@@ -71,7 +70,6 @@ private:
 #endif // HAVE_GMETADOM
 
   std::vector<std::string> dictionaries;
-  std::vector<std::string> fonts;
   std::vector<std::string> entities;
   std::vector<std::string> t1Configs;
 
