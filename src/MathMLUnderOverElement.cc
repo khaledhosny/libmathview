@@ -511,10 +511,10 @@ MathMLUnderOverElement::format(MathFormattingContext& ctxt)
       AreaRef baseArea = base ? base->format(ctxt) : 0;
       ctxt.pop();
 
-      AreaRef res = ctxt.getDevice().underOver(ctxt, baseArea,
-					       underArea, accentUnder,
-					       overArea, accent);
-      setArea(ctxt.getDevice().wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, res)));
+      AreaRef res = ctxt.getDevice()->underOver(ctxt, baseArea,
+						underArea, accentUnder,
+						overArea, accent);
+      setArea(ctxt.getDevice()->wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, res)));
 
       ResetDirtyLayout();
     }

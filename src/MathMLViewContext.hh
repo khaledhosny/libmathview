@@ -31,21 +31,18 @@ class MathMLViewContext : public Object
 protected:
   MathMLViewContext(const SmartPtr<class MathMLDOMLinker>&,
 		    const SmartPtr<class MathMLFormattingEngineFactory>&,
-		    const SmartPtr<class AreaFactory>&,
-		    const SmartPtr<class ShaperManager>&);
+		    const SmartPtr<class MathGraphicDevice>&);
   virtual ~MathMLViewContext();
 
 public:
   static SmartPtr<MathMLViewContext> create(const SmartPtr<class MathMLDOMLinker>& l,
-					    const SmartPtr<class MathMLFormattingEngineFactory>& ef,
-					    const SmartPtr<class AreaFactory>& af,
-					    const SmartPtr<class ShaperManager>& sm)
-  { return new MathMLViewContext(l, ef, af, sm); }
+					    const SmartPtr<class MathMLFormattingEngineFactory>& f,
+					    const SmartPtr<class MathGraphicDevice>& d)
+  { return new MathMLViewContext(l, f, d); }
   
   SmartPtr<class MathMLDOMLinker> linker;
-  SmartPtr<class AreaFactory> areaFactory;
-  SmartPtr<class ShaperManager> shaperManager;
   SmartPtr<class MathMLFormattingEngineFactory> engineFactory;
+  SmartPtr<class MathGraphicDevice> device;
 };
 
 #endif // __MathMLViewContext_hh__

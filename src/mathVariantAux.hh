@@ -33,5 +33,6 @@ struct MathVariantAttributes {
 };
 
 const MathVariantAttributes& attributesOfVariant(TokenId);
+TokenId variantOfAttributes(const char*, TokenId, TokenId);
 
 #endif // mathVariantAux_hh

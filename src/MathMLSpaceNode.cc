@@ -48,6 +48,13 @@ MathMLSpaceNode::DoLayout(const FormattingContext&)
 {
 }
 
+AreaRef
+MathMLSpaceNode::format(MathFormattingContext&)
+{
+  assert(false);
+  return 0;
+}
+
 void
 MathMLSpaceNode::Render(const DrawingArea&)
 {

@@ -44,10 +44,10 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
 	{
 	  std::vector<AreaRef> row;
 	  row.reserve(3);
-	  row.push_back(context.getDevice().getFactory()->horizontalSpace(leftPadding));
+	  row.push_back(context.getDevice()->getFactory()->horizontalSpace(leftPadding));
 	  row.push_back(area);
-	  row.push_back(context.getDevice().getFactory()->horizontalSpace(rightPadding));
-	  return context.getDevice().getFactory()->horizontalArray(row);
+	  row.push_back(context.getDevice()->getFactory()->horizontalSpace(rightPadding));
+	  return context.getDevice()->getFactory()->horizontalArray(row);
 	}
       else
 	return area;

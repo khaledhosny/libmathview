@@ -41,6 +41,7 @@ public:
   virtual void Setup(class RenderingEnvironment&);
   virtual void refine(class AbstractRefinementContext&);
   virtual void DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
 
   bool         IsStretchy(void) const { return stretchy != 0; }
@@ -72,13 +73,14 @@ public:
 private:
   TokenId InferOperatorForm(void);
   SmartPtr<Value> getOperatorAttributeValue(const class MathMLAttributeSignature&) const;
-  void ParseLimitValue(const SmartPtr<Value>&, const class RenderingEnvironment&, float&, scaled&);
+  void ParseLimitValue(const SmartPtr<Value>&, const class MathFormattingContext&, float&, scaled&);
 
   TokenId form;
   SmartPtr<class MathMLAttributeList> defaults;
 
   scaled axis;
 
+  unsigned largeOp : 1;
   unsigned forcedFence : 1;
   unsigned fence : 1;
   unsigned forcedSeparator : 1;

@@ -108,7 +108,7 @@ MathMLBinContainerElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
       AreaRef res = child ? child->format(ctxt) : 0;
-      setArea(res ? ctxt.getDevice().wrapper(ctxt, res) : 0);
+      setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
       ctxt.pop();
 
       ResetDirtyLayout();

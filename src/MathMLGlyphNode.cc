@@ -57,6 +57,13 @@ MathMLGlyphNode::DoLayout(const FormattingContext&)
 #endif
 }
 
+AreaRef
+MathMLGlyphNode::format(MathFormattingContext&)
+{
+  assert(false);
+  return 0;
+}
+
 void
 MathMLGlyphNode::Render(const DrawingArea& area)
 {

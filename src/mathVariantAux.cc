@@ -52,3 +52,28 @@ attributesOfVariant(TokenId id)
   assert(vattr[i].kw != T__NOTVALID);
   return vattr[i];
 }
+
+static int
+attributesMatch(const char* family, TokenId weight, TokenId style,
+		const MathVariantAttributes* attributes)
+{
+  int v = 0;
+  if (family && attributes->family) v = strcmp(family, attributes->family) ? v : v + 1;
+  if (weight != T__NOTVALID) v = (weight == attributes->weight) ? v : v + 1;
+  if (style != T__NOTVALID) v = (style == attributes->style) ? v : v + 1;
+  return v;
+}
+
+TokenId
+variantOfAttributes(const char* family, TokenId weight, TokenId style)
+{
+  int best = -1;
+  int bestValue = 0;
+  for (int i = 0; vattr[i].kw != T__NOTVALID; i++)
+    {
+      int v = attributesMatch(family, weight, style, vattr + i);
+      if (v > bestValue) best = i;
+    }
+
+  return (best >= 0) ? vattr[best].kw : T__NOTVALID;
+}

@@ -116,7 +116,7 @@ MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
       AreaRef res = child ? child->format(ctxt) : 0;
-      if (res) res = ctxt.getDevice().wrapper(ctxt, res);
+      if (res) res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
       ctxt.pop();
       ResetDirtyLayout();

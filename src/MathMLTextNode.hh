@@ -23,6 +23,7 @@
 #ifndef MathMLTextNode_hh
 #define MathMLTextNode_hh
 
+#include "Area.hh"
 #include "String.hh"
 #include "MathMLFrame.hh"
 
@@ -35,6 +36,7 @@ protected:
 public:
   virtual void 	   Setup(class RenderingEnvironment&) = 0;
   virtual void 	   DoLayout(const class FormattingContext&) = 0;
+  virtual AreaRef format(class MathFormattingContext&) = 0;
   virtual void 	   SetPosition(const scaled&, const scaled&);
   virtual void 	   Render(const DrawingArea&) = 0;
 

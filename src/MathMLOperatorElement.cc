@@ -33,6 +33,8 @@
 #include "operatorAux.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLView>& view)
   : MathMLTokenElement(view)
@@ -69,6 +71,7 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
 void
 MathMLOperatorElement::Setup(RenderingEnvironment& env)
 {
+#if 0
   if (DirtyAttribute())
     {
       axis = env.GetAxis();
@@ -171,6 +174,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 
       ResetDirtyAttribute();
     }
+#endif
 }
 
 void
@@ -183,6 +187,106 @@ MathMLOperatorElement::DoLayout(const class FormattingContext& ctxt)
       if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) minBox = box;
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLOperatorElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      
+      TokenId form = T__NOTVALID;
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Operator, form))
+	form = ToTokenId(value);
+      else
+	form = InferOperatorForm();
+
+      SmartPtr<MathMLAttributeList> prefix;
+      SmartPtr<MathMLAttributeList> infix;
+      SmartPtr<MathMLAttributeList> postfix;
+
+      String operatorName = GetRawContent();
+      Globals::dictionary.Search(operatorName, prefix, infix, postfix);
+
+      if      (form == T_PREFIX && prefix) defaults = prefix;
+      else if (form == T_INFIX && infix) defaults = infix;
+      else if (form == T_POSTFIX && postfix) defaults = postfix;
+      else if (infix) defaults = infix;
+      else if (postfix) defaults = postfix;
+      else if (prefix) defaults = prefix;
+      else defaults = 0;
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, fence))
+	fence = ToBoolean(value) ? 1 : 0;
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, separator))
+	separator = ToBoolean(value) ? 1 : 0;
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, lspace))
+	{
+	  SmartPtr<Value> resValue = Resolve(value, ctxt);
+	  if (ctxt.getScriptLevel() <= 0)
+	    lSpace = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+	  else
+	    lSpace = scaled::zero();
+	}
+      else
+	assert(false);
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, rspace))
+	{
+	  SmartPtr<Value> resValue = Resolve(value, ctxt);
+	  if (ctxt.getScriptLevel() <= 0)
+	    rSpace = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+	  else
+	    rSpace = scaled::zero();
+	}
+      else
+	assert(false);
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, stretchy))
+	stretchy = ToBoolean(value) ? 1 : 0;
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, symmetric))
+	symmetric = ToBoolean(value) ? 1 : 0;
+
+      scaled maxSize;
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, maxsize))
+	if (ToTokenId(value) == T_INFINITY)
+	  maxSize = scaled::max();
+	else
+	  ParseLimitValue(value, ctxt, maxMultiplier, maxSize);
+
+      scaled minSize;
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, minsize))
+	ParseLimitValue(value, ctxt, minMultiplier, minSize);
+      else
+	assert(false);
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, movablelimits))
+	movableLimits = ToBoolean(value) ? 1 : 0;
+      else
+	assert(false);
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, accent))
+	accent = ToBoolean(value) ? 1 : 0;
+      else
+	assert(false);
+
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, largeop))
+	largeOp = ToBoolean(value) ? 1 : 0;
+
+      AreaRef res = MathMLTokenElement::format(ctxt);
+      res = formatEmbellishment(this, ctxt, res);
+      ctxt.pop();
+
+      setArea(res);
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void
@@ -333,7 +437,7 @@ MathMLOperatorElement::SetPosition(const scaled& x0, const scaled& y0)
 
 void
 MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
-				       const RenderingEnvironment& env,
+				       const MathFormattingContext& ctxt,
 				       float& multiplier,
 				       scaled& size)
 {
@@ -341,9 +445,9 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
 
   if (IsTokenId(value))
     { // it must be a named math space
-      SmartPtr<Value> resValue = Resolve(value, env);
+      SmartPtr<Value> resValue = Resolve(value, ctxt);
       multiplier = -1;
-      size = env.ToScaledPoints(ToLength(resValue));
+      size = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
     }
   else if (IsNumber(value))
     {
@@ -362,7 +466,7 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
       else
 	{
 	  multiplier = -1;
-	  size = env.ToScaledPoints(siz);
+	  size = ctxt.getDevice()->evaluate(ctxt, siz, scaled::zero());
 	}
     }
 }

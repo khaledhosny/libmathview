@@ -25,6 +25,7 @@
 
 #include "MathMLElement.hh"
 #include "MathMLViewContext.hh"
+#include "Gtk_RenderingContext.hh"
 
 class MathMLView : public Object
 {
@@ -36,7 +37,7 @@ public:
   static SmartPtr<MathMLView> create(const SmartPtr<MathMLViewContext>& context)
   { return new MathMLView(context); }
 
-  void Init(class DrawingArea*);
+  void setDrawable(const GObjectPtr<GdkDrawable>&);
 
   bool frozen(void) const { return freezeCounter > 0; }
   virtual bool freeze(void);
@@ -51,7 +52,7 @@ public:
 
   virtual BoundingBox getBoundingBox(void) const;
   virtual Rectangle getRectangle(void) const;
-  virtual void render(const Rectangle* = 0) const;
+  virtual void render(const Rectangle* = 0);
 
   SmartPtr<MathMLViewContext> getContext(void) const { return context; }
 
@@ -88,8 +89,7 @@ private:
   unsigned defaultFontSize;
   SmartPtr<MathMLElement> root;
   SmartPtr<MathMLViewContext> context;
-
-  class DrawingArea* area;
+  Gtk_RenderingContext renderingContext;
 };
 
 #endif // __MathMLView_hh__

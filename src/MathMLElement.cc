@@ -185,7 +185,7 @@ void
 MathMLElement::refine(class AbstractRefinementContext&)
 {
   // nothing to refine
-  // reset flag
+  ResetDirtyAttribute();
 }
 
 void

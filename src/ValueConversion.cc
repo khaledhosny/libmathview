@@ -224,3 +224,41 @@ Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env, int i, in
     return realValue;
 }
 
+MathFormattingContext::PropertyId
+toMathSpaceId(TokenId id)
+{
+  switch (id)
+    {
+    case T_NEGATIVEVERYVERYTHICKMATHSPACE: return MathFormattingContext::NEGATIVE_VERYVERYTHICK_SPACE;
+    case T_NEGATIVEVERYTHICKMATHSPACE: return MathFormattingContext::NEGATIVE_VERYTHICK_SPACE;
+    case T_NEGATIVETHICKMATHSPACE: return MathFormattingContext::NEGATIVE_THICK_SPACE;
+    case T_NEGATIVEMEDIUMMATHSPACE: return MathFormattingContext::NEGATIVE_MEDIUM_SPACE;
+    case T_NEGATIVETHINMATHSPACE: return MathFormattingContext::NEGATIVE_THIN_SPACE;
+    case T_NEGATIVEVERYTHINMATHSPACE: return MathFormattingContext::NEGATIVE_VERYTHIN_SPACE;
+    case T_NEGATIVEVERYVERYTHINMATHSPACE: return MathFormattingContext::NEGATIVE_VERYVERYTHIN_SPACE;
+    case T_VERYVERYTHINMATHSPACE: return MathFormattingContext::VERYVERYTHIN_SPACE;
+    case T_VERYTHINMATHSPACE: return MathFormattingContext::VERYTHIN_SPACE;
+    case T_THINMATHSPACE: return MathFormattingContext::THIN_SPACE;
+    case T_MEDIUMMATHSPACE: return MathFormattingContext::MEDIUM_SPACE;
+    case T_THICKMATHSPACE: return MathFormattingContext::THICK_SPACE;
+    case T_VERYTHICKMATHSPACE: return MathFormattingContext::VERYTHICK_SPACE;
+    case T_VERYVERYTHICKMATHSPACE: return MathFormattingContext::VERYVERYTHICK_SPACE;
+    default:
+      assert(false);
+      return MathFormattingContext::ZERO_SPACE;
+    }
+}
+
+SmartPtr<Value>
+Resolve(const SmartPtr<Value>& value, const MathFormattingContext& ctxt, int i, int j)
+{
+  assert(value);
+
+  SmartPtr<Value> realValue = GetComponent(value, i, j);
+  assert(realValue);
+
+  if (IsTokenId(value))
+    return Variant<Length>::create(ctxt.getMathSpace(toMathSpaceId(ToTokenId(value))));
+  else
+    return realValue;
+}

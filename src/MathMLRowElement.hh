@@ -38,6 +38,7 @@ public:
 
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
 
   virtual bool IsSpaceLike(void) const;

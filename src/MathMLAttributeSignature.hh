@@ -55,6 +55,7 @@ typedef const MathMLAttributeSignature* MathMLAttributeId;
 #define ATTRIBUTE_NAME_OF_ID(id) ((id)->name)
 #define REFINE_ATTRIBUTE(ctxt,ns,name) refineAttribute(ctxt, ATTRIBUTE_SIGNATURE(ns,name))
 #define GET_ATTRIBUTE_VALUE(ns,name) getAttributeValue(ATTRIBUTE_SIGNATURE(ns,name))
+#define GET_ATTRIBUTE_DEFAULT_VALUE(ns,name) (ATTRIBUTE_SIGNATURE(ns,name).getDefaultValue())
 #define GET_OPERATOR_ATTRIBUTE_VALUE(ns,name) getOperatorAttributeValue(ATTRIBUTE_SIGNATURE(ns,name))
 #define DECLARE_ATTRIBUTE(ns,name) extern const MathMLAttributeSignature ATTRIBUTE_SIGNATURE(ns,name)
 #define DEFINE_ATTRIBUTE(ns,s,name,fe,fc,de,em,df) \

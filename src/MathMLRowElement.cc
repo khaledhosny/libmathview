@@ -37,6 +37,8 @@
 #include "MathMLSpaceElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLRowElement::MathMLRowElement(const SmartPtr<class MathMLView>& view)
   : MathMLLinearContainerElement(view)
@@ -86,6 +88,30 @@ MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
       DoEmbellishmentLayout(this, box);
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLRowElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+
+      std::vector<AreaRef> row;
+      row.reserve(content.size());
+      for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
+	   elem != content.end();
+	   elem++)
+	row.push_back((*elem)->format(ctxt));
+
+      AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(row);
+      setArea(formatEmbellishment(this, ctxt, res));
+
+      ctxt.pop();
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

@@ -68,7 +68,7 @@ MathMLStringNode::DoLayout(const FormattingContext& ctxt)
 AreaRef
 MathMLStringNode::format(MathFormattingContext& ctxt)
 {
-  return ctxt.getDevice().string(ctxt, content);
+  return ctxt.getDevice()->string(ctxt, content);
 }
 
 void

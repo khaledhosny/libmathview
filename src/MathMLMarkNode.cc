@@ -68,6 +68,13 @@ MathMLMarkNode::DoLayout(const FormattingContext&)
   box.unset();
 }
 
+AreaRef
+MathMLMarkNode::format(MathFormattingContext&)
+{
+  assert(false);
+  return 0;
+}
+
 void
 MathMLMarkNode::Render(const DrawingArea&)
 {

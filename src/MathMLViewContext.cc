@@ -24,15 +24,13 @@
 
 #include "MathMLDOMLinker.hh"
 #include "MathMLFormattingEngineFactory.hh"
-#include "AreaFactory.hh"
-#include "ShaperManager.hh"
+#include "MathGraphicDevice.hh"
 #include "MathMLViewContext.hh"
 
 MathMLViewContext::MathMLViewContext(const SmartPtr<MathMLDOMLinker>& l,
-				     const SmartPtr<MathMLFormattingEngineFactory>& ef,
-				     const SmartPtr<AreaFactory>& af,
-				     const SmartPtr<ShaperManager>& sm)
-  : linker(l), engineFactory(ef), areaFactory(af), shaperManager(sm)
+				     const SmartPtr<MathMLFormattingEngineFactory>& f,
+				     const SmartPtr<MathGraphicDevice>& d)
+  : linker(l), engineFactory(f), device(d)
 {
 }
 

@@ -63,7 +63,7 @@ MathMLDummyElement::format(MathFormattingContext& ctxt)
   if (DirtyLayout())
     {
       ctxt.push(this);
-      setArea(ctxt.getDevice().dummy(ctxt));
+      setArea(ctxt.getDevice()->dummy(ctxt));
       ctxt.pop();
     }
 

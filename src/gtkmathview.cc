@@ -51,10 +51,7 @@
 #include "MathMLViewContext.hh"
 #include "MathMLView.hh"
 
-#include "Gtk_AreaFactory.hh"
-#include "ShaperManager.hh"
-#include "Gtk_PangoShaper.hh"
-#include "Gtk_AdobeShaper.hh"
+#include "Gtk_MathGraphicDevice.hh"
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250
@@ -501,22 +498,16 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
   math_view->old_top_x = math_view->old_top_y = 0;
 
   if (new_counter++ == 0)
-    {
-      viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
-					      MathMLFormattingEngineFactory::create(),
-					      Gtk_AreaFactory::create(),
-					      ShaperManager::create());
-      SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
-      pangoShaper->setPangoContext(gtk_widget_create_pango_context(math_view->area));
-      viewContext->shaperManager->registerShaper(pangoShaper);
-      viewContext->shaperManager->registerShaper(Gtk_AdobeShaper::create());
-    }
+    viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
+					    MathMLFormattingEngineFactory::create(),
+					    Gtk_MathGraphicDevice::create(math_view->area));
   assert(viewContext);
 
   SmartPtr<MathMLView> view = MathMLView::create(viewContext);
   view->ref();
   math_view->view = view;
 
+#if 1
   GraphicsContextValues values;
   values.foreground = Globals::configuration.GetForeground();
   values.background = Globals::configuration.GetBackground();
@@ -528,8 +519,9 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 						Globals::configuration.GetSelectForeground(),
 						Globals::configuration.GetSelectBackground());
   math_view->drawing_area->SetPixmap(math_view->pixmap);
+#endif
 
-  view->Init(math_view->drawing_area);
+  view->setDrawable(math_view->pixmap);
 
   return GTK_WIDGET(math_view);
 }
@@ -816,7 +808,10 @@ gtk_math_view_configure_event(GtkWidget* widget,
   if (math_view->pixmap != NULL) g_object_unref(math_view->pixmap);
   math_view->pixmap = gdk_pixmap_new(widget->window, event->width, event->height, -1);
   math_view->drawing_area->SetSize(px2sp(event->width), px2sp(event->height));
+#if 1
   math_view->drawing_area->SetPixmap(math_view->pixmap);
+#endif
+  math_view->view->setDrawable(math_view->pixmap);
   paint_widget(math_view);
 
   return TRUE;

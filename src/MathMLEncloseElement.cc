@@ -144,10 +144,10 @@ MathMLEncloseElement::format(MathFormattingContext& ctxt)
       String notation = ToString(GET_ATTRIBUTE_VALUE(Enclose, notation));
       AreaRef res;
       if (child)
-	res = ctxt.getDevice().enclose(ctxt, child->format(ctxt), notation);
+	res = ctxt.getDevice()->enclose(ctxt, child->format(ctxt), notation);
       else
 	res = 0;
-      setArea(res ? ctxt.getDevice().wrapper(ctxt, res) : 0);
+      setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
       ctxt.pop();
       ResetDirtyLayout();
     }

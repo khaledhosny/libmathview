@@ -110,7 +110,7 @@ MathMLmathElement::format(MathFormattingContext& ctxt)
 	} 
 
       AreaRef res = GetChild() ? GetChild()->format(ctxt) : 0;
-      if (res) res = ctxt.getDevice().wrapper(ctxt, res);
+      if (res) res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

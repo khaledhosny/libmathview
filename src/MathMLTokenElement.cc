@@ -27,6 +27,8 @@
 #include "BoundingBoxAux.hh"
 #include "FormattingContext.hh"
 #include "Globals.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "MathMLGlyphNode.hh"
 #include "MathMLIdentifierElement.hh"
@@ -271,23 +273,6 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	}
       else
 	{
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontfamily))
-	    {
-	      Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
-	    }
-
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontweight))
-	    {
-	      Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
-	    }
-
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontstyle))
-	    {
-	      Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
-	    } 
-	  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)))
-	    {
-	    }
 	}
       
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathcolor))
@@ -352,6 +337,121 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLTokenElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      RGBColor oldColor = ctxt.getColor();
+      RGBColor oldBackground = ctxt.getBackground();
+
+      ctxt.push(this);
+
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathsize))
+	{
+	  if (IsSet(T_FONTSIZE))
+	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
+
+	  if (IsTokenId(value))
+	    switch (ToTokenId(value))
+	      {
+	      case T_SMALL: ctxt.addScriptLevel(1); break;
+	      case T_BIG: ctxt.addScriptLevel(-1); break;
+	      case T_NORMAL: break; // noop
+	      default: assert(false); break;
+	      }
+	  else
+	    ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
+	} 
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontsize))
+	{
+	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
+	  ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
+	}
+  
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathvariant))
+	{
+	  assert(IsTokenId(value));
+
+	  const MathVariantAttributes& attr = attributesOfVariant(ToTokenId(value));
+	  assert(attr.kw != T__NOTVALID);
+
+	  if (IsSet(T_FONTFAMILY) || IsSet(T_FONTWEIGHT) || IsSet(T_FONTSTYLE))
+	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+	}
+      else
+	{
+	  String fontFamily;
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontfamily))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
+	      fontFamily = ToString(value);
+	    }
+
+	  TokenId weight = T__NOTVALID;
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontweight))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
+	      weight = ToTokenId(value);
+	    }
+
+	  TokenId style = T__NOTVALID;
+	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontstyle))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
+	      style = ToTokenId(value);
+	    } 
+	  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)))
+	    style = (GetLogicalContentLength() == 1) ? T_ITALIC : T_NORMAL;
+	}
+      
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathcolor))
+	{
+	  if (IsSet(T_COLOR))
+	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
+	  ctxt.setColor(ToRGB(value));
+	} 
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, color))
+	{
+	  Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
+	  ctxt.setColor(ToRGB(value));
+	} 
+      else
+	if (HasLink()) ctxt.setColor(Globals::configuration.GetLinkForeground());
+
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathbackground))
+	ctxt.setBackground(ToRGB(value));
+      else if (HasLink() && !Globals::configuration.HasTransparentLinkBackground())
+	ctxt.setBackground(Globals::configuration.GetLinkBackground());
+
+      RGBColor newColor = ctxt.getColor();
+      RGBColor newBackground = ctxt.getBackground();
+
+      std::vector<AreaRef> c;
+      c.reserve(GetContent().size());
+      for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = GetContent().begin();
+	   p != GetContent().end();
+	   p++)
+	c.push_back((*p)->format(ctxt));
+
+      AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+
+      if (oldColor != newColor)
+	res = ctxt.getDevice()->getFactory()->color(res, newColor);
+
+      if (!newBackground.transparent && newBackground != oldBackground)
+	res = ctxt.getDevice()->getFactory()->background(res, newBackground);
+
+      setArea(res);
+
+      ctxt.pop();
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

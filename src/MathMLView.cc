@@ -30,14 +30,14 @@
 #include "traverseAux.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "RefinementContext.hh"
-#include "RenderingEnvironment.hh"
+#include "MathGraphicDevice.hh"
+#include "MathFormattingContext.hh"
 
 MathMLView::MathMLView(const SmartPtr<MathMLViewContext>& c)
   : context(c)
 {
   freezeCounter = 0;
   defaultFontSize = Globals::configuration.GetFontSize();
-  area = 0;
 }
 
 MathMLView::~MathMLView()
@@ -45,19 +45,9 @@ MathMLView::~MathMLView()
 }
 
 void
-MathMLView::Init(class DrawingArea* a)
+MathMLView::setDrawable(const GObjectPtr<GdkDrawable>& d)
 {
-  assert(a != NULL);
-
-  if (root)
-    {
-      root->ReleaseGCs();
-      root->SetDirtyAttributeD();
-      root->SetDirtyLayout();
-      //root->SetDirty();
-    }
-
-  area = a;
+  renderingContext.setDrawable(d);
 }
 
 bool
@@ -184,8 +174,8 @@ MathMLView::layout() const
 {
   if (root && !frozen())
     {
-      Clock formatTime;
-      formatTime.Start();
+      Clock layoutTime;
+      layoutTime.Start();
 
       if (root->DirtyStructure())
 	{
@@ -204,40 +194,26 @@ MathMLView::layout() const
 	  root->refine(rc);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
-	  Length size(defaultFontSize, Length::PT_UNIT);
-	  RenderingEnvironment env(getContext()->areaFactory, getContext()->shaperManager);
-	  env.SetFontSize(size);
-	  perf.Start();
-	  root->Setup(env);
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "setup time: %dms", perf());
 	}
 
       if (root->DirtyLayout())
 	{
 	  Clock perf;
-	  perf.Start();
-	  root->DoLayout(FormattingContext(FormattingContext::LAYOUT_MIN,0));
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "minimum layout time: %dms", perf());
-
-	  perf.Start();
-	  root->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, std::max(scaled(0), area->GetWidth() -  2 * area->GetXMargin())));
-	  root->SetPosition(area->GetXMargin(), area->GetYMargin() + root->GetBoundingBox().height);
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "layout time: %dms", perf());
+	  MathFormattingContext ctxt(context->device);
+	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
+	  ctxt.setSize(context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero()));
+	  root->format(ctxt);
+	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 	}
 
-      formatTime.Stop();
-      Globals::logger(LOG_INFO, "FORMATTING TIME: %dms", formatTime());
+      layoutTime.Stop();
+      Globals::logger(LOG_INFO, "LAYOUT TIME: %dms", layoutTime());
     }
 }
 
 void
-MathMLView::render(const Rectangle* rect) const
+MathMLView::render(const Rectangle* rect)
 {
-  assert(area);
-
   layout();
   //SetDirty(rect);
 
@@ -246,11 +222,20 @@ MathMLView::render(const Rectangle* rect) const
       Clock perf;
       perf.Start();
       MathMLStringNode::visited = 0;
-      root->Render(*area);
+      if (AreaRef area = root->getArea())
+	{
+	  BoundingBox box = area->box();
+	  area->render(renderingContext, scaled::zero(), box.height);
+	}
       perf.Stop();
       Globals::logger(LOG_INFO, "rendering time: %dms (visited %d)", perf(), MathMLStringNode::visited);
     }
 
+  renderingContext.update();
+
+#if 0
+  // WHAT ABOUT THESE?
   if (rect) area->Update(*rect);
   else area->Update();
+#endif
 }

@@ -65,7 +65,7 @@ MathMLPhantomElement::format(MathFormattingContext& ctxt)
       AreaRef res = child ? child->format(ctxt) : 0;
       
       if (res)
-	res = ctxt.getDevice().wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, ctxt.getDevice().getFactory()->hide(res)));
+	res = ctxt.getDevice()->wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, ctxt.getDevice()->getFactory()->hide(res)));
       else
 	res = 0;
       setArea(res);

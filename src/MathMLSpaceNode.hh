@@ -37,6 +37,7 @@ public:
 
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void     Render(const DrawingArea&);
 
   virtual unsigned GetLogicalContentLength(void) const;
