@@ -9,7 +9,9 @@ libareamodel_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
 
 libareamodel_la_SOURCES = \
   Area.cc \
+  AreaFactory.cc \
   BoxArea.cc \
+  BoxedLayoutArea.cc \
   ColorArea.cc \
   HideArea.cc \
   HorizontalFillerArea.cc \
@@ -34,6 +36,7 @@ libareamodel_la_SOURCES = \
 pkginclude_HEADERS = \
   Area.hh \
   AreaFactory.hh \
+  BoxedLayoutArea.hh \
   ColorArea.hh	\
   HorizontalFillerArea.hh \
   ShiftArea.hh \
