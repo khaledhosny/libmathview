@@ -1370,35 +1370,30 @@ GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView* math_view, GtkMathViewElementI
     return FALSE;
 }
 
-extern "C" gint
-GTKMATHVIEW_METHOD_NAME(get_width)(GtkMathView* math_view)
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView* math_view, gint* width, gint* height)
 {
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->area != NULL, FALSE);
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->area != NULL);
 
-  return math_view->area->allocation.width;
-}
-
-extern "C" gint
-GTKMATHVIEW_METHOD_NAME(get_height)(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->area != NULL, FALSE);
-
-  return math_view->area->allocation.height;
+  if (width) *width = math_view->area->allocation.width;
+  if (height) *height = math_view->area->allocation.height;
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, gint* width, gint* height, gint* depth)
+GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, GtkMathViewBox* gbox)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   if (AreaRef rootArea = math_view->view->getRootArea())
     {
       BoundingBox box = rootArea->box();
-      if (width) *width = Gtk_RenderingContext::toGtkX(box.width);
-      if (height) *height = Gtk_RenderingContext::toGtkY(box.height);
-      if (depth) *depth = Gtk_RenderingContext::toGtkY(box.depth);
+      if (gbox)
+	{
+	  gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
+	  gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
+	  gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
+	}
       return TRUE;
     }
   else

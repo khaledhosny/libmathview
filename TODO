@@ -5,6 +5,7 @@
 
 BUGS
 
+* mathvariant conversion still made using gmetadom
 * when is it that the libxml2 tree gets freed in the libxml2
   frontends?
 * restore handling of mo attributes with getAttributeValueNoDefault
