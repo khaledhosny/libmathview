@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! $# == 4 ]; then
+if [ ! $# = 4 ]; then
 	echo Usage: makekeywords \{ def \| dec \} enum-type-name search-for output-file;
 	exit 0;
 fi
@@ -11,7 +11,7 @@ SUFFIX=$3_
 
 rm -f $4
 
-if [ $1 == "def" ]; then
+if [ $1 = "def" ]; then
 
     echo -n Making $2 definitions\ 
 
