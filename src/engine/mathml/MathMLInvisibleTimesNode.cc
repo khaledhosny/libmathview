@@ -33,15 +33,15 @@
 String
 MathMLInvisibleTimesNode::getSpace(const FormattingContext& ctxt)
 {
-  static const String zeroWidthSpace = StringOfUCS4String(UCS4String(0x200b, 1));
-  static const String mediumMathSpace = StringOfUCS4String(UCS4String(0x205f, 1));
+  static const String noSpace = StringOfUCS4String(UCS4String(1, 0x200b));
+  static const String someSpace = StringOfUCS4String(UCS4String(1, 0x205f));
 
   // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getMathMLElement()))
     {
       SmartPtr<MathMLElement> prev = findLeftSibling(op);
       SmartPtr<MathMLElement> next = findRightSibling(op);
-      if (!prev || !next) return zeroWidthSpace;
+      if (!prev || !next) return noSpace;
 
       if (is_a<MathMLIdentifierElement>(prev) && is_a<MathMLIdentifierElement>(next))
 	{
@@ -50,19 +50,19 @@ MathMLInvisibleTimesNode::getSpace(const FormattingContext& ctxt)
 	  assert(prevToken && nextToken);
     
 	  if (prevToken->GetLogicalContentLength() <= 1 &&
-	      nextToken->GetLogicalContentLength() <= 1) return zeroWidthSpace;
+	      nextToken->GetLogicalContentLength() <= 1) return noSpace;
 
-	  return mediumMathSpace;
+	  return someSpace;
 	} 
       else if (is_a<MathMLIdentifierElement>(prev))
-	return mediumMathSpace;
+	return someSpace;
       else if (is_a<MathMLFractionElement>(prev) && is_a<MathMLFractionElement>(next))
-	return mediumMathSpace;
+	return someSpace;
       else if (is_a<MathMLFractionElement>(prev) || is_a<MathMLFractionElement>(next))
-	return mediumMathSpace;
+	return someSpace;
     }
 
-  return zeroWidthSpace;
+  return noSpace;
 }
 
 AreaRef
@@ -72,7 +72,7 @@ MathMLInvisibleTimesNode::format(FormattingContext& ctxt)
 String
 MathMLInvisibleTimesNode::getContent()
 {
-  static const String content = StringOfUCS4String(UCS4String(0x2062, 1));
+  static const String content = StringOfUCS4String(UCS4String(1, 0x2062));
   return content;
 }
 

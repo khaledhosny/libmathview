@@ -48,13 +48,13 @@ MathMLOperatorDictionary::add(const AbstractLogger& logger,
     else
       formDefaults.prefix = defaults;
   else if (form == "infix")
-    if (formDefaults.prefix)
+    if (formDefaults.infix)
       logger.out(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
 		 escape(UCS4StringOfString(opName)).c_str());
     else
       formDefaults.infix = defaults;
   else if (form == "postfix")
-    if (formDefaults.prefix)
+    if (formDefaults.postfix)
       logger.out(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
 		 escape(UCS4StringOfString(opName)).c_str());
     else

@@ -25,6 +25,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <math-engine-configuration>
+  <dictionary-path>./config/dictionary.xml</dictionary-path>
   <dictionary-path>./config/dictionary-debug.xml</dictionary-path>
   <font-size     size="8pt"/>
   <color         foreground="black" background="white"/>

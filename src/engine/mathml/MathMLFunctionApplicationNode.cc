@@ -32,25 +32,25 @@
 String
 MathMLFunctionApplicationNode::getSpace(const FormattingContext& ctxt)
 {
-  static const String zeroWidthSpace = StringOfUCS4String(UCS4String(0x200b, 1));
-  static const String mediumMathSpace = StringOfUCS4String(UCS4String(0x205f, 1));
+  static const String noSpace = StringOfUCS4String(UCS4String(1, 0x200b));
+  static const String someSpace = StringOfUCS4String(UCS4String(1, 0x205f));
 
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getMathMLElement()))
     {
       SmartPtr<MathMLElement> next = findRightSibling(op);
-      if (!next) return zeroWidthSpace;
+      if (!next) return noSpace;
 
       if (SmartPtr<MathMLOperatorElement> coreOp = next->getCoreOperatorTop())
-	if (coreOp->IsFence()) return zeroWidthSpace;
+	if (coreOp->IsFence()) return noSpace;
 
       if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(next))
 	if (SmartPtr<MathMLOperatorElement> coreOp = smart_cast<MathMLOperatorElement>(row->getChild(0)))
-	  if (coreOp->IsFence()) return zeroWidthSpace;
+	  if (coreOp->IsFence()) return noSpace;
 
-      return mediumMathSpace;
+      return someSpace;
     }
 
-  return zeroWidthSpace;
+  return noSpace;
 }
 
 AreaRef
@@ -60,7 +60,7 @@ MathMLFunctionApplicationNode::format(FormattingContext& ctxt)
 String
 MathMLFunctionApplicationNode::getContent()
 {
-  static const String content = StringOfUCS4String(UCS4String(0x2061, 1));
+  static const String content = StringOfUCS4String(UCS4String(1, 0x2061));
   return content;
 }
 
