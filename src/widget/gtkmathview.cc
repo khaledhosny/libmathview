@@ -328,7 +328,6 @@ initGlobalData(const char* confPath)
       exit(-1);
     }
 
-#if 0
   if (!Globals::configuration.getDictionaries().empty())
     for (std::vector<std::string>::const_iterator dit = Globals::configuration.getDictionaries().begin();
 	 dit != Globals::configuration.getDictionaries().end();
@@ -342,7 +341,6 @@ initGlobalData(const char* confPath)
     bool res = GtkMathView_Setup::loadOperatorDictionary(Globals::dictionary, "config/dictionary.xml");
     if (!res) GtkMathView_Setup::loadOperatorDictionary(Globals::dictionary, PKGDATADIR"/dictionary.xml");
   }
-#endif
 
   done = true;
 }

@@ -23,7 +23,8 @@
 #ifndef __libxml2_Model_hh__
 #define __libxml2_Model_hh__
 
-#include "libxml/tree.h"
+#include <libxml/tree.h>
+
 #include "String.hh"
 
 #include "TemplateLinker.hh"

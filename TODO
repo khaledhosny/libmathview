@@ -40,6 +40,8 @@ ARCH IMPROVEMENTS
   is right or down depending on the container)
 + in TemplateBuilder exploit MathMLInferredRowElement instead of
   creating it each time
++ in TemplateBuilder do not use the hash map for retrieving old
+  elements, but use accessor methods instead. Much faster 
 - fix Configuration/Globals files 
   create a class for them and refer them from the View
 - move mathvariant files into src/common
