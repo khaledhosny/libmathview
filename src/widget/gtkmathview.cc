@@ -432,7 +432,6 @@ gtk_math_view_init(GtkMathView* math_view)
   view->getRegistry()->add(bmlContext);
 
   math_view->renderingContext = new Gtk_RenderingContext;
-
   math_view->renderingContext->setWidget(math_view->area);
   //math_view->renderingContext->setDrawable(math_view->pixmap);
   //math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
@@ -477,10 +476,7 @@ extern "C" GtkWidget*
 gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 {
   GtkMathView* math_view = (GtkMathView*) gtk_type_new(gtk_math_view_get_type());
-  
   g_return_val_if_fail(math_view != NULL, NULL);
-
-
   return GTK_WIDGET(math_view);
 }
 
