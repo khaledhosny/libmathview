@@ -139,7 +139,7 @@ GUI_run()
 }
 
 static void
-store_filename(GtkFileSelection *selector, GtkWidget* user_data)
+store_filename(GtkFileSelection* selector, GtkWidget* user_data)
 {
   GtkMathView* math_view;
   gchar* selected_filename;
@@ -245,7 +245,7 @@ help_about(GtkWidget* widget, gpointer data)
 }
 
 static void
-export_filename(GtkFileSelection *selector, GtkWidget* user_data)
+export_filename(GtkFileSelection* selector, GtkWidget* user_data)
 {
   FILE* f;
   GtkMathView* math_view;
@@ -336,6 +336,20 @@ selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 }
 
 static void
+jump(GtkMathView* math_view, mDOMNodeRef node)
+{
+  mDOMStringRef href;
+
+  g_return_if_fail(node != NULL);
+  href = mdom_node_get_attribute(node, DOM_CONST_STRING("href"));
+
+  if (href != NULL) {
+    GUI_load_document(C_CONST_STRING(href));
+    mdom_string_free(href);
+  }
+}
+
+static void
 create_widget_set()
 {
   GtkWidget* main_vbox;
@@ -357,6 +371,8 @@ create_widget_set()
 			     "selection_changed", GTK_SIGNAL_FUNC (selection_changed),
 			     (gpointer) main_area);
 
+  gtk_signal_connect_object (GTK_OBJECT (main_area), "jump", GTK_SIGNAL_FUNC(jump), NULL);
+			     
   scrolled_area = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
