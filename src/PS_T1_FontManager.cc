@@ -34,6 +34,7 @@
 #endif
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #ifdef HAVE_VFORK_H
 #include <vfork.h>
 #endif

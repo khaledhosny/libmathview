@@ -40,7 +40,7 @@ MathMLEmbellishedOperatorElement::~MathMLEmbellishedOperatorElement()
 }
 
 void
-MathMLEmbellishedOperatorElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLEmbellishedOperatorElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
 {
   if (!HasDirtyLayout(id, availWidth)) return;
 

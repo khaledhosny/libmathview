@@ -48,7 +48,7 @@ MathMLFrame::IsLast() const
 }
 
 void
-MathMLFrame::SetDirty(const Rectangle* rect)
+MathMLFrame::SetDirty(const Rectangle*)
 {
   dirtyBackground =
     (GetParent() != NULL && (GetParent()->IsSelected() != IsSelected())) ? 1 : 0;

@@ -73,3 +73,5 @@ Bugs
   it has strethcy="false"?
 * map for TeX monospace font is not complete (uppercase letters are ok,
   lowercase letters are not mapped, see mono.xml)
+* cannot make the full documentation because texinfo.tex is not updated
+  (think it is in the automake package)

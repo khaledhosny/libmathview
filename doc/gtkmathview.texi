@@ -408,7 +408,7 @@ MathML elements are enclosed inside rectangles and boxes.
 A rectangle is
 a tuple consisting of four components which locate the element by means
 of absolute coordinates.
-
+@ignore
 @deftypeivar Rectangle scaled x
 Horizontal coordinate of the lower-left corner.
 @end deftypeivar
@@ -424,6 +424,7 @@ Width of the rectangle.
 @deftypeivar Rectangle scaled height
 Height of the rectangle.
 @end deftypeivar
+@end ignore
 
 @deftypemethod Rectangle void Zero ()
 Set all the instance variables @var{x}, @var{y}, @var{width} and @var{height} to zero.
@@ -455,13 +456,12 @@ Debug method.
 @end deftypemethod
 
 
-
 @node Bounding Boxes,  , Rectangles, Boxes and Rectangles
 @subsection Bounding Boxes
 
 A bounding box is a tuple which identifies the @emph{extent}
 of an element, but not its absolute position.
-
+@ignore
 @deftypeivar BoundingBox bool null
 @code{true} if the bounding box is null, that is it is not valid or not initialized
 yet.
@@ -505,6 +505,7 @@ is the ascent of the font.
 ``Total descent'' of the box. For bounding boxes enclosing a single glyph, it
 is the descent of the font.
 @end deftypeivar
+@end ignore
 
 @deftypemethod BoundingBox void Null ()
 Nullify the box.

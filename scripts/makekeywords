@@ -20,7 +20,7 @@ if [ $1 = "def" ]; then
     echo "  "const char\* name\;   >>$4
     echo "  "const Value\* value\; >>$4  
     echo \} s"$2"Token[] = \{      >>$4
-    echo { "$SUFFIX"NOTVALID, 0 }, >>$4
+    echo { "$SUFFIX"NOTVALID, 0, NULL }, >>$4
     for i in $TOKEN
     do
 	TOKENID=`echo $i | cut -d ',' -f 1`

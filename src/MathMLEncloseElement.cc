@@ -95,7 +95,7 @@ MathMLEncloseElement::Setup(RenderingEnvironment* env)
 }
 
 void
-MathMLEncloseElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLEncloseElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
 {
   if (!HasDirtyLayout(id, availWidth)) return;
 

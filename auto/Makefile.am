@@ -18,21 +18,21 @@ noinst_HEADERS = $(AUTOFILES)
 
 SCRIPTDIR = ../scripts
 
-keyword.dec: keyword.list
+keyword.dec: keyword.list $(SCRIPTDIR)/makekeywords
 	@$(SCRIPTDIR)/makekeywords dec Keyword KW keyword.dec
 
-keyword.def: keyword.list
+keyword.def: keyword.list $(SCRIPTDIR)/makekeywords
 	@$(SCRIPTDIR)/makekeywords def Keyword KW keyword.def
 
-tag.dec: keyword.list
+tag.dec: keyword.list $(SCRIPTDIR)/makekeywords
 	@$(SCRIPTDIR)/makekeywords dec Tag TAG tag.dec
 
-tag.def: keyword.list
+tag.def: keyword.list $(SCRIPTDIR)/makekeywords
 	@$(SCRIPTDIR)/makekeywords def Tag TAG tag.def
 
-attribute.dec: keyword.list
+attribute.dec: keyword.list $(SCRIPTDIR)/makekeywords
 	@$(SCRIPTDIR)/makekeywords dec Attribute ATTR attribute.dec
 
-attribute.def: keyword.list
+attribute.def: keyword.list $(SCRIPTDIR)/makekeywords
 	@$(SCRIPTDIR)/makekeywords def Attribute ATTR attribute.def
 
