@@ -153,8 +153,8 @@ if test $HAVE_COLORGCC = "yes"; then
 	CXX=colorgcc
 fi
 
-CFLAGS="$CFLAGS -W -Wall"
-CXXFLAGS="$CXXFLAGS -W -Wall"
+CFLAGS="$CFLAGS -W -Wall -p"
+CXXFLAGS="$CXXFLAGS -W -Wall -p"
 
 AC_OUTPUT([
 Makefile
