@@ -4,7 +4,7 @@ AC_CONFIG_SRCDIR([src/common/Clock.hh])
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=6
-MATHVIEW_MICRO_VERSION=1
+MATHVIEW_MICRO_VERSION=2
 MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
 
@@ -308,10 +308,10 @@ PKG_CHECK_MODULES(XFT, xft)
 AC_SUBST(XFT_CFLAGS)
 AC_SUBST(XFT_LIBS)
 
-available_frontends="c_custom"
+available_frontends="custom_reader"
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.0.0,
   AC_DEFINE(HAVE_LIBXML,,[Define to 1 is libxml2 is installed])
-  available_frontends="$available_frontends libxml2 libxml2_frontend",
+  available_frontends="$available_frontends libxml2_reader libxml2",
   AC_MSG_WARN([could not find libxml2]))
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
@@ -323,6 +323,7 @@ PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
 echo "Available frontends: $available_frontends"
+AC_SUBST(available_frontends)
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no", -lm)
@@ -400,7 +401,9 @@ AC_CONFIG_FILES([
  src/widget/Makefile
  viewer/Makefile
  doc/Makefile
- gtkmathview.pc
+ gtkmathview-custom.pc
+ gtkmathview-libxml2.pc
+ gtkmathview-gmetadom.pc
 ])
 AC_OUTPUT
 

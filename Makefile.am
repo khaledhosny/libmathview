@@ -4,7 +4,10 @@ SUBDIRS = scripts config auto src doc viewer
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA=gtkmathview.pc
+pkgconfig_DATA = \
+  gtkmathview-custom.pc \
+  gtkmathview-libxml2.pc \
+  gtkmathview-gmetadom.pc
 
 SCRIPTDIR = ./scripts
 
@@ -13,11 +16,6 @@ backup:
 
 cleanbak:
 	-rm -f `find . -name "*~"`
-
-licence:
-	$(SCRIPTDIR)/mklicence.pl c <doc/LICENCE >doc/LICENCEc
-	$(SCRIPTDIR)/mklicence.pl cc <doc/LICENCE >doc/LICENCEcc
-	$(SCRIPTDIR)/applylicence $(SCRIPTDIR)
 
 lc:
 	@( \

@@ -58,7 +58,6 @@ ARCH IMPROVEMENTS
 
 MISSING
 
-* provide different libraries for different frontends
 + justification of paragraphs
 + make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
