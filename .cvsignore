@@ -8,3 +8,4 @@ t1lib.log
 libtool
 stamp-h
 Makefile
+*.gz
