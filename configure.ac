@@ -60,28 +60,28 @@ fi
 
 AC_ARG_ENABLE(
 	gmetadom,
-	[ --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
+	[  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
 	enable_gmetadom=$enableval,
 	enable_gmetadom="auto"
 )
 
 AC_ARG_ENABLE(
 	libxml2,
-	[ --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
+	[  --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
 	enable_libxml2=$enableval,
 	enable_libxml2="auto"
 )
 
 AC_ARG_ENABLE(
 	libxml2-reader,
-	[ --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
+	[  --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
 	enable_libxml2_reader=$enableval,
 	enable_libxml2_reader="auto"
 )
 
 AC_ARG_ENABLE(
 	custom-reader,
-	[ --enable-custom-reader[=ARG] enable the custom reader frontend [default=yes]],
+	[  --enable-custom-reader[=ARG] enable the custom reader frontend [default=yes]],
 	enable_custom_reader=$enableval,
 	enable_custom_reader="yes"
 )
