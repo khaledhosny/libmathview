@@ -126,6 +126,7 @@ static gboolean gtk_math_view_button_release_event(GtkWidget*, GdkEventButton*, 
 static gboolean gtk_math_view_motion_notify_event(GtkWidget*, GdkEventMotion*, GtkMathView*);
 static gboolean gtk_math_view_key_press_event(GtkWidget*, GdkEventKey*, GtkMathView*);
 static void     gtk_math_view_realize(GtkWidget*, GtkMathView*);
+static void     gtk_math_view_size_request(GtkWidget*, GtkRequisition*);
 
 /* GtkMathView signals */
 
@@ -332,6 +333,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 
   object_class->destroy = gtk_math_view_destroy;
 
+  widget_class->size_request = gtk_math_view_size_request;
   widget_class->set_scroll_adjustments_signal =
     gtk_signal_new("set_scroll_adjustments",
 		   GTK_RUN_LAST,
@@ -560,6 +562,25 @@ gtk_math_view_realize(GtkWidget* widget, GtkMathView* math_view)
   g_return_if_fail(math_view->drawing_area != NULL);
 
   math_view->drawing_area->Realize();
+}
+
+static void
+gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
+{
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(requisition != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(widget));
+
+  GtkMathView* math_view = GTK_MATH_VIEW(widget);
+  g_assert(math_view != NULL);
+  g_assert(math_view->interface != NULL);
+
+  BoundingBox box;
+  math_view->interface->GetDocumentBoundingBox(box);
+
+  // the 10 is for the border, the frame thickness is missing. How can I get it?
+  requisition->width = sp2ipx(box.width) + 10;
+  requisition->height = sp2ipx(box.GetHeight()) + 10;
 }
 
 static gint
