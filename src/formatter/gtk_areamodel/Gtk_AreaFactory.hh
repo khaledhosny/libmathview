@@ -28,6 +28,7 @@
 #include "DOM.hh"
 #include "AreaFactory.hh"
 #include "Gtk_ColorArea.hh"
+#include "Gtk_BackgroundArea.hh"
 #include "Gtk_InkArea.hh"
 #include "Gtk_PangoGlyphArea.hh"
 #include "Gtk_PangoLayoutArea.hh"
@@ -51,6 +52,8 @@ public:
   { return Gtk_ColorArea::create(area, color); }
   virtual SmartPtr<InkArea> ink(const AreaRef& area) const
   { return Gtk_InkArea::create(area); }
+  virtual AreaRef background(const AreaRef& area, const RGBColor& color) const
+  { return Gtk_BackgroundArea::create(area, color); }
 
   // new methods
 

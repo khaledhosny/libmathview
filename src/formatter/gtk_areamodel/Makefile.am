@@ -8,6 +8,7 @@ libgtk_areamodel_la_SOURCES = \
   Gtk_PangoLayoutLineArea.cc \
   Gtk_PangoGlyphArea.cc \
   Gtk_ColorArea.cc \
+  Gtk_BackgroundArea.cc \
   Gtk_InkArea.cc \
   Gtk_WrapperArea.cc
 
@@ -19,6 +20,7 @@ noinst_HEADERS = \
   Gtk_PangoLayoutLineArea.hh \
   Gtk_PangoGlyphArea.hh \
   Gtk_ColorArea.hh \
+  Gtk_BackgroundArea.hh \
   Gtk_InkArea.hh \
   Gtk_WrapperArea.hh
 
