@@ -530,7 +530,7 @@ MathMLTableElement::ColumnLayout(unsigned j, LayoutId id, BreakId bid, scaled wi
       }
 
       const BoundingBox& cellBox =
-	stretchyCell ?
+	(id == LAYOUT_AUTO && stretchyCell) ?
 	tableCell.mtd->GetMaxBoundingBox() :
 	tableCell.mtd->GetBoundingBox();
 
