@@ -24,3 +24,6 @@ lc:
 	ICCFILES=`find . -name "*.icc"`; \
 	wc -l $$CFILES $$HFILES $$CCFILES $$HHFILES $$ICCFILES | tail -n 1 \
 	)
+
+profile:
+	

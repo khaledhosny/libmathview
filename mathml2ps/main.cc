@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#define MATHML2PS_VERSION "0.0.3"
+#define MATHML2PS_VERSION "0.0.4"
 
 #include <assert.h>
 #include <getopt.h>
@@ -256,75 +256,67 @@ main(int argc, char *argv[])
     }
   }
 
+  if (configPath == NULL) configPath = getenv("MATHENGINECONF");
+
   MathEngine::logger(LOG_INFO, "Font size : %f", fontSize);
   MathEngine::logger(LOG_INFO, "Paper size: %fx%f", width, height);
   MathEngine::logger(LOG_INFO, "Margins   : %fx%f", xMargin, yMargin);
 
 #ifdef HAVE_LIBT1
-  if (optind < argc) {
-    MathEngine::InitGlobalData(configPath);
-
-    MathMLParser parser(argv[optind]);
-    MathMLDocument* document = parser.Parse();
-    document->Normalize();
-
-    if (document != NULL) {
-      MathMLElement* root = document->GetRoot();
-      assert(root != NULL);
-
-      PS_T1_FontManager fm;
-      CharMapper cm(fm);
-      cm.Load("/usr/local/share/gtkmathview/font-configuration.xml");
-      cm.Load("config/font-configuration.xml");
-
-      UnitValue size;
-      size.Set(fontSize, UNIT_PT);
-      RenderingEnvironment env(cm);
-      env.SetFontSize(size);
-
-      root->Setup(&env);
-      root->DoBoxedLayout(LAYOUT_MIN);
-      root->DoBoxedLayout(LAYOUT_MAX);
-
-      UnitValue uWidth;
-      UnitValue uHeight;
-      UnitValue uXMargin;
-      UnitValue uYMargin;
-      uWidth.Set(width, unitId);
-      uHeight.Set(height, unitId);
-      uXMargin.Set(xMargin, unitId);
-      uYMargin.Set(yMargin, unitId);
-
-      scaled w = uWidth.ToScaledPoints();
-      scaled h = uHeight.ToScaledPoints();
-      scaled x0 = uXMargin.ToScaledPoints();
-      scaled y0 = uYMargin.ToScaledPoints();
-
-      root->DoBoxedLayout(LAYOUT_AUTO, BREAK_GOOD, w - 2 * x0);
-      const BoundingBox& box = root->GetBoundingBox();
-      root->SetPosition(0, box.ascent);
-      root->Freeze();
-
-      GraphicsContextValues values;
-      values.foreground = BLACK_COLOR;
-      values.background = WHITE_COLOR;
-      values.lineStyle = LINE_STYLE_SOLID;
-      values.lineWidth = px2sp(1);
-
-      PS_DrawingArea area(values, x0, y0, stdout);
-      area.SetSize(w, h);
-      if (!colors) area.DisableColors();
-      fm.DumpFontDictionary(stdout);
-
-      area.DumpPreamble();
-      //area.DumpGrid();
-      root->SetDirty();
-      root->Render(area);
-      area.DumpEpilogue();
-    }
-  } else
-#endif // HAVE_LIBT1
+  if (optind >= argc) {
     printHelp();
+    exit(1);
+  }
+  
+  MathEngine::InitGlobalData(configPath);
+
+  UnitValue uWidth;
+  UnitValue uHeight;
+  UnitValue uXMargin;
+  UnitValue uYMargin;
+  uWidth.Set(width, unitId);
+  uHeight.Set(height, unitId);
+  uXMargin.Set(xMargin, unitId);
+  uYMargin.Set(yMargin, unitId);
+
+  scaled w = uWidth.ToScaledPoints();
+  scaled h = uHeight.ToScaledPoints();
+  scaled x0 = uXMargin.ToScaledPoints();
+  scaled y0 = uYMargin.ToScaledPoints();
+
+  GraphicsContextValues values;
+  values.foreground = BLACK_COLOR;
+  values.background = WHITE_COLOR;
+  values.lineStyle = LINE_STYLE_SOLID;
+  values.lineWidth = px2sp(1);
+
+  PS_T1_FontManager fm;
+  PS_DrawingArea area(values, x0, y0, stdout);
+  area.SetSize(w, h);
+  if (!colors) area.DisableColors();
+
+  MathEngine engine;
+  engine.Init(&area, &fm);
+  engine.Load(argv[optind]);
+  engine.SetDefaultFontSize(fontSize);
+  engine.Setup();
+  engine.Layout();
+  
+  fm.DumpFontDictionary(stdout);
+
+  Rectangle sheet;
+  sheet.x = 0;
+  sheet.y = 0;
+  sheet.width = w;
+  sheet.height = h;
+
+  area.DumpPreamble();
+  //area.DumpGrid();
+  engine.Render(&sheet);
+  area.DumpEpilogue();
+#else 
+  printHelp();
+#endif
 
   exit(0);
 }

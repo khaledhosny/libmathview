@@ -714,7 +714,7 @@ const Value* mathVariantParser(StringTokenizer& st)
     KW_SCRIPT, KW_BOLD_SCRIPT, KW_FRAKTUR, KW_SANS_SERIF, KW_BOLD_SANS_SERIF,
     KW_SANS_SERIF_ITALIC, KW_SANS_SERIF_BOLD_ITALIC, KW_MONOSPACE };
 
-  return alternativeParser(id, 13, st);
+  return alternativeParser(id, 14, st);
 }
 
 const Value* mathSizeParser(StringTokenizer& st)

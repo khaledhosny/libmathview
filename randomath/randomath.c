@@ -241,8 +241,12 @@ void random_math(guint depth)
 
 int main(int argc, char** argv)
 {
-  if (argc > 1) max_depth = atoi(argv[1]);
-  srandom(time(NULL));
+  if (argc != 3) {
+    printf("Usage: randomath <seed> <depth>\n");
+    exit(1);
+  }
+  srandom(atoi(argv[1]));
+  max_depth = atoi(argv[2]);
   random_math(0);
   return 0;
 }

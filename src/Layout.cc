@@ -83,8 +83,8 @@ Layout::Append(MathMLFrame* frame, scaled spacing, BreakId id)
 void
 Layout::Append(scaled spacing, BreakId id)
 {
-  assert(id != BREAK_YES && id != BREAK_INDENT);
-  AppendAtom(NULL, spacing, id);
+  if (id == BREAK_YES || id == BREAK_INDENT) SetLastBreakability(id);
+  else AppendAtom(NULL, spacing, id);
 }
 
 void

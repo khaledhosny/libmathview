@@ -258,6 +258,8 @@ MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 	}
       }
 
+      printf("%d %p\n", nOp, baseOp);
+
       if (nOp > 0) {
 	scaled w = (nOther == 0) ? wOp : wOther;
 

@@ -96,10 +96,6 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
-#ifdef MATHML_STATS
-  static unsigned GetCounter(void) { return elementCounter; }
-#endif
-
 protected:
   void ResetLayout(void);
   const AttributeSignature* GetAttributeSignatureAux(AttributeId,
@@ -119,10 +115,6 @@ protected:
 private:
   mDOMNodeRef node; // reference to the DOM node
   TagId       tag;
-
-#ifdef MATHML_STATS
-  static unsigned elementCounter;
-#endif
 };
 
 typedef MathMLElement* MathMLElementPtr;
@@ -133,9 +125,14 @@ inline void
 MathMLElement::ConfirmLayout(LayoutId id)
 {
   switch (id) {
-  case LAYOUT_AUTO: break;
-  case LAYOUT_MIN: minBox = box; break;
-  case LAYOUT_MAX: maxBox = box; break;
+  case LAYOUT_AUTO:
+    break;
+  case LAYOUT_MIN:
+    minBox = box;
+    break;
+  case LAYOUT_MAX:
+    maxBox = box;
+    break;
   }
 }
 
