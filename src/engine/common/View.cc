@@ -99,7 +99,7 @@ View::getRootElement() const
   perf.Start();
   rootElement = builder->getRootElement();
   perf.Stop();
-  
+
   if (rootDirty || rootElement != oldRootElement)
     Globals::logger(LOG_INFO, "build time: %dms", perf());
   
