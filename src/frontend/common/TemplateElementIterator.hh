@@ -23,47 +23,27 @@
 #ifndef __TemplateElementIterator_hh__
 #define __TemplateElementIterator_hh__
 
-#define OPT_WILDCARD 0
-
 template <class Model>
 class TemplateElementIterator
 {
 public:
-  TemplateElementIterator(const typename Model::Node& root, const String& ns = "*", const String& n = "*")
-#if OPT_WILDCARD
-    : anyNamespace(ns == "*"), anyName(n == "*"), namespaceURI(ns), name(n)
-#else
-    : namespaceURI(ns), name(n)
-#endif
+  TemplateElementIterator(const typename Model::Element& root, const String& ns = "*", const String& n = "*")
+    : namespaceURI(ns), name(n), currentElement(typename Model::Element())
   { 
     assert(root);
-    if (typename Model::Node p = Model::getFirstChild(root))
+    if (typename Model::Node p = Model::getFirstChild(Model::asNode(root)))
       currentElement = findValidNode(p);
-    else
-      currentElement = typename Model::Element();
   }
 
   typename Model::Element element(void) const { return currentElement; }
   bool more(void) const { return currentElement; }
-
   bool valid(const typename Model::Node& p) const
   {
     assert(p);
-#if 0
-    std::cerr << "valid? " << (Model::getNodeType(p) == Model::ELEMENT_NODE) << " "
-	      << namespaceURI << " " << Model::getNamespaceURI(p) << " "
-	      << name << " " << Model::getNodeName(p) << std::endl;
-#endif
     return (Model::getNodeType(p) == Model::ELEMENT_NODE)
-#if OPT_WILDCARD
-      && (anyNamespace || namespaceURI == Model::getNamespaceURI(p))
-      && (anyName || name == Model::getNodeName(p));
-#else
-      && (namespaceURI == "*" || namespaceURI == Model::getNamespaceURI(p))
+      && (namespaceURI == "*" || namespaceURI == Model::getNodeNamespaceURI(p))
       && (name == "*" || name == Model::getNodeName(p));
-#endif
   }
-    
   void next(void)
   { 
     assert(currentElement);
@@ -79,14 +59,9 @@ protected:
     return typename Model::Element();
   }
     
-private:
-  typename Model::Element currentElement;
-#if OPT_WILDCARD
-  bool anyNamespace;
-  bool anyName;
-#endif
   String namespaceURI;
   String name;
+  typename Model::Element currentElement;
 };
 
 #endif // __TemplateElementIterator_hh__

@@ -45,12 +45,12 @@ protected:
   SmartPtr<typename ElementBuilder::type>
   getElement(const typename Model::Element& el) const
   {
-    if (SmartPtr<typename ElementBuilder::type> elem = smart_cast<typename ElementBuilder::type>(getLinker().assoc(el)))
+    if (SmartPtr<typename ElementBuilder::type> elem = smart_cast<typename ElementBuilder::type>(linkerAssoc(el)))
       return elem;
     else
       {
 	SmartPtr<typename ElementBuilder::type> elem = ElementBuilder::type::create(ElementBuilder::getContext(*this));
-	getLinker().add(el, elem);
+	linkerAdd(el, elem);
 	return elem;
       }
   }
@@ -219,7 +219,7 @@ protected:
   SmartPtr<MathMLElement>
   update_MathML_semantics_Element(const typename Model::Element& el) const
   {
-    typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+    typename Model::ElementIterator iter(el, MATHML_NS_URI);
     if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
       return elem;
 
@@ -230,13 +230,13 @@ protected:
 	  {
 	    String encoding = Model::getAttribute(e, "encoding");
 	    if (encoding == "MathML-Presentation")
-	      return getMathMLElement(typename Model::ElementIterator(Model::asNode(e), MATHML_NS_URI).element());
+	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
 #if 0
 	    else if (encoding == "BoxML")
 	      {
 		// this element can probably be associated with the model element
 		SmartPtr<MathMLBoxMLAdapter> adapter = getMathMLElement<MathMLBoxMLAdapter>(el);
-		adapter->setChild(getBoxMLElement(typename Model::ElementIterator(Model::asNode(e), BOXML_NS_URI).element()));
+		adapter->setChild(getBoxMLElement(typename Model::ElementIterator(e, BOXML_NS_URI).element()));
 		return adapter;
 	      }
 #endif
@@ -296,12 +296,12 @@ protected:
   {
     String encoding = Model::getAttribute(el, "encoding");
     if (encoding == "BoxML")
-      return getBoxMLElement(typename Model::ElementIterator(Model::asNode(el), BOXML_NS_URI).element());
+      return getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element());
     else /* if (encoding == "MathML-Presentation") */
       {
 	// this element can be associated to the corresponding model element
 	SmartPtr<BoxMLMathMLAdapter> adapter = getElement<BoxMLMathMLAdapterBuilder>(el);
-	adapter->setChild(getMathMLElement(typename Model::ElementIterator(Model::asNode(el), MATHML_NS_URI).element()));
+	adapter->setChild(getMathMLElement(typename Model::ElementIterator(el, MATHML_NS_URI).element()));
 	return adapter;
       }
 #if 0
@@ -587,7 +587,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLFractionElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setNumerator(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setDenominator(builder.getMathMLElement(iter.element()));
@@ -601,7 +601,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLRadicalElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setIndex(builder.getMathMLElement(iter.element()));
@@ -640,7 +640,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLScriptElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
@@ -659,7 +659,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLScriptElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setSubScript(0);
@@ -681,7 +681,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLScriptElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
@@ -701,7 +701,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
@@ -720,7 +720,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setUnderScript(0);
@@ -742,7 +742,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
       if (iter.more()) iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
@@ -799,7 +799,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLMultiScriptsElement>& elem)
     {
-      typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       unsigned i = 0;
       unsigned nScripts = 0;
       unsigned nPreScripts = 0;
@@ -891,7 +891,7 @@ protected:
   {
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLBinContainerElement>& elem)
-    { elem->setChild(builder.getBoxMLElement(typename Model::ElementIterator(Model::asNode(el), BOXML_NS_URI).element())); }
+    { elem->setChild(builder.getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element())); }
   };
 
   struct BoxMLLinearContainerElementBuilder : public BoxMLElementBuilder
@@ -1005,7 +1005,7 @@ protected:
 	      text->setContent(Model::getNodeValue(p));
 	      content.push_back(text);
 	    }
-	  else if (Model::getNodeType(p) == Model::ELEMENT_NODE && Model::getNamespaceURI(p) == BOXML_NS_URI)
+	  else if (Model::getNodeType(p) == Model::ELEMENT_NODE && Model::getNodeNamespaceURI(p) == BOXML_NS_URI)
 	    content.push_back(builder.getBoxMLElement(Model::asElement(p)));
 	}
       elem->swapContent(content);
@@ -1041,7 +1041,6 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLTextElement>& elem)
     {
-      typename Model::NodeIterator iter(Model::asNode(el));
       String content;
       for (typename Model::NodeIterator iter(Model::asNode(el)); iter.more(); iter.next())
 	{
@@ -1144,7 +1143,7 @@ protected:
   getChildMathMLElements(const typename Model::Element& el, std::vector<SmartPtr<MathMLElement> >& content) const
   {
     content.clear();
-    for (typename Model::ElementIterator iter(Model::asNode(el), MATHML_NS_URI); iter.more(); iter.next())
+    for (typename Model::ElementIterator iter(el, MATHML_NS_URI); iter.more(); iter.next())
       content.push_back(getMathMLElement(iter.element()));
   }
 
@@ -1177,7 +1176,7 @@ protected:
       
 	  case Model::ELEMENT_NODE:
 	    {	    
-	      if (Model::getNamespaceURI(n) == MATHML_NS_URI)
+	      if (Model::getNodeNamespaceURI(n) == MATHML_NS_URI)
 		{
 		  const String nodeName = Model::getNodeName(n);
 		  if (nodeName == "mglyph")
@@ -1223,7 +1222,7 @@ protected:
   getChildBoxMLElements(const typename Model::Element& el, std::vector<SmartPtr<BoxMLElement> >& content) const
   {
     content.clear();
-    for (typename Model::ElementIterator iter(Model::asNode(el), BOXML_NS_URI); iter.more(); iter.next())
+    for (typename Model::ElementIterator iter(el, BOXML_NS_URI); iter.more(); iter.next())
       content.push_back(getBoxMLElement(iter.element()));
   }
 
@@ -1247,7 +1246,7 @@ public:
     if (typename Model::Element root = getRootModelElement())
       {
 	perf.Start();
-	const String ns = Model::getNamespaceURI(Model::asNode(root));
+	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
 	if (ns == MATHML_NS_URI) rootElement = getMathMLElement(root);
 	else if (ns == BOXML_NS_URI) rootElement = getBoxMLElement(root);
 	perf.Stop();

@@ -32,7 +32,6 @@
 #include "AttributeSignature.hh"
 #include "MathMLAttributeSignatures.hh"
 #include "MathMLOperatorDictionary.hh"
-#include "MathMLEntitiesTable.hh"
 
 template <typename Model>
 struct TemplateSetup
@@ -70,7 +69,7 @@ struct TemplateSetup
   static void
   parse(Configuration& conf, const typename Model::Element& node)
   {
-    for (typename Model::ElementIterator iter(Model::asNode(node)); iter.more(); iter.next())
+    for (typename Model::ElementIterator iter(node); iter.more(); iter.next())
       {
 	typename Model::Element elem = iter.element();
 	assert(elem);
@@ -146,7 +145,7 @@ struct TemplateSetup
   static void
   parse(MathMLOperatorDictionary& dictionary, const typename Model::Element& root)
   {
-    for (typename Model::ElementIterator iter(Model::asNode(root), "*", "operator"); iter.more(); iter.next())
+    for (typename Model::ElementIterator iter(root, "*", "operator"); iter.more(); iter.next())
       {
 	typename Model::Element elem = iter.element();
 	const String opName = Model::getAttribute(elem, "name");
@@ -180,13 +179,14 @@ struct TemplateSetup
   load(Class& obj, const String& description, const String& rootTag, const String& path)
   {
     Globals::logger(LOG_DEBUG, "loading %s from `%s'...", description.c_str(), path.c_str());
-    if (typename Model::Node doc = Model::parseXML(path, subst))
-      if (typename Model::Element root = typename Model::ElementIterator(doc, "*", rootTag).element())
-        {
+    if (typename Model::Element root = Model::parseXML(path, subst))
+      if (Model::getNodeName(Model::asNode(root)) == rootTag)
+	{
 	  parse(obj, root);
 	  return true;
         }
-    Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
+      else 
+	Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
     return false;
   }
 };

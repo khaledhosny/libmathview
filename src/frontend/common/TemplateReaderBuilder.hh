@@ -20,25 +20,30 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __TemplateNodeIterator_hh__
-#define __TemplateNodeIterator_hh__
+#ifndef __TemplateReaderBuilder_hh__
+#define __TemplateReaderBuilder_hh__
 
-template <class Model>
-class TemplateNodeIterator
+#include "Builder.hh"
+#include "String.hh"
+#include "TemplateReaderModel.hh"
+
+template <typename Reader>
+class TemplateReaderBuilder : public Builder
 {
-public:
-  TemplateNodeIterator(const typename Model::Node& root) : currentNode(Model::getFirstChild(root)) { }
-
-  typename Model::Node node(void) const { return currentNode; }
-  bool more(void) const { return currentNode; }
-  void next(void)
-  {
-    assert(currentNode);
-    currentNode = Model::getNextSibling(currentNode);
-  }
-  
 protected:
-  typename Model::Node currentNode;
+  TemplateReaderBuilder(void) { }
+  virtual ~TemplateReaderBuilder() { }
+
+public:
+  void setReader(const SmartPtr<Reader>& r) { reader = r; }
+  SmartPtr<Reader> getReader(void) const { return reader; }
+
+protected:
+  void setRootModelElement(const SmartPtr<Reader>& r) { setReader(r); }
+  SmartPtr<Reader> getRootModelElement(void) const { return (reader && reader->more()) ? reader : 0; }
+
+private:
+  SmartPtr<Reader> reader;
 };
 
-#endif // __TemplateNodeIterator_hh__
+#endif // __TemplateReaderBuilder_hh__
