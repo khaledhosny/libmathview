@@ -439,6 +439,7 @@ options_set_font_size(GtkWidget* widget, gpointer data)
 static void
 element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
+  GdomeElement* action = NULL;
   GdomeDOMString* link = NULL;
 
   g_return_if_fail(math_view != NULL);
@@ -453,6 +454,15 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   if (link != NULL)
     gdome_str_unref(link);
+
+  action = find_action_element(event->id);
+  if (action != NULL)
+    {
+      gtk_math_view_set_cursor(math_view, action, -1);
+      gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
+    }
+  else
+    gtk_math_view_set_cursor(math_view, NULL, -1);
 }
 
 static void
@@ -605,6 +615,7 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(event != NULL);
 
+#if 0
   index = -1;
   if (gtk_math_view_get_char_at(math_view, event->x, event->y, &elem, &index, NULL, NULL))
     {
@@ -617,6 +628,7 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       /*printf("get_char_at: failed\n");*/
       gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_OFF);
     }
+#endif
 
   if (event->id != NULL)
     {

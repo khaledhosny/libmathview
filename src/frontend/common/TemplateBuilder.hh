@@ -238,7 +238,7 @@ protected:
     if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
       return elem;
 
-    if (iter.more()) iter.next();
+    iter.next();
     while (typename Model::Element e = iter.element())
       {
 	if (Model::getNodeName(Model::asNode(e)) == "annotation-xml")
@@ -606,7 +606,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setNumerator(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setDenominator(builder.getMathMLElement(iter.element()));
     }
   };
@@ -620,7 +620,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setIndex(builder.getMathMLElement(iter.element()));
     }
   };
@@ -659,7 +659,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
       elem->setSuperScript(0);
     }
@@ -678,7 +678,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setSubScript(0);
       elem->setSuperScript(builder.getMathMLElement(iter.element()));
     }
@@ -700,9 +700,9 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setSuperScript(builder.getMathMLElement(iter.element()));
     }
   };
@@ -720,7 +720,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
       elem->setOverScript(0);
     }
@@ -739,7 +739,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setUnderScript(0);
       elem->setOverScript(builder.getMathMLElement(iter.element()));
     }
@@ -761,9 +761,9 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       elem->setOverScript(builder.getMathMLElement(iter.element()));
     }
   };
@@ -904,7 +904,7 @@ protected:
       bool preScripts = false;
 
       elem->setBase(builder.getMathMLElement(iter.element()));
-      if (iter.more()) iter.next();
+      iter.next();
       while (iter.more())
 	{
 	  typename Model::Element node = iter.element();
