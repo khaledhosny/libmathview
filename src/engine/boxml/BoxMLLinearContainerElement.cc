@@ -30,12 +30,10 @@
 
 BoxMLLinearContainerElement::BoxMLLinearContainerElement(const SmartPtr<View>& view)
   : BoxMLElement(view)
-{
-}
+{ }
 
 BoxMLLinearContainerElement::~BoxMLLinearContainerElement()
-{
-}
+{ }
 
 void
 BoxMLLinearContainerElement::construct()

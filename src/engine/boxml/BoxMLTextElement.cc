@@ -32,12 +32,10 @@
 
 BoxMLTextElement::BoxMLTextElement(const SmartPtr<View>& view)
   : BoxMLElement(view)
-{
-}
+{ }
 
 BoxMLTextElement::~BoxMLTextElement()
-{
-}
+{ }
 
 SmartPtr<BoxMLTextElement>
 BoxMLTextElement::create(const SmartPtr<View>& view)

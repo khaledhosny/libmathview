@@ -56,6 +56,9 @@ BoxMLVElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#include "scaledAux.hh"
+#include "BoundingBoxAux.hh"
+
 AreaRef
 BoxMLVElement::format(MathFormattingContext& ctxt)
 {
@@ -97,27 +100,57 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
 	      }
 
 	    BoundingBox areaBox = area->box();
-	    if (prevArea)
+	    if (areaBox.defined())
 	      {
-		if (prevHeight + areaBox.depth < minLineSpacing)
-		  c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
-	      }
-	    prevHeight = areaBox.height;
-	    prevArea = area;
+		if (prevArea)
+		  {
+		    if (prevHeight + areaBox.depth < minLineSpacing)
+		      c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
+		  }
+		prevHeight = areaBox.height;
+		prevArea = area;
 
-	    if (enter-- == 0) enter_index = c.size();
-	    if (exit-- == 0) exit_index = c.size();
-	    c.push_back(area);
+		if (enter-- == 0) enter_index = c.size();
+		if (exit-- == 0) exit_index = c.size();
+		c.push_back(area);
+	      }
 	  }
 
-      AreaRef res = ctxt.getDevice()->getFactory()->verticalArray(c, enter_index);
-      if (enter != exit)
+      step = 0;
+      AreaRef res;
+      switch (c.size())
 	{
-	  AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit_index);
-	  step = res->box().height - res1->box().height;
+	case 0:
+	  res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+	  break;
+	case 1:
+	  res = c[0];
+	  break;
+	default:
+	  res = ctxt.getDevice()->getFactory()->verticalArray(c, enter_index);
+	  if (enter != exit)
+	    {
+	      AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit_index);
+	      assert(res->box().defined());
+	      assert(res1->box().defined());
+	      step = res->box().height - res1->box().height;
+
+#if 0
+	      for (unsigned i = 0; i < c.size(); i++)
+		{
+		  std::cerr << "AREA " << i << " HAS BOX = " << c[i]->box() << std::endl;
+		}
+
+	      std::cerr << enter_index << "/" << exit_index << " ************ " << res->box().height << " //// " << res1->box().height << std::endl;
+#endif
+	    }
+	  break;
 	}
-      else
-	step = 0;
+
+#if 0
+      std::cerr << "==================== " << this << " STEP IS " << step << std::endl;
+#endif
+
       res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 

@@ -30,7 +30,7 @@ struct BoundingBox
   BoundingBox(void) : width(scaled::zero()), height(scaled::min()), depth(scaled::min()) { }
   BoundingBox(const scaled& w, const scaled& h, const scaled& d) : width(w), height(h), depth(d) { }
 
-  bool defined(void) const { return height != scaled::min() || depth != scaled::min(); }
+  bool defined(void) const { return height != scaled::min() && depth != scaled::min(); }
   scaled horizontalExtent(void) const { return width; }
   scaled verticalExtent(void) const { return height + depth; }
 

@@ -28,12 +28,10 @@
 
 BoxMLBinContainerElement::BoxMLBinContainerElement(const SmartPtr<View>& view)
   : BoxMLElement(view)
-{
-}
+{ }
 
 BoxMLBinContainerElement::~BoxMLBinContainerElement()
-{
-}
+{ }
 
 void
 BoxMLBinContainerElement::construct()

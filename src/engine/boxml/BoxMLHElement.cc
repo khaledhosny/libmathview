@@ -33,12 +33,10 @@
 
 BoxMLHElement::BoxMLHElement(const SmartPtr<View>& view)
   : BoxMLLinearContainerElement(view)
-{
-}
+{ }
 
 BoxMLHElement::~BoxMLHElement()
-{
-}
+{ }
 
 SmartPtr<BoxMLHElement>
 BoxMLHElement::create(const SmartPtr<View>& view)
@@ -95,7 +93,12 @@ BoxMLHElement::format(MathFormattingContext& ctxt)
 	    c.push_back(area);
 	  }
 
-      AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+      AreaRef res;
+      if (c.size() == 1)
+	res = c[0];
+      else
+	res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+
       res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 

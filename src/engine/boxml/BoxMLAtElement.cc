@@ -30,12 +30,10 @@
 
 BoxMLAtElement::BoxMLAtElement(const SmartPtr<View>& view)
   : BoxMLBinContainerElement(view)
-{
-}
+{ }
 
 BoxMLAtElement::~BoxMLAtElement()
-{
-}
+{ }
 
 SmartPtr<BoxMLAtElement>
 BoxMLAtElement::create(const SmartPtr<View>& view)

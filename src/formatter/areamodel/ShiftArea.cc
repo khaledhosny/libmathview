@@ -41,7 +41,10 @@ BoundingBox
 ShiftArea::box() const
 {
   BoundingBox childBox = getChild()->box();
-  return BoundingBox(childBox.width, childBox.height + shift, childBox.depth - shift);  
+  return
+    childBox.defined()
+    ? BoundingBox(childBox.width, childBox.height + shift, childBox.depth - shift)
+    : childBox;
 }
 
 DOM::Element

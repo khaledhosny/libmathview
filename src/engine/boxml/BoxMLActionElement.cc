@@ -33,12 +33,10 @@
 
 BoxMLActionElement::BoxMLActionElement(const SmartPtr<View>& view)
   : BoxMLLinearContainerElement(view)
-{
-}
+{ }
 
 BoxMLActionElement::~BoxMLActionElement()
-{
-}
+{ }
 
 SmartPtr<BoxMLActionElement>
 BoxMLActionElement::create(const SmartPtr<View>& view)

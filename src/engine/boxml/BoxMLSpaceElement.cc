@@ -31,12 +31,10 @@
 
 BoxMLSpaceElement::BoxMLSpaceElement(const SmartPtr<View>& view)
   : BoxMLElement(view)
-{
-}
+{ }
 
 BoxMLSpaceElement::~BoxMLSpaceElement()
-{
-}
+{ }
 
 SmartPtr<BoxMLSpaceElement>
 BoxMLSpaceElement::create(const SmartPtr<View>& view)

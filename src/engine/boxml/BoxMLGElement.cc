@@ -33,12 +33,10 @@
 
 BoxMLGElement::BoxMLGElement(const SmartPtr<View>& view)
   : BoxMLLinearContainerElement(view)
-{
-}
+{ }
 
 BoxMLGElement::~BoxMLGElement()
-{
-}
+{ }
 
 SmartPtr<BoxMLGElement>
 BoxMLGElement::create(const SmartPtr<View>& view)

@@ -34,7 +34,7 @@ HorizontalFillerArea::create()
 BoundingBox
 HorizontalFillerArea::box() const
 {
-  return BoundingBox(scaled::zero(), scaled::min(), scaled::min());
+  return BoundingBox();
 }
 
 AreaRef

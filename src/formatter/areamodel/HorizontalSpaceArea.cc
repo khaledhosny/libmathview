@@ -26,8 +26,7 @@
 #include "HorizontalSpaceArea.hh"
 
 HorizontalSpaceArea::~HorizontalSpaceArea()
-{
-}
+{ }
 
 BoundingBox
 HorizontalSpaceArea::box() const

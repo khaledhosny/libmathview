@@ -22,7 +22,6 @@
 
 #include <config.h>
 
-#include <sstream>
 #include <algorithm>
 
 #include "BoundingBox.hh"
@@ -68,7 +67,7 @@ void
 BoundingBox::over(const BoundingBox& box)
 {
   if (!box.defined())
-    return ;
+    return;
   else if (defined())
     {
       width = std::max(width, box.width);
@@ -77,3 +76,4 @@ BoundingBox::over(const BoundingBox& box)
   else
     *this = box;
 }
+

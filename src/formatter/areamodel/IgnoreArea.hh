@@ -37,7 +37,7 @@ public:
 
   virtual BoundingBox box(void) const { return BoundingBox(); }
   virtual scaled leftEdge(void) const { return scaled::min(); }
-  virtual scaled rightEdge(void) const { return scaled::max(); }
+  virtual scaled rightEdge(void) const { return scaled::min(); }
   virtual DOM::Element dump(const DOM::Document&) const;
 };
 

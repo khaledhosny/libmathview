@@ -27,9 +27,7 @@
 
 BoxMLboxElement::BoxMLboxElement(const SmartPtr<class View>& view)
   : BoxMLBinContainerElement(view)
-{
-}
+{ }
 
 BoxMLboxElement::~BoxMLboxElement()
-{
-}
+{ }
