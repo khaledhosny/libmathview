@@ -1139,19 +1139,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 }
 
-#if GTKMATHVIEW_USES_CUSTOM_READER
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, GtkMathViewReader* reader,
-				     GtkMathViewReaderData user_data)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(reader != NULL, FALSE);
-  assert(false);
-  return FALSE;
-}
-
-#elif GTKMATHVIEW_USES_GMETADOM
+#if GTKMATHVIEW_USES_GMETADOM
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
@@ -1310,6 +1298,7 @@ GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, xmlDoc* doc)
 {
+  g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(doc != NULL, FALSE);
 
   if (xmlNode* root = xmlDocGetRootElement(doc))
@@ -1348,20 +1337,41 @@ GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
   return math_view->current_doc;
 }
 
+#elif GTKMATHVIEW_USES_CUSTOM_READER
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, GtkMathViewReader* reader,
+				     GtkMathViewReaderData user_data)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(reader != NULL, FALSE);
+
+  if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(math_view->view->getBuilder()))
+    {
+      builder->setReader(customXmlReader::create(reader, user_data));
+      reset_adjustments(math_view);
+      paint_widget(math_view);
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 #elif GTKMATHVIEW_USES_LIBXML2_READER
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
+GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, xmlTextReaderPtr reader)
 {
-  g_return_val_if_fail(name != NULL, FALSE);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(reader != NULL, FALSE);
 
-  if (SmartPtr<libxmlXmlReader> reader = libxml2_reader_Model::document(name, true))
-    if (SmartPtr<libxmlXmlReader> reader = libxml2_reader_Model::getDocumentElement(doc))
-      if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(math_view->view->getBuilder()))
-	{
-	  builder->setReader(reader);
-	  return TRUE;
-	}
+  if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(math_view->view->getBuilder()))
+    {
+      builder->setReader(libxmlXmlReader::create(reader));
+      reset_adjustments(math_view);
+      paint_widget(math_view);
+      return TRUE;
+    }
 
   return FALSE;
 }

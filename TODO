@@ -9,6 +9,7 @@
 
 BUGS
 
+* crash when deleting fragment that contains the cursor
 * when index == length in a glyph area the caret is drawn
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially

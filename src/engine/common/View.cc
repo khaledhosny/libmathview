@@ -104,17 +104,21 @@ View::formatElement(const SmartPtr<Element>& elem) const
 SmartPtr<Element>
 View::getRootElement() const
 {
-  Clock perf;
-	
   const SmartPtr<Element> oldRootElement = rootElement;
-  bool rootDirty = rootElement && (rootElement->dirtyStructure() || rootElement->dirtyAttribute() || rootElement->dirtyAttributeP());
+  bool rootDirty = !rootElement ||
+    rootElement->dirtyStructure() || rootElement->dirtyAttribute() ||
+    rootElement->dirtyAttributeP();
 
-  perf.Start();
-  rootElement = builder->getRootElement();
-  perf.Stop();
+  if (rootDirty)
+    {
+      Clock perf;
+	
+      perf.Start();
+      rootElement = builder->getRootElement();
+      perf.Stop();
 
-  if (rootDirty || rootElement != oldRootElement)
-    Globals::logger(LOG_INFO, "build time: %dms", perf());
+      Globals::logger(LOG_INFO, "build time: %dms", perf());
+    }
   
   return rootElement;
 }

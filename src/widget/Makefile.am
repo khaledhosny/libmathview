@@ -1,9 +1,14 @@
 
 lib_LTLIBRARIES =
+
 if COND_CUSTOM_READER
 if COND_LIBXML2_READER
 lib_LTLIBRARIES += libgtkmathview_custom_reader.la
 endif
+endif
+
+if COND_LIBXML2_READER
+lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
 endif
 
 if COND_LIBXML2
@@ -21,6 +26,12 @@ libgtkmathview_custom_reader_la_LIBADD = \
   $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
   $(top_builddir)/src/frontend/custom_reader/libmathview_frontend_custom_reader.la
 
+libgtkmathview_libxml2_reader_la_LIBADD = \
+  -lstdc++ \
+  $(GTK_LIBS) \
+  $(XML_LIBS) \
+  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la
+
 libgtkmathview_libxml2_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
@@ -34,10 +45,12 @@ libgtkmathview_gmetadom_la_LIBADD = \
   $(top_builddir)/src/frontend/gmetadom/libmathview_frontend_gmetadom.la
 
 libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libgtkmathview_custom_reader_la_SOURCES = gtkmathview_custom_reader.cc
+libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_custom_reader.cc
 libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc
 libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
 
