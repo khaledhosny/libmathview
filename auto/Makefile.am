@@ -46,11 +46,11 @@ token.dec: token-list.xml list-to-dec.xsl
 token.def: token-list.xml list-to-def.xsl
 	$(XSLTPROC) list-to-def.xsl $< >$@
 
-entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
+entitiesTable.inc: $(CONFIGDIR)/entities-table.xml
 	./dumpEntitiesTable $< >$@
 
 INCLUDES = \
-  @DOM_CFLAGS@ \
+  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_builddir)
