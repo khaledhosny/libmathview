@@ -46,13 +46,17 @@ MathMLMultiScriptsElement::formatScripts(FormattingContext& ctxt,
 					 std::vector<AreaRef>& area)
 {
   area.reserve(end - begin);
-#if 0
+#if 1
   for (std::vector<SmartPtr<MathMLElement> >::const_iterator p = begin;
        p != end;
        p++)
     if (*p) area.push_back((*p)->format(ctxt));
     else area.push_back(0);
 #else
+  // the following is nicer but doesn't work if there's a NULL child
+  // Two solutions:
+  // a) create a dedicated FormatAdapter that checks the argument
+  // b) craete a transform_if (but what should it do if the argument doesn't satisfy the predicate?)
   std::transform(begin, end, std::back_inserter(area),
 		 std::bind2nd(FormatAdapter<FormattingContext,MathMLElement,AreaRef>(), &ctxt));
 #endif
