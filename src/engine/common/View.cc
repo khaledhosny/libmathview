@@ -41,7 +41,12 @@ View::View(const SmartPtr<Builder>& b)
 { }
 
 View::~View()
-{ }
+{
+  // When the view is destroyed the formatting tree must have
+  // been destroyed already, because elements need a healthy
+  // view for de-registering themselves from the linker
+  assert(!rootElement);
+}
 
 SmartPtr<View>
 View::create(const SmartPtr<Builder>& builder)
@@ -85,7 +90,27 @@ View::getElementArea(const SmartPtr<Element>& elem) const
 
 SmartPtr<Element>
 View::getRootElement() const
-{ return builder->getRootElement(); }
+{
+  Clock perf;
+	
+  const SmartPtr<Element> oldRootElement = rootElement;
+  bool rootDirty = rootElement && (rootElement->dirtyStructure() || rootElement->dirtyAttribute() || rootElement->dirtyAttributeP());
+
+  perf.Start();
+  rootElement = builder->getRootElement();
+  perf.Stop();
+  
+  if (rootDirty || rootElement != oldRootElement)
+    Globals::logger(LOG_INFO, "build time: %dms", perf());
+  
+  return rootElement;
+}
+
+void
+View::resetRootElement()
+{
+  rootElement = 0;
+}
 
 AreaRef
 View::getRootArea() const

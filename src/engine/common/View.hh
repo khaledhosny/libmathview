@@ -51,6 +51,7 @@ public:
   SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
 
   SmartPtr<class Element> getRootElement(void) const;
+  void resetRootElement(void);
   SmartPtr<const class Area> getRootArea(void) const;
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
   bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
@@ -64,6 +65,7 @@ public:
   void setDefaultFontSize(unsigned);
 
 private:
+  mutable SmartPtr<class Element> rootElement;
   SmartPtr<class Builder> builder;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;
