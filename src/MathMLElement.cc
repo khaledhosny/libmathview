@@ -159,8 +159,13 @@ MathMLElement::GetAttribute(AttributeId id,
   }
 #elif defined(HAVE_GMETADOM)
   if (node != 0) {
-    GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
-    if (!value.isEmpty()) sValue = allocString(value);
+    if (node.hasAttribute(NameOfAttributeId(id)))
+      {
+	GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
+	sValue = allocString(value);
+      }
+    else
+      sValue = NULL;
   }
 #endif // HAVE_GMETADOM
 
@@ -197,8 +202,13 @@ MathMLElement::GetAttributeValue(AttributeId id,
   }
 #elif defined(HAVE_GMETADOM)
   if (node != 0) {
-    GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
-    if (!value.isEmpty()) sValue = allocString(value);
+    if (node.hasAttribute(NameOfAttributeId(id)))
+      {
+	GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
+	sValue = allocString(value);
+      }
+    else
+      sValue = NULL;
   }
 #endif // HAVE_GMETADOM
 

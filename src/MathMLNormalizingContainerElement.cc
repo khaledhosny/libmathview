@@ -45,11 +45,7 @@ MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
 void
 MathMLNormalizingContainerElement::Normalize()
 {
-  if (content.GetSize() == 0) {
-    MathMLElement* mdummy = new MathMLDummyElement();
-    mdummy->SetParent(this);
-    content.Append(mdummy);
-  } else if (content.GetSize() > 1) {
+  if (content.GetSize() != 1) {
     MathMLContainerElement* mrow = new MathMLRowElement(NULL);
     mrow->SetParent(this);
 
