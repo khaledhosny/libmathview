@@ -1,11 +1,17 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libadapters.la
 
 libadapters_la_SOURCES = \
-  BoxMLMathMLAdapter.cc
+  BoxMLMathMLAdapter.cc \
+  MathMLBoxMLAdapter.cc \
+  $(NULL)
 
 noinst_HEADERS = \
-  BoxMLMathMLAdapter.hh
+  BoxMLMathMLAdapter.hh \
+  MathMLBoxMLAdapter.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_builddir)/auto \
@@ -17,5 +23,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/formatter/boxml_graphic_device \
-  -I$(top_srcdir)/src/formatter/mathml_graphic_device
+  -I$(top_srcdir)/src/formatter/mathml_graphic_device \
+  $(NULL)
 

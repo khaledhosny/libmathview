@@ -35,6 +35,7 @@
 #include "BoxMLNamespaceContext.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLMathMLAdapter.hh"
+#include "MathMLBoxMLAdapter.hh"
 #endif // ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
@@ -235,10 +236,15 @@ protected:
   update_MathML_semantics_Element(const typename Model::Element& el) const
   {
     typename Model::ElementIterator iter(el, MATHML_NS_URI);
-    if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
-      return elem;
+    if (iter.more())
+      if (typename Model::Element e = iter.element())
+	if (Model::getNodeName(Model::asNode(e)) != "annotation"
+	    && Model::getNodeName(Model::asNode(e)) != "annotation-xml")
+	  if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
+	    return elem;
+	  else
+	    iter.next();
 
-    iter.next();
     while (typename Model::Element e = iter.element())
       {
 	if (Model::getNodeName(Model::asNode(e)) == "annotation-xml")
@@ -246,15 +252,13 @@ protected:
 	    String encoding = Model::getAttribute(e, "encoding");
 	    if (encoding == "MathML-Presentation")
 	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
-#if 0
 	    else if (encoding == "BoxML")
 	      {
 		// this element can probably be associated with the model element
-		SmartPtr<MathMLBoxMLAdapter> adapter = getMathMLElement<MathMLBoxMLAdapter>(el);
+		SmartPtr<MathMLBoxMLAdapter> adapter = getElement<MathMLBoxMLAdapterBuilder>(el);
 		adapter->setChild(getBoxMLElement(typename Model::ElementIterator(e, BOXML_NS_URI).element()));
 		return adapter;
 	      }
-#endif
 	  }
 	iter.next();
       }
@@ -355,6 +359,9 @@ protected:
     construct(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<MathMLElement>&)
     { }
   };
+
+  struct MathMLBoxMLAdapterBuilder : public MathMLElementBuilder
+  { typedef MathMLBoxMLAdapter type; };
 
   struct MathMLBinContainerElementBuilder : public MathMLElementBuilder
   {

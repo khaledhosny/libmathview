@@ -23,7 +23,7 @@
 #include <config.h>
 
 #include "MathMLElement.hh"
-#include "BoxMLMathMLAdapter.hh"
+#include "MathMLBoxMLAdapter.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "View.hh"
@@ -31,28 +31,28 @@
 #include "MathGraphicDevice.hh"
 #include "BoxGraphicDevice.hh"
 
-BoxMLMathMLAdapter::BoxMLMathMLAdapter(const SmartPtr<BoxMLNamespaceContext>& context)
-  : BoxMLElement(context)
+MathMLBoxMLAdapter::MathMLBoxMLAdapter(const SmartPtr<MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 { }
 
-BoxMLMathMLAdapter::~BoxMLMathMLAdapter()
+MathMLBoxMLAdapter::~MathMLBoxMLAdapter()
 { }
 
-SmartPtr<BoxMLMathMLAdapter>
-BoxMLMathMLAdapter::create(const SmartPtr<BoxMLNamespaceContext>& context)
-{ return new BoxMLMathMLAdapter(context); }
+SmartPtr<MathMLBoxMLAdapter>
+MathMLBoxMLAdapter::create(const SmartPtr<MathMLNamespaceContext>& context)
+{ return new MathMLBoxMLAdapter(context); }
 
 AreaRef
-BoxMLMathMLAdapter::format(FormattingContext& ctxt)
+MathMLBoxMLAdapter::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      if (SmartPtr<MathMLElement> child = getChild())
-	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
+      if (SmartPtr<BoxMLElement> child = getChild())
+	setArea(ctxt.MGD()->wrapper(ctxt, child->format(ctxt)));
       else
-	setArea(ctxt.BGD()->dummy(ctxt));
+	setArea(ctxt.MGD()->dummy(ctxt));
       
       ctxt.pop();
       resetDirtyLayout();

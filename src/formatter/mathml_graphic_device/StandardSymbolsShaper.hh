@@ -58,7 +58,6 @@ protected:
   virtual void registerChar(const SmartPtr<class ShaperManager>&, unsigned, Char16, Char8);
   virtual void registerStretchyCharH(const SmartPtr<class ShaperManager>&, unsigned, const HStretchyChar&, Char8);
   virtual void registerStretchyCharV(const SmartPtr<class ShaperManager>&, unsigned, const VStretchyChar&, Char8);
-
   virtual AreaRef createGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const = 0;
   AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const;
 

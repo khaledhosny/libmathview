@@ -20,43 +20,41 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __MathMLBoxMLAdapter_hh__
+#define __MathMLBoxMLAdapter_hh__
 
+#include "BoxMLElement.hh"
 #include "MathMLElement.hh"
-#include "BoxMLMathMLAdapter.hh"
-#include "BoxMLNamespaceContext.hh"
-#include "MathMLNamespaceContext.hh"
-#include "View.hh"
-#include "FormattingContext.hh"
-#include "MathGraphicDevice.hh"
-#include "BoxGraphicDevice.hh"
+#include "BinContainerTemplate.hh"
 
-BoxMLMathMLAdapter::BoxMLMathMLAdapter(const SmartPtr<BoxMLNamespaceContext>& context)
-  : BoxMLElement(context)
-{ }
-
-BoxMLMathMLAdapter::~BoxMLMathMLAdapter()
-{ }
-
-SmartPtr<BoxMLMathMLAdapter>
-BoxMLMathMLAdapter::create(const SmartPtr<BoxMLNamespaceContext>& context)
-{ return new BoxMLMathMLAdapter(context); }
-
-AreaRef
-BoxMLMathMLAdapter::format(FormattingContext& ctxt)
+class MathMLBoxMLAdapter : public MathMLElement
 {
-  if (dirtyLayout())
-    {
-      ctxt.push(this);
+protected:
+  MathMLBoxMLAdapter(const SmartPtr<class MathMLNamespaceContext>&);
+  virtual ~MathMLBoxMLAdapter();
 
-      if (SmartPtr<MathMLElement> child = getChild())
-	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
-      else
-	setArea(ctxt.BGD()->dummy(ctxt));
-      
-      ctxt.pop();
-      resetDirtyLayout();
-    }
+public:
+  static SmartPtr<MathMLBoxMLAdapter> create(const SmartPtr<class MathMLNamespaceContext>&);
 
-  return getArea();
-}
+  virtual AreaRef format(class FormattingContext&);
+
+  SmartPtr<BoxMLElement> getChild(void) const { return content.getChild(); }
+  void setChild(const SmartPtr<BoxMLElement>& child) { content.setChild(this, child); }
+
+  virtual void setFlagDown(Flags f)
+  {
+    MathMLElement::setFlagDown(f);
+    content.setFlagDown(f);
+  }
+
+  virtual void resetFlagDown(Flags f)
+  {
+    MathMLElement::resetFlagDown(f);
+    content.resetFlagDown(f);
+  }
+
+private:
+  BinContainerTemplate<MathMLBoxMLAdapter, BoxMLElement> content;
+};
+
+#endif // __MathMLBoxMLAdapter_hh__
