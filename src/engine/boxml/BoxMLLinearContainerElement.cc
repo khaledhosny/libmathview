@@ -44,7 +44,7 @@ BoxMLLinearContainerElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), BOXML_NS_URI, "*");
 	  unsigned n = children.get_length();
 
 	  //std::cout << "constructing linear box element " << n << std::endl;

@@ -32,6 +32,7 @@
 Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice(GtkWidget* widget)
 {
   factory = Gtk_AreaFactory::create();
+  pango_context = gtk_widget_create_pango_context(widget);
 }
 
 Gtk_BoxGraphicDevice::~Gtk_BoxGraphicDevice()
@@ -47,8 +48,12 @@ AreaRef
 Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
 			     const String& str) const
 {
-  assert(false);
-  return 0;
+  const DOM::UTF8String utf8_string = str;
+
+  PangoLayout* layout = pango_layout_new(pango_context);
+  pango_layout_set_text(layout, utf8_string.data(), utf8_string.length());
+  // set attributes...
+  return factory->pangoLayout(layout);
 }
 
 AreaRef

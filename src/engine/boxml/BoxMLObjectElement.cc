@@ -32,6 +32,11 @@
 #include "View.hh"
 #include "NamespaceRegistry.hh"
 
+#include "MathMLElement.hh"
+#include "MathFormattingContext.hh"
+#include "MathMLNamespaceContext.hh"
+#include "MathGraphicDevice.hh"
+
 BoxMLObjectElement::BoxMLObjectElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLElement(context)
 { }
@@ -56,14 +61,12 @@ BoxMLObjectElement::construct()
 	    p = p.get_nextSibling();
 
 	  if (p)
-	    {
-	      contentContext = getNamespaceContext()->getView()->getRegistry()->get(p.get_namespaceURI());
-	      if (contentContext)
-		setChild(contentContext->construct(p));
-	      else
-		// cannot handle this namespace
-		setChild(0);
-	    }
+	    if (SmartPtr<NamespaceContext> contentContext =
+		getNamespaceContext()->getView()->getRegistry()->get(p.get_namespaceURI()))
+	      setChild(contentContext->construct(p));
+	    else
+	      // cannot handle this namespace
+	      setChild(0);
 	  else
 	    // found no child
 	    setChild(0);
@@ -74,18 +77,16 @@ BoxMLObjectElement::construct()
     }
 }
 
-#if 0
 void
 BoxMLObjectElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      if (SmartPtr<Element> child = getChild())
+      if (SmartPtr<MathMLElement> child = smart_cast<MathMLElement>(getChild()))
 	child->refine(context);
       BoxMLElement::refine(context);
     }
 }
-#endif
 
 AreaRef
 BoxMLObjectElement::format(BoxFormattingContext& ctxt)
@@ -94,10 +95,20 @@ BoxMLObjectElement::format(BoxFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      if (SmartPtr<Element> child = getChild())
+      if (SmartPtr<MathMLElement> child = smart_cast<MathMLElement>(getChild()))
 	{
+	  SmartPtr<MathMLNamespaceContext> contentContext = child->getMathMLNamespaceContext();
 	  assert(contentContext);
-	  setArea(contentContext->format(getChild()));
+
+	  MathFormattingContext mCtxt(contentContext->getGraphicDevice());
+	  mCtxt.setSize(ctxt.getSize());
+	  mCtxt.setActualSize(ctxt.getSize());
+	  mCtxt.setColor(ctxt.getColor());
+	  mCtxt.setBackground(ctxt.getBackground());
+
+	  AreaRef res = child->format(mCtxt);
+	  res = ctxt.getDevice()->wrapper(ctxt, res);
+	  setArea(res);
 	}
       else
 	setArea(ctxt.getDevice()->dummy(ctxt));

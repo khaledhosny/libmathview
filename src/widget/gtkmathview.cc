@@ -48,10 +48,13 @@
 #include "MathMLActionElement.hh"
 #include "MathMLElementFactory.hh"
 #include "MathMLNamespaceContext.hh"
+#include "BoxMLElementFactory.hh"
+#include "BoxMLNamespaceContext.hh"
 #include "DOMView.hh"
 #include "Linker.hh"
 
 #include "Gtk_MathGraphicDevice.hh"
+#include "Gtk_BoxGraphicDevice.hh"
 #include "Gtk_RenderingContext.hh"
 #include "Gtk_WrapperArea.hh"
 
@@ -443,7 +446,15 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 				   mmlFactory,
 				   Gtk_MathGraphicDevice::create(math_view->area));
   mmlFactory->setContext(mmlContext);
+  SmartPtr<BoxMLElementFactory> bmlFactory = BoxMLElementFactory::create();
+  SmartPtr<BoxMLNamespaceContext> bmlContext =
+    BoxMLNamespaceContext::create(view,
+				  view->getLinker(),
+				  bmlFactory,
+				  Gtk_BoxGraphicDevice::create(math_view->area));
+  bmlFactory->setContext(bmlContext);
   view->getRegistry()->add(mmlContext);
+  view->getRegistry()->add(bmlContext);
 
   math_view->renderingContext = new Gtk_RenderingContext;
 

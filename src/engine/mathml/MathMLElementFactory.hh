@@ -28,7 +28,7 @@
 #include "MathMLNamespaceContext.hh"
 #include "ElementFactory.hh"
 
-#define DEFINE_FACTORY_METHOD(n) SmartPtr<MathMLElement> create##n##Element(void) const { return MathML##n##Element::create(static_cast<MathMLNamespaceContext*>(context)); }
+#define DEFINE_ELEMENT_FACTORY(n) SmartPtr<MathMLElement> create##n##Element(void) const { return MathML##n##Element::create(static_cast<MathMLNamespaceContext*>(context)); }
 
 class MathMLElementFactory : public ElementFactory
 {
@@ -43,39 +43,39 @@ public:
   virtual SmartPtr<Element> createElement(const String&) const;
   void setContext(const SmartPtr<MathMLNamespaceContext>&);
 
-  DEFINE_FACTORY_METHOD(math);
-  DEFINE_FACTORY_METHOD(Identifier);
-  DEFINE_FACTORY_METHOD(Number);
-  DEFINE_FACTORY_METHOD(Operator);
-  DEFINE_FACTORY_METHOD(Text);
-  DEFINE_FACTORY_METHOD(Space);
-  DEFINE_FACTORY_METHOD(StringLit);
-  DEFINE_FACTORY_METHOD(Row);
-  DEFINE_FACTORY_METHOD(Fraction);
-  DEFINE_FACTORY_METHOD(Radical);
-  DEFINE_FACTORY_METHOD(Style);
-  DEFINE_FACTORY_METHOD(Error);
-  DEFINE_FACTORY_METHOD(Padded);
-  DEFINE_FACTORY_METHOD(Phantom);
-  DEFINE_FACTORY_METHOD(Fenced);
-  DEFINE_FACTORY_METHOD(Script);
-  DEFINE_FACTORY_METHOD(UnderOver);
-  DEFINE_FACTORY_METHOD(MultiScripts);
-  DEFINE_FACTORY_METHOD(Table);
-  DEFINE_FACTORY_METHOD(TableRow);
-  DEFINE_FACTORY_METHOD(LabeledTableRow);
-  DEFINE_FACTORY_METHOD(TableCell);
-  DEFINE_FACTORY_METHOD(AlignGroup);
-  DEFINE_FACTORY_METHOD(AlignMark);
-  DEFINE_FACTORY_METHOD(Action);
-  DEFINE_FACTORY_METHOD(Enclose);
-  DEFINE_FACTORY_METHOD(Semantics);
-  DEFINE_FACTORY_METHOD(Dummy);
+  DEFINE_ELEMENT_FACTORY(math);
+  DEFINE_ELEMENT_FACTORY(Identifier);
+  DEFINE_ELEMENT_FACTORY(Number);
+  DEFINE_ELEMENT_FACTORY(Operator);
+  DEFINE_ELEMENT_FACTORY(Text);
+  DEFINE_ELEMENT_FACTORY(Space);
+  DEFINE_ELEMENT_FACTORY(StringLit);
+  DEFINE_ELEMENT_FACTORY(Row);
+  DEFINE_ELEMENT_FACTORY(Fraction);
+  DEFINE_ELEMENT_FACTORY(Radical);
+  DEFINE_ELEMENT_FACTORY(Style);
+  DEFINE_ELEMENT_FACTORY(Error);
+  DEFINE_ELEMENT_FACTORY(Padded);
+  DEFINE_ELEMENT_FACTORY(Phantom);
+  DEFINE_ELEMENT_FACTORY(Fenced);
+  DEFINE_ELEMENT_FACTORY(Script);
+  DEFINE_ELEMENT_FACTORY(UnderOver);
+  DEFINE_ELEMENT_FACTORY(MultiScripts);
+  DEFINE_ELEMENT_FACTORY(Table);
+  DEFINE_ELEMENT_FACTORY(TableRow);
+  DEFINE_ELEMENT_FACTORY(LabeledTableRow);
+  DEFINE_ELEMENT_FACTORY(TableCell);
+  DEFINE_ELEMENT_FACTORY(AlignGroup);
+  DEFINE_ELEMENT_FACTORY(AlignMark);
+  DEFINE_ELEMENT_FACTORY(Action);
+  DEFINE_ELEMENT_FACTORY(Enclose);
+  DEFINE_ELEMENT_FACTORY(Semantics);
+  DEFINE_ELEMENT_FACTORY(Dummy);
 
 private:
   typedef SmartPtr<MathMLElement> (MathMLElementFactory::* FactoryMethod)(void) const;
   typedef HASH_MAP_NS::hash_map<String,FactoryMethod,StringHash,StringEq> FactoryMethodMap;
-  FactoryMethodMap factoryMethodMap;  
+  FactoryMethodMap factoryMethodMap;
   WeakPtr<MathMLNamespaceContext> context;
 };
 

@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 
 #include "BoxGraphicDevice.hh"
+#include "GObjectPtr.hh"
 
 class Gtk_BoxGraphicDevice : public BoxGraphicDevice
 {
@@ -42,6 +43,7 @@ public:
   virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const;
 
 private:
+  GObjectPtr<PangoContext> pango_context;
   SmartPtr<class Gtk_AreaFactory> factory;
 };
 

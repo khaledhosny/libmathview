@@ -51,6 +51,7 @@ public:
 #endif // HAVE_GMETADOM
 
   virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
+  SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
   SmartPtr<class MathMLElementFactory> getFactory(void) const;
 
 private:

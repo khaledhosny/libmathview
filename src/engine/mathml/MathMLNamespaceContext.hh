@@ -24,7 +24,6 @@
 #define __MathMLNamespaceContext_hh__
 
 #include "NamespaceContext.hh"
-#include "MathFormattingContext.hh"
 
 class MathMLNamespaceContext : public NamespaceContext
 {

@@ -143,7 +143,6 @@ Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* 
   PangoLayout* layout = pango_layout_new(context);
   pango_layout_set_text(layout, buffer, length);
 
-
   //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
   PangoAttrList* attrList = pango_attr_list_new();
 

@@ -127,9 +127,11 @@ MathMLElement::getFactory() const
 
 SmartPtr<NamespaceContext>
 MathMLElement::getNamespaceContext() const
-{
-  return static_cast<MathMLNamespaceContext*>(context);
-}
+{ return static_cast<MathMLNamespaceContext*>(context); }
+
+SmartPtr<MathMLNamespaceContext>
+MathMLElement::getMathMLNamespaceContext() const
+{ return static_cast<MathMLNamespaceContext*>(context); }
 
 #include "DOMView.hh"
 #include "Linker.hh"

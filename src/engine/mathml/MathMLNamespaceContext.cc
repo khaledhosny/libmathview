@@ -97,6 +97,8 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
 
 SmartPtr<MathMLElementFactory>
 MathMLNamespaceContext::getFactory() const
-{
-  return factory;
-}
+{ return factory; }
+
+SmartPtr<MathGraphicDevice>
+MathMLNamespaceContext::getGraphicDevice() const
+{ return device; }
