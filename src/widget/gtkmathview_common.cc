@@ -351,8 +351,6 @@ paint_widget(GtkMathView* math_view)
 
   if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
-  std::cerr << "paint_widget pixmap = " << math_view->pixmap << std::endl;
-
   GtkWidget* widget = GTK_WIDGET(math_view);
   
   setup_adjustments(math_view);
@@ -730,8 +728,6 @@ gtk_math_view_realize(GtkWidget* widget)
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_MATH_VIEW (widget));
 
-  std::cerr << "gtk_math_view_realize " << std::endl;
-
   GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
   math_view = GTK_MATH_VIEW (widget);
 
@@ -785,8 +781,6 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
   
-  std::cerr << "size_allocate " << GTK_WIDGET_REALIZED(widget) << std::endl;
-
   if (math_view->pixmap != NULL)
     {
       g_object_unref(math_view->pixmap);
@@ -990,8 +984,6 @@ gtk_math_view_expose_event(GtkWidget* widget,
   g_return_val_if_fail(GTK_IS_MATH_VIEW(widget), FALSE);
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
-
-  std::cerr << "gtk_math_view_expose_event " << std::endl;
 
   update_widget(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
   return FALSE;
