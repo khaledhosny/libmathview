@@ -46,7 +46,7 @@ translation approved by the Free Software Foundation.
 @subtitle A GTK Widget for Rendering MathML Documents
 @subtitle Version @value{VERSION}
 @subtitle @value{UPDATED}
-@author by Luca Padovani
+@author by Luca Padovani, University of Bologna, Italy
 
 @c The following two commands start the copyright page.
 @page
@@ -144,6 +144,11 @@ been added backward "compatibility" with version 1.8.x of libxml, however
 this compatibility is not fully effective due to some bugs of libxml. It is
 recommended to upgrade to version 2. See file INSTALL for more details.
 @item
+@code{minidom} (version 0.0.1) @url{http://cs.unibo.it/~lpadovan/mml-widget},
+this is a minimal, partial implementation of the DOM used by the widget as
+an abstract interface to @code{libxml}. It will be eventually replaced by
+GDOME when there will be a package for it.
+@item
 @code{gcc/g++} (version 2.95.3, this is the version I currently use, but the widget
 will probably compile and run without problems even with some previous versions).
 @end itemize
@@ -165,6 +170,8 @@ variables. See the section about font installation below.
 @comment  node-name,  next,  previous,  up
 @section  Installing
 @noindent
+Keep in mind that the widget will not compile if @code{minidom} is
+not installed.
 See the INSTALL file included in the source distribution for
 detailed compiling and installation instructions. After installation
 you will have the following files:
@@ -177,8 +184,7 @@ of source files using the widget. Use @code{gtkmathview --libs} to get
 linking flags and libraries to be linked with your object files.
 @item
 @code{/usr/local/include/gtkmathview/} include files (you have to include
-@code{gtkmathview.h} and @code{minidom.h} if you plan to access the DOM
-tree underlying the widget).
+@code{gtkmathview.h}).
 @item
 @code{/usr/local/lib/} libraries. Unless you
 gave @code{configure} one of @code{--disable-static} or
@@ -188,8 +194,8 @@ versions of the widget.
 @code{/usr/local/info/}, the info file. You can browse it
 with the command @code{info -f /usr/local/info/gtkmathview.info}.
 @item
-@code{/usr/local/share/gtkmathview/} some configuration files (fonts and
-operator dictionary) along with their DTDs.
+@code{/usr/local/share/gtkmathview/} some configuration files (fonts,
+operator dictionary and general configuration) along with their DTDs.
 @end itemize
 
 
@@ -210,7 +216,7 @@ It can be linked dynamically against your applications with
 the command:
 
 @example
-gcc -o appname *.o `xml-config --libs` `gtk-config --libs` `gtkmathview-config --libs`
+gcc -o appname *.o `minidom-config --libs` `gtk-config --libs` `gtkmathview-config --libs`
 @end example
 
 
@@ -254,10 +260,10 @@ to the related True Type version.
 
 @noindent
 @strong{Type1 fonts and the t1lib library}: starting from version 0.2.0,
-the rendering engine can use the t1lib library to render Type1 fonts.
+the rendering engine can use the @code{t1lib} library to render Type1 fonts.
 The support for this library is still under development (well, as anything else),
 here are some tips to configure the engine so that you can use Type1 fonts
-(please, consult the t1lib documentation at library's home page for firther details).
+(please, consult the @code{t1lib} documentation at library's home page for firther details).
 
 @noindent
 First of all, you have to setup a little configuration file for the t1lib library.
@@ -276,7 +282,9 @@ TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:/usr/X11R6/lib/X11/fonts/Type1/:.
 In particular, you have to specify where your Type1 fonts resides (@code{TYPE1}) along
 with their metrics (@code{AFM}). Metric information in optional, since it can be (mostly)
 recovered by the font file itself. However, it is needed if you want to exploit for
-instance kerning.
+instance kerning. A sample configuration file for @code{t1lib} is included in the
+standard distribution of @code{gtkmathview} and is installed in
+@code{/usr/local/share/gtkmathview/}.
 
 @noindent
 Next, you have to setup an environment variable @code{T1LIB_CONFIG} with the full path to this
@@ -294,58 +302,63 @@ setenv T1LIB_CONFIG ./config/t1.config
 @end example
 
 @noindent
-Now you are ready to use Type1 fonts. See the method @code{gtk_math_view_new} below.
+Now you are ready to use Type1 fonts.
 
 
 @node     Interface, Configuration, Usage, Top
 @comment  node-name,  next,  previous,  up
 @chapter  Interface to the  Widget
-@noindent
 
+@noindent
 Macro: @code{GTK_TYPE_MATH_VIEW}
 @quotation
 used to get the GTK type for the @code{GtkMathView} class. You don't
 usually need tu use this macro, unless you are subclassing @code{gtkmathview}.
 @end quotation
 
+@noindent
 Macro: @code{GTK_MATH_VIEW(object)}
 @quotation
 used to cast a GtK widget to a @code{GtkMathView} class. Remember that
 all methods working with the widget takes a pointer to @code{GtkMathView}.
 @end quotation
 
+@noindent
 Macro: @code{GTK_MATH_VIEW_CLASS(klass)}
 @quotation
 used to cast a Gtk class to a @code{GtkMathView} class. This macro is used internally,
 so you probably don't need it.
 @end quotation
 
+@noindent
 Macro: @code{GTK_IS_MATH_VIEW(object)}
 @quotation
 used to test wether a Gtk object is indeed a @code{GtkMathView} object.
 You can use it before casting to @code{GtkMathView}.
 @end quotation
 
+@noindent
 Method: @code{GtkType gtk_math_view_get_type(void)}
 @quotation
 allocates a new Gtk type for the class @code{GtkMathView}. Used internally.
 @end quotation
 
-Method: @code{GtkWidget* gtk_math_view_new(GtkAdjustment* h_adj, GtkAdjustment* v_adj, gboolean t1)}
+@noindent
+Method: @code{GtkWidget* gtk_math_view_new(GtkAdjustment* h_adj, GtkAdjustment* v_adj)}
 @quotation
 this is the main constructor for @code{GtkMathView}. It allocates a new @code{GtkMathView}
 object. You can pass a couple of adjustments fro the scrolling bars, or just @code{NULL} in the
 case you want the widget to allocate its own scrolling bars.
-The last parameter is used to tell @code{GtkMathView} whether it has to use a Type1 font
-manager (@code{TRUE}) or the (more stable) Gtk font manager (@code{FALSE}).
 @end quotation
 
+@noindent
 Method: @code{gboolean gtk_math_view_load(GtkMathView* widget, const gchar* file_name)}
 @quotation
 load a MathML document into the widget and render it. If the loading succeed then @code{TRUE}
 is returned, @code{FALSE} otherwise.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_unload(GtkMathView*)}
 @quotation
 unload a document from the widget, release all resources related to the document
@@ -353,12 +366,14 @@ itself. This is automatically invoked if you load two subsequent documents, so y
 to call this method explicitly.
 @end quotation
 
+@noindent
 Method: @code{mDOMNodeRef gtk_math_view_get_selection(GtkMathView* widget)}
 @quotation
 return the DOM reference of the node currently selected
 in the document, or @code{NULL} if there is no document or there is no selection
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_set_selection(GtkMathView* widget, mDOMNodeRef node)}
 @quotation
 forces the selection of the document to be the subtree rooted at @code{node}.
@@ -367,18 +382,21 @@ Nothing happens if @code{node} turns out not to be a node rendered by the widget
 @code{NULL} then the currently selected subtree, if any, will be de-selected.
 @end quotation
 
+@noindent
 Method: @code{guint gtk_math_view_get_width(GtkMathView* widget)}
 @quotation
 return the width of the drawable area of the widget. Please note that
-this not necessarily is equal to the whole widget width, due to the inner frame.
+this is not necessarily equal to the whole widget width, due to the inner frame.
 @end quotation
 
+@noindent
 Method: @code{guint gtk_math_view_get_height(GtkMathView* widget)}
 @quotation
-return the height of the drawable area of the widget. Same arguments as
+return the height of the drawable area of the widget. Same remark as
 for @code{gtk_math_view_get_width}.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_get_top(GtkMathView* widget, guint* top_x, guint* top_y)}
 @quotation
 return in @code{top_x} and @code{top_y} the coordinates (in pixels) of the upper left displayed
@@ -386,32 +404,38 @@ corner of the document. Either @code{top_x} or @code{top_y} may be @code{NULL},
 if you are interested in only one of the two values.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_set_top(GtkMathView* widget, guint top_x, guint top_y)}
 @quotation
 set the coordinates (in pixels) of the upper left displayed corner of the
 document.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_set_adjustments(GtkMathView* widget, GtkAdjustment* h_adj, GtkAdjustment* v_adj)}
 @quotation
 set the horizontal and vertical adjustments for the widget.
 @end quotation
 
+@noindent
 Method: @code{GtkAdjustment* gtk_math_view_get_hadjustment(GtkMathView* widget)}
 @quotation
 return a pointer to the horizontal adjustment of the widget.
 @end quotation
 
+@noindent
 Method: @code{GtkAdjustment* gtk_math_view_get_vadjustment(GtkMathView* widget)}
 @quotation
 return a pointer to the vertical adjustment of the widget.
 @end quotation
 
+@noindent
 Method: @code{GdkPixmap* gtk_math_view_get_buffer(GtkMathView* widget)}
 @quotation
 return a pointer to the @code{GdkPixmap} used by the widget as the backbuffer.
 @end quotation
 
+@noindent
 Method: @code{GtkFrame* gtk_math_view_get_frame(GtkMathView* widget)}
 @quotation
 return a pointer to the @code{GtkFrame} used by the widget to draw
@@ -419,16 +443,19 @@ the border around the drawable area. You can set the border style and thickness
 with the proper methods for this objects.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_set_font_size(GtkMathView* widget, guint size)}
 @quotation
 set the default font size (in points) for displaying documents.
 @end quotation
 
+@noindent
 Method: @code{guint gtk_math_view_get_font_size(GtkMathView* widget)}
 @quotation
 return the default font size (in points) for displaying documents.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_set_anti_aliasing(GtkMathView* widget, gboolean b)}
 @quotation
 this is used to enable/disable anti-aliasing for rendering text.
@@ -436,12 +463,14 @@ This function is available with Type1 fonts only, if you are using
 the @code{T1_FontManager} in conjunction with the @code{T1_Gtk_DrawingArea}.
 @end quotation
 
+@noindent
 Method: @code{gboolean gtk_math_view_get_anti_aliasing(GtkMathView* widget)}
 @quotation
 return @code{TRUE} if anti-aliasing is enabled (even if it is
 not supported), @code{FALSE} otherwise.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_set_kerning(GtkMathView* widget, gboolean b)}
 @quotation
 enable/disable kerning. This is available for Type1 fonts only
@@ -450,12 +479,14 @@ Moreover, kerning is usually available only if the rquested font has a
 corresponding metrics file (AFM).
 @end quotation
 
+@noindent
 Method: @code{gboolean gtk_math_view_get_kerning(GtkMathView* widget)}
 @quotation
 return @code{TRUE} if kerning is enabled (even if it is not
 supported), @code{FALSE} otherwise.
 @end quotation
 
+@noindent
 Method: @code{void gtk_math_view_log_set_verbosity(GtkMathView* widget, gint level)}
 @quotation
 set the level of verbosity for displayed messages. @code{level}
@@ -463,29 +494,53 @@ can be an integer from @code{0} (very few messages, in case of error only)
 to @code{3} (all messages). Useful for debugging purposes.
 @end quotation
 
+@noindent
 Method: @code{gint gtk_math_view_log_get_verbosity(GtkMathView* widget)}
 @quotation
 return the current level of verbosity.
 @end quotation
 
-Method: @code{void gtk_math_view_export_to_postscript(GtkMathView* widget, FILE* f)}
+@noindent
+Method: @code{void gtk_math_view_export_to_postscript(GtkMathView* widget, gint width, gint height, gint x0, gint y0, gboolean disable_colors, FILE* f)}
 @quotation
-write a rendered document to the file @code{f} in PostScript format. This method
-is still unstable, so use it with care.
+write a rendered document to the file @code{f} in PostScript format. @code{width}, @code{height},
+@code{x0} and @code{y0} give the size and the margins (in pixels) of the rendering area used
+by this method. @code{disable_colors} can be set to @code{TRUE} if you don't want to
+render colors in PostScript (this may be useful to print the document on a black-and-white
+printer).
 @end quotation
 
+@noindent
+Method: @code{void gtk_math_view_set_font_manager_type(GtkMathview* widget, FontManagerId id)}
+@quotation
+Set the font manager used by the widget to retrieve fonts. Up 'till now, there are
+two valid values for @code{id}: use @code{FONT_MANAGER_GTK} to use the GTK font
+manager (actually, this is just a wrapper for the X font manager). This is the default.
+Alternatively, use @code{FONT_MANAGER_T1} to use @code{t1lib} and Type1 fonts. This
+font manager is availabe only if you have installed the @code{t1lib} library.
+@end quotation
+
+@noindent
+Method: @code{FontManagerId gtk_math_view_get_font_manager_type(GtkMathView* widget)}
+@quotation
+Return the current font manager id.
+@end quotation
+
+@noindent
 Signal: @code{"clicked" void user_function(GtkMathView* widget, mDOMNodeRef node)}
 @quotation
 emitted every time the user clicks on an element with a valid DOM reference node.
 The node is passed as a parameter to the function.
 @end quotation
 
+@noindent
 Signal: @code{"jump" void user_function(GtkMathView* widget, mDOMNodeRef node)}
 @quotation
 emitted subsequently a "clicked" signal, if the @code{node} has at least one
 attribute named @code{href}.
 @end quotation
 
+@noindent
 Signal: @code{"selection_changed" void user_function(GtkMathView* widget, mDOMNodeRef node)}
 @quotation
 emitted when the selected subtree changes. @code{node} is the root node of the newly
@@ -496,10 +551,69 @@ selected subtree.
 @node     Configuration, Bugs, Interface, Top
 @comment  node-name,  next,  previous,  up
 @chapter  Configuration
+
 @noindent
+Starting from version 0.2.2 the widget has a rather flexible configuration system.
+If you made a default installation, you'll find all the configuration files in
+@code{/usr/local/share/gtkmathview}. In particular, the file
+@code{math-engine-configuration.xml} contains all the references to the other
+configuration files (operator dictionary, fonts, entities, @code{t1lib}).
 
-To be written.
+@noindent
+You can set the environment variable @code{MATHENGINECONF} to the full path
+of the configuration file. If the variable is not set, the widget will try to
+load the configuration file from the default location.
 
+@noindent
+The list of valid entries is presented below:
+
+@itemize @bullet
+@item
+@code{dictionary-path} This element contains a full path to an operator
+dictionary (the default is @code{dictionary.xml}). You can use this
+element several times if you have more than one dictionary. This can be
+useful to have a general dictionary and another local dictionary with
+your preferences. An operator found in a subsequent dictionary overrides
+previous settings for the same operator.
+
+@item
+@code{entities-table-path} This element contains a full path to
+an XML file with some entities definitions. The widget has an internal
+table with all the entities defined in the MathML 2.0 specification.
+
+@item
+@code{font-configuration-path} This element contains a full path to
+a font configuration file. The format of such file is still undocumented,
+but you can take a look at the DTD and the source file @code{CharMapper.cc}
+for more details.
+You can use this element several times if you want to override or enrich
+the settings of the default configuration (see @code{font-configuration.xml}).
+
+@item
+@code{t1-config-file} This element contains a full path to the
+configuration file for the @code{t1lib} library. In particular,
+it is not necessary to explicitly set the @code{T1LIB_CONFIG} environment
+variable if this element is set.
+
+@item
+@code{font-size} This element has an attribute @code{size} which
+specify the default font size for the rendering. The size format is 
+the same as for the analogous attributes for MathML token elements.
+
+@item
+@code{color} This element has two attributes, @code{forground} and
+@code{background}, which specify the default colors of the rendering.
+The format of these two attributes is the same as for the analogous
+attributes for MathML elements.
+
+@item
+@code{link-color} Default color settings for MathML elements with
+a @code{href} attribute. Same attributes as for @code{color}.
+
+@item
+@code{select-color} Default color settings for selected elements.
+Same attributes as for @code{color}.
+@end itemize
 
 @node     Bugs,  , Configuration, Top
 @comment  node-name,  next,  previous,  up

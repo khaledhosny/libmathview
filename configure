@@ -2589,7 +2589,7 @@ else
 int main() {
 
 /* Ultrix mips cc rejects this.  */
-typedef int charset[2]; const charset x;
+typedef int charset[2]; const charset x = {0,0};
 /* SunOS 4.1.1 cc rejects this.  */
 char const *const *ccp;
 char **p;
@@ -2871,7 +2871,7 @@ if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
 	
 else
   echo "$ac_t""no" 1>&6
-echo "configure: warning: gtkmathview will not compile if miniDOM is not installed" 1>&2
+{ echo "configure: error: gtkmathview will not compile if minidom is not installed" 1>&2; exit 1; }
 fi
 
 

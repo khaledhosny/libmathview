@@ -71,6 +71,8 @@
 #define DEBUG
 #else
 #define NDEBUG
+#define G_DISABLE_ASSERT
+#define G_DISABLE_CHECKS
 #endif
 
 /* Define to compile with t1lib for Type 1 fonts */

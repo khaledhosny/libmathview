@@ -46,6 +46,8 @@
 #define DEBUG
 #else
 #define NDEBUG
+#define G_DISABLE_ASSERT
+#define G_DISABLE_CHECKS
 #endif
 
 /* Define to compile with libxml 2.x (recommended) */

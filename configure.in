@@ -47,7 +47,7 @@ AC_ARG_ENABLE(
 	export_PS=auto
 )
 
-dnl Aumomake configuration
+dnl Automake configuration
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
 dnl AC_DISABLE_SHARED
@@ -102,7 +102,7 @@ AC_CHECK_LIB(minidom, mdom_node_get_type,
 		CXXFLAGS="$CXXFLAGS `minidom-config --cflags`"
 		LIBS="$LIBS `minidom-config --libs`"
 	],
-	AC_MSG_WARN(gtkmathview will not compile if miniDOM is not installed),
+	AC_MSG_ERROR(gtkmathview will not compile if minidom is not installed),
 	`minidom-config --libs` `glib-config --libs`
 )
 

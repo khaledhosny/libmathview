@@ -25,10 +25,10 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <math-engine-configuration>
-  <dictionary-path>/home/lpadovan/local/share/gtkmathview/dictionary.xml</dictionary-path>
-  <entities-table-path>/home/lpadovan/local/share/gtkmathview/entities-table.xml</entities-table-path>
-  <font-configuration-path>/home/lpadovan/local/share/gtkmathview/font-configuration.xml</font-configuration-path>
-  <t1-config-file>/home/lpadovan/local/share/gtkmathview/t1.config</t1-config-file>
+  <dictionary-path>/usr/local/share/gtkmathview/dictionary.xml</dictionary-path>
+  <entities-table-path>/usr/local/share/gtkmathview/entities-table.xml</entities-table-path>
+  <font-configuration-path>/usr/local/share/gtkmathview/font-configuration.xml</font-configuration-path>
+  <t1-config-file>/usr/local/share/gtkmathview/t1.config</t1-config-file>
   <font-size     size="14pt"/>
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>

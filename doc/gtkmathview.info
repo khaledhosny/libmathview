@@ -97,6 +97,12 @@ on your system:
      some bugs of libxml. It is recommended to upgrade to version 2.
      See file INSTALL for more details.
 
+   * `minidom' (version 0.0.1)
+     <http://cs.unibo.it/~lpadovan/mml-widget>, this is a minimal,
+     partial implementation of the DOM used by the widget as an
+     abstract interface to `libxml'. It will be eventually replaced by
+     GDOME when there will be a package for it.
+
    * `gcc/g++' (version 2.95.3, this is the version I currently use,
      but the widget will probably compile and run without problems even
      with some previous versions).
@@ -119,9 +125,10 @@ File: gtkmathview.info,  Node: Installing,  Next: Compile and Link,  Prev: Requi
 Installing
 ==========
 
-See the INSTALL file included in the source distribution for detailed
-compiling and installation instructions. After installation you will
-have the following files:
+Keep in mind that the widget will not compile if `minidom' is not
+installed.  See the INSTALL file included in the source distribution for
+detailed compiling and installation instructions. After installation
+you will have the following files:
 
    * `/usr/local/bin/gtkmathview-config' this is the configuration
      script. Use `gtkmathview-config --cflags' to get compilation flags
@@ -129,8 +136,7 @@ have the following files:
      linking flags and libraries to be linked with your object files.
 
    * `/usr/local/include/gtkmathview/' include files (you have to
-     include `gtkmathview.h' and `minidom.h' if you plan to access the
-     DOM tree underlying the widget).
+     include `gtkmathview.h').
 
    * `/usr/local/lib/' libraries. Unless you gave `configure' one of
      `--disable-static' or `--disable-shared' you will find in this
@@ -139,8 +145,9 @@ have the following files:
    * `/usr/local/info/', the info file. You can browse it with the
      command `info -f /usr/local/info/gtkmathview.info'.
 
-   * `/usr/local/share/gtkmathview/' some configuration files (fonts and
-     operator dictionary) along with their DTDs.
+   * `/usr/local/share/gtkmathview/' some configuration files (fonts,
+     operator dictionary and general configuration) along with their
+     DTDs.
 
 
 File: gtkmathview.info,  Node: Compile and Link,  Next: Font setup,  Prev: Installing,  Up: Usage
@@ -156,7 +163,7 @@ The widget is compiled by default to generate both static and shared
 object file.  It can be linked dynamically against your applications
 with the command:
 
-     gcc -o appname *.o `xml-config --libs` `gtk-config --libs` `gtkmathview-config --libs`
+     gcc -o appname *.o `minidom-config --libs` `gtk-config --libs` `gtkmathview-config --libs`
 
 
 File: gtkmathview.info,  Node: Font setup,  Prev: Compile and Link,  Up: Usage
@@ -196,11 +203,11 @@ server, and in some cases the mapping of character is different from a
 Type1 font to the related True Type version.
 
 *Type1 fonts and the t1lib library*: starting from version 0.2.0, the
-rendering engine can use the t1lib library to render Type1 fonts.  The
-support for this library is still under development (well, as anything
-else), here are some tips to configure the engine so that you can use
-Type1 fonts (please, consult the t1lib documentation at library's home
-page for firther details).
+rendering engine can use the `t1lib' library to render Type1 fonts.
+The support for this library is still under development (well, as
+anything else), here are some tips to configure the engine so that you
+can use Type1 fonts (please, consult the `t1lib' documentation at
+library's home page for firther details).
 
 First of all, you have to setup a little configuration file for the
 t1lib library.  Call this file `t1.config' and place it somewhere in
@@ -215,7 +222,10 @@ your home directory.  Here is a sample file:
 In particular, you have to specify where your Type1 fonts resides
 (`TYPE1') along with their metrics (`AFM'). Metric information in
 optional, since it can be (mostly) recovered by the font file itself.
-However, it is needed if you want to exploit for instance kerning.
+However, it is needed if you want to exploit for instance kerning. A
+sample configuration file for `t1lib' is included in the standard
+distribution of `gtkmathview' and is installed in
+`/usr/local/share/gtkmathview/'.
 
 Next, you have to setup an environment variable `T1LIB_CONFIG' with the
 full path to this configuration file. For example, if you use `bash':
@@ -226,8 +236,7 @@ And, if you use `tcsh':
 
      setenv T1LIB_CONFIG ./config/t1.config
 
-Now you are ready to use Type1 fonts. See the method
-`gtk_math_view_new' below.
+Now you are ready to use Type1 fonts.
 
 
 File: gtkmathview.info,  Node: Interface,  Next: Configuration,  Prev: Usage,  Up: Top
@@ -240,50 +249,47 @@ Macro: `GTK_TYPE_MATH_VIEW'
      usually need tu use this macro, unless you are subclassing
      `gtkmathview'.
 
-   Macro: `GTK_MATH_VIEW(object)'
+Macro: `GTK_MATH_VIEW(object)'
      used to cast a GtK widget to a `GtkMathView' class. Remember that
      all methods working with the widget takes a pointer to
      `GtkMathView'.
 
-   Macro: `GTK_MATH_VIEW_CLASS(klass)'
+Macro: `GTK_MATH_VIEW_CLASS(klass)'
      used to cast a Gtk class to a `GtkMathView' class. This macro is
      used internally, so you probably don't need it.
 
-   Macro: `GTK_IS_MATH_VIEW(object)'
+Macro: `GTK_IS_MATH_VIEW(object)'
      used to test wether a Gtk object is indeed a `GtkMathView' object.
      You can use it before casting to `GtkMathView'.
 
-   Method: `GtkType gtk_math_view_get_type(void)'
+Method: `GtkType gtk_math_view_get_type(void)'
      allocates a new Gtk type for the class `GtkMathView'. Used
      internally.
 
-   Method: `GtkWidget* gtk_math_view_new(GtkAdjustment* h_adj,
-GtkAdjustment* v_adj, gboolean t1)'
+Method: `GtkWidget* gtk_math_view_new(GtkAdjustment* h_adj,
+GtkAdjustment* v_adj)'
      this is the main constructor for `GtkMathView'. It allocates a new
      `GtkMathView' object. You can pass a couple of adjustments fro the
      scrolling bars, or just `NULL' in the case you want the widget to
-     allocate its own scrolling bars.  The last parameter is used to
-     tell `GtkMathView' whether it has to use a Type1 font manager
-     (`TRUE') or the (more stable) Gtk font manager (`FALSE').
+     allocate its own scrolling bars.
 
-   Method: `gboolean gtk_math_view_load(GtkMathView* widget, const
-gchar* file_name)'
+Method: `gboolean gtk_math_view_load(GtkMathView* widget, const gchar*
+file_name)'
      load a MathML document into the widget and render it. If the
      loading succeed then `TRUE' is returned, `FALSE' otherwise.
 
-   Method: `void gtk_math_view_unload(GtkMathView*)'
+Method: `void gtk_math_view_unload(GtkMathView*)'
      unload a document from the widget, release all resources related
      to the document itself. This is automatically invoked if you load
      two subsequent documents, so you don't need to call this method
      explicitly.
 
-   Method: `mDOMNodeRef gtk_math_view_get_selection(GtkMathView*
-widget)'
+Method: `mDOMNodeRef gtk_math_view_get_selection(GtkMathView* widget)'
      return the DOM reference of the node currently selected in the
      document, or `NULL' if there is no document or there is no
      selection
 
-   Method: `void gtk_math_view_set_selection(GtkMathView* widget,
+Method: `void gtk_math_view_set_selection(GtkMathView* widget,
 mDOMNodeRef node)'
      forces the selection of the document to be the subtree rooted at
      `node'.  Nothing happens if `node' turns out not to be a node
@@ -291,103 +297,121 @@ mDOMNodeRef node)'
      If `node' is set to `NULL' then the currently selected subtree, if
      any, will be de-selected.
 
-   Method: `guint gtk_math_view_get_width(GtkMathView* widget)'
+Method: `guint gtk_math_view_get_width(GtkMathView* widget)'
      return the width of the drawable area of the widget. Please note
-     that this not necessarily is equal to the whole widget width, due
+     that this is not necessarily equal to the whole widget width, due
      to the inner frame.
 
-   Method: `guint gtk_math_view_get_height(GtkMathView* widget)'
-     return the height of the drawable area of the widget. Same
-     arguments as for `gtk_math_view_get_width'.
+Method: `guint gtk_math_view_get_height(GtkMathView* widget)'
+     return the height of the drawable area of the widget. Same remark
+     as for `gtk_math_view_get_width'.
 
-   Method: `void gtk_math_view_get_top(GtkMathView* widget, guint*
-top_x, guint* top_y)'
+Method: `void gtk_math_view_get_top(GtkMathView* widget, guint* top_x,
+guint* top_y)'
      return in `top_x' and `top_y' the coordinates (in pixels) of the
      upper left displayed corner of the document. Either `top_x' or
      `top_y' may be `NULL', if you are interested in only one of the
      two values.
 
-   Method: `void gtk_math_view_set_top(GtkMathView* widget, guint
-top_x, guint top_y)'
+Method: `void gtk_math_view_set_top(GtkMathView* widget, guint top_x,
+guint top_y)'
      set the coordinates (in pixels) of the upper left displayed corner
      of the document.
 
-   Method: `void gtk_math_view_set_adjustments(GtkMathView* widget,
+Method: `void gtk_math_view_set_adjustments(GtkMathView* widget,
 GtkAdjustment* h_adj, GtkAdjustment* v_adj)'
      set the horizontal and vertical adjustments for the widget.
 
-   Method: `GtkAdjustment* gtk_math_view_get_hadjustment(GtkMathView*
+Method: `GtkAdjustment* gtk_math_view_get_hadjustment(GtkMathView*
 widget)'
      return a pointer to the horizontal adjustment of the widget.
 
-   Method: `GtkAdjustment* gtk_math_view_get_vadjustment(GtkMathView*
+Method: `GtkAdjustment* gtk_math_view_get_vadjustment(GtkMathView*
 widget)'
      return a pointer to the vertical adjustment of the widget.
 
-   Method: `GdkPixmap* gtk_math_view_get_buffer(GtkMathView* widget)'
+Method: `GdkPixmap* gtk_math_view_get_buffer(GtkMathView* widget)'
      return a pointer to the `GdkPixmap' used by the widget as the
      backbuffer.
 
-   Method: `GtkFrame* gtk_math_view_get_frame(GtkMathView* widget)'
+Method: `GtkFrame* gtk_math_view_get_frame(GtkMathView* widget)'
      return a pointer to the `GtkFrame' used by the widget to draw the
      border around the drawable area. You can set the border style and
      thickness with the proper methods for this objects.
 
-   Method: `void gtk_math_view_set_font_size(GtkMathView* widget, guint
+Method: `void gtk_math_view_set_font_size(GtkMathView* widget, guint
 size)'
      set the default font size (in points) for displaying documents.
 
-   Method: `guint gtk_math_view_get_font_size(GtkMathView* widget)'
+Method: `guint gtk_math_view_get_font_size(GtkMathView* widget)'
      return the default font size (in points) for displaying documents.
 
-   Method: `void gtk_math_view_set_anti_aliasing(GtkMathView* widget,
+Method: `void gtk_math_view_set_anti_aliasing(GtkMathView* widget,
 gboolean b)'
      this is used to enable/disable anti-aliasing for rendering text.
      This function is available with Type1 fonts only, if you are using
      the `T1_FontManager' in conjunction with the `T1_Gtk_DrawingArea'.
 
-   Method: `gboolean gtk_math_view_get_anti_aliasing(GtkMathView*
-widget)'
+Method: `gboolean gtk_math_view_get_anti_aliasing(GtkMathView* widget)'
      return `TRUE' if anti-aliasing is enabled (even if it is not
      supported), `FALSE' otherwise.
 
-   Method: `void gtk_math_view_set_kerning(GtkMathView* widget,
-gboolean b)'
+Method: `void gtk_math_view_set_kerning(GtkMathView* widget, gboolean
+b)'
      enable/disable kerning. This is available for Type1 fonts only
      (see the same conditions as for the
      `gtk_math_view_set_anti_aliasing').  Moreover, kerning is usually
      available only if the rquested font has a corresponding metrics
      file (AFM).
 
-   Method: `gboolean gtk_math_view_get_kerning(GtkMathView* widget)'
+Method: `gboolean gtk_math_view_get_kerning(GtkMathView* widget)'
      return `TRUE' if kerning is enabled (even if it is not supported),
      `FALSE' otherwise.
 
-   Method: `void gtk_math_view_log_set_verbosity(GtkMathView* widget,
-gint level)'
+Method: `void gtk_math_view_log_set_verbosity(GtkMathView* widget, gint
+level)'
      set the level of verbosity for displayed messages. `level' can be
      an integer from `0' (very few messages, in case of error only) to
      `3' (all messages). Useful for debugging purposes.
 
-   Method: `gint gtk_math_view_log_get_verbosity(GtkMathView* widget)'
+Method: `gint gtk_math_view_log_get_verbosity(GtkMathView* widget)'
      return the current level of verbosity.
 
-   Method: `void gtk_math_view_export_to_postscript(GtkMathView*
-widget, FILE* f)'
+Method: `void gtk_math_view_export_to_postscript(GtkMathView* widget,
+gint width, gint height, gint x0, gint y0, gboolean disable_colors,
+FILE* f)'
      write a rendered document to the file `f' in PostScript format.
-     This method is still unstable, so use it with care.
+     `width', `height', `x0' and `y0' give the size and the margins (in
+     pixels) of the rendering area used by this method.
+     `disable_colors' can be set to `TRUE' if you don't want to render
+     colors in PostScript (this may be useful to print the document on
+     a black-and-white printer).
 
-   Signal: `"clicked" void user_function(GtkMathView* widget,
-mDOMNodeRef node)'
+Method: `void gtk_math_view_set_font_manager_type(GtkMathview* widget,
+FontManagerId id)'
+     Set the font manager used by the widget to retrieve fonts. Up
+     'till now, there are two valid values for `id': use
+     `FONT_MANAGER_GTK' to use the GTK font manager (actually, this is
+     just a wrapper for the X font manager). This is the default.
+     Alternatively, use `FONT_MANAGER_T1' to use `t1lib' and Type1
+     fonts. This font manager is availabe only if you have installed
+     the `t1lib' library.
+
+Method: `FontManagerId gtk_math_view_get_font_manager_type(GtkMathView*
+widget)'
+     Return the current font manager id.
+
+Signal: `"clicked" void user_function(GtkMathView* widget, mDOMNodeRef
+node)'
      emitted every time the user clicks on an element with a valid DOM
      reference node.  The node is passed as a parameter to the function.
 
-   Signal: `"jump" void user_function(GtkMathView* widget, mDOMNodeRef
+Signal: `"jump" void user_function(GtkMathView* widget, mDOMNodeRef
 node)'
      emitted subsequently a "clicked" signal, if the `node' has at
      least one attribute named `href'.
 
-   Signal: `"selection_changed" void user_function(GtkMathView* widget,
+Signal: `"selection_changed" void user_function(GtkMathView* widget,
 mDOMNodeRef node)'
      emitted when the selected subtree changes. `node' is the root node
      of the newly selected subtree.
@@ -398,7 +422,58 @@ File: gtkmathview.info,  Node: Configuration,  Next: Bugs,  Prev: Interface,  Up
 Configuration
 *************
 
-To be written.
+Starting from version 0.2.2 the widget has a rather flexible
+configuration system.  If you made a default installation, you'll find
+all the configuration files in `/usr/local/share/gtkmathview'. In
+particular, the file `math-engine-configuration.xml' contains all the
+references to the other configuration files (operator dictionary,
+fonts, entities, `t1lib').
+
+You can set the environment variable `MATHENGINECONF' to the full path
+of the configuration file. If the variable is not set, the widget will
+try to load the configuration file from the default location.
+
+The list of valid entries is presented below:
+
+   * `dictionary-path' This element contains a full path to an operator
+     dictionary (the default is `dictionary.xml'). You can use this
+     element several times if you have more than one dictionary. This
+     can be useful to have a general dictionary and another local
+     dictionary with your preferences. An operator found in a
+     subsequent dictionary overrides previous settings for the same
+     operator.
+
+   * `entities-table-path' This element contains a full path to an XML
+     file with some entities definitions. The widget has an internal
+     table with all the entities defined in the MathML 2.0
+     specification.
+
+   * `font-configuration-path' This element contains a full path to a
+     font configuration file. The format of such file is still
+     undocumented, but you can take a look at the DTD and the source
+     file `CharMapper.cc' for more details.  You can use this element
+     several times if you want to override or enrich the settings of
+     the default configuration (see `font-configuration.xml').
+
+   * `t1-config-file' This element contains a full path to the
+     configuration file for the `t1lib' library. In particular, it is
+     not necessary to explicitly set the `T1LIB_CONFIG' environment
+     variable if this element is set.
+
+   * `font-size' This element has an attribute `size' which specify the
+     default font size for the rendering. The size format is the same
+     as for the analogous attributes for MathML token elements.
+
+   * `color' This element has two attributes, `forground' and
+     `background', which specify the default colors of the rendering.
+     The format of these two attributes is the same as for the analogous
+     attributes for MathML elements.
+
+   * `link-color' Default color settings for MathML elements with a
+     `href' attribute. Same attributes as for `color'.
+
+   * `select-color' Default color settings for selected elements.  Same
+     attributes as for `color'.
 
 
 File: gtkmathview.info,  Node: Bugs,  Prev: Configuration,  Up: Top
@@ -427,11 +502,11 @@ Node: Overview1422
 Node: Download2169
 Node: Usage2459
 Node: Requirements2823
-Node: Installing4548
-Node: Compile and Link5745
-Node: Font setup6261
-Node: Interface9347
-Node: Configuration16239
-Node: Bugs16373
+Node: Installing4830
+Node: Compile and Link6055
+Node: Font setup6575
+Node: Interface9773
+Node: Configuration17349
+Node: Bugs20047
 
 End Tag Table
