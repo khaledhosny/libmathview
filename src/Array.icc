@@ -41,9 +41,8 @@ Array<Type>::Array(unsigned n, Type obj)
 template <class Type>
 Array<Type>::Array(const Array<Type>& cont)
 {
-  size = 0;
-  data = NULL;
-  SetSize(cont.GetSize());
+  size = cont.GetSize();
+  data = (size > 0) ? new Type[size] : NULL;
   for (unsigned i = 0; i < size; i++) data[i] = cont.Get(i);
 }
 
