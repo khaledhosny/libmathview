@@ -327,11 +327,11 @@ AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have
 
 AC_LANG([C])
 
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.0,, AC_MSG_ERROR(could not fint GLIB))
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.3,, AC_MSG_ERROR(could not fint GLIB))
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0,, AC_MSG_ERROR(could not find GTK))
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4.10,, AC_MSG_ERROR(could not find GTK))
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
