@@ -1506,56 +1506,74 @@ GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView* math_view)
   return math_view->view->getDefaultFontSize();
 }
 
-extern "C" void
+extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->view != NULL);
-  if (math_view->view->notifyStructureChanged(elem)) gtk_math_view_paint(math_view);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  if (math_view->view->notifyStructureChanged(elem))
+    {
+      gtk_math_view_paint(math_view);
+      return TRUE;
+    }
+  else
+    return FALSE;
 }
 
-extern "C" void
+extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewModelId elem, GtkMathViewModelString name)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->view != NULL);
-  if (math_view->view->notifyAttributeChanged(elem, name)) gtk_math_view_paint(math_view);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  if (math_view->view->notifyAttributeChanged(elem, name))
+    {
+      gtk_math_view_paint(math_view);
+      return TRUE;
+    }
+  else
+    return FALSE;
 }
 
-extern "C" void
+extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
-  g_return_if_fail(math_view);
-  g_return_if_fail(math_view->view);
-  g_return_if_fail(elem);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
 
   if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(1);
       gtk_math_view_paint(math_view);
+      return TRUE;
     }
+  else
+    return FALSE;
 }
 
-extern "C" void
+extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
-  g_return_if_fail(math_view);
-  g_return_if_fail(math_view->view);
-  g_return_if_fail(elem);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
 
   if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(0);
       gtk_math_view_paint(math_view);
+      return TRUE;
     }
+  else
+    return FALSE;
 }
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
-  g_return_val_if_fail(math_view, FALSE);
-  g_return_val_if_fail(math_view->view, FALSE);
-  g_return_val_if_fail(elem, FALSE);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
 
   if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     return area->getSelected();

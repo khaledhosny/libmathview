@@ -548,8 +548,14 @@ select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       else
         root_selected = find_common_ancestor(first_selected, event->id);
 
-      if (root_selected != NULL)
-	gtk_math_view_select(math_view, root_selected);
+      while (root_selected != NULL && !gtk_math_view_select(math_view, root_selected))
+	{
+	  GdomeElement* new_root = gdome_el_parentNode(root_selected, &exc);
+	  g_assert(exc == 0);
+	  gdome_el_unref(root_selected, &exc);
+	  g_assert(exc == 0);
+	  root_selected = new_root;
+	}
 
       gtk_math_view_thaw(math_view);
     }
