@@ -70,6 +70,8 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
   pango_layout_set_text(layout, buffer, length);
   // PangoAttribute is not a GObject?
   PangoAttribute* sizeAttr = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
+  sizeAttr->start_index = 0;
+  sizeAttr->end_index = length;
   //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
   PangoAttrList* attrList = pango_attr_list_new();
   pango_attr_list_insert(attrList, sizeAttr);
