@@ -51,7 +51,6 @@ ARCH IMPROVEMENTS
 
 PERFORMANCE IMPROVEMENTS
 
-? make builder maps static members of the TemplateBuilder class
 - implement caching mechanism for pango shaper
 - in TemplateBuilder do not use the hash map for retrieving old
   elements, but use accessor methods instead. Much faster 
@@ -77,8 +76,6 @@ MISSING
 // BoxML
 
 BUGS
-
-* rendering a box:text with no text gives weird bounding box
 
 ARCH IMPROVEMENTS
 

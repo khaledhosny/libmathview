@@ -133,8 +133,13 @@ protected:
       { "",              0 }
     };
 
-    for (unsigned i = 0; mathml_tab[i].update; i++)
-      mathmlMap[mathml_tab[i].tag] = mathml_tab[i].update;
+    if (!mathmlMapInitialized)
+      {
+	for (unsigned i = 0; mathml_tab[i].update; i++)
+	  mathmlMap[mathml_tab[i].tag] = mathml_tab[i].update;
+
+	mathmlMapInitialized = true;
+      }
 
 #if ENABLE_BOXML
     static struct
@@ -155,8 +160,13 @@ protected:
       { "",              0 }
     };
 
-    for (unsigned i = 0; boxml_tab[i].update; i++)
-      boxmlMap[boxml_tab[i].tag] = boxml_tab[i].update;
+    if (!boxmlMapInitialized)
+      {
+	for (unsigned i = 0; boxml_tab[i].update; i++)
+	  boxmlMap[boxml_tab[i].tag] = boxml_tab[i].update;
+
+	boxmlMapInitialized = true;
+      }
 #endif // ENABLE_BOXML
   }
 
@@ -1326,15 +1336,30 @@ public:
 private:
   typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
   typedef HASH_MAP_NS::hash_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
-  MathMLBuilderMap mathmlMap;
-
+  static MathMLBuilderMap mathmlMap;
+  static bool mathmlMapInitialized;
 #if ENABLE_BOXML
   typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
   typedef HASH_MAP_NS::hash_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
-  BoxMLBuilderMap boxmlMap;
+  static BoxMLBuilderMap boxmlMap;
+  static bool boxmlMapInitialized;
 #endif // ENABLE_BOXML
 
   mutable typename Model::RefinementContext refinementContext;
 };
+
+template <class Model>
+typename TemplateBuilder<Model>::MathMLBuilderMap TemplateBuilder<Model>::mathmlMap;
+
+template <class Model>
+bool TemplateBuilder<Model>::mathmlMapInitialized = false;
+
+#ifdef ENABLE_BOXML
+template <class Model>
+typename TemplateBuilder<Model>::BoxMLBuilderMap TemplateBuilder<Model>::boxmlMap;
+
+template <class Model>
+bool TemplateBuilder<Model>::boxmlMapInitialized = false;
+#endif // ENABLE_BOXML
 
 #endif // __TemplateBuilder_hh__
