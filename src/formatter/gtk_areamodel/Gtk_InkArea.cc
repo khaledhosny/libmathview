@@ -29,13 +29,5 @@ void
 Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
-
-  BoundingBox box = getChild()->box();
-  gdk_draw_rectangle(context.getDrawable(),
-		     context.getGC(),
-		     TRUE,
-		     Gtk_RenderingContext::toGtkX(x),
-		     Gtk_RenderingContext::toGtkY(y + box.height),
-		     Gtk_RenderingContext::toGtkPixels(box.width),
-		     Gtk_RenderingContext::toGtkPixels(box.height + box.depth));
+  context.fill(x, y, box());
 }

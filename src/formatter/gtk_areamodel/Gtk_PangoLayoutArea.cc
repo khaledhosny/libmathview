@@ -78,17 +78,7 @@ void
 Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
-//   printf("before %p %d %d %d %d\n",
-// 	 &context,
-// 	 x.getValue(), context.getXOrigin().getValue(),
-// 	 Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
-// 	 Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()));
-
-  gdk_draw_layout(context.getDrawable(),
-		  context.getGC(),
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y + bbox.height),
-		  layout);
+  context.draw(x, y + bbox.height, layout);
 }
 
 bool

@@ -9,7 +9,6 @@
 
 ? make conversion functions in RenderingContext non-static and
   take zooming into account
-+ remove xft support from gtk rendering context since it's not going to be used
 
 // MathML
 

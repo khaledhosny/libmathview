@@ -39,16 +39,9 @@ Gtk_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y
 
       context.setForegroundColor(getColor());
       context.setBackgroundColor(getColor());
-      BoundingBox bbox = box();
-      gdk_draw_rectangle(context.getDrawable(),
-			 context.getGC(),
-			 TRUE,
-			 Gtk_RenderingContext::toGtkX(x),
-			 Gtk_RenderingContext::toGtkY(y + bbox.height),
-			 Gtk_RenderingContext::toGtkPixels(bbox.width) + 1,
-			 Gtk_RenderingContext::toGtkPixels(bbox.height + bbox.depth) + 1);
-
+      context.fill(x, y, box());
       context.setForegroundColor(old_foregroundColor);
+
       getChild()->render(context, x, y);
 
       context.setBackgroundColor(old_backgroundColor);

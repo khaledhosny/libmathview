@@ -47,13 +47,7 @@ void
 Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
-
-  PangoLayoutLine* line = pango_layout_get_line(layout, 0);
-  gdk_draw_layout_line(context.getDrawable(),
-		       context.getGC(),
-		       Gtk_RenderingContext::toGtkX(x),
-		       Gtk_RenderingContext::toGtkY(y),
-		       line);
+  context.draw(x, y, pango_layout_get_line(layout, 0));
 #if 0
   gdk_draw_line(context.getDrawable(),
 		context.getGC(),

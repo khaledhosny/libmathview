@@ -3,7 +3,6 @@ noinst_LTLIBRARIES = libgtk_areamodel.la
 
 libgtk_areamodel_la_SOURCES = \
   Gtk_RenderingContext.cc \
-  Gtk_XftGlyphArea.cc \
   Gtk_PangoLayoutArea.cc \
   Gtk_PangoLayoutLineArea.cc \
   Gtk_PangoGlyphArea.cc \
@@ -15,7 +14,6 @@ libgtk_areamodel_la_SOURCES = \
 noinst_HEADERS = \
   Gtk_AreaFactory.hh \
   Gtk_RenderingContext.hh \
-  Gtk_XftGlyphArea.hh \
   Gtk_PangoLayoutArea.hh \
   Gtk_PangoLayoutLineArea.hh \
   Gtk_PangoGlyphArea.hh \

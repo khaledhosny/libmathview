@@ -26,17 +26,17 @@
 #include "Gtk_RenderingContext.hh"
 
 void
-Gtk_ColorArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
+Gtk_ColorArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& c = dynamic_cast<Gtk_RenderingContext&>(context);
+  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
 
-  if (c.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
+  if (context.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
     {
       RGBColor oldColor; // dunno why asking for the GdkColor, which would save a color allocation, doesn't work
-      c.getForegroundColor(oldColor);
-      c.setForegroundColor(getColor());
+      context.getForegroundColor(oldColor);
+      context.setForegroundColor(getColor());
       getChild()->render(context, x, y);
-      c.setForegroundColor(oldColor);
+      context.setForegroundColor(oldColor);
     }
   else
     getChild()->render(context, x, y);    

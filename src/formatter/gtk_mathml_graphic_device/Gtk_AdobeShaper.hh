@@ -26,7 +26,7 @@
 #include <functional>
 
 #include <pango/pangox.h>
-#include <X11/Xft/Xft.h>
+//#include <X11/Xft/Xft.h>
 
 #include "HashMap.hh"
 #include "Shaper.hh"
@@ -51,12 +51,12 @@ protected:
   static const char* getXLFD(unsigned, const scaled&);
 
   PangoFont* getPangoFont(unsigned, const scaled&, PangoXSubfont&) const;
-  XftFont* getXftFont(unsigned, const scaled&) const;
+  //XftFont* getXftFont(unsigned, const scaled&) const;
 
   virtual AreaRef createGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
 
   AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
-  AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+  //AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
 
   AreaRef shapeChar(const class MathFormattingContext&, const class GlyphSpec&) const;

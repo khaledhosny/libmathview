@@ -29,7 +29,7 @@
 #include "Gtk_RenderingContext.hh"
 
 Gtk_RenderingContext::Gtk_RenderingContext()
-  : style(NORMAL_STYLE), xft_draw(0)
+  : style(NORMAL_STYLE)//, xft_draw(0)
 { }
 
 Gtk_RenderingContext::~Gtk_RenderingContext()
@@ -41,7 +41,7 @@ void
 Gtk_RenderingContext::releaseResources()
 {
   // should free the gc's? 
-
+#if 0
   if (xft_draw)
     {
       // It seems that by using XftDrawDestroy the drawable will be destroyed
@@ -50,6 +50,7 @@ Gtk_RenderingContext::releaseResources()
       free(xft_draw);
       xft_draw = 0;
     }
+#endif
 }
 
 void
@@ -62,16 +63,62 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
     {
       for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
-      
+
+#if 0      
       xft_draw = XftDrawCreate(GDK_DISPLAY(),
 			       gdk_x11_drawable_get_xid(drawable),
 			       GDK_VISUAL_XVISUAL(gdk_drawable_get_visual(drawable)),
 			       GDK_COLORMAP_XCOLORMAP(gdk_colormap));
       assert(xft_draw);
+#endif
     }
   else
     {
       for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = 0;
     }
+}
+
+void
+Gtk_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
+{
+  gdk_draw_rectangle(getDrawable(),
+		     getGC(),
+		     TRUE,
+		     Gtk_RenderingContext::toGtkX(x),
+		     Gtk_RenderingContext::toGtkY(y + box.height),
+		     Gtk_RenderingContext::toGtkPixels(box.width),
+		     Gtk_RenderingContext::toGtkPixels(box.height + box.depth));
+}
+
+void
+Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayout* layout) const
+{
+  gdk_draw_layout(getDrawable(),
+		  getGC(),
+		  Gtk_RenderingContext::toGtkX(x),
+		  Gtk_RenderingContext::toGtkY(y),
+		  layout);
+}
+
+void
+Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayoutLine* line) const
+{
+  gdk_draw_layout_line(getDrawable(),
+		       getGC(),
+		       Gtk_RenderingContext::toGtkX(x),
+		       Gtk_RenderingContext::toGtkY(y),
+		       line);
+}
+
+void
+Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
+			   PangoGlyphString* glyphs) const
+{
+  gdk_draw_glyphs(getDrawable(),
+		  getGC(),
+		  font,
+		  Gtk_RenderingContext::toGtkX(x),
+		  Gtk_RenderingContext::toGtkY(y),
+		  glyphs);
 }

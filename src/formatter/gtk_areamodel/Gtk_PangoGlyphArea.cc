@@ -84,10 +84,5 @@ void
 Gtk_PangoGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
-  gdk_draw_glyphs(context.getDrawable(),
-		  context.getGC(),
-		  font,
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y),
-		  glyphs);
+  context.draw(x, y, font, glyphs);
 }

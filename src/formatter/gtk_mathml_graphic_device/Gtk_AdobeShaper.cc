@@ -420,6 +420,7 @@ Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& su
   return font;
 }
 
+#if 0
 XftFont*
 Gtk_AdobeShaper::getXftFont(unsigned fi, const scaled& size) const
 {
@@ -430,6 +431,7 @@ Gtk_AdobeShaper::getXftFont(unsigned fi, const scaled& size) const
 
   return font;
 }
+#endif
 
 AreaRef
 Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
@@ -450,6 +452,7 @@ Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   return factory->pangoGlyph(font, gs);
 }
 
+#if 0
 AreaRef
 Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 				    unsigned fi, unsigned gi,
@@ -459,6 +462,7 @@ Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   assert(font);
   return factory->xftGlyph(font, gi);
 }
+#endif
 
 AreaRef
 Gtk_AdobeShaper::createGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,

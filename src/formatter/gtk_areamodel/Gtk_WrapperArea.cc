@@ -44,13 +44,6 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
 
-#if 0
-  std::cerr << "Wrapper::render at " << Gtk_RenderingContext::toGtkX(x) << "," << Gtk_RenderingContext::toGtkY(y) << std::endl;
-#endif
-
-  //std::cerr << "WRAPPER::RENDER " << this << " " << selected << std::endl;
-
-
   Gtk_RenderingContext::ColorStyle old_style = context.getStyle();
 
   switch (old_style)
@@ -73,38 +66,12 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
       context.getBackgroundColor(backgroundColor);
       context.setForegroundColor(backgroundColor);
 
-      const BoundingBox bbox = box();
-      gdk_draw_rectangle(context.getDrawable(),
-			 context.getGC(),
-			 TRUE,
-			 Gtk_RenderingContext::toGtkX(x),
-			 Gtk_RenderingContext::toGtkY(y + bbox.height),
-			 Gtk_RenderingContext::toGtkPixels(bbox.width),
-			 Gtk_RenderingContext::toGtkPixels(bbox.height + bbox.depth));
+      context.fill(x, y, box());
 
       context.setForegroundColor(old_foregroundColor);
     }
 
   getChild()->render(context, x, y);
-
-#if 0
-  const BoundingBox bbox = box();
-
-  gdk_draw_rectangle(context.getDrawable(),
-		     context.getGC(),
-		     FALSE,
-		     Gtk_RenderingContext::toGtkX(x),
-		     Gtk_RenderingContext::toGtkY(y + bbox.height),
-		     Gtk_RenderingContext::toGtkPixels(bbox.width) - 1,
-		     Gtk_RenderingContext::toGtkPixels(bbox.height + bbox.depth) - 1);
-
-  gdk_draw_line(context.getDrawable(),
-		context.getGC(),
-		Gtk_RenderingContext::toGtkX(x),
-		Gtk_RenderingContext::toGtkY(y),
-		Gtk_RenderingContext::toGtkX(x + bbox.width),
-		Gtk_RenderingContext::toGtkY(y));
-#endif
 
   context.setStyle(old_style);
 }
