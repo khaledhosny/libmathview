@@ -442,8 +442,6 @@ Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
 
-  std::cerr << "SHAPECHAR " << result.thisChar() << " " << spec.getGlyphId() << std::endl;
-
   AreaRef res;
 
   CachedAreaKey key(result.thisChar(), ctxt.getSize());

@@ -73,14 +73,35 @@ MathMLRadicalElement::construct()
 	  if (IsA() == T_MSQRT)
 	    {
 	      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	      if (children.get_length() == 1)
+	      unsigned n = children.get_length();
+	      if (n == 1)
 		{
 		  DOM::Node node = children.item(0);
 		  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 		  setBase(getFormattingNode(node));
 		}
 	      else
-		setBase(getFormattingNode(getDOMElement()));
+		{
+		  SmartPtr<MathMLRowElement> row;
+		  if (getBase() && is_a<MathMLRowElement>(getBase()) && !getBase()->getDOMElement())
+		    // this must be an inferred mrow
+		    row = smart_cast<MathMLRowElement>(getBase());
+		  else
+		    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
+		  assert(row && !row->getDOMElement());
+		  setBase(row);
+
+		  std::vector< SmartPtr<MathMLElement> > newContent;
+		  newContent.reserve(n);
+		  for (unsigned i = 0; i < n; i++)
+		    {
+		      SmartPtr<MathMLElement> elem = getFormattingNode(children.item(i));
+		      assert(elem);
+		      newContent.push_back(elem);
+		    }
+
+		  row->swapContent(newContent);
+		}
 
 	      setIndex(0);
 	    }
@@ -106,7 +127,7 @@ MathMLRadicalElement::construct()
 		}
 	    }
 	}
-#endif
+#endif // HAVE_GMETADOM
 
       if (base) base->construct();
       if (index) index->construct();
