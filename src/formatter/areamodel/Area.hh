@@ -45,7 +45,7 @@ public:
   virtual scaled       leftEdge(void) const = 0;
   virtual scaled       rightEdge(void) const = 0;
           AreaRef      node(const AreaId& id) const { return node(id.path.begin(), id.path.end()); }
-          scaled       origin(const AreaId& id) const { return hOffset(id.path.begin(), id.path.end()); }
+          scaled       origin(const AreaId& id) const { return origin(id.path.begin(), id.path.end()); }
           scaled       leftSide(const AreaId& id) const { return leftSide(id.path.begin(), id.path.end()); }
           scaled       rightSide(const AreaId& id) const { return rightSide(id.path.begin(), id.path.end()); }
 
