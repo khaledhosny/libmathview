@@ -3,8 +3,6 @@ NULL =
 
 SUBDIRS = xml
 
-XSLTPROC = xsltproc
-
 AUTO_CC = \
   bold-fraktur.cc \
   bold-italic.cc \
@@ -41,6 +39,9 @@ mathview_HEADERS = \
 INCLUDES = \
   -I$(top_builddir)/src/common -I$(top_srcdir)/src/common
 
+if COND_XSLTPROC
+XSLTPROC = xsltproc
+
 %_gen.cc : $(srcdir)/xml/%.xml $(srcdir)/extract.xsl
 	$(XSLTPROC) --novalid $(srcdir)/extract.xsl $< >$@
 
@@ -57,4 +58,5 @@ INCLUDES = \
 	echo "}" >>$@
 	rm -f a.out
 	cat $(srcdir)/variant.bot >>$@
+endif
 

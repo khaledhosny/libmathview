@@ -7,8 +7,6 @@ endif
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
 dumpEntitiesTable_LDADD = @DOM_LIBS@
 
-XSLTPROC = xsltproc
-
 AUTOFILES = \
   token.dec \
   token.def
@@ -36,11 +34,15 @@ noinst_HEADERS = \
 SCRIPTDIR = ../scripts
 CONFIGDIR = ../config
 
+if COND_XSLTPROC
+XSLTPROC = xsltproc
+
 token.dec: token-list.xml list-to-dec.xsl
 	$(XSLTPROC) $(srcdir)/list-to-dec.xsl $< >$@
 
 token.def: token-list.xml list-to-def.xsl
 	$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
+endif
 
 update-entities: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 	./dumpEntitiesTable $< >$@

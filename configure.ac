@@ -279,6 +279,12 @@ AC_SUBST(TRAIT_SPEC)
 
 AC_LANG_POP(C++)
 
+AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
+if test $HAVE_XSLTPROC = "no"; then
+	AC_MSG_WARN(xsltproc not found, the compilation may fail)
+fi
+AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
+
 AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
 if test $HAVE_ICONV = "yes"; then
 	if iconv -t UTF-8 -f UTF-8 </dev/null >/dev/null 2>&1; then
