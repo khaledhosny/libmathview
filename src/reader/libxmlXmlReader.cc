@@ -42,6 +42,12 @@ libxmlXmlReader::valid() const
   return error == 1 && fresh;
 }
 
+bool
+libxmlXmlReader::more() const
+{
+  return valid() && depth == xmlTextReaderDepth(reader);
+}
+
 void
 libxmlXmlReader::firstChild()
 {

@@ -124,6 +124,12 @@ DOMXmlReader::nodeType() const
   return node.get_nodeType();
 }
 
+bool
+DOMXmlReader::more() const
+{
+  return valid();
+}
+
 void
 DOMXmlReader::firstChild()
 {

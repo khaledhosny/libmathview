@@ -41,8 +41,10 @@ public:
 
   virtual unsigned nodeType(void) const = 0;
 
-  virtual next(void) = 0;
-  virtual nextSibling(void) = 0;
+  virtual bool more(void) const = 0;
+  virtual void firstChild(void) = 0;
+  virtual void parentNode(void) = 0;
+  virtual void nextSibling(void) = 0;
 };
 
 #endif // __AbstractXmlReader_hh__
