@@ -27,6 +27,7 @@
 #include "gmetadom_Model.hh"
 #include "Builder.hh"
 #include "String.hh"
+#include "WeakPtr.hh"
 
 class gmetadom_Builder : public Builder
 {
@@ -47,7 +48,8 @@ public:
 protected:
   // methods for accessing the linker
   SmartPtr<Element> linkerAssoc(const DOM::Element& el) const { return linker.assoc(el); }
-  void linkerAdd(const DOM::Element& el, const SmartPtr<Element>& elem) const { linker.add(el, elem); }
+  void linkerAdd(const DOM::Element& el, Element* elem) const { linker.add(el, elem); }
+  void linkerRemove(Element* elem) const { linker.remove(elem); }
 
   void notifySubtreeModified(const DOM::Node&) const;
   void notifyAttributeChanged(const DOM::Node&, const String&) const;
@@ -60,7 +62,7 @@ protected:
     virtual void handleEvent(const DOM::Event&);
 
   private:
-    SmartPtr<gmetadom_Builder> builder;
+    WeakPtr<gmetadom_Builder> builder;
   };
 
   class DOMAttrModifiedListener : public DOM::EventListener
@@ -71,7 +73,7 @@ protected:
     virtual void handleEvent(const DOM::Event&);
 
   private:
-    SmartPtr<gmetadom_Builder> builder;
+    WeakPtr<gmetadom_Builder> builder;
   };
 
 private:

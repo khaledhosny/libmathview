@@ -31,9 +31,11 @@ gmetadom_Builder::~gmetadom_Builder()
   setRootModelElement(DOM::Element());
 }
 
+typedef TemplateBuilder<gmetadom_Model> BUILDER;
+
 SmartPtr<gmetadom_Builder>
 gmetadom_Builder::create()
-{ return TemplateBuilder<gmetadom_Model>::create(); }
+{ return BUILDER::create(); }
 
 SmartPtr<Element>
 gmetadom_Builder::findSelfOrAncestorElement(const DOM::Node& el) const
