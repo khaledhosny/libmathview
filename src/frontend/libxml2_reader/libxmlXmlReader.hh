@@ -66,6 +66,7 @@ public:
   String getAttribute(const String&) const;
   bool hasAttribute(const String&) const;
 
+  void reset(void);
   void moveToFirstChild(void);
   void moveToNextSibling(void);
   void moveToParentNode(void);

@@ -40,7 +40,20 @@ public:
 
 protected:
   void setRootModelElement(const SmartPtr<Reader>& r) { setReader(r); }
-  SmartPtr<Reader> getRootModelElement(void) const { return (reader && reader->more()) ? reader : 0; }
+  SmartPtr<Reader> getRootModelElement(void) const
+  {
+    if (reader)
+      {
+	// In this case the reader must play the role of the root
+	// document element, that is it must be in a state where
+	// it "points to" the beginning of the document. Thus we
+	// invoke the reset method on it.
+	reader->reset();
+	return reader;
+      }
+    else
+      return 0;
+  }
 
 private:
   SmartPtr<Reader> reader;

@@ -125,6 +125,14 @@ libxmlXmlReader::hasAttribute(const String& name) const
 }
 
 void
+libxmlXmlReader::reset()
+{
+  // currently there is no way to reset a libxml text reader
+  // so this method just fails.
+  assert(false);
+}
+
+void
 libxmlXmlReader::moveToFirstChild()
 {
   assert(valid());

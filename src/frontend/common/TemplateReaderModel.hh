@@ -26,6 +26,7 @@ struct TemplateReaderModel
   typedef TemplateReaderRefinementContext<Reader> RefinementContext;
 
   static SmartPtr<Reader> parseXML(const String& path, bool subst = false) { return Reader::create(path, subst); }
+  static void             reset(const SmartPtr<Reader>& reader) { reader->reset(); }
   static SmartPtr<Reader> asNode(const SmartPtr<Reader>& reader) { return reader; }
   static SmartPtr<Reader> asElement(const SmartPtr<Reader>& reader) { return reader; }
 

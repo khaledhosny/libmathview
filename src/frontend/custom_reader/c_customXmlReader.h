@@ -24,16 +24,17 @@
 #define __c_customXmlReader_h__
 
 enum {
-  C_CUSTOM_TEXT_NODE,
+  C_CUSTOM_TEXT_NODE = 1,
   C_CUSTOM_ELEMENT_NODE
 };
 
 struct _c_customXmlReader
 {
-  int   (*reset)(void*);
+  /* auxiliary methods */
   void  (*free_data)(void*);
   void  (*free_string)(char*);
 
+  /* query methods */
   int   (*more)(void*);
   int   (*get_node_type)(void*);
   char* (*get_node_name)(void*);
@@ -44,6 +45,9 @@ struct _c_customXmlReader
   void  (*get_attribute_by_index)(void*, int, char**, char**, char**);
   char* (*get_attribute)(void*, const char*);
   int   (*has_attribute)(void*, const char*);
+
+  /* state methods */
+  int   (*reset)(void*);
   void  (*move_to_first_child)(void*);
   void  (*move_to_next_sibling)(void*);
   void  (*move_to_parent_node)(void*);

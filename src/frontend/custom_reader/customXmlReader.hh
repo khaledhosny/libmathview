@@ -57,6 +57,7 @@ public:
   String getAttribute(const String& name) const { return fromReaderString((*reader->get_attribute)(user_data, name.c_str())); }
   bool hasAttribute(const String& name) const { return (*reader->has_attribute)(user_data, name.c_str()); }
 
+  void reset(void) { (*reader->reset)(user_data); }
   void moveToFirstChild(void) { (*reader->move_to_first_child)(user_data); }
   void moveToNextSibling(void) { (*reader->move_to_next_sibling)(user_data); }
   void moveToParentNode(void) { (*reader->move_to_parent_node)(user_data); }

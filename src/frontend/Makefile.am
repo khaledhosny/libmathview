@@ -1,3 +1,3 @@
 
-SUBDIRS = common custom_reader libxml2 libxml2_reader gmetadom
+SUBDIRS = common $(available_frontends)
 
