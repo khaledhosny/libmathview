@@ -157,6 +157,7 @@ protected:
       { "box",           &TemplateBuilder::template updateElement<BoxML_box_ElementBuilder> },
       { "action",        &TemplateBuilder::template updateElement<BoxML_action_ElementBuilder> },
       { "obj",           &TemplateBuilder::update_BoxML_obj_Element },
+      { "decor",         &TemplateBuilder::template updateElement<BoxML_decor_ElementBuilder> },
       { "",              0 }
     };
 
@@ -1012,6 +1013,19 @@ protected:
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, At, x));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, At, y));
+    }
+  };
+
+  struct BoxML_decor_ElementBuilder : public BoxMLBinContainerElementBuilder
+  {
+    typedef BoxMLDecorElement type;
+
+    static void
+    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLDecorElement>& elem)
+    {
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Decor, type));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Decor, color));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Decor, thickness));
     }
   };
 
