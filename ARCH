@@ -1,0 +1,30 @@
+
+One can find an interesting analogy between gtkmathview's new
+architecture and existing software. In the new architecture:
+* the outcome of formatting has a physical representation (an area
+  tree). 
+* areas can be considered a low-level language if compared to MathML
+* the area tree can be "simplified" through flattening and reduction
+  (by reduction we mean the computation of relative atomic areas
+  coordinates).
+* relative constraints are resolved (filler areas become spacing
+  areas).
+* The Math Graphic Device is meant to capture all device-specific
+  capabilities and to take advantage of them. The formatting engine
+  is independent of the formatting engine.
+Hence the overall architecture is that of a compiler for a programming
+language, with the following characteristics:
+* the area model is the assembly language produced by the formatter
+* the simplification of the area model can be seen as a form of
+  code optimization
+* constraint resolution is some sort of indirect backpatching. We
+  compute the displacement of objects only after we've produced the
+  code
+* the Math Graphic Device is the component that separates the
+  compiler frontend from the compiler backend
+* compilation is modularized into elements. Each element (construct)
+  knows how to compile itself. Is there anything similar in real
+  compilers?
+* wrapping areas provide some sort of debugging tool: they link the
+  assembly code back into the elements that generated it.
+
