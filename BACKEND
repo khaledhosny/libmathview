@@ -1,0 +1,19 @@
+
+The backend is still rather messy
+
+* Gtk_AdobeShaper doesn't use StandardSymbolShaper
+* it is not clear whether it works well. For sure the xft version has
+  problems (huge characters), the pango version does not find the
+  font manager (not installed?)
+* can the font managers be generalized?
+
+T1lib support
+
+* add anti-aliasing and mode switching in gtk_renderingcontext
+* fix bugs (crashes about invalid glyphs)
+* add support for loading fonts at different sizes for better quality (cmr5, ...)
+* very slow startup when loading t1 fonts
+* add support for choosing shapers at runtime
+* comment unwanted glyphs from CM fonts (funny digits, ...)
+* implement TeX-compliant graphic device
+
