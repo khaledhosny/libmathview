@@ -208,7 +208,7 @@ MathMLView::layout() const
 	  Clock perf;
 	  MathFormattingContext ctxt(context->device);
 	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  //ctxt.setSize(context->device->evaluate(ctxt, Length(48, Length::PT_UNIT), scaled::zero()));
+	  ctxt.setSize(context->device->evaluate(ctxt, Length(48, Length::PT_UNIT), scaled::zero()));
 	  ctxt.setActualSize(ctxt.getSize());
 	  root->format(ctxt);
 std::cout << root->getArea()->box() << std::endl;

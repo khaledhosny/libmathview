@@ -116,7 +116,9 @@ public:
   { return BoxMLboxElement::create(view); }
   virtual SmartPtr<MathMLElement> createBoxMLActionElement(const SmartPtr<class MathMLView>& view) const
   { return BoxMLActionElement::create(view); }
-
+  virtual SmartPtr<MathMLElement> createBoxMLObjectElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLObjectElement::create(view); }
+  
 private:
   typedef SmartPtr<MathMLElement> (MathMLFormattingEngineFactory::* FactoryMethod)(const SmartPtr<class MathMLView>&) const;
   typedef HASH_MAP_NS::hash_map<String,FactoryMethod,StringHash,StringEq> FactoryMethodMap;

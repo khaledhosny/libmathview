@@ -8,6 +8,7 @@ libboxml_la_SOURCES = \
   BoxMLBinContainerElement.cc \
   BoxMLLinearContainerElement.cc \
   BoxMLboxElement.cc \
+  BoxMLObjectElement.cc \
   BoxMLTextElement.cc \
   BoxMLHElement.cc \
   BoxMLVElement.cc \
@@ -25,6 +26,7 @@ noinst_HEADERS = \
   BoxMLBinContainerElement.hh \
   BoxMLLinearContainerElement.hh \
   BoxMLboxElement.hh \
+  BoxMLObjectElement.hh \
   BoxMLTextElement.hh \
   BoxMLHElement.hh \
   BoxMLVElement.hh \
