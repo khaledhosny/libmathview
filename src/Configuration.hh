@@ -23,8 +23,6 @@
 #ifndef Configuration_hh
 #define Configuration_hh
 
-#include <config.h>
-
 #include <minidom.h>
 
 #include "scaled.hh"

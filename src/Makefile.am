@@ -121,6 +121,7 @@ libgtkmathview_la_SOURCES = \
   stringAux.cc \
   tableLayout.cc \
   tableSetup.cc \
+  mathVariantAux.cc \
   $(GUISOURCES) \
   $(GTKSOURCES) \
   $(T1SOURCES) \
@@ -226,6 +227,7 @@ noinst_HEADERS = \
   keyword.hh \
   operatorAux.hh \
   stringAux.hh \
+  mathVariantAux.hh \
   scaled.hh \
   $(GTKHEADERS) \
   $(T1HEADERS) \

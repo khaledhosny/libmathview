@@ -118,6 +118,12 @@ MathMLSpaceElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 }
 
 bool
+MathMLSpaceElement::IsSpace() const
+{
+  return true;
+}
+
+bool
 MathMLSpaceElement::IsSpaceLike() const
 {
   return true;

@@ -23,8 +23,6 @@
 #ifndef MathMLTokenElement_hh
 #define MathMLTokenElement_hh
 
-#include <config.h>
-
 #include "RGBValue.hh"
 #include "FontAttributes.hh"
 #include "MathMLContainerElement.hh"

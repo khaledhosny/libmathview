@@ -36,6 +36,7 @@
 #include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "MathMLTextNode.hh"
+#include "mathVariantAux.hh"
 #include "ValueConversion.hh"
 #include "MathMLSpaceNode.hh"
 #include "MathMLStringNode.hh"
@@ -186,36 +187,11 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
   if (value != NULL) {
     assert(value->IsKeyword());
 
-    static struct {
-      KeywordId    kw;
-      const char*  family;
-      FontWeightId weight;
-      FontStyleId  style;
-    } vattr[] = {
-      { KW_NORMAL,            "serif",         FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-      { KW_BOLD,              "serif",         FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-      { KW_ITALIC,            "serif",         FONT_WEIGHT_NORMAL,   FONT_STYLE_ITALIC },
-      { KW_BOLD_ITALIC,       "serif",         FONT_WEIGHT_BOLD,     FONT_STYLE_ITALIC },
-      { KW_DOUBLE_STRUCK,     "double-struck", FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-      { KW_BOLD_FRAKTUR,      "fraktur",       FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-      { KW_SCRIPT,            "script",        FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-      { KW_BOLD_SCRIPT,       "script",        FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-      { KW_FRAKTUR,           "fraktur",       FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-      { KW_SANS_SERIF,        "sans-serif",    FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-      { KW_BOLD_SANS_SERIF,   "sans-serif",    FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-      { KW_SANS_SERIF_ITALIC, "sans-serif",    FONT_WEIGHT_NORMAL,   FONT_STYLE_ITALIC },
-      { KW_MONOSPACE,         "monospace",     FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-
-      { KW_NOTVALID,          NULL,            FONT_WEIGHT_NOTVALID, FONT_STYLE_NOTVALID }
-    };
-
-    unsigned i = 0;
-    while (vattr[i].kw != KW_NOTVALID && vattr[i].kw != value->ToKeyword()) i++;
-
-    assert(vattr[i].kw != KW_NOTVALID);
-    env->SetFontFamily(vattr[i].family);
-    env->SetFontWeight(vattr[i].weight);
-    env->SetFontStyle(vattr[i].style);
+    const MathVariantAttributes& attr = attributesOfVariant(value->ToKeyword());
+    assert(attr.kw != KW_NOTVALID);
+    env->SetFontFamily(attr.family);
+    env->SetFontWeight(attr.weight);
+    env->SetFontStyle(attr.style);
 
     if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
       MathEngine::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
@@ -224,20 +200,21 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
   } else {
     value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
     if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontfamily` is deprecated in MathML 2");
       env->SetFontFamily(value->ToString());
-    } else
-      env->SetFontFamily("serif");
+    }
     delete value;
 
     value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
     if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
       env->SetFontWeight(ToFontWeightId(value));
-    } else
-      env->SetFontWeight(FONT_WEIGHT_NORMAL);
+    }
     delete value;
 
     value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
     if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
       env->SetFontStyle(ToFontStyleId(value));
     } else if (IsA() == TAG_MI) {
       if (rawContentLength == 1) env->SetFontStyle(FONT_STYLE_ITALIC);

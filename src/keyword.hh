@@ -23,8 +23,6 @@
 #ifndef keyword_hh
 #define keyword_hh
 
-#include <config.h>
-
 #include "keyword.dec"
 #include "tag.dec"
 #include "attribute.dec"

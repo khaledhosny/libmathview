@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<math>
+  <mtable width="100%" frame="solid">
+    <mtr>
+      <mtd columnalign="left">
+        <mrow>
+	  <mtable width="100%" frame="solid" framespacing="1px 1px">
+	    <mtr><mtd><mrow/></mtd></mtr>
+	  </mtable>
+	  <mspace linebreak="newline"/>
+	  <mtext>questo testo va a capo</mtext>
+	</mrow>
+      </mtd>
+    </mtr>
+  </mtable>
+</math>

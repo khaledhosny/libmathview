@@ -501,7 +501,7 @@ get_main_menu()
   /* !!!BEWARE!!! the default font size must be kept aligned with the definition
    * in defs.h
    */
-  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Default Font Size/14pt");
+  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Default Font Size/12pt");
   font_size_item = GTK_MENU_ITEM(menu_item);
 
   return gtk_item_factory_get_widget(item_factory, "<main>");

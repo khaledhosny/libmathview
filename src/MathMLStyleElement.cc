@@ -24,7 +24,9 @@
 #include <assert.h>
 
 #include "stringAux.hh"
+#include "MathEngine.hh"
 #include "StringUnicode.hh"
+#include "mathVariantAux.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLStyleElement.hh"
@@ -62,6 +64,10 @@ MathMLStyleElement::GetAttributeSignature(AttributeId id) const
     { ATTR_FONTWEIGHT,             fontWeightParser,  NULL,                  NULL },
     { ATTR_FONTSTYLE,              fontStyleParser,   new StringC("normal"), NULL },
     { ATTR_FONTFAMILY,             stringParser,      NULL,                  NULL },
+    { ATTR_MATHVARIANT,            mathVariantParser, NULL,                  NULL },
+    { ATTR_MATHSIZE,               mathSizeParser,    NULL,                  NULL },
+    { ATTR_MATHCOLOR,              colorParser,       NULL,                  NULL },
+    { ATTR_MATHBACKGROUND,         colorParser,       NULL,                  NULL },
     //
     { ATTR_NOTVALID,               NULL,              NULL,                  NULL }
   };
@@ -133,18 +139,36 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
   }
   delete value;
 
-  value = GetAttributeValue(ATTR_COLOR, NULL, false);
-  if (value != NULL) env->SetColor(ToRGB(value));
+  value = GetAttributeValue(ATTR_MATHCOLOR, NULL, false);
+  if (value != NULL) {
+    if (IsSet(ATTR_COLOR))
+      MathEngine::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
+    env->SetColor(ToRGB(value));
+  } else {
+    value = GetAttributeValue(ATTR_COLOR, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
+      env->SetColor(ToRGB(value));
+    }
+  }
   delete value;
 
   RGBValue oldBackground = env->GetBackgroundColor();
-  value = GetAttributeValue(ATTR_BACKGROUND, NULL, false);
+  value = GetAttributeValue(ATTR_MATHBACKGROUND, NULL, false);
   if (value != NULL) {
+    if (IsSet(ATTR_BACKGROUND))
+      MathEngine::logger(LOG_WARNING, "attribute `mathbackground' overrides deprecated attribute `background'");
     if (!value->IsKeyword(KW_TRANSPARENT)) env->SetBackgroundColor(ToRGB(value));
+  } else {
+    value = GetAttributeValue(ATTR_BACKGROUND, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "attribute `background' is deprecated in MathML 2");
+      if (!value->IsKeyword(KW_TRANSPARENT)) env->SetBackgroundColor(ToRGB(value));
+    }
   }
+  delete value;
   background = env->GetBackgroundColor();
   differentBackground = background != oldBackground;
-  delete value;
 
   value = GetAttributeValue(ATTR_VERYVERYTHINMATHSPACE, NULL, false);
   if (value != NULL) env->SetMathSpace(MATH_SPACE_VERYVERYTHIN, value->ToNumberUnit());
@@ -177,21 +201,60 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
   // the following attributes, thought not directly supported by <mstyle>
   // must be parsed here since they are always inherited by other elements
 
-  value = GetAttributeValue(ATTR_FONTSIZE, NULL, false);
-  if (value != NULL) env->SetFontSize(value->ToNumberUnit());
+  value = GetAttributeValue(ATTR_MATHSIZE, NULL, false);
+  if (value != NULL) {
+    if (IsSet(ATTR_FONTSIZE))
+      MathEngine::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
+    
+    if (value->IsKeyword(KW_SMALL)) env->AddScriptLevel(1);
+    else if (value->IsKeyword(KW_BIG)) env->AddScriptLevel(-1);
+    else if (value->IsKeyword(KW_NORMAL)) ; // noop
+    else env->SetFontSize(value->ToNumberUnit());
+  } else {
+    value = GetAttributeValue(ATTR_FONTSIZE, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
+      env->SetFontSize(value->ToNumberUnit());
+    }
+  }
   delete value;
 
-  value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
-  if (value != NULL) env->SetFontFamily(value->ToString());
-  delete value;
+  value = GetAttributeValue(ATTR_MATHVARIANT, NULL, false);
+  if (value != NULL) {
+    assert(value->IsKeyword());
 
-  value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
-  if (value != NULL) env->SetFontWeight(ToFontWeightId(value));
-  delete value;
+    const MathVariantAttributes& attr = attributesOfVariant(value->ToKeyword());
+    assert(attr.kw != KW_NOTVALID);
+    env->SetFontFamily(attr.family);
+    env->SetFontWeight(attr.weight);
+    env->SetFontStyle(attr.style);
 
-  value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
-  if (value != NULL) env->SetFontStyle(ToFontStyleId(value));
-  delete value;
+    if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+      MathEngine::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+
+    delete value;
+  } else {
+    value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontfamily` is deprecated in MathML 2");
+      env->SetFontFamily(value->ToString());
+    }
+    delete value;
+
+    value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
+      env->SetFontWeight(ToFontWeightId(value));
+    }
+    delete value;
+
+    value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
+      env->SetFontStyle(ToFontStyleId(value));
+    }
+    delete value;
+  }
 
   MathMLNormalizingContainerElement::Setup(env);
 

@@ -23,7 +23,6 @@
 #ifndef Layout_hh
 #define Layout_hh
 
-#include <config.h>
 #include <stddef.h>
 
 #include "scaled.hh"

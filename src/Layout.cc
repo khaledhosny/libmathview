@@ -359,7 +359,7 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
     if (atom()->IsSpace()) fixedWidth += atom()->spacing;
     else {
       assert(atom()->frame != NULL);
-      if (atom()->frame->IsText()) {
+      if (atom()->frame->IsText() || atom()->frame->IsSpace()) {
 	fixedWidth += getFrameBoundingBox(atom()->frame).width;
       } else {
 	assert(atom()->frame->IsElement());

@@ -23,7 +23,6 @@
 #ifndef MathMLObject_hh
 #define MathMLObject_hh
 
-#include <config.h>
 #include <stddef.h>
 
 #include "defs.h"

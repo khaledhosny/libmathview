@@ -23,10 +23,6 @@
 #ifndef FontAttributes_hh
 #define FontAttributes_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "keyword.hh"
 #include "Container.hh"
 #include "UnitValue.hh"

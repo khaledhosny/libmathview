@@ -23,8 +23,6 @@
 #ifndef MathMLNode_hh
 #define MathMLNode_hh
 
-#include <config.h>
-
 #include "MathMLObject.hh"
 
 class MathMLNode: public MathMLObject {

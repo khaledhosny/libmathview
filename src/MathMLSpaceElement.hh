@@ -23,8 +23,6 @@
 #ifndef MathMLSpaceElement_hh
 #define MathMLSpaceElement_hh
 
-#include <config.h>
-
 #include "Layout.hh"
 #include "MathMLElement.hh"
 
@@ -36,6 +34,7 @@ public:
   virtual void    DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual ~MathMLSpaceElement();
 
+  virtual bool    IsSpace(void) const;
   virtual bool    IsSpaceLike(void) const;
   virtual BreakId GetBreakability(void) const;
 
