@@ -35,10 +35,10 @@ public:
   static SmartPtr<VerticalFillerArea> create(void);
 
   virtual BoundingBox box(void) const;
-  virtual AreaRef     fit(const scaled&, const scaled&, const scaled&) const;
-  virtual scaled      leftEdge(void) const;
-  virtual scaled      rightEdge(void) const;
-  virtual void        strength(int&, int&, int&) const;
+  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
+  virtual scaled leftEdge(void) const;
+  virtual scaled rightEdge(void) const;
+  virtual void strength(int&, int&, int&) const;
 };
 
 #endif // __VerticalFillerArea_hh__

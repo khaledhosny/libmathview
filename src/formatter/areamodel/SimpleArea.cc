@@ -44,40 +44,6 @@ SimpleArea::replace(const ReplacementContext& context) const
   else
     return this;
 }
-
-std::pair<scaled,scaled>
-SimpleArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
-{
-  if (id == empty)
-    return std::make_pair(x, y);
-  else
-    throw InvalidId();
-}
-
-scaled
-SimpleArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  throw NotAllowed();
-}
-
-scaled
-SimpleArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  throw NotAllowed();
-}
-
-bool
-SimpleArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
-{ return area == this; }
-
-AreaRef
-SimpleArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    return this;
-  else
-    throw InvalidId();
-}
 #endif
 
 void
@@ -87,12 +53,6 @@ SimpleArea::strength(int& w, int& h, int& d) const
 void
 SimpleArea::render(class RenderingContext&, const scaled&, const scaled&) const
 { }
-
-#if 0
-bool
-SimpleArea::find(class SearchingContext&, const scaled&, const scaled&) const
-{ return false; }
-#endif
 
 bool
 SimpleArea::searchByArea(AreaId&, const AreaRef& area) const

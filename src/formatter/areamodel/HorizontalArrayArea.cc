@@ -81,25 +81,6 @@ HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, c
     }
 }
 
-#if 0
-bool
-HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, const scaled& y) const
-{
-  scaled x = x0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    {
-      if ((*p)->find(context, x, y))
-	return true;
-
-      x += (*p)->box().horizontalExtent();
-    }
-
-  return false;
-}
-#endif
-
 bool
 HorizontalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
 {
@@ -147,70 +128,31 @@ HorizontalArrayArea::rightEdge() const
   return edge;
 }
 
-#if 0
-std::pair<scaled,scaled>
-HorizontalArrayArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
-			    const scaled& x0, const scaled& y) const
+scaled
+HorizontalArrayArea::leftSide(unsigned i) const
 {
-  if (id == empty)
-    return std::make_pair(x0, y);
-  else if (*id >= content.size())
-    throw InvalidId();
-  else
-    {
-      scaled x = x0;
-      for (std::vector<AreaRef>::const_iterator p = content.begin();
-	   p != content.begin() + *id;
-	   p++)
-	x += (*p)->box().horizontalExtent();
-      return content[*id]->origin(id + 1, empty, x, y);
-    }
+  assert(i < content.size());
+
+  unsigned l = i;
+  scaled redge = scaled::min();
+  while (redge == scaled::min() && l > 0)
+    redge = content[l--]->rightEdge();
+
+  return (redge != scaled::min()) ? originX(i) + redge : scaled::zero();
 }
 
 scaled
-HorizontalArrayArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
+HorizontalArrayArea::rightSide(unsigned i) const
 {
-  if (id == empty)
-    throw NotAllowed();
-  else if (*id >= content.size())
-    throw InvalidId();
-  else if (id + 1 == empty)
-    {
-      unsigned l = *id;
-      scaled redge = scaled::min();
-      while (redge == scaled::min() && l > 0)
-	redge = content[l--]->rightEdge();
-      if (redge != scaled::min())
-	return origin(id, empty, redge, scaled::zero()).first;
-      else
-	return scaled::zero();
-    }	
-  else
-    return content[*id]->leftSide(id + 1, empty);
-}
+  assert(i < content.size());
 
-scaled
-HorizontalArrayArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    throw NotAllowed();
-  else if (*id >= content.size())
-    throw InvalidId();
-  else if (id + 1 == empty)
-    {
-      unsigned r = *id;
-      scaled ledge = scaled::max();
-      while (ledge == scaled::max() && r + 1 < content.size())
-	ledge = content[r++]->leftEdge();
-      if (ledge != scaled::max())
-	return origin(id, empty, ledge, scaled::zero()).first;
-      else
-	return box().width;
-    }	
-  else
-    return content[*id]->rightSide(id + 1, empty);
+  unsigned r = i;
+  scaled ledge = scaled::max();
+  while (ledge == scaled::max() && r + 1 < content.size())
+    ledge = content[r++]->leftEdge();
+
+  return (ledge != scaled::max()) ? originX(i) + ledge : box().width;
 }
-#endif
 
 void
 HorizontalArrayArea::strength(int& w, int& h, int& d) const

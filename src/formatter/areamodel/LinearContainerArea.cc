@@ -32,40 +32,6 @@ LinearContainerArea::render(class RenderingContext& context, const scaled& x, co
     (*p)->render(context, x, y);
 }
 
-#if 0
-bool
-LinearContainerArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
-{
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    if ((*p)->find(context, x, y))
-      return true;
-  
-  return false;
-}
-
-bool
-LinearContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
-{
-  if (this == area)
-    return true;
-  else
-    {
-      for (std::vector<AreaRef>::const_iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	{
-	  factory.append(p - content.begin());
-	  if ((*p)->idOf(area, factory))
-	    return true;
-	  factory.backtrack();
-	}
-      return false;
-    }
-}
-#endif
-
 bool
 LinearContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
 {
@@ -98,17 +64,6 @@ LinearContainerArea::searchByIndex(AreaId& id, int index) const
 
 #if 0
 AreaRef
-LinearContainerArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    return this;
-  else if (*id < content.size())
-    return content[*id]->node(id + 1, empty);
-  else
-    throw InvalidId();
-}
-
-AreaRef
 LinearContainerArea::replace(const ReplacementContext& context) const
 {
   if (AreaRef newArea = context.get())
@@ -136,17 +91,6 @@ LinearContainerArea::replace(const ReplacementContext& context) const
 	}
     }
 }
-
-std::pair<scaled,scaled>
-LinearContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
-{
-  if (id == empty)
-    return std::make_pair(x, y);
-  else if (*id < content.size())
-    return content[*id]->origin(id + 1, empty, x, y);
-  else
-    throw InvalidId();
-}
 #endif
 
 scaled
@@ -170,30 +114,6 @@ LinearContainerArea::rightEdge(void) const
     edge = std::max(edge, (*p)->rightEdge());
   return edge;
 }
-
-#if 0
-scaled
-LinearContainerArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    throw NotAllowed();
-  else if (*id >= content.size())
-    throw InvalidId();
-  else
-    return content[*id]->leftSide(id + 1, empty);
-}
-
-scaled
-LinearContainerArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    throw NotAllowed();
-  else if (*id > content.size())
-    throw InvalidId();
-  else
-    return content[*id]->rightSide(id + 1, empty);
-}
-#endif
 
 AreaRef
 LinearContainerArea::node(unsigned i) const

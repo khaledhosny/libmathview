@@ -38,8 +38,8 @@ public:
   { return new VerticalSpaceArea(h, d); }
 
   virtual BoundingBox box(void) const;
-  virtual scaled      leftEdge(void) const;
-  virtual scaled      rightEdge(void) const;
+  virtual scaled leftEdge(void) const;
+  virtual scaled rightEdge(void) const;
 
   scaled getHeight(void) const { return height; }
   scaled getDepth(void) const { return depth; }

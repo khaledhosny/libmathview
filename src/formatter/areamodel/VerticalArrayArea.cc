@@ -117,69 +117,6 @@ VerticalArrayArea::render(class RenderingContext& context, const scaled& x, cons
     }  
 }
 
-#if 0
-bool
-VerticalArrayArea::find(class SearchingContext& context, const scaled& x, const scaled& y0) const
-{
-  std::vector<BoundingBox> box;
-  scaled depth = prepareChildBoxes(box);
-
-  scaled y = y0 - depth;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    {
-      const int i = p - content.begin();
-      y += box[i].depth;
-      if ((*p)->find(context, x, y))
-	return true;
-      y += box[i].height;
-    }  
-
-  return false;
-}
-
-std::pair<scaled,scaled>
-VerticalArrayArea::origin(const AreaId::const_iterator id,
-			  const AreaId::const_iterator empty,
-			  const scaled& x, const scaled& y0) const
-{
-  if (id == empty)
-    return std::make_pair(x, y0);
-  else if (*id >= content.size())
-    throw InvalidId();
-  else
-    {
-      scaled y = y0;
-      if (*id < refArea)
-	{
-	  if (BoundingBox idBox = content[*id]->box())
-	    y -= idBox.height;
-	  if (BoundingBox refBox = content[refArea]->box())
-	    y -= refBox.depth;
-	  for (std::vector<AreaRef>::const_iterator p = content.begin() + *id + 1;
-	       p != content.begin() + refArea;
-	       p++)
-	    if (BoundingBox b = (*p)->box())
-	      y -= b.verticalExtent();
-	}
-      else if (*id > refArea)
-	{
-	  if (BoundingBox refBox = content[refArea]->box())
-	    y += refBox.height;
-	  if (BoundingBox idBox = content[*id]->box())
-	    y += idBox.depth;
-	  for (std::vector<AreaRef>::const_iterator p = content.begin() + refArea + 1;
-	       p != content.begin() + *id;
-	       p++)
-	    if (BoundingBox b = (*p)->box())
-	      y += b.verticalExtent();
-	}
-      return content[*id]->origin(id + 1, empty, x, y);
-    }
-}
-#endif
-
 void
 VerticalArrayArea::strength(int& w, int& h, int& d) const
 {

@@ -35,9 +35,9 @@ public:
   static SmartPtr<BoxArea> create(const AreaRef& area, const BoundingBox& b) { return new BoxArea(area, b); }
   virtual AreaRef clone(const AreaRef& area) const { return create(area, bbox); }
 
-  virtual BoundingBox  box(void) const { return bbox; }
-  virtual AreaRef      fit(const scaled&, const scaled&, const scaled&) const;
-  virtual void         strength(int&, int&, int&) const;
+  virtual BoundingBox box(void) const { return bbox; }
+  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
+  virtual void strength(int&, int&, int&) const;
 
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
 

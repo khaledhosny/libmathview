@@ -37,14 +37,6 @@ BinContainerArea::render(class RenderingContext& context, const scaled& x, const
   child->render(context, x, y);
 }
 
-#if 0
-bool
-BinContainerArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
-{
-  return child->find(context, x, y);
-}
-#endif
-
 scaled
 BinContainerArea::leftEdge() const
 {
@@ -89,29 +81,6 @@ BinContainerArea::searchByIndex(AreaId& id, int index) const
   return false;
 }
 
-#if 0
-AreaRef
-BinContainerArea::replace(const ReplacementContext& context) const
-{
-  if (AreaRef newArea = context.get())
-    return newArea;
-  else
-    {
-      ReplacementContext newContext(context, 0);
-      AreaRef newChild = child->replace(newContext);
-      if (child == newChild)
-	return this;
-      else
-	{
-	  SmartPtr<Area> thisCloned = this->clone();
-	  SmartPtr<BinContainerArea> newArea = smart_cast<BinContainerArea>(thisCloned);
-	  newArea->child = newChild;
-	  return newArea;
-	}
-    }
-}
-#endif
-
 AreaRef
 BinContainerArea::fit(const scaled& w, const scaled& h, const scaled& d) const
 {
@@ -119,67 +88,6 @@ BinContainerArea::fit(const scaled& w, const scaled& h, const scaled& d) const
   if (fitChild == child) return this;
   else return clone(fitChild);
 }
-
-#if 0
-std::pair<scaled,scaled>
-BinContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
-			 const scaled& x, const scaled& y) const
-{
-  if (id == empty)
-    return std::make_pair(x, y);
-  else if (*id == 0)
-    return child->origin(id + 1, empty, x, y);
-  else
-    throw InvalidId();
-}
-
-AreaRef
-BinContainerArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    return this;
-  else if (*id == 0)
-    return child->node(id + 1, empty);
-  else
-    throw InvalidId();
-}
-
-scaled
-BinContainerArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    throw NotAllowed();
-  else if (*id != 0)
-    throw InvalidId();
-  else
-    return child->leftSide(id + 1, empty);
-}
-
-scaled
-BinContainerArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  if (id == empty)
-    throw NotAllowed();
-  else if (*id != 0)
-    throw InvalidId();
-  else
-    return child->rightSide(id + 1, empty);
-}
-
-bool
-BinContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
-{
-  if (area == this)
-    return true;
-  else
-    {
-      factory.append(0);
-      if (child->idOf(area, factory)) return true;
-      factory.backtrack();
-      return false;
-    }
-}
-#endif
 
 void
 BinContainerArea::strength(int& w, int& h, int& d) const
@@ -206,3 +114,11 @@ BinContainerArea::lengthTo(unsigned i) const
   assert(i == 0);
   return 0;
 }
+
+AreaRef
+BinContainerArea::replace(unsigned i, const AreaRef& newChild) const
+{
+  assert(i == 0);
+  return (child == newChild) ? this : clone(newChild);
+}
+

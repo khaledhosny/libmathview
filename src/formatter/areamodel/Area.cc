@@ -24,14 +24,20 @@
 
 #include "Area.hh"
 
-#if 0
-AreaId
-Area::idOf(const AreaRef& area) const
+scaled
+Area::originX(unsigned i) const
 {
-  AreaIdFactory factory;
-  if (idOf(area, factory))
-    return factory.id();
-  else
-    throw NotFound();
+  scaled x;
+  scaled y;
+  origin(i, x, y);
+  return x;
 }
-#endif
+
+scaled
+Area::originY(unsigned i) const
+{
+  scaled x;
+  scaled y;
+  origin(i, x, y);
+  return y;
+}

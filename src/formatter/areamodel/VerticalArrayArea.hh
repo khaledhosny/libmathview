@@ -45,13 +45,6 @@ public:
   virtual void origin(unsigned, scaled&, scaled&) const;
   virtual int lengthTo(unsigned) const;
 
-#if 0
-  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
-  virtual std::pair<scaled,scaled> origin(const AreaId::const_iterator,
-					  const AreaId::const_iterator,
-					  const scaled&, const scaled&) const;
-#endif
-
   unsigned getRefArea(void) const { return refArea; }
 
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;

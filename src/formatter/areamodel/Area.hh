@@ -47,39 +47,15 @@ public:
   virtual AreaRef node(unsigned) const = 0;
   virtual void origin(unsigned, scaled&, scaled&) const = 0;
   virtual int lengthTo(unsigned) const = 0;
+  //virtual AreaRef replace(unsigned, const AreaRef&) const = 0;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const = 0;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const = 0;
   virtual bool searchByIndex(class AreaId&, int) const = 0;
-
-#if 0
-  virtual AreaRef      replace(const class ReplacementContext&) const = 0;
-  virtual bool         find(class SearchingContext&, const scaled&, const scaled&) const = 0;
-          AreaRef      node(const AreaId& id) const { return node(id.path.begin(), id.path.end()); }
-  std::pair<scaled,scaled> origin(const AreaId& id) const
-  { return origin(id.path.begin(), id.path.end(), scaled::zero(), scaled::zero()); }
-          scaled       leftSide(const AreaId& id) const { return leftSide(id.path.begin(), id.path.end()); }
-          scaled       rightSide(const AreaId& id) const { return rightSide(id.path.begin(), id.path.end()); }
-
-  // creates an id object of the first occurrence of the argument
-  // during a depth-first visit of the area tree
-  // throws InvalidArea if the argument is not found
-  AreaId idOf(const AreaRef&) const;
-
-  virtual bool         idOf(const AreaRef&, class AreaIdFactory&) const = 0;
-  virtual AreaRef      node(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;  
-  virtual std::pair<scaled,scaled> origin(const AreaId::const_iterator,
-					  const AreaId::const_iterator,
-					  const scaled&, const scaled&) const = 0;
-  virtual scaled       leftSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
-  virtual scaled       rightSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
-#endif
-
   virtual AreaRef flatten(void) const { return this; }
 
-  class InvalidId { };
-  class NotAllowed { };
-  class NotFound { };
+  scaled originX(unsigned) const;
+  scaled originY(unsigned) const;
 };
 
 #endif // __Area_hh__

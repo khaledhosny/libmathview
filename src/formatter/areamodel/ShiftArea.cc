@@ -41,20 +41,6 @@ ShiftArea::box() const
     : childBox;
 }
 
-#if 0
-bool
-ShiftArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
-{
-  return BinContainerArea::find(context, x, y + shift);
-}
-
-std::pair<scaled,scaled>
-ShiftArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
-{
-  return BinContainerArea::origin(id, empty, x, y + shift);
-}
-#endif
-
 bool
 ShiftArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
 {

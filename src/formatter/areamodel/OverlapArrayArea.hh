@@ -36,7 +36,7 @@ public:
   virtual AreaRef clone(const std::vector<AreaRef>&) const;
   virtual AreaRef flatten(void) const;
 
-  virtual void    strength(int&, int&, int&) const;
+  virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual BoundingBox box(void) const;
   virtual void origin(unsigned, scaled&, scaled&) const;

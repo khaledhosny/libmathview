@@ -37,20 +37,6 @@ BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const 
     p->area->render(context, x + p->dx, y + p->dy);
 }
 
-#if 0
-bool
-BoxedLayoutArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
-{
-  for (std::vector<XYArea>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    if (p->area->find(context, x + p->dx, y + p->dy))
-      return true;
-
-  return false;
-}
-#endif
-
 bool
 BoxedLayoutArea::searchByArea(AreaId& id, const AreaRef& area) const
 {
@@ -104,28 +90,6 @@ BoxedLayoutArea::searchByIndex(AreaId& id, int index) const
 }
 
 #if 0
-bool
-BoxedLayoutArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
-{
-  if (this == area)
-    return true;
-  else
-    {
-      for (std::vector<XYArea>::const_iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	{
-	  factory.append(p - content.begin());
-	  if (p->area->idOf(area, factory))
-	    return true;
-	  factory.backtrack();
-	}
-      return false;
-    }
-}
-#endif
-
-#if 0
 AreaRef
 BoxedLayoutArea::replace(const ReplacementContext& context) const
 {
@@ -148,6 +112,15 @@ BoxedLayoutArea::replace(const ReplacementContext& context) const
       else
 	return clone(bbox, newContent);
     }
+}
+
+AreaRef
+BoxedLayoutArea::replace(const Substitution& subst) const
+{
+  assert(i < content.size());
+  if (content[i].area == newChild)
+    return this;
+  
 }
 #endif
 
@@ -187,38 +160,6 @@ BoxedLayoutArea::fit(const scaled& width, const scaled& height, const scaled& de
   else
     return clone(newContent);
 }
-
-#if 0
-std::pair<scaled,scaled>
-BoxedLayoutArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
-			const scaled& x, const scaled& y) const
-{
-  if (id == empty)
-    return std::make_pair(x, y);
-  else if (*id >= content.size())
-    throw InvalidId();
-  else
-    return content[*id].area->origin(id + 1, empty, content[*id].dx, content[*id].dy);
-}
-
-scaled
-BoxedLayoutArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  throw NotAllowed();
-}
-
-scaled
-BoxedLayoutArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  throw NotAllowed();
-}
-
-AreaRef
-BoxedLayoutArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
-{
-  throw InvalidId();
-}
-#endif
 
 AreaRef
 BoxedLayoutArea::node(unsigned i) const

@@ -37,13 +37,12 @@ public:
   virtual AreaRef clone(const std::vector<AreaRef>&) const = 0;
 
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  //virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
-  //virtual AreaRef replace(const class ReplacementContext&) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual unsigned size(void) const { return content.size(); }
   virtual AreaRef node(unsigned) const;
   virtual int lengthTo(unsigned) const;
+  //virtual AreaRef replace(const class ReplacementContext&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByIndex(class AreaId&, int) const;
@@ -53,14 +52,6 @@ public:
   class InvalidIndex { };
 
 protected:
-#if 0
-  virtual bool idOf(const AreaRef&, AreaIdFactory&) const;
-  virtual AreaRef node(AreaId::const_iterator, AreaId::const_iterator) const;
-  virtual std::pair<scaled,scaled> origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled&, const scaled&) const;
-  virtual scaled leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const;
-  virtual scaled rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const;
-#endif
-
   std::vector<AreaRef> content;
 };
 

@@ -24,3 +24,8 @@
 
 #include "ColorArea.hh"
 
+AreaRef
+ColorArea::clone(const AreaRef& area) const
+{
+  return create(area, getColor());
+}

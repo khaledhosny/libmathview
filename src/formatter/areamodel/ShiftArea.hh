@@ -36,10 +36,6 @@ public:
   virtual AreaRef clone(const AreaRef& area) const { return create(area, getShift()); }
 
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-#if 0
-  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
-  virtual std::pair<scaled,scaled> origin(AreaId::const_iterator, AreaId::const_iterator, const scaled&, const scaled&) const;
-#endif
   virtual BoundingBox box(void) const;
   virtual void origin(unsigned, scaled&, scaled&) const;
 

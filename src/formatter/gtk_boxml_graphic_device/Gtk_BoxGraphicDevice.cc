@@ -73,6 +73,7 @@ Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
 }
 
 #include "BoundingBoxAux.hh"
+#include "scaledAux.hh"
 
 AreaRef
 Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
@@ -86,6 +87,7 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
   pango_layout_set_width(layout, Gtk_RenderingContext::toPangoPixels(width));
   pango_layout_set_single_paragraph_mode(layout, TRUE);
   pango_layout_set_wrap(layout, PANGO_WRAP_WORD);
+  //pango_layout_set_justify(layout, TRUE); // doesn't work????
 
   PangoAttrList* attrList = pango_attr_list_new();
 
@@ -133,17 +135,22 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
   PangoRectangle rect;
   pango_layout_get_extents(layout, 0, &rect);
 
+#if 0
   PangoLayoutLine* first_line = pango_layout_get_line(layout, 0);
   PangoRectangle first_line_rect;
   pango_layout_line_get_extents(first_line, 0, &first_line_rect);
-
   const scaled first_line_ascent = Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(first_line_rect));
+#else
+  PangoLayoutIter* iter = pango_layout_get_iter(layout);
+  const scaled first_line_ascent = Gtk_RenderingContext::fromPangoPixels(pango_layout_iter_get_baseline(iter));
+  pango_layout_iter_free(iter);
+#endif
 
   BoundingBox finalBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
 		       first_line_ascent,
 		       Gtk_RenderingContext::fromPangoPixels(rect.height) - first_line_ascent);
 
-  std::cerr << "the final box will be " << finalBox << std::endl;
+  std::cerr << "the final box will be " << finalBox << " the first line ascent being " << first_line_ascent << std::endl;
 
   std::vector<BoxedLayoutArea::XYArea> c;
   c.push_back(BoxedLayoutArea::XYArea(scaled::zero(), scaled::zero(), factory->pangoLayout(layout)));
@@ -152,8 +159,28 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
       {
 	PangoRectangle pos;
 	pango_layout_index_to_pos(layout, (*obj).start_index, &pos);
+#if 0
+	std::cerr << "Positioning object with box " << (*obj).area->box() << " at "
+		  << Gtk_RenderingContext::fromPangoPixels(pos.x) << ","
+		  << Gtk_RenderingContext::fromPangoPixels(pos.y) << ","
+		  << Gtk_RenderingContext::fromPangoPixels(pos.width) << ","
+		  << Gtk_RenderingContext::fromPangoPixels(pos.height) << std::endl;
+	std::cerr << "The computation yields " << finalBox.height - Gtk_RenderingContext::fromPangoPixels(pos.y) - (*obj).area->box().height << std::endl;
+#endif
+
+	PangoLayoutIter* iter = pango_layout_get_iter(layout);
+	int baseline = pango_layout_iter_get_baseline(iter);
+	while (baseline < pos.y)
+	  {
+	    pango_layout_iter_next_line(iter);
+	    baseline = pango_layout_iter_get_baseline(iter);
+	  }
+	pango_layout_iter_free(iter);
+
+	std::cerr << "found object baseline " << baseline << std::endl;
+
 	c.push_back(BoxedLayoutArea::XYArea(Gtk_RenderingContext::fromPangoPixels(pos.x),
-					    finalBox.height - Gtk_RenderingContext::fromPangoPixels(pos.y) - (*obj).area->box().height,
+					    finalBox.height - Gtk_RenderingContext::fromPangoPixels(baseline),
 					    (*obj).area));
 
       }
@@ -168,3 +195,4 @@ Gtk_BoxGraphicDevice::wrapper(const BoxFormattingContext& context,
   BoundingBox box = base->box();
   return factory->wrapper(base->fit(box.width, box.height, box.depth), box, context.getElement());
 }
+
