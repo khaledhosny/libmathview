@@ -5,14 +5,24 @@ lib_LTLIBRARIES = libengine.la
 
 libengine_la_LIBADD = \
   -lstdc++ \
-  $(DOM_LIBS)
+  $(DOM_LIBS) \
+  $(top_builddir)/src/engine/mathml/libmathml.la \
+  $(top_builddir)/src/engine/boxml/libboxml.la
 
 libengine_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libengine_la_SOURCES = \
-  AttributeSignature.cc
+  Attribute.cc \
+  AttributeList.cc \
+  AttributeSignature.cc \
+  RefinementContext.cc
 
 noinst_HEADERS = \
+  Attribute.hh \
+  AttributeList.hh \
+  AttributeSignature.hh \
+  AbstractRefinementContext.hh \
+  RefinementContext.hh \
   BinContainerTemplate.hh \
   LinearContainerTemplate.hh \
   View.hh \
