@@ -125,11 +125,11 @@ struct _GtkMathView {
   gfloat         button_press_y;
   guint32        button_press_time;
 
-  GtkMathViewElementId current_elem;
+  GtkMathViewModelId current_elem;
 
-  GtkMathViewElementId cursor_elem;
+  GtkMathViewModelId cursor_elem;
   gint           cursor_index;
-  gboolean       cursor_visible;
+  GtkMathViewCursor cursor_visible;
 
   View*          view;
   Gtk_RenderingContext* renderingContext;
@@ -142,12 +142,12 @@ struct _GtkMathViewClass {
 				  GtkAdjustment *hadjustment,
 				  GtkAdjustment *vadjustment);
 
-  void (*click)         (GtkMathView*, GtkMathViewElementId, int);
-  void (*select_begin)  (GtkMathView*, GtkMathViewElementId, int);
-  void (*select_over)   (GtkMathView*, GtkMathViewElementId, int);
-  void (*select_end)    (GtkMathView*, GtkMathViewElementId, int);
-  void (*select_abort)  (GtkMathView*);
-  void (*element_over)  (GtkMathView*, GtkMathViewElementId, int);
+  GtkMathViewModelSignal click;
+  GtkMathViewModelSignal select_begin;
+  GtkMathViewModelSignal select_over;
+  GtkMathViewModelSignal select_end;
+  GtkMathViewSelectAbortSignal select_abort;
+  GtkMathViewModelSignal element_over;
 };
 
 /* helper functions */
@@ -171,12 +171,12 @@ static void     gtk_math_view_size_request(GtkWidget*, GtkRequisition*);
 
 /* GtkMathView Signals */
 
-static void gtk_math_view_click(GtkMathView*, GtkMathViewElementId, int);
-static void gtk_math_view_select_begin(GtkMathView*, GtkMathViewElementId, int);
-static void gtk_math_view_select_over(GtkMathView*, GtkMathViewElementId, int);
-static void gtk_math_view_select_end(GtkMathView*, GtkMathViewElementId, int);
+static void gtk_math_view_click(GtkMathView*, const GtkMathViewModelEvent*);
+static void gtk_math_view_select_begin(GtkMathView*, const GtkMathViewModelEvent*);
+static void gtk_math_view_select_over(GtkMathView*, const GtkMathViewModelEvent*);
+static void gtk_math_view_select_end(GtkMathView*, const GtkMathViewModelEvent*);
 static void gtk_math_view_select_abort(GtkMathView*);
-static void gtk_math_view_element_over(GtkMathView*, GtkMathViewElementId, int);
+static void gtk_math_view_element_over(GtkMathView*, const GtkMathViewModelEvent*);
 
 /* auxiliary functions */
 
@@ -198,7 +198,7 @@ static guint element_over_signal = 0;
 
 #if GTKMATHVIEW_USES_GMETADOM
 static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
+elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
 {
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(b))
     if (SmartPtr<Element> elem = builder->findElement(DOM::Element((el))))
@@ -207,7 +207,7 @@ elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
 }
 #elif GTKMATHVIEW_USES_LIBXML2
 static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
+elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
 {
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(b))
     if (SmartPtr<Element> elem = builder->findElement(el))
@@ -216,12 +216,12 @@ elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
 }
 #else
 static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>&, GtkMathViewElementId)
+elementOfModelElement(const SmartPtr<Builder>&, GtkMathViewModelId)
 { return 0; }
 #endif
 
 static SmartPtr<const Gtk_WrapperArea>
-findGtkWrapperArea(const SmartPtr<View>& view, GtkMathViewElementId node)
+findGtkWrapperArea(const SmartPtr<View>& view, GtkMathViewModelId node)
 {
   if (SmartPtr<Element> elem = elementOfModelElement(view->getBuilder(), node))
     if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
@@ -241,8 +241,7 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 		  math_view->pixmap,
 		  x0, y0, x0, y0, width, height);
 
-#if 1
-  if (math_view->cursor_elem)
+  if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_OFF && math_view->cursor_elem != NULL)
     {
       gint y0 = 0;
       if (AreaRef rootArea = math_view->view->getRootArea())
@@ -250,9 +249,14 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 
       gint x;
       gint y;
+      if (!GTKMATHVIEW_METHOD_NAME(get_element_origin)(math_view, math_view->cursor_elem, &x, &y))
+	return;
+
       GtkMathViewBoundingBox gbox;
-      if (GTKMATHVIEW_METHOD_NAME(get_element_location)(math_view, math_view->cursor_elem,
-							&x, &y, &gbox))
+      if (!GTKMATHVIEW_METHOD_NAME(get_element_extents)(math_view, math_view->cursor_elem, &gbox))
+	return;
+
+      if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_CARET_ON)
 	{
 	  printf("DRAWING FOCUS AT (y offset = %d) (%d,%d) [%d,%d,%d]\n", y0, x, y, gbox.width, gbox.height, gbox.depth);
 	  gtk_paint_focus(widget->style,
@@ -262,27 +266,27 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 			  widget,
 			  "?",
 			  x + MARGIN, MARGIN - y0 + y - gbox.height, gbox.width, gbox.height + gbox.depth);
-
+	}
+ 
+      if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_FOCUS_ON && math_view->cursor_index >= 0)
+	{
 	  GdkRectangle crect;
-	  if (GTKMATHVIEW_METHOD_NAME(get_char_location)(math_view, math_view->cursor_elem, math_view->cursor_index,
-							 &crect.x, &crect.y, NULL))
+	  if (GTKMATHVIEW_METHOD_NAME(get_char_origin)(math_view, math_view->cursor_elem, math_view->cursor_index,
+						       &crect.x, &crect.y))
 	    {
-	      printf("DRAWING CARET AT (%d, %d)\n", crect.x, crect.y);
-	      crect.y -= y0;
-	      crect.height = gbox.height;
-	      _gtk_draw_insertion_cursor(widget, widget->window, NULL, &crect, GTK_TEXT_DIR_LTR, TRUE);
-	    }
-	  else
-	    {
-	      crect.x = MARGIN + x;
+	      crect.x += MARGIN;
+	      //crect.y += MARGIN - y0 - gbox.height;
 	      crect.y = MARGIN - y0 + y - gbox.height;
 	      crect.height = gbox.height + gbox.depth;
-	      _gtk_draw_insertion_cursor(widget, widget->window, widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-					 &crect, GTK_TEXT_DIR_LTR, TRUE);
+	      _gtk_draw_insertion_cursor(widget,
+					 widget->window,
+					 widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+					 &crect,
+					 GTK_TEXT_DIR_LTR,
+					 FALSE);
 	    }
 	}
     }
-#endif
 }
 
 static void
@@ -439,7 +443,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 		 G_STRUCT_OFFSET(GtkMathViewClass,set_scroll_adjustments),
 		 NULL, NULL,
 		 gtk_marshal_NONE__POINTER_POINTER,
-		 G_TYPE_NONE , 2 , GTK_TYPE_ADJUSTMENT,GTK_TYPE_ADJUSTMENT); 
+		 G_TYPE_NONE , 2, GTK_TYPE_ADJUSTMENT, GTK_TYPE_ADJUSTMENT); 
 	
   click_signal = 
     g_signal_new("click",
@@ -447,44 +451,44 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, click),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER_INT,
-		 G_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
   select_begin_signal=
     g_signal_new("select_begin",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass,select_begin),
-		 NULL,NULL,
-		 gtk_marshal_NONE__POINTER_INT,
-		 G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
+		 NULL, NULL,
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	
   select_over_signal = 
     g_signal_new("select_over",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass,select_over),
-		 NULL,NULL,
-		 gtk_marshal_NONE__POINTER_INT,
-		 G_TYPE_NONE, 2 ,GTK_TYPE_POINTER,GTK_TYPE_INT);
+		 NULL, NULL,
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	
   select_end_signal = 
     g_signal_new("select_end",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass,select_end),
-		 NULL,NULL,
-		 gtk_marshal_NONE__POINTER_INT,
-		 G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
+		 NULL, NULL,
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	
   select_abort_signal = 
     g_signal_new("select_abort",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass,select_abort),
-		 NULL,NULL,
+		 NULL, NULL,
 		 gtk_marshal_NONE__NONE,
-		 G_TYPE_NONE,0);
+		 G_TYPE_NONE, 0);
 	
   element_over_signal = 
     g_signal_new("element_over",
@@ -492,8 +496,8 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass,element_over),
 		 NULL,NULL,
-		 gtk_marshal_NONE__POINTER_INT,
-		 G_TYPE_NONE, 2 , GTK_TYPE_POINTER,GTK_TYPE_INT);
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	
   initGlobalData(getenv("MATHENGINECONF"));
 }
@@ -514,7 +518,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->current_elem    = NULL;
   math_view->cursor_elem     = NULL;
   math_view->cursor_index    = 0;
-  math_view->cursor_visible  = FALSE;
+  math_view->cursor_visible  = GTKMATHVIEW_CURSOR_OFF;
   math_view->hadjustment = NULL;
   math_view->vadjustment = NULL;
 
@@ -740,7 +744,7 @@ gtk_math_view_button_press_event(GtkWidget*,
   else if (math_view->select_state == SELECT_STATE_YES)
     {
       math_view->select_state = SELECT_STATE_ABORT;
-      g_signal_emit(GTK_OBJECT(math_view), select_abort_signal,0);
+      g_signal_emit(GTK_OBJECT(math_view), select_abort_signal, 0);
     }
   
   return FALSE;
@@ -760,9 +764,9 @@ gtk_math_view_button_release_event(GtkWidget*,
 #if GTKMATHVIEW_USES_GMETADOM
       GdomeException exc = 0;
 #endif
-      GtkMathViewElementId elem = NULL;
+      GtkMathViewModelId elem = NULL;
       
-      gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem);
+      gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem, NULL, NULL);
 
 #if 0
       if (math_view->cursor_elem != elem)
@@ -786,6 +790,12 @@ gtk_math_view_button_release_event(GtkWidget*,
 	}
 #endif
 
+      GtkMathViewModelEvent me;
+      me.id = elem;
+      me.x = (gint) event->x;
+      me.y = (gint) event->y;
+      me.state = event->state;
+      
       if (math_view->button_pressed == TRUE &&
 	  math_view->select_state == SELECT_STATE_NO &&
 	  fabs(math_view->button_press_x - event->x) <= CLICK_SPACE_RANGE &&
@@ -794,20 +804,12 @@ gtk_math_view_button_release_event(GtkWidget*,
 	{
 	  // the mouse should have not moved more than one pixel in each direction
 	  // and the time elapsed from the press event should be no more than 250ms
-	  g_signal_emit(GTK_OBJECT(math_view),
-			  click_signal,
-			  0,
-			  elem,
-			  event->state);
+	  g_signal_emit(GTK_OBJECT(math_view), click_signal, 0, &me);
 	}
 
       if (math_view->select_state == SELECT_STATE_YES)      
-	      g_signal_emit(GTK_OBJECT(math_view),
-			      select_end_signal,
-			      0,
-			      elem,
-			      event->state);
-
+	g_signal_emit(GTK_OBJECT(math_view), select_end_signal, 0, &me);
+      
 #if GTKMATHVIEW_USES_GMETADOM
       if (elem != NULL)
 	{
@@ -851,9 +853,15 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if GTKMATHVIEW_USES_GMETADOM
   GdomeException exc = 0;
 #endif
-  GtkMathViewElementId elem = NULL;
+  GtkMathViewModelId elem = NULL;
 
-  GTKMATHVIEW_METHOD_NAME(get_element_at)(math_view, (gint) event->x, (gint) event->y, &elem);
+  GTKMATHVIEW_METHOD_NAME(get_element_at)(math_view, (gint) event->x, (gint) event->y, &elem, NULL, NULL);
+
+  GtkMathViewModelEvent me;
+  me.id = elem;
+  me.x = (gint) event->x;
+  me.y = (gint) event->y;
+  me.state = event->state;
 
   if (math_view->button_pressed == TRUE &&
       (math_view->select_state == SELECT_STATE_YES ||
@@ -863,20 +871,11 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
     {
       if (math_view->select_state == SELECT_STATE_NO)
 	{
-		g_signal_emit(GTK_OBJECT(math_view),
-				select_begin_signal,
-				0,
-				elem,
-				event->state);
-	  
+	  g_signal_emit(GTK_OBJECT(math_view), select_begin_signal, 0, &me);
 	  math_view->select_state = SELECT_STATE_YES;
 	}
       else if (math_view->select_state == SELECT_STATE_YES && math_view->current_elem != elem)
-	      g_signal_emit(GTK_OBJECT(math_view),
-			      select_over_signal,
-			      0,
-			      elem,
-			      event->state);
+	g_signal_emit(GTK_OBJECT(math_view), select_over_signal, 0, &me);
     }
 
   if (math_view->current_elem != elem)
@@ -899,10 +898,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 	}
 #endif // GTKMATHVIEW_USES_GMETADOM
 
-      g_signal_emit(GTK_OBJECT(math_view), 
-		    element_over_signal, 
-		    0, math_view->current_elem,
-		    event->state);
+      g_signal_emit(GTK_OBJECT(math_view), element_over_signal, 0, &me);
     }
 
 #if GTKMATHVIEW_USES_GMETADOM
@@ -964,28 +960,28 @@ gtk_math_view_expose_event(GtkWidget* widget,
 }
 
 static void
-gtk_math_view_click(GtkMathView* math_view, GtkMathViewElementId, gint)
+gtk_math_view_click(GtkMathView* math_view, const GtkMathViewModelEvent*)
 {
   g_return_if_fail(math_view != NULL);
   // noop
 }
 
 static void
-gtk_math_view_select_begin(GtkMathView* math_view, GtkMathViewElementId, gint)
+gtk_math_view_select_begin(GtkMathView* math_view, const GtkMathViewModelEvent*)
 {
   g_return_if_fail(math_view != NULL);
   // noop
 }
 
 static void
-gtk_math_view_select_over(GtkMathView* math_view, GtkMathViewElementId, gint)
+gtk_math_view_select_over(GtkMathView* math_view, const GtkMathViewModelEvent*)
 {
   g_return_if_fail(math_view != NULL);
   // noop
 }
 
 static void
-gtk_math_view_select_end(GtkMathView* math_view, GtkMathViewElementId, gint)
+gtk_math_view_select_end(GtkMathView* math_view, const GtkMathViewModelEvent*)
 {
   g_return_if_fail(math_view != NULL);
   // noop
@@ -999,7 +995,7 @@ gtk_math_view_select_abort(GtkMathView* math_view)
 }
 
 static void
-gtk_math_view_element_over(GtkMathView* math_view, GtkMathViewElementId, gint)
+gtk_math_view_element_over(GtkMathView* math_view, const GtkMathViewModelEvent*)
 {
   g_return_if_fail(math_view != NULL);
   // noop
@@ -1118,7 +1114,7 @@ GTKMATHVIEW_METHOD_NAME(load_doc)(GtkMathView* math_view, GdomeDocument* doc)
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewElementId elem)
+GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1157,7 +1153,7 @@ GTKMATHVIEW_METHOD_NAME(load_doc)(GtkMathView* math_view, xmlDoc* doc)
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewElementId elem)
+GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1225,40 +1221,44 @@ GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
   else
     vadj = GTK_ADJUSTMENT(gtk_adjustment_new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 
-  if (math_view->hadjustment != NULL && (math_view->hadjustment != hadj)) {
-    gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->hadjustment), math_view);
-    gtk_object_unref(GTK_OBJECT(math_view->hadjustment));
-  }
+  if (math_view->hadjustment != NULL && (math_view->hadjustment != hadj))
+    {
+      gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->hadjustment), math_view);
+      gtk_object_unref(GTK_OBJECT(math_view->hadjustment));
+    }
 
-  if (math_view->vadjustment != NULL && (math_view->vadjustment != vadj)) {
-    gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->vadjustment), math_view);
-    gtk_object_unref(GTK_OBJECT(math_view->vadjustment));
-  }
+  if (math_view->vadjustment != NULL && (math_view->vadjustment != vadj))
+    {
+      gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->vadjustment), math_view);
+      gtk_object_unref(GTK_OBJECT(math_view->vadjustment));
+    }
 
-  if (math_view->hadjustment != hadj) {
-    math_view->hadjustment = hadj;
-    gtk_object_ref(GTK_OBJECT(math_view->hadjustment));
-    gtk_object_sink(GTK_OBJECT(math_view->hadjustment));
-    
-    math_view->hsignal = 
-	    g_signal_connect(GTK_OBJECT(hadj), 
-			    "value_changed",
-			    G_CALLBACK(hadjustment_value_changed),
-			    math_view);
-  }
+  if (math_view->hadjustment != hadj)
+    {
+      math_view->hadjustment = hadj;
+      gtk_object_ref(GTK_OBJECT(math_view->hadjustment));
+      gtk_object_sink(GTK_OBJECT(math_view->hadjustment));
+      
+      math_view->hsignal = 
+	g_signal_connect(GTK_OBJECT(hadj), 
+			 "value_changed",
+			 G_CALLBACK(hadjustment_value_changed),
+			 math_view);
+    }
 
-  if (math_view->vadjustment != vadj) {
-    math_view->vadjustment = vadj;
-    gtk_object_ref(GTK_OBJECT(math_view->vadjustment));
-    gtk_object_sink(GTK_OBJECT(math_view->vadjustment));
-    
-    math_view->vsignal =
-	    g_signal_connect(GTK_OBJECT(vadj), 
-			    "value_changed",
-			    G_CALLBACK(vadjustment_value_changed),
-			    math_view);
-  }
-
+  if (math_view->vadjustment != vadj)
+    {
+      math_view->vadjustment = vadj;
+      gtk_object_ref(GTK_OBJECT(math_view->vadjustment));
+      gtk_object_sink(GTK_OBJECT(math_view->vadjustment));
+      
+      math_view->vsignal =
+	g_signal_connect(GTK_OBJECT(vadj), 
+			 "value_changed",
+			 G_CALLBACK(vadjustment_value_changed),
+			 math_view);
+    }
+  
   setup_adjustments(math_view);
 }
 
@@ -1304,7 +1304,7 @@ GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView* math_view)
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewElementId elem)
+GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
@@ -1317,7 +1317,7 @@ GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewEl
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewElementId elem, GtkMathViewModelString name)
+GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewModelId elem, GtkMathViewModelString name)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
@@ -1330,7 +1330,7 @@ GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewEl
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewElementId elem)
+GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
   g_return_if_fail(math_view);
   g_return_if_fail(math_view->view);
@@ -1344,7 +1344,7 @@ GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewElementId ele
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewElementId elem)
+GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
   g_return_if_fail(math_view);
   g_return_if_fail(math_view->view);
@@ -1358,7 +1358,7 @@ GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewElementId e
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView* math_view, GtkMathViewElementId elem)
+GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView* math_view, GtkMathViewModelId elem)
 {
   g_return_val_if_fail(math_view, FALSE);
   g_return_val_if_fail(math_view->view, FALSE);
@@ -1401,19 +1401,25 @@ GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, GtkMathViewBou
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, GtkMathViewElementId* result)
+GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y,
+					GtkMathViewModelId* result, gint* rx, gint* ry)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
+  scaled ex;
+  scaled ey;
   SmartPtr<Element> elem;
   if (math_view->view->getElementAt(Gtk_RenderingContext::fromGtkX(x),
-				    Gtk_RenderingContext::fromGtkY(y), elem))
+				    Gtk_RenderingContext::fromGtkY(y),
+				    elem, ex, ey))
 #if GTKMATHVIEW_USES_GMETADOM
     if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
       if (DOM::Element el = builder->findSelfOrAncestorModelElement(elem))
 	{
 	  if (result) *result = gdome_cast_el(el.gdome_object());
+	  if (rx) *rx = Gtk_RenderingContext::toGtkX(ex);
+	  if (ry) *ry = Gtk_RenderingContext::toGtkY(ey);
 	  return TRUE;
 	}
 #elif GTKMATHVIEW_USES_LIBXML2
@@ -1421,6 +1427,8 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, 
     if (xmlElement* el = (xmlElement*) builder->findSelfOrAncestorModelElement(elem))
       {
 	if (result) *result = el;
+	if (rx) *rx = Gtk_RenderingContext::toGtkX(ex);
+	if (ry) *ry = Gtk_RenderingContext::toGtkY(ey);
 	return TRUE;
       }
 #endif // GTKMATHVIEW_USES_LIBXML2
@@ -1430,7 +1438,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, 
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
-				     GtkMathViewElementId* result, gint* index)
+				     GtkMathViewModelId* result, gint* index)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1461,8 +1469,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-					      gint* x, gint* y, GtkMathViewBoundingBox* gbox)
+GTKMATHVIEW_METHOD_NAME(get_element_origin)(GtkMathView* math_view, GtkMathViewModelId elem, gint* rx, gint* ry)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1470,13 +1477,31 @@ GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathVie
 
   if (SmartPtr<Element> e = elementOfModelElement(math_view->view->getBuilder(), elem))
     {
-      scaled sx;
-      scaled sy;
-      BoundingBox box;
-      if (math_view->view->getElementExtents(e, sx, sy, box))
+      scaled ex;
+      scaled ey;
+      if (math_view->view->getElementOrigin(e, ex, ey))
 	{
-	  if (x) *x = Gtk_RenderingContext::toGtkX(sx);
-	  if (y) *y = Gtk_RenderingContext::toGtkY(sy);
+	  if (rx) *rx = Gtk_RenderingContext::toGtkX(ex);
+	  if (ry) *ry = Gtk_RenderingContext::toGtkY(ey);
+	  return TRUE;
+	}
+    }
+  return FALSE;
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView* math_view, GtkMathViewModelId elem,
+					     GtkMathViewBoundingBox* gbox)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
+
+  if (SmartPtr<Element> e = elementOfModelElement(math_view->view->getBuilder(), elem))
+    {
+      BoundingBox box;
+      if (math_view->view->getElementBoundingBox(e, box))
+	{
 	  if (gbox)
 	    {
 	      gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
@@ -1490,8 +1515,8 @@ GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathVie
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-					   gint index, gint* x, gint* y, GtkMathViewBoundingBox* gbox)
+GTKMATHVIEW_METHOD_NAME(get_char_origin)(GtkMathView* math_view, GtkMathViewModelId elem,
+					 gint index, gint* x, gint* y)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1502,17 +1527,10 @@ GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewEl
     {
       scaled sx;
       scaled sy;
-      BoundingBox box;
-      if (math_view->view->getCharExtents(e, index, sx, sy, box))
+      if (math_view->view->getCharOrigin(e, index, sx, sy))
 	{
 	  if (x) *x = Gtk_RenderingContext::toGtkX(sx);
 	  if (y) *y = Gtk_RenderingContext::toGtkY(sy);
-	  if (gbox)
-	    {
-	      gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
-	      gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
-	      gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
-	    }
 	  return TRUE;
 	}
     }
@@ -1520,7 +1538,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewEl
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView* math_view, GtkMathViewElementId* elem, gint* index)
+GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView* math_view, GtkMathViewModelId* elem, gint* index)
 {
   g_return_if_fail(math_view != NULL);
   if (elem != NULL)
@@ -1540,11 +1558,12 @@ GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView* math_view, GtkMathViewElementId
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView* math_view, GtkMathViewElementId elem, gint index)
+GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView* math_view, GtkMathViewModelId elem, gint index)
 {
   g_return_if_fail(math_view != NULL);
   if (math_view->cursor_elem != elem || math_view->cursor_index != index)
     {
+      math_view->cursor_index = index;
 #if GTKMATHVIEW_USES_GMETADOM
       if (math_view->cursor_elem != NULL)
 	{
@@ -1567,7 +1586,7 @@ GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView* math_view, GtkMathViewElementId
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView* math_view, gboolean visible)
+GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView* math_view, GtkMathViewCursor visible)
 {
   g_return_if_fail(math_view != NULL);
   if (math_view->cursor_visible != visible)
@@ -1577,10 +1596,10 @@ GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView* math_view, gboolean vis
     }
 }
 
-extern "C" gboolean
+extern "C" GtkMathViewCursor
 GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView* math_view)
 {
-  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view != NULL, GTKMATHVIEW_CURSOR_OFF);
   return math_view->cursor_visible;
 }
 

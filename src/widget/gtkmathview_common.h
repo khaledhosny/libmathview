@@ -22,8 +22,8 @@
  * <luca.padovani@cs.unibo.it>
  */
 
-#ifndef gtkmathview_h
-#define gtkmathview_h
+#ifndef __gtkmathview_common_h__
+#define __gtkmathview_common_h__
 
 #include "defs.h"
 
@@ -54,19 +54,36 @@ extern "C" {
 #if GTKMATHVIEW_USES_CUSTOM_READER
 #include "c_customXmlReader.h"
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##custom_reader
-  typedef void*                     GtkMathViewElementId;
+  typedef void*                     GtkMathViewModelId;
   typedef const char*               GtkMathViewModelString;
 #elif GTKMATHVIEW_USES_LIBXML2
 #include <libxml/tree.h>
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##libxml2
-  typedef xmlElement*               GtkMathViewElementId;
+  typedef xmlElement*               GtkMathViewModelId;
   typedef const xmlChar*            GtkMathViewModelString;
 #elif GTKMATHVIEW_USES_GMETADOM
 #include <gdome.h>
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##gmetadom
-  typedef GdomeElement*             GtkMathViewElementId;
+  typedef GdomeElement*             GtkMathViewModelId;
   typedef GdomeDOMString*           GtkMathViewModelString;
 #endif
+
+  typedef enum _GtkMathViewCursor {
+    GTKMATHVIEW_CURSOR_OFF,
+    GTKMATHVIEW_CURSOR_CARET_ON,
+    GTKMATHVIEW_CURSOR_FOCUS_ON,
+    GTKMATHVIEW_CURSOR_ON
+  } GtkMathViewCursor;
+
+  typedef struct _GtkMathViewModelEvent {
+    GtkMathViewModelId id;
+    gint x;
+    gint y;
+    gint state;
+  } GtkMathViewModelEvent;
+
+  typedef void (*GtkMathViewModelSignal)(GtkMathView*, const GtkMathViewModelEvent*);
+  typedef void (*GtkMathViewSelectAbortSignal)(GtkMathView*);
 
   GtkType    	 GTKMATHVIEW_METHOD_NAME(get_type)(void);
   GtkWidget* 	 GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
@@ -76,23 +93,24 @@ extern "C" {
   gboolean       GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
 #else
   gboolean       GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewElementId);
+  gboolean       GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewModelId);
 #endif
   void           GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView*);
-  void           GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView*, GtkMathViewElementId);
-  void           GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView*, GtkMathViewElementId, GtkMathViewModelString);
-  void           GTKMATHVIEW_METHOD_NAME(select)(GtkMathView*, GtkMathViewElementId);
-  void           GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewElementId);
-  gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewElementId);
+  void           GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView*, GtkMathViewModelId);
+  void           GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView*, GtkMathViewModelId, GtkMathViewModelString);
+  void           GTKMATHVIEW_METHOD_NAME(select)(GtkMathView*, GtkMathViewModelId);
+  void           GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewModelId);
+  gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewModelId);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewElementId*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView*, GtkMathViewElementId, gint*, gint*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewElementId*, gint*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView*, GtkMathViewElementId, gint, gint*, gint*, GtkMathViewBoundingBox*);
-  void           GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewElementId, gint);
-  void           GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewElementId*, gint*);
-  void           GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, gboolean);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*, gint*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_origin)(GtkMathView*, GtkMathViewModelId, gint*, gint*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView*, GtkMathViewModelId, GtkMathViewBoundingBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_origin)(GtkMathView*, GtkMathViewModelId, gint, gint*, gint*);
+  void           GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
+  void           GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
+  void           GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, GtkMathViewCursor);
+  GtkMathViewCursor GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView*);
   void      	 GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView*, gint*, gint*);
   void       	 GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView*, gint*, gint*);
   void       	 GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView*, gint, gint);
@@ -109,5 +127,5 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* gtkmathview_h */
+#endif /* __gtkmathview_common_h__ */
 
