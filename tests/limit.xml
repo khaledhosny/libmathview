@@ -1,0 +1,17 @@
+
+<math>
+  <mrow>
+    <munder>
+      <mi>lim</mi>
+      <mrow>
+        <mi>x</mi>
+        <mo><mchar name="RightArrow"/></mo>
+        <msub>
+          <mi>x</mi>
+	  <mn>0</mn>
+	</msub>
+      </mrow>
+    </munder>
+    <mi>x</mi>
+  </mrow>
+</math>

@@ -3,3 +3,5 @@
 Makefile
 Makefile.in
 makeDictionary
+dictionary.xml
+entities-table.xml
