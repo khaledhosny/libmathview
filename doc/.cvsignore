@@ -10,6 +10,7 @@
 *.toc
 *.tp
 *.vr
+*.pdf
 Makefile
 Makefile.in
 stamp-vti
