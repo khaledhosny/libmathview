@@ -79,6 +79,7 @@ translation approved by the Free Software Foundation.
 @menu
 * Overview::                    General information about GtkMathView.
 * Usage::                       Compiling and installation instructions.
+* Source Document::             
 * Interactivity Support::       
 * Sample Application::          
 * C++ Interface::               Summary of the C++ interface.
@@ -101,8 +102,14 @@ Configuration
 
 * Main Configuration File::     Basic configuration
 * Operator Dictionary::         Setting the default value for operator attributes
-* Font Setup::                  How the widget maps Unicode characters into glyphs
 
+Source Document
+
+* MathML
+* Extensions to MathML
+* MathML Entities
+* BoxML
+*
 Interactivity Support
 
 * Selection::                   Highlighting sub-expressions
@@ -112,18 +119,11 @@ Interactivity Support
 C++ Interface
 
 * Lengths::                     About Lengths
-* Boxes and Rectangles::        Boxes and Rectangles
-* MathMLRenderingEngine::       The MathMLRenderingEngine Class
-
-Boxes and Rectangles
-
-* Rectangles::                  Rectangles
-* Bounding Boxes::              Bounding Boxes
+* Points, Boxes, Rectangles::   Points, Boxes, Rectangles
 
 Tools
 
 * mathmlviewer::                A simple viewer application.
-* mathml2ps::                   A MathML => PostScript conversion utility.
 
 @end detailmenu
 @end menu
@@ -136,13 +136,12 @@ GtkMathView is a C++ rendering engine for MathML (see
 @url{http://www.w3.org/Math}) documents.  Although GtkMathView is, by
 its own definition, related to the GTK+ framework (we eventually had
 to commit to a development platform that was convenient for our
-purposes), its internal architecture is designed as to isolate as much
-as possible platform dependencies. A large part of GtkMathView, the
-one dealing with proper formula layout, is completely platform
-independent. On top of this internal, hidden library of C++ classes
-are two different interfaces, one for GTK+ and another one that allows
-to render MathML documents to PostScript. The implementation of a new
-interface is a relatively easy and straightforward task.
+purposes), its internal architecture is designed so as to isolate as
+much as possible platform dependencies. A large part of GtkMathView,
+the one dealing with proper formula layout, is completely platform
+independent. On top of this internal, hidden library of C++ classes is
+the GTK+ interface. The implementation of a new interface is a
+relatively easy and straightforward task.
 
 @noindent
 For questions, comments, suggestions, bug reports, contributions, please

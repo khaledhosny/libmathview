@@ -42,9 +42,12 @@ ARCH IMPROVEMENTS
   over areas by implementing a visitor
 - fix Configuration/Globals files 
   create a class for them and refer them from the View
+- remove cast in gmetadom_Model::documentFromBuffer when gdome API is OK
 
 PERFORMANCE IMPROVEMENTS
 
+- share Gtk_MathGraphicDevice along with all the shapers.
+  Unfortunately these need the widget.
 - implement caching mechanism for pango shaper
 - in TemplateBuilder do not use the hash map for retrieving old
   elements, but use accessor methods instead. Much faster 
@@ -52,6 +55,8 @@ PERFORMANCE IMPROVEMENTS
 
 MISSING
 
++ custom_reader not implemented in widget
++ libxml2_reader read from buffer API (add/cleanup in widget)
 ? make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups

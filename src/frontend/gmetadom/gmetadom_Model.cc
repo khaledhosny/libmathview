@@ -74,6 +74,52 @@ gmetadom_Model::document(const String& path, bool subst)
   return res;
 }
 
+DOM::Document
+gmetadom_Model::documentFromBuffer(const String& buffer, bool subst)
+{
+  DOM::Document res;
+
+  Clock perf;
+  perf.Start();
+  if (!subst)
+    res = DOM::DOMImplementation().createDocumentFromMemory(buffer.c_str(), buffer.length());
+  else
+    {
+      GdomeDOMImplementation* di = gdome_di_mkref();
+      assert(di != NULL);
+      GdomeException exc = 0;
+      // FIXME: the cast should not be necessary if the gdome API were OK
+      GdomeDocument* doc = gdome_di_createDocFromMemoryWithEntitiesTable(di,
+									 const_cast<String::value_type*>(buffer.c_str()),
+									 getMathMLEntities(),
+									 GDOME_LOAD_PARSING | GDOME_LOAD_SUBSTITUTE_ENTITIES,
+									 &exc);
+      if (exc != 0)
+	{
+	  gdome_di_unref(di, &exc);
+	  gdome_doc_unref(doc, &exc);
+	  return DOM::Document(0);
+	}
+
+      if (doc == 0)
+	{
+	  // FIXME: this should be signalled as an exception, I think
+	  gdome_di_unref(di, &exc);
+	  return DOM::Document(0);
+	}
+
+      res = DOM::Document(doc);
+      gdome_di_unref(di, &exc);
+      assert(exc == 0);
+      gdome_doc_unref(doc, &exc);
+      assert(exc == 0);
+    }
+  perf.Stop();
+  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+
+  return res;
+}
+
 String
 gmetadom_Model::getElementValue(const DOM::Element& elem)
 {

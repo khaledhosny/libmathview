@@ -1140,6 +1140,7 @@ setup_adjustments(GtkMathView* math_view)
 }
 
 #if GTKMATHVIEW_USES_CUSTOM_READER
+
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, GtkMathViewReader* reader,
 				     GtkMathViewReaderData user_data)
@@ -1149,7 +1150,9 @@ GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, GtkMathViewReader* 
   assert(false);
   return FALSE;
 }
+
 #elif GTKMATHVIEW_USES_GMETADOM
+
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
@@ -1157,6 +1160,27 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
   g_return_val_if_fail(name != NULL, FALSE);
 
   if (DOM::Document doc = gmetadom_Model::document(name, true))
+    {
+      GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
+      g_assert(d != NULL);
+      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_document)(math_view, d);
+      GdomeException exc = 0;
+      gdome_doc_unref(d, &exc);
+      g_assert(exc == 0);
+      return res;
+    }
+
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
+  return FALSE;
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(buffer != NULL, FALSE);
+
+  if (DOM::Document doc = gmetadom_Model::documentFromBuffer(buffer, true))
     {
       GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
       g_assert(d != NULL);
@@ -1232,13 +1256,40 @@ GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
   else
     return NULL;
 }
+
 #elif GTKMATHVIEW_USES_LIBXML2
+
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
+  g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
 
   if (xmlDoc* doc = libxml2_Model::document(name, true))
+    {
+      if (GTKMATHVIEW_METHOD_NAME(load_document)(math_view, doc))
+	{
+	  math_view->doc_owner = TRUE;
+	  return TRUE;
+	}
+      else
+	{
+	  xmlFreeDoc(doc);
+	  return FALSE;
+	}
+    }
+  
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
+  return FALSE;
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(buffer != NULL, FALSE);
+
+  if (xmlDoc* doc = libxml2_Model::documentFromBuffer(buffer, true))
     {
       if (GTKMATHVIEW_METHOD_NAME(load_document)(math_view, doc))
 	{
@@ -1296,7 +1347,9 @@ GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
   g_return_val_if_fail(math_view != NULL, NULL);
   return math_view->current_doc;
 }
+
 #elif GTKMATHVIEW_USES_LIBXML2_READER
+
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
@@ -1312,6 +1365,7 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 
   return FALSE;
 }
+
 #endif // GTKMATHVIEW_USES_LIBXML2_READER
 
 extern "C" void

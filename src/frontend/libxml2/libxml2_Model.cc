@@ -40,6 +40,18 @@ libxml2_Model::document(const String& path, bool)
   return doc;
 }
 
+xmlDoc*
+libxml2_Model::documentFromBuffer(const String& buffer, bool)
+{
+  Clock perf;
+  perf.Start();
+  xmlDoc* doc = xmlReadDoc(toModelString(buffer.c_str()), NULL, NULL, 0);
+  perf.Stop();
+  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+
+  return doc;  
+}
+
 xmlElement*
 libxml2_Model::getDocumentElement(const Document& doc)
 {

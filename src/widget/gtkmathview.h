@@ -29,6 +29,7 @@
 #define gtk_math_view_thaw                 GTKMATHVIEW_METHOD_NAME(thaw)
 #define gtk_math_view_load_reader          GTKMATHVIEW_METHOD_NAME(load_reader)
 #define gtk_math_view_load_uri             GTKMATHVIEW_METHOD_NAME(load_uri)
+#define gtk_math_view_load_buffer          GTKMATHVIEW_METHOD_NAME(load_buffer)
 #define gtk_math_view_load_document        GTKMATHVIEW_METHOD_NAME(load_document)
 #define gtk_math_view_load_root            GTKMATHVIEW_METHOD_NAME(load_root)
 #define gtk_math_view_unload               GTKMATHVIEW_METHOD_NAME(unload)

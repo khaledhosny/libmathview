@@ -97,6 +97,7 @@ extern "C" {
   gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
 #else
   gboolean   GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView*, const gchar*);
   gboolean   GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView*, GtkMathViewModelDocument);
   gboolean   GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewModelId);
   GtkMathViewModelDocument GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView*);
