@@ -127,6 +127,7 @@ MathMLFractionElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLFractionElement::Setup(RenderingEnvironment& env)
 {
@@ -279,6 +280,7 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLFractionElement::format(MathFormattingContext& ctxt)
@@ -360,6 +362,7 @@ MathMLFractionElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
 {
@@ -460,6 +463,7 @@ MathMLFractionElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif
 
 void
 MathMLFractionElement::SetFlagDown(Flags f)
@@ -477,6 +481,7 @@ MathMLFractionElement::ResetFlagDown(Flags f)
   if (denominator) denominator->ResetFlagDown(f);
 }
 
+#if 0
 scaled
 MathMLFractionElement::GetLeftEdge() const
 {
@@ -508,6 +513,7 @@ MathMLFractionElement::Inside(const scaled& x, const scaled& y)
 
   return this;
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLFractionElement::GetCoreOperator()

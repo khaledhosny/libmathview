@@ -36,13 +36,17 @@ public:
   { return new MathMLSpaceElement(view); }
 
   virtual void    refine(class AbstractRefinementContext&);
+#if 0
   virtual void    Setup(class RenderingEnvironment&);
   virtual void    DoLayout(const class FormattingContext&);
+#endif
 
   virtual bool    IsSpace(void) const;
   virtual bool    IsSpaceLike(void) const;
   TokenId         GetBreakability(void) const { return breakability; }
+#if 0
   virtual scaled  GetRightEdge(void) const;
+#endif
 
 private:
   bool    lineBreak;

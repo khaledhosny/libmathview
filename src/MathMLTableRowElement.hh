@@ -38,9 +38,11 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   
   virtual bool IsInside(const scaled&, const scaled&) const;
+#endif
 
   virtual SmartPtr<MathMLElement> GetLabel(void) const;
 
@@ -51,10 +53,12 @@ public:
   virtual void SetDirtyLayout(void);
 
 protected:
+#if 0
   void SetupAux(RenderingEnvironment&, bool);
   void SetupCellSpanning(RenderingEnvironment&);
   void SetupGroupAlign(RenderingEnvironment&);
   void SetupRowIndex(unsigned);
+#endif
 
 private:
   unsigned rowIndex;

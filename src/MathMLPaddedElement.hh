@@ -38,9 +38,11 @@ public:
   { return new MathMLPaddedElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
+#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
 private:

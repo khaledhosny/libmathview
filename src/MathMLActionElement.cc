@@ -53,6 +53,7 @@ MathMLActionElement::refine(AbstractRefinementContext& context)
    }
 }
 
+#if 0
 void
 MathMLActionElement::Setup(RenderingEnvironment& env)
 {
@@ -95,6 +96,7 @@ MathMLActionElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLActionElement::format(MathFormattingContext& ctxt)
@@ -140,6 +142,7 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLActionElement::SetPosition(const scaled& x0, const scaled& y0)
 {
@@ -160,6 +163,7 @@ MathMLActionElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif
 
 SmartPtr<MathMLElement>
 MathMLActionElement::GetSelectedElement() const
@@ -190,6 +194,7 @@ MathMLActionElement::GetSelectedIndex() const
   return (content.size() > 0) ? selection + 1 : 0;
 }
 
+#if 0
 scaled
 MathMLActionElement::GetLeftEdge() const
 {
@@ -221,6 +226,7 @@ MathMLActionElement::Inside(const scaled& x, const scaled& y)
   else
     return 0;
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLActionElement::GetCoreOperator()

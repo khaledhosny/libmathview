@@ -88,6 +88,7 @@ MathMLTableRowElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLTableRowElement::SetupRowIndex(unsigned i)
 {
@@ -155,6 +156,7 @@ MathMLTableRowElement::IsInside(const scaled& x, const scaled& y) const
 
   return false;
 }
+#endif
 
 SmartPtr<MathMLElement>
 MathMLTableRowElement::GetLabel(void) const

@@ -53,6 +53,7 @@ MathMLSpaceElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLSpaceElement::Setup(RenderingEnvironment& env)
 {
@@ -91,6 +92,7 @@ MathMLSpaceElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
+#endif
 
 bool
 MathMLSpaceElement::IsSpace() const
@@ -104,8 +106,10 @@ MathMLSpaceElement::IsSpaceLike() const
   return true;
 }
 
+#if 0
 scaled
 MathMLSpaceElement::GetRightEdge() const
 {
   return GetX() + (lineBreak ? box.width : 0);
 }
+#endif

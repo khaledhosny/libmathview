@@ -25,6 +25,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLBreakableRowElement.hh"
 
+#if 0
 void
 MathMLBreakableRowElement::Setup(RenderingEnvironment& env)
 {
@@ -72,6 +73,7 @@ MathMLBreakableRowElement::SetPosition(const scaled& x0, const scaled& y0)
   SetEmbellishmentPosition(this, x, y);
   layout->SetPosition(x, y);
 }
+#endif
 
 scaled
 MathMLBreakableRowElement::GetExitBaseline() const

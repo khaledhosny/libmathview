@@ -51,7 +51,9 @@ MathMLTableElement::MathMLTableElement(const SmartPtr<class MathMLView>& view)
 
 MathMLTableElement::~MathMLTableElement()
 {
+#if 0
   ReleaseAuxStructures();
+#endif
 }
 
 void
@@ -122,6 +124,7 @@ MathMLTableElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
 {
@@ -372,3 +375,4 @@ MathMLTableElement::ReleaseGCs()
   MathMLLinearContainerElement::ReleaseGCs();
   dGC[0] = dGC[1] = NULL;
 }
+#endif

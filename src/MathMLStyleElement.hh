@@ -38,10 +38,12 @@ public:
   { return new MathMLStyleElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
+#endif
 
   virtual bool IsSpaceLike(void) const;
   virtual void SetDirtyAttribute(void);

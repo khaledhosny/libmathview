@@ -49,17 +49,21 @@ public:
 
   virtual void   construct(void);
   virtual void   refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void 	 Setup(class RenderingEnvironment&);
   virtual void 	 DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void   SetPosition(const scaled&, const scaled&);
   virtual void 	 Render(const class DrawingArea&);
+#endif
 
   bool           IsNonMarking(void) const;
 
+#if 0
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
   scaled         GetDecimalPointEdge(void) const;
+#endif
 
   RGBColor       GetColor(void) const { return color; }
 

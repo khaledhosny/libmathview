@@ -83,6 +83,7 @@ MathMLSemanticsElement::construct()
     }
 }
 
+#if 0
 void
 MathMLSemanticsElement::DoLayout(const FormattingContext& ctxt)
 {
@@ -105,6 +106,7 @@ MathMLSemanticsElement::SetPosition(const scaled& x0, const scaled& y0)
   SetEmbellishmentPosition(this, x, y);
   if (GetChild()) GetChild()->SetPosition(x, y);
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLSemanticsElement::GetCoreOperator()

@@ -38,11 +38,13 @@ public:
   static SmartPtr<MathMLOperatorElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLOperatorElement(view); }
 
-  virtual void Setup(class RenderingEnvironment&);
   virtual void refine(class AbstractRefinementContext&);
-  virtual void DoLayout(const class FormattingContext&);
   virtual AreaRef format(class MathFormattingContext&);
+#if 0
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
+#endif
 
   bool         IsStretchy(void) const { return stretchy != 0; }
   bool         IsAccent(void) const { return accent != 0; }

@@ -39,6 +39,7 @@ MathMLAlignGroupElement::~MathMLAlignGroupElement()
 {
 }
 
+#if 0
 void
 MathMLAlignGroupElement::DoLayout(const FormattingContext& ctxt)
 {
@@ -48,6 +49,7 @@ MathMLAlignGroupElement::DoLayout(const FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 void
 MathMLAlignGroupElement::SetDecimalPoint(const SmartPtr<class MathMLTokenElement>& token)

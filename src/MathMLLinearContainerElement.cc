@@ -94,6 +94,7 @@ MathMLLinearContainerElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLLinearContainerElement::Setup(RenderingEnvironment& env)
 {
@@ -150,6 +151,7 @@ MathMLLinearContainerElement::ReleaseGCs()
   MathMLElement::ReleaseGCs();
   for_each_if(content.begin(), content.end(), NotNullPredicate(), ReleaseGCsAdaptor());
 }
+#endif
 
 void
 MathMLLinearContainerElement::SetSize(unsigned size)
@@ -227,6 +229,7 @@ MathMLLinearContainerElement::SwapChildren(std::vector< SmartPtr<MathMLElement> 
     }
 }
 
+#if 0
 scaled
 MathMLLinearContainerElement::GetLeftEdge() const
 {
@@ -268,6 +271,7 @@ MathMLLinearContainerElement::SetDirty(const Rectangle* rect)
       for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
     }
 }
+#endif
 
 void
 MathMLLinearContainerElement::SetFlagDown(Flags f)

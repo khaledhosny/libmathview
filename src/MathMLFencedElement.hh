@@ -37,7 +37,9 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
+#endif
 
 private:
   bool normalized;

@@ -36,9 +36,11 @@ public:
   { return new MathMLTableCellElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void DoLayout(const class FormattingContext&);
+#endif
 
   void SetAlignmentScope(bool b) { alignmentScope = b; }
 
@@ -64,9 +66,11 @@ protected:
   static void SetupGroups(const SmartPtr<MathMLElement>&, bool, bool, class TableCell&);
   void CalcGroupsExtent(void);
 
+#if 0
   void SetupCellPosition(unsigned, unsigned, unsigned);
   void SetupCellSpanning(RenderingEnvironment&);
   void SetupCell(class TableCell*);
+#endif
 
 private:
   scaled   minWidth;

@@ -89,6 +89,7 @@ MathMLEncloseElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLEncloseElement::Setup(RenderingEnvironment& env)
 {
@@ -134,6 +135,7 @@ MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLEncloseElement::format(MathFormattingContext& ctxt)
@@ -155,6 +157,7 @@ MathMLEncloseElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLEncloseElement::SetPosition(const scaled& x, const scaled& y)
 {
@@ -204,3 +207,4 @@ MathMLEncloseElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif

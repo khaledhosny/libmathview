@@ -49,6 +49,7 @@ MathMLStringLitElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLStringLitElement::Setup(RenderingEnvironment& env)
 {
@@ -80,3 +81,4 @@ MathMLStringLitElement::Setup(RenderingEnvironment& env)
       ResetDirtyAttribute();
     }
 }
+#endif

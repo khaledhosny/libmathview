@@ -45,6 +45,7 @@ MathMLPhantomElement::IsSpaceLike() const
   return child->IsSpaceLike();
 }
 
+#if 0
 void
 MathMLPhantomElement::DoLayout(const FormattingContext& ctxt)
 {
@@ -55,6 +56,7 @@ MathMLPhantomElement::DoLayout(const FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLPhantomElement::format(MathFormattingContext& ctxt)
@@ -77,6 +79,7 @@ MathMLPhantomElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLPhantomElement::SetPosition(const scaled& x0, const scaled& y0)
 {
@@ -94,6 +97,7 @@ MathMLPhantomElement::Render(const DrawingArea&)
 {
   ResetDirty();
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLPhantomElement::GetCoreOperator()

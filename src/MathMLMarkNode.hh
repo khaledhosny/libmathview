@@ -36,10 +36,12 @@ public:
   static SmartPtr<MathMLMarkNode> create(TokenId t)
   { return new MathMLMarkNode(t); }
   
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void Render(const DrawingArea&);
+#endif
 
   TokenId GetAlignmentEdge(void) const { return edge; }
 

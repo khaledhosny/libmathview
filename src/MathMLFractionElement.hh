@@ -38,22 +38,28 @@ public:
   { return new MathMLFractionElement(view); }
 
   virtual void   construct(void);
-  virtual void   Setup(RenderingEnvironment&);
   virtual void   refine(class AbstractRefinementContext&);
-  virtual void   DoLayout(const class FormattingContext&);
   virtual AreaRef format(class MathFormattingContext&);
+#if 0
+  virtual void   Setup(RenderingEnvironment&);
+  virtual void   DoLayout(const class FormattingContext&);
   virtual void   SetPosition(const scaled&, const scaled&);
+#endif
   virtual void   SetFlagDown(Flags);
   virtual void   ResetFlagDown(Flags);
 
+#if 0
   virtual void   Render(const DrawingArea&);
+#endif
 
   virtual void   Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&);
 
+#if 0
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
   virtual void   ReleaseGCs(void);
   virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&);
+#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
   SmartPtr<MathMLElement> GetNumerator(void) const { return numerator; }

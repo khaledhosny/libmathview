@@ -34,25 +34,31 @@ protected:
   virtual ~MathMLTextNode();
 
 public:
+  virtual AreaRef format(class MathFormattingContext&) = 0;
+#if 0
   virtual void 	   Setup(class RenderingEnvironment&) = 0;
   virtual void 	   DoLayout(const class FormattingContext&) = 0;
-  virtual AreaRef format(class MathFormattingContext&) = 0;
   virtual void 	   SetPosition(const scaled&, const scaled&);
   virtual void 	   Render(const DrawingArea&) = 0;
+#endif
 
   virtual String   GetRawContent(void) const { return String(); }
   virtual unsigned GetLogicalContentLength(void) const { return 0; }
 
   virtual bool 	   IsText(void) const;  
+#if 0
   virtual bool 	   IsInside(const scaled&, const scaled&) const;
+#endif
   virtual bool     HasDecimalPoint(void) const;
   void             SetSpacing(int);
   void             AddSpacing(int);
   int              GetSpacing(void) const { return spacing; }
 
+#if 0
   virtual scaled   GetLeftEdge(void) const;
   virtual scaled   GetRightEdge(void) const;
   virtual scaled   GetDecimalPointEdge(void) const;
+#endif
 
 protected:
   int spacing : 13;     // overall spacing after the node

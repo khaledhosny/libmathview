@@ -55,9 +55,11 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
+
+#if 0
   virtual void Setup(class RenderingEnvironment&); // setup attributes
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void RenderBackground(const DrawingArea&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
@@ -65,6 +67,7 @@ public:
 
   const class GraphicsContext* GetForegroundGC(void) const { return fGC[Selected()]; }
   const class GraphicsContext* GetBackgroundGC(void) const { return bGC[Selected()]; }
+#endif
 
 protected:
   SmartPtr<class MathMLViewContext> getViewContext(void) const;
@@ -82,25 +85,31 @@ public:
   // some queries
   TokenId      	 IsA(void) const;
   virtual bool 	 IsSpaceLike(void) const;
+  bool           hasLink(void) const;
+#if 0
   virtual bool 	 IsInside(const scaled&, const scaled&) const;
-  bool           HasLink(void) const;
   bool           Exposed(const DrawingArea& area) const
   { return area.Exposed(GetX(), 
 			GetY() - GetBoundingBox().height, 
 			GetBoundingBox().horizontalExtent(),
 			GetBoundingBox().verticalExtent()); }
   RGBColor     	 GetBackgroundColor(void) const { return background; }
+#endif
   unsigned     	 GetDepth(void) const;
+#if 0
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
+#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
   SmartPtr<class MathMLOperatorElement> GetCoreOperatorTop(void);
 
+#if 0
   bool DirtyBackground(void) const
   {
     return GetParent() && ((Selected() != GetParent()->Selected()) ||
 			   (background != GetParent()->background));
   }
+#endif
 
   bool DirtyLayout(const class FormattingContext&) const { return DirtyLayout(); }
   void ResetDirtyLayout(const FormattingContext& ctxt)
@@ -121,12 +130,14 @@ public:
   virtual void SetDirtyLayout(void);
   void ResetDirtyLayout(void) { ResetFlag(FDirtyLayout); }
   bool DirtyLayout(void) const { return GetFlag(FDirtyLayout); }
+#if 0
   virtual void SetDirty(const Rectangle* = 0);
   void ResetDirty(void) { ResetFlag(FDirty); }
   bool Dirty(void) const { return GetFlag(FDirty); }
   virtual void SetSelected(void);
   void ResetSelected(void);
   bool Selected(void) const { return GetFlag(FSelected); }
+#endif
 
 public:
   enum Flags {
@@ -135,9 +146,11 @@ public:
     FDirtyAttributeP, // an attribute was modified in a descendant
     FDirtyAttributeD, // an attribute was modified and must set DirtyAttribute on all descendants
     FDirtyLayout,     // need to layout
+#if 0
     FDirty,           // need to render
     FDirtyP,          // need to render a descendant
     FSelected,        // selected subtree
+#endif
 
     FUnusedFlag       // Just to know how many flags we use without having to count them
   };
@@ -155,10 +168,12 @@ private:
   SmartPtr<MathMLAttributeList> attributes;
 
 protected:
+#if 0
   const class GraphicsContext* fGC[2];
   const class GraphicsContext* bGC[2];
 
   RGBColor background; // background color
+#endif
 
   WeakPtr<class MathMLView> view;
   AreaRef area;

@@ -146,7 +146,9 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
   // area is scrollable (as in the case of Gtk_DrawingArea) or not
   // (PS_DrawingArea). The caller must properly adjust x and y before
   // calling this method
+#if 0
   return root ? root->Inside(x, y) : 0;
+#endif
 }
 
 BoundingBox
@@ -154,7 +156,7 @@ MathMLView::getBoundingBox() const
 {
   layout();
   if (root)
-    return root->GetBoundingBox();
+    return root->getArea()->box();
   else
     return BoundingBox();
 }
@@ -163,9 +165,11 @@ Rectangle
 MathMLView::getRectangle() const
 {
   layout();
+#if 0
   if (root)
-    return Rectangle(root->GetX(), root->GetY(), root->GetBoundingBox());
+    return Rectangle(root->GetX(), root->GetY(), root->getArea()->box());
   else
+#endif
     return Rectangle();
 }
 

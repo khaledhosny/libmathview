@@ -36,7 +36,9 @@ public:
   { return new MathMLStringLitElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
+#endif
 
 protected:
   SmartPtr<class MathMLTextNode> lQuote;

@@ -35,6 +35,7 @@ protected:
   virtual ~MathMLFrame();
 
 public:
+#if 0
   virtual void   SetPosition(const scaled&, const scaled&);
   virtual void   Render(const DrawingArea&) = 0;
 
@@ -49,6 +50,7 @@ public:
 protected:
   Coords      position;
   BoundingBox box;
+#endif
 };
 
 #endif // MathMLFrame_hh

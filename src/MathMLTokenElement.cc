@@ -232,6 +232,7 @@ MathMLTokenElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLTokenElement::Setup(RenderingEnvironment& env)
 {
@@ -338,6 +339,7 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLTokenElement::format(MathFormattingContext& ctxt)
@@ -419,11 +421,11 @@ MathMLTokenElement::format(MathFormattingContext& ctxt)
 	  ctxt.setColor(ToRGB(value));
 	} 
       else
-	if (HasLink()) ctxt.setColor(Globals::configuration.GetLinkForeground());
+	if (hasLink()) ctxt.setColor(Globals::configuration.GetLinkForeground());
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathbackground))
 	ctxt.setBackground(ToRGB(value));
-      else if (HasLink() && !Globals::configuration.HasTransparentLinkBackground())
+      else if (hasLink() && !Globals::configuration.HasTransparentLinkBackground())
 	ctxt.setBackground(Globals::configuration.GetLinkBackground());
 
       RGBColor newColor = ctxt.getColor();
@@ -454,6 +456,7 @@ MathMLTokenElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLTokenElement::SetPosition(const scaled& x, const scaled& y)
 {
@@ -552,6 +555,7 @@ MathMLTokenElement::GetDecimalPointEdge() const
 
   return GetRightEdge();
 }
+#endif
 
 bool
 MathMLTokenElement::IsNonMarking() const

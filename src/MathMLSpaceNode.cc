@@ -35,6 +35,7 @@ MathMLSpaceNode::~MathMLSpaceNode()
 {
 }
 
+#if 0
 void
 MathMLSpaceNode::Setup(class RenderingEnvironment&)
 {
@@ -47,6 +48,7 @@ void
 MathMLSpaceNode::DoLayout(const FormattingContext&)
 {
 }
+#endif
 
 AreaRef
 MathMLSpaceNode::format(MathFormattingContext&)
@@ -55,10 +57,12 @@ MathMLSpaceNode::format(MathFormattingContext&)
   return 0;
 }
 
+#if 0
 void
 MathMLSpaceNode::Render(const DrawingArea&)
 {
 }
+#endif
 
 bool
 MathMLSpaceNode::IsSpace() const

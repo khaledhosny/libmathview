@@ -140,6 +140,7 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLFencedElement::Setup(RenderingEnvironment& env)
 {
@@ -168,3 +169,4 @@ MathMLFencedElement::Setup(RenderingEnvironment& env)
       ResetDirtyAttribute();
     }
 }
+#endif

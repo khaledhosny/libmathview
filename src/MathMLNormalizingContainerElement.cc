@@ -93,6 +93,7 @@ MathMLNormalizingContainerElement::construct()
     }
 }
 
+#if 0
 void
 MathMLNormalizingContainerElement::DoLayout(const class FormattingContext& ctxt)
 {
@@ -108,6 +109,7 @@ MathMLNormalizingContainerElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
@@ -125,6 +127,7 @@ MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLNormalizingContainerElement::Render(const DrawingArea& area)
 {
@@ -135,6 +138,7 @@ MathMLNormalizingContainerElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif
 
 void
 MathMLNormalizingContainerElement::SetDirtyStructure()

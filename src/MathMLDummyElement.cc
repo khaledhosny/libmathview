@@ -39,6 +39,7 @@ MathMLDummyElement::~MathMLDummyElement()
 {
 }
 
+#if 0
 void
 MathMLDummyElement::Setup(RenderingEnvironment& env)
 {
@@ -56,6 +57,7 @@ MathMLDummyElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
+#endif
 
 AreaRef
 MathMLDummyElement::format(MathFormattingContext& ctxt)
@@ -70,6 +72,7 @@ MathMLDummyElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLDummyElement::Render(const DrawingArea& area)
 {
@@ -89,3 +92,4 @@ MathMLDummyElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif

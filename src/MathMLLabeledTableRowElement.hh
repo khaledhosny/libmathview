@@ -39,10 +39,14 @@ public:
   virtual SmartPtr<MathMLElement> GetLabel(void) const;
 
   virtual void construct(void);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
+#endif
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
+#if 0
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
+#endif
 
   friend class MathMLTableElement;
 

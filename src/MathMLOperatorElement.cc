@@ -68,6 +68,7 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLOperatorElement::Setup(RenderingEnvironment& env)
 {
@@ -188,6 +189,7 @@ MathMLOperatorElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLOperatorElement::format(MathFormattingContext& ctxt)
@@ -423,6 +425,7 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
 #endif
 }
 
+#if 0
 void
 MathMLOperatorElement::SetPosition(const scaled& x0, const scaled& y0)
 {
@@ -434,6 +437,7 @@ MathMLOperatorElement::SetPosition(const scaled& x0, const scaled& y0)
   SetEmbellishmentPosition(this, x, y);
   SetContentPosition(x, y);
 }
+#endif
 
 void
 MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,

@@ -76,6 +76,7 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLStyleElement::Setup(RenderingEnvironment& env)
 {
@@ -251,6 +252,7 @@ MathMLStyleElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif
 
 bool
 MathMLStyleElement::IsSpaceLike() const

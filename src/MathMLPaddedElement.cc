@@ -55,6 +55,7 @@ MathMLPaddedElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLPaddedElement::Setup(RenderingEnvironment& env)
 {
@@ -78,6 +79,7 @@ MathMLPaddedElement::Setup(RenderingEnvironment& env)
       ResetDirtyAttribute();
     }
 }
+#endif
 
 void
 MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
@@ -154,6 +156,7 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
   dim.valid = true;
 }
 
+#if 0
 void
 MathMLPaddedElement::DoLayout(const class FormattingContext& ctxt)
 {
@@ -185,6 +188,7 @@ MathMLPaddedElement::SetPosition(const scaled& x0, const scaled& y0)
   SetEmbellishmentPosition(this, x, y);
   if (GetChild()) GetChild()->SetPosition(x + lSpaceE, y);
 }
+#endif
 
 scaled
 MathMLPaddedElement::EvalLengthDimension(const scaled& orig,

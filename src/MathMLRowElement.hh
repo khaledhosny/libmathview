@@ -36,15 +36,17 @@ protected:
 public:
   static SmartPtr<MathMLRowElement> create(const SmartPtr<class MathMLView>& view);
 
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
+#endif
 
   virtual bool IsSpaceLike(void) const;
 
   TokenId GetOperatorForm(const SmartPtr<MathMLElement>&) const;
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator();
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
 protected:
   void DoStretchyLayout(void);

@@ -35,9 +35,10 @@ protected:
 public:
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
@@ -47,6 +48,7 @@ public:
 
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
+#endif
 
   virtual void Remove(const SmartPtr<MathMLElement>&);
   virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);

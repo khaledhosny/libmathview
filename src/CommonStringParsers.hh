@@ -20,32 +20,20 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __MathMLBreakableRowElement_hh__
-#define __MathMLBreakableRowElement_hh__
+#ifndef __CommonStringParsers_hh__
+#define __CommonStringParsers_hh__
 
-#include "MathMLRowElement.hh"
-#include "VerticalLayout.hh"
+#include "TemplateStringParsers.hh"
 
-class MathMLBreakableRowElement : public MathMLRowElement
-{
-protected:
-  MathMLBreakableRowElement(const SmartPtr<class MathMLView>& view) : MathMLRowElement(view) { }
-  virtual ~MathMLBreakableRowElement() { }
+typedef Union< Set<T_BLACK,T_SILVER,T_GRAY,T_WHITE,T_MAROON,T_RED,T_PURPLE,T_FUCHSIA>,
+	       Set<T_GREEN,T_LIME,T_OLIVE,T_YELLOW,T_NAVY,T_BLUE,T_TEAL,T_AQUA> > TokenSet_HTMLColor;
 
-public:
-  static SmartPtr<MathMLBreakableRowElement> create(const SmartPtr<class MathMLView>& view)
-  { return new MathMLBreakableRowElement(view); }
+typedef Parse<ScanToken,bool> ParseBoolean;
+typedef Parse<ScanUnsignedInteger,int> ParseUnsignedInteger;
+typedef Parse<ScanInteger,int> ParseInteger;
+typedef ParseChoice< ParseRGBColor,ParseTokenSet<TokenSet_HTMLColor> > ParseColor;
+typedef Parse<ScanUnsignedNumber,float> ParseUnsignedNumber;
+typedef Parse<ScanNumber,float> ParseNumber;
+typedef ParseTokenSet<TokenSet_Unit> ParseUnit;
 
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-#endif
-
-  scaled GetExitBaseline(void) const;
-
-protected:
-  SmartPtr<VerticalLayout> layout;
-};
-
-#endif // __MathMLBreakableRowElement_hh__
+#endif // __CommonStringParsers_hh__

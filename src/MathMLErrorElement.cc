@@ -38,6 +38,7 @@ MathMLErrorElement::~MathMLErrorElement()
 {
 }
 
+#if 0
 void
 MathMLErrorElement::Setup(RenderingEnvironment& env)
 {
@@ -54,6 +55,7 @@ MathMLErrorElement::Setup(RenderingEnvironment& env)
       ResetDirtyAttribute();
     }
 }
+#endif
 
 AreaRef
 MathMLErrorElement::format(MathFormattingContext& ctxt)

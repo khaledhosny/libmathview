@@ -47,12 +47,14 @@ MathMLTextNode::IsText() const
   return true;
 }
 
+#if 0
 void
 MathMLTextNode::SetPosition(const scaled& x, const scaled& y)
 {
   position.x = x;
   position.y = y;
 }
+#endif
 
 void
 MathMLTextNode::SetSpacing(int s)
@@ -66,6 +68,7 @@ MathMLTextNode::AddSpacing(int ds)
   spacing += ds;
 }
 
+#if 0
 bool
 MathMLTextNode::IsInside(const scaled& x, const scaled& y) const
 {
@@ -87,6 +90,7 @@ MathMLTextNode::GetRightEdge() const
 {
   return GetX() + box.width;
 }
+#endif
 
 bool
 MathMLTextNode::HasDecimalPoint() const
@@ -94,9 +98,10 @@ MathMLTextNode::HasDecimalPoint() const
   return false;
 }
 
+#if 0
 scaled
 MathMLTextNode::GetDecimalPointEdge() const
 {
   return 0;
 }
-
+#endif

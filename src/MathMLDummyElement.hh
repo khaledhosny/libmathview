@@ -35,10 +35,12 @@ public:
   static SmartPtr<MathMLDummyElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLDummyElement(view); }
 
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void Render(const DrawingArea&);
+#endif
 };
 
 #endif // MathMLDummyElement_hh

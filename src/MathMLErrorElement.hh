@@ -35,7 +35,9 @@ public:
   static SmartPtr<MathMLErrorElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLErrorElement(view); }
 
+#if 0
   virtual void Setup(RenderingEnvironment&);
+#endif
   virtual AreaRef format(class MathFormattingContext&);
 };
 

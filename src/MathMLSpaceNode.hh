@@ -35,10 +35,12 @@ public:
   static SmartPtr<MathMLSpaceNode> create(int s = 0)
   { return SmartPtr<MathMLSpaceNode>(new MathMLSpaceNode(s)); }
 
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void     Render(const DrawingArea&);
+#endif
 
   virtual unsigned GetLogicalContentLength(void) const;
   virtual String   GetRawContent(void) const;

@@ -36,19 +36,25 @@ public:
   { return new MathMLRadicalElement(view); }
 
   virtual void construct(void);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
+#endif
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
+#if 0
   virtual void Render(const DrawingArea&);
+#endif
 
   virtual void Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&);
 
+#if 0
   virtual scaled GetRightEdge(void) const;
   virtual scaled GetLeftEdge(void) const;
   virtual void ReleaseGCs(void);
   virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&);
+#endif
 
   SmartPtr<class MathMLElement> GetRadicand(void) const { return radicand; }
   SmartPtr<class MathMLElement> GetIndex(void) const { return index; }

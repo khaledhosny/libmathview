@@ -48,6 +48,7 @@ MathMLAlignMarkElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLAlignMarkElement::Setup(RenderingEnvironment&)
 {
@@ -65,6 +66,7 @@ MathMLAlignMarkElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
+#endif
 
 bool
 MathMLAlignMarkElement::IsSpaceLike() const
@@ -72,8 +74,10 @@ MathMLAlignMarkElement::IsSpaceLike() const
   return true;
 }
 
+#if 0
 void
 MathMLAlignMarkElement::SetDirty(const Rectangle*)
 {
   // do nothing, this element is space-like and always 0-width, useless for it to be dirty
 }
+#endif

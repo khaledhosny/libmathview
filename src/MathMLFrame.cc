@@ -34,6 +34,7 @@ MathMLFrame::~MathMLFrame()
 {
 }
 
+#if 0
 void
 MathMLFrame::SetPosition(const scaled& x, const scaled& y)
 {
@@ -46,3 +47,4 @@ MathMLFrame::GetRectangle() const
 {
   return Rectangle(GetX(), GetY(), GetBoundingBox());
 }
+#endif

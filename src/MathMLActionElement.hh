@@ -38,9 +38,10 @@ public:
   { return new MathMLActionElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
 
@@ -48,6 +49,7 @@ public:
   virtual scaled GetRightEdge(void) const;
 
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
+#endif
   SmartPtr<MathMLElement> GetSelectedElement(void) const;
 
   unsigned GetSelectedIndex(void) const;

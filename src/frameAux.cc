@@ -37,8 +37,11 @@
 const BoundingBox&
 getFrameBoundingBox(const SmartPtr<MathMLFrame>& frame)
 {
+  assert(false);
+#if 0
   assert(frame != SmartPtr<MathMLFrame>(0));
   return frame->GetBoundingBox();
+#endif
 }
 
 static SmartPtr<MathMLTextNode>

@@ -318,6 +318,7 @@ MathMLMultiScriptsElement::construct()
     }
 }
 
+#if 0
 void
 MathMLMultiScriptsElement::Setup(RenderingEnvironment& env)
 {
@@ -614,6 +615,7 @@ MathMLMultiScriptsElement::GetRightEdge() const
       return base->GetRightEdge();
     }
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLMultiScriptsElement::GetCoreOperator()

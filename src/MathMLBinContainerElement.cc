@@ -73,6 +73,7 @@ MathMLBinContainerElement::refine(AbstractRefinementContext& context)
     }  
 }
 
+#if 0
 void
 MathMLBinContainerElement::Setup(RenderingEnvironment& env)
 {
@@ -100,6 +101,7 @@ MathMLBinContainerElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLBinContainerElement::format(MathFormattingContext& ctxt)
@@ -117,6 +119,7 @@ MathMLBinContainerElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLBinContainerElement::SetPosition(const scaled& x, const scaled& y)
 {
@@ -185,6 +188,7 @@ MathMLBinContainerElement::ReleaseGCs()
   MathMLElement::ReleaseGCs();
   if (child) child->ReleaseGCs();
 }
+#endif
 
 void
 MathMLBinContainerElement::Remove(const SmartPtr<MathMLElement>&)

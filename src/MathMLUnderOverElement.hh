@@ -48,20 +48,23 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const class DrawingArea&);
   virtual void ReleaseGCs(void);
+#endif
 
   virtual void SetDirtyAttribute(void);
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
+#if 0
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
-
+#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
 protected:

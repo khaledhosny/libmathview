@@ -37,11 +37,15 @@ public:
   { return new MathMLAlignMarkElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
+#endif
 
   virtual bool IsSpaceLike(void) const;
+#if 0
   virtual void SetDirty(const Rectangle* = NULL);
+#endif
 
   TokenId GetAlignmentEdge(void) const { return edge; }
 

@@ -56,18 +56,24 @@ public:
   SmartPtr<MathMLElement> GetPreSuperScript(unsigned) const;
 
   virtual void construct(void);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const class DrawingArea&);
   virtual void ReleaseGCs(void);
+#endif
 
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
+#if 0
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
+#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+#if 0
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
+#endif
   virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
 
 private:

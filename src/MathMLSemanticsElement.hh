@@ -38,8 +38,10 @@ public:
   { return new MathMLSemanticsElement(view); }
 
   virtual void construct(void);
+#if 0
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
+#endif
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 };
 

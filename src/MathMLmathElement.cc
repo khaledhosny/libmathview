@@ -51,6 +51,7 @@ MathMLmathElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLmathElement::Setup(RenderingEnvironment& env)
 {
@@ -81,6 +82,7 @@ MathMLmathElement::Setup(RenderingEnvironment& env)
       ResetDirtyAttribute();
     }
 }
+#endif
 
 AreaRef
 MathMLmathElement::format(MathFormattingContext& ctxt)

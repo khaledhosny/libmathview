@@ -94,6 +94,7 @@ MathMLScriptElement::Replace(const SmartPtr<MathMLElement>& oldElem, const Smart
   else assert(false);
 }
 
+#if 0
 SmartPtr<MathMLElement>
 MathMLScriptElement::Inside(const scaled& x, const scaled& y)
 {
@@ -107,6 +108,7 @@ MathMLScriptElement::Inside(const scaled& x, const scaled& y)
 
   return this;
 }
+#endif
 
 void
 MathMLScriptElement::construct()
@@ -178,6 +180,7 @@ MathMLScriptElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLScriptElement::Setup(RenderingEnvironment& env)
 {
@@ -275,6 +278,7 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLScriptElement::format(MathFormattingContext& ctxt)
@@ -328,6 +332,7 @@ MathMLScriptElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLScriptElement::SetPosition(const scaled& x0, const scaled& y0)
 {
@@ -391,6 +396,7 @@ MathMLScriptElement::GetRightEdge() const
   if (superScript) m = std::max(m, superScript->GetRightEdge());
   return m;
 }
+#endif
 
 SmartPtr<class MathMLOperatorElement>
 MathMLScriptElement::GetCoreOperator()

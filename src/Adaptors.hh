@@ -42,6 +42,7 @@ struct RefineAdaptor
   { elem->refine(*context); }
 };
 
+#if 0
 struct SetupAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,class RenderingEnvironment*,void>
 {
@@ -55,6 +56,7 @@ struct DoLayoutAdaptor
   void operator()(const SmartPtr<MathMLElement>& elem, const class FormattingContext* ctxt) const
   { elem->DoLayout(*ctxt); }
 };
+#endif
 
 struct SetFlagDownAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,MathMLElement::Flags,void>
@@ -70,6 +72,7 @@ struct ResetFlagDownAdaptor
   { elem->ResetFlagDown(f); }
 };
 
+#if 0
 struct SetDirtyAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,const class Rectangle*,void>
 {
@@ -77,14 +80,12 @@ struct SetDirtyAdaptor
   { elem->SetDirty(rect); }
 };
 
-#if 0
 struct SetDirtyLayoutAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,bool,void>
 {
   void operator()(const SmartPtr<MathMLElement>& elem, bool children) const
   { elem->SetDirtyLayout(children); }
 };
-#endif
 
 // WARNING: we have to use const DrawingArea* instead of
 // const DrawingArea& because otherwise the compiler tries to
@@ -97,7 +98,6 @@ struct RenderAdaptor
   { elem->Render(*area); }
 };
 
-#if 0
 struct SetSelectedAdaptor
   : public std::unary_function<SmartPtr<MathMLElement>,void>
 {
@@ -111,7 +111,6 @@ struct ResetSelectedAdaptor
   void operator()(const SmartPtr<MathMLElement>& elem) const
   { elem->ResetSelected(); }
 };
-#endif
 
 struct ReleaseGCsAdaptor
   : public std::unary_function<SmartPtr<MathMLElement>,void>
@@ -119,6 +118,7 @@ struct ReleaseGCsAdaptor
   void operator()(const SmartPtr<MathMLElement>& elem) const
   { elem->ReleaseGCs(); }
 };
+#endif
 
 struct IsSpaceLikePredicate
   : public std::unary_function<SmartPtr<MathMLElement>,bool>

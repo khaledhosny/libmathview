@@ -34,6 +34,7 @@
 #include "MathMLTableCellElement.hh"
 #include "MathMLLabeledTableRowElement.hh"
 
+#if 0
 void
 MathMLTableElement::Setup(RenderingEnvironment& env)
 {
@@ -94,7 +95,8 @@ MathMLTableElement::SetupCellSpanning(RenderingEnvironment& env)
 }
 
 // BEGIN OF PRIVATE CLASS
-class TempRow {
+class TempRow
+{
 public:
   TempRow(void)
   {
@@ -129,7 +131,7 @@ public:
 
   unsigned GetColumns(void) const
   {
-    return (first > content.size()) ? first : content.size();
+    return std::max(first, content.size());
   }
 
 private:
@@ -760,3 +762,4 @@ MathMLTableElement::ReleaseAuxStructures()
       cell = 0;
     }
 }
+#endif

@@ -53,15 +53,19 @@ MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v)
   SetDirtyAttribute();
   SetDirtyLayout();
 
+#if 0
   fGC[0] = fGC[1] = NULL;
   bGC[0] = bGC[1] = NULL;
   
   background = RGBColor::BLACK();
+#endif
 }
 
 MathMLElement::~MathMLElement()
 {
+#if 0
   ReleaseGCs();
+#endif
   setDOMElement(DOM::Element(0)); // it is important to invoke this method!
 }
 
@@ -188,6 +192,7 @@ MathMLElement::refine(class AbstractRefinementContext&)
   ResetDirtyAttribute();
 }
 
+#if 0
 void
 MathMLElement::Setup(RenderingEnvironment& env)
 {
@@ -203,6 +208,7 @@ MathMLElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
+#endif
 
 AreaRef
 MathMLElement::format(MathFormattingContext& ctxt)
@@ -216,6 +222,7 @@ MathMLElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLElement::RenderBackground(const DrawingArea& area)
 {
@@ -239,6 +246,7 @@ MathMLElement::Render(const DrawingArea& area)
       ResetDirty();
     }
 }
+#endif
 
 bool
 MathMLElement::IsSpaceLike() const
@@ -246,6 +254,7 @@ MathMLElement::IsSpaceLike() const
   return false;
 }
 
+#if 0
 bool
 MathMLElement::IsInside(const scaled& x, const scaled& y) const
 {
@@ -257,6 +266,7 @@ MathMLElement::Inside(const scaled& x, const scaled& y)
 {
   return IsInside(x, y) ? this : 0;
 }
+#endif
 
 unsigned
 MathMLElement::GetDepth() const
@@ -273,6 +283,7 @@ MathMLElement::GetDepth() const
   return depth;
 }
 
+#if 0
 scaled
 MathMLElement::GetLeftEdge() const
 {
@@ -291,9 +302,10 @@ MathMLElement::ReleaseGCs()
   fGC[0] = fGC[1] = NULL;
   bGC[0] = bGC[1] = NULL;
 }
+#endif
 
 bool
-MathMLElement::HasLink() const
+MathMLElement::hasLink() const
 {
 #if defined(HAVE_GMETADOM)
   DOM::Element p = getDOMElement();
@@ -373,6 +385,7 @@ MathMLElement::SetFlag(Flags f)
   flags.set(f);
 }
 
+#if 0
 void
 MathMLElement::SetDirty(const Rectangle* rect)
 {
@@ -407,6 +420,7 @@ MathMLElement::ResetSelected()
       SetDirty();
     }
 }
+#endif
 
 void
 MathMLElement::SetFlagUp(Flags f)
@@ -464,9 +478,13 @@ MathMLElement::SetParent(const SmartPtr<MathMLElement>& p)
       if (DirtyAttribute()) SetFlagUp(FDirtyAttributeP);
       if (p->DirtyAttributeD()) SetFlagDown(FDirtyAttributeD);
       if (DirtyLayout()) SetFlagUp(FDirtyLayout);
+#if 0
       if (Dirty()) SetFlagUp(FDirty);
+#endif
       if (p->DirtyLayout()) SetFlagDown(FDirtyLayout);
+#if 0
       if (p->Dirty()) SetFlagDown(FDirty);
       if (p->Selected()) SetFlagDown(FSelected);
+#endif
     }
 }

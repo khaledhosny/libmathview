@@ -1103,8 +1103,10 @@ gtk_math_view_select(GtkMathView* math_view, GdomeElement* elem)
 
   if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     {
+#if 0
       el->SetSelected();
       paint_widget(math_view);
+#endif
     }
 }
 
@@ -1117,8 +1119,10 @@ gtk_math_view_unselect(GtkMathView* math_view, GdomeElement* elem)
 
   if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     {
+#if 0
       el->ResetSelected();
       paint_widget(math_view);
+#endif
     }
 }
 
@@ -1129,9 +1133,11 @@ gtk_math_view_is_selected(GtkMathView* math_view, GdomeElement* elem)
   g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(elem, FALSE);
 
+#if 0
   if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     return el->Selected() ? TRUE : FALSE;
   else
+#endif
     return FALSE;
 }
 
@@ -1213,6 +1219,7 @@ gtk_math_view_get_element_coords(GtkMathView* math_view, GdomeElement* elem, gin
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
+#if 0
   if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     {
       if (x != NULL) *x = static_cast<gint>(sp2px(el->GetX()));
@@ -1220,6 +1227,7 @@ gtk_math_view_get_element_coords(GtkMathView* math_view, GdomeElement* elem, gin
       return TRUE;
     }
   else
+#endif
     return FALSE;
 }
 
@@ -1231,6 +1239,7 @@ gtk_math_view_get_element_rectangle(GtkMathView* math_view, GdomeElement* elem, 
   g_return_val_if_fail(elem != NULL, FALSE);
   g_return_val_if_fail(rect != NULL, FALSE);
 
+#if 0
   if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     {
       BoundingBox box = el->GetBoundingBox();
@@ -1241,6 +1250,7 @@ gtk_math_view_get_element_rectangle(GtkMathView* math_view, GdomeElement* elem, 
       return TRUE;
     }
   else
+#endif
     return FALSE;
 }
 

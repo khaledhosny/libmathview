@@ -37,6 +37,7 @@ MathMLMarkNode::~MathMLMarkNode()
 {
 }
 
+#if 0
 void
 MathMLMarkNode::Setup(RenderingEnvironment& env)
 {
@@ -67,6 +68,7 @@ MathMLMarkNode::DoLayout(const FormattingContext&)
 {
   box.unset();
 }
+#endif
 
 AreaRef
 MathMLMarkNode::format(MathFormattingContext&)
@@ -75,7 +77,9 @@ MathMLMarkNode::format(MathFormattingContext&)
   return 0;
 }
 
+#if 0
 void
 MathMLMarkNode::Render(const DrawingArea&)
 {
 }
+#endif

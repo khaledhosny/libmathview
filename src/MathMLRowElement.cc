@@ -59,6 +59,7 @@ MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
 #endif
 }
 
+#if 0
 void
 MathMLRowElement::Setup(RenderingEnvironment& env)
 {
@@ -89,6 +90,7 @@ MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLRowElement::format(MathFormattingContext& ctxt)
@@ -147,6 +149,7 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLRowElement::DoStretchyLayout()
 {
@@ -204,6 +207,7 @@ MathMLRowElement::SetPosition(const scaled& x0, const scaled& y0)
 	x += (*elem)->GetBoundingBox().width;
       }
 }
+#endif
 
 bool
 MathMLRowElement::IsSpaceLike() const

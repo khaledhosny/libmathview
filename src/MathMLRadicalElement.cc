@@ -137,6 +137,7 @@ MathMLRadicalElement::construct()
     }
 }
 
+#if 0
 void
 MathMLRadicalElement::Setup(RenderingEnvironment& env)
 {
@@ -225,6 +226,7 @@ MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
     }
 #endif
 }
+#endif
 
 void
 MathMLRadicalElement::SetFlagDown(Flags f)
@@ -242,6 +244,7 @@ MathMLRadicalElement::ResetFlagDown(Flags f)
   if (index) index->ResetFlagDown(f);
 }
 
+#if 0
 void
 MathMLRadicalElement::Render(const DrawingArea& area)
 {
@@ -298,6 +301,7 @@ MathMLRadicalElement::GetRightEdge() const
 #endif
   return 0;
 }
+#endif
 
 void
 MathMLRadicalElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
@@ -308,6 +312,7 @@ MathMLRadicalElement::Replace(const SmartPtr<MathMLElement>& oldElem, const Smar
   else assert(0);
 }
 
+#if 0
 void
 MathMLRadicalElement::ReleaseGCs()
 {
@@ -327,3 +332,4 @@ MathMLRadicalElement::Inside(const scaled& x, const scaled& y)
 
   return this;
 }
+#endif

@@ -38,11 +38,13 @@ public:
 
   //virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
+#endif
 
 protected:
   void NormalizeRadicalElement(const SmartPtr<class MathMLDocument>&);

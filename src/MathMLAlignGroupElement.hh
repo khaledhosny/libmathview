@@ -35,7 +35,9 @@ public:
   static SmartPtr<MathMLAlignGroupElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLAlignGroupElement(view); }
 
+#if 0
   virtual void DoLayout(const class FormattingContext&);
+#endif
 
   void SetWidth(const scaled&);
   void SetDecimalPoint(const SmartPtr<class MathMLTokenElement>&);

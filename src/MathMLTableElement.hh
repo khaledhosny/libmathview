@@ -199,6 +199,7 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
@@ -206,6 +207,7 @@ public:
   virtual void ReleaseGCs(void);
 
   virtual SmartPtr<MathMLElement> Inside(const scaled& x, const scaled& y);
+#endif
 
   void 	       SetupColumnAlignAux(const SmartPtr<Value>&, unsigned, unsigned, bool = false);
   void 	       SetupRowAlignAux(const SmartPtr<Value>&, unsigned, bool = false);
@@ -238,7 +240,9 @@ protected:
   void 	       SetupAlignMarks(void);
   void 	       SetupTableAttributes(class RenderingEnvironment&);
   void 	       AlignTable(const scaled&, BoundingBox&);
+#if 0
   void         ReleaseAuxStructures(void);
+#endif
 
   // table layout
   void         DoHorizontalLayout(const class FormattingContext&);

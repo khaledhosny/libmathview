@@ -44,6 +44,7 @@ public:
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
+#if 0
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void Render(const DrawingArea&);
@@ -52,13 +53,16 @@ public:
 
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
+#endif
 
   // the content can be accessed directly, but only in a read-only
   // way, because other operation involves SetParent and other
   // memory-management issues
   const std::vector< SmartPtr<MathMLElement> >& GetContent(void) const { return content; }
 
+#if 0
   virtual void SetDirty(const Rectangle* = 0);
+#endif
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
 

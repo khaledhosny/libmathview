@@ -73,6 +73,7 @@ MathMLLabeledTableRowElement::construct()
     }
 }
 
+#if 0
 void
 MathMLLabeledTableRowElement::Setup(RenderingEnvironment& env)
 {
@@ -87,6 +88,7 @@ MathMLLabeledTableRowElement::Inside(const scaled& x, const scaled& y)
   if (label && (inside = label->Inside(x, y))) return inside;
   return 0;
 }
+#endif
 
 void
 MathMLLabeledTableRowElement::SetFlagDown(Flags f)

@@ -63,6 +63,7 @@ MathMLTableCellElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 				    bool allowedGroup,
@@ -218,7 +219,9 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
       columnSpan = 1;
     }
 }
+#endif
 
+#if 0
 void
 MathMLTableCellElement::Setup(RenderingEnvironment& env)
 {
@@ -445,6 +448,7 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 	GetChild()->SetPosition(x, y);
     }
 }
+#endif
 
 bool
 MathMLTableCellElement::IsStretchyOperator() const

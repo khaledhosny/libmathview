@@ -23,15 +23,11 @@
 #ifndef __MathMLAttributeParsers_hh__
 #define __MathMLAttributeParsers_hh__
 
-#include "TemplateStringParsers.hh"
+#include "CommonStringParsers.hh"
 
-typedef Set<T_FALSE,T_TRUE> TokenSet_Boolean;
 typedef Set<T_NORMAL,T_BOLD,T_ITALIC,T_BOLD_ITALIC,T_DOUBLE_STRUCK,T_BOLD_FRAKTUR,T_SCRIPT,
 	    T_BOLD_SCRIPT,T_FRAKTUR,T_SANS_SERIF,T_BOLD_SANS_SERIF,T_SANS_SERIF_ITALIC,
 	    T_SANS_SERIF_BOLD_ITALIC,T_MONOSPACE> TokenSet_MathVariant;
-typedef Set<T_EM,T_EX,T_PX,T_IN,T_CM,T_MM,T_PT,T_PC,T__PERCENTAGE> TokenSet_Unit;
-typedef Union< Set<T_BLACK,T_SILVER,T_GRAY,T_WHITE,T_MAROON,T_RED,T_PURPLE,T_FUCHSIA>,
-	       Set<T_GREEN,T_LIME,T_OLIVE,T_YELLOW,T_NAVY,T_BLUE,T_TEAL,T_AQUA> > TokenSet_HTMLColor;
 typedef Set<T_NEGATIVEVERYVERYTHICKMATHSPACE,T_NEGATIVEVERYTHICKMATHSPACE,T_NEGATIVETHICKMATHSPACE,
 	    T_NEGATIVEMEDIUMMATHSPACE,T_NEGATIVETHINMATHSPACE,T_NEGATIVEVERYTHINMATHSPACE,
 	    T_NEGATIVEVERYVERYTHINMATHSPACE,T_VERYVERYTHINMATHSPACE,T_VERYTHINMATHSPACE,
@@ -39,17 +35,10 @@ typedef Set<T_NEGATIVEVERYVERYTHICKMATHSPACE,T_NEGATIVEVERYTHICKMATHSPACE,T_NEGA
 	    T_VERYVERYTHICKMATHSPACE> TokenSet_NamedSpace;
 typedef Set<T_LEFT,T_CENTER,T_RIGHT> TokenSet_HorizontalAlign;
 
-typedef Parse<ScanToken,bool> ParseBoolean;
-typedef Parse<ScanUnsignedInteger,int> ParseUnsignedInteger;
-typedef Parse<ScanInteger,int> ParseInteger;
 typedef ParseTokenSet<TokenSet_MathVariant> ParseMathVariant;
-typedef ParseChoice< ParseRGBColor,ParseTokenSet<TokenSet_HTMLColor> > ParseColor;
 typedef ParseTokenSet<TokenSet_NamedSpace> ParseNamedSpace;
 typedef ParseChoice<ParseLength,ParseNamedSpace> ParseLengthOrNamedSpace;
-typedef Parse<ScanUnsignedNumber,float> ParseUnsignedNumber;
-typedef Parse<ScanNumber,float> ParseNumber;
 typedef ParseTokenSet<TokenSet_HorizontalAlign> ParseHorizontalAlign;
-typedef ParseTokenSet<TokenSet_Unit> ParseUnit;
 
 // Element
 typedef ParseString Parse_Element_class;

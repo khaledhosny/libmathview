@@ -50,6 +50,7 @@ MathMLStringNode::IsString() const
   return true;
 }
 
+#if 0
 void
 MathMLStringNode::Setup(RenderingEnvironment& env)
 {
@@ -64,6 +65,7 @@ MathMLStringNode::DoLayout(const FormattingContext& ctxt)
   box = area->box();
 #endif
 }
+#endif
 
 AreaRef
 MathMLStringNode::format(MathFormattingContext& ctxt)
@@ -71,6 +73,7 @@ MathMLStringNode::format(MathFormattingContext& ctxt)
   return ctxt.getDevice()->string(ctxt, content);
 }
 
+#if 0
 void
 MathMLStringNode::Render(const DrawingArea& a)
 {
@@ -93,6 +96,7 @@ MathMLStringNode::Render(const DrawingArea& a)
   visited++;
 #endif
 }
+#endif
 
 bool
 MathMLStringNode::HasDecimalPoint() const
@@ -100,11 +104,13 @@ MathMLStringNode::HasDecimalPoint() const
   return false;
 }
 
+#if 0
 scaled
 MathMLStringNode::GetDecimalPointEdge() const
 {
   return GetX();
 }
+#endif
 
 unsigned
 MathMLStringNode::GetLogicalContentLength() const

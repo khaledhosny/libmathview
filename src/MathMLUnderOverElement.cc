@@ -167,6 +167,7 @@ MathMLUnderOverElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#if 0
 void
 MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 {
@@ -465,6 +466,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
       ResetDirtyLayout(ctxt);
     }
 }
+#endif
 
 AreaRef
 MathMLUnderOverElement::format(MathFormattingContext& ctxt)
@@ -525,6 +527,7 @@ MathMLUnderOverElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
+#if 0
 void
 MathMLUnderOverElement::SetPosition(const scaled& x0, const scaled& y0)
 {
@@ -600,6 +603,7 @@ MathMLUnderOverElement::GetRightEdge() const
   if (overScript) m = std::max(m, overScript->GetRightEdge());
   return m;
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLUnderOverElement::GetCoreOperator()

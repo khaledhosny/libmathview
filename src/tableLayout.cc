@@ -34,6 +34,7 @@
 
 #include "BoundingBoxAux.hh"
 
+#if 0
 void
 MathMLTableElement::DoLayout(const FormattingContext& ctxt)
 {
@@ -1140,3 +1141,4 @@ MathMLTableElement::AdjustTableLayoutWithLabels(const FormattingContext& ctxt)
     box.width += labelsWidth + minLabelSpacing;
   }
 }
+#endif
