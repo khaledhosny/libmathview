@@ -449,7 +449,7 @@ element_over(GtkMathView* math_view, GdomeElement* elem, gint state)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 
-#if 1
+#if 0
   if (elem != NULL)
     {
       GdomeException exc;
