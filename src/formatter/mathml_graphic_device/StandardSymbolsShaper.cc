@@ -24,13 +24,13 @@
 
 #include <cassert>
 
-#include "ShapingResult.hh"
 #include "MathVariant.hh"
 #include "MathVariantMap.hh"
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
 #include "StandardSymbolsShaper.hh"
+#include "ShapingContext.hh"
 
 struct GlyphMap {
   Char8 index;
@@ -306,25 +306,30 @@ StandardSymbolsShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned
 }
 
 void
-StandardSymbolsShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
+StandardSymbolsShaper::shape(ShapingContext& context) const
 {
-  for (unsigned n = result.chunkSize(); n > 0; n--)
+  for (unsigned n = context.chunkSize(); n > 0; n--)
     {
       AreaRef res;
-      GlyphSpec spec = result.getSpec();
-
-      if (spec.getFontId() == H_STRETCHY_FONT_INDEX)
-	res = shapeStretchyCharH(ctxt, spec, result.getHSpan());
-      else if (spec.getFontId() == V_STRETCHY_FONT_INDEX)
-	res = shapeStretchyCharV(ctxt, spec, result.getVSpan());
+      switch (context.getSpec().getFontId())
+	{
+	case H_STRETCHY_FONT_INDEX:
+	  res = shapeStretchyCharH(context);
+	  break;
+	case V_STRETCHY_FONT_INDEX:
+	  res = shapeStretchyCharV(context);
+	  break;
+	default:
+	  break;
+	}
 
       // If we get here then either the character was not required
       // to stretch, or one of the stretchying methods has failed,
       // hence we shape it with no stretchying
-      if (!res) res = shapeChar(ctxt, spec);
+      if (!res) res = shapeChar(context);
       if (!res) break;
 
-      result.pushArea(1, res);
+      context.pushArea(1, res);
     }
 }
 
@@ -345,33 +350,33 @@ StandardSymbolsShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
 }
 
 AreaRef
-StandardSymbolsShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
+StandardSymbolsShaper::shapeChar(const ShapingContext& context) const
 {
-  return getGlyphArea(ctxt.getDevice()->getFactory(), spec.getGlyphId(), ctxt.getSize());
+  return getGlyphArea(context.getFactory(), context.getSpec().getGlyphId(), context.getSize());
 }
 
 AreaRef
-StandardSymbolsShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
+StandardSymbolsShaper::shapeStretchyCharH(const ShapingContext& context) const
 {
-  SmartPtr<AreaFactory> factory = ctxt.getDevice()->getFactory();
-  const scaled size = ctxt.getSize();
-  const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
+  SmartPtr<AreaFactory> factory = context.getFactory();
+  const scaled size = context.getSize();
+  const HStretchyChar* charSpec = &hMap[context.getSpec().getGlyphId()];
 
   AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, charSpec->normal, size) : 0;
   AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, charSpec->left, size) : 0;
   AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, charSpec->glue, size) : 0;
   AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, charSpec->right, size) : 0;
 
-  return composeStretchyCharH(factory, normal, left, glue, right, span);
+  return composeStretchyCharH(factory, normal, left, glue, right, context.getHSpan());
 }
 
 AreaRef
-StandardSymbolsShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
+StandardSymbolsShaper::shapeStretchyCharV(const ShapingContext& context) const
 { 
-  SmartPtr<AreaFactory> factory = ctxt.getDevice()->getFactory();
-  const scaled size = ctxt.getSize();
-  const scaled span = strictSpan - (1 * size) / 10;
-  const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
+  SmartPtr<AreaFactory> factory = context.getFactory();
+  const scaled size = context.getSize();
+  const scaled span = context.getVSpan() - (1 * size) / 10;
+  const VStretchyChar* charSpec = &vMap[context.getSpec().getGlyphId()];
 
   AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, charSpec->normal, size) : 0;
   AreaRef top = (charSpec->top != 0) ? getGlyphArea(factory, charSpec->top, size) : 0;

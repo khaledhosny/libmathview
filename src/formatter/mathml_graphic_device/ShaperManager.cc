@@ -26,7 +26,7 @@
 #include <iostream>
 
 #include "Shaper.hh"
-#include "ShapingResult.hh"
+#include "ShapingContext.hh"
 #include "ShaperManager.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
@@ -42,26 +42,26 @@ ShaperManager::~ShaperManager()
 { }
 
 AreaRef
-ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result) const
+ShaperManager::shapeAux(ShapingContext& context) const
 {
-  while (!result.done())
+  while (!context.done())
     {
-      const unsigned index = result.getIndex();
-      getShaper(result.getShaperId())->shape(ctxt, result);
-      if (index == result.getIndex())
+      const unsigned index = context.getIndex();
+      getShaper(context.getShaperId())->shape(context);
+      if (index == context.getIndex())
 	{
 	  // this is very severe, a Shaper has declared it is able to handle
 	  // a character but it turned out that it has eaten no characters from
-	  // the result! This may make sense for example if there is a sort of
+	  // the context! This may make sense for example if there is a sort of
 	  // fallback mechanism and a given shaper can "refuse" to process a
 	  // character in some context
-	  std::cerr << "Internal fatal error: Shaper " << result.getShaperId() << std::endl;
+	  std::cerr << "Internal fatal error: Shaper " << context.getShaperId() << std::endl;
 	  assert(false);
 	  return 0;
 	}
     }
 
-  return result.area(ctxt.getDevice()->getFactory());
+  return context.area();
 }
 
 AreaRef
@@ -71,8 +71,8 @@ ShaperManager::shape(const MathFormattingContext& ctxt, const UCS4String& source
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(map(source[i]));
-  ShapingResult result(source, spec);
-  return shapeAux(ctxt, result);
+  ShapingContext context(ctxt.getElement(), ctxt.getDevice()->getFactory(), source, spec, ctxt.getSize());
+  return shapeAux(context);
 }
 
 AreaRef
@@ -85,8 +85,8 @@ ShaperManager::shapeStretchy(const MathFormattingContext& ctxt,
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(mapStretchy(source[i]));
-  ShapingResult result(source, spec, vSpan, hSpan);
-  return shapeAux(ctxt, result);
+  ShapingContext context(ctxt.getElement(), ctxt.getDevice()->getFactory(), source, spec, ctxt.getSize(), vSpan, hSpan);
+  return shapeAux(context);
 }
 
 unsigned

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,17 +17,36 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
 #include <cassert>
 
-#include "ShapingResult.hh"
+#include "Element.hh"
+#include "AreaFactory.hh"
+#include "ShapingContext.hh"
+
+ShapingContext::ShapingContext(const SmartPtr<Element>& el,
+			       const SmartPtr<AreaFactory>& f,
+			       const UCS4String& src,
+			       const std::vector<GlyphSpec>& s,
+			       const scaled& sz,
+			       const scaled& v, const scaled& h)
+  : element(el), factory(f), source(src), spec(s), size(sz), vSpan(v), hSpan(h), index(0)
+{ }
+
+SmartPtr<Element>
+ShapingContext::getElement() const
+{ return element; }
+
+SmartPtr<AreaFactory>
+ShapingContext::getFactory() const
+{ return factory; }
 
 unsigned
-ShapingResult::chunkSize() const
+ShapingContext::chunkSize() const
 {
   assert(!done());
   unsigned n = 1;
@@ -37,28 +56,28 @@ ShapingResult::chunkSize() const
 }
 
 unsigned
-ShapingResult::getShaperId() const
+ShapingContext::getShaperId() const
 {
   assert(!done());
   return spec[index].getShaperId();
 }
 
-GlyphSpec
-ShapingResult::getSpec(int n) const
+const GlyphSpec&
+ShapingContext::getSpec(int n) const
 {
   assert(index + n < spec.size());
   return spec[index + n];
 }
 
 const Char32*
-ShapingResult::data() const
+ShapingContext::data() const
 {
   assert(!done());
   return source.data() + index;
 }
 
 AreaRef
-ShapingResult::area(const SmartPtr<AreaFactory>& factory) const
+ShapingContext::area() const
 {
   if (res.size() == 1) 
     return res[0];
@@ -67,39 +86,51 @@ ShapingResult::area(const SmartPtr<AreaFactory>& factory) const
 }
 
 Char32
-ShapingResult::prevChar() const
+ShapingContext::prevChar() const
 {
   return (index > 0) ? source[index - 1] : 0;
 }
 
 Char32
-ShapingResult::thisChar() const
+ShapingContext::thisChar() const
 {
   return (index < source.length()) ? source[index] : 0;
 }
 
 Char32
-ShapingResult::nextChar() const
+ShapingContext::nextChar() const
 {
   return (index + 1 < source.length()) ? source[index + 1] : 0;
 }
 
 UCS4String
-ShapingResult::prevString(int l) const
+ShapingContext::prevString() const
 {
-  if (l < 0 || l > index) l = index;
+  return source.substr(0, index);
+}
+
+UCS4String
+ShapingContext::prevString(UCS4String::size_type l) const
+{
+  if (l > index) l = index;
   return source.substr(index - l, l);
 }
 
 UCS4String
-ShapingResult::nextString(int l) const
+ShapingContext::nextString() const
 {
-  if (l < 0 || l > source.length() - index) l = source.length() - index;
+  return source.substr(index, source.length() - index);
+}
+
+UCS4String
+ShapingContext::nextString(UCS4String::size_type l) const
+{
+  if (l > source.length() - index) l = source.length() - index;
   return source.substr(index, l);
 }
 
 AreaRef
-ShapingResult::popArea(CharIndex& n)
+ShapingContext::popArea(CharIndex& n)
 {
   assert(!empty());
   n = res_n.back();
@@ -110,10 +141,10 @@ ShapingResult::popArea(CharIndex& n)
 }
 
 void
-ShapingResult::pushArea(CharIndex n, const AreaRef& area)
+ShapingContext::pushArea(CharIndex n, const AreaRef& area)
 {
   assert(area);
-  assert(index + n >= 0 && index + n <= source.length());
+  assert(index + n <= source.length());
   index += n;
   res_n.push_back(n);
   res.push_back(area);

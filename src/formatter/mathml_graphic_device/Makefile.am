@@ -10,7 +10,7 @@ libmathml_graphic_device_la_SOURCES = \
   MathGraphicDevice.cc \
   Shaper.cc \
   ShaperManager.cc \
-  ShapingResult.cc \
+  ShapingContext.cc \
   SpaceShaper.cc \
   StandardSymbolsShaper.cc \
   $(NULL)
@@ -22,9 +22,10 @@ mathview_HEADERS = \
   GlyphSpec.hh \
   Shaper.hh \
   ShaperManager.hh \
-  ShapingResult.hh \
+  ShapingContext.hh \
   SpaceShaper.hh \
   StandardSymbolsShaper.hh \
+  CachedShapedString.hh \
   $(NULL)
 
 INCLUDES = \

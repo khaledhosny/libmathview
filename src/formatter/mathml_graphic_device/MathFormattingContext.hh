@@ -31,7 +31,7 @@
 #include "MathVariant.hh"
 #include "FormattingContext.hh"
 
-class MathFormattingContext : public FormattingContext
+class MathFormattingContext : public FormattingContext<100>
 {
 public:
   MathFormattingContext(const SmartPtr<class MathGraphicDevice>& d);
@@ -112,7 +112,7 @@ public:
 
   void push(const SmartPtr<class MathMLElement>& el)
   {
-    FormattingContext::push();
+    FormattingContext<100>::push();
     set(ELEMENT, el);
   }
   

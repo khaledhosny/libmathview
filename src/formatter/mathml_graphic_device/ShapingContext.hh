@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,29 +17,33 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __ShapingResult_hh__
-#define __ShapingResult_hh__
+#ifndef __ShapingContext_hh__
+#define __ShapingContext_hh__
 
 #include <vector>
 
 #include "String.hh"
-#include "AreaFactory.hh"
 #include "GlyphSpec.hh"
 
-class ShapingResult
+class ShapingContext
 {
 public:
-  ShapingResult(const UCS4String& src,
-		const std::vector<GlyphSpec>& s,
-		const scaled& v = 0, const scaled& h = 0)
-    : source(src), spec(s), vSpan(v), hSpan(h), index(0) { }
+  ShapingContext(const SmartPtr<class Element>&,
+		 const SmartPtr<class AreaFactory>&,
+		 const UCS4String&,
+		 const std::vector<GlyphSpec>&,
+		 const scaled&,
+		 const scaled& = 0, const scaled& = 0);
 
+  SmartPtr<class Element> getElement(void) const;
+  SmartPtr<class AreaFactory> getFactory(void) const;
   UCS4String getSource(void) const { return source; }
   bool done(void) const { return index == source.length(); }
   bool empty(void) const { return res.empty(); }
+  scaled getSize(void) const { return size; }
   scaled getVSpan(void) const { return vSpan; }
   scaled getHSpan(void) const { return hSpan; }
   unsigned chunkSize(void) const;
@@ -48,26 +52,31 @@ public:
   AreaRef popArea(CharIndex&);
   void pushArea(CharIndex, const AreaRef&);
   AreaRef getArea(int = -1) const;
-  AreaRef area(const SmartPtr<AreaFactory>&) const;
+  AreaRef area(void) const;
 
   unsigned getIndex(void) const { return index; }
 
   const Char32* data(void) const;
-  GlyphSpec getSpec(int = 0) const;
+  const GlyphSpec& getSpec(int = 0) const;
   Char32 prevChar(void) const;
   Char32 thisChar(void) const;
   Char32 nextChar(void) const;
-  UCS4String prevString(int = -1) const;
-  UCS4String nextString(int = -1) const;
+  UCS4String prevString(void) const;
+  UCS4String prevString(UCS4String::size_type) const;
+  UCS4String nextString(void) const;
+  UCS4String nextString(UCS4String::size_type) const;
 
 private:
+  SmartPtr<class Element> element;
+  SmartPtr<class AreaFactory> factory;
   UCS4String source;
   std::vector<GlyphSpec> spec;
+  scaled size;
   scaled vSpan;
   scaled hSpan;
-  CharIndex index;
+  UCS4String::size_type index;
   std::vector<CharIndex> res_n;
   std::vector<AreaRef> res;
 };
 
-#endif // __ShapingResult_hh__
+#endif // __ShapingContext_hh__

@@ -33,7 +33,7 @@ class StandardSymbolsShaper : public Shaper
 public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
-  virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
+  virtual void shape(class ShapingContext&) const;
 
   struct HStretchyChar
   {
@@ -62,9 +62,9 @@ protected:
   virtual AreaRef createGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const = 0;
   AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const;
 
-  AreaRef shapeChar(const class MathFormattingContext&, const class GlyphSpec&) const;
-  AreaRef shapeStretchyCharV(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;
-  AreaRef shapeStretchyCharH(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;
+  AreaRef shapeChar(const class ShapingContext&) const;
+  AreaRef shapeStretchyCharV(const class ShapingContext&) const;
+  AreaRef shapeStretchyCharH(const class ShapingContext&) const;
 
   struct CachedAreaKey
   {

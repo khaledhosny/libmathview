@@ -23,8 +23,7 @@
 #include <config.h>
 
 #include "AreaFactory.hh"
-#include "ShapingResult.hh"
-#include "MathFormattingContext.hh"
+#include "ShapingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLIdentifierElement.hh"
@@ -87,18 +86,18 @@ SpaceShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
 }
 
 void
-SpaceShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
+SpaceShaper::shape(ShapingContext& context) const
 {
-  assert(!result.done());
+  assert(!context.done());
 
-  GlyphSpec spec = result.getSpec();
+  GlyphSpec spec = context.getSpec();
   switch (spec.getFontId())
     {
     case FIXED_SPACE_MAP_INDEX:
-      shapeFixedSpace(ctxt, result, spec);
+      shapeFixedSpace(context, spec);
       break;
     case CS_SPACE_MAP_INDEX:
-      shapeContextSensitiveSpace(ctxt, result, spec);
+      shapeContextSensitiveSpace(context, spec);
       break;
     default:
       assert(false);
@@ -106,38 +105,36 @@ SpaceShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) con
 }
 
 void
-SpaceShaper::pushSpace(const MathFormattingContext& ctxt, ShapingResult& result, int space, unsigned n)
+SpaceShaper::pushSpace(ShapingContext& context, int space, unsigned n)
 {
   assert(n > 0);
-  result.pushArea(n, ctxt.getDevice()->getFactory()->horizontalSpace(ctxt.getSize() * space / 18));
+  context.pushArea(n, context.getFactory()->horizontalSpace(context.getSize() * space / 18));
 }
 
 void
-SpaceShaper::shapeFixedSpace(const MathFormattingContext& ctxt,
-			     ShapingResult& result, const GlyphSpec& spec)
+SpaceShaper::shapeFixedSpace(ShapingContext& context, const GlyphSpec& spec)
 {
   unsigned n = 1;
   int space = fixedSpaceMap[spec.getGlyphId()].space;
-  if (result.nextChar() == 0xfe00)
+  if (context.nextChar() == 0xfe00)
     {
       space = -space;
       n++;
     }
-  pushSpace(ctxt, result, space, n);
+  pushSpace(context, space, n);
 }
 
 void
-SpaceShaper::shapeContextSensitiveSpace(const MathFormattingContext& ctxt,
-					ShapingResult& result, const GlyphSpec& spec)
+SpaceShaper::shapeContextSensitiveSpace(ShapingContext& context, const GlyphSpec& spec)
 {
   int space = 0;
-  switch (result.thisChar())
+  switch (context.thisChar())
     {
     case 0x2061: // FUNCTION APPLICATION
-      space = shapeFunctionApplication(ctxt);
+      space = shapeFunctionApplication(context);
       break;
     case 0x2062: // INVISIBLE TIMES
-      space = shapeInvisibleTimes(ctxt);
+      space = shapeInvisibleTimes(context);
       break;
     case 0x2063: // INVISIBLE SEPARATOR
       space = 0;
@@ -146,13 +143,13 @@ SpaceShaper::shapeContextSensitiveSpace(const MathFormattingContext& ctxt,
       assert(false);
       break;
     }
-  pushSpace(ctxt, result, space);
+  pushSpace(context, space);
 }
 
 int
-SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt)
+SpaceShaper::shapeFunctionApplication(const class ShapingContext& context)
 {
-  if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getElement()))
+  if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(context.getElement()))
     {
       SmartPtr<MathMLElement> next = findRightSibling(op);
       if (!next) return 0;
@@ -171,10 +168,10 @@ SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt)
 }
 
 int
-SpaceShaper::shapeInvisibleTimes(const MathFormattingContext& ctxt)
+SpaceShaper::shapeInvisibleTimes(const ShapingContext& context)
 {
   // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
-  if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getElement()))
+  if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(context.getElement()))
     {
       SmartPtr<MathMLElement> prev = findLeftSibling(op);
       SmartPtr<MathMLElement> next = findRightSibling(op);
