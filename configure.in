@@ -372,4 +372,5 @@ doc/Makefile
 viewer/Makefile
 randomath/Makefile
 mathml2ps/Makefile
+getopt/Makefile
 ])

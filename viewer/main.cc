@@ -24,6 +24,8 @@
 #include <assert.h>
 #if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
 #include <getopt.h>
+#else
+#include <../getopt/getopt.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
