@@ -33,10 +33,9 @@ protected:
 
 public:
   static SmartPtr<HideArea> create(const AreaRef& area) { return new HideArea(area); }
-  virtual SmartPtr<Area> clone(void) const { return new HideArea(getChild()); }
+  virtual SmartPtr<Area> clone(void) const;
 
-  virtual void render(class RenderingContext&, const scaled&, const scaled&) const { }
-  virtual DOM::Element dump(const DOM::Document&) const;
+  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
 };
 
 #endif // __HideArea_hh__

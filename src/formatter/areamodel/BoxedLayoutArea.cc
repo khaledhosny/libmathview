@@ -23,9 +23,7 @@
 #include <config.h>
 
 #include <vector>
-#include <sstream>
 
-#include "BoundingBoxAux.hh"
 #include "AreaIdFactory.hh"
 #include "BoxedLayoutArea.hh"
 #include "ReplacementContext.hh"
@@ -150,22 +148,6 @@ BoxedLayoutArea::fit(const scaled& width, const scaled& height, const scaled& de
     return this;
   else
     return clone(bbox, newContent);
-}
-
-DOM::Element
-BoxedLayoutArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:boxed-layout");
-  std::ostringstream os;
-  os << bbox;
-  el.setAttribute("box", os.str());
-
-  for (std::vector<XYArea>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    el.appendChild(p->area->dump(doc));
-
-  return el;
 }
 
 std::pair<scaled,scaled>

@@ -61,9 +61,3 @@ VerticalFillerArea::strength(int& w, int& h, int& d) const
   w = 0;
   h = d = 1;
 }
-
-DOM::Element
-VerticalFillerArea::dump(const DOM::Document& doc) const
-{
-  return doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:v-fill");
-}

@@ -24,9 +24,18 @@
 
 #include "IgnoreArea.hh"
 
-DOM::Element
-IgnoreArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:ignore");
-  return dumpAux(doc, el);
-}
+SmartPtr<Area>
+IgnoreArea::clone() const
+{ return new IgnoreArea(getChild()); }
+
+BoundingBox
+IgnoreArea::box() const
+{ return BoundingBox(); }
+
+scaled
+IgnoreArea::leftEdge() const
+{ return scaled::min(); }
+
+scaled
+IgnoreArea::rightEdge() const
+{ return scaled::min(); }

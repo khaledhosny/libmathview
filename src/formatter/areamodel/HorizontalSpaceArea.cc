@@ -22,7 +22,6 @@
 
 #include <config.h>
 
-#include "scaledAux.hh"
 #include "HorizontalSpaceArea.hh"
 
 HorizontalSpaceArea::~HorizontalSpaceArea()
@@ -32,14 +31,6 @@ BoundingBox
 HorizontalSpaceArea::box() const
 {
   return BoundingBox(width, scaled::min(), scaled::min());
-}
-
-DOM::Element
-HorizontalSpaceArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:h-space");
-  el.setAttribute("width", toString(width));
-  return el;
 }
 
 scaled

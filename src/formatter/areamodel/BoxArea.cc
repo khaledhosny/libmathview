@@ -24,10 +24,7 @@
 
 #include <cassert>
 
-#include <sstream>
-
 #include "BoxArea.hh"
-#include "BoundingBoxAux.hh"
 #include "ReplacementContext.hh"
 
 AreaRef
@@ -40,14 +37,4 @@ void
 BoxArea::strength(int& w, int& h, int& d) const
 {
   w = h = d = 0;
-}
-
-DOM::Element
-BoxArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:box");
-  std::ostringstream os;
-  os << bbox;
-  el.setAttribute("box", os.str());
-  return dumpAux(doc, el);
 }

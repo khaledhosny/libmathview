@@ -34,9 +34,7 @@ protected:
 
 public:
   static SmartPtr<ColorArea> create(const AreaRef& area, const RGBColor& c) { return new ColorArea(area, c); }
-  virtual SmartPtr<Area> clone(void) const { return new ColorArea(getChild(), color); }
-
-  virtual DOM::Element dump(const DOM::Document&) const;
+  virtual SmartPtr<Area> clone(void) const;
 
   RGBColor getColor(void) const { return color; }
 

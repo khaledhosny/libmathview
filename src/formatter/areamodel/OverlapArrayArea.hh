@@ -39,7 +39,6 @@ public:
 
   virtual void    strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
   virtual BoundingBox box(void) const;
 
 private:

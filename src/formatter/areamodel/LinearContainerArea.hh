@@ -52,8 +52,6 @@ protected:
   virtual scaled leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const;
   virtual scaled rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const;
 
-  DOM::Element dumpAux(const DOM::Document&, const DOM::Element&) const;
-
   std::vector<AreaRef> content;
 };
 

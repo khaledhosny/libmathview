@@ -24,9 +24,10 @@
 
 #include "HideArea.hh"
 
-DOM::Element
-HideArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:hide");
-  return dumpAux(doc, el);
-}
+SmartPtr<Area>
+HideArea::clone(void) const
+{ return new HideArea(getChild()); }
+
+void
+HideArea::render(class RenderingContext&, const scaled&, const scaled&) const
+{ }

@@ -60,6 +60,5 @@ noinst_HEADERS = \
   VerticalFillerArea.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common
 

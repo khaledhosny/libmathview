@@ -147,10 +147,3 @@ BinContainerArea::strength(int& w, int& h, int& d) const
 {
   child->strength(w, h, d);
 }
-
-DOM::Element
-BinContainerArea::dumpAux(const DOM::Document& doc, const DOM::Element& el) const
-{
-  el.appendChild(child->dump(doc));
-  return el;
-}

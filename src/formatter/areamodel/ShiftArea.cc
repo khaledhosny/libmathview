@@ -52,11 +52,3 @@ ShiftArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const
 {
   return BinContainerArea::origin(id, empty, x, y + shift);
 }
-
-DOM::Element
-ShiftArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:shift");
-  el.setAttribute("by", toString(shift));
-  return dumpAux(doc, el);
-}

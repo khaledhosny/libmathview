@@ -22,19 +22,8 @@
 
 #include <config.h>
 
-#include <cassert>
-
 #include "IdArea.hh"
 
 SmartPtr<Area>
 IdArea::clone() const
-{
-  return new IdArea(getChild()->clone());
-}
-
-DOM::Element
-IdArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:id");
-  return dumpAux(doc, el);
-}
+{ return new IdArea(getChild()->clone()); }

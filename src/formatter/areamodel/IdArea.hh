@@ -34,8 +34,6 @@ protected:
 public:
   static SmartPtr<IdArea> create(const AreaRef& area) { return new IdArea(area); }
   virtual SmartPtr<Area> clone(void) const;
-
-  virtual DOM::Element dump(const DOM::Document&) const;
 };
 
 #endif // __IdArea_hh__

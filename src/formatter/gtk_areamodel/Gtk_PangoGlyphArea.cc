@@ -91,10 +91,3 @@ Gtk_PangoGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y
 		  Gtk_RenderingContext::toGtkY(y),
 		  glyphs);
 }
-
-DOM::Element
-Gtk_PangoGlyphArea::dump(const DOM::Document& doc) const
-{
-  assert(false);
-  return DOM::Element(0);
-}

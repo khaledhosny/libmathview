@@ -23,7 +23,6 @@
 #ifndef __Area_hh__
 #define __Area_hh__
 
-#include "DOM.hh"
 #include "AreaId.hh"
 #include "BoundingBox.hh"
 #include "Object.hh"
@@ -66,7 +65,6 @@ public:
   virtual scaled       leftSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
   virtual scaled       rightSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
   virtual void         strength(int&, int&, int&) const = 0;
-  virtual DOM::Element dump(const DOM::Document&) const = 0;
 
   class InvalidId { };
   class NotAllowed { };

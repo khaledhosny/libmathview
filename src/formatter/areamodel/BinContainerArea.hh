@@ -51,9 +51,6 @@ public:
   virtual scaled rightSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual void strength(int&, int&, int&) const;
 
-protected:
-  DOM::Element dumpAux(const DOM::Document&, const DOM::Element&) const;
-
 private:
   AreaRef child;
 };

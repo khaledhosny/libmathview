@@ -266,13 +266,3 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
   else
     return clone(newContent);
 }
-
-DOM::Element
-VerticalArrayArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:v-array");
-  std::ostringstream os;
-  os << refArea;
-  el.setAttribute("ref", os.str());
-  return dumpAux(doc, el);
-}

@@ -59,7 +59,6 @@ public:
   virtual AreaRef replace(const class ReplacementContext&) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
 
   AreaRef getChild(unsigned) const;
   unsigned getSize(void) const { return content.size(); }

@@ -253,10 +253,3 @@ HorizontalArrayArea::fit(const scaled& width, const scaled& height, const scaled
   else
     return clone(newContent);
 }
-
-DOM::Element
-HorizontalArrayArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:h-array");
-  return dumpAux(doc, el);
-}

@@ -23,12 +23,7 @@
 #include <config.h>
 
 #include "ColorArea.hh"
-#include "RGBColorAux.hh"
 
-DOM::Element
-ColorArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:color");
-  el.setAttribute("color", toString(color));
-  return dumpAux(doc, el);
-}
+SmartPtr<Area>
+ColorArea::clone(void) const
+{ return new ColorArea(getChild(), color); }

@@ -89,10 +89,3 @@ Gtk_XftGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) 
 		Gtk_RenderingContext::toXftY(y),
 		&glyph, 1);
 }
-
-DOM::Element
-Gtk_XftGlyphArea::dump(const DOM::Document& doc) const
-{
-  assert(false);
-  return DOM::Element(0);
-}

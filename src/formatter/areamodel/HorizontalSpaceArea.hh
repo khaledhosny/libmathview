@@ -38,7 +38,6 @@ public:
   static  SmartPtr<HorizontalSpaceArea> create(const scaled& w) { return new HorizontalSpaceArea(w); }
 
   virtual BoundingBox box(void) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
   virtual scaled      leftEdge(void) const;
   virtual scaled      rightEdge(void) const;
 

@@ -42,7 +42,6 @@ public:
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
 
   XftFont* getFont(void) const { return font; }
   FT_UInt getGlyph(void) const { return glyph; }

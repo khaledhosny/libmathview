@@ -40,7 +40,6 @@ public:
   virtual BoundingBox box(void) const;
   virtual scaled      leftEdge(void) const;
   virtual scaled      rightEdge(void) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
 
   scaled getHeight(void) const { return height; }
   scaled getDepth(void) const { return depth; }

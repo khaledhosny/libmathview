@@ -26,13 +26,4 @@
 
 SmartPtr<Area>
 InkArea::clone() const
-{
-  return new InkArea(getChild()->clone());
-}
-
-DOM::Element
-InkArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:ink");
-  return dumpAux(doc, el);
-}
+{ return new InkArea(getChild()->clone()); }

@@ -25,6 +25,7 @@
 
 #include <bitset>
 
+#include "DOM.hh"
 #include "Node.hh"
 #include "WeakPtr.hh"
 #include "Area.hh"

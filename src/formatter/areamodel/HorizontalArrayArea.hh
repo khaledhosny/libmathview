@@ -43,7 +43,6 @@ public:
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
   virtual std::pair<scaled,scaled> origin(AreaId::const_iterator,
 					  AreaId::const_iterator,
 					  const scaled&,

@@ -22,7 +22,6 @@
 
 #include <config.h>
 
-#include "scaledAux.hh"
 #include "VerticalSpaceArea.hh"
 
 BoundingBox
@@ -41,13 +40,4 @@ scaled
 VerticalSpaceArea::rightEdge() const
 {
   return scaled::min();
-}
-
-DOM::Element
-VerticalSpaceArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:v-space");
-  el.setAttribute("height", toString(height));
-  el.setAttribute("depth", toString(depth));
-  return el;
 }

@@ -103,10 +103,3 @@ OverlapArrayArea::fit(const scaled& width, const scaled& height, const scaled& d
   else
     return clone(newContent);
 }
-
-DOM::Element
-OverlapArrayArea::dump(const DOM::Document& doc) const
-{
-  DOM::Element el = doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:o-array");
-  return dumpAux(doc, el);
-}

@@ -51,12 +51,6 @@ HorizontalFillerArea::strength(int& w, int& h, int& d) const
   h = d = 0;
 }
 
-DOM::Element
-HorizontalFillerArea::dump(const DOM::Document& doc) const
-{
-  return doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:h-fill");
-}
-
 scaled
 HorizontalFillerArea::leftEdge() const
 {

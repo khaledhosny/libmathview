@@ -83,10 +83,3 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 		  Gtk_RenderingContext::toGtkY(y + bbox.height),
 		  layout);
 }
-
-DOM::Element
-Gtk_PangoLayoutArea::dump(const DOM::Document& doc) const
-{
-  assert(false);
-  return DOM::Element(0);
-}

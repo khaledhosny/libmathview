@@ -168,13 +168,3 @@ LinearContainerArea::getChild(unsigned i) const
   else
     throw InvalidIndex();
 }
-
-DOM::Element
-LinearContainerArea::dumpAux(const DOM::Document& doc, const DOM::Element& el) const
-{
-  for (std::vector< AreaRef >::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    el.appendChild((*p)->dump(doc));
-  return el;
-}
