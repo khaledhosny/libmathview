@@ -75,28 +75,6 @@ static VStretchyChar vMap[] =
 #define V_STRETCHY_INDEX 2
 #define MAPPED_BASE_INDEX 3
 
-struct PangoTextAttributes
-{
-  MathVariant variant;
-  const char* family;
-  PangoStyle style;
-  PangoWeight weight;
-};
-
-static PangoTextAttributes variantDesc[] =
-  {
-    { NORMAL_VARIANT, 0, PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
-    { NORMAL_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
-    { BOLD_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-    { ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
-    { BOLD_ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_BOLD }, 
-    { SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
-    { BOLD_SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-    { SANS_SERIF_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
-    { SANS_SERIF_BOLD_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
-    { MONOSPACE_VARIANT, "Monospace", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL }
-  };
-
 Gtk_PangoShaper::Gtk_PangoShaper()
 { }
 
@@ -106,17 +84,13 @@ Gtk_PangoShaper::~Gtk_PangoShaper()
 void
 Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>& sm, unsigned shaperId)
 {
-  // normal characters are not registered because the Pango shaper is supposed to
-  // be the default shaper. It will be called anyway as soon as there's a
-  // Unicode char that cannot be shaped otherwise
-
-  for (unsigned i = 1; i < sizeof(variantDesc) / sizeof(PangoTextAttributes); i++)
+  for (unsigned i = NORMAL_VARIANT; i <= MONOSPACE_VARIANT; i++)
     {
       for (DOM::Char16 ch = 0x20; ch < 0x100; ch++)
 	{
-	  DOM::Char32 vch = mapMathVariant(variantDesc[i].variant, ch);
-	  if (variantDesc[i].variant == NORMAL_VARIANT || vch != ch)
-	    sm->registerChar(vch, GlyphSpec(shaperId, MAPPED_BASE_INDEX + i, ch));
+	  DOM::Char32 vch = mapMathVariant(MathVariant(i), ch);
+	  if (i == NORMAL_VARIANT || vch != ch)
+	    sm->registerChar(vch, GlyphSpec(shaperId, MAPPED_BASE_INDEX + i - NORMAL_VARIANT, ch));
 	}
     }
 
@@ -130,7 +104,7 @@ Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>& sm, unsigne
 void
 Gtk_PangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned)
 {
-  // nothing to do
+
 }
 
 void
@@ -139,15 +113,6 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
   const GlyphSpec spec = result.getSpec();
   switch (spec.getFontId())
     {
-    case NORMAL_INDEX:
-      {
-	const unsigned n = result.chunkSize();
-	gunichar* uni_buffer = new gunichar[n];
-	for (unsigned i = 0; i < n; i++) uni_buffer[i] = result.data()[i];
-	result.pushArea(n, shapeString(ctxt, uni_buffer, n));
-	delete [] uni_buffer;
-      }
-      break;
     case H_STRETCHY_INDEX:
       result.pushArea(1, shapeStretchyCharH(ctxt, spec, result.getHSpan()));
       break;
@@ -155,89 +120,22 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
       result.pushArea(1, shapeStretchyCharV(ctxt, spec, result.getVSpan()));
       break;
     default:
-      {
-	unsigned fi = spec.getFontId() - MAPPED_BASE_INDEX;
-	assert(fi > 0 && fi < sizeof(variantDesc) / sizeof(PangoTextAttributes));
-	gunichar ch = spec.getGlyphId();
-	result.pushArea(1, shapeString(ctxt, &ch, 1, fi));
-      }
+      result.pushArea(1, shapeChar(ctxt, spec));
       break;
     }
 }
 
 AreaRef
-Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* uni_buffer, glong n,
-			     unsigned fi) const
+Gtk_PangoShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
 {
-  assert(context);
-  assert(fi < sizeof(variantDesc) / sizeof(PangoTextAttributes));
+  gchar buffer[6];
+  gint length = g_unichar_to_utf8(spec.getGlyphId(), buffer);
 
-  glong length;
-  gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
-  //assert((glong) n == length);
-
-  const MathVariant variant = ctxt.getVariant();
-
-  // FIXME: I bet there are some leaks here, but using GObjectPtr just
-  // gives a segfault!!!
-  //GObjectPtr<PangoLayout> layout = pango_layout_new(context);
-  PangoLayout* layout = pango_layout_new(context);
-  pango_layout_set_text(layout, buffer, length);
-
-  //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
-  PangoAttrList* attrList = pango_attr_list_new();
-
-#if 1
-  PangoFontDescription* fontDesc = pango_font_description_new();
-  if (variantDesc[fi].family) pango_font_description_set_family_static(fontDesc, variantDesc[fi].family);
-  if (variantDesc[fi].weight != PANGO_WEIGHT_NORMAL) pango_font_description_set_weight(fontDesc, variantDesc[fi].weight);
-  if (variantDesc[fi].style != PANGO_STYLE_NORMAL) pango_font_description_set_style(fontDesc, variantDesc[fi].style);
-  pango_font_description_set_size(fontDesc, Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
-  PangoAttribute* fontDescAttr = pango_attr_font_desc_new(fontDesc);
-  fontDescAttr->start_index = 0;
-  fontDescAttr->end_index = length;
-  pango_attr_list_insert(attrList, fontDescAttr);
-  //pango_font_description_free(fontDesc);  
-#else
-  // PangoAttribute is not a GObject?
-  PangoAttribute* sizeAttr = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
-  sizeAttr->start_index = 0;
-  sizeAttr->end_index = length;
-  pango_attr_list_insert(attrList, sizeAttr);
-#if 1
-  if (variantDesc[fi].family)
-    {
-      PangoAttribute* familyAttr = pango_attr_family_new(variantDesc[fi].family);
-      familyAttr->start_index = 0;
-      familyAttr->start_index = length;
-      pango_attr_list_insert(attrList, familyAttr);
-    }
-
-  if (variantDesc[fi].weight != PANGO_WEIGHT_NORMAL)
-    {
-      PangoAttribute* weightAttr = pango_attr_weight_new(variantDesc[fi].weight);
-      weightAttr->start_index = 0;
-      weightAttr->end_index = length;
-      pango_attr_list_insert(attrList, weightAttr);
-    }
-
-  if (variantDesc[fi].style != PANGO_STYLE_NORMAL)
-    {
-      PangoAttribute* styleAttr = pango_attr_style_new(variantDesc[fi].style);
-      styleAttr->start_index = 0;
-      styleAttr->end_index = length;
-      pango_attr_list_insert(attrList, styleAttr);
-    }
-#endif
-#endif
-  pango_layout_set_attributes(layout, attrList);
-
+  PangoLayout* layout = createPangoLayout(buffer, length, Gtk_RenderingContext::toPangoPixels(ctxt.getSize()),
+					  getTextAttributes(MathVariant(spec.getFontId() - MAPPED_BASE_INDEX + NORMAL_VARIANT)));
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
   return factory->pangoLayoutLine(layout);
-
-  //g_free(buffer);
-  // g_free(sizeAttr); // ????
 }
 
 AreaRef

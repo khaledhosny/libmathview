@@ -26,6 +26,7 @@
 
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
+#include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
 #include "MathVariantMap.hh"
@@ -36,10 +37,17 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
 {
   factory = Gtk_AreaFactory::create();
 
-  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
-  pangoShaper->setPangoContext(gtk_widget_create_pango_context(widget));
-  getShaperManager()->registerShaper(pangoShaper);
+  GObjectPtr<PangoContext> context = gtk_widget_create_pango_context(widget);
+  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
+  defaultPangoShaper->setPangoContext(context);
+  getShaperManager()->registerShaper(defaultPangoShaper);
+
   getShaperManager()->registerShaper(SpaceShaper::create());
+
+  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
+  pangoShaper->setPangoContext(context);
+  getShaperManager()->registerShaper(pangoShaper);
+
   //getShaperManager()->registerShaper(Gtk_AdobeShaper::create());
 }
 

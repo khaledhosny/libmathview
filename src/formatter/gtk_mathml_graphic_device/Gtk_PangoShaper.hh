@@ -25,10 +25,9 @@
 
 #include <pango/pango.h>
 
-#include "Shaper.hh"
-#include "GObjectPtr.hh"
+#include "Gtk_DefaultPangoShaper.hh"
 
-class Gtk_PangoShaper : public Shaper
+class Gtk_PangoShaper : public Gtk_DefaultPangoShaper
 {
 protected:
   Gtk_PangoShaper(void);
@@ -42,16 +41,10 @@ public:
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
 
-  void setPangoContext(const GObjectPtr<PangoContext>& c) { context = c; }
-  GObjectPtr<PangoContext> getPangoContext(void) const { return context; }
-
 protected:
-  AreaRef shapeString(const class MathFormattingContext&, const gunichar*, glong, unsigned = 0) const;
+  AreaRef shapeChar(const class MathFormattingContext&, const GlyphSpec&) const;
   AreaRef shapeStretchyCharH(const class MathFormattingContext&, const GlyphSpec&, const scaled&) const;
   AreaRef shapeStretchyCharV(const class MathFormattingContext&, const GlyphSpec&, const scaled&) const;
-
-private:
-  GObjectPtr<PangoContext> context;
 };
 
 #endif // __Gtk_PangoShaper_hh__
