@@ -27,6 +27,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <glib.h>
+#include <errno.h>
 
 #include "gdomeAux.h"
 #include "stringAux.hh"
@@ -75,7 +76,9 @@ String* allocString(GdomeDOMString* str)
   const char* s = gdome_str_c(str);
   assert(s != NULL);
 
-  static Char32 buffer[128];
+  // WARNING: the following buffer can be exhausted and thus iconv may
+  // fail if there is a long string with some non-plain characters
+  static Char32 buffer[1024];
   size_t inBytesLeft = strlen(s);
   size_t outBytesLeft = sizeof(buffer);
   /* LUCA: iconv changed and now the 2 argument of iconv is not a const

@@ -320,7 +320,7 @@ MathMLizer::MathMLizeTokenContent(GdomeElement* node, MathMLTokenElement* parent
     } else if (!gdome_n_isBlank(p)) {
       GdomeDOMString* name = gdome_n_nodeName(p, &exc);
       assert(name != NULL);
-      MathEngine::logger(LOG_WARNING, "invalid node `%s' inside container (ignored)", gdome_str_c(name));
+      MathEngine::logger(LOG_WARNING, "invalid node `%s' inside token (ignored)", gdome_str_c(name));
       gdome_str_unref(name);
     }
   }

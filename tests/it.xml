@@ -1,11 +1,24 @@
 <math>
-  <mrow>
-    <mo>&it;</mo>
-    <mo>&it;</mo>
-    <mo>&it;</mo>
-    <mo>&it;</mo>
-    <mo>&it;</mo>
-    <mo>&it;</mo>
-    <mi>y</mi>
-  </mrow>
+  <mtable>
+    <mtr>
+      <mtd>
+        <mi>x</mi>
+        <mi>y</mi>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd>
+        <mi>x</mi>
+        <mo>&af;</mo>
+        <mi>y</mi>
+      </mtd>
+    </mtr>
+    <mtr>
+      <mtd>
+        <mi>x</mi>
+        <mo>&it;</mo>
+        <mi>y</mi>
+      </mtd>
+    </mtr>
+  </mtable>
 </math>

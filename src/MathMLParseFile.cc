@@ -54,7 +54,7 @@ MathMLParseFile(const char* fileName, bool subst)
   GdomeDocument* res;
 
   if (subst)
-    res = gdome_di_createDocFromURIWithEntitiesTable(di, fileName, entitiesTable, GDOME_LOAD_PARSING, &exc);
+    res = gdome_di_createDocFromURIWithEntitiesTable(di, fileName, entitiesTable, GDOME_LOAD_PARSING | GDOME_LOAD_SUBSTITUTE_ENTITIES, &exc);
   else
     res = gdome_di_createDocFromURI(di, fileName, GDOME_LOAD_PARSING, &exc);
 
