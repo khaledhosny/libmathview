@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Sans Serif</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Sans Serif</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="bold-fraktur.xml">
+Bold Fraktur</a>
+         <br class="html-compat"/>
+Next: <a href="bold-sans-serif.xml">
+Bold Sans Serif</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D5A0</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A0.png" alt="U1D5A0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A1</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A1.png" alt="U1D5A1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A2</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A2.png" alt="U1D5A2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A3</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A3.png" alt="U1D5A3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A4</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A4.png" alt="U1D5A4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A5</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A5.png" alt="U1D5A5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A6</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A6.png" alt="U1D5A6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A7</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A7.png" alt="U1D5A7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A8</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A8.png" alt="U1D5A8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5A9</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5A9.png" alt="U1D5A9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5AA</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5AA.png" alt="U1D5AA"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5AB</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5AB.png" alt="U1D5AB"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5AC</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5AC.png" alt="U1D5AC"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5AD</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5AD.png" alt="U1D5AD"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5AE</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5AE.png" alt="U1D5AE"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5AF</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5AF.png" alt="U1D5AF"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B0</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B0.png" alt="U1D5B0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B1</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B1.png" alt="U1D5B1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B2</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B2.png" alt="U1D5B2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B3</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B3.png" alt="U1D5B3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B4</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B4.png" alt="U1D5B4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B5</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B5.png" alt="U1D5B5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B6</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B6.png" alt="U1D5B6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B7</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B7.png" alt="U1D5B7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B8</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B8.png" alt="U1D5B8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5B9</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5B9.png" alt="U1D5B9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF CAPITAL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5BA</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5BA.png" alt="U1D5BA"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5BB</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5BB.png" alt="U1D5BB"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5BC</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5BC.png" alt="U1D5BC"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5BD</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5BD.png" alt="U1D5BD"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5BE</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5BE.png" alt="U1D5BE"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5BF</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5BF.png" alt="U1D5BF"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C0</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C0.png" alt="U1D5C0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C1</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C1.png" alt="U1D5C1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C2</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C2.png" alt="U1D5C2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C3</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C3.png" alt="U1D5C3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C4</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C4.png" alt="U1D5C4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C5</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C5.png" alt="U1D5C5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C6</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C6.png" alt="U1D5C6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C7</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C7.png" alt="U1D5C7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C8</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C8.png" alt="U1D5C8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5C9</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5C9.png" alt="U1D5C9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5CA</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5CA.png" alt="U1D5CA"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5CB</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5CB.png" alt="U1D5CB"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5CC</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5CC.png" alt="U1D5CC"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5CD</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5CD.png" alt="U1D5CD"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5CE</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5CE.png" alt="U1D5CE"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5CF</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5CF.png" alt="U1D5CF"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5D0</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5D0.png" alt="U1D5D0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5D1</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5D1.png" alt="U1D5D1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5D2</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5D2.png" alt="U1D5D2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D5D3</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D5D3.png" alt="U1D5D3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF SMALL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E2</td>
+               <td>00030</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E2.png" alt="U1D7E2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT ZERO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E3</td>
+               <td>00031</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E3.png" alt="U1D7E3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT ONE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E4</td>
+               <td>00032</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E4.png" alt="U1D7E4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT TWO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E5</td>
+               <td>00033</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E5.png" alt="U1D7E5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT THREE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E6</td>
+               <td>00034</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E6.png" alt="U1D7E6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT FOUR</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E7</td>
+               <td>00035</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E7.png" alt="U1D7E7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT FIVE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E8</td>
+               <td>00036</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E8.png" alt="U1D7E8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT SIX</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E9</td>
+               <td>00037</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E9.png" alt="U1D7E9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT SEVEN</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7EA</td>
+               <td>00038</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7EA.png" alt="U1D7EA"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT EIGHT</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7EB</td>
+               <td>00039</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7EB.png" alt="U1D7EB"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF DIGIT NINE</td>
+               <td> </td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="bold-fraktur.xml">
+Bold Fraktur</a>
+         <br class="html-compat"/>
+Next: <a href="bold-sans-serif.xml">
+Bold Sans Serif</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Double Struck (Open Face, Blackboard Bold)</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Double Struck (Open Face, Blackboard Bold)</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="bold-italic.xml">
+Bold Italic or Slanted</a>
+         <br class="html-compat"/>
+Next: <a href="script.xml">
+Script (or Calligraphic)</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D538</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D538.png" alt="U1D538"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL A</td>
+               <td>Aopf</td>
+            </tr>
+            <tr>
+               <td>1D539</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D539.png" alt="U1D539"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL B</td>
+               <td>Bopf</td>
+            </tr>
+            <tr class="bmp">
+               <td>02102</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02102.png" alt="U02102"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL C</td>
+               <td>Copf, complexes</td>
+            </tr>
+            <tr>
+               <td>1D53B</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D53B.png" alt="U1D53B"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL D</td>
+               <td>Dopf</td>
+            </tr>
+            <tr>
+               <td>1D53C</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D53C.png" alt="U1D53C"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL E</td>
+               <td>Eopf</td>
+            </tr>
+            <tr>
+               <td>1D53D</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D53D.png" alt="U1D53D"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL F</td>
+               <td>Fopf</td>
+            </tr>
+            <tr>
+               <td>1D53E</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D53E.png" alt="U1D53E"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL G</td>
+               <td>Gopf</td>
+            </tr>
+            <tr class="bmp">
+               <td>0210D</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0210D.png" alt="U0210D"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL H</td>
+               <td>quaternions, Hopf</td>
+            </tr>
+            <tr>
+               <td>1D540</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D540.png" alt="U1D540"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL I</td>
+               <td>Iopf</td>
+            </tr>
+            <tr>
+               <td>1D541</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D541.png" alt="U1D541"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL J</td>
+               <td>Jopf</td>
+            </tr>
+            <tr>
+               <td>1D542</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D542.png" alt="U1D542"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL K</td>
+               <td>Kopf</td>
+            </tr>
+            <tr>
+               <td>1D543</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D543.png" alt="U1D543"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL L</td>
+               <td>Lopf, imped</td>
+            </tr>
+            <tr>
+               <td>1D544</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D544.png" alt="U1D544"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL M</td>
+               <td>Mopf</td>
+            </tr>
+            <tr class="bmp">
+               <td>02115</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02115.png" alt="U02115"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL N</td>
+               <td>Nopf, naturals</td>
+            </tr>
+            <tr>
+               <td>1D546</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D546.png" alt="U1D546"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL O</td>
+               <td>Oopf</td>
+            </tr>
+            <tr class="bmp">
+               <td>02119</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02119.png" alt="U02119"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL P</td>
+               <td>Popf, primes</td>
+            </tr>
+            <tr class="bmp">
+               <td>0211A</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0211A.png" alt="U0211A"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL Q</td>
+               <td>rationals, Qopf</td>
+            </tr>
+            <tr class="bmp">
+               <td>0211D</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0211D.png" alt="U0211D"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL R</td>
+               <td>reals, Ropf</td>
+            </tr>
+            <tr>
+               <td>1D54A</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D54A.png" alt="U1D54A"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL S</td>
+               <td>Sopf</td>
+            </tr>
+            <tr>
+               <td>1D54B</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D54B.png" alt="U1D54B"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL T</td>
+               <td>Topf</td>
+            </tr>
+            <tr>
+               <td>1D54C</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D54C.png" alt="U1D54C"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL U</td>
+               <td>Uopf</td>
+            </tr>
+            <tr>
+               <td>1D54D</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D54D.png" alt="U1D54D"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL V</td>
+               <td>Vopf</td>
+            </tr>
+            <tr>
+               <td>1D54E</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D54E.png" alt="U1D54E"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL W</td>
+               <td>Wopf</td>
+            </tr>
+            <tr>
+               <td>1D54F</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D54F.png" alt="U1D54F"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL X</td>
+               <td>Xopf</td>
+            </tr>
+            <tr>
+               <td>1D550</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D550.png" alt="U1D550"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK CAPITAL Y</td>
+               <td>Yopf</td>
+            </tr>
+            <tr class="bmp">
+               <td>02124</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02124.png" alt="U02124"/>
+               </td>
+               <td>DOUBLE-STRUCK CAPITAL Z</td>
+               <td>integers, Zopf</td>
+            </tr>
+            <tr>
+               <td>1D552</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D552.png" alt="U1D552"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL A</td>
+               <td>aopf</td>
+            </tr>
+            <tr>
+               <td>1D553</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D553.png" alt="U1D553"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL B</td>
+               <td>bopf</td>
+            </tr>
+            <tr>
+               <td>1D554</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D554.png" alt="U1D554"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL C</td>
+               <td>copf</td>
+            </tr>
+            <tr>
+               <td>1D555</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D555.png" alt="U1D555"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL D</td>
+               <td>dopf</td>
+            </tr>
+            <tr>
+               <td>1D556</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D556.png" alt="U1D556"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL E</td>
+               <td>eopf</td>
+            </tr>
+            <tr>
+               <td>1D557</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D557.png" alt="U1D557"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL F</td>
+               <td>fopf</td>
+            </tr>
+            <tr>
+               <td>1D558</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D558.png" alt="U1D558"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL G</td>
+               <td>gopf</td>
+            </tr>
+            <tr>
+               <td>1D559</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D559.png" alt="U1D559"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL H</td>
+               <td>hopf</td>
+            </tr>
+            <tr>
+               <td>1D55A</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D55A.png" alt="U1D55A"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL I</td>
+               <td>iopf</td>
+            </tr>
+            <tr>
+               <td>1D55B</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D55B.png" alt="U1D55B"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL J</td>
+               <td>jopf</td>
+            </tr>
+            <tr>
+               <td>1D55C</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D55C.png" alt="U1D55C"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL K</td>
+               <td>kopf</td>
+            </tr>
+            <tr>
+               <td>1D55D</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D55D.png" alt="U1D55D"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL L</td>
+               <td>lopf</td>
+            </tr>
+            <tr>
+               <td>1D55E</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D55E.png" alt="U1D55E"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL M</td>
+               <td>mopf</td>
+            </tr>
+            <tr>
+               <td>1D55F</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D55F.png" alt="U1D55F"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL N</td>
+               <td>nopf</td>
+            </tr>
+            <tr>
+               <td>1D560</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D560.png" alt="U1D560"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL O</td>
+               <td>oopf</td>
+            </tr>
+            <tr>
+               <td>1D561</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D561.png" alt="U1D561"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL P</td>
+               <td>popf</td>
+            </tr>
+            <tr>
+               <td>1D562</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D562.png" alt="U1D562"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL Q</td>
+               <td>qopf</td>
+            </tr>
+            <tr>
+               <td>1D563</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D563.png" alt="U1D563"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL R</td>
+               <td>ropf</td>
+            </tr>
+            <tr>
+               <td>1D564</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D564.png" alt="U1D564"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL S</td>
+               <td>sopf</td>
+            </tr>
+            <tr>
+               <td>1D565</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D565.png" alt="U1D565"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL T</td>
+               <td>topf</td>
+            </tr>
+            <tr>
+               <td>1D566</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D566.png" alt="U1D566"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL U</td>
+               <td>uopf</td>
+            </tr>
+            <tr>
+               <td>1D567</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D567.png" alt="U1D567"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL V</td>
+               <td>vopf</td>
+            </tr>
+            <tr>
+               <td>1D568</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D568.png" alt="U1D568"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL W</td>
+               <td>wopf</td>
+            </tr>
+            <tr>
+               <td>1D569</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D569.png" alt="U1D569"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL X</td>
+               <td>xopf</td>
+            </tr>
+            <tr>
+               <td>1D56A</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D56A.png" alt="U1D56A"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL Y</td>
+               <td>yopf</td>
+            </tr>
+            <tr>
+               <td>1D56B</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D56B.png" alt="U1D56B"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK SMALL Z</td>
+               <td>zopf</td>
+            </tr>
+            <tr>
+               <td>1D7D8</td>
+               <td>00030</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7D8.png" alt="U1D7D8"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT ZERO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7D9</td>
+               <td>00031</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7D9.png" alt="U1D7D9"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT ONE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7DA</td>
+               <td>00032</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7DA.png" alt="U1D7DA"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT TWO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7DB</td>
+               <td>00033</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7DB.png" alt="U1D7DB"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT THREE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7DC</td>
+               <td>00034</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7DC.png" alt="U1D7DC"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT FOUR</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7DD</td>
+               <td>00035</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7DD.png" alt="U1D7DD"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT FIVE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7DE</td>
+               <td>00036</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7DE.png" alt="U1D7DE"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT SIX</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7DF</td>
+               <td>00037</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7DF.png" alt="U1D7DF"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT SEVEN</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E0</td>
+               <td>00038</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E0.png" alt="U1D7E0"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT EIGHT</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7E1</td>
+               <td>00039</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7E1.png" alt="U1D7E1"/>
+               </td>
+               <td>MATHEMATICAL DOUBLE-STRUCK DIGIT NINE</td>
+               <td> </td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="bold-italic.xml">
+Bold Italic or Slanted</a>
+         <br class="html-compat"/>
+Next: <a href="script.xml">
+Script (or Calligraphic)</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>

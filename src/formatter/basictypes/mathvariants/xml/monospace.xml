@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Monospace</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Monospace</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="sans-serif-bold-italic.xml">
+Slanted Bold Sans Serif</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D670</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D670.png" alt="U1D670"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D671</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D671.png" alt="U1D671"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D672</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D672.png" alt="U1D672"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D673</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D673.png" alt="U1D673"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D674</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D674.png" alt="U1D674"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D675</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D675.png" alt="U1D675"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D676</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D676.png" alt="U1D676"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D677</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D677.png" alt="U1D677"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D678</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D678.png" alt="U1D678"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D679</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D679.png" alt="U1D679"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D67A</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D67A.png" alt="U1D67A"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D67B</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D67B.png" alt="U1D67B"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D67C</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D67C.png" alt="U1D67C"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D67D</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D67D.png" alt="U1D67D"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D67E</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D67E.png" alt="U1D67E"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D67F</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D67F.png" alt="U1D67F"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D680</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D680.png" alt="U1D680"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D681</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D681.png" alt="U1D681"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D682</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D682.png" alt="U1D682"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D683</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D683.png" alt="U1D683"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D684</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D684.png" alt="U1D684"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D685</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D685.png" alt="U1D685"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D686</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D686.png" alt="U1D686"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D687</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D687.png" alt="U1D687"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D688</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D688.png" alt="U1D688"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D689</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D689.png" alt="U1D689"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE CAPITAL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D68A</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D68A.png" alt="U1D68A"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D68B</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D68B.png" alt="U1D68B"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D68C</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D68C.png" alt="U1D68C"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D68D</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D68D.png" alt="U1D68D"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D68E</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D68E.png" alt="U1D68E"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D68F</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D68F.png" alt="U1D68F"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D690</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D690.png" alt="U1D690"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D691</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D691.png" alt="U1D691"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D692</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D692.png" alt="U1D692"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D693</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D693.png" alt="U1D693"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D694</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D694.png" alt="U1D694"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D695</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D695.png" alt="U1D695"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D696</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D696.png" alt="U1D696"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D697</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D697.png" alt="U1D697"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D698</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D698.png" alt="U1D698"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D699</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D699.png" alt="U1D699"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D69A</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D69A.png" alt="U1D69A"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D69B</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D69B.png" alt="U1D69B"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D69C</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D69C.png" alt="U1D69C"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D69D</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D69D.png" alt="U1D69D"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D69E</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D69E.png" alt="U1D69E"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D69F</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D69F.png" alt="U1D69F"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6A0</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6A0.png" alt="U1D6A0"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6A1</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6A1.png" alt="U1D6A1"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6A2</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6A2.png" alt="U1D6A2"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6A3</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6A3.png" alt="U1D6A3"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE SMALL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7F6</td>
+               <td>00030</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7F6.png" alt="U1D7F6"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT ZERO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7F7</td>
+               <td>00031</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7F7.png" alt="U1D7F7"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT ONE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7F8</td>
+               <td>00032</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7F8.png" alt="U1D7F8"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT TWO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7F9</td>
+               <td>00033</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7F9.png" alt="U1D7F9"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT THREE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7FA</td>
+               <td>00034</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7FA.png" alt="U1D7FA"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT FOUR</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7FB</td>
+               <td>00035</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7FB.png" alt="U1D7FB"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT FIVE</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7FC</td>
+               <td>00036</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7FC.png" alt="U1D7FC"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT SIX</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7FD</td>
+               <td>00037</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7FD.png" alt="U1D7FD"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT SEVEN</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7FE</td>
+               <td>00038</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7FE.png" alt="U1D7FE"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT EIGHT</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7FF</td>
+               <td>00039</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7FF.png" alt="U1D7FF"/>
+               </td>
+               <td>MATHEMATICAL MONOSPACE DIGIT NINE</td>
+               <td> </td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="sans-serif-bold-italic.xml">
+Slanted Bold Sans Serif</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>

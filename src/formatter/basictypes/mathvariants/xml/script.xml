@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Script (or Calligraphic)</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Script (or Calligraphic)</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="double-struck.xml">
+Double Struck (Open Face, Blackboard Bold)</a>
+         <br class="html-compat"/>
+Next: <a href="bold-script.xml">
+Bold Script</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D49C</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D49C.png" alt="U1D49C"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL A</td>
+               <td>Ascr</td>
+            </tr>
+            <tr class="bmp">
+               <td>0212C</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0212C.png" alt="U0212C"/>
+               </td>
+               <td>SCRIPT CAPITAL B</td>
+               <td>bernou, Bernoullis, Bscr</td>
+            </tr>
+            <tr>
+               <td>1D49E</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D49E.png" alt="U1D49E"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL C</td>
+               <td>Cscr</td>
+            </tr>
+            <tr>
+               <td>1D49F</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D49F.png" alt="U1D49F"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL D</td>
+               <td>Dscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>02130</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02130.png" alt="U02130"/>
+               </td>
+               <td>SCRIPT CAPITAL E</td>
+               <td>Escr, expectation</td>
+            </tr>
+            <tr class="bmp">
+               <td>02131</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02131.png" alt="U02131"/>
+               </td>
+               <td>SCRIPT CAPITAL F</td>
+               <td>Fscr, Fouriertrf</td>
+            </tr>
+            <tr>
+               <td>1D4A2</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4A2.png" alt="U1D4A2"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL G</td>
+               <td>Gscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>0210B</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0210B.png" alt="U0210B"/>
+               </td>
+               <td>SCRIPT CAPITAL H</td>
+               <td>hamilt, HilbertSpace, Hscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>02110</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02110.png" alt="U02110"/>
+               </td>
+               <td>SCRIPT CAPITAL I</td>
+               <td>Iscr, imagline</td>
+            </tr>
+            <tr>
+               <td>1D4A5</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4A5.png" alt="U1D4A5"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL J</td>
+               <td>Jscr</td>
+            </tr>
+            <tr>
+               <td>1D4A6</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4A6.png" alt="U1D4A6"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL K</td>
+               <td>Kscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>02112</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02112.png" alt="U02112"/>
+               </td>
+               <td>SCRIPT CAPITAL L</td>
+               <td>Lscr, lagran, Laplacetrf</td>
+            </tr>
+            <tr class="bmp">
+               <td>02133</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02133.png" alt="U02133"/>
+               </td>
+               <td>SCRIPT CAPITAL M</td>
+               <td>phmmat, Mellintrf, Mscr</td>
+            </tr>
+            <tr>
+               <td>1D4A9</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4A9.png" alt="U1D4A9"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL N</td>
+               <td>Nscr</td>
+            </tr>
+            <tr>
+               <td>1D4AA</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4AA.png" alt="U1D4AA"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL O</td>
+               <td>Oscr</td>
+            </tr>
+            <tr>
+               <td>1D4AB</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4AB.png" alt="U1D4AB"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL P</td>
+               <td>Pscr</td>
+            </tr>
+            <tr>
+               <td>1D4AC</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4AC.png" alt="U1D4AC"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL Q</td>
+               <td>Qscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>0211B</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0211B.png" alt="U0211B"/>
+               </td>
+               <td>SCRIPT CAPITAL R</td>
+               <td>Rscr, realine</td>
+            </tr>
+            <tr>
+               <td>1D4AE</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4AE.png" alt="U1D4AE"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL S</td>
+               <td>Sscr</td>
+            </tr>
+            <tr>
+               <td>1D4AF</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4AF.png" alt="U1D4AF"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL T</td>
+               <td>Tscr</td>
+            </tr>
+            <tr>
+               <td>1D4B0</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B0.png" alt="U1D4B0"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL U</td>
+               <td>Uscr</td>
+            </tr>
+            <tr>
+               <td>1D4B1</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B1.png" alt="U1D4B1"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL V</td>
+               <td>Vscr</td>
+            </tr>
+            <tr>
+               <td>1D4B2</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B2.png" alt="U1D4B2"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL W</td>
+               <td>Wscr</td>
+            </tr>
+            <tr>
+               <td>1D4B3</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B3.png" alt="U1D4B3"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL X</td>
+               <td>Xscr</td>
+            </tr>
+            <tr>
+               <td>1D4B4</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B4.png" alt="U1D4B4"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL Y</td>
+               <td>Yscr</td>
+            </tr>
+            <tr>
+               <td>1D4B5</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B5.png" alt="U1D4B5"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT CAPITAL Z</td>
+               <td>Zscr</td>
+            </tr>
+            <tr>
+               <td>1D4B6</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B6.png" alt="U1D4B6"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL A</td>
+               <td>ascr</td>
+            </tr>
+            <tr>
+               <td>1D4B7</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B7.png" alt="U1D4B7"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL B</td>
+               <td>bscr</td>
+            </tr>
+            <tr>
+               <td>1D4B8</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B8.png" alt="U1D4B8"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL C</td>
+               <td>cscr</td>
+            </tr>
+            <tr>
+               <td>1D4B9</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4B9.png" alt="U1D4B9"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL D</td>
+               <td>dscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>0212F</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0212F.png" alt="U0212F"/>
+               </td>
+               <td>SCRIPT SMALL E</td>
+               <td>escr</td>
+            </tr>
+            <tr>
+               <td>1D4BB</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4BB.png" alt="U1D4BB"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL F</td>
+               <td>fscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>0210A</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0210A.png" alt="U0210A"/>
+               </td>
+               <td>SCRIPT SMALL G</td>
+               <td>gscr</td>
+            </tr>
+            <tr>
+               <td>1D4BD</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4BD.png" alt="U1D4BD"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL H</td>
+               <td>hscr</td>
+            </tr>
+            <tr>
+               <td>1D4BE</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4BE.png" alt="U1D4BE"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL I</td>
+               <td>iscr</td>
+            </tr>
+            <tr>
+               <td>1D4BF</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4BF.png" alt="U1D4BF"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL J</td>
+               <td>jscr</td>
+            </tr>
+            <tr>
+               <td>1D4C0</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C0.png" alt="U1D4C0"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL K</td>
+               <td>kscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>02113</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02113.png" alt="U02113"/>
+               </td>
+               <td>SCRIPT SMALL L</td>
+               <td>ell, lscr</td>
+            </tr>
+            <tr>
+               <td>1D4C2</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C2.png" alt="U1D4C2"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL M</td>
+               <td>mscr</td>
+            </tr>
+            <tr>
+               <td>1D4C3</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C3.png" alt="U1D4C3"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL N</td>
+               <td>nscr</td>
+            </tr>
+            <tr class="bmp">
+               <td>02134</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U02134.png" alt="U02134"/>
+               </td>
+               <td>SCRIPT SMALL O</td>
+               <td>order, orderof, oscr</td>
+            </tr>
+            <tr>
+               <td>1D4C5</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C5.png" alt="U1D4C5"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL P</td>
+               <td>pscr</td>
+            </tr>
+            <tr>
+               <td>1D4C6</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C6.png" alt="U1D4C6"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL Q</td>
+               <td>qscr</td>
+            </tr>
+            <tr>
+               <td>1D4C7</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C7.png" alt="U1D4C7"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL R</td>
+               <td>rscr</td>
+            </tr>
+            <tr>
+               <td>1D4C8</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C8.png" alt="U1D4C8"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL S</td>
+               <td>sscr</td>
+            </tr>
+            <tr>
+               <td>1D4C9</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4C9.png" alt="U1D4C9"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL T</td>
+               <td>tscr</td>
+            </tr>
+            <tr>
+               <td>1D4CA</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4CA.png" alt="U1D4CA"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL U</td>
+               <td>uscr</td>
+            </tr>
+            <tr>
+               <td>1D4CB</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4CB.png" alt="U1D4CB"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL V</td>
+               <td>vscr</td>
+            </tr>
+            <tr>
+               <td>1D4CC</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4CC.png" alt="U1D4CC"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL W</td>
+               <td>wscr</td>
+            </tr>
+            <tr>
+               <td>1D4CD</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4CD.png" alt="U1D4CD"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL X</td>
+               <td>xscr</td>
+            </tr>
+            <tr>
+               <td>1D4CE</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4CE.png" alt="U1D4CE"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL Y</td>
+               <td>yscr</td>
+            </tr>
+            <tr>
+               <td>1D4CF</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D4CF.png" alt="U1D4CF"/>
+               </td>
+               <td>MATHEMATICAL SCRIPT SMALL Z</td>
+               <td>zscr</td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="double-struck.xml">
+Double Struck (Open Face, Blackboard Bold)</a>
+         <br class="html-compat"/>
+Next: <a href="bold-script.xml">
+Bold Script</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>

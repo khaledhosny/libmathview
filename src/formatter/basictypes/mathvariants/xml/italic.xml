@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Italic or Slanted</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Italic or Slanted</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="bold.xml">
+Bold (Serif)</a>
+         <br class="html-compat"/>
+Next: <a href="bold-italic.xml">
+Bold Italic or Slanted</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D434</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D434.png" alt="U1D434"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D435</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D435.png" alt="U1D435"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D436</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D436.png" alt="U1D436"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D437</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D437.png" alt="U1D437"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D438</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D438.png" alt="U1D438"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D439</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D439.png" alt="U1D439"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D43A</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D43A.png" alt="U1D43A"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D43B</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D43B.png" alt="U1D43B"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D43C</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D43C.png" alt="U1D43C"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D43D</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D43D.png" alt="U1D43D"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D43E</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D43E.png" alt="U1D43E"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D43F</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D43F.png" alt="U1D43F"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D440</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D440.png" alt="U1D440"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D441</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D441.png" alt="U1D441"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D442</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D442.png" alt="U1D442"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D443</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D443.png" alt="U1D443"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D444</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D444.png" alt="U1D444"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D445</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D445.png" alt="U1D445"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D446</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D446.png" alt="U1D446"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D447</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D447.png" alt="U1D447"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D448</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D448.png" alt="U1D448"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D449</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D449.png" alt="U1D449"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D44A</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D44A.png" alt="U1D44A"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D44B</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D44B.png" alt="U1D44B"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D44C</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D44C.png" alt="U1D44C"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D44D</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D44D.png" alt="U1D44D"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D44E</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D44E.png" alt="U1D44E"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D44F</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D44F.png" alt="U1D44F"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D450</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D450.png" alt="U1D450"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D451</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D451.png" alt="U1D451"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D452</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D452.png" alt="U1D452"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D453</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D453.png" alt="U1D453"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D454</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D454.png" alt="U1D454"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL G</td>
+               <td> </td>
+            </tr>
+            <tr class="bmp">
+               <td>0210E</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/021/U0210E.png" alt="U0210E"/>
+               </td>
+               <td>PLANCK CONSTANT</td>
+               <td>planckh</td>
+            </tr>
+            <tr>
+               <td>1D456</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D456.png" alt="U1D456"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D457</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D457.png" alt="U1D457"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D458</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D458.png" alt="U1D458"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D459</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D459.png" alt="U1D459"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D45A</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D45A.png" alt="U1D45A"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D45B</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D45B.png" alt="U1D45B"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D45C</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D45C.png" alt="U1D45C"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D45D</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D45D.png" alt="U1D45D"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D45E</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D45E.png" alt="U1D45E"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D45F</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D45F.png" alt="U1D45F"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D460</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D460.png" alt="U1D460"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D461</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D461.png" alt="U1D461"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D462</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D462.png" alt="U1D462"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D463</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D463.png" alt="U1D463"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D464</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D464.png" alt="U1D464"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D465</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D465.png" alt="U1D465"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D466</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D466.png" alt="U1D466"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D467</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D4/U1D467.png" alt="U1D467"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E2</td>
+               <td>00391</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E2.png" alt="U1D6E2"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL ALPHA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E3</td>
+               <td>00392</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E3.png" alt="U1D6E3"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL BETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E4</td>
+               <td>00393</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E4.png" alt="U1D6E4"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL GAMMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E5</td>
+               <td>00394</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E5.png" alt="U1D6E5"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL DELTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E6</td>
+               <td>00395</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E6.png" alt="U1D6E6"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL EPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E7</td>
+               <td>00396</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E7.png" alt="U1D6E7"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL ZETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E8</td>
+               <td>00397</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E8.png" alt="U1D6E8"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL ETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6E9</td>
+               <td>00398</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6E9.png" alt="U1D6E9"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL THETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6EA</td>
+               <td>00399</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6EA.png" alt="U1D6EA"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL IOTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6EB</td>
+               <td>0039A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6EB.png" alt="U1D6EB"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL KAPPA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6EC</td>
+               <td>0039B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6EC.png" alt="U1D6EC"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL LAMDA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6ED</td>
+               <td>0039C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6ED.png" alt="U1D6ED"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL MU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6EE</td>
+               <td>0039D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6EE.png" alt="U1D6EE"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL NU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6EF</td>
+               <td>0039E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6EF.png" alt="U1D6EF"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL XI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F0</td>
+               <td>0039F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F0.png" alt="U1D6F0"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL OMICRON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F1</td>
+               <td>003A0</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F1.png" alt="U1D6F1"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL PI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F2</td>
+               <td>003A1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F2.png" alt="U1D6F2"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL RHO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F3</td>
+               <td>003F4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F3.png" alt="U1D6F3"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL THETA SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F4</td>
+               <td>003A3</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F4.png" alt="U1D6F4"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL SIGMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F5</td>
+               <td>003A4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F5.png" alt="U1D6F5"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL TAU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F6</td>
+               <td>003A5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F6.png" alt="U1D6F6"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL UPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F7</td>
+               <td>003A6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F7.png" alt="U1D6F7"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL PHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F8</td>
+               <td>003A7</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F8.png" alt="U1D6F8"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL CHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6F9</td>
+               <td>003A8</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6F9.png" alt="U1D6F9"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL PSI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6FA</td>
+               <td>003A9</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6FA.png" alt="U1D6FA"/>
+               </td>
+               <td>MATHEMATICAL ITALIC CAPITAL OMEGA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6FB</td>
+               <td>02207</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6FB.png" alt="U1D6FB"/>
+               </td>
+               <td>MATHEMATICAL ITALIC NABLA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6FC</td>
+               <td>003B1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6FC.png" alt="U1D6FC"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL ALPHA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6FD</td>
+               <td>003B2</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6FD.png" alt="U1D6FD"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL BETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6FE</td>
+               <td>003B3</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6FE.png" alt="U1D6FE"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL GAMMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D6FF</td>
+               <td>003B4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D6FF.png" alt="U1D6FF"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL DELTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D700</td>
+               <td>003B5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D700.png" alt="U1D700"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL EPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D701</td>
+               <td>003B6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D701.png" alt="U1D701"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL ZETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D702</td>
+               <td>003B7</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D702.png" alt="U1D702"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL ETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D703</td>
+               <td>003B8</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D703.png" alt="U1D703"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL THETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D704</td>
+               <td>003B9</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D704.png" alt="U1D704"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL IOTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D705</td>
+               <td>003BA</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D705.png" alt="U1D705"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL KAPPA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D706</td>
+               <td>003BB</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D706.png" alt="U1D706"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL LAMDA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D707</td>
+               <td>003BC</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D707.png" alt="U1D707"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL MU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D708</td>
+               <td>003BD</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D708.png" alt="U1D708"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL NU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D709</td>
+               <td>003BE</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D709.png" alt="U1D709"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL XI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D70A</td>
+               <td>003BF</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D70A.png" alt="U1D70A"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL OMICRON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D70B</td>
+               <td>003C0</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D70B.png" alt="U1D70B"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL PI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D70C</td>
+               <td>003C1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D70C.png" alt="U1D70C"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL RHO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D70D</td>
+               <td>003C2</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D70D.png" alt="U1D70D"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL FINAL SIGMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D70E</td>
+               <td>003C3</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D70E.png" alt="U1D70E"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL SIGMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D70F</td>
+               <td>003C4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D70F.png" alt="U1D70F"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL TAU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D710</td>
+               <td>003C5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D710.png" alt="U1D710"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL UPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D711</td>
+               <td>003C6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D711.png" alt="U1D711"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL PHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D712</td>
+               <td>003C7</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D712.png" alt="U1D712"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL CHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D713</td>
+               <td>003C8</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D713.png" alt="U1D713"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL PSI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D714</td>
+               <td>003C9</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D714.png" alt="U1D714"/>
+               </td>
+               <td>MATHEMATICAL ITALIC SMALL OMEGA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D715</td>
+               <td>02202</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D715.png" alt="U1D715"/>
+               </td>
+               <td>MATHEMATICAL ITALIC PARTIAL DIFFERENTIAL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D716</td>
+               <td>0220A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D716.png" alt="U1D716"/>
+               </td>
+               <td>MATHEMATICAL ITALIC EPSILON SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D717</td>
+               <td>003D1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D717.png" alt="U1D717"/>
+               </td>
+               <td>MATHEMATICAL ITALIC THETA SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D718</td>
+               <td>003F0</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D718.png" alt="U1D718"/>
+               </td>
+               <td>MATHEMATICAL ITALIC KAPPA SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D719</td>
+               <td>003D5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D719.png" alt="U1D719"/>
+               </td>
+               <td>MATHEMATICAL ITALIC PHI SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D71A</td>
+               <td>003F1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D71A.png" alt="U1D71A"/>
+               </td>
+               <td>MATHEMATICAL ITALIC RHO SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D71B</td>
+               <td>003D6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D71B.png" alt="U1D71B"/>
+               </td>
+               <td>MATHEMATICAL ITALIC PI SYMBOL</td>
+               <td> </td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="bold.xml">
+Bold (Serif)</a>
+         <br class="html-compat"/>
+Next: <a href="bold-italic.xml">
+Bold Italic or Slanted</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Bold Fraktur</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Bold Fraktur</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="fraktur.xml">
+Fraktur</a>
+         <br class="html-compat"/>
+Next: <a href="sans-serif.xml">
+Sans Serif</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D56C</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D56C.png" alt="U1D56C"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D56D</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D56D.png" alt="U1D56D"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D56E</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D56E.png" alt="U1D56E"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D56F</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D56F.png" alt="U1D56F"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D570</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D570.png" alt="U1D570"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D571</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D571.png" alt="U1D571"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D572</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D572.png" alt="U1D572"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D573</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D573.png" alt="U1D573"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D574</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D574.png" alt="U1D574"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D575</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D575.png" alt="U1D575"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D576</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D576.png" alt="U1D576"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D577</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D577.png" alt="U1D577"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D578</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D578.png" alt="U1D578"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D579</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D579.png" alt="U1D579"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D57A</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D57A.png" alt="U1D57A"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D57B</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D57B.png" alt="U1D57B"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D57C</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D57C.png" alt="U1D57C"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D57D</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D57D.png" alt="U1D57D"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D57E</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D57E.png" alt="U1D57E"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D57F</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D57F.png" alt="U1D57F"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D580</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D580.png" alt="U1D580"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D581</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D581.png" alt="U1D581"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D582</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D582.png" alt="U1D582"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D583</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D583.png" alt="U1D583"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D584</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D584.png" alt="U1D584"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D585</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D585.png" alt="U1D585"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR CAPITAL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D586</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D586.png" alt="U1D586"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D587</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D587.png" alt="U1D587"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D588</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D588.png" alt="U1D588"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D589</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D589.png" alt="U1D589"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D58A</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D58A.png" alt="U1D58A"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D58B</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D58B.png" alt="U1D58B"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D58C</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D58C.png" alt="U1D58C"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D58D</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D58D.png" alt="U1D58D"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D58E</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D58E.png" alt="U1D58E"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D58F</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D58F.png" alt="U1D58F"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D590</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D590.png" alt="U1D590"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D591</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D591.png" alt="U1D591"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D592</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D592.png" alt="U1D592"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D593</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D593.png" alt="U1D593"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D594</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D594.png" alt="U1D594"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D595</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D595.png" alt="U1D595"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D596</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D596.png" alt="U1D596"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D597</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D597.png" alt="U1D597"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D598</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D598.png" alt="U1D598"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D599</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D599.png" alt="U1D599"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D59A</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D59A.png" alt="U1D59A"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D59B</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D59B.png" alt="U1D59B"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D59C</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D59C.png" alt="U1D59C"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D59D</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D59D.png" alt="U1D59D"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D59E</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D59E.png" alt="U1D59E"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D59F</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D5/U1D59F.png" alt="U1D59F"/>
+               </td>
+               <td>MATHEMATICAL BOLD FRAKTUR SMALL Z</td>
+               <td> </td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="fraktur.xml">
+Fraktur</a>
+         <br class="html-compat"/>
+Next: <a href="sans-serif.xml">
+Sans Serif</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>

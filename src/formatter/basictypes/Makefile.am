@@ -1,4 +1,6 @@
 
+SUBDIRS = mathvariants
+
 noinst_LTLIBRARIES = libbasictypes.la
 
 noinst_PROGRAMS = test1

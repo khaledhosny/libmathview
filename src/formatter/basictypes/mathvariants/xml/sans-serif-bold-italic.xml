@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="mathml.xsl"?>
+
+<!DOCTYPE html
+  SYSTEM "mathml.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Slanted Bold Sans Serif</title>
+      <style type="text/css">
+.unassigned { background-color: #FF5555 }
+.error { color: red }
+.bmp { color: green ; background-color: yellow }
+th.cchart {font-size: 80%}
+ .minitoc { border-style: solid;
+             border-color: #0050B2; 
+             border-width: 1px ; }
+.ignore {background-color: #AAAAAA;}
+.diff-chg  { background-color: lime }
+  </style>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-WD.css"/>
+   </head>
+   <body>
+      <h1>Slanted Bold Sans Serif</h1>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="sans-serif-italic.xml">
+Slanted Sans Serif</a>
+         <br class="html-compat"/>
+Next: <a href="monospace.xml">
+Monospace</a>
+         <br class="html-compat"/>
+      </div>
+      <div>
+         <br class="html-compat"/>
+         <table border="1">
+            <tr>
+               <th>Unicode</th>
+               <th>BMP</th>
+               <th>Glyph</th>
+               <th>Unicode Name</th>
+               <th>MathML Names</th>
+            </tr>
+            <tr>
+               <td>1D63C</td>
+               <td>00041</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D63C.png" alt="U1D63C"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D63D</td>
+               <td>00042</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D63D.png" alt="U1D63D"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D63E</td>
+               <td>00043</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D63E.png" alt="U1D63E"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D63F</td>
+               <td>00044</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D63F.png" alt="U1D63F"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D640</td>
+               <td>00045</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D640.png" alt="U1D640"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D641</td>
+               <td>00046</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D641.png" alt="U1D641"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D642</td>
+               <td>00047</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D642.png" alt="U1D642"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D643</td>
+               <td>00048</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D643.png" alt="U1D643"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D644</td>
+               <td>00049</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D644.png" alt="U1D644"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D645</td>
+               <td>0004A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D645.png" alt="U1D645"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D646</td>
+               <td>0004B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D646.png" alt="U1D646"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D647</td>
+               <td>0004C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D647.png" alt="U1D647"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D648</td>
+               <td>0004D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D648.png" alt="U1D648"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D649</td>
+               <td>0004E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D649.png" alt="U1D649"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D64A</td>
+               <td>0004F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D64A.png" alt="U1D64A"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D64B</td>
+               <td>00050</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D64B.png" alt="U1D64B"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D64C</td>
+               <td>00051</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D64C.png" alt="U1D64C"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D64D</td>
+               <td>00052</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D64D.png" alt="U1D64D"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D64E</td>
+               <td>00053</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D64E.png" alt="U1D64E"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D64F</td>
+               <td>00054</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D64F.png" alt="U1D64F"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D650</td>
+               <td>00055</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D650.png" alt="U1D650"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D651</td>
+               <td>00056</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D651.png" alt="U1D651"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D652</td>
+               <td>00057</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D652.png" alt="U1D652"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D653</td>
+               <td>00058</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D653.png" alt="U1D653"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D654</td>
+               <td>00059</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D654.png" alt="U1D654"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D655</td>
+               <td>0005A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D655.png" alt="U1D655"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D656</td>
+               <td>00061</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D656.png" alt="U1D656"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL A</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D657</td>
+               <td>00062</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D657.png" alt="U1D657"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL B</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D658</td>
+               <td>00063</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D658.png" alt="U1D658"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL C</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D659</td>
+               <td>00064</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D659.png" alt="U1D659"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL D</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D65A</td>
+               <td>00065</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D65A.png" alt="U1D65A"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL E</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D65B</td>
+               <td>00066</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D65B.png" alt="U1D65B"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL F</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D65C</td>
+               <td>00067</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D65C.png" alt="U1D65C"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL G</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D65D</td>
+               <td>00068</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D65D.png" alt="U1D65D"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL H</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D65E</td>
+               <td>00069</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D65E.png" alt="U1D65E"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL I</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D65F</td>
+               <td>0006A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D65F.png" alt="U1D65F"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL J</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D660</td>
+               <td>0006B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D660.png" alt="U1D660"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL K</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D661</td>
+               <td>0006C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D661.png" alt="U1D661"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL L</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D662</td>
+               <td>0006D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D662.png" alt="U1D662"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL M</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D663</td>
+               <td>0006E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D663.png" alt="U1D663"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL N</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D664</td>
+               <td>0006F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D664.png" alt="U1D664"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL O</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D665</td>
+               <td>00070</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D665.png" alt="U1D665"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL P</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D666</td>
+               <td>00071</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D666.png" alt="U1D666"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL Q</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D667</td>
+               <td>00072</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D667.png" alt="U1D667"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL R</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D668</td>
+               <td>00073</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D668.png" alt="U1D668"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL S</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D669</td>
+               <td>00074</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D669.png" alt="U1D669"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL T</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D66A</td>
+               <td>00075</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D66A.png" alt="U1D66A"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL U</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D66B</td>
+               <td>00076</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D66B.png" alt="U1D66B"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL V</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D66C</td>
+               <td>00077</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D66C.png" alt="U1D66C"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL W</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D66D</td>
+               <td>00078</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D66D.png" alt="U1D66D"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL X</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D66E</td>
+               <td>00079</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D66E.png" alt="U1D66E"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL Y</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D66F</td>
+               <td>0007A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D6/U1D66F.png" alt="U1D66F"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL Z</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D790</td>
+               <td>00391</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D790.png" alt="U1D790"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL ALPHA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D791</td>
+               <td>00392</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D791.png" alt="U1D791"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL BETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D792</td>
+               <td>00393</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D792.png" alt="U1D792"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL GAMMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D793</td>
+               <td>00394</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D793.png" alt="U1D793"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL DELTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D794</td>
+               <td>00395</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D794.png" alt="U1D794"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL EPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D795</td>
+               <td>00396</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D795.png" alt="U1D795"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL ZETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D796</td>
+               <td>00397</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D796.png" alt="U1D796"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL ETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D797</td>
+               <td>00398</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D797.png" alt="U1D797"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL THETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D798</td>
+               <td>00399</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D798.png" alt="U1D798"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL IOTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D799</td>
+               <td>0039A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D799.png" alt="U1D799"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL KAPPA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D79A</td>
+               <td>0039B</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D79A.png" alt="U1D79A"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL LAMDA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D79B</td>
+               <td>0039C</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D79B.png" alt="U1D79B"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL MU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D79C</td>
+               <td>0039D</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D79C.png" alt="U1D79C"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL NU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D79D</td>
+               <td>0039E</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D79D.png" alt="U1D79D"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL XI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D79E</td>
+               <td>0039F</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D79E.png" alt="U1D79E"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL OMICRON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D79F</td>
+               <td>003A0</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D79F.png" alt="U1D79F"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL PI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A0</td>
+               <td>003A1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A0.png" alt="U1D7A0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL RHO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A1</td>
+               <td>003F4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A1.png" alt="U1D7A1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL THETA SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A2</td>
+               <td>003A3</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A2.png" alt="U1D7A2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL SIGMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A3</td>
+               <td>003A4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A3.png" alt="U1D7A3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL TAU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A4</td>
+               <td>003A5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A4.png" alt="U1D7A4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL UPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A5</td>
+               <td>003A6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A5.png" alt="U1D7A5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL PHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A6</td>
+               <td>003A7</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A6.png" alt="U1D7A6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL CHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A7</td>
+               <td>003A8</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A7.png" alt="U1D7A7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL PSI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A8</td>
+               <td>003A9</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A8.png" alt="U1D7A8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL OMEGA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7A9</td>
+               <td>02207</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7A9.png" alt="U1D7A9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC NABLA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7AA</td>
+               <td>003B1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7AA.png" alt="U1D7AA"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL ALPHA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7AB</td>
+               <td>003B2</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7AB.png" alt="U1D7AB"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL BETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7AC</td>
+               <td>003B3</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7AC.png" alt="U1D7AC"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL GAMMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7AD</td>
+               <td>003B4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7AD.png" alt="U1D7AD"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL DELTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7AE</td>
+               <td>003B5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7AE.png" alt="U1D7AE"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL EPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7AF</td>
+               <td>003B6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7AF.png" alt="U1D7AF"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL ZETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B0</td>
+               <td>003B7</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B0.png" alt="U1D7B0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL ETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B1</td>
+               <td>003B8</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B1.png" alt="U1D7B1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL THETA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B2</td>
+               <td>003B9</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B2.png" alt="U1D7B2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL IOTA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B3</td>
+               <td>003BA</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B3.png" alt="U1D7B3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL KAPPA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B4</td>
+               <td>003BB</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B4.png" alt="U1D7B4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL LAMDA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B5</td>
+               <td>003BC</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B5.png" alt="U1D7B5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL MU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B6</td>
+               <td>003BD</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B6.png" alt="U1D7B6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL NU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B7</td>
+               <td>003BE</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B7.png" alt="U1D7B7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL XI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B8</td>
+               <td>003BF</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B8.png" alt="U1D7B8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL OMICRON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7B9</td>
+               <td>003C0</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7B9.png" alt="U1D7B9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL PI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7BA</td>
+               <td>003C1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7BA.png" alt="U1D7BA"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL RHO</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7BB</td>
+               <td>003C2</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7BB.png" alt="U1D7BB"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL FINAL SIGMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7BC</td>
+               <td>003C3</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7BC.png" alt="U1D7BC"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL SIGMA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7BD</td>
+               <td>003C4</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7BD.png" alt="U1D7BD"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL TAU</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7BE</td>
+               <td>003C5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7BE.png" alt="U1D7BE"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL UPSILON</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7BF</td>
+               <td>003C6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7BF.png" alt="U1D7BF"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL PHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C0</td>
+               <td>003C7</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C0.png" alt="U1D7C0"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL CHI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C1</td>
+               <td>003C8</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C1.png" alt="U1D7C1"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL PSI</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C2</td>
+               <td>003C9</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C2.png" alt="U1D7C2"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC SMALL OMEGA</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C3</td>
+               <td>02202</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C3.png" alt="U1D7C3"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC PARTIAL DIFFERENTIAL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C4</td>
+               <td>0220A</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C4.png" alt="U1D7C4"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC EPSILON SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C5</td>
+               <td>003D1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C5.png" alt="U1D7C5"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC THETA SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C6</td>
+               <td>003F0</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C6.png" alt="U1D7C6"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC KAPPA SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C7</td>
+               <td>003D5</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C7.png" alt="U1D7C7"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC PHI SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C8</td>
+               <td>003F1</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C8.png" alt="U1D7C8"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC RHO SYMBOL</td>
+               <td> </td>
+            </tr>
+            <tr>
+               <td>1D7C9</td>
+               <td>003D6</td>
+               <td>
+                  <img height="32" width="32" src="glyphs/1D7/U1D7C9.png" alt="U1D7C9"/>
+               </td>
+               <td>MATHEMATICAL SANS-SERIF BOLD ITALIC PI SYMBOL</td>
+               <td> </td>
+            </tr>
+         </table>
+         <br class="html-compat"/>
+      </div>
+      <div class="minitoc">
+Overview: <a href="overview.xml">Mathematical Markup Language (MathML) Version 2.0 (2nd Edition)</a>
+         <br class="html-compat"/>
+Up: 6 <a href="chapter6.xml">Characters, Entities and Fonts</a>
+         <br class="html-compat"/>
+Previous: <a href="sans-serif-italic.xml">
+Slanted Sans Serif</a>
+         <br class="html-compat"/>
+Next: <a href="monospace.xml">
+Monospace</a>
+         <br class="html-compat"/>
+      </div>
+   </body>
+</html>
