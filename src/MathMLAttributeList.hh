@@ -27,18 +27,22 @@
 
 #include "MathMLAttribute.hh"
 
-class MathMLAttributeList
+class MathMLAttributeList : public Object
 {
-public:
+protected:
   MathMLAttributeList(void);
   ~MathMLAttributeList();
 
-  void Append(MathMLAttribute*);
-  MathMLAttribute* GetAttribute(AttributeId) const;
+public:
+  static SmartPtr<MathMLAttributeList> create(void)
+  { return new MathMLAttributeList(); }
+
+  void Append(const SmartPtr<MathMLAttribute>&);
+  SmartPtr<MathMLAttribute> GetAttribute(AttributeId) const;
   bool Equal(const MathMLAttributeList&) const;
 
 private:
-  std::vector<MathMLAttribute*> content;
+  std::vector< SmartPtr<MathMLAttribute> > content;
 };
 
 #endif // MathMLAttributeList_hh

@@ -24,19 +24,24 @@
 #define MathMLAttribute_hh
 
 #include "SmartPtr.hh"
+#include "Object.hh"
 #include "Value.hh"
 #include "keyword.hh"
 #include "String.hh"
 
-class MathMLAttribute
+class MathMLAttribute : public Object
 {
-public:
+protected:
   MathMLAttribute(AttributeId, const String&);
-  ~MathMLAttribute();
+  virtual ~MathMLAttribute();
+
+public:
+  static SmartPtr<MathMLAttribute> create(AttributeId id, const String& value)
+  { return new MathMLAttribute(id, value); }
 
   const String GetValue(void) const { return value; }
   SmartPtr<Value> GetParsedValue(const struct AttributeSignature* = 0) const;
-  bool Equal(const MathMLAttribute&) const;
+  bool Equal(const SmartPtr<MathMLAttribute>&) const;
 
   AttributeId IsA(void) const { return id; }
 

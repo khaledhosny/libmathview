@@ -349,8 +349,6 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
       break;
     }
 
-    std::cout << "numBox " << numBox << std::endl
-	      << "denomBox " << denomBox << std::endl;
     numerator->SetPosition(x + numXOffset, y - numShift);
     denominator->SetPosition(x + denomXOffset, y + denomShift);
   }

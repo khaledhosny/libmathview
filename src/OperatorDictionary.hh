@@ -24,6 +24,7 @@
 #define OperatorDictionary_hh
 
 #include <vector>
+
 // !!! BEGIN WARNING: hash_map is not part of the STL !!!
 #if defined(HAVE_EXT_HASH_MAP)
 #include <ext/hash_map>
@@ -36,6 +37,7 @@
 #endif
 // !!! END WARNING: hash_map is not part of the STL !!!
 
+#include "SmartPtr.hh"
 #include "String.hh"
 
 class OperatorDictionary
@@ -47,18 +49,16 @@ public:
   bool Load(const char*);
   void Unload(void);
   void Search(const String&,
-	      const class MathMLAttributeList**,
-	      const class MathMLAttributeList**,
-	      const class MathMLAttributeList**) const;
+	      SmartPtr<class MathMLAttributeList>&,
+	      SmartPtr<class MathMLAttributeList>&,
+	      SmartPtr<class MathMLAttributeList>&) const;
 
 private:
   struct FormDefaults
   {
-    FormDefaults(void) { prefix = infix = postfix = 0; };
-    ~FormDefaults();
-    const class MathMLAttributeList* prefix;
-    const class MathMLAttributeList* infix;
-    const class MathMLAttributeList* postfix;
+    SmartPtr<class MathMLAttributeList> prefix;
+    SmartPtr<class MathMLAttributeList> infix;
+    SmartPtr<class MathMLAttributeList> postfix;
   };
 
   void Delete(void);

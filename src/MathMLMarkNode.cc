@@ -48,13 +48,12 @@ MathMLMarkNode::Setup(RenderingEnvironment& env)
   // text nodes as content... otherwise we would have frames.
   static AttributeSignature sig = { ATTR_EDGE, alignMarkEdgeParser, "left", NULL };
 
-  const MathMLAttribute* attribute = env.GetAttribute(ATTR_EDGE);
-  // ok, we have to do something only in case the attribute edge
-  // wasn't explicitly set inside the mark (see Parser.cc)
-  if (edge == MARK_ALIGN_NOTVALID && attribute) {
-    SmartPtr<Value> value = attribute->GetParsedValue(&sig);
-    if (value) edge = ToMarkAlignId(value);
-  }
+  if (SmartPtr<MathMLAttribute> attribute = env.GetAttribute(ATTR_EDGE))
+    // ok, we have to do something only in case the attribute edge
+    // wasn't explicitly set inside the mark (see Parser.cc)
+    if (edge == MARK_ALIGN_NOTVALID)
+      if (SmartPtr<Value> value = attribute->GetParsedValue(&sig))
+	edge = ToMarkAlignId(value);
 
   // since left is the default value for the edge attribute,
   // we set to left even in case the value is wrong

@@ -50,8 +50,6 @@ MathMLOperatorElement::MathMLOperatorElement(const DOM::Element& node)
 void
 MathMLOperatorElement::Init()
 {
-  defaults = NULL;
-
   fence = separator = stretchy = symmetric = infiniteMaxSize = accent = movableLimits = 0;
   forcedFence = forcedSeparator = forcedSymmetric = 0;
 }
@@ -133,12 +131,12 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       else
 	form = InferOperatorForm();
 
-      const MathMLAttributeList* prefix  = 0;
-      const MathMLAttributeList* infix   = 0;
-      const MathMLAttributeList* postfix = 0;
+      SmartPtr<MathMLAttributeList> prefix;
+      SmartPtr<MathMLAttributeList> infix;
+      SmartPtr<MathMLAttributeList> postfix;
 
       String operatorName = GetRawContent();
-      Globals::dictionary.Search(operatorName, &prefix, &infix, &postfix);
+      Globals::dictionary.Search(operatorName, prefix, infix, postfix);
 
       if      (form == OP_FORM_PREFIX && prefix) defaults = prefix;
       else if (form == OP_FORM_INFIX && infix) defaults = infix;
@@ -456,7 +454,7 @@ MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
       // no, it is not explicitly set, but this operator has an entry in
       // the operator dictionary, so let's see if the attribute has a
       // default value
-      if (const MathMLAttribute* attribute = defaults->GetAttribute(id))
+      if (SmartPtr<MathMLAttribute> attribute = defaults->GetAttribute(id))
 	{
 	  const AttributeSignature* aSignature = GetAttributeSignature(id);
 	  assert(aSignature);

@@ -95,7 +95,7 @@ private:
   //SmartPtr<class MathMLEmbellishedOperatorElement> eOp; // ptr to the root of the embellished operator
 
   OperatorFormId form;
-  const class MathMLAttributeList* defaults;
+  SmartPtr<class MathMLAttributeList> defaults;
 
   scaled axis;
 

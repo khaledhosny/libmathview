@@ -71,7 +71,7 @@ RenderingEnvironment::~RenderingEnvironment()
 }
 
 void
-RenderingEnvironment::Push(const MathMLAttributeList* aList)
+RenderingEnvironment::Push(const SmartPtr<MathMLAttributeList>& aList)
 {
   assert(!level.empty());
 
@@ -96,7 +96,7 @@ RenderingEnvironment::Drop()
   level.pop_front();
 }
 
-const MathMLAttribute*
+SmartPtr<MathMLAttribute>
 RenderingEnvironment::GetAttribute(AttributeId id) const
 {
   for (std::list<AttributeLevel*>::const_iterator i = level.begin();
@@ -106,11 +106,9 @@ RenderingEnvironment::GetAttribute(AttributeId id) const
       AttributeLevel* thisLevel = *i;
       assert(thisLevel != 0);
 
-      if (thisLevel->defaults != 0)
-	{
-	  const MathMLAttribute* attribute = thisLevel->defaults->GetAttribute(id);
-	  if (attribute != 0) return attribute;
-	}
+      if (thisLevel->defaults)
+	if (SmartPtr<MathMLAttribute> attribute = thisLevel->defaults->GetAttribute(id))
+	  return attribute;
     }
 
   return 0;

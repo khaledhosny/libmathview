@@ -48,7 +48,7 @@ public:
   virtual ~RenderingEnvironment();
 
   // levels
-  void     Push(const MathMLAttributeList* = NULL);
+  void     Push(const SmartPtr<MathMLAttributeList>& = 0);
   void     Drop(void);
 
   // document
@@ -56,7 +56,7 @@ public:
   SmartPtr<class MathMLDocument> GetDocument(void) const;
 
   // attributes retrieving
-  const MathMLAttribute* GetAttribute(AttributeId) const;
+  SmartPtr<MathMLAttribute> GetAttribute(AttributeId) const;
 
   // attributes facilities
   void     SetDisplayStyle(bool);
@@ -113,7 +113,7 @@ private:
     RGBValue  background;
     bool      transparentBackground;
     SmartPtr<class MathMLDocument> doc;
-    const MathMLAttributeList* defaults;
+    SmartPtr<MathMLAttributeList> defaults;
   };
 
   std::list<AttributeLevel*> level;

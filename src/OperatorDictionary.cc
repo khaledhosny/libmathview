@@ -33,15 +33,15 @@
 #if defined(HAVE_GMETADOM)
 
 void
-getAttribute(const DOM::Element& node, const char* attr, MathMLAttributeList* aList)
+getAttribute(const DOM::Element& node, const char* attr, const SmartPtr<MathMLAttributeList>& aList)
 {
-  assert(aList != NULL);
+  assert(aList);
 
   DOM::GdomeString attrVal = node.getAttribute(attr);
   if (attrVal.empty()) return;
 
-  MathMLAttribute* attribute =
-    new MathMLAttribute(AttributeIdOfName(attr), fromDOMString(attrVal));
+  SmartPtr<MathMLAttribute> attribute =
+    MathMLAttribute::create(AttributeIdOfName(attr), fromDOMString(attrVal));
 
   aList->Append(attribute);
 }
@@ -59,75 +59,7 @@ OperatorDictionary::~OperatorDictionary()
   Unload();
 }
 
-#if defined(HAVE_MINIDOM)
-
-bool
-OperatorDictionary::Load(const char* fileName)
-{
-  mDOMDocRef doc = MathMLParseFile(fileName, true);
-  if (doc == NULL) return false;
-
-  mDOMNodeRef root = mdom_doc_get_root_node(doc);
-  if (root == NULL) {
-    mdom_doc_free(doc);
-    Globals::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
-    return false;
-  }
-
-  if (!mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("dictionary"))) {
-    mdom_doc_free(doc);
-    Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
-    return false;
-  }
-
-  for (mDOMNodeRef op = mdom_node_get_first_child(root);
-       op != NULL;
-       op = mdom_node_get_next_sibling(op)) {
-    if (!mdom_node_is_blank(op)
-	&& mdom_string_eq(mdom_node_get_name(op), DOM_CONST_STRING("operator"))) {
-      mDOMStringRef opName = mdom_node_get_attribute(op, DOM_CONST_STRING("name"));
-      if (opName != NULL) {
-	const String* opString = allocString(opName);
-	MathMLAttributeList* defaults = new MathMLAttributeList;
-
-	getAttribute(op, "form", def);
-	getAttribute(op, "fence", def);
-	getAttribute(op, "separator", def);
-	getAttribute(op, "lspace", def);
-	getAttribute(op, "rspace", def);
-#ifdef ENABLE_EXTENSIONS
-	getAttribute(op, "tspace", def);
-	getAttribute(op, "bspace", def);
-#endif // ENABLE_EXTENSIONS
-	getAttribute(op, "stretchy", def);
-	getAttribute(op, "direction", def);
-	getAttribute(op, "symmetric", def);
-	getAttribute(op, "maxsize", def);
-	getAttribute(op, "minsize", def);
-	getAttribute(op, "largeop", def);
-	getAttribute(op, "movablelimits", def);
-	getAttribute(op, "accent", def);
-
-	OperatorDictionaryItem* item = new OperatorDictionaryItem;
-	item->name     = opString;
-	item->defaults = defaults;
-
-	items.AddFirst(item);
-      } else {
-	Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
-      }
-    } else if (!mdom_node_is_blank(op)) {
-      Globals::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName,
-			 C_CONST_STRING(mdom_node_get_name(op)));
-    }
-  }
-
-  mdom_doc_free(doc);
-
-  return true;
-}
-
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 
 bool
 OperatorDictionary::Load(const char* fileName)
@@ -149,11 +81,10 @@ OperatorDictionary::Load(const char* fileName)
     for (DOM::Node op = root.get_firstChild(); op; op = op.get_nextSibling()) {
       if (op.get_nodeType() == DOM::Node::ELEMENT_NODE && op.get_nodeName() == "operator") {
 	DOM::Element elem = op;
-	DOM::GdomeString opName = elem.getAttribute("name");
+	String opName = fromDOMString(elem.getAttribute("name"));
 
 	if (!opName.empty()) {
-	  String opString = fromDOMString(opName);
-	  MathMLAttributeList* defaults = new MathMLAttributeList;
+	  SmartPtr<MathMLAttributeList> defaults = MathMLAttributeList::create();
 
 	  getAttribute(op, "form", defaults);
 	  getAttribute(op, "fence", defaults);
@@ -173,29 +104,29 @@ OperatorDictionary::Load(const char* fileName)
 	  getAttribute(op, "movablelimits", defaults);
 	  getAttribute(op, "accent", defaults);
 
-	  FormDefaults& formDefaults = items[opString];
+	  FormDefaults& formDefaults = items[opName];
 	  if (elem.getAttribute("form") == "prefix")
 	    if (formDefaults.prefix)
 	      Globals::logger(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
-			      opString.c_str());
+			      opName.c_str());
 	    else
 	      formDefaults.prefix = defaults;
 	  else if (elem.getAttribute("form") == "infix")
 	    if (formDefaults.prefix)
 	      Globals::logger(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
-			      opString.c_str());
+			      opName.c_str());
 	    else
 	      formDefaults.infix = defaults;
 	  else if (elem.getAttribute("form") == "postfix")
 	    if (formDefaults.prefix)
 	      Globals::logger(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
-			      opString.c_str());
+			      opName.c_str());
 	    else
 	      formDefaults.postfix = defaults;
 	  else
 	    Globals::logger(LOG_WARNING, 
 			    "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
-			    opString.c_str());
+			    opName.c_str());
 	} else {
 	  Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
 	}
@@ -220,26 +151,18 @@ OperatorDictionary::Unload()
 
 void
 OperatorDictionary::Search(const String& opName,
-			   const MathMLAttributeList** prefix,
-			   const MathMLAttributeList** infix,
-			   const MathMLAttributeList** postfix) const
+			   SmartPtr<MathMLAttributeList>& prefix,
+			   SmartPtr<MathMLAttributeList>& infix,
+			   SmartPtr<MathMLAttributeList>& postfix) const
 {
-  assert(prefix != 0 && infix != 0 && postfix != 0);
-
-  *prefix = *infix = *postfix = 0;
+  prefix = infix = postfix = 0;
 
   Dictionary::const_iterator p = items.find(opName);
   if (p != items.end())
     {
-      *prefix = (*p).second.prefix;
-      *infix = (*p).second.infix;
-      *postfix = (*p).second.postfix;
+      prefix = (*p).second.prefix;
+      infix = (*p).second.infix;
+      postfix = (*p).second.postfix;
     }
 }
 
-OperatorDictionary::FormDefaults::~FormDefaults()
-{
-  delete prefix;
-  delete infix;
-  delete postfix;
-}

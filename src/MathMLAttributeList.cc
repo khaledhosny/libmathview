@@ -30,17 +30,10 @@
 
 #include "MathMLAttributeList.hh"
 
-struct DeleteAdaptor
-  : public std::unary_function<MathMLAttribute*,void>
-{
-  void operator()(MathMLAttribute* attr) const
-  { delete attr; }
-};
-
 struct IsPredicate
-  : public std::binary_function<MathMLAttribute*,AttributeId,bool>
+  : public std::binary_function<SmartPtr<MathMLAttribute>,AttributeId,bool>
 {
-  bool operator()(MathMLAttribute* attr, AttributeId id) const
+  bool operator()(const SmartPtr<MathMLAttribute>& attr, AttributeId id) const
   {
     assert(attr);
     return attr->IsA() == id;
@@ -53,24 +46,21 @@ MathMLAttributeList::MathMLAttributeList()
 
 MathMLAttributeList::~MathMLAttributeList()
 {
-  std::for_each(content.begin(), content.end(), DeleteAdaptor());
 }
 
 void
-MathMLAttributeList::Append(MathMLAttribute* attr)
+MathMLAttributeList::Append(const SmartPtr<MathMLAttribute>& attr)
 {
-  assert(attr != 0);
+  assert(attr);
   content.push_back(attr);
 }
 
-MathMLAttribute*
+SmartPtr<MathMLAttribute>
 MathMLAttributeList::GetAttribute(AttributeId id) const
 {
-  std::vector<MathMLAttribute*>::const_iterator p =
-    std::find_if(content.begin(), content.end(),
-		 std::bind2nd(IsPredicate(), id));
-  if (p != content.end()) return *p;
-  else return 0;
+  std::vector< SmartPtr<MathMLAttribute> >::const_iterator p =
+    std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));
+  return (p != content.end()) ? *p : 0;
 }
 
 bool
@@ -78,14 +68,18 @@ MathMLAttributeList::Equal(const MathMLAttributeList& aList) const
 {
   if (content.size() != aList.content.size()) return false;
 
-  for (std::vector<MathMLAttribute*>::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<MathMLAttribute> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
       assert(*p);
-      MathMLAttribute* attribute = aList.GetAttribute((*p)->IsA());
-      if (attribute == 0) return false;
-      if (!(*p)->Equal(*attribute)) return false;
+
+      if (SmartPtr<MathMLAttribute> attribute = aList.GetAttribute((*p)->IsA()))
+	{
+	  if (!(*p)->Equal(attribute)) return false;
+	}
+      else
+	return false;
     }
 
   return true;

@@ -107,7 +107,7 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
   // can be optimized here
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      MathMLAttributeList attributes;
+      SmartPtr<MathMLAttributeList> attributes = MathMLAttributeList::create();
 
 #if defined(HAVE_GMETADOM)
       DOM::NamedNodeMap nnm = GetDOMElement().get_attributes();
@@ -119,11 +119,11 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	AttributeId id = AttributeIdOfName(s_name.c_str());
 
 	if (id != ATTR_NOTVALID)
-	  attributes.Append(new MathMLAttribute(id, fromDOMString(attribute.get_nodeValue())));
+	  attributes->Append(MathMLAttribute::create(id, fromDOMString(attribute.get_nodeValue())));
       }
 #endif // HAVE_GMETADOM
 
-      env.Push(&attributes);
+      env.Push(attributes);
 
       if (SmartPtr<Value> value = GetAttributeValue(ATTR_DISPLAYSTYLE, false))
 	env.SetDisplayStyle(ToBoolean(value));

@@ -154,7 +154,7 @@ MathMLElement::GetAttribute(AttributeId id,
     return fromDOMString(node.getAttribute(NameOfAttributeId(id)));
 #endif // HAVE_GMETADOM
 
-  if (const MathMLAttribute* attr = env.GetAttribute(id))
+  if (SmartPtr<MathMLAttribute> attr = env.GetAttribute(id))
     return attr->GetValue();
 
   if (searchDefault) return GetDefaultAttribute(id);
@@ -200,8 +200,8 @@ MathMLElement::GetAttributeValue(AttributeId id,
 
   const AttributeSignature* aSignature = GetAttributeSignature(id);
   assert(aSignature);
-  const MathMLAttribute* attr = env.GetAttribute(id);
-  if (attr)
+  
+  if (SmartPtr<MathMLAttribute> attr = env.GetAttribute(id))
     if (SmartPtr<Value> value = attr->GetParsedValue(aSignature))
       return value;
 
