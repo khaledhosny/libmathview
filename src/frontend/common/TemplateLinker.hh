@@ -72,7 +72,6 @@ public:
   bool
   remove(class Element* elem)
   {
-    return true;
     assert(elem);
     typename BackwardMap::iterator p = backwardMap.find(elem);
     if (p != backwardMap.end())
