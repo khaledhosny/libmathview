@@ -31,7 +31,11 @@ public:
   
   typename Model::Node node(void) const { return currentNode; }
   bool more(void) const { return currentNode; }
-  void next(void) { currentNode = Model::getNextSibling(currentNode); }
+  void next(void)
+  {
+    assert(currentNode);
+    currentNode = Model::getNextSibling(currentNode);
+  }
   
 private:
   typename Model::Node currentNode;

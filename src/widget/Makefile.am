@@ -26,6 +26,7 @@ libgtkmathview_la_LIBADD = \
   $(top_builddir)/src/formatter/areamodel/libareamodel.la \
   $(top_builddir)/src/formatter/basictypes/mathvariants/libmathvariants.la \
   $(top_builddir)/src/frontend/gmetadom/libfrontend_gmetadom.la \
+  $(top_builddir)/src/frontend/libxml2/libfrontend_libxml2.la \
   $(top_builddir)/src/frontend/common/libfrontend_common.la \
   $(top_builddir)/src/common/libcommon.la
 
@@ -43,6 +44,7 @@ INCLUDES = \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2 \
   -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \

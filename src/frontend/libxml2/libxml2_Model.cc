@@ -24,6 +24,8 @@
 
 #include "libxml2_Model.hh"
 
+#include <iostream>
+
 xmlNode*
 libxml2_Model::parseXML(const String& path, bool)
 {
@@ -33,38 +35,56 @@ libxml2_Model::parseXML(const String& path, bool)
 String
 libxml2_Model::getAttribute(const Element& el, const String& name)
 {
-  xmlChar* res = xmlGetProp((xmlNode*) el, toModelString(name));
-  String _res(fromModelString(res));
-  xmlFree(res);
-  return _res;
+  assert(el);
+  if (xmlChar* res = xmlGetProp((xmlNode*) el, toModelString(name)))
+    {
+      String _res(fromModelString(res));
+      xmlFree(res);
+      return _res;
+    }
+  else
+    return String();
 }
 
 String
 libxml2_Model::getNodeName(const Node& n)
 {
+  assert(n);
+  assert(n->name);
   return fromModelString(n->name);
 }
 
 String
 libxml2_Model::getNodeValue(const Node& n)
 {
+  assert(n);
+  assert(n->content);
   return fromModelString(n->content);
 }
 
 String
 libxml2_Model::getElementValue(const Element& el)
 {
-  xmlChar* res = xmlNodeGetContent((xmlNode*) el);
-  String _res(fromModelString(res));
-  xmlFree(res);
-  return _res;
+  assert(el);
+  if (xmlChar* res = xmlNodeGetContent((xmlNode*) el))
+    {
+      String _res(fromModelString(res));
+      xmlFree(res);
+      return _res;
+    }
+  else
+    return String();
 }
 
 String
 libxml2_Model::getNamespaceURI(const Node& n)
 {
+  assert(n);
   if (n->ns)
-    return fromModelString(n->ns->href);
+    {
+      assert(n->ns->href);
+      return fromModelString(n->ns->href);
+    }
   else
     return String();
 }
@@ -72,5 +92,6 @@ libxml2_Model::getNamespaceURI(const Node& n)
 bool
 libxml2_Model::hasAttribute(const Element& el, const String& name)
 {
+  assert(el);
   return xmlHasProp((xmlNode*) el, toModelString(name));
 }

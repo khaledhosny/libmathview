@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include <gdome.h>
 #include "gtkmathview.h"
 #include "guiGTK.h"
 
@@ -182,15 +183,7 @@ GUI_load_document(const char* name)
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  root = load_document(name);
-  if (!root) {
-    load_error_msg(name);
-    return -1;
-  }
-
-  gtk_math_view_load_root(math_view, root);
-  gdome_el_unref(root, &exc);
-  g_assert(exc == 0);
+  gtk_math_view_load_uri(math_view, name);
 
   if (name != doc_name) {
     if (doc_name != NULL) g_free(doc_name);

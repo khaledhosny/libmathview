@@ -36,8 +36,11 @@ public:
     : namespaceURI(ns), name(n)
 #endif
   { 
+    assert(root);
     if (typename Model::Node p = Model::getFirstChild(root))
       currentElement = findValidNode(p);
+    else
+      currentElement = typename Model::Element();
   }
 
   typename Model::Element element(void) const { return currentElement; }
@@ -62,7 +65,10 @@ public:
   }
     
   void next(void)
-  { currentElement = findValidNode(Model::getNextSibling(Model::asNode(currentElement))); }
+  { 
+    assert(currentElement);
+    currentElement = findValidNode(Model::getNextSibling(Model::asNode(currentElement)));
+  }
 
 protected:
   typename Model::Element

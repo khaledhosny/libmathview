@@ -70,8 +70,10 @@ struct libxml2_Model
 
   // methods for navigating the model
   // must be available if the default iterators are used
-  static Node getNextSibling(const Node& n) { return n->next; }
-  static Node getFirstChild(const Node& n) { return n->children; }
+  static Node getNextSibling(const Node& n)
+  { return n->next; }
+  static Node getFirstChild(const Node& n)
+  { return n->children; }
 
   // auxiliary conversion functions from/to libxml2 strings
   static String fromModelString(const xmlChar* str) { return reinterpret_cast<const String::value_type*>(str); }
