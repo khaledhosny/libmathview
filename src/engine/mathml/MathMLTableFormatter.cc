@@ -349,29 +349,27 @@ MathMLTableFormatter::initTempWidths()
     }
 
   for (unsigned j = 0; j < columns.size(); j++)
-    for (unsigned i = 0; i < rows.size(); i++)
-      if (rows[i].isContentRow() && columns[i].isContentColumn())
-	if (const Cell& cell = getCell(i, j))
-	  if (cell.getColumnSpan() > 1)
-	    {
-	      std::cerr << "CELL " << i << "," << j << " " << cell.getColumnSpan() << " " << cell.getBoundingBox() << std::endl;
-	      const scaled cellWidth = cell.getBoundingBox().width;
-	      scaled spannedTempWidth = 0;
-	      int n = 0;
-	      for (unsigned z = j; z <= j + cell.getColumnSpan() - 1; z++)
-		{
-		  spannedTempWidth += columns[z].getTempWidth();
-		  if (columns[z].isContentColumn() && columns[j].getSpec() != Column::FIX)
-		    n++;
-		}
-	      if (cellWidth > spannedTempWidth)
-		{
-		std::cerr << "spannedTempWidth = " << spannedTempWidth << " n = " << n << std::endl;
+    if (columns[j].isContentColumn())
+      for (unsigned i = 0; i < rows.size(); i++)
+	if (rows[i].isContentRow())
+	  if (const Cell& cell = getCell(i, j))
+	    if (cell.getColumnSpan() > 1)
+	      {
+		std::cerr << "CELL " << i << "," << j << " " << cell.getColumnSpan() << " " << cell.getBoundingBox() << std::endl;
+		const scaled cellWidth = cell.getBoundingBox().width;
+		scaled spannedTempWidth = 0;
+		int n = 0;
 		for (unsigned z = j; z <= j + cell.getColumnSpan() - 1; z++)
-		  if (columns[z].isContentColumn() && columns[j].getSpec() != Column::FIX)
-		    columns[z].setTempWidth(columns[z].getTempWidth() + (cellWidth - spannedTempWidth) / n);
-		}
-	    }
+		  {
+		    spannedTempWidth += columns[z].getTempWidth();
+		    if (columns[z].isContentColumn() && columns[j].getSpec() != Column::FIX)
+		      n++;
+		  }
+		if (cellWidth > spannedTempWidth)
+		  for (unsigned z = j; z <= j + cell.getColumnSpan() - 1; z++)
+		    if (columns[z].isContentColumn() && columns[j].getSpec() != Column::FIX)
+		      columns[z].setTempWidth(columns[z].getTempWidth() + (cellWidth - spannedTempWidth) / n);
+	      }
 }
 
 scaled
@@ -539,20 +537,30 @@ MathMLTableFormatter::initTempHeights(const scaled& axis)
 	    }
 	
   for (unsigned i = 0; i < rows.size(); i++)
-    for (unsigned j = 0; j < columns.size(); j++)
-      if (columns[j].isContentColumn())
-	if (const Cell& cell = getCell(i, j))
-	  if (cell.getColumnSpan() > 1)
-	    {
-	      const scaled cellHeightDepth = cell.getBoundingBox().verticalExtent();
-	      scaled spannedTempHeightDepth = 0;
-	      for (unsigned z = i; z <= i + cell.getRowSpan() - 1; z++)
-		spannedTempHeightDepth += rows[z].getTempHeight() + rows[z].getTempDepth();
-	      if (cellHeightDepth > spannedTempHeightDepth)
+    if (rows[i].isContentRow())
+      for (unsigned j = 0; j < columns.size(); j++)
+	if (columns[j].isContentColumn())
+	  if (const Cell& cell = getCell(i, j))
+	    if (cell.getRowSpan() > 1)
+	      {
+		const scaled cellHeightDepth = cell.getBoundingBox().verticalExtent();
+		scaled spannedTempHeightDepth = 0;
+		int n = 0;
 		for (unsigned z = i; z <= i + cell.getRowSpan() - 1; z++)
-		  if (rows[z].isContentRow())
-		    rows[z].setTempDepth(rows[z].getTempDepth() + (cellHeightDepth - spannedTempHeightDepth) / static_cast<int>(cell.getRowSpan()));
-	    }
+		  {
+		    spannedTempHeightDepth += rows[z].getTempHeight() + rows[z].getTempDepth();
+		    if (rows[z].isContentRow()) n++;
+		  }
+		std::cerr << "CELL " << i << "," << j
+			  << " cellHeightDepth = " << cellHeightDepth
+			  << " spannedTempHeightDepth = " << spannedTempHeightDepth << std::endl;
+		if (cellHeightDepth > spannedTempHeightDepth)
+		  {
+		    for (unsigned z = i; z <= i + cell.getRowSpan() - 1; z++)
+		      if (rows[z].isContentRow())
+			rows[z].setTempDepth(rows[z].getTempDepth() + (cellHeightDepth - spannedTempHeightDepth) / n);
+		  }
+	      }
 }
 
 scaled
