@@ -7,7 +7,8 @@ libmathml_graphic_device_la_SOURCES = \
   MathFormattingContext.cc \
   MathGraphicDevice.cc \
   ShaperManager.cc \
-  ShapingResult.cc
+  ShapingResult.cc \
+  SpaceShaper.cc
 
 noinst_HEADERS = \
   MathFormattingContext.hh \
@@ -15,10 +16,13 @@ noinst_HEADERS = \
   GlyphSpec.hh \
   Shaper.hh \
   ShaperManager.hh \
-  ShapingResult.hh
+  ShapingResult.hh \
+  SpaceShaper.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \
+  -I$(top_srcdir)/src \
+  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/formatter/basictypes \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants \
   -I$(top_srcdir)/src/formatter/areamodel
