@@ -707,8 +707,7 @@ MathMLTableFormatter::alignTable(const scaled& tableHeightDepth, const scaled& a
       assert(false);
     }
   setHeight(temp);
-
-  setDepth(tableHeightDepth - getDepth());
+  setDepth(tableHeightDepth - temp);
 }
 
 BoundingBox
