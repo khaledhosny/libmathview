@@ -65,3 +65,7 @@ Bugs
 * cannot make the full documentation because texinfo.tex is not updated
   (think it is in the automake package)
 * cannot select phantom elements
+* check examples in problems under solaris, there might be a weird bounding
+  box
+* check length of dashes when rendering to postscript
+

@@ -191,10 +191,18 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_ROWSPAN, env);
   rowSpan = value->ToInteger();
+  if (rowSpan <= 0) {
+    MathEngine::logger(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
+    rowSpan = 1;
+  }
   delete value;
 
   value = GetAttributeValue(ATTR_COLUMNSPAN, env);
   columnSpan = value->ToInteger();
+  if (columnSpan <= 0) {
+    MathEngine::logger(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
+    columnSpan = 1;
+  }
   delete value;
 }
 

@@ -298,6 +298,9 @@ MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId, scaled maxWidth)
 	underShiftY = baseBox.descent + underSpacing + scriptBox.ascent;
 	underClearance = ruleThickness;
       }
+    } else {
+      underShiftX = 0;
+      underShiftY = 0;
     }
 
     if (overScript != NULL) {
@@ -325,6 +328,9 @@ MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId, scaled maxWidth)
 	overShiftY = baseBox.ascent + overSpacing + scriptBox.descent;
 	overClearance = ruleThickness;
       }
+    } else {
+      overShiftX = 0;
+      overShiftY = 0;
     }
 
     baseShiftX = scaledMax(0, - scaledMin(overShiftX, underShiftX));

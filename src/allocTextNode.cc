@@ -47,6 +47,7 @@ allocCharNode(Char ch)
 
   case U_UNDERLINE:
   case U_OVERLINE:
+  case U_HORIZBAR:
     return new MathMLHorizBarNode(ch);
 
   default:

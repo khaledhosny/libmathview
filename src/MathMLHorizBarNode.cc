@@ -32,7 +32,7 @@
 
 MathMLHorizBarNode::MathMLHorizBarNode(Char c) : MathMLCharNode(c)
 {
-  assert(c == U_OVERLINE || c == U_UNDERLINE);
+  assert(c == U_OVERLINE || c == U_UNDERLINE || c == U_HORIZBAR);
   thickness = 0;
 }
 
