@@ -1278,7 +1278,7 @@ protected:
 	      if (first) s = trimSpacesLeft(s);
 	      if (iter.more()) s = trimSpacesRight(s);
 	      
-	      content.push_back(MathMLStringNode::create(s));
+	      content.push_back(createMathMLTextNode(s));
 	    }
 	    break;
       
@@ -1303,6 +1303,38 @@ protected:
 	first = false;
       }
   }
+
+#if ENABLE_BUILDER_CACHE
+  SmartPtr<MathMLTextNode>
+  createMathMLTextNode(const String& content) const
+  {
+    std::pair<MathMLTextNodeCache::iterator, bool> r =
+      mathmlTextNodeCache.insert(std::make_pair(content, SmartPtr<MathMLTextNode>(0)));
+    if (r.second)
+      {
+	if (content == MathMLFunctionApplicationNode::getContent())
+	  r.first->second = MathMLFunctionApplicationNode::create();
+	else if (content == MathMLInvisibleTimesNode::getContent())
+	  r.first->second = MathMLInvisibleTimesNode::create();
+	else
+	  r.first->second = MathMLStringNode::create(content);
+	return r.first->second;
+      }
+    else
+      return r.first->second;
+  }
+#else
+  SmartPtr<MathMLTextNode>
+  createMathMLTextNode(const String& content) const
+  {
+    if (content == MathMLFunctionApplicationNode::getContent())
+      return MathMLFunctionApplicationNode::create();
+    else if (content == MathMLInvisibleTimesNode::getContent())
+      return MathMLInvisibleTimesNode::create();
+    else
+      return MathMLStringNode::create(content);
+  }
+#endif // ENABLE_BUILDER_CACHE
 
   SmartPtr<MathMLElement>
   createMathMLDummyElement(void) const
@@ -1365,6 +1397,10 @@ public:
   }
 
 private:
+#if ENABLE_BUILDER_CACHE
+  typedef HASH_MAP_NS::hash_map<String, SmartPtr<MathMLTextNode>, StringHash, StringEq> MathMLTextNodeCache;
+  mutable MathMLTextNodeCache mathmlTextNodeCache;
+#endif // ENABLE_BUILDER_CACHE
   typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
   typedef HASH_MAP_NS::hash_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
   static MathMLBuilderMap mathmlMap;
