@@ -2,7 +2,7 @@ Source: gtkmathview
 Section: devel
 Priority: optional
 Maintainer: Stefano Zacchiroli <zack@debian.org>
-Build-Depends: debhelper (>> 3.0.0), libgdome2-cpp-smart-dev (>= 0.0.3-4), libxml2-dev (>= 2.4.2), libglib1.2-dev (>= 1.2.9), libgtk1.2-dev, t1lib-dev (>= 1.2)
+Build-Depends: debhelper (>> 3.0.0), libgdome2-cpp-smart-dev (>= 0.0.3-4), libxml2-dev (>= 2.4.2), libglib1.2-dev (>= 1.2.9), libgtk1.2-dev, t1lib-dev (>= 1.2), libgdome2-dev
 Standards-Version: 3.5.2
 
 Package: libgtkmathview0

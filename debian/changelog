@@ -1,3 +1,9 @@
+gtkmathview (0.3.0-3) unstable; urgency=low
+
+  * Added build-dep on libgdome2-dev (Closes: Bug#140402).
+
+ -- Stefano Zacchiroli <zack@debian.org>  Fri, 29 Mar 2002 11:28:53 +0100
+
 gtkmathview (0.3.0-2) unstable; urgency=low
 
   * Rebuilt against gmetadom 0.0.3-4
