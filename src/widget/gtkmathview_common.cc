@@ -1387,9 +1387,9 @@ GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, GtkMathViewBox
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   if (AreaRef rootArea = math_view->view->getRootArea())
     {
-      BoundingBox box = rootArea->box();
       if (gbox)
 	{
+	  BoundingBox box = rootArea->box();
 	  gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
 	  gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
 	  gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
