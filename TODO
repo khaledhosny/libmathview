@@ -15,6 +15,7 @@
   the AreaFactory and the Shapers customizable from outside
 * create a AbiWord_RenderingContext (just a wrapper for the AbiWord
   GraphicContext?)
++ remove xft support from gtk rendering context since it's not going to be used
 
 // MathML
 

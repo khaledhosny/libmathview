@@ -24,3 +24,4 @@ mkinstalldirs
 autom4te.cache
 gtkmathview.pc
 stamp-h1
+*.pc
