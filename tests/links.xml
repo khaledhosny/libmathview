@@ -1,0 +1,20 @@
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtable columnalign="left">
+    <mtr>
+      <mtd><mtext>no link</mtext></mtd>
+      <mtd><mi>a</mi></mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>link</mtext></mtd>
+      <mtd><mi href="hi">a</mi></mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>link and background</mtext></mtd>
+      <mtd><mi mathbackground="yellow" href="hi">a</mi></mtd>
+    </mtr>
+    <mtr>
+      <mtd><mtext>link and styled background</mtext></mtd>
+      <mtd><mstyle mathbackground="yellow"><mi href="hi">a</mi></mstyle></mtd>
+    </mtr>
+  </mtable>
+</math>

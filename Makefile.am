@@ -1,5 +1,5 @@
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
-SUBDIRS = scripts config auto src doc viewer mathml2ps 
+SUBDIRS = scripts config auto src doc viewer mathml2ps
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig

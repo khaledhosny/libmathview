@@ -15,6 +15,9 @@ AC_SUBST(MAJOR_VERSION)
 AC_SUBST(MATHVIEW_VERSION)
 AC_SUBST(MATHVIEW_VERSION_INFO)
 
+AREAMODEL_VERSION_INFO=$MATHVIEW_VERSION_INFO
+AC_SUBST(AREAMODEL_VERSION_INFO)
+
 AC_ARG_ENABLE(
 	profile,
 	[  --enable-profile[=ARG]  include profiling information [default=no]],
@@ -31,6 +34,17 @@ AC_ARG_ENABLE(
 
 if test "x$enable_debug" = "xyes"; then
    AC_DEFINE(ENABLE_DEBUG,,[Define to 1 if you want to enable validity checks while running])
+fi
+
+AC_ARG_ENABLE(
+	breaks,
+	[  --enable-breaks[=ARG]   enable linebreaking with mspace elements [default=no]],
+	enable_breaks=$enableval,
+	enable_breaks=no
+)
+
+if test "x$enable_breaks" = "xyes"; then
+	AC_DEFINE(ENABLE_BREAKS,,[Define to 1 if you want to enable linebreaking using mspace elements])
 fi
 
 AC_ARG_WITH(
@@ -235,6 +249,14 @@ PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0,, AC_MSG_ERROR(could not find GTK))
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
+PKG_CHECK_MODULES(PANGOX, pangox)
+AC_SUBST(PANGOX_CFLAGS)
+AC_SUBST(PANGOX_LIBS)
+
+PKG_CHECK_MODULES(XFT, xft)
+AC_SUBST(XFT_CFLAGS)
+AC_SUBST(XFT_LIBS)
+
 PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
   AC_DEFINE(HAVE_GMETADOM,,[Define to 1 if using gmetadom as DOM implementation]),
   AC_MSG_ERROR(could not find GMetaDOM))
@@ -289,11 +311,18 @@ AC_CONFIG_FILES([
  scripts/Makefile
  src/Makefile
  src/scaled.hh
+ src/formatter/Makefile
+ src/formatter/basictypes/Makefile
+ src/formatter/basictypes/mathvariants/Makefile
+ src/formatter/basictypes/mathvariants/xml/Makefile
+ src/formatter/areamodel/Makefile
+ src/formatter/gtk_areamodel/Makefile
+ src/formatter/mathml_graphic_device/Makefile
+ src/formatter/gtk_mathml_graphic_device/Makefile
  auto/Makefile
  auto/config.dirs
  doc/Makefile
  viewer/Makefile
- randomath/Makefile
  mathml2ps/Makefile
  gtkmathview.pc
 ])
