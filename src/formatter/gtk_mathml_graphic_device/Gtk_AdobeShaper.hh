@@ -38,6 +38,8 @@ protected:
   virtual ~Gtk_AdobeShaper() { }
 
 public:
+  enum { N_FONTS = 10 };
+
   static SmartPtr<Gtk_AdobeShaper> create(void)
   { return new Gtk_AdobeShaper(); }
 
@@ -50,6 +52,11 @@ protected:
 
   PangoFont* getPangoFont(unsigned, const scaled&, PangoXSubfont&) const;
   XftFont* getXftFont(unsigned, const scaled&) const;
+
+  AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+  AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+  AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+
   void getGlyphExtents(PangoFont*, PangoGlyphString*, PangoRectangle*) const;
   bool shapeChar(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
   bool shapeStretchyCharV(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
@@ -57,19 +64,18 @@ protected:
 
   struct CachedFontKey
   {
-    CachedFontKey(unsigned i, const scaled& s) : index(i), size(s) { }
+    CachedFontKey(const scaled& s) : size(s) { }
 
-    unsigned index;
     scaled size;
 
     bool operator==(const CachedFontKey& k) const
-    { return index == k.index && size == k.size; }
+    { return size == k.size; }
   };
 
   struct CachedFontKeyHash
   {
     size_t operator()(const CachedFontKey& key) const
-    { return key.index + key.size.getValue(); }
+    { return key.size.getValue(); }
   };
 
   struct CachedPangoFontData
@@ -83,26 +89,26 @@ protected:
 
   struct CachedAreaKey
   {
-    CachedAreaKey(DOM::Char32 c, const scaled& s) : ch(c), size(s) { }
+    CachedAreaKey(unsigned g, const scaled& s) : glyph(g), size(s) { }
 
-    DOM::Char32 ch;
+    unsigned glyph;
     scaled size;
 
     bool operator==(const CachedAreaKey& k) const
-    { return ch == k.ch && size == k.size; }
+    { return glyph == k.glyph && size == k.size; }
   };
 
   struct CachedAreaKeyHash
   {
     bool operator()(const CachedAreaKey& key) const
-    { return key.ch + key.size.getValue(); }
+    { return key.glyph ^ key.size.getValue(); }
   };
 
   typedef HASH_MAP_NS::hash_map<CachedFontKey,CachedPangoFontData,CachedFontKeyHash> PangoFontCache;
   typedef HASH_MAP_NS::hash_map<CachedAreaKey,AreaRef,CachedAreaKeyHash> AreaCache;
 
-  mutable PangoFontCache pangoFontCache;
-  mutable AreaCache areaCache;
+  mutable PangoFontCache pangoFontCache[N_FONTS];
+  mutable AreaCache areaCache[N_FONTS];
 };
 
 #endif // __Gtk_AdobeShaper_hh__

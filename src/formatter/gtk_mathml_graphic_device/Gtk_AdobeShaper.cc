@@ -292,14 +292,14 @@ struct XFontDesc
 };
 
 #define SYMBOL_INDEX 0
-#define V_STRETCHY_SYMBOL_INDEX 1
-#define H_STRETCHY_SYMBOL_INDEX 2
-#define LATIN_INDEX 3
+#define LATIN_BASE_INDEX 1
 
-static XFontDesc variantDesc[] =
+#define H_STRETCHY_BIT 0x100
+#define V_STRETCHY_BIT 0x200
+#define GLYPH_INDEX_MASK 0xff
+
+static XFontDesc variantDesc[Gtk_AdobeShaper::N_FONTS] =
   {
-    { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
-    { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
     { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
     { NORMAL_VARIANT, "times", "medium", "r", "iso8859-1" },
     { BOLD_VARIANT, "times", "bold", "r", "iso8859-1" },
@@ -312,8 +312,6 @@ static XFontDesc variantDesc[] =
     { MONOSPACE_VARIANT, "courier", "medium", "r", "iso8859-1" }
   };
 
-#define N_FONTS (sizeof(variantDesc) / sizeof(XFontDesc))
-
 void
 Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
@@ -323,12 +321,12 @@ Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shap
     sm->registerChar(symbolMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, symbolMap[i].index));
 
   for (unsigned i = 0; vMap[i].ch != 0; i++)
-    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, V_STRETCHY_SYMBOL_INDEX, i));
+    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | H_STRETCHY_BIT));
 
   for (unsigned i = 0; hMap[i].ch != 0; i++)
-    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, H_STRETCHY_SYMBOL_INDEX, i));
+    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | V_STRETCHY_BIT));
 
-  for (unsigned i = LATIN_INDEX; i < N_FONTS; i++)
+  for (unsigned i = LATIN_BASE_INDEX; i < N_FONTS; i++)
     {
       for (DOM::Char16 ch = 0x20; ch < 0x100; ch++)
 	{
@@ -354,16 +352,12 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
     {
       bool res = false;
       GlyphSpec spec = result.getSpec();
-      switch (spec.getFontId())
-	{
-	case V_STRETCHY_SYMBOL_INDEX:
-	  res = shapeStretchyCharV(ctxt, result, spec);
-	  break;
-	case H_STRETCHY_SYMBOL_INDEX:
-	  res = shapeStretchyCharH(ctxt, result, spec);
-	default:
-	  break;
-	}
+
+      if (spec.getGlyphId() & H_STRETCHY_BIT)
+	res = shapeStretchyCharH(ctxt, result, spec);
+      else if (spec.getGlyphId() & V_STRETCHY_BIT)
+	res = shapeStretchyCharV(ctxt, result, spec);
+
       // If we get here then either the character was not required
       // to stretch, or one of the stretchying methods has failed,
       // hence we shape it with no stretchying
@@ -391,9 +385,10 @@ Gtk_AdobeShaper::getXLFD(unsigned fi, const scaled& size)
 PangoFont*
 Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
 {
-  CachedFontKey key(fi, size);
-  PangoFontCache::iterator p = pangoFontCache.find(key);
-  if (p != pangoFontCache.end())
+  assert(fi < N_FONTS);
+  CachedFontKey key(size);
+  PangoFontCache::iterator p = pangoFontCache[fi].find(key);
+  if (p != pangoFontCache[fi].end())
     {
       subfont = p->second.subfont;
       return p->second.font;
@@ -421,7 +416,7 @@ Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& su
     printf("subfont: %d\n", subfont[i]);
 #endif
   
-  pangoFontCache[key] = CachedPangoFontData(font, subfont);
+  pangoFontCache[fi][key] = CachedPangoFontData(font, subfont);
 
   return font;
 }
@@ -437,6 +432,54 @@ Gtk_AdobeShaper::getXftFont(unsigned fi, const scaled& size) const
   return font;
 }
 
+AreaRef
+Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
+				      unsigned fi, unsigned gi,
+				      const scaled& size) const
+{
+  PangoXSubfont subfont;
+  PangoFont* font = getPangoFont(fi, size, subfont);
+  assert(font);
+
+  PangoGlyphString* gs = pango_glyph_string_new();
+  pango_glyph_string_set_size(gs, 1);
+  gs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(subfont, gi);
+  gs->glyphs[0].geometry.x_offset = 0;
+  gs->glyphs[0].geometry.y_offset = 0;
+  gs->glyphs[0].geometry.width = 0;
+
+  return factory->pangoGlyph(font, gs);
+}
+
+AreaRef
+Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
+				    unsigned fi, unsigned gi,
+				    const scaled& size) const
+{
+  XftFont* font = getXftFont(fi, size);
+  assert(font);
+  return factory->xftGlyph(font, gi);
+}
+
+AreaRef
+Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
+			      unsigned fi, unsigned gi,
+			      const scaled& size) const
+{
+  assert(fi < N_FONTS);
+  CachedAreaKey key(gi, size);
+  AreaCache::iterator p = areaCache[fi].find(key);
+  if (p != areaCache[fi].end())
+    return p->second;
+
+  AreaRef res = createPangoGlyphArea(factory, fi, gi, size);
+  // AreaRef res = createXftGlyphArea(factory, fi, gi, size);
+  assert(res);
+  areaCache[fi][key] = res;
+
+  return res;
+}
+
 bool
 Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
 			   ShapingResult& result, const GlyphSpec& spec) const
@@ -444,37 +487,8 @@ Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
 
-  AreaRef res;
-
-  CachedAreaKey key(result.thisChar(), ctxt.getSize());
-  AreaCache::iterator p = areaCache.find(key);
-  if (p != areaCache.end())
-    res = p->second;
-  else
-    {
-#if 1
-      PangoXSubfont subfont;
-      PangoFont* font = getPangoFont(spec.getFontId(), ctxt.getSize(), subfont);
-      assert(font);
-
-      //printf("creating glyph area with glyph id = %d\n", spec.getGlyphId());
-
-      PangoGlyphString* gs = pango_glyph_string_new();
-      pango_glyph_string_set_size(gs, 1);
-      gs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(subfont, spec.getGlyphId());
-      gs->glyphs[0].geometry.x_offset = 0;
-      gs->glyphs[0].geometry.y_offset = 0;
-      gs->glyphs[0].geometry.width = 0;
-      res = factory->pangoGlyph(font, gs);
-#else
-      XftFont* font = getXftFont(spec.getFontId(), ctxt.getSize());
-      assert(font);
-
-      res = factory->xftGlyph(font, spec.getGlyphId());
-#endif
-      areaCache[key] = res;
-    }
-
+  AreaRef res = getGlyphArea(factory, spec.getFontId(), spec.getGlyphId() & GLYPH_INDEX_MASK, ctxt.getSize());
+  assert(res);
   result.pushArea(res);
 
   return true;
@@ -495,16 +509,14 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
 {
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-#if 0
 
-  PangoFont* font = getFont(spec.getFontId(), ctxt.getFontSize());
-  assert(font);
+  const scaled size = ctxt.getSize();
 
-  const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
+  const HStretchyChar* charSpec = &hMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
 
   if (charSpec->normal)
     {
-      AreaRef res = factory->createXftGlyphArea(font, charSpec->normal);
+      AreaRef res = getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size);
       if (res->box().width >= result.getHSpan())
 	{
 	  result.pushArea(res);
@@ -512,34 +524,31 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
 	}
     }
 
-  AreaRef left = (charSpec->left != 0) ? factory->createXftGlyphArea(font, charSpec->left) : 0;
-  AreaRef right = (charSpec->right != 0) ? factory->createXftGlyphArea(font, charSpec->right) : 0;
-  AreaRef glue = (charSpec->glue != 0) ? factory->createXftGlyphArea(font, charSpec->glue) : 0;
+  AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->left, size) : 0;
+  AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->right, size) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
 
   scaled leftSize = left ? left->box().width : 0;
   scaled rightSize = right ? right->box().width : 0;
   scaled glueSize = glue ? glue->box().width : 0;
 
   // Compute first the number of glue segments we have to use
-  assert(glueSize > scaled(0));
+  assert(glueSize > scaled::zero());
   unsigned n = (result.getHSpan() - leftSize - rightSize).getValue() / glueSize.getValue();
 
   // Then the final number of glyphs
   unsigned gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
 
-  PangoGlyphString* gs = pango_glyph_string_new();
-  pango_glyph_string_set_size(gs, gsN);
+  std::vector<AreaRef> h;
+  h.reserve(gsN);
 
-  unsigned i = 0;
-  if (left) gs.push_back(left);
-  for (unsigned i = 0; i < n; i++) gs.push_back(glue);
-  if (right) gs.push_back(right);
+  if (left) h.push_back(left);
+  for (unsigned i = 0; i < n; i++) h.push_back(glue);
+  if (right) h.push_back(right);
 
-  result.pushArea(factory->createHorizontalArrayArea(gs));
+  result.pushArea(factory->horizontalArray(h));
 
   return true;
-#endif
-  return false;
 }
 
 bool

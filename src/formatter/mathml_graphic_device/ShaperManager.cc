@@ -53,6 +53,7 @@ ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result
 	  // the result! This may make sense for example if there is a sort of
 	  // fallback mechanism and a given shaper can "refuse" to process a
 	  // character in some context
+	  std::cerr << "Internal fatal error: Shaper " << result.getShaperId() << std::endl;
 	  assert(false);
 	  return 0;
 	}

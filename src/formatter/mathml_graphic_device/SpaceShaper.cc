@@ -179,6 +179,7 @@ SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt, Shaping
 void
 SpaceShaper::shapeInvisibleTimes(const MathFormattingContext& ctxt, ShapingResult& result)
 {
+  // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getElement()))
     {
       SmartPtr<MathMLElement> prev = findLeftSibling(op);
@@ -194,10 +195,10 @@ SpaceShaper::shapeInvisibleTimes(const MathFormattingContext& ctxt, ShapingResul
 	  if (prevToken->GetLogicalContentLength() <= 1 &&
 	      nextToken->GetLogicalContentLength() <= 1) return;
 
-	  pushSpace(ctxt, result, 5);
+	  pushSpace(ctxt, result, 4);
 	} 
       else if (is_a<MathMLIdentifierElement>(prev))
-	pushSpace(ctxt, result, 4);
+	pushSpace(ctxt, result, 5);
       else if (is_a<MathMLFractionElement>(prev) && is_a<MathMLFractionElement>(next))
 	pushSpace(ctxt, result, 5);
       else if (is_a<MathMLFractionElement>(prev) || is_a<MathMLFractionElement>(next))
