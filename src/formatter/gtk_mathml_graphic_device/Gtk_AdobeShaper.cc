@@ -404,206 +404,109 @@ Gtk_AdobeShaper::shapeChar(ShapingResult& result, const GlyphSpec& spec) const
   result.pushArea(res);
 }
 
-PangoGlyphString*
-Gtk_AdobeShaper::createGlyphString(unsigned subFont, unsigned char glyph)
+void
+Gtk_AdobeShaper::getGlyphExtents(XftFont* font, FT_UInt glyph, XGlyphInfo* info) const
 {
-  PangoGlyphString* gs = pango_glyph_string_new(void);
-  pango_glyph_string_set_size(gs, 1);
-  glyphs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(1, spec.getGlyph());
-  return gs;
+  assert(font);
+  assert(info);
+  XftGlyphExtents(gdk_x11_get_default_xdisplay(), font, &glyph, 1, info);
 }
 
-AreaRef
-Gtk_AdobeShaper::stretchH(const AreaRef& base, const scaled& size) const
+void
+Gtk_AdobeShaper::shapeStretchyCharH(ShapingResult& result, const GlyphSpec& spec) const
 {
-  if (Ptr<Gtk_GlyphArea> glyph = smart_cast<Gtk_GlyphArea>(base))
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
+  assert(factory);
+
+  XftFont* font = getFont(spec.getFontId(), result.getFontSize());
+  assert(font);
+
+  const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
+
+  if (charSpec->normal)
     {
-      DOM::Char32 ch = glyph.getChar();
-      unsigned i = 0;
-      while (hMap[i] != 0 && hMap[i] != ch) i++;
-      if (hMap[i] != 0)
+      AreaRef res = factory.createXftGlyphArea(charSpec->normal, font);
+      if (res->box().width >= result.getHSpan())
 	{
-	  scaled leftSize = 0;
-	  scaled rightSize = 0;
-	  scaled glueSize = 0;
-
-	  if (hMap[i].left != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, hMap[i].left);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      leftSize = rect.width;
-	    }
-
-	  if (hMap[i].right != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, hMap[i].right);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      rightSize = rect.width;
-	    }
-
-	  if (hMap[i].glue != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, hMap[i].glue);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      glueSize = rect.width;
-	      assert(glueSize > 0);
-	    }
-
-	  unsigned n = (size - leftSize - rightSize) / glueSize;
-
-	  unsigned gsN = ((hMap[i].left != 0) ? 1 : 0) + n + ((hMap[i].right != 0) ? 1 : 0);
-
-	  PangoGlyphString* gs = pango_glyph_string_new(void);
-	  pango_glyph_string_set_size(gs, gsN);
-
-	  scaled w = 0;
-	  unsigned k = 0;
-	  if (hMap[i].left != 0)
-	    {
-	      glyphs->glyphs[k++].glyph = PANGO_X_MAKE_GLYPH(1, hMap[i].left);
-	      w += leftSize;
-	    }
-
-	  while (n > 0)
-	    {
-	      glyphs->glyphs[k].glyph = PANGO_X_MAKE_GLYPH(1, hMap[i].glue);
-	      glyphs->glyphs[k].geometry.x_offset = w;
-	      w += glueSize;
-	      k++;
-	      n--;
-	    }
-
-	  if (hMap[i].right != 0)
-	    {
-	      glyphs->glyphs[k].glyph = PANGO_X_MAKE_GLYPH(1, hMap[i].right);
-	      glyphs->glyphs[k].geometry.x_offset = w;
-	      k++;
-	    }
-
-	  return Gtk_GlyphArea::create(font, gs, glyph.getChar());
+	  result.pushArea(res);
+	  return;
 	}
-      else
-	return base;
     }
-  else
-    return base;
+
+  AreaRef left = (charSpec->left != 0) ? factory.createXftGlyphArea(charSpec->left, font) : 0;
+  AreaRef right = (charSpec->right != 0) ? factory.createXftGlyphArea(charSpec->right, font) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? factory.createXftGlyphArea(charSpec->glue, font) : 0;
+
+  scaled leftSize = left ? left->box().width : 0;
+  scaled rightSize = right ? right->box().width : 0;
+  scaled glueSize = glue ? glue->box().width : 0;
+
+  // Compute first the number of glue segments we have to use
+  assert(glueSize > 0);
+  unsigned n = (result.getHSpan() - leftSize - rightSize) / glueSize;
+
+  // Then the final number of glyphs
+  unsigned gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
+
+  std::vector<AreaRef> gs(gsN);
+
+  if (left) gs.push_back(left);
+  for (unsigned i = 0; i < n; i++) gs.push_back(glue);
+  if (right) gs.push_back(right);
+
+  result.pushArea(factory.createHorizontalArrayArea(gs));
 }
 
-AreaRef
-Gtk_AdobeShaper::stretchV(const AreaRef& base, const scaled& size) const
+void
+Gtk_AdobeShaper::stretchV(ShapingResult& result, const GlyphSpec& spec) const
 { 
-  if (Ptr<Gtk_GlyphArea> glyph = smart_cast<Gtk_GlyphArea>(base))
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
+  assert(factory);
+
+  XftFont* font = getFont(spec.getFontId(), result.getFontSize());
+  assert(font);
+
+  const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
+
+  if (charSpec->normal)
     {
-      DOM::Char32 ch = glyph.getChar();
-      unsigned i = 0;
-      while (vMap[i] != 0 && vMap[i] != ch) i++;
-      if (vMap[i] != 0)
+      AreaRef res = factory.createXftGlyphArea(charSpec->normal, font);
+      if (res->box().verticalExtent() >= result.getVSpan())
 	{
-	  scaled topSize = 0;
-	  scaled middleSize = 0;
-	  scaled gluSize = 0;
-	  scaled bottomSize = 0;			
-
-	  if (vMap[i].top != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, vMap[i].top);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      topSize = rect.width;
-	    }
-
-	  if (vMap[i].middle != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, vMap[i].middle);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      middleSize = rect.width;
-	    }
-
-	  if (vMap[i].glue != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, vMap[i].glue);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      glueSize = rect.width;
-	      assert(glueSize > 0);
-	    }
-		
-	  if (vMap[i].bottom != 0)
-	    {
-	      PangoRectangle rect;
-	      PangoGlyphString* gs = createGlyphString(1, vMap[i].bottom);
-	      pango_glyph_string_extents(gs, base.getFont(), &rect, NULL);
-	      bottomSize = rect.width;
-	    }
-
-	  unsigned n = (size - topSize - bottomSize - middleSize) / glueSize;
-
-	  if(( n%2 == 1 ) && (vMap[i].middle != 0))
-	    n = n+1;
-
-	  unsigned gsN = n +
-	    ((vMap[i].top != 0) ? 1 : 0) +
-	    ((vMap[i].middle != 0) ? 1 : 0) +
-	    ((vMap[i].bottom != 0) ? 1 : 0);
-
-	  PangoGlyphString* gs = pango_glyph_string_new(void);
-	  pango_glyph_string_set_size(gs, gsN);
-
-	  scaled w = 0;
-	  unsigned k = 0;
-	  unsigned x,y = 0;
-	  x = n / 2;
-	  y = n - x;
-	  
-	  if (vMap[i].top != 0)
-	    {
-	      glyphs->glyphs[k++].glyph = PANGO_X_MAKE_GLYPH(1, vMap[i].top);
-	      w += topSize;
-	    }
-
-	  while (x > 0)
-	    {
-	      glyphs->glyphs[k].glyph = PANGO_X_MAKE_GLYPH(1, vMap[i].glue);
-	      glyphs->glyphs[k].geometry.y_offset = w;
-	      w += glueSize;
-	      k++;
-	      x--;
-	    }
-
-	  if (vMap[i].middle != 0)
-	    {
-	      glyphs->glyphs[k].glyph = PANGO_X_MAKE_GLYPH(1, vMap[i].middle);
-	      glyphs->glyphs[k].geometry.y_offset = w;
-	      k++;
-	    }
-
-	  while (y > 0)
-	    {
-	      glyphs->glyphs[k].glyph = PANGO_X_MAKE_GLYPH(1, vMap[i].glue);
-	      glyphs->glyphs[k].geometry.y_offset = w;
-	      w += glueSize;
-	      k++;
-	      y--;
-	    }
-
-
-	  if (vMap[i].bottom != 0)
-	    {
-	      glyphs->glyphs[k++].glyph = PANGO_X_MAKE_GLYPH(1, vMap[i].bottom);
-	      glyphs->glyphs[k].geometry.y_offset = w;
-	    }
-
-	  return Gtk_GlyphArea::create(font, gs, glyph.getChar());
+	  result.pushArea(res);
+	  return;
 	}
-      else
-	return base;
+    }
+
+  AreaRef top = (charSpec->top != 0) ? factory.createXftGlyphArea(charSpec->top, font) : 0;
+  AreaRef middle = (charSpec->middle != 0) ? factory.createXftGlyphArea(charSpec->middle, font) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? factory.createXftGlyphArea(charSpec->glue, font) : 0;
+  AreaRef bottom = (charSpec->bottom != 0) ? factory.createXftGlyphArea(charSpec->bottom, font) : 0;
+
+  scaled topSize = top ? top->box().verticalExtent() : 0;
+  scaled middleSize = middle ? middle->box().verticalExtent() : 0;
+  scaled glueSize = glue ? glue->box().verticalExtent() : 0;
+  scaled bottomSize = bottom ? bottom->box().verticalExtent() : 0;			
+
+  assert(glueSize > 0);
+  unsigned n = (size - topSize - bottomSize - middleSize) / glueSize;
+
+  if (n % 2 == 1 && middle) n++;
+  
+  unsigned gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
+
+  std::vector<AreaRef> gs(gsN);
+
+  if (bottom) gs.push_back(bottom);
+  if (middle)
+    {
+      for (unsigned i = 0; i < n / 2; i++) gs.push_back(glue);
+      gs.push_back(middle);
+      for (unsigned i = 0; i < n / 2; i++) gs.push_back(glue);
     }
   else
-    return base;
+    for (unsigned i = 0; i < n; i++) gs.push_back(glue);
+  if (top) gs.push_back(top);
 
-  return base;
+  result.pushBack(factory.createVerticalArrayArea(gs, 1));
 }
