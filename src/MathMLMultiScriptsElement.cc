@@ -390,7 +390,7 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 
 	  subScriptBox.Append(subBox);
 	  superScriptBox.Append(supBox);
-	  scriptsWidth = scaledMax(scriptsWidth, scaledMax(subBox.width, supBox.width));
+	  scriptsWidth = std::max(scriptsWidth, std::max(subBox.width, supBox.width));
 	}
 
       for (pSub = preSubScript.begin(), pSup = preSuperScript.begin();
@@ -414,7 +414,7 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 
 	  subScriptBox.Append(subBox);
 	  superScriptBox.Append(supBox);
-	  preScriptsWidth = scaledMax(preScriptsWidth, scaledMax(subBox.width, supBox.width));
+	  preScriptsWidth = std::max(preScriptsWidth, std::max(subBox.width, supBox.width));
 	}
 
       DoScriptLayout(base->GetBoundingBox(), subScriptBox, superScriptBox,
@@ -425,14 +425,14 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 
       if (!subScriptBox.IsNull())
 	{
-	  box.ascent  = scaledMax(box.ascent, subScriptBox.ascent - subShiftY);
-	  box.descent = scaledMax(box.descent, subScriptBox.descent + subShiftY);
+	  box.ascent  = std::max(box.ascent, subScriptBox.ascent - subShiftY);
+	  box.descent = std::max(box.descent, subScriptBox.descent + subShiftY);
 	}
 
       if (!superScriptBox.IsNull())
 	{
-	  box.ascent  = scaledMax(box.ascent, superScriptBox.ascent + superShiftY);
-	  box.descent = scaledMax(box.descent, superScriptBox.descent - superShiftY);
+	  box.ascent  = std::max(box.ascent, superScriptBox.ascent + superShiftY);
+	  box.descent = std::max(box.descent, superScriptBox.descent - superShiftY);
 	}
 
       DoEmbellishmentLayout(this, box);
@@ -469,7 +469,7 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
       if (*preSup)
 	{
 	  (*preSup)->SetPosition(x, y - superShiftY);
-	  scriptW = scaledMax(scriptW, (*preSup)->GetBoundingBox().GetWidth());
+	  scriptW = std::max(scriptW, (*preSup)->GetBoundingBox().GetWidth());
 	}
 
       x += scriptW;
@@ -495,7 +495,7 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
       if (*pSup)
 	{
 	  (*pSup)->SetPosition(x + superShiftX, y - superShiftY);
-	  scriptW = scaledMax(scriptW, (*pSup)->GetBoundingBox().GetWidth());
+	  scriptW = std::max(scriptW, (*pSup)->GetBoundingBox().GetWidth());
 	}
 
       x += scriptW;
@@ -585,7 +585,7 @@ MathMLMultiScriptsElement::GetLeftEdge() const
       Ptr<MathMLElement> sub = GetPreSubScript(preSubScript.size() - 1);
       Ptr<MathMLElement> sup = GetPreSuperScript(preSuperScript.size() - 1);
       if (sub && sup)
-	return scaledMin(sub->GetLeftEdge(), sup->GetLeftEdge());
+	return std::min(sub->GetLeftEdge(), sup->GetLeftEdge());
       else if (sub)
 	return sub->GetLeftEdge();
       else if (sup)
@@ -609,7 +609,7 @@ MathMLMultiScriptsElement::GetRightEdge() const
       Ptr<MathMLElement> sub = GetSubScript(subScript.size() - 1);
       Ptr<MathMLElement> sup = GetSuperScript(superScript.size() - 1);
       if (sub && sup)
-	return scaledMin(sub->GetLeftEdge(), sup->GetLeftEdge());
+	return std::min(sub->GetLeftEdge(), sup->GetLeftEdge());
       else if (sub)
 	return sub->GetLeftEdge();
       else if (sup)

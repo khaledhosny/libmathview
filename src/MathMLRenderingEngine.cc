@@ -205,7 +205,7 @@ MathMLRenderingEngine::Layout() const
 	  Globals::logger(LOG_INFO, "minimum layout time: %dms", perf());
 
 	  perf.Start();
-	  document->DoLayout(FormattingContext(LAYOUT_AUTO, scaledMax(0, area->GetWidth() -  2 * area->GetXMargin())));
+	  document->DoLayout(FormattingContext(LAYOUT_AUTO, std::max(scaled(0), area->GetWidth() -  2 * area->GetXMargin())));
 	  document->SetPosition(area->GetXMargin(), area->GetYMargin() + document->GetBoundingBox().ascent);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "layout time: %dms", perf());

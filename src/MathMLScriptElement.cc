@@ -278,23 +278,23 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
 
       box = baseBox;
 
-      box.width = scaledMax(box.width,
-			    scaledMax(superShiftX + superScriptBox.width,
+      box.width = std::max(box.width,
+			    std::max(superShiftX + superScriptBox.width,
 				      subShiftX + subScriptBox.width));
-      box.rBearing = scaledMax(box.rBearing,
-			       scaledMax(superShiftX + superScriptBox.rBearing,
+      box.rBearing = std::max(box.rBearing,
+			       std::max(superShiftX + superScriptBox.rBearing,
 					 subShiftX + subScriptBox.rBearing));
 
       if (subScript)
 	{
-	  box.ascent   = scaledMax(box.ascent, subScriptBox.ascent - subShiftY);
-	  box.descent  = scaledMax(box.descent, subScriptBox.descent + subShiftY);
+	  box.ascent   = std::max(box.ascent, subScriptBox.ascent - subShiftY);
+	  box.descent  = std::max(box.descent, subScriptBox.descent + subShiftY);
 	}
 
       if (superScript)
 	{
-	  box.ascent   = scaledMax(box.ascent, superScriptBox.ascent + superShiftY);
-	  box.descent  = scaledMax(box.descent, superScriptBox.descent - superShiftY);
+	  box.ascent   = std::max(box.ascent, superScriptBox.ascent + superShiftY);
+	  box.descent  = std::max(box.descent, superScriptBox.descent - superShiftY);
 	}
 
       DoEmbellishmentLayout(this, box);
@@ -352,8 +352,8 @@ MathMLScriptElement::GetLeftEdge() const
 {
   assert(base);
   scaled m = base->GetLeftEdge();
-  if (subScript) m = scaledMin(m, subScript->GetLeftEdge());
-  if (superScript) m = scaledMin(m, superScript->GetLeftEdge());
+  if (subScript) m = std::min(m, subScript->GetLeftEdge());
+  if (superScript) m = std::min(m, superScript->GetLeftEdge());
   return m;
 }
 
@@ -362,8 +362,8 @@ MathMLScriptElement::GetRightEdge() const
 {
   assert(base);
   scaled m = base->GetRightEdge();
-  if (subScript) m = scaledMax(m, subScript->GetRightEdge());
-  if (superScript) m = scaledMax(m, superScript->GetRightEdge());
+  if (subScript) m = std::max(m, subScript->GetRightEdge());
+  if (superScript) m = std::max(m, superScript->GetRightEdge());
   return m;
 }
 

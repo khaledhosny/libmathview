@@ -66,8 +66,8 @@ PS_DrawingArea::DumpHeader(const char* appName, const char* title, const Rectang
   if (output != NULL) {
     fprintf(output, "%%!PS-Adobe-3.0 EPSF-3.0\n");
     fprintf(output, "%%%%BoundingBox: %d %d %d %d\n",
-	    truncFloat(sp2ps(rect.x)), truncFloat(sp2ps(height - (rect.y + rect.height))),
-	    roundFloat(sp2ps(rect.x + rect.width)), roundFloat(sp2ps(height - rect.y)));
+	    sp2psi(rect.x), sp2psi(height - (rect.y + rect.height)),
+	    sp2psi(rect.x + rect.width), sp2psi(height - rect.y));
     fprintf(output, "%%%%Creator: %s\n", appName);
     fprintf(output, "%%%%CreationDate: %s", asctime(localtime(&curTime)));
     fprintf(output, "%%%%Title: %s\n", title);

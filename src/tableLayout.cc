@@ -87,7 +87,7 @@ void
 MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
 {
   // ok, the available width cannot be negative
-  scaled availWidth = scaledMax(0, ctxt.GetAvailableWidth());
+  scaled availWidth = std::max(scaled(0), ctxt.GetAvailableWidth());
 
   unsigned j;
 
@@ -102,13 +102,13 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
     ConfirmHorizontalScaleSpacing(availWidth);
     // we compute the available space for the table content, it is obtained
     // removing the space between columns
-    scaled avail = scaledMax(0, availWidth - GetSpacingWidth());
+    scaled avail = std::max(scaled(0), availWidth - GetSpacingWidth());
     scaled availPerColumn = avail / static_cast<int>(nColumns);
 
     if (ctxt.GetLayoutType() == LAYOUT_AUTO) {
       // in any case all columns must be rendered to the max of the minimum widths!!!!!!
       for (j = 0; j < nColumns; j++)
-	availPerColumn = scaledMax(availPerColumn, column[j].minimumWidth);
+	availPerColumn = std::max(availPerColumn, column[j].minimumWidth);
     }
 
     // then we render each column with a portion of the available space
@@ -118,7 +118,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
       // oh, the table has no fit columns, so it could be smaller than the
       // whole available space, let's find the largest column
       scaled maxC = 0;
-      for (j = 0; j < nColumns; j++) maxC = scaledMax(maxC, column[j].contentWidth);
+      for (j = 0; j < nColumns; j++) maxC = std::max(maxC, column[j].contentWidth);
 
       // we assign each column the same width
       for (j = 0; j < nColumns; j++) column[j].width = maxC;
@@ -134,7 +134,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
     for (j = 0; j < nColumns; j++)
       if (column[j].widthType == COLUMN_WIDTH_FIXED) {
 	ColumnLayout(j, FormattingContext(ctxt.GetLayoutType(), column[j].fixedWidth));
-	column[j].width = scaledMax(column[j].contentWidth, column[j].fixedWidth);
+	column[j].width = std::max(column[j].contentWidth, column[j].fixedWidth);
       }
 
     scaled maxTableWidth = availWidth;
@@ -157,14 +157,14 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
     scaled avail = maxTableWidth - GetColumnWidth(COLUMN_WIDTH_PERCENTAGE) -
       GetColumnWidth(COLUMN_WIDTH_FIXED) -
       GetSpacingWidth();
-    avail = scaledMax(0, avail);
+    avail = std::max(scaled(0), avail);
 
     unsigned n = nAuto + nFit;
 
     for (j = 0; j < nColumns; j++) {
       if (column[j].widthType == COLUMN_WIDTH_AUTO) {
 	ColumnLayout(j, FormattingContext(ctxt.GetLayoutType(), avail / static_cast<int>(n)));
-	avail = scaledMax(0, avail - column[j].contentWidth);
+	avail = std::max(scaled(0), avail - column[j].contentWidth);
 	n--;
       }
     }
@@ -175,7 +175,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
       for (j = 0; j < nColumns; j++) {
 	if (column[j].widthType == COLUMN_WIDTH_PERCENTAGE) {
 	  assert(column[j].scaleWidth > EPSILON);
-	  tableWidth = scaledMax(tableWidth, column[j].contentWidth / column[j].scaleWidth);
+	  tableWidth = std::max(tableWidth, column[j].contentWidth / column[j].scaleWidth);
 	  constraint = true;
 	}
       }
@@ -186,7 +186,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
 	GetSpacingWidth(SPACING_FIXED);
 
       assert(1 - wScale > EPSILON);
-      tableWidth = scaledMax(tableWidth, fixedWidth / (1 - wScale));
+      tableWidth = std::max(tableWidth, fixedWidth / (1 - wScale));
 
       for (j = 0; j < nColumns; j++)
 	if (column[j].widthType == COLUMN_WIDTH_PERCENTAGE)
@@ -197,7 +197,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
 	GetColumnWidth(COLUMN_WIDTH_PERCENTAGE) -
 	GetColumnWidth(COLUMN_WIDTH_FIXED) -
 	GetSpacingWidth();
-      delta = scaledMax(0, delta);
+      delta = std::max(scaled(0), delta);
 
       // if there are not % columns, then there is no need to reduce the
       // extra space to auto column so that their total width has a
@@ -215,7 +215,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
       for (j = 0; j < nColumns; j++) {
 	if (column[j].widthType == COLUMN_WIDTH_FIT) {
 	  ColumnLayout(j, FormattingContext(ctxt.GetLayoutType(), float2sp(sp2float(avail) / n)));
-	  avail = scaledMax(0, avail - scaledMax(column[j].contentWidth, column[j].width));
+	  avail = std::max(scaled(0), avail - std::max(column[j].contentWidth, column[j].width));
 	  n--;
 	}
       }
@@ -252,7 +252,7 @@ MathMLTableElement::DoHorizontalMinimumLayout()
 	if (cellWidth > minWidth) {
 	  for (unsigned k = 0; k < n; k++) 
 	    if (minWidth == scaled(0) || equalColumns)
-	      column[j + k].minimumWidth = scaledMax(column[j + k].minimumWidth, cellWidth / static_cast<int>(n));
+	      column[j + k].minimumWidth = std::max(column[j + k].minimumWidth, cellWidth / static_cast<int>(n));
 	    else
 	      column[j + k].minimumWidth =
 		float2sp(sp2float(column[j + k].minimumWidth) * sp2float(cellWidth) / sp2float(minWidth));
@@ -346,7 +346,7 @@ MathMLTableElement::ConfirmHorizontalFixedSpacing()
 void
 MathMLTableElement::ConfirmHorizontalScaleSpacing(const scaled& tableWidth)
 {
-  assert(scaledGeq(tableWidth, 0));
+  assert(tableWidth >= scaled(0));
 
   if (frame != TABLE_LINE_NONE) {
     if (frameHorizontalSpacingType == SPACING_PERCENTAGE)
@@ -548,10 +548,10 @@ MathMLTableElement::ColumnLayout(unsigned j, const FormattingContext& ctxt)
     }
   }
 
-  columnWidth = scaledMax(columnWidth, ColumnGroupsLayout(j, ctxt));
+  columnWidth = std::max(columnWidth, ColumnGroupsLayout(j, ctxt));
 
-  column[j].contentWidth = scaledMax(columnWidth, column[j].minimumWidth);
-  column[j].width = scaledMax(column[j].contentWidth, width);
+  column[j].contentWidth = std::max(columnWidth, column[j].minimumWidth);
+  column[j].width = std::max(column[j].contentWidth, width);
 }
 
 scaled
@@ -578,8 +578,8 @@ MathMLTableElement::ColumnGroupsLayout(unsigned j, const FormattingContext& ctxt
 	{
 	  for (k = 0; k < tableCell.nAlignGroup; k++)
 	    {
-	      gExtent[k].left = scaledMax(gExtent[k].left, tableCell.aGroup[k].extent.left);
-	      gExtent[k].right = scaledMax(gExtent[k].right, tableCell.aGroup[k].extent.right);
+	      gExtent[k].left = std::max(gExtent[k].left, tableCell.aGroup[k].extent.left);
+	      gExtent[k].right = std::max(gExtent[k].right, tableCell.aGroup[k].extent.right);
 	    }
 	}
     }
@@ -647,9 +647,9 @@ MathMLTableElement::SpannedCellsLayout(const FormattingContext& ctxt)
 	if (ctxt.GetLayoutType() == LAYOUT_MIN) {
 	  cell[i][j].mtd->DoLayout(FormattingContext(LAYOUT_MIN, 0));
 	  const BoundingBox& cellBox = cell[i][j].mtd->GetBoundingBox();
-	  scaled widthPerColumn = scaledMax(0, cellBox.width / static_cast<int>(cell[i][j].colSpan));
+	  scaled widthPerColumn = std::max(scaled(0), cellBox.width / static_cast<int>(cell[i][j].colSpan));
 	  for (unsigned k = 0; k < cell[i][j].colSpan; k++)
-	    column[j].minimumWidth = scaledMax(column[j].minimumWidth, widthPerColumn);
+	    column[j].minimumWidth = std::max(column[j].minimumWidth, widthPerColumn);
 	} else {
 	  scaled spannedWidth = GetColumnWidth(j, cell[i][j].colSpan);
 	  cell[i][j].mtd->DoLayout(FormattingContext(ctxt.GetLayoutType(), spannedWidth));
@@ -711,16 +711,16 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 	  !cell[i][j].spanned &&
 	  cell[i][j].rowAlign == ROW_ALIGN_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
-        ascent = scaledMax(ascent, box.ascent);
-        if (cell[i][j].rowSpan == 1) descent = scaledMax(descent, box.descent);
+        ascent = std::max(ascent, box.ascent);
+        if (cell[i][j].rowSpan == 1) descent = std::max(descent, box.descent);
       }
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement != NULL &&
           rowLabel[i].rowAlign == ROW_ALIGN_BASELINE) {
         const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-        ascent = scaledMax(ascent, labelBox.ascent);
-        descent = scaledMax(descent, labelBox.descent);
+        ascent = std::max(ascent, labelBox.ascent);
+        descent = std::max(descent, labelBox.descent);
       }
     }
 
@@ -749,7 +749,7 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
   if (equalRows) {
     scaled maxHeight = 0;
     for (i = 0; i < nRows; i++)
-      maxHeight = scaledMax(maxHeight, row[i].GetHeight());
+      maxHeight = std::max(maxHeight, row[i].GetHeight());
 
     for (i = 0; i < nRows; i++)
       if (row[i].GetHeight() < maxHeight)
@@ -956,23 +956,23 @@ MathMLTableElement::AdjustTableWidth(const scaled& availWidth)
   unsigned j;
   scaled tableWidth = GetTableWidth();
 
-  if (scaledLeq(tableWidth, availWidth)) return;
+  if (tableWidth <= availWidth) return;
 
-  scaled extraSpace = scaledMax(0, tableWidth - GetContentWidth());
+  scaled extraSpace = std::max(scaled(0), tableWidth - GetContentWidth());
   if (extraSpace == scaled(0)) return;
 
-  scaled toKill = scaledMax(0, scaledMin(tableWidth - availWidth, extraSpace));
+  scaled toKill = std::max(scaled(0), std::min(tableWidth - availWidth, extraSpace));
 
   float ratio = 1 - sp2float(toKill) / sp2float(extraSpace);
 
   for (j = 0; j < nColumns; j++)
     column[j].width = column[j].contentWidth + (column[j].width - column[j].contentWidth) * ratio;
 
-  frameHorizontalSpacing = scaledMax(MIN_COLUMN_SPACING, frameHorizontalSpacing * ratio);
+  frameHorizontalSpacing = std::max(MIN_COLUMN_SPACING, frameHorizontalSpacing * ratio);
 
   for (j = 0; j + 1 < nColumns; j++)
     if (column[j].spacing > MIN_COLUMN_SPACING)
-      column[j].spacing = scaledMax(MIN_COLUMN_SPACING, column[j].spacing * ratio);
+      column[j].spacing = std::max(MIN_COLUMN_SPACING, column[j].spacing * ratio);
 }
 
 void
@@ -1041,12 +1041,12 @@ MathMLTableElement::PrepareLabelsLayout(const FormattingContext& ctxt)
   if (ctxt.GetLayoutType() == LAYOUT_AUTO && HasLabels()) {
     // FIXME: what if the minLabelSpacing is a percentage value?
     assert(minLabelSpacingType == SPACING_FIXED);
-    minLabelSpacing = scaledMax(0, minLabelFixedSpacing);
+    minLabelSpacing = std::max(scaled(0), minLabelFixedSpacing);
     
     scaled maxLabelWidth = GetMaxLabelWidth();
     
 #if 0
-    if (scaledLeq(GetMaxBoundingBox().width - maxLabelWidth - minLabelSpacing, availWidth) &&
+    if (GetMaxBoundingBox().width - maxLabelWidth - minLabelSpacing <= availWidth &&
 	availWidth < GetMaxBoundingBox().width &&
 	(side == TABLE_SIDE_LEFTOVERLAP || side == TABLE_SIDE_RIGHTOVERLAP)) {
       // ok, there is not enough room to render the labels aside the
@@ -1057,7 +1057,7 @@ MathMLTableElement::PrepareLabelsLayout(const FormattingContext& ctxt)
 #endif
       // labels aside the table, compute the available space for the table itself
       aAvailWidth -= maxLabelWidth - minLabelSpacing;
-      aAvailWidth = scaledMax(0, aAvailWidth);
+      aAvailWidth = std::max(scaled(0), aAvailWidth);
 #if 0
     }
 #endif
@@ -1074,7 +1074,7 @@ MathMLTableElement::GetMaxLabelWidth() const
   scaled width = 0;
   for (unsigned i = 0; i < nRows; i++) {
     if (rowLabel[i].labelElement)
-      width = scaledMax(width, rowLabel[i].labelElement->GetBoundingBox().width);
+      width = std::max(width, rowLabel[i].labelElement->GetBoundingBox().width);
   }
 
   return width;
@@ -1085,7 +1085,7 @@ MathMLTableElement::DoLabelsLayout(const FormattingContext& ctxt)
 {
   assert(rowLabel);
 
-  scaled availForLabels = scaledMax(0, ctxt.GetAvailableWidth() - GetTableWidth() - minLabelFixedSpacing);
+  scaled availForLabels = std::max(scaled(0), ctxt.GetAvailableWidth() - GetTableWidth() - minLabelFixedSpacing);
 
   for (unsigned i = 0; i < nRows; i++) {
     if (rowLabel[i].labelElement)
@@ -1105,7 +1105,7 @@ MathMLTableElement::AdjustTableLayoutWithLabels(const FormattingContext& ctxt)
   for (unsigned i = 0; i < nRows; i++) {
     if (rowLabel[i].labelElement) {
       const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-      labelsWidth = scaledMax(labelsWidth, labelBox.width);
+      labelsWidth = std::max(labelsWidth, labelBox.width);
     }
   }  
 
@@ -1124,7 +1124,7 @@ MathMLTableElement::AdjustTableLayoutWithLabels(const FormattingContext& ctxt)
 	leftPadding = extra - minLabelSpacing - labelsWidth;
     }
 
-    box.width = scaledMax(ctxt.GetAvailableWidth(), tableWidth + labelsWidth + minLabelSpacing);
+    box.width = std::max(ctxt.GetAvailableWidth(), tableWidth + labelsWidth + minLabelSpacing);
   } else {
     if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)
       leftPadding = labelsWidth + minLabelSpacing;

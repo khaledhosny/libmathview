@@ -47,8 +47,8 @@ MathMLScriptCommonElement::ScriptSetup(RenderingEnvironment& env)
   ruleThickness = env.GetRuleThickness();
 #ifdef TEXISH_MATHML
   sppex = env.GetScaledPointsPerEx();
-  subMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.247217);
-  superMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.362892);
+  subMinShift = env.GetFontAttributes().size.ToScaledPoints() * 0.247217;
+  superMinShift = env.GetFontAttributes().size.ToScaledPoints() * 0.362892;
 #else
   sppex = subMinShift = superMinShift = env.GetAxis();
 #endif // TEXISH_MATHML
@@ -86,11 +86,11 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
   if (superScriptBox.IsNull())
     {
       u = 0;
-      v = scaledMax(v, scaledMax(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
+      v = std::max(v, std::max(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
     } 
   else
     {
-      u = scaledMax(u, scaledMax(superMinShift, superScriptBox.descent + sppex / 4));
+      u = std::max(u, std::max(superMinShift, superScriptBox.descent + sppex / 4));
 
       if (subScriptBox.IsNull())
 	{
@@ -98,7 +98,7 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
 	} 
       else
 	{
-	  v = scaledMax(v, subMinShift);
+	  v = std::max(v, subMinShift);
 
 	  if ((u - superScriptBox.descent) - (subScriptBox.ascent - v) < 4 * ruleThickness)
 	    {
@@ -115,7 +115,7 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
     }
 
   superShiftY = u;
-  superShiftX = scaledMax(baseBox.width, baseBox.rBearing + sppex / 5);
+  superShiftX = std::max(baseBox.width, baseBox.rBearing + sppex / 5);
 
   subShiftY = v;
   subShiftX = baseBox.width;

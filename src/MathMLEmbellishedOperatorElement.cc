@@ -111,7 +111,7 @@ MathMLEmbellishedOperatorElement::DoLayout(const class FormattingContext& ctxt)
       if (node && isIntegral(node->GetChar())) {
 	// WARNING
 	// the following patch is needed in order to have integral sign working
-	box.width = scaledMax(box.width, box.rBearing);
+	box.width = std::max(box.width, box.rBearing);
       }
       box.width += totalPadding;
 

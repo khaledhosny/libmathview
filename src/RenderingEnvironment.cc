@@ -240,16 +240,10 @@ RenderingEnvironment::SetFontSize(const UnitValue& size)
   // it's expressed in terms of em ex or %
   switch (size.GetUnitId()) {
   case UNIT_EM:
-    {
-      float sppm = sp2float(GetScaledPointsPerEm());
-      top->fontAttributes.size.Set((size.GetValue() * sppm) / SCALED_POINTS_PER_PT, UNIT_PT);
-    }
+    top->fontAttributes.size.Set((GetScaledPointsPerEm() * size.GetValue()).toFloat(), UNIT_PT);
     break;
   case UNIT_EX:
-    {
-      float sppx = sp2float(GetScaledPointsPerEx());
-      top->fontAttributes.size.Set((size.GetValue() * sppx) / SCALED_POINTS_PER_PT, UNIT_PT);
-    }
+    top->fontAttributes.size.Set((GetScaledPointsPerEx() * size.GetValue()).toFloat(), UNIT_PT);
     break;
   case UNIT_PERCENTAGE:
     top->fontAttributes.size.Set(top->fontAttributes.size.GetValue() * size.GetValue(),
@@ -470,11 +464,10 @@ RenderingEnvironment::GetRuleThickness() const
 
 #ifdef TEXISH_MATHML
   // don't know if this is the correct heuristics
-  scaled s = float2sp(sp2float(top->fontAttributes.size.ToScaledPoints()) * 0.04);
+  scaled s = top->fontAttributes.size.ToScaledPoints() * 0.04;
   return s;
 #else
-  scaled s = scaledMin(SCALED_POINTS_PER_PX,
-		       float2sp(sp2float(top->fontAttributes.size.ToScaledPoints()) * 0.1));
+  scaled s = std::min(px2sp(1), top->fontAttributes.size.ToScaledPoints() * 0.1);
   return s;
 #endif
 }

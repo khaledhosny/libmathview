@@ -345,12 +345,12 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		{
 		  if (!underOp)
 		    {
-		      wOther = scaledMax(wOther, underScript->GetBoundingBox().width);
+		      wOther = std::max(wOther, underScript->GetBoundingBox().width);
 		      nOther++;
 		    } 
 		  else
 		    {
-		      wOp = scaledMax(wOp, underOp->GetMinBoundingBox().width);
+		      wOp = std::max(wOp, underOp->GetMinBoundingBox().width);
 		      nOp++;
 		    }
 		}
@@ -359,12 +359,12 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		{
 		  if (!overOp)
 		    {
-		      wOther = scaledMax(wOther, overScript->GetBoundingBox().width);
+		      wOther = std::max(wOther, overScript->GetBoundingBox().width);
 		      nOther++;
 		    } 
 		  else
 		    {
-		      wOp = scaledMax(wOp, overOp->GetMinBoundingBox().width);
+		      wOp = std::max(wOp, overOp->GetMinBoundingBox().width);
 		      nOp++;
 		    }
 		}
@@ -438,13 +438,13 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		{
 		  const BoundingBox& scriptBox = overScript->GetBoundingBox();
 
-		  overShiftX = (baseBox.width - scriptBox.width) / 2 + scaledMax(0, baseBox.rBearing - baseBox.width);
+		  overShiftX = (baseBox.width - scriptBox.width) / 2 + std::max(scaled(0), baseBox.rBearing - baseBox.width);
 		  overShiftY = baseBox.ascent + overSpacing + scriptBox.descent;
 		  overClearance = ruleThickness;
 		}
 	    }
 
-	  baseShiftX = scaledMax(0, - scaledMin(overShiftX, underShiftX));
+	  baseShiftX = std::max(scaled(0), - std::min(overShiftX, underShiftX));
 	}
 
       overShiftX += baseShiftX;
@@ -458,11 +458,11 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	{
 	  const BoundingBox& scriptBox = underScript->GetBoundingBox();
 
-	  box.width = scaledMax(box.width, underShiftX + scriptBox.width);
-	  box.rBearing = scaledMax(box.rBearing, underShiftX + scriptBox.rBearing);
-	  box.lBearing = scaledMin(box.lBearing, underShiftX + scriptBox.lBearing);
-	  box.ascent   = scaledMax(box.ascent, scriptBox.ascent - underShiftY);
-	  box.descent  = scaledMax(box.descent, scriptBox.descent + underShiftY);
+	  box.width = std::max(box.width, underShiftX + scriptBox.width);
+	  box.rBearing = std::max(box.rBearing, underShiftX + scriptBox.rBearing);
+	  box.lBearing = std::min(box.lBearing, underShiftX + scriptBox.lBearing);
+	  box.ascent   = std::max(box.ascent, scriptBox.ascent - underShiftY);
+	  box.descent  = std::max(box.descent, scriptBox.descent + underShiftY);
 	  box.descent += underClearance;
 	}
 
@@ -470,11 +470,11 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	{
 	  const BoundingBox& scriptBox = overScript->GetBoundingBox();
 
-	  box.width = scaledMax(box.width, overShiftX + scriptBox.width);
-	  box.rBearing = scaledMax(box.rBearing, overShiftX + scriptBox.rBearing);
-	  box.lBearing = scaledMin(box.lBearing, overShiftX + scriptBox.lBearing);
-	  box.ascent   = scaledMax(box.ascent, scriptBox.ascent + overShiftY);
-	  box.descent  = scaledMax(box.descent, scriptBox.descent - overShiftY);
+	  box.width = std::max(box.width, overShiftX + scriptBox.width);
+	  box.rBearing = std::max(box.rBearing, overShiftX + scriptBox.rBearing);
+	  box.lBearing = std::min(box.lBearing, overShiftX + scriptBox.lBearing);
+	  box.ascent   = std::max(box.ascent, scriptBox.ascent + overShiftY);
+	  box.descent  = std::max(box.descent, scriptBox.descent - overShiftY);
 	  box.ascent += overClearance;
 	}
 
@@ -545,8 +545,8 @@ MathMLUnderOverElement::GetLeftEdge() const
 {
   assert(base);
   scaled m = base->GetLeftEdge();
-  if (underScript) m = scaledMin(m, underScript->GetLeftEdge());
-  if (overScript) m = scaledMin(m, overScript->GetLeftEdge());
+  if (underScript) m = std::min(m, underScript->GetLeftEdge());
+  if (overScript) m = std::min(m, overScript->GetLeftEdge());
   return m;
 }
 
@@ -555,8 +555,8 @@ MathMLUnderOverElement::GetRightEdge() const
 {
   assert(base);
   scaled m = base->GetRightEdge();
-  if (underScript) m = scaledMax(m, underScript->GetRightEdge());
-  if (overScript) m = scaledMax(m, overScript->GetRightEdge());
+  if (underScript) m = std::max(m, underScript->GetRightEdge());
+  if (overScript) m = std::max(m, overScript->GetRightEdge());
   return m;
 }
 

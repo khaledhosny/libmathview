@@ -93,7 +93,7 @@ FontAttributes::Equals(const FontAttributes& fa) const
       (family != "" && fa.family == "")) return false;
   if (family != "" && family != fa.family) return false;
   if (size.IsNull() != fa.size.IsNull()) return false;
-  if (!size.IsNull() && !scaledEq(size.ToScaledPoints(), fa.size.ToScaledPoints())) return false;
+  if (!size.IsNull() && size.ToScaledPoints() != fa.size.ToScaledPoints()) return false;
 
   return true;
 }
@@ -138,8 +138,8 @@ FontAttributes::Compare(const FontAttributes& fa) const
 
   if (HasSize()) {
     if (fa.HasSize()) {
-      scaled d = scaledAbs(size.ToScaledPoints() - fa.size.ToScaledPoints());
-      eval += truncFloat(sp2pt(d));
+      scaled d = abs(size.ToScaledPoints() - fa.size.ToScaledPoints());
+      eval += static_cast<int>(sp2pt(d));
     } else {
       eval++;
     }
@@ -170,7 +170,7 @@ FontAttributes::Compare(const FontAttributes& fa) const
   else if (HasSize() && fa.HasSize()) {
     scaled s1 = size.ToScaledPoints();
     scaled s2 = fa.size.ToScaledPoints();
-    scaled d = scaledAbs(s1 - s2);
+    scaled d = abs(s1 - s2);
     if (d < pt2sp(24)) eval += 24 - truncFloat(sp2pt(d));    
   } else eval += 10;
 #endif
@@ -186,8 +186,8 @@ FontAttributes::Dump() const
   const char* m[] = { "*", "text", "math" };
 
   Globals::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s,%s)",
-		     HasSize() ? truncFloat(sp2pt(size.ToScaledPoints())) : -1,
-		     HasFamily() ? family.c_str() : "_", w[weight + 1], s[style + 1], m[mode]);
+		  HasSize() ? static_cast<int>(sp2pt(size.ToScaledPoints())) : -1,
+		  HasFamily() ? family.c_str() : "_", w[weight + 1], s[style + 1], m[mode]);
 }
 
 // ExtraFontAttributes

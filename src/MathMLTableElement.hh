@@ -32,7 +32,7 @@
 #include "MathMLLinearContainerElement.hh"
 #include "MathMLAlignGroupElement.hh"
 
-#define MIN_COLUMN_SPACING (float2sp(3 * SCALED_POINTS_PER_PX))
+#define MIN_COLUMN_SPACING (px2sp(3))
 
 class MathMLTableCellElement;     // forward declaration to avoid circular dependencies
 

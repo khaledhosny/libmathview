@@ -283,15 +283,15 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
   // Here we have to calculate the desired size of the stretchable symbol.
   // If symmetric == true the we have to stretch to cover the maximum among
   // height and depth, otherwise we just stretch to ascent + descent
-  desiredSize = symmetric ? (2 * scaledMax(height, depth)) : (height + depth);
+  desiredSize = symmetric ? (2 * std::max(height, depth)) : (height + depth);
 
   // actually a slightly smaller fence is usually enough when symmetric is true
   Globals::logger(LOG_DEBUG, "request for stretch to %d...", sp2ipx(desiredSize));
   if (true || symmetric)
-    desiredSize = scaledMax(desiredSize - pt2sp(5), ((desiredSize * 901) / 1000));
+    desiredSize = std::max(desiredSize - pt2sp(5), ((desiredSize * 901) / 1000));
   Globals::logger(LOG_DEBUG, "%d will be enough!", sp2ipx(desiredSize));
 
-  desiredSize = scaledMax(0, desiredSize);
+  desiredSize = std::max(scaled(0), desiredSize);
 
   // ...however, there may be some contraints over the size of the stretchable
   // operator. adjustedSize will be the final allowed size for the operator
@@ -301,18 +301,18 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
   scaled adjustedSize = desiredSize;
 
   if (minMultiplier > 0)
-    adjustedSize = scaledMax(adjustedSize, minHeight * minMultiplier);
+    adjustedSize = std::max(adjustedSize, minHeight * minMultiplier);
   else
-    adjustedSize = scaledMax(adjustedSize, minSize);
+    adjustedSize = std::max(adjustedSize, minSize);
 
   if (!infiniteMaxSize) {
     if (maxMultiplier > 0)
-      adjustedSize = scaledMin(adjustedSize, minHeight * maxMultiplier);
+      adjustedSize = std::min(adjustedSize, minHeight * maxMultiplier);
     else
-      adjustedSize = scaledMin(adjustedSize, maxSize);
+      adjustedSize = std::min(adjustedSize, maxSize);
   }
 
-  adjustedSize = scaledMax(0, adjustedSize);
+  adjustedSize = std::max(scaled(0), adjustedSize);
 
   assert(GetSize() == 1);
   if (Ptr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
@@ -357,7 +357,7 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
 
   scaled desiredSize = width;
 
-  desiredSize = scaledMax(0, desiredSize);
+  desiredSize = std::max(scaled(0), desiredSize);
 
   // ...however, there may be some contraints over the size of the stretchable
   // operator. adjustedSize will be the final allowed size for the operator
@@ -365,18 +365,18 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
   scaled adjustedSize = desiredSize;
 
   if (minMultiplier > 0)
-    adjustedSize = scaledMax(adjustedSize, minWidth * minMultiplier);
+    adjustedSize = std::max(adjustedSize, minWidth * minMultiplier);
   else
-    adjustedSize = scaledMax(adjustedSize, minSize);
+    adjustedSize = std::max(adjustedSize, minSize);
 
   if (!infiniteMaxSize) {
     if (maxMultiplier > 0)
-      adjustedSize = scaledMin(adjustedSize, minWidth * maxMultiplier);
+      adjustedSize = std::min(adjustedSize, minWidth * maxMultiplier);
     else
-      adjustedSize = scaledMin(adjustedSize, minSize);
+      adjustedSize = std::min(adjustedSize, minSize);
   }
 
-  adjustedSize = scaledMax(0, adjustedSize);
+  adjustedSize = std::max(scaled(0), adjustedSize);
 
   assert(GetSize() == 1);
   if (Ptr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
@@ -440,7 +440,7 @@ MathMLOperatorElement::ParseLimitValue(const Value* value,
     
       if (unitV->IsEmpty()) 
 	{
-	  multiplier = floatMax(EPSILON, v->ToNumber());
+	  multiplier = std::max(EPSILON, v->ToNumber());
 	}
       else
 	{
@@ -453,7 +453,7 @@ MathMLOperatorElement::ParseLimitValue(const Value* value,
 	  if (siz.IsPercentage())
 	    {
 	      Globals::logger(LOG_WARNING, "percentage value specified in maxsize attribute (mo) (ignored)");
-	      multiplier = floatMax(EPSILON, siz.GetValue());
+	      multiplier = std::max(EPSILON, siz.GetValue());
 	    } 
 	  else
 	    {

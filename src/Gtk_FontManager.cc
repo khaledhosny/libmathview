@@ -106,8 +106,8 @@ Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
   if (points == "") {
     if (fa.HasSize()) {
       int ptSize = (fa.size.GetUnitId() == UNIT_PT) ?
-	roundFloat(fa.size.GetValue() * 10) :
-	roundFloat(sp2pt(fa.size.ToScaledPoints()) * 10);
+	roundf(fa.size.GetValue() * 10) :
+	roundf(sp2pt(fa.size.ToScaledPoints()) * 10);
 
       // we round the size (in points) to be a multiple of five
       ptSize = (ptSize + 4) / 5;

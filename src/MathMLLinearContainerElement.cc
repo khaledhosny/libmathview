@@ -236,7 +236,7 @@ MathMLLinearContainerElement::GetLeftEdge() const
        elem++)
     {
       if (elem == content.begin()) edge = (*elem)->GetLeftEdge();
-      else edge = scaledMin(edge, (*elem)->GetX() + (*elem)->GetLeftEdge());
+      else edge = std::min(edge, (*elem)->GetX() + (*elem)->GetLeftEdge());
     }
 
   return edge;
@@ -252,7 +252,7 @@ MathMLLinearContainerElement::GetRightEdge() const
        elem++)
     {
       if (elem == content.begin()) edge = (*elem)->GetRightEdge();
-      else edge = scaledMax(edge, (*elem)->GetX() + (*elem)->GetRightEdge());
+      else edge = std::max(edge, (*elem)->GetX() + (*elem)->GetRightEdge());
     }
 
   return edge;

@@ -51,7 +51,7 @@ struct GraphicsContextValues {
       foreground == v.foreground &&
       background == v.background &&
       lineStyle == v.lineStyle &&
-      scaledEq(lineWidth, v.lineWidth);
+      lineWidth == v.lineWidth;
   }
 };
 

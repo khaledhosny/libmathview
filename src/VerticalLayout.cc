@@ -95,9 +95,9 @@ VerticalLayout::GetBoundingBox() const
       if (p == content.begin()) box.Set(0, pBox.ascent, 0, pBox.lBearing, pBox.rBearing);
       if (p + 1 == content.end()) box.descent += pBox.descent;
       if (p != content.begin()) box.descent += GetRowSpacing(p - 1, p);
-      box.width = scaledMax(box.width, pBox.width);
-      box.lBearing = scaledMin(box.lBearing, pBox.lBearing);
-      box.rBearing = scaledMax(box.rBearing, pBox.rBearing);
+      box.width = std::max(box.width, pBox.width);
+      box.lBearing = std::min(box.lBearing, pBox.lBearing);
+      box.rBearing = std::max(box.rBearing, pBox.rBearing);
     }
   return box;
 }

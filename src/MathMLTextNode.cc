@@ -72,10 +72,10 @@ bool
 MathMLTextNode::IsInside(const scaled& x, const scaled& y) const
 {
   return
-    scaledGeq(x, position.x) &&
-    scaledGeq(y, position.y - box.ascent) &&
-    scaledLeq(x, position.x + box.width) &&
-    scaledLeq(y, position.y + box.descent);
+    x >= position.x &&
+    y >= position.y - box.ascent &&
+    x <= position.x + box.width &&
+    y <= position.y + box.descent;
 }
 
 scaled

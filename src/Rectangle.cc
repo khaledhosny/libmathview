@@ -24,15 +24,17 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include <algorithm>
+
 #include "Rectangle.hh"
 
 void
 Rectangle::Union(const Rectangle& r)
 {
-  scaled maxX = scaledMax(x + width, r.x + r.width);
-  scaled maxY = scaledMax(y + height, r.y + r.height);
-  x = scaledMin(x, r.x);
-  y = scaledMin(y, r.y);
+  scaled maxX = std::max(x + width, r.x + r.width);
+  scaled maxY = std::max(y + height, r.y + r.height);
+  x = std::min(x, r.x);
+  y = std::min(y, r.y);
   width = maxX - x;
   height = maxY - y;
 }

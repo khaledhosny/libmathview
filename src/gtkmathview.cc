@@ -852,7 +852,7 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
   if (adj->upper < 0) adj->upper = 0.0;
 
   if (adj->value > adj->upper - page_size) {
-    adj->value = floatMax(0, adj->upper - page_size);
+    adj->value = std::max(0.0, adj->upper - page_size);
     gtk_adjustment_value_changed(adj);
   }
 
@@ -888,7 +888,7 @@ setup_adjustments(GtkMathView* math_view)
     gfloat page_width = sp2float(math_view->drawing_area->GetWidth());
     
     if (math_view->top_x > width - page_width)
-      math_view->top_x = floatMax(0, width - page_width);
+      math_view->top_x = std::max(0.0f, width - page_width);
 
     setup_adjustment(math_view->hadjustment, width, page_width);
   }
@@ -898,7 +898,7 @@ setup_adjustments(GtkMathView* math_view)
     gfloat page_height = sp2float(math_view->drawing_area->GetHeight());
 
     if (math_view->top_y > height - page_height)
-      math_view->old_top_y = math_view->top_y = floatMax(0, height - page_height);
+      math_view->old_top_y = math_view->top_y = std::max(0.0f, height - page_height);
 
     setup_adjustment(math_view->vadjustment, height, page_height);
   }

@@ -190,8 +190,8 @@ MathMLRadicalElement::DoLayout(const class FormattingContext& ctxt)
 
       box.width += radBox.width;
       box.rBearing += radBox.width;
-      box.ascent = scaledMax(box.ascent + spacing, radBox.ascent);
-      box.descent = scaledMax(box.descent, radBox.descent);
+      box.ascent = std::max(box.ascent + spacing, radBox.ascent);
+      box.descent = std::max(box.descent, radBox.descent);
 
       if (index)
 	{
@@ -333,8 +333,8 @@ MathMLRadicalElement::GetLeftEdge() const
 {
   assert(radical);
   assert(radicand);
-  scaled m = scaledMin(radicand->GetLeftEdge(), radical->GetLeftEdge());
-  if (index) return scaledMin(m, index->GetLeftEdge());
+  scaled m = std::min(radicand->GetLeftEdge(), radical->GetLeftEdge());
+  if (index) return std::min(m, index->GetLeftEdge());
   else return m;
 }
 
@@ -343,8 +343,8 @@ MathMLRadicalElement::GetRightEdge() const
 {
   assert(radical);
   assert(radicand);
-  scaled m = scaledMax(radicand->GetRightEdge(), radical->GetRightEdge());
-  if (index) return scaledMax(m, index->GetRightEdge());
+  scaled m = std::max(radicand->GetRightEdge(), radical->GetRightEdge());
+  if (index) return std::max(m, index->GetRightEdge());
   else return m;
 }
 

@@ -173,7 +173,7 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
 	  assert(unit != NULL);
 
 	  if (unit->IsEmpty())
-	    lineThickness = defaultRuleThickness * roundFloat(number->ToNumber());
+	    lineThickness = defaultRuleThickness * number->ToNumber();
 	  else
 	    {
 	      assert(unit->IsKeyword());
@@ -189,7 +189,7 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
 	    }
 	}
 
-	lineThickness = scaledMax(0, lineThickness);
+	lineThickness = std::max(scaled(0), lineThickness);
       }
 
       delete value;
@@ -220,11 +220,11 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
 
 #ifdef TEXISH_MATHML
       if (displayStyle) {
-	numMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.676508);
-	denomMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.685951);
+	numMinShift = env.GetFontAttributes().size.ToScaledPoints() * 0.676508;
+	denomMinShift = env.GetFontAttributes().size.ToScaledPoints()) * 0.685951;
       } else {
-	numMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * (lineThickness > 0 ? 0.393732 : 0.443731));
-	denomMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.344841);
+	numMinShift = env.GetFontAttributes().size.ToScaledPoints() * (lineThickness > 0 ? 0.393732 : 0.443731);
+	denomMinShift = env.GetFontAttributes().size.ToScaledPoints() * 0.344841;
       }
 #else
       minShift = env.GetScaledPointsPerEx();
@@ -255,7 +255,7 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
       const BoundingBox& denomBox = denominator->GetBoundingBox();
 
       if (bevelled) {
-	scaled barVert = scaledMax(numBox.GetHeight(), denomBox.GetHeight());
+	scaled barVert = std::max(numBox.GetHeight(), denomBox.GetHeight());
 	scaled barHoriz = barVert / 2;
 
 	box.Set(barHoriz + 2 * lineThickness, 0, 0);
@@ -295,11 +295,11 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 	numShift   = u;
 	denomShift = v;
     
-	box.Set(scaledMax(numBox.width, denomBox.width),
+	box.Set(std::max(numBox.width, denomBox.width),
 		numShift + numBox.ascent,
 		denomShift + denomBox.descent);
-	box.rBearing = scaledMax(numBox.rBearing, denomBox.rBearing);
-	box.width = scaledMax(box.width, box.rBearing);
+	box.rBearing = std::max(numBox.rBearing, denomBox.rBearing);
+	box.width = std::max(box.width, box.rBearing);
       }
 
       DoEmbellishmentLayout(this, box);
@@ -326,7 +326,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
   const BoundingBox& denomBox = denominator->GetBoundingBox();
 
   if (bevelled) {
-    scaled barVert = scaledMax(numBox.GetHeight(), denomBox.GetHeight());
+    scaled barVert = std::max(numBox.GetHeight(), denomBox.GetHeight());
     scaled barHoriz = barVert / 2;
 
     numerator->SetPosition(x, y);
@@ -335,7 +335,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
     scaled numXOffset = 0;
     switch (numAlign) {
     case FRAC_ALIGN_CENTER:
-      numXOffset = (box.width - scaledMax(numBox.width, numBox.rBearing)) / 2;
+      numXOffset = (box.width - std::max(numBox.width, numBox.rBearing)) / 2;
       break;
     case FRAC_ALIGN_RIGHT:
       numXOffset = box.width - numBox.width;
@@ -348,7 +348,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
     scaled denomXOffset = 0;
     switch (denomAlign) {
     case FRAC_ALIGN_CENTER:
-      denomXOffset = (box.width - denomBox.width) / 2 - scaledMax(0, denomBox.rBearing - denomBox.width);
+      denomXOffset = (box.width - denomBox.width) / 2 - std::max(scaled(0), denomBox.rBearing - denomBox.width);
       break;
     case FRAC_ALIGN_RIGHT:
       denomXOffset = box.width - denomBox.width;
@@ -389,14 +389,14 @@ MathMLFractionElement::Render(const DrawingArea& area)
 	      const BoundingBox& numBox   = numerator->GetBoundingBox();
 	      const BoundingBox& denomBox = denominator->GetBoundingBox();
 
-	      scaled barVert = scaledMax(numBox.GetHeight(), denomBox.GetHeight());
+	      scaled barVert = std::max(numBox.GetHeight(), denomBox.GetHeight());
 	      scaled barHoriz = barVert / 2;
 
 	      area.DrawLine(fGC[Selected()],
 			    GetX() + numBox.width + lineThickness,
-			    GetY() + scaledMax(numBox.descent, denomBox.descent),
+			    GetY() + std::max(numBox.descent, denomBox.descent),
 			    GetX() + numBox.width + lineThickness + barHoriz,
-			    GetY() - scaledMax(numBox.ascent, denomBox.ascent));
+			    GetY() - std::max(numBox.ascent, denomBox.ascent));
 	    }
 	  else
 	    {

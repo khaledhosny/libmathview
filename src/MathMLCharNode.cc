@@ -175,7 +175,7 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(const scaled& desiredSize, bool)
 
   // first of all let's see if the small, unstretchable char is enough
   fChar.GetBoundingBox(charBox);
-  if (scaledGeq(charBox.GetHeight(), desiredSize)) return;
+  if (charBox.GetHeight() >= desiredSize) return;
 
   // next let's see if there is some single large char large enough
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && nch[i] != NULLCHAR; i++) {
@@ -184,7 +184,7 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(const scaled& desiredSize, bool)
     Globals::logger(LOG_DEBUG, "trying simple char %x for desire %d", layout->simple, sp2ipx(desiredSize));
 #endif
     font->CharBox(layout->simple, charBox);
-    if (scaledGeq(charBox.GetHeight(), desiredSize)) return;
+    if (charBox.GetHeight() >= desiredSize) return;
   }
   
   // if there is no compound char then we return immediately, the largest
@@ -206,31 +206,31 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(const scaled& desiredSize, bool)
   if (nch[SC_FIRST] != NULLCHAR) {
     font->CharBox(nch[SC_FIRST], layout->box[SC_FIRST]);
     size += layout->box[SC_FIRST].GetHeight();
-    width = scaledMax(width, layout->box[SC_FIRST].width);
-    lBearing = scaledMin(lBearing, layout->box[SC_FIRST].lBearing);
-    rBearing = scaledMax(rBearing, layout->box[SC_FIRST].rBearing);
+    width = std::max(width, layout->box[SC_FIRST].width);
+    lBearing = std::min(lBearing, layout->box[SC_FIRST].lBearing);
+    rBearing = std::max(rBearing, layout->box[SC_FIRST].rBearing);
     layout->n++;
   }
 
   if (nch[SC_LAST] != NULLCHAR) {
     font->CharBox(nch[SC_LAST], layout->box[SC_LAST]);
     size += layout->box[SC_LAST].GetHeight();
-    width = scaledMax(width, layout->box[SC_LAST].width);
-    lBearing = scaledMin(lBearing, layout->box[SC_LAST].lBearing);
-    rBearing = scaledMax(rBearing, layout->box[SC_LAST].rBearing);
+    width = std::max(width, layout->box[SC_LAST].width);
+    lBearing = std::min(lBearing, layout->box[SC_LAST].lBearing);
+    rBearing = std::max(rBearing, layout->box[SC_LAST].rBearing);
     layout->n++;
   }
 
   if (nch[SC_MIDDLE] != NULLCHAR) {
     font->CharBox(nch[SC_MIDDLE], layout->box[SC_MIDDLE]);
     size += layout->box[SC_MIDDLE].GetHeight();
-    width = scaledMax(width, layout->box[SC_MIDDLE].width);
-    lBearing = scaledMin(lBearing, layout->box[SC_MIDDLE].lBearing);
-    rBearing = scaledMax(rBearing, layout->box[SC_MIDDLE].rBearing);
+    width = std::max(width, layout->box[SC_MIDDLE].width);
+    lBearing = std::min(lBearing, layout->box[SC_MIDDLE].lBearing);
+    rBearing = std::max(rBearing, layout->box[SC_MIDDLE].rBearing);
     layout->n++;
   }
 
-  if (scaledGeq(size, desiredSize)) {
+  if (size >= desiredSize) {
     if      (nch[SC_LAST] != NULLCHAR) charBox = layout->box[SC_LAST];
     else if (nch[SC_MIDDLE] != NULLCHAR) charBox = layout->box[SC_MIDDLE];
     else charBox = layout->box[SC_FIRST];
@@ -247,9 +247,9 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(const scaled& desiredSize, bool)
     font->CharBox(nch[SC_REPEAT], layout->box[SC_REPEAT]);
 
   if (nch[SC_REPEAT] != NULLCHAR && layout->box[SC_REPEAT].GetHeight() > scaled(0)) {
-    width = scaledMax(width, layout->box[SC_REPEAT].width);
-    lBearing = scaledMin(lBearing, layout->box[SC_REPEAT].lBearing);
-    rBearing = scaledMax(rBearing, layout->box[SC_REPEAT].rBearing);
+    width = std::max(width, layout->box[SC_REPEAT].width);
+    lBearing = std::min(lBearing, layout->box[SC_REPEAT].lBearing);
+    rBearing = std::max(rBearing, layout->box[SC_REPEAT].rBearing);
     while (desiredSize - size > scaled(0)) {
       int step = (nch[SC_MIDDLE] == NULLCHAR) ? 1 : 2;
       layout->n += step;
@@ -293,7 +293,7 @@ MathMLCharNode::DoHorizontalStretchyLayoutAux(const scaled& desiredSize, bool)
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && nch[i] != NULLCHAR; i++) {
     layout->simple = nch[i];
     font->CharBox(layout->simple, charBox);
-    if (scaledGeq(charBox.width, desiredSize)) return;
+    if (charBox.width >= desiredSize) return;
   }
 
   nch = layout->sChar.charMap->stretchy.compound;
@@ -323,7 +323,7 @@ MathMLCharNode::DoHorizontalStretchyLayoutAux(const scaled& desiredSize, bool)
     layout->n++;
   }
 
-  if (scaledGeq(charBox.width, desiredSize)) return;
+  if (charBox.width >= desiredSize) return;
 
   if (nch[SC_REPEAT] != NULLCHAR)
     font->CharBox(nch[SC_REPEAT], layout->box[SC_REPEAT]);
@@ -576,7 +576,7 @@ MathMLCharNode::CombineWith(const Ptr<MathMLCharNode>& cChar, scaled& shiftX, sc
     // the following computation assumes that the accent is taken from a TeX font
     // and that that font has a valid glyph for x as position 'x'
     shiftY = box.ascent - cFont->GetEx();
-    shiftY = scaledMax(shiftY, box.ascent + cBox.descent);
+    shiftY = std::max(shiftY, box.ascent + cBox.descent);
 
     float ia = (M_PI * (90 + fChar.font->GetItalicAngle())) / 180;
     scaled correction = pt2sp(sp2pt(shiftY) * cos(ia));
@@ -584,10 +584,10 @@ MathMLCharNode::CombineWith(const Ptr<MathMLCharNode>& cChar, scaled& shiftX, sc
 #if 0
     float ia = (M_PI * (90 + fChar.font->GetItalicAngle())) / 180;
 
-    scaled correction = (shiftY > 0) ? float2sp(sp2float(box.ascent) * cos(ia)) : 0;
+    scaled correction = (shiftY > 0) ? box.ascent * cos(ia) : 0;
 
     shiftX = correction + (box.width - cBox.rBearing + cBox.lBearing) / 2 - cBox.lBearing;
-    //printf("%04x ic: %f height: %f\n", GetChar(), scaledMax(0, box.rBearing - box.width), box.ascent);
+    //printf("%04x ic: %f height: %f\n", GetChar(), std::max(0, box.rBearing - box.width), box.ascent);
 #endif
   }
 

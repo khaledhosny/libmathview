@@ -537,7 +537,7 @@ MathMLTokenElement::GetLeftEdge() const
     {
       assert(*text);
       if (text == GetContent().begin()) edge = (*text)->GetLeftEdge();
-      else edge = scaledMin(edge, (*text)->GetLeftEdge());
+      else edge = std::min(edge, (*text)->GetLeftEdge());
     }
 
   return edge;
@@ -554,7 +554,7 @@ MathMLTokenElement::GetRightEdge() const
     {
       assert(*text);
       if (text == GetContent().begin()) edge = (*text)->GetRightEdge();
-      else edge = scaledMax(edge, (*text)->GetRightEdge());
+      else edge = std::max(edge, (*text)->GetRightEdge());
     }
 
   return edge;

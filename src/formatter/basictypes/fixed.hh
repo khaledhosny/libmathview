@@ -50,6 +50,7 @@ public:
   template<typename S, int p> friend fixed<S,p> operator+(const fixed<S,p>&, const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> operator-(const fixed<S,p>&, const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> operator-(const fixed<S,p>&);
+  template<typename S, int p> friend fixed<S,p> operator*(const fixed<S,p>&, const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> operator*(const fixed<S,p>&, int);
   template<typename S, int p> friend fixed<S,p> operator*(const fixed<S,p>&, float);
   template<typename S, int p> friend fixed<S,p> operator*(const fixed<S,p>&, double);
@@ -142,6 +143,17 @@ inline fixed<T,p>
 operator-(const fixed<T,p>& f)
 { 
   return fixed<T,p>(-f.value, true);
+}
+
+template <typename T, int p> 
+inline fixed<T,p>
+operator*(const fixed<T,p>& f1, const fixed<T,p>& f2) 
+{ 
+  T a = f1.value >> (p / 2);
+  T a1 = f1.value & ((1 << (p / 2)) - 1);
+  T b = f2.value >> (p / 2);
+  T b1 = f2.value & ((1 << (p / 2)) - 1);
+  return fixed<T,p>(static_cast<T>(a * b + ((a1 * b) >> (p / 2)) + ((a * b1) >> (p / 2)) + ((a1 * b1) >> p)), true);
 }
 
 template <typename T, int p> 

@@ -73,14 +73,14 @@ MathMLCombinedCharNode::DoLayout(const FormattingContext& ctxt)
     bool res = CombineWith(cChar, shiftX, shiftY);
     assert(res);
 
-    box.ascent = scaledMax(charBox.ascent, cBox.ascent + shiftY);
-    box.descent = scaledMax(charBox.descent, cBox.descent - shiftY);
+    box.ascent = std::max(charBox.ascent, cBox.ascent + shiftY);
+    box.descent = std::max(charBox.descent, cBox.descent - shiftY);
     if (cChar->GetChar() != 0x20dd)
-      box.width = scaledMax(charBox.width, cBox.width + shiftX);
+      box.width = std::max(charBox.width, cBox.width + shiftX);
     else
-      box.width = scaledMax(charBox.width, cBox.width);
-    box.lBearing = scaledMin(charBox.lBearing, cBox.lBearing + shiftX);
-    box.rBearing = scaledMax(charBox.rBearing, cBox.rBearing + shiftX);
+      box.width = std::max(charBox.width, cBox.width);
+    box.lBearing = std::min(charBox.lBearing, cBox.lBearing + shiftX);
+    box.rBearing = std::max(charBox.rBearing, cBox.rBearing + shiftX);
     charBox = box; // WARNING: watch this
   }
 }
