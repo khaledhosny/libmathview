@@ -24,6 +24,7 @@
 #define __Gtk_WrapperArea_hh__
 
 #include "BoxArea.hh"
+#include "WeakPtr.hh"
 
 class Gtk_WrapperArea : public BoxArea
 {
@@ -40,13 +41,13 @@ public:
   virtual void render(RenderingContext&, const scaled&, const scaled&) const;
   //virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
 
-  SmartPtr<Object> getElement(void) const;
+  SmartPtr<Object> getElement(void) const { return static_cast<Object*>(element); }
 
   int getSelected(void) const { return selected; }
   void setSelected(int n) const { selected = n; }
 
 private:
-  SmartPtr<Object> element; // element that has created this area
+  WeakPtr<Object> element; // element that has created this area
   mutable int selected;
 };
 

@@ -118,8 +118,10 @@ Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& 
 }
 #endif
 
+#if 0
 SmartPtr<Object>
 Gtk_WrapperArea::getElement(void) const
 {
   return element;
 }
+#endif
