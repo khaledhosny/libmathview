@@ -27,8 +27,8 @@
 
 struct RGBColor
 {
-  RGBColor(unsigned r = 0, unsigned g = 0, unsigned b = 0)
-    : red(r), green(g), blue(b), transparent(0) { }
+  RGBColor(unsigned r = 0, unsigned g = 0, unsigned b = 0, bool t = false)
+    : red(r), green(g), blue(b), transparent(t ? 1 : 0) { }
 
   static RGBColor BLACK   (void) { return RGBColor(0x00,0x00,0x00); }
   static RGBColor SILVER  (void) { return RGBColor(0xc0,0xc0,0xc0); }
