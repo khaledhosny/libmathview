@@ -47,12 +47,34 @@ if test "x$enable_breaks" = "xyes"; then
 	AC_DEFINE(ENABLE_BREAKS,,[Define to 1 if you want to enable linebreaking using mspace elements])
 fi
 
-AC_ARG_WITH(frontends,
-	[  --with-frontends=[frontend list|all]   Specify the set of frontends to be built [default=all]],
-	GMETADOM_MODULES=$withval,
-	GMETADOM_MODULES="all"
+AC_ARG_ENABLE(
+	gmetadom,
+	[ --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
+	enable_gmetadom=$enableval,
+	enable_gmetadom="auto"
 )
-	
+
+AC_ARG_ENABLE(
+	libxml2,
+	[ --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
+	enable_libxml2=$enableval,
+	enable_libxml2="auto"
+)
+
+AC_ARG_ENABLE(
+	libxml2-reader,
+	[ --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
+	enable_libxml2_reader=$enableval,
+	enable_libxml2_reader="auto"
+)
+
+AC_ARG_ENABLE(
+	custom-reader,
+	[ --enable-custom-reader[=ARG] enable the custom reader frontend [default=yes]],
+	enable_custom_reader=$enableval,
+	enable_custom_reader="yes"
+)
+
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
@@ -308,22 +330,26 @@ PKG_CHECK_MODULES(XFT, xft)
 AC_SUBST(XFT_CFLAGS)
 AC_SUBST(XFT_LIBS)
 
-available_frontends="custom_reader"
+AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
+
+have_libxml2="no"
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.0.0,
   AC_DEFINE(HAVE_LIBXML,,[Define to 1 is libxml2 is installed])
-  available_frontends="$available_frontends libxml2_reader libxml2",
+  have_libxml2="yes",
   AC_MSG_WARN([could not find libxml2]))
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
+AM_CONDITIONAL([COND_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
+AM_CONDITIONAL([COND_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o \( "$enable_libxml2_reader" = "auto" -a "$have_libxml2" = "yes" \)]) 
 
+have_gmetadom="no"
 PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
   AC_DEFINE(HAVE_GMETADOM,,[Define to 1 if gmetadom is installed])
-  available_frontends="$available_frontends gmetadom",
+  have_gmetadom="yes",
   AC_MSG_WARN([could not find GMetaDOM]))
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
-echo "Available frontends: $available_frontends"
-AC_SUBST(available_frontends)
+AM_CONDITIONAL([COND_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no", -lm)
