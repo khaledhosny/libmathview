@@ -75,34 +75,3 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
 
   context.setStyle(old_style);
 }
-
-#if 0
-#define PIX(x) (Gtk_RenderingContext::toGtkPixels(x))
-bool
-Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
-{
-#if 0
-  std::cerr << "Wrapper::find at " << Gtk_RenderingContext::toGtkX(x) << "," << Gtk_RenderingContext::toGtkY(y) << " "
-	    << " SEARCHING FOR (" << Gtk_RenderingContext::toGtkX(context.getX()) << "," << Gtk_RenderingContext::toGtkY(context.getY()) << ")" << std::endl;
-
-  BoundingBox b = box();
-  Rectangle r(x, y, b);
-
-  std::cerr << "Wrapper::find at " << PIX(x) << "," << PIX(y) << " "
-	    << "BBOX = [" << PIX(b.width) << "," << PIX(b.height) << "," << PIX(b.depth) << "] "
-	    << PIX(r.x) << "," << PIX(r.y) << " "
-	    << PIX(r.width) << "," << PIX(r.height) << " "
-	    << " SEARCHING FOR (" << PIX(context.getX()) << "," << PIX(context.getY()) << ")"
-	    << std::endl;
-#endif
-
-  if (context.accept(this, x, y))
-    {
-      if (!BoxArea::find(context, x, y))
-	context.setResult(this, x, y);
-      return true;
-    }
-  else
-    return BoxArea::find(context, x, y);
-}
-#endif

@@ -48,29 +48,9 @@ Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scal
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
   context.draw(x, y, pango_layout_get_line(layout, 0));
-#if 0
-  gdk_draw_line(context.getDrawable(),
-		context.getGC(),
-		Gtk_RenderingContext::toGtkX(x),
-		Gtk_RenderingContext::toGtkY(y),
-		Gtk_RenderingContext::toGtkX(x + bbox.width),
-		Gtk_RenderingContext::toGtkY(y));
-#endif
-#if 0
-  gdk_draw_rectangle(context.getDrawable(),
-		     context.getGC(),
-		     FALSE,
-		     Gtk_RenderingContext::toGtkX(x),
-		     Gtk_RenderingContext::toGtkY(y + bbox.height),
-		     Gtk_RenderingContext::toGtkPixels(bbox.width) - 1,
-		     Gtk_RenderingContext::toGtkPixels(bbox.verticalExtent()) - 1);
-#endif
 }
 
 #if 1
-
-#include "BoundingBoxAux.hh"
-#include <iostream>
 
 bool
 Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
@@ -84,7 +64,6 @@ Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharI
     {
       const gchar* buffer = pango_layout_get_text(layout);
       index = g_utf8_pointer_to_offset(buffer, buffer + utf8_index) + trailing;
-      std::cout << "pango_layout_line_x_to_index " << utf8_index << " " << index << std::endl;
       return true;
     }
   else
