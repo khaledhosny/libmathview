@@ -81,7 +81,7 @@ AreaId::getOrigin(scaled& x, scaled& y, int index) const
     getOriginAux(origin.size() + index, x, y);
   else
     {
-      assert(index == -1 || index == 0);
+      assert(index == -1);
       x = y = scaled::zero();
     }
 }
@@ -91,7 +91,7 @@ AreaId::getOriginAux(int index, scaled& x, scaled& y) const
 {
   assert(index >= 0 && index < origin.size());
   x = y = scaled::zero();
-  for (OriginVector::const_iterator p = origin.begin(); index > 0 && p != origin.end(); p++, index--)
+  for (OriginVector::const_iterator p = origin.begin(); p != origin.begin() + index + 1; p++)
     {
       x += (*p).first;
       y += (*p).second;
