@@ -1,6 +1,5 @@
 
-DOM_CFLAGS = @DOM_CFLAGS@
-DOM_LIBS = @DOM_LIBS@
+NULL =
 
 bin_PROGRAMS =
 if COND_GMETADOM
@@ -37,7 +36,8 @@ test_embedding_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_libxml2.la
+  $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(NULL)
 
 INCLUDES = \
   $(GTK_CFLAGS) \

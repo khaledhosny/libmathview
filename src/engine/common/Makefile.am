@@ -15,7 +15,10 @@ libengine_common_la_SOURCES = \
   Node.cc \
   Element.cc
 
-pkginclude_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  Element.hh \
+  Node.hh \
   View.hh \
   $(NULL)
 
@@ -27,12 +30,10 @@ noinst_HEADERS = \
   BinContainerTemplate.hh \
   CommonStringParsers.hh \
   Configuration.hh \
-  Element.hh \
   ElementFactory.hh \
   Globals.hh \
   LinearContainerTemplate.hh \
   NamespaceContext.hh \
-  Node.hh \
   TemplateStringParsers.hh \
   TemplateStringScanners.hh \
   $(NULL)

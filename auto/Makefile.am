@@ -10,7 +10,8 @@ dumpEntitiesTable_LDADD = @DOM_LIBS@
 XSLTPROC = xsltproc
 
 AUTOFILES = \
-  token.dec token.def \
+  token.dec \
+  token.def \
   entitiesTable.inc
 
 EXTRA_DIST = \
@@ -28,7 +29,13 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = $(AUTOFILES)
 
-noinst_HEADERS = $(AUTOFILES)
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  token.dec
+
+noinst_HEADERS = \
+  token.def \
+  entitiesTable.inc
 
 SCRIPTDIR = ../scripts
 CONFIGDIR = ../config

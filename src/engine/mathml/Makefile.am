@@ -1,4 +1,6 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libmathml.la
 
 libmathml_la_SOURCES = \
@@ -51,6 +53,11 @@ libmathml_la_SOURCES = \
   tableSetup.cc \
   tableLayout.cc
 
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  MathMLElement.hh \
+  $(NULL)
+
 noinst_HEADERS = \
   traverseAux.hh \
   MathML.hh \
@@ -68,7 +75,6 @@ noinst_HEADERS = \
   MathMLBinContainerElement.hh \
   MathMLContainerElement.hh \
   MathMLDummyElement.hh \
-  MathMLElement.hh \
   MathMLEmbellishment.hh \
   MathMLEncloseElement.hh \
   MathMLErrorElement.hh \

@@ -31,6 +31,7 @@
 MathFormattingContext::MathFormattingContext(const SmartPtr<MathGraphicDevice>& d)
   : device(d)
 {
+  setZoom(100);
   setSize(device->evaluate(*this, Length(10.0, Length::PT_UNIT), scaled::zero()));
   setActualSize(getSize());
   setVariant(NORMAL_VARIANT);

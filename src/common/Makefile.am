@@ -30,10 +30,14 @@ libcommon_la_SOURCES = \
   token.cc \
   $(NULL)
 
-pkginclude_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   BoundingBox.hh \
   BoundingBoxAux.hh \
   Char.hh \
+  HashMap.hh \
+  Length.hh \
+  LengthAux.hh \
   Object.hh \
   Point.hh \
   PointAux.hh \
@@ -42,30 +46,27 @@ pkginclude_HEADERS = \
   Rectangle.hh \
   Rectangle.hh \
   SmartPtr.hh \
+  ScopedHashMap.hh \
+  SparseMap.hh \
   String.hh \
+  Value.hh \
+  ValueConversion.hh \
+  Variant.hh \
   WeakPtr.hh \
   defs.h \
   fixed.hh \
   scaled.hh \
   scaledAux.hh \
+  token.hh \
   $(NULL)
 
 noinst_HEADERS = \
   Clock.hh \
   GObjectPtr.hh \
-  HashMap.hh \
-  Length.hh \
-  LengthAux.hh \
   Logger.hh \
   Rope.hh \
-  ScopedHashMap.hh \
-  SparseMap.hh \
   TokenSet.hh \
-  Value.hh \
-  ValueConversion.hh \
-  Variant.hh \
   for_each_if.h \
-  token.hh \
   $(NULL)
 
 INCLUDES = \

@@ -36,7 +36,8 @@ libareamodel_la_SOURCES = \
   WrapperArea.cc \
   $(NULL)
 
-pkginclude_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   Area.hh \
   AreaFactory.hh \
   AreaId.hh \

@@ -1,4 +1,5 @@
 
-noinst_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   FormattingContext.hh
 

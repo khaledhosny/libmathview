@@ -30,9 +30,12 @@ libmathvariants_la_SOURCES = \
   $(AUTO_CC) \
   MathVariantMap.cc
 
-noinst_HEADERS = \
-  MathVariantMap.hh \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   MathVariant.hh
+
+noinst_HEADERS = \
+  MathVariantMap.hh
 
 INCLUDES = \
   -I$(top_srcdir)/src/common

@@ -13,7 +13,8 @@ libmathview_frontend_custom_reader_la_SOURCES = \
   customXmlReader.cc \
   custom_reader_Builder.cc
 
-pkginclude_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   c_customXmlReader.h \
   $(NULL)
 

@@ -11,7 +11,8 @@ libmathml_graphic_device_la_SOURCES = \
   ShapingResult.cc \
   SpaceShaper.cc
 
-noinst_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   MathFormattingContext.hh \
   MathGraphicDevice.hh \
   GlyphSpec.hh \

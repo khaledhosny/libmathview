@@ -37,6 +37,7 @@ public:
   MathFormattingContext(const SmartPtr<class MathGraphicDevice>& d);
 
   enum PropertyId {
+    ZOOM,
     SIZE,
     ACTUAL_SIZE,
     VARIANT,
@@ -74,7 +75,9 @@ public:
   
   SmartPtr<class MathGraphicDevice> getDevice(void) const;
 
-  scaled getSize(void) const { return get<scaled>(SIZE); }
+  int getZoom(void) const { return get<int>(ZOOM); }
+  void setZoom(int n) { set<int>(ZOOM, n); }
+  scaled getSize(void) const { return get<scaled>(SIZE) * getZoom() / 100; }
   void setSize(const scaled& s) { set<scaled>(SIZE, s); }
   scaled getActualSize(void) const { return get<scaled>(ACTUAL_SIZE); }
   void setActualSize(const scaled& s) { set<scaled>(ACTUAL_SIZE, s); }

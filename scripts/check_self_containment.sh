@@ -1,10 +1,10 @@
 #!/bin/sh
 
-rm /tmp/log
-for i in /tmp/usr/local/include/gtkmathview/*.hh;
+rm -f /tmp/log
+for i in $HOME/Local/include/gtkmathview/MathView/*.hh;
 do
   echo "************************ $i" >&2
   echo "#include \"$i\"" >t.cc
-  g++ `pkg-config libxml-2.0 gdome2-cpp-smart --cflags` -c -I /tmp/usr/local/include/gtkmathview/ t.cc
+  g++ `pkg-config libxml-2.0 gdome2-cpp-smart --cflags` -c -I $HOME/Local/include/gtkmathview/MathView t.cc
 done &>/tmp/log
 
