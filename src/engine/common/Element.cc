@@ -43,7 +43,7 @@ Element::setParent(const SmartPtr<Element>& p)
   parent = static_cast<Element*>(p);
   if (p)
     {
-      // the setFlagDown is smart so it does not propagate the flag
+      // the setFlagUp is smart so it does not propagate the flag
       // if the flag is already set.
       // the setFlagDown however doesn't check for the status of the flag
       // so it is more delicate

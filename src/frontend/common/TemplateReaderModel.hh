@@ -21,7 +21,6 @@ struct TemplateReaderModel
 
   typedef SmartPtr<Reader> Node;
   typedef SmartPtr<Reader> Element;
-  typedef TemplateLinker<TemplateReaderModel<Reader> > Linker;
   typedef TemplateReaderNodeIterator<Reader> NodeIterator;
   typedef TemplateReaderElementIterator<Reader> ElementIterator;
   typedef TemplateReaderRefinementContext<Reader> RefinementContext;

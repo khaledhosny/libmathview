@@ -86,6 +86,7 @@ struct libxml2_Model
     size_t operator()(xmlElement* el) const
     {
       assert(el);
+      assert(sizeof(size_t) == sizeof(xmlElement*));
       return reinterpret_cast<size_t>(el);
     }
   };

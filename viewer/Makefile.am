@@ -26,6 +26,7 @@ INCLUDES = \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto/ \
   -I$(top_srcdir)/src/common/ \
+  -I$(top_srcdir)/src/frontend/custom_reader/ \
   -I$(top_srcdir)/src/frontend/gmetadom/ \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \

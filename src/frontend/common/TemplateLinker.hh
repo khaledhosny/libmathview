@@ -25,7 +25,7 @@
 
 #include "HashMap.hh"
 
-template <class Model>
+template <class Model, typename ELEMENT = typename Model::Element>
 class TemplateLinker
 {
 public:
@@ -33,7 +33,7 @@ public:
   ~TemplateLinker() { }
 
   void
-  add(const typename Model::Element& el, class Element* elem)
+  add(const ELEMENT& el, class Element* elem)
   {
     assert(el);
     assert(elem);
@@ -42,7 +42,7 @@ public:
   }
 
   bool
-  remove(const typename Model::Element& el)
+  remove(const ELEMENT& el)
   {
     assert(el);
     typename ForwardMap::iterator p = forwardMap.find(el);
@@ -72,7 +72,7 @@ public:
   }
 
   class Element*
-  assoc(const typename Model::Element& el) const
+  assoc(const ELEMENT& el) const
   {
     assert(el);
     typename ForwardMap::const_iterator p = forwardMap.find(el);
@@ -82,7 +82,7 @@ public:
       return 0;
   }
 
-  typename Model::Element
+  ELEMENT
   assoc(class Element* elem) const
   {
     assert(elem);
@@ -90,7 +90,7 @@ public:
     if (p != backwardMap.end())
       return (*p).second;
     else
-      return typename Model::Element();
+      return ELEMENT();
   }
 
 protected:
@@ -103,8 +103,8 @@ protected:
     }
   };
 
-  typedef HASH_MAP_NS::hash_map<typename Model::Element, class Element*, typename Model::Hash> ForwardMap;
-  typedef HASH_MAP_NS::hash_map<class Element*, typename Model::Element, Element_hash> BackwardMap;
+  typedef HASH_MAP_NS::hash_map<ELEMENT, class Element*, typename Model::Hash> ForwardMap;
+  typedef HASH_MAP_NS::hash_map<class Element*, ELEMENT, Element_hash> BackwardMap;
   ForwardMap forwardMap;
   BackwardMap backwardMap;
 };

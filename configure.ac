@@ -377,8 +377,9 @@ AC_CONFIG_FILES([
  src/common/Char.hh
  src/frontend/Makefile
  src/frontend/common/Makefile
- src/frontend/libxml2/Makefile
+ src/frontend/custom_reader/Makefile
  src/frontend/libxml2_reader/Makefile
+ src/frontend/libxml2/Makefile
  src/frontend/gmetadom/Makefile
  src/engine/Makefile
  src/engine/common/Makefile

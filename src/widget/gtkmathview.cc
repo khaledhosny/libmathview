@@ -29,6 +29,10 @@
 #include "defs.h"
 #include "config.dirs"
 
+#define USE_GMETADOM       0
+#define USE_LIBXML2        0
+#define USE_LIBXML2_READER 1
+
 // don't know why this is needed!!!
 #define PANGO_ENABLE_BACKEND
 #include <pango/pango.h>
@@ -114,8 +118,8 @@ struct _GtkMathView {
   gfloat         button_press_y;
   guint32        button_press_time;
 
-  GtkMathView_Model_Element current_elem;
-  GtkMathView_Model_Element cursor_elem;
+  GtkMathViewElementId current_elem;
+  GtkMathViewElementId cursor_elem;
 
   View*          view;
   Gtk_RenderingContext* renderingContext;
@@ -128,12 +132,12 @@ struct _GtkMathViewClass {
 				  GtkAdjustment *hadjustment,
 				  GtkAdjustment *vadjustment);
 
-  void (*click)         (GtkMathView*, GtkMathView_Model_Element, int);
-  void (*select_begin)  (GtkMathView*, GtkMathView_Model_Element, int);
-  void (*select_over)   (GtkMathView*, GtkMathView_Model_Element, int);
-  void (*select_end)    (GtkMathView*, GtkMathView_Model_Element, int);
+  void (*click)         (GtkMathView*, GtkMathViewElementId, int);
+  void (*select_begin)  (GtkMathView*, GtkMathViewElementId, int);
+  void (*select_over)   (GtkMathView*, GtkMathViewElementId, int);
+  void (*select_end)    (GtkMathView*, GtkMathViewElementId, int);
   void (*select_abort)  (GtkMathView*);
-  void (*element_over)  (GtkMathView*, GtkMathView_Model_Element, int);
+  void (*element_over)  (GtkMathView*, GtkMathViewElementId, int);
 };
 
 /* helper functions */
@@ -157,12 +161,12 @@ static void     gtk_math_view_size_request(GtkWidget*, GtkRequisition*);
 
 /* GtkMathView Signals */
 
-static void gtk_math_view_click(GtkMathView*, GtkMathView_Model_Element, int);
-static void gtk_math_view_select_begin(GtkMathView*, GtkMathView_Model_Element, int);
-static void gtk_math_view_select_over(GtkMathView*, GtkMathView_Model_Element, int);
-static void gtk_math_view_select_end(GtkMathView*, GtkMathView_Model_Element, int);
+static void gtk_math_view_click(GtkMathView*, GtkMathViewElementId, int);
+static void gtk_math_view_select_begin(GtkMathView*, GtkMathViewElementId, int);
+static void gtk_math_view_select_over(GtkMathView*, GtkMathViewElementId, int);
+static void gtk_math_view_select_end(GtkMathView*, GtkMathViewElementId, int);
 static void gtk_math_view_select_abort(GtkMathView*);
-static void gtk_math_view_element_over(GtkMathView*, GtkMathView_Model_Element, int);
+static void gtk_math_view_element_over(GtkMathView*, GtkMathViewElementId, int);
 
 /* auxiliary functions */
 
@@ -184,7 +188,7 @@ static guint element_over_signal = 0;
 
 #if USE_GMETADOM
 static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathView_Model_Element el)
+elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
 {
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(b))
     if (SmartPtr<Element> elem = builder->findElement(DOM::Element(el)))
@@ -193,7 +197,7 @@ elementOfModelElement(const SmartPtr<Builder>& b, GtkMathView_Model_Element el)
 }
 #elif USE_LIBXML2
 static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathView_Model_Element el)
+elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
 {
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(b))
     if (SmartPtr<Element> elem = builder->findElement(el))
@@ -202,12 +206,12 @@ elementOfModelElement(const SmartPtr<Builder>& b, GtkMathView_Model_Element el)
 }
 #else
 static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>&, GtkMathView_Model_Element)
+elementOfModelElement(const SmartPtr<Builder>&, GtkMathViewElementId)
 { return 0; }
 #endif
 
 static SmartPtr<const Gtk_WrapperArea>
-findGtkWrapperArea(const SmartPtr<View>& view, GtkMathView_Model_Element node)
+findGtkWrapperArea(const SmartPtr<View>& view, GtkMathViewElementId node)
 {
   if (SmartPtr<Element> elem = elementOfModelElement(view->getBuilder(), node))
     if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
@@ -692,7 +696,7 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 #if USE_GMETADOM
       GdomeException exc = 0;
 #endif
-      GtkMathView_Model_Element elem = NULL;
+      GtkMathViewElementId elem = NULL;
       
       gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem);
 
@@ -783,7 +787,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if USE_GMETADOM
   GdomeException exc = 0;
 #endif
-  GtkMathView_Model_Element elem = NULL;
+  GtkMathViewElementId elem = NULL;
 
   gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem);
 
@@ -893,28 +897,28 @@ gtk_math_view_expose_event(GtkWidget* widget,
 }
 
 static void
-gtk_math_view_click(GtkMathView* math_view, GtkMathView_Model_Element, gint)
+gtk_math_view_click(GtkMathView* math_view, GtkMathViewElementId, gint)
 {
   g_return_if_fail(math_view != NULL);
   // noop
 }
 
 static void
-gtk_math_view_select_begin(GtkMathView* math_view, GtkMathView_Model_Element, gint)
+gtk_math_view_select_begin(GtkMathView* math_view, GtkMathViewElementId, gint)
 {
   g_return_if_fail(math_view != NULL);
   // noop
 }
 
 static void
-gtk_math_view_select_over(GtkMathView* math_view, GtkMathView_Model_Element, gint)
+gtk_math_view_select_over(GtkMathView* math_view, GtkMathViewElementId, gint)
 {
   g_return_if_fail(math_view != NULL);
   // noop
 }
 
 static void
-gtk_math_view_select_end(GtkMathView* math_view, GtkMathView_Model_Element, gint)
+gtk_math_view_select_end(GtkMathView* math_view, GtkMathViewElementId, gint)
 {
   g_return_if_fail(math_view != NULL);
   // noop
@@ -928,7 +932,7 @@ gtk_math_view_select_abort(GtkMathView* math_view)
 }
 
 static void
-gtk_math_view_element_over(GtkMathView* math_view, GtkMathView_Model_Element, gint)
+gtk_math_view_element_over(GtkMathView* math_view, GtkMathViewElementId, gint)
 {
   g_return_if_fail(math_view != NULL);
   // noop
@@ -1037,7 +1041,7 @@ gtk_math_view_load_doc(GtkMathView* math_view, GdomeDocument* doc)
 }
 
 extern "C" gboolean
-gtk_math_view_load_root(GtkMathView* math_view, GtkMathView_Model_Element elem)
+gtk_math_view_load_root(GtkMathView* math_view, GtkMathViewElementId elem)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1076,7 +1080,7 @@ gtk_math_view_load_doc(GtkMathView* math_view, xmlDoc* doc)
 }
 
 extern "C" gboolean
-gtk_math_view_load_root(GtkMathView* math_view, GtkMathView_Model_Element elem)
+gtk_math_view_load_root(GtkMathView* math_view, GtkMathViewElementId elem)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1221,7 +1225,7 @@ gtk_math_view_get_font_size(GtkMathView* math_view)
 }
 
 extern "C" void
-gtk_math_view_select(GtkMathView* math_view, GtkMathView_Model_Element elem)
+gtk_math_view_select(GtkMathView* math_view, GtkMathViewElementId elem)
 {
   g_return_if_fail(math_view);
   g_return_if_fail(math_view->view);
@@ -1235,7 +1239,7 @@ gtk_math_view_select(GtkMathView* math_view, GtkMathView_Model_Element elem)
 }
 
 extern "C" void
-gtk_math_view_unselect(GtkMathView* math_view, GtkMathView_Model_Element elem)
+gtk_math_view_unselect(GtkMathView* math_view, GtkMathViewElementId elem)
 {
   g_return_if_fail(math_view);
   g_return_if_fail(math_view->view);
@@ -1249,7 +1253,7 @@ gtk_math_view_unselect(GtkMathView* math_view, GtkMathView_Model_Element elem)
 }
 
 extern "C" gboolean
-gtk_math_view_is_selected(GtkMathView* math_view, GtkMathView_Model_Element elem)
+gtk_math_view_is_selected(GtkMathView* math_view, GtkMathViewElementId elem)
 {
   g_return_val_if_fail(math_view, FALSE);
   g_return_val_if_fail(math_view->view, FALSE);
@@ -1280,7 +1284,7 @@ gtk_math_view_get_height(GtkMathView* math_view)
 }
 
 extern "C" gboolean
-gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GtkMathView_Model_Element* result)
+gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GtkMathViewElementId* result)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1308,7 +1312,7 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GtkMathView
 }
 
 extern "C" gboolean
-gtk_math_view_get_element_location(GtkMathView* math_view, GtkMathView_Model_Element elem,
+gtk_math_view_get_element_location(GtkMathView* math_view, GtkMathViewElementId elem,
 				   gint* x, gint* y, GdkRectangle* rect)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
@@ -1340,7 +1344,7 @@ gtk_math_view_get_element_location(GtkMathView* math_view, GtkMathView_Model_Ele
 
 extern "C" gboolean
 gtk_math_view_get_char_at(GtkMathView* math_view, gint x, gint y,
-			  GtkMathView_Model_Element* result, gint* index)
+			  GtkMathViewElementId* result, gint* index)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1371,7 +1375,7 @@ gtk_math_view_get_char_at(GtkMathView* math_view, gint x, gint y,
 }
 
 extern "C" gboolean
-gtk_math_view_get_char_location(GtkMathView* math_view, GtkMathView_Model_Element elem,
+gtk_math_view_get_char_location(GtkMathView* math_view, GtkMathViewElementId elem,
 				gint index, gint* x, gint* y, GdkRectangle* rect)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
