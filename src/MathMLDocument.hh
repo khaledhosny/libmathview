@@ -26,8 +26,10 @@
 // !!! BEGIN WARNING: hash_map is not part of the STL !!!
 #if defined(HAVE_EXT_HASH_MAP)
 #include <ext/hash_map>
+#define HASH_MAP_NS __gnu_cxx
 #elif defined(HAVE_HASH_MAP)
 #include <hash_map>
+#define HASH_MAP_NS std
 #else
 #error "no implementation of hash_map could be found"
 #endif
@@ -118,11 +120,7 @@ protected:
     }
   };
 
-#if defined(HAVE_EXT_HASH_MAP)
-  typedef __gnu_cxx::hash_map< DOM::Node, Ptr<MathMLElement>, DOM_hash > DOMNodeMap;
-#elif defined(HAVE_HASH_MAP)
-  typedef std::hash_map< DOM::Node, Ptr<MathMLElement>, DOM_hash > DOMNodeMap;
-#endif
+  typedef HASH_MAP_NS::hash_map< DOM::Node, Ptr<MathMLElement>, DOM_hash > DOMNodeMap;
   mutable DOMNodeMap nodeMap;
 #endif // HAVE_GMETADOM
 };
