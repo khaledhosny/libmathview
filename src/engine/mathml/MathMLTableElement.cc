@@ -121,14 +121,11 @@ MathMLTableElement::format(FormattingContext& ctxt)
 
       std::cerr << "formatting table 2" << std::endl;
       for_each_if(cell.begin(), cell.end(),
-		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt),
-		  NotNullPredicate<MathMLTableCellElement>());
-#if 0
-      // questo for_each fallisce ma non si capisce perche' :(
+		  NotNullPredicate<MathMLTableCellElement>(),
+		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt));
       for_each_if(label.begin(), label.end(),
-		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt),
-		  NotNullPredicate<MathMLTableCellElement>());
-#endif
+		  NotNullPredicate<MathMLTableCellElement>(),
+		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt));
       std::cerr << "formatting table 2 bis" << std::endl;
 
       AreaRef res = tableFormatter->format(ctxt,
