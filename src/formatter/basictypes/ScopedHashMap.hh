@@ -23,17 +23,7 @@
 #ifndef __ScopedHashMap_hh__
 #define __ScopedHashMap_hh__
 
-// !!! BEGIN WARNING: hash_map is not part of the STL !!!
-#if defined(HAVE_EXT_HASH_MAP)
-#include <ext/hash_map>
-#define HASH_MAP_NS __gnu_cxx
-#elif defined(HAVE_HASH_MAP)
-#include <hash_map>
-#define HASH_MAP_NS std
-#else
-#error "no implementation of hash_map could be found"
-#endif
-// !!! END WARNING: hash_map is not part of the STL !!!
+#include "HashMap.hh"
 
 template <class K, class T, class HashFcn = HASH_MAP_NS::hash<K>, class EqualKey = std::equal_to<K>, class Alloc = std::allocator<T> >
 class ScopedHashMap
@@ -45,7 +35,7 @@ public:
   ~ScopedHashMap()
   {
     while (env) pop();
-    for (Map::iterator p = map.begin(); p != map.end(); p++)
+    for (typename Map::iterator p = map.begin(); p != map.end(); p++)
       delete p->second;
   }
 
@@ -70,7 +60,7 @@ public:
   void set(const K& key, T value)
   {
     Bucket* bucket;
-    Map::iterator p = map.find(key);
+    typename Map::iterator p = map.find(key);
     if (p == map.end())
       bucket = map[key] = new Bucket(key);
     else
@@ -82,7 +72,7 @@ public:
 
   T get(const K& key) const
   {
-    Map::const_iterator p = map.find(key);
+    typename Map::const_iterator p = map.find(key);
     if (p != map.end() && p->second->current_binding)
       return p->second->current_binding->value;
     else
@@ -91,7 +81,7 @@ public:
 
   bool defined(const K& key) const
   {
-    Map::const_iterator p = map.find(key);
+    typename Map::const_iterator p = map.find(key);
     return p != map.end() && p->second->current_binding;
   }
 
