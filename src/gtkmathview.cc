@@ -830,8 +830,7 @@ static void
 gtk_math_view_selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
-  printf("selection changed %p\n", node);
-  gtk_math_view_set_selection(math_view, node);
+  //  gtk_math_view_set_selection(math_view, node);
 }
 
 extern "C" GtkAdjustment*
