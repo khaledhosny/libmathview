@@ -148,10 +148,10 @@ public:
   scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
   {
     UCS4String::const_iterator p = begin;
-    unsigned n = n0;
-    while (n-- > 0 && E::scan(p, end, next))
+    unsigned n;
+    for (n = 0; n < n0 && E::scan(p, end, next); n++)
       p = next;
-    return n == 0;
+    return n == n0;
   }
 };
 
@@ -164,12 +164,15 @@ public:
   static inline bool
   scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
   {
-    UCS4String::const_iterator next1;
-    UCS4String::const_iterator next2;
-    bool res1 = E1::scan(begin, end, next1);
-    bool res2 = E2::scan(begin, end, next2);
-    next = max(next1, next2);
-    return res1 || res2;
+    if (E1::scan(begin, end, next))
+      {
+	UCS4String::const_iterator next2;
+	if (E2::scan(begin, end, next2))
+	  next = std::max(next, next2);
+	return true;
+      }
+
+    return E2::scan(begin, end, next);
   }
 };
 
