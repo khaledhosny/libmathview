@@ -23,8 +23,6 @@
 #ifndef T1_Gtk_DrawingArea_hh
 #define T1_Gtk_DrawingArea_hh
 
-#include <config.h>
-
 #include "Gtk_DrawingArea.hh"
 
 class T1_Gtk_DrawingArea : public Gtk_DrawingArea {
@@ -40,10 +38,14 @@ public:
   bool GetAntiAliasing(void) const { return antiAliasing; }
   void SetAntiAliasing(bool);
 
+  bool GetTransparency(void) const;
+  void SetTransparency(bool);
+
 private:
   static bool firstTime;
 
   bool antiAliasing;
+  int  mode;
 };
 
 #define TO_T1_GTK_DRAWING_AREA(area) (dynamic_cast<T1_Gtk_DrawingArea*>(area))

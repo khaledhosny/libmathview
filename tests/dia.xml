@@ -1,0 +1,84 @@
+<math>
+  <mstyle mathsize="48pt">
+    <mtable>
+      <mtr>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0306;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0307;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0308;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0305;</mo>
+	  </mover>
+	</mtd>
+      </mtr>
+      <mtr>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0304;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0303;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0302;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0301;</mo>
+	  </mover>
+	</mtd>
+      </mtr>
+      <mtr>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x0300;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x030a;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="alpha"/></mi>
+	    <mo>&#x030c;</mo>
+	  </mover>
+	</mtd>
+	<mtd>
+	  <mover accent="true">
+	    <mi><mchar name="beta"/></mi>
+	    <mo>&#x0307;</mo>
+	  </mover>
+	</mtd>
+      </mtr>
+    </mtable>
+  </mstyle>
+</math>

@@ -150,6 +150,10 @@ getStretchyOperator(MathMLElement* elem)
 
     if (op->IsStretchy()) return op;
     else return NULL;
+  } else if (elem->IsOperator()) {
+    MathMLOperatorElement* op = TO_OPERATOR(elem);
+    if (op->IsStretchy()) return op;
+    else return NULL;
   } else
     return NULL;
 }

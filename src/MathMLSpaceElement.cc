@@ -67,18 +67,20 @@ MathMLSpaceElement::Setup(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_WIDTH);
   assert(value != NULL && value->IsNumberUnit());
-  width = env->ToScaledPoints(value->ToNumberUnit());
+  scaled width = env->ToScaledPoints(value->ToNumberUnit());
   delete value;
 
   value = GetAttributeValue(ATTR_HEIGHT);
   assert(value != NULL && value->IsNumberUnit());
-  height = env->ToScaledPoints(value->ToNumberUnit());
+  scaled height = env->ToScaledPoints(value->ToNumberUnit());
   delete value;
 
   value = GetAttributeValue(ATTR_DEPTH);
   assert(value != NULL && value->IsNumberUnit());
-  depth = env->ToScaledPoints(value->ToNumberUnit());
+  scaled depth = env->ToScaledPoints(value->ToNumberUnit());
   delete value;
+
+  box.Set(width, height, depth);
 
   if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH)) {
     value = GetAttributeValue(ATTR_LINEBREAK);
@@ -113,7 +115,6 @@ MathMLSpaceElement::Setup(RenderingEnvironment* env)
 void
 MathMLSpaceElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
-  box.Set(width, height, depth);
   ConfirmLayout(id);
 }
 
@@ -138,5 +139,5 @@ MathMLSpaceElement::GetBreakability() const
 scaled
 MathMLSpaceElement::GetRightEdge() const
 {
-  return GetX() + (lineBreak ? width : 0);
+  return GetX() + (lineBreak ? box.width : 0);
 }

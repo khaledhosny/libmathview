@@ -31,12 +31,19 @@
 #include "allocTextNode.hh"
 #include "MathMLTextNode.hh"
 #include "MathMLCharNode.hh"
+#include "MathMLCombinedCharNode.hh"
 #include "MathMLStringNode.hh"
 
 MathMLTextNode*
 allocCharNode(Char ch)
 {
   return new MathMLCharNode(ch);
+}
+
+MathMLTextNode*
+allocCombinedCharNode(Char ch, Char cch)
+{
+  return new MathMLCombinedCharNode(ch, cch);
 }
 
 MathMLTextNode*

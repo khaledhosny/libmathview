@@ -28,6 +28,10 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <dictionary-path>@prefix@/share/gtkmathview/dictionary.xml</dictionary-path>
   <entities-table-path>@prefix@/share/gtkmathview/entities-table.xml</entities-table-path>
   <font-configuration-path>@prefix@/share/gtkmathview/font-configuration.xml</font-configuration-path>
+  <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-adobe.xml</font-configuration-path>
+  <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-bh.xml</font-configuration-path>
+  <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-wri.xml</font-configuration-path>
+  <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-tex.xml</font-configuration-path>
   <t1-config-file>@prefix@/share/gtkmathview/t1.config</t1-config-file>
   <font-size     size="14pt"/>
   <color         foreground="black" background="white"/>

@@ -44,7 +44,9 @@ bool 	    isPlain(const Char*, unsigned);
 bool 	    isPlain(const class String&, unsigned, unsigned);
 
 inline bool isVariant(Char ch) { return ch == 0xfe00; }
-inline bool isCancellation(Char ch) { return ch == 0x0338 || ch == 0x20d2 || ch == 0x20e5; }
+inline bool isCombining(Char ch) { return (ch >= 0x0300 && ch <= 0x0362) || (ch >= 0x20d0 && ch <= 0x20e8); }
+bool        isCombiningOverlay(Char ch);
+bool        isCombiningBelow(Char ch);
 
 unsigned    isNonMarkingChar(Char, int* = NULL, BreakId* = NULL);
 unsigned    isNonMarkingChar(Char, Char, int* = NULL, BreakId* = NULL);

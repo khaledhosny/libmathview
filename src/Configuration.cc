@@ -126,7 +126,7 @@ Configuration::ParseConfiguration(mDOMNodeRef node)
 	s->TrimSpacesRight();
 	entities.Append(s);
       }
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("t1-config-file"))) {
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("t1-config-path"))) {
       mDOMStringRef path = mdom_node_get_content(p);
       if (path != NULL && t1Configs.GetSize() == 0) {
 	MathEngine::logger(LOG_DEBUG, "found t1lib config path `%s'", C_STRING(path));

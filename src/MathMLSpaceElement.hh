@@ -43,9 +43,11 @@ public:
 private:
   bool    lineBreak;
 
+#if 0
   scaled  width;  // valid if lineBreaking == false
   scaled  height; // valid if lineBreaking == false
   scaled  depth;  // valid if lineBreaking == false
+#endif
 
   bool    autoLineBreak; // valid if lineBreaking == true
   BreakId breakability; // valid if auto == false

@@ -359,7 +359,7 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
     if (atom()->IsSpace()) fixedWidth += atom()->spacing;
     else {
       assert(atom()->frame != NULL);
-      if (atom()->frame->IsText() || atom()->frame->IsSpace()) {
+      if (atom()->frame->IsText()/* || atom()->frame->IsSpace()*/) {
 	fixedWidth += getFrameBoundingBox(atom()->frame).width;
       } else {
 	assert(atom()->frame->IsElement());
@@ -373,7 +373,7 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
   scaled availableWidth = scaledMax(0, totalWidth - fixedWidth);
 
   for (Iterator<Atom*> atom(content); atom.More(); atom.Next()) {
-    if (atom()->IsFrame() && atom()->frame->IsElement()) {
+    if (atom()->IsFrame() && atom()->frame->IsElement()/* && !atom()->frame->IsSpace()*/) {
       MathMLElement* elem = TO_ELEMENT(atom()->frame);
       assert(elem != NULL);
 

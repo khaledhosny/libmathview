@@ -89,10 +89,26 @@ T1_Font::GetAxis() const
   return GetEx() / 2;
 }
 
+scaled
+T1_Font::GetKerning(char ch1, char ch2) const
+{
+  return pt2sp(scale * T1_GetKerning(nativeFontId, ch1, ch2) / 1000.0);
+}
+
+scaled
+T1_Font::GetLineThickness() const
+{
+  // don't know exactly where the following heuristic comes from
+  return float2sp(scale * 2500);
+}
+
 void
 T1_Font::GetBoundingBox(BoundingBox& box) const
 {
-  box.Set(GetEm(), GetAscent(), GetDescent());
+  BBox fontBox = T1_GetFontBBox(nativeFontId);
+  box.Set(pt2sp(scale * (fontBox.urx - fontBox.llx) / 1000.0),
+	  pt2sp(scale * fontBox.ury / 1000.0),
+	  pt2sp(scale * (-fontBox.lly) / 1000.0));
 }
 
 void
@@ -119,12 +135,6 @@ T1_Font::StringBox(const char* s, unsigned len, BoundingBox& box) const
 
   box.tAscent = GetAscent();
   box.tDescent = GetDescent();
-}
-
-scaled
-T1_Font::GetKerning(char ch1, char ch2) const
-{
-  return pt2sp(scale * T1_GetKerning(nativeFontId, ch1, ch2) / 1000.0);
 }
 
 #endif // HAVE_LIBT1

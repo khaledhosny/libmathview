@@ -284,6 +284,7 @@ MathMLStyleElement::Render(const DrawingArea& area)
     }
   }
 
+  RenderBackground(area);
   assert(content.GetSize() == 1);
   MathMLElement* elem = content.GetFirst();
   assert(elem != NULL);

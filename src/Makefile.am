@@ -62,6 +62,7 @@ libgtkmathview_la_SOURCES = \
   MathMLAttribute.cc \
   MathMLAttributeList.cc \
   MathMLCharNode.cc \
+  MathMLCombinedCharNode.cc \
   MathMLContainerElement.cc \
   MathMLDocument.cc \
   MathMLDummyElement.cc \
@@ -165,6 +166,7 @@ noinst_HEADERS = \
   MathMLAttribute.hh \
   MathMLAttributeList.hh \
   MathMLCharNode.hh \
+  MathMLCombinedCharNode.hh \
   MathMLContainerElement.hh \
   MathMLDocument.hh \
   MathMLDummyElement.hh \

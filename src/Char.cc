@@ -53,7 +53,8 @@ static struct NonMarkingCharData {
   { 0x0000, 0x0000, 0,     BREAK_NO }
 };
 
-Char getBiggestChar(const Char* s, unsigned len)
+Char
+getBiggestChar(const Char* s, unsigned len)
 {
   assert(s != NULL);
 
@@ -64,12 +65,14 @@ Char getBiggestChar(const Char* s, unsigned len)
   return big;
 }
 
-bool isPlain(const char* s)
+bool
+isPlain(const char* s)
 {
   return isPlain(s, strlen(s));
 }
 
-bool isPlain(const char* s, unsigned length)
+bool
+isPlain(const char* s, unsigned length)
 {
   for (unsigned i = 0; i < length; i++)
     if (!isPlain(s[i])) return false;
@@ -77,7 +80,8 @@ bool isPlain(const char* s, unsigned length)
   return true;
 }
 
-bool isPlain(const Char* s, unsigned length)
+bool
+isPlain(const Char* s, unsigned length)
 {
   for (unsigned i = 0; i < length; i++)
     if (!isPlain(s[i])) return false;
@@ -85,7 +89,8 @@ bool isPlain(const Char* s, unsigned length)
   return true;
 }
 
-bool isPlain(const String& str, unsigned offset, unsigned length)
+bool
+isPlain(const String& str, unsigned offset, unsigned length)
 {
   assert(offset + length <= str.GetLength());
 
@@ -95,14 +100,16 @@ bool isPlain(const String& str, unsigned offset, unsigned length)
   return true;
 }
 
-static int getNonMarkingCharIndex(Char ch, Char modifier)
+static int
+getNonMarkingCharIndex(Char ch, Char modifier)
 {
   for (unsigned i = 0; nmChar[i].ch != 0; i++)
     if (ch == nmChar[i].ch && modifier == nmChar[i].modifier) return i;
   return -1;
 }
 
-unsigned isNonMarkingChar(Char ch, Char modifier, int* spacing, BreakId* breakability)
+unsigned
+isNonMarkingChar(Char ch, Char modifier, int* spacing, BreakId* breakability)
 {
   int index = getNonMarkingCharIndex(ch, modifier);
   if (index < 0) return 0;
@@ -111,12 +118,14 @@ unsigned isNonMarkingChar(Char ch, Char modifier, int* spacing, BreakId* breakab
   return (modifier != 0) ? 2 : 1;
 }
 
-unsigned isNonMarkingChar(Char ch, int* spacing, BreakId* breakability)
+unsigned
+isNonMarkingChar(Char ch, int* spacing, BreakId* breakability)
 {
   return isNonMarkingChar(ch, 0, spacing, breakability);
 }
 
-unsigned isNonMarkingChar(const String& s, unsigned offset, int* spacing, BreakId* breakability)
+unsigned
+isNonMarkingChar(const String& s, unsigned offset, int* spacing, BreakId* breakability)
 {
   assert(offset < s.GetLength());
   Char ch = s.GetChar(offset);
@@ -124,8 +133,26 @@ unsigned isNonMarkingChar(const String& s, unsigned offset, int* spacing, BreakI
   return isNonMarkingChar(ch, modifier, spacing, breakability);
 }
 
-unsigned isNonMarkingChar(const String& s, int* spacing, BreakId* breakability)
+unsigned
+isNonMarkingChar(const String& s, int* spacing, BreakId* breakability)
 {
   return isNonMarkingChar(s, 0, spacing, breakability);
+}
+
+bool
+isCombiningBelow(Char ch)
+{
+  return 
+    ch >= 0x031c && ch <= 0x0333 ||
+    ch >= 0x0339 && ch <= 0x033c;
+}
+
+bool
+isCombiningOverlay(Char ch)
+{
+  return
+    ch >= 0x0334 && ch <= 0x0338 ||
+    ch == 0x20d2 || ch == 0x20d3 ||
+    ch == 0x20e5;
 }
 

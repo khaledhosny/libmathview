@@ -115,7 +115,7 @@ void
 FontAttributes::Dump() const
 {
   const char* w[] = { "_", "normal", "bold" };
-  const char* s[] = { "_", "normal", "bold" };
+  const char* s[] = { "_", "normal", "italic" };
   const char* m[] = { "*", "text", "math" };
 
   MathEngine::logger(LOG_DEBUG, "font(%s,%s,%s,%s)",

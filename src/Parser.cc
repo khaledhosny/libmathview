@@ -236,6 +236,7 @@ MathMLParser::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent
 {
   assert(parent != NULL);
 
+  String* sContent = NULL;
   mDOMNodeRef p = mdom_node_get_first_child(node);
   while (p != NULL) {
     if (mdom_node_is_text(p)) {
@@ -253,11 +254,14 @@ MathMLParser::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent
       if (mdom_node_is_first(p)) s->TrimSpacesLeft();
       if (mdom_node_is_last(p)) s->TrimSpacesRight();
 
-      parent->Append(s);
-      delete s;
+      if (sContent == NULL)
+	sContent = s;
+      else {
+	sContent->Append(*s);
+	delete s;
+      }
     } else if (mdom_node_is_entity_ref(p)) {
       String* s = NULL;
-
       // first of all we try to perform the substitution, maybe this entity has been
       // defined inside the document itself
       mDOMStringRef content = mdom_node_get_content(p);
@@ -272,9 +276,19 @@ MathMLParser::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent
       if (s == NULL) s = MathEngine::entitiesTable.GetErrorEntityContent();
       assert(s != NULL);
 
-      parent->Append(s);
-      delete s;
+      if (sContent == NULL)
+	sContent = s;
+      else {
+	sContent->Append(*s);
+	delete s;
+      }
     } else if (mdom_node_is_element(p)) {
+      if (sContent != NULL) {
+	parent->Append(sContent);
+	delete sContent;
+	sContent = NULL;
+      }
+
       TagId tag = TagIdOfName(C_CONST_STRING(mdom_node_get_name(p)));
 
       switch (tag) {
@@ -305,6 +319,11 @@ MathMLParser::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent
     }
 
     p = mdom_node_get_next_sibling(p);
+  }
+  
+  if (sContent != NULL) {
+    parent->Append(sContent);
+    delete sContent;
   }
 }
 

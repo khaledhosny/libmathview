@@ -315,9 +315,11 @@ MathMLCharNode::Render(const DrawingArea& area)
     area.DrawChar(gc, fChar.font, GetX(), GetY() + box.descent - charBox.descent, fChar.nch);
   }
 
-  //box.Dump();
-  //putchar('\n');
-  //area.DrawBoundingBox(gc, GetX(), GetY(), box, true);
+#if 0
+  box.Dump();
+  putchar('\n');
+  area.DrawBoundingBox(gc, GetX(), GetY(), box, true);
+#endif
 
   ResetDirty();
 }

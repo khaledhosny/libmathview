@@ -41,6 +41,8 @@ public:
   virtual scaled GetEm(void) const = 0;
   virtual scaled GetEx(void) const = 0;
   virtual scaled GetAxis(void) const = 0;
+  virtual scaled GetKerning(char, char) const = 0;
+  virtual scaled GetLineThickness(void) const = 0;
   virtual void   GetBoundingBox(BoundingBox&) const = 0;
   virtual scaled StringWidth(const char*, unsigned) const;
   virtual void   CharBox(char, BoundingBox&) const = 0;

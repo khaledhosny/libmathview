@@ -26,6 +26,7 @@
 #include <wctype.h>
 #include <string.h>
 #include <malloc.h>
+#include <glib.h>
 
 #include "stringAux.hh"
 #include "StringUnicode.hh"
@@ -38,7 +39,7 @@ union endian_union {
   Char32 ch;
 };
 
-#ifndef WORD_BIGENDIAN
+#ifndef WORDS_BIGENDIAN
 static Char32 swac(Char32 ch)
 {
   endian_union u1;
@@ -52,7 +53,7 @@ static Char32 swac(Char32 ch)
 
   return u2.ch;
 }
-#endif
+#endif // WORDS_BIGENDIAN
 
 String* allocString(mDOMConstStringRef str)
 {
@@ -101,9 +102,9 @@ String* allocString(mDOMConstStringRef str)
       if (nConv != (size_t) -1) {
 	unsigned n = (outbuf - outbuf0) / sizeof(Char32);
 	if (n > 0) {
-#ifndef WORD_BIGENDIAN
+#ifndef WORDS_BIGENDIAN
 	  for (unsigned i = 0; i < n; i++) buffer[i] = swac(buffer[i]);
-#endif
+#endif // WORDS_BIGENDIAN
 	  chunk = new StringU<Char32>(buffer, n);
 	}
       } else {
@@ -114,7 +115,10 @@ String* allocString(mDOMConstStringRef str)
 
       if (chunk != NULL) {
 	if (sValue == NULL) sValue = chunk;
-	else sValue->Append(*chunk);
+	else {
+	  sValue->Append(*chunk);
+	  // FIXME: chunk is to be freed???
+	}
       }
     } while (inBytesLeft > 0 && n > 0);
 

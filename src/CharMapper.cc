@@ -84,9 +84,40 @@ CharMapper::GetStretch(Char ch) const
 const AFont*
 CharMapper::GetFont(const FontAttributes& fa) const
 {
+#if 0
   const AFont* font = fontManager.GetFont(fa, NULL);
   if (font != NULL) fontManager.MarkAsUsed(font);
   return font;
+#endif
+  unsigned bestEval = 0;
+  const AFont* bestFont = NULL;
+
+  FontAttributes myfa(fa);
+
+  do {
+    for (Iterator<FontDescriptor*> i(fonts); i.More(); i.Next()) {
+      assert(i() != NULL);
+
+      if (i()->fontMap != NULL) {
+	unsigned eval = i()->attributes.Compare(myfa);
+
+	printf("comparing with (%d)\n ", eval);
+	i()->attributes.Dump();
+
+	if (eval > bestEval) {
+	  const AFont* font = fontManager.GetFont(myfa, &i()->extraAttributes);
+	  if (font != NULL) {
+	    bestEval = eval;
+	    bestFont = font;
+	  }
+	}
+      }
+    }
+  } while (bestFont == NULL && myfa.DownGrade());
+
+  if (bestFont != NULL) fontManager.MarkAsUsed(bestFont);
+
+  return bestFont;
 }
 
 bool

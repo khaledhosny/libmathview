@@ -88,6 +88,19 @@ Gtk_Font::GetAxis() const
   return GetEx() / 2;
 }
 
+scaled
+Gtk_Font::GetKerning(char ch1, char ch2) const
+{
+  // little hope to have kerning information for X fonts
+  return 0;
+}
+
+scaled
+Gtk_Font::GetLineThickness() const
+{
+  return float2sp(sp2pt(GetAscent() + GetDescent()) * 2500);
+}
+
 void
 Gtk_Font::GetBoundingBox(BoundingBox& box) const
 {

@@ -39,12 +39,12 @@ MathMLSpaceNode::~MathMLSpaceNode()
 void
 MathMLSpaceNode::Setup(class RenderingEnvironment*)
 {
+  box.Null();
 }
 
 void
 MathMLSpaceNode::DoLayout()
 {
-  box.Null();
 }
 
 void

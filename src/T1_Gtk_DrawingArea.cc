@@ -44,6 +44,7 @@ T1_Gtk_DrawingArea::T1_Gtk_DrawingArea(const GraphicsContextValues& values, scal
   Gtk_DrawingArea(values, xm, ym, widget, f, b)
 {
   antiAliasing = false;
+  mode = T1_TRANSPARENT;
 }
 
 T1_Gtk_DrawingArea::~T1_Gtk_DrawingArea()
@@ -70,8 +71,8 @@ T1_Gtk_DrawingArea::Realize()
 
     T1_AASetBitsPerPixel(pvisual->visual.depth);
     MathEngine::logger(LOG_DEBUG, "X11 depth: %d", pvisual->visual.depth);
-    MathEngine::logger(LOG_DEBUG, "X11 AAGetLevel() --> %d\n", T1_AAGetLevel());
-    MathEngine::logger(LOG_DEBUG, "X11 AAGetBitsPerPixel() --> %d\n", T1_AAGetBitsPerPixel());
+    MathEngine::logger(LOG_DEBUG, "X11 AAGetLevel() --> %d", T1_AAGetLevel());
+    MathEngine::logger(LOG_DEBUG, "X11 AAGetBitsPerPixel() --> %d", T1_AAGetBitsPerPixel());
     T1_SetX11Params(pwindow->xdisplay, pvisual->xvisual, pvisual->visual.depth, pcolormap->xcolormap);
 
     firstTime = false;
@@ -101,11 +102,11 @@ T1_Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
   assert(ppixmap != NULL);
 
   if (antiAliasing)
-    T1_AASetCharX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_AASetCharX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), ch, t1_font->GetScale(),
 		  NULL);
   else
-    T1_SetCharX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_SetCharX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		t1_font->GetNativeFontId(), ch, t1_font->GetScale(),
 		NULL);
 }
@@ -136,11 +137,11 @@ T1_Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
   assert(ppixmap != NULL);
 
   if (antiAliasing)
-    T1_AASetStringX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_AASetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		    t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
 		    MathEngine::GetKerning() ? T1_KERNING : 0, t1_font->GetScale(), NULL);
   else
-    T1_SetStringX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_SetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
 		  MathEngine::GetKerning() ? T1_KERNING : 0, t1_font->GetScale(), NULL);
 }
@@ -149,6 +150,19 @@ void
 T1_Gtk_DrawingArea::SetAntiAliasing(bool aa)
 {
   antiAliasing = aa;
+}
+
+bool
+T1_Gtk_DrawingArea::GetTransparency() const
+{
+  return mode == T1_TRANSPARENT;
+}
+
+void
+T1_Gtk_DrawingArea::SetTransparency(bool b)
+{
+  if (b) mode = T1_TRANSPARENT;
+  else mode = T1_OPAQUE;
 }
 
 #endif // HAVE_LIBT1

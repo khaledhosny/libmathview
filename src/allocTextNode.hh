@@ -30,6 +30,7 @@
 #include "String.hh"
 
 class MathMLTextNode* allocCharNode(Char);
+class MathMLTextNode* allocCombinedCharNode(Char, Char);
 class MathMLTextNode* allocTextNode(const String**);
 
 #endif

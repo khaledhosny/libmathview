@@ -101,7 +101,8 @@ MathMLTokenElement::Append(const String* s)
 
   unsigned i = 0;
   bool lastBreak = true;
-  while (i < s->GetLength()) {
+  unsigned sLength = s->GetLength();
+  while (i < sLength) {
     MathMLTextNode* node = NULL;
 
     int spacing;
@@ -111,13 +112,14 @@ MathMLTokenElement::Append(const String* s)
       if (last != NULL && last->GetBreakability() < BREAK_YES) {
 	last->AddSpacing(spacing);
 	last->AddBreakability(bid);
-      } else node = new MathMLSpaceNode(spacing, bid);
+      } else
+	node = new MathMLSpaceNode(spacing, bid);
       i += len;
 
       lastBreak = true;
-    } else if (iswalnum(s->GetChar(i))) {
+    } else if (i + 1 < sLength && iswalnum(s->GetChar(i)) && iswalnum(s->GetChar(i + 1))) {
       unsigned start = i;
-      while (i < s->GetLength() && iswalnum(s->GetChar(i)) && !iswspace(s->GetChar(i))) i++;
+      while (i + 1 < sLength && iswalnum(s->GetChar(i)) && iswalnum(s->GetChar(i + 1)) && !iswspace(s->GetChar(i))) i++;
       assert(start < i);
       
       const String* sText = allocString(*s, start, i - start);
@@ -125,15 +127,20 @@ MathMLTokenElement::Append(const String* s)
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
-    } else if (!isVariant(s->GetChar(i)) && !isCancellation(s->GetChar(i))) {
+    } else if (i + 1 < sLength && isCombining(s->GetChar(i + 1))) {
+      node = allocCombinedCharNode(s->GetChar(i), s->GetChar(i + 1));
+      i += 2;
+
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
+      lastBreak = false;
+    } else if (!isVariant(s->GetChar(i))) {
       node = allocCharNode(s->GetChar(i));
       i++;
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
     } else {
-      MathEngine::logger(LOG_WARNING, "ignoring modifier char U+%04x", s->GetChar(i));
+      MathEngine::logger(LOG_WARNING, "ignoring variant modifier char U+%04x", s->GetChar(i));
       i++;
     }
     
@@ -280,13 +287,20 @@ MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
     // as the minimum layout, that we have previously done,
     // so we save some work.
     if (id == LAYOUT_MIN) text->DoLayout();
-    
+
+    // if we do not insert MathMLSpaceNodes in the layout, they will not be
+    // positioned correctly, since positioning is done thru the layout.
+    // In such way, If a space node is the first inside a token, it will produce
+    // a zero-origin rectangle which is obviously incorrect
+    layout.Append(text, spacing, breakability);
+#if 0
     if (!text->IsSpace())
       layout.Append(text, spacing, breakability);
     else {
       layout.SetLastBreakability(breakability);
       layout.Append(spacing, breakability);
     }
+#endif
 
     i.Next();
   }

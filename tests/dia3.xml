@@ -1,0 +1,17 @@
+
+<math>
+  <mstyle mathsize="48pt">
+    <mrow>
+      <mover accent="true">
+        <mi><mchar name="alpha"/></mi>
+        <mo>&#x0307;</mo>
+      </mover>
+      <mo>,</mo>
+      <mover accent="true">
+        <mi><mchar name="beta"/></mi>
+	<mpadded lspace="+.2em"><mo>&#x0307;</mo></mpadded>
+      </mover>
+    </mrow>
+  </mstyle>
+</math>
+
