@@ -2,6 +2,7 @@
 lib_LTLIBRARIES = libboxml.la
 
 libboxml_la_SOURCES = \
+  BoxedParagraph.cc \
   BoxMLElementFactory.cc \
   BoxMLNamespaceContext.cc \
   BoxMLAttributeSignatures.cc \
@@ -22,6 +23,7 @@ libboxml_la_SOURCES = \
   BoxMLInkElement.cc
 
 noinst_HEADERS = \
+  BoxedParagraph.hh \
   BoxMLElementFactory.hh \
   BoxMLNamespaceContext.hh \
   BoxML.hh \

@@ -35,6 +35,7 @@
 #include "BoxMLTextElement.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "BoxMLElementFactory.hh"
+#include "BoxedParagraph.hh"
 
 BoxMLParagraphElement::BoxMLParagraphElement(const SmartPtr<BoxMLNamespaceContext>& c)
   : BoxMLLinearContainerElement(c)
@@ -80,28 +81,17 @@ BoxMLParagraphElement::format(BoxFormattingContext& ctxt)
       else
 	width = scaled::min();
 
-      const String objectReplacement = fromUCS4String(DOM::UCS4String(1, 0xfffc));
-      std::vector< std::pair<unsigned, AreaRef> > boxes;
-      ROPE_NS::rope<String::value_type> c;
+      BoxedParagraph paragraph;
       for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	if (*p)
-	  {
-	    if (p != content.begin()) c.append(' ');
-	    if (SmartPtr<BoxMLTextElement> text = smart_cast<BoxMLTextElement>(*p))
-	      {
-		const String s = text->getContent();
-		c.append(s.data(), s.length());
-	      }
-	    else
-	      {
-		boxes.push_back(std::make_pair(c.size(), (*p)->format(ctxt)));
-		c.append(objectReplacement.data(), objectReplacement.length());
-	      }
-	  }
+	  if (SmartPtr<BoxMLTextElement> text = smart_cast<BoxMLTextElement>(*p))
+	    paragraph.append(ctxt, text->getContent());
+	  else
+	    paragraph.append(ctxt, (*p)->format(ctxt));
 
-      AreaRef res = ctxt.getDevice()->paragraph(ctxt, String(c.begin(), c.end()), boxes, width);
+      AreaRef res = ctxt.getDevice()->paragraph(ctxt, paragraph, width);
       setArea(ctxt.getDevice()->wrapper(ctxt, res));
 
       ctxt.pop();

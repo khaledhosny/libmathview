@@ -4,10 +4,11 @@
 - = LONG TERM
 
 BUGS
-+ selection of math inside boxes crashes
+* selection of math inside boxes crashes
+* again problems with colors
++ step in a boxml paragraph is wrong
 + make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
-+ again problems with colors
 - applying the variant map before shaping is problematic when
   using the PangoShaper because Pango doesn't know about variant
   chars. This can be seen as a bug of pango or as a bug of our architecture
@@ -43,10 +44,10 @@ MISSING
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
 + minlabelspacing -> spacing in paragraph, use pango layout spacing
-+ implement overstrike and underline for box text
++ implement overstrike and underline for box text ?
 + cleanup code for box paragraph, create an auxiliary class for
   collecting things and handle groups inside paragraphs. What
-  about groups inside paragraphs?
+  about groups inside paragraphs? What about colors inside paragraphs?
 + implement cursor
 + enable actions in boxml
 + add getId() method to reader interface

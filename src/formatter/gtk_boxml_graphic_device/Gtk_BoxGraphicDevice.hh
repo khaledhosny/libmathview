@@ -40,7 +40,7 @@ public:
 
   virtual SmartPtr<class AreaFactory> getFactory(void) const;
   virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const;
-  virtual AreaRef paragraph(const class BoxFormattingContext&, const String&, const BoxLayout&, const scaled&) const;
+  virtual AreaRef paragraph(const class BoxFormattingContext&, const class BoxedParagraph&, const scaled&) const;
   virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const;
 
 private:

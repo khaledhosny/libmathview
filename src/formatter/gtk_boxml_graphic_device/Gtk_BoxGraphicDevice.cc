@@ -29,6 +29,7 @@
 #include "Gtk_RenderingContext.hh"
 #include "BoxFormattingContext.hh"
 #include "BoxMLElement.hh"
+#include "BoxedParagraph.hh"
 
 Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice(GtkWidget* widget)
 {
@@ -75,11 +76,10 @@ Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
 
 AreaRef
 Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
-				const String& str,
-				const BoxLayout& boxes,
+				const BoxedParagraph& p,
 				const scaled& width) const
 {
-  const DOM::UTF8String utf8_string = str;
+  const DOM::UTF8String utf8_string = p.getContent();
 
   PangoLayout* layout = pango_layout_new(pango_context);
   pango_layout_set_text(layout, utf8_string.data(), utf8_string.length());
@@ -88,27 +88,45 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
   pango_layout_set_wrap(layout, PANGO_WRAP_WORD);
 
   PangoAttrList* attrList = pango_attr_list_new();
-  PangoAttribute* aSize = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(context.getSize()));
-  aSize->start_index = 0;
-  aSize->end_index = utf8_string.length();
-  pango_attr_list_insert(attrList, aSize);
 
-  std::cerr << "************ formatting a paragraph with " << boxes.size() << " foreign objects" << std::endl;
+  for (std::vector<BoxedParagraph::Object>::const_iterator obj = p.begin(); obj != p.end(); obj++)
+    if ((*obj).area)
+      {
+	const BoundingBox box = (*obj).area->box();
+	PangoRectangle rect;
+	rect.x = 0;
+	rect.y = -Gtk_RenderingContext::toPangoPixels(box.height);
+	rect.width = Gtk_RenderingContext::toPangoPixels(box.width);
+	rect.height = Gtk_RenderingContext::toPangoPixels(box.verticalExtent());
+	PangoAttribute* aShape = pango_attr_shape_new(&rect, &rect);
+	aShape->start_index = (*obj).start_index;
+	aShape->end_index = (*obj).end_index;
+	pango_attr_list_insert(attrList, aShape);
+      }
+    else
+      {
+#if 0
+	const RGBColor fColor = (*obj).foreground;
+	PangoAttribute* fAttr = pango_attr_foreground_new(fColor.red << 8, fColor.green << 8, fColor.blue << 8);
+	fAttr->start_index = (*obj).start_index;
+	fAttr->end_index = (*obj).end_index;
+	pango_attr_list_insert(attrList, fAttr);
 
-  for (BoxLayout::const_iterator p = boxes.begin(); p != boxes.end(); p++)
-    {
-      const BoundingBox box = (*p).second->box();
-      PangoRectangle rect;
-      rect.x = 0;
-      rect.y = -Gtk_RenderingContext::toPangoPixels(box.height);
-      rect.width = Gtk_RenderingContext::toPangoPixels(box.width);
-      rect.height = Gtk_RenderingContext::toPangoPixels(box.verticalExtent());
-      PangoAttribute* aShape = pango_attr_shape_new(&rect, &rect);
-      aShape->start_index = (*p).first;
-      aShape->end_index = (*p).first + 3;
-      pango_attr_list_insert(attrList, aShape);
-      std::cerr << "setting foreign object at " << aShape->start_index << std::endl;
-    }
+	if (!(*obj).background.transparent)
+	  {
+	    const RGBColor bColor = (*obj).background;
+	    PangoAttribute* bAttr = pango_attr_background_new(bColor.red << 8, bColor.green << 8, bColor.blue << 8);
+	    bAttr->start_index = (*obj).start_index;
+	    bAttr->end_index = (*obj).end_index;
+	    pango_attr_list_insert(attrList, bAttr);
+	  }
+#endif
+
+	PangoAttribute* aSize = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels((*obj).size));
+	aSize->start_index = (*obj).start_index;
+	aSize->end_index = (*obj).end_index;
+	pango_attr_list_insert(attrList, aSize);
+      }
 
   pango_layout_set_attributes(layout, attrList);
 
@@ -128,18 +146,18 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
   std::cerr << "the final box will be " << finalBox << std::endl;
 
   std::vector<BoxedLayoutArea::XYArea> c;
-  c.reserve(boxes.size() + 1);
   c.push_back(BoxedLayoutArea::XYArea(scaled::zero(), scaled::zero(), factory->pangoLayout(layout)));
-  for (BoxLayout::const_iterator p = boxes.begin(); p != boxes.end(); p++)
-    {
-      PangoRectangle pos;
-      pango_layout_index_to_pos(layout, (*p).first, &pos);
-      c.push_back(BoxedLayoutArea::XYArea(Gtk_RenderingContext::fromPangoPixels(pos.x),
-					  finalBox.height - Gtk_RenderingContext::fromPangoPixels(pos.y) - (*p).second->box().height,
-					  (*p).second));
+  for (std::vector<BoxedParagraph::Object>::const_iterator obj = p.begin(); obj != p.end(); obj++)
+    if ((*obj).area)
+      {
+	PangoRectangle pos;
+	pango_layout_index_to_pos(layout, (*obj).start_index, &pos);
+	c.push_back(BoxedLayoutArea::XYArea(Gtk_RenderingContext::fromPangoPixels(pos.x),
+					    finalBox.height - Gtk_RenderingContext::fromPangoPixels(pos.y) - (*obj).area->box().height,
+					    (*obj).area));
 
-      std::cerr << "the foreign object is at " << pos.x << " " << pos.y << " " << pos.width << " " << pos.height << std::endl;
-    }
+      }
+  
   return factory->boxedLayout(finalBox, c);
 }
 
