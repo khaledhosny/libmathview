@@ -35,7 +35,7 @@
 #endif // ENABLE_BOXML
 #include "AreaId.hh"
 #include "scaled.hh"
-#include "WrapperArea.hh"
+#include "Area.hh"
 #include "AbstractLogger.hh"
 
 View::View() : defaultFontSize(10), freezeCounter(0)
@@ -160,14 +160,15 @@ View::getElementAt(const scaled& x, const scaled& y, Point* elemOrigin, Bounding
       AreaId deepId(rootArea);
       if (rootArea->searchByCoords(deepId, x, y))
 	for (int i = deepId.size(); i >= 0; i--)
-	  if (SmartPtr<const WrapperArea> area = smart_cast<const WrapperArea>(deepId.getArea(i)))
-	    {
-	      SmartPtr<Element> elem = area->getElement();
-	      assert(elem);
-	      if (elemOrigin) deepId.getOrigin(*elemOrigin, 0, i);
-	      if (elemBox) *elemBox = area->box();
-	      return elem;
-	    }
+	  {
+	    AreaRef area = deepId.getArea(i);
+	    if (SmartPtr<Element> elem = area->getElement())
+	      {
+		if (elemOrigin) deepId.getOrigin(*elemOrigin, 0, i);
+		if (elemBox) *elemBox = area->box();
+		return elem;
+	      }
+	  }
     }
 
   return 0;
@@ -219,29 +220,29 @@ View::getCharAt(const scaled& x, const scaled& y, CharIndex& index, Point* charO
       AreaId deepId(rootArea);
       if (rootArea->searchByCoords(deepId, x, y))
 	for (int i = deepId.size(); i >= 0; i--)
-	  if (SmartPtr<const WrapperArea> elemArea = smart_cast<const WrapperArea>(deepId.getArea(i)))
-	    {
-	      SmartPtr<Element> elem = elemArea->getElement();
-	      assert(elem);
-	      
-	      Point deepOrigin;
-	      deepId.accumulateOrigin(deepOrigin);
-
-	      AreaRef deepArea = deepId.getArea();
-	      CharIndex deepIndex;
-	      if (!deepArea->indexOfPosition(x - deepOrigin.x, y - deepOrigin.y, deepIndex))
-		deepIndex = 0;
-
-	      index = deepId.getLength(i, -1) + deepIndex;
-
-	      if (charOrig || charBox)
-		{
-		  if (!deepArea->positionOfIndex(deepIndex, charOrig, charBox))
-		    return 0;
-		}
-
-	      return elem;
-	    }
+	  {
+	    AreaRef area = deepId.getArea(i);
+	    if (SmartPtr<Element> elem = area->getElement())
+	      {
+		Point deepOrigin;
+		deepId.accumulateOrigin(deepOrigin);
+		
+		AreaRef deepArea = deepId.getArea();
+		CharIndex deepIndex;
+		if (!deepArea->indexOfPosition(x - deepOrigin.x, y - deepOrigin.y, deepIndex))
+		  deepIndex = 0;
+		
+		index = deepId.getLength(i, -1) + deepIndex;
+		
+		if (charOrig || charBox)
+		  {
+		    if (!deepArea->positionOfIndex(deepIndex, charOrig, charBox))
+		      return 0;
+		  }
+		
+		return elem;
+	      }
+	  }
     }
 
   return false;
