@@ -34,6 +34,7 @@
 #include "ValueConversion.hh"
 #include "Variant.hh"
 #include "traverseAux.hh"
+#include "MathMLElementFactory.hh"
 
 MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& c) : context(c)
 {

@@ -11,7 +11,6 @@ libmathml_la_SOURCES = \
   MathMLNamespaceContext.cc \
   MathMLOperatorDictionary.cc \
   MathMLEntitiesTable.cc \
-  MathMLAttributeSignatures.cc \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
@@ -70,7 +69,6 @@ noinst_HEADERS = \
   MathMLOperatorDictionary.hh \
   MathMLEntitiesTable.hh \
   MathMLAttributeParsers.hh \
-  MathMLAttributeSignatures.hh \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \

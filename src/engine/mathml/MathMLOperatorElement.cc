@@ -69,8 +69,8 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#include "scaledAux.hh"
-#include "BoundingBoxAux.hh"
+//#include "scaledAux.hh"
+//#include "BoundingBoxAux.hh"
 
 AreaRef
 MathMLOperatorElement::format(MathFormattingContext& ctxt)
@@ -168,7 +168,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	{
 	  // is it a good place to handle largeOp here???
 
-	  std::cerr << "FOUND STRETCHY OP" << std::endl;
+	  //std::cerr << "FOUND STRETCHY OP" << std::endl;
 
 	  // before stretchying the operator need to be formatted at
 	  // least once
@@ -177,7 +177,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 
 	  const BoundingBox minBox = minArea->box();
 
-	  std::cerr << "minimum area bounding box = " << minBox << std::endl;
+	  //std::cerr << "minimum area bounding box = " << minBox << std::endl;
 
 	  const scaled axis = ctxt.getDevice()->axis(ctxt);
 	  const scaled height = ctxt.getStretchToHeight() - axis;
@@ -189,15 +189,15 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	  scaled v = std::max(scaled::zero(), symmetric ? (2 * std::max(height, depth)) : (height + depth));
 	  scaled h = std::max(scaled::zero(), ctxt.getStretchToWidth());
 
-	  std::cerr << "desired V = " << v << " H = " << h << std::endl;
+	  //std::cerr << "desired V = " << v << " H = " << h << std::endl;
 
 	  // ...however, there may be some contraints over the size of the stretchable
 	  // operator. 
 	  const scaled minV = minBox.height + minBox.depth;
 	  const scaled minH = minBox.width;
 	  
-	  std::cerr << "minV = " << minV << " minH = " << minH << std::endl;
-	  std::cerr << "minSize = " << minSize << " maxMult = " << minMultiplier << std::endl;
+	  //std::cerr << "minV = " << minV << " minH = " << minH << std::endl;
+	  //std::cerr << "minSize = " << minSize << " maxMult = " << minMultiplier << std::endl;
 
 	  if (minMultiplier > 0)
 	    {
@@ -210,8 +210,8 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	      h = std::max(h, minSize);
 	    }
 
-	  std::cerr << "after min constraint v = " << v << " h = " << h << std::endl;
-	  std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
+	  //std::cerr << "after min constraint v = " << v << " h = " << h << std::endl;
+	  //std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
 
 	  if (maxMultiplier > 0)
 	    {
@@ -224,12 +224,12 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	      h = std::min(h, maxSize);
 	    }
 
-	  std::cerr << "after max constraint v = " << v << " h = " << h << std::endl;
+	  //std::cerr << "after max constraint v = " << v << " h = " << h << std::endl;
 
 	  ctxt.setStretchV(v);
 	  ctxt.setStretchH(h);
 	  
-	  std::cerr << "stretch by V = " << v << " H = " << h << std::endl;
+	  //std::cerr << "stretch by V = " << v << " H = " << h << std::endl;
 
 	  res = formatAux(ctxt);
 	  
@@ -248,7 +248,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       else
 	res = formatAux(ctxt);
 
-      std::cerr << "formatting operator, is top? " << (getCoreOperatorTop() != 0) << " has dirty something" << dirtyAttribute() << dirtyLayout() << std::endl;
+      //std::cerr << "formatting operator, is top? " << (getCoreOperatorTop() != 0) << " has dirty something" << dirtyAttribute() << dirtyLayout() << std::endl;
 
       res = formatEmbellishment(this, ctxt, res);
       setArea(ctxt.getDevice()->wrapper(ctxt, res));
