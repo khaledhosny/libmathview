@@ -34,6 +34,7 @@ protected:
 
 public:
   virtual SmartPtr<class Element> getRootElement(void) const = 0;
+  virtual void forgetElement(Element*) const = 0;
 
   void setNamespaceContexts(const SmartPtr<class MathMLNamespaceContext>&,
 			    const SmartPtr<class BoxMLNamespaceContext>&);
