@@ -60,18 +60,33 @@ protected:
   updateElement(const typename Model::Element& el) const
   {
     SmartPtr<typename ElementBuilder::type> elem = getElement<ElementBuilder>(el);
+#if 0
+    std::cerr << "BEFORE"
+	      << " updateElement " << static_cast<typename ElementBuilder::type*>(elem)
+	      << " dirtyAttribute=" << elem->dirtyAttribute() 
+	      << " dirtyAttributeP=" << elem->dirtyAttributeP()
+	      << " dirtyStructure=" << elem->dirtyStructure()
+	      << " dirtyLayout=" << elem->dirtyLayout() << std::endl;
+#endif
     if (elem->dirtyAttribute() || elem->dirtyAttributeP() || elem->dirtyStructure())
       {
 	ElementBuilder::begin(*this, el, elem);
-	if (elem->dirtyAttribute() || elem->dirtyAttributeP())
-	  {
-	    ElementBuilder::refine(*this, el, elem);
-	    elem->resetDirtyAttribute();
-	  }
+	ElementBuilder::refine(*this, el, elem);
 	ElementBuilder::construct(*this, el, elem);
+	// NOTE: it is necessary to reset the dirtyAttribute flag after
+	// construction because construction might set the dirtyAttributeP flag
 	elem->resetDirtyStructure();
+	elem->resetDirtyAttribute();
 	ElementBuilder::end(*this, el, elem);
       }
+#if 0
+    std::cerr << "AFTER"
+	      << " updateElement " << static_cast<typename ElementBuilder::type*>(elem)
+	      << " dirtyAttribute=" << elem->dirtyAttribute() 
+	      << " dirtyAttributeP=" << elem->dirtyAttributeP()
+	      << " dirtyStructure=" << elem->dirtyStructure()
+	      << " dirtyLayout=" << elem->dirtyLayout() << std::endl;
+#endif
     return elem;
   }
 
@@ -1230,6 +1245,10 @@ public:
 	else if (ns == BOXML_NS_URI) res = getBoxMLElement(root);
 	perf.Stop();
 	Globals::logger(LOG_INFO, "build time: %dms", perf());
+#if 0
+	std::cerr << "FOUND ROOT ELEMENT = " << static_cast<Element*>(res)
+		  << " DIRTY? " << res->dirtyLayout() << std::endl;
+#endif
 	return res;
       }
     else
