@@ -26,7 +26,6 @@ MATHVIEW_LIBS = \
   $(NULL)
 
 libmathview_custom_reader_la_LIBADD = \
-  -lstdc++ \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
   $(top_builddir)/src/frontend/custom_reader/libmathview_frontend_custom_reader.la \
@@ -34,21 +33,18 @@ libmathview_custom_reader_la_LIBADD = \
   $(NULL)
 
 libmathview_libxml2_reader_la_LIBADD = \
-  -lstdc++ \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
   $(MATHVIEW_LIBS) \
   $(NULL)
 
 libmathview_libxml2_la_LIBADD = \
-  -lstdc++ \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/libxml2/libmathview_frontend_libxml2.la \
   $(MATHVIEW_LIBS) \
   $(NULL)
 
 libmathview_gmetadom_la_LIBADD = \
-  -lstdc++ \
   $(DOM_LIBS) \
   $(top_builddir)/src/frontend/gmetadom/libmathview_frontend_gmetadom.la \
   $(MATHVIEW_LIBS) \

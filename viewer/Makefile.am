@@ -34,7 +34,6 @@ mathmlviewer_debug_LDADD = \
 test_embedding_SOURCES = test_embedding.c
 
 test_embedding_LDADD = \
-  -lstdc++ \
   $(XML_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
@@ -43,7 +42,6 @@ test_embedding_LDADD = \
 test_loading_SOURCES = test_loading.c
 
 test_loading_LDADD = \
-  -lstdc++ \
   $(XML_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \

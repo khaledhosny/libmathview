@@ -20,22 +20,18 @@ lib_LTLIBRARIES += libgtkmathview_gmetadom.la
 endif
 
 libgtkmathview_custom_reader_la_LIBADD = \
-  -lstdc++ \
   $(GTK_LIBS) \
   $(top_builddir)/src/view/libmathview_custom_reader.la
 
 libgtkmathview_libxml2_reader_la_LIBADD = \
-  -lstdc++ \
   $(GTK_LIBS) \
   $(top_builddir)/src/view/libmathview_libxml2_reader.la
 
 libgtkmathview_libxml2_la_LIBADD = \
-  -lstdc++ \
   $(GTK_LIBS) \
   $(top_builddir)/src/view/libmathview_libxml2.la
 
 libgtkmathview_gmetadom_la_LIBADD = \
-  -lstdc++ \
   $(GTK_LIBS) \
   $(top_builddir)/src/view/libmathview_gmetadom.la
 
