@@ -92,7 +92,7 @@ HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, c
     }
 }
 
-AreaRef
+bool
 HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, const scaled& y) const
 {
   scaled x = x0;
@@ -100,13 +100,13 @@ HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, con
        p != content.end();
        p++)
     {
-      if (AreaRef area = (*p)->find(context, x, y))
-	return area;
+      if ((*p)->find(context, x, y))
+	return true;
 
       x += (*p)->box().horizontalExtent();
     }
 
-  return 0;
+  return false;
 }
 
 scaled

@@ -101,6 +101,6 @@ void
 SimpleArea::render(class RenderingContext&, const scaled&, const scaled&) const
 { }
 
-AreaRef
+bool
 SimpleArea::find(class SearchingContext&, const scaled&, const scaled&) const
-{ return 0; }
+{ return false; }

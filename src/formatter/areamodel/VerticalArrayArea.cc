@@ -129,7 +129,7 @@ VerticalArrayArea::render(class RenderingContext& context, const scaled& x, cons
     }  
 }
 
-AreaRef
+bool
 VerticalArrayArea::find(class SearchingContext& context, const scaled& x, const scaled& y0) const
 {
   std::vector<BoundingBox> box;
@@ -142,12 +142,12 @@ VerticalArrayArea::find(class SearchingContext& context, const scaled& x, const 
     {
       const int i = p - content.begin();
       y += box[i].depth;
-      if (AreaRef area = (*p)->find(context, x, y))
-	return area;
+      if ((*p)->find(context, x, y))
+	return true;
       y += box[i].height;
     }  
 
-  return 0;
+  return false;
 }
 
 void

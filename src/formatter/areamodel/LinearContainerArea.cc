@@ -33,16 +33,16 @@ LinearContainerArea::render(class RenderingContext& context, const scaled& x, co
     (*p)->render(context, x, y);
 }
 
-AreaRef
+bool
 LinearContainerArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
 {
   for (std::vector<AreaRef>::const_iterator p = content.begin();
        p != content.end();
        p++)
-    if (AreaRef area = (*p)->find(context, x, y))
-      return area;
+    if ((*p)->find(context, x, y))
+      return true;
 
-  return 0;
+  return false;
 }
 
 bool

@@ -31,10 +31,10 @@ ShiftArea::render(class RenderingContext& context, const scaled& x, const scaled
   getChild()->render(context, x, y + shift);
 }
 
-AreaRef
+bool
 ShiftArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
 {
-  return getChild()->find(context, x, y + shift);
+  return find(context, x, y + shift);
 }
 
 BoundingBox

@@ -43,9 +43,14 @@ public:
   scaled getX(void) const { return x0; }
   scaled getY(void) const { return y0; }
 
+  void setResult(AreaRef area) { result = area; }
+  AreaRef getResult(void) const { return result; }
+
 protected:
   scaled x0;
   scaled y0;
+
+  AreaRef result;
 };
 
 #endif // __SearchingContext_hh__

@@ -39,7 +39,7 @@ public:
 
   virtual BoundingBox box(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual AreaRef find(class SearchingContext&, const scaled&, const scaled&) const;
+  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;

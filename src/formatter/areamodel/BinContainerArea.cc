@@ -38,7 +38,7 @@ BinContainerArea::render(class RenderingContext& context, const scaled& x, const
   child->render(context, x, y);
 }
 
-AreaRef
+bool
 BinContainerArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
 {
   return child->find(context, x, y);
