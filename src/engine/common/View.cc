@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "Globals.hh"
 #include "Clock.hh"
 #include "View.hh"
 #include "Element.hh"
@@ -36,7 +37,7 @@
 
 View::View(const SmartPtr<Builder>& b)
 
-  : builder(b), freezeCounter(0)
+  : builder(b), defaultFontSize(Globals::configuration.getFontSize()), freezeCounter(0)
 { }
 
 View::~View()
@@ -188,3 +189,19 @@ View::render(RenderingContext& ctxt) const
       //Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }
 }
+
+void
+View::setDefaultFontSize(unsigned size)
+{
+  assert(size > 0);
+  if (defaultFontSize != size)
+    {
+      defaultFontSize = size;
+      if (SmartPtr<Element> elem = getRootElement())
+	{
+	  //elem->setDirtyAttributeD();
+	  elem->setDirtyLayout();	  
+	}
+    }
+}
+

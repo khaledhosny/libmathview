@@ -40,18 +40,3 @@ NamespaceContext::getView() const
   return static_cast<View*>(view);
 }
 
-void
-NamespaceContext::setDefaultFontSize(unsigned size)
-{
-  assert(size > 0);
-  if (defaultFontSize != size)
-    {
-      defaultFontSize = size;
-      if (SmartPtr<Element> elem = getView()->getRootElement())
-	{
-	  elem->setDirtyAttributeD();
-	  elem->setDirtyLayout();	  
-	}
-    }
-}
-

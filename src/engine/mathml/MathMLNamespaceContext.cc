@@ -32,9 +32,7 @@
 MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<View>& v,
 					       const SmartPtr<MathGraphicDevice>& d)
   : NamespaceContext(MATHML_NS_URI, v), device(d)
-{
-  setDefaultFontSize(Globals::configuration.getFontSize());
-}
+{ }
 
 MathMLNamespaceContext::~MathMLNamespaceContext()
 { }
@@ -53,7 +51,7 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
   if (elem->dirtyLayout())
     {
       MathFormattingContext ctxt(device);
-      scaled l = device->evaluate(ctxt, Length(getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
+      scaled l = device->evaluate(ctxt, Length(getView()->getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
       //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
       ctxt.setSize(l);
       ctxt.setActualSize(ctxt.getSize());

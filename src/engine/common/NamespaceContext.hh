@@ -38,17 +38,11 @@ public:
   String getNamespaceURI(void) const { return namespaceURI; }
   SmartPtr<class View> getView(void) const;
 
-  // virtual SmartPtr<class Element> construct(class AbstractReader&) const = 0;
-  //virtual SmartPtr<class Element> construct(const DOM::Element&) const = 0;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const = 0;
-
-  unsigned getDefaultFontSize(void) const { return defaultFontSize; }
-  void setDefaultFontSize(unsigned);
 
 private:
   const String namespaceURI;
   WeakPtr<class View> view;
-  unsigned defaultFontSize;
 };
 
 #endif // __NamespaceContext_hh__

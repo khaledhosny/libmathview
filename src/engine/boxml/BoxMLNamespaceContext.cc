@@ -33,9 +33,7 @@
 BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,
 					     const SmartPtr<BoxGraphicDevice>& d)
   : NamespaceContext(BOXML_NS_URI, v), device(d)
-{
-  setDefaultFontSize(Globals::configuration.getFontSize());
-}
+{ }
 
 BoxMLNamespaceContext::~BoxMLNamespaceContext()
 { }
@@ -48,7 +46,7 @@ BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
   if (elem->dirtyLayout())
     {
       BoxFormattingContext ctxt(device);
-      scaled l = device->evaluate(ctxt, Length(getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
+      scaled l = device->evaluate(ctxt, Length(getView()->getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
       //ctxt.setSize(device->evaluate(ctxt, Length(14, Length::PT_UNIT), scaled::zero()));
       ctxt.setSize(l);
       Clock perf;

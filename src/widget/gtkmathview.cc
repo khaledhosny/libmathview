@@ -1092,10 +1092,7 @@ gtk_math_view_set_font_size(GtkMathView* math_view, guint size)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view);
   g_return_if_fail(size > 0);
-  if (SmartPtr<NamespaceContext> ctxt = math_view->view->getMathMLNamespaceContext())
-    ctxt->setDefaultFontSize(size);
-  if (SmartPtr<NamespaceContext> ctxt = math_view->view->getBoxMLNamespaceContext())
-    ctxt->setDefaultFontSize(size);
+  math_view->view->setDefaultFontSize(size);
   paint_widget(math_view);
 }
 
@@ -1104,9 +1101,7 @@ gtk_math_view_get_font_size(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view, 0);
   g_return_val_if_fail(math_view->view, 0);
-  SmartPtr<NamespaceContext> ctxt = math_view->view->getMathMLNamespaceContext();
-  assert(ctxt);
-  return ctxt->getDefaultFontSize();
+  return math_view->view->getDefaultFontSize();
 }
 
 extern "C" void

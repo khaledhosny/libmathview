@@ -60,10 +60,14 @@ public:
 
   void render(class RenderingContext&) const;
 
+  unsigned getDefaultFontSize(void) const { return defaultFontSize; }
+  void setDefaultFontSize(unsigned);
+
 private:
   SmartPtr<class Builder> builder;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;
+  unsigned defaultFontSize;
   unsigned freezeCounter;
   scaled x0;
   scaled y0;
