@@ -1,5 +1,8 @@
 2004-07-22  Hubert Figuiere  <hfiguiere@teaser.fr>
 
+	* src/frontend/libxml2_reader/Makefile.am (INCLUDES): Made sure we can build in a different dir than 
+	srcdir.
+
 	* src/formatter/mathml_graphic_device/Makefile.am: 
 	* src/formatter/gtk_mathml_graphic_device/Makefile.am: 
 	* src/engine/mathml/Makefile.am: 
