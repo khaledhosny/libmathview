@@ -5,6 +5,7 @@
 
 BUGS
 * par without width attribute -> assert false
+* View::getCharAt always returns index = 0
 + step in a boxml paragraph is wrong
 + make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.

@@ -47,7 +47,9 @@ public:
   DOM::Element getRootDOMElement(void) const { return rootDOMElement; }
 
   bool getDOMElementExtents(const DOM::Element&, scaled&, scaled&, BoundingBox&) const;
-  DOM::Element getDOMElementAt(const scaled&, const scaled&) const;
+  bool getDOMElementAt(const scaled&, const scaled&, DOM::Element&) const;
+  bool getCharExtents(const DOM::Element&, int, scaled&, scaled&, BoundingBox&) const;
+  bool getCharAt(const scaled&, const scaled&, DOM::Element&, int&) const;
 
 private:
   class DOMSubtreeModifiedListener : public DOM::EventListener

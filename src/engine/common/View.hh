@@ -51,7 +51,9 @@ public:
   SmartPtr<const class Area> getRootArea(void) const;
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
   bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
-  SmartPtr<class Element> getElementAt(const scaled&, const scaled&) const;
+  bool getElementAt(const scaled&, const scaled&, SmartPtr<class Element>&) const;
+  bool getCharExtents(const SmartPtr<class Element>&, int, scaled&, scaled&, BoundingBox&) const;
+  bool getCharAt(const scaled&, const scaled&, SmartPtr<class Element>&, int&) const;
 
   void render(class RenderingContext&) const;
 

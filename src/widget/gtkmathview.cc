@@ -169,7 +169,6 @@ static guint select_over_signal = 0;
 static guint select_end_signal = 0;
 static guint select_abort_signal = 0;
 static guint element_over_signal = 0;
-static guint new_counter = 0;
 
 /* auxiliary C++ functions */
 
@@ -635,7 +634,9 @@ gtk_math_view_button_release_event(GtkWidget* widget,
   if (event->button == 1)
     {
       GdomeException exc = 0;
-      GdomeElement* elem = gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y);
+      GdomeElement* elem = NULL;
+      
+      gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem);
 
 #if 0
       if (math_view->cursor_elem != elem)
@@ -716,7 +717,9 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
   }
 
   GdomeException exc = 0;
-  GdomeElement* elem = gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y);
+  GdomeElement* elem = NULL;
+
+  gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem);
 
   if (math_view->button_pressed == TRUE &&
       (math_view->select_state == SELECT_STATE_YES ||
@@ -1151,15 +1154,21 @@ gtk_math_view_get_height(GtkMathView* math_view)
   return math_view->area->allocation.height;
 }
 
-extern "C" GdomeElement*
-gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
+extern "C" gboolean
+gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GdomeElement** elem)
 {
-  g_return_val_if_fail(math_view != NULL, NULL);
-  g_return_val_if_fail(math_view->view != NULL, NULL);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
 
-  DOM::Element at = math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
-						     Gtk_RenderingContext::fromGtkY(y));
-  return gdome_cast_el(at.gdome_object());
+  DOM::Element el;
+  if (math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
+				       Gtk_RenderingContext::fromGtkY(y), el))
+    {
+      if (elem) *elem = gdome_cast_el(el.gdome_object());
+      return TRUE;
+    }
+  else
+    return FALSE;
 }
 
 extern "C" gboolean
@@ -1174,6 +1183,57 @@ gtk_math_view_get_element_location(GtkMathView* math_view, GdomeElement* elem,
   scaled sy;
   BoundingBox box;
   if (math_view->view->getDOMElementExtents(DOM::Element(elem), sx, sy, box))
+    {
+      if (x) *x = Gtk_RenderingContext::toGtkX(sx);
+      if (y) *y = Gtk_RenderingContext::toGtkY(sy);
+      if (rect)
+	{
+	  Rectangle srect(sx, sy, box);
+	  rect->x = Gtk_RenderingContext::toGtkX(srect.x);
+	  rect->y = Gtk_RenderingContext::toGtkY(srect.y);
+	  rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
+	  rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
+	}
+      return TRUE;
+    }
+  else
+    return FALSE;
+}
+
+extern "C" gboolean
+gtk_math_view_get_char_at(GtkMathView* math_view, gint x, gint y,
+			  GdomeElement** elem, gint* index)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  
+  DOM::Element el;
+  int idx;
+  if (math_view->view->getCharAt(Gtk_RenderingContext::fromGtkX(x),
+				 Gtk_RenderingContext::fromGtkY(y),
+				 el, idx))
+    {
+      if (elem) *elem = gdome_cast_el(el.gdome_object());
+      if (index) *index = idx;
+      return TRUE;
+    }
+  else
+    return FALSE;
+}
+
+extern "C" gboolean
+gtk_math_view_get_char_location(GtkMathView* math_view, GdomeElement* elem,
+				gint index, gint* x, gint* y, GdkRectangle* rect)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
+  g_return_val_if_fail(index >= 0, FALSE);
+
+  scaled sx;
+  scaled sy;
+  BoundingBox box;
+  if (math_view->view->getCharExtents(DOM::Element(elem), index, sx, sy, box))
     {
       if (x) *x = Gtk_RenderingContext::toGtkX(sx);
       if (y) *y = Gtk_RenderingContext::toGtkY(sy);

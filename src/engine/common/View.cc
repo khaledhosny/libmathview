@@ -27,7 +27,6 @@
 #include "Element.hh"
 #include "NamespaceRegistry.hh"
 #include "NamespaceContext.hh"
-//#include "SearchingContext.hh"
 #include "AreaId.hh"
 #include "scaled.hh"
 #include "scaledConv.hh"
@@ -56,20 +55,6 @@ View::thaw()
   return --freezeCounter == 0;
 }
 
-#if 0
-void
-View::setRootElement(const SmartPtr<Element>& root)
-{
-  rootElement = root;
-}
-
-SmartPtr<Element>
-View::getRootElement() const
-{
-  return rootElement;
-}
-#endif
-
 AreaRef
 View::getElementArea(const SmartPtr<Element>& elem) const
 { return elem ? elem->getNamespaceContext()->format(elem) : 0; }
@@ -80,39 +65,21 @@ View::getRootArea() const
 
 #include "scaledAux.hh"
 
-SmartPtr<Element>
-View::getElementAt(const scaled& x, const scaled& y) const
+bool
+View::getElementAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem) const
 {
   if (AreaRef rootArea = getRootArea())
     {
       BoundingBox box = rootArea->box();
-#if 0
-      SearchingContext context(x, y);
-      
-      if (rootArea->find(context, -x0, -box.height - y0))
-	{
-	  SearchingContext::Result result = context.getResult();
-	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(result.area))
-	    if (SmartPtr<Element> elem = smart_cast<Element>(area->getElement()))
-	      return elem;
-	}
-#endif
       AreaId id(rootArea);
-      //std::cerr << "searching at " << (x) << "," << (y + box.height) << std::endl;
       if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
-	{
-	  //std::cerr << "FOUND!" << std::endl;
-	  for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
-	    if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
-	      {
-		//std::cerr << "FOUND WRAPPER, with element? " << (area->getElement() != 0) << std::endl;
-		if (SmartPtr<Element> elem = smart_cast<Element>(area->getElement()))
-		  return elem;
-	      }
-	}
+	for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
+	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
+	    if ((elem = smart_cast<Element>(area->getElement())))
+	      return true;
     }
   
-  return 0;
+  return false;
 }
 
 bool
@@ -122,25 +89,50 @@ View::getElementExtents(const SmartPtr<Element>& elem, scaled& x, scaled& y, Bou
   if (AreaRef rootArea = getRootArea())
     if (AreaRef elemArea = elem->getArea())
       {
-#if 0
-	AreaId elemId = rootArea->idOf(elemArea);
-
-	for (AreaId id = elemId; !id.empty(); id = id.tail())
-	  std::cout << id.head() << "/";
-	std::cout << std::endl;
-
-	std::pair<scaled,scaled> orig = rootArea->origin(elemId);
-	x = orig.first;
-	y = orig.second;
-	box = elemArea->box();
-	return true;
-#endif
 	AreaId elemId(rootArea);
-
 	if (rootArea->searchByArea(elemId, elemArea))
 	  {
 	    elemId.getOrigin(x, y);
 	    box = elemArea->box();
+	    return true;
+	  }
+      }
+							    
+  return false;
+}
+
+bool
+View::getCharAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem, int& index) const
+{
+  if (AreaRef rootArea = getRootArea())
+    {
+      BoundingBox box = rootArea->box();
+      AreaId id(rootArea);
+      if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
+	for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
+	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
+	    if ((elem = smart_cast<Element>(area->getElement())))
+	      {
+		index = 0; // FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		return true;
+	      }
+    }
+  
+  return false;
+}
+
+bool
+View::getCharExtents(const SmartPtr<Element>& elem, int index, scaled& x, scaled& y, BoundingBox& box) const
+{
+  assert(elem);
+  if (getRootArea()) // just to be sure the tree has been formatted
+    if (AreaRef elemArea = elem->getArea())
+      {
+	AreaId elemId(elemArea);
+	if (elemArea->searchByIndex(elemId, index))
+	  {
+	    elemId.getOrigin(x, y);
+	    box = elemId.getArea()->box();
 	    return true;
 	  }
       }
@@ -153,74 +145,6 @@ View::getRegistry(void) const
 {
   return registry;
 }
-
-#if 0
-AreaRef
-View::getRootArea() const
-{
-  if (root && !frozen())
-    {
-      SmartPtr<MathMLElement> elem = getRootElement();
-      assert(elem);
-
-      if (elem->dirtyStructure())
-	{
-	  Clock perf;
-	  perf.Start();
-	  elem->construct();
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "construction time: %dms", perf());
-	}
-
-      if (elem->dirtyAttribute() || elem->dirtyAttributeP())
-	{
-	  RefinementContext rc;
-	  Clock perf;
-	  perf.Start();
-	  elem->refine(rc);
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
-	}
-
-      if (elem->dirtyLayout())
-	{
-	  MathFormattingContext ctxt(device);
-	  scaled l = device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
-	  ctxt.setSize(l);
-	  ctxt.setActualSize(ctxt.getSize());
-	  Clock perf;
-	  perf.Start();
-	  elem->format(ctxt);
-	  perf.Stop();
-	  Globals::logger(LOG_INFO, "format time: %dms", perf());
-	}
-
-      return elem->getArea();
-    }
-
-  return 0;
-}
-
-BoundingBox
-View::getBoundingBox() const
-{
-  if (AreaRef rootArea = getRootArea())
-    return rootArea->box();
-  else
-    return BoundingBox();
-}
-
-Rectangle
-View::getRectangle() const
-{
-  if (AreaRef rootArea = getRootArea())
-    return Rectangle(scaled::zero(), scaled::zero(), rootArea->box());
-  else
-    return Rectangle();
-}
-
-#endif
 
 void
 View::render(RenderingContext& ctxt) const

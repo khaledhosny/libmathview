@@ -157,8 +157,34 @@ DOMView::getDOMElementExtents(const DOM::Element& el, scaled& x, scaled& y, Boun
     return false;
 }
 
-DOM::Element
-DOMView::getDOMElementAt(const scaled& x, const scaled& y) const
+bool
+DOMView::getDOMElementAt(const scaled& x, const scaled& y, DOM::Element& el) const
 {
-  return findDOMElement(getElementAt(x, y));
+  SmartPtr<Element> elem;
+  if (getElementAt(x, y, elem))
+    {
+      el = findDOMElement(elem);
+      return el;
+    }
+  else
+    return false;
+}
+
+bool
+DOMView::getCharExtents(const DOM::Element& el, int index, scaled& x, scaled& y, BoundingBox& box) const
+{
+  if (SmartPtr<Element> elem = findElement(el))
+    return View::getCharExtents(elem, index, x, y, box);
+  else
+    return false;
+}
+
+bool
+DOMView::getCharAt(const scaled& x, const scaled& y, DOM::Element& el, int& index) const
+{
+  SmartPtr<Element> elem;
+  if (View::getCharAt(x, y, elem, index))
+    if ((el = findDOMElement(elem)))
+      return true;
+  return false;
 }
