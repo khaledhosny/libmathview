@@ -25,6 +25,7 @@
 
 #include "Area.hh"
 #include "Object.hh"
+#include "String.hh"
 #include "SmartPtr.hh"
 #include "BoundingBox.hh"
 
@@ -35,17 +36,19 @@ protected:
   virtual ~View();
 
 public:
-  static SmartPtr<View> create(void) { return new View(); }
-
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);
   bool thaw(void);
 
   // configuration stuff
+  virtual bool loadConfiguration(const SmartPtr<class Configuration>&, const String&) const = 0;
+  bool loadDefaultConfiguration(const SmartPtr<class Configuration>&) const;
   void setLogger(const SmartPtr<class AbstractLogger>&);
   SmartPtr<class AbstractLogger> getLogger(void) const;
   void setOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&);
   SmartPtr<class MathMLOperatorDictionary> getOperatorDictionary(void) const;
+  virtual bool loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const = 0;
+  bool loadDefaultOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&) const;
   void setBuilder(const SmartPtr<class Builder>&);
   SmartPtr<class Builder> getBuilder(void) const;
   void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);

@@ -25,6 +25,7 @@
 #include "AbstractLogger.hh"
 #include "gmetadom_Model.hh"
 #include "gmetadom_Builder.hh"
+#include "gmetadom_Setup.hh"
 // WARNING: the following #includes MUST be the last one (???)
 #include "gmetadom_MathView.hh"
 #include "Element.hh"
@@ -137,3 +138,12 @@ gmetadom_MathView::notifyAttributeChanged(const DOM::Element& el, const DOM::Gdo
 SmartPtr<Element>
 gmetadom_MathView::elementOfModelElement(GdomeElement* el) const
 { return elementOfModelElement(GdomeSmartDOM::Element(el)); }
+
+bool
+gmetadom_MathView::loadConfiguration(const SmartPtr<MathMLConfiguration>& configuration, const String& path) const
+{ return gmetadom_Setup::loadConfiguration(*getLogger(), *configuration, path); }
+
+bool
+gmetadom_MathView::loadOperatorDictionary(const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path) const
+{ return gmetadom_Setup::loadOperatorDictionary(*getLogger(), *dictionary, path); }
+

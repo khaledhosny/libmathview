@@ -49,6 +49,9 @@ public:
 
   xmlDoc* getDocument(void) const { return currentDoc; }
 
+  virtual bool loadConfiguration(const SmartPtr<class Configuration>&, const String&) const;
+  virtual bool loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const;
+
 protected:
   xmlDoc* currentDoc;
   bool docOwner;

@@ -7,6 +7,7 @@ DISTCLEANFILES = \
   gtkmathview.conf.xml
 
 EXTRA_DIST = \
+  mathml-entities.dtd \
   dictionary.in \
   dictionary.dtd \
   dictionary.xml \
@@ -22,6 +23,7 @@ EXTRA_DIST = \
   $(NULL)
 
 pkgdata_DATA = \
+  mathml-entities.dtd \
   dictionary.dtd \
   dictionary.xml \
   dictionary-local.xml \

@@ -1,18 +1,18 @@
 <dictionary>
- <operator name="&prime;" form="infix" stretchy="false" lspace="0em" rspace="0em"/>
- <operator name="&Prime;" form="infix" stretchy="false" lspace="0em" rspace="0em"/>
+ <operator name="&#x2032;" form="infix" stretchy="false" lspace="0em" rspace="0em"/> <!-- prime -->
+ <operator name="&#x2033;" form="infix" stretchy="false" lspace="0em" rspace="0em"/> <!-- Prime -->
 
- <operator name="&minus;" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
- <operator name="&minus;" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&#x2212;" form="prefix" lspace="0em" rspace="veryverythinmathspace"/> <!-- minus -->
+ <operator name="&#x2212;" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
 
  <!-- the following, IMHO, is the real overline char -->
  <operator name="&#x0305;" form="infix" stretchy="true" lspace="0em" rspace="0em" accent="false"/>
 
  <operator name="/" form="infix" stretchy="false" lspace="veryverythinmathspace" rspace="veryverythinmathspace"/>
  
- <operator name="&Sqrt;" form="prefix" stretchy="false" symmetric="false"/>
+ <operator name="&#x221a;" form="prefix" stretchy="false" symmetric="false"/> <!-- Sqrt -->
 
- <operator name="&dd;" form="prefix" lspace="0em" rspace="0em"/>
- <operator name="&DD;" form="prefix" lspace="0em" rspace="0em"/>
- <operator name="&PartialD;" form="prefix" lspace="0em" rspace="0em"/>
+ <operator name="&#x2146;" form="prefix" lspace="0em" rspace="0em"/> <!-- dd -->
+ <operator name="&#x2145;" form="prefix" lspace="0em" rspace="0em"/> <!-- DD -->
+ <operator name="&#x2022;" form="prefix" lspace="0em" rspace="0em"/> <!-- PartialD -->
 </dictionary>

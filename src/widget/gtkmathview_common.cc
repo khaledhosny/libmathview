@@ -27,7 +27,6 @@
 #include <sstream>
 
 #include "defs.h"
-#include "config.dirs"
 
 // don't know why this is needed!!!
 #define PANGO_ENABLE_BACKEND
@@ -42,29 +41,21 @@
 #include "gtkmathview_common.h"
 #if GTKMATHVIEW_USES_CUSTOM_READER
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_Custom_Reader"
-#include "libxml2_reader_Setup.hh"
 #include "custom_reader_MathView.hh"
 typedef custom_reader_MathView MathView;
-typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2_READER
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_libxml2_Reader"
-#include "libxml2_reader_Setup.hh"
 #include "libxml2_reader_MathView.hh"
 typedef libxml2_reader_MathView MathView;
-typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_libxml2"
-#include "libxml2_Setup.hh"
 #include "libxml2_MathView.hh"
 typedef libxml2_MathView MathView;
-typedef libxml2_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_GMETADOM
 #include "gmetadom.hh"
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_GMetaDOM"
-#include "gmetadom_Setup.hh"
 #include "gmetadom_MathView.hh"
 typedef gmetadom_MathView MathView;
-typedef gmetadom_Setup GtkMathView_Setup;
 #endif
 
 #include "Logger.hh"
@@ -441,17 +432,17 @@ GTKMATHVIEW_METHOD_NAME(get_type)(void)
 }
 
 static SmartPtr<Configuration>
-initConfiguration(const AbstractLogger& logger, const char* confPath)
+initConfiguration(const SmartPtr<View>& view, const SmartPtr<AbstractLogger>& logger, const char* confPath)
 {
   SmartPtr<Configuration> configuration = Configuration::create();
 
   bool res = false;
-  if (confPath != NULL) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, confPath);
-  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, PKGDATADIR"/gtkmathview.conf.xml");
-  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, "config/gtkmathview.conf.xml");
+  if (confPath != NULL) res = view->loadConfiguration(configuration, confPath);
+  if (!res) res = view->loadDefaultConfiguration(configuration);
+  if (!res) res = view->loadConfiguration(configuration, "config/gtkmathview.conf.xml");
   if (!res)
     {
-      logger.out(LOG_ERROR, "could not load configuration file");
+      logger->out(LOG_ERROR, "could not load configuration file");
       exit(-1);
     }
 
@@ -459,7 +450,8 @@ initConfiguration(const AbstractLogger& logger, const char* confPath)
 }
 
 static SmartPtr<MathMLOperatorDictionary>
-initOperatorDictionary(const AbstractLogger& logger, const SmartPtr<Configuration> configuration)
+initOperatorDictionary(const SmartPtr<View>& view,
+		       const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
 {
   SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
   if (!configuration->getDictionaries().empty())
@@ -467,14 +459,14 @@ initOperatorDictionary(const AbstractLogger& logger, const SmartPtr<Configuratio
 	 dit != configuration->getDictionaries().end();
 	 dit++)
       {
-	logger.out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	if (!GtkMathView_Setup::loadOperatorDictionary(logger, *dictionary, (*dit).c_str()))
-	  logger.out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
+	logger->out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
+	if (!view->loadOperatorDictionary(dictionary, (*dit).c_str()))
+	  logger->out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
       }
   else
     {
-      const bool res = GtkMathView_Setup::loadOperatorDictionary(logger, *dictionary, "config/dictionary.xml");
-      if (!res) GtkMathView_Setup::loadOperatorDictionary(logger, *dictionary, PKGDATADIR"/dictionary.xml");
+      const bool res = view->loadOperatorDictionary(dictionary, "config/dictionary.xml");
+      if (!res) view->loadDefaultOperatorDictionary(dictionary);
     }
 
   return dictionary;
@@ -690,18 +682,19 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
-  SmartPtr<AbstractLogger> logger = Logger::create();
-  SmartPtr<Configuration> configuration = initConfiguration(*logger, getenv("GTKMATHVIEWCONF"));
-  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(*logger, configuration);
-
-  configuration->ref();
-  math_view->configuration = configuration;
-
   SmartPtr<MathView> view = MathView::create();
   view->ref();
   math_view->view = view;
 
+  SmartPtr<AbstractLogger> logger = Logger::create();
   view->setLogger(logger);
+
+  SmartPtr<Configuration> configuration = initConfiguration(view, logger, getenv("GTKMATHVIEWCONF"));
+  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(view, logger, configuration);
+
+  configuration->ref();
+  math_view->configuration = configuration;
+
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view,
 								 Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view))));

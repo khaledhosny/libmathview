@@ -24,6 +24,7 @@
 
 #include "custom_reader_MathView.hh"
 #include "custom_reader_Builder.hh"
+#include "custom_reader_Setup.hh"
 
 custom_reader_MathView::custom_reader_MathView()
   : data(0)
@@ -77,3 +78,12 @@ custom_reader_MathView::notifyStructureChanged(c_customModelElementId) const
 bool
 custom_reader_MathView::notifyAttributeChanged(c_customModelElementId, const char*) const
 { return false; }
+
+bool
+custom_reader_MathView::loadConfiguration(const SmartPtr<class Configuration>&, const String&) const
+{ return false; }
+
+bool
+custom_reader_MathView::loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const
+{ return false; }
+
