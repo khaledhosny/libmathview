@@ -93,5 +93,6 @@ Gtk_XftGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) 
 DOM::Element
 Gtk_XftGlyphArea::dump(const DOM::Document& doc) const
 {
+  assert(false);
   return DOM::Element(0);
 }

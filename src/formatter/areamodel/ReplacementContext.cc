@@ -41,6 +41,9 @@ ReplacementContext::ReplacementContext(const ReplacementContext& context, unsign
       subst.push_back(*p);
 }
 
+ReplacementContext::~ReplacementContext()
+{ }
+
 void
 ReplacementContext::add(const AreaId& id, const AreaRef& area)
 {

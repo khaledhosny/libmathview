@@ -70,3 +70,10 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 		  Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()),
 		  layout);
 }
+
+DOM::Element
+Gtk_PangoLayoutArea::dump(const DOM::Document& doc) const
+{
+  assert(false);
+  return DOM::Element(0);
+}

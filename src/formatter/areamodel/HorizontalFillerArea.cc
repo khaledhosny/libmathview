@@ -55,3 +55,15 @@ HorizontalFillerArea::dump(const DOM::Document& doc) const
 {
   return doc.createElementNS(STD_AREAMODEL_NAMESPACE_URI, "a:h-fill");
 }
+
+scaled
+HorizontalFillerArea::leftEdge() const
+{
+  return scaled::min();
+}
+
+scaled
+HorizontalFillerArea::rightEdge() const
+{
+  return scaled::min();
+}

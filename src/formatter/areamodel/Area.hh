@@ -35,7 +35,7 @@ class Area : public Object
 {
 protected:
   Area(void) { };
-  virtual ~Area() = 0;
+  virtual ~Area() { };
 
 public:
   virtual BoundingBox  box(void) const = 0;

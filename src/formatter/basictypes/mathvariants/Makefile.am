@@ -43,7 +43,7 @@ INCLUDES = \
 	$(XSLTPROC) --novalid --param temp "false()" extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
 	$(CC) $(DOM_CFLAGS) $(DOM_LIBS) $<
 	echo "DOM::Char32 " >>$@
-	echo -n "map_$@_variant" | cut -d '.' -f1 | tr "-" "_" >>$@
+	echo -n "map_variant_$@" | cut -d '.' -f1 | tr "-" "_" >>$@
 	echo "(DOM::Char16 ch)" >>$@
 	echo "{" >>$@
 	./a.out >>$@

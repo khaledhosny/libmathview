@@ -25,6 +25,6 @@
 
 #include "fixed.hh"
 
-typedef fixed<> scaled;
+typedef fixed<int,10> scaled;
 
 #endif // __scaled_hh__

@@ -101,3 +101,6 @@ ShapingResult::nextString(int l) const
   return source.substr(index, l);
 }
 
+void
+ShapingResult::pushArea(const AreaRef& area)
+{ res.push_back(area); }
