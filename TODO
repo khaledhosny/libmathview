@@ -18,25 +18,16 @@ BUGS
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially
   for mo elements
-? no indentifiers for the custom frontend? In particular, the widget
-  API never handles this (modelElementOfElement and converse method)
 ? selecting the root <math> element does not show selection
 + fix X font loading mechanism
 + the xft font selection mechanism behaves in strange ways, in
   particular it is no longer possible to select the 'symbol' font
   event if the pattern is close. See the fonts in xfree86 howto by
   Juliusz
-- add space in munderover between base and script
-- enable percentage in minsize/maxsize stretchable operators
 
 ARCH IMPROVEMENTS
 
-+ Gtk_AdobeShaper: extract shaper for the symbol font and clean up
 ? make GlyphStringArea a leaf-like area?
-- in TemplateBuilder exploit MathMLInferredRowElement instead of
-  creating it each time
-- make the dummy elements have some content (or an attribute)
-  and parameterize their rendering with that content
 - change the clone method for areas so that it checks if the
   content is unchanged, and possibly implement the replace this
   way
@@ -51,17 +42,14 @@ ARCH IMPROVEMENTS
 
 PERFORMANCE IMPROVEMENTS
 
-- implement caching mechanism for pango shaper
 - in TemplateBuilder do not use the hash map for retrieving old
   elements, but use accessor methods instead. Much faster 
-- GetOperatorForm in mrow is linear in the length of the row
 
 MISSING
 
 ? make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
-- implement table formatting
 - implement PS area model (using pslib?)
 - implement T1lib area model (using pslib instead?)
 - implement MGD for TeX fonts
@@ -70,18 +58,8 @@ MISSING
 - implement shaper for Mathematica fonts
 - implement shaper for Euclid fonts
 - runtime selection of backend
-- mmultiscripts
-- mpadded
 
 // BoxML
-
-BUGS
-
-ARCH IMPROVEMENTS
-
-+ The BoxML/MathML embedding mechanism is still ad-hoc and works
-  only for MathML inside BoxML
-+ remove BoxML paragraph, cleanup box code to a bare minimum
 
 MISSING
 
