@@ -25,7 +25,6 @@ libmathml_la_SOURCES = \
   MathMLFencedElement.cc \
   MathMLFormattingEngineFactory.cc \
   MathMLFractionElement.cc \
-  MathMLFrame.cc \
   MathMLGlyphNode.cc \
   MathMLIdentifierElement.cc \
   MathMLLabeledTableRowElement.cc \
@@ -87,7 +86,6 @@ noinst_HEADERS = \
   MathMLFencedElement.hh \
   MathMLFormattingEngineFactory.hh \
   MathMLFractionElement.hh \
-  MathMLFrame.hh \
   MathMLGlyphNode.hh \
   MathMLIdentifierElement.hh \
   MathMLLabeledTableRowElement.hh \

@@ -326,7 +326,7 @@ MathMLOperatorElement::inferOperatorForm()
 {
   SmartPtr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
   assert(eOp);
-  SmartPtr<MathMLElement> elem = eOp->GetParent();
+  SmartPtr<MathMLElement> elem = eOp->getParent();
   assert(elem);
 
   TokenId res = T_INFIX;

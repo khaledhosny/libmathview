@@ -28,15 +28,13 @@
 #include "MathMLElement.hh"
 
 MathMLNode::MathMLNode()
-{
-}
+{ }
 
 MathMLNode::~MathMLNode()
-{
-}
+{ }
 
 SmartPtr<MathMLElement>
-MathMLNode::GetParent() const
+MathMLNode::getParent() const
 {
   return static_cast<MathMLElement*>(parent);
 }
@@ -46,11 +44,3 @@ MathMLNode::setParent(const SmartPtr<MathMLElement>& p)
 {
   parent = static_cast<MathMLElement*>(p);
 }
-
-#if 0
-void
-MathMLNode::Unlink()
-{
-  SetParent(0);
-}
-#endif

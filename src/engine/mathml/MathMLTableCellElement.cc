@@ -461,9 +461,9 @@ MathMLTableCellElement::IsStretchyOperator() const
 void
 MathMLTableCellElement::setDirtyStructure()
 {
-  assert(GetParent());
-  assert(is_a<MathMLTableRowElement>(GetParent()));
-  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  assert(getParent());
+  assert(is_a<MathMLTableRowElement>(getParent()));
+  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(getParent());
   assert(row);
   row->setDirtyStructure();
   MathMLNormalizingContainerElement::setDirtyStructure();
@@ -472,9 +472,9 @@ MathMLTableCellElement::setDirtyStructure()
 void
 MathMLTableCellElement::setDirtyAttribute()
 {
-  assert(GetParent());
-  assert(is_a<MathMLTableRowElement>(GetParent()));
-  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  assert(getParent());
+  assert(is_a<MathMLTableRowElement>(getParent()));
+  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(getParent());
   assert(row);
   row->setDirtyAttribute();
   MathMLNormalizingContainerElement::setDirtyAttribute();
@@ -483,9 +483,9 @@ MathMLTableCellElement::setDirtyAttribute()
 void
 MathMLTableCellElement::setDirtyLayout()
 {
-  assert(GetParent());
-  assert(is_a<MathMLTableRowElement>(GetParent()));
-  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  assert(getParent());
+  assert(is_a<MathMLTableRowElement>(getParent()));
+  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(getParent());
   assert(row);
   row->setDirtyLayout();
   MathMLNormalizingContainerElement::setDirtyLayout();

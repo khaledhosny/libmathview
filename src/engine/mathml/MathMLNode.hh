@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLNode_hh
-#define MathMLNode_hh
+#ifndef __MathMLNode_hh__
+#define __MathMLNode_hh__
 
 #include "Object.hh"
 #include "WeakPtr.hh"
@@ -34,14 +34,11 @@ protected:
   virtual ~MathMLNode();
 
 public:
-#if 0
-  virtual void Unlink(void);
-#endif
   virtual void setParent(const SmartPtr<class MathMLElement>& p);
-  SmartPtr<class MathMLElement> GetParent(void) const;
+  SmartPtr<class MathMLElement> getParent(void) const;
 
 private:
   WeakPtr<class MathMLElement> parent;
 };
 
-#endif // MathMLNode_hh
+#endif // __MathMLNode_hh__

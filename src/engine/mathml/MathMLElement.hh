@@ -27,14 +27,14 @@
 
 #include "Area.hh"
 #include "BoundingBox.hh"
-#include "MathMLFrame.hh"
+#include "MathMLNode.hh"
 #include "SmartPtr.hh"
 #include "token.hh"
 
 #include "Element.hh"
 
 // MathMLElement: base class for every MathML Element
-class MathMLElement : public MathMLFrame
+class MathMLElement : public MathMLNode
 {
 protected:
   MathMLElement(const SmartPtr<class MathMLView>&);
@@ -42,10 +42,6 @@ protected:
 
 public:
   virtual void setParent(const SmartPtr<MathMLElement>&);
-#if 0
-  void Link(const SmartPtr<MathMLElement>&);
-  void Unlink(void);
-#endif
 
   SmartPtr<class MathMLView> getView(void) const;
 #if defined(HAVE_GMETADOM)

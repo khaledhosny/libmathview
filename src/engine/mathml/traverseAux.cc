@@ -45,11 +45,11 @@ findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& op)
 {
   SmartPtr<MathMLElement> root = op;
 
-  while (root && root->GetParent())
+  while (root && root->getParent())
     {
-      SmartPtr<MathMLElement> newRoot = op->GetParent()->getCoreOperator();
+      SmartPtr<MathMLElement> newRoot = op->getParent()->getCoreOperator();
       if (newRoot != root) break;
-      else root = op->GetParent();
+      else root = op->getParent();
     }
 
   return root;
@@ -61,9 +61,9 @@ findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& root)
 {
   assert(root);
 
-  if (!root->GetParent()) return root;
+  if (!root->getParent()) return root;
 
-  SmartPtr<MathMLContainerElement> rootParent = smart_cast<MathMLContainerElement>(root->GetParent());
+  SmartPtr<MathMLContainerElement> rootParent = smart_cast<MathMLContainerElement>(root->getParent());
   assert(rootParent);
 
   if (is_a<MathMLRowElement>(rootParent))
@@ -128,13 +128,13 @@ findCommonAncestor(const SmartPtr<MathMLElement>& first, const SmartPtr<MathMLEl
 
       while (firstP && firstDepth > lastDepth)
 	{
-	  firstP = firstP->GetParent();
+	  firstP = firstP->getParent();
 	  firstDepth--;
 	}
 
       while (lastP && lastDepth > firstDepth)
 	{
-	  lastP = lastP->GetParent();
+	  lastP = lastP->getParent();
 	  lastDepth--;
 	}
 
@@ -142,8 +142,8 @@ findCommonAncestor(const SmartPtr<MathMLElement>& first, const SmartPtr<MathMLEl
 
       while (firstP && lastP && firstP != lastP)
 	{
-	  firstP = firstP->GetParent();
-	  lastP = lastP->GetParent();
+	  firstP = firstP->getParent();
+	  lastP = lastP->getParent();
 	}
     }
   
@@ -156,7 +156,7 @@ findActionElement(const SmartPtr<MathMLElement>& elem)
   SmartPtr<MathMLElement> elemP(elem);
 
   while (elemP && elemP->IsA() != T_MACTION)
-    elemP = elemP->GetParent();
+    elemP = elemP->getParent();
 
   return (elemP) ? smart_cast<MathMLActionElement>(elemP) : SmartPtr<MathMLActionElement>(0);
 }
@@ -169,7 +169,7 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
   SmartPtr<MathMLElement> elemP(elem);
 
   while (elemP && !elemP->getDOMElement())
-    elemP = elemP->GetParent();
+    elemP = elemP->getParent();
 
   if (elemP) return elemP->getDOMElement();
   else return DOM::Element(0);
@@ -222,7 +222,7 @@ findRightSibling(const SmartPtr<MathMLElement>& elem)
 {
   if (!elem)
     return 0;
-  else if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent()))
+  else if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->getParent()))
     {
       std::vector< SmartPtr<MathMLElement> >::const_iterator p =
 	std::find(row->getContent().begin(), row->getContent().end(), elem);
@@ -231,7 +231,7 @@ findRightSibling(const SmartPtr<MathMLElement>& elem)
       else return findRightSibling(row);
     }
   else
-    return findRightSibling(elem->GetParent());
+    return findRightSibling(elem->getParent());
 }
 
 SmartPtr<MathMLElement>
@@ -239,7 +239,7 @@ findLeftSibling(const SmartPtr<MathMLElement>& elem)
 {
   if (!elem)
     return 0;
-  else if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent()))
+  else if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->getParent()))
     {
       std::vector< SmartPtr<MathMLElement> >::const_iterator p =
 	std::find(row->getContent().begin(), row->getContent().end(), elem);
@@ -248,5 +248,5 @@ findLeftSibling(const SmartPtr<MathMLElement>& elem)
       else return findLeftSibling(row);
     }
   else
-    return findLeftSibling(elem->GetParent());
+    return findLeftSibling(elem->getParent());
 }

@@ -213,7 +213,7 @@ MathMLElement::GetDepth() const
   while (p)
     {
       depth++;
-      p = p->GetParent();
+      p = p->getParent();
     }
 
   return depth;
@@ -240,7 +240,7 @@ SmartPtr<MathMLOperatorElement>
 MathMLElement::getCoreOperatorTop()
 {
   if (SmartPtr<MathMLOperatorElement> coreOp = getCoreOperator())
-    if (!GetParent() || GetParent()->getCoreOperator() != coreOp)
+    if (!getParent() || getParent()->getCoreOperator() != coreOp)
       return coreOp;
   return 0;
 }
@@ -303,14 +303,14 @@ MathMLElement::SetFlag(Flags f)
 void
 MathMLElement::SetFlagUp(Flags f)
 {
-  for (SmartPtr<MathMLElement> p = GetParent(); p && !p->GetFlag(f); p = p->GetParent())
+  for (SmartPtr<MathMLElement> p = getParent(); p && !p->GetFlag(f); p = p->getParent())
     p->SetFlag(f);
 }
 
 void
 MathMLElement::ResetFlagUp(Flags f)
 {
-  for (SmartPtr<MathMLElement> p = GetParent(); p && p->GetFlag(f); p = p->GetParent())
+  for (SmartPtr<MathMLElement> p = getParent(); p && p->GetFlag(f); p = p->getParent())
     p->ResetFlag(f);
 }
 

@@ -75,7 +75,7 @@ MathMLTokenElement::SetChild(unsigned i, const SmartPtr<MathMLTextNode>& child)
   assert(child);
   if (content[i] != child)
     {
-      assert(!child->GetParent());
+      assert(!child->getParent());
       child->setParent(this);
       content[i] = child;
       setDirtyLayout();
