@@ -61,6 +61,8 @@ Gtk_XftFontManager::getXftFont(const XLFD& fd) const
     }
 }
 
+#include <iostream>
+
 XftFont*
 Gtk_XftFontManager::createXftFont(const XLFD& fd) const
 {

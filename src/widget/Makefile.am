@@ -21,18 +21,22 @@ endif
 
 libgtkmathview_custom_reader_la_LIBADD = \
   $(GTK_LIBS) \
+  $(T1_LIBS) \
   $(top_builddir)/src/view/libmathview_custom_reader.la
 
 libgtkmathview_libxml2_reader_la_LIBADD = \
   $(GTK_LIBS) \
+  $(T1_LIBS) \
   $(top_builddir)/src/view/libmathview_libxml2_reader.la
 
 libgtkmathview_libxml2_la_LIBADD = \
   $(GTK_LIBS) \
+  $(T1_LIBS) \
   $(top_builddir)/src/view/libmathview_libxml2.la
 
 libgtkmathview_gmetadom_la_LIBADD = \
   $(GTK_LIBS) \
+  $(T1_LIBS) \
   $(top_builddir)/src/view/libmathview_gmetadom.la
 
 libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@

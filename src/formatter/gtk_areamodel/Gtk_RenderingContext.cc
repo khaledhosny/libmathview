@@ -51,6 +51,10 @@ Gtk_RenderingContext::releaseResources()
     }
 }
 
+#include <t1lib.h>
+#include <t1libx.h>
+#include <iostream>
+
 void
 Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 {
@@ -67,6 +71,22 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 			       GDK_VISUAL_XVISUAL(gdk_drawable_get_visual(drawable)),
 			       GDK_COLORMAP_XCOLORMAP(gdk_colormap));
       assert(xft_draw);
+
+#if HAVE_LIBT1
+    Display* xdisplay = GDK_DRAWABLE_XDISPLAY(drawable);
+    assert(xdisplay != NULL);
+    Colormap xcolormap = GDK_COLORMAP_XCOLORMAP(gdk_colormap);
+    GdkVisual* visual = gdk_colormap_get_visual(gdk_colormap);
+    assert(visual != NULL);
+    Visual* xvisual = GDK_VISUAL_XVISUAL(visual);
+    assert(xvisual != NULL);
+
+    T1_AASetBitsPerPixel(visual->depth);
+    std::cerr << "X11 depth: " << visual->depth << std::endl;
+    std::cerr << "X11 AAGetLevel() --> " << T1_AAGetLevel() << std::endl;
+    std::cerr << "X11 AAGetBitsPerPixel() --> " << T1_AAGetBitsPerPixel() << std::endl;
+    T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
+#endif // HAVE_LIBT1
     }
   else
     {

@@ -31,6 +31,10 @@
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
 #include "Gtk_ComputerModernShaper.hh"
+#if HAVE_LIBT1
+#include "T1FontManager.hh"
+#include "Gtk_T1ComputerModernShaper.hh"
+#endif // HAVE_LIBT1
 #include "SpaceShaper.hh"
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
@@ -50,16 +54,21 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
 
   getShaperManager()->registerShaper(SpaceShaper::create());
 
+#if HAVE_LIBT1
+  SmartPtr<T1FontManager> t1FontManager = T1FontManager::create();
+  SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
+  cmShaper->setFontManager(t1FontManager);
+  getShaperManager()->registerShaper(cmShaper);
+#endif // HAVE_LIBT1
+
 #if 0
   SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
   pangoShaper->setPangoContext(context);
   getShaperManager()->registerShaper(pangoShaper);
-#else
+#elif 0
   SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
   SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-  SmartPtr<Gtk_ComputerModernShaper> cmShaper = Gtk_ComputerModernShaper::create();
   adobeShaper->setFontManager(xftFontManager);
-  cmShaper->setFontManager(xftFontManager);
   //getShaperManager()->registerShaper(adobeShaper);
   getShaperManager()->registerShaper(cmShaper);
 #endif

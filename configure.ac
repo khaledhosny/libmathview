@@ -400,6 +400,7 @@ else
 	T1_CFLAGS=""
 	T1_LIBS=""
 fi
+AM_CONDITIONAL([COND_T1LIB], [test $t1lib = "yes"])
 AC_SUBST(T1_CFLAGS)
 AC_SUBST(T1_LIBS)
 
