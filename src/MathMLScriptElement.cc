@@ -122,6 +122,8 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
 void
 MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
+  if (!HasDirtyLayout(id, maxWidth)) return;
+
   assert(base != NULL);
 
   base->DoBoxedLayout(id, BREAK_NO, maxWidth / 2);
@@ -161,6 +163,8 @@ MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   }
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, maxWidth);
 }
 
 void

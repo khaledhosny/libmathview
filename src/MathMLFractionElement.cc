@@ -80,6 +80,7 @@ MathMLFractionElement::Setup(RenderingEnvironment* env)
   const Value* value = NULL;
 
   scaled ruleThickness = env->GetRuleThickness();
+  printf("sule thickness %d\n", sp2ipx(ruleThickness));
 
   value = GetAttributeValue(ATTR_LINETHICKNESS, env, true);
   if (value != NULL) {

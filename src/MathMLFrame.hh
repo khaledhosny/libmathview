@@ -59,7 +59,7 @@ public:
   void         	 ResetDirty(void) { dirty = dirtyChildren = dirtyBackground = 0; }
   void           ResetDirtyLayout(void) { dirtyLayout = 0; }
   virtual void 	 ResetLast(void);
-  virtual void   SetDirtyLayout(void);  
+  virtual void   SetDirtyLayout(bool = false);  
 
   virtual BreakId GetBreakability(void) const;
 

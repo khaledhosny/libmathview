@@ -27,9 +27,8 @@
 
 MathMLFrame::MathMLFrame()
 {
-  selected = last = 0;
-  dirty = dirtyChildren = dirtyBackground = 1;
-  dirtyLayout = 1;
+  selected = last = dirty = dirtyChildren = dirtyBackground = 0;
+  dirtyLayout = 0;
 }
 
 MathMLFrame::~MathMLFrame()
@@ -69,7 +68,7 @@ MathMLFrame::SetDirtyChildren()
 }
 
 void
-MathMLFrame::SetDirtyLayout()
+MathMLFrame::SetDirtyLayout(bool)
 {
   if (HasDirtyLayout()) return;
   dirtyLayout = 1;

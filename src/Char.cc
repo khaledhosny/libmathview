@@ -47,8 +47,8 @@ static struct NonMarkingCharData {
   { 0x2009, 0xfe00, -3,    BREAK_NO },   // NegativeThinSPace
   { 0x205f, 0xfe00, -4,    BREAK_NO },   // NegativeMediumSpace
   { 0x2005, 0xfe00, -5,    BREAK_NO },   // NegativeThickSpace
-  { 0x2062, 0x0000, 1,     BREAK_NO },   // InvisibleTimes
-  { 0x2061, 0x0000, 2,     BREAK_NO },   // ApplyFunction
+  { 0x2062, 0x0000, 2,     BREAK_NO },   // InvisibleTimes
+  { 0x2061, 0x0000, 3,     BREAK_NO },   // ApplyFunction
 
   { 0x0000, 0x0000, 0,     BREAK_NO }
 };

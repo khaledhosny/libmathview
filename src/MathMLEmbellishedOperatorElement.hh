@@ -23,8 +23,6 @@
 #ifndef MathMLEmbellishedOperatorElement_hh
 #define MathMLEmbellishedOperatorElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLEmbellishedOperatorElement: public MathMLContainerElement {

@@ -1,5 +1,5 @@
 <math>
-  <mtable frame="solid" rowlines="solid" rowalign="center">
+  <mtable frame="solid" rowlines="solid" rowalign="center" columnwidth="fit">
     <mtr>
       <mtd>
 	<mrow>
@@ -66,4 +66,5 @@
 	</mrow>
       </mtd>
     </mtr>
+  </mtable>
 </math>

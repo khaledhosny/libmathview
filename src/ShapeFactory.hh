@@ -23,10 +23,6 @@
 #ifndef ShapeFactory_hh
 #define ShapeFactory_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Shape.hh"
 #include "Container.hh"
 #include "Rectangle.hh"

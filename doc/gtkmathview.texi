@@ -112,7 +112,7 @@ GtkMathView is a C++ rendering engine for MathML (see @url{http://www.w3.org/Mat
 documents. This module is meant to be part of the
 Helm project (see @url{http://www.cs.unibo.it/helm/}), but
 the widget is independent from it and easily
-embeddable within GTK applications. This library is
+embeddable within GTK+ applications. This library is
 covered by the GNU General Public Licence (@emph{not}
 the GNU LGPL, this means that the library cannot be linked against commercial
 applications. See the file COPYING included in the distribution for more details).
@@ -126,10 +126,12 @@ contact the author at the following email address: @email{luca.padovani@@cs.unib
 @comment  node-name,  next,  previous,  up
 @chapter  Download
 @noindent
-The complete source code of the GtkMathView widget, along with this
+The latest version of the source code of the GtkMathView widget, along with this
 documentation, can be obtained directly from the author's page located
 at @url{http://www.cs.unibo.it/helm/mml-widget/}.
 
+In the same page you will find @emph{unofficial} redHat packages and
+@emph{official} Debian packages for the widget and related tools.
 
 @node     Usage, C++ Interface, Download, Top
 @comment  node-name,  next,  previous,  up
@@ -141,7 +143,6 @@ at @url{http://www.cs.unibo.it/helm/mml-widget/}.
 * Font setup::       Preparing a font configuration file.
 @end menu
 
-
 @node     Requirements, Installing, Usage, Usage
 @comment  node-name,  next,  previous,  up
 @section  Requirements
@@ -151,7 +152,7 @@ installed on your system:
 
 @itemize @bullet
 @item
-@code{GTK} (version 1.2) @url{http://www.gtk.org}, of course.
+@code{GTK+} (version 1.2) @url{http://www.gtk.org}, of course.
 @item
 @code{libxml} @url{http://xmlsoft.org}, be careful
 because all current Linux distributions come with version 1.x of libxml
@@ -162,7 +163,7 @@ been added backward "compatibility" with version 1.8.x of libxml, however
 this compatibility is not fully effective due to some bugs of libxml. It is
 recommended to upgrade to version 2. See file INSTALL for more details.
 @item
-@code{minidom} (version 0.1.1) @url{http://www.cs.unibo.it/helm/mml-widget},
+@code{minidom} (version 0.1.1 or higher) @url{http://www.cs.unibo.it/helm/mml-widget},
 this is a minimal, partial implementation of the DOM used by the widget as
 an abstract interface to @code{libxml}. It will be eventually replaced by
 GDOME when there will be a package for it.
@@ -174,13 +175,13 @@ will probably compile and run without problems even with some previous versions)
 @itemize @bullet
 @item
 @comment FIXME: update the link for t1lib
-@code{t1lib} (version 1.0.1) @url{ftp://ftp.neuroinformatik.ruhr-uni-bochum.de/pub/software/t1lib/}
+@code{t1lib} (version 1.0.1) @url{ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-x.y.z.tar.gz}
 Actually, this library is not required, however, if you have it, you will
 be able to use Type1 fonts independently from the X font server. Furthermore,
 you will be able to render anti-aliased text and exploit kerning information,
 if available. This library is also needed in the case you want to export MathML
 to PostScript.
-Finally, the configuration script is usually able to autodetect the library,
+Note that the configuration script is usually able to autodetect the library,
 if installed, however you will have to configure some files and environment
 variables. See the section about font installation below.
 @end itemize
@@ -197,23 +198,23 @@ you will have the following files:
 
 @itemize @bullet
 @item
-@code{/usr/local/bin/gtkmathview-config} this is the configuration
-script. Use @code{gtkmathview-config --cflags} to get compilation flags
-of source files using the widget. Use @code{gtkmathview --libs} to get
+@file{/usr/local/bin/gtkmathview-config} this is the configuration
+script. Use @command{gtkmathview-config --cflags} to get compilation flags
+of source files using the widget. Use @command{gtkmathview-config --libs} to get
 linking flags and libraries to be linked with your object files.
 @item
-@code{/usr/local/include/gtkmathview/} include files (you have to include
-@code{gtkmathview.h}).
+@file{/usr/local/include/gtkmathview/} include files (you have to include
+@file{gtkmathview.h}).
 @item
-@code{/usr/local/lib/} libraries. Unless you
-gave @code{configure} one of @code{--disable-static} or
-@code{--disable-shared} you will find in this directory both static and shared
+@file{/usr/local/lib/} libraries. Unless you
+gave @command{configure} one of @option{--disable-static} or
+@option{--disable-shared} you will find in this directory both static and shared
 versions of the widget.
 @item
-@code{/usr/local/info/}, the info file. You can browse it
-with the command @code{info -f /usr/local/info/gtkmathview.info}.
+@file{/usr/local/info/}, the info file. You can browse it
+with the command @command{info -f /usr/local/info/gtkmathview.info}.
 @item
-@code{/usr/local/share/gtkmathview/} some configuration files (fonts,
+@file{/usr/local/share/gtkmathview/} some configuration files (fonts,
 operator dictionary and general configuration) along with their DTDs.
 @end itemize
 
@@ -225,18 +226,14 @@ operator dictionary and general configuration) along with their DTDs.
 @noindent
 To compile a source file which uses the widget use the command
 
-@example
-gcc -c filename.c -l... -I... `gtkmathview-config --cflags`
-@end example
+@command{gcc -c filename.c -l... -I... `gtkmathview-config --cflags`}
 
 @noindent
 The widget is compiled by default to generate both static and shared object file.
 It can be linked dynamically against your applications with
 the command:
 
-@example
-gcc -o appname *.o `minidom-config --libs` `gtk-config --libs` `gtkmathview-config --libs`
-@end example
+@command{gcc -o appname *.o `minidom-config --libs` `gtk-config --libs` `gtkmathview-config --libs`}
 
 
 @node     Font setup,  , Compile and Link, Usage
@@ -244,7 +241,7 @@ gcc -o appname *.o `minidom-config --libs` `gtk-config --libs` `gtkmathview-conf
 @section  Font setup
 @noindent
 The widget is designed to use the best fonts available on the
-system. As of today the font configuration file (@code{font-configuration.xml}) is
+system. As of today the font configuration file (@file{font-configuration.xml}) is
 designed to use the fonts that comes with the X distribution, in
 particular `times' for plain text and `symbol' for mathematical
 symbols. In addition to this, the configuration file includes the
@@ -254,12 +251,10 @@ LaTeX fonts.
 On September 8th it has been released the first version of free fonts from
 the STIX project. You can download them freely at
 
-@example
-ftp://ftp.elsevier.nl/pub/styles/esstix/esstix.zip
-@end example
+@url{ftp://ftp.elsevier.nl/pub/styles/esstix/esstix.zip}
 
 @noindent
-However, the file @code{font-configuration.xml} must be properly setup to recognize these
+However, the file @file{font-configuration.xml} must be properly setup to recognize these
 fonts. As of today I have no time to seek for each single glyph name, so
 if someone has enough patience and wants to contribute here is a very long
 work for him/her.
@@ -271,7 +266,7 @@ Microsoft Windows and friends. These fonts often have more flexible scaling
 capabilities and you could find the final rendering really improved by their use.
 Since their handling is almost completely hidden inside the X font server,
 the widget needs not any special configuration to use them, apart from a proper
-setting of the font configuration file (@code{font-configuration.xml}). In particular,
+setting of the font configuration file (@file{font-configuration.xml}). In particular,
 True Type versions of Mathematica fonts are available as well, but be careful,
 because some of the fonts provided still have problems with the X server,
 and in some cases the mapping of character is different from a Type1 font
@@ -286,15 +281,15 @@ here are some tips to configure the engine so that you can use Type1 fonts
 
 @noindent
 First of all, you have to setup a little configuration file for the t1lib library.
-Call this file @code{t1.config} and place it somewhere in your home directory.
-Here is a sample file:
+Call this file @file{t1.config} and place it somewhere in your home directory.
+Here is a sample file (also provided with the standard distribution):
 
 @example
 #
 #
 ENCODING=.
 AFM=/usr/share/texmf/fonts/afm/
-TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:/usr/X11R6/lib/X11/fonts/Type1/:.
+TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:.
 @end example
 
 @noindent
@@ -303,22 +298,18 @@ with their metrics (@code{AFM}). Metric information in optional, since it can be
 recovered by the font file itself. However, it is needed if you want to exploit for
 instance kerning. A sample configuration file for @code{t1lib} is included in the
 standard distribution of @code{gtkmathview} and is installed in
-@code{/usr/local/share/gtkmathview/}.
+@file{/usr/local/share/gtkmathview/}.
 
 @noindent
-Next, you have to setup an environment variable @code{T1LIB_CONFIG} with the full path to this
+Next, you have to setup an environment variable @env{T1LIB_CONFIG} with the full path to this
 configuration file. For example, if you use @code{bash}:
 
-@example
-export T1LIB_CONFIG=./config/t1.config
-@end example
+@command{export T1LIB_CONFIG=./config/t1.config}
 
 @noindent
 And, if you use @code{tcsh}:
 
-@example
-setenv T1LIB_CONFIG ./config/t1.config
-@end example
+@command{setenv T1LIB_CONFIG ./config/t1.config}
 
 @noindent
 Now you are ready to use Type1 fonts.
@@ -336,13 +327,11 @@ this class with particular support for GTK.
 * Lengths::                     About Lengths
 * Boxes and Rectangles::        Boxes and Rectangles
 * MathEngine::                  The MathEngine Class
-* DrawingArea::                 The DrawingArea Abstract Class
-* FontManager::                 The FontManager Abstract Class
 @end menu
 
 @node    Lengths, Boxes and Rectangles, C++ Interface, C++ Interface
 @section Lengths
-
+@noindent
 A brief introduction is devoted to lengths, since they are a fundamental
 concept in the engine. From the user point of view, lengths can be expressed
 in many ways. For example, one might prefer using decimal units such as
@@ -353,33 +342,33 @@ used by TeX.
 
 From the point of view of the programmer, a @emph{scaled point} is a
 floating point number, though it can be turned into fixed-pointer number
-giving the option @code{--disable-floating} while configuring the package.
+giving the option @option{--disable-floating} while configuring the package.
 Doing so is not particularly recommended, since with most modern
 microprocessor floating-point arithmetics is rather efficient.
 
 Another unit of measure which is of particular interest for the programmer
-is the @emph{pixel}. Unfortunately, there is no a unique correspondence
+is the @emph{pixel}. Unfortunately, there is not a unique correspondence
 between pixels and scaled points. Theoretically, their relationship
-should depends on the resolution of the output device involved for
+should depend on the resolution of the output device involved for
 rendering (usually, the display). Since this resolution is not available
 in general and often is also misconfigured, it has been fixed in the rendering
 engine to be 72 dots per inch (DPI), which gives pretty good results. Its value
-can be changed by modifing the file @code{src/defs.h}.
+can be changed by modifing the file @file{src/defs.h}.
 
 The following table summarizes the relationships between scaled points and
 the other units of measure recognized by the widget.
 
-@multitable {  mm  } { millimeter } {-------------------------------}
-@item @emph{Unit} @tab @emph{Name} @tab @emph{scaled points}
-@item mm @tab millimeter @tab 186467.98
-@item cm @tab centimeter @tab 1864679.8
-@item pt @tab point @tab 65536
-@item pc @tab pica @tab 786432
-@item in @tab inch @tab 65536 * 72.27
-@item px @tab pixel @tab 65536 * 72.27 / DPI
+@multitable @columnfractions .22 .10 .20 .25 .22
+@item @tab @emph{Unit} @tab @emph{Name} @tab @emph{scaled points} @tab 
+@item @tab mm @tab millimeter @tab 186467.98 @tab 
+@item @tab cm @tab centimeter @tab 1864679.8 @tab 
+@item @tab pt @tab point @tab 65536 @tab 
+@item @tab pc @tab pica @tab 786432 @tab 
+@item @tab in @tab inch @tab 65536 * 72.27 @tab 
+@item @tab px @tab pixel @tab 65536 * 72.27 / DPI @tab 
 @end multitable
 
-The include file @code{src/scaled.hh} defines several conversion functions
+The include file @file{src/scaled.hh} defines several conversion functions
 to convert from one unit to another. The following table summarizes
 the conversion availables.
 
@@ -395,157 +384,341 @@ convert @var{sp} scaled points into the unit @var{xx}.
 convert @var{sp} scaled points into an integral number of pixels.
 @end deftypefn
 
+The system of coordinates depends on the actual drawing area used for the
+rendering. For example, the standard ``browser-like'' coordinate system
+has the vertical components growing to the bottom. On the other hand,
+PostScript has the vertical components growing to the top. In either
+case, when referring to vertical coordinates, ``lower'' means ``nearer
+to the origin''.
+
 
 @node Boxes and Rectangles, MathEngine, Lengths, C++ Interface
 @section Boxes and Rectangles
+@noindent
+MathML elements are enclosed inside rectangles and boxes.
 
-MathML elements are enclosed inside rectangles and boxes. A rectangle is
+@menu
+* Rectangles::                  Rectangles
+* Bounding Boxes::              Bounding Boxes
+@end menu
+
+@node Rectangles, Bounding Boxes, Boxes and Rectangles, Boxes and Rectangles
+@subsection Rectangles
+
+A rectangle is
 a tuple consisting of four components which locate the element by means
 of absolute coordinates.
 
-By contrast, a bounding box is a tuple which identifies the @emph{extent}
+@deftypeivar Rectangle scaled x
+Horizontal coordinate of the lower-left corner.
+@end deftypeivar
+
+@deftypeivar Rectangle scaled y
+Vertical coordinate of the lower-left corner.
+@end deftypeivar
+
+@deftypeivar Rectangle scaled width
+Width of the rectangle.
+@end deftypeivar
+
+@deftypeivar Rectangle scaled height
+Height of the rectangle.
+@end deftypeivar
+
+@deftypemethod Rectangle void Zero ()
+Set all the instance variables @var{x}, @var{y}, @var{width} and @var{height} to zero.
+@end deftypemethod
+
+@deftypemethod Rectangle bool Overlaps (const Rectangle& @var{rect})
+Return @code{true} if the rectangle (partially) overlaps with @var{rect}.
+@end deftypemethod
+
+@deftypemethod Rectangle bool Overlaps (scaled @var{x0}, scaled @var{y0}, scaled @var{w0}, scaled @var{h0})
+Same as the previous method, but the rectangle is given in its components.
+@end deftypemethod
+
+@deftypemethod Rectangle bool IsNull ()
+Return @code{true} if the rectangle is null, that is if either @var{width} or @var{height}
+is strictly less than a predefined constant @code{EPSILON}.
+@end deftypemethod
+
+@deftypemethod Rectangle bool IsInside (scaled @var{x}, scaled @var{y})
+Return @code{true} is the point (@var{x}, @var{y}) is inside the rectangle.
+@end deftypemethod
+
+@deftypemethod Rectangle void Union (const Rectangle& @var{rect})
+Set the rectangle as the smallest rectangle which comprises both @var{*this} and @var{rect}.
+@end deftypemethod
+
+@deftypemethod Rectangle void Dump ()
+Debug method.
+@end deftypemethod
+
+
+
+@node Bounding Boxes,  , Rectangles, Boxes and Rectangles
+@subsection Bounding Boxes
+
+A bounding box is a tuple which identifies the @emph{extent}
 of an element, but not its absolute position.
 
-@node    MathEngine, DrawingArea, Boxes and Rectangles, C++ Interface
+@deftypeivar BoundingBox bool null
+@code{true} if the bounding box is null, that is it is not valid or not initialized
+yet.
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled width
+Width of the bounding box, that is, amount of horizontal space to shift in order to
+render the subsequent entity.
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled ascent
+Ascent of the bounding box, that is the distance from the baseline of the
+topmost pixel on of the entity enclosed in this box. Note that this
+field may be negative for entities laying completely below the baseline,
+such as the underscore @code{_}.
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled descent
+Descent of the bounding box, that is the distance from the baseline of the
+bottommost pixel on of the entity enclosed in this box. Note that this
+field may be negative for entities laying completely above the baseline,
+such as the minus sign and many diacritical marks.  
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled lBearing
+Distance from the origin of the box to the leftmost pixel on of the entity
+enclosed in the box.
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled rBearing
+Distance from the origin of the box to the rightmost pixel on of the entity
+enclosed in the box.
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled tAscent
+``Total ascent'' of the box. For boounding boxes enclosing a single glyph, it
+is the ascent of the font.
+@end deftypeivar
+
+@deftypeivar BoundingBox scaled tDescent
+``Total descent'' of the box. For bounding boxes enclosing a single glyph, it
+is the descent of the font.
+@end deftypeivar
+
+@deftypemethod BoundingBox void Null ()
+Nullify the box.
+@end deftypemethod
+
+@deftypemethod BoundingBox bool IsNull ()
+Return @code{true} if the box is null.
+@end deftypemethod
+
+@deftypemethod BoundingBox scaled GetHeight ()
+Return the height of the box, given as the sum of @var{ascent} and @var{descent}.
+@end deftypemethod
+
+@deftypemethod BoundingBox scaled GetTotalHeight ()
+Return the ``total height'' of the box, given as the sum of @var{tAscent} and @var{tDescent}.
+@end deftypemethod
+
+@deftypemethod BoundingBox void Set (scaled @var{w}, scaled @var{a}, scaled @var{d})
+Set the box to be non-null, with width @var{w}, ascent @var{a}, descent @var{d},
+left bearing 0 and right bearing @var{w}.
+@end deftypemethod
+
+@deftypemethod BoundingBox void Set (scaled @var{w}, scaled @var{a}, scaled @var{d}, scaled @var{l}, scaled @var{r})
+Set the box to be non-null, with width @var{w}, ascent @var{a}, descent @var{d},
+left bearing @var{l} and right bearing @var{r}.
+@end deftypemethod
+
+@deftypemethod BoundingBox void Append (const BoundingBox& @var{box})
+Enlarge current bounding box as if @var{box} was ``appended'' right after it. All the instance
+variable are updated accordingly.
+@end deftypemethod
+
+@deftypemethod BoundingBox void Append (scaled @var{w})
+Augment the @var{width} of the current bounding box by @var{w}.
+@end deftypemethod
+
+@deftypemethod BoundingBox void Max (const BoundingBox& @var{box})
+Enlarge current bounding box as if @var{box} was ``overlaid'' on top of it.
+@end deftypemethod
+
+@deftypemethod BoundingBox void ToRectangle (scaled @var{x}, scaled @var{y}, Rectangle& @var{rect})
+Initialize a rectangle @var{rect} from the current bounding box as if it was placed at
+(@var{x}, @var{y}).
+@end deftypemethod
+
+@deftypemethod BoundingBox void Dump ()
+Debug method.
+@end deftypemethod
+
+
+@node    MathEngine,  , Boxes and Rectangles, C++ Interface
 @section The MathEngine Class
 
-@deffn {Constructor} MathEngine::MathEngine ()
-This is the default constructo of the rendering engine.
-@end deffn
+@defmethod MathEngine MathEngine ()
+This is the default constructor of the rendering engine.
+@end defmethod
 
-@deffn {Destructor} MathEngine::~MathEngine ()
+@defmethod MathEngine ~MathEngine ()
 This is the descructor.
-@end deffn
+@end defmethod
 
-@deftypefn {Static Method} void MathEngine::InitGlobalData (const char* @var{confPath})
+@deftypemethod MathEngine void InitGlobalData (const char* @var{confPath})
 Global initialization function. Must be called once (and only once) no matter
 how many instances of the rendering engine are created. @var{confPath}
 is the full path to the engine's configuration file. If it is @code{NULL}
 then the engine will try to open the default configuration file
-(usually located in @code{/usr/local/share/gtkmathview}).
-@end deftypefn
+(usually located in @file{/usr/local/share/gtkmathview}).
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Init (DrawingArea* @var{area}, FontManager* @var{fm})
+@deftypemethod MathEngine void Init (DrawingArea* @var{area}, FontManager* @var{fm})
 Initialization function. Must be called before any other method of this class
 is invoked. @var{area} must be a non-@code{NULL} pointer to an already instantiated
 @code{DrawingArea} object and @var{fm} must be a non-@code{NULL} pointer to an
 already instantiated @code{FontManager} object.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn {Method} bool MathEngine::Load (const char* @var{uri})
+@deftypemethod MathEngine bool Load (const char* @var{uri})
 Load the document whose URI is @var{uri}. The document is parsed, the
 setup is done (see below). Return @code{true} if the document has
 been loaded correctly, @code{false} otherwise.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Unload ()
+@deftypemethod MathEngine bool Load (mDOMDocRef @var{doc})
+Load the document whose DOM structure is @var{doc}. Return @code{true}
+if the document has been loaded correctly, @code{false} otherwise.
+@end deftypemethod
+
+@deftypemethod  MathEngine void Unload ()
 Unload the document currently loaded and release all resources associated
 to it. This method is implicitly called by the load method.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Setup ()
+@deftypemethod  MathEngine void Setup ()
 Force the setup of the document loaded, that is the document tree is
 traversed and all the attributes are re-evaluated. This is to be done
 if a global default property of the document has changed, such as
 the default font size.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Layout ()
+@deftypemethod  MathEngine void Layout ()
 Force the layout of the document, that is, the document is formatted
 given the available horizontal width (which is a property of
 the drawing area set at initialization time).
-@end deftypefn
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetDirty (const Rectangle* @var{rect} = NULL)
-@end deftypefn
+@deftypemethod  MathEngine void SetDirty (const Rectangle* @var{rect} = NULL)
+Force a set of MathML elements to be redrawn. If @var{rect} is specified (i.e. it
+is non-@code{NULL}), then only elements whose bounding box has a non-empty
+intersection with @var{rect} are set as ``dirty''. If @var{rect} is @code{NULL}, all
+the elements in the document are set as ``dirty''. Only dirty elements
+will be drawn in the next call to the update method.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Render ()
-@end deftypefn
+@deftypemethod  MathEngine void Update (const Rectangle* @var{rect})
+If @var{rect} is not @code{NULL}, update the rectangle @var{rect}. Otherwise
+update all the visible area. The update is done by rendering the dirty
+elements of the document and copying the
+rendered area from the back buffer to the screen.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Render (const Rectangle* @var{rect})
-@end deftypefn
+@deftypemethod  MathEngine void Render ()
+Render the whole document.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::Update (const Rectangle* @var{rect})
-@end deftypefn
+@deftypemethod  MathEngine void Render (const Rectangle* @var{rect})
+Render all MathML elements whose bounding box has a non-empty
+intersection with @var{rect}.
+@end deftypemethod
 
-@deftypefn {Method} bool MathEngine::IsOnLink (scaled @var{x}, scaled @var{y})
-@end deftypefn
+@deftypemethod  MathEngine bool IsOnLink (scaled @var{x}, scaled @var{y})
+Return @code{true} if the element pointed to by (@var{x}, @var{y})
+has a link. Currently, this test is done by looking at an attribute
+@code{href} in the DOM node, ignoring possible namespaces.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetElement (MathMLElement* @var{elem})
-@end deftypefn
+@deftypemethod  MathEngine void SetSelection (MathMLElement* @var{elem})
+Set the element @var{elem} as selected. A selected element (and all
+its children) will be rendered with a different background color.
+@end deftypemethod
 
-@deftypefn {Method} MathMLElement* MathEngine::GetElement ()
-@end deftypefn
+@deftypemethod  MathEngine MathMLElement* GetSelection ()
+Return the MathML currently selected, or @code{NULL} if no element
+is selected.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetSelectionFirst (MathMLElement* @var{elem})
-@end deftypefn
+@deftypemethod  MathEngine MathMLElement* GetRoot ()
+Return the document's root element.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetSelectionLast (MathMLElement* @var{elem})
-@end deftypefn
+@deftypemethod  MathEngine MathMLElement* GetElementAt (scaled @var{x}, scaled @var{y})
+Return the element pointed to by (@var{x}, @var{y}), or @code{NULL} if there is
+no element at that coordinates.
+@end deftypemethod
 
-@deftypefn {Method} MathMLElement* MathEngine::GetSelectionRoot ()
-@end deftypefn
+@deftypemethod  MathEngine void GetDocumentBoundingBox (BoundingBox& @var{box})
+Initialize @var{box} with the bounding box of the whole document.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::ResetSelectionRoot ()
-@end deftypefn
+@deftypemethod  MathEngine void GetDocumentRectangle (Rectangle& @var{rect})
+Initialize @var{rect} with the rectangle of the whole document.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetSelection (MathMLElement* @var{elem})
-@end deftypefn
+@deftypemethod  MathEngine void SetDefaultFontSize (unsigned @var{size})
+Set the default font size for the document. No setup or update is done after a call to this
+method. @var{size} is expressed in points.
+@end deftypemethod
 
-@deftypefn {Method} MathMLElement* MathEngine::GetSelection ()
-@end deftypefn
+@deftypemethod  MathEngine unsigned GetDefaultFontSize ()
+Return the current default font size for the document in points.
+@end deftypemethod
 
-@deftypefn {Method} MathMLElement* MathEngine::GetRoot ()
-@end deftypefn
+@deftypemethod  MathEngine void SetVerbosity (int @var{level})
+Set the verbosity level to @var{level}. Valid levels are the integers from
+0 to 3, each associated to an increasing verbosity of messages.
+@end deftypemethod
 
-@deftypefn {Method} MathMLElement* MathEngine::GetElementAt (scaled @var{x}, scaled @var{y})
-@end deftypefn
+@deftypemethod  MathEngine int GetVerbosity ()
+Return the current level of verbosity as an index from 0 to 3.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::GetDocumentBoundingBox (BoundingBox& @var{box})
-@end deftypefn
+@deftypemethod  MathEngine void SetAntiAliasing (bool @var{b})
+Enable anti-aliasing if @var{b} is @code{true}, disable otherwise. The document
+is updated at each invocation of this method. Anti-aliasing is available
+with Type1 fonts only and it is much slower than non-anti-aliased mode.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::GetDocumentRectangle (Rectangle& @var{rect})
-@end deftypefn
+@deftypemethod  MathEngine bool GetAntiAliasing ()
+Return @code{true} if anti-aliasing is enabled.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetDefaultFontSize (unsigned @var{size})
-@end deftypefn
+@deftypemethod  MathEngine void SetKerning (bool @var{b})
+Enable kerning if @var{b} is @code{true}, disable otherwise. The document is
+update at each invocation of this method. Kerning is available for Type1
+fonts only, and only for those fonts with a proper @code{AFM} file with
+kerning information. Exporting to PostScript does not currently support
+kerning.
+@end deftypemethod
 
-@deftypefn {Method} unsigned MathEngine::GetDefaultFontSize ()
-@end deftypefn
+@deftypemethod  MathEngine bool GetKerning ()
+Return @code{true} if kerning is enabled.
+@end deftypemethod
 
-@deftypefn {Method} void MathEngine::SetVerbosity (int @var{level})
-@end deftypefn
+@deftypemethod  MathEngine void SetTransparency (bool @var{b})
+Enable transparency if @var{b} is true, disable otherwise. Transparency
+allows two or more glyphs to overlap transparently, which is rather useful
+in the case of combining characters. Since these characters are not frequent
+and transparency is slower than standard rendering mode, the default for
+transparency is @code{false}. Note also that transparency is currently
+supported for Type1 fonts only. 
+@end deftypemethod
 
-@deftypefn {Method} int MathEngine::GetVerbosity ()
-@end deftypefn
-
-@deftypefn {Method} void MathEngine::SetAntiAliasing (bool @var{b})
-@end deftypefn
-
-@deftypefn {Method} bool MathEngine::GetAntiAliasing ()
-@end deftypefn
-
-@deftypefn {Method} void MathEngine::SetKerning (bool @var{b})
-@end deftypefn
-
-@deftypefn {Method} bool MathEngine::GetKerning ()
-@end deftypefn
-
-@deftypefn {Method} void MathEngine::SetTransparency (bool @var{b})
-@end deftypefn
-
-@deftypefn {Method} bool MathEngine::GetTransparency ()
-@end deftypefn
-
-
-
-
-@node DrawingArea, FontManager, MathEngine, C++ Interface
-@section The DrawingArea Abstract Class
-
-@node FontManager,  , DrawingArea, C++ Interface
-@section The FontManager Abstract Class
-
+@deftypemethod  MathEngine bool GetTransparency ()
+Return @code{true} if transparency is enabled.
+@end deftypemethod
 
 @node     GTK+ Interface, Configuration, C++ Interface, Top
 @comment  node-name,  next,  previous,  up
@@ -581,9 +754,14 @@ object. You can pass a couple of adjustments for the scrolling bars, or just @co
 case you want the widget to allocate its own scrolling bars.
 @end deftypefn
 
-@deftypefn {Method} gboolean gtk_math_view_load (GtkMathView* @var{widget}, const gchar* @var{file_name})
-load a MathML document into the widget and render it. If the loading succeed then @code{TRUE}
+@deftypefn {Method} gboolean gtk_math_view_load (GtkMathView* @var{widget}, const gchar* @var{uri})
+load the MathML document whose URI is @var{uri} and render it. If the loading succeed then @code{TRUE}
 is returned, @code{FALSE} otherwise.
+@end deftypefn
+
+@deftypefn {Method} gboolean gtk_math_view_load_tree (GtkMathView* @var{widget}, mDOMDocRef @var{doc})
+load the MathML document whose DOM document structure is pointed to by @var{doc} and render
+it. If the loading succeed then @code{TRUE} is returned, @code{FALSE} otherwise.
 @end deftypefn
 
 @deftypefn {Method} void gtk_math_view_unload (GtkMathView* @var{widget})
@@ -748,12 +926,12 @@ node of the newly pointed element.
 @noindent
 Starting from version 0.2.2 the @var{widget} has a rather flexible configuration system.
 If you made a default installation, you'll find all the configuration files in
-@code{/usr/local/share/gtkmathview}. In particular, the file
-@code{math-engine-configuration.xml} contains all the references to the other
+@file{/usr/local/share/gtkmathview}. In particular, the file
+@file{math-engine-configuration.xml} contains all the references to the other
 configuration files (operator dictionary, fonts, entities, @code{t1lib}).
 
 @noindent
-You can set the environment variable @code{MATHENGINECONF} to the full path
+You can set the environment variable @env{MATHENGINECONF} to the full path
 of the configuration file. If the variable is not set, the @var{widget} will try to
 load the configuration file from the default location.
 
@@ -763,7 +941,7 @@ The list of valid entries is presented below:
 @itemize @bullet
 @item
 @code{dictionary-path} This element contains a full path to an operator
-dictionary (the default is @code{dictionary.xml}). You can use this
+dictionary (the default is @file{dictionary.xml}). You can use this
 element several times if you have more than one dictionary. This can be
 useful to have a general dictionary and another local dictionary with
 your preferences. An operator found in a subsequent dictionary overrides
@@ -779,15 +957,15 @@ loaded from this file.
 @item
 @code{font-configuration-path} This element contains a full path to
 a font configuration file. The format of such file is still undocumented,
-but you can take a look at the DTD and the source file @code{CharMapper.cc}
+but you can take a look at the DTD and the source file @file{src/CharMapper.cc}
 for more details.
 You can use this element several times if you want to override or enrich
-the settings of the default configuration (see @code{font-configuration.xml}).
+the settings of the default configuration (see @file{font-configuration.xml}).
 
 @item
 @code{t1-config-file} This element contains a full path to the
 configuration file for the @code{t1lib} library. In particular,
-it is not necessary to explicitly set the @code{T1LIB_CONFIG} environment
+it is not necessary to explicitly set the @env{T1LIB_CONFIG} environment
 variable if this element is set.
 
 @item

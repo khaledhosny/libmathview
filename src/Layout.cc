@@ -356,8 +356,7 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
 
   for (Iterator<Atom*> atom(content); atom.More(); atom.Next()) {
     assert(atom() != NULL);
-    if (atom()->IsSpace()) fixedWidth += atom()->spacing;
-    else {
+    if (!atom()->IsSpace()) {
       assert(atom()->frame != NULL);
       if (atom()->frame->IsText()/* || atom()->frame->IsSpace()*/) {
 	fixedWidth += getFrameBoundingBox(atom()->frame).width;
@@ -367,6 +366,8 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
 	nElements++;
       }
     }
+
+    fixedWidth += atom()->spacing;
   }
 
   bool moreSpace = fixedWidth + elemWidth < totalWidth;
@@ -396,6 +397,11 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
     }
   }
 
+#if 0
+  // the following code is used to set the `last' flag for
+  // the last frame in a row of the layout
+  // NOTE: this code is wrong in this position, because it sets
+  // last even for the last frame in the last row!
   if (content.GetSize() > 0) {
     Iterator<Atom*> p(content);
     p.ResetLast();
@@ -411,6 +417,7 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
       p()->frame->SetLast();
     }
   }
+#endif
 }
 
 void
@@ -438,6 +445,13 @@ Layout::Row::BreakUpTo(Atom* atom, Row* newRow)
     width += atom->GetWidth(LAYOUT_MAX);
   }
 
+  Iterator<Atom*> a(content);
+  a.ResetLast();
+  while (a.More() && a()->frame == NULL) a.Prev();
+  if (a.More()) {
+    a()->frame->SetLast();
+  }
+    
   return width;
 }
 

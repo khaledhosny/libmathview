@@ -39,7 +39,9 @@ MathMLSpaceNode::~MathMLSpaceNode()
 void
 MathMLSpaceNode::Setup(class RenderingEnvironment*)
 {
-  box.Null();
+  // if the box is set to be null then a possible spacing is not added
+  // or, better, it is added, but the box remains null
+  box.Set(0, 0, 0);
 }
 
 void

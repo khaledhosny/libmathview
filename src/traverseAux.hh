@@ -23,6 +23,8 @@
 #ifndef traverseAux_hh
 #define traverseAux_hh
 
+#include <minidom.h>
+
 #include "CharMap.hh"
 
 class MathMLElement*         findEmbellishedOperatorRoot(class MathMLElement*);
@@ -31,5 +33,7 @@ class MathMLOperatorElement* findStretchyOperator(class MathMLElement*);
 class MathMLOperatorElement* findStretchyOperator(class MathMLElement*, StretchId);
 class MathMLElement*         findCommonAncestor(class MathMLElement*, class MathMLElement*);
 class MathMLActionElement*   findActionElement(class MathMLElement*);
+mDOMNodeRef                  findDOMNode(class MathMLElement*);
+class MathMLElement*         findMathMLElement(mDOMNodeRef);
 
 #endif // traverseAux_hh

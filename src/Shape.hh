@@ -23,10 +23,6 @@
 #ifndef Shape_hh
 #define Shape_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stddef.h>
 
 #include "Rectangle.hh"
@@ -44,4 +40,4 @@ public:
   Container<Rectangle*> content;
 };
 
-#endif
+#endif // Shape_hh

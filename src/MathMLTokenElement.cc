@@ -115,7 +115,6 @@ MathMLTokenElement::Append(const String* s)
       } else
 	node = new MathMLSpaceNode(spacing, bid);
       i += len;
-
       lastBreak = true;
     } else if (i + 1 < sLength && iswalnum(s->GetChar(i)) && iswalnum(s->GetChar(i + 1))) {
       unsigned start = i;
@@ -458,4 +457,15 @@ MathMLTokenElement::IsNonMarking() const
   }
 
   return true;
+}
+
+bool
+MathMLTokenElement::IsLast() const
+{
+  if (last != 0) return true;
+  if (content.GetSize() > 0) {
+    assert(content.GetLast() != NULL);
+    return content.GetLast()->IsLast();
+  } else
+    return false;
 }

@@ -95,9 +95,9 @@ public:
   virtual scaled GetRightEdge(void) const;
 
   bool HasDirtyLayout(void) const { return MathMLFrame::HasDirtyLayout(); }
-  bool HasDirtyLayout(scaled w) const { return HasDirtyLayout() || !scaledEq(w, lastLayoutWidth); }
   void ResetDirtyLayout(void) { MathMLFrame::ResetDirtyLayout(); }
-  void ResetDirtyLayout(scaled w);
+  bool HasDirtyLayout(LayoutId, scaled) const;
+  void ResetDirtyLayout(LayoutId, scaled);
 
 #ifdef DEBUG
   static int GetCounter(void) { return counter; }

@@ -34,15 +34,20 @@ public:
   virtual void DoLayout(LayoutId, class Layout&);
   virtual void DoStretchyLayout(void);
   virtual void SetPosition(scaled, scaled);
+  virtual void Freeze(void);
   virtual void Render(const DrawingArea&);
-  virtual void SetDirty(const Rectangle* = NULL);  
   virtual ~MathMLActionElement();
 
+  virtual void SetDirtyLayout(bool = false);
+  virtual void SetDirty(const Rectangle* = NULL);  
+  virtual void SetSelected(void);
+  virtual void ResetSelected(void);
+  virtual void ResetLast(void);
+
+  virtual bool IsLast(void) const;
   virtual bool IsBreakable(void) const;
   virtual bool IsExpanding(void) const;
-
   virtual BreakId GetBreakability(void) const;
-
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 

@@ -267,17 +267,25 @@ MathMLElement::ResetLayout()
   layout = NULL;
 }
 
-void
-MathMLElement::ResetDirtyLayout(scaled w)
+bool
+MathMLElement::HasDirtyLayout(LayoutId id, scaled w) const
 {
-  ResetDirtyLayout();
-  lastLayoutWidth = w;
+  return true || HasDirtyLayout() || (id == LAYOUT_AUTO && !scaledEq(w, lastLayoutWidth));
+}
+
+void
+MathMLElement::ResetDirtyLayout(LayoutId id, scaled w)
+{
+  if (id == LAYOUT_AUTO) {
+    ResetDirtyLayout();
+    lastLayoutWidth = w;
+  }
 }
 
 void
 MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
-  if (!HasDirtyLayout(maxWidth)) return;
+  if (!HasDirtyLayout(id, maxWidth)) return;
 
   ResetLayout();
 
@@ -293,7 +301,7 @@ MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   cout << '`' << NameOfTagId(IsA()) << "' (" << this << ") DoBoxedLayout " << box << endl;
 #endif
 
-  if (id == LAYOUT_AUTO) ResetDirtyLayout(maxWidth);
+  ResetDirtyLayout(id, maxWidth);
 }
 
 void
@@ -319,6 +327,9 @@ MathMLElement::DoStretchyLayout()
 void
 MathMLElement::SetPosition(scaled x, scaled y)
 {
+  if (IsA() == TAG_MO) printf("was %d %d now %d %d layout? %d\n", sp2ipx(position.x), sp2ipx(position.y), 
+			      sp2ipx(x), sp2ipx(y), HasLayout());
+
   position.x = x;
   position.y = y;
   if (HasLayout()) layout->SetPosition(x, y);
@@ -345,6 +356,9 @@ MathMLElement::RenderBackground(const DrawingArea& area)
   }
 
   if (HasDirtyBackground()) {
+    printf("`%s' has dirty background : shape = ", NameOfTagId(IsA()));
+    shape->Dump();
+    printf("\n");
     assert(IsShaped());
     area.Clear(bGC[IsSelected()], GetShape());
   }

@@ -39,6 +39,7 @@ public:
 
   void   In(void);
   void   Out(void);
+  int    GetPenalty(void) const { return penalty; }
   void   Append(class MathMLFrame*, scaled, BreakId = BREAK_NO);
   void   Append(scaled, BreakId = BREAK_NO);
   void   DoLayout(LayoutId) const;

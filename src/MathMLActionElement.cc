@@ -25,6 +25,7 @@
 #include <assert.h>
 
 #include "MathEngine.hh"
+#include "ShapeFactory.hh"
 #include "StringUnicode.hh"
 #include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
@@ -77,8 +78,9 @@ MathMLActionElement::Setup(RenderingEnvironment* env)
 void
 MathMLActionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
-  printf("LAYOUT %d (dirty? %d)\n", id, HasDirtyLayout(availWidth));
-  if (!HasDirtyLayout(availWidth)) return;
+  printf("boxed layout for action %d\n", HasDirtyLayout(id, availWidth));
+
+  if (!HasDirtyLayout(id, availWidth)) return;
 
   MathMLElement* elem = GetSelectedElement();
 
@@ -90,10 +92,7 @@ MathMLActionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 
   ConfirmLayout(id);
 
-  box.Dump();
-  printf("\n");
-
-  if (id == LAYOUT_AUTO) ResetDirtyLayout(availWidth);
+  ResetDirtyLayout(id, availWidth);
 }
 
 void
@@ -118,6 +117,24 @@ MathMLActionElement::SetPosition(scaled x, scaled y)
 
   MathMLElement* elem = GetSelectedElement();
   if (elem != NULL) elem->SetPosition(x, y);
+}
+
+void
+MathMLActionElement::Freeze()
+{
+  MathMLElement* elem = GetSelectedElement();
+  assert(elem != NULL);
+
+  elem->Freeze();
+
+  if (!IsBreakable() || HasLayout()) MathMLElement::Freeze();
+  else {
+    if (shape != NULL) delete shape;
+    ShapeFactory shapeFactory;
+    shapeFactory.Add(elem->GetShape());
+    if (elem->IsLast()) shapeFactory.SetNewRow();
+    shape = shapeFactory.GetShape();
+  }
 }
 
 void
@@ -159,6 +176,14 @@ MathMLActionElement::IsExpanding() const
   return (elem != NULL) ? elem->IsExpanding() : false;
 }
 
+bool
+MathMLActionElement::IsLast() const
+{
+  if (last != 0) return true;
+  MathMLElement* elem = GetSelectedElement();
+  return (elem != NULL) ? elem->IsLast() : false;
+}
+
 MathMLElement*
 MathMLActionElement::GetSelectedElement() const
 {
@@ -173,13 +198,9 @@ MathMLActionElement::SetSelectedIndex(unsigned i)
   selection = i - 1;
 
   MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) {
-    elem->SetDirtyLayout();
-    // same argument as for SetDirty
-    SetDirtyLayout();
-  }
-
-  printf("the index has changed, now dirty layout is %d\n", HasDirtyLayout());
+  printf("before calling setdirty child is %d and this is %d\n", elem->HasDirtyLayout(), HasDirtyLayout());
+  if (elem != NULL) elem->SetDirtyLayout(true);
+  printf("the index has changed (%p), now dirty layout is %d\n", elem->HasDirtyLayout(), HasDirtyLayout());
 }
 
 unsigned
@@ -216,4 +237,48 @@ MathMLActionElement::Inside(scaled x, scaled y)
 
   MathMLElement* elem = GetSelectedElement();
   return (elem != NULL) ? elem->Inside(x, y) : this;
+}
+
+void
+MathMLActionElement::SetSelected()
+{
+  if (IsSelected()) return;
+
+  selected = 1;
+
+  MathMLElement* elem = GetSelectedElement();
+  if (elem != NULL) elem->SetSelected();
+
+  SetDirty();
+}
+
+void
+MathMLActionElement::ResetSelected()
+{
+  if (!IsSelected()) return;
+
+  SetDirty();
+
+  MathMLElement* elem = GetSelectedElement();
+  if (elem != NULL) elem->ResetSelected();
+
+  selected = 0;
+}
+
+void
+MathMLActionElement::ResetLast()
+{
+  last = 0;
+  MathMLElement* elem = GetSelectedElement();
+  if (elem != NULL) elem->ResetLast();
+}
+
+void
+MathMLActionElement::SetDirtyLayout(bool children)
+{
+  MathMLElement::SetDirtyLayout(children);
+  if (children) {
+    MathMLElement* elem = GetSelectedElement();
+    if (elem != NULL) elem->SetDirtyLayout(children);
+  }
 }

@@ -225,6 +225,7 @@ MathEngine::Setup()
   root->Setup(&env);
   perf.Stop();
   logger(LOG_INFO, "setup time: %dms", perf());
+  root->SetDirtyLayout(true);
 
   MinMaxLayout();
 }

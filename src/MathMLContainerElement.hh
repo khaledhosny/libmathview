@@ -41,14 +41,14 @@ public:
   virtual MathMLElement* Inside(scaled, scaled);
   virtual ~MathMLContainerElement();
 
+  virtual void SetDirtyLayout(bool = false);
   virtual void SetDirty(const Rectangle* = NULL);
-  virtual void SetDirtyLayout(void);
   virtual void SetSelected(void);
   virtual void ResetSelected(void);
   virtual void ResetLast(void);
 
-  virtual bool IsExpanding(void) const;
   virtual bool IsLast(void) const;
+  virtual bool IsExpanding(void) const;
   virtual void GetLinearBoundingBox(BoundingBox&) const;
   virtual BreakId GetBreakability(void) const;
   virtual scaled GetLeftEdge(void) const;

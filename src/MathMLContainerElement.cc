@@ -65,6 +65,8 @@ MathMLContainerElement::Setup(RenderingEnvironment* env)
 void
 MathMLContainerElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
+  if (!HasDirtyLayout(id, availWidth)) return;
+
   ResetLayout();
 
   if (IsBreakable()) {
@@ -90,6 +92,8 @@ MathMLContainerElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidt
       elem()->DoBoxedLayout(id, bid, availWidth);
     }
   }
+
+  ResetDirtyLayout(id, availWidth);
 }
 
 void
@@ -185,6 +189,18 @@ MathMLContainerElement::Inside(scaled x, scaled y)
 }
 
 void
+MathMLContainerElement::SetDirtyLayout(bool children)
+{
+  MathMLElement::SetDirtyLayout(children);
+  if (children) {
+    for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
+      assert(elem() != NULL);
+      elem()->SetDirtyLayout(children);
+    }
+  }
+}
+
+void
 MathMLContainerElement::SetDirty(const Rectangle* rect)
 {
   assert(IsShaped());
@@ -210,19 +226,6 @@ MathMLContainerElement::SetDirty(const Rectangle* rect)
   for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
     assert(elem() != NULL);
     elem()->SetDirty(rect);
-  }
-}
-
-void
-MathMLContainerElement::SetDirtyLayout()
-{
-  if (HasDirtyLayout()) return;
-
-  dirtyLayout = 1;
-  
-  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-    assert(elem() != NULL);
-    elem()->SetDirtyLayout();
   }
 }
 
@@ -285,9 +288,10 @@ bool
 MathMLContainerElement::IsLast() const
 {
   if (last != 0) return true;
-  if (content.GetSize() > 0 && content.GetLast() != NULL)
+  if (content.GetSize() > 0) {
+    assert(content.GetLast() != NULL);
     return content.GetLast()->IsLast();
-  else
+  } else
     return false;
 }
 

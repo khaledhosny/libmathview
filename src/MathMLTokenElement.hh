@@ -42,6 +42,7 @@ public:
   virtual void   Append(const String*);
   void           Append(class MathMLTextNode*);
 
+  virtual bool   IsLast(void) const;
   virtual bool 	 IsToken(void) const;
   virtual bool 	 IsBreakable(void) const;
   bool           IsNonMarking(void) const;

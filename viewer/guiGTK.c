@@ -434,7 +434,15 @@ element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  printf("element changed: %p %s\n", node, (node != NULL) ? mdom_node_get_name(node) : "-");
+  printf("node changed: %p %s\n", node, (node != NULL) ? mdom_node_get_name(node) : "-");
+}
+
+static void
+action_changed(GtkMathView* math_view, mDOMNodeRef node)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  printf("action changed: %p\n", node);
 }
 
 static void
@@ -462,9 +470,11 @@ jump(GtkMathView* math_view, mDOMNodeRef node)
 static void
 clicked(GtkMathView* math_view, gpointer user_data)
 {
-  if (gtk_math_view_get_action(math_view) != NULL) {
+  printf("click event!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+  if (gtk_math_view_get_action(math_view) != NULL)
     gtk_math_view_action_toggle(math_view);
-  }
+  else 
+    printf("no action!\n");
 }
 
 static void
@@ -491,6 +501,10 @@ create_widget_set()
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "element_changed", GTK_SIGNAL_FUNC (element_changed),
+			     (gpointer) main_area);
+
+  gtk_signal_connect_object (GTK_OBJECT (main_area),
+			     "action_changed", GTK_SIGNAL_FUNC (action_changed),
 			     (gpointer) main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
