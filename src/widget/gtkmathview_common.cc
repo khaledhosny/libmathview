@@ -89,7 +89,6 @@ typedef gmetadom_Setup GtkMathView_Setup;
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250
-#define MARGIN            5
 
 enum SelectState 
   {
@@ -292,8 +291,8 @@ from_view_coords(GtkMathView* math_view, GtkMathViewPoint* point)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(point != NULL);
-  point->x -= math_view->top_x - MARGIN;
-  point->y -= math_view->top_y - MARGIN - Gtk_RenderingContext::toGtkPixels(math_view->view->getBoundingBox().height);
+  point->x -= math_view->top_x;
+  point->y -= math_view->top_y - Gtk_RenderingContext::toGtkPixels(math_view->view->getBoundingBox().height);
 }
 
 static void
@@ -302,8 +301,8 @@ to_view_coords(GtkMathView* math_view, gint* x, gint* y)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(x != NULL);
   g_return_if_fail(y != NULL);
-  *x += math_view->top_x - MARGIN;
-  *y += math_view->top_y - MARGIN - Gtk_RenderingContext::toGtkPixels(math_view->view->getBoundingBox().height);
+  *x += math_view->top_x;
+  *y += math_view->top_y - Gtk_RenderingContext::toGtkPixels(math_view->view->getBoundingBox().height);
 }
 
 /* widget implementation */
@@ -834,8 +833,8 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
 
   if (BoundingBox box = math_view->view->getBoundingBox())
     {
-      requisition->width = sp2ipx(box.horizontalExtent()) + 2 * MARGIN;
-      requisition->height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
+      requisition->width = sp2ipx(box.horizontalExtent());
+      requisition->height = sp2ipx(box.verticalExtent());
     }
 }
 
@@ -1141,7 +1140,7 @@ setup_adjustments(GtkMathView* math_view)
   BoundingBox box = math_view->view->getBoundingBox();
 
   if (math_view->hadjustment != NULL) {
-    gint width = sp2ipx(box.width) + 2 * MARGIN;
+    gint width = sp2ipx(box.width);
     gint page_width = GTK_WIDGET(math_view)->allocation.width;
     
     if (math_view->top_x > width - page_width)
@@ -1151,7 +1150,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    gint height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
+    gint height = sp2ipx(box.verticalExtent());
     gint page_height = GTK_WIDGET(math_view)->allocation.height;
 
     if (math_view->top_y > height - page_height)
