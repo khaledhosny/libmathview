@@ -29,3 +29,29 @@
 SmartPtr<custom_reader_Builder>
 custom_reader_Builder::create()
 { return TemplateBuilder<custom_reader_Model>::create(); }
+
+bool
+custom_reader_Builder::notifyStructureChanged(void* id)
+{
+  if (SmartPtr<Element> elem = linker.assoc(id))
+    {
+      elem->setDirtyStructure();
+      elem->setDirtyAttributeD();
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+custom_reader_Builder::notifyAttributeChanged(void* id, const char*)
+{
+  if (SmartPtr<Element> elem = linker.assoc(id))
+    {
+      elem->setDirtyAttribute();
+      return true;
+    }
+  else
+    return false;
+}
+

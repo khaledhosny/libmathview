@@ -38,6 +38,9 @@ protected:
 public:
   static SmartPtr<custom_reader_Builder> create(void);
 
+  bool notifyStructureChanged(void*);
+  bool notifyAttributeChanged(void*, const char*);
+
 protected:
   SmartPtr<Element>
   linkerAssoc(const SmartPtr<customXmlReader>& reader) const

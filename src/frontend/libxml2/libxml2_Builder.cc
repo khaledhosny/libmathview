@@ -38,20 +38,20 @@ libxml2_Builder::create()
 { return TemplateBuilder<libxml2_Model>::create(); }
 
 SmartPtr<Element>
-libxml2_Builder::findSelfOrAncestorElement(xmlNode* el) const
+libxml2_Builder::findSelfOrAncestorElement(xmlElement* el) const
 {
-  for (xmlNode* p = el; p; p = p->parent)
+  for (xmlNode* p = libxml2_Model::asNode(el); p; p = p->parent)
     if (SmartPtr<Element> elem = linker.assoc(libxml2_Model::asElement(p)))
       return elem;
   return 0;
 }
 
-xmlNode*
-libxml2_Builder::findSelfOrAncestorModelNode(const SmartPtr<Element>& elem) const
+xmlElement*
+libxml2_Builder::findSelfOrAncestorModelElement(const SmartPtr<Element>& elem) const
 {
   for (SmartPtr<Element> p(elem); p; p = p->getParent())
     if (xmlElement* el = linker.assoc(p))
-      return (xmlNode*) el;
+      return el;
   return 0;
 }
 
@@ -59,4 +59,29 @@ void
 libxml2_Builder::setRootModelElement(xmlElement* el)
 {
   root = el;
+}
+
+bool
+libxml2_Builder::notifyStructureChanged(xmlElement* target)
+{
+  if (SmartPtr<Element> elem = findSelfOrAncestorElement(target))
+    {
+      elem->setDirtyStructure();
+      elem->setDirtyAttributeD();
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+libxml2_Builder::notifyAttributeChanged(xmlElement* target, const xmlChar*)
+{
+  if (SmartPtr<Element> elem = findSelfOrAncestorElement(target))
+    {
+      elem->setDirtyAttribute();
+      return true;
+    }
+  else
+    return false;
 }

@@ -28,29 +28,32 @@ enum {
   C_CUSTOM_ELEMENT_NODE
 };
 
+typedef void* c_customModelElementId;
+typedef void* c_customModelUserData;
+
 struct _c_customXmlReader
 {
   /* auxiliary methods */
-  void  (*free_data)(void*);
+  void  (*free_data)(c_customModelUserData);
   void  (*free_string)(char*);
 
   /* query methods */
-  int   (*more)(void*);
-  int   (*get_node_type)(void*);
-  char* (*get_node_name)(void*);
-  char* (*get_node_namespace_uri)(void*);
-  char* (*get_node_value)(void*);
-  void* (*get_node_id)(void*);
-  int   (*get_attribute_count)(void*);
-  void  (*get_attribute_by_index)(void*, int, char**, char**, char**);
-  char* (*get_attribute)(void*, const char*);
-  int   (*has_attribute)(void*, const char*);
+  int   (*more)(c_customModelUserData);
+  int   (*get_node_type)(c_customModelUserData);
+  char* (*get_node_name)(c_customModelUserData);
+  char* (*get_node_namespace_uri)(c_customModelUserData);
+  char* (*get_node_value)(c_customModelUserData);
+  void* (*get_node_id)(c_customModelUserData);
+  int   (*get_attribute_count)(c_customModelUserData);
+  void  (*get_attribute_by_index)(c_customModelUserData, int, char**, char**, char**);
+  char* (*get_attribute)(c_customModelUserData, const char*);
+  int   (*has_attribute)(c_customModelUserData, const char*);
 
   /* state methods */
-  int   (*reset)(void*);
-  void  (*move_to_first_child)(void*);
-  void  (*move_to_next_sibling)(void*);
-  void  (*move_to_parent_node)(void*);
+  int   (*reset)(c_customModelUserData);
+  void  (*move_to_first_child)(c_customModelUserData);
+  void  (*move_to_next_sibling)(c_customModelUserData);
+  void  (*move_to_parent_node)(c_customModelUserData);
 };
 
 typedef struct _c_customXmlReader c_customXmlReader;

@@ -10,8 +10,10 @@ libmathview_frontend_custom_reader_la_SOURCES = \
   customXmlReader.cc \
   custom_reader_Builder.cc
 
+custom_readerdir = $(includedir)/$(PACKAGE)/custom_reader/
+custom_reader_HEADERS = c_customXmlReader.h
+
 noinst_HEADERS = \
-  c_customXmlReader.h \
   customXmlReader.hh \
   custom_reader_Model.hh \
   custom_reader_Builder.hh

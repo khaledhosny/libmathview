@@ -38,21 +38,46 @@ gmetadom_Builder::create()
 { return BUILDER::create(); }
 
 SmartPtr<Element>
-gmetadom_Builder::findSelfOrAncestorElement(const DOM::Node& el) const
+gmetadom_Builder::findSelfOrAncestorElement(const DOM::Element& el) const
 {
-  for (DOM::Node p = el; p; p = p.get_parentNode())
+  for (DOM::Element p = el; p; p = p.get_parentNode())
     if (SmartPtr<Element> elem = linker.assoc(p))
       return elem;
   return 0;
 }
 
-DOM::Node
-gmetadom_Builder::findSelfOrAncestorModelNode(const SmartPtr<Element>& elem) const
+DOM::Element
+gmetadom_Builder::findSelfOrAncestorModelElement(const SmartPtr<Element>& elem) const
 {
   for (SmartPtr<Element> p(elem); p; p = p->getParent())
-    if (DOM::Node el = linker.assoc(p))
+    if (DOM::Element el = linker.assoc(p))
       return el;
-  return DOM::Node(0);
+  return DOM::Element();
+}
+
+bool
+gmetadom_Builder::notifyStructureChanged(const DOM::Element& target)
+{
+  if (SmartPtr<Element> elem = findSelfOrAncestorElement(target))
+    {
+      elem->setDirtyStructure();
+      elem->setDirtyAttributeD();
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+gmetadom_Builder::notifyAttributeChanged(const DOM::Element& target, const DOM::GdomeString&)
+{
+  if (SmartPtr<Element> elem = findSelfOrAncestorElement(target))
+    {
+      elem->setDirtyAttribute();
+      return true;
+    }
+  else
+    return false;
 }
 
 void
@@ -60,13 +85,7 @@ gmetadom_Builder::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
 {
   DOM::MutationEvent me(ev);
   assert(me);
-  //std::cerr << "RECEIVING SUBTREE MODIFIED" << std::endl;
-  if (SmartPtr<Element> elem = builder->findSelfOrAncestorElement(me.get_target()))
-    {
-      //std::cerr << "FOUND LINKED ELEMENT" << std::endl;
-      elem->setDirtyStructure();
-      elem->setDirtyAttributeD();
-    }
+  builder->notifyStructureChanged(DOM::Node(me.get_target()));
 }
 
 void
@@ -74,9 +93,7 @@ gmetadom_Builder::DOMAttrModifiedListener::handleEvent(const DOM::Event& ev)
 {
   DOM::MutationEvent me(ev);
   assert(me);
-
-  if (SmartPtr<Element> elem = builder->findSelfOrAncestorElement(me.get_target()))
-    elem->setDirtyAttribute();
+  builder->notifyAttributeChanged(DOM::Node(me.get_target()), me.get_newValue());
 }
 
 void

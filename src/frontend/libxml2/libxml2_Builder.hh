@@ -41,17 +41,17 @@ public:
   xmlElement* getRootModelElement(void) const { return root; }
 
   SmartPtr<Element> findElement(xmlElement* p) const { return linker.assoc(p); }
-  xmlNode* findSelfOrAncestorModelNode(const SmartPtr<Element>&) const;
-  SmartPtr<Element> findSelfOrAncestorElement(xmlNode*) const;
+  xmlElement* findSelfOrAncestorModelElement(const SmartPtr<Element>&) const;
+  SmartPtr<Element> findSelfOrAncestorElement(xmlElement*) const;
+
+  bool notifyStructureChanged(xmlElement*);
+  bool notifyAttributeChanged(xmlElement*, const xmlChar*);
 
 protected:
   // methods for accessing the linker
   SmartPtr<Element> linkerAssoc(xmlElement* el) const { return linker.assoc(el); }
   void linkerAdd(xmlElement* el, Element* elem) const { linker.add(el, elem); }
   void linkerRemove(Element* elem) const { linker.remove(elem); }
-
-  void notifySubtreeModified(xmlNode*) const;
-  void notifyAttributeChanged(xmlNode*, const String&) const;
 
 private:
   mutable libxml2_Model::Linker linker;

@@ -1,3 +1,19 @@
 
-SUBDIRS = common $(available_frontends)
+if COND_CUSTOM_READER
+  MAYBE_CUSTOM_READER = custom_reader
+endif
+
+if COND_LIBXML2_READER
+  MAYBE_LIBXML2_READER = libxml2_reader
+endif
+
+if COND_LIBXML2
+  MAYBE_LIBXML2 = libxml2
+endif
+
+if COND_GMETADOM
+  MAYBE_GMETADOM = gmetadom
+endif
+
+SUBDIRS = common $(MAYBE_CUSTOM_READER) $(MAYBE_LIBXML2_READER) $(MAYBE_LIBXML2) $(MAYBE_GMETADOM)
 

@@ -42,17 +42,17 @@ public:
   DOM::Element getRootModelElement(void) const { return root; }
 
   SmartPtr<Element> findElement(const DOM::Element& p) const { return linker.assoc(p); }
-  DOM::Node findSelfOrAncestorModelNode(const SmartPtr<Element>&) const;
-  SmartPtr<Element> findSelfOrAncestorElement(const DOM::Node&) const;
+  DOM::Element findSelfOrAncestorModelElement(const SmartPtr<Element>&) const;
+  SmartPtr<Element> findSelfOrAncestorElement(const DOM::Element&) const;
+
+  bool notifyStructureChanged(const DOM::Element&);
+  bool notifyAttributeChanged(const DOM::Element&, const DOM::GdomeString&);
 
 protected:
   // methods for accessing the linker
   SmartPtr<Element> linkerAssoc(const DOM::Element& el) const { return linker.assoc(el); }
   void linkerAdd(const DOM::Element& el, Element* elem) const { linker.add(el, elem); }
   void linkerRemove(Element* elem) const { linker.remove(elem); }
-
-  void notifySubtreeModified(const DOM::Node&) const;
-  void notifyAttributeChanged(const DOM::Node&, const String&) const;
 
   class DOMSubtreeModifiedListener : public DOM::EventListener
   {
