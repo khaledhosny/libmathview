@@ -318,6 +318,9 @@ AC_CONFIG_FILES([
  src/formatter/gtk_areamodel/Makefile
  src/formatter/mathml_graphic_device/Makefile
  src/formatter/gtk_mathml_graphic_device/Makefile
+ src/engine/Makefile
+ src/engine/boxml/Makefile
+ src/engine/mathml/Makefile
  auto/Makefile
  auto/config.dirs
  doc/Makefile
