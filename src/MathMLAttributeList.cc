@@ -36,7 +36,7 @@ struct IsPredicate
   bool operator()(const SmartPtr<MathMLAttribute>& attr, AttributeId id) const
   {
     assert(attr);
-    return attr->IsA() == id;
+    return attr->isA() == id;
   }
 };
 
@@ -48,15 +48,27 @@ MathMLAttributeList::~MathMLAttributeList()
 {
 }
 
-void
-MathMLAttributeList::Append(const SmartPtr<MathMLAttribute>& attr)
+bool
+MathMLAttributeList::set(const SmartPtr<MathMLAttribute>& attr)
 {
   assert(attr);
-  content.push_back(attr);
+  std::vector< SmartPtr<MathMLAttribute> >::iterator p =
+    std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), attr->isA()));
+  if (p != content.end())
+    {
+      bool res = attr->equal(*p);
+      *p = attr;
+      return res;
+    }
+  else
+    {
+      content.push_back(attr);
+      return true;
+    }
 }
 
 SmartPtr<MathMLAttribute>
-MathMLAttributeList::GetAttribute(AttributeId id) const
+MathMLAttributeList::get(AttributeId id) const
 {
   std::vector< SmartPtr<MathMLAttribute> >::const_iterator p =
     std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));
@@ -64,23 +76,15 @@ MathMLAttributeList::GetAttribute(AttributeId id) const
 }
 
 bool
-MathMLAttributeList::Equal(const MathMLAttributeList& aList) const
+MathMLAttributeList::remove(AttributeId id)
 {
-  if (content.size() != aList.content.size()) return false;
-
-  for (std::vector< SmartPtr<MathMLAttribute> >::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  std::vector< SmartPtr<MathMLAttribute> >::iterator p =
+    std::remove_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));
+  if (p != content.end())
     {
-      assert(*p);
-
-      if (SmartPtr<MathMLAttribute> attribute = aList.GetAttribute((*p)->IsA()))
-	{
-	  if (!(*p)->Equal(attribute)) return false;
-	}
-      else
-	return false;
+      content.erase(p, content.end());
+      return true;
     }
-
-  return true;
+  else
+    return false;
 }

@@ -155,7 +155,7 @@ MathMLElement::GetAttribute(AttributeId id,
 #endif // HAVE_GMETADOM
 
   if (SmartPtr<MathMLAttribute> attr = env.GetAttribute(id))
-    return attr->GetValue();
+    return attr->getValue();
 
   if (searchDefault) return GetDefaultAttribute(id);
   assert(false);
@@ -202,7 +202,7 @@ MathMLElement::GetAttributeValue(AttributeId id,
   assert(aSignature);
   
   if (SmartPtr<MathMLAttribute> attr = env.GetAttribute(id))
-    if (SmartPtr<Value> value = attr->GetParsedValue(aSignature))
+    if (SmartPtr<Value> value = attr->getParsedValue(aSignature))
       return value;
 
   if (searchDefault)

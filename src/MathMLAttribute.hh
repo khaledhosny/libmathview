@@ -39,11 +39,10 @@ public:
   static SmartPtr<MathMLAttribute> create(AttributeId id, const String& value)
   { return new MathMLAttribute(id, value); }
 
-  const String GetValue(void) const { return value; }
-  SmartPtr<Value> GetParsedValue(const struct AttributeSignature* = 0) const;
-  bool Equal(const SmartPtr<MathMLAttribute>&) const;
-
-  AttributeId IsA(void) const { return id; }
+  const String getValue(void) const { return value; }
+  SmartPtr<Value> getParsedValue(const struct AttributeSignature* = 0) const;
+  bool equal(const SmartPtr<MathMLAttribute>&) const;
+  AttributeId isA(void) const { return id; }
 
 private:
   AttributeId id;

@@ -454,11 +454,11 @@ MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
       // no, it is not explicitly set, but this operator has an entry in
       // the operator dictionary, so let's see if the attribute has a
       // default value
-      if (SmartPtr<MathMLAttribute> attribute = defaults->GetAttribute(id))
+      if (SmartPtr<MathMLAttribute> attribute = defaults->get(id))
 	{
 	  const AttributeSignature* aSignature = GetAttributeSignature(id);
 	  assert(aSignature);
-	  if (SmartPtr<Value> value = attribute->GetParsedValue(aSignature))
+	  if (SmartPtr<Value> value = attribute->getParsedValue(aSignature))
 	    return value;
 	}
 

@@ -52,7 +52,7 @@ MathMLMarkNode::Setup(RenderingEnvironment& env)
     // ok, we have to do something only in case the attribute edge
     // wasn't explicitly set inside the mark (see Parser.cc)
     if (edge == MARK_ALIGN_NOTVALID)
-      if (SmartPtr<Value> value = attribute->GetParsedValue(&sig))
+      if (SmartPtr<Value> value = attribute->getParsedValue(&sig))
 	edge = ToMarkAlignId(value);
 
   // since left is the default value for the edge attribute,

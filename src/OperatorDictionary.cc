@@ -40,10 +40,7 @@ getAttribute(const DOM::Element& node, const char* attr, const SmartPtr<MathMLAt
   DOM::GdomeString attrVal = node.getAttribute(attr);
   if (attrVal.empty()) return;
 
-  SmartPtr<MathMLAttribute> attribute =
-    MathMLAttribute::create(AttributeIdOfName(attr), fromDOMString(attrVal));
-
-  aList->Append(attribute);
+  aList->set(MathMLAttribute::create(AttributeIdOfName(attr), fromDOMString(attrVal)));
 }
 
 #endif // HAVE_GMETADOM

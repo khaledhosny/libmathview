@@ -107,7 +107,7 @@ RenderingEnvironment::GetAttribute(AttributeId id) const
       assert(thisLevel != 0);
 
       if (thisLevel->defaults)
-	if (SmartPtr<MathMLAttribute> attribute = thisLevel->defaults->GetAttribute(id))
+	if (SmartPtr<MathMLAttribute> attribute = thisLevel->defaults->get(id))
 	  return attribute;
     }
 

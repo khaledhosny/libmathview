@@ -119,7 +119,7 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	AttributeId id = AttributeIdOfName(s_name.c_str());
 
 	if (id != ATTR_NOTVALID)
-	  attributes->Append(MathMLAttribute::create(id, fromDOMString(attribute.get_nodeValue())));
+	  attributes->set(MathMLAttribute::create(id, fromDOMString(attribute.get_nodeValue())));
       }
 #endif // HAVE_GMETADOM
 

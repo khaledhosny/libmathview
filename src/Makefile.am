@@ -124,6 +124,7 @@ libgtkmathview_la_SOURCES = \
   OperatorDictionary.cc \
   Rectangle.cc \
   RenderingEnvironment.cc \
+  RefinementContext.cc \
   StringTokenizer.cc \
   UnitValue.cc \
   ValueConversion.cc \
@@ -217,6 +218,8 @@ noinst_HEADERS = \
   RGBValue.hh \
   Rectangle.hh \
   RenderingEnvironment.hh \
+  AbstractRefinementContext.hh \
+  RefinementContext.hh \
   StringTokenizer.hh \
   UnitValue.hh \
   ValueConversion.hh \

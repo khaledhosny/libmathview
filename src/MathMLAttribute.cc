@@ -37,7 +37,7 @@ MathMLAttribute::~MathMLAttribute()
 }
 
 SmartPtr<Value>
-MathMLAttribute::GetParsedValue(const AttributeSignature* aSignature) const
+MathMLAttribute::getParsedValue(const AttributeSignature* aSignature) const
 {
   if (!parsedValue)
     {
@@ -54,7 +54,7 @@ MathMLAttribute::GetParsedValue(const AttributeSignature* aSignature) const
 }
 
 bool
-MathMLAttribute::Equal(const SmartPtr<MathMLAttribute>& attribute) const
+MathMLAttribute::equal(const SmartPtr<MathMLAttribute>& attribute) const
 {
-  return (id == attribute->id && value == attribute->value);
+  return attribute->id == id && attribute->value == value;
 }

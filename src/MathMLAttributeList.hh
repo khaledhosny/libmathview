@@ -37,9 +37,9 @@ public:
   static SmartPtr<MathMLAttributeList> create(void)
   { return new MathMLAttributeList(); }
 
-  void Append(const SmartPtr<MathMLAttribute>&);
-  SmartPtr<MathMLAttribute> GetAttribute(AttributeId) const;
-  bool Equal(const MathMLAttributeList&) const;
+  bool set(const SmartPtr<MathMLAttribute>&);
+  bool remove(AttributeId);
+  SmartPtr<MathMLAttribute> get(AttributeId) const;
 
 private:
   std::vector< SmartPtr<MathMLAttribute> > content;
