@@ -91,7 +91,6 @@ DOMView::setRootDOMElement(const DOM::Element& elem)
       attrModifiedListener = 0;
     }
 
-  setRootElement(0);
   rootDOMElement = elem;
 
   if (rootDOMElement)
@@ -106,11 +105,19 @@ DOMView::setRootDOMElement(const DOM::Element& elem)
       et.addEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
       et.addEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
       et.addEventListener("DOMAttrModified", *attrModifiedListener, false);
-
-      if (SmartPtr<NamespaceContext> context = getRegistry()->get(rootDOMElement.get_namespaceURI()))
-	if (SmartPtr<Element> e = context->construct(rootDOMElement))
-	  setRootElement(e);
     }
+}
+
+SmartPtr<Element>
+DOMView::getRootElement() const
+{
+  if (rootDOMElement)
+    {
+      if (SmartPtr<NamespaceContext> context = getRegistry()->get(rootDOMElement.get_namespaceURI()))
+	return context->construct(rootDOMElement);
+    }
+  else
+    return 0;
 }
 
 SmartPtr<Linker>

@@ -55,6 +55,7 @@ View::thaw()
   return --freezeCounter == 0;
 }
 
+#if 0
 void
 View::setRootElement(const SmartPtr<Element>& root)
 {
@@ -66,6 +67,7 @@ View::getRootElement() const
 {
   return rootElement;
 }
+#endif
 
 AreaRef
 View::getElementArea(const SmartPtr<Element>& elem) const

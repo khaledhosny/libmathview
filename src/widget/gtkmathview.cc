@@ -49,6 +49,7 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLNamespaceContext.hh"
 #include "DOMView.hh"
+#include "Linker.hh"
 
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_RenderingContext.hh"
@@ -200,17 +201,17 @@ paint_widget(GtkMathView* math_view)
   math_view->view->setOrigin(Gtk_RenderingContext::fromGtkX(math_view->top_x - MARGIN),
 			     Gtk_RenderingContext::fromGtkY(math_view->top_y - MARGIN));
 
-  if (AreaRef rootArea = math_view->view->getRootArea())
-    {
+  math_view->view->render(*math_view->renderingContext);
+
+#if 0
       rootArea->render(*math_view->renderingContext,
 		       math_view->view->getOriginX(),
 		       math_view->view->getOriginY());
-
+#endif
       gdk_draw_pixmap(widget->window,
 		      widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		      math_view->pixmap,
 		      0, 0, 0, 0, width, height);
-    }
 }
 
 static void
@@ -437,7 +438,9 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 
   SmartPtr<MathMLElementFactory> mmlFactory = MathMLElementFactory::create();
   SmartPtr<MathMLNamespaceContext> mmlContext =
-    MathMLNamespaceContext::create(mmlFactory,
+    MathMLNamespaceContext::create(view,
+				   view->getLinker(),
+				   mmlFactory,
 				   Gtk_MathGraphicDevice::create(math_view->area));
   mmlFactory->setContext(mmlContext);
   view->getRegistry()->add(mmlContext);

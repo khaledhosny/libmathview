@@ -47,7 +47,6 @@ public:
 
   SmartPtr<class MathMLElementFactory> getFactory(void) const;
   SmartPtr<class MathGraphicDevice> getGraphicDevice(void) const;
-  MathFormattingContext& getFormattingContext(void) const { return context; }
 
   virtual SmartPtr<class Element> construct(const DOM::Element&) const;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const;
@@ -55,7 +54,6 @@ public:
 private:
   SmartPtr<class MathMLElementFactory> factory;
   SmartPtr<class MathGraphicDevice> device;
-  mutable MathFormattingContext context;
   unsigned defaultFontSize;
 };
 

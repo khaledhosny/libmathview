@@ -63,18 +63,56 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
   //assert((glong) n == length);
   delete [] uni_buffer;
 
+  MathVariant variant = ctxt.getVariant();
+
   // FIXME: I bet there are some leaks here, but using GObjectPtr just
   // gives a segfault!!!
   //GObjectPtr<PangoLayout> layout = pango_layout_new(context);
   PangoLayout* layout = pango_layout_new(context);
   pango_layout_set_text(layout, buffer, length);
+
+
+  //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
+  PangoAttrList* attrList = pango_attr_list_new();
+
   // PangoAttribute is not a GObject?
   PangoAttribute* sizeAttr = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
   sizeAttr->start_index = 0;
   sizeAttr->end_index = length;
-  //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
-  PangoAttrList* attrList = pango_attr_list_new();
   pango_attr_list_insert(attrList, sizeAttr);
+#if 0
+  switch (variant)
+    {
+    case BOLD_VARIANT:
+    case BOLD_ITALIC_VARIANT:
+    case BOLD_FRAKTUR_VARIANT:
+    case BOLD_SCRIPT_VARIANT:
+    case BOLD_SANS_SERIF_VARIANT:
+      {
+	PangoAttribute* weightAttr = pango_attr_weight_new(PANGO_WEIGHT_BOLD);
+	weightAttr->start_index = 0;
+	weightAttr->end_index = length;
+	pango_attr_list_insert(attrList, weightAttr);
+      }
+      break;
+    default: break;
+    }
+
+  switch (variant)
+    {
+    case ITALIC_VARIANT:
+    case BOLD_ITALIC_VARIANT:
+    case SANS_SERIF_ITALIC_VARIANT:
+      {
+	PangoAttribute* styleAttr = pango_attr_style_new(PANGO_STYLE_ITALIC);
+	styleAttr->start_index = 0;
+	styleAttr->end_index = length;
+	pango_attr_list_insert(attrList, styleAttr);
+      }
+      break;
+    default: break;
+    }
+#endif
   pango_layout_set_attributes(layout, attrList);
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());

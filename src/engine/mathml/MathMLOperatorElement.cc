@@ -248,6 +248,8 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       else
 	res = formatAux(ctxt);
 
+      std::cerr << "formatting operator, is top? " << (getCoreOperatorTop() != 0) << " has dirty something" << dirtyAttribute() << dirtyLayout() << std::endl;
+
       res = formatEmbellishment(this, ctxt, res);
       setArea(ctxt.getDevice()->wrapper(ctxt, res));
 

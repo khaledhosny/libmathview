@@ -34,7 +34,7 @@ protected:
   virtual ~View();
 
 public:
-  static SmartPtr<View> create(void) { return new View(); }
+  //static SmartPtr<View> create(void) { return new View(); }
 
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);
@@ -46,8 +46,7 @@ public:
 
   SmartPtr<class NamespaceRegistry> getRegistry(void) const;
 
-  void setRootElement(const SmartPtr<class Element>&);
-  SmartPtr<class Element> getRootElement(void) const;
+  virtual SmartPtr<class Element> getRootElement(void) const = 0;
 
   SmartPtr<const class Area> getRootArea(void) const;
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
@@ -58,7 +57,6 @@ public:
 
 private:
   SmartPtr<class NamespaceRegistry> registry;
-  SmartPtr<class Element> rootElement;
   unsigned freezeCounter;
   scaled x0;
   scaled y0;
