@@ -29,11 +29,12 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include "t1lib.h"
+#include <t1lib.h>
 
 #include "T1_Font.hh"
 #include "Globals.hh"
 #include "T1_FontManager.hh"
+#include "scaledConv.hh"
 
 bool T1_FontManager::firstTime = true;
 

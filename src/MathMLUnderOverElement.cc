@@ -25,6 +25,7 @@
 
 #include "Globals.hh"
 #include "ChildList.hh"
+#include "scaledConv.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"
 #include "MathMLCharNode.hh"

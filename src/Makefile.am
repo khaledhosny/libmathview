@@ -1,5 +1,5 @@
 
-SUBDIRS = . formatter
+SUBDIRS = formatter
 
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
@@ -12,7 +12,13 @@ T1_LIBS = @T1_LIBS@
 
 lib_LTLIBRARIES = libgtkmathview.la
 
-libgtkmathview_la_LIBADD = $(GTK_LIBS) $(DOM_LIBS) $(T1_LIBS) -lstdc++
+libgtkmathview_la_LIBADD = \
+  -lstdc++ \
+  $(GTK_LIBS) \
+  $(DOM_LIBS) \
+  $(T1_LIBS) \
+  $(top_builddir)/src/formatter/gtk_mathml_graphic_device/libgtk_mathml_graphic_device.la
+
 libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 GTKSOURCES = \
@@ -115,6 +121,7 @@ libgtkmathview_la_SOURCES = \
   MathMLSpaceElement.cc \
   MathMLSpaceNode.cc \
   MathMLStringLitElement.cc \
+  MathMLStringNode.cc \
   MathMLStyleElement.cc \
   MathMLTableCellElement.cc \
   MathMLTableElement.cc \
@@ -224,6 +231,7 @@ noinst_HEADERS = \
   MathMLSpaceElement.hh \
   MathMLSpaceNode.hh \
   MathMLStringLitElement.hh \
+  MathMLStringNode.hh \
   MathMLStyleElement.hh \
   MathMLTableCellElement.hh \
   MathMLTableElement.hh \
@@ -256,7 +264,7 @@ noinst_HEADERS = \
   stringAux.hh \
   traverseAux.hh \
   mathVariantAux.hh \
-  scaled.hh \
+  scaledConv.hh \
   for_each_if.h \
   unidefs.h \
   $(GTKHEADERS) \
@@ -268,5 +276,11 @@ INCLUDES = \
   $(DOM_CFLAGS) \
   $(T1_CFLAGS) \
   -I$(top_builddir) \
-  -I$(top_srcdir)/auto/
+  -I$(top_srcdir)/auto/ \
+  -I$(srcdir)/formatter/basictypes \
+  -I$(srcdir)/formatter/areamodel \
+  -I$(srcdir)/formatter/gtk_areamodel \
+  -I$(srcdir)/formatter/mathml_graphic_device \
+  -I$(srcdir)/formatter/gtk_mathml_graphic_device
+
 

@@ -195,3 +195,4 @@ allocString(const Char* s, unsigned length)
 
   return sValue;
 }
+

@@ -26,6 +26,7 @@
 
 #include <algorithm>
 
+#include "scaledConv.hh"
 #include "Rectangle.hh"
 
 void

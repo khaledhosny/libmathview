@@ -151,7 +151,8 @@ MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
 	{
 	  fence = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
 	  assert(fence);
-	  fence->Append(openFence);
+	  assert(false); // FIX THIS
+	  //fence->Append(openFence);
 	  fence->SetFence();
 	  mainRow->Append(fence);
 	}
@@ -182,7 +183,7 @@ MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
 	      assert(separator);
 
 	      separator->SetSeparator();
-	      separator->Append(sep);
+	      //separator->Append(sep);
 	      mrow->Append(separator);
 	    }
 	}
@@ -194,7 +195,7 @@ MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
 	{
 	  fence = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
 	  assert(fence);
-	  fence->Append(closeFence);
+	  //fence->Append(closeFence);
 	  fence->SetFence();
 	  mainRow->Append(fence);
 	}

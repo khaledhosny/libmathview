@@ -30,6 +30,7 @@
 #include "Gtk_Font.hh"
 #include "Globals.hh"
 #include "Gtk_FontManager.hh"
+#include "scaledConv.hh"
 
 Gtk_FontManager::Gtk_FontManager()
 {

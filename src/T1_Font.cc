@@ -29,6 +29,7 @@
 
 #include "T1_Font.hh"
 #include "T1_Gtk_DrawingArea.hh"
+#include "scaledConv.hh"
 
 unsigned T1_Font::nextId = 0;
 

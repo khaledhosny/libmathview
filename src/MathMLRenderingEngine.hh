@@ -39,7 +39,7 @@ public:
   MathMLRenderingEngine(void);
   ~MathMLRenderingEngine();
 
-  void Init(class DrawingArea*, class FontManager*);
+  void Init(class DrawingArea*, class FontManager*, class AreaFactory*, class ShaperManager*);
 
 #if defined(HAVE_GMETADOM)
   bool Load(const char*);
@@ -77,9 +77,12 @@ private:
 
   SmartPtr<class MathMLDocument> document;
 
-  class DrawingArea* area;
-  class FontManager* fontManager;
-  class CharMapper*  charMapper;
+  class DrawingArea*   area;
+  class FontManager*   fontManager;
+  class CharMapper*    charMapper;
+
+  class AreaFactory* areaFactory;
+  class ShaperManager* shaperManager;
 };
 
 #endif // MathMLRenderingEngine_hh

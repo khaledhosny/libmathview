@@ -28,6 +28,10 @@
 
 #include "defs.h"
 
+// don't know why this is needed!!!
+#define PANGO_ENABLE_BACKEND
+#include <pango/pango.h>
+
 #include <math.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkmain.h>
@@ -36,6 +40,7 @@
 
 #include "Globals.hh"
 #include "Rectangle.hh"
+#include "scaledConv.hh"
 #include "gtkmathview.h"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
@@ -45,6 +50,11 @@
 #include "T1_Gtk_DrawingArea.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLRenderingEngine.hh"
+
+#include "Gtk_AreaFactory.hh"
+#include "ShaperManager.hh"
+#include "Gtk_PangoShaper.hh"
+#include "Gtk_AdobeShaper.hh"
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250
@@ -93,6 +103,12 @@ struct _GtkMathView {
 
   FontManager*     font_manager;
   Gtk_DrawingArea* drawing_area;
+
+  Gtk_AreaFactory* area_factory;
+  ShaperManager*   shaper_manager;
+  Gtk_PangoShaper* shaper_pango;
+  Gtk_AdobeShaper* shaper_adobe;
+
   MathMLRenderingEngine* interface;
 };
 
@@ -426,6 +442,8 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->pixmap          = NULL;
   math_view->font_manager_id = FONT_MANAGER_UNKNOWN;
   math_view->font_manager    = NULL;
+  math_view->area_factory    = 0;
+  math_view->shaper_manager  = NULL;
   math_view->drawing_area    = NULL;
   math_view->interface       = NULL;
   math_view->freeze_counter  = 0;
@@ -1271,6 +1289,10 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
 
   delete math_view->font_manager;
   delete math_view->drawing_area;
+  delete math_view->area_factory;
+  delete math_view->shaper_manager;
+  delete math_view->shaper_pango;
+  delete math_view->shaper_adobe;
 
   math_view->font_manager = NULL;
   math_view->drawing_area = NULL;
@@ -1286,6 +1308,9 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
   switch (id) {
   case FONT_MANAGER_T1:
 #ifdef HAVE_LIBT1
+    math_view->shaper_manager = 0;
+    math_view->shaper_pango = 0;
+    math_view->shaper_adobe = 0;
     math_view->font_manager = new PS_T1_FontManager;
     math_view->drawing_area = new T1_Gtk_DrawingArea(values, px2sp(MARGIN), px2sp(MARGIN),
 						     GTK_WIDGET(math_view->area),
@@ -1303,13 +1328,21 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
 						  Globals::configuration.GetSelectForeground(),
 						  Globals::configuration.GetSelectBackground());
     math_view->drawing_area->SetPixmap(math_view->pixmap);
+    math_view->area_factory = new Gtk_AreaFactory();
+    math_view->shaper_manager = new ShaperManager();
+    math_view->shaper_pango = new Gtk_PangoShaper();
+    math_view->shaper_pango->setPangoContext(gtk_widget_create_pango_context(math_view->area));
+    math_view->shaper_manager->registerShaper(*math_view->shaper_pango);
+    //math_view->shaper_adobe = new Gtk_AdobeShaper();
+    //math_view->shaper_manager->registerShaper(*math_view->shaper_adobe);
     break;
   default:
     Globals::logger(LOG_ERROR, "could not switch to font manager type %d", id);
     break;
   }
 
-  math_view->interface->Init(math_view->drawing_area, math_view->font_manager);
+  math_view->interface->Init(math_view->drawing_area, math_view->font_manager,
+			     math_view->area_factory, math_view->shaper_manager);
   if (GTK_WIDGET_REALIZED(GTK_WIDGET(math_view))) math_view->drawing_area->Realize();
   paint_widget(math_view);
 }

@@ -44,6 +44,7 @@
 #include "MathMLCharNode.hh"
 #include "MathMLCombinedCharNode.hh"
 #include "MathMLTextNode.hh"
+#include "MathMLStringNode.hh"
 #include "mathVariantAux.hh"
 #include "ValueConversion.hh"
 #include "MathMLGlyphNode.hh"
@@ -55,6 +56,42 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLIdentifierElement.hh"
 #include "FormattingContext.hh"
+
+// TEMPORARY TRIMMING ROUTINES
+
+template <class T>
+void
+trimSpacesLeft(std::basic_string<T>& s)
+{
+  std::basic_string<T>::iterator i = s.begin();
+  while (i != s.end() && isXmlSpace(*i)) i++;
+  s.erase(s.begin(), i);
+}
+
+template <class T>
+void
+trimSpacesRight(std::basic_string<T>& s)
+{
+  std::basic_string<T>::iterator i = s.end();
+  do i--; while (i != s.begin() && isXmlSpace(*i)) ;
+  s.erase(i + 1, s.end());
+}
+
+template <class T>
+void
+collapseSpaces(std::basic_string<T>& s)
+{
+  unsigned i = 0;
+  while (i < s.length()) {
+    if (isXmlSpace(s[i])) {
+      s[i++] = L' ';
+      std::basic_string<T>::iterator j = s.begin() + i;
+      while (j < s.end() && isXmlSpace(*j)) j++;
+      s.erase(s.begin() + i, j);
+    } else
+      i++;
+  }
+}
 
 MathMLTokenElement::MathMLTokenElement()
 {
@@ -124,6 +161,7 @@ MathMLTokenElement::SetChild(unsigned i, const SmartPtr<MathMLTextNode>& child)
     }
 }
 
+#if 0
 void
 MathMLTokenElement::Append(const String* s)
 {
@@ -184,6 +222,14 @@ MathMLTokenElement::Append(const String* s)
 	  last = node;
 	}
     }
+}
+#endif
+
+void
+MathMLTokenElement::Append(const DOM::GdomeString& s)
+{
+  SmartPtr<MathMLTextNode> node = MathMLStringNode::create(s);
+  AppendChild(node);
 }
 
 void
@@ -260,20 +306,17 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
 	    case DOM::Node::TEXT_NODE:
 	      {
 		// ok, we have a chunk of text
-		DOM::GdomeString content = p.get_nodeValue();
-		String* s = allocString(content);
-		assert(s != NULL);
+		DOM::UTF8String content = p.get_nodeValue();
 
 		// white-spaces are always collapsed...
-		s->CollapseSpaces();
+		collapseSpaces<DOM::Char8>(content);
 	      
 		// ...but spaces at the at the beginning (end) are deleted only if this
 		// is the very first (last) chunk in the token.
-		if (!p.get_previousSibling()) s->TrimSpacesLeft();
-		if (!p.get_nextSibling()) s->TrimSpacesRight();
+		if (!p.get_previousSibling()) trimSpacesLeft<DOM::Char8>(content);
+		if (!p.get_nextSibling()) trimSpacesRight<DOM::Char8>(content);
 
-		Append(s);
-		delete s;
+		Append(content);
 	      }
 	    break;
 

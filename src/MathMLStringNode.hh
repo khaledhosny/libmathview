@@ -23,18 +23,19 @@
 #ifndef MathMLStringNode_hh
 #define MathMLStringNode_hh
 
+#include "Area.hh"
 #include "MathMLTextNode.hh"
 #include "FontifiedString.hh"
 
 class MathMLStringNode: public MathMLTextNode
 {
 protected:
-  MathMLStringNode(const String*);
+  MathMLStringNode(const DOM::GdomeString&);
   virtual ~MathMLStringNode();
 
 public:
-  static SmartPtr<MathMLStringNode> create(const String* s)
-  { return SmartPtr<MathMLStringNode>(new MathMLStringNode(s)); }
+  static SmartPtr<MathMLStringNode> create(const DOM::GdomeString& s)
+  { return new MathMLStringNode(s); }
 
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);
@@ -49,8 +50,8 @@ public:
   virtual String*  GetRawContent(void) const;
 
 private:
-  const String* content;
-  const FontifiedString* fContent;
+  DOM::GdomeString content;
+  AreaRef area;
 };
 
 #endif // MathMLStringNode_hh

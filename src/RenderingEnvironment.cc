@@ -29,11 +29,16 @@
 
 #include "CharMapper.hh"
 #include "Globals.hh"
+#include "scaledConv.hh"
 #include "StringTokenizer.hh"
 #include "ValueConversion.hh"
 #include "RenderingEnvironment.hh"
 
-RenderingEnvironment::RenderingEnvironment(CharMapper& cm) : charMapper(cm)
+#include "AreaFactory.hh"
+#include "ShaperManager.hh"
+
+RenderingEnvironment::RenderingEnvironment(CharMapper& cm, const SmartPtr<AreaFactory>& af, ShaperManager& sm)
+  : charMapper(cm), areaFactory(af), shaperManager(sm)
 {
   AttributeLevel* top = new AttributeLevel;
   top->displayStyle = true;

@@ -24,21 +24,23 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "stringAux.hh"
 #include "MathMLStringNode.hh"
 #include "MathMLTokenElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLStringNode::MathMLStringNode(const String* c)
+#include "Gtk_DrawingArea.hh"
+#include "ShaperManager.hh"
+#include "Gtk_RenderingContext.hh"
+
+MathMLStringNode::MathMLStringNode(const DOM::GdomeString& c)
 {
-  assert(c != NULL);
   content = c;
-  fContent = NULL;
 }
 
 MathMLStringNode::~MathMLStringNode()
 {
   delete content;
-  delete fContent;
 }
 
 bool
@@ -50,71 +52,54 @@ MathMLStringNode::IsString() const
 void
 MathMLStringNode::Setup(RenderingEnvironment& env)
 {
-  assert(content != NULL);
-
-  if (fContent != NULL) delete fContent;
-  fContent = new FontifiedString(*content, env.GetFontAttributes(), env.charMapper);
+  area = env.shaperManager.shape(env.areaFactory, content, env.GetFontAttributes().size.ToScaledPoints());
 }
 
 void
 MathMLStringNode::DoLayout(const FormattingContext&)
 {
-  assert(fContent != NULL);
-  fContent->GetBoundingBox(box);
+  box = area->box();
 }
 
 void
-MathMLStringNode::Render(const DrawingArea& area)
+MathMLStringNode::Render(const DrawingArea& a)
 {
   assert(GetParent());
   assert(is_a<MathMLTokenElement>(GetParent()));
-  assert(fContent != NULL);
 
   SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
   assert(token);
 
   const GraphicsContext* gc = token->GetForegroundGC();
-  fContent->Draw(GetX(), GetY(), area, gc);
+
+  const Gtk_DrawingArea& gtk_area = dynamic_cast<const Gtk_DrawingArea&>(a);
+  Gtk_RenderingContext rc;
+  rc.setDrawable(gtk_area.GetPixmap());
+  
+  assert(area);
+  area->render(rc, GetX(), GetY());
 }
 
 bool
 MathMLStringNode::HasDecimalPoint() const
 {
-  assert(content != NULL);
-
-  for (unsigned i = 0; i < content->GetLength(); i++)
-    if (content->GetChar(i) == '.') return true;
-
   return false;
 }
 
 scaled
 MathMLStringNode::GetDecimalPointEdge() const
 {
-  assert(content != NULL);
-  assert(GetParent());
-  assert(is_a<MathMLTokenElement>(GetParent()));
-
-  SmartPtr<MathMLTokenElement> parent = smart_cast<MathMLTokenElement>(GetParent());
-  assert(parent);
-
-  // let's find the position of the decimal point
-  unsigned i;
-  for (i = 0; i < content->GetLength() && content->GetChar(i) != '.'; i++) ;
-
-  return GetX() + fContent->WidthTo(i);
+  return GetX();
 }
 
 unsigned
 MathMLStringNode::GetLogicalContentLength() const
 {
-  assert(content != NULL);
-  return content->GetLength();
+  return content.length();
 }
 
 String*
 MathMLStringNode::GetRawContent() const
 {
-  assert(content != NULL);
-  return content->Clone();
+  return allocString(content);
 }

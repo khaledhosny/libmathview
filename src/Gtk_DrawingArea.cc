@@ -29,6 +29,7 @@
 #include "UnitValue.hh"
 #include "Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
+#include "scaledConv.hh"
 
 Gtk_DrawingArea::Gtk_DrawingArea(const GraphicsContextValues& v, const scaled& xm, const scaled& ym, GtkWidget* widget,
 				 RGBValue f, RGBValue b) :

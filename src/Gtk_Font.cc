@@ -26,6 +26,7 @@
 
 #include "Gtk_Font.hh"
 #include "UnitValue.hh"
+#include "scaledConv.hh"
 
 Gtk_Font::Gtk_Font(GdkFont* native_font)
 {

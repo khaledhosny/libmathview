@@ -33,6 +33,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLRenderingEngine.hh"
 #include "FormattingContext.hh"
+#include "ShaperManager.hh"
 
 #include "config.dirs"
 
@@ -44,9 +45,11 @@
 MathMLRenderingEngine::MathMLRenderingEngine()
   : document(0)
 {
-  area = NULL;
-  fontManager = NULL;
-  charMapper = NULL;
+  area = 0;
+  fontManager = 0;
+  charMapper = 0;
+  shaperManager = 0;
+  areaFactory = 0;
 
   defaultFontSize = Globals::configuration.GetFontSize();
 }
@@ -57,14 +60,18 @@ MathMLRenderingEngine::~MathMLRenderingEngine()
   assert(!document);
 
   delete charMapper;
-  charMapper = NULL;
+  charMapper = 0;
 
   // WARNING: do we have to delete the font manager?
-  fontManager = NULL;
+  fontManager = 0;
+
+  areaFactory = 0;
+  shaperManager = 0;
 }
 
 void
-MathMLRenderingEngine::Init(class DrawingArea* a, class FontManager* fm)
+MathMLRenderingEngine::Init(class DrawingArea* a, class FontManager* fm,
+			    class AreaFactory* af, class ShaperManager* sm)
 {
   assert(a != NULL);
   assert(fm != NULL);
@@ -80,8 +87,13 @@ MathMLRenderingEngine::Init(class DrawingArea* a, class FontManager* fm)
   area = a;
   fontManager = fm;
 
-  if (charMapper != NULL) delete charMapper;
+  if (charMapper) delete charMapper;
   charMapper = new CharMapper(*fm);
+
+  if (areaFactory) delete areaFactory;
+  areaFactory = af;
+  if (shaperManager) delete shaperManager;
+  shaperManager = sm;
 
   if (!Globals::configuration.GetFonts().empty())
     for (std::vector<String*>::const_iterator cit = Globals::configuration.GetFonts().begin();
@@ -187,7 +199,7 @@ MathMLRenderingEngine::Layout() const
 	  UnitValue size;
 	  size.Set(defaultFontSize, UNIT_PT);
 	  assert(charMapper != NULL);
-	  RenderingEnvironment env(*charMapper);
+	  RenderingEnvironment env(*charMapper, areaFactory, *shaperManager);
 	  env.SetFontSize(size);
 	  Clock perf;
 	  perf.Start();

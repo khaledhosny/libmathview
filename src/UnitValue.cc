@@ -25,6 +25,7 @@
 
 #include "defs.h"
 #include "UnitValue.hh"
+#include "scaledConv.hh"
 
 void
 UnitValue::Null()

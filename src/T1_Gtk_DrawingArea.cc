@@ -37,6 +37,7 @@
 #include "Globals.hh"
 #include "T1_Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
+#include "scaledConv.hh"
 
 bool T1_Gtk_DrawingArea::firstTime = true;
 

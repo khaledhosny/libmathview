@@ -43,7 +43,9 @@ private:
   struct AttributeLevel;
 
 public:
-  RenderingEnvironment(class CharMapper&);
+  RenderingEnvironment(class CharMapper&,
+		       const SmartPtr<class AreaFactory>&,
+		       class ShaperManager&);
   virtual ~RenderingEnvironment();
 
   // levels
@@ -94,6 +96,9 @@ public:
   scaled   GetRuleThickness(void) const;
 
   class CharMapper& charMapper;
+
+  SmartPtr<class AreaFactory> areaFactory;
+  class ShaperManager& shaperManager;
 
 private:
   struct AttributeLevel {

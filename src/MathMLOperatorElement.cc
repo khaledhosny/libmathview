@@ -26,6 +26,7 @@
 #include <stdio.h>
 
 #include "Globals.hh"
+#include "scaledConv.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"
 #include "ValueSequence.hh"

@@ -59,7 +59,7 @@ public:
   void           RemoveChild(unsigned);
   void           InsertChild(unsigned, const SmartPtr<MathMLTextNode>&);
   void           AppendChild(const SmartPtr<class MathMLTextNode>&);
-  void           Append(const String*);
+  void           Append(const DOM::GdomeString&);
   void           SwapChildren(std::vector< SmartPtr<MathMLTextNode> >&);
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;

@@ -23,6 +23,7 @@
 #include <config.h>
 #include <assert.h>
 
+#include "defs.h"
 #include "CharMap.hh"
 
 bool

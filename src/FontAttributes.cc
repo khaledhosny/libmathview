@@ -30,6 +30,7 @@
 #include <string.h>
 
 #include "Globals.hh"
+#include "scaledConv.hh"
 #include "FontAttributes.hh"
 
 // local definition of adaptors

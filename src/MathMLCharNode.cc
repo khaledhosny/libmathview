@@ -25,6 +25,7 @@
 
 #include <math.h>
 
+#include "scaledConv.hh"
 #include "Globals.hh"
 #include "stringAux.hh"
 #include "CharMapper.hh"

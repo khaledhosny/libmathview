@@ -29,6 +29,7 @@
 
 #include "AFont.hh"
 #include "DrawingArea.hh"
+#include "scaledConv.hh"
 
 inline float sp2ps(const scaled& s) { return sp2in(s) * 72; }
 inline int sp2psi(const scaled& s) { return static_cast<int>(sp2ps(s)); }

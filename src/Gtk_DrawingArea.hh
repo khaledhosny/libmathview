@@ -53,7 +53,9 @@ public:
   void SetTopX(const scaled&);
   void SetTopY(const scaled&);
   void SetPixmap(GdkPixmap*);
-  
+
+  GdkPixmap* GetPixmap(void) const { return gdk_pixmap; }
+
 protected:
   scaled x0; // x-coordinate of the top-left corner
   scaled y0; // y-coordinate of the top-left corner
