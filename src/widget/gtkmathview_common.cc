@@ -77,11 +77,12 @@ typedef gmetadom_Setup GtkMathView_Setup;
 #include "MathMLElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLNamespaceContext.hh"
-#include "BoxMLNamespaceContext.hh"
-#include "View.hh"
-
 #include "Gtk_MathGraphicDevice.hh"
+#if ENABLE_BOXML
+#include "BoxMLNamespaceContext.hh"
 #include "Gtk_BoxGraphicDevice.hh"
+#endif // ENABLE_BOXML
+#include "View.hh"
 #include "Gtk_RenderingContext.hh"
 #include "Gtk_WrapperArea.hh"
 
@@ -535,8 +536,14 @@ gtk_math_view_init(GtkMathView* math_view)
 #elif GTKMATHVIEW_USES_GMETADOM
   SmartPtr<View> view = View::create(gmetadom_Builder::create());
 #endif
+
+#if ENABLE_BOXML
   view->initialize(Gtk_MathGraphicDevice::create(math_view->area),
 		   Gtk_BoxGraphicDevice::create(math_view->area));
+#else
+  view->initialize(Gtk_MathGraphicDevice::create(math_view->area));
+#endif // ENABLE_BOXML
+
   view->ref();
   math_view->view = view;
 

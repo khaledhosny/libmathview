@@ -29,10 +29,12 @@
 #include "MathML.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
+#if ENABLE_BOXML
 #include "BoxML.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLMathMLAdapter.hh"
+#endif // ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "Globals.hh"
 
@@ -132,6 +134,7 @@ protected:
     for (unsigned i = 0; mathml_tab[i].update; i++)
       mathmlMap[mathml_tab[i].tag] = mathml_tab[i].update;
 
+#if ENABLE_BOXML
     static struct
     {
       String tag;
@@ -153,6 +156,7 @@ protected:
 
     for (unsigned i = 0; boxml_tab[i].update; i++)
       boxmlMap[boxml_tab[i].tag] = boxml_tab[i].update;
+#endif // ENABLE_BOXML
   }
 
   ////////////////////////////////////
@@ -286,6 +290,7 @@ protected:
     return MathMLMarkNode::create(align);
   }
 
+#if ENABLE_BOXML
   ///////////////////////////////////
   // SPECIALIZED BOXML UPDATE METHODS
   ///////////////////////////////////
@@ -308,6 +313,7 @@ protected:
       return createBoxMLDummyElement();
 #endif
   }
+#endif // ENABLE_BOXML
 
   //////////////////
   // MATHML BUILDERS
@@ -854,6 +860,7 @@ protected:
     }
   };
 
+#if ENABLE_BOXML
   /////////////////
   // BOXML BUILDERS
   /////////////////
@@ -1066,6 +1073,7 @@ protected:
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, minlinespacing));
     }
   };
+#endif // ENABLE_BOXML
 
   ////////////////////////////
   // BUILDER AUXILIARY METHODS
@@ -1201,6 +1209,7 @@ protected:
     return MathMLDummyElement::create(getMathMLNamespaceContext());
   }
 
+#if ENABLE_BOXML
   //////////////////////////////////////
   // BUILDER AUXILIARY METHODS FOR BOXML
   //////////////////////////////////////
@@ -1231,6 +1240,7 @@ protected:
     assert(false);
     return 0;
   }
+#endif // ENABLE_BOXML
 
 public:
   static SmartPtr<typename Model::Builder> create(void) { return new TemplateBuilder(); }
@@ -1246,20 +1256,23 @@ public:
       {
 	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
 	if (ns == MATHML_NS_URI) return getMathMLElement(root);
+#if ENABLE_BOXML
 	else if (ns == BOXML_NS_URI) return getBoxMLElement(root);
+#endif // ENABLE_BOXML
       }
     return 0;
   }
 
 private:
   typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
-  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
-
   typedef HASH_MAP_NS::hash_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
-  typedef HASH_MAP_NS::hash_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
-
   MathMLBuilderMap mathmlMap;
+
+#if ENABLE_BOXML
+  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
+  typedef HASH_MAP_NS::hash_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
   BoxMLBuilderMap boxmlMap;
+#endif // ENABLE_BOXML
 
   mutable typename Model::RefinementContext refinementContext;
 };

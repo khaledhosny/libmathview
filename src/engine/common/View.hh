@@ -35,8 +35,12 @@ protected:
 
 public:
   static SmartPtr<View> create(const SmartPtr<class Builder>&);
+#if ENABLE_BOXML
   void initialize(const SmartPtr<class MathGraphicDevice>&,
 		  const SmartPtr<class BoxGraphicDevice>&);
+#else
+  void initialize(const SmartPtr<class MathGraphicDevice>&);
+#endif // ENABLE_BOXML
 
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);
@@ -48,7 +52,9 @@ public:
 
   SmartPtr<class Builder> getBuilder(void) const;
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
+#if ENABLE_BOXML
   SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
+#endif // ENABLE_BOXML
 
   SmartPtr<class Element> getRootElement(void) const;
   void resetRootElement(void);
@@ -68,7 +74,9 @@ private:
   mutable SmartPtr<class Element> rootElement;
   SmartPtr<class Builder> builder;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
+#if ENABLE_BOXML
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;
+#endif // ENABLE_BOXML
   unsigned defaultFontSize;
   unsigned freezeCounter;
   scaled x0;

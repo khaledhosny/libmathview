@@ -24,7 +24,9 @@
 
 #include "Builder.hh"
 #include "MathMLNamespaceContext.hh"
+#if ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
+#endif // ENABLE_BOXML
 
 Builder::Builder()
 { }
@@ -32,6 +34,7 @@ Builder::Builder()
 Builder::~Builder()
 { }
 
+#if ENABLE_BOXML
 void
 Builder::setNamespaceContexts(const SmartPtr<MathMLNamespaceContext>& mmlContext,
 			      const SmartPtr<BoxMLNamespaceContext>& bmlContext)
@@ -39,11 +42,20 @@ Builder::setNamespaceContexts(const SmartPtr<MathMLNamespaceContext>& mmlContext
   mathmlContext = mmlContext;
   boxmlContext = bmlContext;
 }
+#else
+void
+Builder::setNamespaceContext(const SmartPtr<MathMLNamespaceContext>& mmlContext)
+{
+  mathmlContext = mmlContext;
+}
+#endif // ENABLE_BOXML
 
 SmartPtr<MathMLNamespaceContext>
 Builder::getMathMLNamespaceContext() const
 { return mathmlContext; }
 
+#if ENABLE_BOXML
 SmartPtr<BoxMLNamespaceContext>
 Builder::getBoxMLNamespaceContext() const
 { return boxmlContext; }
+#endif // ENABLE_BOXML

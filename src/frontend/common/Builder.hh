@@ -36,15 +36,23 @@ public:
   virtual SmartPtr<class Element> getRootElement(void) const = 0;
   virtual void forgetElement(Element*) const = 0;
 
+#if ENABLE_BOXML
   void setNamespaceContexts(const SmartPtr<class MathMLNamespaceContext>&,
 			    const SmartPtr<class BoxMLNamespaceContext>&);
+#else
+  void setNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
+#endif // ENABLE_BOXML
 
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
+#if ENABLE_BOXML
   SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
+#endif // ENABLE_BOXML
 
 protected:
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
+#if ENABLE_BOXML
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;
+#endif // ENABLE_BOXML
 };
 
 #endif // __Builder_hh__

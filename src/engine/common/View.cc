@@ -28,7 +28,9 @@
 #include "Element.hh"
 #include "Builder.hh"
 #include "MathMLNamespaceContext.hh"
+#if ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
+#endif // ENABLE_BOXML
 #include "AreaId.hh"
 #include "scaled.hh"
 #include "scaledConv.hh"
@@ -55,6 +57,7 @@ View::create(const SmartPtr<Builder>& builder)
   return view;
 }
 
+#if ENABLE_BOXML
 void
 View::initialize(const SmartPtr<MathGraphicDevice>& mgd,
 		 const SmartPtr<BoxGraphicDevice>& bgd)
@@ -66,6 +69,17 @@ View::initialize(const SmartPtr<MathGraphicDevice>& mgd,
   boxmlContext = BoxMLNamespaceContext::create(this, bgd);
   getBuilder()->setNamespaceContexts(mathmlContext, boxmlContext);
 }
+#else
+void
+View::initialize(const SmartPtr<MathGraphicDevice>& mgd)
+{
+  // the following fields cannot be initialized within the constructor
+  // because there the reference counter is still 0, so it is
+  // harmful to pass `this' as pointer
+  mathmlContext = MathMLNamespaceContext::create(this, mgd);
+  getBuilder()->setNamespaceContext(mathmlContext);
+}
+#endif // ENABLE_BOXML
 
 bool
 View::freeze()
@@ -197,9 +211,11 @@ SmartPtr<MathMLNamespaceContext>
 View::getMathMLNamespaceContext(void) const
 { return mathmlContext; }
 
+#if ENABLE_BOXML
 SmartPtr<BoxMLNamespaceContext>
 View::getBoxMLNamespaceContext(void) const
 { return boxmlContext; }
+#endif // ENABLE_BOXML
 
 void
 View::render(RenderingContext& ctxt) const

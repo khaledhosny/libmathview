@@ -33,7 +33,7 @@ AC_ARG_ENABLE(
 )
 
 if test "x$enable_debug" = "xyes"; then
-   AC_DEFINE(ENABLE_DEBUG,,[Define to 1 if you want to enable validity checks while running])
+   AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
 fi
 
 AC_ARG_ENABLE(
@@ -44,7 +44,18 @@ AC_ARG_ENABLE(
 )
 
 if test "x$enable_breaks" = "xyes"; then
-	AC_DEFINE(ENABLE_BREAKS,,[Define to 1 if you want to enable linebreaking using mspace elements])
+	AC_DEFINE(ENABLE_BREAKS,1,[Define to 1 if you want to enable linebreaking using mspace elements])
+fi
+
+AC_ARG_ENABLE(
+	boxml,
+	[  --enable-boxml[=ARG]    enable support for BoxML markup [default=no]],
+	enable_boxml=$enableval,
+	enable_boxml=no
+)
+AM_CONDITIONAL([COND_BOXML], [test "$enable_boxml" = "yes"])
+if test "x$enable_boxml" = "xyes"; then
+	AC_DEFINE(ENABLE_BOXML,1,[Define to 1 if you want support for BoxML markup])
 fi
 
 AC_ARG_ENABLE(
@@ -152,7 +163,7 @@ AC_TRY_COMPILE(
 	[#include <getopt.h>],
 	[],
 	[
-		AC_DEFINE(HAVE_HIDDEN_GETOPT,,[Define to 1 if #include <getopt.h> works even when HAVE_GETOPT_H is false])
+		AC_DEFINE(HAVE_HIDDEN_GETOPT,1,[Define to 1 if #include <getopt.h> works even when HAVE_GETOPT_H is false])
 		AC_MSG_RESULT(yes)
 	],
 	[
@@ -194,7 +205,7 @@ AC_TRY_COMPILE(
 		iconv(cd, &inbuf, 0, 0, 0);
 	],
 	[
-		AC_DEFINE(ICONV_CONST,,[Define to 1 if iconv has a const second argument])
+		AC_DEFINE(ICONV_CONST,1,[Define to 1 if iconv has a const second argument])
 		AC_MSG_RESULT(yes)
 	],
 	[
@@ -310,7 +321,7 @@ AC_CHECK_LIB(iberty, getopt_long,
 	,
 	-liberty
 )
-AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,,[Define to 1 if you have getopt_long]))
+AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have getopt_long]))
 
 AC_LANG([C])
 
@@ -334,7 +345,7 @@ AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$
 
 have_libxml2="no"
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.0.0,
-  AC_DEFINE(HAVE_LIBXML,,[Define to 1 is libxml2 is installed])
+  AC_DEFINE(HAVE_LIBXML,1,[Define to 1 is libxml2 is installed])
   have_libxml2="yes",
   AC_MSG_WARN([could not find libxml2]))
 AC_SUBST(XML_CFLAGS)
@@ -344,7 +355,7 @@ AM_CONDITIONAL([COND_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o 
 
 have_gmetadom="no"
 PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
-  AC_DEFINE(HAVE_GMETADOM,,[Define to 1 if gmetadom is installed])
+  AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 if gmetadom is installed])
   have_gmetadom="yes",
   AC_MSG_WARN([could not find GMetaDOM]))
 AC_SUBST(DOM_CFLAGS)
@@ -388,7 +399,7 @@ CXXFLAGS="$CXXFLAGS -W -Wall"
 if test $profile = yes; then
 	CFLAFS="$CFLAGS -O0 -pg"
 	CXXFLAGS="$CXXFLAGS -O0 -pg"
-	AC_DEFINE(ENABLE_PROFILE,,[Define to 1 to let the widget collect some information for profiling purposes])
+	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
 fi
 
 AC_CONFIG_FILES([
