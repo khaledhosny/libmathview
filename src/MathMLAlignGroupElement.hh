@@ -29,7 +29,7 @@
 
 class MathMLAlignGroupElement: public MathMLElement {
 public:
-  MathMLAlignGroupElement(GdomeElement*);
+  MathMLAlignGroupElement(mDOMNodeRef);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual ~MathMLAlignGroupElement();
 

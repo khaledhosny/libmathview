@@ -31,7 +31,7 @@
 // and a very limited set of other MathML elements (e.g. <malignmark>)
 class MathMLTokenElement : public MathMLElement {
 public:
-  MathMLTokenElement(GdomeElement*, TagId t = TAG_NOTVALID);
+  MathMLTokenElement(mDOMNodeRef, TagId t = TAG_NOTVALID);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void 	 Setup(class RenderingEnvironment*);
   virtual void 	 DoLayout(LayoutId, class Layout&);

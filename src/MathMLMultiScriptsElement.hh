@@ -23,11 +23,13 @@
 #ifndef MathMLMultiScriptsElement_hh
 #define MathMLMultiScriptsElement_hh
 
+#include <config.h>
+
 #include "MathMLScriptCommonElement.hh"
 
 class MathMLMultiScriptsElement : public MathMLScriptCommonElement {
 public:
-  MathMLMultiScriptsElement(GdomeElement*);
+  MathMLMultiScriptsElement(mDOMNodeRef);
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

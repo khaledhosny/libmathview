@@ -23,20 +23,22 @@
 #ifndef MathMLDocument_hh
 #define MathMLDocument_hh
 
+#include <config.h>
+
 #include "MathMLContainerElement.hh"
 
 class MathMLDocument: public MathMLContainerElement {
 public:
-  MathMLDocument(GdomeDocument*);
+  MathMLDocument(mDOMDocRef);
   virtual void Normalize(void);
   virtual bool IsDocument(void) const;
   virtual ~MathMLDocument();
 
   MathMLElement* GetRoot(void) const;
-  GdomeDocument* GetDOMDocument(void) const { return DOMdoc; }
+  mDOMDocRef     GetDOMDocument(void) const { return DOMdoc; }
 
 protected:
-  GdomeDocument* DOMdoc;
+  mDOMDocRef DOMdoc;
 };
 
 typedef MathMLDocument* MathMLDocumentPtr;

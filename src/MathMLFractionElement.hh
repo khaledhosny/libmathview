@@ -23,11 +23,13 @@
 #ifndef MathMLFractionElement_hh
 #define MathMLFractionElement_hh
 
+#include <config.h>
+
 #include "MathMLContainerElement.hh"
 
 class MathMLFractionElement: public MathMLContainerElement {
 public:
-  MathMLFractionElement(GdomeElement*);
+  MathMLFractionElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

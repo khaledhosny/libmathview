@@ -30,7 +30,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLFractionElement.hh"
 
-MathMLFractionElement::MathMLFractionElement(GdomeElement* node) : MathMLContainerElement(node, TAG_MFRAC)
+MathMLFractionElement::MathMLFractionElement(mDOMNodeRef node) : MathMLContainerElement(node, TAG_MFRAC)
 {
 }
 

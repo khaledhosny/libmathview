@@ -31,7 +31,7 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLUnderOverElement::MathMLUnderOverElement(GdomeElement* node, TagId id) :
+MathMLUnderOverElement::MathMLUnderOverElement(mDOMNodeRef node, TagId id) :
   MathMLContainerElement(node, id)
 {
   assert(id == TAG_MUNDER || id == TAG_MOVER || id == TAG_MUNDEROVER);

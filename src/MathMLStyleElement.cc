@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "gdomeAux.h"
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "StringUnicode.hh"
@@ -34,7 +33,7 @@
 #include "MathMLAttributeList.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLStyleElement::MathMLStyleElement(GdomeElement* node) :
+MathMLStyleElement::MathMLStyleElement(mDOMNodeRef node) :
   MathMLNormalizingContainerElement(node, TAG_MSTYLE)
 {
 }
@@ -83,33 +82,21 @@ void
 MathMLStyleElement::Setup(RenderingEnvironment* env)
 {
   assert(env != NULL);
-  assert(GetDOMNode() != NULL);
 
   MathMLAttributeList attributes;
 
-  GdomeException exc;
-  GdomeNamedNodeMap* attrMap = gdome_el_attributes(GetDOMNode(), &exc);
-
-  for (unsigned i = 0; i < gdome_nnm_length(attrMap, &exc); i++) {
-    GdomeAttr* attr = GDOME_A(gdome_nnm_item(attrMap, i, &exc));
-    GdomeDOMString* attrName = gdome_n_nodeName(GDOME_N(attr), &exc);
-    assert(attrName != NULL);
-
-    AttributeId id = AttributeIdOfName(gdome_str_c(attrName));
-    gdome_str_unref(attrName);
-    
+  for (mDOMAttrRef attribute = mdom_node_get_first_attribute(GetDOMNode());
+       attribute != NULL;
+       attribute = mdom_attr_get_next_sibling(attribute)) {
+    AttributeId id = AttributeIdOfName(C_CONST_STRING(mdom_attr_get_name(attribute)));
     if (id != ATTR_NOTVALID) {
-      GdomeDOMString* attrValue = gdome_n_nodeValue(GDOME_N(attr), &exc);
-      assert(attrValue != NULL);
-
-      String* sValue = allocString(attrValue);
+      mDOMStringRef value = mdom_attr_get_value(attribute);
+      String* sValue = allocString(value);
       attributes.Append(new MathMLAttribute(id, sValue));
-      gdome_str_unref(attrValue);
+      mdom_string_free(value);
     }
   }
   
-  gdome_nnm_unref(attrMap, &exc);
-
   env->Push(&attributes);
 
   const Value* value = NULL;

@@ -23,14 +23,18 @@
 #ifndef MathMLTextElement_hh
 #define MathMLTextElement_hh
 
+#include <config.h>
+
 #include "MathMLTokenElement.hh"
 
 class MathMLTextElement: public MathMLTokenElement {
 public:
-  MathMLTextElement(GdomeElement*);
+  MathMLTextElement(mDOMNodeRef);
   virtual ~MathMLTextElement();
 
   virtual bool IsSpaceLike(void) const;
+
+private:
 };
 
 #endif // MathMLTextElement_hh

@@ -23,7 +23,7 @@
 #ifndef Configuration_hh
 #define Configuration_hh
 
-#include <gdome.h>
+#include <minidom.h>
 
 #include "scaled.hh"
 #include "String.hh"
@@ -58,8 +58,8 @@ public:
   RGBValue GetSelectBackground(void) const { return HasSelectColor() ? selectBackground : DEFAULT_SELECT_BACKGROUND; }
 
 private:
-  void ParseConfiguration(GdomeElement*);
-  bool ParseColor(GdomeElement*, RGBValue&, RGBValue&);
+  void ParseConfiguration(mDOMNodeRef);
+  bool ParseColor(mDOMNodeRef, RGBValue&, RGBValue&);
 
   Container<String*> dictionaries;
   Container<String*> fonts;

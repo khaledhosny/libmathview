@@ -43,7 +43,7 @@
 #include "MathMLTokenElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLTokenElement::MathMLTokenElement(GdomeElement* node, TagId t) : MathMLElement(node, t)
+MathMLTokenElement::MathMLTokenElement(mDOMNodeRef node, TagId t) : MathMLElement(node, t)
 {
   rawContentLength = 0;
 }

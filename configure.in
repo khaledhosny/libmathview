@@ -3,7 +3,7 @@ AC_INIT(src/MathMLObject.cc)
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=2
-MATHVIEW_MICRO_VERSION=6
+MATHVIEW_MICRO_VERSION=5
 MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
 
@@ -156,14 +156,14 @@ AC_CHECK_LIB(glib, g_malloc,
 	`glib-config --libs`
 )
 
-AC_CHECK_LIB(gdome, gdome_di_mkref,
+AC_CHECK_LIB(minidom, mdom_node_get_type,
 	[
-		CFLAGS="$CFLAGS `gdome-config --cflags`"
-		CXXFLAGS="$CXXFLAGS `gdome-config --cflags`"
-		LIBS="$LIBS `gdome-config --libs`"
+		CFLAGS="$CFLAGS `minidom-config --cflags`"
+		CXXFLAGS="$CXXFLAGS `minidom-config --cflags`"
+		LIBS="$LIBS `minidom-config --libs`"
 	],
-	AC_MSG_ERROR(gtkmathview will not compile if Gdome2 is not installed),
-	`gdome-config --libs`
+	AC_MSG_ERROR(gtkmathview will not compile if minidom is not installed),
+	`minidom-config --libs` `glib-config --libs`
 )
 
 AC_CHECK_LIB(gtk, gtk_window_new, gtklib="yes", gtklib="no", `gtk-config --libs`)

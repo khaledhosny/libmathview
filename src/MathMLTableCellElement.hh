@@ -23,12 +23,14 @@
 #ifndef MathMLTableCellElement_hh
 #define MathMLTableCellElement_hh
 
+#include <config.h>
+
 #include "MathMLTableElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLTableCellElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLTableCellElement(GdomeElement*);
+  MathMLTableCellElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual void SetPosition(scaled, scaled);

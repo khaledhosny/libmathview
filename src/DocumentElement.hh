@@ -23,11 +23,13 @@
 #ifndef DocumentElement_hh
 #define DocumentElement_hh
 
+#include <config.h>
+
 #include "MathMLContainerElement.hh"
 
 class DocumentElement : public MathMLContainerElement {
 public:
-  DocumentElement(GdomeElement*);
+  DocumentElement(mDOMNodeRef);
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual void SetPosition(scaled, scaled);

@@ -28,7 +28,6 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "gtkmathview.h"
-#include "gdomeAux.h"
 #include "guiGTK.h"
 
 #define XLINK_NS_URI "http://www.w3.org/1999/xlink"
@@ -431,7 +430,7 @@ export_to_ps(GtkWidget* widget)
 }
 
 static void
-element_changed(GtkMathView* math_view, GdomeElement* node)
+element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
@@ -439,7 +438,7 @@ element_changed(GtkMathView* math_view, GdomeElement* node)
 }
 
 static void
-action_changed(GtkMathView* math_view, GdomeElement* node)
+action_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
@@ -447,7 +446,7 @@ action_changed(GtkMathView* math_view, GdomeElement* node)
 }
 
 static void
-selection_changed(GtkMathView* math_view, GdomeElement* node)
+selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
@@ -455,21 +454,16 @@ selection_changed(GtkMathView* math_view, GdomeElement* node)
 }
 
 static void
-jump(GtkMathView* math_view, GdomeElement* node)
+jump(GtkMathView* math_view, mDOMNodeRef node)
 {
+  mDOMStringRef href;
+
   g_return_if_fail(node != NULL);
+  href = mdom_node_get_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI);
 
-  if (gdome_el_hasAttribute_c(node, "href")) {
-    GdomeException exc;
-    GdomeDOMString* name = gdome_str_mkref("href");
-    GdomeDOMString* ns = gdome_str_mkref(XLINK_NS_URI);
-    GdomeDOMString* href = gdome_el_getAttributeNS(node, name, ns, &exc);
-    g_assert(href != NULL);
-
-    GUI_load_document(gdome_str_c(href));
-    gdome_str_unref(href);
-    gdome_str_unref(name);
-    gdome_str_unref(ns);
+  if (href != NULL) {
+    GUI_load_document(C_CONST_STRING(href));
+    mdom_string_free(href);
   }
 }
 

@@ -23,12 +23,7 @@
 #ifndef EntitiesTable_hh
 #define EntitiesTable_hh
 
-#include <gdome.h>
-
-extern const GdomeEntitiesTableEntry entitiesTable[];
-  
-#if 0
-
+#include "minidom.h"
 #include "String.hh"
 
 class EntitiesTable {
@@ -46,6 +41,5 @@ public:
 private:
   mDOMDocRef repository;
 };
-#endif
 
 #endif // EntitiesTable_hh

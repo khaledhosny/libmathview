@@ -33,7 +33,7 @@
 #include "MathMLFencedElement.hh"
 #include "MathMLOperatorElement.hh"
 
-MathMLFencedElement::MathMLFencedElement(GdomeElement* node) :
+MathMLFencedElement::MathMLFencedElement(mDOMNodeRef node) :
   MathMLNormalizingContainerElement(node, TAG_MFENCED)
 {
   normalized = false;

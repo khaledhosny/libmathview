@@ -23,12 +23,11 @@
 #ifndef MathEngine_hh
 #define MathEngine_hh
 
-#include <gdome.h>
-
 #include "scaled.hh"
 #include "Logger.hh"
 #include "RGBValue.hh"
 #include "Configuration.hh"
+#include "EntitiesTable.hh"
 #include "OperatorDictionary.hh"
 
 class MathEngine {
@@ -39,7 +38,7 @@ public:
   void  Init(class DrawingArea*, class FontManager*);
 
   bool  Load(const char*);
-  bool  Load(GdomeDocument*);
+  bool  Load(mDOMDocRef);
   void  Unload(void);
 
   void  Setup(void);
@@ -79,9 +78,7 @@ public:
 
   static void InitGlobalData(const char*);
 
-#if 0
   static EntitiesTable      entitiesTable;
-#endif
   static OperatorDictionary dictionary;
   static Configuration      configuration;
   static Logger             logger;

@@ -29,7 +29,7 @@
 #include "MathMLmathElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLmathElement::MathMLmathElement(GdomeElement* node) :
+MathMLmathElement::MathMLmathElement(mDOMNodeRef node) :
   MathMLNormalizingContainerElement(node, TAG_MATH)
 {
 }

@@ -596,19 +596,19 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
       <simple index="0003 0151 0025 0043"/>
       <compound index="0063 -1 0065 0067"/>
     </stretchy>
-    <stretchy code="0x230a" direction="vertical">
+    <stretchy name="LeftFloor" direction="vertical">
       <simple index="4 106 22 36"/>
       <compound index="-1 -1 52 54"/>
     </stretchy>
-    <stretchy code="0x230b" direction="vertical">
+    <stretchy name="RightFloor" direction="vertical">
       <simple index="5 107 23 37"/>
       <compound index="-1 -1 53 55"/>
     </stretchy>
-    <stretchy code="0x2308" direction="vertical">
+    <stretchy name="LeftCeiling" direction="vertical">
       <simple index="6 108 24 38"/>
       <compound index="50 -1 -1 54"/>
     </stretchy>
-    <stretchy code="0x2309" direction="vertical">
+    <stretchy name="RightCeiling" direction="vertical">
       <simple index="7 106 25 39"/>
       <compound index="51 -1 -1 55"/>
     </stretchy>
@@ -620,63 +620,64 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
       <simple index="9 111 27 41"/>
       <compound index="57 61 59 62"/>
     </stretchy>
-    <stretchy code="0x2329" direction="vertical">
+    <stretchy name="LeftAngleBracket" direction="vertical">
       <simple index="10 68 28 42"/>
     </stretchy>
-    <stretchy code="0x232a" direction="vertical">
+    <stretchy name="RightAngleBracket" direction="vertical">
       <simple index="11 69 29 43"/>
     </stretchy>
-    <stretchy code="0x222b" direction="vertical">
+    <stretchy name="Integral" direction="vertical">
       <simple index="0122 0132"/>
     </stretchy>
-    <stretchy code="0x2294" direction="vertical">
+    <stretchy name="SquareUnion" direction="vertical">
       <simple index="0106 0107"/>
     </stretchy>
-    <stretchy code="0x222e" direction="vertical">
+    <stretchy name="ContourIntegral" direction="vertical">
       <simple index="0110 0111"/>
     </stretchy>
-    <stretchy code="0x2299" direction="both">
+    <stretchy name="CircleDot" direction="both">
       <simple index="0112 0113"/>
     </stretchy>
-    <stretchy code="0x2295" direction="both">
+    <stretchy name="CirclePlus" direction="both">
       <simple index="0114 0115"/>
     </stretchy>
-    <stretchy code="0x2297" direction="both">
+    <stretchy name="CircleTimes" direction="both">
       <simple index="0116 0117"/>
     </stretchy>
-    <stretchy code="0x2211" direction="vertical">
+    <stretchy name="Sum" direction="vertical">
       <simple index="0120 0130"/>
     </stretchy>
-    <stretchy code="0x220f" direction="vertical">
+    <stretchy name="Product" direction="vertical">
       <simple index="0121 0131"/>
     </stretchy>
-    <stretchy code="0x22c3" direction="vertical">
+    <stretchy name="Union" direction="vertical">
       <simple index="0123 0133"/>
     </stretchy>
-    <stretchy code="0x22c2" direction="vertical">
+    <stretchy name="Intersection" direction="vertical">
       <simple index="0124 0134"/>
     </stretchy>
-    <stretchy code="0x228e" direction="vertical">
+    <stretchy name="UnionPlus" direction="vertical">
       <simple index="0125 0135"/>
     </stretchy>
-    <stretchy code="0x2227" direction="vertical">
+    <stretchy name="Wedge" direction="vertical">
       <simple index="0126 0136"/>
     </stretchy>
-    <stretchy code="0x2228" direction="vertical">
+    <stretchy name="Vee" direction="vertical">
       <simple index="0127 0137"/>
     </stretchy>
-    <stretchy code="0x2210" direction="vertical">
+    <stretchy name="Coproduct" direction="vertical">
       <simple index="0140 0141"/>
     </stretchy>
-    <stretchy code="0x2229" direction="horizontal">
+    <stretchy name="Cap" direction="horizontal">
       <simple index="0142 0143 0144"/>
     </stretchy>
-    <stretchy code="0x223c" direction="horizontal">
+    <stretchy name="Tilde" direction="horizontal">
       <simple index="0145 0146 0147"/>
     </stretchy>
-    <stretchy code="0x221a" direction="vertical">
+    <stretchy name="Sqrt" direction="vertical">
       <simple index="112 113 114 115"/>
       <compound index="118 -1 116 117"/>
     </stretchy>
   </map>
+
 </font-configuration>

@@ -23,7 +23,7 @@
 #ifndef traverseAux_hh
 #define traverseAux_hh
 
-#include <gdome.h>
+#include <minidom.h>
 
 #include "CharMap.hh"
 
@@ -33,7 +33,7 @@ class MathMLOperatorElement* findStretchyOperator(class MathMLElement*);
 class MathMLOperatorElement* findStretchyOperator(class MathMLElement*, StretchId);
 class MathMLElement*         findCommonAncestor(class MathMLElement*, class MathMLElement*);
 class MathMLActionElement*   findActionElement(class MathMLElement*);
-GdomeElement*                findDOMNode(class MathMLElement*);
-class MathMLElement*         findMathMLElement(GdomeElement*);
+mDOMNodeRef                  findDOMNode(class MathMLElement*);
+class MathMLElement*         findMathMLElement(mDOMNodeRef);
 
 #endif // traverseAux_hh

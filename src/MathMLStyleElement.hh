@@ -23,11 +23,13 @@
 #ifndef MathMLStyleElement_hh
 #define MathMLStyleElement_hh
 
+#include <config.h>
+
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLStyleElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLStyleElement(GdomeElement*);
+  MathMLStyleElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void Render(const DrawingArea&);

@@ -28,7 +28,7 @@
 
 class MathMLSpaceElement: public MathMLElement {
 public:
-  MathMLSpaceElement(GdomeElement*);
+  MathMLSpaceElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void    Setup(class RenderingEnvironment*);
   virtual void    DoBoxedLayout(LayoutId, BreakId, scaled);

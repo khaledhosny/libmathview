@@ -29,7 +29,7 @@
 #include "MathMLPaddedElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLPaddedElement::MathMLPaddedElement(GdomeElement* node) :
+MathMLPaddedElement::MathMLPaddedElement(mDOMNodeRef node) :
   MathMLNormalizingContainerElement(node, TAG_MPADDED)
 {
   width.valid = lSpace.valid = height.valid = depth.valid = false;

@@ -28,7 +28,7 @@
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
 
-MathMLEncloseElement::MathMLEncloseElement(GdomeElement* node) :
+MathMLEncloseElement::MathMLEncloseElement(mDOMNodeRef node) :
   MathMLNormalizingContainerElement(node, TAG_MENCLOSE)
 {
   normalized = false;

@@ -40,7 +40,7 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLOperatorElement::MathMLOperatorElement(GdomeElement* node) :
+MathMLOperatorElement::MathMLOperatorElement(mDOMNodeRef node) :
   MathMLTokenElement(node, TAG_MO)
 {
   eOp = NULL;
@@ -465,8 +465,8 @@ StretchId
 MathMLOperatorElement::GetStretch() const
 {
   if (!IsStretchy()) return STRETCH_NO;
-  if (content.GetSize() != 1) return STRETCH_NO;
 
+  assert(content.GetSize() == 1);
   assert(content.GetFirst() != NULL);
 
   if (!content.GetFirst()->IsStretchyChar()) return STRETCH_NO;

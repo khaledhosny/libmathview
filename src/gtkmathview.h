@@ -27,8 +27,8 @@
 
 #include "defs.h"
 
+#include <minidom.h>
 #include <stdio.h>
-#include <gdome.h>
 
 #include <gtk/gtkframe.h>
 #include <gtk/gtkeventbox.h>
@@ -56,10 +56,10 @@ extern "C" {
   GtkType    	 gtk_math_view_get_type(void);
   GtkWidget* 	 gtk_math_view_new(GtkAdjustment*, GtkAdjustment*);
   gboolean     	 gtk_math_view_load(GtkMathView*, const gchar*);
-  gboolean       gtk_math_view_load_tree(GtkMathView*, GdomeDocument*);
+  gboolean       gtk_math_view_load_tree(GtkMathView*, mDOMDocRef);
   void           gtk_math_view_unload(GtkMathView*);
-  GdomeElement*  gtk_math_view_get_selection(GtkMathView*);
-  void           gtk_math_view_set_selection(GtkMathView*, GdomeElement*);
+  mDOMNodeRef    gtk_math_view_get_selection(GtkMathView*);
+  void           gtk_math_view_set_selection(GtkMathView*, mDOMNodeRef);
   gint      	 gtk_math_view_get_width(GtkMathView*);
   gint      	 gtk_math_view_get_height(GtkMathView*);
   void       	 gtk_math_view_get_top(GtkMathView*, gint*, gint*);
@@ -84,8 +84,8 @@ extern "C" {
   FontManagerId  gtk_math_view_get_font_manager_type(GtkMathView*);
 
   /* the following are *unstable*, *experimental* APIs */
-  GdomeElement*  gtk_math_view_get_element(GtkMathView*);
-  GdomeElement*  gtk_math_view_get_action(GtkMathView*);
+  mDOMNodeRef    gtk_math_view_get_element(GtkMathView*);
+  mDOMNodeRef    gtk_math_view_get_action(GtkMathView*);
   guint          gtk_math_view_action_get_selected(GtkMathView*);
   void           gtk_math_view_action_set_selected(GtkMathView*, guint);
   void           gtk_math_view_action_toggle(GtkMathView*);

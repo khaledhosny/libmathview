@@ -27,7 +27,7 @@
 #include "MathMLDummyElement.hh"
 #include "MathMLSemanticsElement.hh"
 
-MathMLSemanticsElement::MathMLSemanticsElement(GdomeElement* node) :
+MathMLSemanticsElement::MathMLSemanticsElement(mDOMNodeRef node) :
   MathMLContainerElement(node, TAG_SEMANTICS)
 {
 }

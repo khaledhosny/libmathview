@@ -23,11 +23,13 @@
 #ifndef MathMLFencedElement_hh
 #define MathMLFencedElement_hh
 
+#include <config.h>
+
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLFencedElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLFencedElement(GdomeElement*);
+  MathMLFencedElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

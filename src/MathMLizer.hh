@@ -23,27 +23,26 @@
 #ifndef MathMLizer_hh
 #define MathMLizer_hh
 
-#include <gdome.h>
-
+#include "minidom.h"
 #include "keyword.hh"
 
 class MathMLizer {
 public:
-  MathMLizer(GdomeDocument*);
+  MathMLizer(mDOMDocRef);
   ~MathMLizer();
 
   class MathMLDocument* operator()(void);
 
 protected:
-  void MathMLizeNode(GdomeElement*, class MathMLContainerElement*);
-  void MathMLizeContainerContent(GdomeElement*, class MathMLContainerElement*);
-  void MathMLizeTokenContent(GdomeElement*, class MathMLTokenElement*);
-  class String* SubstituteMCharElement(GdomeElement*);
-  class MathMLTextNode* SubstituteMGlyphElement(GdomeElement*);
-  class MathMLTextNode* SubstituteAlignMarkElement(GdomeElement*);
+  void MathMLizeNode(mDOMNodeRef, class MathMLContainerElement*);
+  void MathMLizeContainerContent(mDOMNodeRef, class MathMLContainerElement*);
+  void MathMLizeTokenContent(mDOMNodeRef, class MathMLTokenElement*);
+  class String* SubstituteMCharElement(mDOMNodeRef);
+  class MathMLTextNode* SubstituteMGlyphElement(mDOMNodeRef);
+  class MathMLTextNode* SubstituteAlignMarkElement(mDOMNodeRef);
 
   const char* fileName;
-  GdomeDocument* doc;
+  mDOMDocRef  doc;
 };
 
 #endif // MathMLizer_hh

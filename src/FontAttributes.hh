@@ -66,4 +66,4 @@ private:
   Container<ExtraFontAttribute*> content;
 };
 
-#endif // FontAttributes_hh
+#endif

@@ -23,6 +23,8 @@
 #ifndef MathMLEncloseElement_hh
 #define MathMLEncloseElement_hh
 
+#include <config.h>
+
 #include "RGBValue.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
@@ -34,7 +36,7 @@ enum NotationType {
 
 class MathMLEncloseElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLEncloseElement(GdomeElement*);
+  MathMLEncloseElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

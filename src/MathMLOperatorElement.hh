@@ -28,7 +28,7 @@
 
 class MathMLOperatorElement: public MathMLTokenElement {
 public:
-  MathMLOperatorElement(GdomeElement*);
+  MathMLOperatorElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void Normalize(void);

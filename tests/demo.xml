@@ -10,7 +10,7 @@
 	  we present some examples of rendering for each MathML presentation element, along with some more
 	  complete (and complex) examples of such elements inside mathematical furmulae. Feel free to send comments
 	  and/or contributions to the author at the following
-	  address:&NonBreakingSpace;
+	  address:<mchar name="NonBreakingSpace"/>
 	</mtext>
 	<mtext mathvariant="monospace">luca.padovani@cs.unibo.it</mtext>
       </mtd></mtr>
@@ -79,7 +79,7 @@
 	<mspace width="1em"/>
         <mo mathcolor="blue">&lt;</mo>
 	<mspace width="1em"/>
-        <mo mathcolor="blue">&sum;</mo>
+        <mo mathcolor="blue"><mchar name="sum"/></mo>
 	<mspace width="2em"/>
         <mo mathcolor="blue">.NOT.</mo>
       </mtd></mtr>
@@ -115,7 +115,7 @@
 	    <mo mathcolor="blue">+</mo>
 	    <mrow>
 	      <mn mathcolor="green">2</mn>
-	      <mo>&InvisibleTimes;</mo>
+	      <mo><mchar name="InvisibleTimes"/></mo>
 	      <mi>x</mi>
 	    </mrow>
 	    <mo mathcolor="blue">+</mo>
@@ -182,9 +182,9 @@
         <mtext>
 	  There are also some "invisible operators", that is operators which have no associated
 	  glyph. They are used to render small non-null spaces between elements to improve
-	  readability. For example, the operator&NonBreakingSpace;</mtext>
+	  readability. For example, the operator<mchar name="NonBreakingSpace"/></mtext>
 	  <mtext mathvariant="monospace">InvisibleTimes</mtext>
-	  <mtext>&NonBreakingSpace;is used when two terms are multiplied by placing them side by side. Note the
+	  <mtext><mchar name="NonBreakingSpace"/>is used when two terms are multiplied by placing them side by side. Note the
 	  difference in the following example, where the first two terms are just placed one after the
 	  other, while the second two terms have an invisible operator:
 	</mtext>
@@ -199,7 +199,7 @@
 	<mspace width="1em"/>
 	<mrow>
 	  <mn mathcolor="green">2</mn>
-	  <mo>&InvisibleTimes;</mo>
+	  <mo><mchar name="InvisibleTimes"/></mo>
 	  <mi>x</mi>
 	</mrow>
       </mtd></mtr>
@@ -215,7 +215,7 @@
         <mspace width="1em"/>
 	<mi>x</mi>
 	<munder>
-	  <mo mathcolor="blue">&RightArrow;</mo>
+	  <mo mathcolor="blue"><mchar name="RightArrow"/></mo>
 	  <mtext>maps to</mtext>
 	</munder>
 	<mi>y</mi>

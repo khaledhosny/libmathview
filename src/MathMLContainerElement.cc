@@ -31,7 +31,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLContainerElement.hh"
 
-MathMLContainerElement::MathMLContainerElement(GdomeElement* node, TagId t) : MathMLElement(node, t)
+MathMLContainerElement::MathMLContainerElement(mDOMNodeRef node, TagId t) : MathMLElement(node, t)
 {
 }
 

@@ -29,7 +29,7 @@
 #include "RenderingEnvironment.hh"
 #include "AttributeParser.hh"
 
-MathMLSpaceElement::MathMLSpaceElement(GdomeElement* node) :
+MathMLSpaceElement::MathMLSpaceElement(mDOMNodeRef node) :
   MathMLElement(node, TAG_MSPACE)
 {
   breakability = BREAK_AUTO;

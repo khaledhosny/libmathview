@@ -30,7 +30,7 @@
 #include "MathMLTableElement.hh"
 #include "MathMLTableCellElement.hh"
 
-MathMLTableElement::MathMLTableElement(GdomeElement* node) :
+MathMLTableElement::MathMLTableElement(mDOMNodeRef node) :
   MathMLContainerElement(node, TAG_MTABLE)
 {
   nRows    = 0;

@@ -25,7 +25,6 @@
 #include <stdio.h>
 
 #include "Layout.hh"
-#include "gdomeAux.h"
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "DrawingArea.hh"
@@ -44,15 +43,10 @@ int MathMLElement::counter = 0;
 // It implements the basic skeleton of every such element, moreover it handles
 // the attributes and provides some facility functions to access and parse
 // attributes.
-MathMLElement::MathMLElement(GdomeElement* n, TagId t)
+MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
 {
-  GdomeException exc;
-
   node = n;
-  if (node != NULL) {
-    gdome_n_ref(GDOME_N(n), &exc);
-    gdome_n_setUserData(GDOME_N(node), this);
-  }
+  if (node != NULL) mdom_node_set_user_data(node, this);
 
   tag  = t;
 
@@ -70,11 +64,7 @@ MathMLElement::MathMLElement(GdomeElement* n, TagId t)
 MathMLElement::~MathMLElement()
 {
   //MathEngine::logger(LOG_DEBUG, "destroying `%s' (DOM %p)", NameOfTagId(IsA()), node);
-  if (node != NULL) {
-    GdomeException exc;
-    gdome_n_setUserData(GDOME_N(node), NULL);
-    gdome_n_unref(GDOME_N(node), &exc);
-  }
+  if (node != NULL) mdom_node_set_user_data(node, NULL);
 
   delete layout;
   delete shape;
@@ -148,12 +138,11 @@ MathMLElement::GetAttribute(AttributeId id,
   // then it cannot have attributes. This may happen for
   // elements inferred with normalization
   if (node != NULL) {
-    if (gdome_el_hasAttribute_c(node, NameOfAttributeId(id))) {
-      GdomeDOMString* value = gdome_el_getAttribute_c(node, NameOfAttributeId(id));
-      assert(value != NULL);
-      
+    mDOMStringRef value = mdom_node_get_attribute(node,
+						  DOM_CONST_STRING(NameOfAttributeId(id)));
+    if (value != NULL) {
       sValue = allocString(value);
-      gdome_str_unref(value);
+      mdom_string_free(value);
     }
   }
 
@@ -180,12 +169,11 @@ MathMLElement::GetAttributeValue(AttributeId id,
   const String* sValue = NULL;
 
   if (node != NULL) {
-    if (gdome_el_hasAttribute_c(node, NameOfAttributeId(id))) {
-      GdomeDOMString* value = gdome_el_getAttribute_c(node, NameOfAttributeId(id));
-      assert(value != NULL);
-      
+    mDOMStringRef value = mdom_node_get_attribute(node,
+						  DOM_CONST_STRING(NameOfAttributeId(id)));
+    if (value != NULL) {
       sValue = allocString(value);
-      gdome_str_unref(value);
+      mdom_string_free(value);
     }
   }
 
@@ -250,7 +238,15 @@ bool
 MathMLElement::IsSet(AttributeId id) const
 {
   if (node == NULL) return false;
-  return gdome_el_hasAttribute_c(node, NameOfAttributeId(id)) ? true : false;
+
+  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
+
+  if (value != NULL) {
+    mdom_string_free(value);
+    return true;
+  }
+
+  return false;
 }
 
 void
@@ -518,5 +514,5 @@ bool
 MathMLElement::HasLink() const
 {
   if (GetDOMNode() == NULL) return false;
-  return gdome_el_hasAttribute_c(GetDOMNode(), "href") ? true : false;
+  return mdom_node_has_attribute(GetDOMNode(), DOM_CONST_STRING("href"));
 }

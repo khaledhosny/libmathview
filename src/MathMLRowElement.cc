@@ -35,7 +35,7 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLRowElement::MathMLRowElement(GdomeElement* node) :
+MathMLRowElement::MathMLRowElement(mDOMNodeRef node) :
   MathMLContainerElement(node, TAG_MROW)
 {
   lastElement = NULL;

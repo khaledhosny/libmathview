@@ -27,7 +27,7 @@
 
 class MathMLActionElement : public MathMLContainerElement {
 public:
-  MathMLActionElement(GdomeElement*);
+  MathMLActionElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

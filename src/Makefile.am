@@ -117,7 +117,6 @@ libgtkmathview_la_SOURCES = \
   ValueSequence.cc \
   allocTextNode.cc \
   frameAux.cc \
-  gdomeAux.c \
   keyword.cc \
   operatorAux.cc \
   stringAux.cc \
@@ -228,7 +227,6 @@ noinst_HEADERS = \
   ValueSequence.hh \
   allocTextNode.hh \
   frameAux.hh \
-  gdomeAux.h \
   keyword.hh \
   operatorAux.hh \
   stringAux.hh \

@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "minidom.h"
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "EntitiesTable.hh"
@@ -31,12 +32,14 @@
 
 #define XML_ERROR_ENTITY  (DOM_CONST_STRING("ThisIsMyVerySillyErrorEntity"))
 
-const GdomeEntitiesTableEntry entitiesTable[] = {
+static struct {
+  const char* name;
+  const char* content;
+} internalTable[] = {
 #include "../auto/entitiesTable.inc"
-  { NULL, NULL, NULL, NULL }
+  { NULL, NULL }
 };
 
-#if 0
 EntitiesTable::EntitiesTable()
 {
   repository = mdom_doc_new(DOM_CONST_STRING("1.0"));
@@ -135,4 +138,3 @@ EntitiesTable::GetErrorEntityContent() const
 {
   return GetEntityContent(XML_ERROR_ENTITY);
 }
-#endif

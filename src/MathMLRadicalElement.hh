@@ -23,13 +23,13 @@
 #ifndef MathMLRadicalElement_hh
 #define MathMLRadicalElement_hh
 
-#include "MathMLContainerElement.hh"
+#include <config.h>
 
-#define UNICODE_SQRT 0x221a
+#include "MathMLContainerElement.hh"
 
 class MathMLRadicalElement : public MathMLContainerElement {
 public:
-  MathMLRadicalElement(GdomeElement*, TagId);
+  MathMLRadicalElement(mDOMNodeRef, TagId);
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

@@ -24,9 +24,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <gdome.h>
-
-#include "gdomeAux.h"
 #include "MathEngine.hh"
 #include "StringUnicode.hh"
 #include "Configuration.hh"
@@ -69,156 +66,119 @@ Configuration::Load(const char* confPath)
 
   MathEngine::logger(LOG_DEBUG, "loading configuration from `%s'...", confPath);
 
-  GdomeException exc;
-  GdomeDocument* doc = MathMLParseFile(confPath, false);
+  mDOMDocRef doc = MathMLParseFile(confPath, false);
   if (doc == NULL) return false;
 
-  GdomeElement* root = gdome_doc_documentElement(doc, &exc);
+  mDOMNodeRef root = mdom_doc_get_root_node(doc);
   if (root == NULL) {
-    gdome_doc_unref(doc, &exc);
+    mdom_doc_free(doc);
     MathEngine::logger(LOG_WARNING, "configuration file `%s' has no root node", confPath);
     return false;
   }
 
-  if (!gdome_n_name_is(GDOME_N(root), "math-engine-configuration")) {
-    gdome_doc_unref(doc, &exc);
+  if (!mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("math-engine-configuration"))) {
+    mdom_doc_free(doc);
     MathEngine::logger(LOG_WARNING, "configuration file `%s': could not find root element", confPath);
     return false;
   }
 
   ParseConfiguration(root);
 
-  gdome_doc_unref(doc, &exc);
+  mdom_doc_free(doc);
 
   return true;
 }
 
 void
-Configuration::ParseConfiguration(GdomeElement* el)
+Configuration::ParseConfiguration(mDOMNodeRef node)
 {
-  assert(el != NULL);
+  assert(node != NULL);
   
-  GdomeException exc;
-  for (GdomeNode* p = gdome_el_firstChild(el, &exc);
+  for (mDOMNodeRef p = mdom_node_get_first_child(node);
        p != NULL;
-       p = gdome_n_nextSibling_unref(p)) {
-    if (gdome_n_name_is(p, "dictionary-path")) {
-      GdomeDOMString* path = gdome_n_content(p);
-      assert(path != NULL);
-
-      if (!gdome_str_isEmpty(path)) {
-	MathEngine::logger(LOG_DEBUG, "found dictionary path `%s'", gdome_str_c(path));
-	String* s = new StringC(gdome_str_c(path));
+       p = mdom_node_get_next_sibling(p)) {
+    mDOMConstStringRef name = mdom_node_get_name(p);
+    
+    if (mdom_string_eq(name, DOM_CONST_STRING("dictionary-path"))) {
+      mDOMStringRef path = mdom_node_get_content(p);
+      if (path != NULL) {
+	MathEngine::logger(LOG_DEBUG, "found dictionary path `%s'", C_STRING(path));
+	String* s = new StringC(C_STRING(path));
 	s->TrimSpacesLeft();
 	s->TrimSpacesRight();
 	dictionaries.Append(s);
       }
-
-      gdome_str_unref(path);
-    } else if (gdome_n_name_is(p, "font-configuration-path")) {
-      GdomeDOMString* path = gdome_n_content(p);
-      assert(path != NULL);
-
-      if (!gdome_str_isEmpty(path)) {
-	MathEngine::logger(LOG_DEBUG, "found font configuration path `%s'", gdome_str_c(path));
-	String* s = new StringC(gdome_str_c(path));
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("font-configuration-path"))) {
+      mDOMStringRef path = mdom_node_get_content(p);
+      if (path != NULL) {
+	MathEngine::logger(LOG_DEBUG, "found font configuration path `%s'", C_STRING(path));
+	String* s = new StringC(C_STRING(path));
 	s->TrimSpacesLeft();
 	s->TrimSpacesRight();
 	fonts.Append(s);
       }
-
-      gdome_str_unref(path);
-    } else if (gdome_n_name_is(p, "entities-table-path")) {
-      GdomeDOMString* path = gdome_n_content(p);
-      assert(path != NULL);
-
-      if (!gdome_str_isEmpty(path)) {
-	MathEngine::logger(LOG_DEBUG, "found entities table path `%s'", gdome_str_c(path));
-	String* s = new StringC(gdome_str_c(path));
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("entities-table-path"))) {
+      mDOMStringRef path = mdom_node_get_content(p);
+      if (path != NULL) {
+	MathEngine::logger(LOG_DEBUG, "found entities table path `%s'", C_STRING(path));
+	String* s = new StringC(C_STRING(path));
 	s->TrimSpacesLeft();
 	s->TrimSpacesRight();
 	entities.Append(s);
       }
-
-      gdome_str_unref(path);
-    } else if (gdome_n_name_is(p, "t1-config-path")) {
-      GdomeDOMString* path = gdome_n_content(p);
-      assert(path != NULL);
-
-      if (!gdome_str_isEmpty(path) && t1Configs.GetSize() == 0) {
-	MathEngine::logger(LOG_DEBUG, "found t1lib config path `%s'", gdome_str_c(path));
-	String* s = new StringC(gdome_str_c(path));
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("t1-config-path"))) {
+      mDOMStringRef path = mdom_node_get_content(p);
+      if (path != NULL && t1Configs.GetSize() == 0) {
+	MathEngine::logger(LOG_DEBUG, "found t1lib config path `%s'", C_STRING(path));
+	String* s = new StringC(C_STRING(path));
 	s->TrimSpacesLeft();
 	s->TrimSpacesRight();
 	t1Configs.Append(s);
       }
-
-      gdome_str_unref(path);
-    } else if (gdome_n_name_is(p, "font-size")) {
-      GdomeDOMString* size = gdome_el_getAttribute_c(GDOME_EL(p), "size");
-
-      if (gdome_str_isEmpty(size)) {
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("font-size"))) {
+      mDOMStringRef attr = mdom_node_get_attribute(p, DOM_CONST_STRING("size"));
+      if (attr == NULL) {
 	MathEngine::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
       } else {
-	fontSize = atoi(gdome_str_c(size));
+	fontSize = atoi(C_STRING(attr));
 	MathEngine::logger(LOG_DEBUG, "default font size set to %d points", fontSize);
 	fontSizeSet = true;
       }
-
-      gdome_str_unref(size);
-    } else if (gdome_n_name_is(p, "color")) {
-      colorSet = ParseColor(GDOME_EL(p), foreground, background);
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("color"))) {
+      colorSet = ParseColor(p, foreground, background);
       if (colorSet) MathEngine::logger(LOG_DEBUG, "default color set to %06x %06x", foreground, background);
       else MathEngine::logger(LOG_WARNING, "color parsing error in configuration file");
-    } else if (gdome_n_name_is(p, "link-color")) {
-      linkColorSet = ParseColor(GDOME_EL(p), linkForeground, linkBackground);
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("link-color"))) {
+      linkColorSet = ParseColor(p, linkForeground, linkBackground);
       if (linkColorSet) MathEngine::logger(LOG_DEBUG, "default link color set to %06x %06x", linkForeground, linkBackground);
       else MathEngine::logger(LOG_WARNING, "color parsing error in configuration file");
-    } else if (gdome_n_name_is(p, "select-color")) {
-      selectColorSet = ParseColor(GDOME_EL(p), selectForeground, selectBackground);
+    } else if (mdom_string_eq(name, DOM_CONST_STRING("select-color"))) {
+      selectColorSet = ParseColor(p, selectForeground, selectBackground);
       if (selectColorSet) MathEngine::logger(LOG_DEBUG, "default selection color set to %06x %06x", selectForeground, selectBackground);
       else MathEngine::logger(LOG_WARNING, "color parsing error in configuration file");
-    } else if (!gdome_n_isBlank(p)) {
-      GdomeException exc;
-      GdomeDOMString* name = gdome_n_nodeName(p, &exc);
-      assert(name != NULL);
-
+    } else if (!mdom_node_is_blank(p)) {
       MathEngine::logger(LOG_WARNING, "unrecognized entry %s in configuration file (ignored)",
-			 gdome_str_c(name));
-      
-      gdome_str_unref(name);
+			 C_STRING(mdom_node_get_name(p)));
     }
   }
 }
 
 bool
-Configuration::ParseColor(GdomeElement* el, RGBValue& f, RGBValue& b)
+Configuration::ParseColor(mDOMNodeRef node, RGBValue& f, RGBValue& b)
 {
-  assert(el != NULL);
+  assert(node != NULL);
 
-  GdomeException exc;
-  GdomeDOMString* fs = gdome_el_getAttribute_c(el, "foreground");
-  GdomeDOMString* bs = gdome_el_getAttribute_c(el, "background");
-  assert(fs != NULL && bs != NULL);
+  mDOMStringRef fs = mdom_node_get_attribute(node, DOM_STRING("foreground"));
+  mDOMStringRef bs = mdom_node_get_attribute(node, DOM_STRING("background"));
 
-  if (gdome_str_isEmpty(fs) || gdome_str_isEmpty(bs)) {
-    GdomeDOMString* name = gdome_n_nodeName(GDOME_N(el), &exc);
-    assert(name != NULL);
-
+  if (fs == NULL || bs == NULL) {
     MathEngine::logger(LOG_WARNING, "malformed `%s' element in configuration file",
-		       gdome_str_c(name));
-
-    gdome_str_unref(name);
-    gdome_str_unref(fs);
-    gdome_str_unref(bs);
-
+		       mdom_node_get_name(node));
     return false;
   }
 
-  StringC fss(gdome_str_c(fs));
-  StringC bss(gdome_str_c(bs));
-  gdome_str_unref(fs);
-  gdome_str_unref(bs);
+  StringC fss(C_STRING(fs));
+  StringC bss(C_STRING(bs));
 
   StringTokenizer fst(fss);
   StringTokenizer bst(bss);
@@ -227,16 +187,11 @@ Configuration::ParseColor(GdomeElement* el, RGBValue& f, RGBValue& b)
   const Value* bv = colorParser(bst);
 
   if (fv == NULL || bv == NULL) {
-    GdomeDOMString* name = gdome_n_nodeName(GDOME_N(el), &exc);
-    assert(name != NULL);
-
     delete fv;
     delete bv;
 
     MathEngine::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element",
-		       gdome_str_c(name));
-
-    gdome_str_unref(name);
+		       mdom_node_get_name(node));
 
     return false;
   }

@@ -24,7 +24,7 @@
 
 #include "MathMLTextElement.hh"
 
-MathMLTextElement::MathMLTextElement(GdomeElement* node) :
+MathMLTextElement::MathMLTextElement(mDOMNodeRef node) :
   MathMLTokenElement(node, TAG_MTEXT)
 {
 }

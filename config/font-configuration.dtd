@@ -12,7 +12,7 @@
   weight    (normal|bold) #IMPLIED
   size      CDATA #IMPLIED
 
-  map        CDATA #REQUIRED
+  mapping   CDATA #IMPLIED
 
   x-foundry  CDATA #IMPLIED
   x-family   CDATA #IMPLIED
@@ -40,7 +40,8 @@
 
 <!ELEMENT single EMPTY>
 <!ATTLIST single
-  code CDATA #REQUIRED
+  name CDATA #IMPLIED
+  code CDATA #IMPLIED
   index CDATA #IMPLIED
 >
 
@@ -60,8 +61,9 @@
 
 <!ELEMENT stretchy (simple, compound?)>
 <!ATTLIST stretchy
-  code CDATA #REQUIRED
-  direction (vertical|horizontal|both) #REQUIRED
+  name CDATA #IMPLIED
+  code CDATA #IMPLIED
+  direction (vertical|horizontal) #REQUIRED
 >
 
 <!ELEMENT simple EMPTY>

@@ -23,11 +23,13 @@
 #ifndef MathMLStringLitElement_hh
 #define MathMLStringLitElement_hh
 
+#include <config.h>
+
 #include "MathMLTokenElement.hh"
 
 class MathMLStringLitElement : public MathMLTokenElement {
 public:
-  MathMLStringLitElement(GdomeElement*);
+  MathMLStringLitElement(mDOMNodeRef);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLStringLitElement();

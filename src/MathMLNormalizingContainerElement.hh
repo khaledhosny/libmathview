@@ -23,13 +23,15 @@
 #ifndef MathMLNormalizingContainerElement_hh
 #define MathMLNormalizingContainerElement_hh
 
+#include <config.h>
+
 #include "MathMLContainerElement.hh"
 
 // base class for MathML elements that infer an mrow when the number of
 // children is not 1
 class MathMLNormalizingContainerElement: public MathMLContainerElement {
 public:
-  MathMLNormalizingContainerElement(GdomeElement*, TagId tag = TAG_NOTVALID);
+  MathMLNormalizingContainerElement(mDOMNodeRef, TagId tag = TAG_NOTVALID);
   virtual void Normalize(void);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual void SetPosition(scaled, scaled);

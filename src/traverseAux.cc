@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "gdomeAux.h"
 #include "Iterator.hh"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
@@ -207,7 +206,7 @@ findActionElement(MathMLElement* elem)
   return (elem != NULL) ? TO_ACTION(elem) : NULL;
 }
 
-GdomeElement*
+mDOMNodeRef
 findDOMNode(MathMLElement* elem)
 {
   while (elem != NULL && elem->GetDOMNode() == NULL) elem = elem->GetParent();
@@ -215,13 +214,13 @@ findDOMNode(MathMLElement* elem)
 }
 
 MathMLElement*
-findMathMLElement(GdomeElement* node)
+findMathMLElement(mDOMNodeRef node)
 {
   assert(node != NULL);
   // WARNING: the following is a very dangerous operation. It relies
   // of the assumption that the user will NEVER modify the user data field
   // in the DOM tree elements!!!
-  MathMLElement* elem = (MathMLElement*) gdome_n_getUserData(GDOME_N(node));
+  MathMLElement* elem = (MathMLElement*) mdom_node_get_user_data(node);
   assert(elem != NULL);
   assert(elem->GetDOMNode() == node);
 

@@ -29,7 +29,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLMultiScriptsElement.hh"
 
-MathMLMultiScriptsElement::MathMLMultiScriptsElement(GdomeElement* node) :
+MathMLMultiScriptsElement::MathMLMultiScriptsElement(mDOMNodeRef node) :
   MathMLScriptCommonElement(node, TAG_MMULTISCRIPTS)
 {
 }

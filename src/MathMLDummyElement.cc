@@ -27,7 +27,7 @@
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLDummyElement::MathMLDummyElement(GdomeElement* node) : 
+MathMLDummyElement::MathMLDummyElement(mDOMNodeRef node) : 
   MathMLElement(node, TAG_DUMMY)
 {
 }

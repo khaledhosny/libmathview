@@ -23,8 +23,7 @@
 #ifndef CharMapper_hh
 #define CharMapper_hh
 
-#include <gdome.h>
-
+#include "minidom.h"
 #include "CharMap.hh"
 #include "FontAttributes.hh"
 
@@ -69,15 +68,15 @@ private:
 
   bool FontifyCharAux(FontifiedChar&, const FontAttributes&, Char, bool = false) const;
 
-  void ParseFontConfiguration(GdomeElement*);
-  void ParseFont(GdomeElement*);
-  void ParseMap(GdomeElement*);
-  void ParseRange(GdomeElement*, FontMap*);
-  void ParseMulti(GdomeElement*, FontMap*);
-  void ParseSingle(GdomeElement*, FontMap*);
-  void ParseStretchy(GdomeElement*, FontMap*);
-  void ParseStretchySimple(GdomeElement*, CharMap*);
-  void ParseStretchyCompound(GdomeElement*, CharMap*);
+  void ParseFontConfiguration(mDOMNodeRef);
+  void ParseFont(mDOMNodeRef);
+  void ParseMap(mDOMNodeRef);
+  void ParseRange(mDOMNodeRef, FontMap*);
+  void ParseMulti(mDOMNodeRef, FontMap*);
+  void ParseSingle(mDOMNodeRef, FontMap*);
+  void ParseStretchy(mDOMNodeRef, FontMap*);
+  void ParseStretchySimple(mDOMNodeRef, CharMap*);
+  void ParseStretchyCompound(mDOMNodeRef, CharMap*);
 
   void PatchConfiguration(void);
   const FontMap* SearchMapping(const char*) const;

@@ -349,7 +349,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <single code="0xef82" index="0xcf"/>
     <single code="0xf8e7" index="0xd6"/>
 
-    <stretchy code="0x221a" direction="vertical">
+    <stretchy name="Sqrt" direction="vertical">
       <simple index="0x30 0x31 0x32 0x33"/>
       <compound index="0x36   -1 0x34 0x35"/>
     </stretchy>
@@ -456,22 +456,22 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <stretchy code="0xef82" direction="vertical">
       <simple index="0xcd 0xce 0xcf"/>
     </stretchy>
-    <stretchy code="0x2758" direction="vertical"> 
+    <stretchy name="VerticalSeparator" direction="vertical"> 
       <simple index="0xc8 0xc9 0xcb 0xcc"/> 
     </stretchy>
-    <stretchy code="0xf576" direction="horizontal"> 
+    <stretchy name="LongLeftArrow" direction="horizontal"> 
       <simple index="0xd5"/> 
       <compound index="0xd5   -1   -1 0xd6"/> 
     </stretchy> 
-    <stretchy code="0xf577" direction="horizontal"> 
+    <stretchy name="LongRightArrow" direction="horizontal"> 
       <simple index="0xd7"/> 
       <compound index="  -1   -1 0xd7 0xd6"/> 
     </stretchy> 
-    <stretchy code="0xf578" direction="horizontal"> 
+    <stretchy name="LongLeftRightArrow" direction="horizontal"> 
       <simple index="0xd8"/> 
       <compound index="0xd5   -1 0xd7 0xd6"/> 
     </stretchy> 
-    <stretchy code="0x223d" direction="horizontal"> 
+    <stretchy name="Tilde" direction="horizontal"> 
       <simple index="0xf3 0xf4 0xf5 0xf6"/> 
     </stretchy> 
     <stretchy code="0x222b" direction="vertical"> 
@@ -486,7 +486,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <stretchy code="0x22c3" direction="vertical"> 
       <simple index="0xdc 0xe6 0xe7"/> 
     </stretchy> 
-    <stretchy code="0x22c2" direction="vertical"> 
+    <stretchy code="0x22c2Intersection" direction="vertical"> 
       <simple index="0xdd 0xe8 0xe9"/> 
     </stretchy> 
     <stretchy code="0x2227" direction="vertical"> 
@@ -499,11 +499,11 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
       <simple index="0xa0 0xa1 0xa2 0xa3"/> 
       <compound index="  -1   -1   -1 0xfb"/> 
     </stretchy> 
-    <stretchy code="0x2223" direction="vertical"> 
+    <stretchy name="VerticalBar" direction="vertical"> 
       <simple index="0xa0 0xa1 0xa2 0xa3"/> 
       <compound index="  -1   -1   -1 0xfb"/> 
     </stretchy> 
-    <stretchy code="0x2225" direction="vertical"> 
+    <stretchy name="DoubleVerticalBar" direction="vertical"> 
       <simple index="0xb0 0xb1 0xb2 0xb3"/> 
       <compound index="  -1   -1   -1 0xfe"/> 
     </stretchy>  
@@ -705,19 +705,19 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	   "/>
     
-    <stretchy code="0x21bf" direction="vertical"> 
+    <stretchy name="LeftUpVector" direction="vertical"> 
       <simple index="0x40"/> 
       <compound index="0x40   -1   -1 0x41"/> 
     </stretchy> 
-    <stretchy code="0x21c3" direction="vertical"> 
+    <stretchy name="LeftDownVector" direction="vertical"> 
       <simple index="0x42"/> 
       <compound index="  -1   -1 0x42 0x41"/> 
     </stretchy> 
-    <stretchy code="0x21be" direction="vertical"> 
+    <stretchy name="RightUpVector" direction="vertical"> 
       <simple index="0x43"/> 
       <compound index="0x43   -1   -1 0x44"/> 
     </stretchy> 
-    <stretchy code="0x21c2" direction="vertical"> 
+    <stretchy name="RightDownVector" direction="vertical"> 
       <simple index="0x45"/> 
       <compound index="  -1   -1 0x45 0x44"/> 
     </stretchy> 
@@ -779,6 +779,281 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+  </map>
+
+  <map id="tex-cmrom">
+    <multi first="0x0000" last="0x00ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0x20 0x21   -1 0x23 0x24 0x25 0x26   -1 0x28 0x29 0x2a 0x2b 0x2c 0x2d 0x2e 0x2f 
+	   0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x3a 0x3b   -1 0x3d   -1 0x3f 
+	   0x40 0x41 0x42 0x43 0x44 0x45 0x46 0x47 0x48 0x49 0x4a 0x4b 0x4c 0x4d 0x4e 0x4f 
+	   0x50 0x51 0x52 0x53 0x54 0x55 0x56 0x57 0x58 0x59 0x5a 0x5b   -1 0x5d 0x5e   -1 
+	     -1 0x61 0x62 0x63 0x64 0x65 0x66 0x67 0x68 0x69 0x6a 0x6b 0x6c 0x6d 0x6e 0x6f 
+	   0x70 0x71 0x72 0x73 0x74 0x75 0x76 0x77 0x78 0x79 0x7a   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0x3c   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x3e 
+	     -1   -1   -1   -1   -1   -1 0xc0   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1 0xc2   -1   -1   -1   -1   -1   -1 0xbc 
+	     -1   -1   -1   -1   -1   -1 0xbd   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1 0xbf   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x0131" index="0xb3"/>
+    <single code="0x0152" index="0xc1"/>
+    <single code="0x0153" index="0xbe"/>
+    <multi first="0x0300" last="0x03ff" index="
+	     -1 0xb5 0xb6 0x7e 0xb9   -1 0xb8 0x5f 0xc4   -1 0xba   -1 0xb7   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1 0xbb   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1 0xa1 0xa2   -1   -1   -1 0xa3   -1   -1 0xa4   -1   -1 0xa5   -1 
+	   0xa6   -1   -1 0xa7   -1   -1 0xa9   -1 0xaa 0xad   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1 0xa8   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x2013" index="0x7b"/>
+    <single code="0x2014" index="0x7c"/>
+    <single code="0x2018" index="0x60"/>
+    <single code="0x2019" index="0x27"/>
+    <single code="0x201c" index="0x5c"/>
+    <single code="0x201d" index="0x22"/>
+    <single code="0x2033" index="0x7d"/>
+    <single code="0xed02" index="0xb4"/>
+    <single code="0xfb00" index="0xae"/>
+    <single code="0xfb01" index="0xaf"/>
+    <single code="0xfb02" index="0xb0"/>
+    <single code="0xfb03" index="0xb1"/>
+    <single code="0xfb04" index="0xb2"/>
+  </map>
+
+  <map id="tex-cmmi">
+    <multi first="0x0000" last="0x00ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0x20   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x3b   -1 0x3a 0x3d 
+	   0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39   -1   -1 0x3c   -1 0x3e   -1 
+	     -1 0x41 0x42 0x43 0x44 0x45 0x46 0x47 0x48 0x49 0x4a 0x4b 0x4c 0x4d 0x4e 0x4f 
+	   0x50 0x51 0x52 0x53 0x54 0x55 0x56 0x57 0x58 0x59 0x5a   -1   -1   -1   -1   -1 
+	     -1 0x61 0x62 0x63 0x64 0x65 0x66 0x67 0x68 0x69 0x6a 0x6b 0x6c 0x6d 0x6e 0x6f 
+	   0x70 0x71 0x72 0x73 0x74 0x75 0x76 0x77 0x78 0x79 0x7a   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0xa0   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x0131" index="0x7b"/>
+    <single code="0x02be" index="0x2d"/>
+    <single code="0x02bf" index="0x2c"/>
+    <multi first="0x0300" last="0x03ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1 0xa1 0xa2   -1   -1   -1 0xa3   -1   -1 0xa4   -1   -1 0xa5   -1 
+	   0xa6   -1   -1 0xa7   -1 0xa8 0xa9   -1 0xaa 0xad   -1   -1   -1   -1   -1   -1 
+	     -1 0xae 0xaf 0xb0 0xb1 0xb2 0xb3 0xb4 0xb5 0xb6 0xb7 0xb8 0xb9 0xba 0xbb   -1 
+	   0xbc 0xbd 0x26 0xbe 0xbf 0xc0 0xc1 0xc2 0xc3 0x21   -1   -1   -1   -1   -1   -1 
+	     -1 0x23   -1   -1   -1 0x27 0x24   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0x25   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x2040" index="0xc4"/>
+    <single code="0x20d7" index="0x7e"/>
+    <single code="0x2113" index="0x60"/>
+    <single code="0x2118" index="0x7d"/>
+    <single code="0x21bc" index="0x28"/>
+    <single code="0x21bd" index="0x29"/>
+    <single code="0x21c0" index="0x2a"/>
+    <single code="0x21c1" index="0x2b"/>
+    <single code="0x2202" index="0x40"/>
+    <single code="0x22b2" index="0x2f"/>
+    <single code="0x22b3" index="0x2e"/>
+    <single code="0x22c6" index="0x3f"/>
+    <single code="0x2322" index="0x5f"/>
+    <single code="0x2323" index="0x5e"/>
+    <single code="0x266d" index="0x5b"/>
+    <single code="0x266e" index="0x5c"/>
+    <single code="0x266f" index="0x5d"/>
+    <single code="0xed02" index="0x7c"/>    
+  </map>
+
+  <map id="tex-cmsy">
+    <single code="0x0020" index="0x20"/>
+    <single code="0x002d" index="0x00"/>
+    <single code="0x005c" index="0x6e"/>
+    <single code="0x007b" index="0x66"/>
+    <single code="0x007d" index="0x67"/>
+    <single code="0x00a0" index="0xa0"/>
+    <single code="0x00a7" index="0x78"/>
+    <single code="0x00ac" index="0x3a"/>
+    <single code="0x00b1" index="0xa7"/>
+    <single code="0x00b6" index="0x7b"/>
+    <single code="0x00d7" index="0xa3"/>
+    <single code="0x00f7" index="0xa5"/>
+    <single code="0x0338" index="0x36"/>
+    <single code="0x2020" index="0x79"/>
+    <single code="0x2021" index="0x7a"/>
+    <single code="0x2032" index="0x30"/>
+    <multi first="0x2100" last="0x21ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x48   -1   -1   -1   -1 
+	   0x49 0x3d 0x4c   -1   -1   -1   -1   -1 0x50   -1   -1 0x52 0x3c   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x42   -1   -1   -1 
+	   0x45 0x46   -1 0x4d   -1 0x40   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0xc3 0x22 0x21 0x23 0x24 0x6c 0x2d 0x25 0x26 0x2e   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0x28 0x2a 0x29 0x2b 0x2c 0x6d   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <multi first="0x2200" last="0x22ff" index="
+	   0x38   -1   -1 0x39   -1 0x3b   -1 0x72 0x32   -1   -1 0x33   -1   -1   -1   -1 
+	   0x71   -1 0xa1 0xa8   -1   -1   -1 0xa4 0xb1 0xb2 0x70   -1   -1 0x2f 0x31   -1 
+	     -1   -1   -1 0x6a   -1 0x6b   -1 0x5e 0x5f 0x5c 0x5b 0x73   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0xbb   -1   -1   -1 
+	   0x6f   -1   -1 0x27   -1   -1   -1   -1 0xbc   -1   -1   -1   -1 0xb3   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0xb4   -1   -1 0xb7 0xb8   -1   -1   -1   -1 0xbf 0xc0   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0xc1 0xc2 0xb9 0xba   -1   -1 
+	     -1   -1 0xbd 0xbe   -1   -1 0xb5 0xb6   -1   -1   -1   -1   -1   -1 0x5d   -1 
+	     -1 0x76 0x77 0x75 0x74 0xa9 0xaa 0xad 0xae 0xaf   -1   -1   -1   -1   -1   -1 
+	     -1   -1 0x60 0x61 0x3e 0x3f 0x37   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1 0xa6 0xa2   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x2308" index="0x64"/>
+    <single code="0x2309" index="0x65"/>
+    <single code="0x230a" index="0x62"/>
+    <single code="0x230b" index="0x63"/>
+    <single code="0x2329" index="0x68"/>
+    <single code="0x232a" index="0x69"/>
+    <single code="0x25b3" index="0x34"/>
+    <single code="0x25bd" index="0x35"/>
+    <single code="0x25cb" index="0xb0"/>
+    <single code="0x2660" index="0xc4"/>
+    <single code="0x2663" index="0x7c"/>
+    <single code="0x2665" index="0x7e"/>
+    <single code="0x2666" index="0x7d"/>
+    <multi first="0xf100" last="0xf1ff" index="
+	   0x41   -1 0x43 0x44   -1   -1 0x47   -1   -1 0x4a 0x4b   -1   -1 0x4e 0x4f   -1 
+	   0x51   -1 0x53 0x54 0x55 0x56 0x57 0x58 0x59 0x5a   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+  </map>
+
+  <map id="tex-cmti">
+    <multi first="0x0000" last="0x00ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0xa0 0x21 0x22 0x23   -1 0x25 0x26 0xb0 0x28 0x29 0x2a 0x2b 0x2c   -1 0x2e 0x2f 
+	   0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x3a 0x3b 0x3c 0x3d 0x3e 0x3f 
+	   0x40 0x41 0x42 0x43 0x44 0x45 0x46 0x47 0x48 0x49 0x4a 0x4b 0x4c 0x4d 0x4e 0x4f 
+	   0x50 0x51 0x52 0x53 0x54 0x55 0x56 0x57 0x58 0x59 0x5a 0x5b 0x5c 0x5d 0x5e 0x5f 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x7b 0x7c 0x7d 0x7e   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0xb1   -1 0x24   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0xb2 
+	     -1   -1   -1   -1   -1   -1 0xc0   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1 0xc2   -1   -1   -1   -1   -1   -1 0xbc 
+	     -1   -1   -1   -1   -1   -1 0xbd   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1 0xbf   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x0131" index="0xb3"/>
+    <single code="0x0152" index="0xc1"/>
+    <single code="0x0153" index="0xbe"/>
+    <single code="0x0262" index="0x67"/>
+    <single code="0x026a" index="0x69"/>
+    <single code="0x0274" index="0x6e"/>
+    <single code="0x0280" index="0x72"/>
+    <single code="0x028f" index="0x79"/>
+    <single code="0x0299" index="0x62"/>
+    <single code="0x029c" index="0x68"/>
+    <single code="0x029f" index="0x6c"/>
+    <multi first="0x0300" last="0x03ff" index="
+	   0xb5 0xb6   -1   -1   -1 0xb9 0xb8   -1 0xc4   -1 0xba   -1 0xb7   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1 0xbb   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1 0xa1 0xa2   -1   -1   -1 0xa3   -1   -1 0xa4   -1   -1 0xa5   -1 
+	   0xa6   -1   -1 0xa7   -1   -1 0xa9   -1 0xaa 0xad   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1 0xa8   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x2018" index="0x60"/>
+    <single code="0x2019" index="0x27"/>
+    <single code="0x2191" index="0xae"/>
+    <single code="0x2193" index="0xaf"/>
+    <single code="0x2212" index="0x2d"/>
+    <single code="0xed02" index="0xb4"/>
+    <multi first="0xf100" last="0xf1ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0x61   -1 0x63 0x64 0x65 0x66   -1   -1   -1 0x6a 0x6b   -1 0x6d   -1 0x6f 0x70 
+	   0x71   -1 0x73 0x74 0x75 0x76 0x77 0x78   -1 0x7a   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 

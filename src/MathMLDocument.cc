@@ -23,19 +23,15 @@
 #include <config.h>
 #include <assert.h>
 #include <stddef.h>
-#include <gdome.h>
 
 #include "MathEngine.hh"
 #include "MathMLDocument.hh"
 #include "DocumentElement.hh"
 
-MathMLDocument::MathMLDocument(GdomeDocument* doc) : MathMLContainerElement(NULL)
+MathMLDocument::MathMLDocument(mDOMDocRef doc) : MathMLContainerElement(NULL)
 {
   assert(doc != NULL);
   DOMdoc = doc;
-
-  GdomeException exc;
-  gdome_doc_ref(doc, &exc);
 }
 
 MathMLDocument::~MathMLDocument()
