@@ -27,7 +27,8 @@
 #include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
 
-MathMLAlignMarkElement::MathMLAlignMarkElement(mDOMNodeRef node) : MathMLElement(node, TAG_MALIGNMARK)
+MathMLAlignMarkElement::MathMLAlignMarkElement(mDOMNodeRef node) : 
+  MathMLElement(node, TAG_MALIGNMARK)
 {
   edge = MARK_ALIGN_NOTVALID;
 }
@@ -59,13 +60,16 @@ MathMLAlignMarkElement::Setup(RenderingEnvironment* env)
   if   (value->IsKeyword(KW_RIGHT)) edge = MARK_ALIGN_RIGHT;
   else edge = MARK_ALIGN_LEFT;
   delete value;
+
+  box.Null();
 }
 
 void
-MathMLAlignMarkElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLAlignMarkElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
 {
-  box.Null();
+  if (!HasDirtyLayout(id, availWidth)) return;
   ConfirmLayout(id);
+  ResetDirtyLayout(id, availWidth);
 }
 
 bool
@@ -75,7 +79,7 @@ MathMLAlignMarkElement::IsSpaceLike() const
 }
 
 void
-MathMLAlignMarkElement::SetDirty(const Rectangle* rect)
+MathMLAlignMarkElement::SetDirty(const Rectangle*)
 {
   // do nothing, this element is space-like and always 0-width, useless for it to be dirty
 }

@@ -140,6 +140,8 @@ MathMLRowElement::DoLayout(LayoutId id, Layout& layout)
   }
 
   layout.Out();
+
+  ResetDirtyLayout(id);
 }
 
 void

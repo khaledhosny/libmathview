@@ -355,7 +355,7 @@ RenderingEnvironment::GetScaledPointsPerEm() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  charMapper.FontifyChar(fChar, top->fontAttributes, ' ');
+  charMapper.FontifyChar(fChar, top->fontAttributes, 'M');
   assert(fChar.font != NULL);
 
   return fChar.font->GetEm();
@@ -370,7 +370,7 @@ RenderingEnvironment::GetScaledPointsPerEx() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  charMapper.FontifyChar(fChar, top->fontAttributes, ' ');
+  charMapper.FontifyChar(fChar, top->fontAttributes, 'x');
   assert(fChar.font != NULL);
 
   return fChar.font->GetEx();

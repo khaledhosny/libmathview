@@ -176,6 +176,8 @@ MathMLUnderOverElement::Setup(RenderingEnvironment* env)
 void
 MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
+  if (!HasDirtyLayout(id, maxWidth)) return;
+
   assert(base != NULL);
 
   if (scriptize) {
@@ -292,6 +294,8 @@ MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   }
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, maxWidth);
 }
 
 void

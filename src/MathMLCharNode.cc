@@ -128,7 +128,7 @@ MathMLCharNode::DoVerticalStretchyLayout(scaled height, scaled depth, scaled axi
 }
 
 void
-MathMLCharNode::DoVerticalStretchyLayoutAux(scaled desiredSize, bool strict)
+MathMLCharNode::DoVerticalStretchyLayoutAux(scaled desiredSize, bool)
 {
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);
@@ -237,7 +237,7 @@ MathMLCharNode::DoHorizontalStretchyLayout(scaled desiredSize, bool strict)
 }
 
 void
-MathMLCharNode::DoHorizontalStretchyLayoutAux(scaled desiredSize, bool strict)
+MathMLCharNode::DoHorizontalStretchyLayoutAux(scaled desiredSize, bool)
 {
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);

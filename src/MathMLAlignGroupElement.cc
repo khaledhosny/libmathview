@@ -25,7 +25,8 @@
 
 #include "MathMLAlignGroupElement.hh"
 
-MathMLAlignGroupElement::MathMLAlignGroupElement(mDOMNodeRef node) : MathMLElement(node, TAG_MALIGNGROUP)
+MathMLAlignGroupElement::MathMLAlignGroupElement(mDOMNodeRef node) :
+  MathMLElement(node, TAG_MALIGNGROUP)
 {
   width = 0;
   decimalPoint = NULL;
@@ -38,10 +39,12 @@ MathMLAlignGroupElement::~MathMLAlignGroupElement()
 }
 
 void
-MathMLAlignGroupElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLAlignGroupElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
 {
+  if (!HasDirtyLayout(id, availWidth)) return;
   box.Set(width, 0, 0);
   ConfirmLayout(id);
+  ResetDirtyLayout(id, availWidth);
 }
 
 void

@@ -47,6 +47,8 @@ DocumentElement::Setup(RenderingEnvironment* env)
 void
 DocumentElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
+  if (!HasDirtyLayout(id, maxWidth)) return;
+
   box.Null();
 
   for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
@@ -62,6 +64,8 @@ DocumentElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   }
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, maxWidth);
 }
 
 void

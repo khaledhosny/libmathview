@@ -63,6 +63,8 @@ MathMLNormalizingContainerElement::Normalize()
 void
 MathMLNormalizingContainerElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
+  if (!HasDirtyLayout(id, maxWidth)) return;
+
   assert(content.GetSize() == 1);
   assert(content.GetFirst() != NULL);
 
@@ -71,11 +73,13 @@ MathMLNormalizingContainerElement::DoBoxedLayout(LayoutId id, BreakId bid, scale
 
   ConfirmLayout(id);
 
+  ResetDirtyLayout(id, maxWidth);
+
 #if 0
   printf("`%s' DoBoxedLayout (%d,%d,%d) [%d,%d]\n",
 	 NameOfTagId(IsA()), id, bid, sp2ipx(maxWidth),
 	 sp2ipx(box.width), sp2ipx(box.GetHeight()));
-#endif
+#endif  
 }
 
 void

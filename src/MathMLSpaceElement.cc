@@ -113,9 +113,10 @@ MathMLSpaceElement::Setup(RenderingEnvironment* env)
 }
 
 void
-MathMLSpaceElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
+MathMLSpaceElement::DoBoxedLayout(LayoutId id, BreakId, scaled)
 {
   ConfirmLayout(id);
+  ResetDirtyLayout(id);
 }
 
 bool

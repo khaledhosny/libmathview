@@ -97,6 +97,8 @@ MathMLEncloseElement::Setup(RenderingEnvironment* env)
 void
 MathMLEncloseElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
+  if (!HasDirtyLayout(id, availWidth)) return;
+
   assert(content.GetSize() == 1);
   assert(content.GetFirst() != NULL);
 
@@ -110,6 +112,8 @@ MathMLEncloseElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
   }
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, availWidth);
 }
 
 void
@@ -156,4 +160,6 @@ MathMLEncloseElement::Render(const DrawingArea& area)
     area.DrawLineTo(fGC[IsSelected()], GetX() + box.width - lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
     area.DrawLineTo(fGC[IsSelected()], GetX() + box.width - lineThickness / 2, GetY() + box.descent);
   }
+
+  ResetDirty();
 }

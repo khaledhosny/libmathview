@@ -98,6 +98,7 @@ public:
   void ResetDirtyLayout(void) { MathMLFrame::ResetDirtyLayout(); }
   bool HasDirtyLayout(LayoutId, scaled) const;
   void ResetDirtyLayout(LayoutId, scaled);
+  void ResetDirtyLayout(LayoutId);
 
 #ifdef DEBUG
   static int GetCounter(void) { return counter; }

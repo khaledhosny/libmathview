@@ -27,7 +27,8 @@
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLDummyElement::MathMLDummyElement(mDOMNodeRef node) : MathMLElement(node, TAG_DUMMY)
+MathMLDummyElement::MathMLDummyElement(mDOMNodeRef node) : 
+  MathMLElement(node, TAG_DUMMY)
 {
 }
 
@@ -49,9 +50,10 @@ MathMLDummyElement::Setup(RenderingEnvironment* env)
 }
 
 void
-MathMLDummyElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLDummyElement::DoBoxedLayout(LayoutId id, BreakId, scaled)
 {
   ConfirmLayout(id);
+  ResetDirtyLayout(id);
 }
 
 void

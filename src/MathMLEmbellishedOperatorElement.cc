@@ -42,6 +42,8 @@ MathMLEmbellishedOperatorElement::~MathMLEmbellishedOperatorElement()
 void
 MathMLEmbellishedOperatorElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
+  if (!HasDirtyLayout(id, availWidth)) return;
+
   assert(content.GetSize() == 1);
   assert(content.GetFirst() != NULL);
   assert(coreOp != NULL);
@@ -53,6 +55,8 @@ MathMLEmbellishedOperatorElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled
   box.width += totalPadding;
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, availWidth);
 }
 
 #if 0
@@ -81,14 +85,6 @@ MathMLEmbellishedOperatorElement::SetPosition(scaled x, scaled y)
 
   content.GetFirst()->SetPosition(x + coreOp->GetLeftPadding(), y);
 }
-
-#if 0
-bool
-MathMLEmbellishedOperatorElement::IsBreakable() const
-{
-  return true;
-}
-#endif
 
 bool
 MathMLEmbellishedOperatorElement::IsEmbellishedOperator() const

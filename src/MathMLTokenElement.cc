@@ -116,19 +116,19 @@ MathMLTokenElement::Append(const String* s)
 	node = new MathMLSpaceNode(spacing, bid);
       i += len;
       lastBreak = true;
-    } else if (i + 1 < sLength && iswalnum(s->GetChar(i)) && iswalnum(s->GetChar(i + 1))) {
-      unsigned start = i;
-      while (i + 1 < sLength && iswalnum(s->GetChar(i)) && iswalnum(s->GetChar(i + 1)) && !iswspace(s->GetChar(i))) i++;
-      assert(start < i);
-      
-      const String* sText = allocString(*s, start, i - start);
-      node = allocTextNode(&sText);
-
-      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
-      lastBreak = false;
     } else if (i + 1 < sLength && isCombining(s->GetChar(i + 1))) {
       node = allocCombinedCharNode(s->GetChar(i), s->GetChar(i + 1));
       i += 2;
+
+      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
+      lastBreak = false;
+    } else if (iswalnum(s->GetChar(i))) {
+      unsigned start = i;
+      while (i < sLength && iswalnum(s->GetChar(i))) i++;
+      assert(start < i);
+
+      const String* sText = allocString(*s, start, i - start);
+      node = allocTextNode(&sText);
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
@@ -291,6 +291,7 @@ MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
     // positioned correctly, since positioning is done thru the layout.
     // In such way, If a space node is the first inside a token, it will produce
     // a zero-origin rectangle which is obviously incorrect
+    if (text->IsSpace()) layout.SetLastBreakability(breakability);
     layout.Append(text, spacing, breakability);
 #if 0
     if (!text->IsSpace())
@@ -303,6 +304,8 @@ MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
 
     i.Next();
   }
+
+  ResetDirtyLayout(id);
 }
 
 void

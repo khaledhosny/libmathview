@@ -78,8 +78,6 @@ MathMLActionElement::Setup(RenderingEnvironment* env)
 void
 MathMLActionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
-  printf("boxed layout for action %d\n", HasDirtyLayout(id, availWidth));
-
   if (!HasDirtyLayout(id, availWidth)) return;
 
   MathMLElement* elem = GetSelectedElement();
@@ -100,6 +98,7 @@ MathMLActionElement::DoLayout(LayoutId id, Layout& layout)
 {
   MathMLElement* elem = GetSelectedElement();
   if (elem != NULL) elem->DoLayout(id, layout);
+  ResetDirtyLayout(id);
 }
 
 void
@@ -198,9 +197,7 @@ MathMLActionElement::SetSelectedIndex(unsigned i)
   selection = i - 1;
 
   MathMLElement* elem = GetSelectedElement();
-  printf("before calling setdirty child is %d and this is %d\n", elem->HasDirtyLayout(), HasDirtyLayout());
   if (elem != NULL) elem->SetDirtyLayout(true);
-  printf("the index has changed (%p), now dirty layout is %d\n", elem->HasDirtyLayout(), HasDirtyLayout());
 }
 
 unsigned

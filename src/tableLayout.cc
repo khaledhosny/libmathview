@@ -34,6 +34,8 @@
 void
 MathMLTableElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
+  if (!HasDirtyLayout(id, availWidth)) return;
+
   scaled aAvailWidth = PrepareLabelsLayout(id, availWidth);
 
   if (id == LAYOUT_MIN) DoHorizontalMinimumLayout();
@@ -73,6 +75,8 @@ MathMLTableElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
   }
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, availWidth);
 }
 
 void

@@ -44,6 +44,8 @@ Minor improvements
 * using a glyph for the / in bevelled fractions
 * making the PostScript document conformant, what about fonts?
 * matching the nearest font (w.r.t. size, see LaTeX fonts)
+* maybe RecalcBoundingBox is useless now
+* mpadded for breakable elements
 
 Configuration
 
@@ -67,3 +69,7 @@ Bugs
 * it seems that `gtk_math_view_set_font_size' is called twice when a new default
   font size is selected. Now I've patched this by making a check and preventing
   re-doing the layout if the font turns out to be equal
+* what if one wants a large operator which is not in a stretchy position or
+  it has strethcy="false"?
+* map for TeX monospace font is not complete (uppercase letters are ok,
+  lowercase letters are not mapped, see mono.xml)

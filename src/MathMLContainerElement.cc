@@ -104,6 +104,8 @@ MathMLContainerElement::DoLayout(LayoutId id, Layout& layout)
     if (elem()->IsBreakable()) elem()->DoLayout(id, layout);
     else layout.Append(elem(), 0);
   }
+
+  ResetDirtyLayout(id);
 }
 
 void

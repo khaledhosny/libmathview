@@ -250,7 +250,7 @@ MathMLElement::IsSet(AttributeId id) const
 }
 
 void
-MathMLElement::Setup(RenderingEnvironment* env)
+MathMLElement::Setup(RenderingEnvironment*)
 {
   // this function is defined to be empty but not pure-virtual
   // because some "space-like" elements such as <mspace>
@@ -283,6 +283,12 @@ MathMLElement::ResetDirtyLayout(LayoutId id, scaled w)
 }
 
 void
+MathMLElement::ResetDirtyLayout(LayoutId id)
+{
+  if (id == LAYOUT_AUTO) ResetDirtyLayout();
+}
+
+void
 MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
   if (!HasDirtyLayout(id, maxWidth)) return;
@@ -305,10 +311,11 @@ MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 }
 
 void
-MathMLElement::DoLayout(LayoutId id, Layout& layout)
+MathMLElement::DoLayout(LayoutId id, Layout&)
 {
   // Well, there are some empty elements, such as <none/> or <prescripts/>
   // that do not have a layout, nonetheless they are unbreakable
+  ResetDirtyLayout(id);
 }
 
 void
@@ -327,9 +334,6 @@ MathMLElement::DoStretchyLayout()
 void
 MathMLElement::SetPosition(scaled x, scaled y)
 {
-  if (IsA() == TAG_MO) printf("was %d %d now %d %d layout? %d\n", sp2ipx(position.x), sp2ipx(position.y), 
-			      sp2ipx(x), sp2ipx(y), HasLayout());
-
   position.x = x;
   position.y = y;
   if (HasLayout()) layout->SetPosition(x, y);
@@ -356,9 +360,11 @@ MathMLElement::RenderBackground(const DrawingArea& area)
   }
 
   if (HasDirtyBackground()) {
+#if 0
     printf("`%s' has dirty background : shape = ", NameOfTagId(IsA()));
     shape->Dump();
     printf("\n");
+#endif
     assert(IsShaped());
     area.Clear(bGC[IsSelected()], GetShape());
   }

@@ -100,6 +100,8 @@ MathMLMultiScriptsElement::Setup(RenderingEnvironment* env)
 void
 MathMLMultiScriptsElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
+  if (!HasDirtyLayout(id, availWidth)) return;
+
   assert(base != NULL);
 
   unsigned n = 1 + nPre / 2 + nPost / 2;
@@ -161,6 +163,8 @@ MathMLMultiScriptsElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availW
   }
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, availWidth);
 }
 
 void

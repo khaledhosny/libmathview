@@ -156,6 +156,8 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment* env,
 void
 MathMLPaddedElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
+  if (!HasDirtyLayout(id, maxWidth)) return;
+
   assert(content.GetSize() == 1);
   MathMLElement* elem = content.GetFirst();
   assert(elem != NULL);
@@ -169,6 +171,8 @@ MathMLPaddedElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   lSpaceE     = EvalLengthDimension(0, lSpace, elemBox);
 
   ConfirmLayout(id);
+
+  ResetDirtyLayout(id, maxWidth);
 }
 
 void
