@@ -3,20 +3,20 @@ noinst_LTLIBRARIES = libfrontend_gmetadom.la
 
 libfrontend_gmetadom_la_SOURCES = \
   MathMLEntitiesTable.cc \
-  gmetadom.cc \
-  gmetadom_RefinementContext.cc \
+  gmetadom_Model.cc \
   gmetadom_Setup.cc \
-  gmetadom_Builder.cc \
-  gmetadom_Linker.cc
+  gmetadom_RefinementContext.cc \
+  gmetadom_Linker.cc \
+  gmetadom_Builder.cc
 
 noinst_HEADERS = \
   MathMLEntitiesTable.hh \
   gmetadom.hh \
-  gmetadom_RefinementContext.hh \
-  gmetadom_Iterator.hh \
+  gmetadom_Model.hh \
   gmetadom_Setup.hh \
-  gmetadom_Builder.hh \
-  gmetadom_Linker.hh
+  gmetadom_RefinementContext.hh \
+  gmetadom_Linker.hh \
+  gmetadom_Builder.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \

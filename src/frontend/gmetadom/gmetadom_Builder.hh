@@ -26,6 +26,7 @@
 #include "gmetadom.hh"
 #include "gmetadom_Linker.hh"
 #include "Builder.hh"
+#include "String.hh"
 
 class gmetadom_Builder : public Builder
 {

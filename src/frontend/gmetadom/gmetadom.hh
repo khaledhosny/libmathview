@@ -20,26 +20,11 @@
 // http://www.cs.unibo.it/helm/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef gmetadom_hh
-#define gmetadom_hh
+#ifndef __gmetadom_hh__
+#define __gmetadom_hh__
 
 #include <GdomeSmartDOM.hh>
 
-#include "String.hh"
-
 namespace DOM = GdomeSmartDOM;
 
-namespace GdomeSmartDOMExt {
-
-  bool nodeIsBlank(const DOM::Node&);
-  DOM::GdomeString elementValue(const DOM::Element&);
-  DOM::GdomeString nodeLocalName(const DOM::Node&);
-
-  inline String fromDOMString(const DOM::GdomeString& s) { return s; }
-  inline DOM::GdomeString toDOMString(const String& s) { return s; }
-
-}
-
-namespace DOMX = GdomeSmartDOMExt;
-
-#endif // gmetadom_hh
+#endif // __gmetadom_hh__

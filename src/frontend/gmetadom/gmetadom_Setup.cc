@@ -22,177 +22,16 @@
 
 #include <config.h>
 
-#include <functional>
-#include <algorithm>
-
-#include <cassert>
-
 #include "gmetadom_Setup.hh"
-#include "gmetadom_Iterator.hh"
-#include "Globals.hh"
-#include "Configuration.hh"
-#include "ValueConversion.hh"
-#include "Attribute.hh"
-#include "AttributeList.hh"
-#include "AttributeSignature.hh"
-#include "MathMLAttributeSignatures.hh"
-#include "MathMLOperatorDictionary.hh"
-#include "MathMLEntitiesTable.hh"
-
-DOM::Document
-parseXMLFile(const char* filename, bool subst)
-{
-  if (!subst)
-    {
-      DOM::DOMImplementation di;
-      return di.createDocumentFromURI(filename);
-    } 
-  else
-    {
-      GdomeDOMImplementation* di = gdome_di_mkref();
-      assert(di != NULL);
-      GdomeException exc = 0;
-      GdomeDocument* doc = gdome_di_createDocFromURIWithEntitiesTable(di,
-								      filename,
-								      getMathMLEntities(),
-								      GDOME_LOAD_PARSING | GDOME_LOAD_SUBSTITUTE_ENTITIES,
-								      &exc);
-      if (exc != 0)
-	{
-	  gdome_di_unref(di, &exc);
-	  gdome_doc_unref(doc, &exc);
-	  return DOM::Document(0);
-	}
-
-      if (doc == 0)
-	{
-	  // FIXME: this should be signalled as an exception, I think
-	  gdome_di_unref(di, &exc);
-	  return DOM::Document(0);
-	}
-
-      DOM::Document res(doc);
-      gdome_di_unref(di, &exc);
-      assert(exc == 0);
-      gdome_doc_unref(doc, &exc);
-      assert(exc == 0);
-    
-      return res;
-    }
-}
-
-static bool
-parseColor(const DOM::Element& node, RGBColor& f, RGBColor& b)
-{
-  String fs = DOMX::fromDOMString(node.getAttribute("foreground"));
-  String bs = DOMX::fromDOMString(node.getAttribute("background"));
-
-  if (fs.empty() || bs.empty()) {
-    String s_name = node.get_nodeName();
-    Globals::logger(LOG_WARNING, "malformed `%s' element in configuration file", s_name.c_str());
-    return false;
-  }
-
-  SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(MathML, Token, mathcolor).parseValue(fs);
-  SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(MathML, Token, mathbackground).parseValue(bs);
-
-  if (!fv || !bv)
-    {
-      String s_name = node.get_nodeName();
-      Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
-      return false;
-    }
-
-  f = ToRGB(fv);
-  b.transparent = ToTokenId(bv) == T_TRANSPARENT;
-  if (!b.transparent) b = ToRGB(bv);
-
-  return true;
-}
-
-static void
-parseConfiguration(Configuration& conf, const DOM::Element& node)
-{
-  for (DOMX::ElementIterator iter(node); iter.more(); iter.next())
-    {
-      DOM::Element elem = iter.element();
-      assert(elem);
-      std::string name = elem.get_nodeName();
-    
-      if (name == "dictionary-path")
-	{
-	  std::string path = DOMX::elementValue(elem);
-	  if (!path.empty())
-	    {
-	      Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
-	      conf.addDictionary(path);
-	    }
-	} 
-      else if (name == "font-size")
-	{
-	  std::string attr = elem.getAttribute("size");
-	  if (attr.empty())
-	    Globals::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
-	  else
-	    {
-	      conf.setFontSize(atoi(attr.c_str()));
-	      Globals::logger(LOG_DEBUG, "default font size set to %d points", conf.getFontSize());
-	    }
-	} 
-      else if (name == "color")
-	{
-	  RGBColor f;
-	  RGBColor b;
-	  if (parseColor(elem, f, b))
-	    {
-	      conf.setForeground(f); 
-	      conf.setBackground(b);
-	    }
-	}
-      else if (name == "link-color")
-	{
-	  RGBColor f;
-	  RGBColor b;
-	  if (parseColor(elem, f, b))
-	    {
-	      conf.setLinkForeground(f);
-	      conf.setLinkBackground(b);
-	    }
-	}
-      else if (name == "select-color")
-	{
-	  RGBColor f;
-	  RGBColor b;
-	  if (parseColor(elem, f, b))
-	    {
-	      conf.setSelectForeground(f);
-	      conf.setSelectBackground(b);
-	    }
-	}
-      else
-	Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
-    } 
-}
+#include "gmetadom_Model.hh"
+#include "TemplateSetup.hh"
 
 bool
-loadConfiguration(Configuration& conf, const char* confPath)
+gmetadom_Setup::loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const String& path)
 {
-  assert(confPath != NULL);
-
-  Globals::logger(LOG_DEBUG, "loading configuration from `%s'...", confPath);
-
   try
     {
-      if (DOM::Element root = DOMX::ElementIterator(parseXMLFile(confPath), "*", "math-engine-configuration").element())
-	{
-	  parseConfiguration(conf, root);
-	  return true;
-	}
-      else
-	{
-	  Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", confPath);
-	  return false;
-	}
+      return TemplateSetup<gmetadom_Model>::load<MathMLOperatorDictionary,true>(dictionary, "operator dictionary", "dictionary", path);
     }
   catch (DOM::DOMException e)
     {
@@ -202,62 +41,17 @@ loadConfiguration(Configuration& conf, const char* confPath)
     }
 }
 
-static void
-getAttribute(const DOM::Element& node, const AttributeSignature& signature,
-	     const SmartPtr<AttributeList>& aList)
-{
-  assert(aList);
-
-  DOM::GdomeString attrVal = node.getAttribute(DOMX::toDOMString(signature.name));
-  if (attrVal.empty()) return;
-
-  aList->set(Attribute::create(signature, DOMX::fromDOMString(attrVal)));
-}
-
 bool
-loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const char* fileName)
+gmetadom_Setup::loadConfiguration(Configuration& conf, const String& path)
 {
   try
     {
-      if (DOM::Element root = DOMX::ElementIterator(parseXMLFile(fileName, true), "*", "dictionary").element())
-	{
-	  for (DOMX::ElementIterator iter(root, "*", "operator"); iter.more(); iter.next())
-	    {
-	      DOM::Element elem = iter.element();
-	      String opName = DOMX::fromDOMString(elem.getAttribute("name"));
-
-	      if (!opName.empty())
-		{
-		  SmartPtr<AttributeList> defaults = AttributeList::create();
-
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
-		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
-
-		  dictionary.add(opName, elem.getAttribute("form"), defaults);
-		} 
-	      else
-		Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
-	    }
-	  return true;
-	}
-      else
-	{
-	  Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
-	  return false;
-	}
-    } 
-  catch (DOM::DOMException)
+      return TemplateSetup<gmetadom_Model>::load<Configuration,false>(conf, "configuration", "math-engine-configuration", path);
+    }
+  catch (DOM::DOMException e)
     {
+      String msg = e.msg;
+      Globals::logger(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
       return false;
     }
 }

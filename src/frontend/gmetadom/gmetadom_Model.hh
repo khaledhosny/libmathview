@@ -24,17 +24,74 @@
 #define __gmetadom_Model_hh__
 
 #include "gmetadom.hh"
-#include "gmetadom_Iterator.hh"
+#include "String.hh"
 
 struct gmetadom_Model
 {
+  typedef DOM::GdomeString String;
   typedef DOM::Node Node;
   typedef DOM::Element Element;
-  typedef DOMX::NodeIterator NodeIterator;
-  typedef DOMX::ElementIterator ElementIterator;
+//   typedef DOMX::NodeIterator NodeIterator;
+//   typedef DOMX::ElementIterator ElementIterator;
   typedef class gmetadom_Linker Linker;
   typedef class gmetadom_Builder Builder;
   typedef class gmetadom_RefinementContext RefinementContext;
+
+  static DOM::Document parseXML(const ::String&, bool = false);
+  static bool nodeIsBlank(const Node&);
+  static ::String elementValue(const Element&);
+  static ::String nodeLocalName(const Node&);
+  inline static ::String fromModelString(const DOM::GdomeString& s) { return s; }
+  inline static DOM::GdomeString toModelString(const ::String& s) { return s; }
+
+  class NodeIterator
+  {
+  public:
+    NodeIterator(const DOM::Node& root) : currentNode(root.get_firstChild()) { }
+
+    DOM::Node node(void) const { return currentNode; }
+    bool more(void) const { return currentNode; }
+    void next(void) { currentNode = currentNode.get_nextSibling(); }
+
+  private:
+    DOM::Node currentNode;
+  };
+
+  class ElementIterator
+  {
+  public:
+    ElementIterator(const DOM::Node& root, const String& ns = "*", const String& n = "*")
+      : namespaceURI(ns), name(n)
+    { currentElement = findValidNode(root.get_firstChild()); }
+
+    DOM::Element element(void) const { return currentElement; }
+    bool more(void) const { return currentElement; }
+
+    bool valid(const DOM::Node& p) const
+    {
+      return (p.get_nodeType() == DOM::Node::ELEMENT_NODE)
+	&& (namespaceURI == "*" || namespaceURI == p.get_namespaceURI())
+	&& (name == "*" || name == gmetadom_Model::nodeLocalName(p));
+    }
+    
+    void next(void)
+    { currentElement = findValidNode(currentElement.get_nextSibling()); }
+
+  protected:
+    DOM::Element
+    findValidNode(const DOM::Node& p0)
+    {
+      for (DOM::Node p = p0; p; p = p.get_nextSibling())
+	if (valid(p)) return p;
+      return DOM::Element();
+    }
+    
+  private:
+    DOM::Element currentElement;
+    DOM::GdomeString namespaceURI;
+    DOM::GdomeString name;
+  };
+
 };
 
 #endif // __gmetadom_Model_hh__

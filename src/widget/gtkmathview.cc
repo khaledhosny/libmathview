@@ -39,8 +39,9 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkdrawingarea.h>
 
-#include "gmetadom_Builder.hh"
+#include "gmetadom_Model.hh"
 #include "gmetadom_Setup.hh"
+#include "gmetadom_Builder.hh"
 
 #include "Globals.hh"
 #include "Rectangle.hh"
@@ -297,9 +298,9 @@ initGlobalData(const char* confPath)
   initTokens();
 
   bool res = false;
-  if (confPath != NULL) res = loadConfiguration(Globals::configuration, confPath);
-  if (!res) res = loadConfiguration(Globals::configuration, PKGDATADIR"/math-engine-configuration.xml");
-  if (!res) res = loadConfiguration(Globals::configuration, "config/math-engine-configuration.xml");
+  if (confPath != NULL) res = gmetadom_Setup::loadConfiguration(Globals::configuration, confPath);
+  if (!res) res = gmetadom_Setup::loadConfiguration(Globals::configuration, PKGDATADIR"/math-engine-configuration.xml");
+  if (!res) res = gmetadom_Setup::loadConfiguration(Globals::configuration, "config/math-engine-configuration.xml");
   if (!res)
     {
       Globals::logger(LOG_ERROR, "could not load configuration file");
@@ -312,12 +313,12 @@ initGlobalData(const char* confPath)
 	 dit++)
       {
 	Globals::logger(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	if (!loadOperatorDictionary(Globals::dictionary, (*dit).c_str()))
+	if (!gmetadom_Setup::loadOperatorDictionary(Globals::dictionary, (*dit).c_str()))
 	  Globals::logger(LOG_WARNING, "could not load `%s'", (*dit).c_str());
       }
   else {
-    bool res = loadOperatorDictionary(Globals::dictionary, "config/dictionary.xml");
-    if (!res) loadOperatorDictionary(Globals::dictionary, PKGDATADIR"/dictionary.xml");
+    bool res = gmetadom_Setup::loadOperatorDictionary(Globals::dictionary, "config/dictionary.xml");
+    if (!res) gmetadom_Setup::loadOperatorDictionary(Globals::dictionary, PKGDATADIR"/dictionary.xml");
   }
 
   done = true;
@@ -957,7 +958,7 @@ gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (DOM::Document doc = parseXMLFile(name, true))
+  if (DOM::Document doc = gmetadom_Model::parseXML(name, true))
     {
       GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
       g_assert(d != NULL);

@@ -23,10 +23,12 @@
 #ifndef __gmetadom_Setup_hh__
 #define __gmetadom_Setup_hh__
 
-#include "gmetadom.hh"
+#include "String.hh"
 
-DOM::Document parseXMLFile(const char*, bool = false);
-bool loadConfiguration(class Configuration&, const char*);
-bool loadOperatorDictionary(class MathMLOperatorDictionary&, const char*);
+struct gmetadom_Setup
+{
+  static bool loadConfiguration(class Configuration&, const String&);
+  static bool loadOperatorDictionary(class MathMLOperatorDictionary&, const String&);
+};
 
 #endif // __gmetadom_Setup_hh__
