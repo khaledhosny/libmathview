@@ -27,7 +27,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <ctype.h>
-
+#include <stdlib.h>
+#include <string.h>
 #include <t1lib.h>
 
 #include "T1_Font.hh"
@@ -104,6 +105,12 @@ T1_FontManager::SearchNativeFont(const FontAttributes& fa,
   AFont* f = (i >= 0) ? new T1_Font(i, size) : NULL;
 
   return f;
+}
+
+void
+T1_FontManager::SetLogLevel(int level)
+{
+  T1_SetLogLevel(level + 1);
 }
 
 #endif // HAVE_LIBT1

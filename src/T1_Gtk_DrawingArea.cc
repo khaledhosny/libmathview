@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <t1lib.h>
 #include <t1libx.h>

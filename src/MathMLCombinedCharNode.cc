@@ -74,6 +74,11 @@ MathMLCombinedCharNode::DoLayout()
 #endif
       shiftX = 0;
 
+    if (scaledEq(shiftX, 0))
+      shiftX = fChar.font->GetKerning(fChar.nch, 127);
+
+    printf("kerning found: %x %d\n", fChar.nch, sp2ipx(shiftX));
+
     if (isCombiningOverlay(cch))
       shiftY = 0;
     else

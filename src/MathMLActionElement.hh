@@ -23,8 +23,6 @@
 #ifndef MathMLActionElement_hh
 #define MathMLActionElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLActionElement : public MathMLContainerElement {

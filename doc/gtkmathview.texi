@@ -80,11 +80,29 @@ translation approved by the Free Software Foundation.
 * Overview::        General information about GtkMathView.
 * Download::        References to get the source code.
 * Usage::           Compiling and installation instructions.
-* Interface::       Summary of the interface.
+* C++ Interface::   Summary of the C++ interface.
+* GTK+ Interface::  Summary of the GTK+ interface.
 * Configuration::   How to tune-up the widget.
+* Tools::           Tools coming along the widget.
 * Bugs::            How to report a bug.
-@end menu
 
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Usage
+
+* Requirements::     Auxiliary packages to compile and run GtkMathView.
+* Installing::       How to compile the source code of the widget.
+* Compile and Link:: How to link against your source code.
+* Font setup::       Preparing a font configuration file.
+
+Tools
+
+* mathmlviewer::     A simple viewer application.
+* mathml2ps::        A MathML ==> PostScript conversion utility.
+
+@end detailmenu
+@end menu
 
 @node     Overview, Download, Top, Top
 @comment  node-name,    next,  previous,  up
@@ -110,10 +128,10 @@ contact the author at the following email address: @email{luca.padovani@@cs.unib
 @noindent
 The complete source code of the GtkMathView widget, along with this
 documentation, can be obtained directly from the author's page located
-at @url{http://cs.unibo.it/~lpadovan/mml-widget/}.
+at @url{http://www.cs.unibo.it/helm/mml-widget/}.
 
 
-@node     Usage, Interface, Download, Top
+@node     Usage, C++ Interface, Download, Top
 @comment  node-name,  next,  previous,  up
 @chapter  Usage
 @menu
@@ -144,7 +162,7 @@ been added backward "compatibility" with version 1.8.x of libxml, however
 this compatibility is not fully effective due to some bugs of libxml. It is
 recommended to upgrade to version 2. See file INSTALL for more details.
 @item
-@code{minidom} (version 0.1.1) @url{http://cs.unibo.it/~lpadovan/mml-widget},
+@code{minidom} (version 0.1.1) @url{http://www.cs.unibo.it/helm/mml-widget},
 this is a minimal, partial implementation of the DOM used by the widget as
 an abstract interface to @code{libxml}. It will be eventually replaced by
 GDOME when there will be a package for it.
@@ -221,7 +239,7 @@ gcc -o appname *.o `minidom-config --libs` `gtk-config --libs` `gtkmathview-conf
 @end example
 
 
-@node     Font setup,     , Compile and Link, Usage
+@node     Font setup,  , Compile and Link, Usage
 @comment  node-name,  next,  previous,  up
 @section  Font setup
 @noindent
@@ -280,7 +298,7 @@ TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:/usr/X11R6/lib/X11/fonts/Type1/:.
 @end example
 
 @noindent
-In particular, you have to specify where your Type1 fonts resides (@code{TYPE1}) along
+In particular, you have to specify where your Type1 fonts reside (@code{TYPE1}) along
 with their metrics (@code{AFM}). Metric information in optional, since it can be (mostly)
 recovered by the font file itself. However, it is needed if you want to exploit for
 instance kerning. A sample configuration file for @code{t1lib} is included in the
@@ -306,278 +324,429 @@ setenv T1LIB_CONFIG ./config/t1.config
 Now you are ready to use Type1 fonts.
 
 
-@node     Interface, Configuration, Usage, Top
-@comment  node-name,  next,  previous,  up
-@chapter  Interface to the  Widget
-
+@node     C++ Interface, GTK+ Interface, Usage, Top
+@chapter  C++ Interface to the Rendering Engine
 @noindent
-Macro: @code{GTK_TYPE_MATH_VIEW}
-@quotation
+In this chapter we will describe the C++ class @code{MathEngine}
+which provides access to all the functionalities of the rendering
+engine from a C++ program. The GTK+ widget is just a wrapper of
+this class with particular support for GTK.
+
+@menu
+* Lengths::                     About Lengths
+* Boxes and Rectangles::        Boxes and Rectangles
+* MathEngine::                  The MathEngine Class
+* DrawingArea::                 The DrawingArea Abstract Class
+* FontManager::                 The FontManager Abstract Class
+@end menu
+
+@node    Lengths, Boxes and Rectangles, C++ Interface, C++ Interface
+@section Lengths
+
+A brief introduction is devoted to lengths, since they are a fundamental
+concept in the engine. From the user point of view, lengths can be expressed
+in many ways. For example, one might prefer using decimal units such as
+centimeters of millimeters, while others might prefer using inches
+or other typographical units. However, the engine uses internally a single
+unit which is called @emph{scaled point}. It is the same unit as
+used by TeX.
+
+From the point of view of the programmer, a @emph{scaled point} is a
+floating point number, though it can be turned into fixed-pointer number
+giving the option @code{--disable-floating} while configuring the package.
+Doing so is not particularly recommended, since with most modern
+microprocessor floating-point arithmetics is rather efficient.
+
+Another unit of measure which is of particular interest for the programmer
+is the @emph{pixel}. Unfortunately, there is no a unique correspondence
+between pixels and scaled points. Theoretically, their relationship
+should depends on the resolution of the output device involved for
+rendering (usually, the display). Since this resolution is not available
+in general and often is also misconfigured, it has been fixed in the rendering
+engine to be 72 dots per inch (DPI), which gives pretty good results. Its value
+can be changed by modifing the file @code{src/defs.h}.
+
+The following table summarizes the relationships between scaled points and
+the other units of measure recognized by the widget.
+
+@multitable {  mm  } { millimeter } {-------------------------------}
+@item @emph{Unit} @tab @emph{Name} @tab @emph{scaled points}
+@item mm @tab millimeter @tab 186467.98
+@item cm @tab centimeter @tab 1864679.8
+@item pt @tab point @tab 65536
+@item pc @tab pica @tab 786432
+@item in @tab inch @tab 65536 * 72.27
+@item px @tab pixel @tab 65536 * 72.27 / DPI
+@end multitable
+
+The include file @code{src/scaled.hh} defines several conversion functions
+to convert from one unit to another. The following table summarizes
+the conversion availables.
+
+@deftypefn {Inline Function} scaled @var{xx}2sp (float @var{v})
+convert the value @var{v} expressed in the @var{xx} unit into scaled points.
+@end deftypefn
+
+@deftypefn {Inline Function} float sp2@var{xx} (scaled @var{sp})
+convert @var{sp} scaled points into the unit @var{xx}.
+@end deftypefn
+
+@deftypefn {Inline Function} int sp2ipx (scaled @var{sp})
+convert @var{sp} scaled points into an integral number of pixels.
+@end deftypefn
+
+
+@node Boxes and Rectangles, MathEngine, Lengths, C++ Interface
+@section Boxes and Rectangles
+
+MathML elements are enclosed inside rectangles and boxes. A rectangle is
+a tuple consisting of four components which locate the element by means
+of absolute coordinates.
+
+By contrast, a bounding box is a tuple which identifies the @emph{extent}
+of an element, but not its absolute position.
+
+@node    MathEngine, DrawingArea, Boxes and Rectangles, C++ Interface
+@section The MathEngine Class
+
+@deffn {Constructor} MathEngine::MathEngine ()
+This is the default constructo of the rendering engine.
+@end deffn
+
+@deffn {Destructor} MathEngine::~MathEngine ()
+This is the descructor.
+@end deffn
+
+@deftypefn {Static Method} void MathEngine::InitGlobalData (const char* @var{confPath})
+Global initialization function. Must be called once (and only once) no matter
+how many instances of the rendering engine are created. @var{confPath}
+is the full path to the engine's configuration file. If it is @code{NULL}
+then the engine will try to open the default configuration file
+(usually located in @code{/usr/local/share/gtkmathview}).
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Init (DrawingArea* @var{area}, FontManager* @var{fm})
+Initialization function. Must be called before any other method of this class
+is invoked. @var{area} must be a non-@code{NULL} pointer to an already instantiated
+@code{DrawingArea} object and @var{fm} must be a non-@code{NULL} pointer to an
+already instantiated @code{FontManager} object.
+@end deftypefn
+
+@deftypefn {Method} bool MathEngine::Load (const char* @var{uri})
+Load the document whose URI is @var{uri}. The document is parsed, the
+setup is done (see below). Return @code{true} if the document has
+been loaded correctly, @code{false} otherwise.
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Unload ()
+Unload the document currently loaded and release all resources associated
+to it. This method is implicitly called by the load method.
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Setup ()
+Force the setup of the document loaded, that is the document tree is
+traversed and all the attributes are re-evaluated. This is to be done
+if a global default property of the document has changed, such as
+the default font size.
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Layout ()
+Force the layout of the document, that is, the document is formatted
+given the available horizontal width (which is a property of
+the drawing area set at initialization time).
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetDirty (const Rectangle* @var{rect} = NULL)
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Render ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Render (const Rectangle* @var{rect})
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::Update (const Rectangle* @var{rect})
+@end deftypefn
+
+@deftypefn {Method} bool MathEngine::IsOnLink (scaled @var{x}, scaled @var{y})
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetElement (MathMLElement* @var{elem})
+@end deftypefn
+
+@deftypefn {Method} MathMLElement* MathEngine::GetElement ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetSelectionFirst (MathMLElement* @var{elem})
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetSelectionLast (MathMLElement* @var{elem})
+@end deftypefn
+
+@deftypefn {Method} MathMLElement* MathEngine::GetSelectionRoot ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::ResetSelectionRoot ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetSelection (MathMLElement* @var{elem})
+@end deftypefn
+
+@deftypefn {Method} MathMLElement* MathEngine::GetSelection ()
+@end deftypefn
+
+@deftypefn {Method} MathMLElement* MathEngine::GetRoot ()
+@end deftypefn
+
+@deftypefn {Method} MathMLElement* MathEngine::GetElementAt (scaled @var{x}, scaled @var{y})
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::GetDocumentBoundingBox (BoundingBox& @var{box})
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::GetDocumentRectangle (Rectangle& @var{rect})
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetDefaultFontSize (unsigned @var{size})
+@end deftypefn
+
+@deftypefn {Method} unsigned MathEngine::GetDefaultFontSize ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetVerbosity (int @var{level})
+@end deftypefn
+
+@deftypefn {Method} int MathEngine::GetVerbosity ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetAntiAliasing (bool @var{b})
+@end deftypefn
+
+@deftypefn {Method} bool MathEngine::GetAntiAliasing ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetKerning (bool @var{b})
+@end deftypefn
+
+@deftypefn {Method} bool MathEngine::GetKerning ()
+@end deftypefn
+
+@deftypefn {Method} void MathEngine::SetTransparency (bool @var{b})
+@end deftypefn
+
+@deftypefn {Method} bool MathEngine::GetTransparency ()
+@end deftypefn
+
+
+
+
+@node DrawingArea, FontManager, MathEngine, C++ Interface
+@section The DrawingArea Abstract Class
+
+@node FontManager,  , DrawingArea, C++ Interface
+@section The FontManager Abstract Class
+
+
+@node     GTK+ Interface, Configuration, C++ Interface, Top
+@comment  node-name,  next,  previous,  up
+@chapter  GTK+ Interface to the Rendering Engine
+
+@defmac GTK_TYPE_MATH_VIEW
 used to get the GTK type for the @code{GtkMathView} class. You don't
 usually need tu use this macro, unless you are subclassing @code{gtkmathview}.
-@end quotation
+@end defmac
 
-@noindent
-Macro: @code{GTK_MATH_VIEW(object)}
-@quotation
-used to cast a GtK widget to a @code{GtkMathView} class. Remember that
+@defmac GTK_MATH_VIEW (@var{object})
+used to cast a Gtk widget to a @code{GtkMathView} class. Remember that
 all methods working with the widget takes a pointer to @code{GtkMathView}.
-@end quotation
+@end defmac
 
-@noindent
-Macro: @code{GTK_MATH_VIEW_CLASS(klass)}
-@quotation
+@defmac GTK_MATH_VIEW_CLASS (@var{klass})
 used to cast a Gtk class to a @code{GtkMathView} class. This macro is used internally,
 so you probably don't need it.
-@end quotation
+@end defmac
 
-@noindent
-Macro: @code{GTK_IS_MATH_VIEW(object)}
-@quotation
+@defmac GTK_IS_MATH_VIEW (@var{object})
 used to test wether a Gtk object is indeed a @code{GtkMathView} object.
 You can use it before casting to @code{GtkMathView}.
-@end quotation
+@end defmac
 
-@noindent
-Method: @code{GtkType gtk_math_view_get_type(void)}
-@quotation
+@deftypefn {Method} GtkType gtk_math_view_get_type ()
 allocates a new Gtk type for the class @code{GtkMathView}. Used internally.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{GtkWidget* gtk_math_view_new(GtkAdjustment* h_adj, GtkAdjustment* v_adj)}
-@quotation
+@deftypefn {Method} GtkWidget* gtk_math_view_new (GtkAdjustment* @var{h_adj}, GtkAdjustment* @var{v_adj})
 this is the main constructor for @code{GtkMathView}. It allocates a new @code{GtkMathView}
-object. You can pass a couple of adjustments fro the scrolling bars, or just @code{NULL} in the
+object. You can pass a couple of adjustments for the scrolling bars, or just @code{NULL} in the
 case you want the widget to allocate its own scrolling bars.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{gboolean gtk_math_view_load(GtkMathView* widget, const gchar* file_name)}
-@quotation
+@deftypefn {Method} gboolean gtk_math_view_load (GtkMathView* @var{widget}, const gchar* @var{file_name})
 load a MathML document into the widget and render it. If the loading succeed then @code{TRUE}
 is returned, @code{FALSE} otherwise.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_unload(GtkMathView*)}
-@quotation
+@deftypefn {Method} void gtk_math_view_unload (GtkMathView* @var{widget})
 unload a document from the widget, release all resources related to the document
 itself. This is automatically invoked if you load two subsequent documents, so you don't need
 to call this method explicitly.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{mDOMNodeRef gtk_math_view_get_selection(GtkMathView* widget)}
-@quotation
+@deftypefn {Method} mDOMNodeRef gtk_math_view_get_selection (GtkMathView* @var{widget})
 return the DOM reference of the node currently selected
 in the document, or @code{NULL} if there is no document or there is no selection
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_selection(GtkMathView* widget, mDOMNodeRef node)}
-@quotation
-forces the selection of the document to be the subtree rooted at @code{node}.
-Nothing happens if @code{node} turns out not to be a node rendered by the widget
-(for example, if it is a content element). If @code{node} is set to
+@deftypefn {Method} void gtk_math_view_set_selection (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
+forces the selection of the document to be the subtree rooted at @var{node}.
+Nothing happens if @var{node} turns out not to be a node rendered by the widget
+(for example, if it is a content element). If @var{node} is set to
 @code{NULL} then the currently selected subtree, if any, will be de-selected.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{guint gtk_math_view_get_width(GtkMathView* widget)}
-@quotation
-return the width of the drawable area of the widget. Please note that
-this is not necessarily equal to the whole widget width, due to the inner frame.
-@end quotation
+@deftypefn {Method} guint gtk_math_view_get_width (GtkMathView* @var{widget})
+return the width of the drawable area of the @var{widget}. Please note that
+this is not necessarily equal to the whole @var{widget} width, due to the inner frame.
+@end deftypefn
 
-@noindent
-Method: @code{guint gtk_math_view_get_height(GtkMathView* widget)}
-@quotation
-return the height of the drawable area of the widget. Same remark as
+@deftypefn {Method} guint gtk_math_view_get_height (GtkMathView* @var{widget})
+return the height of the drawable area of the @var{widget}. Same remark as
 for @code{gtk_math_view_get_width}.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_get_top(GtkMathView* widget, guint* top_x, guint* top_y)}
-@quotation
-return in @code{top_x} and @code{top_y} the coordinates (in pixels) of the upper left displayed
-corner of the document. Either @code{top_x} or @code{top_y} may be @code{NULL},
+@deftypefn {Method} void gtk_math_view_get_top (GtkMathView* @var{widget}, guint* @var{top_x}, guint* @var{top_y})
+return in @var{top_x} and @var{top_y} the coordinates (in pixels) of the upper left displayed
+corner of the document. Either @var{top_x} or @var{top_y} may be @code{NULL},
 if you are interested in only one of the two values.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_top(GtkMathView* widget, guint top_x, guint top_y)}
-@quotation
+@deftypefn {Method} void gtk_math_view_set_top (GtkMathView* @var{widget}, guint @var{top_x}, guint @var{top_y})
 set the coordinates (in pixels) of the upper left displayed corner of the
 document.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_adjustments(GtkMathView* widget, GtkAdjustment* h_adj, GtkAdjustment* v_adj)}
-@quotation
-set the horizontal and vertical adjustments for the widget.
-@end quotation
+@deftypefn {Method} void gtk_math_view_set_adjustments (GtkMathView* @var{widget}, GtkAdjustment* @var{h_adj}, GtkAdjustment* @var{v_adj})
+set the horizontal and vertical adjustments for the @var{widget}.
+@end deftypefn
 
-@noindent
-Method: @code{GtkAdjustment* gtk_math_view_get_hadjustment(GtkMathView* widget)}
-@quotation
-return a pointer to the horizontal adjustment of the widget.
-@end quotation
+@deftypefn {Method} GtkAdjustment* gtk_math_view_get_hadjustment (GtkMathView* @var{widget})
+return a pointer to the horizontal adjustment of the @var{widget}.
+@end deftypefn
 
-@noindent
-Method: @code{GtkAdjustment* gtk_math_view_get_vadjustment(GtkMathView* widget)}
-@quotation
-return a pointer to the vertical adjustment of the widget.
-@end quotation
+@deftypefn {Method} GtkAdjustment* gtk_math_view_get_vadjustment (GtkMathView* @var{widget})
+return a pointer to the vertical adjustment of the @var{widget}.
+@end deftypefn
 
-@noindent
-Method: @code{GdkPixmap* gtk_math_view_get_buffer(GtkMathView* widget)}
-@quotation
-return a pointer to the @code{GdkPixmap} used by the widget as the backbuffer.
-@end quotation
+@deftypefn {Method} GdkPixmap* gtk_math_view_get_buffer (GtkMathView* @var{widget})
+return a pointer to the @code{GdkPixmap} used by the @var{widget} as the backbuffer.
+@end deftypefn
 
-@noindent
-Method: @code{GtkFrame* gtk_math_view_get_frame(GtkMathView* widget)}
-@quotation
-return a pointer to the @code{GtkFrame} used by the widget to draw
+@deftypefn {Method} GtkFrame* gtk_math_view_get_frame (GtkMathView* @var{widget})
+return a pointer to the @code{GtkFrame} used by the @var{widget} to draw
 the border around the drawable area. You can set the border style and thickness
 with the proper methods for this objects.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_font_size(GtkMathView* widget, guint size)}
-@quotation
-set the default font size (in points) for displaying documents.
-@end quotation
+@deftypefn {Method} void gtk_math_view_set_font_size (GtkMathView* @var{widget}, guint @var{size})
+set the default font @var{size} (in points) for displaying documents.
+@end deftypefn
 
-@noindent
-Method: @code{guint gtk_math_view_get_font_size(GtkMathView* widget)}
-@quotation
+@deftypefn {Method} guint gtk_math_view_get_font_size (GtkMathView* @var{widget})
 return the default font size (in points) for displaying documents.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_anti_aliasing(GtkMathView* widget, gboolean b)}
-@quotation
+@deftypefn {Method} void gtk_math_view_set_anti_aliasing (GtkMathView* @var{widget}, gboolean @var{b})
 this is used to enable/disable anti-aliasing for rendering text.
 This function is available with Type1 fonts only, if you are using
 the @code{T1_FontManager} in conjunction with the @code{T1_Gtk_DrawingArea}.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{gboolean gtk_math_view_get_anti_aliasing(GtkMathView* widget)}
-@quotation
+@deftypefn {Method} gboolean gtk_math_view_get_anti_aliasing (GtkMathView* @var{widget})
 return @code{TRUE} if anti-aliasing is enabled (even if it is
 not supported), @code{FALSE} otherwise.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_kerning(GtkMathView* widget, gboolean b)}
-@quotation
+@deftypefn {Method} void gtk_math_view_set_kerning (GtkMathView* @var{widget}, gboolean @var{b})
 enable/disable kerning. This is available for Type1 fonts only
 (see the same conditions as for the @code{gtk_math_view_set_anti_aliasing}).
 Moreover, kerning is usually available only if the rquested font has a
 corresponding metrics file (AFM).
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{gboolean gtk_math_view_get_kerning(GtkMathView* widget)}
-@quotation
+@deftypefn {Method} gboolean gtk_math_view_get_kerning (GtkMathView* @var{widget})
 return @code{TRUE} if kerning is enabled (even if it is not
 supported), @code{FALSE} otherwise.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{gboolean gtk_math_view_set_transparency(GtkMathView* widget, gboolean b)}
-@quotation
+@deftypefn {Method} gboolean gtk_math_view_set_transparency (GtkMathView* @var{widget}, gboolean @var{b})
 enable/disable transparency. This is available for Type1 fonts only. Transparency
 can be enabled for documents containing combining or otherwise overlapping
 characters. When transparency is enabled, only coloured pixels are drawn, leaving
 the background untouched. This prevents for glyphs overwriting one each other
 when they overlap. Since transparent mode is heavier than opaque mode, it is
 disabled by default.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{gboolean gtk_math_view_get_transparency(GtkMathView* widget, gboolean b)}
-@quotation
+@deftypefn {Method} gboolean gtk_math_view_get_transparency (GtkMathView* @var{widget}, gboolean @var{b})
 retrieve the current state of transparency.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_log_set_verbosity(GtkMathView* widget, gint level)}
-@quotation
-set the level of verbosity for displayed messages. @code{level}
+@deftypefn {Method} void gtk_math_view_log_set_verbosity (GtkMathView* @var{widget}, gint @var{level})
+set the level of verbosity for displayed messages. @var{level}
 can be an integer from @code{0} (very few messages, in case of error only)
 to @code{3} (all messages). Useful for debugging purposes.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{gint gtk_math_view_log_get_verbosity(GtkMathView* widget)}
-@quotation
+@deftypefn {Method} gint gtk_math_view_log_get_verbosity (GtkMathView* @var{widget})
 return the current level of verbosity.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_export_to_postscript(GtkMathView* widget, gint width, gint height, gint x0, gint y0, gboolean disable_colors, FILE* f)}
-@quotation
-write a rendered document to the file @code{f} in PostScript format. @code{width}, @code{height},
-@code{x0} and @code{y0} give the size and the margins (in pixels) of the rendering area used
-by this method. @code{disable_colors} can be set to @code{TRUE} if you don't want to
+@deftypefn {Method} void gtk_math_view_export_to_postscript (GtkMathView* @var{widget}, gint @var{width}, gint @var{height}, gint @var{x0}, gint @var{y0}, gboolean @var{disable_colors}, FILE* @var{f})
+write a rendered document to the file @var{f} in PostScript format. @var{width}, @var{height},
+@var{x0} and @var{y0} give the size and the margins (in pixels) of the rendering area used
+by this method. @var{disable_colors} can be set to @code{TRUE} if you don't want to
 render colors in PostScript (this may be useful to print the document on a black-and-white
 printer).
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{void gtk_math_view_set_font_manager_type(GtkMathview* widget, FontManagerId id)}
-@quotation
-Set the font manager used by the widget to retrieve fonts. Up 'till now, there are
-two valid values for @code{id}: use @code{FONT_MANAGER_GTK} to use the GTK font
+@deftypefn {Method} void gtk_math_view_set_font_manager_type (GtkMathview* @var{widget}, FontManagerId @var{id})
+Set the font manager used by the @var{widget} to retrieve fonts. Up 'till now, there are
+two valid values for @var{id}: use @code{FONT_MANAGER_GTK} to use the GTK font
 manager (actually, this is just a wrapper for the X font manager). This is the default.
 Alternatively, use @code{FONT_MANAGER_T1} to use @code{t1lib} and Type1 fonts. This
 font manager is availabe only if you have installed the @code{t1lib} library.
-@end quotation
+@end deftypefn
 
-@noindent
-Method: @code{FontManagerId gtk_math_view_get_font_manager_type(GtkMathView* widget)}
-@quotation
+@deftypefn {Method} FontManagerId gtk_math_view_get_font_manager_type (GtkMathView* @var{widget})
 Return the current font manager id.
-@end quotation
+@end deftypefn
 
-@noindent
-Signal: @code{"clicked" void user_function(GtkMathView* widget, mDOMNodeRef node)}
-@quotation
-emitted every time the user clicks on an element with a valid DOM reference node.
+@deftypefn {Signal} void "clicked" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
+emitted every time the user clicks on an element with a valid DOM reference @var{node}.
 The node is passed as a parameter to the function.
-@end quotation
+@end deftypefn
 
-@noindent
-Signal: @code{"jump" void user_function(GtkMathView* widget, mDOMNodeRef node)}
-@quotation
-emitted subsequently a "clicked" signal, if the @code{node} has at least one
+@deftypefn {Signal} void "jump" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
+emitted subsequently a "clicked" signal, if the @var{node} has at least one
 attribute named @code{href}.
-@end quotation
+@end deftypefn
 
-@noindent
-Signal: @code{"selection_changed" void user_function(GtkMathView* widget, mDOMNodeRef node)}
-@quotation
-emitted when the selected subtree changes. @code{node} is the root node of the newly
+@deftypefn {Signal} void "selection_changed" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
+emitted when the selected subtree changes. @var{node} is the root node of the newly
 selected subtree.
-@end quotation
+@end deftypefn
 
-@noindent
-Signal: @code{"element_changed" void user_function(GtkMathView* widget, mDOMNodeRef node)}
-@quotation
-emitted when the mouse pointer moves on a different element. @code{node} is the
+@deftypefn {Signal} void "element_changed" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
+emitted when the mouse pointer moves on a different element. @var{node} is the
 node of the newly pointed element.
-@end quotation
+@end deftypefn
 
-@node     Configuration, Bugs, Interface, Top
+@node     Configuration, Tools, GTK+ Interface, Top
 @comment  node-name,  next,  previous,  up
 @chapter  Configuration
 
 @noindent
-Starting from version 0.2.2 the widget has a rather flexible configuration system.
+Starting from version 0.2.2 the @var{widget} has a rather flexible configuration system.
 If you made a default installation, you'll find all the configuration files in
 @code{/usr/local/share/gtkmathview}. In particular, the file
 @code{math-engine-configuration.xml} contains all the references to the other
@@ -585,7 +754,7 @@ configuration files (operator dictionary, fonts, entities, @code{t1lib}).
 
 @noindent
 You can set the environment variable @code{MATHENGINECONF} to the full path
-of the configuration file. If the variable is not set, the widget will try to
+of the configuration file. If the variable is not set, the @var{widget} will try to
 load the configuration file from the default location.
 
 @noindent
@@ -641,7 +810,40 @@ a @code{href} attribute. Same attributes as for @code{color}.
 Same attributes as for @code{color}.
 @end itemize
 
-@node     Bugs,  , Configuration, Top
+
+@node     Tools, Bugs, Configuration, Top
+@comment  name , next, prev,          up
+@chapter  Tools
+@noindent
+
+There are some tools provided along the widget. We will shortly describe them
+in the following two sections.
+
+@menu
+* mathmlviewer::     A simple viewer application.
+* mathml2ps::        A MathML ==> PostScript conversion utility.
+@end menu
+
+
+@node     mathmlviewer, mathml2ps, Tools, Tools
+@comment  node-name,  next,  previous,  up
+@section  @code{mathmlviewer}
+@noindent
+This is a simple browsing application whose purpose is twofold. First,
+it is an example of application using the GtkMathView widget. Second,
+it allows viewing MathML documents. A document is referenced by means
+of a URL or just a file name.
+
+
+@node     mathml2ps,  , mathmlviewer, Tools
+@section  @code{mathml2ps}
+@noindent
+This is a simple utility which allows to render a MathML document to
+PostScript. In addition to this, it shows how the widget's rendering
+engine can be exploited in a non-GTK+ application.
+
+
+@node     Bugs,  , Tools, Top
 @comment  node-name,  next,  previous,  up
 @chapter  Bugs and Contributions
 @noindent
@@ -650,13 +852,15 @@ one is bug report, sending me an email (@email{luca.padovani@@cs.unibo.it})
 with a short description of the problem encountered, a list of the error messages
 or failed assertions and the simplest MathML document that causes the trouble.
 
+If you think that the problem may be of interests for other people too, then I
+encourage to subscribe and post the report on the mailing list. You can
+subscribe by sending an empty email at the address
+@email{gtkmathview-subscribe@@cs.unibo.it}.
+
 @noindent
 Furthermore, the widget is still not complete, it lacks the proper handling
-of some MathML elements and attributes, and I think that there are several
-improvements which can be done. A note about this: the widget is based
-on the MathML 2 Working Draft, which is not
-yet confirmed as standard at the moment of writing, however it is assumed to be a
-rather stable version.
+of some MathML attributes, and I think that there are several
+improvements which can be done. 
 
 @summarycontents
 @contents

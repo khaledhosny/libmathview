@@ -66,7 +66,7 @@ PS_DrawingArea::DumpHeader(const char* appName, const char* title, const Rectang
   time_t curTime = time(NULL);
 
   // FIXME: is the output conformant???
-  //fprintf(output, "%%!PS-Adobe-3.0 EPSF-3.0\n");
+  fprintf(output, "%%!PS-Adobe-3.0 EPSF-3.0\n");
   fprintf(output, "%%%%BoundingBox: %d %d %d %d\n",
 	  truncFloat(sp2ps(rect.x)), truncFloat(sp2ps(height - (rect.y + rect.height))),
 	  roundFloat(sp2ps(rect.x + rect.width)), roundFloat(sp2ps(height - rect.y)));
@@ -244,4 +244,4 @@ PS_DrawingArea::SetFont(const AFont* font) const
   }
 }
 
-#endif HAVE_LIBT1
+#endif // HAVE_LIBT1

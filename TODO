@@ -27,7 +27,9 @@ Major improvements
   of space in a 32bit field
 * kerning is NOT available when exporting PS, the whole issue of tokens
   must be reconsidered and reimplemented
-  
+* CombinedChar information is usually not available in AFM files, so
+  char combination has to do some heuristics.
+
 Minor improvements
 
 * making script elements breakable

@@ -23,10 +23,6 @@
 #ifndef Rectangle_hh
 #define Rectangle_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "scaled.hh"
 
 struct Rectangle {

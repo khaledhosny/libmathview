@@ -28,7 +28,7 @@
 #include "MathMLNode.hh"
 #include "DrawingArea.hh"
 
-class MathMLFrame: public MathMLNode {
+class MathMLFrame : public MathMLNode {
 public:
   MathMLFrame(void);
   virtual void   SetPosition(scaled, scaled) = 0;
@@ -41,6 +41,7 @@ public:
   virtual scaled GetLeftEdge(void) const = 0;
   virtual scaled GetRightEdge(void) const = 0;
 
+  // flags facilities
   virtual bool 	 IsFrame(void) const;
   virtual bool 	 IsInside(scaled, scaled) const = 0;
   virtual bool 	 IsLast(void) const;
@@ -48,15 +49,17 @@ public:
   bool         	 IsDirty(void) const { return dirty != 0; }
   bool         	 HasDirtyChildren(void) const { return dirtyChildren != 0; }
   bool         	 HasDirtyBackground(void) const { return dirtyBackground != 0; }
+  bool           HasDirtyLayout(void) const { return dirtyLayout != 0; }
 
-  // flags facilities
   void         	 SetLast(void) { last = 1; }
   virtual void 	 SetDirty(const Rectangle* = NULL);
   virtual void 	 SetDirtyChildren(void);
   virtual void 	 SetSelected(void);
   virtual void 	 ResetSelected(void);
   void         	 ResetDirty(void) { dirty = dirtyChildren = dirtyBackground = 0; }
+  void           ResetDirtyLayout(void) { dirtyLayout = 0; }
   virtual void 	 ResetLast(void);
+  virtual void   SetDirtyLayout(void);  
 
   virtual BreakId GetBreakability(void) const;
 
@@ -68,6 +71,7 @@ protected:
   unsigned    dirty : 1;
   unsigned    dirtyChildren : 1;
   unsigned    dirtyBackground : 1;
+  unsigned    dirtyLayout : 1;
   unsigned    last : 1; // is != 0 is this frame is the last in a row
 };
 

@@ -45,6 +45,7 @@ struct BoundingBox {
   void Set(scaled, scaled, scaled, scaled, scaled);
   void Append(const BoundingBox&);
   void Append(scaled);
+  void Max(const BoundingBox&);
 
   void ToRectangle(scaled, scaled, struct Rectangle&) const;
 

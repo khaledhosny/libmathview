@@ -23,8 +23,6 @@
 #ifndef UnitValue_hh
 #define UnitValue_hh
 
-#include <config.h>
-
 #include "scaled.hh"
 #include "keyword.hh"
 
@@ -44,4 +42,4 @@ struct UnitValue {
   scaled ToScaledPoints(float, float) const;
 };
 
-#endif
+#endif // UnitValue_hh

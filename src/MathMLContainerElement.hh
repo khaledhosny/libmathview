@@ -23,8 +23,6 @@
 #ifndef MathMLContainerElement_hh
 #define MathMLContainerElement_hh
 
-#include <config.h>
-
 #include "MathMLElement.hh"
 
 // base class for every non-empty MathML container element

@@ -67,6 +67,7 @@ static double fontSize = 10;
 static bool   colors = false;
 //static bool   kerning = false;
 static const char* configPath = NULL;
+static int logLevel = LOG_ERROR;
 
 extern void* parseMathMLFile(char*);
 
@@ -287,8 +288,8 @@ main(int argc, char *argv[])
       break;
 
     case OPTION_VERBOSE:
-      if (optarg == NULL) MathEngine::logger.SetLogLevel(0);
-      else MathEngine::logger.SetLogLevel(*optarg - '0');
+      if (optarg == NULL) logLevel = LOG_ERROR;
+      else logLevel = *optarg - '0';
       break;
 
     case OPTION_FONT_SIZE:
@@ -325,7 +326,8 @@ main(int argc, char *argv[])
   }
 
   if (configPath == NULL) configPath = getenv("MATHENGINECONF");
-
+  
+  MathEngine::logger.SetLogLevel(logLevel);
   MathEngine::logger(LOG_INFO, "Font size : %f", fontSize);
   MathEngine::logger(LOG_INFO, "Paper size: %fx%f", width, height);
   MathEngine::logger(LOG_INFO, "Margins   : %fx%f", xMargin, yMargin);
@@ -377,7 +379,7 @@ main(int argc, char *argv[])
     if (!colors) area.DisableColors();
 
     engine.Init(&area, &fm);
-
+    engine.SetVerbosity(logLevel);
     engine.SetDefaultFontSize(fontSize);
 #if 0
     engine.SetKerning(kerning);

@@ -67,15 +67,14 @@ FontAttributes::DownGrade()
 bool
 FontAttributes::Equals(const FontAttributes& fa) const
 {
-  if (family == NULL && fa.family != NULL) return false;
-  if (family != NULL && fa.family == NULL) return false;
-  if (family != NULL && fa.family != NULL && strcmp(family, fa.family)) return false;
+  if (mode != fa.mode) return false;
   if (style != fa.style) return false;
   if (weight != fa.weight) return false;
-  if (mode != fa.mode) return false;
-  if (size.IsNull() && !fa.size.IsNull()) return false;
-  if (!size.IsNull() && fa.size.IsNull()) return false;
-  if (!size.IsNull() && !fa.size.IsNull() && !scaledEq(size.ToScaledPoints(), fa.size.ToScaledPoints())) return false;
+  if ((family == NULL && fa.family != NULL) ||
+      (family != NULL && fa.family == NULL)) return false;
+  if (family != NULL && strcmp(family, fa.family)) return false;
+  if (size.IsNull() != fa.size.IsNull()) return false;
+  if (!size.IsNull() && !scaledEq(size.ToScaledPoints(), fa.size.ToScaledPoints())) return false;
 
   return true;
 }
@@ -87,25 +86,28 @@ FontAttributes::Compare(const FontAttributes& fa) const
 
   if (mode != FONT_MODE_ANY && fa.mode != FONT_MODE_ANY && mode != fa.mode) return 0;
 
+  if (!HasStyle() && !fa.HasStyle()) eval += 2;
+  else if (HasStyle() && fa.HasStyle()) {
+    if (style == fa.style) eval += 2;
+    else return 0;
+  } else eval++;
+
+  if (!HasWeight() && !fa.HasWeight()) eval += 2;
+  else if (HasWeight() && fa.HasWeight()) {
+    if (weight == fa.weight) eval += 2;
+    else return 0;
+  } else eval++;
+
   if (!HasFamily() && !fa.HasFamily()) eval += 2;
   else if (HasFamily() && fa.HasFamily()) {
     if (strcmp(family, fa.family)) return 0;
     else eval += 2;
   } else eval++;
 
-  if (!HasStyle() && !fa.HasStyle()) eval += 2;
-  else if (HasStyle() && fa.HasStyle()) {
-    if (style == fa.style) eval += 2;
-  } else eval++;
-
-  if (!HasWeight() && !fa.HasWeight()) eval += 2;
-  else if (HasWeight() && fa.HasWeight()) {
-    if (weight == fa.weight) eval += 2;
-  } else eval++;
-
   if (!HasSize() && !fa.HasSize()) eval += 2;
   else if (HasSize() && fa.HasSize()) {
     if (scaledEq(size.ToScaledPoints(), fa.size.ToScaledPoints())) eval += 2;
+    else return 0;
   } else eval++;
 
   return eval;

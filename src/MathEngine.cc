@@ -34,6 +34,7 @@
 #include "CharMapper.hh"
 #include "StringUnicode.hh"
 #include "MathMLDocument.hh"
+#include "T1_FontManager.hh"
 #include "T1_Gtk_DrawingArea.hh"
 #include "RenderingEnvironment.hh"
 
@@ -240,7 +241,11 @@ MathEngine::SetDirty(const Rectangle* rect)
 void
 MathEngine::Render(const Rectangle* rect)
 {
+  Clock perf;
+  perf.Start();
   if (root != NULL) root->SetDirty(rect);
+  perf.Stop();
+  logger(LOG_INFO, "set-dirty time: %dms", perf());
   Update(rect);
 }
 
@@ -379,6 +384,10 @@ void
 MathEngine::SetVerbosity(int level)
 {
   logger.SetLogLevel(level);
+#ifdef HAVE_LIBT1
+  T1_FontManager* t1_fm = TO_T1_FONT_MANAGER(fontManager);
+  if (t1_fm != NULL) t1_fm->SetLogLevel(level);
+#endif // HAVE_LIBT1
 }
 
 int

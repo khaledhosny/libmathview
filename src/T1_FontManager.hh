@@ -34,6 +34,8 @@ public:
   T1_FontManager(void);
   virtual ~T1_FontManager();
 
+  void SetLogLevel(int);
+
 protected:
   virtual const class AFont* SearchNativeFont(const FontAttributes&,
 					      const ExtraFontAttributes*) const;
@@ -41,6 +43,8 @@ protected:
 private:
   static bool firstTime;
 };
+
+#define TO_T1_FONT_MANAGER(ptr) dynamic_cast<T1_FontManager*>(ptr)
 
 #endif // HAVE_LIBT1
 

@@ -13,6 +13,10 @@ EXTRA_DIST = \
   entities-table.xml \
   font-configuration.dtd \
   font-configuration.xml \
+  font-configuration-adobe.xml \
+  font-configuration-bh.xml \
+  font-configuration-tex.xml \
+  font-configuration-wri.xml \
   math-engine-configuration.xml.in \
   math-engine-configuration.dtd \
   math-engine-configuration.xml \
@@ -25,6 +29,10 @@ pkgdata_DATA = \
   entities-table.xml \
   font-configuration.dtd \
   font-configuration.xml \
+  font-configuration-adobe.xml \
+  font-configuration-bh.xml \
+  font-configuration-tex.xml \
+  font-configuration-wri.xml \
   math-engine-configuration.dtd \
   math-engine-configuration.xml \
   t1.config
@@ -44,6 +52,3 @@ dictionary.xml: makeDictionary dictionary.in
 entities-table.xml: entities-table.in
 	@echo Making entities table...
 	$(SCRIPTDIR)/makeEntitiesTable <entities-table.in >entities-table.xml
-
-#math-engine-configuration.xml: math-engine-configuration.in
-#	@echo Making configuration file...

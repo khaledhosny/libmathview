@@ -71,6 +71,25 @@ BoundingBox::Append(scaled w)
 }
 
 void
+BoundingBox::Max(const BoundingBox& box)
+{
+  if (box.IsNull()) return;
+
+  if (IsNull()) {
+    *this = box;
+    return;
+  }
+
+  ascent = scaledMax(ascent, box.ascent);
+  descent = scaledMax(descent, box.descent);
+  width = scaledMax(width, box.width);
+  tAscent = scaledMax(tAscent, box.tAscent);
+  tDescent = scaledMax(tDescent, box.tDescent);
+  lBearing = scaledMin(lBearing, box.lBearing);
+  rBearing = scaledMax(rBearing, box.rBearing);
+}
+
+void
 BoundingBox::ToRectangle(scaled x, scaled y, Rectangle& rect) const
 {
   rect.x = x;

@@ -23,8 +23,6 @@
 #ifndef FontManager_hh
 #define FontManager_hh
 
-#include <config.h>
-
 #include "Container.hh"
 #include "FontAttributes.hh"
 

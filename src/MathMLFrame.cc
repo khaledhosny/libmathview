@@ -20,16 +20,16 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "MathMLFrame.hh"
 #include "MathMLElement.hh"
 
 MathMLFrame::MathMLFrame()
 {
-  selected = dirty = dirtyChildren = dirtyBackground = last = 0;
+  selected = last = 0;
+  dirty = dirtyChildren = dirtyBackground = 1;
+  dirtyLayout = 1;
 }
 
 MathMLFrame::~MathMLFrame()
@@ -53,7 +53,7 @@ MathMLFrame::SetDirty(const Rectangle* rect)
 {
   dirtyBackground =
     (GetParent() != NULL && (GetParent()->IsSelected() != IsSelected())) ? 1 : 0;
-
+  
   if (IsDirty()) return;
   dirty = 1;
   SetDirtyChildren();
@@ -64,7 +64,17 @@ MathMLFrame::SetDirtyChildren()
 {
   if (HasDirtyChildren()) return;
   dirtyChildren = 1;
-  if (GetParent() != NULL) GetParent()->SetDirtyChildren();
+  for (MathMLElement* elem = GetParent(); elem != NULL && !elem->HasDirtyChildren(); elem = elem->GetParent())
+    elem->dirtyChildren = 1;
+}
+
+void
+MathMLFrame::SetDirtyLayout()
+{
+  if (HasDirtyLayout()) return;
+  dirtyLayout = 1;
+  for (MathMLElement* elem = GetParent(); elem != NULL && !elem->HasDirtyLayout(); elem = elem->GetParent())
+    elem->dirtyLayout = 1;
 }
 
 void
