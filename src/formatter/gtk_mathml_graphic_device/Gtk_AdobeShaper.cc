@@ -361,11 +361,13 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
 	  break;
 	case H_STRETCHY_SYMBOL_INDEX:
 	  res = shapeStretchyCharH(ctxt, result, spec);
-	  break;
 	default:
-	  res = shapeChar(ctxt, result, spec);
 	  break;
 	}
+      // If we get here then either the character was not required
+      // to stretch, or one of the stretchying methods has failed,
+      // hence we shape it with no stretchying
+      if (!res) res = shapeChar(ctxt, result, spec);
       if (!res) break;
       result.advance();
       n--;

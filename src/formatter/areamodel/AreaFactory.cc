@@ -86,10 +86,12 @@ AreaFactory::right(const AreaRef& area) const
 AreaRef
 AreaFactory::middle(const AreaRef& area) const
 {
+  BoundingBox areaBox = area->box();
+
   std::vector<AreaRef> v;
   v.reserve(3);
   v.push_back(verticalFiller());
-  v.push_back(area);
+  v.push_back(shift(area, (areaBox.depth - areaBox.depth) / 2));
   v.push_back(verticalFiller());
   return verticalArray(v, 1);
 }

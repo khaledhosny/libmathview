@@ -24,6 +24,7 @@
 #define __MathMLRadicalElement_hh__
 
 #include "MathMLContainerElement.hh"
+#include "BinContainerTemplate.hh"
 
 class MathMLRadicalElement : public MathMLContainerElement
 {
@@ -41,14 +42,14 @@ public:
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
 
-  SmartPtr<class MathMLElement> getBase(void) const { return base; }
-  SmartPtr<class MathMLElement> getIndex(void) const { return index; }
-  void setBase(const SmartPtr<class MathMLElement>&);
-  void setIndex(const SmartPtr<class MathMLElement>&);
+  SmartPtr<class MathMLElement> getBase(void) const { return base.getChild(); }
+  SmartPtr<class MathMLElement> getIndex(void) const { return index.getChild(); }
+  void setBase(const SmartPtr<class MathMLElement>& child) { base.setChild(this, child); }
+  void setIndex(const SmartPtr<class MathMLElement>& child) { index.setChild(this, child); }
 
 private:
-  SmartPtr<class MathMLElement> base;
-  SmartPtr<class MathMLElement> index;
+  BinContainerTemplate<MathMLRadicalElement, SmartPtr<MathMLElement> > base;
+  BinContainerTemplate<MathMLRadicalElement, SmartPtr<MathMLElement> > index;
 };
 
 #endif // __MathMLRadicalElement_hh__

@@ -41,28 +41,6 @@ MathMLRadicalElement::~MathMLRadicalElement()
 { }
 
 void
-MathMLRadicalElement::setBase(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != base)
-    {
-      if (elem) elem->setParent(this);
-      base = elem;
-      setDirtyLayout();
-    }
-}
-
-void
-MathMLRadicalElement::setIndex(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != index)
-    {
-      if (elem) elem->setParent(this);
-      index = elem;
-      setDirtyLayout();
-    }
-}
-
-void
 MathMLRadicalElement::construct()
 {
   if (dirtyStructure())
@@ -129,8 +107,8 @@ MathMLRadicalElement::construct()
 	}
 #endif // HAVE_GMETADOM
 
-      if (base) base->construct();
-      if (index) index->construct();
+      if (getBase()) getBase()->construct();
+      if (getIndex()) getIndex()->construct();
 
       resetDirtyStructure();
     }
@@ -141,8 +119,8 @@ MathMLRadicalElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      if (base) base->refine(context);
-      if (index) index->refine(context);
+      if (getBase()) getBase()->refine(context);
+      if (getIndex()) getIndex()->refine(context);
       MathMLContainerElement::refine(context);
     }
 }
@@ -154,13 +132,13 @@ MathMLRadicalElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      AreaRef baseArea = base->format(ctxt);
+      AreaRef baseArea = getBase()->format(ctxt);
       AreaRef indexArea;
-      if (index)
+      if (getIndex())
 	{
 	  ctxt.setDisplayStyle(false);
 	  ctxt.addScriptLevel(2);
-	  indexArea = index->format(ctxt);
+	  indexArea = getIndex()->format(ctxt);
 	}
       AreaRef res = ctxt.getDevice()->radical(ctxt, baseArea, indexArea);
 
@@ -176,16 +154,16 @@ MathMLRadicalElement::format(MathFormattingContext& ctxt)
 void
 MathMLRadicalElement::setFlagDown(Flags f)
 {
-  MathMLElement::setFlagDown(f);
-  if (base) base->setFlagDown(f);
-  if (index) index->setFlagDown(f);
+  MathMLContainerElement::setFlagDown(f);
+  base.setFlagDown(f);
+  index.setFlagDown(f);
 }
 
 void
 MathMLRadicalElement::resetFlagDown(Flags f)
 {
-  MathMLElement::resetFlagDown(f);
-  if (base) base->resetFlagDown(f);
-  if (index) index->resetFlagDown(f);
+  MathMLContainerElement::resetFlagDown(f);
+  base.resetFlagDown(f);
+  index.resetFlagDown(f);
 }
 

@@ -69,15 +69,16 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
       for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
-	{
-	  row.push_back((*elem)->format(ctxt));
-	  SmartPtr<MathMLOperatorElement> coreOp = (*elem)->getCoreOperatorTop();
-	  // WARNING: we can check for IsStretchy only *after* format because it is
-	  // at that time that the flags in the operator get set (see MathMLOperatorElement)
-	  if (coreOp && !coreOp->IsStretchy()) coreOp = 0;
-	  stretchy = stretchy || coreOp;
-	  erow.push_back(coreOp);
-	}
+	if (AreaRef elemArea = (*elem)->format(ctxt))
+	  {
+	    row.push_back(elemArea);
+	    SmartPtr<MathMLOperatorElement> coreOp = (*elem)->getCoreOperatorTop();
+	    // WARNING: we can check for IsStretchy only *after* format because it is
+	    // at that time that the flags in the operator get set (see MathMLOperatorElement)
+	    if (coreOp && !coreOp->IsStretchy()) coreOp = 0;
+	    stretchy = stretchy || coreOp;
+	    erow.push_back(coreOp);
+	  }
 
       AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(row);
       BoundingBox rowBox = res->box();
