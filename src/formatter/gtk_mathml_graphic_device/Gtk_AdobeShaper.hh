@@ -23,9 +23,6 @@
 #ifndef __Gtk_AdobeShaper_hh__
 #define __Gtk_AdobeShaper_hh__
 
-#include <functional>
-
-#include "HashMap.hh"
 #include "Shaper.hh"
 
 class Gtk_AdobeShaper : public Shaper
@@ -48,36 +45,13 @@ public:
   virtual void shape(class ShapingContext&) const;
 
 protected:
-  virtual AreaRef createGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
-
+  AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
-  AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
-
   AreaRef shapeChar(const class ShapingContext&) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
 
-  struct CachedAreaKey
-  {
-    CachedAreaKey(unsigned g, const scaled& s) : glyph(g), size(s) { }
-
-    unsigned glyph;
-    scaled size;
-
-    bool operator==(const CachedAreaKey& k) const
-    { return glyph == k.glyph && size == k.size; }
-  };
-
-  struct CachedAreaKeyHash
-  {
-    bool operator()(const CachedAreaKey& key) const
-    { return key.glyph ^ key.size.getValue(); }
-  };
-
-  typedef HASH_MAP_NS::hash_map<CachedAreaKey,AreaRef,CachedAreaKeyHash> AreaCache;
-
-  mutable AreaCache areaCache[N_FONTS];
   SmartPtr<class Gtk_PangoFontManager> pangoFontManager;
   SmartPtr<class Gtk_XftFontManager> xftFontManager;
 };

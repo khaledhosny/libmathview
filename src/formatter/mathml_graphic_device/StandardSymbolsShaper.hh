@@ -58,33 +58,11 @@ protected:
   virtual void registerChar(const SmartPtr<class ShaperManager>&, unsigned, Char16, Char8);
   virtual void registerStretchyCharH(const SmartPtr<class ShaperManager>&, unsigned, const HStretchyChar&, Char8);
   virtual void registerStretchyCharV(const SmartPtr<class ShaperManager>&, unsigned, const VStretchyChar&, Char8);
-  virtual AreaRef createGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const = 0;
-  AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const;
+  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const = 0;
 
   AreaRef shapeChar(const class ShapingContext&) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
-
-  struct CachedAreaKey
-  {
-    CachedAreaKey(unsigned g, const scaled& s) : glyph(g), size(s) { }
-
-    unsigned glyph;
-    scaled size;
-
-    bool operator==(const CachedAreaKey& k) const
-    { return glyph == k.glyph && size == k.size; }
-  };
-
-  struct CachedAreaKeyHash
-  {
-    bool operator()(const CachedAreaKey& key) const
-    { return key.glyph ^ key.size.getValue(); }
-  };
-
-  typedef HASH_MAP_NS::hash_map<CachedAreaKey,AreaRef,CachedAreaKeyHash> AreaCache;
-
-  mutable AreaCache areaCache;
 };
 
 #endif // __StandardSymbolsShaper_hh__

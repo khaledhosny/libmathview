@@ -427,30 +427,12 @@ Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 }
 
 AreaRef
-Gtk_AdobeShaper::createGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
-				 unsigned fi, unsigned gi,
-				 const scaled& size) const
-{
-  // return createPangoGlyphArea(factory, fi, gi, size);
-  return createXftGlyphArea(factory, fi, gi, size);
-}
-
-AreaRef
 Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 			      unsigned fi, unsigned gi,
 			      const scaled& size) const
 {
-  assert(fi < N_FONTS);
-  CachedAreaKey key(gi, size);
-  AreaCache::iterator p = areaCache[fi].find(key);
-  if (p != areaCache[fi].end())
-    return p->second;
-
-  AreaRef res = createGlyphArea(factory, fi, gi, size);
-  assert(res);
-  areaCache[fi][key] = res;
-
-  return res;
+  // return createPangoGlyphArea(factory, fi, gi, size);
+  return createXftGlyphArea(factory, fi, gi, size);
 }
 
 AreaRef

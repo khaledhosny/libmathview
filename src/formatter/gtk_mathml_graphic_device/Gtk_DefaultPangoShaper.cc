@@ -109,8 +109,6 @@ Gtk_DefaultPangoShaper::getTextAttributes(MathVariant variant)
   return variantDesc[variant - NORMAL_VARIANT];
 }
 
-#include <iostream>
-
 PangoLayout*
 Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, const scaled& sp_size,
 					  const PangoTextAttributes& attributes) const

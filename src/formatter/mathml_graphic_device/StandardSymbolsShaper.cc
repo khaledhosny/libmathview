@@ -334,22 +334,6 @@ StandardSymbolsShaper::shape(ShapingContext& context) const
 }
 
 AreaRef
-StandardSymbolsShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
-				    Char8 glyphIndex, const scaled& size) const
-{
-  CachedAreaKey key(glyphIndex, size);
-  AreaCache::iterator p = areaCache.find(key);
-  if (p != areaCache.end())
-    return p->second;
-
-  AreaRef res = createGlyphArea(factory, glyphIndex, size);
-  assert(res);
-  areaCache[key] = res;
-
-  return res;
-}
-
-AreaRef
 StandardSymbolsShaper::shapeChar(const ShapingContext& context) const
 {
   return getGlyphArea(context.getFactory(), context.getSpec().getGlyphId(), context.getSize());
