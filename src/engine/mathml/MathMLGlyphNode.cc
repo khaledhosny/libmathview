@@ -25,6 +25,8 @@
 #include <cassert>
 
 #include "MathMLGlyphNode.hh"
+#include "FormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLGlyphNode::MathMLGlyphNode(const String& f, const String& i, const String& a)
   : family(f), index(i), alt(a)
@@ -34,11 +36,8 @@ MathMLGlyphNode::~MathMLGlyphNode()
 { }
 
 AreaRef
-MathMLGlyphNode::format(FormattingContext&)
-{
-  assert(false);
-  return 0;
-}
+MathMLGlyphNode::format(FormattingContext& ctxt)
+{ return ctxt.MGD()->dummy(ctxt); }
 
 unsigned
 MathMLGlyphNode::GetLogicalContentLength() const

@@ -83,9 +83,9 @@ void
 MathMLTableElement::swapContent(std::vector<SmartPtr<MathMLTableCellElement> >& cellContent,
 				std::vector<SmartPtr<MathMLTableCellElement> >& labelContent)
 {
-  assert(cellContent.size() % labelContent.size() == 0);
+  assert((cellContent.size() == 0 && labelContent.size() == 0) || (cellContent.size() % labelContent.size() == 0));
   numRows = labelContent.size();
-  numColumns = cellContent.size() / numRows;
+  numColumns = (numRows > 0) ? (cellContent.size() / numRows) : 0;
   cell.swapContent(this, cellContent);
   label.swapContent(this, labelContent);
 }

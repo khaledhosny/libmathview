@@ -59,8 +59,8 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
   const bool hasFrame = frame == T_SOLID || frame == T_DASHED;
   const bool hasLabels = std::find_if(label.begin(), label.end(), NotNullPredicate<MathMLTableCellElement>()) != label.end();
   
-  const unsigned nGridRows = (hasFrame ? 2 : 0) + nRows * 2 - 1;
-  const unsigned nGridColumns = (hasFrame ? 2 : 0) + (hasLabels ? 4 : 0) + nColumns * 2 - 1;
+  const unsigned nGridRows = (hasFrame ? 2 : 0) + ((nRows > 0) ? (nRows * 2 - 1) : 0);
+  const unsigned nGridColumns = (hasFrame ? 2 : 0) + (hasLabels ? 4 : 0) + ((nColumns > 0) ? (nColumns * 2 - 1) : 0);
   const unsigned contentColumnOffset = (hasFrame ? 1 : 0) + (hasLabels ? 2 : 0);
   const unsigned contentRowOffset = (hasFrame ? 1 : 0);
   const unsigned leftLabelOffset = (hasFrame ? 1 : 0);
@@ -69,8 +69,8 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 
   const bool equalColumns = ToBoolean(equalColumnsV);
 
-  assert(nGridRows > 0);
-  assert(nGridColumns > 0);
+  assert(nGridRows >= 0);
+  assert(nGridColumns >= 0);
 
   std::cerr << "CI SIAMO: " << nRows << "x" << nColumns << std::endl
 	    << "grid: " << nGridRows << "x" << nGridColumns << std::endl
