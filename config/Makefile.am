@@ -40,13 +40,13 @@ makeDictionary_SOURCES = makeDictionary.c
 
 SCRIPTDIR = $(srcdir)/../scripts
 
-dictionary.xml: makeDictionary dictionary.in
+dictionary.xml: makeDictionary $(srcdir)/dictionary.in
 	@echo Making operator dictionary...
 	@( \
-	./makeDictionary <dictionary.in | \
+	./makeDictionary < $(srcdir)/dictionary.in | \
 	tr -s '\t' ' ' | tr -s ' ' ' ' >$@ \
 	)
 
-entities-table.xml: entities-table.in
+entities-table.xml: $(srcdir)/entities-table.in
 	@echo Making entities table...
-	$(SCRIPTDIR)/makeEntitiesTable <entities-table.in >$@
+	$(SCRIPTDIR)/makeEntitiesTable < $(srcdir)/entities-table.in >$@

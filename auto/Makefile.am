@@ -37,10 +37,10 @@ SCRIPTDIR = ../scripts
 CONFIGDIR = ../config
 
 token.dec: token-list.xml list-to-dec.xsl
-	$(XSLTPROC) list-to-dec.xsl $< >$@
+	$(XSLTPROC) $(srcdir)/list-to-dec.xsl $< >$@
 
 token.def: token-list.xml list-to-def.xsl
-	$(XSLTPROC) list-to-def.xsl $< >$@
+	$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
 
 update-entities: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 	./dumpEntitiesTable $< >$@

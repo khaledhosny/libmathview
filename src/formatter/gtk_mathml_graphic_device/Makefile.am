@@ -36,6 +36,7 @@ INCLUDES = \
   $(XFT_CFLAGS) \
   $(GTK_CFLAGS) \
   -I$(top_srcdir)/auto \
+  -I$(top_builddir)/src/common \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \

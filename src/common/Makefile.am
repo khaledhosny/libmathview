@@ -73,7 +73,7 @@ noinst_HEADERS = \
 
 INCLUDES = \
   $(GLIB_CFLAGS) \
-  -I$(top_srcdir)/auto \
-  -I$(top_srcdir)/src/common
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/common
 
 

@@ -29,7 +29,8 @@ mathview_HEADERS = \
 
 INCLUDES = \
   -I$(top_srcdir)/src \
-  -I$(top_srcdir)/auto \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/common \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/formatter/common \

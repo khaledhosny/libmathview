@@ -39,15 +39,15 @@ mathview_HEADERS = \
   $(NULL)
 
 INCLUDES = \
-  -I$(top_srcdir)/src/common
+  -I$(top_builddir)/src/common -I$(top_srcdir)/src/common
 
-%_gen.cc : $(srcdir)/xml/%.xml extract.xsl
-	$(XSLTPROC) --novalid extract.xsl $< >$@
+%_gen.cc : $(srcdir)/xml/%.xml $(srcdir)/extract.xsl
+	$(XSLTPROC) --novalid $(srcdir)/extract.xsl $< >$@
 
-%.cc : %_gen.cc variant.top variant.bot
-	cat variant.top >$@
-	$(XSLTPROC) --novalid --param temp "false()" extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
-	$(CXX) -I$(top_srcdir)/src/common $<
+%.cc : %_gen.cc $(srcdir)/variant.top $(srcdir)/variant.bot
+	cat $(srcdir)/variant.top >$@
+	$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
+	$(CXX) -I$(top_builddir)/src/common $<
 	echo "Char32 " >>$@
 	echo -n "map_variant_$@" | cut -d '.' -f1 | tr "-" "_" >>$@
 	echo "(Char32 ch)" >>$@
@@ -56,5 +56,5 @@ INCLUDES = \
 	echo "  return ch;" >>$@
 	echo "}" >>$@
 	rm -f a.out
-	cat variant.bot >>$@
+	cat $(srcdir)/variant.bot >>$@
 

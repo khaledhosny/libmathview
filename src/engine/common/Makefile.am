@@ -38,6 +38,7 @@ noinst_HEADERS = \
   $(NULL)
 
 INCLUDES = \
+  -I$(top_builddir)/src/common \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
