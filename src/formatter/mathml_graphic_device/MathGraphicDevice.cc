@@ -25,12 +25,10 @@
 #include <cassert>
 
 #include "MathGraphicDevice.hh"
-#include "SpaceShaper.hh"
 
 MathGraphicDevice::MathGraphicDevice()
   : shaperManager(ShaperManager::create())
 {
-  shaperManager->registerShaper(SpaceShaper::create());
 }
 
 MathGraphicDevice::~MathGraphicDevice()
