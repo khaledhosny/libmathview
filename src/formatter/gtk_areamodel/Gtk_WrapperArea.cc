@@ -64,8 +64,8 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
 
   if (old_style != context.getStyle())
     {
-      GdkColor old_foregroundColor;
-      GdkColor backgroundColor;
+      RGBColor old_foregroundColor;
+      RGBColor backgroundColor;
       context.getForegroundColor(old_foregroundColor);
       context.getBackgroundColor(backgroundColor);
       context.setForegroundColor(backgroundColor);
