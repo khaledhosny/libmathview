@@ -133,7 +133,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 	    {
 	      const Length spec = resolveLength(ctxt, specV);
 	      if (spec.type == Length::PERCENTAGE_UNIT)
-		columns[jj].setWidthSpec(spec.value);
+		columns[jj].setWidthSpec(spec.value / 100.0);
 	      else
 		columns[jj].setWidthSpec(ctxt.MGD()->evaluate(ctxt, spec, scaled::zero()));
 	    }
@@ -452,10 +452,14 @@ MathMLTableFormatter::initWidthsF()
   float sumScale;
 
   const scaled tableWidth = calcTableWidthF(numCol, sumCont, sumFix, sumScale);
-	
+
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
   const scaled extraWidth = tableWidth - assignedWidth - sumCont;
 			
+  std::cerr << "initWidthsF sumScale = " << sumScale << std::endl
+	  << "assignedWidth = " << assignedWidth << std::endl
+	  << "extraWidth = " << extraWidth << std::endl;
+
   for (unsigned j = 0; j < columns.size(); j++)
     if ((columns[j].isContentColumn()
 	 && columns[j].getSpec() != Column::FIX
