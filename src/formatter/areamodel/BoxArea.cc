@@ -33,7 +33,7 @@
 AreaRef
 BoxArea::fit(const scaled&, const scaled&, const scaled&) const
 {
-  return replace(ReplacementContext(AreaId(1), getChild()->fit(bbox.width, bbox.height, bbox.depth)));
+  return replace(ReplacementContext(AreaId(0), getChild()->fit(bbox.width, bbox.height, bbox.depth)));
 }
 
 void

@@ -188,7 +188,7 @@ paint_widget(GtkMathView* math_view)
   Rectangle rect(px2sp(math_view->top_x), px2sp(math_view->top_y), px2sp(width), px2sp(height));
   math_view->renderingContext->setRegion(rect);
 
-  math_view->view->render(*math_view->renderingContext, &rect);
+  math_view->view->render(*math_view->renderingContext);
 
   gdk_draw_pixmap(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],

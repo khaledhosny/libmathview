@@ -176,7 +176,7 @@ MathMLView::getRectangle() const
     return Rectangle();
 }
 
-void
+AreaRef
 MathMLView::layout() const
 {
   if (root && !frozen())
@@ -216,24 +216,23 @@ MathMLView::layout() const
 
       layoutTime.Stop();
       Globals::logger(LOG_INFO, "LAYOUT TIME: %dms", layoutTime());
+
+      if (AreaRef area = root->getArea())
+	return area->fit(scaled::zero(), scaled::zero(), scaled::zero());
     }
+
+  return 0;
 }
 
 void
-MathMLView::render(RenderingContext& ctxt, const Rectangle* rect)
+MathMLView::render(RenderingContext& ctxt) const
 {
-  layout();
-
-  if (root)
+  if (AreaRef rootArea = layout())
     {
       Clock perf;
       perf.Start();
-      MathMLStringNode::visited = 0;
-      if (AreaRef area = root->getArea())
-	{
-	  BoundingBox box = area->box();
-	  area->render(ctxt, scaled::zero(), -box.height);
-	}
+      BoundingBox box = rootArea->box();
+      rootArea->render(ctxt, scaled::zero(), -box.height);
       perf.Stop();
       Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }
