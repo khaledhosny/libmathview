@@ -261,6 +261,7 @@ export_filename(GtkFileSelection *selector, GtkWidget* user_data)
 				     (29 * SCALED_POINTS_PER_CM) / SCALED_POINTS_PER_PX,
 				     SCALED_POINTS_PER_IN / SCALED_POINTS_PER_PX,
 				     SCALED_POINTS_PER_IN / SCALED_POINTS_PER_PX,
+				     FALSE,
 				     f);
   fclose(f);
 }

@@ -120,7 +120,8 @@ void String::ToLowerCase()
 {
   for (unsigned i = 0; i < GetLength(); i++) {
     Char ch = GetChar(i);
-    SetChar(i, towlower(ch));
+    SetChar(i, (ch >= 'A' && ch <= 'Z') ? ch + 'a' - 'A' : ch);
+    // SetChar(i, towlower(ch));
   }
 }
 

@@ -44,7 +44,7 @@ extern "C" {
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
   enum _FontManagerId {
-    FONT_MANAGER_UNKNOWN,
+    FONT_MANAGER_UNKNOWN = -1,
     FONT_MANAGER_GTK,
     FONT_MANAGER_T1
   };
@@ -121,7 +121,7 @@ extern "C" {
   gboolean       gtk_math_view_get_kerning(GtkMathView*);
   void           gtk_math_view_set_log_verbosity(GtkMathView*, gint);
   gint           gtk_math_view_get_log_verbosity(GtkMathView*);
-  void           gtk_math_view_export_to_postscript(GtkMathView*, gint, gint, gint, gint, FILE*);
+  void           gtk_math_view_export_to_postscript(GtkMathView*, gint, gint, gint, gint, gboolean, FILE*);
   void           gtk_math_view_set_font_manager_type(GtkMathView*, FontManagerId);
   FontManagerId  gtk_math_view_get_font_manager_type(GtkMathView*);
 

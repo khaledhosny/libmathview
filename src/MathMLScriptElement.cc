@@ -74,6 +74,8 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
 {
   assert(env != NULL);
 
+  MathMLScriptCommonElement::Setup(env);
+
   base->Setup(env);
 
   env->Push();
@@ -109,8 +111,6 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
       superMinShift = env->ToScaledPoints(unitValue);
     }
   }
-
-  MathMLScriptCommonElement::Setup(env);
 
   env->Drop();
 }

@@ -1080,6 +1080,7 @@ extern "C" void
 gtk_math_view_export_to_postscript(GtkMathView* math_view,
 				   gint w, gint h,
 				   gint x0, gint y0,
+				   gboolean disable_colors,
 				   FILE* f)
 {
   g_return_if_fail(math_view != NULL);
@@ -1098,6 +1099,7 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
   PS_DrawingArea area(math_view->drawing_area->GetDefaultGraphicsContextValues(),
 		      px2sp(x0), px2sp(y0), f);
   area.SetSize(px2sp(w), px2sp(h));
+  if (disable_colors) area.DisableColors();
 
   MathMLElement* root = math_view->interface->GetRoot();
   if (root == NULL) return;
