@@ -30,9 +30,12 @@
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
+#include "Gtk_ComputerModernShaper.hh"
 #include "SpaceShaper.hh"
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
+
+#include <iostream>
 
 Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
   : gtk_factory(Gtk_AreaFactory::create())
@@ -54,8 +57,11 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
 #else
   SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
   SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
+  SmartPtr<Gtk_ComputerModernShaper> cmShaper = Gtk_ComputerModernShaper::create();
   adobeShaper->setFontManager(xftFontManager);
-  getShaperManager()->registerShaper(adobeShaper);
+  cmShaper->setFontManager(xftFontManager);
+  //getShaperManager()->registerShaper(adobeShaper);
+  getShaperManager()->registerShaper(cmShaper);
 #endif
 }
 

@@ -542,12 +542,18 @@ enum FontIndex
     V_STRETCHY_FONT_INDEX,
     H_STRETCHY_FONT_INDEX,
     H_BIG_FONT_INDEX,
+    MATH_ITALIC_FONT_INDEX,
+    MATH_SYMBOLS_FONT_INDEX,
     NORMAL_FONT_INDEX
   };
+
+#include <iostream>
 
 void
 ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
+  std::cerr << "REGISTERING COMPUTER-MODERN SHAPER" << std::endl;
+
   assert(sm);
 
   for (unsigned j = 0; j < sizeof(variantDesc) / sizeof(FontDesc); j++)
@@ -559,10 +565,10 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       }
 
   for (unsigned i = 0; cmmMap[i].ch; i++)
-    sm->registerChar(cmmMap[i].ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX, cmmMap[i].index));
+    sm->registerChar(cmmMap[i].ch, GlyphSpec(shaperId, MATH_ITALIC_FONT_INDEX, cmmMap[i].index));
 
   for (unsigned i = 0; cmsMap[i].ch; i++)
-    sm->registerChar(cmsMap[i].ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX, cmsMap[i].index));
+    sm->registerChar(cmsMap[i].ch, GlyphSpec(shaperId, MATH_SYMBOLS_FONT_INDEX, cmsMap[i].index));
 
   for (unsigned i = 0; vMap[i].ch; i++)
     sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, V_STRETCHY_FONT_INDEX, i));
@@ -598,8 +604,14 @@ ComputerModernShaper::shape(ShapingContext& context) const
 	case V_STRETCHY_FONT_INDEX:
 	  res = shapeStretchyCharV(context);
 	  break;
+	case MATH_ITALIC_FONT_INDEX:
+	  res = shapeChar(context, CMM);
+	  break;
+	case MATH_SYMBOLS_FONT_INDEX:
+	  res = shapeChar(context, CMS);
+	  break;
 	default:
-	  res = shapeChar(context);
+	  res = shapeChar(context, CMR);
 	  break;
 	}
 
@@ -610,12 +622,9 @@ ComputerModernShaper::shape(ShapingContext& context) const
 }
 
 AreaRef
-ComputerModernShaper::shapeChar(const ShapingContext& context) const
+ComputerModernShaper::shapeChar(const ShapingContext& context, Char8 map) const
 {
-  GlyphIndex index;
-  index.map = context.getSpec().getFontId() - NORMAL_FONT_INDEX;
-  index.index = context.getSpec().getGlyphId();
-  return getGlyphArea(context.getFactory(), index, context.getSize());
+  return getGlyphArea(context.getFactory(), map, context.getSpec().getGlyphId(), context.getSize());
 }
 
 AreaRef
@@ -644,4 +653,10 @@ AreaRef
 ComputerModernShaper::shapeStretchyCharH(const ShapingContext& context) const
 {
   return 0;
+}
+
+AreaRef
+ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, const GlyphIndex& index, const scaled& size) const
+{
+  return getGlyphArea(factory, index.map, index.index, size);
 }

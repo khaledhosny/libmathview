@@ -70,7 +70,7 @@ protected:
   virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8 map, Char8 index, const scaled&) const = 0;
   AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, const GlyphIndex&, const scaled&) const;
 
-  AreaRef shapeChar(const class ShapingContext&) const;
+  AreaRef shapeChar(const class ShapingContext&, Char8) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
 };

@@ -20,6 +20,7 @@ libgtk_mathml_graphic_device_la_SOURCES = \
   Gtk_DefaultPangoShaper.cc \
   Gtk_PangoShaper.cc \
   Gtk_AdobeShaper.cc \
+  Gtk_ComputerModernShaper.cc \
   $(NULL)
 
 noinst_HEADERS = \
@@ -29,6 +30,7 @@ noinst_HEADERS = \
   Gtk_DefaultPangoShaper.hh \
   Gtk_PangoShaper.hh \
   Gtk_AdobeShaper.hh \
+  Gtk_ComputerModernShaper.hh \
   $(NULL)
 
 INCLUDES = \
