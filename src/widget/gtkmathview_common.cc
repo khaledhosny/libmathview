@@ -346,6 +346,7 @@ paint_widget(GtkMathView* math_view)
   const gint height = widget->allocation.height;
 
   Gtk_RenderingContext* rc = math_view->renderingContext;
+  assert(rc);
 
   if (math_view->pixmap == NULL)
     {
@@ -1129,11 +1130,11 @@ setup_adjustments(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view);
 
-  BoundingBox box = math_view->view->getBoundingBox();
+  const BoundingBox box = math_view->view->getBoundingBox();
 
   if (math_view->hadjustment != NULL) {
-    gint width = Gtk_RenderingContext::toGtkPixels(box.width);
-    gint page_width = GTK_WIDGET(math_view)->allocation.width;
+    const gint width = box.defined() ? Gtk_RenderingContext::toGtkPixels(box.width) : 0;
+    const gint page_width = GTK_WIDGET(math_view)->allocation.width;
     
     if (math_view->top_x > width - page_width)
       math_view->top_x = std::max(0, width - page_width);
@@ -1142,8 +1143,8 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    gint height = Gtk_RenderingContext::toGtkPixels(box.verticalExtent());
-    gint page_height = GTK_WIDGET(math_view)->allocation.height;
+    const gint height = box.defined() ? Gtk_RenderingContext::toGtkPixels(box.verticalExtent()) : 0;
+    const gint page_height = GTK_WIDGET(math_view)->allocation.height;
 
     if (math_view->top_y > height - page_height)
       math_view->old_top_y = math_view->top_y = std::max(0, height - page_height);
