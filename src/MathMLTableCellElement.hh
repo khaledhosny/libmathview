@@ -51,7 +51,7 @@ public:
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   virtual void DoLayout(const class FormattingContext&);
 
   void SetAlignmentScope(bool b) { alignmentScope = b; }

@@ -66,7 +66,7 @@ public:
   virtual void   Normalize(const Ptr<class MathMLDocument>&);
   virtual void 	 Setup(class RenderingEnvironment&);
   virtual void 	 DoLayout(const class FormattingContext&);
-  virtual void   SetPosition(scaled, scaled);
+  virtual void   SetPosition(const scaled&, const scaled&);
   virtual void 	 Render(const class DrawingArea&);
 
   bool           IsNonMarking(void) const;
@@ -86,7 +86,7 @@ private:
   std::vector< Ptr<class MathMLTextNode> > content;
 
 protected:
-  void SetContentPosition(scaled, scaled);
+  void SetContentPosition(const scaled&, const scaled&);
 
   static Ptr<class MathMLTextNode> SubstituteMGlyphElement(const DOM::Element&);
   static Ptr<class MathMLTextNode> SubstituteAlignMarkElement(const DOM::Element&);

@@ -56,7 +56,7 @@ public:
   void Render(const struct Rectangle* = 0) const;
 
   Ptr<MathMLDocument> GetDocument(void) const { return document; }
-  Ptr<MathMLElement> GetElementAt(scaled, scaled) const;
+  Ptr<MathMLElement> GetElementAt(const scaled&, const scaled&) const;
 
   // BoundingBox, and Rectangle are structs, not classes, 
   void GetDocumentBoundingBox(struct BoundingBox&) const;

@@ -37,7 +37,7 @@ public:
 
   void Add(const Ptr<MathMLElement>&);
   void RemoveAll(void);
-  void SetPosition(scaled, scaled);
+  void SetPosition(const scaled&, const scaled&);
 
   BoundingBox GetBoundingBox(void) const;
   BoundingBox GetLinearBoundingBox(void) const;

@@ -209,7 +209,7 @@ MathMLRadicalElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLRadicalElement::SetPosition(scaled x, scaled y)
+MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
 {
   position.x = x;
   position.y = y;
@@ -366,7 +366,7 @@ MathMLRadicalElement::ReleaseGCs()
 }
 
 Ptr<MathMLElement>
-MathMLRadicalElement::Inside(scaled x, scaled y)
+MathMLRadicalElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 

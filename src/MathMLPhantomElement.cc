@@ -80,8 +80,11 @@ MathMLPhantomElement::DoLayout(const FormattingContext& ctxt)
 }
 
 void
-MathMLPhantomElement::SetPosition(scaled x, scaled y)
+MathMLPhantomElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
   SetEmbellishmentPosition(this, x, y);

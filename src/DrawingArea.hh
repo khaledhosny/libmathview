@@ -32,7 +32,7 @@
 
 class DrawingArea {
 public:
-  DrawingArea(const GraphicsContextValues&, scaled, scaled,
+  DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&,
 	      RGBValue = WHITE_COLOR,
 	      RGBValue = BLUE_COLOR);
   virtual ~DrawingArea();
@@ -41,23 +41,23 @@ public:
   const GraphicsContext* GetGC(const GraphicsContextValues&, unsigned) const;
   void ReleaseGCs(void);
 
-  virtual void DrawLine(const GraphicsContext*, scaled, scaled, scaled, scaled) const = 0;
-  virtual void DrawRectangle(const GraphicsContext*, scaled, scaled, scaled, scaled) const = 0;
-  virtual void DrawChar(const GraphicsContext*, const AFont*, scaled, scaled, char) const = 0;
-  virtual void DrawString(const GraphicsContext*, const AFont*, scaled, scaled, const char*, unsigned) const = 0;
-  virtual void Clear(const GraphicsContext*, scaled, scaled, scaled, scaled) const = 0;
-  virtual void Update(scaled, scaled, scaled, scaled) const = 0;
+  virtual void DrawLine(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
+  virtual void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
+  virtual void DrawChar(const GraphicsContext*, const AFont*, const scaled&, const scaled&, char) const = 0;
+  virtual void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const char*, unsigned) const = 0;
+  virtual void Clear(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
+  virtual void Update(const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
   virtual void Update(void) const;
 
-  void SetTop(scaled, scaled);
-  void MoveTo(scaled, scaled) const;
-  void DrawLineTo(const GraphicsContext*, scaled, scaled) const;
-  void DrawLineToDelta(const GraphicsContext*, scaled, scaled) const;
-  void DrawRectangle(const GraphicsContext*, scaled, scaled, const BoundingBox&) const;
+  void SetTop(const scaled&, const scaled&);
+  void MoveTo(const scaled&, const scaled&) const;
+  void DrawLineTo(const GraphicsContext*, const scaled&, const scaled&) const;
+  void DrawLineToDelta(const GraphicsContext*, const scaled&, const scaled&) const;
+  void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&) const;
   void DrawRectangle(const GraphicsContext*, const Rectangle&) const;
-  void DrawBoundingBox(const GraphicsContext*, scaled, scaled, const BoundingBox&, bool = true) const;
-  void DrawString(const GraphicsContext*, const AFont*, scaled, scaled, const String*) const;
-  void Clear(const GraphicsContext*, scaled, scaled, const BoundingBox&) const;
+  void DrawBoundingBox(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&, bool = true) const;
+  void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const String*) const;
+  void Clear(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&) const;
   void Clear(const GraphicsContext*, const Rectangle&) const;
 
   void Update(const Rectangle&) const;
@@ -68,7 +68,7 @@ public:
   scaled GetXMargin(void) const { return mx; }
   scaled GetYMargin(void) const { return my; }
 
-  void   SetSize(scaled, scaled);
+  void   SetSize(const scaled&, const scaled&);
   scaled GetWidth(void) const { return width; }
   scaled GetHeight(void) const { return height; }
 

@@ -26,7 +26,7 @@
 class FormattingContext
 {
 public:
-  FormattingContext(LayoutId lt, scaled aw) : layoutType(lt), availableWidth(aw) { }
+  FormattingContext(LayoutId lt, const scaled& aw) : layoutType(lt), availableWidth(aw) { }
   ~FormattingContext() { }
 
   LayoutId GetLayoutType(void) const { return layoutType; }

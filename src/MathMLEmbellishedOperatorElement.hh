@@ -39,7 +39,7 @@ public:
   virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
 
   virtual bool IsEmbellishedOperator(void) const;
   virtual Ptr<MathMLOperatorElement> GetCoreOperator(void) { return coreOp; }

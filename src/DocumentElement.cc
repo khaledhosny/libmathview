@@ -57,7 +57,7 @@ DocumentElement::Setup(RenderingEnvironment* env)
 }
 
 void
-DocumentElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
+DocumentElement::DoBoxedLayout(LayoutId id, BreakId bid, const scaled& maxWidth)
 {
   if (!HasDirtyLayout(id, maxWidth)) return;
 
@@ -82,7 +82,7 @@ DocumentElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 }
 
 void
-DocumentElement::SetPosition(scaled x, scaled y)
+DocumentElement::SetPosition(const scaled& x, const scaled& y)
 {
   position.x = x;
   position.y = y;

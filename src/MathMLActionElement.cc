@@ -105,8 +105,10 @@ MathMLActionElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLActionElement::SetPosition(scaled x, scaled y)
+MathMLActionElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
   position.x = x;
   position.y = y;
   SetEmbellishmentPosition(this, x, y);
@@ -187,7 +189,7 @@ MathMLActionElement::GetRightEdge() const
 }
 
 Ptr<MathMLElement>
-MathMLActionElement::Inside(scaled x, scaled y)
+MathMLActionElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y))
     {

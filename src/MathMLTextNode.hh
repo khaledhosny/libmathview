@@ -35,14 +35,14 @@ protected:
 public:
   virtual void 	   Setup(class RenderingEnvironment&) = 0;
   virtual void 	   DoLayout(const class FormattingContext&) = 0;
-  virtual void 	   SetPosition(scaled, scaled);
+  virtual void 	   SetPosition(const scaled&, const scaled&);
   virtual void 	   Render(const DrawingArea&) = 0;
 
   virtual String*  GetRawContent(void) const = 0;
   virtual unsigned GetLogicalContentLength(void) const = 0;
 
   virtual bool 	   IsText(void) const;  
-  virtual bool 	   IsInside(scaled, scaled) const;
+  virtual bool 	   IsInside(const scaled&, const scaled&) const;
   virtual bool     HasDecimalPoint(void) const;
   void             SetSpacing(int);
   void             AddSpacing(int);

@@ -45,8 +45,8 @@ public:
 #endif
 
   virtual void Setup(RenderingEnvironment*);
-  virtual void DoLayout(scaled);
-  virtual void SetPosition(scaled, scaled);
+  virtual void DoLayout(const scaled&);
+  virtual void SetPosition(const scaled&, const scaled&);
 
 private:
   scaled sppm;

@@ -56,7 +56,7 @@ public:
   //virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
 
   bool         IsStretchy(void) const { return stretchy != 0; }
   StretchId    GetStretch(void) const;
@@ -80,8 +80,8 @@ public:
   scaled       GetBottomPadding(void) const { return bSpace; }
 #endif // ENABLE_EXTENSIONS
 
-  void         HorizontalStretchTo(scaled, bool = false);
-  void         VerticalStretchTo(scaled, scaled, bool = false);
+  void         HorizontalStretchTo(const scaled&, bool = false);
+  void         VerticalStretchTo(const scaled&, const scaled&, bool = false);
 
   virtual Ptr<MathMLOperatorElement> GetCoreOperator(void);
   //Ptr<class MathMLEmbellishedOperatorElement> GetEmbellishment(void) const;

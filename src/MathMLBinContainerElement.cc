@@ -100,7 +100,7 @@ MathMLBinContainerElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLBinContainerElement::SetPosition(scaled x, scaled y)
+MathMLBinContainerElement::SetPosition(const scaled& x, const scaled& y)
 {
   MathMLContainerElement::SetPosition(x, y);
   if (child) child->SetPosition(x, y);
@@ -118,7 +118,7 @@ MathMLBinContainerElement::Render(const DrawingArea& area)
 }
 
 Ptr<MathMLElement>
-MathMLBinContainerElement::Inside(scaled x, scaled y)
+MathMLBinContainerElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y))
     {

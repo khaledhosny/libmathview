@@ -26,7 +26,7 @@
 #include "MathMLSpaceElement.hh"
 
 void
-VerticalLayout::SetSpacing(scaled rs, scaled rms)
+VerticalLayout::SetSpacing(const scaled& rs, const scaled& rms)
 {
   rowSpacing = rs;
   rowMinSpacing = rms;
@@ -71,13 +71,14 @@ VerticalLayout::GetRowSpacing(const std::vector< Ptr<HorizontalLayout> >::const_
 }
 
 void
-VerticalLayout::SetPosition(scaled x, scaled y)
+VerticalLayout::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled y = y0;
   for (std::vector< Ptr<HorizontalLayout> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
-      (*p)->SetPosition(x, y);
+      (*p)->SetPosition(x0, y);
       y += GetRowSpacing(p, p + 1);
     }
 }

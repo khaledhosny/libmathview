@@ -123,7 +123,7 @@ MathMLLinearContainerElement::Render(const DrawingArea& area)
 }
 
 Ptr<MathMLElement>
-MathMLLinearContainerElement::Inside(scaled x, scaled y)
+MathMLLinearContainerElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y)) 
     {

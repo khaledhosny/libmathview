@@ -309,8 +309,11 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLFractionElement::SetPosition(scaled x, scaled y)
+MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
 
@@ -483,7 +486,7 @@ MathMLFractionElement::ReleaseGCs()
 }
 
 Ptr<MathMLElement>
-MathMLFractionElement::Inside(scaled x, scaled y)
+MathMLFractionElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 

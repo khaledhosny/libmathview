@@ -50,7 +50,7 @@ public:
 
   virtual void DoLayout(const class FormattingContext&);
 
-  void SetWidth(scaled);
+  void SetWidth(const scaled&);
   void SetDecimalPoint(const Ptr<class MathMLTokenElement>&);
   void SetAlignmentMark(const Ptr<class MathMLMarkNode>&);
   void SetAlignmentMark(const Ptr<class MathMLAlignMarkElement>&);

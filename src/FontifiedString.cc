@@ -121,7 +121,7 @@ FontifiedString::WidthTo(unsigned i) const
 }
 
 void
-FontifiedString::Draw(scaled x, scaled y, const DrawingArea& area, const GraphicsContext* gc) const
+FontifiedString::Draw(const scaled& x, const scaled& y, const DrawingArea& area, const GraphicsContext* gc) const
 {
   for (Iterator<Chunk*> p(content); p.More(); p.Next()) {
     assert(p() != NULL);

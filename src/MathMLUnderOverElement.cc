@@ -485,8 +485,11 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLUnderOverElement::SetPosition(scaled x, scaled y)
+MathMLUnderOverElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
 
@@ -516,7 +519,7 @@ MathMLUnderOverElement::Render(const DrawingArea& area)
 }
 
 Ptr<MathMLElement>
-MathMLUnderOverElement::Inside(scaled x, scaled y)
+MathMLUnderOverElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 

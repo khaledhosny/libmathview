@@ -170,7 +170,7 @@ MathMLTableRowElement::SetDirty(const Rectangle* rect)
 #endif
 
 bool
-MathMLTableRowElement::IsInside(scaled x, scaled y) const
+MathMLTableRowElement::IsInside(const scaled& x, const scaled& y) const
 {
   // same arguments as for the SetDirty method above
   for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();

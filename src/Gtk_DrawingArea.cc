@@ -30,7 +30,7 @@
 #include "Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
 
-Gtk_DrawingArea::Gtk_DrawingArea(const GraphicsContextValues& v, scaled xm, scaled ym, GtkWidget* widget,
+Gtk_DrawingArea::Gtk_DrawingArea(const GraphicsContextValues& v, const scaled& xm, const scaled& ym, GtkWidget* widget,
 				 RGBValue f, RGBValue b) :
   DrawingArea(v, xm, ym, f, b)
 {
@@ -100,28 +100,28 @@ Gtk_DrawingArea::SetPixmap(GdkPixmap* pixmap)
 }
 
 void
-Gtk_DrawingArea::SetTop(scaled x, scaled y)
+Gtk_DrawingArea::SetTop(const scaled& x, const scaled& y)
 {
   x0 = x;
   y0 = y;
 }
 
 void
-Gtk_DrawingArea::SetTopX(scaled x)
+Gtk_DrawingArea::SetTopX(const scaled& x)
 {
   x0 = x;
 }
 
 void
-Gtk_DrawingArea::SetTopY(scaled y)
+Gtk_DrawingArea::SetTopY(const scaled& y)
 {
   y0 = y;
 }
 
 void
 Gtk_DrawingArea::DrawLine(const GraphicsContext* gc,
-			  scaled x1, scaled y1,
-			  scaled x2, scaled y2) const
+			  const scaled& x1, const scaled& y1,
+			  const scaled& x2, const scaled& y2) const
 {
   const Gtk_GraphicsContext* gtk_gc = TO_GTK_GRAPHICS_CONTEXT(gc);
   assert(gtk_gc != NULL);
@@ -133,7 +133,7 @@ Gtk_DrawingArea::DrawLine(const GraphicsContext* gc,
 
 void
 Gtk_DrawingArea::DrawRectangle(const GraphicsContext* gc,
-			       scaled x, scaled y, scaled width, scaled height) const
+			       const scaled& x, const scaled& y, const scaled& width, const scaled& height) const
 {
   const Gtk_GraphicsContext* gtk_gc = TO_GTK_GRAPHICS_CONTEXT(gc);
   assert(gtk_gc != NULL);
@@ -145,7 +145,7 @@ Gtk_DrawingArea::DrawRectangle(const GraphicsContext* gc,
 
 void
 Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
-			  scaled x, scaled y, char ch) const
+			  const scaled& x, const scaled& y, char ch) const
 {
   const Gtk_GraphicsContext* gtk_gc = TO_GTK_GRAPHICS_CONTEXT(gc);
   const Gtk_Font* gtk_font = TO_GTK_FONT(font);
@@ -162,7 +162,7 @@ Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
 
 void
 Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			    scaled x, scaled y,
+			    const scaled& x, const scaled& y,
 			    const char* text,
 			    unsigned len) const
 {
@@ -179,7 +179,7 @@ Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
 
 void
 Gtk_DrawingArea::Clear(const GraphicsContext* gc,
-		       scaled x, scaled y, scaled width, scaled height) const
+		       const scaled& x, const scaled& y, const scaled& width, const scaled& height) const
 {
   assert(gc != NULL);
   const Gtk_GraphicsContext* gtk_gc = TO_GTK_GRAPHICS_CONTEXT(gc);
@@ -194,7 +194,7 @@ Gtk_DrawingArea::Clear(const GraphicsContext* gc,
 #include <stdio.h>
 
 void
-Gtk_DrawingArea::Update(scaled x, scaled y, scaled width, scaled height) const
+Gtk_DrawingArea::Update(const scaled& x, const scaled& y, const scaled& width, const scaled& height) const
 {
   assert(gtk_widget != NULL);
 

@@ -61,8 +61,11 @@ MathMLBreakableRowElement::DoLayout(const FormattingContext& ctxt)
 }
 
 void
-MathMLBreakableRowElement::SetPosition(scaled x, scaled y)
+MathMLBreakableRowElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   assert(layout);
   position.x = x;
   position.y = y;

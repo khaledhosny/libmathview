@@ -49,7 +49,7 @@ public:
   virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
 #if 0
   virtual void SetDirtyLayout(bool = false);
   virtual void SetDirty(const Rectangle* = 0);
@@ -65,7 +65,7 @@ public:
   virtual scaled GetRightEdge(void) const;
   virtual scaled GetLeftEdge(void) const;
   virtual void ReleaseGCs(void);
-  virtual Ptr<class MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<class MathMLElement> Inside(const scaled&, const scaled&);
 
   Ptr<class MathMLElement> GetRadicand(void) const { return radicand; }
   Ptr<class MathMLElement> GetIndex(void) const { return index; }

@@ -268,7 +268,7 @@ MathMLRenderingEngine::GetDocumentRectangle(Rectangle& rect) const
 }
 
 Ptr<MathMLElement>
-MathMLRenderingEngine::GetElementAt(scaled x, scaled y) const
+MathMLRenderingEngine::GetElementAt(const scaled& x, const scaled& y) const
 {
   if (document) return document->Inside(x, y);
   else return 0;

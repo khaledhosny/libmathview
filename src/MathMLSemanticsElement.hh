@@ -50,7 +50,7 @@ public:
 
   virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 };
 

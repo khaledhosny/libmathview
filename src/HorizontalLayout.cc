@@ -38,8 +38,10 @@ HorizontalLayout::RemoveAll()
 }
 
 void
-HorizontalLayout::SetPosition(scaled x, scaled y)
+HorizontalLayout::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
   for (std::vector< Ptr<MathMLElement> >::const_iterator p = content.begin();
        p != content.end();
        p++)

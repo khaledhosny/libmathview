@@ -44,8 +44,8 @@ public:
   virtual bool   HasDecimalPoint(void) const;
   virtual scaled GetDecimalPointEdge(void) const;
 
-  virtual void   DoVerticalStretchyLayout(scaled, scaled, scaled, bool);
-  virtual void   DoHorizontalStretchyLayout(scaled, bool);
+  virtual void   DoVerticalStretchyLayout(const scaled&, const scaled&, const scaled&, bool);
+  virtual void   DoHorizontalStretchyLayout(const scaled&, bool);
   virtual StretchId GetStretch(void) const;
 
 protected:

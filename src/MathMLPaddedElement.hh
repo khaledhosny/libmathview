@@ -52,7 +52,7 @@ public:
   //virtual void Normalize(const Ptr<MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   //virtual void SetDirty(const Rectangle* = NULL);
   virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 
@@ -68,7 +68,7 @@ private:
   };
 
   void   ParseLengthDimension(RenderingEnvironment&, const Value*, LengthDimension&, KeywordId);
-  scaled EvalLengthDimension(scaled, const LengthDimension&, const BoundingBox&) const;
+  scaled EvalLengthDimension(const scaled&, const LengthDimension&, const BoundingBox&) const;
 
   LengthDimension width;
   LengthDimension lSpace;

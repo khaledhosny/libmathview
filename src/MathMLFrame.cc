@@ -35,7 +35,7 @@ MathMLFrame::~MathMLFrame()
 }
 
 void
-MathMLFrame::SetPosition(scaled x, scaled y)
+MathMLFrame::SetPosition(const scaled& x, const scaled& y)
 {
   position.x = x;
   position.y = y;

@@ -54,7 +54,7 @@ public:
   //virtual void SetDirty(const Rectangle*);
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
-  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
 
   friend class MathMLTableElement;
 

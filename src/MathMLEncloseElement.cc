@@ -146,7 +146,7 @@ MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLEncloseElement::SetPosition(scaled x, scaled y)
+MathMLEncloseElement::SetPosition(const scaled& x, const scaled& y)
 {
   assert(child);
 

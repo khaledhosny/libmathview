@@ -146,7 +146,7 @@ MathMLCharNode::DoLayout(const FormattingContext&)
 }
 
 void
-MathMLCharNode::DoVerticalStretchyLayout(scaled height, scaled depth, scaled axis, bool strict)
+MathMLCharNode::DoVerticalStretchyLayout(const scaled& height, const scaled& depth, const scaled& axis, bool strict)
 {
   if (!IsStretchyFontified()) return;
   if (layout->sChar.charMap->GetStretch() != STRETCH_VERTICAL) return;
@@ -161,7 +161,7 @@ MathMLCharNode::DoVerticalStretchyLayout(scaled height, scaled depth, scaled axi
 }
 
 void
-MathMLCharNode::DoVerticalStretchyLayoutAux(scaled desiredSize, bool)
+MathMLCharNode::DoVerticalStretchyLayoutAux(const scaled& desiredSize, bool)
 {
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);
@@ -268,7 +268,7 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(scaled desiredSize, bool)
 }
 
 void
-MathMLCharNode::DoHorizontalStretchyLayout(scaled desiredSize, bool strict)
+MathMLCharNode::DoHorizontalStretchyLayout(const scaled& desiredSize, bool strict)
 {
   if (!IsStretchyFontified()) return;
   if (layout->sChar.charMap->GetStretch() != STRETCH_HORIZONTAL) return;
@@ -278,7 +278,7 @@ MathMLCharNode::DoHorizontalStretchyLayout(scaled desiredSize, bool strict)
 }
 
 void
-MathMLCharNode::DoHorizontalStretchyLayoutAux(scaled desiredSize, bool)
+MathMLCharNode::DoHorizontalStretchyLayoutAux(const scaled& desiredSize, bool)
 {
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);
@@ -366,13 +366,14 @@ MathMLCharNode::Render(const DrawingArea& area)
 
 void
 MathMLCharNode::RenderVerticalStretchyChar(const DrawingArea& area,
-					   const GraphicsContext* gc, scaled x, scaled y)
+					   const GraphicsContext* gc, const scaled& x, const scaled& y0)
 {
   assert(gc != NULL);
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);
   assert(layout->sChar.charMap != NULL);
 
+  scaled y = y0;
   const AFont* font = layout->sChar.font;
 
   if (layout->simple != NULLCHAR) {
@@ -435,13 +436,14 @@ MathMLCharNode::RenderVerticalStretchyChar(const DrawingArea& area,
 
 void
 MathMLCharNode::RenderHorizontalStretchyChar(const DrawingArea& area,
-					     const GraphicsContext* gc, scaled x, scaled y)
+					     const GraphicsContext* gc, const scaled& x0, const scaled& y)
 {
   assert(gc != NULL);
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);
   assert(layout->sChar.charMap != NULL);
 
+  scaled x = x0;
   const AFont* font = layout->sChar.font;
   unsigned i = 0;
 

@@ -86,7 +86,7 @@ MathMLLabeledTableRowElement::Setup(RenderingEnvironment& env)
 }
 
 Ptr<MathMLElement>
-MathMLLabeledTableRowElement::Inside(scaled x, scaled y)
+MathMLLabeledTableRowElement::Inside(const scaled& x, const scaled& y)
 {
   Ptr<MathMLElement> inside;
   if (inside = MathMLTableRowElement::Inside(x, y)) return inside;

@@ -201,8 +201,11 @@ MathMLPaddedElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLPaddedElement::SetPosition(scaled x, scaled y)
+MathMLPaddedElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
   SetEmbellishmentPosition(this, x, y);
@@ -210,7 +213,7 @@ MathMLPaddedElement::SetPosition(scaled x, scaled y)
 }
 
 scaled
-MathMLPaddedElement::EvalLengthDimension(scaled orig,
+MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
 					 const LengthDimension& dim,
 					 const BoundingBox& b) const
 {

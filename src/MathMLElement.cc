@@ -343,13 +343,13 @@ MathMLElement::IsSpaceLike() const
 }
 
 bool
-MathMLElement::IsInside(scaled x, scaled y) const
+MathMLElement::IsInside(const scaled& x, const scaled& y) const
 {
   return GetRectangle().IsInside(x, y);
 }
 
 Ptr<MathMLElement>
-MathMLElement::Inside(scaled x, scaled y)
+MathMLElement::Inside(const scaled& x, const scaled& y)
 {
   return IsInside(x, y) ? this : 0;
 }

@@ -344,7 +344,7 @@ MathMLTableElement::ConfirmHorizontalFixedSpacing()
 }
 
 void
-MathMLTableElement::ConfirmHorizontalScaleSpacing(scaled tableWidth)
+MathMLTableElement::ConfirmHorizontalScaleSpacing(const scaled& tableWidth)
 {
   assert(scaledGeq(tableWidth, 0));
 
@@ -823,7 +823,7 @@ MathMLTableElement::ConfirmVerticalFixedSpacing()
 }
 
 void
-MathMLTableElement::ConfirmVerticalScaleSpacing(scaled tableHeight)
+MathMLTableElement::ConfirmVerticalScaleSpacing(const scaled& tableHeight)
 {
   if (frame != TABLE_LINE_NONE) {
     if (frameVerticalSpacingType == SPACING_PERCENTAGE)
@@ -951,7 +951,7 @@ MathMLTableElement::GetTableHeight() const
 }
 
 void
-MathMLTableElement::AdjustTableWidth(scaled availWidth)
+MathMLTableElement::AdjustTableWidth(const scaled& availWidth)
 {
   unsigned j;
   scaled tableWidth = GetTableWidth();
@@ -976,7 +976,7 @@ MathMLTableElement::AdjustTableWidth(scaled availWidth)
 }
 
 void
-MathMLTableElement::AlignTable(scaled height, BoundingBox& box)
+MathMLTableElement::AlignTable(const scaled& height, BoundingBox& box)
 {
   if (rowNumber > static_cast<int>(nRows)) rowNumber = nRows;
   else if (-rowNumber > static_cast<int>(nRows)) rowNumber = -static_cast<int>(nRows);

@@ -30,21 +30,21 @@
 #include "AFont.hh"
 #include "DrawingArea.hh"
 
-inline float sp2ps(scaled s) { return sp2in(s) * 72; }
+inline float sp2ps(const scaled& s) { return sp2in(s) * 72; }
 
 class PS_DrawingArea : public DrawingArea {
 public:
-  PS_DrawingArea(const GraphicsContextValues&, scaled, scaled, FILE* = NULL);
+  PS_DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&, FILE* = NULL);
   virtual ~PS_DrawingArea();
 
   virtual const GraphicsContext* GetGC(const GraphicsContextValues&) const;
 
-  virtual void DrawLine(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
-  virtual void DrawRectangle(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
-  virtual void DrawChar(const GraphicsContext*, const AFont*, scaled, scaled, char) const;
-  virtual void DrawString(const GraphicsContext*, const AFont*, scaled, scaled, const char*, unsigned) const;
-  virtual void Clear(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
-  virtual void Update(scaled, scaled, scaled, scaled) const;
+  virtual void DrawLine(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
+  virtual void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
+  virtual void DrawChar(const GraphicsContext*, const AFont*, const scaled&, const scaled&, char) const;
+  virtual void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const char*, unsigned) const;
+  virtual void Clear(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
+  virtual void Update(const scaled&, const scaled&, const scaled&, const scaled&) const;
 
   void DisableColors();
 

@@ -49,7 +49,7 @@ MathMLTextNode::IsText() const
 }
 
 void
-MathMLTextNode::SetPosition(scaled x, scaled y)
+MathMLTextNode::SetPosition(const scaled& x, const scaled& y)
 {
   //printf("set position x %d y %d\n", sp2ipx(x), sp2ipx(y));
   position.x = x;
@@ -69,7 +69,7 @@ MathMLTextNode::AddSpacing(int ds)
 }
 
 bool
-MathMLTextNode::IsInside(scaled x, scaled y) const
+MathMLTextNode::IsInside(const scaled& x, const scaled& y) const
 {
   return
     scaledGeq(x, position.x) &&

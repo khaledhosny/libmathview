@@ -40,7 +40,7 @@
 
 bool T1_Gtk_DrawingArea::firstTime = true;
 
-T1_Gtk_DrawingArea::T1_Gtk_DrawingArea(const GraphicsContextValues& values, scaled xm, scaled ym,
+T1_Gtk_DrawingArea::T1_Gtk_DrawingArea(const GraphicsContextValues& values, const scaled& xm, const scaled& ym,
 				       GtkWidget* widget, RGBValue f, RGBValue b) :
   Gtk_DrawingArea(values, xm, ym, widget, f, b)
 {
@@ -85,7 +85,7 @@ T1_Gtk_DrawingArea::Realize()
 
 void
 T1_Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
-			     scaled x, scaled y, char ch) const
+			     const scaled& x, const scaled& y, char ch) const
 {
   assert(gc != NULL);
   assert(font != NULL);
@@ -114,7 +114,7 @@ T1_Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
 
 void
 T1_Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			       scaled x, scaled y,
+			       const scaled& x, const scaled& y,
 			       const char* text,
 			       unsigned len) const
 {

@@ -45,7 +45,7 @@ public:
 
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
 
   scaled GetExitBaseline(void) const;
 

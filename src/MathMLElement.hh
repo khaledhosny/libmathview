@@ -60,7 +60,7 @@ public:
   virtual void RenderBackground(const DrawingArea&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
 
   const class GraphicsContext* GetForegroundGC(void) const { return fGC[Selected()]; }
   const class GraphicsContext* GetBackgroundGC(void) const { return bGC[Selected()]; }
@@ -83,7 +83,7 @@ public:
   static Ptr<MathMLElement> getRenderingInterface(const DOM::Element&);
 #endif
   virtual bool 	 IsSpaceLike(void) const;
-  virtual bool 	 IsInside(scaled, scaled) const;
+  virtual bool 	 IsInside(const scaled&, const scaled&) const;
   bool           HasLink(void) const;
   RGBValue     	 GetBackgroundColor(void) const { return background; }
   unsigned     	 GetDepth(void) const;

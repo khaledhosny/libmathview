@@ -33,7 +33,7 @@ public:
 
   void   GetBoundingBox(class BoundingBox&) const;
   scaled WidthTo(unsigned i) const;
-  void   Draw(scaled x, scaled y, const class DrawingArea&, const class GraphicsContext*) const;
+  void   Draw(const scaled& x, const scaled& y, const class DrawingArea&, const class GraphicsContext*) const;
 
 private:
   struct Chunk

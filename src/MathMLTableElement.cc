@@ -140,7 +140,7 @@ MathMLTableElement::Normalize(const Ptr<MathMLDocument>& doc)
 }
 
 void
-MathMLTableElement::SetPosition(scaled x, scaled y)
+MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
 {
   position.x = x;
   position.y = y;
@@ -195,12 +195,14 @@ MathMLTableElement::SetPosition(scaled x, scaled y)
 // if side == RIGHT? then x is the right edge of the whole table (and thus
 // must be adjust to accomodate the label)
 void
-MathMLTableElement::SetLabelPosition(unsigned i, scaled x, scaled y)
+MathMLTableElement::SetLabelPosition(unsigned i, const scaled& x0, const scaled& y0)
 {
   assert(i < nRows);
   assert(rowLabel);
   assert(rowLabel[i].labelElement);
 
+  scaled x = x0;
+  scaled y = y0;
   const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
 
   switch (rowLabel[i].rowAlign) {
@@ -369,7 +371,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 }
 
 Ptr<MathMLElement>
-MathMLTableElement::Inside(scaled x, scaled y)
+MathMLTableElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
   

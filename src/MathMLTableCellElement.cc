@@ -428,7 +428,7 @@ MathMLTableCellElement::CalcGroupsExtent()
 }
 
 void
-MathMLTableCellElement::SetPosition(scaled x, scaled y)
+MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 {
   if (GetChild())
     {

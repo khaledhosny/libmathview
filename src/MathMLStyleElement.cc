@@ -321,8 +321,11 @@ MathMLStyleElement::DoLayout(const FormattingContext& ctxt)
 }
 
 void
-MathMLStyleElement::SetPosition(scaled x, scaled y)
+MathMLStyleElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
   SetEmbellishmentPosition(this, x, y);

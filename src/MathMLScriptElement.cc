@@ -120,7 +120,7 @@ MathMLScriptElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathML
 }
 
 Ptr<MathMLElement>
-MathMLScriptElement::Inside(scaled x, scaled y)
+MathMLScriptElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 
@@ -304,8 +304,11 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLScriptElement::SetPosition(scaled x, scaled y)
+MathMLScriptElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
 

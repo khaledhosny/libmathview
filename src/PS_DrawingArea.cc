@@ -34,7 +34,7 @@
 #include "PS_DrawingArea.hh"
 
 PS_DrawingArea::PS_DrawingArea(const GraphicsContextValues& values,
-			       scaled xMargin, scaled yMargin, FILE* f) :
+			       const scaled& xMargin, const scaled& yMargin, FILE* f) :
   DrawingArea(values, xMargin, yMargin)
 {
   lastGC = NULL;
@@ -101,8 +101,8 @@ PS_DrawingArea::GetGC(const GraphicsContextValues& values) const
 
 void
 PS_DrawingArea::DrawLine(const GraphicsContext* gc,
-			 scaled x1, scaled y1,
-			 scaled x2, scaled y2) const
+			 const scaled& x1, const scaled& y1,
+			 const scaled& x2, const scaled& y2) const
 {
   SetGraphicsContext(gc);
 
@@ -115,7 +115,7 @@ PS_DrawingArea::DrawLine(const GraphicsContext* gc,
 
 void
 PS_DrawingArea::DrawRectangle(const GraphicsContext* gc,
-			      scaled x, scaled y, scaled w, scaled h) const
+			      const scaled& x, const scaled& y, const scaled& w, const scaled& h) const
 {
   SetGraphicsContext(gc);
 
@@ -128,7 +128,7 @@ PS_DrawingArea::DrawRectangle(const GraphicsContext* gc,
 
 void
 PS_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
-			 scaled x, scaled y, char ch) const
+			 const scaled& x, const scaled& y, char ch) const
 {
   const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
   assert(ps_font != NULL);
@@ -164,7 +164,7 @@ PS_DrawingArea::DrawCharAux(unsigned char ch) const
 
 void
 PS_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			   scaled x, scaled y,
+			   const scaled& x, const scaled& y,
 			   const char* text,
 			   unsigned len) const
 {
@@ -188,7 +188,7 @@ PS_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
 
 void
 PS_DrawingArea::Clear(const GraphicsContext* gc,
-		      scaled x, scaled y, scaled w, scaled h) const
+		      const scaled& x, const scaled& y, const scaled& w, const scaled& h) const
 {
   SetGraphicsContext(gc);
 
@@ -200,7 +200,7 @@ PS_DrawingArea::Clear(const GraphicsContext* gc,
 }
 
 void
-PS_DrawingArea::Update(scaled x, scaled y, scaled w, scaled h) const
+PS_DrawingArea::Update(const scaled& x, const scaled& y, const scaled& w, const scaled& h) const
 {
   // nothing to update when rendering PostScript
 }

@@ -271,7 +271,7 @@ MathMLOperatorElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool strict)
+MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& descent, bool strict)
 {
   assert(stretchy);
 
@@ -351,7 +351,7 @@ MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool str
 }
 
 void
-MathMLOperatorElement::HorizontalStretchTo(scaled width, bool strict)
+MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
 {
   assert(stretchy);
 
@@ -401,8 +401,11 @@ MathMLOperatorElement::HorizontalStretchTo(scaled width, bool strict)
 }
 
 void
-MathMLOperatorElement::SetPosition(scaled x, scaled y)
+MathMLOperatorElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
   SetEmbellishmentPosition(this, x, y);

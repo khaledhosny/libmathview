@@ -43,10 +43,10 @@ public:
   virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
 
 #if 0
   virtual void SetDirtyLayout(bool = false);

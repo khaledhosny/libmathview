@@ -31,17 +31,17 @@
 
 class Gtk_DrawingArea : public DrawingArea {
 public:
-  Gtk_DrawingArea(const GraphicsContextValues&, scaled, scaled, GtkWidget*, RGBValue, RGBValue);
+  Gtk_DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&, GtkWidget*, RGBValue, RGBValue);
   virtual ~Gtk_DrawingArea();
 
   virtual const GraphicsContext* GetGC(const GraphicsContextValues&) const;
 
-  virtual void DrawLine(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
-  virtual void DrawRectangle(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
-  virtual void DrawChar(const GraphicsContext*, const AFont*, scaled, scaled, char) const;
-  virtual void DrawString(const GraphicsContext*, const AFont*, scaled, scaled, const char*, unsigned) const;
-  virtual void Clear(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
-  virtual void Update(scaled, scaled, scaled, scaled) const;
+  virtual void DrawLine(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
+  virtual void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
+  virtual void DrawChar(const GraphicsContext*, const AFont*, const scaled&, const scaled&, char) const;
+  virtual void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const char*, unsigned) const;
+  virtual void Clear(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
+  virtual void Update(const scaled&, const scaled&, const scaled&, const scaled&) const;
   virtual void Update(void) const;
 
   virtual void Realize(void);
@@ -49,9 +49,9 @@ public:
   scaled GetTopX(void) const { return x0; }
   scaled GetTopY(void) const { return y0; }
 
-  void SetTop(scaled, scaled);
-  void SetTopX(scaled);
-  void SetTopY(scaled);
+  void SetTop(const scaled&, const scaled&);
+  void SetTopX(const scaled&);
+  void SetTopY(const scaled&);
   void SetPixmap(GdkPixmap*);
   
 protected:

@@ -39,7 +39,7 @@ struct DeleteGraphicsContextAdaptor
   { delete gc; }
 };
 
-DrawingArea::DrawingArea(const GraphicsContextValues& v, scaled xMargin, scaled yMargin,
+DrawingArea::DrawingArea(const GraphicsContextValues& v, const scaled& xMargin, const scaled& yMargin,
 			 RGBValue f, RGBValue b)
 {
   width = height = 0;
@@ -92,27 +92,27 @@ DrawingArea::ReleaseGCs()
 }
 
 void
-DrawingArea::MoveTo(scaled x1, scaled y1) const
+DrawingArea::MoveTo(const scaled& x1, const scaled& y1) const
 {
   x = x1;
   y = y1;
 }
 
 void
-DrawingArea::DrawLineTo(const GraphicsContext* gc, scaled x1, scaled y1) const
+DrawingArea::DrawLineTo(const GraphicsContext* gc, const scaled& x1, const scaled& y1) const
 {
   DrawLine(gc, x, y, x1, y1);
 }
 
 void
-DrawingArea::DrawLineToDelta(const GraphicsContext* gc, scaled dx, scaled dy) const
+DrawingArea::DrawLineToDelta(const GraphicsContext* gc, const scaled& dx, const scaled& dy) const
 {
   DrawLine(gc, x, y, x + dx, y + dy);
 }
 
 void
 DrawingArea::DrawRectangle(const GraphicsContext* gc,
-			   scaled x, scaled y, const BoundingBox& box) const
+			   const scaled& x, const scaled& y, const BoundingBox& box) const
 {
   DrawRectangle(gc, x, y - box.ascent, box.width, box.GetHeight());
 }
@@ -125,7 +125,7 @@ DrawingArea::DrawRectangle(const GraphicsContext* gc, const Rectangle& rect) con
 
 void
 DrawingArea::DrawBoundingBox(const GraphicsContext* gc,
-			     scaled x, scaled y,
+			     const scaled& x, const scaled& y,
 			     const BoundingBox& box,
 			     bool drawExtra) const
 {
@@ -144,7 +144,7 @@ DrawingArea::DrawBoundingBox(const GraphicsContext* gc,
 
 void
 DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			scaled x, scaled y, const String* text) const
+			const scaled& x, const scaled& y, const String* text) const
 {
   assert(text != NULL);
   DrawString(gc, font, x, y, text->ToStaticC(), text->GetLength());
@@ -152,7 +152,7 @@ DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
 
 void
 DrawingArea::Clear(const GraphicsContext* gc,
-		   scaled x, scaled y, const BoundingBox& box) const
+		   const scaled& x, const scaled& y, const BoundingBox& box) const
 {
   Clear(gc, x, y - box.ascent, box.width, box.GetHeight());
 }
@@ -176,7 +176,7 @@ DrawingArea::Update() const
 }
 
 void
-DrawingArea::SetSize(scaled w, scaled h)
+DrawingArea::SetSize(const scaled& w, const scaled& h)
 {
   assert(w != scaled(0));
   assert(h != scaled(0));

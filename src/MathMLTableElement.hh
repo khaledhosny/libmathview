@@ -203,11 +203,11 @@ public:
   virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const class DrawingArea&);
   virtual void ReleaseGCs(void);
 
-  virtual Ptr<MathMLElement> Inside(scaled x, scaled y);
+  virtual Ptr<MathMLElement> Inside(const scaled& x, const scaled& y);
 
   void 	       SetupColumnAlignAux(const Value*, unsigned, unsigned, bool = false);
   void 	       SetupRowAlignAux(const Value*, unsigned, bool = false);
@@ -240,7 +240,7 @@ protected:
   void 	       SetupGroupAlign(class RenderingEnvironment&);
   void 	       SetupAlignMarks(void);
   void 	       SetupTableAttributes(class RenderingEnvironment&);
-  void 	       AlignTable(scaled, BoundingBox&);
+  void 	       AlignTable(const scaled&, BoundingBox&);
   void         ReleaseAuxStructures(void);
 
   // table layout
@@ -248,10 +248,10 @@ protected:
   void         DoHorizontalMinimumLayout(void);
   void         DoVerticalLayout(LayoutId);
   void         ConfirmHorizontalFixedSpacing(void);
-  void         ConfirmHorizontalScaleSpacing(scaled);
+  void         ConfirmHorizontalScaleSpacing(const scaled&);
   void         ConfirmVerticalFixedSpacing(void);
-  void         ConfirmVerticalScaleSpacing(scaled);
-  void         AdjustTableWidth(scaled);
+  void         ConfirmVerticalScaleSpacing(const scaled&);
+  void         AdjustTableWidth(const scaled&);
   void         SpanRowHeight(LayoutId);
   void         ColumnLayout(unsigned, const class FormattingContext&);
   void         ScaleColumnsLayout(const class FormattingContext&);
@@ -261,7 +261,7 @@ protected:
   scaled       PrepareLabelsLayout(const class FormattingContext&);
   void         DoLabelsLayout(const class FormattingContext&);
   void         AdjustTableLayoutWithLabels(const class FormattingContext&);
-  void         SetLabelPosition(unsigned, scaled, scaled);
+  void         SetLabelPosition(unsigned, const scaled&, const scaled&);
 
   // table invariants
   void         EnforceHorizontalInvariants(void);

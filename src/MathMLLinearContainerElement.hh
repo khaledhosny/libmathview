@@ -54,7 +54,7 @@ public:
   virtual void DoLayout(const class FormattingContext&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
 
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;

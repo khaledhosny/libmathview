@@ -474,15 +474,17 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLTokenElement::SetPosition(scaled x, scaled y)
+MathMLTokenElement::SetPosition(const scaled& x, const scaled& y)
 {
   MathMLElement::SetPosition(x, y);
   SetContentPosition(x, y);
 }
 
 void
-MathMLTokenElement::SetContentPosition(scaled x, scaled y)
+MathMLTokenElement::SetContentPosition(const scaled& x0, const scaled& y)
 {
+  scaled x = x0;
+
   for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin(); 
        text != GetContent().end();
        text++)

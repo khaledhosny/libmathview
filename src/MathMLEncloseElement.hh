@@ -57,7 +57,7 @@ public:
   virtual void Normalize(const Ptr<MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
 
 protected:

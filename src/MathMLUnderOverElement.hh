@@ -61,7 +61,7 @@ public:
   virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(scaled, scaled);
+  virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const class DrawingArea&);
   virtual void ReleaseGCs(void);
 
@@ -70,7 +70,7 @@ public:
   virtual void ResetFlagDown(Flags);
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
-  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
 
   virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 

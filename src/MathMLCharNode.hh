@@ -52,18 +52,18 @@ public:
   bool             IsStretchyFontified(void) const;
 
   virtual void     SetDefaultLargeGlyph(bool);
-  virtual void     DoVerticalStretchyLayout(scaled, scaled, scaled, bool);
-  virtual void     DoHorizontalStretchyLayout(scaled, bool);
+  virtual void     DoVerticalStretchyLayout(const scaled&, const scaled&, const scaled&, bool);
+  virtual void     DoHorizontalStretchyLayout(const scaled&, bool);
   virtual StretchId GetStretch(void) const;
   const AFont*     GetFont(void) const { return fChar.font; }
 
   bool             CombineWith(const Ptr<MathMLCharNode>&, scaled&, scaled&) const;
 
 protected:
-  void DoVerticalStretchyLayoutAux(scaled, bool);
-  void DoHorizontalStretchyLayoutAux(scaled, bool);
-  void RenderVerticalStretchyChar(const DrawingArea&, const GraphicsContext*, scaled, scaled);
-  void RenderHorizontalStretchyChar(const DrawingArea&, const GraphicsContext*, scaled, scaled);
+  void DoVerticalStretchyLayoutAux(const scaled&, bool);
+  void DoHorizontalStretchyLayoutAux(const scaled&, bool);
+  void RenderVerticalStretchyChar(const DrawingArea&, const GraphicsContext*, const scaled&, const scaled&);
+  void RenderHorizontalStretchyChar(const DrawingArea&, const GraphicsContext*, const scaled&, const scaled&);
   void RenderMissingCharacter(const DrawingArea&, const GraphicsContext*);
 
   FontifiedChar fChar;

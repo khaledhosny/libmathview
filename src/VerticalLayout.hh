@@ -36,10 +36,10 @@ public:
   static Ptr<VerticalLayout> create(void)
   { return new VerticalLayout(); }
 
-  void SetSpacing(scaled, scaled);
+  void SetSpacing(const scaled&, const scaled&);
   void Add(const Ptr<MathMLElement>&);
   void RemoveAll(void);
-  void SetPosition(scaled, scaled);
+  void SetPosition(const scaled&, const scaled&);
 
   BoundingBox GetBoundingBox(void) const;
   BoundingBox GetLinearBoundingBox(void) const;

@@ -442,8 +442,11 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLMultiScriptsElement::SetPosition(scaled x, scaled y)
+MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
 {
+  scaled x = x0;
+  scaled y = y0;
+
   position.x = x;
   position.y = y;
 
@@ -528,7 +531,7 @@ MathMLMultiScriptsElement::ReleaseGCs()
 }
 
 Ptr<MathMLElement>
-MathMLMultiScriptsElement::Inside(scaled x, scaled y)
+MathMLMultiScriptsElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y))
     {

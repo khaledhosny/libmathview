@@ -125,7 +125,7 @@ MathMLEmbellishedOperatorElement::DoLayout(const class FormattingContext& ctxt)
 }
 
 void
-MathMLEmbellishedOperatorElement::SetPosition(scaled x, scaled y)
+MathMLEmbellishedOperatorElement::SetPosition(const scaled& x, const scaled& y)
 {
   assert(coreOp);
   assert(child);

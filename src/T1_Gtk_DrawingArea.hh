@@ -27,11 +27,11 @@
 
 class T1_Gtk_DrawingArea : public Gtk_DrawingArea {
 public:
-  T1_Gtk_DrawingArea(const GraphicsContextValues&, scaled, scaled, GtkWidget*, RGBValue, RGBValue);
+  T1_Gtk_DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&, GtkWidget*, RGBValue, RGBValue);
   virtual ~T1_Gtk_DrawingArea();
 
-  virtual void DrawChar(const GraphicsContext*, const AFont*, scaled, scaled, char) const;
-  virtual void DrawString(const GraphicsContext*, const AFont*, scaled, scaled, const char*, unsigned) const;
+  virtual void DrawChar(const GraphicsContext*, const AFont*, const scaled&, const scaled&, char) const;
+  virtual void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const char*, unsigned) const;
 
   virtual void Realize(void);
 

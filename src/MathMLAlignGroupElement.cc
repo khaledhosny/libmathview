@@ -99,7 +99,7 @@ MathMLAlignGroupElement::IsSpaceLike() const
 }
 
 void
-MathMLAlignGroupElement::SetWidth(scaled w)
+MathMLAlignGroupElement::SetWidth(const scaled& w)
 {
   width = w;
 }

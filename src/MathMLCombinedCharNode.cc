@@ -86,7 +86,7 @@ MathMLCombinedCharNode::DoLayout(const FormattingContext& ctxt)
 }
 
 void
-MathMLCombinedCharNode::SetPosition(scaled x, scaled y)
+MathMLCombinedCharNode::SetPosition(const scaled& x, const scaled& y)
 {
   //printf("set position: x %d y %d dx %d dy %d\n", sp2ipx(x), sp2ipx(y), sp2ipx(shiftX), sp2ipx(shiftY));
   if (cChar->GetChar() != 0x20dd)

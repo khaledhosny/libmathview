@@ -35,7 +35,7 @@ protected:
   virtual ~MathMLFrame();
 
 public:
-  virtual void   SetPosition(scaled, scaled);
+  virtual void   SetPosition(const scaled&, const scaled&);
   virtual void   Render(const DrawingArea&) = 0;
 
   scaled         GetX(void) const { return position.x; }
@@ -44,7 +44,7 @@ public:
   Rectangle      GetRectangle(void) const;
   virtual scaled GetLeftEdge(void) const = 0;
   virtual scaled GetRightEdge(void) const = 0;
-  virtual bool 	 IsInside(scaled, scaled) const = 0;
+  virtual bool 	 IsInside(const scaled&, const scaled&) const = 0;
 
 protected:
   Coords      position;
