@@ -23,7 +23,6 @@
 #ifndef __Area_hh__
 #define __Area_hh__
 
-#include "AreaId.hh"
 #include "BoundingBox.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
@@ -37,13 +36,25 @@ protected:
   virtual ~Area() { };
 
 public:
-  virtual BoundingBox  box(void) const = 0;
-  virtual void         render(class RenderingContext&, const scaled& x, const scaled& y) const = 0;
-  virtual bool         find(class SearchingContext&, const scaled&, const scaled&) const = 0;
-  virtual AreaRef      fit(const scaled&, const scaled&, const scaled&) const = 0;
+  virtual BoundingBox box(void) const = 0;
+  virtual void render(class RenderingContext&, const scaled& x, const scaled& y) const = 0;
+  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const = 0;
+  virtual scaled leftEdge(void) const = 0;
+  virtual scaled rightEdge(void) const = 0;
+  virtual void strength(int&, int&, int&) const = 0;
+  virtual int length(void) const { return 0; }
+  virtual unsigned size(void) const { return 0; }
+  virtual AreaRef node(unsigned) const = 0;
+  virtual void origin(unsigned, scaled&, scaled&) const = 0;
+  virtual int lengthTo(unsigned) const = 0;
+
+  virtual bool searchByArea(class AreaId&, const AreaRef&) const = 0;
+  virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const = 0;
+  virtual bool searchByIndex(class AreaId&, int) const = 0;
+
+#if 0
   virtual AreaRef      replace(const class ReplacementContext&) const = 0;
-  virtual scaled       leftEdge(void) const = 0;
-  virtual scaled       rightEdge(void) const = 0;
+  virtual bool         find(class SearchingContext&, const scaled&, const scaled&) const = 0;
           AreaRef      node(const AreaId& id) const { return node(id.path.begin(), id.path.end()); }
   std::pair<scaled,scaled> origin(const AreaId& id) const
   { return origin(id.path.begin(), id.path.end(), scaled::zero(), scaled::zero()); }
@@ -55,16 +66,16 @@ public:
   // throws InvalidArea if the argument is not found
   AreaId idOf(const AreaRef&) const;
 
-  virtual SmartPtr<Area> clone(void) const = 0;
-  virtual AreaRef      flatten(void) const { return this; }
-  virtual bool         idOf(const AreaRef&, AreaIdFactory&) const = 0;
+  virtual bool         idOf(const AreaRef&, class AreaIdFactory&) const = 0;
   virtual AreaRef      node(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;  
   virtual std::pair<scaled,scaled> origin(const AreaId::const_iterator,
 					  const AreaId::const_iterator,
 					  const scaled&, const scaled&) const = 0;
   virtual scaled       leftSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
   virtual scaled       rightSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
-  virtual void         strength(int&, int&, int&) const = 0;
+#endif
+
+  virtual AreaRef flatten(void) const { return this; }
 
   class InvalidId { };
   class NotAllowed { };

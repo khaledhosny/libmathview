@@ -22,9 +22,8 @@
 
 #include <config.h>
 
-#include "AreaIdFactory.hh"
+#include "AreaId.hh"
 #include "BinContainerArea.hh"
-#include "ReplacementContext.hh"
 
 BoundingBox
 BinContainerArea::box() const
@@ -38,11 +37,13 @@ BinContainerArea::render(class RenderingContext& context, const scaled& x, const
   child->render(context, x, y);
 }
 
+#if 0
 bool
 BinContainerArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
 {
   return child->find(context, x, y);
 }
+#endif
 
 scaled
 BinContainerArea::leftEdge() const
@@ -56,18 +57,39 @@ BinContainerArea::rightEdge() const
   return child->rightEdge();
 }
 
-std::pair<scaled,scaled>
-BinContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
-			 const scaled& x, const scaled& y) const
+bool
+BinContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
 {
-  if (id == empty)
-    return std::make_pair(x, y);
-  else if (*id == 0)
-    return child->origin(id + 1, empty, x, y);
+  if (area == this)
+    return true;
   else
-    throw InvalidId();
+    {
+      id.append(0, child);
+      if (child->searchByArea(id, area)) return true;
+      id.pop_back();
+      return false;
+    }
 }
 
+bool
+BinContainerArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  id.append(0, this, scaled::zero(), scaled::zero());
+  if (child->searchByCoords(id, x, y)) return true;
+  id.pop_back();
+  return false;
+}
+
+bool
+BinContainerArea::searchByIndex(AreaId& id, int index) const
+{
+  id.append(0, this);
+  if (child->searchByIndex(id, index)) return true;
+  id.pop_back();
+  return false;
+}
+
+#if 0
 AreaRef
 BinContainerArea::replace(const ReplacementContext& context) const
 {
@@ -88,11 +110,27 @@ BinContainerArea::replace(const ReplacementContext& context) const
 	}
     }
 }
+#endif
 
 AreaRef
 BinContainerArea::fit(const scaled& w, const scaled& h, const scaled& d) const
 {
-  return replace(ReplacementContext(AreaId(0), child->fit(w, h, d)));
+  AreaRef fitChild = child->fit(w, h, d);
+  if (fitChild == child) return this;
+  else return clone(fitChild);
+}
+
+#if 0
+std::pair<scaled,scaled>
+BinContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
+			 const scaled& x, const scaled& y) const
+{
+  if (id == empty)
+    return std::make_pair(x, y);
+  else if (*id == 0)
+    return child->origin(id + 1, empty, x, y);
+  else
+    throw InvalidId();
 }
 
 AreaRef
@@ -141,9 +179,30 @@ BinContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
       return false;
     }
 }
+#endif
 
 void
 BinContainerArea::strength(int& w, int& h, int& d) const
 {
   child->strength(w, h, d);
+}
+
+AreaRef
+BinContainerArea::node(unsigned i) const
+{
+  assert(i == 0);
+  return getChild();
+}
+
+void
+BinContainerArea::origin(unsigned i, scaled&, scaled&) const
+{
+  assert(i == 0);
+}
+
+int
+BinContainerArea::lengthTo(unsigned i) const
+{
+  assert(i == 0);
+  return 0;
 }

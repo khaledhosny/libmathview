@@ -50,13 +50,13 @@ MISSING
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
 + minlabelspacing -> spacing in paragraph, use pango layout spacing
-+ implement overstrike and underline for box text ?
 + cleanup code for box paragraph, create an auxiliary class for
   collecting things and handle groups inside paragraphs. What
   about groups inside paragraphs? What about colors inside paragraphs?
 + implement cursor
 + enable actions in boxml
 + add getId() method to reader interface
+- implement overstrike and underline for box text ?
 - implement available width propagation for boxes?
 - implement AreaCanvas for drawing lines
 - implement table formatting

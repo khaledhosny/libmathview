@@ -34,20 +34,28 @@ protected:
 public:
   static SmartPtr<VerticalArrayArea> create(const std::vector<AreaRef>& children, unsigned r = 1)
   { return new VerticalArrayArea(children, r); }
-  virtual SmartPtr<Area> clone(void) const;
-  virtual SmartPtr<Area> clone(const std::vector<AreaRef>&) const;
+  virtual AreaRef clone(const std::vector<AreaRef>& children) const { return create(children, getRefArea()); }
+
   virtual AreaRef flatten(void) const;
 
   virtual BoundingBox box(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
+  virtual void origin(unsigned, scaled&, scaled&) const;
+  virtual int lengthTo(unsigned) const;
+
+#if 0
+  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
   virtual std::pair<scaled,scaled> origin(const AreaId::const_iterator,
 					  const AreaId::const_iterator,
 					  const scaled&, const scaled&) const;
+#endif
 
   unsigned getRefArea(void) const { return refArea; }
+
+  virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
+  virtual bool searchByIndex(class AreaId&, int) const;
 
 protected:
   scaled prepareChildBoxes(std::vector<BoundingBox>&) const;

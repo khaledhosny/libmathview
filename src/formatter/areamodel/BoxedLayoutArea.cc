@@ -24,21 +24,9 @@
 
 #include <vector>
 
-#include "AreaIdFactory.hh"
+#include "AreaId.hh"
 #include "BoxedLayoutArea.hh"
 #include "ReplacementContext.hh"
-
-SmartPtr<Area>
-BoxedLayoutArea::clone() const
-{
-  return clone(bbox, content);
-}
-
-SmartPtr<Area>
-BoxedLayoutArea::clone(const BoundingBox& newBox, const std::vector<XYArea>& newContent) const
-{
-  return new BoxedLayoutArea(newBox, newContent);
-}
 
 void
 BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
@@ -49,6 +37,7 @@ BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const 
     p->area->render(context, x + p->dx, y + p->dy);
 }
 
+#if 0
 bool
 BoxedLayoutArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
 {
@@ -60,7 +49,61 @@ BoxedLayoutArea::find(class SearchingContext& context, const scaled& x, const sc
 
   return false;
 }
+#endif
 
+bool
+BoxedLayoutArea::searchByArea(AreaId& id, const AreaRef& area) const
+{
+  if (this == area)
+    return true;
+  else
+    {
+      for (std::vector<XYArea>::const_iterator p = content.begin();
+	   p != content.end();
+	   p++)
+	{
+	  id.append(p - content.begin(), p->area);
+	  if (p->area->searchByArea(id, area))
+	    return true;
+	  id.pop_back();
+	}
+      return false;
+    }
+}
+
+bool
+BoxedLayoutArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  // See OverlapArrayArea for the reason why the search must be done
+  // from the last to the first area
+  for (std::vector<XYArea>::const_reverse_iterator p = content.rbegin();
+       p != content.rend();
+       p++)
+    {
+      id.append(content.size() - (p - content.rbegin()) - 1, p->area, p->dx, p->dy);
+      if (p->area->searchByCoords(id, x - p->dx, y - p->dy)) return true;
+      id.pop_back();
+    }
+  return false;
+}
+
+bool
+BoxedLayoutArea::searchByIndex(AreaId& id, int index) const
+{
+  for (std::vector<XYArea>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      id.append(p - content.begin(), p->area);
+      if (p->area->searchByIndex(id, index))
+	return true;
+      id.pop_back();
+      index -= p->area->length();
+    }
+  return false;
+}
+
+#if 0
 bool
 BoxedLayoutArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
 {
@@ -80,15 +123,9 @@ BoxedLayoutArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
       return false;
     }
 }
-AreaRef
-BoxedLayoutArea::getChild(unsigned i) const
-{
-  if (i - 1 < content.size())
-    return content[i - 1].area;
-  else
-    throw InvalidIndex();
-}
+#endif
 
+#if 0
 AreaRef
 BoxedLayoutArea::replace(const ReplacementContext& context) const
 {
@@ -112,6 +149,7 @@ BoxedLayoutArea::replace(const ReplacementContext& context) const
 	return clone(bbox, newContent);
     }
 }
+#endif
 
 scaled
 BoxedLayoutArea::leftEdge() const
@@ -147,9 +185,10 @@ BoxedLayoutArea::fit(const scaled& width, const scaled& height, const scaled& de
   if (newContent == content)
     return this;
   else
-    return clone(bbox, newContent);
+    return clone(newContent);
 }
 
+#if 0
 std::pair<scaled,scaled>
 BoxedLayoutArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
 			const scaled& x, const scaled& y) const
@@ -178,4 +217,30 @@ AreaRef
 BoxedLayoutArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
 {
   throw InvalidId();
+}
+#endif
+
+AreaRef
+BoxedLayoutArea::node(unsigned i) const
+{
+  assert(i < content.size());
+  return content[i].area;
+}
+
+void
+BoxedLayoutArea::origin(unsigned i, scaled& x, scaled& y) const
+{
+  assert(i < content.size());
+  x += content[i].dx;
+  y += content[i].dy;
+}
+
+int
+BoxedLayoutArea::lengthTo(unsigned i) const
+{
+  assert(i < content.size());
+  int length = 0;
+  for (std::vector<XYArea>::const_iterator p = content.begin(); p != content.begin() + i; p++)
+    length += p->area->length();
+  return length;
 }

@@ -25,16 +25,33 @@
 #include <cassert>
 
 #include "BoxArea.hh"
-#include "ReplacementContext.hh"
+#include "Rectangle.hh"
 
 AreaRef
 BoxArea::fit(const scaled&, const scaled&, const scaled&) const
 {
-  return replace(ReplacementContext(AreaId(0), getChild()->fit(bbox.width, bbox.height, bbox.depth)));
+  AreaRef newChild = getChild()->fit(bbox.width, bbox.height, bbox.depth);
+  if (newChild == getChild())
+    return this;
+  else
+    return clone(newChild);
 }
 
 void
 BoxArea::strength(int& w, int& h, int& d) const
 {
   w = h = d = 0;
+}
+
+bool
+BoxArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  if (Rectangle(scaled::zero(), scaled::zero(), box()).isInside(x, y))
+    {
+      if (BinContainerArea::searchByCoords(id, x, y))
+	return true;
+      return true;
+    }
+  else
+    return false;
 }

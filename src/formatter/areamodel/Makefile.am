@@ -17,10 +17,9 @@ libareamodel_la_SOURCES = \
   OverlapArrayArea.cc \
   VerticalArrayArea.cc \
   AreaId.cc \
+  AreaIdAux.cc \
   HorizontalSpaceArea.cc \
-  ReplacementContext.cc \
   VerticalFillerArea.cc \
-  AreaIdFactory.cc \
   HideArea.cc \
   IgnoreArea.cc	\
   ShiftArea.cc \
@@ -39,11 +38,11 @@ noinst_HEADERS = \
   ShiftArea.hh \
   VerticalSpaceArea.hh \
   AreaId.hh \
+  AreaIdAux.hh \
   ContainerArea.hh \
   HorizontalSpaceArea.hh \
   OverlapArrayArea.hh \
   SimpleArea.hh \
-  AreaIdFactory.hh \
   FillerArea.hh \
   IdArea.hh \
   InkArea.hh \
@@ -53,7 +52,6 @@ noinst_HEADERS = \
   SearchingContext.hh \
   HideArea.hh \
   LinearContainerArea.hh \
-  ReplacementContext.hh \
   VerticalArrayArea.hh \
   BoxArea.hh \
   HorizontalArrayArea.hh \

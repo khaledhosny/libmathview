@@ -24,21 +24,10 @@
 
 #include <cassert>
 
-#include "AreaIdFactory.hh"
+#include "AreaId.hh"
 #include "ReplacementContext.hh"
 #include "SimpleArea.hh"
-
-SmartPtr<Area>
-SimpleArea::clone() const
-{
-  /* cloning a simple area makes no sense as cloning occurs only
-   * when fitting an area, and simple areas fit into themselves.
-   * There is also a technical difficulty in that cloning should
-   * return a read-write area, but in this case returning this
-   * would fail because of the const modifier of the method.
-   */
-  assert(false);
-}
+#include "Rectangle.hh"
 
 AreaRef
 SimpleArea::fit(const scaled&, const scaled&, const scaled&) const
@@ -46,6 +35,7 @@ SimpleArea::fit(const scaled&, const scaled&, const scaled&) const
   return this;
 }
 
+#if 0
 AreaRef
 SimpleArea::replace(const ReplacementContext& context) const
 {
@@ -78,9 +68,7 @@ SimpleArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) c
 
 bool
 SimpleArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
-{
-  return area == this;
-}
+{ return area == this; }
 
 AreaRef
 SimpleArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
@@ -90,17 +78,51 @@ SimpleArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
   else
     throw InvalidId();
 }
+#endif
 
 void
 SimpleArea::strength(int& w, int& h, int& d) const
-{
-  w = h = d = 0;
-}
+{ w = h = d = 0; }
 
 void
 SimpleArea::render(class RenderingContext&, const scaled&, const scaled&) const
 { }
 
+#if 0
 bool
 SimpleArea::find(class SearchingContext&, const scaled&, const scaled&) const
 { return false; }
+#endif
+
+bool
+SimpleArea::searchByArea(AreaId&, const AreaRef& area) const
+{ return this == area; }
+
+bool
+SimpleArea::searchByCoords(AreaId&, const scaled& x, const scaled& y) const
+{ return Rectangle(scaled::zero(), scaled::zero(), box()).isInside(x, y); }
+
+bool
+SimpleArea::searchByIndex(AreaId&, int index) const
+{ return index < length(); }
+
+AreaRef
+SimpleArea::node(unsigned) const
+{
+  // A leaf area cannot have children
+  assert(false);
+}
+
+void
+SimpleArea::origin(unsigned, scaled&, scaled&) const
+{
+  // A leaf area cannot have children
+  assert(false);
+}
+
+int
+SimpleArea::lengthTo(unsigned) const
+{
+  // A leaf area cannot haev children
+  assert(false);
+}

@@ -87,6 +87,7 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
   context.setStyle(old_style);
 }
 
+#if 0
 #define PIX(x) (Gtk_RenderingContext::toGtkPixels(x))
 bool
 Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
@@ -115,6 +116,7 @@ Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& 
   else
     return BoxArea::find(context, x, y);
 }
+#endif
 
 SmartPtr<Object>
 Gtk_WrapperArea::getElement(void) const

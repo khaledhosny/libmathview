@@ -48,24 +48,33 @@ protected:
 public:
   static SmartPtr<BoxedLayoutArea> create(const BoundingBox& b, const std::vector<XYArea>& c)
   { return new BoxedLayoutArea(b, c); }
-  virtual SmartPtr<Area> clone(void) const;
-  virtual SmartPtr<Area> clone(const BoundingBox&, const std::vector<XYArea>&) const;
+  virtual AreaRef clone(const std::vector<XYArea>& c) const { return create(bbox, c); }
 
   virtual BoundingBox box(void) const { return bbox; }
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
+#if 0
   virtual AreaRef replace(const class ReplacementContext&) const;
+#endif
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
+  virtual unsigned size(void) const { return content.size(); }
+  virtual AreaRef node(unsigned) const;
+  virtual void origin(unsigned, scaled&, scaled&) const;
+  virtual int lengthTo(unsigned) const;
 
-  AreaRef getChild(unsigned) const;
-  unsigned getSize(void) const { return content.size(); }
+  virtual bool searchByArea(class AreaId&, const AreaRef&) const;
+  virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
+  virtual bool searchByIndex(class AreaId&, int) const;
+
+  //virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
+
 
   class InvalidIndex { };
 
 protected:
+#if 0
   virtual bool idOf(const AreaRef&, AreaIdFactory&) const;
   virtual AreaRef node(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual std::pair<scaled,scaled> origin(AreaId::const_iterator,
@@ -73,6 +82,7 @@ protected:
 					  const scaled&, const scaled&) const;
   virtual scaled leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const;
   virtual scaled rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const;
+#endif
 
   BoundingBox bbox;
   std::vector<XYArea> content;

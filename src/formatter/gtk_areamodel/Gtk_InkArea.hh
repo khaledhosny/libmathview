@@ -34,7 +34,7 @@ protected:
 public:
   static SmartPtr<Gtk_InkArea> create(const AreaRef& area)
   { return new Gtk_InkArea(area); }
-  virtual SmartPtr<Area> clone(void) const;
+  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
 
   virtual void render(RenderingContext&, const scaled&, const scaled&) const;
 };

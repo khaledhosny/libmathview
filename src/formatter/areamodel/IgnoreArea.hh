@@ -33,7 +33,7 @@ protected:
 
 public:
   static SmartPtr<IgnoreArea> create(const AreaRef& area) { return new IgnoreArea(area); }
-  virtual SmartPtr<Area> clone(void) const;
+  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
 
   virtual BoundingBox box(void) const;
   virtual scaled leftEdge(void) const;

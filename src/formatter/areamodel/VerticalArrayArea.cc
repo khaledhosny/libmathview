@@ -24,8 +24,7 @@
 
 #include <cassert>
 
-#include <sstream>
-
+#include "AreaId.hh"
 #include "VerticalArrayArea.hh"
 
 VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, unsigned r)
@@ -33,19 +32,6 @@ VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, unsig
 {
   assert(content.size() > 0);
   assert(refArea < content.size());
-}
-
-SmartPtr<Area>
-VerticalArrayArea::clone() const
-{
-  return new VerticalArrayArea(content, refArea);
-}
-
-SmartPtr<Area>
-VerticalArrayArea::clone(const std::vector<AreaRef>& children) const
-{
-  assert(children.size() == content.size());
-  return new VerticalArrayArea(children, refArea);
 }
 
 // unsigned
@@ -131,6 +117,7 @@ VerticalArrayArea::render(class RenderingContext& context, const scaled& x, cons
     }  
 }
 
+#if 0
 bool
 VerticalArrayArea::find(class SearchingContext& context, const scaled& x, const scaled& y0) const
 {
@@ -191,6 +178,7 @@ VerticalArrayArea::origin(const AreaId::const_iterator id,
       return content[*id]->origin(id + 1, empty, x, y);
     }
 }
+#endif
 
 void
 VerticalArrayArea::strength(int& w, int& h, int& d) const
@@ -259,10 +247,85 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
       newContent.push_back((*p)->fit(width, pheight, pdepth));
     }
 
-  //std::cout << "fit vertical done *** same? " << (newContent == content) << std::endl;
-
   if (newContent == content)
     return this;
   else
     return clone(newContent);
+}
+
+bool
+VerticalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  std::vector<BoundingBox> box;
+  scaled depth = prepareChildBoxes(box);
+
+  scaled offset = -depth;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      const int i = p - content.begin();
+      offset += box[i].depth;
+      id.append(i, *p, scaled::zero(), offset);
+      if ((*p)->searchByCoords(id, x, y - offset)) return true;
+      id.pop_back();
+      offset += box[i].height;
+    }  
+
+  return false;
+}
+
+bool
+VerticalArrayArea::searchByIndex(AreaId& id, int index) const
+{
+  for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin(); p != content.rend(); p++)
+    {
+      id.append(content.size() - (p - content.rbegin()) - 1, *p);
+      if ((*p)->searchByIndex(id, index)) return true;
+      id.pop_back();
+      index -= (*p)->length();
+    }
+  return false;
+}
+
+void
+VerticalArrayArea::origin(unsigned i, scaled&, scaled& y) const
+{
+  assert(i < content.size());
+  if (i < refArea)
+    {
+      if (BoundingBox idBox = content[i]->box())
+	y -= idBox.height;
+      if (BoundingBox refBox = content[refArea]->box())
+	y -= refBox.depth;
+      for (std::vector<AreaRef>::const_iterator p = content.begin() + i + 1;
+	   p != content.begin() + refArea;
+	   p++)
+	if (BoundingBox b = (*p)->box())
+	  y -= b.verticalExtent();
+    }
+  else if (i > refArea)
+    {
+      if (BoundingBox refBox = content[refArea]->box())
+	y += refBox.height;
+      if (BoundingBox idBox = content[i]->box())
+	y += idBox.depth;
+      for (std::vector<AreaRef>::const_iterator p = content.begin() + refArea + 1;
+	   p != content.begin() + i;
+	   p++)
+	if (BoundingBox b = (*p)->box())
+	  y += b.verticalExtent();
+    }
+}
+
+int
+VerticalArrayArea::lengthTo(unsigned i) const
+{
+  assert(i < content.size());
+  int length = 0;
+  for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin();
+       p != content.rbegin() + i;
+       p++)
+    length += (*p)->length();
+  return length;
 }

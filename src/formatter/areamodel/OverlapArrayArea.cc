@@ -22,18 +22,13 @@
 
 #include <config.h>
 
+#include "AreaId.hh"
 #include "OverlapArrayArea.hh"
 
-SmartPtr<Area>
-OverlapArrayArea::clone() const
+AreaRef
+OverlapArrayArea::clone(const std::vector<AreaRef>& content) const
 {
-  return new OverlapArrayArea(content);
-}
-
-SmartPtr<Area>
-OverlapArrayArea::clone(const std::vector<AreaRef>& children) const
-{
-  return new OverlapArrayArea(content);
+  return create(content);
 }
 
 void
@@ -102,4 +97,26 @@ OverlapArrayArea::fit(const scaled& width, const scaled& height, const scaled& d
     return this;
   else
     return clone(newContent);
+}
+
+bool
+OverlapArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  // the last child area is also the last painted area. This means that
+  // it may overlap some previous child area. Hence, if the user sees
+  // something, we must first check the last painted area because it is
+  // what the user sees for sure
+  for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin(); p != content.rend(); p++)
+    {
+      id.append(content.size() - (p - content.rbegin()) - 1, *p, scaled::zero(), scaled::zero());
+      if ((*p)->searchByCoords(id, x, y)) return true;
+      id.pop_back();
+    }
+  return false;
+}
+
+void
+OverlapArrayArea::origin(unsigned i, scaled&, scaled&) const
+{
+  assert(i < content.size());
 }

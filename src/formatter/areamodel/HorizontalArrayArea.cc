@@ -22,22 +22,11 @@
 
 #include <config.h>
 
+#include "AreaId.hh"
 #include "HorizontalArrayArea.hh"
 
 SmartPtr<HorizontalArrayArea>
 HorizontalArrayArea::create(const std::vector<AreaRef>& children)
-{
-  return new HorizontalArrayArea(children);
-}
-
-SmartPtr<Area>
-HorizontalArrayArea::clone() const
-{
-  return new HorizontalArrayArea(content);
-}
-
-SmartPtr<Area>
-HorizontalArrayArea::clone(const std::vector<AreaRef>& children) const
 {
   return new HorizontalArrayArea(children);
 }
@@ -92,6 +81,7 @@ HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, c
     }
 }
 
+#if 0
 bool
 HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, const scaled& y) const
 {
@@ -104,6 +94,22 @@ HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, con
 	return true;
 
       x += (*p)->box().horizontalExtent();
+    }
+
+  return false;
+}
+#endif
+
+bool
+HorizontalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  scaled offset;
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+    {
+      id.append(p - content.begin(), *p, offset, scaled::zero());
+      if ((*p)->searchByCoords(id, x - offset, y)) return true;
+      id.pop_back();
+      offset += (*p)->box().horizontalExtent();
     }
 
   return false;
@@ -141,6 +147,7 @@ HorizontalArrayArea::rightEdge() const
   return edge;
 }
 
+#if 0
 std::pair<scaled,scaled>
 HorizontalArrayArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
 			    const scaled& x0, const scaled& y) const
@@ -203,6 +210,7 @@ HorizontalArrayArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator
   else
     return content[*id]->rightSide(id + 1, empty);
 }
+#endif
 
 void
 HorizontalArrayArea::strength(int& w, int& h, int& d) const
@@ -252,4 +260,12 @@ HorizontalArrayArea::fit(const scaled& width, const scaled& height, const scaled
     return this;
   else
     return clone(newContent);
+}
+
+void
+HorizontalArrayArea::origin(unsigned i, scaled& x, scaled&) const
+{
+  assert(i < content.size());
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
+    x += (*p)->box().horizontalExtent();
 }

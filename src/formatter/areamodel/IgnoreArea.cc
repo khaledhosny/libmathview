@@ -24,10 +24,6 @@
 
 #include "IgnoreArea.hh"
 
-SmartPtr<Area>
-IgnoreArea::clone() const
-{ return new IgnoreArea(getChild()); }
-
 BoundingBox
 IgnoreArea::box() const
 { return BoundingBox(); }

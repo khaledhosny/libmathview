@@ -25,29 +25,48 @@
 
 #include <vector>
 
+#include "Area.hh"
+
 class AreaId
 {
 public:
-  AreaId(void);
-  AreaId(unsigned, const AreaId& = AreaId());
+  AreaId(const AreaRef& r) : root(r) { };
 
-  bool operator==(const AreaId& id) const { return path == id.path; }
+  void append(int);
+  void append(int, const AreaRef&);
+  void append(int, const AreaRef&, const scaled&, const scaled&);
+  void pop_back(void);
 
   bool empty(void) const { return path.empty(); }
-  unsigned head(void) const;
-  AreaId tail(void) const;
+  int length(void) const { return path.size(); }
+  AreaRef getRoot(void) const { return root; }
 
-  class InvalidAreaId { };
-  typedef std::vector<unsigned>::const_iterator const_iterator;
+  AreaRef getArea(int = -1) const;
+  void getOrigin(scaled&, scaled&, int = -1) const;
+
+  typedef std::vector<int> PathVector;
+  typedef std::vector<AreaRef> AreaVector;
+  typedef std::vector< std::pair<scaled,scaled> > OriginVector;
+
+  const PathVector& getPath(void) const { return path; }
+  const AreaVector& getAreas(void) const { validateAreas(); return area; }
+  const OriginVector& getOrigins(void) const { validateOrigins(); return origin; }
 
 protected:
-  AreaId(const_iterator, const_iterator);
+  AreaId(const AreaRef& r, PathVector::const_iterator begin, PathVector::const_iterator end)
+    : root(r), path(begin, end) { }
 
-  friend class Area;
-  friend class AreaIdFactory;
+  void getOriginAux(int, scaled&, scaled&) const;
 
 private:
-  std::vector<unsigned> path;
+  void validateAreas(void) const;
+  void validateOrigins(void) const;
+
+  const AreaRef root;
+  PathVector path;
+  mutable AreaVector area;
+  mutable OriginVector origin;
 };
 
 #endif // __AreaId_hh__
+

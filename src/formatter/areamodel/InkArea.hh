@@ -33,7 +33,7 @@ protected:
 
 public:
   static SmartPtr<InkArea> create(const AreaRef& area) { return new InkArea(area); }
-  virtual SmartPtr<Area> clone(void) const;
+  virtual AreaRef clone(const AreaRef&) const;
 };
 
 #endif // __InkArea_hh__

@@ -25,12 +25,6 @@
 #include "Gtk_InkArea.hh"
 #include "Gtk_RenderingContext.hh"
 
-SmartPtr<Area>
-Gtk_InkArea::clone() const
-{
-  return new Gtk_InkArea(getChild());
-}
-
 void
 Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {

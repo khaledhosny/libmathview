@@ -34,12 +34,11 @@ protected:
 public:
   static SmartPtr<Gtk_WrapperArea> create(const AreaRef& area, const BoundingBox& b, const SmartPtr<Object>& el)
   { return new Gtk_WrapperArea(area, b, el); }
-  virtual SmartPtr<Area> clone(void) const
-  { return new Gtk_WrapperArea(getChild(), box(), getElement()); }
+  virtual AreaRef clone(const AreaRef& area) const { return create(area, box(), getElement()); }
 
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual void render(RenderingContext&, const scaled&, const scaled&) const;
-  virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
+  //virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
 
   SmartPtr<Object> getElement(void) const;
 

@@ -23,8 +23,8 @@
 #include <config.h>
 
 #include "Area.hh"
-#include "AreaIdFactory.hh"
 
+#if 0
 AreaId
 Area::idOf(const AreaRef& area) const
 {
@@ -34,3 +34,4 @@ Area::idOf(const AreaRef& area) const
   else
     throw NotFound();
 }
+#endif

@@ -24,6 +24,6 @@
 
 #include "InkArea.hh"
 
-SmartPtr<Area>
-InkArea::clone() const
-{ return new InkArea(getChild()->clone()); }
+AreaRef
+InkArea::clone(const AreaRef& area) const
+{ return create(area); }

@@ -100,6 +100,7 @@ struct _GtkMathView {
 
 #if defined(HAVE_GMETADOM)
   GdomeElement*  current_elem;
+  GdomeElement*  cursor_elem;
 #endif
 
   DOMView*       view;
@@ -208,14 +209,26 @@ paint_widget(GtkMathView* math_view)
   math_view->view->render(*math_view->renderingContext);
 
 #if 0
-      rootArea->render(*math_view->renderingContext,
-		       math_view->view->getOriginX(),
-		       math_view->view->getOriginY());
+  if (math_view->cursor_elem)
+    {
+      gint x;
+      gint y;
+      GdkRectangle rect;
+      gboolean res = gtk_math_view_get_element_location(math_view, math_view->cursor_elem,
+							&x, &y, &rect);
+      if (res)
+	{
+	  printf("stampo il cursore che si trova a %d %d %d %d %d %d\n", x, y, rect.x, rect.y, rect.width, rect.y);
+	  gdk_draw_rectangle(math_view->pixmap, widget->style->black_gc, FALSE, x + MARGIN, y + MARGIN, rect.width, rect.height);
+	}
+    }
 #endif
-      gdk_draw_pixmap(widget->window,
-		      widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		      math_view->pixmap,
-		      0, 0, 0, 0, width, height);
+
+  gdk_draw_pixmap(widget->window,
+		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+		  math_view->pixmap,
+		  0, 0, 0, 0, width, height);
+
 }
 
 static void
@@ -376,6 +389,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->select_state    = SELECT_STATE_NO;
   math_view->button_pressed  = FALSE;
   math_view->current_elem    = NULL;
+  math_view->cursor_elem    = NULL;
   math_view->hadjustment = NULL;
   math_view->vadjustment = NULL;
 
@@ -522,6 +536,14 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->current_elem = NULL;
     }
 
+  if (math_view->cursor_elem != NULL)
+    {
+      GdomeException exc = 0;
+      gdome_el_unref(math_view->cursor_elem, &exc);
+      g_assert(exc == 0);
+      math_view->cursor_elem = NULL;
+    }
+  
   /* ATTEMPT: since this class is derived from a container
    * then contained object will be destroyed by the parent class'
    * method
@@ -622,13 +644,30 @@ gtk_math_view_button_release_event(GtkWidget* widget,
       GdomeException exc = 0;
       GdomeElement* elem = gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y);
 
+#if 0
+      if (math_view->cursor_elem != elem)
+	{
+	  if (math_view->cursor_elem)
+	    {
+	      gdome_el_unref(math_view->cursor_elem, &exc);
+	      g_assert(exc == 0);
+	    }
+	  math_view->cursor_elem = elem;
+	  if (math_view->cursor_elem)
+	    {
+	      gdome_el_ref(math_view->cursor_elem, &exc);
+	      g_assert(exc == 0);
+	    }
+	  paint_widget(math_view);
+	}
+#endif
+
       if (math_view->button_pressed == TRUE &&
 	  math_view->select_state == SELECT_STATE_NO &&
 	  fabs(math_view->button_press_x - event->x) <= CLICK_SPACE_RANGE &&
 	  fabs(math_view->button_press_y - event->y) <= CLICK_SPACE_RANGE &&
 	  abs(math_view->button_press_time - event->time) <= CLICK_TIME_RANGE)
 	{
-	  printf("EMITTING CLICK\n");
 	  // the mouse should have not moved more than one pixel in each direction
 	  // and the time elapsed from the press event should be no more than 250ms
 	  g_signal_emit(GTK_OBJECT(math_view),
@@ -1118,8 +1157,8 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->view != NULL, NULL);
 
-  DOM::Element at = math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
-						     Gtk_RenderingContext::fromGtkY(y));
+  DOM::Element at = math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x + math_view->top_x - MARGIN),
+						     Gtk_RenderingContext::fromGtkY(y + math_view->top_y - MARGIN));
   return gdome_cast_el(at.gdome_object());
 }
 

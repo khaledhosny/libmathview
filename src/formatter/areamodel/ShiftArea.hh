@@ -33,12 +33,17 @@ protected:
 
 public:
   static SmartPtr<ShiftArea> create(const AreaRef& area, const scaled& s) { return new ShiftArea(area, s); }
-  virtual SmartPtr<Area> clone(void) const { return new ShiftArea(getChild(), shift); }
+  virtual AreaRef clone(const AreaRef& area) const { return create(area, getShift()); }
 
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+#if 0
   virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
-  virtual BoundingBox box(void) const;
   virtual std::pair<scaled,scaled> origin(AreaId::const_iterator, AreaId::const_iterator, const scaled&, const scaled&) const;
+#endif
+  virtual BoundingBox box(void) const;
+  virtual void origin(unsigned, scaled&, scaled&) const;
+
+  virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
 
   scaled getShift(void) const { return shift; }
 

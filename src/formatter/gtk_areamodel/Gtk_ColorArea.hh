@@ -34,8 +34,7 @@ protected:
 public:
   static SmartPtr<Gtk_ColorArea> create(const AreaRef& area, const RGBColor& c)
   { return new Gtk_ColorArea(area, c); }
-  virtual SmartPtr<Area> clone(void) const
-  { return new Gtk_ColorArea(getChild(), getColor()); }
+  virtual AreaRef clone(const AreaRef& area) const { return create(area, getColor()); }
 
   virtual void render(RenderingContext&, const scaled&, const scaled&) const;
 };

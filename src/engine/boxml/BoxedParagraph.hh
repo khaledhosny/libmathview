@@ -23,6 +23,8 @@
 #ifndef __BoxedParagraph_hh__
 #define __BoxedParagraph_hh__
 
+#include <vector>
+
 #include "DOM.hh"
 #include "Area.hh"
 #include "RGBColor.hh"

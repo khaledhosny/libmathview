@@ -27,7 +27,8 @@
 #include "Element.hh"
 #include "NamespaceRegistry.hh"
 #include "NamespaceContext.hh"
-#include "SearchingContext.hh"
+//#include "SearchingContext.hh"
+#include "AreaId.hh"
 #include "scaled.hh"
 #include "scaledConv.hh"
 // FIXME:
@@ -77,25 +78,37 @@ AreaRef
 View::getRootArea() const
 { return getElementArea(getRootElement()); }
 
+#include "scaledAux.hh"
+
 SmartPtr<Element>
 View::getElementAt(const scaled& x, const scaled& y) const
 {
   if (AreaRef rootArea = getRootArea())
     {
       BoundingBox box = rootArea->box();
+#if 0
       SearchingContext context(x, y);
       
       if (rootArea->find(context, -x0, -box.height - y0))
 	{
 	  SearchingContext::Result result = context.getResult();
-#if 0
-	  std::cerr << "found area at " << result.x << "," << result.y 
-		    << " is wrapper? " << is_a<const Gtk_WrapperArea>(result.area)
-		    << " has element? " << (smart_cast<const Gtk_WrapperArea>(result.area)->getElement() != 0) << std::endl;
-#endif
 	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(result.area))
 	    if (SmartPtr<Element> elem = smart_cast<Element>(area->getElement()))
 	      return elem;
+	}
+#endif
+      AreaId id(rootArea);
+      std::cerr << "searching at " << (x) << "," << (y + box.height) << std::endl;
+      if (rootArea->searchByCoords(id, x, y + box.height))
+	{
+	  std::cerr << "FOUND!" << std::endl;
+	  for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
+	    if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
+	      {
+		std::cerr << "FOUND WRAPPER, with element? " << (area->getElement() != 0) << std::endl;
+		if (SmartPtr<Element> elem = smart_cast<Element>(area->getElement()))
+		  return elem;
+	      }
 	}
     }
   
@@ -109,6 +122,7 @@ View::getElementExtents(const SmartPtr<Element>& elem, scaled& x, scaled& y, Bou
   if (AreaRef rootArea = getRootArea())
     if (AreaRef elemArea = elem->getArea())
       {
+#if 0
 	AreaId elemId = rootArea->idOf(elemArea);
 
 	for (AreaId id = elemId; !id.empty(); id = id.tail())
@@ -120,6 +134,15 @@ View::getElementExtents(const SmartPtr<Element>& elem, scaled& x, scaled& y, Bou
 	y = orig.second;
 	box = elemArea->box();
 	return true;
+#endif
+	AreaId elemId(rootArea);
+
+	if (rootArea->searchByArea(elemId, elemArea))
+	  {
+	    elemId.getOrigin(x, y);
+	    box = elemArea->box();
+	    return true;
+	  }
       }
 							    
   return false;

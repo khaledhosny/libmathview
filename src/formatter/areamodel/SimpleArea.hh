@@ -32,20 +32,28 @@ protected:
   virtual ~SimpleArea() { }
 
 public:
-  virtual SmartPtr<Area> clone(void) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  virtual AreaRef replace(const ReplacementContext&) const;
+  //virtual AreaRef replace(const class ReplacementContext&) const;
 
+  virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
+#if 0
   virtual bool      idOf(const AreaRef& area, AreaIdFactory& factory) const;
   virtual AreaRef   node(AreaId::const_iterator, AreaId::const_iterator) const;
-  virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual bool      find(class SearchingContext&, const scaled&, const scaled&) const;
   virtual std::pair<scaled,scaled> origin(AreaId::const_iterator,
 					  AreaId::const_iterator,
 					  const scaled&, const scaled&) const;
   virtual scaled    leftSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual scaled    rightSide(AreaId::const_iterator, AreaId::const_iterator) const;
+#endif
   virtual void      strength(int&, int&, int&) const;
+  virtual AreaRef   node(unsigned) const;
+  virtual void origin(unsigned, scaled&, scaled&) const;
+  virtual int lengthTo(unsigned) const;
+
+  virtual bool searchByArea(class AreaId&, const AreaRef&) const;
+  virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
+  virtual bool searchByIndex(class AreaId&, int) const;
 };
 
 #endif // __SimpleArea_hh__

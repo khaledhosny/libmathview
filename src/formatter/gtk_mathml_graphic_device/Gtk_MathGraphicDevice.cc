@@ -40,7 +40,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
   pangoShaper->setPangoContext(gtk_widget_create_pango_context(widget));
   getShaperManager()->registerShaper(pangoShaper);
   getShaperManager()->registerShaper(SpaceShaper::create());
-  getShaperManager()->registerShaper(Gtk_AdobeShaper::create());
+  //getShaperManager()->registerShaper(Gtk_AdobeShaper::create());
 }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()

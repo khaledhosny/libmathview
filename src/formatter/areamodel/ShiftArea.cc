@@ -22,19 +22,13 @@
 
 #include <config.h>
 
-#include "scaledAux.hh"
 #include "ShiftArea.hh"
+#include "AreaId.hh"
 
 void
 ShiftArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
 {
   getChild()->render(context, x, y + shift);
-}
-
-bool
-ShiftArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
-{
-  return BinContainerArea::find(context, x, y + shift);
 }
 
 BoundingBox
@@ -47,8 +41,32 @@ ShiftArea::box() const
     : childBox;
 }
 
+#if 0
+bool
+ShiftArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
+{
+  return BinContainerArea::find(context, x, y + shift);
+}
+
 std::pair<scaled,scaled>
 ShiftArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
 {
   return BinContainerArea::origin(id, empty, x, y + shift);
+}
+#endif
+
+bool
+ShiftArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+{
+  id.append(0, getChild(), scaled::zero(), shift);
+  if (getChild()->searchByCoords(id, x, y - shift)) return true; // ?????
+  id.pop_back();
+  return false;
+}
+
+void
+ShiftArea::origin(unsigned i, scaled&, scaled& y) const
+{
+  assert(i == 0);
+  y += shift;
 }

@@ -23,7 +23,3 @@
 #include <config.h>
 
 #include "IdArea.hh"
-
-SmartPtr<Area>
-IdArea::clone() const
-{ return new IdArea(getChild()->clone()); }

@@ -33,13 +33,15 @@ protected:
 
 public:
   static SmartPtr<OverlapArrayArea> create(const std::vector<AreaRef>& children) { return new OverlapArrayArea(children); }
-  virtual SmartPtr<Area> clone(void) const;
-  virtual SmartPtr<Area> clone(const std::vector<AreaRef>&) const;
+  virtual AreaRef clone(const std::vector<AreaRef>&) const;
   virtual AreaRef flatten(void) const;
 
   virtual void    strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual BoundingBox box(void) const;
+  virtual void origin(unsigned, scaled&, scaled&) const;
+
+  virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
 
 private:
   static void flattenAux(std::vector<AreaRef>&, const std::vector<AreaRef>&);  

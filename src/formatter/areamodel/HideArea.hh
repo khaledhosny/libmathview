@@ -33,7 +33,7 @@ protected:
 
 public:
   static SmartPtr<HideArea> create(const AreaRef& area) { return new HideArea(area); }
-  virtual SmartPtr<Area> clone(void) const;
+  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
 
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
 };

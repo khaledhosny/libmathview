@@ -24,6 +24,3 @@
 
 #include "ColorArea.hh"
 
-SmartPtr<Area>
-ColorArea::clone(void) const
-{ return new ColorArea(getChild(), color); }

@@ -20,9 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#include "AreaIdFactory.hh"
+#include "AreaId.hh"
 #include "LinearContainerArea.hh"
-#include "ReplacementContext.hh"
 
 void
 LinearContainerArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
@@ -33,6 +32,7 @@ LinearContainerArea::render(class RenderingContext& context, const scaled& x, co
     (*p)->render(context, x, y);
 }
 
+#if 0
 bool
 LinearContainerArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
 {
@@ -64,7 +64,39 @@ LinearContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
       return false;
     }
 }
+#endif
 
+bool
+LinearContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
+{
+  if (this == area)
+    return true;
+  else
+    {
+      for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+	{
+	  id.append(p - content.begin(), *p);
+	  if ((*p)->searchByArea(id, area)) return true;
+	  id.pop_back();
+	}
+      return false;
+    }
+}
+
+bool
+LinearContainerArea::searchByIndex(AreaId& id, int index) const
+{
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+    {
+      id.append(p - content.begin(), *p);
+      if ((*p)->searchByIndex(id, index)) return true;
+      id.pop_back();
+      index -= (*p)->length();
+    }
+  return false;
+}
+
+#if 0
 AreaRef
 LinearContainerArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
 {
@@ -115,6 +147,7 @@ LinearContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator em
   else
     throw InvalidId();
 }
+#endif
 
 scaled
 LinearContainerArea::leftEdge(void) const
@@ -138,6 +171,7 @@ LinearContainerArea::rightEdge(void) const
   return edge;
 }
 
+#if 0
 scaled
 LinearContainerArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
 {
@@ -159,12 +193,21 @@ LinearContainerArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator
   else
     return content[*id]->rightSide(id + 1, empty);
 }
+#endif
 
 AreaRef
-LinearContainerArea::getChild(unsigned i) const
+LinearContainerArea::node(unsigned i) const
 {
-  if (i - 1 < content.size())
-    return content[i - 1];
-  else
-    throw InvalidIndex();
+  assert(i < content.size());
+  return content[i];
+}
+
+int
+LinearContainerArea::lengthTo(unsigned i) const
+{
+  assert(i < content.size());
+  int length = 0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
+    length += (*p)->length();
+  return length;
 }

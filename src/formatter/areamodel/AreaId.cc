@@ -22,37 +22,100 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "AreaId.hh"
 
-AreaId::AreaId()
+void
+AreaId::append(int step)
 {
+  path.push_back(step);
 }
 
-AreaId::AreaId(unsigned head, const AreaId& tail)
+void
+AreaId::append(int step, const AreaRef& a)
 {
-  path.reserve(tail.path.size() + 1);
-  path.push_back(head);
-  path.insert(path.end(), tail.path.begin(), tail.path.end());
+  path.push_back(step);
+  area.push_back(a);
 }
 
-AreaId::AreaId(const_iterator begin, const_iterator end) : path(begin, end)
+void
+AreaId::append(int step, const AreaRef& a, const scaled& x, const scaled& y)
 {
+  append(step, a);
+  origin.push_back(std::make_pair(x, y));
 }
 
-unsigned
-AreaId::head() const
+void
+AreaId::pop_back()
 {
-  if (path.empty())
-    throw InvalidAreaId();
+  assert(!path.empty());
+  path.pop_back();
+  while (area.size() > path.size()) area.pop_back();
+  while (origin.size() > path.size()) origin.pop_back();
+}
+
+AreaRef
+AreaId::getArea(int index) const
+{
+  if (index == 0) return root;
+  else if (index > 0)
+    {
+      assert(index <= area.size());
+      return area[index - 1];
+    }
   else
-    return path[0];
+    {
+      assert(-index <= area.size());
+      return area[area.size() + index];
+    }
 }
 
-AreaId
-AreaId::tail() const
+void
+AreaId::getOrigin(scaled& x, scaled& y, int index) const
 {
-  if (path.empty())
-    throw InvalidAreaId();
+  validateOrigins();
+  if (index >= 0)
+    getOriginAux(index, x, y);
   else
-    return AreaId(path.begin() + 1, path.end());
+    getOriginAux(origin.size() + index - 1, x, y);
 }
+
+void
+AreaId::getOriginAux(int index, scaled& x, scaled& y) const
+{
+  assert(index >= 0 && index < origin.size());
+  x = y = scaled::zero();
+  for (OriginVector::const_iterator p = origin.begin(); index > 0 && p != origin.end(); p++, index--)
+    {
+      x += (*p).first;
+      y += (*p).second;
+    }
+}
+
+void
+AreaId::validateAreas() const
+{
+  AreaRef prev = root;
+  while (area.size() < path.size())
+    {
+      area.push_back(prev->node(path[area.size()]));
+      prev = area[area.size() - 1];
+    }
+}
+
+void
+AreaId::validateOrigins() const
+{
+  validateAreas();
+
+  AreaRef prev = root;
+  while (origin.size() < area.size())
+    {
+      std::pair<scaled,scaled> o;
+      prev->origin(path[origin.size()], o.first, o.second);
+      origin.push_back(o);
+      prev = area[origin.size() - 1];
+    }
+}
+

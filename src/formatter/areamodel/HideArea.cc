@@ -24,10 +24,6 @@
 
 #include "HideArea.hh"
 
-SmartPtr<Area>
-HideArea::clone(void) const
-{ return new HideArea(getChild()); }
-
 void
 HideArea::render(class RenderingContext&, const scaled&, const scaled&) const
 { }
