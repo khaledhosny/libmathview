@@ -658,20 +658,20 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
       <compound index="0063 -1 0065 0067"/>
     </stretchy>
     <stretchy name="LeftFloor" direction="vertical">
-      <simple index="4 106 22 36"/>
-      <compound index="-1 -1 52 54"/>
+      <simple index="0004 0152 0026 0044"/>
+      <compound index="-1 -1 0064 0066"/>
     </stretchy>
     <stretchy name="RightFloor" direction="vertical">
-      <simple index="5 107 23 37"/>
-      <compound index="-1 -1 53 55"/>
+      <simple index="0005 0153 0027 0045"/>
+      <compound index="-1 -1 0065 0067"/>
     </stretchy>
     <stretchy name="LeftCeiling" direction="vertical">
-      <simple index="6 108 24 38"/>
-      <compound index="50 -1 -1 54"/>
+      <simple index="0006 0154 0030 0046"/>
+      <compound index="0062 -1 -1 0066"/>
     </stretchy>
     <stretchy name="RightCeiling" direction="vertical">
-      <simple index="7 106 25 39"/>
-      <compound index="51 -1 -1 55"/>
+      <simple index="0007 0155 0031 0047"/>
+      <compound index="0063 -1 -1 0067"/>
     </stretchy>
     <stretchy code="{" direction="vertical">
       <simple index="8 110 26 40"/>

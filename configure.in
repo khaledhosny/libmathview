@@ -310,9 +310,6 @@ AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
 AC_SUBST(DOM_IMPLEMENTATION)
 
-echo $DOM_CFLAGS
-echo $DOM_LIBS
-
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no")
 	AC_CHECK_HEADER(t1lib.h, , t1lib="no")
@@ -328,7 +325,12 @@ if test $t1lib = "yes"; then
         fi
 
 	T1_LIBS="-lt1x -lt1"
+else
+	T1_CFLAGS=""
+	T1_LIBS=""
 fi
+AC_SUBST(T1_CFLAGS)
+AC_SUBST(T1_LIBS)
 
 if test "(" $t1lib = "no" ")" -a "(" $export_PS = "yes" ")"; then
 	AC_MSG_WARN(cannot export to PostScript if t1lib is not available)

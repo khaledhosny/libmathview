@@ -682,10 +682,11 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
   if (math_view->select == TRUE && math_view->selected_first != NULL && elem != NULL) {
 #if defined(HAVE_MINIDOM)
     mDOMNodeRef oldRoot = math_view->selected_root;
+    math_view->selected_root = findDOMNode(findCommonAncestor(math_view->selected_first, elem));
 #elif defined(HAVE_GMETADOM)
     GdomeNode* oldRoot = math_view->selected_root;
-#endif
     math_view->selected_root = findDOMNode(findCommonAncestor(math_view->selected_first, elem)).gdome_object();
+#endif
 
     if (math_view->selected_root != oldRoot)
       gtk_signal_emit(GTK_OBJECT(math_view), selection_changed_signal, math_view->selected_root);
@@ -1059,7 +1060,11 @@ gtk_math_view_set_selection(GtkMathView* math_view, GdomeNode* node)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->interface != NULL);
 
+#if defined(HAVE_MINIDOM)
+  MathMLElement* elem = (node != NULL) ? getMathMLElement(node) : NULL;
+#elif defined(HAVE_GMETADOM)
   MathMLElement* elem = (node != NULL) ? getMathMLElement(gdome_cast_el(node)) : NULL;
+#endif
   math_view->interface->SetSelected(elem);
 }
 
@@ -1336,7 +1341,11 @@ gtk_math_view_action_get_selected(GtkMathView* math_view)
 
   if (math_view->action_node == NULL) return 0;
 
+#if defined(HAVE_MINIDOM)
+  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(math_view->action_node));
+#elif defined(HAVE_GMETADOM)
   MathMLActionElement* action_element = TO_ACTION(findMathMLElement(gdome_cast_el(math_view->action_node)));
+#endif
   assert(action_element != NULL);
   return action_element->GetSelectedIndex();
 }
@@ -1348,7 +1357,11 @@ gtk_math_view_action_set_selected(GtkMathView* math_view, guint idx)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(math_view->action_node != NULL);
 
+#if defined(HAVE_MINIDOM)
+  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(math_view->action_node));
+#elif defined(HAVE_GMETADOM)
   MathMLActionElement* action_element = TO_ACTION(findMathMLElement(gdome_cast_el(math_view->action_node)));
+#endif
   assert(action_element != NULL);
   action_element->SetSelectedIndex(idx);
 
@@ -1366,7 +1379,11 @@ gtk_math_view_action_toggle(GtkMathView* math_view)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(math_view->action_node != NULL);
 
+#if defined(HAVE_MINIDOM)
+  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(math_view->action_node));
+#elif defined(HAVE_GMETADOM)
   MathMLActionElement* action_element = TO_ACTION(findMathMLElement(gdome_cast_el(math_view->action_node)));
+#endif
   assert(action_element != NULL);
   guint idx = action_element->GetSelectedIndex();
   if (idx < action_element->content.GetSize())
