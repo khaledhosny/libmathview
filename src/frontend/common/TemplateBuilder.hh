@@ -943,6 +943,8 @@ protected:
 		}
 	      i++;
 	    }
+
+	  iter.next();
 	}
 
       if (preScripts && i % 2 == 1) elem->setPreSuperScript(nPreScripts, 0);

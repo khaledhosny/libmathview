@@ -61,6 +61,11 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
+  static void formatScripts(class MathFormattingContext&,
+			    const std::vector<SmartPtr<MathMLElement> >::const_iterator&,
+			    const std::vector<SmartPtr<MathMLElement> >::const_iterator&,
+			    std::vector<AreaRef>&);
+
   BinContainerTemplate<MathMLMultiScriptsElement,MathMLElement> base;
   LinearContainerTemplate<MathMLMultiScriptsElement,MathMLElement> subScript;
   LinearContainerTemplate<MathMLMultiScriptsElement,MathMLElement> superScript;

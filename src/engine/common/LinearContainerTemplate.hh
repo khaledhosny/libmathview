@@ -67,8 +67,7 @@ public:
 
   void appendChild(E* elem, const TPtr& child)
   {
-    assert(child);
-    T::setParent(child, elem);
+    if (child) T::setParent(child, elem);
     content.push_back(child);
     elem->setDirtyLayout();
   }

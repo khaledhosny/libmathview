@@ -28,6 +28,9 @@
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLAttributeSignatures.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
+#include "ValueConversion.hh"
 
 MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathMLNamespaceContext>& context)
   : MathMLContainerElement(context)
@@ -36,12 +39,65 @@ MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathML
 MathMLMultiScriptsElement::~MathMLMultiScriptsElement()
 { }
 
+void
+MathMLMultiScriptsElement::formatScripts(MathFormattingContext& ctxt,
+					 const std::vector<SmartPtr<MathMLElement> >::const_iterator& begin,
+					 const std::vector<SmartPtr<MathMLElement> >::const_iterator& end,
+					 std::vector<AreaRef>& area)
+{
+  area.reserve(end - begin);
+  for (std::vector<SmartPtr<MathMLElement> >::const_iterator p = begin;
+       p != end;
+       p++)
+    if (*p) area.push_back((*p)->format(ctxt));
+    else area.push_back(0);
+}
+
 AreaRef
 MathMLMultiScriptsElement::format(MathFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
-      assert(false);
+      ctxt.push(this);
+
+      assert(getBase());
+      AreaRef baseArea = getBase()->format(ctxt);
+
+      ctxt.addScriptLevel(1);
+      ctxt.setDisplayStyle(false);
+
+      Length subScriptShift;
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Script, subscriptshift))
+	{
+	  assert(IsLength(value));
+	  subScriptShift = ToLength(value);
+	}
+
+      Length superScriptShift;
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Script, superscriptshift))
+	{
+	  assert(IsLength(value));
+	  superScriptShift = ToLength(value);
+	}
+
+      std::vector<AreaRef> subScriptArea;
+      formatScripts(ctxt, subScript.begin(), subScript.end(), subScriptArea);
+      std::vector<AreaRef> superScriptArea;
+      formatScripts(ctxt, superScript.begin(), superScript.end(), superScriptArea);
+      std::vector<AreaRef> preSubScriptArea;
+      formatScripts(ctxt, preSubScript.begin(), preSubScript.end(), preSubScriptArea);
+      std::vector<AreaRef> preSuperScriptArea;
+      formatScripts(ctxt, preSuperScript.begin(), preSuperScript.end(), preSuperScriptArea);
+
+      AreaRef res = ctxt.getDevice()->multiScripts(ctxt,
+						   baseArea,
+						   subScriptArea, preSubScriptArea, subScriptShift,
+						   superScriptArea, preSuperScriptArea, superScriptShift);
+      res = formatEmbellishment(this, ctxt, res);
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+
+      ctxt.pop();
+      resetDirtyLayout();
     }
 
   return getArea();

@@ -337,7 +337,7 @@ MathGraphicDevice::script(const MathFormattingContext& context,
   if (o.size() > 1)
     h.push_back(factory->overlapArray(o));
   else
-    h.push_back(o[0]);
+    h.push_back(o.front());
 
   return factory->horizontalArray(h);
 }
@@ -347,12 +347,81 @@ MathGraphicDevice::multiScripts(const MathFormattingContext& context,
 				const AreaRef& base,
 				const std::vector<AreaRef>& subScripts,
 				const std::vector<AreaRef>& preSubScripts,
-				const Length& subScriptShift,
+				const Length& subScriptMinShift,
 				const std::vector<AreaRef>& superScripts,
 				const std::vector<AreaRef>& preSuperScripts,
-				const Length& superScriptShift) const
+				const Length& superScriptMinShift) const
 {
-  return base;
+  assert(subScripts.size() == superScripts.size());
+  assert(preSubScripts.size() == preSuperScripts.size());
+
+  BoundingBox subScriptsBox;
+  BoundingBox superScriptsBox;
+
+  for (std::vector<AreaRef>::const_iterator p = subScripts.begin();
+       p != subScripts.end();
+       p++)
+    if (*p) subScriptsBox.append((*p)->box());
+  for (std::vector<AreaRef>::const_iterator p = preSubScripts.begin();
+       p != preSubScripts.end();
+       p++)
+    if (*p) subScriptsBox.append((*p)->box());
+
+  for (std::vector<AreaRef>::const_iterator p = superScripts.begin();
+       p != superScripts.end();
+       p++)
+    if (*p) superScriptsBox.append((*p)->box());
+  for (std::vector<AreaRef>::const_iterator p = preSuperScripts.begin();
+       p != preSuperScripts.end();
+       p++)
+    if (*p) superScriptsBox.append((*p)->box());
+
+  scaled subScriptShift;
+  scaled superScriptShift;
+
+  calculateScriptShift(context,
+		       base->box(),
+		       subScriptsBox, subScriptMinShift,
+		       superScriptsBox, superScriptMinShift,
+		       subScriptShift,
+		       superScriptShift);
+
+  std::vector<AreaRef> h;
+  h.reserve(subScripts.size() + preSubScripts.size() + 1);
+
+  std::vector<AreaRef>::const_reverse_iterator preP = preSubScripts.rbegin();
+  std::vector<AreaRef>::const_reverse_iterator preQ = preSuperScripts.rbegin();
+  for (; preP != preSubScripts.rend(); preP++, preQ++)
+    {
+      std::vector<AreaRef> o;
+      o.reserve(2);
+      if (*preP) o.push_back(factory->right(factory->shift(*preP, -subScriptShift)));
+      if (*preQ) o.push_back(factory->right(factory->shift(*preQ, superScriptShift)));
+
+      if (o.size() > 1)
+	h.push_back(factory->overlapArray(o));
+      else
+	h.push_back(o.front());
+    }
+
+  h.push_back(base);
+
+  std::vector<AreaRef>::const_iterator postP = subScripts.begin();
+  std::vector<AreaRef>::const_iterator postQ = superScripts.begin();
+  for (; postP != subScripts.end(); postP++, postQ++)
+    {
+      std::vector<AreaRef> o;
+      o.reserve(2);
+      if (*postP) o.push_back(factory->shift(*postP, -subScriptShift));
+      if (*postQ) o.push_back(factory->shift(*postQ, superScriptShift));
+
+      if (o.size() > 1)
+	h.push_back(factory->overlapArray(o));
+      else
+	h.push_back(o.front());
+    }
+
+  return factory->horizontalArray(h);
 }
 
 AreaRef
