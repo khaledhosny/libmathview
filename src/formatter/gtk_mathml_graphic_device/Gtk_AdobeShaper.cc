@@ -294,9 +294,9 @@ struct XFontDesc
 #define SYMBOL_INDEX 0
 #define LATIN_BASE_INDEX 1
 
-#define H_STRETCHY_BIT 0x100
-#define V_STRETCHY_BIT 0x200
-#define GLYPH_INDEX_MASK 0xff
+#define H_STRETCHY_BIT   0x100
+#define V_STRETCHY_BIT   0x200
+#define GLYPH_INDEX_MASK 0x0ff
 
 static XFontDesc variantDesc[Gtk_AdobeShaper::N_FONTS] =
   {
@@ -321,10 +321,10 @@ Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shap
     sm->registerChar(symbolMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, symbolMap[i].index));
 
   for (unsigned i = 0; vMap[i].ch != 0; i++)
-    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | H_STRETCHY_BIT));
+    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | V_STRETCHY_BIT));
 
   for (unsigned i = 0; hMap[i].ch != 0; i++)
-    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | V_STRETCHY_BIT));
+    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | H_STRETCHY_BIT));
 
   for (unsigned i = LATIN_BASE_INDEX; i < N_FONTS; i++)
     {
@@ -350,19 +350,21 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
   unsigned n = n0;
   while (n > 0)
     {
-      bool res = false;
+      AreaRef res;
       GlyphSpec spec = result.getSpec();
 
       if (spec.getGlyphId() & H_STRETCHY_BIT)
-	res = shapeStretchyCharH(ctxt, result, spec);
+	res = shapeStretchyCharH(ctxt, spec, result.getHSpan());
       else if (spec.getGlyphId() & V_STRETCHY_BIT)
-	res = shapeStretchyCharV(ctxt, result, spec);
+	res = shapeStretchyCharV(ctxt, spec, result.getVSpan());
 
       // If we get here then either the character was not required
       // to stretch, or one of the stretchying methods has failed,
       // hence we shape it with no stretchying
-      if (!res) res = shapeChar(ctxt, result, spec);
+      if (!res) res = shapeChar(ctxt, spec);
       if (!res) break;
+
+      result.pushArea(res);
       result.advance();
       n--;
     }
@@ -480,18 +482,12 @@ Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   return res;
 }
 
-bool
-Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
-			   ShapingResult& result, const GlyphSpec& spec) const
+AreaRef
+Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
 {
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-
-  AreaRef res = getGlyphArea(factory, spec.getFontId(), spec.getGlyphId() & GLYPH_INDEX_MASK, ctxt.getSize());
-  assert(res);
-  result.pushArea(res);
-
-  return true;
+  return getGlyphArea(factory, spec.getFontId(), spec.getGlyphId() & GLYPH_INDEX_MASK, ctxt.getSize());
 }
 
 void
@@ -503,9 +499,8 @@ Gtk_AdobeShaper::getGlyphExtents(PangoFont* font, PangoGlyphString* gs, PangoRec
   pango_glyph_string_extents(gs, font, rect, NULL);
 }
 
-bool
-Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
-				    ShapingResult& result, const GlyphSpec& spec) const
+AreaRef
+Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
 {
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
@@ -517,11 +512,8 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
   if (charSpec->normal)
     {
       AreaRef res = getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size);
-      if (res->box().width >= result.getHSpan())
-	{
-	  result.pushArea(res);
-	  return true;
-	}
+      if (res->box().width >= span)
+	return res;
     }
 
   AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->left, size) : 0;
@@ -534,7 +526,7 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
 
   // Compute first the number of glue segments we have to use
   assert(glueSize > scaled::zero());
-  unsigned n = (result.getHSpan() - leftSize - rightSize).getValue() / glueSize.getValue();
+  unsigned n = (span - leftSize - rightSize).getValue() / glueSize.getValue();
 
   // Then the final number of glyphs
   unsigned gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
@@ -546,68 +538,62 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
   for (unsigned i = 0; i < n; i++) h.push_back(glue);
   if (right) h.push_back(right);
 
-  result.pushArea(factory->horizontalArray(h));
-
-  return true;
+  return factory->horizontalArray(h);
 }
 
-bool
-Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt,
-				    ShapingResult& result, const GlyphSpec& spec) const
+#include "scaledAux.hh"
+
+AreaRef
+Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
 { 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
 
-#if 0
-  PangoFont* font = getFont(spec.getFontId(), result.getFontSize());
-  assert(font);
+  std::cerr << "shapeStretchyCharV span = " << span << std::endl;
 
-  const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
+  const scaled size = ctxt.getSize();
+
+  const VStretchyChar* charSpec = &vMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
 
   if (charSpec->normal)
     {
-      AreaRef res = factory->createXftGlyphArea(font, charSpec->normal);
-      if (res->box().verticalExtent() >= result.getVSpan())
-	{
-	  result.pushArea(res);
-	  return true;
-	}
+      AreaRef res = getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size);
+      if (res->box().verticalExtent() >= span)
+	return res;
     }
 
-  AreaRef top = (charSpec->top != 0) ? factory->createXftGlyphArea(font, charSpec->top) : 0;
-  AreaRef middle = (charSpec->middle != 0) ? factory->createXftGlyphArea(font, charSpec->middle) : 0;
-  AreaRef glue = (charSpec->glue != 0) ? factory->createXftGlyphArea(font, charSpec->glue) : 0;
-  AreaRef bottom = (charSpec->bottom != 0) ? factory->createXftGlyphArea(font, charSpec->bottom) : 0;
+  AreaRef top = (charSpec->top != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->top, size) : 0;
+  AreaRef middle = (charSpec->middle != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->middle, size) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
+  AreaRef bottom = (charSpec->bottom != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->bottom, size) : 0;
 
   scaled topSize = top ? top->box().verticalExtent() : 0;
   scaled middleSize = middle ? middle->box().verticalExtent() : 0;
   scaled glueSize = glue ? glue->box().verticalExtent() : 0;
   scaled bottomSize = bottom ? bottom->box().verticalExtent() : 0;			
 
-  assert(glueSize > scaled(0));
-  unsigned n = (result.getVSpan() - topSize - bottomSize - middleSize).getValue() / glueSize.getValue();
+  assert(glueSize > scaled::zero());
+  unsigned n = (span - topSize - bottomSize - middleSize).getValue() / glueSize.getValue();
+
+  std::cerr << "STRETCHYING: " << span << " N = " << n << std::endl;
 
   if (n % 2 == 1 && middle) n++;
   
   unsigned gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
 
-  std::vector<AreaRef> gs;
-  gs.reserve(gsN);
+  std::vector<AreaRef> v;
+  v.reserve(gsN);
 
-  if (bottom) gs.push_back(bottom);
+  if (bottom) v.push_back(bottom);
   if (middle)
     {
-      for (unsigned i = 0; i < n / 2; i++) gs.push_back(glue);
-      gs.push_back(middle);
-      for (unsigned i = 0; i < n / 2; i++) gs.push_back(glue);
+      for (unsigned i = 0; i < n / 2; i++) v.push_back(glue);
+      v.push_back(middle);
+      for (unsigned i = 0; i < n / 2; i++) v.push_back(glue);
     }
   else
-    for (unsigned i = 0; i < n; i++) gs.push_back(glue);
-  if (top) gs.push_back(top);
+    for (unsigned i = 0; i < n; i++) v.push_back(glue);
+  if (top) v.push_back(top);
 
-  result.pushArea(factory->createVerticalArrayArea(gs, 1));
-
-  return true;
-#endif
-  return false;
+  return factory->verticalArray(v, 0);
 }

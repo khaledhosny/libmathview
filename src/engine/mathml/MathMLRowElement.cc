@@ -54,6 +54,8 @@ MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
 #endif
 }
 
+#include "BoundingBoxAux.hh"
+
 AreaRef
 MathMLRowElement::format(MathFormattingContext& ctxt)
 {
@@ -82,6 +84,8 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 
       AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(row);
       BoundingBox rowBox = res->box();
+
+      std::cerr << rowBox << std::endl;
 
       if (stretchy)
 	{

@@ -190,6 +190,9 @@ MathMLOperatorElement::DoLayout(const class FormattingContext& ctxt)
 }
 #endif
 
+#include "scaledAux.hh"
+#include "BoundingBoxAux.hh"
+
 AreaRef
 MathMLOperatorElement::format(MathFormattingContext& ctxt)
 {
@@ -255,7 +258,10 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       scaled maxSize;
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, maxsize))
 	if (ToTokenId(value) == T_INFINITY)
-	  maxSize = scaled::max();
+	  {
+	    maxSize = scaled::max();
+	    maxMultiplier = 0.0f;
+	  }
 	else
 	  ParseLimitValue(value, ctxt, maxMultiplier, maxSize);
 
@@ -277,6 +283,73 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop))
 	largeOp = ToBoolean(value) ? 1 : 0;
+
+      if (stretchy && this == ctxt.getStretchOperator())
+	{
+	  // is it a good place to handle largeOp here???
+
+	  std::cerr << "FOUND STRETCHY OP" << std::endl;
+
+	  // before stretchying the operator need to be formatted at
+	  // least once
+	  AreaRef minArea = getArea();
+	  assert(minArea);
+
+	  BoundingBox minBox = minArea->box();
+
+	  std::cerr << "minimum area bounding box = " << minBox << std::endl;
+
+	  scaled height = ctxt.getStretchToHeight() - axis;
+	  scaled depth = ctxt.getStretchToDepth() + axis;
+
+	  // Here we have to calculate the desired size of the stretchable symbol.
+	  // If symmetric == true the we have to stretch to cover the maximum among
+	  // height and depth, otherwise we just stretch to ascent + descent
+	  scaled v = std::max(scaled::zero(), symmetric ? (2 * std::max(height, depth)) : (height + depth));
+	  scaled h = std::max(scaled::zero(), ctxt.getStretchToWidth());
+
+	  std::cerr << "desired V = " << v << " H = " << h << std::endl;
+
+	  // ...however, there may be some contraints over the size of the stretchable
+	  // operator. adjustedSize will be the final allowed size for the operator
+	  scaled minV = minBox.height + minBox.depth;
+	  scaled minH = minBox.width;
+	  
+	  std::cerr << "minV = " << minV << " minH = " << minH << std::endl;
+	  std::cerr << "minSize = " << minSize << " maxMult = " << minMultiplier << std::endl;
+
+	  if (minMultiplier > 0)
+	    {
+	      v = std::max(v, minV * minMultiplier);
+	      h = std::max(h, minH * minMultiplier);
+	    }
+	  else
+	    {
+	      v = std::max(v, minSize);
+	      h = std::max(h, minSize);
+	    }
+
+	  std::cerr << "after min constraint v = " << v << " h = " << h << std::endl;
+	  std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
+
+	  if (maxMultiplier > 0)
+	    {
+	      v = std::min(v, minV * maxMultiplier);
+	      h = std::min(h, minH * maxMultiplier);
+	    }
+	  else
+	    {
+	      v = std::min(v, maxSize);
+	      h = std::min(h, maxSize);
+	    }
+
+	  std::cerr << "after max constraint v = " << v << " h = " << h << std::endl;
+
+	  ctxt.setStretchV(v);
+	  ctxt.setStretchH(h);
+	  
+	  std::cerr << "stretch by V = " << v << " H = " << h << std::endl;
+	}
 
       AreaRef res = MathMLTokenElement::format(ctxt);
       res = formatEmbellishment(this, ctxt, res);

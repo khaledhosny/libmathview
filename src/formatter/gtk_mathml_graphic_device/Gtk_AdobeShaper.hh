@@ -58,9 +58,9 @@ protected:
   AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
 
   void getGlyphExtents(PangoFont*, PangoGlyphString*, PangoRectangle*) const;
-  bool shapeChar(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
-  bool shapeStretchyCharV(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
-  bool shapeStretchyCharH(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
+  AreaRef shapeChar(const class MathFormattingContext&, const class GlyphSpec&) const;
+  AreaRef shapeStretchyCharV(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;
+  AreaRef shapeStretchyCharH(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;
 
   struct CachedFontKey
   {
