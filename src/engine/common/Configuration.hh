@@ -34,7 +34,8 @@ class Configuration
 {
 public:
   Configuration(void)
-    : fontSize(DEFAULT_FONT_SIZE), 
+    : drawMissingGlyphs(true),
+      fontSize(DEFAULT_FONT_SIZE), 
       foreground(DEFAULT_FOREGROUND),
       background(DEFAULT_BACKGROUND),
       linkForeground(DEFAULT_LINK_FOREGROUND),
@@ -47,6 +48,9 @@ public:
 
   void addDictionary(const String& s) { dictionaries.push_back(s); }
   const std::vector<String>& getDictionaries(void) const { return dictionaries; }
+
+  bool getDrawMissingGlyphs(void) const { return drawMissingGlyphs; }
+  void setDrawMissingGlyphs(bool b) { drawMissingGlyphs = b; }
 
   void setFontSize(unsigned s) { fontSize = s; }
   unsigned getFontSize(void) const { return fontSize; }
@@ -69,6 +73,8 @@ public:
 private:
   std::vector<std::string> dictionaries;
 
+  bool drawMissingGlyphs;
+  int verbosity;
   unsigned fontSize;
 
   RGBColor foreground;

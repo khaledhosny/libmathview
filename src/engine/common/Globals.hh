@@ -33,13 +33,6 @@ namespace Globals {
   extern Configuration      configuration;
   extern Logger             logger;
 
-  void InitGlobalData(const char*);
-
-  void SetVerbosity(int);
-  int  GetVerbosity(void);
-  bool DrawMissingCharacter(void);
-  void DrawMissingCharacter(bool);
-  
 }
 
 #endif // __Globals_hh__

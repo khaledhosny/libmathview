@@ -1306,12 +1306,12 @@ gtk_math_view_set_top(GtkMathView* math_view, gint x, gint y)
 extern "C" void
 gtk_math_view_set_log_verbosity(GtkMathView*, gint level)
 {
-  Globals::SetVerbosity(level);
+  Globals::logger.SetLogLevel(level);
 }
 
 extern "C" gint
 gtk_math_view_get_log_verbosity(GtkMathView*)
 {
-  return Globals::GetVerbosity();
+  return Globals::logger.GetLogLevel();
 }
 

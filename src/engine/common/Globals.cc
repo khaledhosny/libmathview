@@ -33,30 +33,5 @@ namespace Globals {
   Configuration      configuration;
   Logger             logger;
 
-  static bool drawMissingCharacter = true;
-
-  void
-  SetVerbosity(int level)
-  {
-    logger.SetLogLevel(level);
-  }
-
-  int
-  GetVerbosity()
-  {
-    return logger.GetLogLevel();
-  }
-
-  bool
-  DrawMissingCharacter()
-  {
-    return drawMissingCharacter;
-  }
-
-  void
-  DrawMissingCharacter(bool dmc)
-  {
-    drawMissingCharacter = dmc;
-  }
-
 }
+

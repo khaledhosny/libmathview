@@ -23,7 +23,7 @@
 #ifndef __MathMLEmbellishment_hh__
 #define __MathMLEmbellishment_hh__
 
-#include "MathMLElement.hh"
+#include "Area.hh"
 
 class MathMLEmbellishment
 {
@@ -32,7 +32,7 @@ protected:
   ~MathMLEmbellishment() { };
 
 public:
-  AreaRef formatEmbellishment(const SmartPtr<MathMLElement>&,
+  AreaRef formatEmbellishment(const SmartPtr<class MathMLElement>&,
 			      const class MathFormattingContext&,
 			      const AreaRef&) const;
 };
