@@ -55,6 +55,7 @@ Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scal
 		       line);
 }
 
+#if 0
 bool
 Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
 {
@@ -75,7 +76,7 @@ Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharI
 }
 
 bool
-Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
+Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
 {
   const gchar* buffer = pango_layout_get_text(layout);
 
@@ -85,13 +86,18 @@ Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy
       
       gint xpos;
       pango_layout_line_index_to_x(pango_layout_get_line(layout, 0), ptr - buffer, 0, &xpos);
-      
-      dx += Gtk_RenderingContext::fromPangoPixels(xpos);
-      dy += scaled::zero();
+
+      if (p)
+	{
+	  p->x += Gtk_RenderingContext::fromPangoPixels(xpos);
+	  p->y += scaled::zero();
+	}
+
+      if (b) *b = 
 
       return true;
     }
   else
     return false;
 }
-
+#endif

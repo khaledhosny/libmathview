@@ -43,7 +43,7 @@ public:
   virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
   virtual CharIndex length(void) const;
 
 protected:

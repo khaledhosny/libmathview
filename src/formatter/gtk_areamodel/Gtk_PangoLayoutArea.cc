@@ -26,6 +26,7 @@
 
 #include "Gtk_PangoLayoutArea.hh"
 #include "Gtk_RenderingContext.hh"
+#include "Point.hh"
 
 #include "scaledAux.hh"
 
@@ -104,19 +105,31 @@ Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex
     return false;
 }
 
+#include "PointAux.hh"
+
 bool
-Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
+Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
 {
   const gchar* buffer = pango_layout_get_text(layout);
 
-  if (index >= 0 && index <= g_utf8_strlen(buffer, -1))
+  std::cerr << "Gtk_PangoLayoutArea::positionOfIndex " << index << " len = " << g_utf8_strlen(buffer, -1) << std::endl;
+  if (index >= 0 && index < g_utf8_strlen(buffer, -1))
     {
       const gchar* ptr = g_utf8_offset_to_pointer(buffer, index);
       PangoRectangle rect;
       pango_layout_index_to_pos(layout, ptr - buffer, &rect);
-      
-      dx += Gtk_RenderingContext::fromPangoPixels(rect.x);
-      dy += Gtk_RenderingContext::fromPangoPixels(rect.y);
+
+      if (p)
+	{
+	  p->x += Gtk_RenderingContext::fromPangoPixels(rect.x);
+	  p->y += Gtk_RenderingContext::fromPangoPixels(rect.y);
+	}
+
+      if (b) *b = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
+			      Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
+			      Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
+
+      std::cerr << "Gtk_PangoLayoutArea::positionOfIndex " << index << " OK-> " << *p << std::endl;
       return true;
     }
   else

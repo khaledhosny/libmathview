@@ -38,8 +38,10 @@ public:
   { return new Gtk_PangoLayoutLineArea(layout); }
 
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+#if 0
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+#endif
 };
 
 #endif // __Gtk_PangoLayoutLineArea_hh__
