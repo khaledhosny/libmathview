@@ -38,7 +38,6 @@ ARCH IMPROVEMENTS
   vertical area is the bottommost is a bit weird. Think of the cursor:
   intuitively at increasing indices the cursor should go forward (that
   is right or down depending on the container)
-+ in TemplateBuilder remove get_{next,previous}Sibling
 + in TemplateBuilder exploit MathMLInferredRowElement instead of
   creating it each time
 - fix Configuration/Globals files 
