@@ -158,6 +158,7 @@ CXXFLAGS="$CXXFLAGS -W -Wall -p"
 
 AC_OUTPUT([
 Makefile
+gtkmathview.spec
 config/Makefile
 config/math-engine-configuration.xml
 scripts/Makefile
