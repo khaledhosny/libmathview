@@ -791,7 +791,7 @@ gtk_math_view_init(GtkMathView* math_view)
   view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, math_view_class->box_graphic_device));
 #endif // ENABLE_BOXML
 
-  math_view->renderingContext = new Gtk_RenderingContext;
+  math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
 #endif
 }
@@ -1855,6 +1855,7 @@ GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView* math_view, gint level)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != 0);
+  g_return_if_fail(math_view->renderingContext != 0);
   math_view->view->getLogger()->setLogLevel(LogLevelId(level));
 }
 
@@ -1866,3 +1867,36 @@ GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView* math_view)
   return math_view->view->getLogger()->getLogLevel();
 }
 
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)(GtkMathView* math_view, gboolean mode)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->renderingContext != 0);
+  math_view->renderingContext->setT1OpaqueMode(mode == TRUE);
+  gtk_math_view_paint(math_view);
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_t1_opaque_mode)(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->renderingContext != 0, FALSE);
+  return math_view->renderingContext->getT1OpaqueMode() ? TRUE : FALSE;
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)(GtkMathView* math_view, gboolean mode)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->renderingContext != 0);
+  math_view->renderingContext->setT1AntiAliasedMode(mode == TRUE);
+  gtk_math_view_paint(math_view);
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->renderingContext != 0, FALSE);
+  return math_view->renderingContext->getT1AntiAliasedMode() ? TRUE : FALSE;
+}

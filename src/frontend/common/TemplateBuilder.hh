@@ -608,6 +608,7 @@ protected:
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Fraction, numalign));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Fraction, denomalign));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Fraction, linethickness));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Fraction, bevelled));
     }
 
     static void

@@ -43,7 +43,7 @@ protected:
 public:
   enum ColorStyle { NORMAL_STYLE, SELECTED_STYLE, MAX_STYLE };
 
-  Gtk_RenderingContext(void);
+  Gtk_RenderingContext(const SmartPtr<class AbstractLogger>&);
   virtual ~Gtk_RenderingContext();
 
   void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
@@ -76,6 +76,11 @@ public:
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
   void draw(const scaled&, const scaled&, XftFont*, FcChar8) const;
   void draw(const scaled&, const scaled&, const SmartPtr<class T1Font>&, Char8) const;
+
+  void setT1OpaqueMode(bool b) { t1_opaque_mode = b; }
+  bool getT1OpaqueMode(void) const { return t1_opaque_mode; }
+  void setT1AntiAliasedMode(bool b) { t1_aa_mode = b; }
+  bool getT1AntiAliasedMode(void) const { return t1_aa_mode; }
 
   static int toGtkPixels(const scaled& s)
   { return round(s * (72.27 / 72.0)).toInt(); }
@@ -183,6 +188,8 @@ protected:
 
   void releaseResources(void);
 
+  SmartPtr<class AbstractLogger> logger;
+
   ColorStyle style;
   ContextData data[MAX_STYLE];
 
@@ -192,6 +199,10 @@ protected:
 
   // Xft-specific fields
   XftDraw* xft_draw;
+
+  // t1lib-specific fields
+  bool t1_opaque_mode;
+  bool t1_aa_mode;
 };
 
 #endif // __Gtk_RenderingContext_hh__

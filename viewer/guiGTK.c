@@ -60,6 +60,8 @@ static void file_close(GtkWidget*, gpointer);
 static void options_set_font_size(GtkWidget*, gpointer);
 static void options_change_font_size(GtkWidget*, gboolean);
 static void options_verbosity(GtkWidget*, guint);
+static void options_transparent(GtkWidget*, gpointer);
+static void options_anti_aliased(GtkWidget*, gpointer);
 static void options_selection(GtkWidget*, gboolean);
 static void selection_delete(GtkWidget*, gpointer);
 static void selection_parent(GtkWidget*, gpointer);
@@ -90,6 +92,9 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors" },
   { "/Options/Verbosity/_Info",        NULL, options_verbosity,     2,  "/Options/Verbosity/Errors" },
   { "/Options/Verbosity/_Debug",       NULL, options_verbosity,     3,  "/Options/Verbosity/Errors" },
+  { "/Options/Type 1",                 NULL, NULL,                  0,  "<Branch>" },
+  { "/Options/Type 1/_Transparent",    NULL, options_transparent,   TRUE,  "<CheckItem>" },
+  { "/Options/Type 1/_Anti Aliased",   NULL, options_anti_aliased,  0,  "<CheckItem>" },
   { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>" },
   { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>" },
   { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure" },
@@ -281,6 +286,22 @@ static void
 options_verbosity(GtkWidget* widget, guint level)
 {
   gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), level);
+}
+
+static void
+options_transparent(GtkWidget* widget, gpointer data)
+{
+  GtkMathView* math_view = GTK_MATH_VIEW(main_area);
+  g_return_if_fail(math_view != NULL);
+  gtk_math_view_set_t1_opaque_mode(math_view, !gtk_math_view_get_t1_opaque_mode(math_view));
+}
+
+static void
+options_anti_aliased(GtkWidget* widget, gpointer data)
+{
+  GtkMathView* math_view = GTK_MATH_VIEW(main_area);
+  g_return_if_fail(math_view != NULL);
+  gtk_math_view_set_t1_anti_aliased_mode(math_view, !gtk_math_view_get_t1_anti_aliased_mode(math_view));
 }
 
 static void

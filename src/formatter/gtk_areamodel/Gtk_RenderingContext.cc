@@ -27,14 +27,18 @@
 #include <gdk/gdkx.h>
 #if HAVE_LIBT1
 #include <t1lib.h>
+#include <t1libx.h>
 #endif // HAVE_LIBT1
 
 #include "T1Font.hh"
+#include "AbstractLogger.hh"
 #include "Gtk_RenderingContext.hh"
 
-Gtk_RenderingContext::Gtk_RenderingContext()
-  : style(NORMAL_STYLE), xft_draw(0)
-{ }
+Gtk_RenderingContext::Gtk_RenderingContext(const SmartPtr<AbstractLogger>& l)
+  : logger(l), style(NORMAL_STYLE), xft_draw(0), t1_opaque_mode(false), t1_aa_mode(false)
+{
+  assert(logger);
+}
 
 Gtk_RenderingContext::~Gtk_RenderingContext()
 {
@@ -54,10 +58,6 @@ Gtk_RenderingContext::releaseResources()
       xft_draw = 0;
     }
 }
-
-#include <t1lib.h>
-#include <t1libx.h>
-#include <iostream>
 
 void
 Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
@@ -86,9 +86,9 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
       assert(xvisual != NULL);
 
       T1_AASetBitsPerPixel(visual->depth);
-      std::cerr << "X11 depth: " << visual->depth << std::endl;
-      std::cerr << "X11 AAGetLevel() --> " << T1_AAGetLevel() << std::endl;
-      std::cerr << "X11 AAGetBitsPerPixel() --> " << T1_AAGetBitsPerPixel() << std::endl;
+      logger->out(LOG_DEBUG, "t1lib: X11 depth = %d ", visual->depth);
+      logger->out(LOG_DEBUG, "t1lib: X11 AAGetLevel = %d", T1_AAGetLevel());
+      logger->out(LOG_DEBUG, "t1lib: X11 AAGetBitsPerPixel = %d", T1_AAGetBitsPerPixel());
       T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
 #endif // HAVE_LIBT1
     }
@@ -158,12 +158,16 @@ void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<T1Font>& font, Char8 glyph) const
 {
 #if HAVE_LIBT1
-  T1_AASetCharX(GDK_DRAWABLE_XID(getDrawable()),
-	      GDK_GC_XGC(getGC()), T1_OPAQUE,
-	      Gtk_RenderingContext::toGtkX(x),
-	      Gtk_RenderingContext::toGtkY(y),
-	      font->getFontId(), glyph,
-	      font->getScale(), NULL);
+  if (t1_aa_mode)
+    T1_AASetCharX(GDK_DRAWABLE_XID(getDrawable()),
+		  GDK_GC_XGC(getGC()), t1_opaque_mode ? T1_OPAQUE : T1_TRANSPARENT,
+		  Gtk_RenderingContext::toGtkX(x), Gtk_RenderingContext::toGtkY(y),
+		  font->getFontId(), glyph, font->getScale(), NULL);
+  else
+    T1_SetCharX(GDK_DRAWABLE_XID(getDrawable()),
+		GDK_GC_XGC(getGC()), t1_opaque_mode ? T1_OPAQUE : T1_TRANSPARENT,
+		Gtk_RenderingContext::toGtkX(x), Gtk_RenderingContext::toGtkY(y),
+		font->getFontId(), glyph, font->getScale(), NULL);
 #else
   assert(false);
 #endif // HAVE_LIBT1

@@ -154,7 +154,7 @@ MathGraphicDevice::stretchStringV(const FormattingContext& context,
 				  const scaled& height,
 				  const scaled& depth) const
 {
-  return getShaperManager()->shapeStretchy(context, UCS4StringOfString(str), height, depth);
+  return getShaperManager()->shapeStretchy(context, UCS4StringOfString(str), height + depth, 0);
 }
 
 AreaRef
@@ -214,7 +214,7 @@ MathGraphicDevice::radical(const FormattingContext& context,
   const scaled RULE = defaultLineThickness(context);
   UCS4String root(1, 0x221a);
   BoundingBox baseBox = base->box();
-  AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.depth, baseBox.height + RULE);
+  AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + 2 * RULE, baseBox.depth);
   
   std::vector<AreaRef> v;
   v.reserve(3);

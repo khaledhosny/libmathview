@@ -9,7 +9,6 @@ The backend is still rather messy
 
 T1lib support
 
-* add anti-aliasing and mode switching in gtk_renderingcontext
 * fix bugs (crashes about invalid glyphs)
 * add support for loading fonts at different sizes for better quality (cmr5, ...)
 * add support for choosing shapers at runtime
