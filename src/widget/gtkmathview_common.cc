@@ -243,7 +243,7 @@ elementOfModelElement(const SmartPtr<Builder>&, GtkMathViewModelId)
 { return 0; }
 
 static GtkMathViewModelId
-modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
+modelElementOfElement(const SmartPtr<Builder>&, const SmartPtr<Element>&)
 { return 0; }
 
 #endif
@@ -299,7 +299,6 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 
       if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_CARET_ON)
 	{
-	  //printf("DRAWING FOCUS AT (y offset = %d) (%d,%d) [%d,%d,%d]\n", y0, x, y, gbox.width, gbox.height, gbox.depth);
 	  gtk_paint_focus(widget->style,
 			  widget->window,
 			  GTK_STATE_NORMAL,
@@ -482,12 +481,8 @@ initGlobalData(const char* confPath)
 static void
 gtk_math_view_class_init(GtkMathViewClass* klass)
 {
-
-  GtkObjectClass* object_class;
-  GtkWidgetClass* widget_class;
-	
-  object_class = (GtkObjectClass*) klass;
-  widget_class = (GtkWidgetClass*) klass;
+  GtkObjectClass* object_class = (GtkObjectClass*) klass;
+  GtkWidgetClass* widget_class = (GtkWidgetClass*) klass;
 	
   klass->click = gtk_math_view_click;
   klass->select_begin = gtk_math_view_select_begin;
@@ -531,7 +526,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
     g_signal_new("select_begin",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
-		 G_STRUCT_OFFSET(GtkMathViewClass,select_begin),
+		 G_STRUCT_OFFSET(GtkMathViewClass, select_begin),
 		 NULL, NULL,
 		 gtk_marshal_NONE__POINTER,
 		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
@@ -540,7 +535,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
     g_signal_new("select_over",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
-		 G_STRUCT_OFFSET(GtkMathViewClass,select_over),
+		 G_STRUCT_OFFSET(GtkMathViewClass, select_over),
 		 NULL, NULL,
 		 gtk_marshal_NONE__POINTER,
 		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
@@ -549,7 +544,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
     g_signal_new("select_end",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
-		 G_STRUCT_OFFSET(GtkMathViewClass,select_end),
+		 G_STRUCT_OFFSET(GtkMathViewClass, select_end),
 		 NULL, NULL,
 		 gtk_marshal_NONE__POINTER,
 		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
@@ -558,7 +553,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
     g_signal_new("select_abort",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
-		 G_STRUCT_OFFSET(GtkMathViewClass,select_abort),
+		 G_STRUCT_OFFSET(GtkMathViewClass, select_abort),
 		 NULL, NULL,
 		 gtk_marshal_NONE__NONE,
 		 G_TYPE_NONE, 0);
@@ -567,7 +562,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
     g_signal_new("element_over",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
-		 G_STRUCT_OFFSET(GtkMathViewClass,element_over),
+		 G_STRUCT_OFFSET(GtkMathViewClass, element_over),
 		 NULL,NULL,
 		 gtk_marshal_NONE__POINTER,
 		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
@@ -841,7 +836,7 @@ gtk_math_view_button_release_event(GtkWidget* widget, GdkEventButton* event)
       GdomeException exc = 0;
 #endif
       GtkMathViewModelId elem = NULL;
-      
+
       gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem, NULL, NULL);
 
       GtkMathViewModelEvent me;
@@ -849,7 +844,7 @@ gtk_math_view_button_release_event(GtkWidget* widget, GdkEventButton* event)
       me.x = (gint) event->x;
       me.y = (gint) event->y;
       me.state = event->state;
-      
+
       if (math_view->button_pressed == TRUE &&
 	  math_view->select_state == SELECT_STATE_NO &&
 	  fabs(math_view->button_press_x - event->x) <= CLICK_SPACE_RANGE &&

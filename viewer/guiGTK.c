@@ -595,6 +595,10 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   GdomeDOMString* ns_uri;
   GdomeElement* p;
 
+  gint w, h;
+  gtk_math_view_get_size(math_view, &w, &h);
+  printf("click signal %d %d\n", w, h);
+
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(event != NULL);
 
@@ -671,69 +675,35 @@ create_widget_set()
   main_area = gtk_math_view_new(NULL, NULL);
   gtk_widget_show(main_area);
 
-  /* gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "select_begin", GTK_SIGNAL_FUNC (select_begin),
-			     (gpointer) main_area); */
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "select_begin", 
+		   G_CALLBACK(select_begin),
+		   (gpointer) main_area);
 
-  g_signal_connect_swapped(GTK_OBJECT (main_area),
-		  "select_begin", 
-		  G_CALLBACK(select_begin),
-		  (gpointer) main_area);
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "select_over", 
+		   G_CALLBACK(select_over),
+		   (gpointer) main_area);
 
-
-
-  /* gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "select_over", GTK_SIGNAL_FUNC (select_over),
-			     (gpointer) main_area); */
-
-  g_signal_connect_swapped(GTK_OBJECT (main_area),
-		  "select_over", 
-		  G_CALLBACK(select_over),
-		  (gpointer) main_area);
-
-  /*gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "select_end", GTK_SIGNAL_FUNC (select_end),
-			     (gpointer) main_area); */
-
- g_signal_connect_swapped(GTK_OBJECT (main_area),
-		 "select_end", 
-		 G_CALLBACK(select_end),
-		 (gpointer) main_area);
-
-
-  /*gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "select_abort", GTK_SIGNAL_FUNC (select_abort),
-			     (gpointer) main_area);*/
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "select_end", 
+		   G_CALLBACK(select_end),
+		   (gpointer) main_area);
  
- g_signal_connect_swapped(GTK_OBJECT (main_area),
-		 "select_abort", 
-		 G_CALLBACK(select_abort),
-		 (gpointer) main_area);
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "select_abort", 
+		   G_CALLBACK(select_abort),
+		   (gpointer) main_area);
 
-
-  /*gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "element_over", GTK_SIGNAL_FUNC (element_over),
-			     (gpointer) main_area);*/
-
- g_signal_connect_swapped(GTK_OBJECT (main_area),
-		 "element_over", 
-		 G_CALLBACK(element_over),
-		 (gpointer) main_area);
-
-
-  /*gtk_signal_connect_object (GTK_OBJECT (main_area), 
-			     "click", GTK_SIGNAL_FUNC(click),
-			     (gpointer) main_area);*/
-
-  g_signal_connect_swapped(GTK_OBJECT (main_area),
-		  "click", 
-		  G_CALLBACK(click),
-		  (gpointer) main_area);
-
-  gtk_widget_add_events(GTK_WIDGET(main_area),
-			GDK_BUTTON_PRESS_MASK
-			| GDK_BUTTON_RELEASE_MASK
-			| GDK_POINTER_MOTION_MASK);
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "element_over", 
+		   G_CALLBACK(element_over),
+		   (gpointer) main_area);
+  
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "click", 
+		   G_CALLBACK(click),
+		   (gpointer) main_area);
 
   scrolled_area = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
