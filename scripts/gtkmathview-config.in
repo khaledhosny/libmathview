@@ -7,6 +7,7 @@ Options:
 	[--version]
 	[--libs]
 	[--cflags]
+	[--prefix]
 EOF
 	exit $1
 }
@@ -30,6 +31,9 @@ while test $# -gt 0; do
       ;;
     --libs)
       echo_libs=yes
+      ;;
+    --prefix)
+      echo $prefix
       ;;
     *)
       usage 1 1>&2
