@@ -22,47 +22,7 @@
 
 #include <config.h>
 
-#include <t1lib.h>
+#include "T1Font.hh"
 
-#include "T1FontManager.hh"
-
-bool T1FontManager::firstTime = true;
-
-#include <iostream>
-
-T1FontManager::T1FontManager()
-{
-  if (firstTime)
-    {
-      const void* res = T1_InitLib(LOGFILE | IGNORE_FONTDATABASE);
-      assert(res != 0);
-      firstTime = false;
-      T1_SetLogLevel(T1LOG_DEBUG);
-
-      assert(T1_QueryX11Support());
-
-      int i = T1_AddFont("cmr10.pfb");
-      assert(i >= 0);
-      T1_LoadFont(i);
-
-      const int n = T1_GetNoFonts();
-      for (int i = 0; i < n; i++)
-	fontCache[String(T1_GetFontFileName(i))] = i;
-
-      std::cerr << "initialized " << n << " T1 fonts" << std::endl;
-    }
-}
-
-T1FontManager::~T1FontManager()
-{
-  const int res = T1_CloseLib();
-  assert(res == 0);
-  firstTime = true;
-}
-
-T1FontID
-T1FontManager::getT1Font(const String& name) const
-{
-  T1FontCache::iterator p = fontCache.find(name);
-  return (p != fontCache.end()) ? p->second : -1;
-}
+T1Font::~T1Font()
+{ }

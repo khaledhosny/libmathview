@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "T1Font.hh"
 #include "Gtk_AreaFactory.hh"
 #include "T1FontManager.hh"
 #include "Gtk_T1ComputerModernShaper.hh"
@@ -46,13 +47,13 @@ Gtk_T1ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
 {
 
   assert(t1FontManager);
-  T1FontID fontId = t1FontManager->getT1Font("cmr10.pfb");
-  assert(fontId != -1);
+  const SmartPtr<T1Font> font = t1FontManager->getT1Font("cmr10.pfb", size);
+  assert(font);
 
   std::vector<AreaRef> c;
   c.reserve(256);
   for (int i = 0; i < 256; i++)
-    c.push_back(Gtk_T1GlyphArea::create(fontId, size.toFloat(), i));
+    c.push_back(Gtk_T1GlyphArea::create(font, i));
 
   return factory->horizontalArray(c);
 }

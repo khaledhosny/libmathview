@@ -15,11 +15,9 @@ noinst_LTLIBRARIES = libgtk_mathml_graphic_device.la
 
 if COND_T1LIB
 MAYBE_T1_S = \
-  T1FontManager.cc \
   Gtk_T1ComputerModernShaper.cc \
   $(NULL)
 MAYBE_T1_H = \
-  T1FontManager.hh \
   Gtk_T1ComputerModernShaper.hh \
   $(NULL)
 else

@@ -28,6 +28,8 @@
 #include <ft2build.h>
 #include <X11/Xft/Xft.h>
 
+#include "Char.hh"
+#include "SmartPtr.hh"
 #include "GObjectPtr.hh"
 #include "RGBColor.hh"
 #include "Rectangle.hh"
@@ -73,6 +75,7 @@ public:
   void draw(const scaled&, const scaled&, PangoLayoutLine*) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
   void draw(const scaled&, const scaled&, XftFont*, FcChar8) const;
+  void draw(const scaled&, const scaled&, const SmartPtr<class T1Font>&, Char8) const;
 
   static int toGtkPixels(const scaled& s)
   { return round(s * (72.27 / 72.0)).toInt(); }

@@ -1,6 +1,20 @@
 
 NULL =
 
+if COND_T1LIB
+MAYBE_T1_S = \
+  T1Font.cc \
+  T1FontManager.cc \
+  $(NULL)
+MAYBE_T1_H = \
+  T1Font.hh \
+  T1FontManager.hh \
+  $(NULL)
+else
+MAYBE_T1_S = $(NULL)
+MAYBE_T1_H = $(NULL)
+endif
+
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
   FormattingContext.hh \
@@ -9,9 +23,14 @@ mathview_HEADERS = \
 
 noinst_LTLIBRARIES = libcommon.la
 
+noinst_HEADERS = \
+  $(MAYBE_T1_H) \
+  $(NULL)
+
 libcommon_la_SOURCES = \
   FormattingContext.cc \
   GraphicDevice.cc \
+  $(MAYBE_T1_S) \
   $(NULL)
 
 INCLUDES = \

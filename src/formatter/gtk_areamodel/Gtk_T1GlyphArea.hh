@@ -28,25 +28,22 @@
 class Gtk_T1GlyphArea : public GlyphArea
 {
 protected:
-  Gtk_T1GlyphArea(int, float, Char8);
+  Gtk_T1GlyphArea(const SmartPtr<class T1Font>&, Char8);
   virtual ~Gtk_T1GlyphArea();
 
 public:
-  static SmartPtr<Gtk_T1GlyphArea> create(int fontId, float scale, Char8 index)
-  { return new Gtk_T1GlyphArea(fontId, scale, index); }
+  static SmartPtr<Gtk_T1GlyphArea> create(const SmartPtr<class T1Font>&, Char8);
 
   virtual BoundingBox box(void) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
 
-  int getFontId(void) const { return fontId; }
-  float getScale(void) const { return scale; }
+  SmartPtr<class T1Font> getFont(void) const;
   Char8 getIndex(void) const { return index; }
 
 private:
-  int fontId;
-  float scale;
+  SmartPtr<class T1Font> font;
   Char8 index;
 };
 

@@ -49,6 +49,7 @@ INCLUDES = \
   $(T1_CFLAGS) \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/formatter/areamodel \
   $(NULL)
 

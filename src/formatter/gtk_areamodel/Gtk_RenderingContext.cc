@@ -25,7 +25,11 @@
 #include <cassert>
 
 #include <gdk/gdkx.h>
+#if HAVE_LIBT1
+#include <t1lib.h>
+#endif // HAVE_LIBT1
 
+#include "T1Font.hh"
 #include "Gtk_RenderingContext.hh"
 
 Gtk_RenderingContext::Gtk_RenderingContext()
@@ -73,19 +77,19 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
       assert(xft_draw);
 
 #if HAVE_LIBT1
-    Display* xdisplay = GDK_DRAWABLE_XDISPLAY(drawable);
-    assert(xdisplay != NULL);
-    Colormap xcolormap = GDK_COLORMAP_XCOLORMAP(gdk_colormap);
-    GdkVisual* visual = gdk_colormap_get_visual(gdk_colormap);
-    assert(visual != NULL);
-    Visual* xvisual = GDK_VISUAL_XVISUAL(visual);
-    assert(xvisual != NULL);
+      Display* xdisplay = GDK_DRAWABLE_XDISPLAY(drawable);
+      assert(xdisplay != NULL);
+      Colormap xcolormap = GDK_COLORMAP_XCOLORMAP(gdk_colormap);
+      GdkVisual* visual = gdk_colormap_get_visual(gdk_colormap);
+      assert(visual != NULL);
+      Visual* xvisual = GDK_VISUAL_XVISUAL(visual);
+      assert(xvisual != NULL);
 
-    T1_AASetBitsPerPixel(visual->depth);
-    std::cerr << "X11 depth: " << visual->depth << std::endl;
-    std::cerr << "X11 AAGetLevel() --> " << T1_AAGetLevel() << std::endl;
-    std::cerr << "X11 AAGetBitsPerPixel() --> " << T1_AAGetBitsPerPixel() << std::endl;
-    T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
+      T1_AASetBitsPerPixel(visual->depth);
+      std::cerr << "X11 depth: " << visual->depth << std::endl;
+      std::cerr << "X11 AAGetLevel() --> " << T1_AAGetLevel() << std::endl;
+      std::cerr << "X11 AAGetBitsPerPixel() --> " << T1_AAGetBitsPerPixel() << std::endl;
+      T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
 #endif // HAVE_LIBT1
     }
   else
@@ -148,4 +152,19 @@ Gtk_RenderingContext::draw(const scaled& x, const scaled& y, XftFont* font, FcCh
 		 Gtk_RenderingContext::toXftX(x),
 		 Gtk_RenderingContext::toXftY(y),
 		 &glyph, 1);
+}
+
+void
+Gtk_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<T1Font>& font, Char8 glyph) const
+{
+#if HAVE_LIBT1
+  T1_SetCharX(GDK_DRAWABLE_XID(getDrawable()),
+	      GDK_GC_XGC(getGC()), T1_OPAQUE,
+	      Gtk_RenderingContext::toGtkX(x),
+	      Gtk_RenderingContext::toGtkY(y),
+	      font->getFontId(), glyph,
+	      font->getScale(), NULL);
+#else
+  assert(false);
+#endif // HAVE_LIBT1
 }
