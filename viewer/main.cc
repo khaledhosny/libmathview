@@ -59,7 +59,7 @@ extern void *parseMathMLFile(char *);
 
 static void printVersion()
 {
-  printf("%s - written by Luca Padovani (C) 2000-2001.\n", appName);
+  printf("%s - written by Luca Padovani (C) 2000-2004.\n", appName);
 #ifdef DEBUG
   //printf("Compiled %s %s\n", __DATE__, __TIME__);
 #endif // DEBUG

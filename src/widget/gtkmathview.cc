@@ -49,7 +49,6 @@
 #include "gtkmathview.h"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
-#include "NamespaceRegistry.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "BoxMLNamespaceContext.hh"

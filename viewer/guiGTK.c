@@ -346,7 +346,7 @@ help_about(GtkWidget* widget, gpointer data)
   GtkWidget* ok;
 
   dialog = gtk_dialog_new();
-  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2003 Luca Padovani    \n");
+  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2004 Luca Padovani    \n");
   ok = gtk_button_new_with_label("Close");
 
   /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",

@@ -38,6 +38,8 @@ ARCH IMPROVEMENTS
   intuitively at increasing indices the cursor should go forward (that
   is right or down depending on the container)
 + in TemplateBuilder remove get_{next,previous}Sibling
++ in TemplateBuilder exploit MathMLInferredRowElement instead of
+  creating it each time
 - the default font size now need to be set on two different 
   namespacecontexts, ugly. (see gtkmathview.cc)
   Put the default font size in the view
