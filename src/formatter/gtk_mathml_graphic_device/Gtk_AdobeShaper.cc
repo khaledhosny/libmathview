@@ -431,8 +431,11 @@ Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 			      unsigned fi, unsigned gi,
 			      const scaled& size) const
 {
-  // return createPangoGlyphArea(factory, fi, gi, size);
+#if 0
+  return createPangoGlyphArea(factory, fi, gi, size);
+#else
   return createXftGlyphArea(factory, fi, gi, size);
+#endif
 }
 
 AreaRef

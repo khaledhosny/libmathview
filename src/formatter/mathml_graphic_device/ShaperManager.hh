@@ -50,8 +50,8 @@ public:
   GlyphSpec registerStretchyChar(Char32 ch, const GlyphSpec& spec);
 
 private:
-  GlyphSpec map(Char32 ch) const;
-  GlyphSpec mapStretchy(Char32 ch) const;
+  const GlyphSpec& map(Char32 ch) const;
+  const GlyphSpec& mapStretchy(Char32 ch) const;
   SmartPtr<const class Area> shapeAux(class ShapingContext&) const;
   SmartPtr<class Shaper> getShaper(unsigned) const;
 

@@ -131,22 +131,18 @@ ShaperManager::registerStretchyChar(Char32 ch, const GlyphSpec& spec)
   return oldSpec;
 }
 
-GlyphSpec
+const GlyphSpec&
 ShaperManager::map(Char32 ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch];
 }
 
-GlyphSpec
+const GlyphSpec&
 ShaperManager::mapStretchy(Char32 ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch | STRETCHY_FLAG];
-#if 0
-  GlyphSpec spec = glyphSpec[ch | STRETCHY_FLAG];
-  return spec.getShaperId() ? spec : map(ch);
-#endif
 }
 
 SmartPtr<class Shaper>

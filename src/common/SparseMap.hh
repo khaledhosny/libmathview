@@ -65,7 +65,7 @@ public:
     data[i][J(index)] = v;
   }
 
-  T& operator[](size_t index) const
+  const T& operator[](size_t index) const
   { return data[I(index)][J(index)]; }
 
 private:

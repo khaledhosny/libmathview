@@ -47,7 +47,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
 
   getShaperManager()->registerShaper(SpaceShaper::create());
 
-#if 1
+#if 0
   SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
   pangoShaper->setPangoContext(context);
   getShaperManager()->registerShaper(pangoShaper);
