@@ -40,6 +40,8 @@ extern "C" {
 #define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
+  typedef GdkPoint GtkMathViewPoint;
+
   typedef struct _GtkMathViewBoundingBox {
     gint width;
     gint height;
@@ -102,11 +104,14 @@ extern "C" {
   void           GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewModelId);
   gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewModelId);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*, gint*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_origin)(GtkMathView*, GtkMathViewModelId, gint*, gint*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView*, GtkMathViewModelId, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_origin)(GtkMathView*, GtkMathViewModelId, gint, gint*, gint*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewModelId*,
+							 GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView*, GtkMathViewModelId,
+							      GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*,
+						      GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView*, GtkMathViewModelId, gint,
+							   GtkMathViewPoint*, GtkMathViewBoundingBox*);
   void           GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
   void           GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
   void           GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, GtkMathViewCursor);
@@ -118,7 +123,6 @@ extern "C" {
   GtkAdjustment* GTKMATHVIEW_METHOD_NAME(get_hadjustment)(GtkMathView*);
   GtkAdjustment* GTKMATHVIEW_METHOD_NAME(get_vadjustment)(GtkMathView*);
   GdkPixmap*     GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView*);
-  GtkDrawingArea* GTKMATHVIEW_METHOD_NAME(get_drawing_area)(GtkMathView*);
   void           GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView*, guint);
   guint          GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView*);
   void           GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint);
