@@ -416,56 +416,56 @@ MathML elements are enclosed inside rectangles and boxes.
 A rectangle is a tuple consisting of four components which locate the
 element by means of absolute coordinates.
 
-@deftypevr Field scaled {Rectangle::x}
+@deftypeivar Rectangle scaled x
 Horizontal coordinate of the lower-left corner.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {Rectangle::y}
+@deftypeivar Rectangle scaled y
 Vertical coordinate of the lower-left corner.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {Rectangle::width}
+@deftypeivar Rectangle scaled width
 Width of the rectangle.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {Rectangle::height}
+@deftypeivar Rectangle scaled height
 Height of the rectangle.
-@end deftypevr
+@end deftypeivar
 
-@deftypefn Method void {Rectangle::Zero} ()
+@deftypemethod Rectangle void Zero ()
 Set all the instance variables @var{x}, @var{y}, @var{width} and
 @var{height} to zero.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {Rectangle::Overlaps} (const Rectangle& @var{rect})
+@deftypemethod Rectangle bool Overlaps (const Rectangle& @var{rect})
 Return @code{true} if the rectangle (partially) overlaps with
 @var{rect}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {Rectangle::Overlaps} (scaled @var{x0}, scaled @var{y0}, scaled @var{w0}, scaled @var{h0})
+@deftypemethod Rectangle bool Overlaps (scaled @var{x0}, scaled @var{y0}, scaled @var{w0}, scaled @var{h0})
 Same as the previous method, but the rectangle is given in its
 components.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {Rectangle::IsNull} ()
+@deftypemethod Rectangle bool IsNull ()
 Return @code{true} if the rectangle is null, that is if either
 @var{width} or @var{height} is strictly less than a predefined constant
 @code{EPSILON}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {Rectangle::IsInside} (scaled @var{x}, scaled @var{y})
+@deftypemethod Rectangle bool IsInside (scaled @var{x}, scaled @var{y})
 Return @code{true} is the point (@var{x}, @var{y}) is inside the
 rectangle.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {Rectangle::Union} (const Rectangle& @var{rect})
+@deftypemethod Rectangle void Union (const Rectangle& @var{rect})
 Set the rectangle as the smallest rectangle which comprises both
 @var{*this} and @var{rect}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {Rectangle::Dump} ()
+@deftypemethod Rectangle void Dump ()
 Debug method.
-@end deftypefn
+@end deftypemethod
 
 @node Bounding Boxes,  , Rectangles, Boxes and Rectangles
 @subsection Bounding Boxes
@@ -473,100 +473,100 @@ Debug method.
 A bounding box is a tuple which identifies the @emph{extent}
 of an element, but not its absolute position.
 
-@deftypevr Field bool {BoundingBox::null}
+@deftypeivar BoundingBox bool null
 @code{true} if the bounding box is null, that is it is not valid or not
 initialized yet.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::width}
+@deftypeivar BoundingBox scaled width
 Width of the bounding box, that is, amount of horizontal space to shift
 in order to render the subsequent entity.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::ascent}
+@deftypeivar BoundingBox scaled ascent
 Ascent of the bounding box, that is the distance from the baseline of
 the topmost pixel on of the entity enclosed in this box. Note that this
 field may be negative for entities laying completely below the baseline,
 such as the underscore @code{_}.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::descent}
+@deftypeivar BoundingBox scaled descent
 Descent of the bounding box, that is the distance from the baseline of
 the bottommost pixel on of the entity enclosed in this box. Note that
 this field may be negative for entities laying completely above the
 baseline, such as the minus sign and many diacritical marks.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::lBearing}
+@deftypeivar BoundingBox scaled lBearing
 Distance from the origin of the box to the leftmost pixel on of the
 entity enclosed in the box.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::rBearing}
+@deftypeivar BoundingBox scaled rBearing
 Distance from the origin of the box to the rightmost pixel on of the
 entity enclosed in the box.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::tAscent}
+@deftypeivar BoundingBox scaled tAscent
 ``Total ascent'' of the box. For boounding boxes enclosing a single
 glyph, it is the ascent of the font.
-@end deftypevr
+@end deftypeivar
 
-@deftypevr Field scaled {BoundingBox::tDescent}
+@deftypeivar BoundingBox scaled tDescent
 ``Total descent'' of the box. For bounding boxes enclosing a single
 glyph, it is the descent of the font.
-@end deftypevr
+@end deftypeivar
 
-@deftypefn Method void {BoundingBox::Null} ()
+@deftypemethod BoundingBox void Null ()
 Nullify the box.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {BoundingBox::IsNull} ()
+@deftypemethod BoundingBox bool IsNull ()
 Return @code{true} if the box is null.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method scaled {BoundingBox::GetHeight} ()
+@deftypemethod BoundingBox scaled GetHeight ()
 Return the height of the box, given as the sum of @var{ascent} and
 @var{descent}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method scaled {BoundingBox::GetTotalHeight} ()
+@deftypemethod BoundingBox scaled GetTotalHeight ()
 Return the ``total height'' of the box, given as the sum of
 @var{tAscent} and @var{tDescent}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::Set} (scaled @var{w}, scaled @var{a}, scaled @var{d})
+@deftypemethod BoundingBox void Set (scaled @var{w}, scaled @var{a}, scaled @var{d})
 Set the box to be non-null, with width @var{w}, ascent @var{a}, descent
 @var{d}, left bearing 0 and right bearing @var{w}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::Set} (scaled @var{w}, scaled @var{a}, scaled @var{d}, scaled @var{l}, scaled @var{r})
+@deftypemethod BoundingBox void Set (scaled @var{w}, scaled @var{a}, scaled @var{d}, scaled @var{l}, scaled @var{r})
 Set the box to be non-null, with width @var{w}, ascent @var{a}, descent
 @var{d}, left bearing @var{l} and right bearing @var{r}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::Append} (const BoundingBox& @var{box})
+@deftypemethod BoundingBox void Append (const BoundingBox& @var{box})
 Enlarge current bounding box as if @var{box} was ``appended'' right
 after it. All the instance variable are updated accordingly.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::Append} (scaled @var{w})
+@deftypemethod BoundingBox void Append (scaled @var{w})
 Augment the @var{width} of the current bounding box by @var{w}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::Max} (const BoundingBox& @var{box})
+@deftypemethod BoundingBox void Max (const BoundingBox& @var{box})
 Enlarge current bounding box as if @var{box} was ``overlaid'' on top of
 it.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::ToRectangle} (scaled @var{x}, scaled @var{y}, Rectangle& @var{rect})
+@deftypemethod BoundingBox void ToRectangle (scaled @var{x}, scaled @var{y}, Rectangle& @var{rect})
 Initialize a rectangle @var{rect} from the current bounding box as if it
 was placed at (@var{x}, @var{y}).
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {BoundingBox::Dump} ()
+@deftypemethod BoundingBox void Dump ()
 Debug method.
-@end deftypefn
+@end deftypemethod
 
 
 @node    MathEngine,  , Boxes and Rectangles, C++ Interface
@@ -580,163 +580,163 @@ This is the default constructor of the rendering engine.
 This is the descructor.
 @end defmethod
 
-@deftypefn Method void {MathEngine::InitGlobalData} (const char* @var{confPath})
+@deftypemethod MathEngine void InitGlobalData (const char* @var{confPath})
 Global initialization function. Must be called once (and only once) no
 matter how many instances of the rendering engine are
 created. @var{confPath} is the full path to the engine's configuration
 file. If it is @code{NULL} then the engine will try to open the default
 configuration file (usually located in
 @file{/usr/local/share/gtkmathview}).
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Init} (DrawingArea* @var{area}, FontManager* @var{fm})
+@deftypemethod MathEngine void Init (DrawingArea* @var{area}, FontManager* @var{fm})
 Initialization function. Must be called before any other method of this
 class is invoked. @var{area} must be a non-@code{NULL} pointer to an
 already instantiated @code{DrawingArea} object and @var{fm} must be a
 non-@code{NULL} pointer to an already instantiated @code{FontManager}
 object.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {MathEngine::Load} (const char* @var{uri})
+@deftypemethod MathEngine bool Load (const char* @var{uri})
 Load the document whose URI is @var{uri}. The document is parsed, the
 setup is done (see below). Return @code{true} if the document has been
 loaded correctly, @code{false} otherwise.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {MathEngine::Load} (mDOMDocRef @var{doc})
+@deftypemethod MathEngine bool Load (mDOMDocRef @var{doc})
 Load the document whose DOM structure is @var{doc}. Return @code{true}
 if the document has been loaded correctly, @code{false} otherwise.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Unload} ()
+@deftypemethod MathEngine void Unload ()
 Unload the document currently loaded and release all resources
 associated to it. This method is implicitly called by the load method.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Setup} ()
+@deftypemethod MathEngine void Setup ()
 Force the setup of the document loaded, that is the document tree is
 traversed and all the attributes are re-evaluated. This is to be done if
 a global default property of the document has changed, such as the
 default font size.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Layout} ()
+@deftypemethod MathEngine void Layout ()
 Force the layout of the document, that is, the document is formatted
 given the available horizontal width (which is a property of the drawing
 area set at initialization time).
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetDirty} (const Rectangle* @var{rect} = NULL)
+@deftypemethod MathEngine void SetDirty (const Rectangle* @var{rect} = NULL)
 Force a set of MathML elements to be redrawn. If @var{rect} is specified
 (i.e. it is non-@code{NULL}), then only elements whose bounding box has
 a non-empty intersection with @var{rect} are set as ``dirty''. If
 @var{rect} is @code{NULL}, all the elements in the document are set as
 ``dirty''. Only dirty elements will be drawn in the next call to the
 update method.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Update} (const Rectangle* @var{rect})
+@deftypemethod MathEngine void Update (const Rectangle* @var{rect})
 If @var{rect} is not @code{NULL}, update the rectangle
 @var{rect}. Otherwise update all the visible area. The update is done by
 rendering the dirty elements of the document and copying the rendered
 area from the back buffer to the screen.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Render} ()
+@deftypemethod MathEngine void Render ()
 Render the whole document.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::Render} (const Rectangle* @var{rect})
+@deftypemethod MathEngine void Render (const Rectangle* @var{rect})
 Render all MathML elements whose bounding box has a non-empty
 intersection with @var{rect}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {MathEngine::IsOnLink} (scaled @var{x}, scaled @var{y})
+@deftypemethod MathEngine bool IsOnLink (scaled @var{x}, scaled @var{y})
 Return @code{true} if the element pointed to by (@var{x}, @var{y}) has a
 link. Currently, this test is done by looking at an attribute
 @code{href} in the DOM node, ignoring possible namespaces.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetSelection} (MathMLElement* @var{elem})
+@deftypemethod MathEngine void SetSelection (MathMLElement* @var{elem})
 Set the element @var{elem} as selected. A selected element (and all its
 children) will be rendered with a different background color.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method MathMLElement* {MathEngine::GetSelection} ()
+@deftypemethod MathEngine MathMLElement* GetSelection ()
 Return the MathML currently selected, or @code{NULL} if no element is
 selected.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method MathMLElement* {MathEngine::GetRoot} ()
+@deftypemethod MathEngine MathMLElement* GetRoot ()
 Return the document's root element.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method MathMLElement* {MathEngine::GetElementAt} (scaled @var{x}, scaled @var{y})
+@deftypemethod MathEngine MathMLElement* GetElementAt (scaled @var{x}, scaled @var{y})
 Return the element pointed to by (@var{x}, @var{y}), or @code{NULL} if
 there is no element at that coordinates.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::GetDocumentBoundingBox} (BoundingBox& @var{box})
+@deftypemethod MathEngine void GetDocumentBoundingBox (BoundingBox& @var{box})
 Initialize @var{box} with the bounding box of the whole document.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::GetDocumentRectangle} (Rectangle& @var{rect})
+@deftypemethod MathEngine void GetDocumentRectangle (Rectangle& @var{rect})
 Initialize @var{rect} with the rectangle of the whole document.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetDefaultFontSize} (unsigned @var{size})
+@deftypemethod MathEngine void SetDefaultFontSize (unsigned @var{size})
 Set the default font size for the document. No setup or update is done
 after a call to this method. @var{size} is expressed in points.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method unsigned {MathEngine::GetDefaultFontSize} ()
+@deftypemethod MathEngine unsigned GetDefaultFontSize ()
 Return the current default font size for the document in points.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetVerbosity} (int @var{level})
+@deftypemethod MathEngine void SetVerbosity (int @var{level})
 Set the verbosity level to @var{level}. Valid levels are the integers
 from 0 to 3, each associated to an increasing verbosity of messages.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method int {MathEngine::GetVerbosity} ()
+@deftypemethod MathEngine int GetVerbosity ()
 Return the current level of verbosity as an index from 0 to 3.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetAntiAliasing} (bool @var{b})
+@deftypemethod MathEngine void SetAntiAliasing (bool @var{b})
 Enable anti-aliasing if @var{b} is @code{true}, disable otherwise. The
 document is updated at each invocation of this method. Anti-aliasing is
 available with Type1 fonts only and it is much slower than
 non-anti-aliased mode.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {MathEngine::GetAntiAliasing} ()
+@deftypemethod MathEngine bool GetAntiAliasing ()
 Return @code{true} if anti-aliasing is enabled.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetKerning} (bool @var{b})
+@deftypemethod MathEngine void SetKerning (bool @var{b})
 Enable kerning if @var{b} is @code{true}, disable otherwise. The
 document is update at each invocation of this method. Kerning is
 available for Type1 fonts only, and only for those fonts with a proper
 @code{AFM} file with kerning information. Exporting to PostScript does
 not currently support kerning.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {MathEngine::GetKerning} ()
+@deftypemethod MathEngine bool GetKerning ()
 Return @code{true} if kerning is enabled.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void {MathEngine::SetTransparency} (bool @var{b})
+@deftypemethod MathEngine void SetTransparency (bool @var{b})
 Enable transparency if @var{b} is true, disable otherwise. Transparency
 allows two or more glyphs to overlap transparently, which is rather
 useful in the case of combining characters. Since these characters are
 not frequent and transparency is slower than standard rendering mode,
 the default for transparency is @code{false}. Note also that
 transparency is currently supported for Type1 fonts only.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method bool {MathEngine::GetTransparency} ()
+@deftypemethod MathEngine bool GetTransparency ()
 Return @code{true} if transparency is enabled.
-@end deftypefn
+@end deftypemethod
 
 @node     GTK+ Interface, Configuration, C++ Interface, Top
 @comment  node-name,  next,  previous,  up
