@@ -27,7 +27,7 @@
 #include "Globals.hh"
 #include "ChildList.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLRadicalElement.hh"
 #include "MathMLView.hh"
 #include "MathFormattingContext.hh"
@@ -65,7 +65,7 @@ MathMLRadicalElement::construct()
 		    // this must be an inferred mrow
 		    row = smart_cast<MathMLRowElement>(getBase());
 		  else
-		    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
+		    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement());
 		  assert(row && !row->getDOMElement());
 		  setBase(row);
 
@@ -91,12 +91,12 @@ MathMLRadicalElement::construct()
 	      switch (children.get_length())
 		{
 		case 0:
-		  setBase(getFactory()->createDummyElement(getView()));
-		  setIndex(getFactory()->createDummyElement(getView()));
+		  setBase(getFactory()->createDummyElement());
+		  setIndex(getFactory()->createDummyElement());
 		  break;
 		case 1:
 		  setBase(getFormattingNode(children.item(0)));
-		  setIndex(getFactory()->createDummyElement(getView()));
+		  setIndex(getFactory()->createDummyElement());
 		  break;
 		default:
 		  setBase(getFormattingNode(children.item(0)));

@@ -55,7 +55,7 @@ public:
   unsigned       GetLogicalContentLength(void) const;
 
 private:
-  LinearContainerTemplate<MathMLTokenElement, SmartPtr<class MathMLTextNode> > content;
+  LinearContainerTemplate<MathMLTokenElement,class MathMLTextNode> content;
 
 protected:
   AreaRef formatAux(class MathFormattingContext&);

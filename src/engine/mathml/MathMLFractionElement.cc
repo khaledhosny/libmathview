@@ -29,7 +29,7 @@
 #include "MathGraphicDevice.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLView.hh"
@@ -71,12 +71,12 @@ MathMLFractionElement::construct()
 	  if (n > 0)
 	    setNumerator(getFormattingNode(children.item(0)));
 	  else if (!getNumerator() || !is_a<MathMLDummyElement>(getNumerator()))
-	    setNumerator(getFactory()->createDummyElement(getView()));
+	    setNumerator(getFactory()->createDummyElement());
 
 	  if (n > 1)
 	    setDenominator(getFormattingNode(children.item(1)));
 	  else if (!getDenominator() || !is_a<MathMLDummyElement>(getDenominator()))
-	    setDenominator(getFactory()->createDummyElement(getView()));
+	    setDenominator(getFactory()->createDummyElement());
 	}
 #endif
 

@@ -33,14 +33,3 @@ MathMLNode::MathMLNode()
 MathMLNode::~MathMLNode()
 { }
 
-SmartPtr<MathMLElement>
-MathMLNode::getParent() const
-{
-  return static_cast<MathMLElement*>(parent);
-}
-
-void
-MathMLNode::setParent(const SmartPtr<MathMLElement>& p)
-{
-  parent = static_cast<MathMLElement*>(p);
-}

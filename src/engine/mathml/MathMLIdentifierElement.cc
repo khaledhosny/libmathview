@@ -26,9 +26,7 @@
 
 MathMLIdentifierElement::MathMLIdentifierElement(const SmartPtr<class MathMLView>& view)
   : MathMLTokenElement(view)
-{
-}
+{ }
 
 MathMLIdentifierElement::~MathMLIdentifierElement()
-{
-}
+{ }

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,30 +17,30 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __MathMLDOMLinker_hh__
-#define __MathMLDOMLinker_hh__
+#ifndef __Linker_hh__
+#define __Linker_hh__
 
 #include "DOM.hh"
-#include "Object.hh"
 #include "HashMap.hh"
 #include "SmartPtr.hh"
 #include "WeakPtr.hh"
+#include "Object.hh"
 
-class MathMLDOMLinker : public Object
+class Linker : public Object
 {
 protected:
-  MathMLDOMLinker(void);
-  virtual ~MathMLDOMLinker();
+  Linker(void);
+  virtual ~Linker();
 
 public:
-  static SmartPtr<MathMLDOMLinker> create(void)
-  { return new MathMLDOMLinker(); }
+  static SmartPtr<Linker> create(void) 
+  { return new Linker(); }
 
-  SmartPtr<class MathMLElement> get(const DOM::Element&) const;
-  void add(const DOM::Element&, const SmartPtr<class MathMLElement>&);
+  SmartPtr<class Element> get(const DOM::Element&) const;
+  void add(const DOM::Element&, const SmartPtr<class Element>&);
   bool remove(const DOM::Element&);
   
 protected:
@@ -49,12 +49,12 @@ protected:
     size_t operator()(const DOM::Node& node) const
     {
       assert(node);
-      return reinterpret_cast<size_t>(static_cast<GdomeNode*>(node));
+      return reinterpret_cast<size_t>(node.id());
     }
   };
 
-  typedef HASH_MAP_NS::hash_map<DOM::Node,WeakPtr<class MathMLElement>,DOM_hash> DOMNodeMap;
+  typedef HASH_MAP_NS::hash_map<DOM::Node,WeakPtr<class Element>,DOM_hash> DOMNodeMap;
   mutable DOMNodeMap nodeMap;
 };
 
-#endif // __MathMLDOMLinker_hh__
+#endif // __Linker_hh__

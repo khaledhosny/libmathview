@@ -11,7 +11,11 @@ libengine_common_la_SOURCES = \
   Attribute.cc \
   AttributeList.cc \
   AttributeSignature.cc \
-  RefinementContext.cc
+  RefinementContext.cc \
+  NamespaceFactory.cc \
+  ElementFactory.cc \
+  Element.cc \
+  Linker.cc
 
 noinst_HEADERS = \
   Attribute.hh \
@@ -21,10 +25,14 @@ noinst_HEADERS = \
   RefinementContext.hh \
   BinContainerTemplate.hh \
   LinearContainerTemplate.hh \
+  NamespaceFactory.hh \
+  ElementFactory.hh \
   View.hh \
   ViewContext.hh \
-  Element.hh 
+  Element.hh \
+  Linker.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \
-  -I$(top_srcdir)/src/common
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/formatter/areamodel

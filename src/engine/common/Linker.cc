@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,37 +17,35 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
 #include <cassert>
 
-#include "MathMLDOMLinker.hh"
-#include "MathMLElement.hh"
+#include "Linker.hh"
+#include "Element.hh"
 
-MathMLDOMLinker::MathMLDOMLinker()
-{
-}
+Linker::Linker()
+{ }
 
-MathMLDOMLinker::~MathMLDOMLinker()
-{
-}
+Linker::~Linker()
+{ }
 
-SmartPtr<MathMLElement>
-MathMLDOMLinker::get(const DOM::Element& elem) const
+SmartPtr<Element>
+Linker::get(const DOM::Element& elem) const
 {
   assert(elem);
 
   DOMNodeMap::iterator p = nodeMap.find(elem);
-  if (p != nodeMap.end()) return static_cast<MathMLElement*>((*p).second);
+  if (p != nodeMap.end()) return static_cast<Element*>((*p).second);
   else return 0;
 }
 
 #if 0
 SmartPtr<MathMLElement>
-MathMLDOMLinker::findFormattingNode(const DOM::Node& node) const
+Linker::findFormattingNode(const DOM::Node& node) const
 {
   for (DOM::Node p = node; p; p = p.get_parentNode())
     if (SmartPtr<MathMLElement> fNode = getFormattingNode(p))
@@ -58,14 +56,14 @@ MathMLDOMLinker::findFormattingNode(const DOM::Node& node) const
 #endif
 
 void
-MathMLDOMLinker::add(const DOM::Element& elem, const SmartPtr<MathMLElement>& fElem)
+Linker::add(const DOM::Element& elem, const SmartPtr<Element>& fElem)
 {
   assert(elem);
-  nodeMap[elem] = static_cast<MathMLElement*>(fElem);
+  nodeMap[elem] = static_cast<Element*>(fElem);
 }
 
 bool
-MathMLDOMLinker::remove(const DOM::Element& elem)
+Linker::remove(const DOM::Element& elem)
 {
   assert(elem);
   DOMNodeMap::iterator p = nodeMap.find(elem);

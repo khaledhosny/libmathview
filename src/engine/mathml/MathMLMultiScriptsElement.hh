@@ -63,11 +63,11 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
-  BinContainerTemplate<MathMLMultiScriptsElement, SmartPtr<MathMLElement> > base;
-  LinearContainerTemplate<MathMLMultiScriptsElement, SmartPtr<MathMLElement> > subScript;
-  LinearContainerTemplate<MathMLMultiScriptsElement, SmartPtr<MathMLElement> > superScript;
-  LinearContainerTemplate<MathMLMultiScriptsElement, SmartPtr<MathMLElement> > preSubScript;
-  LinearContainerTemplate<MathMLMultiScriptsElement, SmartPtr<MathMLElement> > preSuperScript;
+  BinContainerTemplate<MathMLMultiScriptsElement,MathMLElement> base;
+  LinearContainerTemplate<MathMLMultiScriptsElement,MathMLElement> subScript;
+  LinearContainerTemplate<MathMLMultiScriptsElement,MathMLElement> superScript;
+  LinearContainerTemplate<MathMLMultiScriptsElement,MathMLElement> preSubScript;
+  LinearContainerTemplate<MathMLMultiScriptsElement,MathMLElement> preSuperScript;
 
   scaled subShiftX;
   scaled subShiftY;

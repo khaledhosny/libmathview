@@ -56,7 +56,7 @@ public:
   virtual void resetFlagDown(Flags);
 
 protected:
-  LinearContainerTemplate<MathMLLinearContainerElement, SmartPtr<MathMLElement> > content;
+  LinearContainerTemplate<MathMLLinearContainerElement,MathMLElement> content;
 };
 
 #endif // __MathMLLinearContainerElement_hh__

@@ -29,7 +29,7 @@
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLView.hh"
-#include "MathMLDOMLinker.hh"
+#include "Linker.hh"
 // the following are needed for the dynamic casts
 #include "MathMLScriptElement.hh"
 #include "MathMLUnderOverElement.hh"
@@ -39,6 +39,8 @@
 #include "MathMLStyleElement.hh"
 #include "MathMLPhantomElement.hh"
 #include "MathMLPaddedElement.hh"
+
+#if 0
 
 SmartPtr<MathMLElement>
 findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& op)
@@ -55,7 +57,6 @@ findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& op)
   return root;
 }
 
-#if 0
 SmartPtr<MathMLElement>
 findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& root)
 {
@@ -112,6 +113,7 @@ findStretchyOperator(const SmartPtr<MathMLElement>& elem)
   return 0;
 }
 
+#if 0
 SmartPtr<MathMLElement>
 findCommonAncestor(const SmartPtr<MathMLElement>& first, const SmartPtr<MathMLElement>& last)
 {
@@ -123,8 +125,8 @@ findCommonAncestor(const SmartPtr<MathMLElement>& first, const SmartPtr<MathMLEl
 
   if (firstP != lastP)
     {
-      unsigned firstDepth = first->GetDepth();
-      unsigned lastDepth  = last->GetDepth();
+      unsigned firstDepth = first->getDepth();
+      unsigned lastDepth  = last->getDepth();
 
       while (firstP && firstDepth > lastDepth)
 	{
@@ -155,11 +157,12 @@ findActionElement(const SmartPtr<MathMLElement>& elem)
 {
   SmartPtr<MathMLElement> elemP(elem);
 
-  while (elemP && elemP->IsA() != T_MACTION)
+  while (elemP && !is_a<MathMLActionElement>(elemP))
     elemP = elemP->getParent();
 
   return (elemP) ? smart_cast<MathMLActionElement>(elemP) : SmartPtr<MathMLActionElement>(0);
 }
+#endif
 
 #if defined(HAVE_GMETADOM)
 
@@ -169,7 +172,7 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
   SmartPtr<MathMLElement> elemP(elem);
 
   while (elemP && !elemP->getDOMElement())
-    elemP = elemP->getParent();
+    elemP = smart_cast<MathMLElement>(elemP->getParent());
 
   if (elemP) return elemP->getDOMElement();
   else return DOM::Element(0);
@@ -178,7 +181,7 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
 SmartPtr<MathMLElement>
 findMathMLElement(const SmartPtr<const MathMLView>& view, const DOM::Element& node)
 {
-  if (SmartPtr<MathMLElement> elem = view->getContext()->linker->get(node))
+  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(view->getLinker()->get(node)))
     {
       while (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
 	{
@@ -217,6 +220,7 @@ findLeftmostChild(const SmartPtr<MathMLElement>& elem)
     return elem;
 }
 
+#if 0
 SmartPtr<MathMLElement>
 findRightSibling(const SmartPtr<MathMLElement>& elem)
 {
@@ -250,3 +254,4 @@ findLeftSibling(const SmartPtr<MathMLElement>& elem)
   else
     return findLeftSibling(elem->getParent());
 }
+#endif

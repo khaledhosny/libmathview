@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,21 +17,31 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __MathMLNode_hh__
-#define __MathMLNode_hh__
+#ifndef __NamespaceFactory_hh__
+#define __NamespaceFactory_hh__
 
-#include "Node.hh"
-#include "WeakPtr.hh"
+#include "Object.hh"
+#include "HashMap.hh"
+#include "String.hh"
 #include "SmartPtr.hh"
 
-class MathMLNode : public Node
+class NamespaceFactory : public Object
 {
-protected:
-  MathMLNode(void);
-  virtual ~MathMLNode();
+public:
+  NamespaceFactory(void);
+  virtual ~NamespaceFactory();
+
+  bool registerFactory(const String& namespaceURI, const SmartPtr<class ElementFactory>& factory);
+  bool unregisterFactory(const String& namespaceURI);
+
+  SmartPtr<class ElementFactory> getFactory(const String& namespaceURI) const;
+
+private:
+  typedef HASH_MAP_NS::hash_map<String,SmartPtr<class ElementFactory>,StringHash,StringEq> ElementFactoryMap;
+  ElementFactoryMap map;
 };
 
-#endif // __MathMLNode_hh__
+#endif // __NamespaceFactory_hh__

@@ -23,19 +23,19 @@
 #ifndef __BinContainerTemplate_hh__
 #define __BinContainerTemplate_hh__
 
-template <class E, class T>
+template <class E, class T, class TPtr = SmartPtr<T> >
 class BinContainerTemplate
 {
 public:
   BinContainerTemplate(void) { }
 
-  T getChild(void) const { return child; }
+  TPtr getChild(void) const { return child; }
 
-  void setChild(E* elem, const T& newChild)
+  void setChild(E* elem, const TPtr& newChild)
   {
     if (child != newChild)
       {
-	if (newChild) newChild->setParent(elem);
+	if (newChild) T::setParent(newChild, elem);
 	child = newChild;
 	elem->setDirtyLayout();
       }
@@ -52,7 +52,7 @@ public:
   }
 
 private:
-  T child;
+  TPtr child;
 };
 
 #endif // __BinContainerTemplate_hh__

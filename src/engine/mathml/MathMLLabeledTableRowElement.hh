@@ -46,7 +46,7 @@ public:
   friend class MathMLTableElement;
 
 private:
-  BinContainerTemplate<MathMLLabeledTableRowElement, SmartPtr<MathMLElement> > label;
+  BinContainerTemplate<MathMLLabeledTableRowElement,MathMLElement> label;
 };
 
 #endif // __MathMLLabeledTableRowElement_hh__

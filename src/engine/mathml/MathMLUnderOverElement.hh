@@ -71,9 +71,9 @@ protected:
   scaled overShiftX;
   scaled overShiftY;
 
-  BinContainerTemplate<MathMLUnderOverElement, SmartPtr<MathMLElement> > base;
-  BinContainerTemplate<MathMLUnderOverElement, SmartPtr<MathMLElement> > underScript;
-  BinContainerTemplate<MathMLUnderOverElement, SmartPtr<MathMLElement> > overScript;
+  BinContainerTemplate<MathMLUnderOverElement,MathMLElement> base;
+  BinContainerTemplate<MathMLUnderOverElement,MathMLElement> underScript;
+  BinContainerTemplate<MathMLUnderOverElement,MathMLElement> overScript;
 };
 
 #endif // __MathMLUnderOverElement_hh__

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,22 +17,43 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
-#include "MathMLTextElement.hh"
+#include "NamespaceFactory.hh"
+#include "ElementFactory.hh"
 
-MathMLTextElement::MathMLTextElement(const SmartPtr<class MathMLView>& view)
-  : MathMLTokenElement(view)
+NamespaceFactory::NamespaceFactory()
 { }
 
-MathMLTextElement::~MathMLTextElement()
+NamespaceFactory::~NamespaceFactory()
 { }
 
 bool
-MathMLTextElement::IsSpaceLike(void) const
+NamespaceFactory::registerFactory(const String& namespaceURI, const SmartPtr<ElementFactory>& factory)
 {
+  if (map.find(namespaceURI) != map.end())
+    return false;
+
+  map[namespaceURI] = factory;
   return true;
+}
+
+bool
+NamespaceFactory::unregisterFactory(const String& namespaceURI)
+{
+  if (map.find(namespaceURI) == map.end())
+    return false;
+
+  map.erase(namespaceURI);
+  return true;
+}
+
+SmartPtr<ElementFactory>
+NamespaceFactory::getFactory(const String& namespaceURI) const
+{
+  ElementFactoryMap::const_iterator p = map.find(namespaceURI);
+  return (p != map.end()) ? (*p).second : 0;
 }

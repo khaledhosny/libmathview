@@ -53,8 +53,8 @@ public:
   void setDenominator(const SmartPtr<MathMLElement>& child) { denominator.setChild(this, child); }
 
 private:
-  BinContainerTemplate<MathMLFractionElement, SmartPtr<MathMLElement> > numerator;
-  BinContainerTemplate<MathMLFractionElement, SmartPtr<MathMLElement> > denominator;
+  BinContainerTemplate<MathMLFractionElement,MathMLElement> numerator;
+  BinContainerTemplate<MathMLFractionElement,MathMLElement> denominator;
 };
 
 #endif // __MathMLFractionElement_hh__

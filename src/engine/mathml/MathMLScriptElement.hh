@@ -54,9 +54,9 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
-  BinContainerTemplate<MathMLScriptElement, SmartPtr<MathMLElement> > base;
-  BinContainerTemplate<MathMLScriptElement, SmartPtr<MathMLElement> > subScript;
-  BinContainerTemplate<MathMLScriptElement, SmartPtr<MathMLElement> > superScript;
+  BinContainerTemplate<MathMLScriptElement,MathMLElement> base;
+  BinContainerTemplate<MathMLScriptElement,MathMLElement> subScript;
+  BinContainerTemplate<MathMLScriptElement,MathMLElement> superScript;
 };
 
 #endif // __MathMLScriptElement_hh__

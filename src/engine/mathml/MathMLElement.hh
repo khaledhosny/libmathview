@@ -23,105 +23,40 @@
 #ifndef __MathMLElement_hh__
 #define __MathMLElement_hh__
 
-#include <bitset>
-
 #include "Area.hh"
-#include "BoundingBox.hh"
-#include "MathMLNode.hh"
-#include "SmartPtr.hh"
+#include "Element.hh"
 #include "token.hh"
 
-#include "Element.hh"
-
 // MathMLElement: base class for every MathML Element
-class MathMLElement : public MathMLNode
+class MathMLElement : public Element
 {
 protected:
   MathMLElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLElement();
 
 public:
-  virtual void setParent(const SmartPtr<MathMLElement>&);
-
-  SmartPtr<class MathMLView> getView(void) const;
-#if defined(HAVE_GMETADOM)
-  DOM::Element getDOMElement(void) const { return element; }
-  void setDOMElement(const DOM::Element&);
-  SmartPtr<MathMLElement> getFormattingNode(const DOM::Element&) const;
-#endif // HAVE_GMETADOM
-
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
-protected:
-  SmartPtr<class MathMLViewContext> getViewContext(void) const;
-  SmartPtr<class MathMLDOMLinker> getLinker(void) const;
-  SmartPtr<class MathMLFormattingEngineFactory> getFactory(void) const;
-  SmartPtr<class Value> getAttributeValue(const class AttributeSignature&) const;
-  SmartPtr<class Value> getAttributeValueNoDefault(const class AttributeSignature&) const;
-  void refineAttribute(const class AbstractRefinementContext&, const class AttributeSignature&);
+  virtual bool IsSpaceLike(void) const;
 
-  void setArea(const AreaRef& a) { area = a; }
-
-public:
-  bool IsSet(TokenId) const;
-
-  // some queries
-  TokenId      	 IsA(void) const;
-  virtual bool 	 IsSpaceLike(void) const;
-  bool           hasLink(void) const;
-
-  unsigned     	 GetDepth(void) const;
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
   SmartPtr<class MathMLOperatorElement> getCoreOperatorTop(void);
 
-  AreaRef getArea(void) const { return area; }
-
-  virtual void setDirtyStructure(void);
-  void resetDirtyStructure(void) { resetFlag(FDirtyStructure); }
-  bool dirtyStructure(void) const { return getFlag(FDirtyStructure); }
-  virtual void setDirtyAttribute(void);
-  virtual void setDirtyAttributeD(void);
-  void resetDirtyAttribute(void)
-  { resetFlag(FDirtyAttribute); resetFlag(FDirtyAttributeP); resetFlag(FDirtyAttributeD); }
-  bool dirtyAttribute(void) const { return getFlag(FDirtyAttribute) || getFlag(FDirtyAttributeD); }
-  bool dirtyAttributeP(void) const { return getFlag(FDirtyAttributeP); }
-  bool dirtyAttributeD(void) const { return getFlag(FDirtyAttributeD); }
-  virtual void setDirtyLayout(void);
-  void resetDirtyLayout(void) { resetFlag(FDirtyLayout); }
-  bool dirtyLayout(void) const { return getFlag(FDirtyLayout); }
-
-public:
-  enum Flags {
-    FDirtyStructure,  // need to resynchronize with DOM
-    FDirtyAttribute,  // an attribute was modified
-    FDirtyAttributeP, // an attribute was modified in a descendant
-    FDirtyAttributeD, // an attribute was modified and must set dirtyAttribute on all descendants
-    FDirtyLayout,     // need to layout
-
-    FUnusedFlag       // Just to know how many flags we use without having to count them
-  };
-
-  void setFlag(Flags f);// { flags.set(f); }
-  void resetFlag(Flags f) { flags.reset(f); }
-  void setFlagUp(Flags);
-  void resetFlagUp(Flags);
-  virtual void setFlagDown(Flags);
-  virtual void resetFlagDown(Flags);
-  bool getFlag(Flags f) const { return flags.test(f); }
-
-private:
-  std::bitset<FUnusedFlag> flags;
-  SmartPtr<class AttributeList> attributes;
+#if defined(HAVE_GMETADOM)
+  SmartPtr<MathMLElement> getFormattingNode(const DOM::Element& el) const;
+  void refineAttribute(const class AbstractRefinementContext& context, const class AttributeSignature& signature);
+  bool IsSet(TokenId) const;
+  TokenId IsA(void) const;
+#endif // HAVE_GMETADOM
 
 protected:
-  WeakPtr<class MathMLView> view;
-  AreaRef area;
+  SmartPtr<class MathMLView> getView(void) const;
+  SmartPtr<class MathMLElementFactory> getFactory(void) const;
 
-#if defined(HAVE_GMETADOM)
-  DOM::Element element;
-#endif // HAVE_GMETADOM
+private:
+  WeakPtr<class MathMLView> view;
 };
 
 #endif // __MathMLElement_hh__

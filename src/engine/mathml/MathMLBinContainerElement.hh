@@ -45,7 +45,7 @@ public:
   virtual void resetFlagDown(Flags);
 
 protected:
-  BinContainerTemplate<MathMLBinContainerElement, SmartPtr<MathMLElement> > content;
+  BinContainerTemplate<MathMLBinContainerElement,MathMLElement> content;
 };
 
 #endif // __MathMLContainerElement_hh__

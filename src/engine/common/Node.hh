@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,32 +17,24 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __MathMLViewContext_hh__
-#define __MathMLViewContext_hh__
+#ifndef __Node_hh__
+#define __Node_hh__
 
 #include "Object.hh"
 #include "SmartPtr.hh"
 
-class MathMLViewContext : public Object
+class Node : public Object
 {
 protected:
-  MathMLViewContext(const SmartPtr<class MathMLDOMLinker>&,
-		    const SmartPtr<class MathMLFormattingEngineFactory>&,
-		    const SmartPtr<class MathGraphicDevice>&);
-  virtual ~MathMLViewContext();
+  Node(void) { }
+  virtual ~Node();
 
 public:
-  static SmartPtr<MathMLViewContext> create(const SmartPtr<class MathMLDOMLinker>& l,
-					    const SmartPtr<class MathMLFormattingEngineFactory>& f,
-					    const SmartPtr<class MathGraphicDevice>& d)
-  { return new MathMLViewContext(l, f, d); }
-  
-  SmartPtr<class MathMLDOMLinker> linker;
-  SmartPtr<class MathMLFormattingEngineFactory> engineFactory;
-  SmartPtr<class MathGraphicDevice> device;
+  static bool hasParentLink(void) { return false; }
+  static void setParent(Node*, const SmartPtr<class Element>&) { }
 };
 
-#endif // __MathMLViewContext_hh__
+#endif // __Node_hh__

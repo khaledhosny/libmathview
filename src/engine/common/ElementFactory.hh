@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,21 +17,26 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __MathMLNode_hh__
-#define __MathMLNode_hh__
+#ifndef __ElementFactory_hh__
+#define __ElementFactory_hh__
 
-#include "Node.hh"
-#include "WeakPtr.hh"
-#include "SmartPtr.hh"
+#include "DOM.hh"
+#include "String.hh"
+#include "Object.hh"
 
-class MathMLNode : public Node
+class ElementFactory : public Object
 {
-protected:
-  MathMLNode(void);
-  virtual ~MathMLNode();
+public:
+  SmartPtr<class Element> getElement(const DOM::Element&) const;
+  virtual SmartPtr<class Element> createElement(const String&) const = 0;
+
+  SmartPtr<class Linker> getLinker(void) const;
+
+private:
+  SmartPtr<class Linker> linker;
 };
 
-#endif // __MathMLNode_hh__
+#endif // __ElementFactory_hh__

@@ -23,8 +23,85 @@
 #ifndef __Element_hh__
 #define __Element_hh__
 
-#include "MathMLElement.hh"
+#include <bitset>
 
-typedef MathMLElement Element; // FIXME: TEMPORARY
+#include "Node.hh"
+#include "WeakPtr.hh"
+#include "Area.hh"
+
+class Element : public Node
+{
+protected:
+  Element(void);
+  virtual ~Element();
+
+public:
+  static bool hasParentLink(void) { return true; }
+  static void setParent(Element* self, const SmartPtr<Element>& el) { self->setParent(el); }
+
+  void setParent(const SmartPtr<Element>&);
+  SmartPtr<Element> getParent(void) const { return static_cast<Element*>(parent); }
+  unsigned getDepth(void) const;
+
+  void setAttribute(const SmartPtr<class Attribute>&);
+  void removeAttribute(const class AttributeSignature&);
+  SmartPtr<class Attribute> getAttribute(const class AttributeSignature&) const;
+  SmartPtr<class Value> getAttributeValue(const class AttributeSignature&) const;
+  SmartPtr<class Value> getAttributeValueNoDefault(const class AttributeSignature&) const;
+
+  void setArea(const AreaRef& a) { area = a; }
+  AreaRef getArea(void) const { return area; }
+
+  virtual void setDirtyStructure(void);
+  void resetDirtyStructure(void) { resetFlag(FDirtyStructure); }
+  bool dirtyStructure(void) const { return getFlag(FDirtyStructure); }
+  virtual void setDirtyAttribute(void);
+  virtual void setDirtyAttributeD(void);
+  void resetDirtyAttribute(void)
+  { resetFlag(FDirtyAttribute); resetFlag(FDirtyAttributeP); resetFlag(FDirtyAttributeD); }
+  bool dirtyAttribute(void) const { return getFlag(FDirtyAttribute) || getFlag(FDirtyAttributeD); }
+  bool dirtyAttributeP(void) const { return getFlag(FDirtyAttributeP); }
+  bool dirtyAttributeD(void) const { return getFlag(FDirtyAttributeD); }
+  virtual void setDirtyLayout(void);
+  void resetDirtyLayout(void) { resetFlag(FDirtyLayout); }
+  bool dirtyLayout(void) const { return getFlag(FDirtyLayout); }
+
+  enum Flags {
+    FDirtyStructure,  // need to resynchronize with DOM
+    FDirtyAttribute,  // an attribute was modified
+    FDirtyAttributeP, // an attribute was modified in a descendant
+    FDirtyAttributeD, // an attribute was modified and must set dirtyAttribute on all descendants
+    FDirtyLayout,     // need to layout
+
+    FUnusedFlag       // Just to know how many flags we use without having to count them
+  };
+
+  void setFlag(Flags f);// { flags.set(f); }
+  void resetFlag(Flags f) { flags.reset(f); }
+  void setFlagUp(Flags);
+  void resetFlagUp(Flags);
+  virtual void setFlagDown(Flags);
+  virtual void resetFlagDown(Flags);
+  bool getFlag(Flags f) const { return flags.test(f); }
+
+#if defined(HAVE_GMETADOM)
+  DOM::Element getDOMElement(void) const { return elem; }
+  void setDOMElement(const DOM::Element&);
+private:
+  void link(const SmartPtr<class Linker>&, const DOM::Element&);
+  void unlink(void);
+  friend class ElementFactory;
+#endif // HAVE_GMEATDOM
+
+private:
+  WeakPtr<Element> parent;
+  std::bitset<FUnusedFlag> flags;
+  SmartPtr<class AttributeList> attributes;
+  AreaRef area;
+#if defined(HAVE_GMETADOM)
+  DOM::Element elem;
+  SmartPtr<class Linker> linker;
+#endif // HAVE_GMEATDOM
+};
 
 #endif // __Element_hh__

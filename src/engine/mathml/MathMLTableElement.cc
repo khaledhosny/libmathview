@@ -29,7 +29,7 @@
 
 #include "Adaptors.hh"
 #include "ChildList.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLView.hh"
@@ -92,7 +92,7 @@ MathMLTableElement::construct()
 #endif // HAVE_GMETADOM
 
       if (getSize() == 0)
-	appendChild(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement(getView())));
+	appendChild(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement()));
 
       std::for_each(content.begin(), content.end(), ConstructAdaptor());
 

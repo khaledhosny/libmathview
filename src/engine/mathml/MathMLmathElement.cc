@@ -33,12 +33,10 @@
 
 MathMLmathElement::MathMLmathElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
-{
-}
+{ }
 
 MathMLmathElement::~MathMLmathElement()
-{
-}
+{ }
 
 void
 MathMLmathElement::refine(AbstractRefinementContext& context)

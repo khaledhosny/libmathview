@@ -48,8 +48,8 @@ public:
   void setIndex(const SmartPtr<class MathMLElement>& child) { index.setChild(this, child); }
 
 private:
-  BinContainerTemplate<MathMLRadicalElement, SmartPtr<MathMLElement> > base;
-  BinContainerTemplate<MathMLRadicalElement, SmartPtr<MathMLElement> > index;
+  BinContainerTemplate<MathMLRadicalElement,MathMLElement> base;
+  BinContainerTemplate<MathMLRadicalElement,MathMLElement> index;
 };
 
 #endif // __MathMLRadicalElement_hh__

@@ -27,9 +27,7 @@
 #include "AbstractRefinementContext.hh"
 #include "Globals.hh"
 #include "AttributeList.hh"
-#include "MathMLDOMLinker.hh"
 #include "MathMLElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLStyleElement.hh"
 #include "MathMLView.hh"
@@ -37,131 +35,13 @@
 #include "Variant.hh"
 #include "traverseAux.hh"
 
-// MathMLElement: this is the base class for every MathML presentation element.
-// It implements the basic skeleton of every such element, moreover it handles
-// the attributes and provides some facility functions to access and parse
-// attributes.
-MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v)
-  : view(v)
+MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v) : view(v)
 {
   assert(view);
-
-  setDirtyStructure();
-  setDirtyAttribute();
-  setDirtyLayout();
 }
 
 MathMLElement::~MathMLElement()
-{
-  setDOMElement(DOM::Element(0)); // it is important to invoke this method!
-}
-
-SmartPtr<Value>
-MathMLElement::getAttributeValueNoDefault(const AttributeSignature& signature) const
-{
-  if (attributes)
-    if (SmartPtr<Value> value = attributes->getValue(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
-      return value;
-
-  return 0;
-}
-
-SmartPtr<Value>
-MathMLElement::getAttributeValue(const AttributeSignature& signature) const
-{
-  if (attributes)
-    if (SmartPtr<Value> value = getAttributeValueNoDefault(signature))
-      return value;
-
-  return signature.getDefaultValue();
-}
-
-void
-MathMLElement::refineAttribute(const AbstractRefinementContext& context, const AttributeSignature& signature)
-{
-  if (!attributes) attributes = AttributeList::create();
-
-  SmartPtr<Attribute> attr;
-
-  if (signature.fromElement)
-    if (DOM::Element elem = getDOMElement())
-      if (elem.hasAttribute(signature.name))
-	attr = Attribute::create(signature, elem.getAttribute(signature.name));
-
-  if (!attr && signature.fromContext)
-    attr = context.get(signature);
-
-  if (attr)
-    {
-      if (attributes->set(attr)) setDirtyLayout();
-    }
-  else
-    if (attributes->remove(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
-      setDirtyLayout();
-}
-
-SmartPtr<MathMLView>
-MathMLElement::getView() const
-{
-  return static_cast<MathMLView*>(view);
-}
-
-SmartPtr<MathMLViewContext>
-MathMLElement::getViewContext() const
-{
-  return getView()->getContext();
-}
-
-SmartPtr<MathMLDOMLinker>
-MathMLElement::getLinker() const
-{
-  return getViewContext()->linker;
-}
-
-SmartPtr<MathMLFormattingEngineFactory>
-MathMLElement::getFactory() const
-{
-  return getViewContext()->engineFactory;
-}
-
-#if defined(HAVE_GMETADOM)
-void
-MathMLElement::setDOMElement(const DOM::Element& el)
-{
-  if (el != element)
-    {
-      if (element) getLinker()->remove(element);
-      if (el) getLinker()->remove(el);
-      element = el;
-      if (element) getLinker()->add(element, this);
-    }
-}
-
-SmartPtr<MathMLElement>
-MathMLElement::getFormattingNode(const DOM::Element& elem) const
-{
-  assert(elem);
-
-  if (SmartPtr<MathMLElement> el = getLinker()->get(elem))
-    return el;
-
-  SmartPtr<MathMLElement> res = getFactory()->createElement(getView(), nodeLocalName(elem));
-  assert(res);
-  res->setDOMElement(elem);
-  return res;
-}
-
-#endif // HAVE_GMETADOM
-
-bool
-MathMLElement::IsSet(TokenId id) const
-{
-#if defined(HAVE_GMETADOM)
-  return getDOMElement() && getDOMElement().hasAttribute(stringOfTokenId(id));
-#else // HAVE_GMETADOM
-  return false;
-#endif
-}
+{ }
 
 #if 0
 void
@@ -191,7 +71,7 @@ MathMLElement::format(MathFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
-      area = 0;
+      setArea(0);
       resetDirtyLayout();
     }
 
@@ -204,32 +84,6 @@ MathMLElement::IsSpaceLike() const
   return false;
 }
 
-unsigned
-MathMLElement::GetDepth() const
-{
-  unsigned depth = 0;
-  SmartPtr<const MathMLElement> p = this;
-  
-  while (p)
-    {
-      depth++;
-      p = p->getParent();
-    }
-
-  return depth;
-}
-
-bool
-MathMLElement::hasLink() const
-{
-#if defined(HAVE_GMETADOM)
-  DOM::Element p = getDOMElement();
-  return p && p.hasAttribute("href");
-#else // HAVE_GMETADOM
-  return false;
-#endif
-}
-
 SmartPtr<MathMLOperatorElement>
 MathMLElement::getCoreOperator()
 {
@@ -240,9 +94,30 @@ SmartPtr<MathMLOperatorElement>
 MathMLElement::getCoreOperatorTop()
 {
   if (SmartPtr<MathMLOperatorElement> coreOp = getCoreOperator())
-    if (!getParent() || getParent()->getCoreOperator() != coreOp)
-      return coreOp;
+    {
+      SmartPtr<MathMLElement> parent = smart_cast<MathMLElement>(getParent());
+      if (!parent || parent->getCoreOperator() != coreOp)
+	return coreOp;
+    }
   return 0;
+}
+
+#if defined(HAVE_GMETADOM)
+void
+MathMLElement::refineAttribute(const AbstractRefinementContext& context, const AttributeSignature& signature)
+{
+  SmartPtr<Attribute> attr;
+  
+  if (signature.fromElement)
+    if (DOM::Element el = getDOMElement())
+      if (el.hasAttribute(signature.name))
+	attr = Attribute::create(signature, el.getAttribute(signature.name));
+
+  if (!attr && signature.fromContext)
+    attr = context.get(signature);
+
+  if (attr) setAttribute(attr);
+  else removeAttribute(signature);
 }
 
 TokenId
@@ -254,90 +129,16 @@ MathMLElement::IsA() const
     return T__NOTVALID;
 }
 
-void
-MathMLElement::setDirtyStructure()
+bool
+MathMLElement::IsSet(TokenId id) const
 {
-  if (!dirtyStructure())
-    {
-      setFlag(FDirtyStructure);
-      setFlagUp(FDirtyStructure);
-    }
+  return getDOMElement() && getDOMElement().hasAttribute(stringOfTokenId(id));
+}
+#endif // HAVE_GMETADOM
+
+SmartPtr<MathMLView>
+MathMLElement::getView() const
+{
+  return static_cast<MathMLView*>(view);
 }
 
-void
-MathMLElement::setDirtyAttribute()
-{
-  if (!dirtyAttribute())
-    {
-      setFlag(FDirtyAttribute);
-      setFlagUp(FDirtyAttributeP);
-    }
-}
-
-void
-MathMLElement::setDirtyAttributeD()
-{
-  if (!dirtyAttributeD())
-    {
-      setFlagDown(FDirtyAttributeD);
-      setFlagUp(FDirtyAttributeP);
-    }
-}
-
-void
-MathMLElement::setDirtyLayout()
-{
-  if (!dirtyLayout())
-    {
-      setFlagDown(FDirtyLayout);
-      setFlagUp(FDirtyLayout);
-    }
-}
-
-void
-MathMLElement::setFlag(Flags f)
-{
-  flags.set(f);
-}
-
-void
-MathMLElement::setFlagUp(Flags f)
-{
-  for (SmartPtr<MathMLElement> p = getParent(); p && !p->getFlag(f); p = p->getParent())
-    p->setFlag(f);
-}
-
-void
-MathMLElement::resetFlagUp(Flags f)
-{
-  for (SmartPtr<MathMLElement> p = getParent(); p && p->getFlag(f); p = p->getParent())
-    p->resetFlag(f);
-}
-
-void
-MathMLElement::setFlagDown(Flags f)
-{
-  setFlag(f);
-}
-
-void
-MathMLElement::resetFlagDown(Flags f)
-{
-  resetFlag(f);
-}
-
-// FIXME: when we'll have a real Node class we could move
-// these operations in it and make setParent non-virtual
-void
-MathMLElement::setParent(const SmartPtr<MathMLElement>& p)
-{
-  MathMLNode::setParent(p);
-  if (p)
-    {
-      if (dirtyStructure()) setFlagUp(FDirtyStructure);
-      if (dirtyAttribute()) setFlagUp(FDirtyAttributeP);
-      if (p->dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
-      if (dirtyLayout()) setFlagUp(FDirtyLayout);
-      if (p->dirtyLayout()) setFlagDown(FDirtyLayout);
-    }
-}

@@ -28,7 +28,7 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLNormalizingContainerElement.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLView.hh"
@@ -64,7 +64,7 @@ MathMLNormalizingContainerElement::construct()
 	    // this must be an inferred mrow
 	    row = smart_cast<MathMLRowElement>(getChild());
 	  else
-	    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
+	    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement());
 	  assert(row && !row->getDOMElement());
 	  setChild(row);
 

@@ -25,26 +25,27 @@
 
 #include "View.hh"
 #include "MathMLElement.hh"
-#include "MathMLViewContext.hh"
 #include "Rectangle.hh"
 
 class MathMLView : public Object
 {
 protected:
-  MathMLView(const SmartPtr<MathMLViewContext>&);
+  MathMLView(const SmartPtr<class MathMLElementFactory>&,
+	     const SmartPtr<class MathGraphicDevice>&);
   virtual ~MathMLView();
 
 public:
-  static SmartPtr<MathMLView> create(const SmartPtr<MathMLViewContext>& context)
-  { return new MathMLView(context); }
+  static SmartPtr<MathMLView> create(const SmartPtr<class MathMLElementFactory>& factory,
+				     const SmartPtr<class MathGraphicDevice>& device)
+  { return new MathMLView(factory, device); }
 
   bool frozen(void) const { return freezeCounter > 0; }
   virtual bool freeze(void);
   virtual bool thaw(void);
 
-  virtual void setRoot(const DOM::Element&);
-  SmartPtr<MathMLElement> getRoot(void) const { return root; }
-  SmartPtr<MathMLElement> getElementAt(const scaled&, const scaled&) const;
+  void setRoot(const DOM::Element&);
+  DOM::Element getRoot(void) const { return root; }
+  SmartPtr<MathMLElement> getElementAt(const scaled&, const scaled&) const; // should return DOM::ELement
   bool getElementExtents(const DOM::Element&, scaled&, scaled&, BoundingBox&) const;
   AreaRef getRootArea(void) const;
 
@@ -59,9 +60,11 @@ public:
   virtual Rectangle getRectangle(void) const;
   virtual void render(class RenderingContext&) const;
 
-  SmartPtr<MathMLViewContext> getContext(void) const { return context; }
+  SmartPtr<class Linker> getLinker(void) const;
 
 protected:
+  SmartPtr<MathMLElement> getRootElement(void) const;
+
   class DOMSubtreeModifiedListener : public DOM::EventListener
   {
   public:
@@ -90,8 +93,9 @@ protected:
 private:
   unsigned freezeCounter;
   unsigned defaultFontSize;
-  SmartPtr<MathMLElement> root;
-  SmartPtr<MathMLViewContext> context;
+  DOM::Element root;
+  SmartPtr<class MathMLElementFactory> factory;
+  SmartPtr<class MathGraphicDevice> device;
   scaled x0;
   scaled y0;
 };

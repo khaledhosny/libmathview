@@ -4,10 +4,10 @@ lib_LTLIBRARIES = libmathml.la
 libmathml_la_SOURCES = \
   Configuration.cc \
   Globals.cc \
-  MathMLDOMLinker.cc \
   traverseAux.cc \
   ValueConversion.cc \
   mathVariantAux.cc \
+  MathMLElementFactory.cc \
   MathMLOperatorDictionary.cc \
   MathMLEntitiesTable.cc \
   MathMLAttributeSignatures.cc \
@@ -23,7 +23,6 @@ libmathml_la_SOURCES = \
   MathMLEncloseElement.cc \
   MathMLErrorElement.cc \
   MathMLFencedElement.cc \
-  MathMLFormattingEngineFactory.cc \
   MathMLFractionElement.cc \
   MathMLGlyphNode.cc \
   MathMLIdentifierElement.cc \
@@ -55,7 +54,6 @@ libmathml_la_SOURCES = \
   MathMLTokenElement.cc \
   MathMLUnderOverElement.cc \
   MathMLView.cc \
-  MathMLViewContext.cc \
   MathMLmathElement.cc \
   tableSetup.cc \
   tableLayout.cc
@@ -63,10 +61,10 @@ libmathml_la_SOURCES = \
 noinst_HEADERS = \
   Configuration.hh \
   Globals.hh \
-  MathMLDOMLinker.hh \
   traverseAux.hh \
   ValueConversion.hh \
   mathVariantAux.hh \
+  MathMLElementFactory.hh \
   MathMLOperatorDictionary.hh \
   MathMLEntitiesTable.hh \
   MathMLAttributeParsers.hh \
@@ -84,7 +82,6 @@ noinst_HEADERS = \
   MathMLEncloseElement.hh \
   MathMLErrorElement.hh \
   MathMLFencedElement.hh \
-  MathMLFormattingEngineFactory.hh \
   MathMLFractionElement.hh \
   MathMLGlyphNode.hh \
   MathMLIdentifierElement.hh \
@@ -116,7 +113,6 @@ noinst_HEADERS = \
   MathMLTokenElement.hh \
   MathMLUnderOverElement.hh \
   MathMLView.hh \
-  MathMLViewContext.hh \
   MathMLmathElement.hh
 
 INCLUDES = \

@@ -40,7 +40,6 @@ public:
   bool set(const SmartPtr<Attribute>&);
   bool remove(const AttributeId&);
   SmartPtr<Attribute> get(const AttributeId&) const;
-  SmartPtr<Value> getValue(const AttributeId&) const;
 
 private:
   std::vector< SmartPtr<Attribute> > content;

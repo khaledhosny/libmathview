@@ -73,15 +73,6 @@ AttributeList::get(const AttributeId& id) const
   return (p != content.end()) ? *p : 0;
 }
 
-SmartPtr<Value>
-AttributeList::getValue(const AttributeId& id) const
-{
-  if (SmartPtr<Attribute> attr = get(id))
-    return attr->getValue();
-  else
-    return 0;
-}
-
 bool
 AttributeList::remove(const AttributeId& id)
 {

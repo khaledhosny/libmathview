@@ -31,7 +31,7 @@
 #include "ChildList.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLView.hh"
@@ -71,7 +71,7 @@ MathMLMultiScriptsElement::construct()
 		  i++;
 		}
 	      if (elem) setBase(elem);
-	      else if (!is_a<MathMLDummyElement>(getBase())) setBase(getFactory()->createDummyElement(getView()));
+	      else if (!is_a<MathMLDummyElement>(getBase())) setBase(getFactory()->createDummyElement());
 	    }
 	  else if (nodeLocalName(node) == "mprescripts")
 	    {
@@ -131,7 +131,7 @@ MathMLMultiScriptsElement::construct()
 	    }
 	}
       
-      if (n == 0 && !is_a<MathMLDummyElement>(getBase())) setBase(getFactory()->createDummyElement(getView()));
+      if (n == 0 && !is_a<MathMLDummyElement>(getBase())) setBase(getFactory()->createDummyElement());
       setScriptsSize(nScripts);
       setPreScriptsSize(nPreScripts);
 #endif // HAVE_GMETADOM

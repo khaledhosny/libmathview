@@ -306,8 +306,9 @@ MathMLOperatorElement::getOperatorAttributeValue(const AttributeSignature& signa
       // no, it is not explicitly set, but this operator has an entry in
       // the operator dictionary, so let's see if the attribute has a
       // default value
-      if (SmartPtr<Value> value = defaults->getValue(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
-	return value;
+      if (SmartPtr<Attribute> attr = defaults->get(ATTRIBUTE_ID_OF_SIGNATURE(signature)))
+	if (SmartPtr<Value> value = attr->getValue())
+	  return value;
     }
 
   // if the attribute hasn't still a value, then take its default
@@ -324,7 +325,7 @@ MathMLOperatorElement::inferOperatorForm()
 {
   SmartPtr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
   assert(eOp);
-  SmartPtr<MathMLElement> elem = eOp->getParent();
+  SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(eOp->getParent());
   assert(elem);
 
   TokenId res = T_INFIX;

@@ -26,7 +26,7 @@
 
 #include "ChildList.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLScriptElement.hh"
 #include "MathMLView.hh"
@@ -58,7 +58,7 @@ MathMLScriptElement::construct()
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 	    setBase(e);
 	  else if (!is_a<MathMLDummyElement>(getBase()))
-	    setBase(getFactory()->createDummyElement(getView()));
+	    setBase(getFactory()->createDummyElement());
 
 	  switch (IsA())
 	    {
@@ -66,7 +66,7 @@ MathMLScriptElement::construct()
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		setSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(getSubScript()))
-		setSubScript(getFactory()->createDummyElement(getView()));
+		setSubScript(getFactory()->createDummyElement());
 	      setSuperScript(0);
 	      break;
 	    case T_MSUP:
@@ -74,17 +74,17 @@ MathMLScriptElement::construct()
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		setSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(getSuperScript()))
-		setSuperScript(getFactory()->createDummyElement(getView()));
+		setSuperScript(getFactory()->createDummyElement());
 	      break;
 	    case T_MSUBSUP:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		setSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(getSubScript()))
-		setSubScript(getFactory()->createDummyElement(getView()));
+		setSubScript(getFactory()->createDummyElement());
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
 		setSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(getSuperScript()))
-		setSuperScript(getFactory()->createDummyElement(getView()));
+		setSuperScript(getFactory()->createDummyElement());
 	      break;
 	    default:
 	      assert(false);

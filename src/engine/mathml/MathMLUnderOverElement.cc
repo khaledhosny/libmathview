@@ -27,7 +27,7 @@
 #include "ChildList.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
 #include "MathMLView.hh"
@@ -59,7 +59,7 @@ MathMLUnderOverElement::construct()
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 	    setBase(e);
 	  else if (!is_a<MathMLDummyElement>(getBase()))
-	    setBase(getFactory()->createDummyElement(getView()));
+	    setBase(getFactory()->createDummyElement());
 
 	  switch (IsA())
 	    {
@@ -67,7 +67,7 @@ MathMLUnderOverElement::construct()
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		setUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(getUnderScript()))
-		setUnderScript(getFactory()->createDummyElement(getView()));
+		setUnderScript(getFactory()->createDummyElement());
 	      setOverScript(0);
 	      break;
 	    case T_MOVER:
@@ -75,17 +75,17 @@ MathMLUnderOverElement::construct()
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		setOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(getOverScript()))
-		setOverScript(getFactory()->createDummyElement(getView()));
+		setOverScript(getFactory()->createDummyElement());
 	      break;
 	    case T_MUNDEROVER:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		setUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(getUnderScript()))
-		setUnderScript(getFactory()->createDummyElement(getView()));
+		setUnderScript(getFactory()->createDummyElement());
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
 		setOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(getOverScript()))
-		setOverScript(getFactory()->createDummyElement(getView()));
+		setOverScript(getFactory()->createDummyElement());
 	      break;
 	    default:
 	      assert(0);

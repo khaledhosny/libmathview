@@ -27,7 +27,7 @@
 #include "ChildList.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLLabeledTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
@@ -64,7 +64,7 @@ MathMLLabeledTableRowElement::construct()
 	}
 #endif // HAVE_GMETADOM
 
-      if (!getLabel()) setLabel(getFactory()->createDummyElement(getView()));
+      if (!getLabel()) setLabel(getFactory()->createDummyElement());
       getLabel()->construct();
 
       resetDirtyStructure();

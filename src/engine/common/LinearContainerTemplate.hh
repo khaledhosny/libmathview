@@ -28,7 +28,7 @@
 #include "for_each_if.h"
 #include "Adaptors.hh"
 
-template <class E, class T>
+template <class E, class T, class TPtr = SmartPtr<T> >
 class LinearContainerTemplate
 {
 public:
@@ -46,63 +46,64 @@ public:
       }
   }
 
-  T getChild(unsigned i) const
+  TPtr getChild(unsigned i) const
   {
     assert(i < getSize());
     return content[i];
   }
 
-  void setChild(E* elem, unsigned i, const T& child)
+  void setChild(E* elem, unsigned i, const TPtr& child)
   {
     assert(i <= getSize());
 
     if (i == getSize()) appendChild(elem, child);
     else if (content[i] != child)
       {
-	if (child) child->setParent(elem);
+	if (child) T::setParent(child, elem);
 	content[i] = child;
 	elem->setDirtyLayout();
       }
   }
 
-  void appendChild(E* elem, const T& child)
+  void appendChild(E* elem, const TPtr& child)
   {
     assert(child);
-    child->setParent(elem);
+    T::setParent(child, elem);
     content.push_back(child);
     elem->setDirtyLayout();
   }
 
-  void swapContent(E* elem, std::vector<T>& newContent)
+  void swapContent(E* elem, std::vector<TPtr>& newContent)
   {
     if (newContent != content)
       {
-	for (typename std::vector<T>::iterator p = newContent.begin();
-	     p != newContent.end();
-	     p++)
-	  if (*p) (*p)->setParent(elem);
+	if (T::hasParentLink())
+	  for (typename std::vector<TPtr>::const_iterator p = newContent.begin();
+	       p != newContent.end();
+	       p++)
+	    if (*p) T::setParent(*p, elem);
 	
 	content.swap(newContent);
 	elem->setDirtyLayout();
       }
   }
 
-  const std::vector<T>& getContent(void) const { return content; }
+  const std::vector<TPtr>& getContent(void) const { return content; }
 
   template <typename UnaryFunction>
   UnaryFunction for_each(UnaryFunction f) const
   { return for_each_if(content.begin(), content.end(), NotNullPredicate(), f); }
 
-  typename std::vector<T>::const_iterator begin(void) const
+  typename std::vector<TPtr>::const_iterator begin(void) const
   { return content.begin(); }
 
-  typename std::vector<T>::const_iterator end(void) const
+  typename std::vector<TPtr>::const_iterator end(void) const
   { return content.end(); }
 
-  typename std::vector<T>::const_reverse_iterator rbegin(void) const
+  typename std::vector<TPtr>::const_reverse_iterator rbegin(void) const
   { return content.rbegin(); }
 
-  typename std::vector<T>::const_reverse_iterator rend(void) const
+  typename std::vector<TPtr>::const_reverse_iterator rend(void) const
   { return content.rend(); }
 
   void setFlagDown(Element::Flags f)
@@ -112,7 +113,7 @@ public:
   { for_each(std::bind2nd(ResetFlagDownAdaptor(), f)); }
 
 private:
-  std::vector<T> content;
+  std::vector<TPtr> content;
 };
 
 #endif // __LinearContainerTemplate_hh__

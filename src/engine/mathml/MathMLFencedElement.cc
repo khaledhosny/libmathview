@@ -28,7 +28,7 @@
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFencedElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLView.hh"
@@ -64,21 +64,21 @@ MathMLFencedElement::construct()
 
 	      content.push_back(getFormattingNode(node));
 
-	      if (i + 1 < nArgs) content.push_back(getFactory()->createOperatorElement(getView()));
+	      if (i + 1 < nArgs) content.push_back(getFactory()->createOperatorElement());
 	    }
 	}
 #endif // HAVE_GMETADOM
 
-      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
-      outerRow->appendChild(getFactory()->createOperatorElement(getView()));
+      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement());
+      outerRow->appendChild(getFactory()->createOperatorElement());
       if (content.size() == 1) outerRow->appendChild(content[0]);
       else if (content.size() > 1)
 	{
-	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
+	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement());
 	  innerRow->swapContent(content);
 	  outerRow->appendChild(innerRow);
 	}
-      outerRow->appendChild(getFactory()->createOperatorElement(getView()));
+      outerRow->appendChild(getFactory()->createOperatorElement());
 
       setChild(outerRow);
       outerRow->construct();

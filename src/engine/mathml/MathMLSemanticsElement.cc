@@ -26,7 +26,7 @@
 
 #include "ChildList.hh"
 #include "MathMLDummyElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLSemanticsElement.hh"
 #include "MathMLView.hh"
@@ -83,24 +83,25 @@ MathMLSemanticsElement::construct()
 		  if (encoding == "MathML-Presentation")
 		    {
 		      ChildList children(elem, MATHML_NS_URI, "*");
-		      if (SmartPtr<Element> e = getFormattingNode(children.item(0)))
+		      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 			setChild(e);
 		      else if (!is_a<MathMLDummyElement>(getChild()))
-			setChild(getFactory()->createDummyElement(getView()));
+			setChild(getFactory()->createDummyElement());
 		      break;
 		    }
 		  else if (encoding == "BoxML")
 		    {
 		      ChildList children(elem, BOXML_NS_URI, "*");
-		      if (SmartPtr<Element> e = getFormattingNode(children.item(0)))
+		      // FIXME: this should be a BoxMLElement
+		      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 			setChild(e);
 		      else if (!is_a<MathMLDummyElement>(getChild()))
-			setChild(getFactory()->createDummyElement(getView()));
+			setChild(getFactory()->createDummyElement());
 		      break;
 		    }
 		}
 	      if (!is_a<MathMLDummyElement>(getChild()))
-		setChild(getFactory()->createDummyElement(getView()));
+		setChild(getFactory()->createDummyElement());
 	    }
 	}
 #endif // HAVE_GMETADOM

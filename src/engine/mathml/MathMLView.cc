@@ -28,15 +28,17 @@
 #include "scaled.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
-#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLElementFactory.hh"
 #include "RefinementContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathFormattingContext.hh"
 #include "SearchingContext.hh"
 #include "Gtk_WrapperArea.hh"
+#include "Linker.hh"
 
-MathMLView::MathMLView(const SmartPtr<MathMLViewContext>& c)
-  : context(c)
+MathMLView::MathMLView(const SmartPtr<MathMLElementFactory>& f,
+		       const SmartPtr<MathGraphicDevice>& d)
+  : factory(f), device(d)
 {
   freezeCounter = 0;
   defaultFontSize = Globals::configuration.GetFontSize();
@@ -58,6 +60,12 @@ MathMLView::thaw()
   return --freezeCounter == 0;
 }
 
+SmartPtr<MathMLElement>
+MathMLView::getRootElement() const
+{
+  return root ? smart_cast<MathMLElement>(factory->getElement(root)) : 0;
+}
+
 void
 MathMLView::setDefaultFontSize(unsigned size)
 {
@@ -65,10 +73,10 @@ MathMLView::setDefaultFontSize(unsigned size)
   if (defaultFontSize != size)
     {
       defaultFontSize = size;
-      if (root)
+      if (SmartPtr<MathMLElement> elem = getRootElement())
 	{
-	  root->setDirtyAttributeD();
-	  root->setDirtyLayout();	  
+	  elem->setDirtyAttributeD();
+	  elem->setDirtyLayout();	  
 	}
     }
 }
@@ -101,7 +109,7 @@ MathMLView::setRoot(const DOM::Element& elem)
 {
   if (root)
     {
-      DOM::EventTarget et(root->getDOMElement());
+      DOM::EventTarget et(root);
       assert(et);
 
       et.removeEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
@@ -117,10 +125,9 @@ MathMLView::setRoot(const DOM::Element& elem)
 
   if (elem)
     {
-      root = getContext()->engineFactory->createElement(this, nodeLocalName(elem));
-      root->setDOMElement(elem);
+      root = elem;
 
-      DOM::EventTarget et(root->getDOMElement());
+      DOM::EventTarget et(root);
       assert(et);
 
       subtreeModifiedListener = new DOMSubtreeModifiedListener(this);
@@ -191,40 +198,43 @@ MathMLView::getRootArea() const
 {
   if (root && !frozen())
     {
-      if (root->dirtyStructure())
+      SmartPtr<MathMLElement> elem = getRootElement();
+      assert(elem);
+
+      if (elem->dirtyStructure())
 	{
 	  Clock perf;
 	  perf.Start();
-	  root->construct();
+	  elem->construct();
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "construction time: %dms", perf());
 	}
 
-      if (root->dirtyAttribute() || root->dirtyAttributeP())
+      if (elem->dirtyAttribute() || elem->dirtyAttributeP())
 	{
 	  RefinementContext rc;
 	  Clock perf;
 	  perf.Start();
-	  root->refine(rc);
+	  elem->refine(rc);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
 	}
 
-      if (root->dirtyLayout())
+      if (elem->dirtyLayout())
 	{
-	  MathFormattingContext ctxt(context->device);
-	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  //ctxt.setSize(context->device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
+	  MathFormattingContext ctxt(device);
+	  scaled l = device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
+	  //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
 	  ctxt.setSize(l);
 	  ctxt.setActualSize(ctxt.getSize());
 	  Clock perf;
 	  perf.Start();
-	  root->format(ctxt);
+	  elem->format(ctxt);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 	}
 
-      return root->getArea();
+      return elem->getArea();
     }
 
   return 0;
@@ -243,7 +253,7 @@ Rectangle
 MathMLView::getRectangle() const
 {
   if (AreaRef rootArea = getRootArea())
-    return Rectangle(scaled::zero(), scaled::zero(), root->getArea()->box());
+    return Rectangle(scaled::zero(), scaled::zero(), rootArea->box());
   else
     return Rectangle();
 }
@@ -260,4 +270,10 @@ MathMLView::render(RenderingContext& ctxt) const
       perf.Stop();
       Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }
+}
+
+SmartPtr<Linker>
+MathMLView::getLinker() const
+{
+  return factory->getLinker();
 }
