@@ -105,12 +105,12 @@ public:
   { return fromGtkY(y); }
 
 protected:
-  template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+  template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
   void setColor(const RGBColor& c)
   { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
 
-  template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
-  void setColor(GdkColor& c)
+  template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
+  void setColor(const GdkColor& c)
   { data[getStyle()].setColor<index,set>(c); }
 
   template <typename C, ColorIndex index>
@@ -128,7 +128,7 @@ protected:
     GdkColor gdk_color[MAX_INDEX];
     XftColor xft_color[MAX_INDEX];
     
-    template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+    template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
     void setColor(const RGBColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
     {
       if (c != color[index])
@@ -152,10 +152,8 @@ protected:
     void getColor(RGBColor& c) const
     { c = color[index]; }
 
-    // The only reason why the argument is not const is that
-    // the GDK function does not respect const-ness :-(
-    template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
-    void setColor(/* const */ GdkColor& c)
+    template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
+    void setColor(const GdkColor& c)
     {
       // Set the color in the GDK GC
       set(gdk_gc, &c);
