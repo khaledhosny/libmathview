@@ -78,7 +78,8 @@ ShaperManager::shapeStretchy(const MathFormattingContext& ctxt,
 			     const scaled& vSpan,
 			     const scaled& hSpan) const
 {
-  std::vector<GlyphSpec> spec(source.length());
+  std::vector<GlyphSpec> spec;
+  spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(mapStretchy(source[i]));
   ShapingResult result(source, spec, vSpan, hSpan);

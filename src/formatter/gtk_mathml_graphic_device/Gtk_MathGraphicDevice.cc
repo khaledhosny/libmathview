@@ -73,7 +73,7 @@ Gtk_MathGraphicDevice::stretchStringV(const MathFormattingContext& context,
 				      const scaled& height,
 				      const scaled& depth) const
 {
-  assert(false);
+  return getShaperManager()->shapeStretchy(context, toUCS4String(str), height, depth);
 }
 
 AreaRef
@@ -127,9 +127,28 @@ Gtk_MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
 
 AreaRef
 Gtk_MathGraphicDevice::radical(const MathFormattingContext& context,
-			       const AreaRef& radicand,
+			       const AreaRef& base,
 			       const AreaRef& index) const
 {
+  const scaled RULE = defaultLineThickness(context);
+  DOM::UCS4String root(1, 0x221a);
+  BoundingBox baseBox = base->box();
+  AreaRef rootArea = stretchStringV(context, fromUCS4String(root), baseBox.depth, baseBox.height + RULE);
+  
+  std::vector<AreaRef> v;
+  v.reserve(3);
+  v.push_back(base);
+  v.push_back(factory->verticalSpace(RULE, 0));
+  v.push_back(factory->horizontalLine(RULE, context.getColor()));
+
+  std::vector<AreaRef> h;
+  h.reserve(index ? 4 : 3);
+  if (index) h.push_back(index);
+  h.push_back(rootArea);
+  h.push_back(factory->horizontalSpace(RULE));
+  h.push_back(factory->verticalArray(v, 0));
+
+  return factory->horizontalArray(h);
 }
 
 void

@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLRadicalElement_hh
-#define MathMLRadicalElement_hh
+#ifndef __MathMLRadicalElement_hh__
+#define __MathMLRadicalElement_hh__
 
 #include "MathMLContainerElement.hh"
 
@@ -36,46 +36,19 @@ public:
   { return new MathMLRadicalElement(view); }
 
   virtual void construct(void);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-#endif
+  virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
-#if 0
-  virtual void Render(const DrawingArea&);
-#endif
 
-#if 0
-  virtual void Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&);
-#endif
-
-#if 0
-  virtual scaled GetRightEdge(void) const;
-  virtual scaled GetLeftEdge(void) const;
-  virtual void ReleaseGCs(void);
-  virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&);
-#endif
-
-  SmartPtr<class MathMLElement> GetRadicand(void) const { return radicand; }
-  SmartPtr<class MathMLElement> GetIndex(void) const { return index; }
-  void SetRadicand(const SmartPtr<class MathMLElement>&);
-  void SetIndex(const SmartPtr<class MathMLElement>&);
+  SmartPtr<class MathMLElement> getBase(void) const { return base; }
+  SmartPtr<class MathMLElement> getIndex(void) const { return index; }
+  void setBase(const SmartPtr<class MathMLElement>&);
+  void setIndex(const SmartPtr<class MathMLElement>&);
 
 private:
-  SmartPtr<class MathMLElement> GetNucleus(void) const;
-  SmartPtr<class MathMLCharNode> GetRadicalSign(void) const;
-  void DoBaseLayoutAux(BoundingBox&, const BoundingBox&);
-
-  scaled spacing;
-  scaled lineThickness;
-
-  //SmartPtr<class MathMLCharNode> radical;
-  SmartPtr<class MathMLElement> radicand;
+  SmartPtr<class MathMLElement> base;
   SmartPtr<class MathMLElement> index;
-
-  RGBColor color;
 };
 
-#endif // MathMLRadicalElement_hh
+#endif // __MathMLRadicalElement_hh__

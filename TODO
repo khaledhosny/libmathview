@@ -24,3 +24,4 @@
 * implement embedding mechanism from MathML (semantics?)
 * generalize embedding mechanism from BoxML (now MathML only)
 * move mathvariant files into src/common
+* use templates for the MathML model as it is for the BoxML model

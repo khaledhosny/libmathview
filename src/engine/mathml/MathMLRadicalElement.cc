@@ -24,44 +24,35 @@
 
 #include <cassert>
 
-#include "ChildList.hh"
-#include "MathMLEntitiesTable.hh"
 #include "Globals.hh"
+#include "ChildList.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
-#include "MathMLOperatorElement.hh"
 #include "MathMLRadicalElement.hh"
-#include "MathMLRowElement.hh"
 #include "MathMLView.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLRadicalElement::MathMLRadicalElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)
-{
-  //radical = 0;
-  radicand = 0;
-  index = 0;
-}
+{ }
 
 MathMLRadicalElement::~MathMLRadicalElement()
-{
-  //radical = 0;
-  SetRadicand(0);
-  SetIndex(0);
-}
+{ }
 
 void
-MathMLRadicalElement::SetRadicand(const SmartPtr<MathMLElement>& elem)
+MathMLRadicalElement::setBase(const SmartPtr<MathMLElement>& elem)
 {
-  if (elem != radicand)
+  if (elem != base)
     {
       if (elem) elem->setParent(this);
-      radicand = elem;
+      base = elem;
       setDirtyLayout();
     }
 }
 
 void
-MathMLRadicalElement::SetIndex(const SmartPtr<MathMLElement>& elem)
+MathMLRadicalElement::setIndex(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != index)
     {
@@ -86,12 +77,12 @@ MathMLRadicalElement::construct()
 		{
 		  DOM::Node node = children.item(0);
 		  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-		  SetRadicand(getFormattingNode(node));
+		  setBase(getFormattingNode(node));
 		}
 	      else
-		SetRadicand(getFormattingNode(getDOMElement()));
+		setBase(getFormattingNode(getDOMElement()));
 
-	      SetIndex(0);
+	      setIndex(0);
 	    }
 	  else
 	    {
@@ -101,131 +92,71 @@ MathMLRadicalElement::construct()
 	      switch (children.get_length())
 		{
 		case 0:
-		  SetRadicand(getFactory()->createDummyElement(getView()));
-		  SetIndex(getFactory()->createDummyElement(getView()));
+		  setBase(getFactory()->createDummyElement(getView()));
+		  setIndex(getFactory()->createDummyElement(getView()));
 		  break;
 		case 1:
-		  SetRadicand(getFormattingNode(children.item(0)));
-		  SetIndex(getFactory()->createDummyElement(getView()));
+		  setBase(getFormattingNode(children.item(0)));
+		  setIndex(getFactory()->createDummyElement(getView()));
 		  break;
 		default:
-		  SetRadicand(getFormattingNode(children.item(0)));
-		  SetIndex(getFormattingNode(children.item(1)));
+		  setBase(getFormattingNode(children.item(0)));
+		  setIndex(getFormattingNode(children.item(1)));
 		  break;
 		}
 	    }
 	}
 #endif
 
-#if 0
-      if (!radical) radical = MathMLCharNode::create(U_SQRT);
-      assert(radical);
-      radical->SetParent(this);
-#endif
-
-      if (radicand) radicand->construct();
+      if (base) base->construct();
       if (index) index->construct();
 
       resetDirtyStructure();
     }
 }
 
-#if 0
 void
-MathMLRadicalElement::Setup(RenderingEnvironment& env)
+MathMLRadicalElement::refine(AbstractRefinementContext& context)
 {
   if (dirtyAttribute() || dirtyAttributeP())
     {
-      spacing       = env.ToScaledPoints(env.GetMathSpace(RenderingEnvironment::MATH_SPACE_MEDIUM));
-      color         = env.GetColor();
-      background    = env.GetBackgroundColor();
-      lineThickness = env.GetRuleThickness();
+      if (base) base->refine(context);
+      if (index) index->refine(context);
+      MathMLContainerElement::refine(context);
+    }
+}
 
-      //if (radical) radical->Setup(env);
-      if (radicand) radicand->Setup(env);
+AreaRef
+MathMLRadicalElement::format(MathFormattingContext& ctxt)
+{
+  if (dirtyLayout())
+    {
+      ctxt.push(this);
+
+      AreaRef baseArea = base->format(ctxt);
+      AreaRef indexArea;
       if (index)
 	{
-	  env.Push();
-	  env.SetDisplayStyle(false);
-	  env.AddScriptLevel(2);
-	  index->Setup(env);
-	  env.Drop();
+	  ctxt.setDisplayStyle(false);
+	  ctxt.addScriptLevel(2);
+	  indexArea = index->format(ctxt);
 	}
+      AreaRef res = ctxt.getDevice()->radical(ctxt, baseArea, indexArea);
 
-      resetDirtyAttribute();
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
+
+      ctxt.pop();
+      resetDirtyLayout();
     }
+
+  return getArea();
 }
-
-void
-MathMLRadicalElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      assert(radicand);
-      radicand->DoLayout(ctxt);
-      box = radicand->GetBoundingBox();
-
-#if 0
-      assert(radical);
-      radical->DoLayout(ctxt);
-      radical->DoVerticalStretchyLayout(box.height + lineThickness, box.depth, 0, false);
-      const BoundingBox& radBox = radical->GetBoundingBox();
-#else
-      BoundingBox radBox;
-#endif
-
-      box.width += radBox.width;
-      box.height = std::max(box.height + spacing, radBox.height);
-      box.depth = std::max(box.depth, radBox.depth);
-
-      if (index)
-	{
-	  index->DoLayout(ctxt);
-	  const BoundingBox& indexBox = index->GetBoundingBox();
-
-	  box.width += indexBox.width;
-
-	  if (box.verticalExtent() / 2 < indexBox.verticalExtent())
-	    box.height += indexBox.verticalExtent() - box.verticalExtent() / 2;
-	}
-
-      resetDirtyLayout(ctxt);
-    }
-}
-
-void
-MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
-{
-  position.x = x;
-  position.y = y;
-
-#if 0
-  assert(radical);
-  const BoundingBox& radBox = radical->GetBoundingBox();
-
-  if (index)
-    {
-      const BoundingBox& baseBox  = radicand->GetBoundingBox();
-      const BoundingBox& indexBox = index->GetBoundingBox();
-
-      index->SetPosition(x, y + (baseBox.verticalExtent() / 2 - baseBox.height) - indexBox.depth);
-      radical->SetPosition(x + indexBox.width, y);
-      radicand->SetPosition(x + indexBox.width + radBox.width, y);
-    } 
-  else
-    {
-      radical->SetPosition(x, y - box.height + radBox.height);
-      radicand->SetPosition(x + radBox.width, y);
-    }
-#endif
-}
-#endif
 
 void
 MathMLRadicalElement::setFlagDown(Flags f)
 {
   MathMLElement::setFlagDown(f);
-  if (radicand) radicand->setFlagDown(f);
+  if (base) base->setFlagDown(f);
   if (index) index->setFlagDown(f);
 }
 
@@ -233,98 +164,7 @@ void
 MathMLRadicalElement::resetFlagDown(Flags f)
 {
   MathMLElement::resetFlagDown(f);
-  if (radicand) radicand->resetFlagDown(f);
+  if (base) base->resetFlagDown(f);
   if (index) index->resetFlagDown(f);
 }
 
-#if 0
-void
-MathMLRadicalElement::Render(const DrawingArea& area)
-{
-#if 0
-  if (Exposed(area))
-    {
-      if (fGC[Selected()] == NULL) {
-	GraphicsContextValues values;
-	values.foreground = Selected() ? area.GetSelectionForeground() : color;
-	values.background = Selected() ? area.GetSelectionBackground() : background;
-	values.lineWidth = lineThickness;
-	fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND | GC_MASK_LINE_WIDTH);
-      }
-
-      RenderBackground(area);
-
-      assert(radicand);
-      radicand->Render(area);
-      if (index) index->Render(area);
-
-      assert(radical);
-      radical->Render(area);
-      const BoundingBox& radBox = radical->GetBoundingBox();
-      area.MoveTo(radical->GetX() + radBox.width, radical->GetY() - radBox.height + lineThickness / 2);
-      area.DrawLineToDelta(fGC[Selected()], radicand->GetBoundingBox().width, 0);
-
-      ResetDirty();
-    }
-#endif
-}
-
-scaled
-MathMLRadicalElement::GetLeftEdge() const
-{
-#if 0
-  assert(radical);
-  assert(radicand);
-  scaled m = std::min(radicand->GetLeftEdge(), radical->GetLeftEdge());
-  if (index) return std::min(m, index->GetLeftEdge());
-  else return m;
-#endif
-  return 0;
-}
-
-scaled
-MathMLRadicalElement::GetRightEdge() const
-{
-#if 0
-  assert(radical);
-  assert(radicand);
-  scaled m = std::max(radicand->GetRightEdge(), radical->GetRightEdge());
-  if (index) return std::max(m, index->GetRightEdge());
-  else return m;
-#endif
-  return 0;
-}
-#endif
-
-#if 0
-void
-MathMLRadicalElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
-{
-  assert(oldElem);
-  if (oldElem == radicand) SetRadicand(newElem);
-  else if (oldElem == index) SetIndex(newElem);
-  else assert(0);
-}
-#endif
-
-#if 0
-void
-MathMLRadicalElement::ReleaseGCs()
-{
-  MathMLElement::ReleaseGCs();
-  if (radicand) radicand->ReleaseGCs();
-  if (index) index->ReleaseGCs();
-}
-
-SmartPtr<MathMLElement>
-MathMLRadicalElement::Inside(const scaled& x, const scaled& y)
-{
-  if (!IsInside(x, y)) return 0;
-
-  SmartPtr<MathMLElement> inside = 0;
-  if (radicand && (inside = radicand->Inside(x, y))) return inside;
-  if (index && (inside = index->Inside(x, y))) return inside;
-
-  return this;
-}
-#endif
