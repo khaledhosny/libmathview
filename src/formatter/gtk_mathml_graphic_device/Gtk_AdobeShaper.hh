@@ -23,9 +23,12 @@
 #ifndef __Gtk_AdobeShaper_hh__
 #define __Gtk_AdobeShaper_hh__
 
+#include <functional>
+
 #include <pango/pangox.h>
 #include <X11/Xft/Xft.h>
 
+#include "HashMap.hh"
 #include "Shaper.hh"
 
 class Gtk_AdobeShaper : public Shaper
@@ -51,6 +54,55 @@ protected:
   bool shapeChar(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
   bool shapeStretchyCharV(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
   bool shapeStretchyCharH(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
+
+  struct CachedFontKey
+  {
+    CachedFontKey(unsigned i, const scaled& s) : index(i), size(s) { }
+
+    unsigned index;
+    scaled size;
+
+    bool operator==(const CachedFontKey& k) const
+    { return index == k.index && size == k.size; }
+  };
+
+  struct CachedFontKeyHash
+  {
+    size_t operator()(const CachedFontKey& key) const
+    { return key.index + key.size.getValue(); }
+  };
+
+  struct CachedPangoFontData
+  {
+    CachedPangoFontData(void) { }
+    CachedPangoFontData(PangoFont* f, int s) : font(f), subfont(s) { }
+
+    PangoFont* font;
+    int subfont;
+  };
+
+  struct CachedAreaKey
+  {
+    CachedAreaKey(DOM::Char32 c, const scaled& s) : ch(c), size(s) { }
+
+    DOM::Char32 ch;
+    scaled size;
+
+    bool operator==(const CachedAreaKey& k) const
+    { return ch == k.ch && size == k.size; }
+  };
+
+  struct CachedAreaKeyHash
+  {
+    bool operator()(const CachedAreaKey& key) const
+    { return key.ch + key.size.getValue(); }
+  };
+
+  typedef HASH_MAP_NS::hash_map<CachedFontKey,CachedPangoFontData,CachedFontKeyHash> PangoFontCache;
+  typedef HASH_MAP_NS::hash_map<CachedAreaKey,AreaRef,CachedAreaKeyHash> AreaCache;
+
+  mutable PangoFontCache pangoFontCache;
+  mutable AreaCache areaCache;
 };
 
 #endif // __Gtk_AdobeShaper_hh__

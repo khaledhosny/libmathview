@@ -389,6 +389,14 @@ Gtk_AdobeShaper::getXLFD(unsigned fi, const scaled& size)
 PangoFont*
 Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
 {
+  CachedFontKey key(fi, size);
+  PangoFontCache::iterator p = pangoFontCache.find(key);
+  if (p != pangoFontCache.end())
+    {
+      subfont = p->second.subfont;
+      return p->second.font;
+    }
+
   // Note that we use the default values for the display
   // that is the value that was specified to the
   // X server on the command line. This will work on most cases
@@ -410,6 +418,8 @@ Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& su
   for (unsigned i = 0; i < n_subfonts; i++)
     printf("subfont: %d\n", subfont[i]);
 #endif
+  
+  pangoFontCache[key] = CachedPangoFontData(font, subfont);
 
   return font;
 }
@@ -432,26 +442,37 @@ Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
 
-#if 0
-  PangoXSubfont subfont;
-  PangoFont* font = getPangoFont(spec.getFontId(), ctxt.getSize(), subfont);
-  assert(font);
+  AreaRef res;
 
-  //printf("creating glyph area with glyph id = %d\n", spec.getGlyphId());
+  CachedAreaKey key(result.thisChar(), ctxt.getSize());
+  AreaCache::iterator p = areaCache.find(key);
+  if (false && p != areaCache.end())
+    res = p->second;
+  else
+    {
+#if 1
+      PangoXSubfont subfont;
+      PangoFont* font = getPangoFont(spec.getFontId(), ctxt.getSize(), subfont);
+      assert(font);
 
-  PangoGlyphString* gs = pango_glyph_string_new();
-  pango_glyph_string_set_size(gs, 1);
-  gs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(subfont, spec.getGlyphId());
-  gs->glyphs[0].geometry.x_offset = 0;
-  gs->glyphs[0].geometry.y_offset = 0;
-  gs->glyphs[0].geometry.width = 0;
-  AreaRef res = factory->pangoGlyph(font, gs);
+      //printf("creating glyph area with glyph id = %d\n", spec.getGlyphId());
+
+      PangoGlyphString* gs = pango_glyph_string_new();
+      pango_glyph_string_set_size(gs, 1);
+      gs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(subfont, spec.getGlyphId());
+      gs->glyphs[0].geometry.x_offset = 0;
+      gs->glyphs[0].geometry.y_offset = 0;
+      gs->glyphs[0].geometry.width = 0;
+      res = factory->pangoGlyph(font, gs);
 #else
-  XftFont* font = getXftFont(spec.getFontId(), ctxt.getSize());
-  assert(font);
+      XftFont* font = getXftFont(spec.getFontId(), ctxt.getSize());
+      assert(font);
 
-  AreaRef res = factory->xftGlyph(font, spec.getGlyphId());
+      res = factory->xftGlyph(font, spec.getGlyphId());
 #endif
+      areaCache[key] = res;
+    }
+
   result.pushArea(res);
 
   return true;
