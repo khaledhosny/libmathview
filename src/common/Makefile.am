@@ -1,4 +1,6 @@
 
+NULL =
+
 SUBDIRS = mathvariants
 
 noinst_LTLIBRARIES = libcommon.la
@@ -15,50 +17,55 @@ libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libcommon_la_LIBADD = $(top_builddir)/src/common/mathvariants/libmathvariants.la
 
 libcommon_la_SOURCES = \
-  Clock.cc \
-  Logger.cc \
-  Rectangle.cc \
-  scaledConv.cc \
-  token.cc \
-  RGBColorAux.cc \
   BoundingBox.cc \
   BoundingBoxAux.cc \
+  Clock.cc \
   LengthAux.cc \
+  Logger.cc \
+  PointAux.cc \
+  RGBColorAux.cc \
+  Rectangle.cc \
   String.cc \
-  ValueConversion.cc
+  ValueConversion.cc \
+  scaledConv.cc \
+  token.cc \
+  $(NULL)
 
 pkginclude_HEADERS = defs.h
 
 noinst_HEADERS = \
-  Clock.hh \
-  Logger.hh \
-  Rectangle.hh \
-  token.hh \
-  TokenSet.hh \
-  scaledConv.hh \
-  for_each_if.h \
-  fixed.hh \
-  scaled.hh \
-  scaledAux.hh \
-  Length.hh \
-  LengthAux.hh \
-  RGBColor.hh \
-  RGBColorAux.hh \
   BoundingBox.hh \
   BoundingBoxAux.hh \
+  Clock.hh \
+  GObjectPtr.hh \
+  HashMap.hh \
+  Length.hh \
+  LengthAux.hh \
+  Logger.hh \
+  Object.hh \
+  Point.hh \
+  PointAux.hh \
+  RGBColor.hh \
+  RGBColorAux.hh \
   Rectangle.hh \
+  Rectangle.hh \
+  Rope.hh \
+  ScopedHashMap.hh \
+  SmartPtr.hh \
+  SparseMap.hh \
+  String.hh \
+  TokenSet.hh \
   Value.hh \
   ValueConversion.hh \
   Variant.hh \
-  HashMap.hh \
-  Rope.hh \
-  ScopedHashMap.hh \
-  SparseMap.hh \
-  SmartPtr.hh \
   WeakPtr.hh \
-  String.hh \
-  GObjectPtr.hh \
-  Object.hh
+  fixed.hh \
+  for_each_if.h \
+  scaled.hh \
+  scaledAux.hh \
+  scaledConv.hh \
+  token.hh \
+  $(NULL)
 
 INCLUDES = \
   $(GLIB_CFLAGS) \

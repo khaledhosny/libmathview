@@ -9,12 +9,13 @@
 
 BUGS
 
+* when index == length in a glyph area the caret is drawn
+  at the right end of the focus' bounding box. It would be
+  more appropriate to draw it just after the glyph, especially
+  for mo elements
 * when is it that the libxml2 tree gets freed in the libxml2
   frontends?
 * restore handling of mo attributes with getAttributeValueNoDefault
-* View::getCharAt always returns index = 0
-+ make it possible for the content of a bin/linear container to
-  have null elements. For example mfenced may generate these cases.
 - units like cm are wrong (can be the dpi?)
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
@@ -23,38 +24,39 @@ BUGS
   backend_HEADERS = ...
   endinedir = $(includedir)/$(PACKAGE)/engine
   engine_HEADERS = ...
-  gtkdir = $(includedir)/$(PACKAGE)/gtk
-  gtk_HEADERS = ...
 
 ARCH IMPROVEMENTS
 
-+ GetOperatorForm in mrow is linear in the length of the row
-+ make the dummy elements have some content (or an attribute)
+? make GlyphStringArea a leaf-like area?
+- in TemplateBuilder exploit MathMLInferredRowElement instead of
+  creating it each time
+- make the dummy elements have some content (or an attribute)
   and parameterize their rendering with that content
-+ change the clone method for areas so that it checks if the
+- change the clone method for areas so that it checks if the
   content is unchanged, and possibly implement the replace this
   way
-+ implement auxiliary methods for searching into the area model
-+ implement caching mechanism for pango shaper
-+ it seems like the choice of having that the first child of a
+- implement auxiliary methods for searching into the area model
+- it seems like the choice of having that the first child of a
   vertical area is the bottommost is a bit weird. Think of the cursor:
   intuitively at increasing indices the cursor should go forward (that
   is right or down depending on the container)
-+ in TemplateBuilder exploit MathMLInferredRowElement instead of
-  creating it each time
-+ in TemplateBuilder do not use the hash map for retrieving old
-  elements, but use accessor methods instead. Much faster 
 - It may be feasible to generalize searching functions
   over areas by implementing a visitor
 - fix Configuration/Globals files 
   create a class for them and refer them from the View
 
+PERFORMANCE IMPROVEMENTS
+
+- implement caching mechanism for pango shaper
+- in TemplateBuilder do not use the hash map for retrieving old
+  elements, but use accessor methods instead. Much faster 
+- GetOperatorForm in mrow is linear in the length of the row
+
 MISSING
 
-+ make setSelected virtual in Gtk_WrapperArea and implement
+? make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
-+ implement cursor
 - implement AreaCanvas for drawing lines
 - implement table formatting
 - implement PS area model (using pslib?)
@@ -84,7 +86,7 @@ ARCH IMPROVEMENTS
 
 MISSING
 
-+ justification of paragraphs
+? justification of paragraphs
 + minlabelspacing -> spacing in paragraph, use pango layout spacing
 + cleanup code for box paragraph, create an auxiliary class for
   collecting things and handle groups inside paragraphs. What
