@@ -9,8 +9,6 @@
 
 ? make conversion functions in RenderingContext non-static and
   take zooming into account
-* split the Gtk_MathGraphicDevice into a Default_MathGraphicDevice, make
-  the AreaFactory and the Shapers customizable from outside
 + remove xft support from gtk rendering context since it's not going to be used
 
 // MathML
@@ -26,15 +24,10 @@ BUGS
 ? selecting the root <math> element does not show selection
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
-- install header files in subdirectories:
-  backenddir = $(includedir)/$(PACKAGE)/backend
-  backend_HEADERS = ...
-  endinedir = $(includedir)/$(PACKAGE)/engine
-  engine_HEADERS = ...
 
 ARCH IMPROVEMENTS
 
-* move the MathMLOperatorDictionary into MathMLNamespaceContext?
+? move the MathMLOperatorDictionary into MathMLNamespaceContext?
 + Gtk_PangoLayoutLineArea shares constructor with GtkPangoLayoutArea
   which computes bounding box as well
 ? make GlyphStringArea a leaf-like area?

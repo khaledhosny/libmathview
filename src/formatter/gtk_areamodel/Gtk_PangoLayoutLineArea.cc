@@ -24,13 +24,12 @@
 
 #include <cassert>
 
+#include "Point.hh"
 #include "Gtk_PangoLayoutLineArea.hh"
 #include "Gtk_RenderingContext.hh"
 
-#include "BoundingBoxAux.hh"
-
 Gtk_PangoLayoutLineArea::Gtk_PangoLayoutLineArea(PangoLayout* _layout)
-  : Gtk_PangoLayoutArea(_layout)
+  : Gtk_PangoLayoutArea(_layout, true)
 {
   PangoRectangle rect;
   PangoLayoutLine* line = pango_layout_get_line(layout, 0);
@@ -74,7 +73,11 @@ Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scal
 #endif
 }
 
-#if 0
+#if 1
+
+#include "BoundingBoxAux.hh"
+#include <iostream>
+
 bool
 Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
 {
@@ -87,7 +90,7 @@ Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharI
     {
       const gchar* buffer = pango_layout_get_text(layout);
       index = g_utf8_pointer_to_offset(buffer, buffer + utf8_index) + trailing;
-      //std::cout << "pango_layout_line_x_to_index " << utf8_index << " " << index << std::endl;
+      std::cout << "pango_layout_line_x_to_index " << utf8_index << " " << index << std::endl;
       return true;
     }
   else
@@ -111,8 +114,6 @@ Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, Point* p, BoundingBox*
 	  p->x += Gtk_RenderingContext::fromPangoPixels(xpos);
 	  p->y += scaled::zero();
 	}
-
-      if (b) *b = 
 
       return true;
     }

@@ -32,11 +32,14 @@ class Gtk_PangoLayoutArea : public GlyphArea
 {
 protected:
   Gtk_PangoLayoutArea(PangoLayout*);
+  Gtk_PangoLayoutArea(PangoLayout*, bool);
   virtual ~Gtk_PangoLayoutArea();
 
 public:
   static SmartPtr<Gtk_PangoLayoutArea> create(PangoLayout* layout)
   { return new Gtk_PangoLayoutArea(layout); }
+  static SmartPtr<Gtk_PangoLayoutArea> create(PangoLayout* layout, bool)
+  { return new Gtk_PangoLayoutArea(layout, true); }
 
   virtual BoundingBox box(void) const;
   virtual scaled leftEdge(void) const;

@@ -43,6 +43,14 @@ Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout)
 		     height, Gtk_RenderingContext::fromPangoPixels(rect.height) - height);
 }
 
+Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout, bool)
+  : layout(_layout)
+{
+  // this version of the constructor does not compute the bounding
+  // box which is supposed to be initialized by a derived class
+  // (see Gtk_PangoLayoutLineArea)
+}
+
 Gtk_PangoLayoutArea::~Gtk_PangoLayoutArea()
 { }
 
