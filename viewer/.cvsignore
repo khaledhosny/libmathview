@@ -4,3 +4,5 @@ mathmlviewer
 mathmlviewer.debug
 Makefile
 Makefile.in
+test_embedding
+test_loading

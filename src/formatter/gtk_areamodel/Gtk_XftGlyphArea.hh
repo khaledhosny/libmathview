@@ -31,11 +31,11 @@
 class Gtk_XftGlyphArea : public GlyphArea
 {
 protected:
-  Gtk_XftGlyphArea(XftFont* font, FT_UInt glyph);
+  Gtk_XftGlyphArea(XftFont*, FcChar8);
   virtual ~Gtk_XftGlyphArea();
 
 public:
-  static SmartPtr<Gtk_XftGlyphArea> create(XftFont* font, FT_UInt glyph)
+  static SmartPtr<Gtk_XftGlyphArea> create(XftFont* font, FcChar8 glyph)
   { return new Gtk_XftGlyphArea(font, glyph); }
 
   virtual BoundingBox box(void) const;
@@ -44,13 +44,13 @@ public:
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
 
   XftFont* getFont(void) const { return font; }
-  FT_UInt getGlyph(void) const { return glyph; }
+  FcChar8 getGlyph(void) const { return glyph; }
 
 private:
   void getXftExtents(XGlyphInfo&) const;
 
   XftFont* font;
-  FT_UInt glyph;
+  FcChar8 glyph;
 };
 
 #endif // __Gtk_XftGlyphArea_hh__

@@ -26,7 +26,7 @@
 
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
-#include "Gtk_PangoFontManager.hh"
+#include "Gtk_XftFontManager.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
@@ -45,14 +45,14 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
 
   getShaperManager()->registerShaper(SpaceShaper::create());
 
-#if 1
+#if 0
   SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
   pangoShaper->setPangoContext(context);
   getShaperManager()->registerShaper(pangoShaper);
 #else
-  SmartPtr<Gtk_PangoFontManager> pangoFontManager = Gtk_PangoFontManager::create();
+  SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
   SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-  adobeShaper->setFontManager(pangoFontManager);
+  adobeShaper->setFontManager(xftFontManager);
   getShaperManager()->registerShaper(adobeShaper);
 #endif
 }

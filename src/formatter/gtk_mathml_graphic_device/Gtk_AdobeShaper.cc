@@ -30,8 +30,8 @@
 #include "ShapingResult.hh"
 #include "Gtk_AdobeShaper.hh"
 #include "Gtk_AreaFactory.hh"
-#include "Gtk_RenderingContext.hh"
 #include "Gtk_PangoFontManager.hh"
+#include "Gtk_XftFontManager.hh"
 #include "MathVariant.hh"
 #include "MathVariantMap.hh"
 #include "ShaperManager.hh"
@@ -323,7 +323,13 @@ Gtk_AdobeShaper::~Gtk_AdobeShaper()
 
 void
 Gtk_AdobeShaper::setFontManager(const SmartPtr<Gtk_PangoFontManager>& fm)
-{ fontManager = fm; }
+{ pangoFontManager = fm; }
+
+void
+Gtk_AdobeShaper::setFontManager(const SmartPtr<Gtk_XftFontManager>& fm)
+{ xftFontManager = fm; }
+
+#include <iostream>
 
 void
 Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
@@ -332,7 +338,7 @@ Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shap
 
   for (unsigned i = LATIN_BASE_INDEX; i < N_FONTS; i++)
     {
-      for (Char16 ch = 0x20; ch < 0x100; ch++)
+      for (Char16 ch = 0x20; ch < 0x80; ch++)
 	{
 	  Char32 vch = mapMathVariant(variantDesc[i].variant, ch);
 	  if (variantDesc[i].variant == NORMAL_VARIANT || vch != ch)
@@ -379,92 +385,20 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
     }
 }
 
-#if 0
-const char*
-Gtk_AdobeShaper::getXLFD(unsigned fi, const scaled& size)
-{
-  assert(fi < N_FONTS);
-
-  static char buffer[128];
-  sprintf(buffer, "-adobe-%s-%s-%s-*--*-%d-75-75-*-*-%s",
-	  variantDesc[fi].family, variantDesc[fi].weight, variantDesc[fi].slant,
-	  static_cast<int>(size.toFloat() * 10 + 0.5f), variantDesc[fi].charset);
- 
-  return buffer;
-}
-
-PangoFont*
-Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
-{
-  assert(fi < N_FONTS);
-  CachedFontKey key(size);
-  PangoFontCache::iterator p = pangoFontCache[fi].find(key);
-  if (p != pangoFontCache[fi].end())
-    {
-      subfont = p->second.subfont;
-      return p->second.font;
-    }
-
-  // Note that we use the default values for the display
-  // that is the value that was specified to the
-  // X server on the command line. This will work on most cases
-  PangoFont* font = pango_x_load_font(gdk_x11_get_default_xdisplay(), getXLFD(fi, size));
-  assert(font);
-
-  // the following operations are needed even if the subfont is
-  // always 1, dunno why :-(((
-  PangoXSubfont* sf;
-  int* subfont_charset;
-  int n_subfonts;
-  n_subfonts = pango_x_list_subfonts(font, &variantDesc[fi].charset, 1, &sf, &subfont_charset);
-  assert(n_subfonts > 0);
-  subfont = sf[0];
-  g_free(sf);
-  g_free(subfont_charset);
-#if 0
-  printf("found %d subfonts\n", n_subfonts);
-  for (unsigned i = 0; i < n_subfonts; i++)
-    printf("subfont: %d\n", subfont[i]);
-#endif
-  
-  pangoFontCache[fi][key] = CachedPangoFontData(font, subfont);
-
-  return font;
-}
-
-#if 0
-XftFont*
-Gtk_AdobeShaper::getXftFont(unsigned fi, const scaled& size) const
-{
-  XftFont* font = XftFontOpenXlfd(gdk_x11_get_default_xdisplay(),
-		                  gdk_x11_get_default_screen(),
-				  getXLFD(fi, size));
-  assert(font);
-
-  return font;
-}
-#endif
-#endif
-
 AreaRef
 Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 				      unsigned fi, unsigned gi,
 				      const scaled& size) const
 {
   PangoXSubfont subfont;
-  assert(fontManager);
-#if 0
-  PangoFont* font = fontManager->getPangoFont(Gtk_PangoFontManager::XLFD("adobe", variantDesc[fi].family,
-									 variantDesc[fi].weight, variantDesc[fi].slant,
-									 static_cast<int>(size.toFloat() * 10 + 0.5f),
-									 variantDesc[fi].charset),
-					      subfont);
-#else
-  PangoFont* font = fontManager->getPangoFont(Gtk_PangoFontManager::PangoFD("symbol", PANGO_STYLE_NORMAL,
-									    PANGO_WEIGHT_NORMAL,
-									    static_cast<int>(size.toFloat() * 10 + 0.5f)),
-					      subfont);
-#endif
+  assert(pangoFontManager);
+  
+  Gtk_PangoFontManager::XLFD fd("adobe", variantDesc[fi].family,
+				variantDesc[fi].weight, variantDesc[fi].slant,
+				static_cast<int>(size.toFloat() * 10 + 0.5f),
+				variantDesc[fi].charset);
+
+  PangoFont* font = pangoFontManager->getPangoFont(fd, subfont);
   assert(font);
 
   PangoGlyphString* gs = pango_glyph_string_new();
@@ -477,25 +411,28 @@ Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   return factory->pangoGlyph(font, gs);
 }
 
-#if 0
 AreaRef
 Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 				    unsigned fi, unsigned gi,
 				    const scaled& size) const
 {
-  XftFont* font = getXftFont(fi, size);
+  assert(xftFontManager);
+  Gtk_XftFontManager::XLFD fd("adobe", variantDesc[fi].family,
+			      variantDesc[fi].weight, variantDesc[fi].slant,
+			      round(size * 10).toInt(),
+			      variantDesc[fi].charset);
+  XftFont* font = xftFontManager->getXftFont(Gtk_XftFontManager::XLFD(fd));
   assert(font);
   return factory->xftGlyph(font, gi);
 }
-#endif
 
 AreaRef
 Gtk_AdobeShaper::createGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 				 unsigned fi, unsigned gi,
 				 const scaled& size) const
 {
-  return createPangoGlyphArea(factory, fi, gi, size);
-  // return createXftGlyphArea(factory, fi, gi, size);
+  // return createPangoGlyphArea(factory, fi, gi, size);
+  return createXftGlyphArea(factory, fi, gi, size);
 }
 
 AreaRef

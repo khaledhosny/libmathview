@@ -28,7 +28,7 @@
 #include "Gtk_XftGlyphArea.hh"
 #include "Gtk_RenderingContext.hh"
 
-Gtk_XftGlyphArea::Gtk_XftGlyphArea(XftFont* f, FT_UInt g)
+Gtk_XftGlyphArea::Gtk_XftGlyphArea(XftFont* f, FcChar8 g)
   : font(f), glyph(g)
 { }
 
@@ -49,7 +49,7 @@ Gtk_XftGlyphArea::getXftExtents(XGlyphInfo& gInfo) const
   GdkDisplay* gdk_display = gdk_display_get_default();
   Display* display = gdk_x11_display_get_xdisplay(gdk_display);
 
-  XftGlyphExtents(display, font, &glyph, 1, &gInfo);
+  XftTextExtents8(display, font, &glyph, 1, &gInfo);
 }
 
 BoundingBox
@@ -82,10 +82,5 @@ void
 Gtk_XftGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
-  XftDrawGlyphs(context.getXftDraw(),
-		context.getXftForegroundColor(),
-		font,
-		Gtk_RenderingContext::toXftX(x),
-		Gtk_RenderingContext::toXftY(y),
-		&glyph, 1);
+  context.draw(x, y, font, glyph);
 }

@@ -62,10 +62,8 @@ public:
   { return Gtk_PangoLayoutArea::create(layout); }
   virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayoutLine(PangoLayout* layout) const
   { return Gtk_PangoLayoutLineArea::create(layout); }
-#if 0
-  virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FT_UInt glyph) const
+  virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FcChar8 glyph) const
   { return Gtk_XftGlyphArea::create(font, glyph); }
-#endif
   virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
   { return Gtk_WrapperArea::create(area, box, el); }
 };

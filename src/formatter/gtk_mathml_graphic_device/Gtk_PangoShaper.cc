@@ -27,7 +27,6 @@
 #include "ShapingResult.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_PangoShaper.hh"
-#include "Gtk_RenderingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
 #include "MathVariantMap.hh"

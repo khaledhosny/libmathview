@@ -41,6 +41,7 @@ public:
   { return new Gtk_AdobeShaper(); }
 
   void setFontManager(const SmartPtr<class Gtk_PangoFontManager>&);
+  void setFontManager(const SmartPtr<class Gtk_XftFontManager>&);
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
@@ -50,6 +51,7 @@ protected:
   virtual AreaRef createGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
 
   AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+  AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
 
   AreaRef shapeChar(const class MathFormattingContext&, const class GlyphSpec&) const;
@@ -76,7 +78,8 @@ protected:
   typedef HASH_MAP_NS::hash_map<CachedAreaKey,AreaRef,CachedAreaKeyHash> AreaCache;
 
   mutable AreaCache areaCache[N_FONTS];
-  SmartPtr<class Gtk_PangoFontManager> fontManager;
+  SmartPtr<class Gtk_PangoFontManager> pangoFontManager;
+  SmartPtr<class Gtk_XftFontManager> xftFontManager;
 };
 
 #endif // __Gtk_AdobeShaper_hh__

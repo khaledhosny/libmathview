@@ -16,6 +16,7 @@ noinst_LTLIBRARIES = libgtk_mathml_graphic_device.la
 libgtk_mathml_graphic_device_la_SOURCES = \
   Gtk_MathGraphicDevice.cc \
   Gtk_PangoFontManager.cc \
+  Gtk_XftFontManager.cc \
   Gtk_DefaultPangoShaper.cc \
   Gtk_PangoShaper.cc \
   Gtk_AdobeShaper.cc \
@@ -24,6 +25,7 @@ libgtk_mathml_graphic_device_la_SOURCES = \
 noinst_HEADERS = \
   Gtk_MathGraphicDevice.hh \
   Gtk_PangoFontManager.hh \
+  Gtk_XftFontManager.hh \
   Gtk_DefaultPangoShaper.hh \
   Gtk_PangoShaper.hh \
   Gtk_AdobeShaper.hh \
