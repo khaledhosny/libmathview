@@ -1251,25 +1251,29 @@ public:
   virtual SmartPtr<Element>
   getRootElement() const
   {
+    Clock perf;
+	
+    SmartPtr<Element> oldRootElement = rootElement;
+    bool rootDirty = rootElement && (rootElement->dirtyStructure() || rootElement->dirtyAttribute() || rootElement->dirtyAttributeP());
     if (typename Model::Element root = getRootModelElement())
       {
-	Clock perf;
-	
 	perf.Start();
-	SmartPtr<Element> res;
 	String ns = root.get_namespaceURI();
-	if (ns == MATHML_NS_URI) res = getMathMLElement(root);
-	else if (ns == BOXML_NS_URI) res = getBoxMLElement(root);
+	if (ns == MATHML_NS_URI) rootElement = getMathMLElement(root);
+	else if (ns == BOXML_NS_URI) rootElement = getBoxMLElement(root);
 	perf.Stop();
-	Globals::logger(LOG_INFO, "build time: %dms", perf());
 #if 0
 	std::cerr << "FOUND ROOT ELEMENT = " << static_cast<Element*>(res)
 		  << " DIRTY? " << res->dirtyLayout() << std::endl;
 #endif
-	return res;
       }
     else
-      return 0;
+      rootElement = 0;
+
+    if (rootDirty || rootElement != oldRootElement)
+      Globals::logger(LOG_INFO, "build time: %dms", perf());
+
+    return rootElement;
   }
 
 private:
@@ -1282,6 +1286,7 @@ private:
   MathMLBuilderMap mathmlMap;
   BoxMLBuilderMap boxmlMap;
 
+  mutable SmartPtr<Element> rootElement;
   mutable typename Model::RefinementContext refinementContext;
 };
 

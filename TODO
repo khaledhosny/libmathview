@@ -5,6 +5,7 @@
 
 BUGS
 
+** when changing font size the tree is rebuilt twice!!!!!!!
 * restore handling of mo attributes with getAttributeValueNoDefault
 * par without width attribute -> assert false
 * View::getCharAt always returns index = 0

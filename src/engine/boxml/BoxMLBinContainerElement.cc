@@ -23,6 +23,8 @@
 #include <config.h>
 
 #include "BoxMLBinContainerElement.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 
 BoxMLBinContainerElement::BoxMLBinContainerElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLElement(context)
@@ -36,8 +38,10 @@ BoxMLBinContainerElement::format(BoxFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
+      ctxt.push(this);
       if (SmartPtr<BoxMLElement> child = getChild())
-	setArea(child->format(ctxt));
+	setArea(ctxt.getDevice()->wrapper(ctxt, child->format(ctxt)));
+      ctxt.pop();
       resetDirtyLayout();
     }
 

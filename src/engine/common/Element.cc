@@ -43,11 +43,15 @@ Element::setParent(const SmartPtr<Element>& p)
   parent = static_cast<Element*>(p);
   if (p)
     {
+      // the setFlagDown is smart so it does not propagate the flag
+      // if the flag is already set.
+      // the setFlagDown however doesn't check for the status of the flag
+      // so it is more delicate
       if (dirtyStructure()) setFlagUp(FDirtyStructure);
       if (dirtyAttribute()) setFlagUp(FDirtyAttributeP);
-      if (p->dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
+      if (p->dirtyAttributeD() && !dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
       if (dirtyLayout()) setFlagUp(FDirtyLayout);
-      if (p->dirtyLayout()) setFlagDown(FDirtyLayout);
+      // if (p->dirtyLayout()) setFlagDown(FDirtyLayout); // NOOOOOOOOOOOOOOOOOOOO
     }
 }
 
