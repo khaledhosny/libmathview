@@ -190,9 +190,9 @@ MathMLPaddedElement::DoLayout(const class FormattingContext& ctxt)
       const BoundingBox& elemBox = child->GetBoundingBox();
 
       lSpaceE = EvalLengthDimension(0, lSpace, elemBox);
-      box.Set(lSpaceE + EvalLengthDimension(elemBox.width, width, elemBox),
-	      EvalLengthDimension(elemBox.ascent, height, elemBox),
-	      EvalLengthDimension(elemBox.descent, depth, elemBox));
+      box.set(lSpaceE + EvalLengthDimension(elemBox.width, width, elemBox),
+	      EvalLengthDimension(elemBox.height, height, elemBox),
+	      EvalLengthDimension(elemBox.depth, depth, elemBox));
 
       DoEmbellishmentLayout(this, box);
 
@@ -228,8 +228,8 @@ MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
     switch (dim.pseudoUnitId) {
     case KW_WIDTH: res = b.width * f; break;
     case KW_LSPACE: break; // LUCA: BoundingBox does not have a lspace length!!!
-    case KW_HEIGHT: res = b.ascent * f; break;
-    case KW_DEPTH: res = b.descent * f; break;
+    case KW_HEIGHT: res = b.height * f; break;
+    case KW_DEPTH: res = b.depth * f; break;
     default:
       assert(false);
       break;

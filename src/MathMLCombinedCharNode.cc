@@ -73,14 +73,12 @@ MathMLCombinedCharNode::DoLayout(const FormattingContext& ctxt)
     bool res = CombineWith(cChar, shiftX, shiftY);
     assert(res);
 
-    box.ascent = std::max(charBox.ascent, cBox.ascent + shiftY);
-    box.descent = std::max(charBox.descent, cBox.descent - shiftY);
+    box.height = std::max(charBox.height, cBox.height + shiftY);
+    box.depth = std::max(charBox.depth, cBox.depth - shiftY);
     if (cChar->GetChar() != 0x20dd)
       box.width = std::max(charBox.width, cBox.width + shiftX);
     else
       box.width = std::max(charBox.width, cBox.width);
-    box.lBearing = std::min(charBox.lBearing, cBox.lBearing + shiftX);
-    box.rBearing = std::max(charBox.rBearing, cBox.rBearing + shiftX);
     charBox = box; // WARNING: watch this
   }
 }
@@ -97,11 +95,9 @@ MathMLCombinedCharNode::SetPosition(const scaled& x, const scaled& y)
     }
   else
     {
-      const BoundingBox& cBox = cChar->GetBoundingBox();
-      
-      MathMLCharNode::SetPosition(x - cBox.lBearing - shiftX, y);
+      MathMLCharNode::SetPosition(x - shiftX, y);
       assert(cChar != NULL);
-      cChar->SetPosition(x - cBox.lBearing, y - shiftY);
+      cChar->SetPosition(x, y - shiftY);
     }
 }
 

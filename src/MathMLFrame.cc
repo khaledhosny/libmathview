@@ -44,5 +44,5 @@ MathMLFrame::SetPosition(const scaled& x, const scaled& y)
 Rectangle
 MathMLFrame::GetRectangle() const
 {
-  return GetBoundingBox().GetRectangle(GetX(), GetY());
+  return Rectangle(GetX(), GetY(), GetBoundingBox());
 }

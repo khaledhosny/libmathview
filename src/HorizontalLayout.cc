@@ -76,15 +76,14 @@ HorizontalLayout::GetLinearBoundingBox() const
 {
   scaled bl = 0;
   BoundingBox box;
-  box.Null();
   for (std::vector< Ptr<MathMLElement> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
       BoundingBox pBox = (*p)->GetBoundingBox();
-      pBox.ascent -= bl;
-      pBox.descent += bl;
-      box.Append(pBox);
+      pBox.height -= bl;
+      pBox.depth += bl;
+      box.append(pBox);
       if (Ptr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
 	bl += brow->GetExitBaseline();
     }

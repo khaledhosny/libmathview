@@ -185,13 +185,12 @@ MathMLRadicalElement::DoLayout(const class FormattingContext& ctxt)
 
       assert(radical);
       radical->DoLayout(ctxt);
-      radical->DoVerticalStretchyLayout(box.ascent + lineThickness, box.descent, 0, false);
+      radical->DoVerticalStretchyLayout(box.height + lineThickness, box.depth, 0, false);
       const BoundingBox& radBox = radical->GetBoundingBox();
 
       box.width += radBox.width;
-      box.rBearing += radBox.width;
-      box.ascent = std::max(box.ascent + spacing, radBox.ascent);
-      box.descent = std::max(box.descent, radBox.descent);
+      box.height = std::max(box.height + spacing, radBox.height);
+      box.depth = std::max(box.depth, radBox.depth);
 
       if (index)
 	{
@@ -200,8 +199,8 @@ MathMLRadicalElement::DoLayout(const class FormattingContext& ctxt)
 
 	  box.width += indexBox.width;
 
-	  if (box.GetHeight() / 2 < indexBox.GetHeight())
-	    box.ascent += indexBox.GetHeight() - box.GetHeight() / 2;
+	  if (box.verticalExtent() / 2 < indexBox.verticalExtent())
+	    box.height += indexBox.verticalExtent() - box.verticalExtent() / 2;
 	}
 
       ResetDirtyLayout(ctxt);
@@ -222,13 +221,13 @@ MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
       const BoundingBox& baseBox  = radicand->GetBoundingBox();
       const BoundingBox& indexBox = index->GetBoundingBox();
 
-      index->SetPosition(x, y + (baseBox.GetHeight() / 2 - baseBox.ascent) - indexBox.descent);
+      index->SetPosition(x, y + (baseBox.verticalExtent() / 2 - baseBox.height) - indexBox.depth);
       radical->SetPosition(x + indexBox.width, y);
       radicand->SetPosition(x + indexBox.width + radBox.width, y);
     } 
   else
     {
-      radical->SetPosition(x, y - box.ascent + radBox.ascent);
+      radical->SetPosition(x, y - box.height + radBox.height);
       radicand->SetPosition(x + radBox.width, y);
     }
 }
@@ -321,7 +320,7 @@ MathMLRadicalElement::Render(const DrawingArea& area)
       assert(radical);
       radical->Render(area);
       const BoundingBox& radBox = radical->GetBoundingBox();
-      area.MoveTo(radical->GetX() + radBox.width, radical->GetY() - radBox.ascent + lineThickness / 2);
+      area.MoveTo(radical->GetX() + radBox.width, radical->GetY() - radBox.height + lineThickness / 2);
       area.DrawLineToDelta(fGC[Selected()], radicand->GetBoundingBox().width, 0);
 
       ResetDirty();

@@ -283,7 +283,7 @@ MathMLTokenElement::Normalize(const Ptr<class MathMLDocument>&)
 	      for (DOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling())
 		MathMLizeTokenContent(p, parent);
 	      break;
-#endif 0
+#endif
 
 	    case DOM::Node::ELEMENT_NODE:
 	      {	    
@@ -451,7 +451,7 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt))
     {
-      box.Null();
+      box.unset();
       for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
 	   text != GetContent().end();
 	   text++)
@@ -463,8 +463,8 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 	  // positioned correctly, since positioning is done thru the layout.
 	  // In such way, If a space node is the first inside a token, it will produce
 	  // a zero-origin rectangle which is obviously incorrect
-	  box.Append((*text)->GetBoundingBox());
-	  box.Append((sppm * (*text)->GetSpacing()) / 18);
+	  box.append((*text)->GetBoundingBox());
+	  box.width += ((sppm * (*text)->GetSpacing()) / 18);
 	}
 
       AddItalicCorrection();
@@ -619,10 +619,6 @@ MathMLTokenElement::AddItalicCorrection()
   if (!coreOp) return;
   bool isFence = coreOp->IsFence();
   if (!isFence) return;
-
-  const BoundingBox& lastBox = lastNode->GetBoundingBox();
-  Globals::logger(LOG_DEBUG, "adding italic correction: %d %d", sp2ipx(box.rBearing), sp2ipx(box.width));
-  if (lastBox.rBearing > lastBox.width) box.Append(lastBox.rBearing - lastBox.width);
 }
 
 Ptr<MathMLTextNode>

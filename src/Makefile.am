@@ -1,5 +1,5 @@
 
-SUBDIRS = formatter
+SUBDIRS = . formatter
 
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@

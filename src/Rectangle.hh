@@ -24,12 +24,17 @@
 #define Rectangle_hh
 
 #include "scaled.hh"
+#include "BoundingBox.hh"
 
 struct Rectangle {
   scaled x;
   scaled y;
   scaled width;
   scaled height;
+
+  Rectangle(void) { }
+  Rectangle(const scaled& x0, const scaled& y0, const BoundingBox& box)
+    : x(x0), y(y0 - box.height), width(box.width), height(box.verticalExtent()) { }
 
   void Zero(void) { x = y = width = height = 0; }
 

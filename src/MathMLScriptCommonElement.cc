@@ -79,20 +79,20 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
     } 
   else
     {
-      u = baseBox.ascent - scriptAxis;
-      v = baseBox.descent + scriptAxis / 2;
+      u = baseBox.height - scriptAxis;
+      v = baseBox.depth + scriptAxis / 2;
     }
 
-  if (superScriptBox.IsNull())
+  if (!superScriptBox.defined())
     {
       u = 0;
-      v = std::max(v, std::max(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
+      v = std::max(v, std::max(subMinShift, subScriptBox.height - (4 * sppex) / 5));
     } 
   else
     {
-      u = std::max(u, std::max(superMinShift, superScriptBox.descent + sppex / 4));
+      u = std::max(u, std::max(superMinShift, superScriptBox.depth + sppex / 4));
 
-      if (subScriptBox.IsNull())
+      if (!subScriptBox.defined())
 	{
 	  v = 0;
 	} 
@@ -100,11 +100,11 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
 	{
 	  v = std::max(v, subMinShift);
 
-	  if ((u - superScriptBox.descent) - (subScriptBox.ascent - v) < 4 * ruleThickness)
+	  if ((u - superScriptBox.depth) - (subScriptBox.height - v) < 4 * ruleThickness)
 	    {
-	      v = 4 * ruleThickness - u + superScriptBox.descent + subScriptBox.ascent;
+	      v = 4 * ruleThickness - u + superScriptBox.depth + subScriptBox.height;
 
-	      scaled psi = (4 * sppex) / 5 - (u - superScriptBox.descent);
+	      scaled psi = (4 * sppex) / 5 - (u - superScriptBox.depth);
 	      if (psi > scaled(0))
 		{
 		  u += psi;
@@ -115,7 +115,7 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
     }
 
   superShiftY = u;
-  superShiftX = std::max(baseBox.width, baseBox.rBearing + sppex / 5);
+  superShiftX = baseBox.width + sppex / 5;
 
   subShiftY = v;
   subShiftX = baseBox.width;

@@ -130,13 +130,13 @@ MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt))
     {
-      box.Null();
+      box.unset();
       for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
 	{
 	  (*elem)->DoLayout(ctxt);
-	  box.Append((*elem)->GetBoundingBox());
+	  box.append((*elem)->GetBoundingBox());
 	}
 
       DoStretchyLayout();
@@ -153,27 +153,27 @@ MathMLRowElement::DoStretchyLayout()
 
   BoundingBox rowBox;
   BoundingBox opBox;
-  rowBox.Null();
-  opBox.Null();
+  rowBox.unset();
+  opBox.unset();
 
   for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
        elem++)
     if (Ptr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
       {
-	opBox.Append(op->GetMinBoundingBox());
+	opBox.append(op->GetMinBoundingBox());
 	nStretchy++;      
       } 
     else
       {
-	rowBox.Append((*elem)->GetBoundingBox());
+	rowBox.append((*elem)->GetBoundingBox());
 	nOther++;
       }
 
   if (nStretchy > 0)
     {
-      scaled toAscent  = (nOther == 0) ? opBox.ascent : rowBox.ascent;
-      scaled toDescent = (nOther == 0) ? opBox.descent : rowBox.descent;
+      scaled toAscent  = (nOther == 0) ? opBox.height : rowBox.height;
+      scaled toDescent = (nOther == 0) ? opBox.depth : rowBox.depth;
 
 #if 0
       printf("%s(%p): found %d stretchy (%d other), now stretch to %d %d\n",

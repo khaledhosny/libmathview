@@ -206,7 +206,7 @@ MathMLRenderingEngine::Layout() const
 
 	  perf.Start();
 	  document->DoLayout(FormattingContext(LAYOUT_AUTO, std::max(scaled(0), area->GetWidth() -  2 * area->GetXMargin())));
-	  document->SetPosition(area->GetXMargin(), area->GetYMargin() + document->GetBoundingBox().ascent);
+	  document->SetPosition(area->GetXMargin(), area->GetYMargin() + document->GetBoundingBox().height);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "layout time: %dms", perf());
 	}
@@ -250,7 +250,7 @@ MathMLRenderingEngine::GetDocumentBoundingBox(BoundingBox& box) const
   if (document)
     box = document->GetBoundingBox();
   else
-    box.Null();
+    box.unset();
 }
 
 void
@@ -261,7 +261,7 @@ MathMLRenderingEngine::GetDocumentRectangle(Rectangle& rect) const
     {
       BoundingBox box;
       GetDocumentBoundingBox(box);
-      rect = box.GetRectangle(document->GetX(), document->GetY());
+      rect = Rectangle(document->GetX(), document->GetY(), box);
     }
   else
     rect.Zero();

@@ -76,7 +76,7 @@ MathMLAlignMarkElement::Setup(RenderingEnvironment& env)
       if   (value->IsKeyword(KW_RIGHT)) edge = MARK_ALIGN_RIGHT;
       else edge = MARK_ALIGN_LEFT;
       delete value;
-      box.Null();
+      box.unset();
       ResetDirtyAttribute();
     }
 }

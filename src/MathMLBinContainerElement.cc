@@ -93,7 +93,7 @@ MathMLBinContainerElement::DoLayout(const class FormattingContext& ctxt)
 	  box = child->GetBoundingBox();
 	}
       else
-	box.Null();
+	box.unset();
 
       ResetDirtyLayout(ctxt);
     }

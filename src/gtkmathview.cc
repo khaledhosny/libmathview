@@ -592,8 +592,8 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
   math_view->interface->GetDocumentBoundingBox(box);
 
   // the 10 is for the border, the frame thickness is missing. How can I get it?
-  requisition->width = sp2ipx(box.width) + 10;
-  requisition->height = sp2ipx(box.GetHeight()) + 10;
+  requisition->width = sp2ipx(box.horizontalExtent()) + 10;
+  requisition->height = sp2ipx(box.verticalExtent()) + 10;
 }
 
 static gint
@@ -894,7 +894,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    gint height = sp2ipx(box.GetHeight()) + 2 * MARGIN;
+    gint height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
     gint page_height = sp2ipx(math_view->drawing_area->GetHeight());
 
     if (math_view->top_y > height - page_height)
@@ -1216,9 +1216,9 @@ gtk_math_view_get_element_rectangle(GtkMathView* math_view, GdomeElement* elem, 
 
   const BoundingBox& box = el->GetBoundingBox();
   rect->x = sp2ipx(el->GetX());
-  rect->y = sp2ipx(el->GetY() - box.ascent);
-  rect->width = sp2ipx(box.width);
-  rect->height = sp2ipx(box.GetHeight());
+  rect->y = sp2ipx(el->GetY() - box.height);
+  rect->width = sp2ipx(box.horizontalExtent());
+  rect->height = sp2ipx(box.verticalExtent());
 
   return TRUE;
 }

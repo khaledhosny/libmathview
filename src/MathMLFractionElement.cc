@@ -255,12 +255,12 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
       const BoundingBox& denomBox = denominator->GetBoundingBox();
 
       if (bevelled) {
-	scaled barVert = std::max(numBox.GetHeight(), denomBox.GetHeight());
+	scaled barVert = std::max(numBox.verticalExtent(), denomBox.verticalExtent());
 	scaled barHoriz = barVert / 2;
 
-	box.Set(barHoriz + 2 * lineThickness, 0, 0);
-	box.Append(numBox);
-	box.Append(denomBox);
+	box.set(barHoriz + 2 * lineThickness, 0, 0);
+	box.append(numBox);
+	box.append(denomBox);
       } else {
 #ifdef TEXISH_MATHML
 	scaled u = numMinShift;
@@ -276,7 +276,7 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 #else
 	  scaled psi = displayStyle ? 3 * lineThickness : lineThickness;
 #endif // TEXISH_MATHML
-	  scaled phi = (u - numBox.descent) - (denomBox.ascent - v);
+	  scaled phi = (u - numBox.depth) - (denomBox.height - v);
 
 	  if (psi < phi) {
 	    u += (phi - psi) / 2;
@@ -285,21 +285,19 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 	} else {
 	  scaled phi = displayStyle ? 3 * lineThickness : lineThickness;
 
-	  scaled diff = phi - ((u - numBox.descent) - (axis + lineThickness / 2));
+	  scaled diff = phi - ((u - numBox.depth) - (axis + lineThickness / 2));
 	  if (diff > scaled(0)) u += diff;
 
-	  diff = phi - ((axis - lineThickness / 2) - (denomBox.ascent - v));
+	  diff = phi - ((axis - lineThickness / 2) - (denomBox.height - v));
 	  if (diff > scaled(0)) v += diff;
 	}
 
 	numShift   = u;
 	denomShift = v;
     
-	box.Set(std::max(numBox.width, denomBox.width),
-		numShift + numBox.ascent,
-		denomShift + denomBox.descent);
-	box.rBearing = std::max(numBox.rBearing, denomBox.rBearing);
-	box.width = std::max(box.width, box.rBearing);
+	box.set(std::max(numBox.width, denomBox.width),
+		numShift + numBox.height,
+		denomShift + denomBox.depth);
       }
 
       DoEmbellishmentLayout(this, box);
@@ -326,7 +324,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
   const BoundingBox& denomBox = denominator->GetBoundingBox();
 
   if (bevelled) {
-    scaled barVert = std::max(numBox.GetHeight(), denomBox.GetHeight());
+    scaled barVert = std::max(numBox.verticalExtent(), denomBox.verticalExtent());
     scaled barHoriz = barVert / 2;
 
     numerator->SetPosition(x, y);
@@ -335,7 +333,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
     scaled numXOffset = 0;
     switch (numAlign) {
     case FRAC_ALIGN_CENTER:
-      numXOffset = (box.width - std::max(numBox.width, numBox.rBearing)) / 2;
+      numXOffset = (box.width - numBox.width) / 2;
       break;
     case FRAC_ALIGN_RIGHT:
       numXOffset = box.width - numBox.width;
@@ -348,7 +346,7 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
     scaled denomXOffset = 0;
     switch (denomAlign) {
     case FRAC_ALIGN_CENTER:
-      denomXOffset = (box.width - denomBox.width) / 2 - std::max(scaled(0), denomBox.rBearing - denomBox.width);
+      denomXOffset = (box.width - denomBox.width) / 2;
       break;
     case FRAC_ALIGN_RIGHT:
       denomXOffset = box.width - denomBox.width;
@@ -389,14 +387,14 @@ MathMLFractionElement::Render(const DrawingArea& area)
 	      const BoundingBox& numBox   = numerator->GetBoundingBox();
 	      const BoundingBox& denomBox = denominator->GetBoundingBox();
 
-	      scaled barVert = std::max(numBox.GetHeight(), denomBox.GetHeight());
+	      scaled barVert = std::max(numBox.verticalExtent(), denomBox.verticalExtent());
 	      scaled barHoriz = barVert / 2;
 
 	      area.DrawLine(fGC[Selected()],
 			    GetX() + numBox.width + lineThickness,
-			    GetY() + std::max(numBox.descent, denomBox.descent),
+			    GetY() + std::max(numBox.depth, denomBox.depth),
 			    GetX() + numBox.width + lineThickness + barHoriz,
-			    GetY() - std::max(numBox.ascent, denomBox.ascent));
+			    GetY() - std::max(numBox.height, denomBox.height));
 	    }
 	  else
 	    {

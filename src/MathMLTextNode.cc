@@ -73,21 +73,21 @@ MathMLTextNode::IsInside(const scaled& x, const scaled& y) const
 {
   return
     x >= position.x &&
-    y >= position.y - box.ascent &&
+    y >= position.y - box.height &&
     x <= position.x + box.width &&
-    y <= position.y + box.descent;
+    y <= position.y + box.depth;
 }
 
 scaled
 MathMLTextNode::GetLeftEdge() const
 {
-  return GetX() + box.lBearing;
+  return GetX();
 }
 
 scaled
 MathMLTextNode::GetRightEdge() const
 {
-  return GetX() + box.rBearing;
+  return GetX() + box.width;
 }
 
 bool

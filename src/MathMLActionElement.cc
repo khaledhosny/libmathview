@@ -96,7 +96,7 @@ MathMLActionElement::DoLayout(const class FormattingContext& ctxt)
 	  box = elem->GetBoundingBox();
 	}
       else
-	box.Null();
+	box.unset();
 
       DoEmbellishmentLayout(this, box);
 

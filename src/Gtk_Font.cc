@@ -111,7 +111,7 @@ Gtk_Font::GetLineThickness() const
 void
 Gtk_Font::GetBoundingBox(BoundingBox& box) const
 {
-  box.Set(GetEm(), GetAscent(), GetDescent());
+  box.set(GetEm(), GetAscent(), GetDescent());
 }
 
 void
@@ -130,7 +130,7 @@ Gtk_Font::StringBox(const char* s, unsigned length, BoundingBox& box) const
 		   &width,
 		   &ascent, &descent);
 
-  box.Set(px2sp(width), px2sp(ascent), px2sp(descent), px2sp(lbearing), px2sp(rbearing));
+  box.set(px2sp(width), px2sp(ascent), px2sp(descent));
 }
 
 void

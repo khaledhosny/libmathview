@@ -51,21 +51,21 @@ MathMLTableElement::DoLayout(const FormattingContext& ctxt)
 
       DoVerticalLayout(ctxt.GetLayoutType());
 
-      box.Set(GetTableWidth(), 0, 0);
+      box.set(GetTableWidth(), 0, 0);
       AlignTable(GetTableHeight(), box);
 
       if (HasLabels()) AdjustTableLayoutWithLabels(ctxt);
 
       for (unsigned i = 0; i < nRows; i++) {
 	if (row[i].mtr)
-	  row[i].mtr->box.Set(GetColumnWidth(0, nColumns), row[i].ascent, row[i].descent);
+	  row[i].mtr->box.set(GetColumnWidth(0, nColumns), row[i].height, row[i].depth);
 
 	for (unsigned j = 0; j < nColumns; j++) {
 	  if (cell[i][j].mtd && !cell[i][j].spanned) {
 	    scaled width = GetColumnWidth(j, cell[i][j].colSpan);
 	    scaled height = GetRowHeight(i, cell[i][j].rowSpan);
 
-	    cell[i][j].mtd->box.Set(width, row[i].ascent, height - row[i].ascent);
+	    cell[i][j].mtd->box.set(width, row[i].height, height - row[i].height);
 	  }
 	}
       }
@@ -678,7 +678,7 @@ MathMLTableElement::StretchyCellsLayout()
 		  if (op->GetStretch() == STRETCH_VERTICAL)
 		    {
 		      scaled height = GetRowHeight(i, cell[i][j].rowSpan);
-		      op->VerticalStretchTo(row[i].ascent, height - row[i].ascent);
+		      op->VerticalStretchTo(row[i].height, height - row[i].height);
 		    } 
 		  else 
 		    {
@@ -711,16 +711,16 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 	  !cell[i][j].spanned &&
 	  cell[i][j].rowAlign == ROW_ALIGN_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
-        ascent = std::max(ascent, box.ascent);
-        if (cell[i][j].rowSpan == 1) descent = std::max(descent, box.descent);
+        ascent = std::max(ascent, box.height);
+        if (cell[i][j].rowSpan == 1) descent = std::max(descent, box.depth);
       }
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement != NULL &&
           rowLabel[i].rowAlign == ROW_ALIGN_BASELINE) {
         const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-        ascent = std::max(ascent, labelBox.ascent);
-        descent = std::max(descent, labelBox.descent);
+        ascent = std::max(ascent, labelBox.height);
+        descent = std::max(descent, labelBox.depth);
       }
     }
 
@@ -729,19 +729,19 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 	  !cell[i][j].spanned && cell[i][j].rowSpan == 1 &&
 	  cell[i][j].rowAlign != ROW_ALIGN_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
-	if (box.GetHeight() > ascent + descent) descent = box.GetHeight() - ascent;
+	if (box.verticalExtent() > ascent + descent) descent = box.verticalExtent() - ascent;
       }
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement &&
 	  rowLabel[i].rowAlign != ROW_ALIGN_BASELINE) {
 	const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-	if (labelBox.GetHeight() > ascent + descent) descent = labelBox.GetHeight() - ascent;
+	if (labelBox.verticalExtent() > ascent + descent) descent = labelBox.verticalExtent() - ascent;
       }
     }
 
-    row[i].ascent = ascent;
-    row[i].descent = descent;
+    row[i].height = ascent;
+    row[i].depth = descent;
   }
 
   SpanRowHeight(id);
@@ -749,11 +749,11 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
   if (equalRows) {
     scaled maxHeight = 0;
     for (i = 0; i < nRows; i++)
-      maxHeight = std::max(maxHeight, row[i].GetHeight());
+      maxHeight = std::max(maxHeight, row[i].verticalExtent());
 
     for (i = 0; i < nRows; i++)
-      if (row[i].GetHeight() < maxHeight)
-	row[i].descent += maxHeight - row[i].GetHeight();
+      if (row[i].verticalExtent() < maxHeight)
+	row[i].depth += maxHeight - row[i].verticalExtent();
   }
 
   scaled fixedHeight = GetRowHeight() + GetSpacingHeight(SPACING_FIXED);
@@ -851,18 +851,18 @@ MathMLTableElement::SpanRowHeight(LayoutId id)
 	      scaled height  = GetRowHeight(i, n);
 	      const BoundingBox& cellBox = cell[i][j].mtd->GetBoundingBox();
 
-	      if (height < cellBox.GetHeight())
+	      if (height < cellBox.verticalExtent())
 		{
 		  // the total height of spanned rows is still smaller than the
 		  // height of the single spanning cell. We have to distribute
 		  // additional space among the spanned rows
-		  scaled rest = cellBox.GetHeight() - height;
+		  scaled rest = cellBox.verticalExtent() - height;
 		  //printf("column %d rest is %d\n", j, sp2ipx(rest));
 		  for (unsigned k = 0; k < n; k++)
 		    {
 		      if (k == n - 1)
 			// it is the last column, we assign all the remaining space
-			row[i + k].descent += rest;
+			row[i + k].depth += rest;
 		      else
 			{
 			  // we assign a space proportional to the column height
@@ -870,10 +870,10 @@ MathMLTableElement::SpanRowHeight(LayoutId id)
 			  if (height != scaled(0))
 			    // if all the columns have 0 width we assign an equal amount
 			    // of space to each spanned column
-			    thisRowRest = rest * (row[i + k].GetHeight().toFloat() / height.toFloat());
+			    thisRowRest = rest * (row[i + k].verticalExtent().toFloat() / height.toFloat());
 			  else
 			    thisRowRest = rest / static_cast<int>(n);
-			  row[i + k].descent += thisRowRest;
+			  row[i + k].depth += thisRowRest;
 			  rest -= thisRowRest;
 			}
 		    }
@@ -892,7 +892,7 @@ MathMLTableElement::GetRowHeight(unsigned i, unsigned n) const
   scaled height = 0;
 
   for (unsigned k = 0; k < n; k++) {
-    height += row[i + k].GetHeight();
+    height += row[i + k].verticalExtent();
     if (k < n - 1) height += row[i + k].spacing;
   }
 
@@ -905,7 +905,7 @@ MathMLTableElement::GetRowHeight() const
   scaled height = 0;
 
   for (unsigned i = 0; i < nRows; i++)
-    height += row[i].GetHeight();
+    height += row[i].verticalExtent();
 
   return height;
 }
@@ -986,18 +986,18 @@ MathMLTableElement::AlignTable(const scaled& height, BoundingBox& box)
   if (rowNumber == 0) {
     switch (align) {
     case TABLE_ALIGN_TOP:
-      box.ascent  = 0;
+      box.height  = 0;
       break;
     case TABLE_ALIGN_BOTTOM:
-      box.ascent  = height;
+      box.height  = height;
       break;
     case TABLE_ALIGN_AXIS:
-      box.ascent  = height / 2 + environmentAxis;
+      box.height  = height / 2 + environmentAxis;
       break;
     case TABLE_ALIGN_CENTER:
     case TABLE_ALIGN_BASELINE:
     default:
-      box.ascent  = height / 2;
+      box.height  = height / 2;
       break;
     }
   } else {
@@ -1007,25 +1007,25 @@ MathMLTableElement::AlignTable(const scaled& height, BoundingBox& box)
 
     switch (align) {
     case TABLE_ALIGN_TOP:
-      box.ascent = upTo - row[rowNumber - 1].GetHeight();
+      box.height = upTo - row[rowNumber - 1].verticalExtent();
       break;
     case TABLE_ALIGN_BOTTOM:
-      box.ascent = upTo;
+      box.height = upTo;
       break;
     case TABLE_ALIGN_AXIS:
-      box.ascent = upTo - row[rowNumber - 1].GetHeight() / 2 + environmentAxis;
+      box.height = upTo - row[rowNumber - 1].verticalExtent() / 2 + environmentAxis;
       break;
     case TABLE_ALIGN_BASELINE:
-      box.ascent = upTo - row[rowNumber - 1].descent;
+      box.height = upTo - row[rowNumber - 1].depth;
       break;
     case TABLE_ALIGN_CENTER:
     default:
-      box.ascent = upTo - row[rowNumber - 1].GetHeight() / 2;
+      box.height = upTo - row[rowNumber - 1].verticalExtent() / 2;
       break;      
     }
   }
 
-  box.descent = height - box.ascent;
+  box.depth = height - box.height;
 }
 
 // PrepareLabelsLayout: this method is for deciding whether the labels

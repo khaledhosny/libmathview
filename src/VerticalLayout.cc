@@ -64,8 +64,8 @@ VerticalLayout::GetRowSpacing(const std::vector< Ptr<HorizontalLayout> >::const_
   else
     {
       scaled s = rowSpacing;
-      if (s - ((*p0)->GetBoundingBox().descent + (*p1)->GetBoundingBox().ascent) < rowMinSpacing)
-	s = rowMinSpacing + ((*p0)->GetBoundingBox().descent + (*p1)->GetBoundingBox().ascent);
+      if (s - ((*p0)->GetBoundingBox().depth + (*p1)->GetBoundingBox().height) < rowMinSpacing)
+	s = rowMinSpacing + ((*p0)->GetBoundingBox().depth + (*p1)->GetBoundingBox().height);
       return s;
     }
 }
@@ -92,12 +92,10 @@ VerticalLayout::GetBoundingBox() const
        p++)
     {
       BoundingBox pBox = (*p)->GetBoundingBox();
-      if (p == content.begin()) box.Set(0, pBox.ascent, 0, pBox.lBearing, pBox.rBearing);
-      if (p + 1 == content.end()) box.descent += pBox.descent;
-      if (p != content.begin()) box.descent += GetRowSpacing(p - 1, p);
+      if (p == content.begin()) box.set(0, pBox.height, 0);
+      if (p + 1 == content.end()) box.depth += pBox.depth;
+      if (p != content.begin()) box.depth += GetRowSpacing(p - 1, p);
       box.width = std::max(box.width, pBox.width);
-      box.lBearing = std::min(box.lBearing, pBox.lBearing);
-      box.rBearing = std::max(box.rBearing, pBox.rBearing);
     }
   return box;
 }
@@ -109,7 +107,7 @@ VerticalLayout::GetLinearBoundingBox() const
   for (std::vector< Ptr<HorizontalLayout> >::const_iterator p = content.begin();
        p != content.end();
        p++)
-    box.Append((*p)->GetLinearBoundingBox());
+    box.append((*p)->GetLinearBoundingBox());
   return box;
 }
 

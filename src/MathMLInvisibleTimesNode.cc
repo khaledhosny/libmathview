@@ -60,7 +60,7 @@ MathMLInvisibleTimesNode::DoLayout(const FormattingContext&)
 
   assert(GetParent());
 
-  box.Set(0, 0, 0);
+  box.set(0, 0, 0);
 
   // maybe we should seek for the top embellishment
   if (!is_a<MathMLOperatorElement>(GetParent())) return;
@@ -79,19 +79,19 @@ MathMLInvisibleTimesNode::DoLayout(const FormattingContext&)
 	  nextToken->GetLogicalContentLength() <= 1) return;
     
       // FIXME: the following constants should be defined somewhere
-      box.Set((sppm * 5) / 18, 0, 0);
+      box.set((sppm * 5) / 18, 0, 0);
     } 
   else if (is_a<MathMLIdentifierElement>(prev))
     {
-      box.Set((sppm * 4) / 18, 0, 0);
+      box.set((sppm * 4) / 18, 0, 0);
     }
   else if (is_a<MathMLFractionElement>(prev) && is_a<MathMLFractionElement>(next))
     {
-      box.Set((sppm * 5) / 18, 0, 0);
+      box.set((sppm * 5) / 18, 0, 0);
     } 
   else if (is_a<MathMLFractionElement>(prev) || is_a<MathMLFractionElement>(next))
     {
-      box.Set((sppm * 4) / 18, 0, 0);
+      box.set((sppm * 4) / 18, 0, 0);
     }
 }
 

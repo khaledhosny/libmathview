@@ -40,7 +40,7 @@ MathMLSpaceNode::Setup(class RenderingEnvironment&)
 {
   // if the box is set to be null then a possible spacing is not added
   // or, better, it is added, but the box remains null
-  box.Set(0, 0, 0);
+  box.set(0, 0, 0);
 }
 
 void

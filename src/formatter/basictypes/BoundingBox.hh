@@ -34,6 +34,9 @@ struct BoundingBox
   scaled horizontalExtent(void) const { return width; }
   scaled verticalExtent(void) const { return height + depth; }
 
+  void unset(void) { set(scaled::zero(), scaled::min(), scaled::min()); }
+  void set(const scaled& w, const scaled& h, const scaled& d)
+  { width = w; height = h; depth = d; }
   void append(const BoundingBox&);
   void overlap(const BoundingBox&);
   void under(const BoundingBox&);

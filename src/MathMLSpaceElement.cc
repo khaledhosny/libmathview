@@ -103,7 +103,7 @@ MathMLSpaceElement::Setup(RenderingEnvironment& env)
       scaled depth = env.ToScaledPoints(value->ToNumberUnit());
       delete value;
 
-      box.Set(width, height, depth);
+      box.set(width, height, depth);
 
       if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH))
 	{

@@ -137,7 +137,7 @@ MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
       if (notation != NOTATION_RADICAL)
 	{
 	  box = child->GetBoundingBox();
-	  box.ascent += spacing + lineThickness;
+	  box.height += spacing + lineThickness;
 	  box.width += spacing + lineThickness;
 	}
 
@@ -177,13 +177,13 @@ MathMLEncloseElement::Render(const DrawingArea& area)
       }
 
       if (notation == NOTATION_LONGDIV) {
-	area.MoveTo(GetX() + lineThickness / 2, GetY() + box.descent);
-	area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
-	area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.ascent + lineThickness / 2);
+	area.MoveTo(GetX() + lineThickness / 2, GetY() + box.depth);
+	area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.height + lineThickness / 2);
+	area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height + lineThickness / 2);
       } else if (notation == NOTATION_ACTUARIAL) {
-	area.MoveTo(GetX(), GetY() - box.ascent + lineThickness / 2);
-	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
-	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.descent);
+	area.MoveTo(GetX(), GetY() - box.height + lineThickness / 2);
+	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.height + lineThickness / 2);
+	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.depth);
       }
 
       ResetDirty();

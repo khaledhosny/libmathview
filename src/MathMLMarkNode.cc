@@ -64,7 +64,7 @@ MathMLMarkNode::Setup(RenderingEnvironment& env)
 void
 MathMLMarkNode::DoLayout(const FormattingContext&)
 {
-  box.Null();
+  box.unset();
 }
 
 void

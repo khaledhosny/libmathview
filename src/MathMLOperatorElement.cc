@@ -295,7 +295,7 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
 
   // ...however, there may be some contraints over the size of the stretchable
   // operator. adjustedSize will be the final allowed size for the operator
-  scaled minHeight = minBox.GetHeight();
+  scaled minHeight = minBox.verticalExtent();
   Globals::logger(LOG_DEBUG, "the minimum height is %d", sp2ipx(minHeight));
 
   scaled adjustedSize = desiredSize;

@@ -147,7 +147,7 @@ struct TableRow {
     spacingType = SPACING_NOTVALID;
     fixedSpacing = 0;
     lineType = TABLE_LINE_NOTVALID;
-    ascent = descent = spacing = 0;
+    height = depth = spacing = 0;
   }
 
   Ptr<MathMLTableRowElement> mtr;   // Table Row element
@@ -158,9 +158,9 @@ struct TableRow {
 
   TableLineId lineType;         // line type between rows
 
-  scaled      ascent;
-  scaled      descent;
-  scaled      GetHeight(void) const { return ascent + descent; }
+  scaled      height;
+  scaled      depth;
+  scaled      verticalExtent(void) const { return height + depth; }
   scaled      spacing;
 };
 

@@ -49,7 +49,7 @@ MathMLHorizBarNode::Setup(RenderingEnvironment& env)
 void
 MathMLHorizBarNode::DoLayout(const FormattingContext&)
 {
-  box.Set(0, thickness / 2, thickness - thickness / 2);
+  box.set(0, thickness / 2, thickness - thickness / 2);
 }
 
 void
@@ -70,7 +70,7 @@ MathMLHorizBarNode::Render(const DrawingArea& area)
 {
   assert(GetParent());
   const GraphicsContext* gc = GetParent()->GetForegroundGC();
-  area.Clear(gc, GetX(), GetY() - box.descent, box.width, box.GetHeight());
+  area.Clear(gc, GetX(), GetY() - box.depth, box.width, box.verticalExtent());
 }
 
 bool

@@ -388,9 +388,9 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 	      supBox = (*pSup)->GetBoundingBox();
 	    }
 
-	  subScriptBox.Append(subBox);
-	  superScriptBox.Append(supBox);
-	  scriptsWidth = std::max(scriptsWidth, std::max(subBox.width, supBox.width));
+	  subScriptBox.append(subBox);
+	  superScriptBox.append(supBox);
+	  scriptsWidth = std::max(scriptsWidth, std::max(subBox.horizontalExtent(), supBox.horizontalExtent()));
 	}
 
       for (pSub = preSubScript.begin(), pSup = preSuperScript.begin();
@@ -412,27 +412,27 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 	      supBox = (*pSup)->GetBoundingBox();
 	    }
 
-	  subScriptBox.Append(subBox);
-	  superScriptBox.Append(supBox);
-	  preScriptsWidth = std::max(preScriptsWidth, std::max(subBox.width, supBox.width));
+	  subScriptBox.append(subBox);
+	  superScriptBox.append(supBox);
+	  preScriptsWidth = std::max(preScriptsWidth, std::max(subBox.horizontalExtent(), supBox.horizontalExtent()));
 	}
 
       DoScriptLayout(base->GetBoundingBox(), subScriptBox, superScriptBox,
 		     subShiftX, subShiftY, superShiftX, superShiftY);
   
       box = base->GetBoundingBox();
-      box.Append(preScriptsWidth + scriptsWidth);
+      box.width += preScriptsWidth + scriptsWidth;
 
-      if (!subScriptBox.IsNull())
+      if (subScriptBox.defined())
 	{
-	  box.ascent  = std::max(box.ascent, subScriptBox.ascent - subShiftY);
-	  box.descent = std::max(box.descent, subScriptBox.descent + subShiftY);
+	  box.height  = std::max(box.height, subScriptBox.height - subShiftY);
+	  box.depth = std::max(box.depth, subScriptBox.depth + subShiftY);
 	}
 
-      if (!superScriptBox.IsNull())
+      if (superScriptBox.defined())
 	{
-	  box.ascent  = std::max(box.ascent, superScriptBox.ascent + superShiftY);
-	  box.descent = std::max(box.descent, superScriptBox.descent - superShiftY);
+	  box.height  = std::max(box.height, superScriptBox.height + superShiftY);
+	  box.depth = std::max(box.depth, superScriptBox.depth - superShiftY);
 	}
 
       DoEmbellishmentLayout(this, box);
@@ -464,12 +464,12 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
       if (*preSub) 
 	{
 	  (*preSub)->SetPosition(x, y + subShiftY);
-	  scriptW = (*preSub)->GetBoundingBox().GetWidth();
+	  scriptW = (*preSub)->GetBoundingBox().horizontalExtent();
 	}
       if (*preSup)
 	{
 	  (*preSup)->SetPosition(x, y - superShiftY);
-	  scriptW = std::max(scriptW, (*preSup)->GetBoundingBox().GetWidth());
+	  scriptW = std::max(scriptW, (*preSup)->GetBoundingBox().horizontalExtent());
 	}
 
       x += scriptW;
@@ -490,12 +490,12 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
       if (*pSub) 
 	{
 	  (*pSub)->SetPosition(x + subShiftX, y + subShiftY);
-	  scriptW = (*pSub)->GetBoundingBox().GetWidth();
+	  scriptW = (*pSub)->GetBoundingBox().horizontalExtent();
 	}
       if (*pSup)
 	{
 	  (*pSup)->SetPosition(x + superShiftX, y - superShiftY);
-	  scriptW = std::max(scriptW, (*pSup)->GetBoundingBox().GetWidth());
+	  scriptW = std::max(scriptW, (*pSup)->GetBoundingBox().horizontalExtent());
 	}
 
       x += scriptW;

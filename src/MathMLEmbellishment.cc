@@ -34,7 +34,7 @@ MathMLEmbellishment::DoEmbellishmentLayout(const Ptr<MathMLElement>& elem, Bound
   if (Ptr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
     {
       assert(!top->DirtyAttribute());
-      box.Append(top->GetLeftPadding() + top->GetRightPadding());
+      box.width += top->GetLeftPadding() + top->GetRightPadding();
     }
 }
 

@@ -291,10 +291,10 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	  BoundingBox overBox;
     
 	  if (underScript) underBox = underScript->GetBoundingBox();
-	  else underBox.Null();
+	  else underBox.unset();
 
 	  if (overScript) overBox = overScript->GetBoundingBox();
-	  else overBox.Null();
+	  else overBox.unset();
 
 	  DoScriptLayout(baseBox, underBox, overBox, underShiftX, underShiftY, overShiftX, overShiftY);
 	  underClearance = overClearance = 0;
@@ -409,7 +409,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		  const BoundingBox& scriptBox = underScript->GetBoundingBox();
 
 		  underShiftX = (baseBox.width - scriptBox.width) / 2;
-		  underShiftY = baseBox.descent + underSpacing + scriptBox.ascent;
+		  underShiftY = baseBox.depth + underSpacing + scriptBox.height;
 		  underClearance = ruleThickness;
 		}
 	    }
@@ -438,8 +438,8 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		{
 		  const BoundingBox& scriptBox = overScript->GetBoundingBox();
 
-		  overShiftX = (baseBox.width - scriptBox.width) / 2 + std::max(scaled(0), baseBox.rBearing - baseBox.width);
-		  overShiftY = baseBox.ascent + overSpacing + scriptBox.descent;
+		  overShiftX = (baseBox.width - scriptBox.width) / 2;
+		  overShiftY = baseBox.height + overSpacing + scriptBox.depth;
 		  overClearance = ruleThickness;
 		}
 	    }
@@ -452,18 +452,15 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 
       box = base->GetBoundingBox();
       box.width += baseShiftX;
-      box.lBearing += baseShiftX;
 
       if (underScript)
 	{
 	  const BoundingBox& scriptBox = underScript->GetBoundingBox();
 
 	  box.width = std::max(box.width, underShiftX + scriptBox.width);
-	  box.rBearing = std::max(box.rBearing, underShiftX + scriptBox.rBearing);
-	  box.lBearing = std::min(box.lBearing, underShiftX + scriptBox.lBearing);
-	  box.ascent   = std::max(box.ascent, scriptBox.ascent - underShiftY);
-	  box.descent  = std::max(box.descent, scriptBox.descent + underShiftY);
-	  box.descent += underClearance;
+	  box.height   = std::max(box.height, scriptBox.height - underShiftY);
+	  box.depth  = std::max(box.depth, scriptBox.depth + underShiftY);
+	  box.depth += underClearance;
 	}
 
       if (overScript)
@@ -471,11 +468,9 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	  const BoundingBox& scriptBox = overScript->GetBoundingBox();
 
 	  box.width = std::max(box.width, overShiftX + scriptBox.width);
-	  box.rBearing = std::max(box.rBearing, overShiftX + scriptBox.rBearing);
-	  box.lBearing = std::min(box.lBearing, overShiftX + scriptBox.lBearing);
-	  box.ascent   = std::max(box.ascent, scriptBox.ascent + overShiftY);
-	  box.descent  = std::max(box.descent, scriptBox.descent - overShiftY);
-	  box.ascent += overClearance;
+	  box.height   = std::max(box.height, scriptBox.height + overShiftY);
+	  box.depth  = std::max(box.depth, scriptBox.depth - overShiftY);
+	  box.height += overClearance;
 	}
 
       DoEmbellishmentLayout(this, box);

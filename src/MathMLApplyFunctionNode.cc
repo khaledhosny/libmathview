@@ -59,7 +59,7 @@ MathMLApplyFunctionNode::DoLayout(const FormattingContext&)
 
   assert(GetParent());
 
-  box.Set(0, 0, 0);
+  box.set(0, 0, 0);
 
   if (!is_a<MathMLOperatorElement>(GetParent())) return;
 
@@ -72,7 +72,7 @@ MathMLApplyFunctionNode::DoLayout(const FormattingContext&)
     if (coreOp->IsFence()) return;
 
   // FIXME: the following constant should be defined somewhere
-  box.Set((sppm * 5) / 18, 0, 0);
+  box.set((sppm * 5) / 18, 0, 0);
 }
 
 unsigned

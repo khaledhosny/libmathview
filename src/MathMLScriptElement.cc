@@ -262,16 +262,15 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
 
       const BoundingBox& baseBox = base->GetBoundingBox();
       BoundingBox relBox = rel->GetBoundingBox();
-      relBox.rBearing = baseBox.rBearing;
       relBox.width = baseBox.width;
 
       BoundingBox subScriptBox;
       BoundingBox superScriptBox;
 
-      subScriptBox.Null();
+      subScriptBox.unset();
       if (subScript) subScriptBox = subScript->GetBoundingBox();
 
-      superScriptBox.Null();
+      superScriptBox.unset();
       if (superScript) superScriptBox = superScript->GetBoundingBox();
 
       DoScriptLayout(relBox, subScriptBox, superScriptBox, subShiftX, subShiftY, superShiftX, superShiftY);
@@ -281,20 +280,17 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
       box.width = std::max(box.width,
 			    std::max(superShiftX + superScriptBox.width,
 				      subShiftX + subScriptBox.width));
-      box.rBearing = std::max(box.rBearing,
-			       std::max(superShiftX + superScriptBox.rBearing,
-					 subShiftX + subScriptBox.rBearing));
 
       if (subScript)
 	{
-	  box.ascent   = std::max(box.ascent, subScriptBox.ascent - subShiftY);
-	  box.descent  = std::max(box.descent, subScriptBox.descent + subShiftY);
+	  box.height = std::max(box.height, subScriptBox.height - subShiftY);
+	  box.depth  = std::max(box.depth, subScriptBox.depth + subShiftY);
 	}
 
       if (superScript)
 	{
-	  box.ascent   = std::max(box.ascent, superScriptBox.ascent + superShiftY);
-	  box.descent  = std::max(box.descent, superScriptBox.descent - superShiftY);
+	  box.height = std::max(box.height, superScriptBox.height + superShiftY);
+	  box.depth  = std::max(box.depth, superScriptBox.depth - superShiftY);
 	}
 
       DoEmbellishmentLayout(this, box);

@@ -444,7 +444,7 @@ RenderingEnvironment::GetAxis() const
     BoundingBox eqBox;
     fChar.GetBoundingBox(eqBox);
 
-    return eqBox.ascent - (eqBox.ascent + eqBox.descent) / 2;
+    return eqBox.height - eqBox.verticalExtent() / 2;
   }
 
   return GetScaledPointsPerEx() / 2;

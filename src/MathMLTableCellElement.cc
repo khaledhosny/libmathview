@@ -300,7 +300,7 @@ MathMLTableCellElement::DoLayout(const FormattingContext& ctxt)
       box = GetChild()->GetBoundingBox();
     }
   else
-    box.Null();
+    box.unset();
 
   if (ctxt.GetLayoutType() == LAYOUT_MIN) minWidth = box.width;
 
@@ -458,11 +458,11 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 	  scaled cellYOffset = 0;
 	  switch (cell->rowAlign) {
 	  case ROW_ALIGN_BOTTOM:
-	    cellYOffset = box.descent - elemBox.descent;
+	    cellYOffset = box.depth - elemBox.depth;
 	    break;
 	  case ROW_ALIGN_CENTER:
-	    cellYOffset = (box.GetHeight() - elemBox.GetHeight()) / 2 +
-	      elemBox.ascent - box.ascent;
+	    cellYOffset = (box.verticalExtent() - elemBox.verticalExtent()) / 2 +
+	      elemBox.height - box.height;
 	    break;
 	  case ROW_ALIGN_BASELINE:
 	    cellYOffset = 0;
@@ -471,7 +471,7 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 	    assert(IMPOSSIBLE);
 	    break;
 	  case ROW_ALIGN_TOP:
-	    cellYOffset = elemBox.ascent - box.ascent;
+	    cellYOffset = elemBox.height - box.height;
 	    break;
 	  default:
 	    cellYOffset = 0;

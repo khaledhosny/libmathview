@@ -68,7 +68,7 @@ void
 MathMLGlyphNode::DoLayout(const FormattingContext&)
 {
   if (font != NULL) font->CharBox(nch, box);
-  else box.Null();
+  else box.unset();
 }
 
 void

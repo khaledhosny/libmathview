@@ -112,7 +112,7 @@ void
 T1_Font::GetBoundingBox(BoundingBox& box) const
 {
   BBox fontBox = T1_GetFontBBox(nativeFontId);
-  box.Set(pt2sp(scale * (fontBox.urx - fontBox.llx) / 1000.0),
+  box.set(pt2sp(scale * (fontBox.urx - fontBox.llx) / 1000.0),
 	  pt2sp(scale * fontBox.ury / 1000.0),
 	  pt2sp(scale * (-fontBox.lly) / 1000.0));
 }
@@ -121,11 +121,9 @@ void
 T1_Font::CharBox(char ch, BoundingBox& box) const
 {
   BBox charBox = T1_GetCharBBox(nativeFontId, ch);
-  box.Set(CharWidth(ch),
+  box.set(CharWidth(ch),
 	  pt2sp(scale * charBox.ury / 1000.0),
-	  pt2sp(scale * (-charBox.lly) / 1000.0),
-	  pt2sp(scale * charBox.llx / 1000.0),
-	  pt2sp(scale * charBox.urx / 1000.0));
+	  pt2sp(scale * (-charBox.lly) / 1000.0));
 }
 
 void
@@ -133,11 +131,9 @@ T1_Font::StringBox(const char* s, unsigned len, BoundingBox& box) const
 {
   int sw = T1_GetStringWidth(nativeFontId, const_cast<char*>(s), len, 0, 0);
   BBox stringBox = T1_GetStringBBox(nativeFontId, const_cast<char*>(s), len, 0, 0);
-  box.Set(pt2sp(scale * sw / 1000.0),
+  box.set(pt2sp(scale * sw / 1000.0),
 	  pt2sp(scale * stringBox.ury / 1000.0),
-       	  pt2sp(scale * (-stringBox.lly) / 1000.0),
-	  pt2sp(scale * stringBox.llx / 1000.0),
-	  pt2sp(scale * stringBox.urx / 1000.0));
+       	  pt2sp(scale * (-stringBox.lly) / 1000.0));
 }
 
 #endif // HAVE_LIBT1

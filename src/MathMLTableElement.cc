@@ -147,7 +147,7 @@ MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
 
   //printf("setposition for table (%d,%d) %d rows\n", sp2ipx(x), sp2ipx(y), nRows);
 
-  scaled yOffset = frameVerticalSpacing - box.ascent;
+  scaled yOffset = frameVerticalSpacing - box.height;
 
   for (unsigned i = 0; i < nRows; i++) {
     scaled xOffset = frameHorizontalSpacing;
@@ -155,23 +155,23 @@ MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
     if (HasLabels()) {
       if (rowLabel[i].labelElement &&
 	  (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP))
-	  SetLabelPosition(i, x, y + yOffset + row[i].ascent);
+	  SetLabelPosition(i, x, y + yOffset + row[i].height);
       
       xOffset += leftPadding;
     }
 
-    //printf("row set position %d %d height = %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + row[i].ascent), sp2ipx(row[i].GetHeight() + row[i].spacing));
+    //printf("row set position %d %d height = %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + row[i].height), sp2ipx(row[i].verticalExtent() + row[i].spacing));
 
     if (row[i].mtr)
-      row[i].mtr->SetPosition(x + xOffset, y + yOffset + row[i].ascent);
+      row[i].mtr->SetPosition(x + xOffset, y + yOffset + row[i].height);
 
     for (unsigned j = 0; j < nColumns; j++) {
       TableCell* cell = GetCell(i, j);
 
       if (cell->mtd && !cell->spanned) {
 	const BoundingBox& cellBox = cell->mtd->GetBoundingBox();
-	//printf("cell set position %d %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + cellBox.ascent));
-	cell->mtd->SetPosition(x + xOffset, y + yOffset + cellBox.ascent);
+	//printf("cell set position %d %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + cellBox.height));
+	cell->mtd->SetPosition(x + xOffset, y + yOffset + cellBox.height);
       }
       
       xOffset += column[j].width;
@@ -183,10 +183,10 @@ MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
 
       if (rowLabel[i].labelElement &&
 	  (side == TABLE_SIDE_RIGHT || side == TABLE_SIDE_RIGHTOVERLAP))
-	SetLabelPosition(i, x + xOffset, y + yOffset + row[i].ascent);
+	SetLabelPosition(i, x + xOffset, y + yOffset + row[i].height);
     }
 
-    yOffset += row[i].GetHeight() + row[i].spacing;
+    yOffset += row[i].verticalExtent() + row[i].spacing;
   }
 }
 
@@ -207,11 +207,11 @@ MathMLTableElement::SetLabelPosition(unsigned i, const scaled& x0, const scaled&
 
   switch (rowLabel[i].rowAlign) {
   case ROW_ALIGN_BOTTOM:
-    y += row[i].descent - labelBox.descent;
+    y += row[i].depth - labelBox.depth;
     break;
   case ROW_ALIGN_CENTER:
-    y += (row[i].GetHeight() - labelBox.GetHeight()) / 2 +
-      labelBox.ascent - row[i].ascent;
+    y += (row[i].verticalExtent() - labelBox.verticalExtent()) / 2 +
+      labelBox.height - row[i].height;
     break;
   case ROW_ALIGN_BASELINE:
     break;
@@ -219,7 +219,7 @@ MathMLTableElement::SetLabelPosition(unsigned i, const scaled& x0, const scaled&
     assert(IMPOSSIBLE);
     break;
   case ROW_ALIGN_TOP:
-    y += labelBox.ascent - row[i].ascent;
+    y += labelBox.height - row[i].height;
     break;
   default:
     break;
@@ -292,16 +292,16 @@ MathMLTableElement::Render(const DrawingArea& area)
 
 	if (HasLabels()) {
 	  rect.x = GetX() + leftPadding;
-	  rect.y = GetY() - box.ascent;    
+	  rect.y = GetY() - box.height;    
 	  rect.width = tableWidth;
-	  rect.height = box.GetHeight();
+	  rect.height = box.verticalExtent();
 	} else
-	  rect = box.GetRectangle(GetX(), GetY());
+	  rect = Rectangle(GetX(), GetY(), box);
 
 	area.DrawRectangle((frame == TABLE_LINE_DASHED) ? dGC[Selected()] : fGC[Selected()], rect);
       }
 
-      scaled yOffset = frameVerticalSpacing - box.ascent;
+      scaled yOffset = frameVerticalSpacing - box.height;
       for (unsigned i = 0; i < nRows; i++) {
 	scaled xOffset = frameHorizontalSpacing;
 	if (HasLabels()) xOffset += leftPadding;
@@ -313,7 +313,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 	    // horizontal lines
 	    if (cell->rowSpan <= 1) {
 	      scaled lineX = position.x + xOffset;
-	      scaled lineY = position.y + yOffset + row[i].GetHeight() + row[i].spacing / 2;
+	      scaled lineY = position.y + yOffset + row[i].verticalExtent() + row[i].spacing / 2;
 	      scaled len = column[j].width;
 
 	      if (j == 0) {
@@ -340,7 +340,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 	    if (cell->colSpan <= 1) {
 	      scaled lineX = position.x + xOffset + column[j].width + column[j].spacing / 2;
 	      scaled lineY = position.y + yOffset;
-	      scaled len = row[i].GetHeight();
+	      scaled len = row[i].verticalExtent();
 
 	      if (i == 0) {
 		lineY -= frameVerticalSpacing;
@@ -363,7 +363,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 	  xOffset += column[j].width + column[j].spacing;
 	}
 
-	yOffset += row[i].GetHeight() + row[i].spacing;
+	yOffset += row[i].verticalExtent() + row[i].spacing;
       }
 
       ResetDirty();
