@@ -150,7 +150,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 	}
     }
 
-  std::cerr << "SETUP CONTENT" << std::endl;
+  std::cerr << "SETUP ROWS" << std::endl;
   for (unsigned i = 0; i < nRows; i++)
     {
       const unsigned ii = contentRowOffset + i * 2;
@@ -158,7 +158,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
       if (hasLabels)
 	cells[ii * nGridColumns + labelOffset].setContent(label[i]);
 
-      rows[ii].setHeight(Row::AUTO);
+      rows[ii].setHeightSpec(Row::AUTO);
       for (unsigned j = 0; j < nColumns; j++)
 	{
 	  const unsigned jj = contentColumnOffset + j * 2;
@@ -170,9 +170,9 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 	{
 	  const Length spacingSpec = resolveLength(ctxt, rowSpacingV, i);
 	  if (spacingSpec.type == Length::PERCENTAGE_UNIT)
-	    rows[ii + 1].setHeight(spacingSpec.value);
+	    rows[ii + 1].setHeightSpec(spacingSpec.value);
 	  else
-	    rows[ii + 1].setHeight(ctxt.MGD()->evaluate(ctxt, spacingSpec, scaled::zero()));
+	    rows[ii + 1].setHeightSpec(ctxt.MGD()->evaluate(ctxt, spacingSpec, scaled::zero()));
 	}
     }
 }
@@ -541,7 +541,9 @@ MathMLTableFormatter::calcTableHeightDepthT(int& numRig, float& sumScale, scaled
   scaled max = 0;
   sumContHD = 0;
   sumFixHD = 0;
-	
+
+  std::cerr << "calcTableHeightDepthT" << std::endl;
+
   for (unsigned i = 0; i < rows.size(); i++)
     {
       if (rows[i].isContentRow())
@@ -565,9 +567,14 @@ MathMLTableFormatter::calcTableHeightDepthF()
   scaled sumContFix = 0;
   float sumScale = 0;
 
+  std::cerr << "calcTableHeightDepthF" << std::endl;
+
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow() || rows[i].getSpec() == Row::FIX)
-      sumContFix += rows[i].getTempHeight() + rows[i].getTempDepth();
+      {
+	std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
+	sumContFix += rows[i].getTempHeight() + rows[i].getTempDepth();
+      }
     else if (rows[i].getSpec() == Row::SCALE)
       sumScale += rows[i].getScaleHeight();         
 

@@ -111,6 +111,9 @@ private:
     void setContentRow(bool b = true) { contentRow = b; }
     void setDepth(const scaled& d) { depth = d; }
     void setHeight(const scaled& h) { height = h; }
+    void setHeightSpec(RowHeightSpec s) { spec = s; }
+    void setHeightSpec(const scaled& w) { spec = FIX; fixHeight = w; }
+    void setHeightSpec(float s) { spec = SCALE; scaleHeight = s; }
     void setTempDepth(const scaled& d) { tempDepth = d; }
     void setTempHeight(const scaled& h) { tempHeight = h; }
     void setDisplacement(const scaled& d) { displacement = d; }

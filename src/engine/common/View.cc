@@ -342,7 +342,7 @@ View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
       rootArea->render(ctxt, -x, -y);
 
       perf.Stop();
-      //getLogger()->out(LOG_INFO, "rendering time: %dms", perf());
+      getLogger()->out(LOG_INFO, "rendering time: %dms", perf());
     }
 }
 
