@@ -1,4 +1,6 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libengine_common.la
 
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
@@ -13,23 +15,27 @@ libengine_common_la_SOURCES = \
   Node.cc \
   Element.cc
 
+pkginclude_HEADERS = \
+  View.hh \
+  $(NULL)
+
 noinst_HEADERS = \
-  Globals.hh \
-  Configuration.hh \
   Adapters.hh \
   Attribute.hh \
   AttributeList.hh \
   AttributeSignature.hh \
-  CommonStringParsers.hh \
-  TemplateStringParsers.hh \
-  TemplateStringScanners.hh \
   BinContainerTemplate.hh \
+  CommonStringParsers.hh \
+  Configuration.hh \
+  Element.hh \
+  ElementFactory.hh \
+  Globals.hh \
   LinearContainerTemplate.hh \
   NamespaceContext.hh \
-  ElementFactory.hh \
-  View.hh \
   Node.hh \
-  Element.hh
+  TemplateStringParsers.hh \
+  TemplateStringScanners.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_srcdir)/src/common \

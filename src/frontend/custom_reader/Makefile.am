@@ -1,4 +1,6 @@
 
+NULL = 
+
 lib_LTLIBRARIES = libmathview_frontend_custom_reader.la
 
 libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
@@ -11,13 +13,15 @@ libmathview_frontend_custom_reader_la_SOURCES = \
   customXmlReader.cc \
   custom_reader_Builder.cc
 
-custom_readerdir = $(includedir)/$(PACKAGE)/custom_reader/
-custom_reader_HEADERS = c_customXmlReader.h
+pkginclude_HEADERS = \
+  c_customXmlReader.h \
+  $(NULL)
 
 noinst_HEADERS = \
   customXmlReader.hh \
   custom_reader_Model.hh \
-  custom_reader_Builder.hh
+  custom_reader_Builder.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_srcdir)/auto \

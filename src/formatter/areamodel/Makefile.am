@@ -36,7 +36,7 @@ libareamodel_la_SOURCES = \
   WrapperArea.cc \
   $(NULL)
 
-noinst_HEADERS = \
+pkginclude_HEADERS = \
   Area.hh \
   AreaFactory.hh \
   AreaId.hh \
@@ -67,6 +67,9 @@ noinst_HEADERS = \
   VerticalFillerArea.hh \
   VerticalSpaceArea.hh \
   WrapperArea.hh \
+  $(NULL)
+
+noinst_HEADERS = \
   $(NULL)
 
 INCLUDES = \

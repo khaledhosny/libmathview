@@ -30,17 +30,9 @@ libcommon_la_SOURCES = \
   token.cc \
   $(NULL)
 
-pkginclude_HEADERS = defs.h
-
-noinst_HEADERS = \
+pkginclude_HEADERS = \
   BoundingBox.hh \
   BoundingBoxAux.hh \
-  Clock.hh \
-  GObjectPtr.hh \
-  HashMap.hh \
-  Length.hh \
-  LengthAux.hh \
-  Logger.hh \
   Object.hh \
   Point.hh \
   PointAux.hh \
@@ -48,20 +40,30 @@ noinst_HEADERS = \
   RGBColorAux.hh \
   Rectangle.hh \
   Rectangle.hh \
+  SmartPtr.hh \
+  String.hh \
+  defs.h \
+  fixed.hh \
+  scaled.hh \
+  scaledAux.hh \
+  $(NULL)
+
+noinst_HEADERS = \
+  Clock.hh \
+  GObjectPtr.hh \
+  HashMap.hh \
+  Length.hh \
+  LengthAux.hh \
+  Logger.hh \
   Rope.hh \
   ScopedHashMap.hh \
-  SmartPtr.hh \
   SparseMap.hh \
-  String.hh \
   TokenSet.hh \
   Value.hh \
   ValueConversion.hh \
   Variant.hh \
   WeakPtr.hh \
-  fixed.hh \
   for_each_if.h \
-  scaled.hh \
-  scaledAux.hh \
   token.hh \
   $(NULL)
 
