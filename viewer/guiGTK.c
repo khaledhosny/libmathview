@@ -545,7 +545,7 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 	  gint x, y, width, height, depth;
 	  gtk_math_view_select(math_view, root_selected);
 	  gtk_math_view_get_element_coords(math_view, root_selected, &x, &y);
-	  gtk_math_view_get_element_bounding_box(math_view, root_selected, &width, &height, &depth);
+	  /* gtk_math_view_get_element_bounding_box(math_view, root_selected, &width, &height, &depth); */
 	  printf("selected element at %d %d bounding box %d %d %d\n", x, y, width, height, depth);
 	}
 

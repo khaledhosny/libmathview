@@ -24,6 +24,7 @@ mathmlviewer_debug_LDADD = \
   $(top_builddir)/src/engine/boxml/libboxml.la \
   $(top_builddir)/src/formatter/gtk_mathml_graphic_device/libgtk_mathml_graphic_device.la \
   $(top_builddir)/src/formatter/mathml_graphic_device/libmathml_graphic_device.la \
+  $(top_builddir)/src/formatter/basictypes/mathvariants/libmathvariants.la \
   $(top_builddir)/src/engine/common/libengine_common.la \
   $(top_builddir)/src/common/libcommon.la
 
