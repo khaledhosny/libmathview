@@ -25,7 +25,6 @@
 #include <assert.h>
 
 #include "Globals.hh"
-#include "StringUnicode.hh"
 #include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
@@ -53,9 +52,9 @@ const AttributeSignature*
 MathMLActionElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_ACTIONTYPE, NULL,          NULL,             NULL },
-    { ATTR_SELECTION,  integerParser, new StringC("1"), NULL },
-    { ATTR_NOTVALID,   NULL,          NULL,             NULL }
+    { ATTR_ACTIONTYPE, stringParser,  NULL, NULL },
+    { ATTR_SELECTION,  integerParser, "1",  NULL },
+    { ATTR_NOTVALID,   NULL,          NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -69,11 +68,13 @@ MathMLActionElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      const String* sValue = GetAttribute(ATTR_ACTIONTYPE, env, false);
-      if (sValue != NULL) {
-	if (!sValue->Equal("toggle"))
-	  Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", sValue->ToStaticC());
-      } else
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_ACTIONTYPE, env, false))
+	{
+	  String action = ToString(value);
+	  if (action != "toggle")
+	    Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
+	}
+      else
 	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
 
       if (SmartPtr<Value> value = GetAttributeValue(ATTR_SELECTION, env))

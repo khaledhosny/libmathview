@@ -27,9 +27,9 @@
 #include "gmetadom.hh"
 #endif
 
-#include "CharMap.hh"
 #include "MathMLEmbellishment.hh"
 #include "MathMLTokenElement.hh"
+#include "keyword.hh"
 
 class MathMLOperatorElement
   : public MathMLTokenElement, public MathMLEmbellishment

@@ -25,7 +25,6 @@
 
 #include "Globals.hh"
 #include "ChildList.hh"
-#include "StringUnicode.hh"
 #include "ValueConversion.hh"
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
@@ -54,11 +53,11 @@ const AttributeSignature*
 MathMLFractionElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_LINETHICKNESS, lineThicknessParser, new StringC("1"),      NULL },
-    { ATTR_NUMALIGN,      fracAlignParser,     new StringC("center"), NULL },
-    { ATTR_DENOMALIGN,    fracAlignParser,     new StringC("center"), NULL },
-    { ATTR_BEVELLED,      booleanParser,       new StringC("false"),  NULL },
-    { ATTR_NOTVALID,      NULL,                NULL,                  NULL }
+    { ATTR_LINETHICKNESS, lineThicknessParser, "1",      NULL },
+    { ATTR_NUMALIGN,      fracAlignParser,     "center", NULL },
+    { ATTR_DENOMALIGN,    fracAlignParser,     "center", NULL },
+    { ATTR_BEVELLED,      booleanParser,       "false",  NULL },
+    { ATTR_NOTVALID,      NULL,                NULL,     NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

@@ -27,19 +27,19 @@
 #include "gmetadom.hh"
 #endif
 
-#include "Ptr.hh"
-#include "CharMap.hh"
+#include "SmartPtr.hh"
+#include "keyword.hh"
 
 SmartPtr<class MathMLElement>         findEmbellishedOperatorRoot(const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
 SmartPtr<class MathMLElement>         findCommonAncestor(const SmartPtr<class MathMLElement>&,
-						    const SmartPtr<class MathMLElement>&);
+							 const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLActionElement>   findActionElement(const SmartPtr<class MathMLElement>&);
 #if defined(HAVE_GMETADOM)
 DOM::Element                findDOMNode(const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLElement>         findMathMLElement(const SmartPtr<class MathMLDocument>&,
-						   const DOM::Element&);
+							const DOM::Element&);
 #endif
 SmartPtr<class MathMLElement>         findRightmostChild(const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLElement>         findLeftmostChild(const SmartPtr<class MathMLElement>&);

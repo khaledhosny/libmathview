@@ -26,10 +26,6 @@
 
 #include "Globals.hh"
 #include "ChildList.hh"
-#include "stringAux.hh"
-#include "allocTextNode.hh"
-#include "StringUnicode.hh"
-#include "MathMLCharNode.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLFencedElement.hh"
 #include "MathMLOperatorElement.hh"
@@ -39,7 +35,6 @@
 MathMLFencedElement::MathMLFencedElement()
 {
   normalized = false;
-  openFence = closeFence = separators = 0;
 }
 
 #if defined(HAVE_GMETADOM)
@@ -47,25 +42,21 @@ MathMLFencedElement::MathMLFencedElement(const DOM::Element& node)
   : MathMLBinContainerElement(node)
 {
   normalized = false;
-  openFence = closeFence = separators = 0;
 }
 #endif
 
 MathMLFencedElement::~MathMLFencedElement()
 {
-  delete openFence;
-  delete closeFence;
-  delete separators;
 }
 
 const AttributeSignature*
 MathMLFencedElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_OPEN,       fenceParser,      new StringC("("), NULL },
-    { ATTR_CLOSE,      fenceParser,      new StringC(")"), NULL },
-    { ATTR_SEPARATORS, separatorsParser, new StringC(","), NULL },
-    { ATTR_NOTVALID,   NULL,             NULL,             NULL }
+    { ATTR_OPEN,       fenceParser,      "(",  NULL },
+    { ATTR_CLOSE,      fenceParser,      ")",  NULL },
+    { ATTR_SEPARATORS, separatorsParser, ",",  NULL },
+    { ATTR_NOTVALID,   NULL,             NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -94,26 +85,23 @@ MathMLFencedElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      delete openFence;
       if (SmartPtr<Value> value = GetAttributeValue(ATTR_OPEN, env))
 	openFence = ToString(value);
       else
-	openFence = 0;
+	openFence.clear();
 
-      delete closeFence;
       if (SmartPtr<Value> value = GetAttributeValue(ATTR_CLOSE, env))
 	closeFence = ToString(value);
       else
-	closeFence = 0;
+	closeFence.clear();
 
-      delete separators;
       SmartPtr<Value> value;
       if (GetDOMElement() && GetDOMElement().hasAttribute("separators"))
 	value = GetAttributeValue(ATTR_SEPARATORS, env, false);
       else
 	value = GetAttributeValue(ATTR_SEPARATORS, env);
       if (value) separators = ToString(value);
-      else separators = 0;
+      else separators.clear();
 
       DelayedNormalize(env.GetDocument());
       MathMLBinContainerElement::Setup(env);
@@ -149,12 +137,11 @@ MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
       SmartPtr<MathMLRowElement> mrow = 0;
       SmartPtr<MathMLOperatorElement> fence = 0;
 
-      if (openFence && openFence->GetLength() > 0)
+      if (!openFence.empty())
 	{
 	  fence = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
 	  assert(fence);
-	  // FIXME
-	  fence->Append(openFence->ToStaticC());
+	  fence->Append(openFence);
 	  fence->SetFence();
 	  mainRow->Append(fence);
 	}
@@ -175,18 +162,15 @@ MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
 
 	  mrow->Append(arg);
 
-	  if (separators != NULL && separators->GetLength() > 0 && i < nChildren - 1)
+	  if (!separators.empty() && i < nChildren - 1)
 	    {
-	      unsigned offset = (i < separators->GetLength()) ? i : separators->GetLength() - 1;
-	      const String* sep = allocString(*separators, offset, 1);
-	      assert(sep != NULL);
+	      unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
+	      String sep = separators.substr(offset, 1);
 
 	      SmartPtr<MathMLOperatorElement> separator = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
 	      assert(separator);
-
 	      separator->SetSeparator();
-	      // FIXME
-	      separator->Append(sep->ToStaticC());
+	      separator->Append(sep);
 	      mrow->Append(separator);
 	    }
 	}
@@ -194,12 +178,11 @@ MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
       if (moreArguments) mainRow->Append(mrow);
 #endif // HAVE_GMETADOM
 
-      if (closeFence && closeFence->GetLength() > 0)
+      if (!closeFence.empty())
 	{
 	  fence = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
 	  assert(fence);
-	  // FIXME
-	  fence->Append(closeFence->ToStaticC());
+	  fence->Append(closeFence);
 	  fence->SetFence();
 	  mainRow->Append(fence);
 	}

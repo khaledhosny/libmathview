@@ -50,6 +50,8 @@ DrawingArea::DrawingArea(const GraphicsContextValues& v, const scaled& xMargin, 
   x = mx;
   y = my;
 
+  x0 = y0 = 0;
+
   defaultValues = v;
   selectionForeground = f;
   selectionBackground = b;
@@ -142,10 +144,9 @@ DrawingArea::DrawBoundingBox(const GraphicsContext* gc,
 
 void
 DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			const scaled& x, const scaled& y, const String* text) const
+			const scaled& x, const scaled& y, const String& text) const
 {
-  assert(text != NULL);
-  DrawString(gc, font, x, y, text->ToStaticC(), text->GetLength());
+  DrawString(gc, font, x, y, text.c_str(), text.length());
 }
 
 void

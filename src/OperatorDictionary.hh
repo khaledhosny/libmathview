@@ -46,7 +46,7 @@ public:
 
   bool Load(const char*);
   void Unload(void);
-  void Search(const String*,
+  void Search(const String&,
 	      const class MathMLAttributeList**,
 	      const class MathMLAttributeList**,
 	      const class MathMLAttributeList**) const;
@@ -63,7 +63,7 @@ private:
 
   void Delete(void);
 
-  typedef HASH_MAP_NS::hash_map<const String*, FormDefaults, String::Hash, String::Eq> Dictionary;
+  typedef HASH_MAP_NS::hash_map<String, FormDefaults, StringHash, StringEq> Dictionary;
   Dictionary items;
 };
 

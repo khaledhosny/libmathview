@@ -54,9 +54,9 @@ private:
   void DelayedNormalize(const SmartPtr<class MathMLDocument>&);
 
   bool normalized;
-  const String* openFence;
-  const String* closeFence;
-  const String* separators;
+  String openFence;
+  String closeFence;
+  String separators;
 };
 
 #endif // MathMLFencedElement_hh

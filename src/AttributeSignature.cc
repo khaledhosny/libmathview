@@ -33,7 +33,7 @@ AttributeSignature::GetDefaultParsedValue(void) const
 
   if (!defaultParsedValue)
     {
-      StringTokenizer st(*defaultValue);
+      StringTokenizer st(defaultValue);
       defaultParsedValue = parser(st);
       // a default value cannot be null
       assert(defaultParsedValue);

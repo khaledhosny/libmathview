@@ -26,12 +26,9 @@
 
 #include "FormattingContext.hh"
 #include "Globals.hh"
-#include "MathMLCharNode.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
 #include "RenderingEnvironment.hh"
-#include "StringFactory.hh"
-#include "StringUnicode.hh"
 #include "ValueConversion.hh"
 #include "operatorAux.hh"
 #include "scaledConv.hh"
@@ -67,23 +64,23 @@ const AttributeSignature*
 MathMLOperatorElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_FORM,      	  operatorFormParser, 	 NULL,                          NULL },
-    { ATTR_FENCE,     	  booleanParser,      	 new StringC("false"),          NULL },
-    { ATTR_SEPARATOR, 	  booleanParser,      	 new StringC("false"),          NULL },
-    { ATTR_LSPACE,    	  spaceParser,    	 new StringC("thickmathspace"), NULL },
-    { ATTR_RSPACE,    	  spaceParser,    	 new StringC("thickmathspace"), NULL },
+    { ATTR_FORM,      	  operatorFormParser, 	 NULL,             NULL },
+    { ATTR_FENCE,     	  booleanParser,      	 "false",          NULL },
+    { ATTR_SEPARATOR, 	  booleanParser,      	 "false",          NULL },
+    { ATTR_LSPACE,    	  spaceParser,    	 "thickmathspace", NULL },
+    { ATTR_RSPACE,    	  spaceParser,    	 "thickmathspace", NULL },
 #ifdef ENABLE_EXTENSIONS
-    { ATTR_TSPACE,        numberUnitParser,      new StringC("0ex"),            NULL },
-    { ATTR_BSPACE,        numberUnitParser,      new StringC("0ex"),            NULL },
+    { ATTR_TSPACE,        numberUnitParser,      "0ex",            NULL },
+    { ATTR_BSPACE,        numberUnitParser,      "0ex",            NULL },
 #endif // ENABLE_EXTENSIONS
-    { ATTR_STRETCHY,  	  booleanParser,      	 new StringC("false"),          NULL },
-    { ATTR_SYMMETRIC, 	  booleanParser,      	 new StringC("true"),           NULL },
-    { ATTR_MAXSIZE,   	  operatorMaxSizeParser, new StringC("infinity"),       NULL },
-    { ATTR_MINSIZE,   	  operatorMinSizeParser, new StringC("1"),              NULL },
-    { ATTR_LARGEOP,       booleanParser,         new StringC("false"),          NULL },
-    { ATTR_MOVABLELIMITS, booleanParser,         new StringC("false"),          NULL },
-    { ATTR_ACCENT,        booleanParser,         new StringC("false"),          NULL },
-    { ATTR_NOTVALID,      NULL,                  NULL,                          NULL }
+    { ATTR_STRETCHY,  	  booleanParser,      	 "false",          NULL },
+    { ATTR_SYMMETRIC, 	  booleanParser,      	 "true",           NULL },
+    { ATTR_MAXSIZE,   	  operatorMaxSizeParser, "infinity",       NULL },
+    { ATTR_MINSIZE,   	  operatorMinSizeParser, "1",              NULL },
+    { ATTR_LARGEOP,       booleanParser,         "false",          NULL },
+    { ATTR_MOVABLELIMITS, booleanParser,         "false",          NULL },
+    { ATTR_ACCENT,        booleanParser,         "false",          NULL },
+    { ATTR_NOTVALID,      NULL,                  NULL,             NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -140,12 +137,8 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       const MathMLAttributeList* infix   = 0;
       const MathMLAttributeList* postfix = 0;
 
-      String* operatorName = GetRawContent();
-      if (operatorName)
-	{
-	  Globals::dictionary.Search(operatorName, &prefix, &infix, &postfix);
-	  delete operatorName;
-	}
+      String operatorName = GetRawContent();
+      Globals::dictionary.Search(operatorName, &prefix, &infix, &postfix);
 
       if      (form == OP_FORM_PREFIX && prefix) defaults = prefix;
       else if (form == OP_FORM_INFIX && infix) defaults = infix;
@@ -227,6 +220,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 
       MathMLTokenElement::Setup(env);
 
+#if 0
       if (GetSize() == 1 && largeOp && env.GetDisplayStyle())
 	{
 	  // WARNING: the fact that I'm using a local variable is probably due
@@ -236,6 +230,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 	  if (SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(child))
 	    if (sNode->IsStretchyChar()) sNode->SetDefaultLargeGlyph(true);
 	}
+#endif
 
       ResetDirtyAttribute();
     }
@@ -297,6 +292,7 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
 
   adjustedSize = std::max(scaled(0), adjustedSize);
 
+#if 0
   assert(GetSize() == 1);
   if (SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
     {
@@ -331,6 +327,7 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
   // since the bounding box may have changed, we force dirtyLayout to true, so that
   // a DoBoxedLayout done on this operator will have effect
   SetDirtyLayout();
+#endif
 }
 
 void
@@ -361,6 +358,7 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
 
   adjustedSize = std::max(scaled(0), adjustedSize);
 
+#if 0
   assert(GetSize() == 1);
   if (SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
     {
@@ -381,6 +379,7 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
   // since the bounding box may have changed, we force dirtyLayout to true, so that
   // a DoBoxedLayout done on this operator will have effect
   SetDirtyLayout();
+#endif
 }
 
 void
@@ -449,30 +448,32 @@ MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
   //printf("`%s': searching for attribute `%s'\n", NameOfTagId(IsA()), NameOfAttributeId(id));
 
   // 1st attempt, the attribute may be set for the current operator
-  SmartPtr<Value> value = GetAttributeValue(id, env, false);
+  if (SmartPtr<Value> value = GetAttributeValue(id, env, false))
+    return value;
 
-  //if (value != NULL) printf("found directly\n");
+  if (defaults)
+    {
+      // no, it is not explicitly set, but this operator has an entry in
+      // the operator dictionary, so let's see if the attribute has a
+      // default value
+      if (const MathMLAttribute* attribute = defaults->GetAttribute(id))
+	{
+	  const AttributeSignature* aSignature = GetAttributeSignature(id);
+	  assert(aSignature);
+	  if (SmartPtr<Value> value = attribute->GetParsedValue(aSignature))
+	    return value;
+	}
 
-  if (!value && defaults) {
-    // no, it is not explicitly set, but this operator has an entry in
-    // the operator dictionary, so let's see if the attribute has a
-    // default value
-    const MathMLAttribute* attribute = defaults->GetAttribute(id);
-    if (attribute != NULL) {
-      const AttributeSignature* aSignature = GetAttributeSignature(id);
-      assert(aSignature != NULL);
-      value = attribute->GetParsedValue(aSignature);
+      //if (value != NULL) printf("found in dictionary\n");
     }
-
-    //if (value != NULL) printf("found in dictionary\n");
-  }
 
   // if the attribute hasn't still a value, then take its default
   // for the mo element
-  if (!value) value = GetAttributeValue(id);
-  assert(value);
-
-  return value;
+  if (SmartPtr<Value> value = GetAttributeValue(id))
+    return value;
+  
+  assert(false);
+  return 0;
 }
 
 OperatorFormId
@@ -498,6 +499,7 @@ MathMLOperatorElement::InferOperatorForm()
 StretchId
 MathMLOperatorElement::GetStretch() const
 {
+#if 0
   if (!IsStretchy()) return STRETCH_NO;
 
   //assert(GetSize() == 1);
@@ -508,6 +510,8 @@ MathMLOperatorElement::GetStretch() const
   if (!sChar->IsStretchyChar()) return STRETCH_NO;
 
   return sChar->GetStretch();
+#endif
+  return STRETCH_NO;
 }
 
 SmartPtr<MathMLOperatorElement>

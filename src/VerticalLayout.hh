@@ -26,7 +26,7 @@
 #include "MathMLElement.hh"
 #include "HorizontalLayout.hh"
 
-class VerticalLayout : public MathMLObject
+class VerticalLayout : public Object
 {
 protected:
   VerticalLayout(void) : rowSpacing(0), rowMinSpacing(0) { }

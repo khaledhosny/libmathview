@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "Globals.hh"
-#include "StringUnicode.hh"
 
 #ifdef HAVE_LIBT1
 #include <t1lib.h>
@@ -71,14 +70,13 @@ namespace Globals {
 #endif
 
     if (!configuration.GetDictionaries().empty())
-      for (std::vector<String*>::const_iterator dit = configuration.GetDictionaries().begin();
+      for (std::vector<std::string>::const_iterator dit = configuration.GetDictionaries().begin();
 	   dit != configuration.GetDictionaries().end();
 	   dit++)
 	{
-	  assert(*dit);
-	  logger(LOG_DEBUG, "loading dictionary `%s'", (*dit)->ToStaticC());
-	  if (!dictionary.Load((*dit)->ToStaticC()))
-	    logger(LOG_WARNING, "could not load `%s'", (*dit)->ToStaticC());
+	  logger(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
+	  if (!dictionary.Load((*dit).c_str()))
+	    logger(LOG_WARNING, "could not load `%s'", (*dit).c_str());
 	}
     else {
       bool res = dictionary.Load("config/dictionary.xml");
@@ -87,12 +85,9 @@ namespace Globals {
 
     if (getenv("T1LIB_CONFIG") == NULL && configuration.GetT1ConfigFiles().size() == 1)
       {
-	StringC s("T1LIB_CONFIG=");
-	assert(configuration.GetT1ConfigFiles()[0]);
-	s.Append(*configuration.GetT1ConfigFiles()[0]);
-
-	char *cs = strdup(s.ToStaticC());
-	putenv(cs);
+	std::string s = "T1LIB_CONFIG=";
+	s += configuration.GetT1ConfigFiles()[0];
+	putenv(const_cast<char*>(s.c_str()));
       }
 
     done = true;

@@ -25,7 +25,7 @@
 #include <cassert>
 #include <stddef.h>
 
-#include "StringUnicode.hh"
+#include "defs.h"
 #include "MathMLSpaceElement.hh"
 #include "RenderingEnvironment.hh"
 #include "AttributeParser.hh"
@@ -53,11 +53,11 @@ const AttributeSignature*
 MathMLSpaceElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_WIDTH,     spaceParser,      new StringC("0em"),  NULL },
-    { ATTR_HEIGHT,    numberUnitParser, new StringC("0ex"),  NULL },
-    { ATTR_DEPTH,     numberUnitParser, new StringC("0ex"),  NULL },
-    { ATTR_LINEBREAK, lineBreakParser,  new StringC("auto"), NULL },
-    { ATTR_NOTVALID,  NULL,             NULL,                NULL }
+    { ATTR_WIDTH,     spaceParser,      "0em",  NULL },
+    { ATTR_HEIGHT,    numberUnitParser, "0ex",  NULL },
+    { ATTR_DEPTH,     numberUnitParser, "0ex",  NULL },
+    { ATTR_LINEBREAK, lineBreakParser,  "auto", NULL },
+    { ATTR_NOTVALID,  NULL,             NULL,   NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

@@ -32,6 +32,8 @@
 #include "MathMLTableCellElement.hh"
 #include "FormattingContext.hh"
 
+#include "BoundingBoxAux.hh"
+
 void
 MathMLTableElement::DoLayout(const FormattingContext& ctxt)
 {

@@ -24,8 +24,8 @@
 
 #include <cassert>
 
+#include "defs.h"
 #include "ValueConversion.hh"
-#include "StringUnicode.hh"
 #include "ValueConversion.hh"
 #include "MathMLPaddedElement.hh"
 #include "RenderingEnvironment.hh"
@@ -53,11 +53,11 @@ MathMLPaddedElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] =
   {
-    { ATTR_WIDTH,    paddedWidthParser, NULL,               NULL },
-    { ATTR_LSPACE,   paddedValueParser, new StringC("0em"), NULL },
-    { ATTR_HEIGHT,   paddedValueParser, NULL,               NULL },
-    { ATTR_DEPTH,    paddedValueParser, NULL,               NULL },
-    { ATTR_NOTVALID, NULL,              NULL,               NULL }
+    { ATTR_WIDTH,    paddedWidthParser, NULL,  NULL },
+    { ATTR_LSPACE,   paddedValueParser, "0em", NULL },
+    { ATTR_HEIGHT,   paddedValueParser, NULL,  NULL },
+    { ATTR_DEPTH,    paddedValueParser, NULL,  NULL },
+    { ATTR_NOTVALID, NULL,              NULL,  NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);  

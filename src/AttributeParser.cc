@@ -27,7 +27,7 @@
 #include <vector>
 
 #include "Variant.hh"
-#include "StringUnicode.hh"
+//#include "StringUnicode.hh"
 #include "AttributeParser.hh"
 //#include "ValueSequence.hh"
 #include "ValueConversion.hh"
@@ -57,7 +57,7 @@ integerParser(StringTokenizer& st)
   st.SkipSpaces();
   if (!st.MoreTokens()) return res;
 
-  if (st.ParseInteger(&n)) res = Variant<int>::create(n);
+  if (st.ParseInteger(n)) res = Variant<int>::create(n);
   else st.SetMark(mark);
 
   return res;
@@ -73,7 +73,7 @@ unsignedIntegerParser(StringTokenizer& st)
   st.SkipSpaces();
   if (!st.MoreTokens()) return res;
 
-  if (st.ParseUnsignedInteger(&n)) res = Variant<int>::create(n);
+  if (st.ParseUnsignedInteger(n)) res = Variant<int>::create(n);
   else st.SetMark(mark);
 
   return res;
@@ -182,7 +182,7 @@ numberParser(StringTokenizer& st)
   st.SkipSpaces();
   if (!st.MoreTokens()) return NULL;
 
-  if (st.ParseNumber(&n)) res = Variant<float>::create(n);
+  if (st.ParseNumber(n)) res = Variant<float>::create(n);
   else st.SetMark(mark);
 
   return res;
@@ -198,7 +198,7 @@ unsignedNumberParser(StringTokenizer& st)
   st.SkipSpaces();
   if (!st.MoreTokens()) return NULL;
 
-  if (st.ParseUnsignedNumber(&n)) res = Variant<float>::create(n);
+  if (st.ParseUnsignedNumber(n)) res = Variant<float>::create(n);
   else st.SetMark(mark);
 
   return res;
@@ -246,7 +246,7 @@ numberUnitParser(StringTokenizer& st)
   st.SkipSpaces();
   if (!st.MoreTokens()) return NULL;
 
-  if (st.ParseNumber(&n))
+  if (st.ParseNumber(n))
     {
       SmartPtr<Value> unit = unitPercentageParser(st);
       if (unit)
@@ -315,8 +315,8 @@ stringParser(StringTokenizer& st)
   st.SkipSpaces();
   if (!st.MoreTokens()) return 0;
 
-  String* s = new StringUnicode;
-  if (st.ParseString(s)) return Variant<String*>::create(s);
+  String s;
+  if (st.ParseString(s)) return Variant<String>::create(s);
   else st.SetMark(mark);
 
   return 0;
@@ -331,14 +331,9 @@ colorParser(StringTokenizer& st)
     KW_TEAL, KW_AQUA
   };
 
-  const String& source = st.GetString();
-  String* sourceNC = source.Clone();
-  assert(sourceNC);
-  sourceNC->ToLowerCase();
-  StringTokenizer stNC(*sourceNC);
+  StringTokenizer stNC(toLowerCase(st.GetString()));
 
   SmartPtr<Value> res = alternativeParser(id, 16, stNC);
-  delete sourceNC;
   if (res) return res;
 
   unsigned mark = st.GetMark();
@@ -347,7 +342,7 @@ colorParser(StringTokenizer& st)
   if (!st.MoreTokens()) return 0;
 
   RGBValue v;
-  if (st.ParseRGB(&v))
+  if (st.ParseRGB(v))
     return Variant<RGBValue>::create(v);
   else
     st.SetMark(mark);
@@ -606,26 +601,13 @@ operatorMaxSizeParser(StringTokenizer& st)
 SmartPtr<Value>
 fenceParser(StringTokenizer& st)
 {
-  return Variant<String*>::create(st.GetString().Clone());
+  return Variant<String>::create(st.GetString());
 }
 
 SmartPtr<Value>
 separatorsParser(StringTokenizer& st)
 {
-  String* sep = st.GetString().Clone();
-  sep->DeleteSpaces();
-
-  SmartPtr<Value> value;
-
-  if (sep->GetLength() > 0)
-    value = Variant<String*>::create(sep);
-  else
-    {
-      value = Variant<String*>::create(0);
-      delete sep;
-    }
-
-  return value;
+  return Variant<String>::create(deleteSpaces(st.GetString()));
 }
 
 SmartPtr<Value>

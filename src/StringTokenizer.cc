@@ -22,27 +22,22 @@
 
 #include <config.h>
 
-#include <stddef.h>
-#include <assert.h>
-#ifdef HAVE_WCTYPE_H
-#include <wctype.h>
-#endif
-#ifdef HAVE_WCHAR_H
-#include <wchar.h>
-#endif
+#include <cassert>
+#include <cctype>
 
 #include "MathMLAttribute.hh"
 #include "StringTokenizer.hh"
 
-static unsigned hexOfChar(Char ch)
+static unsigned
+hexOfChar(Char ch)
 {
-  assert(iswxdigit(ch));
-  ch = towupper(ch);
+  assert(isxdigit(ch));
+  ch = toupper(ch);
   if (ch <= '9') return ch - '0';
   else return ch - 'A' + 10;
 }
 
-StringTokenizer::StringTokenizer(const String& s0) : s(s0)
+StringTokenizer::StringTokenizer(const String& s0) : s(toUCS4String(s0))
 {
   Reset();
 }
@@ -51,199 +46,178 @@ StringTokenizer::~StringTokenizer()
 {
 }
 
-void StringTokenizer::Reset()
+void
+StringTokenizer::Reset()
 {
   offset = 0;
 }
 
-void StringTokenizer::SkipSpaces()
+void
+StringTokenizer::SkipSpaces()
 {
-  while (offset < s.GetLength() && isXmlSpace(s.GetChar(offset))) offset++;
+  while (offset < s.length() && isXmlSpace(s[offset])) offset++;
 }
 
-void StringTokenizer::SkipToken()
+void
+StringTokenizer::SkipToken()
 {
-  while (offset < s.GetLength() && !isXmlSpace(s.GetChar(offset))) offset++;
+  while (offset < s.length() && !isXmlSpace(s[offset])) offset++;
 }
 
-bool StringTokenizer::MoreTokens()
+bool
+StringTokenizer::MoreTokens()
 {
-  return offset < s.GetLength();
+  return offset < s.length();
 }
 
-bool StringTokenizer::Parse(const char *str)
+bool
+StringTokenizer::Parse(const char *str)
 {
-  assert(str != NULL);
+  assert(str);
 
   unsigned i = 0;
-  while (offset + i < s.GetLength() &&
+  while (offset + i < s.length() &&
 	 str[i] != '\0' &&
-	 s.GetChar(offset + i) == static_cast<Char>(str[i])) i++;
+	 s[offset + i] == static_cast<Char>(str[i])) i++;
 
-  if (str[i] == '\0') {
-    offset += i;
-    return true;
-  }
+  if (str[i] == '\0')
+    {
+      offset += i;
+      return true;
+    }
 
   return false;
 }
 
-bool StringTokenizer::Parse(KeywordId id)
+bool
+StringTokenizer::Parse(KeywordId id)
 {
   return Parse(NameOfKeywordId(id));
 }
 
-const char* StringTokenizer::ParseToken()
+String
+StringTokenizer::ParseToken()
 {
-  unsigned i = 0;
-  static char tempS[TEMP_BUFFER_SIZE + 1];
-
-  while (offset < s.GetLength() &&
-	 !isXmlSpace(s.GetChar(offset)) &&
-	 i < TEMP_BUFFER_SIZE) {
-    tempS[i] = s.GetChar(offset);
-    i++;
-    offset++;
-  }
-
-  tempS[i] = 0;
-
-  return tempS;
+  unsigned offset0 = offset;
+  while (offset < s.length() && !isXmlSpace(s[offset])) offset++;
+  return fromUCS4String(s.substr(offset0, offset - offset0));
 }
 
-bool StringTokenizer::ParseKeyword(KeywordId* v)
+bool
+StringTokenizer::ParseKeyword(KeywordId& v)
 {
-  KeywordId id = KeywordIdOfName(ParseToken());
-  if (id == KW_NOTVALID) return false;
-
-  if (v != NULL) *v = id;
-  return true;
+  v = KeywordIdOfName(ParseToken().c_str());
+  return v != KW_NOTVALID;
 }
 
-bool StringTokenizer::ParseUnsignedInteger(int* v)
+bool
+StringTokenizer::ParseUnsignedInteger(int& v)
 {
-  int n = 0;
   unsigned nDigits = 0;
-  while (offset < s.GetLength() && iswdigit(s.GetChar(offset))) {
-    n = n * 10 + s.GetChar(offset) - '0';
-    nDigits++;
-    offset++;
-  }
+  v = 0;
+  while (offset < s.length() && isdigit(s[offset]))
+    {
+      v = v * 10 + s[offset] - '0';
+      nDigits++;
+      offset++;
+    }
 
-  if (nDigits == 0) return false;
-   
-  if (v != NULL) *v = n;
-
-  return true;
+  return nDigits != 0;
 }
 
-bool StringTokenizer::ParseInteger(int* v)
+bool
+StringTokenizer::ParseInteger(int& v)
 {
-  int n;
   bool negative = false;
 
-  if (s.GetChar(offset) == '-') {
-    negative = true;
-    offset++;
-  }
+  if (offset < s.length() && s[offset] == '-')
+    {
+      negative = true;
+      offset++;
+    }
 
-  if (!ParseUnsignedInteger(&n)) return false;
-
-  if (v != NULL) *v = negative ? -((int) n) : (int) n;
+  if (!ParseUnsignedInteger(v)) return false;
+  if (negative) v = -v;
 
   return true;
 }
 
-bool StringTokenizer::ParseUnsignedNumber(float* v)
+bool
+StringTokenizer::ParseUnsignedNumber(float& v)
 {
-  float res = 0.0;
   bool decimal = false; // true if decimal point found
   unsigned n = 0;       // number of digits after decimal point
   unsigned nDigits = 0;
 
-  while (offset < s.GetLength() &&
-	 (iswdigit(s.GetChar(offset)) ||
-	  (!decimal && s.GetChar(offset) == '.'))) {
-    if (s.GetChar(offset) == '.') {
-      decimal = true;
-    } else {
-      res = res * 10 + s.GetChar(offset) - '0';
-      if (decimal) n++;
+  v = 0.0f;
+  while (offset < s.length() &&
+	 (isdigit(s[offset]) || (!decimal && s[offset] == '.')))
+    {
+      if (s[offset] == '.')
+	{
+	  decimal = true;
+	} 
+      else
+	{
+	  v = v * 10 + s[offset] - '0';
+	  if (decimal) n++;
+	}
+      nDigits++;
+      offset++;
     }
-    nDigits++;
-    offset++;
-  }
 
-  while (n-- > 0) res /= 10;
+  while (n-- > 0) v /= 10;
 
-  if (nDigits == 0 || (decimal && n == 0)) return false;
-
-  if (v != NULL) *v = res;
-
-  return true;
+  return (nDigits != 0 && (!decimal || n != 0));
 }
 
-bool StringTokenizer::ParseNumber(float* v)
+bool
+StringTokenizer::ParseNumber(float& v)
 {
-  float n;
   bool negative = false;
 
-  if (s.GetChar(offset) == '-') {
-    negative = true;
-    offset++;
-  }
+  if (s[offset] == '-')
+    {
+      negative = true;
+      offset++;
+    }
 
-  if (!ParseUnsignedNumber(&n)) return false;
-
-  if (v != NULL) *v = negative ? -n : n;
-
-  return true;
-}
-
-bool StringTokenizer::ParseChar(Char* v)
-{
-  if (offset >= s.GetLength()) return false;
-
-  if (v != NULL) *v = s.GetChar(offset++);
+  if (!ParseUnsignedNumber(v)) return false;
+  if (negative) v = -v;
 
   return true;
 }
 
-bool StringTokenizer::ParseString(String* str)
+bool
+StringTokenizer::ParseChar(Char& v)
 {
-  assert(str != NULL);
+  if (offset >= s.length()) return false;
 
+  v = s[offset++];
+
+  return true;
+}
+
+bool
+StringTokenizer::ParseString(String& str)
+{
   unsigned start = offset;
-  while (offset < s.GetLength() && !isXmlSpace(s.GetChar(offset))) offset++;
+  while (offset < s.length() && !isXmlSpace(s[offset])) offset++;
 
-  unsigned length = offset - start;
-  if (length > 0) {
-    Char* token = new Char[length];
-
-    for (unsigned i = 0; i < length; i++)
-      token[i] = s.GetChar(start + i);
-
-    str->Set(token, length);
-
-    delete [] token;
-  } else
-    str->Set(static_cast<char*>(NULL), 0);
+  str = fromUCS4String(s.substr(start, offset - start));
 
   return true;
 }
 
-bool StringTokenizer::ParseRGB(RGBValue* v)
+bool
+StringTokenizer::ParseRGB(RGBValue& v)
 {
   unsigned i;
 
-  if (offset >= s.GetLength()) return false;
-  if (s.GetChar(offset) != '#') return false;
+  if (offset >= s.length()) return false;
+  if (s[offset] != '#') return false;
 
-  for (i = 1;
-       i <= 6 &&
-	 offset + i < s.GetLength() &&
-	 iswxdigit(s.GetChar(offset + i));
-       i++) ;
+  for (i = 1; i <= 6 && offset + i < s.length() && isxdigit(s[offset + i]); i++) ;
   i--;
 
   if (i != 3 && i != 6) return false;
@@ -252,29 +226,33 @@ bool StringTokenizer::ParseRGB(RGBValue* v)
   unsigned green = 0;
   unsigned blue = 0;
   
-  if (i == 3) {
-    i = offset + 1;
-    red   = hexOfChar(s.GetChar(i++)) * 17;
-    green = hexOfChar(s.GetChar(i++)) * 17;
-    blue  = hexOfChar(s.GetChar(i++)) * 17;
-  } else {
-    i = offset + 1;
-    red   = hexOfChar(s.GetChar(i++));
-    red   = red * 16 + hexOfChar(s.GetChar(i++));
-    green = hexOfChar(s.GetChar(i++));
-    green = green * 16 + hexOfChar(s.GetChar(i++));
-    blue  = hexOfChar(s.GetChar(i++));
-    blue  = blue * 16 + hexOfChar(s.GetChar(i++));
-  }
+  if (i == 3)
+    {
+      i = offset + 1;
+      red   = hexOfChar(s[i++]) * 17;
+      green = hexOfChar(s[i++]) * 17;
+      blue  = hexOfChar(s[i++]) * 17;
+    } 
+  else
+    {
+      i = offset + 1;
+      red   = hexOfChar(s[i++]);
+      red   = red * 16 + hexOfChar(s[i++]);
+      green = hexOfChar(s[i++]);
+      green = green * 16 + hexOfChar(s[i++]);
+      blue  = hexOfChar(s[i++]);
+      blue  = blue * 16 + hexOfChar(s[i++]);
+    }
 
-  if (v != NULL) *v = MKRGB(red, green, blue);
+  v = MKRGB(red, green, blue);
 
   return true;
 }
 
-void StringTokenizer::SetMark(unsigned n)
+void
+StringTokenizer::SetMark(unsigned n)
 {
-  assert(n < s.GetLength());
+  assert(n < s.length());
   offset = n;
 }
 

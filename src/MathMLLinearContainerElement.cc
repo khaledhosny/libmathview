@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "defs.h"
 #include "for_each_if.h"
 #include "Adaptors.hh"
 #include "ChildList.hh"

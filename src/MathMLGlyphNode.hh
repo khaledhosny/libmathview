@@ -39,7 +39,6 @@ public:
   virtual void 	   DoLayout(const class FormattingContext&);
   virtual void 	   Render(const DrawingArea&);
 
-  virtual String*  GetRawContent(void) const;
   virtual unsigned GetLogicalContentLength(void) const;
 
 protected:

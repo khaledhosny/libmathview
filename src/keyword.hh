@@ -46,6 +46,15 @@ enum BreakId {
   BREAK_INDENT
 };
 
+// Stretchability
+
+enum StretchId {
+  STRETCH_NO,
+  STRETCH_VERTICAL,
+  STRETCH_HORIZONTAL,
+  STRETCH_BOTH
+};
+
 // Units
 
 enum UnitId {

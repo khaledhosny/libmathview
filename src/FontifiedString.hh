@@ -23,12 +23,13 @@
 #ifndef FontifiedString_hh
 #define FontifiedString_hh
 
+#include "String.hh"
 #include "scaled.hh"
 
 class FontifiedString
 {
 public:
-  FontifiedString(const class String&, const class FontAttributes&, const class CharMapper&);
+  FontifiedString(const String&, const class FontAttributes&, const class CharMapper&);
   ~FontifiedString();
 
   void   GetBoundingBox(class BoundingBox&) const;

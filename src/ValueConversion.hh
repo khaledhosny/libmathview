@@ -29,6 +29,7 @@
 #include "Variant.hh"
 #include "keyword.hh"
 #include "RGBValue.hh"
+#include "String.hh"
 
 bool            IsEmpty(const SmartPtr<Value>&);
 bool            IsKeyword(const SmartPtr<Value>&);
@@ -39,7 +40,7 @@ bool            IsRGBValue(const SmartPtr<Value>&);
 bool            ToBoolean(const SmartPtr<Value>&);
 int             ToInteger(const SmartPtr<Value>&);
 float           ToNumber(const SmartPtr<Value>&);
-class String*   ToString(const SmartPtr<Value>&);
+String          ToString(const SmartPtr<Value>&);
 SmartPtr<ValueSequence> ToSequence(const SmartPtr<Value>&);
 RGBValue        ToRGBValue(const SmartPtr<Value>&);
 KeywordId       ToKeywordId(const SmartPtr<Value>&);

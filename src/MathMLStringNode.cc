@@ -24,20 +24,18 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "stringAux.hh"
 #include "MathMLStringNode.hh"
 #include "MathMLTokenElement.hh"
 #include "RenderingEnvironment.hh"
-
 #include "Gtk_DrawingArea.hh"
 #include "ShaperManager.hh"
 #include "Gtk_RenderingContext.hh"
 
 unsigned MathMLStringNode::visited = 0;
 
-MathMLStringNode::MathMLStringNode(const DOM::GdomeString& c)
+MathMLStringNode::MathMLStringNode(const String& c)
+  : content(c)
 {
-  content = c;
 }
 
 MathMLStringNode::~MathMLStringNode()
@@ -53,7 +51,7 @@ MathMLStringNode::IsString() const
 void
 MathMLStringNode::Setup(RenderingEnvironment& env)
 {
-  area = env.shaperManager.shape(env.areaFactory, content, env.GetFontAttributes().size.ToScaledPoints());
+  area = env.shaperManager.shape(env.areaFactory, toUCS4String(content), env.GetFontAttributes().size.ToScaledPoints());
 }
 
 void
@@ -101,8 +99,8 @@ MathMLStringNode::GetLogicalContentLength() const
   return content.length();
 }
 
-String*
+String
 MathMLStringNode::GetRawContent() const
 {
-  return allocString(content);
+  return content;
 }

@@ -65,13 +65,13 @@ public:
 protected:
   void NormalizeRadicalElement(const SmartPtr<class MathMLDocument>&);
 
-  bool         normalized;
+  bool normalized;
 
-  const String* notation;
+  String notation;
   //NotationType notation;
-  scaled       spacing;
-  scaled       lineThickness;
-  RGBValue     color;
+  scaled spacing;
+  scaled lineThickness;
+  RGBValue color;
 };
 
 #endif // MathMLEncloseElement_hh

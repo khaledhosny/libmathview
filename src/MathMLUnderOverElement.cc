@@ -26,7 +26,6 @@
 #include "ChildList.hh"
 #include "FormattingContext.hh"
 #include "Globals.hh"
-#include "MathMLCharNode.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
@@ -378,10 +377,11 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	    }
 
 	  const BoundingBox& baseBox = base->GetBoundingBox();
-	  SmartPtr<const MathMLCharNode> bChar = base->GetCharNode();
+	  //SmartPtr<const MathMLCharNode> bChar = base->GetCharNode();
 
 	  if (underScript)
 	    {
+#if 0
 	      SmartPtr<MathMLCharNode> cChar = underScript->GetCharNode();
 
 	      if (accentUnder &&
@@ -400,6 +400,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 #endif
 		} 
 	      else
+#endif
 		{
 		  const BoundingBox& scriptBox = underScript->GetBoundingBox();
 
@@ -411,6 +412,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 
 	  if (overScript)
 	    {
+#if 0
 	      SmartPtr<MathMLCharNode> cChar = overScript->GetCharNode();
 
 	      if (accent &&
@@ -430,6 +432,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 #endif
 		} 
 	      else
+#endif
 		{
 		  const BoundingBox& scriptBox = overScript->GetBoundingBox();
 

@@ -40,11 +40,6 @@ public:
   virtual void     DoLayout(const class FormattingContext&);
   virtual void     Render(const DrawingArea&);
 
-  virtual unsigned GetLogicalContentLength(void) const;
-  virtual String*  GetRawContent(void) const;
-
-  virtual bool     IsMark(void) const;  
-
   MarkAlignType    GetAlignmentEdge(void) const { return edge; }
 
 protected:

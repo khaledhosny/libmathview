@@ -31,12 +31,12 @@ struct AttributeSignature
 {
   AttributeId     id;
   AttributeParser parser;
-  const String*   defaultValue;
+  const char*     defaultValue;
   mutable SmartPtr<Value> defaultParsedValue;
 
   AttributeId     GetAttributeId(void) const { return id; }
   AttributeParser GetParser(void) const { return parser; }
-  const String*   GetDefaultValue(void) const { return defaultValue; }
+  const char*     GetDefaultValue(void) const { return defaultValue; }
   SmartPtr<Value> GetDefaultParsedValue(void) const;
 };
 

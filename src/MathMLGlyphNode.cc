@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "Globals.hh"
-#include "CharMapper.hh"
+//#include "CharMapper.hh"
 #include "MathMLElement.hh"
 #include "MathMLGlyphNode.hh"
 #include "MathMLTokenElement.hh"
@@ -61,20 +61,20 @@ MathMLGlyphNode::Setup(RenderingEnvironment& env)
   FontAttributes glyphAttributes = env.GetFontAttributes();
   glyphAttributes.family = fontFamily;
   glyphAttributes.mode = FONT_MODE_ANY;
-  font = env.charMapper.GetFont(glyphAttributes);
+  //font = env.charMapper.GetFont(glyphAttributes);
 }
 
 void
 MathMLGlyphNode::DoLayout(const FormattingContext&)
 {
-  if (font != NULL) font->CharBox(nch, box);
+  if (font) font->CharBox(nch, box);
   else box.unset();
 }
 
 void
 MathMLGlyphNode::Render(const DrawingArea& area)
 {
-  if (font != NULL)
+  if (font)
     {
       assert(GetParent());
       assert(is_a<MathMLTokenElement>(GetParent()));
@@ -91,10 +91,4 @@ unsigned
 MathMLGlyphNode::GetLogicalContentLength() const
 {
   return 1;
-}
-
-String*
-MathMLGlyphNode::GetRawContent() const
-{
-  return NULL;
 }

@@ -40,7 +40,7 @@ public:
   virtual void     Render(const DrawingArea&);
 
   virtual unsigned GetLogicalContentLength(void) const;
-  virtual String*  GetRawContent(void) const;
+  virtual String   GetRawContent(void) const;
 
   virtual bool     IsSpace(void) const;
 };

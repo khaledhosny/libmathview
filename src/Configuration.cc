@@ -29,19 +29,10 @@
 #include <stdlib.h>
 
 #include "Globals.hh"
-#include "StringUnicode.hh"
 #include "Configuration.hh"
 #include "AttributeParser.hh"
 #include "MathMLParseFile.hh"
 #include "ValueConversion.hh"
-
-// definition of local adaptors
-struct DeleteStringAdaptor
-  : public std::unary_function<String*,void>
-{
-  void operator()(String* s) const
-  { delete s; }
-};
 
 Configuration::Configuration(void)
 {
@@ -50,161 +41,9 @@ Configuration::Configuration(void)
 
 Configuration::~Configuration()
 {
-  std::for_each(dictionaries.begin(), dictionaries.end(), DeleteStringAdaptor());
-  std::for_each(entities.begin(), entities.end(), DeleteStringAdaptor());
-  std::for_each(fonts.begin(), fonts.end(), DeleteStringAdaptor());
-  std::for_each(t1Configs.begin(), t1Configs.end(), DeleteStringAdaptor());
 }
 
-#if defined(HAVE_MINIDOM)
-
-bool
-Configuration::Load(const char* confPath)
-{
-  assert(confPath != NULL);
-
-  Globals::logger(LOG_DEBUG, "loading configuration from `%s'...", confPath);
-
-  mDOMDocRef doc = MathMLParseFile(confPath, false);
-  if (doc == NULL) return false;
-
-  mDOMNodeRef root = mdom_doc_get_root_node(doc);
-  if (root == NULL) {
-    mdom_doc_free(doc);
-    Globals::logger(LOG_WARNING, "configuration file `%s' has no root node", confPath);
-    return false;
-  }
-
-  if (!mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("math-engine-configuration"))) {
-    mdom_doc_free(doc);
-    Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", confPath);
-    return false;
-  }
-
-  ParseConfiguration(root);
-
-  mdom_doc_free(doc);
-
-  return true;
-}
-
-void
-Configuration::ParseConfiguration(mDOMNodeRef node)
-{
-  assert(node != NULL);
-  
-  for (mDOMNodeRef p = mdom_node_get_first_child(node);
-       p != NULL;
-       p = mdom_node_get_next_sibling(p)) {
-    mDOMConstStringRef name = mdom_node_get_name(p);
-    
-    if (mdom_string_eq(name, DOM_CONST_STRING("dictionary-path"))) {
-      mDOMStringRef path = mdom_node_get_content(p);
-      if (path != NULL) {
-	Globals::logger(LOG_DEBUG, "found dictionary path `%s'", C_STRING(path));
-	String* s = new StringC(C_STRING(path));
-	s->TrimSpacesLeft();
-	s->TrimSpacesRight();
-	dictionaries.push_back(s);
-      }
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("font-configuration-path"))) {
-      mDOMStringRef path = mdom_node_get_content(p);
-      if (path != NULL) {
-	Globals::logger(LOG_DEBUG, "found font configuration path `%s'", C_STRING(path));
-	String* s = new StringC(C_STRING(path));
-	s->TrimSpacesLeft();
-	s->TrimSpacesRight();
-	fonts.push_back(s);
-      }
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("entities-table-path"))) {
-      mDOMStringRef path = mdom_node_get_content(p);
-      if (path != NULL) {
-	Globals::logger(LOG_DEBUG, "found entities table path `%s'", C_STRING(path));
-	String* s = new StringC(C_STRING(path));
-	s->TrimSpacesLeft();
-	s->TrimSpacesRight();
-	entities.push_back(s);
-      }
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("t1-config-path"))) {
-      mDOMStringRef path = mdom_node_get_content(p);
-      if (path != NULL && t1Configs.empty()) {
-	Globals::logger(LOG_DEBUG, "found t1lib config path `%s'", C_STRING(path));
-	String* s = new StringC(C_STRING(path));
-	s->TrimSpacesLeft();
-	s->TrimSpacesRight();
-	t1Configs.push_back(s);
-      }
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("font-size"))) {
-      mDOMStringRef attr = mdom_node_get_attribute(p, DOM_CONST_STRING("size"));
-      if (attr == NULL) {
-	Globals::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
-      } else {
-	fontSize = atoi(C_STRING(attr));
-	Globals::logger(LOG_DEBUG, "default font size set to %d points", fontSize);
-	fontSizeSet = true;
-      }
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("color"))) {
-      colorSet = ParseColor(p, foreground, background);
-      if (colorSet) Globals::logger(LOG_DEBUG, "default color set to %06x %06x", foreground, background);
-      else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("link-color"))) {
-      linkColorSet = ParseColor(p, linkForeground, linkBackground);
-      if (linkColorSet) Globals::logger(LOG_DEBUG, "default link color set to %06x %06x", linkForeground, linkBackground);
-      else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
-    } else if (mdom_string_eq(name, DOM_CONST_STRING("select-color"))) {
-      selectColorSet = ParseColor(p, selectForeground, selectBackground);
-      if (selectColorSet) Globals::logger(LOG_DEBUG, "default selection color set to %06x %06x", selectForeground, selectBackground);
-      else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
-    } else if (!mdom_node_is_blank(p)) {
-      Globals::logger(LOG_WARNING, "unrecognized entry %s in configuration file (ignored)",
-			 C_STRING(mdom_node_get_name(p)));
-    }
-  }
-}
-
-bool
-Configuration::ParseColor(mDOMNodeRef node, RGBValue& f, RGBValue& b)
-{
-  assert(node != NULL);
-
-  mDOMStringRef fs = mdom_node_get_attribute(node, DOM_STRING("foreground"));
-  mDOMStringRef bs = mdom_node_get_attribute(node, DOM_STRING("background"));
-
-  if (fs == NULL || bs == NULL) {
-    Globals::logger(LOG_WARNING, "malformed `%s' element in configuration file",
-		       mdom_node_get_name(node));
-    return false;
-  }
-
-  StringC fss(C_STRING(fs));
-  StringC bss(C_STRING(bs));
-
-  StringTokenizer fst(fss);
-  StringTokenizer bst(bss);
-
-  const Value* fv = colorParser(fst);
-  const Value* bv = colorParser(bst);
-
-  if (fv == NULL || bv == NULL) {
-    delete fv;
-    delete bv;
-
-    Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element",
-		       mdom_node_get_name(node));
-
-    return false;
-  }
-
-  f = ToRGB(fv);
-  b = ToRGB(bv);
-
-  delete fv;
-  delete bv;
-
-  return true;
-}
-
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 
 bool
 Configuration::Load(const char* confPath)
@@ -241,55 +80,38 @@ Configuration::ParseConfiguration(const DOM::Element& node)
   for (DOM::Node p = node.get_firstChild(); p; p = p.get_nextSibling()) {
     if (p.get_nodeType() == DOM::Node::ELEMENT_NODE) {
       DOM::Element elem(p);
-      DOM::GdomeString name = elem.get_nodeName();
+      std::string name = elem.get_nodeName();
     
       if (name == "dictionary-path") {
-	DOM::GdomeString path = elementValue(elem);
+	std::string path = elementValue(elem);
 	if (!path.empty()) {
-	  std::string s_path = path;
-	  Globals::logger(LOG_DEBUG, "found dictionary path `%s'", s_path.c_str());
-	  String* s = new StringC(s_path.c_str());
-	  s->TrimSpacesLeft();
-	  s->TrimSpacesRight();
-	  dictionaries.push_back(s);
+	  Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
+	  dictionaries.push_back(path);
 	}
       } else if (name == "font-configuration-path") {
-	DOM::GdomeString path = elementValue(elem);
+	std::string path = elementValue(elem);
 	if (!path.empty()) {
-	  std::string s_path = path;
-	  Globals::logger(LOG_DEBUG, "found font configuration path `%s'", s_path.c_str());
-	  String* s = new StringC(s_path.c_str());
-	  s->TrimSpacesLeft();
-	  s->TrimSpacesRight();
-	  fonts.push_back(s);
+	  Globals::logger(LOG_DEBUG, "found font configuration path `%s'", path.c_str());
+	  fonts.push_back(path);
 	}
       } else if (name == "entities-table-path") {
-	DOM::GdomeString path = elementValue(elem);
+	std::string path = elementValue(elem);
 	if (!path.empty()) {
-	  std::string s_path = path;
-	  Globals::logger(LOG_DEBUG, "found entities table path `%s'", s_path.c_str());
-	  String* s = new StringC(s_path.c_str());
-	  s->TrimSpacesLeft();
-	  s->TrimSpacesRight();
-	  entities.push_back(s);
+	  Globals::logger(LOG_DEBUG, "found entities table path `%s'", path.c_str());
+	  entities.push_back(path);
 	}
       } else if (name == "t1-config-path") {
-	DOM::GdomeString path = elementValue(elem);
+	std::string path = elementValue(elem);
 	if (!path.empty() && t1Configs.empty()) {
-	  std::string s_path = path;
-	  Globals::logger(LOG_DEBUG, "found t1lib config path `%s'", s_path.c_str());
-	  String* s = new StringC(s_path.c_str());
-	  s->TrimSpacesLeft();
-	  s->TrimSpacesRight();
-	  t1Configs.push_back(s);
+	  Globals::logger(LOG_DEBUG, "found t1lib config path `%s'", path.c_str());
+	  t1Configs.push_back(path);
 	}
       } else if (name == "font-size") {
-	DOM::GdomeString attr = elem.getAttribute("size");
+	std::string attr = elem.getAttribute("size");
 	if (attr.empty()) {
 	  Globals::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
 	} else {
-	  std::string s_attr = attr;
-	  fontSize = atoi(s_attr.c_str());
+	  fontSize = atoi(attr.c_str());
 	  Globals::logger(LOG_DEBUG, "default font size set to %d points", fontSize);
 	  fontSizeSet = true;
 	}
@@ -306,8 +128,7 @@ Configuration::ParseConfiguration(const DOM::Element& node)
 	if (selectColorSet) Globals::logger(LOG_DEBUG, "default selection color set to %06x %06x", selectForeground, selectBackground);
 	else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
       } else {
-	std::string s_name = name;
-	Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", s_name.c_str());
+	Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
       }
     } else if (!DOM::nodeIsBlank(p)) {
       Globals::logger(LOG_WARNING, "unrecognized node type `%d' in configuration file (ignored)", p.get_nodeType());
@@ -325,8 +146,8 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b)
 bool
 Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bool& transparent)
 {
-  DOM::GdomeString fs = node.getAttribute("foreground");
-  DOM::GdomeString bs = node.getAttribute("background");
+  String fs = fromDOMString(node.getAttribute("foreground"));
+  String bs = fromDOMString(node.getAttribute("background"));
 
   if (fs.empty() || bs.empty()) {
     std::string s_name = node.get_nodeName();
@@ -334,13 +155,8 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bo
     return false;
   }
 
-  std::string s_fs = fs;
-  std::string s_bs = bs;
-  StringC fss(s_fs.c_str());
-  StringC bss(s_bs.c_str());
-
-  StringTokenizer fst(fss);
-  StringTokenizer bst(bss);
+  StringTokenizer fst(fs);
+  StringTokenizer bst(bs);
 
   SmartPtr<Value> fv = colorParser(fst);
   SmartPtr<Value> bv = backgroundParser(bst);

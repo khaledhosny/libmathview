@@ -23,8 +23,8 @@
 #ifndef operatorAux_hh
 #define operatorAux_hh
 
-#include "Ptr.hh"
-#include "CharMap.hh"
+#include "SmartPtr.hh"
+#include "keyword.hh"
 
 bool isStretchyOperator(const SmartPtr<class MathMLElement>&);
 bool isStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);

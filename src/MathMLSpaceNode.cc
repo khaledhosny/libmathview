@@ -65,8 +65,8 @@ MathMLSpaceNode::GetLogicalContentLength() const
   return 0;
 }
 
-String*
+String
 MathMLSpaceNode::GetRawContent() const
 {
-  return NULL;
+  return String();
 }

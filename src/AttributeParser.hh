@@ -25,7 +25,6 @@
 
 #include "SmartPtr.hh"
 #include "StringTokenizer.hh"
-#include "MathMLObject.hh"
 #include "Value.hh"
 
 #define ATTRIBUTE_PARSER(name) SmartPtr<Value> name(StringTokenizer&);

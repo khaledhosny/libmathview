@@ -27,7 +27,6 @@
 #include "frameAux.hh"
 #include "Globals.hh"
 #include "operatorAux.hh"
-#include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "ValueConversion.hh"
 #include "MathMLTableElement.hh"
@@ -67,12 +66,12 @@ const AttributeSignature*
 MathMLTableCellElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_ROWSPAN,         unsignedIntegerParser,    new StringC("1"), NULL },
-    { ATTR_COLUMNSPAN,      unsignedIntegerParser,    new StringC("1"), NULL },
-    { ATTR_ROWALIGN,        rowAlignParser,           NULL,             NULL },
-    { ATTR_COLUMNALIGN,     columnAlignParser,        NULL,             NULL },
-    { ATTR_GROUPALIGN,      groupAlignListParser,     NULL,             NULL },
-    { ATTR_NOTVALID,        NULL,                     NULL,             NULL }
+    { ATTR_ROWSPAN,         unsignedIntegerParser,    "1", NULL },
+    { ATTR_COLUMNSPAN,      unsignedIntegerParser,    "1", NULL },
+    { ATTR_ROWALIGN,        rowAlignParser,           NULL, NULL },
+    { ATTR_COLUMNALIGN,     columnAlignParser,        NULL, NULL },
+    { ATTR_GROUPALIGN,      groupAlignListParser,     NULL, NULL },
+    { ATTR_NOTVALID,        NULL,                     NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

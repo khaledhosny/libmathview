@@ -22,20 +22,13 @@
 
 #include <config.h>
 
-#if defined(HAVE_MINIDOM)
-
-#include <minidom.h>
-
-#elif defined(HAVE_GMETADOM)
-
 #include <assert.h>
 
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #include "EntitiesTable.hh"
-
 #endif // HAVE_GMETADOM
 
-#include "stringAux.hh"
 #include "Globals.hh"
 #include "MathMLParseFile.hh"
 

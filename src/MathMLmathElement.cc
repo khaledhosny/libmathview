@@ -26,7 +26,6 @@
 #include "Globals.hh"
 #include "MathMLmathElement.hh"
 #include "RenderingEnvironment.hh"
-#include "StringUnicode.hh"
 #include "ValueConversion.hh"
 
 MathMLmathElement::MathMLmathElement()
@@ -48,9 +47,9 @@ const AttributeSignature*
 MathMLmathElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_MODE,     modeParser,    new StringC("inline"), NULL },
-    { ATTR_DISPLAY,  displayParser, new StringC("inline"), NULL },
-    { ATTR_NOTVALID, NULL,          NULL,                  NULL }
+    { ATTR_MODE,     modeParser,    "inline", NULL },
+    { ATTR_DISPLAY,  displayParser, "inline", NULL },
+    { ATTR_NOTVALID, NULL,          NULL,     NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

@@ -34,15 +34,9 @@
 
 #include "AFont.hh"
 #include "frameAux.hh"
-#include "stringAux.hh"
 #include "Globals.hh"
 #include "traverseAux.hh"
-#include "StringFactory.hh"
-#include "allocTextNode.hh"
-#include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
-#include "MathMLCharNode.hh"
-#include "MathMLCombinedCharNode.hh"
 #include "MathMLTextNode.hh"
 #include "MathMLStringNode.hh"
 #include "mathVariantAux.hh"
@@ -58,41 +52,41 @@
 #include "FormattingContext.hh"
 #include "BoundingBoxAux.hh"
 
-// TEMPORARY TRIMMING ROUTINES
+// // TEMPORARY TRIMMING ROUTINES
 
-template <class T>
-void
-trimSpacesLeft(std::basic_string<T>& s)
-{
-  std::basic_string<T>::iterator i = s.begin();
-  while (i != s.end() && isXmlSpace(*i)) i++;
-  s.erase(s.begin(), i);
-}
+// template <class T>
+// void
+// trimSpacesLeft(std::basic_string<T>& s)
+// {
+//   std::basic_string<T>::iterator i = s.begin();
+//   while (i != s.end() && isXmlSpace(*i)) i++;
+//   s.erase(s.begin(), i);
+// }
 
-template <class T>
-void
-trimSpacesRight(std::basic_string<T>& s)
-{
-  std::basic_string<T>::iterator i = s.end();
-  do i--; while (i != s.begin() && isXmlSpace(*i)) ;
-  s.erase(i + 1, s.end());
-}
+// template <class T>
+// void
+// trimSpacesRight(std::basic_string<T>& s)
+// {
+//   std::basic_string<T>::iterator i = s.end();
+//   do i--; while (i != s.begin() && isXmlSpace(*i)) ;
+//   s.erase(i + 1, s.end());
+// }
 
-template <class T>
-void
-collapseSpaces(std::basic_string<T>& s)
-{
-  unsigned i = 0;
-  while (i < s.length()) {
-    if (isXmlSpace(s[i])) {
-      s[i++] = L' ';
-      std::basic_string<T>::iterator j = s.begin() + i;
-      while (j < s.end() && isXmlSpace(*j)) j++;
-      s.erase(s.begin() + i, j);
-    } else
-      i++;
-  }
-}
+// template <class T>
+// void
+// collapseSpaces(std::basic_string<T>& s)
+// {
+//   unsigned i = 0;
+//   while (i < s.length()) {
+//     if (isXmlSpace(s[i])) {
+//       s[i++] = L' ';
+//       std::basic_string<T>::iterator j = s.begin() + i;
+//       while (j < s.end() && isXmlSpace(*j)) j++;
+//       s.erase(s.begin() + i, j);
+//     } else
+//       i++;
+//   }
+// }
 
 MathMLTokenElement::MathMLTokenElement()
 {
@@ -162,72 +156,8 @@ MathMLTokenElement::SetChild(unsigned i, const SmartPtr<MathMLTextNode>& child)
     }
 }
 
-#if 0
 void
-MathMLTokenElement::Append(const String* s)
-{
-  assert(s != NULL);
-
-  if (s->GetLength() == 0) return;
-
-  SmartPtr<MathMLTextNode> last = 0;
-  if (GetSize() > 0 && GetChild(GetSize() - 1)->IsText())
-    {
-      last = smart_cast<MathMLTextNode>(GetChild(GetSize() - 1));
-      assert(last);
-    }
-
-  unsigned i = 0;
-  unsigned sLength = s->GetLength();
-  while (i < sLength)
-    {
-      SmartPtr<MathMLTextNode> node = 0;
-
-      int spacing;
-      unsigned len = isNonMarkingChar(*s, i, &spacing);
-      if (len > 0)
-	{
-	  node = MathMLSpaceNode::create(spacing);
-	  i += len;
-	} 
-      else if (i + 1 < sLength && isCombining(s->GetChar(i + 1)))
-	{
-	  node = allocCombinedCharNode(s->GetChar(i), s->GetChar(i + 1));
-	  i += 2;
-#if 0
-	}
-      else if (iswalnum(s->GetChar(i)))
-	{
-	  unsigned start = i;
-	  while (i < sLength && iswalnum(s->GetChar(i))) i++;
-	  assert(start < i);
-
-	  const String* sText = allocString(*s, start, i - start);
-	  node = allocTextNode(&sText);
-#endif
-	}
-      else if (!isVariant(s->GetChar(i)))
-	{
-	  node = allocCharNode(s->GetChar(i));
-	  i++;
-	}
-      else
-	{
-	  Globals::logger(LOG_WARNING, "ignoring variant modifier char U+%04x", s->GetChar(i));
-	  i++;
-	}
-    
-      if (node)
-	{
-	  AppendChild(node);
-	  last = node;
-	}
-    }
-}
-#endif
-
-void
-MathMLTokenElement::Append(const DOM::GdomeString& s)
+MathMLTokenElement::Append(const String& s)
 {
   SmartPtr<MathMLTextNode> node = MathMLStringNode::create(s);
   AppendChild(node);
@@ -297,7 +227,6 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
 #if defined(HAVE_GMETADOM)
       content.clear();
 
-      String* sContent = NULL;
       for (DOM::Node p = GetDOMElement().get_firstChild(); 
 	   p;
 	   p = p.get_nextSibling()) 
@@ -307,15 +236,12 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
 	    case DOM::Node::TEXT_NODE:
 	      {
 		// ok, we have a chunk of text
-		DOM::UTF8String content = p.get_nodeValue();
+		String content = collapseSpaces(fromDOMString(p.get_nodeValue()));
 
-		// white-spaces are always collapsed...
-		collapseSpaces<DOM::Char8>(content);
-	      
 		// ...but spaces at the at the beginning (end) are deleted only if this
 		// is the very first (last) chunk in the token.
-		if (!p.get_previousSibling()) trimSpacesLeft<DOM::Char8>(content);
-		if (!p.get_nextSibling()) trimSpacesRight<DOM::Char8>(content);
+		if (!p.get_previousSibling()) content = trimSpacesLeft(content);
+		if (!p.get_nextSibling()) content = trimSpacesRight(content);
 
 		Append(content);
 	      }
@@ -646,21 +572,7 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)))
 	    {
 	      if (GetLogicalContentLength() == 1)
-		{
-		  SmartPtr<MathMLTextNode> node = GetChild(0);
-		  assert(node);
-
-		  if (is_a<MathMLCharNode>(node))
-		    {
-		      SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(node);
-		      assert(cNode);
-		      
-		      if (!isUpperCaseGreek(cNode->GetChar())) env.SetFontStyle(FONT_STYLE_ITALIC);
-		      else env.SetFontStyle(FONT_STYLE_NORMAL);
-		    }
-		  else
-		    env.SetFontStyle(FONT_STYLE_NORMAL);
-		} 
+		env.SetFontStyle(FONT_STYLE_ITALIC);
 	      else
 		{
 		  env.SetFontStyle(FONT_STYLE_NORMAL);
@@ -849,9 +761,11 @@ MathMLTokenElement::IsNonMarking() const
   return true;
 }
 
+#if 0
 SmartPtr<MathMLCharNode>
 MathMLTokenElement::GetCharNode() const
 {
+#if 0
   if (GetSize() != 1) return 0;
 
   SmartPtr<MathMLTextNode> node = GetChild(0);
@@ -859,7 +773,10 @@ MathMLTokenElement::GetCharNode() const
   if (!is_a<MathMLCharNode>(node) || is_a<MathMLCombinedCharNode>(node)) return 0;
 
   return smart_cast<MathMLCharNode>(node);
+#endif
+  return 0; // ??????????????????????????????
 }
+#endif
 
 void
 MathMLTokenElement::AddItalicCorrection()
@@ -893,7 +810,7 @@ MathMLTokenElement::SubstituteMGlyphElement(const DOM::Element& node)
 
   if (alt.empty() || fontFamily.empty() || index.empty()) {
     Globals::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
-    return MathMLCharNode::create('?');
+    return MathMLStringNode::create("?");
   }
 
   std::string s_index = index;
@@ -937,25 +854,19 @@ MathMLTokenElement::SubstituteAlignMarkElement(const DOM::Element& node)
   return MathMLMarkNode::create(align);
 }
 
-String*
+String
 MathMLTokenElement::GetRawContent() const
 {
-  StringFactory c;
-
+  String res;
   for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = GetContent().begin();
        i != GetContent().end();
        i++)
     {
       assert(*i);
-      String* s = (*i)->GetRawContent();
-      if (s != NULL)
-	{
-	  c.Append(s);
-	  delete s;
-	}
+      res += (*i)->GetRawContent();
     }
 
-  return c.Pack();
+  return res;
 }
 
 unsigned

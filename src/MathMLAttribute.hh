@@ -26,14 +26,15 @@
 #include "SmartPtr.hh"
 #include "Value.hh"
 #include "keyword.hh"
+#include "String.hh"
 
 class MathMLAttribute
 {
 public:
-  MathMLAttribute(AttributeId, const class String*);
+  MathMLAttribute(AttributeId, const String&);
   ~MathMLAttribute();
 
-  const class String* GetValue(void) const { return value; }
+  const String GetValue(void) const { return value; }
   SmartPtr<Value> GetParsedValue(const struct AttributeSignature* = 0) const;
   bool Equal(const MathMLAttribute&) const;
 
@@ -41,10 +42,8 @@ public:
 
 private:
   AttributeId id;
-  const class String* value;
+  String value;
   mutable SmartPtr<Value> parsedValue;
 };
-
-typedef MathMLAttribute* MathMLAttributePtr;
 
 #endif // MathMLAttribute_hh

@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "defs.h"
 #include "ChildList.hh"
 #include "FormattingContext.hh"
 #include "MathMLDummyElement.hh"

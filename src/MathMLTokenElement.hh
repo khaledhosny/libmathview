@@ -59,7 +59,7 @@ public:
   void           RemoveChild(unsigned);
   void           InsertChild(unsigned, const SmartPtr<MathMLTextNode>&);
   void           AppendChild(const SmartPtr<class MathMLTextNode>&);
-  void           Append(const DOM::GdomeString&);
+  void           Append(const String&);
   void           SwapChildren(std::vector< SmartPtr<MathMLTextNode> >&);
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
@@ -77,9 +77,9 @@ public:
 
   RGBValue       GetColor(void) const { return color; }
 
-  virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
+  //virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
   const std::vector< SmartPtr<class MathMLTextNode> >& GetContent(void) const { return content; }
-  String*        GetRawContent(void) const;
+  String         GetRawContent(void) const;
   unsigned       GetLogicalContentLength(void) const;
 
 private:

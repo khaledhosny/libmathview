@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "AttributeSignature.hh"
 #include "RenderingEnvironment.hh"
@@ -47,7 +46,7 @@ MathMLMarkNode::Setup(RenderingEnvironment& env)
   // the rendering environment.
   // This is the price for having a more natural token element with just
   // text nodes as content... otherwise we would have frames.
-  static AttributeSignature sig = { ATTR_EDGE, alignMarkEdgeParser, new StringC("left"), NULL };
+  static AttributeSignature sig = { ATTR_EDGE, alignMarkEdgeParser, "left", NULL };
 
   const MathMLAttribute* attribute = env.GetAttribute(ATTR_EDGE);
   // ok, we have to do something only in case the attribute edge
@@ -71,22 +70,4 @@ MathMLMarkNode::DoLayout(const FormattingContext&)
 void
 MathMLMarkNode::Render(const DrawingArea&)
 {
-}
-
-bool
-MathMLMarkNode::IsMark() const
-{
-  return true;
-}
-
-unsigned
-MathMLMarkNode::GetLogicalContentLength() const
-{
-  return 1;
-}
-
-String*
-MathMLMarkNode::GetRawContent() const
-{
-  return NULL;
 }

@@ -25,12 +25,9 @@
 #include <stddef.h>
 
 #include "unidefs.h"
-#include "stringAux.hh"
 #include "Globals.hh"
 #include "ChildList.hh"
-#include "StringUnicode.hh"
 #include "EntitiesTable.hh"
-#include "MathMLCharNode.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLRadicalElement.hh"
@@ -53,7 +50,7 @@ MathMLRadicalElement::MathMLRadicalElement(const DOM::Element& node)
 
 MathMLRadicalElement::~MathMLRadicalElement()
 {
-  radical = 0;
+  //radical = 0;
   SetRadicand(0);
   SetIndex(0);
 }
@@ -61,7 +58,7 @@ MathMLRadicalElement::~MathMLRadicalElement()
 void
 MathMLRadicalElement::Init()
 {
-  radical = 0;
+  //radical = 0;
   radicand = 0;
   index = 0;
 }
@@ -138,9 +135,11 @@ MathMLRadicalElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	}
 #endif
 
+#if 0
       if (!radical) radical = MathMLCharNode::create(U_SQRT);
       assert(radical);
       radical->SetParent(this);
+#endif
 
       if (radicand) radicand->Normalize(doc);
       if (index) index->Normalize(doc);
@@ -159,7 +158,7 @@ MathMLRadicalElement::Setup(RenderingEnvironment& env)
       background    = env.GetBackgroundColor();
       lineThickness = env.GetRuleThickness();
 
-      if (radical) radical->Setup(env);
+      //if (radical) radical->Setup(env);
       if (radicand) radicand->Setup(env);
       if (index)
 	{
@@ -183,10 +182,14 @@ MathMLRadicalElement::DoLayout(const class FormattingContext& ctxt)
       radicand->DoLayout(ctxt);
       box = radicand->GetBoundingBox();
 
+#if 0
       assert(radical);
       radical->DoLayout(ctxt);
       radical->DoVerticalStretchyLayout(box.height + lineThickness, box.depth, 0, false);
       const BoundingBox& radBox = radical->GetBoundingBox();
+#else
+      BoundingBox radBox;
+#endif
 
       box.width += radBox.width;
       box.height = std::max(box.height + spacing, radBox.height);
@@ -213,6 +216,7 @@ MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
   position.x = x;
   position.y = y;
 
+#if 0
   assert(radical);
   const BoundingBox& radBox = radical->GetBoundingBox();
 
@@ -230,6 +234,7 @@ MathMLRadicalElement::SetPosition(const scaled& x, const scaled& y)
       radical->SetPosition(x, y - box.height + radBox.height);
       radicand->SetPosition(x + radBox.width, y);
     }
+#endif
 }
 
 #if 0
@@ -301,6 +306,7 @@ MathMLRadicalElement::ResetFlagDown(Flags f)
 void
 MathMLRadicalElement::Render(const DrawingArea& area)
 {
+#if 0
   if (Exposed(area))
     {
       if (fGC[Selected()] == NULL) {
@@ -325,26 +331,33 @@ MathMLRadicalElement::Render(const DrawingArea& area)
 
       ResetDirty();
     }
+#endif
 }
 
 scaled
 MathMLRadicalElement::GetLeftEdge() const
 {
+#if 0
   assert(radical);
   assert(radicand);
   scaled m = std::min(radicand->GetLeftEdge(), radical->GetLeftEdge());
   if (index) return std::min(m, index->GetLeftEdge());
   else return m;
+#endif
+  return 0;
 }
 
 scaled
 MathMLRadicalElement::GetRightEdge() const
 {
+#if 0
   assert(radical);
   assert(radicand);
   scaled m = std::max(radicand->GetRightEdge(), radical->GetRightEdge());
   if (index) return std::max(m, index->GetRightEdge());
   else return m;
+#endif
+  return 0;
 }
 
 void

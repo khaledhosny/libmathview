@@ -24,31 +24,13 @@
 #include <assert.h>
 
 #include "keyword.hh"
-#include "stringAux.hh"
 #include "Globals.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLParseFile.hh"
 #include "OperatorDictionary.hh"
 #include "MathMLAttributeList.hh"
 
-#if defined(HAVE_MINIDOM)
-
-void
-getAttribute(mDOMNodeRef node, const char* attr, MathMLAttributeList* aList)
-{
-  assert(aList != NULL);
-
-  mDOMStringRef attrVal = mdom_node_get_attribute(node, DOM_CONST_STRING(attr));
-  if (attrVal == NULL) return;
-
-  MathMLAttribute* attribute =
-    new MathMLAttribute(AttributeIdOfName(attr), allocString(attrVal));
-
-  aList->Append(attribute);
-  mdom_string_free(attrVal);
-}
-
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 
 void
 getAttribute(const DOM::Element& node, const char* attr, MathMLAttributeList* aList)
@@ -59,7 +41,7 @@ getAttribute(const DOM::Element& node, const char* attr, MathMLAttributeList* aL
   if (attrVal.empty()) return;
 
   MathMLAttribute* attribute =
-    new MathMLAttribute(AttributeIdOfName(attr), allocString(attrVal));
+    new MathMLAttribute(AttributeIdOfName(attr), fromDOMString(attrVal));
 
   aList->Append(attribute);
 }
@@ -170,7 +152,7 @@ OperatorDictionary::Load(const char* fileName)
 	DOM::GdomeString opName = elem.getAttribute("name");
 
 	if (!opName.empty()) {
-	  const String* opString = allocString(opName);
+	  String opString = fromDOMString(opName);
 	  MathMLAttributeList* defaults = new MathMLAttributeList;
 
 	  getAttribute(op, "form", defaults);
@@ -195,25 +177,25 @@ OperatorDictionary::Load(const char* fileName)
 	  if (elem.getAttribute("form") == "prefix")
 	    if (formDefaults.prefix)
 	      Globals::logger(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
-			      opString->ToStaticC());
+			      opString.c_str());
 	    else
 	      formDefaults.prefix = defaults;
 	  else if (elem.getAttribute("form") == "infix")
 	    if (formDefaults.prefix)
 	      Globals::logger(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
-			      opString->ToStaticC());
+			      opString.c_str());
 	    else
 	      formDefaults.infix = defaults;
 	  else if (elem.getAttribute("form") == "postfix")
 	    if (formDefaults.prefix)
 	      Globals::logger(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
-			      opString->ToStaticC());
+			      opString.c_str());
 	    else
 	      formDefaults.postfix = defaults;
 	  else
 	    Globals::logger(LOG_WARNING, 
 			    "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
-			    opString->ToStaticC());
+			    opString.c_str());
 	} else {
 	  Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
 	}
@@ -234,21 +216,14 @@ OperatorDictionary::Load(const char* fileName)
 void
 OperatorDictionary::Unload()
 {
-  while (items.begin() != items.end())
-    {
-      const String* key = (*items.begin()).first;
-      items.erase(key);
-      delete key;
-    }
 }
 
 void
-OperatorDictionary::Search(const String* opName,
+OperatorDictionary::Search(const String& opName,
 			   const MathMLAttributeList** prefix,
 			   const MathMLAttributeList** infix,
 			   const MathMLAttributeList** postfix) const
 {
-  assert(opName != 0);
   assert(prefix != 0 && infix != 0 && postfix != 0);
 
   *prefix = *infix = *postfix = 0;
@@ -256,7 +231,6 @@ OperatorDictionary::Search(const String* opName,
   Dictionary::const_iterator p = items.find(opName);
   if (p != items.end())
     {
-      assert((*p).first != 0);
       *prefix = (*p).second.prefix;
       *infix = (*p).second.infix;
       *postfix = (*p).second.postfix;

@@ -38,8 +38,8 @@ public:
   virtual void 	   SetPosition(const scaled&, const scaled&);
   virtual void 	   Render(const DrawingArea&) = 0;
 
-  virtual String*  GetRawContent(void) const = 0;
-  virtual unsigned GetLogicalContentLength(void) const = 0;
+  virtual String   GetRawContent(void) const { return String(); }
+  virtual unsigned GetLogicalContentLength(void) const { return 0; }
 
   virtual bool 	   IsText(void) const;  
   virtual bool 	   IsInside(const scaled&, const scaled&) const;

@@ -29,7 +29,6 @@
 #include <stddef.h>
 
 #include "Adaptors.hh"
-#include "CharMap.hh"
 #include "ChildList.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"

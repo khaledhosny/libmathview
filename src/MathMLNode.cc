@@ -26,7 +26,6 @@
 
 #include "MathMLNode.hh"
 #include "MathMLElement.hh"
-#include "MathMLCharNode.hh"
 
 MathMLNode::MathMLNode() : parent(0)
 {
@@ -34,12 +33,6 @@ MathMLNode::MathMLNode() : parent(0)
 
 MathMLNode::~MathMLNode()
 {
-}
-
-SmartPtr<MathMLCharNode>
-MathMLNode::GetCharNode() const
-{
-  return 0;
 }
 
 SmartPtr<MathMLElement>

@@ -27,8 +27,6 @@
 #include "UnitValue.hh"
 #include "RGBValue.hh"
 
-#define TEMP_BUFFER_SIZE 128
-
 class StringTokenizer
 {
 public:
@@ -42,24 +40,24 @@ public:
 
   bool Parse(const char*);
   bool Parse(KeywordId);
-  bool ParseKeyword(KeywordId*);
-  bool ParseString(String*);
-  bool ParseUnsignedInteger(int*);
-  bool ParseInteger(int*);
-  bool ParseUnsignedNumber(float*);
-  bool ParseNumber(float*);
-  bool ParseChar(Char*);
-  bool ParseRGB(RGBValue*);
+  bool ParseKeyword(KeywordId&);
+  bool ParseString(String&);
+  bool ParseUnsignedInteger(int&);
+  bool ParseInteger(int&);
+  bool ParseUnsignedNumber(float&);
+  bool ParseNumber(float&);
+  bool ParseChar(Char&);
+  bool ParseRGB(RGBValue&);
 
   unsigned GetMark(void) const { return offset; }
   void SetMark(unsigned);
 
-  const String& GetString(void) const { return s; }
+  String GetString(void) const { return fromUCS4String(s); }
 
 private:
-  const char* ParseToken(void);
+  String ParseToken(void);
 
-  const String& s;
+  UCS4String s;
   unsigned offset;
 };
 

@@ -23,10 +23,10 @@
 #ifndef MathMLNode_hh
 #define MathMLNode_hh
 
-#include "Ptr.hh"
-#include "MathMLObject.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
 
-class MathMLNode: public MathMLObject
+class MathMLNode : public Object
 {
 protected:
   MathMLNode(void);
@@ -39,8 +39,6 @@ public:
   // that you can do ->ref() on the parent, which you don't unless you
   // include MathMLElement => circular include
   SmartPtr<class MathMLElement> GetParent(void) const;
-
-  virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
 
 private:
   SmartPtr<MathMLElement> parent;

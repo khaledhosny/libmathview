@@ -25,12 +25,11 @@
 
 #include <vector>
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "defs.h"
 #include "scaled.hh"
 #include "String.hh"
 #include "RGBValue.hh"
@@ -43,10 +42,10 @@ public:
 
   bool Load(const char*);
 
-  const std::vector<String*>& GetDictionaries(void) const { return dictionaries; }
-  const std::vector<String*>& GetFonts(void) const { return fonts; }
-  const std::vector<String*>& GetEntities(void) const { return entities; }
-  const std::vector<String*>& GetT1ConfigFiles(void) const { return t1Configs; }
+  const std::vector<String>& GetDictionaries(void) const { return dictionaries; }
+  const std::vector<String>& GetFonts(void) const { return fonts; }
+  const std::vector<String>& GetEntities(void) const { return entities; }
+  const std::vector<String>& GetT1ConfigFiles(void) const { return t1Configs; }
 
   bool     HasFontSize(void) const { return fontSizeSet; }
   unsigned GetFontSize(void) const { return HasFontSize() ? fontSize : DEFAULT_FONT_SIZE; }
@@ -65,19 +64,16 @@ public:
   RGBValue GetSelectBackground(void) const { return HasSelectColor() ? selectBackground : DEFAULT_SELECT_BACKGROUND; }
 
 private:
-#if defined(HAVE_MINIDOM)
-  void ParseConfiguration(mDOMNodeRef);
-  bool ParseColor(mDOMNodeRef, RGBValue&, RGBValue&);
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
   void ParseConfiguration(const DOM::Element&);
   bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&);
   bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&, bool&);
 #endif // HAVE_GMETADOM
 
-  std::vector<String*> dictionaries;
-  std::vector<String*> fonts;
-  std::vector<String*> entities;
-  std::vector<String*> t1Configs;
+  std::vector<std::string> dictionaries;
+  std::vector<std::string> fonts;
+  std::vector<std::string> entities;
+  std::vector<std::string> t1Configs;
 
   bool     fontSizeSet;
   unsigned fontSize;

@@ -43,8 +43,7 @@ private:
   struct AttributeLevel;
 
 public:
-  RenderingEnvironment(class CharMapper&,
-		       const SmartPtr<class AreaFactory>&,
+  RenderingEnvironment(const SmartPtr<class AreaFactory>&,
 		       class ShaperManager&);
   virtual ~RenderingEnvironment();
 
@@ -70,7 +69,7 @@ public:
 
   // font specific attributes
   void     SetFontFamily(const char*);
-  void     SetFontFamily(const String*);
+  void     SetFontFamily(const String&);
   void     SetFontSize(const UnitValue&);
   void     SetFontWeight(FontWeightId);
   void     SetFontStyle(FontStyleId);
@@ -94,8 +93,6 @@ public:
   scaled   ToScaledPoints(const UnitValue&) const;
   scaled   GetAxis(void) const;
   scaled   GetRuleThickness(void) const;
-
-  class CharMapper& charMapper;
 
   SmartPtr<class AreaFactory> areaFactory;
   class ShaperManager& shaperManager;

@@ -25,7 +25,7 @@
 
 #include "MathMLElement.hh"
 
-class HorizontalLayout : public MathMLObject
+class HorizontalLayout : public Object
 {
 protected:
   HorizontalLayout(void) { }

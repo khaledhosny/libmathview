@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "CharMapper.hh"
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 #include "FormattingContext.hh"

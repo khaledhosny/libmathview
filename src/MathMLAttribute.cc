@@ -27,11 +27,9 @@
 #include "MathMLAttribute.hh"
 #include "AttributeSignature.hh"
 
-MathMLAttribute::MathMLAttribute(AttributeId i, const String* v)
+MathMLAttribute::MathMLAttribute(AttributeId i, const String& v)
+  : id(i), value(v)
 {
-  id = i;
-  value = v;
-  parsedValue = NULL;
 }
 
 MathMLAttribute::~MathMLAttribute()
@@ -44,12 +42,11 @@ MathMLAttribute::GetParsedValue(const AttributeSignature* aSignature) const
   if (!parsedValue)
     {
       assert(aSignature);
-      assert(value);
 
       AttributeParser parser = aSignature->GetParser();
       assert(parser);
 
-      StringTokenizer st(*value);
+      StringTokenizer st(value);
       parsedValue = parser(st);
     }
 
@@ -59,13 +56,5 @@ MathMLAttribute::GetParsedValue(const AttributeSignature* aSignature) const
 bool
 MathMLAttribute::Equal(const MathMLAttribute& attribute) const
 {
-  if (IsA() != attribute.IsA()) return false;
-
-  const String* aValue = value;
-  const String* bValue = attribute.GetValue();
-
-  if (!aValue && bValue) return false;
-  else if (aValue && !bValue) return false;
-  else if (aValue && bValue) return aValue->Equal(*bValue);
-  else return true;
+  return (id == attribute.id && value == attribute.value);
 }

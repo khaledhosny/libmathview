@@ -282,7 +282,7 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   math_view->old_top_y = math_view->top_y;
   math_view->top_y = static_cast<int>(adj->value);
   math_view->drawing_area->SetTopY(px2sp(static_cast<int>(adj->value)));
-  
+
   if (math_view->old_top_y != math_view->top_y) {
 #if 0
     gint change = abs(math_view->old_top_y - math_view->top_y);

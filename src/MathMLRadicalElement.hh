@@ -83,7 +83,7 @@ private:
   scaled spacing;
   scaled lineThickness;
 
-  SmartPtr<class MathMLCharNode> radical;
+  //SmartPtr<class MathMLCharNode> radical;
   SmartPtr<class MathMLElement> radicand;
   SmartPtr<class MathMLElement> index;
 

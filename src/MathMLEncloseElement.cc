@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "StringUnicode.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
@@ -33,7 +32,6 @@
 MathMLEncloseElement::MathMLEncloseElement()
 {
   normalized = false;
-  notation = 0;
 }
 
 #if defined(HAVE_GMETADOM)
@@ -41,25 +39,19 @@ MathMLEncloseElement::MathMLEncloseElement(const DOM::Element& node)
   : MathMLNormalizingContainerElement(node)
 {
   normalized = false;
-  notation = 0;
 }
 #endif
 
 MathMLEncloseElement::~MathMLEncloseElement()
 {
-  if (notation)
-    {
-      delete notation;
-      notation = 0;
-    }
 }
 
 const AttributeSignature*
 MathMLEncloseElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_NOTATION, stringParser, new StringC("longdiv"), NULL },
-    { ATTR_NOTVALID, NULL,         NULL,                   NULL }
+    { ATTR_NOTATION, stringParser, "longdiv", NULL },
+    { ATTR_NOTVALID, NULL,         NULL,      NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -108,9 +100,7 @@ MathMLEncloseElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      if (notation) delete notation;
       notation = ToString(GetAttributeValue(ATTR_NOTATION, env));
-      assert(notation);
 
       spacing = env.ToScaledPoints(env.GetMathSpace(MATH_SPACE_MEDIUM));
       lineThickness = env.GetRuleThickness();
@@ -118,7 +108,7 @@ MathMLEncloseElement::Setup(RenderingEnvironment& env)
       
       if (!normalized)
 	{
-	  if (notation->Equal("radical")) NormalizeRadicalElement(env.GetDocument());
+	  if (notation == "radical") NormalizeRadicalElement(env.GetDocument());
 	  normalized = true;
 	}
 
@@ -138,7 +128,7 @@ MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
       MathMLNormalizingContainerElement::DoLayout(ctxt);
       box = child->GetBoundingBox();
 
-      if (notation->Equal("actuarial") || notation->Equal("longdiv"))
+      if (notation == "actuarial" || notation == "longdiv")
 	{
 	  box = child->GetBoundingBox();
 	  box.height += spacing + lineThickness;
@@ -157,7 +147,7 @@ MathMLEncloseElement::SetPosition(const scaled& x, const scaled& y)
   position.x = x;
   position.y = y;
 
-  if (notation->Equal("longdiv"))
+  if (notation == "longdiv")
     child->SetPosition(x + spacing + lineThickness, y);
   else
     child->SetPosition(x, y);
@@ -176,21 +166,21 @@ MathMLEncloseElement::Render(const DrawingArea& area)
 	fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND);
       }
 
-      if (notation->Equal("longdiv")) {
+      if (notation == "longdiv") {
         area.MoveTo(GetX() + lineThickness / 2, GetY() + box.depth);
         area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.height + lineThickness / 2);
         area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height + lineThickness / 2);
-      } else if (notation->Equal("actuarial")) {
+      } else if (notation == "actuarial") {
         area.MoveTo(GetX(), GetY() - box.height + lineThickness / 2);
         area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.height + lineThickness / 2);
         area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.depth);
-      } else if (notation->Equal("overstrike")) {
+      } else if (notation == "overstrike") {
         area.MoveTo(GetX(), GetY() - box.height / 2);
         area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height / 2);
-      } else if (notation->Equal("NESWslash")) {
+      } else if (notation == "NESWslash") {
         area.MoveTo(GetX(), GetY() + box.depth);
         area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height);
-      } else if (notation->Equal("NWSEslash")) {
+      } else if (notation == "NWSEslash") {
         area.MoveTo(GetX(), GetY() - box.height);
         area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() + box.depth);
       }

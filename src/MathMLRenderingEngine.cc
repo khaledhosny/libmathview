@@ -25,8 +25,6 @@
 
 #include "Clock.hh"
 #include "Globals.hh"
-#include "CharMapper.hh"
-#include "StringUnicode.hh"
 #include "MathMLDocument.hh"
 #include "MathMLParseFile.hh"
 #include "MathMLActionElement.hh"
@@ -47,7 +45,6 @@ MathMLRenderingEngine::MathMLRenderingEngine()
 {
   area = 0;
   fontManager = 0;
-  charMapper = 0;
   shaperManager = 0;
   areaFactory = 0;
 
@@ -58,9 +55,6 @@ MathMLRenderingEngine::~MathMLRenderingEngine()
 {
   Unload();
   assert(!document);
-
-  delete charMapper;
-  charMapper = 0;
 
   // WARNING: do we have to delete the font manager?
   fontManager = 0;
@@ -87,28 +81,10 @@ MathMLRenderingEngine::Init(class DrawingArea* a, class FontManager* fm,
   area = a;
   fontManager = fm;
 
-  if (charMapper) delete charMapper;
-  charMapper = new CharMapper(*fm);
-
   if (areaFactory) delete areaFactory;
   areaFactory = af;
   if (shaperManager) delete shaperManager;
   shaperManager = sm;
-
-  if (!Globals::configuration.GetFonts().empty())
-    for (std::vector<String*>::const_iterator cit = Globals::configuration.GetFonts().begin();
-	 cit != Globals::configuration.GetFonts().end();
-	 cit++)
-      {
-	assert(*cit);
-	if (!charMapper->Load((*cit)->ToStaticC()))
-	  Globals::logger(LOG_WARNING, "could not load `%s'", (*cit)->ToStaticC());
-      }
-  else
-    {
-      bool res = charMapper->Load("config/font-configuration.xml");
-      if (!res) charMapper->Load(PKGDATADIR"/font-configuration.xml");
-    }
 }
 
 bool
@@ -197,8 +173,7 @@ MathMLRenderingEngine::Layout() const
       if (document->DirtyAttribute() || document->DirtyAttributeP())
 	{
 	  UnitValue size(defaultFontSize, UNIT_PT);
-	  assert(charMapper != NULL);
-	  RenderingEnvironment env(*charMapper, areaFactory, *shaperManager);
+	  RenderingEnvironment env(areaFactory, *shaperManager);
 	  env.SetFontSize(size);
 	  Clock perf;
 	  perf.Start();

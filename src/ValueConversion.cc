@@ -24,6 +24,7 @@
 
 #include <cassert>
 
+#include "defs.h"
 #include "String.hh"
 #include "ValueConversion.hh"
 
@@ -93,11 +94,11 @@ ToInteger(const SmartPtr<Value>& value)
   return 0;
 }
 
-String*
+String
 ToString(const SmartPtr<Value>& value)
 {
-  if (SmartPtr< Variant<String*> > v = smart_cast< Variant<String*> >(value))
-    return v->getValue() ? v->getValue()->Clone() : 0;
+  if (SmartPtr< Variant<String> > v = smart_cast< Variant<String> >(value))
+    return v->getValue();
   assert(false);
   return 0;
 }

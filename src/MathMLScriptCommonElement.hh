@@ -23,7 +23,7 @@
 #ifndef MathMLScriptCommonElement_hh
 #define MathMLScriptCommonElement_hh
 
-#include "Ptr.hh"
+#include "SmartPtr.hh"
 
 class MathMLScriptCommonElement
 {

@@ -41,8 +41,6 @@ Gtk_DrawingArea::Gtk_DrawingArea(const GraphicsContextValues& v, const scaled& x
   width = px2sp(gtk_widget->allocation.width);
   height = px2sp(gtk_widget->allocation.height);
 
-  x0 = y0 = 0;
-
   gdk_pixmap = NULL;
 }
 

@@ -24,9 +24,9 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "StringUnicode.hh"
-#include "MathMLCharNode.hh"
 #include "MathMLStringLitElement.hh"
+#include "MathMLStringNode.hh"
+#include "ValueConversion.hh"
 
 MathMLStringLitElement::MathMLStringLitElement()
 {
@@ -49,9 +49,9 @@ const AttributeSignature*
 MathMLStringLitElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_LQUOTE,   NULL, new StringC("\""), NULL },
-    { ATTR_RQUOTE,   NULL, new StringC("\""), NULL },
-    { ATTR_NOTVALID, NULL, NULL,              NULL }
+    { ATTR_LQUOTE,   stringParser, "\"", NULL },
+    { ATTR_RQUOTE,   stringParser, "\"", NULL },
+    { ATTR_NOTVALID, NULL, NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -65,8 +65,6 @@ MathMLStringLitElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute())
     {
-      const String* s = NULL;
-
       if (setupDone)
 	{
 	  assert(GetSize() >= 2);
@@ -74,17 +72,17 @@ MathMLStringLitElement::Setup(RenderingEnvironment& env)
 	  RemoveChild(0);
 	}
 
-      s = GetAttribute(ATTR_LQUOTE, env);
-      assert(s != NULL);
-      if (s->GetLength() >= 1) lQuote = MathMLCharNode::create(s->GetChar(0));
-      assert(lQuote);
-      InsertChild(0, lQuote);
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_LQUOTE, env))
+	{
+	  String s = ToString(value);
+	  if (!s.empty()) InsertChild(0, MathMLStringNode::create(toDOMString(s)));
+	}
 
-      s = GetAttribute(ATTR_RQUOTE, env);
-      assert(s != NULL);
-      if (s->GetLength() >= 1) rQuote = MathMLCharNode::create(s->GetChar(0));
-      assert(rQuote);
-      InsertChild(GetSize(), rQuote);
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_RQUOTE, env))
+	{
+	  String s = ToString(value);
+	  if (!s.empty()) InsertChild(GetSize(), MathMLStringNode::create(toDOMString(s)));
+	}
 
       MathMLTokenElement::Setup(env);
 

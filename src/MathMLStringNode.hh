@@ -30,11 +30,11 @@
 class MathMLStringNode: public MathMLTextNode
 {
 protected:
-  MathMLStringNode(const DOM::GdomeString&);
+  MathMLStringNode(const String&);
   virtual ~MathMLStringNode();
 
 public:
-  static SmartPtr<MathMLStringNode> create(const DOM::GdomeString& s)
+  static SmartPtr<MathMLStringNode> create(const String& s)
   { return new MathMLStringNode(s); }
 
   virtual void     Setup(class RenderingEnvironment&);
@@ -47,12 +47,12 @@ public:
   virtual scaled   GetDecimalPointEdge(void) const;
 
   virtual unsigned GetLogicalContentLength(void) const;
-  virtual String*  GetRawContent(void) const;
+  virtual String   GetRawContent(void) const;
 
   static unsigned visited;
 
 private:
-  DOM::GdomeString content;
+  String content;
   AreaRef area;
 };
 

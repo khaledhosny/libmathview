@@ -25,7 +25,6 @@
 #include <cassert>
 #include <stdio.h>
 
-#include "stringAux.hh"
 #include "Globals.hh"
 #include "traverseAux.hh"
 #include "DrawingArea.hh"
@@ -110,11 +109,11 @@ MathMLElement::GetAttributeSignature(AttributeId id) const
   return GetAttributeSignatureAux(id, sig);
 }
 
-const String*
+String
 MathMLElement::GetDefaultAttribute(AttributeId id) const
 {
   const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature != NULL);
+  assert(aSignature);
   return aSignature->GetDefaultValue();
 }
 
@@ -122,104 +121,71 @@ SmartPtr<Value>
 MathMLElement::GetDefaultAttributeValue(AttributeId id) const
 {
   const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature != NULL);
+  assert(aSignature);
   return aSignature->GetDefaultParsedValue();
 }
 
-const String*
+String
 MathMLElement::GetAttribute(AttributeId id, bool searchDefault) const
 {
-  const String* sValue = 0;
-
   // if this element is not connected with a DOM element
   // then it cannot have attributes. This may happen for
   // elements inferred with normalization
-#if defined(HAVE_MINIDOM)
-  if (node != 0)
-    {
-      mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
-      if (value != 0)
-	{
-	  sValue = allocString(value);
-	  mdom_string_free(value);
-	}
-    }
-#elif defined(HAVE_GMETADOM)
-  if (node)
-    {
-      DOM::GdomeString value = node.getAttribute(NameOfAttributeId(id));
-      if (!value.empty()) sValue = allocString(value);
-    }
+#if defined(HAVE_GMETADOM)
+  if (node && node.hasAttribute(NameOfAttributeId(id)))
+    return fromDOMString(node.getAttribute(NameOfAttributeId(id)));
 #endif // HAVE_GMETADOM
 
-  if (sValue == 0 && searchDefault) sValue = GetDefaultAttribute(id);
-
-  return sValue;
+  if (searchDefault) return GetDefaultAttribute(id);
+  assert(false);
+  return "";
 }
 
-const String*
+String
 MathMLElement::GetAttribute(AttributeId id,
 			    const RenderingEnvironment& env,
 			    bool searchDefault) const
 {
-  const String* sValue = GetAttribute(id, false);
+  // if this element is not connected with a DOM element
+  // then it cannot have attributes. This may happen for
+  // elements inferred with normalization
+#if defined(HAVE_GMETADOM)
+  if (node && node.hasAttribute(NameOfAttributeId(id)))
+    return fromDOMString(node.getAttribute(NameOfAttributeId(id)));
+#endif // HAVE_GMETADOM
 
-  if (sValue == 0)
-    {
-      const MathMLAttribute* attr = env.GetAttribute(id);
-      if (attr != 0) sValue = attr->GetValue();
-    }
+  if (const MathMLAttribute* attr = env.GetAttribute(id))
+    return attr->GetValue();
 
-  if (sValue == 0 && searchDefault) sValue = GetDefaultAttribute(id);
-
-  return sValue;
+  if (searchDefault) return GetDefaultAttribute(id);
+  assert(false);
+  return "";
 }
 
 SmartPtr<Value>
 MathMLElement::GetAttributeValue(AttributeId id, bool searchDefault) const
 {
-  SmartPtr<Value> value = NULL;
+  SmartPtr<Value> value;
 
   const AttributeSignature* aSignature = GetAttributeSignature(id);
-  assert(aSignature != NULL);
+  assert(aSignature);
 
-  const String* sValue = NULL;
+#if defined(HAVE_GMETADOM)
+  if (node && node.hasAttribute(NameOfAttributeId(id)))
+    {
+      AttributeParser parser = aSignature->GetParser();
+      assert(parser);
 
-#if defined(HAVE_MINIDOM)
-  if (node != 0)
-    {
-      mDOMStringRef value = mdom_node_get_attribute(node,
-						    DOM_CONST_STRING(NameOfAttributeId(id)));
-      if (value != 0) {
-	sValue = allocString(value);
-	mdom_string_free(value);
-      }
-    }
-#elif defined(HAVE_GMETADOM)
-  if (node)
-    {
-      DOM::GdomeString value = node.getAttribute(NameOfAttributeId(id));
-      if (!value.empty()) sValue = allocString(value);
+      StringTokenizer st(fromDOMString(node.getAttribute(NameOfAttributeId(id))));
+      value = parser(st);
+
+      if (!value)
+	Globals::logger(LOG_WARNING, "in element `%s' parsing error in attribute `%s'",
+			NameOfTagId(IsA()), NameOfAttributeId(id));
     }
 #endif // HAVE_GMETADOM
 
-  if (sValue != 0)
-    {
-      AttributeParser parser = aSignature->GetParser();
-      assert(parser != 0);
-
-      StringTokenizer st(*sValue);
-      value = parser(st);
-
-      if (value == 0)
-	Globals::logger(LOG_WARNING, "in element `%s' parsing error in attribute `%s'",
-			NameOfTagId(IsA()), NameOfAttributeId(id));
-
-      delete sValue;
-      sValue = 0;
-    } 
-
-  if (value == 0 && searchDefault) value = GetDefaultAttributeValue(id);
+  if (!value && searchDefault) value = GetDefaultAttributeValue(id);
 
   return value;
 }
@@ -229,19 +195,20 @@ MathMLElement::GetAttributeValue(AttributeId id,
 				 const RenderingEnvironment& env,
 				 bool searchDefault) const
 {
-  SmartPtr<Value> value = GetAttributeValue(id, false);
+  if (SmartPtr<Value> value = GetAttributeValue(id, false))
+    return value;
 
-  if (!value)
-    {
-      const AttributeSignature* aSignature = GetAttributeSignature(id);
-      assert(aSignature != 0);
-      const MathMLAttribute* attr = env.GetAttribute(id);    
-      if (attr != 0) value = attr->GetParsedValue(aSignature);
-    }
+  const AttributeSignature* aSignature = GetAttributeSignature(id);
+  assert(aSignature);
+  const MathMLAttribute* attr = env.GetAttribute(id);
+  if (attr)
+    if (SmartPtr<Value> value = attr->GetParsedValue(aSignature))
+      return value;
 
-  if (!value && searchDefault) value = GetDefaultAttributeValue(id);
+  if (searchDefault)
+    return GetDefaultAttributeValue(id);
 
-  return value;
+  return 0;
 }
 
 SmartPtr<Value>

@@ -55,7 +55,7 @@ public:
   void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&) const;
   void DrawRectangle(const GraphicsContext*, const Rectangle&) const;
   void DrawBoundingBox(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&, bool = true) const;
-  void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const String*) const;
+  void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const String&) const;
   void Clear(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&) const;
   void Clear(const GraphicsContext*, const Rectangle&) const;
 
@@ -69,7 +69,7 @@ public:
 
   void   SetTop(const scaled& x, const scaled& y) { x0 = x; y0 = y; }
   void   SetTopX(const scaled& x) { x0 = x; }
-  void   SetTopY(const scaled&) { y0 = y; }
+  void   SetTopY(const scaled& y) { y0 = y; }
   void   SetSize(const scaled&, const scaled&);
   scaled GetTopX(void) const { return x0; }
   scaled GetTopY(void) const { return y0; }

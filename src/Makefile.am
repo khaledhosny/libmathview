@@ -55,8 +55,6 @@ PSHEADERS = \
 
 GUISOURCES = \
   AFont.cc \
-  CharMap.cc \
-  CharMapper.cc \
   DrawingArea.cc \
   FontAttributes.cc \
   FontManager.cc \
@@ -66,7 +64,6 @@ GUISOURCES = \
 libgtkmathview_la_SOURCES = \
   AttributeParser.cc \
   AttributeSignature.cc \
-  Char.cc \
   Clock.cc \
   Configuration.cc \
   EntitiesTable.cc \
@@ -79,11 +76,8 @@ libgtkmathview_la_SOURCES = \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
-  MathMLApplyFunctionNode.cc \
   MathMLAttribute.cc \
   MathMLAttributeList.cc \
-  MathMLCharNode.cc \
-  MathMLCombinedCharNode.cc \
   MathMLContainerElement.cc \
   MathMLBinContainerElement.cc \
   MathMLLinearContainerElement.cc \
@@ -97,16 +91,13 @@ libgtkmathview_la_SOURCES = \
   MathMLFractionElement.cc \
   MathMLFrame.cc \
   MathMLGlyphNode.cc \
-  MathMLHorizBarNode.cc \
   MathMLIdentifierElement.cc \
-  MathMLInvisibleTimesNode.cc \
   MathMLLabeledTableRowElement.cc \
   MathMLMarkNode.cc \
   MathMLMultiScriptsElement.cc \
   MathMLNode.cc \
   MathMLNormalizingContainerElement.cc \
   MathMLNumberElement.cc \
-  MathMLObject.cc \
   MathMLOperatorElement.cc \
   MathMLPaddedElement.cc \
   MathMLParseFile.cc \
@@ -133,18 +124,13 @@ libgtkmathview_la_SOURCES = \
   OperatorDictionary.cc \
   Rectangle.cc \
   RenderingEnvironment.cc \
-  String.cc \
-  StringFactory.cc \
   StringTokenizer.cc \
-  StringUnicode.cc \
   UnitValue.cc \
   ValueConversion.cc \
-  allocTextNode.cc \
   frameAux.cc \
   gmetadom.cc \
   keyword.cc \
   operatorAux.cc \
-  stringAux.cc \
   tableLayout.cc \
   tableSetup.cc \
   traverseAux.cc \
@@ -159,14 +145,10 @@ pkginclude_HEADERS = \
   gtkmathview.h
 
 noinst_HEADERS = \
-  Ptr.hh \
   AFont.hh \
   Adaptors.hh \
   AttributeParser.hh \
   AttributeSignature.hh \
-  Char.hh \
-  CharMap.hh \
-  CharMapper.hh \
   Clock.hh \
   Configuration.hh \
   Coords.hh \
@@ -186,11 +168,8 @@ noinst_HEADERS = \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \
-  MathMLApplyFunctionNode.hh \
   MathMLAttribute.hh \
   MathMLAttributeList.hh \
-  MathMLCharNode.hh \
-  MathMLCombinedCharNode.hh \
   MathMLContainerElement.hh \
   MathMLBinContainerElement.hh \
   MathMLLinearContainerElement.hh \
@@ -204,16 +183,13 @@ noinst_HEADERS = \
   MathMLFractionElement.hh \
   MathMLFrame.hh \
   MathMLGlyphNode.hh \
-  MathMLHorizBarNode.hh \
   MathMLIdentifierElement.hh \
-  MathMLInvisibleTimesNode.hh \
   MathMLLabeledTableRowElement.hh \
   MathMLMarkNode.hh \
   MathMLMultiScriptsElement.hh \
   MathMLNode.hh \
   MathMLNormalizingContainerElement.hh \
   MathMLNumberElement.hh \
-  MathMLObject.hh \
   MathMLOperatorElement.hh \
   MathMLPaddedElement.hh \
   MathMLParseFile.hh \
@@ -237,25 +213,17 @@ noinst_HEADERS = \
   MathMLTokenElement.hh \
   MathMLUnderOverElement.hh \
   MathMLmathElement.hh \
-  MultiString.hh \
   OperatorDictionary.hh \
   RGBValue.hh \
   Rectangle.hh \
   RenderingEnvironment.hh \
-  String.hh \
-  StringFactory.hh \
   StringTokenizer.hh \
-  StringU.hh \
-  StringU.icc \
-  StringUnicode.hh \
   UnitValue.hh \
   ValueConversion.hh \
-  allocTextNode.hh \
   frameAux.hh \
   gmetadom.hh \
   keyword.hh \
   operatorAux.hh \
-  stringAux.hh \
   traverseAux.hh \
   mathVariantAux.hh \
   scaledConv.hh \

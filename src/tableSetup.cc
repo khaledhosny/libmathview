@@ -27,6 +27,7 @@
 
 #include <vector>
 
+#include "defs.h"
 #include "ValueConversion.hh"
 #include "MathMLTableElement.hh"
 #include "RenderingEnvironment.hh"

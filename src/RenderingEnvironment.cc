@@ -27,7 +27,6 @@
 #include <string.h> // for strncpy(...)
 #include <stdlib.h> // for exit()
 
-#include "CharMapper.hh"
 #include "Globals.hh"
 #include "scaledConv.hh"
 #include "StringTokenizer.hh"
@@ -37,8 +36,8 @@
 #include "AreaFactory.hh"
 #include "ShaperManager.hh"
 
-RenderingEnvironment::RenderingEnvironment(CharMapper& cm, const SmartPtr<AreaFactory>& af, ShaperManager& sm)
-  : charMapper(cm), areaFactory(af), shaperManager(sm)
+RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af, ShaperManager& sm)
+  : areaFactory(af), shaperManager(sm)
 {
   AttributeLevel* top = new AttributeLevel;
   top->displayStyle = true;
@@ -226,10 +225,9 @@ RenderingEnvironment::SetFontFamily(const char* family)
 }
 
 void
-RenderingEnvironment::SetFontFamily(const String* family)
+RenderingEnvironment::SetFontFamily(const String& family)
 {
-  assert(family != NULL);
-  SetFontFamily(family->ToStaticC());
+  SetFontFamily(family.c_str());
 }
 
 void

@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "StringUnicode.hh"
 #include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "FormattingContext.hh"
@@ -50,8 +49,8 @@ const AttributeSignature*
 MathMLAlignMarkElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_EDGE,     alignMarkEdgeParser, new StringC("left"), NULL },
-    { ATTR_NOTVALID, NULL,                NULL,                NULL }
+    { ATTR_EDGE,     alignMarkEdgeParser, "left", NULL },
+    { ATTR_NOTVALID, NULL,                NULL,   NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

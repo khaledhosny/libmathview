@@ -26,7 +26,6 @@
 
 #include "ChildList.hh"
 #include "Globals.hh"
-#include "StringUnicode.hh"
 #include "ValueConversion.hh"
 #include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"

@@ -23,9 +23,7 @@
 #include <config.h>
 #include <assert.h>
 
-#include "stringAux.hh"
 #include "Globals.hh"
-#include "StringUnicode.hh"
 #include "mathVariantAux.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttribute.hh"
@@ -53,30 +51,30 @@ const AttributeSignature*
 MathMLStyleElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_SCRIPTLEVEL,            scriptLevelParser, NULL,                  NULL },
-    { ATTR_DISPLAYSTYLE,           booleanParser,     NULL,                  NULL },
-    { ATTR_SCRIPTSIZEMULTIPLIER,   numberParser,      NULL,                  NULL },
-    { ATTR_SCRIPTMINSIZE,          numberUnitParser,  NULL,                  NULL },
-    { ATTR_COLOR,                  colorParser,       NULL,                  NULL },
-    { ATTR_BACKGROUND,             backgroundParser,  NULL,                  NULL },
-    { ATTR_VERYVERYTHINMATHSPACE,  numberUnitParser,  NULL,                  NULL },
-    { ATTR_VERYTHINMATHSPACE,      numberUnitParser,  NULL,                  NULL },
-    { ATTR_THINMATHSPACE,          numberUnitParser,  NULL,                  NULL },
-    { ATTR_MEDIUMMATHSPACE,        numberUnitParser,  NULL,                  NULL },
-    { ATTR_THICKMATHSPACE,         numberUnitParser,  NULL,                  NULL },
-    { ATTR_VERYTHICKMATHSPACE,     numberUnitParser,  NULL,                  NULL },
-    { ATTR_VERYVERYTHICKMATHSPACE, numberUnitParser,  NULL,                  NULL },
+    { ATTR_SCRIPTLEVEL,            scriptLevelParser, NULL, NULL },
+    { ATTR_DISPLAYSTYLE,           booleanParser,     NULL, NULL },
+    { ATTR_SCRIPTSIZEMULTIPLIER,   numberParser,      NULL, NULL },
+    { ATTR_SCRIPTMINSIZE,          numberUnitParser,  NULL, NULL },
+    { ATTR_COLOR,                  colorParser,       NULL, NULL },
+    { ATTR_BACKGROUND,             backgroundParser,  NULL, NULL },
+    { ATTR_VERYVERYTHINMATHSPACE,  numberUnitParser,  NULL, NULL },
+    { ATTR_VERYTHINMATHSPACE,      numberUnitParser,  NULL, NULL },
+    { ATTR_THINMATHSPACE,          numberUnitParser,  NULL, NULL },
+    { ATTR_MEDIUMMATHSPACE,        numberUnitParser,  NULL, NULL },
+    { ATTR_THICKMATHSPACE,         numberUnitParser,  NULL, NULL },
+    { ATTR_VERYTHICKMATHSPACE,     numberUnitParser,  NULL, NULL },
+    { ATTR_VERYVERYTHICKMATHSPACE, numberUnitParser,  NULL, NULL },
     // inherited attributes (see below)
-    { ATTR_FONTSIZE,               numberUnitParser,  NULL,                  NULL },
-    { ATTR_FONTWEIGHT,             fontWeightParser,  NULL,                  NULL },
-    { ATTR_FONTSTYLE,              fontStyleParser,   new StringC("normal"), NULL },
-    { ATTR_FONTFAMILY,             stringParser,      NULL,                  NULL },
-    { ATTR_MATHVARIANT,            mathVariantParser, NULL,                  NULL },
-    { ATTR_MATHSIZE,               mathSizeParser,    NULL,                  NULL },
-    { ATTR_MATHCOLOR,              colorParser,       NULL,                  NULL },
-    { ATTR_MATHBACKGROUND,         colorParser,       NULL,                  NULL },
+    { ATTR_FONTSIZE,               numberUnitParser,  NULL, NULL },
+    { ATTR_FONTWEIGHT,             fontWeightParser,  NULL, NULL },
+    { ATTR_FONTSTYLE,              fontStyleParser,   "normal", NULL },
+    { ATTR_FONTFAMILY,             stringParser,      NULL, NULL },
+    { ATTR_MATHVARIANT,            mathVariantParser, NULL, NULL },
+    { ATTR_MATHSIZE,               mathSizeParser,    NULL, NULL },
+    { ATTR_MATHCOLOR,              colorParser,       NULL, NULL },
+    { ATTR_MATHBACKGROUND,         colorParser,       NULL, NULL },
     //
-    { ATTR_NOTVALID,               NULL,              NULL,                  NULL }
+    { ATTR_NOTVALID,               NULL,              NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -111,19 +109,7 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
     {
       MathMLAttributeList attributes;
 
-#if defined(HAVE_MINIDOM)
-      for (mDOMAttrRef attribute = mdom_node_get_first_attribute(GetDOMElement());
-	   attribute != NULL;
-	   attribute = mdom_attr_get_next_sibling(attribute)) {
-	AttributeId id = AttributeIdOfName(C_CONST_STRING(mdom_attr_get_name(attribute)));
-	if (id != ATTR_NOTVALID) {
-	  mDOMStringRef value = mdom_attr_get_value(attribute);
-	  String* sValue = allocString(value);
-	  attributes.Append(new MathMLAttribute(id, sValue));
-	  mdom_string_free(value);
-	}
-      }
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
       DOM::NamedNodeMap nnm = GetDOMElement().get_attributes();
 
       for (unsigned i = 0; i < nnm.get_length(); i++) {
@@ -132,11 +118,8 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	std::string s_name = nodeLocalName(attribute);
 	AttributeId id = AttributeIdOfName(s_name.c_str());
 
-	if (id != ATTR_NOTVALID) {
-	  DOM::GdomeString value = attribute.get_nodeValue();
-	  String* sValue = allocString(value);
-	  attributes.Append(new MathMLAttribute(id, sValue));
-	}
+	if (id != ATTR_NOTVALID)
+	  attributes.Append(new MathMLAttribute(id, fromDOMString(attribute.get_nodeValue())));
       }
 #endif // HAVE_GMETADOM
 

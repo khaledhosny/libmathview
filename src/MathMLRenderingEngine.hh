@@ -27,7 +27,6 @@
 #include "gmetadom.hh"
 #endif
 
-#include "Ptr.hh"
 #include "scaled.hh"
 #include "RGBValue.hh"
 #include "MathMLElement.hh"
@@ -79,7 +78,6 @@ private:
 
   class DrawingArea*   area;
   class FontManager*   fontManager;
-  class CharMapper*    charMapper;
 
   class AreaFactory* areaFactory;
   class ShaperManager* shaperManager;
