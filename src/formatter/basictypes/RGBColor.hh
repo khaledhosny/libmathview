@@ -32,6 +32,11 @@ struct RGBColor
 
   std::string toString(void) const;
 
+  bool operator==(const RGBColor& c)
+  { return red == c.red && green == c.green && blue == c.blue && transparent == c.transparent; }
+  bool operator!=(const RGBColor& c)
+  { return !(*this == c); }
+
   unsigned red : 8;
   unsigned green : 8;
   unsigned blue : 8;
