@@ -191,7 +191,7 @@ protected:
   scaled initHeightsT(void);
   void alignTable(const scaled&, const scaled&, TokenId);
   void alignTable(const scaled&, const scaled&, TokenId, unsigned);
-  void initTempHeights(void);
+  void initTempHeights(const scaled&);
   void initTempWidths(void);
   void initWidthsF(void);
   void initWidthsT(void);

@@ -272,6 +272,7 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
 
   const bool equalRows = ToBoolean(equalRowsV);
   const bool equalColumns = ToBoolean(equalColumnsV);
+  const scaled& axis = ctxt.MGD()->axis(ctxt);
 
   std::cerr << "COMPUTING TABLE WIDTH" << std::endl;
   initTempWidths();
@@ -279,11 +280,10 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
   else initWidthsF();
 
   std::cerr << "COMPUTING TABLE HEIGHT" << std::endl;
-  initTempHeights();
+  initTempHeights(axis);
   const scaled tableHeightDepth = equalRows ? initHeightsT() : initHeightsF();
 
   std::cerr << "TABLE ALIGNMENT" << std::endl;
-  const scaled& axis = ctxt.MGD()->axis(ctxt);
   TokenId align = ToTokenId(GetComponent(alignV, 0));
   if (IsEmpty(GetComponent(alignV, 1)))
     alignTable(tableHeightDepth, axis, align);
@@ -474,7 +474,7 @@ MathMLTableFormatter::initWidthsF()
 }
 
 void
-MathMLTableFormatter::initTempHeights()
+MathMLTableFormatter::initTempHeights(const scaled& axis)
 {
   for (unsigned i = 0; i < rows.size(); i++)
     {
@@ -494,12 +494,26 @@ MathMLTableFormatter::initTempHeights()
 	  scaled maxD = 0;
 	  for (unsigned j = 0; j < columns.size(); j++)
 	    if (const Cell& cell = getCell(i, j))
-	      if (cell.getRowSpan() == 1 && cell.getRowAlign() == T_BASELINE)
-		{
-		  const BoundingBox box = cell.getBoundingBox();
-		  maxH = std::max(maxH, box.height);
-		  maxD = std::max(maxD, box.depth);
-		}
+	      if (cell.getRowSpan() == 1)
+		switch (cell.getRowAlign())
+		  {
+		  case T_BASELINE:
+		    {
+		      const BoundingBox box = cell.getBoundingBox();
+		      maxH = std::max(maxH, box.height);
+		      maxD = std::max(maxD, box.depth);
+		    }
+		    break;
+		  case T_AXIS:
+		    {
+		      const BoundingBox box = cell.getBoundingBox();
+		      maxH = std::max(maxH, box.height - axis);
+		      maxD = std::max(maxD, box.depth + axis);
+		    }
+		    break;
+		  default:
+		    break;
+		  }
 	  rows[i].setTempHeight(maxH);
 	  rows[i].setTempDepth(maxD);
 	}
@@ -509,7 +523,7 @@ MathMLTableFormatter::initTempHeights()
     if (rows[i].isContentRow())
       for (unsigned j = 0; j < columns.size(); j++)
 	if (const Cell& cell = getCell(i, j))
-	  if (cell.getRowSpan() == 1 && cell.getRowAlign() != T_BASELINE)
+	  if (cell.getRowSpan() == 1 && cell.getRowAlign() != T_BASELINE && cell.getRowAlign() != T_AXIS)
 	    {
 	      const BoundingBox box = cell.getBoundingBox();
 	      if ((rows[i].getTempHeight() + rows[i].getTempDepth()) < box.verticalExtent())
@@ -779,7 +793,7 @@ MathMLTableFormatter::setCellPositions(const scaled& axis)
 		    dy = (cellBox.height - cellBox.depth - box.height + box.depth) / 2;
 		    break;
 		  case T_AXIS:
-		    dy = (cellBox.height - cellBox.depth - box.height + box.depth) / 2 + axis;
+		    dy = -axis;
 		    break;
 		  default:
 		    assert(false);
