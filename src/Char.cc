@@ -158,6 +158,6 @@ isCombiningOverlay(Char ch)
   return
     (ch >= 0x0334 && ch <= 0x0338) ||
     ch == 0x20d2 || ch == 0x20d3 ||
-    ch == 0x20e5;
+    ch == 0x20e5 || ch == 0x20dd;
 }
 

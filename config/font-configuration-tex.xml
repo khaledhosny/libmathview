@@ -304,6 +304,10 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	ps-file="cmex10.pfb"
 	/>
 
+  <font type="ps" mode="math" map="tex-circle"
+        ps-file="lcircle1.pfb"
+	/>
+
   <map id="tex-cmr">
     <multi first="0x0000" last="0x00ff" index="
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
@@ -744,4 +748,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     </stretchy>
   </map>
 
+  <map id="tex-circle">
+    <single code="0x20dd" index="0152"/>
+  </map>
 </font-configuration>
