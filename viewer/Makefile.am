@@ -11,7 +11,9 @@ noinst_PROGRAMS =
 if COND_GMETADOM
 noinst_PROGRAMS += mathmlviewer.debug
 endif
-noinst_PROGRAMS += testembedding
+if COND_LIBXML2
+noinst_PROGRAMS += test_embedding
+endif
 
 noinst_HEADERS = guiGTK.h
 
@@ -29,9 +31,9 @@ mathmlviewer_debug_LDADD = \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la
 
-testembedding_SOURCES = testembedding.c
+test_embedding_SOURCES = test_embedding.c
 
-testembedding_LDADD = \
+test_embedding_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
   $(GTK_LIBS) \

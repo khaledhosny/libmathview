@@ -96,6 +96,16 @@ enum SelectState
     SELECT_STATE_ABORT
   };
 
+enum GtkMathViewProperties
+  {
+    PROP_DEFAULT_FONT_SIZE,
+    PROP_DEFAULT_FOREGROUND_COLOR,
+    PROP_DEFAULT_BACKGROUND_COLOR,
+    PROP_DEFAULT_SELECTED_FOREGROUND_COLOR,
+    PROP_DEFAULT_SELECTED_BACKGROUND_COLOR,
+    PROP_LOG_VERBOSITY
+  };
+
 /* structures */
 
 struct _GtkMathView {
@@ -160,6 +170,13 @@ struct _GtkMathViewClass {
 
 static void gtk_math_view_class_init(GtkMathViewClass*);
 static void gtk_math_view_init(GtkMathView*);
+
+/* GObject functions */
+
+#if 0
+static void gtk_math_view_set_property(GObject*, guint, const GValue*, GParamSpec*);
+static void gtk_math_view_get_property(GObject*, guint, GValue*, GParamSpec*);
+#endif
 
 /* GtkObject functions */
 
@@ -303,6 +320,39 @@ to_view_coords(GtkMathView* math_view, gint* x, gint* y)
   *x += math_view->top_x;
   *y += math_view->top_y - Gtk_RenderingContext::toGtkPixels(math_view->view->getBoundingBox().height);
 }
+
+/* GObject implementation */
+
+#if 0
+static extern "C" void
+gtk_math_view_set_property (GObject* object,
+			    guint prop_id,
+			    GValue* value,
+			    GParamSpec* pspec)
+{
+  GtkMathView *math_view = GTK_MATH_VIEW(object);
+  
+  switch (prop_id)
+    {
+    case PROP_DEFAULT_FONT_SIZE:
+    case PROP_DEFAULT_FOREGROUND_COLOR:
+    case PROP_DEFAULT_BACKGROUND_COLOR:
+    case PROP_DEFAULT_SELECTED_FOREGROUND_COLOR:
+    case PROP_DEFAULT_SELECTED_BACKGROUND_COLOR:
+    case PROP_LOG_VERBOSITY:
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static extern "C" void
+gtk_math_view_get_property (GObject* object,
+			    guint prop_id,
+			    const GValue* value,
+			    GParamSpec* pspec)
+{ }
+#endif
 
 /* widget implementation */
 
@@ -508,6 +558,7 @@ initGlobalData(const char* confPath)
 static void
 gtk_math_view_class_init(GtkMathViewClass* klass)
 {
+  GObjectClass* gobject_class = G_OBJECT_CLASS(klass);
   GtkObjectClass* object_class = (GtkObjectClass*) klass;
   GtkWidgetClass* widget_class = (GtkWidgetClass*) klass;
 	
@@ -520,6 +571,11 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
   klass->set_scroll_adjustments = gtk_math_view_set_adjustments;
 
   parent_class = (GtkWidgetClass*) gtk_type_class(gtk_widget_get_type());
+
+#if 0
+  gobject_class->set_property = gtk_math_view_set_property;
+  gobject_class->get_property = gtk_math_view_get_property;
+#endif
 
   object_class->destroy = gtk_math_view_destroy;
 
@@ -593,7 +649,61 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 		 NULL,NULL,
 		 gtk_marshal_NONE__POINTER,
 		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	
+
+#if 0	
+  g_object_class_install_property(gobject_class,
+				  PROP_DEFAULT_FONT_SIZE,
+				  g_param_spec_int("font_size",
+						   "Font Size",
+						   "The default font size",
+						   -1,
+						   100,
+						   -1,
+						   G_PARAM_READWRITE));
+
+  g_object_class_install_property(gobject_class,
+				  PROP_DEFAULT_FOREGROUND_COLOR,
+				  g_param_spec_string("foreground_color",
+						      "Foreground color",
+						      "The default foreground color",
+						      NULL,
+						      G_PARAM_READWRITE));
+
+  g_object_class_install_property(gobject_class,
+				  PROP_DEFAULT_BACKGROUND_COLOR,
+				  g_param_spec_string("background_color",
+						      "Background color",
+						      "The default background color",
+						      NULL,
+						      G_PARAM_READWRITE));
+
+  g_object_class_install_property(gobject_class,
+				  PROP_DEFAULT_SELECT_FOREGROUND_COLOR,
+				  g_param_spec_string("select_foreground_color",
+						      "Select foreground color",
+						      "The default foreground color for selected markup",
+						      NULL,
+						      G_PARAM_READWRITE));
+
+  g_object_class_install_property(gobject_class,
+				  PROP_DEFAULT_SELECT_BACKGROUND_COLOR,
+				  g_param_spec_string("select_background_color",
+						      "Select background color",
+						      "The default background color for selected markup",
+						      NULL,
+						      G_PARAM_READWRITE));
+
+  g_object_class_install_property(gobject_class,
+				  PROP_LOG_VERBOSITY,
+				  g_param_spec_int("log_verbosity",
+						   "Logger verbosity",
+						   "Verbosity level of the logger",
+						   LOG_ERROR,
+						   LOG_DEBUG,
+						   LOG_ERROR,
+						   G_PARAM_READWRITE));
+#endif
+
   initGlobalData(getenv("MATHENGINECONF"));
 }
 
