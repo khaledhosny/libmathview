@@ -57,14 +57,6 @@ public:
   void update(void) const;
   void update(const Rectangle&) const;
 
-  scaled getXOrigin(void) const { return region.x; }
-  scaled getYOrigin(void) const { return region.y; }
-  scaled getWidth(void) const { return region.width; }
-  scaled getHeight(void) const { return region.height; }
-
-  Rectangle getRegion(void) const { return region; }
-  void setRegion(const Rectangle& r) { region = r; }
-
   bool getSelection(void) const { return selection; }
   bool setSelection(bool b)
   {
@@ -73,18 +65,41 @@ public:
     return oldSelection;
   }
 
-  static int toGtkPixels(const scaled& s);
-  static int toXftPixels(const scaled& s);
-  static int toPangoPixels(const scaled& s);
-  static scaled fromGtkPixels(int s);
-  static scaled fromXftPixels(int s);
-  static scaled fromPangoPixels(int s);
+  static int toGtkPixels(const scaled& s)
+  { return static_cast<int>(s.toFloat() * (72.27 / 72.0)); }
+  static int toXftPixels(const scaled& s)
+  { return toGtkPixels(s); }
+  static int toPangoPixels(const scaled& s)
+  { return static_cast<int>(s.toFloat() * PANGO_SCALE * (72.27 / 72.0)); }
+  static scaled fromGtkPixels(int s)
+  { return scaled(s * (72.0 / 72.27)); }
+  static scaled fromXftPixels(int s)
+  { return fromGtkPixels(s); }
+  static scaled fromPangoPixels(int s)
+  { return scaled((s * (72.0 / 72.27)) / PANGO_SCALE); }
+
+  static int toGtkX(const scaled& x)
+  { return toGtkPixels(x); }
+  static int toGtkY(const scaled& y)
+  { return -toGtkPixels(y); }
+  static int toXftX(const scaled& x)
+  { return toGtkX(x); }
+  static int toXftY(const scaled& y)
+  { return toGtkY(y); }
+
+  static scaled fromGtkX(int x)
+  { return fromGtkPixels(x); }
+  static scaled fromGtkY(int y)
+  { return fromGtkPixels(-y); }
+  static scaled fromXftX(int x)
+  { return fromGtkX(x); }
+  static scaled fromXftY(int y)
+  { return fromGtkY(y); }
 
 protected:
   void releaseResources(void);
 
   RGBColor foregroundColor;
-  Rectangle region;
   bool selection;
 
   // GTK-specific fields

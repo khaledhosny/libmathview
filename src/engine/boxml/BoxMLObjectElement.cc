@@ -89,7 +89,7 @@ BoxMLObjectElement::format(MathFormattingContext& ctxt)
       ctxt.push(this);
 
       if (SmartPtr<Element> child = getChild())
-	setArea(child->format(ctxt));
+	setArea(ctxt.getDevice()->wrapper(ctxt, child->format(ctxt)));
       else
 	setArea(ctxt.getDevice()->dummy(ctxt));
       

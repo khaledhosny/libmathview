@@ -71,8 +71,8 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 // 	 Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()));
   gdk_draw_layout(context.getDrawable(),
 		  context.getGC(),
-		  Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
-		  Gtk_RenderingContext::toGtkPixels(-context.getYOrigin() - y),
+		  Gtk_RenderingContext::toGtkX(x),
+		  Gtk_RenderingContext::toGtkY(y),
 		  layout);
 }
 

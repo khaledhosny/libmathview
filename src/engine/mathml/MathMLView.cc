@@ -32,6 +32,8 @@
 #include "RefinementContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathFormattingContext.hh"
+#include "SearchingContext.hh"
+#include "Gtk_WrapperArea.hh"
 
 MathMLView::MathMLView(const SmartPtr<MathMLViewContext>& c)
   : context(c)
@@ -140,14 +142,21 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
   // area is scrollable (as in the case of Gtk_DrawingArea) or not
   // (PS_DrawingArea). The caller must properly adjust x and y before
   // calling this method
-#if 0
-  return root ? root->Inside(x, y) : 0;
-#endif
+  if (AreaRef rootArea = getRootArea())
+    {
+      BoundingBox box = rootArea->box();
+      SearchingContext context(x, y);
+      if (rootArea->find(context, scaled::zero(), -box.height))
+	if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(context.getResult()))
+	  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(area->getElement()))
+	    return elem;
+    }
+  
   return 0;
 }
 
 AreaRef
-MathMLView::layout() const
+MathMLView::getRootArea() const
 {
   if (root && !frozen())
     {
@@ -188,16 +197,18 @@ MathMLView::layout() const
       Globals::logger(LOG_INFO, "LAYOUT TIME: %dms", layoutTime());
 
       if (AreaRef area = root->getArea())
-	return area->fit(scaled::zero(), scaled::zero(), scaled::zero());
+	rootArea = area->fit(scaled::zero(), scaled::zero(), scaled::zero());
+      else
+	rootArea = 0;
     }
 
-  return 0;
+  return rootArea;
 }
 
 BoundingBox
 MathMLView::getBoundingBox() const
 {
-  if (AreaRef rootArea = layout())
+  if (AreaRef rootArea = getRootArea())
     return rootArea->box();
   else
     return BoundingBox();
@@ -206,7 +217,7 @@ MathMLView::getBoundingBox() const
 Rectangle
 MathMLView::getRectangle() const
 {
-  if (AreaRef rootArea = layout())
+  if (AreaRef rootArea = getRootArea())
     return Rectangle(scaled::zero(), scaled::zero(), root->getArea()->box());
   else
     return Rectangle();
@@ -215,12 +226,12 @@ MathMLView::getRectangle() const
 void
 MathMLView::render(RenderingContext& ctxt) const
 {
-  if (AreaRef rootArea = layout())
+  if (AreaRef rootArea = getRootArea())
     {
       Clock perf;
       perf.Start();
       BoundingBox box = rootArea->box();
-      rootArea->render(ctxt, scaled::zero(), -box.height);
+      rootArea->render(ctxt, -x0, -box.height - y0);
       perf.Stop();
       Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }

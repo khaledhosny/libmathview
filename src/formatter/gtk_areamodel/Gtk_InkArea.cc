@@ -40,8 +40,8 @@ Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
   gdk_draw_rectangle(context.getDrawable(),
 		     context.getGC(),
 		     TRUE,
-		     Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
-		     Gtk_RenderingContext::toGtkPixels(box.height - context.getYOrigin() - y),
+		     Gtk_RenderingContext::toGtkX(x),
+		     Gtk_RenderingContext::toGtkY(y + box.height),
 		     Gtk_RenderingContext::toGtkPixels(box.width),
 		     Gtk_RenderingContext::toGtkPixels(box.height + box.depth));
 }

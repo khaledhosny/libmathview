@@ -45,6 +45,12 @@ public:
   virtual void setRoot(const DOM::Element&);
   SmartPtr<MathMLElement> getRoot(void) const { return root; }
   SmartPtr<MathMLElement> getElementAt(const scaled&, const scaled&) const;
+  AreaRef getRootArea(void) const;
+
+  void setXOrigin(const scaled& x) { x0 = x; }
+  scaled getXOrigin(void) const { return x0; }
+  void setYOrigin(const scaled& y) { y0 = y; }
+  scaled getYOrigin(void) const { return y0; }
 
   void setDefaultFontSize(unsigned);
   unsigned getDefaultFontSize(void) const { return defaultFontSize; }
@@ -56,8 +62,6 @@ public:
   SmartPtr<MathMLViewContext> getContext(void) const { return context; }
 
 protected:
-  AreaRef layout(void) const;
-
   class DOMSubtreeModifiedListener : public DOM::EventListener
   {
   public:
@@ -88,6 +92,9 @@ private:
   unsigned defaultFontSize;
   SmartPtr<MathMLElement> root;
   SmartPtr<MathMLViewContext> context;
+  mutable AreaRef rootArea;
+  scaled x0;
+  scaled y0;
 };
 
 #endif // __MathMLView_hh__

@@ -130,6 +130,7 @@ BoxMLTextElement::format(MathFormattingContext& ctxt)
       if (!newBackground.transparent && newBackground != oldBackground)
 	res = ctxt.getDevice()->getFactory()->background(res, newBackground);
 
+      res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 
       ctxt.pop();

@@ -129,37 +129,3 @@ Gtk_RenderingContext::setForegroundColor(/* const */ GdkColor& color)
   xft_foregroundColor.color.alpha = 0xffff;
   xft_foregroundColor.pixel = color.pixel;
 }
-
-int
-Gtk_RenderingContext::toGtkPixels(const scaled& s)
-{
-  return static_cast<int>(s.toFloat() * (72.27 / 72.0));
-}
-
-scaled
-Gtk_RenderingContext::fromGtkPixels(int s)
-{ return scaled(s * (72.0 / 72.27)); }
-
-int
-Gtk_RenderingContext::toPangoPixels(const scaled& s)
-{
-  return static_cast<int>(s.toFloat() * PANGO_SCALE * (72.27 / 72.0));
-}
-
-scaled
-Gtk_RenderingContext::fromPangoPixels(int s)
-{
-  return scaled((s * (72.0 / 72.27)) / PANGO_SCALE);
-}
-
-int
-Gtk_RenderingContext::toXftPixels(const scaled& s)
-{
-  return toGtkPixels(s);
-}
-
-scaled
-Gtk_RenderingContext::fromXftPixels(int s)
-{
-  return fromGtkPixels(s);
-}

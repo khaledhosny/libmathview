@@ -604,18 +604,22 @@ click(GtkMathView* math_view, GdomeElement* elem, gint state)
 
   g_return_if_fail(math_view != NULL);
 
+  name = gdome_el_nodeName(elem, &exc);
+  g_assert(exc == 0);
+  printf("node name: %s\n", name->str);
+
   if (elem != NULL)
     {
       GdomeElement* action;
       GdomeDOMString* href = find_hyperlink(elem, XLINK_NS_URI, "href");
       if (href != NULL)
 	{
-/* 	  printf("hyperlink %s\n", href->str); */
+ 	  printf("hyperlink %s\n", href->str);
 	  gdome_str_unref(href);
 	}
 
       action = find_self_or_ancestor(elem, MATHML_NS_URI, "maction");
-/*       printf("action? %p\n", action); */
+      printf("action? %p\n", action);
       if (action != NULL)
 	{
 	  gtk_math_view_freeze(math_view);

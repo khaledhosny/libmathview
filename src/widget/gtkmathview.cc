@@ -185,8 +185,9 @@ paint_widget(GtkMathView* math_view)
   gint height = widget->allocation.height;
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
-  Rectangle rect(px2sp(math_view->top_x - MARGIN), px2sp(math_view->top_y - MARGIN), px2sp(width), px2sp(height));
-  math_view->renderingContext->setRegion(rect);
+  //Rectangle rect(px2sp(math_view->top_x - MARGIN), px2sp(math_view->top_y - MARGIN), px2sp(width), px2sp(height));
+  math_view->view->setXOrigin(Gtk_RenderingContext::fromGtkX(math_view->top_x - MARGIN));
+  math_view->view->setYOrigin(Gtk_RenderingContext::fromGtkY(math_view->top_y - MARGIN));
 
   math_view->view->render(*math_view->renderingContext);
 
@@ -578,6 +579,7 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 	  fabs(math_view->button_press_y - event->y) <= CLICK_SPACE_RANGE &&
 	  abs(math_view->button_press_time - event->time) <= CLICK_TIME_RANGE)
 	{
+	  printf("EMITTING CLICK\n");
 	  // the mouse should have not moved more than one pixel in each direction
 	  // and the time elapsed from the press event should be no more than 250ms
 	  g_signal_emit(GTK_OBJECT(math_view),

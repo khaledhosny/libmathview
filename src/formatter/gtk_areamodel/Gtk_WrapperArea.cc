@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
+// (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -40,9 +40,17 @@ Gtk_WrapperArea::render(RenderingContext& context, const scaled& x, const scaled
   // ...
 }
 
+#include "scaledAux.hh"
+#include "BoundingBoxAux.hh"
+
 bool
 Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
 {
+#if 0
+  std::cerr << "Wrapper::find: " << box() << " (" << x << "," << y << ") "
+	    << " SEARCHING FOR (" << context.getX() << "," << context.getY() << ")" << std::endl;
+#endif
+
   if (context.accept(this, x, y))
     {
       if (!BoxArea::find(context, x, y))

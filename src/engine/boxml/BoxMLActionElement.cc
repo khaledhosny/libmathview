@@ -93,7 +93,7 @@ BoxMLActionElement::format(MathFormattingContext& ctxt)
       else
 	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
       assert(res);
-      setArea(res);
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
       
       ctxt.pop();
       resetDirtyLayout();

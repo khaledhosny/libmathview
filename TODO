@@ -13,4 +13,6 @@
 * runtime selection of backend
 * runtime selection of reader
 * implement cursor
+* implement the Area::find method more efficiently so that it
+  doesn't visit parts of the area tree where the point cannot be
 
