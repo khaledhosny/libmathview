@@ -23,8 +23,6 @@
 #ifndef MathEngine_hh
 #define MathEngine_hh
 
-#include <config.h>
-
 #include "scaled.hh"
 #include "Logger.hh"
 #include "RGBValue.hh"
@@ -65,7 +63,8 @@ public:
   class MathMLElement* GetRoot(void) const { return root; }
   class MathMLElement* GetElementAt(scaled, scaled) const;
 
-  void  GetDocumentBoundingBox(class BoundingBox&) const;
+  void GetDocumentBoundingBox(class BoundingBox&) const;
+  void GetDocumentRectangle(class Rectangle&) const;
 
   void     SetDefaultFontSize(unsigned);
   unsigned GetDefaultFontSize(void) const { return defaultFontSize; }

@@ -23,7 +23,6 @@
 #ifndef RenderingEnvironment_hh
 #define RenderingEnvironment_hh
 
-#include <config.h>
 #include <stddef.h>
 
 #include "AFont.hh"

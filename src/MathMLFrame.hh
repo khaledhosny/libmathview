@@ -23,10 +23,6 @@
 #ifndef MathMLFrame_hh
 #define MathMLFrame_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Coords.hh"
 #include "BoundingBox.hh"
 #include "MathMLNode.hh"
@@ -79,4 +75,4 @@ typedef MathMLFrame* MathMLFramePtr;
 
 #define TO_FRAME(object) (dynamic_cast<MathMLFrame*>(object))
 
-#endif
+#endif // MathMLFrame_hh

@@ -84,6 +84,18 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output) const
   }
 
   for (Iterator<unsigned> id(fontId); id.More(); id.Next()) {
+    if (id.IsFirst()) {
+      fprintf(output, "%%%%DocumentSuppliedResources: font ");
+    } else {
+      fprintf(output, "%%%%+ font ");
+    }
+    fprintf(output, "%s\n", T1_GetFontName(id()));
+    if (id.IsLast()) fprintf(output, "\n\n");
+  }
+
+  fprintf(output, "%%%%BeginSetup\n");
+
+  for (Iterator<unsigned> id(fontId); id.More(); id.Next()) {
     const char* fileName = getFontFilePath(id());
 
     if (fileName != NULL) {
@@ -111,14 +123,20 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output) const
       }
 
       if (f != NULL) {
+	fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(id()));
 	dumpFontFile(f, output);
-	fclose(f);
+	fprintf(output, "%%%%EndResource\n\n");
+	fclose(f);	
       } else
 	MathEngine::logger(LOG_WARNING, "could not include font file `%s'", path);
 
       delete [] path;
+    } else {
+      MathEngine::logger(LOG_WARNING, "could not find file for font `%s'", T1_GetFontName(id()));
     }
   }
+
+  fprintf(output, "%%%%EndSetup\n\n");
 
   for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
     assert(i() != NULL);

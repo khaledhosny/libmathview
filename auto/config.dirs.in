@@ -1,1 +1,1 @@
-#define PKGDATADIR "@prefix@/share/"PACKAGE
+#define PKGDATADIR "@prefix@/share/@PACKAGE@"

@@ -23,8 +23,6 @@
 #ifndef PS_DrawingArea_hh
 #define PS_DrawingArea_hh
 
-#include <config.h>
-
 #ifdef HAVE_LIBT1
 
 #include <stdio.h>
@@ -50,6 +48,7 @@ public:
 
   void DisableColors();
 
+  void DumpHeader(const char*, const char*, const Rectangle&) const;
   void DumpGrid(void) const;
   void DumpPreamble(void) const;
   void DumpEpilogue(void) const;

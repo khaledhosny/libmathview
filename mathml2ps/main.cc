@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#define MATHML2PS_VERSION "0.0.4"
+#define MATHML2PS_VERSION "0.0.5"
 
 #include <assert.h>
 #include <getopt.h>
@@ -71,7 +71,7 @@ extern void* parseMathMLFile(char*);
 static void
 printVersion()
 {
-  printf("%s - written by Luca Padovani (C) 2000.\n", appName);
+  printf("%s - written by Luca Padovani (C) 2000 - 2001.\n", appName);
 #ifdef DEBUG
   printf("Compiled %s %s\n", __DATE__, __TIME__);
 #endif
@@ -102,7 +102,7 @@ in order to use this tool!\n\n");
   exit(0);
 }
 
-bool
+static bool
 parseSize(const char* s)
 {
   assert(s != NULL);
@@ -123,7 +123,7 @@ parseSize(const char* s)
   return true;
 }
 
-bool
+static bool
 parseUnit(const char* s)
 {
   assert(s != NULL);
@@ -152,7 +152,7 @@ parseUnit(const char* s)
   return true;
 }
 
-bool
+static bool
 parseMargins(const char* s)
 {
   assert(s != NULL);
@@ -171,6 +171,30 @@ parseMargins(const char* s)
   yMargin = y;
 
   return true;
+}
+
+static char*
+getOutputFileName(const char* in)
+{
+  char* out;
+
+  assert(in != NULL);
+  const char* dot = strrchr(in, '.');
+  const char* slash = strrchr(in, '/');
+  if (slash != NULL) in = slash + 1;
+
+  if (dot == NULL) {
+    out = new char[strlen(in) + 5];
+    strcpy(out, in);
+  } else {
+    out = new char[strlen(in) - strlen(dot) + 5];
+    strncpy(out, in, strlen(in) - strlen(dot));
+    out[strlen(in) - strlen(dot)] = '\0';
+  }
+
+  strcat(out, ".eps");
+
+  return out;
 }
 
 int
@@ -290,30 +314,51 @@ main(int argc, char *argv[])
   values.lineStyle = LINE_STYLE_SOLID;
   values.lineWidth = px2sp(1);
 
-  PS_T1_FontManager fm;
-  PS_DrawingArea area(values, x0, y0, stdout);
-  area.SetSize(w, h);
-  if (!colors) area.DisableColors();
+  while (optind < argc) {
+    MathEngine::logger(LOG_INFO, "Processing `%s'...", argv[optind]);
 
-  MathEngine engine;
-  engine.Init(&area, &fm);
-  engine.Load(argv[optind]);
-  engine.SetDefaultFontSize(fontSize);
-  engine.Setup();
-  engine.Layout();
-  
-  fm.DumpFontDictionary(stdout);
+    char* outName = getOutputFileName(argv[optind]);
+    assert(outName != NULL);
 
-  Rectangle sheet;
-  sheet.x = 0;
-  sheet.y = 0;
-  sheet.width = w;
-  sheet.height = h;
+    FILE* outFile = fopen(outName, "wt");
+    if (outFile == NULL) {
+      MathEngine::logger(LOG_ERROR, "could not open output file `%s' for writing", outName);
+      exit(1);
+    }
 
-  area.DumpPreamble();
-  //area.DumpGrid();
-  engine.Render(&sheet);
-  area.DumpEpilogue();
+    PS_T1_FontManager fm;
+    PS_DrawingArea area(values, x0, y0, outFile);
+    area.SetSize(w, h);
+    if (!colors) area.DisableColors();
+
+    MathEngine engine;
+    engine.Init(&area, &fm);
+
+    engine.SetDefaultFontSize(fontSize);
+    engine.Load(argv[optind]);
+    engine.Layout();
+
+    Rectangle rect;
+    engine.GetDocumentRectangle(rect);
+    area.DumpHeader(appName, argv[optind], rect);
+    fm.DumpFontDictionary(outFile);
+
+    Rectangle sheet;
+    sheet.x = 0;
+    sheet.y = 0;
+    sheet.width = w;
+    sheet.height = h;
+
+    area.DumpPreamble();
+    //area.DumpGrid();
+    engine.Render(&sheet);
+    area.DumpEpilogue();
+
+    fclose(outFile);
+    delete [] outName;
+
+    optind++;
+  }
 #else 
   printHelp();
 #endif

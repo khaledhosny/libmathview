@@ -1122,6 +1122,9 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
 
   root->SetDirty();
 
+  Rectangle rect;
+  math_view->interface->GetDocumentRectangle(rect);
+  area.DumpHeader(PACKAGE, "(no title)", rect);
   fm->DumpFontDictionary(f);
   area.DumpPreamble();
   root->Render(area);

@@ -276,6 +276,17 @@ MathEngine::GetDocumentBoundingBox(BoundingBox& box) const
 }
 
 void
+MathEngine::GetDocumentRectangle(Rectangle& rect) const
+{
+  if (root != NULL) {
+    BoundingBox box;
+    GetDocumentBoundingBox(box);
+    box.ToRectangle(root->GetX(), root->GetY(), rect);
+  } else
+    rect.Zero();
+}
+
+void
 MathEngine::SetSelectionFirst(MathMLElement* elem)
 {
   selectionFirst = elem;

@@ -23,10 +23,6 @@
 #ifndef Container_hh
 #define Container_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 template <class Type>
 class Iterator;
 
@@ -72,4 +68,4 @@ private:
 
 #include "Container.icc"
 
-#endif
+#endif // Container_hh

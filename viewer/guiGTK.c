@@ -398,7 +398,7 @@ element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  printf("element changed: %p\n", node);
+  /* printf("element changed: %p\n", node); */
 }
 
 static void

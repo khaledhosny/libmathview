@@ -23,10 +23,6 @@
 #ifndef Iterator_hh
 #define Iterator_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Container.hh"
 
 template <class Type>

@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "T1_Font.hh"
 #include "Iterator.hh"
@@ -57,14 +58,37 @@ PS_DrawingArea::DisableColors()
 }
 
 void
+PS_DrawingArea::DumpHeader(const char* appName, const char* title, const Rectangle& rect) const
+{
+  assert(appName != NULL);
+  assert(title != NULL);
+
+  time_t curTime = time(NULL);
+
+  // FIXME: is the output conformant???
+  //fprintf(output, "%%!PS-Adobe-3.0 EPSF-3.0\n");
+  fprintf(output, "%%%%BoundingBox: %d %d %d %d\n",
+	  truncFloat(sp2ps(rect.x)), truncFloat(sp2ps(height - (rect.y + rect.height))),
+	  roundFloat(sp2ps(rect.x + rect.width)), roundFloat(sp2ps(height - rect.y)));
+  fprintf(output, "%%%%Creator: %s\n", appName);
+  fprintf(output, "%%%%CreationDate: %s", asctime(localtime(&curTime)));
+  fprintf(output, "%%%%Title: %s\n", title);
+  fprintf(output, "%%%%Pages: 1\n");
+  fprintf(output, "%%%%EndComments\n\n");
+}
+
+void
 PS_DrawingArea::DumpPreamble() const
 {
+  fprintf(output, "%%%%Page: 1 1\n\n");
 }
 
 void
 PS_DrawingArea::DumpEpilogue() const
 {
   fprintf(output, "showpage\n");
+  fprintf(output, "%%%%Trailer\n");
+  fprintf(output, "%%%%EOF\n");
 }
 
 const GraphicsContext*

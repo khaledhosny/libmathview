@@ -23,8 +23,6 @@
 #ifndef EntitiesTable_hh
 #define EntitiesTable_hh
 
-#include <config.h>
-
 #include "minidom.h"
 #include "String.hh"
 

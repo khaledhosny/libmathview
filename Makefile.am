@@ -1,6 +1,6 @@
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT
 SUBDIRS = auto scripts src config doc viewer randomath mathml2ps
-CLEANFILES = core t1lib.log
+CLEANFILES = core t1lib.log *.eps
 
 SCRIPTDIR = ./scripts
 

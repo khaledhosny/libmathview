@@ -35,6 +35,11 @@
 #include "EntitiesTable.hh"
 #include "MathMLParseFile.hh"
 
+#ifdef ENABLE_PROFILE
+unsigned CharMapper::alnumChars = 0;
+unsigned CharMapper::chars = 0;
+#endif // ENABLE_PROFILE
+
 // CharMapper: this class is used to map a Unicode char and a FontAttributes structures
 // into a native char index and a native font to draw that char.
 // Information on the native fonts available in the system and the actual mapping
@@ -87,6 +92,11 @@ CharMapper::GetFont(const FontAttributes& fa) const
 bool
 CharMapper::FontifyChar(FontifiedChar& fMap, const FontAttributes& fa, Char ch) const
 {
+#ifdef ENABLE_PROFILE
+  chars++;
+  if (isalnum(ch)) alnumChars++;
+#endif // ENABLE_PROFILE
+  
   bool res = FontifyCharAux(fMap, fa, ch, false);
   if (res) return true;
 

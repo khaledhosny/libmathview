@@ -23,8 +23,6 @@
 #ifndef Char_hh
 #define Char_hh
 
-#include <config.h>
-
 #include <glib.h>
 #include <stddef.h>
 

@@ -50,6 +50,11 @@
 #define G_DISABLE_CHECKS
 #endif
 
+/* If defined teh widget will collect some information
+ * for profiling purposes
+ */
+#undef ENABLE_PROFILE
+
 /* Define to compile with libxml 2.x (recommended) */
 #undef HAVE_LIBXML2
 

@@ -63,7 +63,10 @@ const AFont*
 T1_FontManager::SearchNativeFont(const FontAttributes& fa,
 				 const ExtraFontAttributes* efa) const
 {
-  assert(efa != NULL);
+  // FIXME: maybe with the new version of t1lib it can be done like
+  // for Gtk_FontManager, because it is not necessary any more to know
+  // the file name from the config file. Maybe.
+  if (efa == NULL) return NULL;
 
   const char* type = efa->GetProperty("type");
   if (type == NULL) {

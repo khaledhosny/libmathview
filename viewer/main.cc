@@ -36,6 +36,9 @@
 #ifdef DEBUG
 #include "Gtk_GraphicsContext.hh"
 #endif // DEBUG
+#ifdef ENABLE_PROFILE
+#include "CharMapper.hh"
+#endif // ENABLE_PROFILE
 
 enum CommandLineOptionId {
   OPTION_VERSION = 256,
@@ -85,6 +88,15 @@ checkCounters()
   MathEngine::logger(LOG_DEBUG, "Values   : %d (cached %d)", Value::GetCounter(), Value::GetCached());
 }
 #endif // DEBUG
+
+#ifdef ENABLE_PROFILE
+static void
+checkProfileCounters()
+{
+  MathEngine::logger(LOG_DEBUG, "Total : %d", CharMapper::GetChars());
+  MathEngine::logger(LOG_DEBUG, "alnum : %d", CharMapper::GetAlnumChars());
+}
+#endif // ENABLE_PROFILE
 
 int
 main(int argc, char *argv[])
@@ -143,6 +155,10 @@ main(int argc, char *argv[])
 #ifdef DEBUG
   atexit(checkCounters);
 #endif // DEBUG
+
+#ifdef ENABLE_PROFILE
+  atexit(checkProfileCounters);
+#endif // ENABLE_PROFILE
 
   if (optind < argc) {
     GUI_init(&argc, &argv, appName, 500, 500);

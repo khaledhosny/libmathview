@@ -23,8 +23,6 @@
 #ifndef CharMapper_hh
 #define CharMapper_hh
 
-#include <config.h>
-
 #include "minidom.h"
 #include "CharMap.hh"
 #include "FontAttributes.hh"
@@ -44,6 +42,11 @@ public:
   const AFont* GetFont(const FontAttributes&) const;
   bool FontifyChar(FontifiedChar&, const FontAttributes&, Char) const;
   bool FontifyStretchyChar(FontifiedChar&, const FontAttributes&, Char) const;
+
+#ifdef ENABLE_PROFILE
+  static unsigned GetChars(void) { return chars; }
+  static unsigned GetAlnumChars(void) { return alnumChars; }
+#endif // ENABLE_PROFILE
 
 private:
   struct FontMap {
@@ -82,6 +85,11 @@ private:
   Container<FontMap*>        maps;
 
   class FontManager& fontManager;
+
+#ifdef ENABLE_PROFILE
+  static unsigned alnumChars;
+  static unsigned chars;
+#endif // ENABLE_PROFILE
 };
 
 #endif // CharMapper_hh
