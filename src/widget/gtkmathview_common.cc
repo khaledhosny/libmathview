@@ -59,6 +59,7 @@ typedef libxml2_reader_Setup GtkMathView_Setup;
 typedef libxml2_MathView MathView;
 typedef libxml2_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_GMETADOM
+#include "gmetadom.hh"
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_GMetaDOM"
 #include "gmetadom_Setup.hh"
 #include "gmetadom_MathView.hh"

@@ -23,8 +23,9 @@
 #ifndef __libxml2_reader_MathView_hh__
 #define __libxml2_reader_MathView_hh__
 
+#include <libxml/xmlreader.h>
+
 #include "View.hh"
-#include "libxml/tree.h"
 
 class libxml2_reader_MathView : public View
 {

@@ -23,8 +23,9 @@
 #ifndef __libxml2_MathView_hh__
 #define __libxml2_MathView_hh__
 
+#include <libxml/tree.h>
+
 #include "View.hh"
-#include "libxml/tree.h"
 
 class libxml2_MathView : public View
 {

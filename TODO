@@ -7,25 +7,14 @@
 
 // AbiWord
 
+* make conversion functions in RenderingContext non-static and
+  take zooming into account
 * create AbiWord specific areas that forward rendering requests to the
   AbiWord GraphicsContext
-* create AbiWord specific AreaFactory
 * split the Gtk_MathGraphicDevice into a Default_MathGraphicDevice, make
   the AreaFactory and the Shapers customizable from outside
-* export basic (?) area .hh files so that it is possible to instantiate
-  abiword area classes from within abiword
-* export abstract AreaFactory class
 * create a AbiWord_RenderingContext (just a wrapper for the AbiWord
   GraphicContext?)
-
-===
-List of .hh files to be exported:
-BoundingBox.hh
-Object.hh
-SmartPtr.hh
-scaled.hh
-fixed.hh
-formatter/areamodel/*.hh
 
 // MathML
 

@@ -23,6 +23,7 @@
 #ifndef __SearchingContext_hh__
 #define __SearchingContext_hh__
 
+#include "Area.hh"
 #include "Rectangle.hh"
 
 class SearchingContext

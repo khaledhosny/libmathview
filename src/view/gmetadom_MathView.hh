@@ -23,9 +23,10 @@
 #ifndef __gmetadom_MathView_hh__
 #define __gmetadom_MathView_hh__
 
+#include <GdomeSmartDOM.hh>
+
 #include "View.hh"
 #include "String.hh"
-#include "gmetadom.hh"
 
 class gmetadom_MathView : public View
 {
@@ -39,25 +40,24 @@ public:
   void unload(void);
   bool loadURI(const String&);
   bool loadBuffer(const String&);
-  bool loadDocument(const DOM::Document&);
-  bool loadRootElement(const DOM::Element&);
+  bool loadDocument(const GdomeSmartDOM::Document&);
+  bool loadRootElement(const GdomeSmartDOM::Element&);
 
-  bool notifyStructureChanged(const DOM::Element&) const;
-  bool notifyStructureChanged(GdomeElement* el) const { return notifyStructureChanged(DOM::Element(el)); }
-  bool notifyAttributeChanged(const DOM::Element&, const DOM::GdomeString&) const;
+  bool notifyStructureChanged(const GdomeSmartDOM::Element&) const;
+  bool notifyStructureChanged(GdomeElement* el) const { return notifyStructureChanged(GdomeSmartDOM::Element(el)); }
+  bool notifyAttributeChanged(const GdomeSmartDOM::Element&, const GdomeSmartDOM::GdomeString&) const;
   bool notifyAttributeChanged(GdomeElement* el, GdomeDOMString* s) const
-  { return notifyAttributeChanged(DOM::Element(el), DOM::GdomeString(s)); }
-  DOM::Element modelElementOfElementAux(const SmartPtr<class Element>&) const;
+  { return notifyAttributeChanged(GdomeSmartDOM::Element(el), GdomeSmartDOM::GdomeString(s)); }
+  GdomeSmartDOM::Element modelElementOfElementAux(const SmartPtr<class Element>&) const;
   GdomeElement* modelElementOfElement(const SmartPtr<class Element>& elem) const
   { return reinterpret_cast<GdomeElement*>(modelElementOfElementAux(elem).gdome_object()); }
-  SmartPtr<class Element> elementOfModelElement(const DOM::Element&) const;
-  SmartPtr<class Element> elementOfModelElement(GdomeElement* el) const
-  { return elementOfModelElement(DOM::Element(el)); }
+  SmartPtr<class Element> elementOfModelElement(const GdomeSmartDOM::Element&) const;
+  SmartPtr<class Element> elementOfModelElement(GdomeElement*) const;
 
-  DOM::Document getDocument(void) const { return currentDoc; }
+  GdomeSmartDOM::Document getDocument(void) const { return currentDoc; }
 
 protected:
-  DOM::Document currentDoc;
+  GdomeSmartDOM::Document currentDoc;
 };
 
 #endif // __gmetadom_MathView_hh__

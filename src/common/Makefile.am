@@ -33,6 +33,7 @@ libcommon_la_SOURCES = \
 pkginclude_HEADERS = \
   BoundingBox.hh \
   BoundingBoxAux.hh \
+  Char.hh \
   Object.hh \
   Point.hh \
   PointAux.hh \
@@ -42,6 +43,7 @@ pkginclude_HEADERS = \
   Rectangle.hh \
   SmartPtr.hh \
   String.hh \
+  WeakPtr.hh \
   defs.h \
   fixed.hh \
   scaled.hh \
@@ -62,7 +64,6 @@ noinst_HEADERS = \
   Value.hh \
   ValueConversion.hh \
   Variant.hh \
-  WeakPtr.hh \
   for_each_if.h \
   token.hh \
   $(NULL)

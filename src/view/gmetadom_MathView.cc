@@ -132,3 +132,7 @@ gmetadom_MathView::notifyAttributeChanged(const DOM::Element& el, const DOM::Gdo
   else
     return false;
 }
+
+SmartPtr<Element>
+gmetadom_MathView::elementOfModelElement(GdomeElement* el) const
+{ return elementOfModelElement(GdomeSmartDOM::Element(el)); }
