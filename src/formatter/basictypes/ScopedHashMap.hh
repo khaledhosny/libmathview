@@ -65,9 +65,14 @@ public:
       bucket = map[key] = new Bucket(key);
     else
       bucket = p->second;
-    if (bucket->current_binding->env == env)
-      throw AlreadyDefined();
-    bucket->current_binding = new Entry(env, bucket, bucket->current_binding, value);
+
+    if (bucket->current_binding && bucket->current_binding->env == env)
+      bucket->current_binding->value = value;
+    else
+      {
+        bucket->current_binding = new Entry(env, bucket, bucket->current_binding, env->first, value);
+	env->first = bucket->current_binding;
+      }
   }
 
   T get(const K& key) const
@@ -85,8 +90,14 @@ public:
     return p != map.end() && p->second->current_binding;
   }
 
+  bool definedInScope(const K& key) const
+  {
+    typename Map::const_iterator p = map.find(key);
+    return p != map.end() && p->second->current_binding &&
+      p->second->current_binding->env == env;
+  }
+
   class NotFound { };
-  class AlreadyDefined { };
 
 private:
   struct Entry;
@@ -94,7 +105,7 @@ private:
 
   struct Bucket
   {
-    Bucket(const K& k) : key(k) { }
+    Bucket(const K& k) : key(k), current_binding(0) { }
 
     K key;
     Entry* current_binding;
@@ -102,7 +113,7 @@ private:
 
   struct Entry
   {
-    Entry(Env* e, Bucket* b, Entry* p, const T& v) : env(e), bucket(b), next_env(0), prev(p), value(v) { }
+    Entry(Env* e, Bucket* b, Entry* p, Entry* p_env, const T& v) : env(e), bucket(b), next_env(p_env), prev(p), value(v) { }
 
     Env* env;
     Bucket* bucket;
@@ -113,7 +124,7 @@ private:
 
   struct Env
   {
-    Env(Env* p) : prev(p) { }
+    Env(Env* p) : prev(p), first(0) { }
 
     Env* prev;
     Entry* first;
