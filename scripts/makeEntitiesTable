@@ -1,0 +1,36 @@
+#! /bin/sh
+
+ENTITIES=`cut -d ',' -f1,2 | tr -d ',' | tr -s ' ' | tr ' ' ','`
+
+echo "<?xml version=\"1.0\"?>"
+echo "<!DOCTYPE entities-table SYSTEM \"entities-table.dtd\">"
+echo
+
+echo "<entities-table>"
+for i in $ENTITIES
+do
+  NAME=`echo $i | cut -d ',' -f1`
+  VALUE=`echo $i | cut -d ',' -f2 | tr -d 'xU'`
+  VALUE1=`echo $VALUE | cut -d '-' -f1`
+  VALUE2=`echo $VALUE | cut -s -d '-' -f2`
+  VALUE3=`echo $VALUE | cut -s -d '-' -f3`
+  echo -n "  <entity name=\""$NAME"\" value=\""
+
+  if test $VALUE1
+  then
+    echo -n "&#x"$VALUE1";"
+  fi
+
+  if test $VALUE2
+  then
+    echo -n "&#x"$VALUE2";"
+  fi
+
+  if test $VALUE3
+  then
+    echo -n "&#x"$VALUE3";"
+  fi
+
+  echo "\"/>"
+done
+echo "</entities-table>"
