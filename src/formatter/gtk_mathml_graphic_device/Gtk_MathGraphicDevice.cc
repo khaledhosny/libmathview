@@ -89,16 +89,16 @@ Gtk_MathGraphicDevice::fraction(const MathFormattingContext& context,
 
   std::vector<AreaRef> v;
 
-  AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle() ? RULE * 3 : RULE, scaled::zero());
+  AreaRef s = factory->verticalSpace(context.getDisplayStyle() ? RULE * 3 : RULE, scaled::zero());
 
   v.reserve(5);
   v.push_back(denominator);
   v.push_back(s);
-  v.push_back(getFactory()->horizontalLine(evaluate(context, lineThickness, RULE), context.getColor()));
+  v.push_back(factory->horizontalLine(evaluate(context, lineThickness, RULE), context.getColor()));
   v.push_back(s);
   v.push_back(numerator);
 
-  return getFactory()->shift(getFactory()->verticalArray(v, 2), axis(context));
+  return factory->shift(factory->verticalArray(v, 2), axis(context));
 }
 
 AreaRef
@@ -116,7 +116,7 @@ Gtk_MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
   h.push_back(stretchStringV(context, "/", std::max(n.height, d.height), std::max(n.depth, d.depth)));
   h.push_back(denominator);
   
-  return getFactory()->horizontalArray(h);
+  return factory->horizontalArray(h);
 }
 
 AreaRef
@@ -211,18 +211,18 @@ Gtk_MathGraphicDevice::script(const MathFormattingContext& context,
 
   std::vector<AreaRef> o;
   o.reserve(2);
-  if (subScript) o.push_back(getFactory()->shift(subScript, -subScriptShift));
-  if (superScript) o.push_back(getFactory()->shift(superScript, superScriptShift));
+  if (subScript) o.push_back(factory->shift(subScript, -subScriptShift));
+  if (superScript) o.push_back(factory->shift(superScript, superScriptShift));
 
   std::vector<AreaRef> h;
   h.reserve(2);
   h.push_back(base);
   if (o.size() > 1)
-    h.push_back(getFactory()->overlapArray(o));
+    h.push_back(factory->overlapArray(o));
   else
     h.push_back(o[0]);
 
-  return getFactory()->horizontalArray(h);
+  return factory->horizontalArray(h);
 }
 
 AreaRef
@@ -246,11 +246,11 @@ Gtk_MathGraphicDevice::underOver(const MathFormattingContext& context,
 {
   std::vector<AreaRef> v;
   v.reserve(3);
-  if (underScript) v.push_back(getFactory()->center(underScript));
-  v.push_back(getFactory()->center(base));
-  if (overScript) v.push_back(getFactory()->center(overScript));
+  if (underScript) v.push_back(factory->center(underScript));
+  v.push_back(factory->center(base));
+  if (overScript) v.push_back(factory->center(overScript));
 
-  return getFactory()->verticalArray(v, underScript ? 1 : 0);
+  return factory->verticalArray(v, underScript ? 1 : 0);
 }
 
 AreaRef
@@ -280,5 +280,5 @@ Gtk_MathGraphicDevice::wrapper(const MathFormattingContext& context,
 			       const AreaRef& base) const
 {
   BoundingBox box = base->box();
-  return getFactory()->box(base, box);
+  return factory->wrapper(base, box, context.getElement());
 }

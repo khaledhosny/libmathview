@@ -32,6 +32,7 @@
 #include "Gtk_PangoGlyphArea.hh"
 #include "Gtk_PangoLayoutArea.hh"
 #include "Gtk_XftGlyphArea.hh"
+#include "Gtk_WrapperArea.hh"
 
 class Gtk_AreaFactory : public AreaFactory
 {
@@ -52,12 +53,14 @@ public:
 
   // new methods
 
-  virtual SmartPtr<Gtk_PangoGlyphArea> pangoGlyph(PangoFont* f, PangoGlyphString* gs)
+  virtual SmartPtr<Gtk_PangoGlyphArea> pangoGlyph(PangoFont* f, PangoGlyphString* gs) const
   { return Gtk_PangoGlyphArea::create(f, gs); }
-  virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayout(PangoLayout* layout)
+  virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayout(PangoLayout* layout) const
   { return Gtk_PangoLayoutArea::create(layout); }
-  virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FT_UInt glyph)
+  virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FT_UInt glyph) const
   { return Gtk_XftGlyphArea::create(font, glyph); }
+  virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<Object>& el) const
+  { return Gtk_WrapperArea::create(area, box, el); }
 };
 
 #endif // __Gtk_AreaFactory_hh__

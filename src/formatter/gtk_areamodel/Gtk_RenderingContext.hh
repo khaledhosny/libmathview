@@ -44,11 +44,13 @@ public:
   void getForegroundColor(RGBColor& c) { c = foregroundColor; }
   void getForegroundColor(GdkColor& c) { c = gdk_foregroundColor; }
 
+  void setSelectionColors(const RGBColor&, const RGBColor&);
+
   void setWidget(const GObjectPtr<GtkWidget>&);
   GObjectPtr<GtkWidget> getWidget(void) const { return gtk_widget; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
-  GObjectPtr<GdkGC> getGC(void) const { return gdk_gc; }
+  GObjectPtr<GdkGC> getGC(void) const { return selection ? gdk_selected_gc : gdk_gc; }
   XftDraw* getXftDraw(void) const { return xft_draw; }
   const XftColor* getXftColor(void) const { return &xft_foregroundColor; }
 
@@ -60,8 +62,16 @@ public:
   scaled getWidth(void) const { return region.width; }
   scaled getHeight(void) const { return region.height; }
 
-  void setRegion(const Rectangle& r) { region = r; }
   Rectangle getRegion(void) const { return region; }
+  void setRegion(const Rectangle& r) { region = r; }
+
+  bool getSelection(void) const { return selection; }
+  bool setSelection(bool b)
+  {
+    bool oldSelection = selection;
+    selection = b;
+    return oldSelection;
+  }
 
   static int toGtkPixels(const scaled& s);
   static int toXftPixels(const scaled& s);
@@ -75,6 +85,7 @@ protected:
 
   RGBColor foregroundColor;
   Rectangle region;
+  bool selection;
 
   // GTK-specific fields
   GObjectPtr<GtkWidget> gtk_widget;
@@ -82,6 +93,7 @@ protected:
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;
   GObjectPtr<GdkGC> gdk_gc;
+  GObjectPtr<GdkGC> gdk_selected_gc;
   GObjectPtr<GdkColormap> gdk_colormap;
   GdkColor gdk_foregroundColor;
 

@@ -17,7 +17,8 @@ libgtk_areamodel_la_SOURCES = \
   Gtk_PangoLayoutArea.cc \
   Gtk_PangoGlyphArea.cc \
   Gtk_ColorArea.cc \
-  Gtk_InkArea.cc
+  Gtk_InkArea.cc \
+  Gtk_WrapperArea.cc
 
 pkginclude_HEADERS = \
   Gtk_AreaFactory.hh \
@@ -26,7 +27,8 @@ pkginclude_HEADERS = \
   Gtk_PangoLayoutArea.hh \
   Gtk_PangoGlyphArea.hh \
   Gtk_ColorArea.hh \
-  Gtk_InkArea.hh
+  Gtk_InkArea.hh \
+  Gtk_WrapperArea.hh
 
 INCLUDES = \
   $(PANGOX_CFLAGS) \

@@ -29,10 +29,8 @@
 #include "Gtk_RenderingContext.hh"
 
 Gtk_RenderingContext::Gtk_RenderingContext()
-{
-  xft_draw = 0;
-  gtk_widget = 0;
-}
+  : selection(false), xft_draw(0)
+{ }
 
 Gtk_RenderingContext::~Gtk_RenderingContext()
 {
