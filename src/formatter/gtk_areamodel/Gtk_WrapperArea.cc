@@ -46,13 +46,14 @@ Gtk_WrapperArea::render(RenderingContext& context, const scaled& x, const scaled
 bool
 Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
 {
+  if (context.accept(this, x, y))
+    {
 #if 0
   std::cerr << "Wrapper::find: " << box() << " (" << x << "," << y << ") "
 	    << " SEARCHING FOR (" << context.getX() << "," << context.getY() << ")" << std::endl;
 #endif
 
-  if (context.accept(this, x, y))
-    {
+
       if (!BoxArea::find(context, x, y))
 	context.setResult(this);
       return true;

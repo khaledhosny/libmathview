@@ -137,16 +137,11 @@ MathMLView::setRoot(const DOM::Element& elem)
 SmartPtr<MathMLElement>
 MathMLView::getElementAt(const scaled& x, const scaled& y) const
 {
-  // WARNING: x and y must be absolute coordinates w.r.t. the drawing
-  // area, because at this level we do not known whether the drawing
-  // area is scrollable (as in the case of Gtk_DrawingArea) or not
-  // (PS_DrawingArea). The caller must properly adjust x and y before
-  // calling this method
   if (AreaRef rootArea = getRootArea())
     {
       BoundingBox box = rootArea->box();
       SearchingContext context(x, y);
-      if (rootArea->find(context, scaled::zero(), -box.height))
+      if (rootArea->find(context, -x0, -box.height - y0))
 	if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(context.getResult()))
 	  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(area->getElement()))
 	    return elem;

@@ -1097,10 +1097,13 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->view != NULL, NULL);
 
+#if 0
   gint x0 = (math_view->vadjustment != NULL) ? static_cast<int>(math_view->hadjustment->value) : 0;
   gint y0 = (math_view->hadjustment != NULL) ? static_cast<int>(math_view->vadjustment->value) : 0;
+#endif
 
-  SmartPtr<MathMLElement> at = math_view->view->getElementAt(px2sp(x0 + x), px2sp(y0 + y));
+  SmartPtr<MathMLElement> at = math_view->view->getElementAt(Gtk_RenderingContext::fromGtkX(x),
+							     Gtk_RenderingContext::fromGtkY(y));
   return gdome_cast_el(findDOMNode(at).gdome_object());
 }
 
