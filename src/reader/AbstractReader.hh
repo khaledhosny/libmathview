@@ -28,8 +28,8 @@
 class AbstractReader
 {
 public:
+  virtual unsigned nodeType(void) const = 0;
   virtual String name(void) const = 0;
-  virtual String localName(void) const = 0;
   virtual String namespaceURI(void) const = 0;
   virtual String prefix(void) const = 0;
   virtual String value(void) const = 0;
@@ -38,8 +38,6 @@ public:
   virtual String getAttribute(const String&) const = 0;
   virtual String getAttributeNS(const String&, const String&) const = 0;
   virtual String getAttributeNo(unsigned) const = 0;
-
-  virtual unsigned nodeType(void) const = 0;
 
   virtual bool more(void) const = 0;
   virtual void firstChild(void) = 0;
