@@ -69,11 +69,9 @@ T1_Gtk_DrawingArea::Realize()
     assert(pvisual != NULL);
 
     T1_AASetBitsPerPixel(pvisual->visual.depth);
-#if 0
     MathEngine::logger(LOG_DEBUG, "X11 depth: %d", pvisual->visual.depth);
     MathEngine::logger(LOG_DEBUG, "X11 AAGetLevel() --> %d\n", T1_AAGetLevel());
     MathEngine::logger(LOG_DEBUG, "X11 AAGetBitsPerPixel() --> %d\n", T1_AAGetBitsPerPixel());
-#endif
     T1_SetX11Params(pwindow->xdisplay, pvisual->xvisual, pvisual->visual.depth, pcolormap->xcolormap);
 
     firstTime = false;

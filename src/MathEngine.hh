@@ -50,7 +50,9 @@ public:
   bool  IsOnLink(scaled, scaled) const;
 
   void                 SetSelectionFirst(scaled, scaled);
-  class MathMLElement* SetSelectionLast(scaled, scaled);
+  void                 SetSelectionLast(scaled, scaled);
+  class MathMLElement* GetSelectionRoot(void) const { return selectionRoot; }
+  void                 ResetSelectionRoot(void);
   void                 SetSelection(class MathMLElement*);
   class MathMLElement* GetSelection(void) const { return selection; }
 
@@ -88,6 +90,7 @@ private:
   class MathMLElement*  root;
 
   class MathMLElement*  selectionFirst;
+  class MathMLElement*  selectionRoot;
   class MathMLElement*  selection;
 
   class DrawingArea& area;

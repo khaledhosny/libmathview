@@ -86,9 +86,7 @@ GUI_init(int *argc, char ***argv, char *title, guint width, guint height, gboole
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), title);
   gtk_window_set_default_size(GTK_WINDOW(window), width, height);
-#if 0
   gtk_signal_connect(GTK_OBJECT(window), "delete_event", (GtkSignalFunc) gtk_main_quit, NULL);
-#endif
   create_widget_set(t1_font_manager);
 
   gtk_widget_show(window);

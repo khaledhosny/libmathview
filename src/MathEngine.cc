@@ -59,7 +59,7 @@ MathEngine::MathEngine(DrawingArea& a, FontManager& fm, MathMLDocument* d) :
   if (document != NULL) root = document->GetRoot();
   else root = NULL;
 
-  selectionFirst = selection = NULL;
+  selectionFirst = selectionRoot = selection = NULL;
 }
 
 MathEngine::~MathEngine()
@@ -105,7 +105,7 @@ MathEngine::Unload()
   document = NULL;  
   root = NULL;
 
-  selectionFirst = selection = NULL;
+  selectionFirst = selectionRoot = selection = NULL;
 }
 
 void
@@ -230,19 +230,23 @@ MathEngine::SelectMinimumTree(MathMLElement* first, MathMLElement* last)
   return first;
 }
 
-MathMLElement*
+void
 MathEngine::SetSelectionLast(scaled x, scaled y)
 {
-  if (selectionFirst == NULL) return NULL;
+  if (selectionFirst == NULL);
 
   MathMLElement* selectionLast = GetElementAt(x, y);
-  if (selectionLast == NULL) return NULL;
+  if (selectionLast == NULL) return;
 
-  MathMLElement* selectionRoot = SelectMinimumTree(selectionFirst, selectionLast);
+  selectionRoot = SelectMinimumTree(selectionFirst, selectionLast);
   while (selectionRoot != NULL && selectionRoot->GetDOMNode() == NULL)
     selectionRoot = selectionRoot->GetParent();
+}
 
-  return selectionRoot;
+void
+MathEngine::ResetSelectionRoot()
+{
+  selectionFirst = selectionRoot = NULL;
 }
 
 void

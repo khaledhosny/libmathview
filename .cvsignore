@@ -1,1 +1,8 @@
 .emacs.desktop
+config.h
+config.h.in
+config.cache
+config.log
+config.status
+t1lib.log
+

@@ -235,7 +235,7 @@ mdom_node_get_attribute(mDOMNodeRef node, mDOMConstStringRef name)
 }
 
 mDOMStringRef
-mdom_node_get_attribute_ns(mDOMNodeRef node, mDOMConstStringRef uri, mDOMConstStringRef name)
+mdom_node_get_attribute_ns(mDOMNodeRef node, mDOMConstStringRef name, mDOMConstStringRef uri)
 {
   g_return_val_if_fail(node != NULL, NULL);
   g_return_val_if_fail(uri != NULL, NULL);
