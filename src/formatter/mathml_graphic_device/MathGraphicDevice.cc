@@ -56,6 +56,8 @@ MathGraphicDevice::evaluate(const MathFormattingContext& context,
       return defaultValue * length.value;
     case Length::INFINITY_UNIT:
       return scaled::max();
+    case Length::LT_UNIT:
+      return defaultLineThickness(context) * length.value;
     case Length::EM_UNIT:
       return em(context) * length.value;
     case Length::EX_UNIT:
