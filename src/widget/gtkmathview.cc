@@ -200,14 +200,17 @@ paint_widget(GtkMathView* math_view)
   math_view->view->setOrigin(Gtk_RenderingContext::fromGtkX(math_view->top_x - MARGIN),
 			     Gtk_RenderingContext::fromGtkY(math_view->top_y - MARGIN));
 
-  math_view->view->getRootArea()->render(*math_view->renderingContext,
-					 math_view->view->getOriginX(),
-					 math_view->view->getOriginY());
+  if (AreaRef rootArea = math_view->view->getRootArea())
+    {
+      rootArea->render(*math_view->renderingContext,
+		       math_view->view->getOriginX(),
+		       math_view->view->getOriginY());
 
-  gdk_draw_pixmap(widget->window,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		  math_view->pixmap,
-		  0, 0, 0, 0, width, height);
+      gdk_draw_pixmap(widget->window,
+		      widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+		      math_view->pixmap,
+		      0, 0, 0, 0, width, height);
+    }
 }
 
 static void

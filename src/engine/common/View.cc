@@ -34,6 +34,7 @@
 
 View::View()
 {
+  registry = NamespaceRegistry::create();
   freezeCounter = 0;
 }
 
