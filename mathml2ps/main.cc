@@ -75,7 +75,7 @@ static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = 10;
 static bool   colors = false;
-static bool   embedFonts = false;
+static bool   embedFonts = true;
 static bool   subsetFonts = true;
 static bool   cropping = true;
 static bool   showMissing = true;
@@ -111,7 +111,7 @@ Usage: mathml2ps [options] file ...\n\n\
   -f, --font-size=<float>         Default font size (in pt, default=10)\n\
   -k, --kerning[=yes|no]          Enable/disable kerning (default='no')\n\
   -c, --colors[=yes|no]           Enable/disable colors (default='no')\n\
-  -E, --embed-fonts[=yes|no]      Enable/disable font embedding (default='no')\n\
+  -E, --embed-fonts[=yes|no]      Enable/disable font embedding (default='yes')\n\
   -s, --subset-fonts[=yes|no]     Enable/disable font subsetting (default='yes')\n\
   -r, --crop[=yes|no]             Enable/disable cropping to bounding box (default='yes')\n\
   -i, --show-missing[=yes|no]     Show missing characters (default='yes')\n\
