@@ -23,31 +23,17 @@
 #ifndef MathMLTableCellElement_hh
 #define MathMLTableCellElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLTableCellElement : public MathMLNormalizingContainerElement
 {
 protected:
-  MathMLTableCellElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLTableCellElement(const DOM::Element&);
-#endif
+  MathMLTableCellElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLTableCellElement();
 
-private:
-  void Init(void);
-
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLTableCellElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLTableCellElement(el)); }
-#endif
+  static SmartPtr<MathMLTableCellElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLTableCellElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);

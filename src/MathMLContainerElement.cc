@@ -26,18 +26,8 @@
 
 #include "MathMLContainerElement.hh"
 
-MathMLContainerElement::MathMLContainerElement()
-{
-}
-
-#if defined(HAVE_GMETADOM)
-MathMLContainerElement::MathMLContainerElement(const DOM::Element& node)
-  : MathMLElement(node)
-{
-}
-#endif
-
-MathMLContainerElement::~MathMLContainerElement()
+MathMLContainerElement::MathMLContainerElement(const SmartPtr<class MathMLView>& view)
+  : MathMLElement(view)
 {
 }
 

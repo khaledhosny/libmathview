@@ -20,25 +20,32 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLNormalizingContainerElement_hh
-#define MathMLNormalizingContainerElement_hh
+#ifndef __MathMLViewContext_hh__
+#define __MathMLViewContext_hh__
 
-#include "MathMLBinContainerElement.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
 
-// base class for MathML elements that infer an mrow when the number of
-// children is not 1
-class MathMLNormalizingContainerElement : public MathMLBinContainerElement
+class MathMLViewContext : public Object
 {
 protected:
-  MathMLNormalizingContainerElement(const SmartPtr<class MathMLView>&);
-  virtual ~MathMLNormalizingContainerElement();
+  MathMLViewContext(const SmartPtr<class MathMLDOMLinker>&,
+		    const SmartPtr<class MathMLFormattingEngineFactory>&,
+		    const SmartPtr<class AreaFactory>&,
+		    const SmartPtr<class ShaperManager>&);
+  virtual ~MathMLViewContext();
 
 public:
-  virtual void construct(void);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-
-  virtual void SetDirtyStructure(void);
+  static SmartPtr<MathMLViewContext> create(const SmartPtr<class MathMLDOMLinker>& l,
+					    const SmartPtr<class MathMLFormattingEngineFactory>& ef,
+					    const SmartPtr<class AreaFactory>& af,
+					    const SmartPtr<class ShaperManager>& sm)
+  { return new MathMLViewContext(l, ef, af, sm); }
+  
+  SmartPtr<class MathMLDOMLinker> linker;
+  SmartPtr<class AreaFactory> areaFactory;
+  SmartPtr<class ShaperManager> shaperManager;
+  SmartPtr<class MathMLFormattingEngineFactory> engineFactory;
 };
 
-#endif // MathMLNormalizingContainerElement_hh
+#endif // __MathMLViewContext_hh__

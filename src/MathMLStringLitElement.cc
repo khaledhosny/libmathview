@@ -28,18 +28,11 @@
 #include "MathMLStringNode.hh"
 #include "ValueConversion.hh"
 
-MathMLStringLitElement::MathMLStringLitElement()
+MathMLStringLitElement::MathMLStringLitElement(const SmartPtr<class MathMLView>& view)
+  : MathMLTokenElement(view)
 {
   setupDone = false;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLStringLitElement::MathMLStringLitElement(const DOM::Element& node)
-  : MathMLTokenElement(node)
-{
-  setupDone = false;
-}
-#endif
 
 MathMLStringLitElement::~MathMLStringLitElement()
 {

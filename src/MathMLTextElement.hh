@@ -23,28 +23,17 @@
 #ifndef MathMLTextElement_hh
 #define MathMLTextElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLTokenElement.hh"
 
 class MathMLTextElement : public MathMLTokenElement
 {
 protected:
-  MathMLTextElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLTextElement(const DOM::Element&);
-#endif
+  MathMLTextElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLTextElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLTextElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLTextElement(el)); }
-#endif
+  static SmartPtr<MathMLTextElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLTextElement(view); }
 
   virtual bool IsSpaceLike(void) const;
 };

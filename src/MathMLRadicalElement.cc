@@ -24,43 +24,33 @@
 
 #include <cassert>
 
-#include "unidefs.h"
-#include "Globals.hh"
 #include "ChildList.hh"
+#include "ConstructionContext.hh"
 #include "EntitiesTable.hh"
-#include "MathMLRowElement.hh"
-#include "MathMLDummyElement.hh"
-#include "MathMLRadicalElement.hh"
-#include "RenderingEnvironment.hh"
-#include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
+#include "Globals.hh"
+#include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLRadicalElement.hh"
+#include "MathMLRowElement.hh"
+#include "MathMLView.hh"
+#include "RenderingEnvironment.hh"
+#include "unidefs.h"
 
-MathMLRadicalElement::MathMLRadicalElement()
+MathMLRadicalElement::MathMLRadicalElement(const SmartPtr<class MathMLView>& view)
+  : MathMLContainerElement(view)
 {
-  Init();
+  //radical = 0;
+  radicand = 0;
+  index = 0;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLRadicalElement::MathMLRadicalElement(const DOM::Element& node)
-  : MathMLContainerElement(node)
-{
-  Init();
-}
-#endif
 
 MathMLRadicalElement::~MathMLRadicalElement()
 {
   //radical = 0;
   SetRadicand(0);
   SetIndex(0);
-}
-
-void
-MathMLRadicalElement::Init()
-{
-  //radical = 0;
-  radicand = 0;
-  index = 0;
 }
 
 void
@@ -90,45 +80,45 @@ MathMLRadicalElement::SetIndex(const SmartPtr<MathMLElement>& elem)
 }
 
 void
-MathMLRadicalElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLRadicalElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
 	  if (IsA() == TAG_MSQRT)
 	    {
-	      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	      if (children.get_length() == 1)
 		{
 		  DOM::Node node = children.item(0);
 		  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-		  SetRadicand(doc->getFormattingNode(node));
+		  SetRadicand(getFormattingNode(node));
 		}
 	      else
-		SetRadicand(MathMLRowElement::create(GetDOMElement()));
+		SetRadicand(getFormattingNode(getDOMElement()));
 
 	      SetIndex(0);
 	    }
 	  else
 	    {
 	      assert(IsA() == TAG_MROOT);	      
-	      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 
 	      switch (children.get_length())
 		{
 		case 0:
-		  SetRadicand(MathMLDummyElement::create());
-		  SetIndex(MathMLDummyElement::create());
+		  SetRadicand(getFactory()->createDummyElement(getView()));
+		  SetIndex(getFactory()->createDummyElement(getView()));
 		  break;
 		case 1:
-		  SetRadicand(doc->getFormattingNode(children.item(0)));
-		  SetIndex(MathMLDummyElement::create());
+		  SetRadicand(getFormattingNode(children.item(0)));
+		  SetIndex(getFactory()->createDummyElement(getView()));
 		  break;
 		default:
-		  SetRadicand(doc->getFormattingNode(children.item(0)));
-		  SetIndex(doc->getFormattingNode(children.item(1)));
+		  SetRadicand(getFormattingNode(children.item(0)));
+		  SetIndex(getFormattingNode(children.item(1)));
 		  break;
 		}
 	    }
@@ -141,8 +131,8 @@ MathMLRadicalElement::Normalize(const SmartPtr<MathMLDocument>& doc)
       radical->SetParent(this);
 #endif
 
-      if (radicand) radicand->Normalize(doc);
-      if (index) index->Normalize(doc);
+      if (radicand) radicand->construct();
+      if (index) index->construct();
 
       ResetDirtyStructure();
     }

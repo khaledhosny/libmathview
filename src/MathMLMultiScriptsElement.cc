@@ -27,26 +27,23 @@
 #include <algorithm>
 #include <functional>
 
-#include "Globals.hh"
 #include "Adaptors.hh"
-#include "for_each_if.h"
 #include "ChildList.hh"
-#include "MathMLDummyElement.hh"
-#include "RenderingEnvironment.hh"
-#include "MathMLOperatorElement.hh"
-#include "MathMLMultiScriptsElement.hh"
+#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
+#include "Globals.hh"
+#include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLMultiScriptsElement.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLView.hh"
+#include "RenderingEnvironment.hh"
+#include "for_each_if.h"
 
-MathMLMultiScriptsElement::MathMLMultiScriptsElement()
+MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathMLView>& view)
+  : MathMLContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLMultiScriptsElement::MathMLMultiScriptsElement(const DOM::Element& node)
-  : MathMLContainerElement(node)
-{
-}
-#endif
 
 MathMLMultiScriptsElement::~MathMLMultiScriptsElement()
 {
@@ -222,12 +219,12 @@ MathMLMultiScriptsElement::Replace(const SmartPtr<MathMLElement>& oldElem, const
 }
 
 void
-MathMLMultiScriptsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLMultiScriptsElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
       unsigned i = 0;
       unsigned nScripts = 0;
       unsigned nPreScripts = 0;
@@ -243,11 +240,11 @@ MathMLMultiScriptsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	      SmartPtr<MathMLElement> elem;
 	      if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
 		{
-		  elem = doc->getFormattingNode(node);
+		  elem = getFormattingNode(node);
 		  i++;
 		}
 	      if (elem) SetBase(elem);
-	      else if (!is_a<MathMLDummyElement>(base)) SetBase(MathMLDummyElement::create());
+	      else if (!is_a<MathMLDummyElement>(base)) SetBase(getFactory()->createDummyElement(getView()));
 	    }
 	  else if (nodeLocalName(node) == "mprescripts")
 	    {
@@ -263,14 +260,14 @@ MathMLMultiScriptsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	      SmartPtr<MathMLElement> sup;
 
 	      if (nodeLocalName(node) != "none")
-		sub = doc->getFormattingNode(node);
+		sub = getFormattingNode(node);
 	      i++;
 	      
 	      if (i < n)
 		{
 		  node = children.item(i);
 		  if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
-		    sup = doc->getFormattingNode(node);
+		    sup = getFormattingNode(node);
 		  if (nodeLocalName(node) != "mprescripts") i++;
 		}
 
@@ -287,14 +284,14 @@ MathMLMultiScriptsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	      SmartPtr<MathMLElement> sup;
 
 	      if (nodeLocalName(node) != "none")
-		sub = doc->getFormattingNode(node);
+		sub = getFormattingNode(node);
 	      i++;
 	      
 	      if (i < n)
 		{
 		  node = children.item(i);
 		  if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
-		    sup = doc->getFormattingNode(node);
+		    sup = getFormattingNode(node);
 		  if (nodeLocalName(node) != "mprescripts") i++;
 		}
 
@@ -307,20 +304,16 @@ MathMLMultiScriptsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	    }
 	}
       
-      if (n == 0 && !is_a<MathMLDummyElement>(base)) base = MathMLDummyElement::create();
+      if (n == 0 && !is_a<MathMLDummyElement>(base)) base = getFactory()->createDummyElement(getView());
       SetScriptsSize(nScripts);
       SetPreScriptsSize(nPreScripts);
 #endif // HAVE_GMETADOM
 
-      if (base) base->Normalize(doc);
-      for_each_if(subScript.begin(), subScript.end(),
-		  NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
-      for_each_if(superScript.begin(), superScript.end(),
-		  NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
-      for_each_if(preSubScript.begin(), preSubScript.end(),
-		  NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
-      for_each_if(preSuperScript.begin(), preSuperScript.end(),
-		  NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
+      if (base) base->construct();
+      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate(), ConstructAdaptor());
+      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate(), ConstructAdaptor());
+      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate(), ConstructAdaptor());
+      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate(), ConstructAdaptor());
 
       ResetDirtyStructure();
     }

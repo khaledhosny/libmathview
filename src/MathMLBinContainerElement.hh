@@ -23,24 +23,17 @@
 #ifndef MathMLBinContainerElement_hh
 #define MathMLBinContainerElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLContainerElement.hh"
 
 // base class for every non-empty MathML container element
-class MathMLBinContainerElement: public MathMLContainerElement
+class MathMLBinContainerElement : public MathMLContainerElement
 {
 protected:
-  MathMLBinContainerElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLBinContainerElement(const DOM::Element&);
-#endif
+  MathMLBinContainerElement(const SmartPtr<class MathMLView>& view);
   virtual ~MathMLBinContainerElement();
 
 public:
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

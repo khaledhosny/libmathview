@@ -23,28 +23,17 @@
 #ifndef MathMLStringLitElement_hh
 #define MathMLStringLitElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLTokenElement.hh"
 
 class MathMLStringLitElement : public MathMLTokenElement
 {
 protected:
-  MathMLStringLitElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLStringLitElement(const DOM::Element&);
-#endif
+  MathMLStringLitElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLStringLitElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLStringLitElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLStringLitElement(el)); }
-#endif
+  static SmartPtr<MathMLStringLitElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLStringLitElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);

@@ -71,7 +71,8 @@ libgtkmathview_la_SOURCES = \
   ChildList.cc \
   HorizontalLayout.cc \
   VerticalLayout.cc \
-  MathMLRenderingEngine.cc \
+  MathMLDOMLinker.cc \
+  MathMLFormattingEngineFactory.cc \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
@@ -81,7 +82,6 @@ libgtkmathview_la_SOURCES = \
   MathMLContainerElement.cc \
   MathMLBinContainerElement.cc \
   MathMLLinearContainerElement.cc \
-  MathMLDocument.cc \
   MathMLDummyElement.cc \
   MathMLElement.cc \
   MathMLEmbellishment.cc \
@@ -101,6 +101,7 @@ libgtkmathview_la_SOURCES = \
   MathMLOperatorElement.cc \
   MathMLPaddedElement.cc \
   MathMLParseFile.cc \
+  MathMLDOMLinker.cc \
   MathMLPhantomElement.cc \
   MathMLRadicalElement.cc \
   MathMLRowElement.cc \
@@ -120,6 +121,8 @@ libgtkmathview_la_SOURCES = \
   MathMLTextNode.cc \
   MathMLTokenElement.cc \
   MathMLUnderOverElement.cc \
+  MathMLView.cc \
+  MathMLViewContext.cc \
   MathMLmathElement.cc \
   OperatorDictionary.cc \
   Rectangle.cc \
@@ -164,7 +167,8 @@ noinst_HEADERS = \
   HorizontalLayout.hh \
   VerticalLayout.hh \
   FormattingContext.hh \
-  MathMLRenderingEngine.hh \
+  MathMLDOMLinker.hh \
+  MathMLFormattingEngineFactory.cc \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \
@@ -173,7 +177,6 @@ noinst_HEADERS = \
   MathMLContainerElement.hh \
   MathMLBinContainerElement.hh \
   MathMLLinearContainerElement.hh \
-  MathMLDocument.hh \
   MathMLDummyElement.hh \
   MathMLElement.hh \
   MathMLEmbellishment.hh \
@@ -193,6 +196,7 @@ noinst_HEADERS = \
   MathMLOperatorElement.hh \
   MathMLPaddedElement.hh \
   MathMLParseFile.hh \
+  MathMLDOMLinker.hh \
   MathMLPhantomElement.hh \
   MathMLRadicalElement.hh \
   MathMLRowElement.hh \
@@ -212,6 +216,8 @@ noinst_HEADERS = \
   MathMLTextNode.hh \
   MathMLTokenElement.hh \
   MathMLUnderOverElement.hh \
+  MathMLView.hh \
+  MathMLViewContext.hh \
   MathMLmathElement.hh \
   OperatorDictionary.hh \
   RGBValue.hh \

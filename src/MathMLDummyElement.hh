@@ -23,30 +23,18 @@
 #ifndef MathMLDummyElement_hh
 #define MathMLDummyElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLElement.hh"
 
 class MathMLDummyElement : public MathMLElement
 {
 protected:
-  MathMLDummyElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLDummyElement(const DOM::Element&);
-#endif
+  MathMLDummyElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLDummyElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLDummyElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLDummyElement(el)); }
-#endif
+  static SmartPtr<MathMLDummyElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLDummyElement(view); }
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void Render(const DrawingArea&);

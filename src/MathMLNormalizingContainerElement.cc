@@ -24,61 +24,58 @@
 
 #include <cassert>
 
-#include "defs.h"
 #include "ChildList.hh"
-#include "MathMLDocument.hh"
-#include "MathMLRowElement.hh"
-#include "MathMLDummyElement.hh"
-#include "MathMLNormalizingContainerElement.hh"
+#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
+#include "MathMLDocument.hh"
+#include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLNormalizingContainerElement.hh"
+#include "MathMLRowElement.hh"
+#include "MathMLView.hh"
+#include "defs.h"
 
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement()
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const SmartPtr<class MathMLView>& view)
+  : MathMLBinContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const DOM::Element& node)
-  : MathMLBinContainerElement(node)
-{
-}
-#endif
 
 MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
 {
 }
 
 void
-MathMLNormalizingContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLNormalizingContainerElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
       unsigned n = children.get_length();
       if (n == 1)
 	{
 	  DOM::Node node = children.item(0);
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
+	  SmartPtr<MathMLElement> elem = getFormattingNode(node);
 	  assert(elem);
 	  SetChild(elem);
 	}
       else 
 	{
 	  SmartPtr<MathMLRowElement> row;
-	  if (GetChild() && is_a<MathMLRowElement>(GetChild()) && !GetChild()->GetDOMElement())
+	  if (GetChild() && is_a<MathMLRowElement>(GetChild()) && !GetChild()->getDOMElement())
 	    // this must be an inferred mrow
 	    row = smart_cast<MathMLRowElement>(GetChild());
 	  else
-	    row = smart_cast<MathMLRowElement>(MathMLRowElement::create());
-	  assert(row && !row->GetDOMElement());
+	    row = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
+	  assert(row && !row->getDOMElement());
 	  SetChild(row);
 
 	  std::vector< SmartPtr<MathMLElement> > newContent;
 	  newContent.reserve(n);
 	  for (unsigned i = 0; i < n; i++)
 	    {
-	      SmartPtr<MathMLElement> elem = doc->getFormattingNode(children.item(i));
+	      SmartPtr<MathMLElement> elem = getFormattingNode(children.item(i));
 	      assert(elem);
 	      newContent.push_back(elem);
 	    }
@@ -90,7 +87,7 @@ MathMLNormalizingContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc
 #endif
 
       assert(GetChild());
-      GetChild()->Normalize(doc);
+      GetChild()->construct();
 
       ResetDirtyStructure();
     }
@@ -130,6 +127,6 @@ MathMLNormalizingContainerElement::SetDirtyStructure()
   // if the structure of this element gets dirty, and there is
   // an inferred mrow, then the mrow itself has a dirty strcuture,
   // even if it has no corresponding DOM element
-  if (child && !child->GetDOMElement() && is_a<MathMLRowElement>(child))
+  if (child && !child->getDOMElement() && is_a<MathMLRowElement>(child))
     child->SetDirtyStructure();
 }

@@ -23,10 +23,6 @@
 #ifndef MathMLTokenElement_hh
 #define MathMLTokenElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include <vector>
 
 #include "RGBValue.hh"
@@ -38,20 +34,10 @@
 class MathMLTokenElement : public MathMLElement
 {
 protected:
-  MathMLTokenElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLTokenElement(const DOM::Element&);
-#endif
+  MathMLTokenElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLTokenElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLTokenElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLTokenElement(el)); }
-#endif
-
   unsigned       GetSize(void) const { return content.size(); }
   void           SetSize(unsigned);
   SmartPtr<class MathMLTextNode> GetChild(unsigned) const;
@@ -62,7 +48,7 @@ public:
   void           Append(const String&);
   void           SwapChildren(std::vector< SmartPtr<MathMLTextNode> >&);
 
-  virtual void   Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void   construct(void);
   virtual void   refine(class AbstractRefinementContext&);
   virtual void 	 Setup(class RenderingEnvironment&);
   virtual void 	 DoLayout(const class FormattingContext&);

@@ -31,18 +31,11 @@
 #include "FormattingContext.hh"
 #include "ValueConversion.hh"
 
-MathMLActionElement::MathMLActionElement(void)
+MathMLActionElement::MathMLActionElement(const SmartPtr<class MathMLView>& view)
+  : MathMLLinearContainerElement(view)
 {
   selection = 0;
 }
-
-#if defined(HAVE_GMETADOM)
-  MathMLActionElement::MathMLActionElement(const DOM::Element& node)
-  : MathMLLinearContainerElement(node)
-{
-  selection = 0;
-}
-#endif
 
 MathMLActionElement::~MathMLActionElement()
 {

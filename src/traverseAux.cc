@@ -29,6 +29,8 @@
 #include "MathMLRowElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
+#include "MathMLView.hh"
+#include "MathMLDOMLinker.hh"
 // the following are needed for the dynamic casts
 #include "MathMLScriptElement.hh"
 #include "MathMLUnderOverElement.hh"
@@ -175,26 +177,29 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
 {
   SmartPtr<MathMLElement> elemP(elem);
 
-  while (elemP && !elemP->GetDOMElement())
+  while (elemP && !elemP->getDOMElement())
     elemP = elemP->GetParent();
 
-  if (elemP) return elemP->GetDOMElement();
+  if (elemP) return elemP->getDOMElement();
   else return DOM::Element(0);
 }
 
 SmartPtr<MathMLElement>
-findMathMLElement(const SmartPtr<MathMLDocument>& doc, const DOM::Element& node)
+findMathMLElement(const SmartPtr<MathMLView>& view, const DOM::Element& node)
 {
-  SmartPtr<MathMLElement> elem = doc->getFormattingNodeNoCreate(node);
   
-  if (elem)
-    while (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
-      {
-	if (row->GetSize() != 1) break;
-	elem = row->GetChild(0);
-      }
-
-  return elem;
+  
+  if (SmartPtr<MathMLElement> elem = view->getContext()->linker->get(node))
+    {
+      while (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
+	{
+	  if (row->GetSize() != 1) break;
+	  elem = row->GetChild(0);
+	}
+      return elem;
+    }
+  else
+    return 0;
 }
 
 #endif // HAVE_GMETADOM

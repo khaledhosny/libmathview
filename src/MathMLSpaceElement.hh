@@ -23,30 +23,18 @@
 #ifndef MathMLSpaceElement_hh
 #define MathMLSpaceElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLElement.hh"
 
-class MathMLSpaceElement: public MathMLElement
+class MathMLSpaceElement : public MathMLElement
 {
 protected:
-  MathMLSpaceElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLSpaceElement(const DOM::Element&);
-#endif
+  MathMLSpaceElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLSpaceElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLSpaceElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLSpaceElement(el)); }
-#endif
+  static SmartPtr<MathMLSpaceElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLSpaceElement(view); }
 
-  virtual void    Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void    refine(class AbstractRefinementContext&);
   virtual void    Setup(class RenderingEnvironment&);
   virtual void    DoLayout(const class FormattingContext&);

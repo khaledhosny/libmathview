@@ -24,47 +24,32 @@
 
 #include <cassert>
 
-#include "Globals.hh"
-#include "traverseAux.hh"
-#include "DrawingArea.hh"
-#include "MathMLElement.hh"
-#include "MathMLDocument.hh"
-#include "ValueConversion.hh"
-#include "MathMLStyleElement.hh"
-#include "MathMLAttributeList.hh"
-#include "MathMLOperatorElement.hh"
-#include "RenderingEnvironment.hh"
-#include "FormattingContext.hh"
 #include "AbstractRefinementContext.hh"
+#include "DrawingArea.hh"
+#include "FormattingContext.hh"
+#include "Globals.hh"
+#include "MathMLAttributeList.hh"
+#include "MathMLDOMLinker.hh"
+#include "MathMLDocument.hh"
+#include "MathMLElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLStyleElement.hh"
+#include "MathMLView.hh"
+#include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
 #include "Variant.hh"
-
-#ifdef DEBUG
-int MathMLElement::counter = 0;
-#endif // DEBUG
-
-MathMLElement::MathMLElement()
-#if defined(HAVE_GMETADOM)
-  : node(0)
-#endif
-{
-  Init();
-}
+#include "traverseAux.hh"
 
 // MathMLElement: this is the base class for every MathML presentation element.
 // It implements the basic skeleton of every such element, moreover it handles
 // the attributes and provides some facility functions to access and parse
 // attributes.
-#if defined(HAVE_GMETADOM)
-MathMLElement::MathMLElement(const DOM::Element& n)
-  : node(n)
+MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v)
+  : view(v)
 {
-  Init();
-}
-#endif
+  assert(view);
 
-void
-MathMLElement::Init()
-{
   SetDirtyStructure();
   SetDirtyAttribute();
   SetDirtyLayout();
@@ -78,6 +63,7 @@ MathMLElement::Init()
 MathMLElement::~MathMLElement()
 {
   ReleaseGCs();
+  setDOMElement(DOM::Element(0)); // it is important to invoke this method!
 }
 
 SmartPtr<Value>
@@ -108,7 +94,7 @@ MathMLElement::refineAttribute(const AbstractRefinementContext& context, const M
   SmartPtr<MathMLAttribute> attr;
 
   if (signature.fromElement)
-    if (DOM::Element elem = GetDOMElement())
+    if (DOM::Element elem = getDOMElement())
       if (elem.hasAttribute(signature.name))
 	attr = MathMLAttribute::create(signature, elem.getAttribute(signature.name));
 
@@ -126,18 +112,78 @@ MathMLElement::refineAttribute(const AbstractRefinementContext& context, const M
 	SetDirtyLayout();
 }
 
+SmartPtr<MathMLView>
+MathMLElement::getView() const
+{
+  return static_cast<MathMLView*>(view);
+}
+
+SmartPtr<MathMLViewContext>
+MathMLElement::getViewContext() const
+{
+  return getView()->getContext();
+}
+
+SmartPtr<MathMLDOMLinker>
+MathMLElement::getLinker() const
+{
+  return getViewContext()->linker;
+}
+
+SmartPtr<MathMLFormattingEngineFactory>
+MathMLElement::getFactory() const
+{
+  return getViewContext()->engineFactory;
+}
+
+#if defined(HAVE_GMETADOM)
+void
+MathMLElement::setDOMElement(const DOM::Element& el)
+{
+  if (el != element)
+    {
+      if (element) getLinker()->remove(element);
+      if (el) getLinker()->remove(el);
+      element = el;
+      if (element) getLinker()->add(element, this);
+    }
+}
+
+SmartPtr<MathMLElement>
+MathMLElement::getFormattingNode(const DOM::Element& elem) const
+{
+  assert(elem);
+
+  if (SmartPtr<MathMLElement> el = getLinker()->get(elem))
+    return el;
+
+  SmartPtr<MathMLElement> res = getFactory()->createElement(getView(), nodeLocalName(elem));
+  assert(res);
+  res->setDOMElement(elem);
+  return res;
+}
+
+#endif // HAVE_GMETADOM
+
 bool
 MathMLElement::IsSet(AttributeId id) const
 {
 #if defined(HAVE_GMETADOM)
-  return node && node.hasAttribute(NameOfAttributeId(id));
+  return getDOMElement() && getDOMElement().hasAttribute(NameOfAttributeId(id));
 #else // HAVE_GMETADOM
   return false;
 #endif
 }
 
 void
-MathMLElement::refine(AbstractRefinementContext& ctxt)
+MathMLElement::construct()
+{
+  // nothing to construct
+  ResetDirtyStructure();
+}
+
+void
+MathMLElement::refine(class AbstractRefinementContext&)
 {
   // nothing to refine
   // reset flag
@@ -239,7 +285,7 @@ bool
 MathMLElement::HasLink() const
 {
 #if defined(HAVE_GMETADOM)
-  DOM::Element p = GetDOMElement();
+  DOM::Element p = getDOMElement();
   return p && p.hasAttribute("href");
 #else // HAVE_GMETADOM
   return false;
@@ -264,12 +310,10 @@ MathMLElement::GetCoreOperatorTop()
 TagId
 MathMLElement::IsA() const
 {
-  if (!node) return TAG_NOTVALID;
-
-  std::string s_tag = nodeLocalName(node);
-  TagId res = TagIdOfName(s_tag.c_str());
-
-  return res;
+  if (DOM::Element el = getDOMElement())
+    return TagIdOfName(std::string(nodeLocalName(el)).c_str());
+  else
+    return TAG_NOTVALID;
 }
 
 void

@@ -23,10 +23,6 @@
 #ifndef MathMLActionElement_hh
 #define MathMLActionElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLLinearContainerElement.hh"
 
@@ -34,19 +30,12 @@ class MathMLActionElement
   : public MathMLLinearContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLActionElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLActionElement(const DOM::Element&);
-#endif
+  MathMLActionElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLActionElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLActionElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLActionElement(el)); }
-#endif
+  static SmartPtr<MathMLActionElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLActionElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&);

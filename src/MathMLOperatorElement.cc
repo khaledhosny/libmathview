@@ -34,21 +34,8 @@
 #include "scaledConv.hh"
 #include "traverseAux.hh"
 
-MathMLOperatorElement::MathMLOperatorElement()
-{
-  Init();
-}
-
-#if defined(HAVE_GMETADOM)
-MathMLOperatorElement::MathMLOperatorElement(const DOM::Element& node)
-  : MathMLTokenElement(node)
-{
-  Init();
-}
-#endif
-
-void
-MathMLOperatorElement::Init()
+MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLView>& view)
+  : MathMLTokenElement(view)
 {
   fence = separator = stretchy = symmetric = infiniteMaxSize = accent = movableLimits = 0;
   forcedFence = forcedSeparator = forcedSymmetric = 0;

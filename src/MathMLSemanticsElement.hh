@@ -23,10 +23,6 @@
 #ifndef MathMLSemanticsElement_hh
 #define MathMLSemanticsElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLBinContainerElement.hh"
 
@@ -34,21 +30,14 @@ class MathMLSemanticsElement
   : public MathMLBinContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLSemanticsElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLSemanticsElement(const DOM::Element&);
-#endif
+  MathMLSemanticsElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLSemanticsElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLSemanticsElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLSemanticsElement(el)); }
-#endif
+  static SmartPtr<MathMLSemanticsElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLSemanticsElement(view); }
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);

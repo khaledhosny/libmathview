@@ -23,28 +23,17 @@
 #ifndef MathMLmathElement_hh
 #define MathMLmathElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLmathElement : public MathMLNormalizingContainerElement
 {
 protected:
-  MathMLmathElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLmathElement(const DOM::Element&);
-#endif
+  MathMLmathElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLmathElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLmathElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLmathElement(el)); }
-#endif
+  static SmartPtr<MathMLmathElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLmathElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&);

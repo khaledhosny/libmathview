@@ -24,16 +24,10 @@
 
 #include "MathMLIdentifierElement.hh"
 
-MathMLIdentifierElement::MathMLIdentifierElement()
+MathMLIdentifierElement::MathMLIdentifierElement(const SmartPtr<class MathMLView>& view)
+  : MathMLTokenElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLIdentifierElement::MathMLIdentifierElement(const DOM::Element& node)
-  : MathMLTokenElement(node)
-{
-}
-#endif
 
 MathMLIdentifierElement::~MathMLIdentifierElement()
 {

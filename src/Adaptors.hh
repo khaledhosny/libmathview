@@ -28,11 +28,11 @@
 #include "SmartPtr.hh"
 #include "MathMLElement.hh"
 
-struct NormalizeAdaptor
-  : public std::binary_function<SmartPtr<MathMLElement>,SmartPtr<class MathMLDocument>,void>
+struct ConstructAdaptor
+  : public std::unary_function<SmartPtr<MathMLElement>,void>
 {
-  void operator()(const SmartPtr<MathMLElement>& elem, const SmartPtr<MathMLDocument>& doc) const
-  { elem->Normalize(doc); }
+  void operator()(const SmartPtr<MathMLElement>& elem) const
+  { elem->construct(); }
 };
 
 struct RefineAdaptor

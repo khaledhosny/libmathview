@@ -51,7 +51,7 @@ MathMLStringNode::IsString() const
 void
 MathMLStringNode::Setup(RenderingEnvironment& env)
 {
-  area = env.shaperManager.shape(env.areaFactory, toUCS4String(content), env.GetFontAttributes().size.ToScaledPoints());
+  area = env.shaperManager->shape(env.areaFactory, toUCS4String(content), env.GetFontAttributes().size.ToScaledPoints());
 }
 
 void

@@ -25,10 +25,6 @@
 
 #include <vector>
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
@@ -37,13 +33,13 @@ class MathMLMultiScriptsElement
   : public MathMLContainerElement, public MathMLScriptCommonElement, public MathMLEmbellishment
 {
 protected:
-  MathMLMultiScriptsElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLMultiScriptsElement(const DOM::Element&);
-#endif
+  MathMLMultiScriptsElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLMultiScriptsElement();
 
 public:
+  static SmartPtr<MathMLMultiScriptsElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLMultiScriptsElement(view); }
+
   unsigned GetScriptsSize(void) const { return subScript.size(); }
   void     SetScriptsSize(unsigned);
   unsigned GetPreScriptsSize(void) const { return preSubScript.size(); }
@@ -59,14 +55,7 @@ public:
   SmartPtr<MathMLElement> GetPreSubScript(unsigned) const;
   SmartPtr<MathMLElement> GetPreSuperScript(unsigned) const;
 
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLMultiScriptsElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLMultiScriptsElement(el)); }
-#endif
-
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);

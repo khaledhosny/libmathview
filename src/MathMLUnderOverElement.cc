@@ -28,25 +28,21 @@
 #include "FormattingContext.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
+#include "MathMLView.hh"
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
 #include "operatorAux.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
 
-MathMLUnderOverElement::MathMLUnderOverElement()
+MathMLUnderOverElement::MathMLUnderOverElement(const SmartPtr<class MathMLView>& view)
+  : MathMLContainerElement(view)
 {
   underScript = overScript = 0;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLUnderOverElement::MathMLUnderOverElement(const DOM::Element& node)
-  : MathMLContainerElement(node)
-{
-}
-#endif
 
 MathMLUnderOverElement::~MathMLUnderOverElement()
 {
@@ -99,46 +95,46 @@ MathMLUnderOverElement::Replace(const SmartPtr<MathMLElement>& oldElem, const Sm
 }
 
 void
-MathMLUnderOverElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLUnderOverElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
 	  assert(IsA() == TAG_MUNDER || IsA() == TAG_MOVER || IsA() == TAG_MUNDEROVER);
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  
-	  if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 	    SetBase(e);
 	  else if (!is_a<MathMLDummyElement>(GetBase()))
-	    SetBase(MathMLDummyElement::create());
+	    SetBase(getFactory()->createDummyElement(getView()));
 
 	  switch (IsA())
 	    {
 	    case TAG_MUNDER:
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetUnderScript()))
-		SetUnderScript(MathMLDummyElement::create());
+		SetUnderScript(getFactory()->createDummyElement(getView()));
 	      SetOverScript(0);
 	      break;
 	    case TAG_MOVER:
 	      SetUnderScript(0);
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetOverScript()))
-		SetOverScript(MathMLDummyElement::create());
+		SetOverScript(getFactory()->createDummyElement(getView()));
 	      break;
 	    case TAG_MUNDEROVER:
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetUnderScript()))
-		SetUnderScript(MathMLDummyElement::create());
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
+		SetUnderScript(getFactory()->createDummyElement(getView()));
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
 		SetOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetOverScript()))
-		SetOverScript(MathMLDummyElement::create());
+		SetOverScript(getFactory()->createDummyElement(getView()));
 	      break;
 	    default:
 	      assert(0);
@@ -147,9 +143,9 @@ MathMLUnderOverElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 #endif // HAVE_GMETADOM
 
       assert(base);
-      base->Normalize(doc);
-      if (underScript) underScript->Normalize(doc);
-      if (overScript) overScript->Normalize(doc);
+      base->construct();
+      if (underScript) underScript->construct();
+      if (overScript) overScript->construct();
 
       ResetDirtyStructure();
     }

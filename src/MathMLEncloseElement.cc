@@ -30,23 +30,17 @@
 #include "FormattingContext.hh"
 #include "ValueConversion.hh"
 
-MathMLEncloseElement::MathMLEncloseElement()
+MathMLEncloseElement::MathMLEncloseElement(const SmartPtr<MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
   normalized = false;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLEncloseElement::MathMLEncloseElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-  normalized = false;
-}
-#endif
 
 MathMLEncloseElement::~MathMLEncloseElement()
 {
 }
 
+#if 0
 void
 MathMLEncloseElement::NormalizeRadicalElement(const SmartPtr<MathMLDocument>& doc)
 {
@@ -63,12 +57,12 @@ MathMLEncloseElement::NormalizeRadicalElement(const SmartPtr<MathMLDocument>& do
 }
 
 void
-MathMLEncloseElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLEncloseElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      if (normalized && GetDOMElement() &&
+      if (normalized && getDOMElement() &&
 	  GetChild() && is_a<MathMLRadicalElement>(GetChild()) && !GetChild()->GetParent())
 	{
 	  // this must be an inferred msqrt element
@@ -78,9 +72,10 @@ MathMLEncloseElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	}
 #endif
       normalized = false;
-      MathMLNormalizingContainerElement::Normalize(doc);
+      MathMLNormalizingContainerElement::construct(context);
     }
 }
+#endif
 
 void
 MathMLEncloseElement::refine(AbstractRefinementContext& context)
@@ -102,12 +97,14 @@ MathMLEncloseElement::Setup(RenderingEnvironment& env)
       spacing = env.ToScaledPoints(env.GetMathSpace(MATH_SPACE_MEDIUM));
       lineThickness = env.GetRuleThickness();
       color = env.GetColor();
-      
+
+#if 0      
       if (!normalized)
 	{
 	  if (notation == "radical") NormalizeRadicalElement(env.GetDocument());
 	  normalized = true;
 	}
+#endif
 
       MathMLNormalizingContainerElement::Setup(env);
 

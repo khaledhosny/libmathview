@@ -29,19 +29,12 @@
 class MathMLBreakableRowElement : public MathMLRowElement
 {
 protected:
-  MathMLBreakableRowElement(void) : MathMLRowElement() { }
-#if defined(HAVE_GMETADOM)
-  MathMLBreakableRowElement(const DOM::Element& el) : MathMLRowElement(el) { }
-#endif
+  MathMLBreakableRowElement(const SmartPtr<class MathMLView>& view) : MathMLRowElement(view) { }
   virtual ~MathMLBreakableRowElement() { }
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLBreakableRowElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLBreakableRowElement(el)); }
-#endif
+  static SmartPtr<MathMLBreakableRowElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLBreakableRowElement(view); }
 
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

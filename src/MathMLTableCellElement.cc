@@ -36,21 +36,8 @@
 #include "MathMLTableCellElement.hh"
 #include "FormattingContext.hh"
 
-MathMLTableCellElement::MathMLTableCellElement()
-{
-  Init();
-}
-
-#if defined(HAVE_GMETADOM)
-MathMLTableCellElement::MathMLTableCellElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-  Init();
-}
-#endif
-
-void
-MathMLTableCellElement::Init()
+MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
   minWidth = 0;
   rowIndex = 0;

@@ -33,16 +33,10 @@
 #include "FormattingContext.hh"
 #include "Variant.hh"
 
-MathMLPaddedElement::MathMLPaddedElement()
+MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLPaddedElement::MathMLPaddedElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-}
-#endif
 
 MathMLPaddedElement::~MathMLPaddedElement()
 {

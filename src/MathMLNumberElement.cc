@@ -24,16 +24,10 @@
 
 #include "MathMLNumberElement.hh"
 
-MathMLNumberElement::MathMLNumberElement()
+MathMLNumberElement::MathMLNumberElement(const SmartPtr<class MathMLView>& view)
+  : MathMLTokenElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLNumberElement::MathMLNumberElement(const DOM::Element& node)
-  : MathMLTokenElement(node)
-{
-}
-#endif
 
 MathMLNumberElement::~MathMLNumberElement()
 {

@@ -44,7 +44,7 @@ private:
 
 public:
   RenderingEnvironment(const SmartPtr<class AreaFactory>&,
-		       class ShaperManager&);
+		       const SmartPtr<class ShaperManager>&);
   virtual ~RenderingEnvironment();
 
   // levels
@@ -92,7 +92,7 @@ public:
   scaled   GetRuleThickness(void) const;
 
   SmartPtr<class AreaFactory> areaFactory;
-  class ShaperManager& shaperManager;
+  SmartPtr<class ShaperManager> shaperManager;
 
 private:
   struct AttributeLevel {

@@ -25,44 +25,41 @@
 #include <cassert>
 
 #include "ChildList.hh"
+#include "ConstructionContext.hh"
 #include "Globals.hh"
-#include "ValueConversion.hh"
 #include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLLabeledTableRowElement.hh"
+#include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
-#include "MathMLTableCellElement.hh"
-#include "MathMLLabeledTableRowElement.hh"
+#include "MathMLView.hh"
+#include "ValueConversion.hh"
 
-MathMLLabeledTableRowElement::MathMLLabeledTableRowElement()
+MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const SmartPtr<MathMLView>& view)
+  : MathMLTableRowElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const DOM::Element& node)
-  : MathMLTableRowElement(node)
-{
-}
-#endif
 
 MathMLLabeledTableRowElement::~MathMLLabeledTableRowElement()
 {
 }
 
 void
-MathMLLabeledTableRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLLabeledTableRowElement::construct()
 {
   if (DirtyStructure())
     {
-      MathMLTableRowElement::Normalize(doc);
+      MathMLTableRowElement::construct();
 
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  if (children.item(0) && nodeLocalName(children.item(0)) != "mtr")
 	    {
-	      SmartPtr<MathMLElement> elem = doc->getFormattingNode(children.item(0));
+	      SmartPtr<MathMLElement> elem = getFormattingNode(children.item(0));
 	      assert(elem);
 	      SetLabel(elem);
 	    }
@@ -71,8 +68,8 @@ MathMLLabeledTableRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	}
 #endif // HAVE_GMETADOM
 
-      if (!label) SetLabel(MathMLDummyElement::create());
-      label->Normalize(doc);
+      if (!label) SetLabel(getFactory()->createDummyElement(getView()));
+      label->construct();
 
       ResetDirtyStructure();
     }

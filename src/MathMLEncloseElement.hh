@@ -23,31 +23,20 @@
 #ifndef MathMLEncloseElement_hh
 #define MathMLEncloseElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "RGBValue.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLEncloseElement: public MathMLNormalizingContainerElement
+class MathMLEncloseElement : public MathMLNormalizingContainerElement
 {
 protected:
-  MathMLEncloseElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLEncloseElement(const DOM::Element&);
-#endif
+  MathMLEncloseElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLEncloseElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLEncloseElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLEncloseElement(el)); }
-#endif
+  static SmartPtr<MathMLEncloseElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLEncloseElement(view); }
 
-  virtual void Normalize(const SmartPtr<MathMLDocument>&);
+  //virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

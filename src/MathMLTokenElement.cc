@@ -24,13 +24,6 @@
 
 #include <cassert>
 
-// #ifdef HAVE_WCTYPE_H
-// #include <wctype.h>
-// #endif
-// #ifdef HAVE_WCHAR_H
-// #include <wchar.h>
-// #endif
-
 #include "AFont.hh"
 #include "frameAux.hh"
 #include "Globals.hh"
@@ -48,40 +41,18 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLIdentifierElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 #include "BoundingBoxAux.hh"
 
-MathMLTokenElement::MathMLTokenElement()
+MathMLTokenElement::MathMLTokenElement(const SmartPtr<class MathMLView>& view)
+  : MathMLElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLTokenElement::MathMLTokenElement(const DOM::Element& node)
-  : MathMLElement(node)
-{
-}
-#endif
 
 MathMLTokenElement::~MathMLTokenElement()
 {
-}
-
-void
-MathMLTokenElement::refine(AbstractRefinementContext& context)
-{
-  if (DirtyAttribute() || DirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, Token, fontsize);
-      REFINE_ATTRIBUTE(context, Token, fontweight);
-      REFINE_ATTRIBUTE(context, Token, fontstyle);
-      REFINE_ATTRIBUTE(context, Token, fontfamily);
-      REFINE_ATTRIBUTE(context, Token, color);
-      REFINE_ATTRIBUTE(context, Token, mathvariant);
-      REFINE_ATTRIBUTE(context, Token, mathsize);
-      REFINE_ATTRIBUTE(context, Token, mathcolor);
-      REFINE_ATTRIBUTE(context, Token, mathbackground);
-      MathMLElement::refine(context);
-    }
 }
 
 void
@@ -178,14 +149,14 @@ MathMLTokenElement::SwapChildren(std::vector< SmartPtr<MathMLTextNode> >& newCon
 }
 
 void
-MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
+MathMLTokenElement::construct()
 {
-  if (DirtyStructure() && GetDOMElement())
+  if (DirtyStructure() && getDOMElement())
     {
 #if defined(HAVE_GMETADOM)
       content.clear();
 
-      for (DOM::Node p = GetDOMElement().get_firstChild(); 
+      for (DOM::Node p = getDOMElement().get_firstChild(); 
 	   p;
 	   p = p.get_nextSibling()) 
 	{
@@ -205,38 +176,31 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
 	      }
 	    break;
 
-#if 0
-	    // to be rewritten or deleted
-	    case DOM::Node::ENTITY_REFERENCE_NODE:
-	      for (DOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling())
-		MathMLizeTokenContent(p, parent);
-	      break;
-#endif
-
 	    case DOM::Node::ELEMENT_NODE:
 	      {	    
 		if (p.get_namespaceURI() == MATHML_NS_URI)
 		  {
 		    if (nodeLocalName(p) == "mglyph")
 		      {
-			SmartPtr<MathMLTextNode> text = SubstituteMGlyphElement(p);
-			if (text) AppendChild(text);
+			if (SmartPtr<MathMLTextNode> text = SubstituteMGlyphElement(p))
+			  AppendChild(text);
 		      }
 		    else if (nodeLocalName(p) == "malignmark")
 		      {
-			SmartPtr<MathMLTextNode> text = SubstituteAlignMarkElement(p);
-			if (text) AppendChild(text);
+			if (SmartPtr<MathMLTextNode> text = SubstituteAlignMarkElement(p))
+			  AppendChild(text);
 		      }
 		    else
 		      {
 			std::string s_name = nodeLocalName(p);
 			Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
 		      }
-		  } else
-		    {
-		      std::string s_name = p.get_nodeName();
-		      Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
-		    }
+		  } 
+		else
+		  {
+		    std::string s_name = p.get_nodeName();
+		    Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
+		  }
 	      }
 	    break;
 	  
@@ -247,6 +211,24 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
 #endif // HAVE_GMETADOM
 
       ResetDirtyStructure();
+    }
+}
+
+void
+MathMLTokenElement::refine(AbstractRefinementContext& context)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      REFINE_ATTRIBUTE(context, Token, fontsize);
+      REFINE_ATTRIBUTE(context, Token, fontweight);
+      REFINE_ATTRIBUTE(context, Token, fontstyle);
+      REFINE_ATTRIBUTE(context, Token, fontfamily);
+      REFINE_ATTRIBUTE(context, Token, color);
+      REFINE_ATTRIBUTE(context, Token, mathvariant);
+      REFINE_ATTRIBUTE(context, Token, mathsize);
+      REFINE_ATTRIBUTE(context, Token, mathcolor);
+      REFINE_ATTRIBUTE(context, Token, mathbackground);
+      MathMLElement::refine(context);
     }
 }
 
@@ -559,18 +541,9 @@ MathMLTokenElement::SubstituteMGlyphElement(const DOM::Element& node)
     return MathMLStringNode::create("?");
   }
 
-  std::string s_index = index;
-  char* endPtr;
-  unsigned nch = strtoul(s_index.c_str(), &endPtr, 10);
-
-  if (endPtr == NULL || *endPtr != '\0') {
-    Globals::logger(LOG_WARNING, "malformed `mglyph' element (parsing error in `index' attribute)\n");
-    nch = '?';
-  }
-
-  std::string s_alt = alt;
-  std::string s_fontFamily = fontFamily;
-  SmartPtr<MathMLGlyphNode> glyph = MathMLGlyphNode::create(s_alt.c_str(), s_fontFamily.c_str(), nch);
+  SmartPtr<MathMLGlyphNode> glyph = MathMLGlyphNode::create(fromDOMString(fontFamily),
+							    fromDOMString(index),
+							    fromDOMString(alt));
 
   return glyph;
 }

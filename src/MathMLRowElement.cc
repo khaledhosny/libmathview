@@ -39,38 +39,22 @@
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
 
-MathMLRowElement::MathMLRowElement()
+MathMLRowElement::MathMLRowElement(const SmartPtr<class MathMLView>& view)
+  : MathMLLinearContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLRowElement::MathMLRowElement(const DOM::Element& node)
-  : MathMLLinearContainerElement(node)
-{
-}
-#endif
 
 MathMLRowElement::~MathMLRowElement()
 {
 }
 
-SmartPtr<MathMLElement>
-MathMLRowElement::create()
+SmartPtr<MathMLRowElement>
+MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
 {
 #if defined(ENABLE_BREAKS)
-  return MathMLBreakableRowElement::create();
+  return MathMLBreakableRowElement::create(view);
 #else
-  return new MathMLRowElement();
-#endif
-}
-
-SmartPtr<MathMLElement>
-MathMLRowElement::create(const DOM::Element& el)
-{
-#if defined(ENABLE_BREAKS)
-  return MathMLBreakableRowElement::create(el);
-#else
-  return new MathMLRowElement(el);
+  return new MathMLRowElement(view);
 #endif
 }
 

@@ -20,25 +20,22 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLNormalizingContainerElement_hh
-#define MathMLNormalizingContainerElement_hh
+#include <config.h>
 
-#include "MathMLBinContainerElement.hh"
+#include "MathMLDOMLinker.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "AreaFactory.hh"
+#include "ShaperManager.hh"
+#include "MathMLViewContext.hh"
 
-// base class for MathML elements that infer an mrow when the number of
-// children is not 1
-class MathMLNormalizingContainerElement : public MathMLBinContainerElement
+MathMLViewContext::MathMLViewContext(const SmartPtr<MathMLDOMLinker>& l,
+				     const SmartPtr<MathMLFormattingEngineFactory>& ef,
+				     const SmartPtr<AreaFactory>& af,
+				     const SmartPtr<ShaperManager>& sm)
+  : linker(l), engineFactory(ef), areaFactory(af), shaperManager(sm)
 {
-protected:
-  MathMLNormalizingContainerElement(const SmartPtr<class MathMLView>&);
-  virtual ~MathMLNormalizingContainerElement();
+}
 
-public:
-  virtual void construct(void);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-
-  virtual void SetDirtyStructure(void);
-};
-
-#endif // MathMLNormalizingContainerElement_hh
+MathMLViewContext::~MathMLViewContext()
+{
+}

@@ -24,25 +24,22 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "ChildList.hh"
-#include "ValueConversion.hh"
+#include "ConstructionContext.hh"
+#include "FormattingContext.hh"
+#include "Globals.hh"
 #include "MathMLDummyElement.hh"
-#include "RenderingEnvironment.hh"
+#include "MathMLFormattingEngineFactory.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "FormattingContext.hh"
+#include "MathMLView.hh"
+#include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
 
-MathMLFractionElement::MathMLFractionElement()
+MathMLFractionElement::MathMLFractionElement(const SmartPtr<class MathMLView>& view)
+  : MathMLContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLFractionElement::MathMLFractionElement(const DOM::Element& node)
-  : MathMLContainerElement(node)
-{
-}
-#endif
 
 MathMLFractionElement::~MathMLFractionElement()
 {
@@ -84,31 +81,31 @@ MathMLFractionElement::Replace(const SmartPtr<MathMLElement>& oldElem, const Sma
 }
 
 void
-MathMLFractionElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLFractionElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
 	  assert(IsA() == TAG_MFRAC);
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  unsigned n = children.get_length();
 
 	  if (n > 0)
-	    SetNumerator(doc->getFormattingNode(children.item(0)));
+	    SetNumerator(getFormattingNode(children.item(0)));
 	  else if (!numerator || !is_a<MathMLDummyElement>(numerator))
-	    SetNumerator(MathMLDummyElement::create());
+	    SetNumerator(getFactory()->createDummyElement(getView()));
 
 	  if (n > 1)
-	    SetDenominator(doc->getFormattingNode(children.item(1)));
+	    SetDenominator(getFormattingNode(children.item(1)));
 	  else if (!denominator || !is_a<MathMLDummyElement>(denominator))
-	    SetDenominator(MathMLDummyElement::create());
+	    SetDenominator(getFactory()->createDummyElement(getView()));
 	}
 #endif
 
-      if (numerator) numerator->Normalize(doc);
-      if (denominator) denominator->Normalize(doc);
+      if (numerator) numerator->construct();
+      if (denominator) denominator->construct();
 
       ResetDirtyStructure();
     }

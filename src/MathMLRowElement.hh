@@ -23,10 +23,6 @@
 #ifndef MathMLRowElement_hh
 #define MathMLRowElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLLinearContainerElement.hh"
 
@@ -34,17 +30,11 @@ class MathMLRowElement
   : public MathMLLinearContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLRowElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLRowElement(const DOM::Element&);
-#endif
+  MathMLRowElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLRowElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void);
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element&);
-#endif
+  static SmartPtr<MathMLRowElement> create(const SmartPtr<class MathMLView>& view);
 
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

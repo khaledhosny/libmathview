@@ -24,43 +24,39 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "ChildList.hh"
-#include "MathMLRowElement.hh"
-#include "MathMLFencedElement.hh"
-#include "MathMLOperatorElement.hh"
+#include "ConstructionContext.hh"
+#include "Globals.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLFencedElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLRowElement.hh"
+#include "MathMLView.hh"
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
 
-MathMLFencedElement::MathMLFencedElement()
+MathMLFencedElement::MathMLFencedElement(const SmartPtr<class MathMLView>& view)
+  : MathMLBinContainerElement(view)
 {
   normalized = false;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLFencedElement::MathMLFencedElement(const DOM::Element& node)
-  : MathMLBinContainerElement(node)
-{
-  normalized = false;
-}
-#endif
 
 MathMLFencedElement::~MathMLFencedElement()
 {
 }
 
 void
-MathMLFencedElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLFencedElement::construct()
 {
   if (DirtyStructure())
     {
       std::vector< SmartPtr<MathMLElement> > content;
 
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  nArgs = children.get_length();
 
 	  if (nArgs > 1) content.reserve(2 * nArgs - 1);
@@ -69,29 +65,26 @@ MathMLFencedElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	      DOM::Node node = children.item(i);
 	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 
-	      if (SmartPtr<MathMLElement> elem = doc->getFormattingNode(node))
-		content.push_back(elem);
-	      else
-		content.push_back(MathMLDummyElement::create());
+	      content.push_back(getFormattingNode(node));
 
-	      if (i + 1 < nArgs) content.push_back(MathMLOperatorElement::create());
+	      if (i + 1 < nArgs) content.push_back(getFactory()->createOperatorElement(getView()));
 	    }
 	}
 #endif // HAVE_GMETADOM
 
-      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
-      outerRow->Append(MathMLOperatorElement::create());
+      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
+      outerRow->Append(getFactory()->createOperatorElement(getView()));
       if (content.size() == 1) outerRow->Append(content[0]);
       else if (content.size() > 1)
 	{
-	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
+	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement(getView()));
 	  innerRow->SwapChildren(content);
 	  outerRow->Append(innerRow);
 	}
-      outerRow->Append(MathMLOperatorElement::create());
+      outerRow->Append(getFactory()->createOperatorElement(getView()));
 
       SetChild(outerRow);
-      outerRow->Normalize(doc);
+      outerRow->construct();
 
       ResetDirtyStructure();
     }
@@ -122,7 +115,7 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
       if (nArgs > 1)
 	{
 	  SmartPtr<MathMLRowElement> innerRow = smart_cast<MathMLRowElement>(outerRow->GetChild(1));
-	  assert(innerRow && !innerRow->GetDOMElement());
+	  assert(innerRow && !innerRow->getDOMElement());
 	  for (unsigned i = 0; i < nArgs - 1; i++)
 	    {
 	      if (separators.empty())
@@ -164,7 +157,7 @@ MathMLFencedElement::Setup(RenderingEnvironment& env)
 	closeFence.clear();
 
       SmartPtr<Value> value;
-      if (GetDOMElement() && GetDOMElement().hasAttribute("separators"))
+      if (getDOMElement() && getDOMElement().hasAttribute("separators"))
 	value = GET_ATTRIBUTE_VALUE(Fenced, separators);
       else
 	value = GET_ATTRIBUTE_VALUE(Fenced, separators);

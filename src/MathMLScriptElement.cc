@@ -24,28 +24,24 @@
 
 #include <cassert>
 
-#include "defs.h"
 #include "ChildList.hh"
+#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLScriptElement.hh"
+#include "MathMLView.hh"
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
+#include "defs.h"
 #include "traverseAux.hh"
 
-MathMLScriptElement::MathMLScriptElement()
+MathMLScriptElement::MathMLScriptElement(const SmartPtr<class MathMLView>& view)
+  : MathMLContainerElement(view)
 {
   subScript = superScript = 0;  
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLScriptElement::MathMLScriptElement(const DOM::Element& node)
-  : MathMLContainerElement(node)
-{
-  subScript = superScript = 0;
-}
-#endif
 
 MathMLScriptElement::~MathMLScriptElement()
 {
@@ -112,46 +108,46 @@ MathMLScriptElement::Inside(const scaled& x, const scaled& y)
 }
 
 void
-MathMLScriptElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLScriptElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
 	  assert(IsA() == TAG_MSUB || IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP);
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  
-	  if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 	    SetBase(e);
 	  else if (!is_a<MathMLDummyElement>(GetBase()))
-	    SetBase(MathMLDummyElement::create());
+	    SetBase(getFactory()->createDummyElement(getView()));
 
 	  switch (IsA())
 	    {
 	    case TAG_MSUB:
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
-		SetSubScript(MathMLDummyElement::create());
+		SetSubScript(getFactory()->createDummyElement(getView()));
 	      SetSuperScript(0);
 	      break;
 	    case TAG_MSUP:
 	      SetSubScript(0);
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
-		SetSuperScript(MathMLDummyElement::create());
+		SetSuperScript(getFactory()->createDummyElement(getView()));
 	      break;
 	    case TAG_MSUBSUP:
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
-		SetSubScript(MathMLDummyElement::create());
-	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
+		SetSubScript(getFactory()->createDummyElement(getView()));
+	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
 		SetSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
-		SetSuperScript(MathMLDummyElement::create());
+		SetSuperScript(getFactory()->createDummyElement(getView()));
 	      break;
 	    default:
 	      assert(false);
@@ -159,9 +155,9 @@ MathMLScriptElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	}
 #endif
 
-      if (base) base->Normalize(doc);
-      if (subScript) subScript->Normalize(doc);
-      if (superScript) superScript->Normalize(doc);
+      if (base) base->construct();
+      if (subScript) subScript->construct();
+      if (superScript) superScript->construct();
 
       ResetDirtyStructure();
     }

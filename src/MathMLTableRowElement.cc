@@ -35,22 +35,46 @@
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
+#include "MathMLView.hh"
 
-MathMLTableRowElement::MathMLTableRowElement()
+MathMLTableRowElement::MathMLTableRowElement(const SmartPtr<class MathMLView>& view)
+  : MathMLLinearContainerElement(view)
 {
   rowIndex = 0;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLTableRowElement::MathMLTableRowElement(const DOM::Element& node)
-  : MathMLLinearContainerElement(node)
-{
-  rowIndex = 0;
-}
-#endif
 
 MathMLTableRowElement::~MathMLTableRowElement()
 {
+}
+
+void
+MathMLTableRowElement::construct()
+{
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      if (getDOMElement())
+	{
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "mtd");
+	  unsigned n = children.get_length();
+
+	  std::vector< SmartPtr<MathMLElement> > newContent;
+	  newContent.reserve(n);
+	  for (unsigned i = 0; i < n; i++)
+	    {
+	      DOM::Node node = children.item(i);
+	      SmartPtr<MathMLElement> elem = getFormattingNode(node);
+	      assert(elem);
+	      newContent.push_back(elem);
+	    }
+	  SwapChildren(newContent);
+	}
+#endif
+      
+      std::for_each(content.begin(), content.end(), ConstructAdaptor());
+
+      ResetDirtyStructure();
+    }
 }
 
 void
@@ -62,36 +86,6 @@ MathMLTableRowElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, TableRow, columnalign);
       REFINE_ATTRIBUTE(context, TableRow, groupalign);
       MathMLLinearContainerElement::refine(context);
-    }
-}
-
-void
-MathMLTableRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
-{
-  if (DirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
-	{
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "mtd");
-	  unsigned n = children.get_length();
-
-	  std::vector< SmartPtr<MathMLElement> > newContent;
-	  newContent.reserve(n);
-	  for (unsigned i = 0; i < n; i++)
-	    {
-	      DOM::Node node = children.item(i);
-	      SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
-	      assert(elem);
-	      newContent.push_back(elem);
-	    }
-	  SwapChildren(newContent);
-	}
-#endif
-      
-      std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
-
-      ResetDirtyStructure();
     }
 }
 

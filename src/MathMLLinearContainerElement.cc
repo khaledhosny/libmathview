@@ -33,33 +33,28 @@
 #include "ChildList.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLLinearContainerElement.hh"
+#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 
-MathMLLinearContainerElement::MathMLLinearContainerElement()
+MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathMLView>& view)
+  : MathMLContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLLinearContainerElement::MathMLLinearContainerElement(const DOM::Element& node)
-  : MathMLContainerElement(node)
-{
-}
-#endif
 
 MathMLLinearContainerElement::~MathMLLinearContainerElement()
 {
 }
 
 void
-MathMLLinearContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLLinearContainerElement::construct()
 {
   if (DirtyStructure())
     {
       // editing is supported with DOM only
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  unsigned n = children.get_length();
 
 	  std::vector< SmartPtr<MathMLElement> > newContent;
@@ -69,7 +64,7 @@ MathMLLinearContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 	      DOM::Node node = children.item(i);
 	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 
-	      if (SmartPtr<MathMLElement> elem = doc->getFormattingNode(node))
+	      if (SmartPtr<MathMLElement> elem = getFormattingNode(node))
 		newContent.push_back(elem);
 	      else
 		{
@@ -85,7 +80,7 @@ MathMLLinearContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
       // it is better to normalize elements only after all the rendering
       // interfaces have been collected, because the structure might change
       // depending on the actual number of children
-      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), ConstructAdaptor());
       ResetDirtyStructure();
     }
 }

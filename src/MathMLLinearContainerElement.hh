@@ -25,19 +25,12 @@
 
 #include <vector>
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLContainerElement.hh"
 
 class MathMLLinearContainerElement : public MathMLContainerElement
 {
 protected:
-  MathMLLinearContainerElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLLinearContainerElement(const DOM::Element&);
-#endif
+  MathMLLinearContainerElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLLinearContainerElement();
 
 public:
@@ -49,7 +42,7 @@ public:
   virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
   void         SwapChildren(std::vector< SmartPtr<MathMLElement> >&);
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

@@ -23,28 +23,17 @@
 #ifndef MathMLNumberElement_hh
 #define MathMLNumberElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLTokenElement.hh"
 
 class MathMLNumberElement : public MathMLTokenElement
 {
 protected:
-  MathMLNumberElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLNumberElement(const DOM::Element&);
-#endif
+  MathMLNumberElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLNumberElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLNumberElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLNumberElement(el)); }
-#endif
+  static SmartPtr<MathMLNumberElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLNumberElement(view); }
 };
 
 #endif // MathMLNumberElement_hh

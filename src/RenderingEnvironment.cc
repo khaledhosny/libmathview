@@ -36,7 +36,8 @@
 #include "AreaFactory.hh"
 #include "ShaperManager.hh"
 
-RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af, ShaperManager& sm)
+RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af,
+					   const SmartPtr<ShaperManager>& sm)
   : areaFactory(af), shaperManager(sm)
 {
   AttributeLevel* top = new AttributeLevel;

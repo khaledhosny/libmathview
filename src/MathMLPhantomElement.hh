@@ -23,10 +23,6 @@
 #ifndef MathMLPhantomElement_hh
 #define MathMLPhantomElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
@@ -34,19 +30,12 @@ class MathMLPhantomElement
   : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 public:
-  MathMLPhantomElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLPhantomElement(const DOM::Element&);
-#endif
+  MathMLPhantomElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLPhantomElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLPhantomElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLPhantomElement(el)); }
-#endif
+  static SmartPtr<MathMLPhantomElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLPhantomElement(view); }
 
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);

@@ -27,16 +27,10 @@
 #include "MathMLErrorElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLErrorElement::MathMLErrorElement()
+MathMLErrorElement::MathMLErrorElement(const SmartPtr<class MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLErrorElement::MathMLErrorElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-}
-#endif
 
 MathMLErrorElement::~MathMLErrorElement()
 {

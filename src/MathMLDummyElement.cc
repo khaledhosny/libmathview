@@ -21,31 +21,20 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include <cassert>
 
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 #include "FormattingContext.hh"
 
-MathMLDummyElement::MathMLDummyElement()
+MathMLDummyElement::MathMLDummyElement(const SmartPtr<class MathMLView>& view)
+  : MathMLElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLDummyElement::MathMLDummyElement(const DOM::Element& node)
-  : MathMLElement(node)
-{
-}
-#endif
 
 MathMLDummyElement::~MathMLDummyElement()
 {
-}
-
-void
-MathMLDummyElement::Normalize(const SmartPtr<class MathMLDocument>&)
-{
-  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 void

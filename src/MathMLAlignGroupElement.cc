@@ -30,23 +30,9 @@
 #include "MathMLAlignGroupElement.hh"
 #include "FormattingContext.hh"
 
-MathMLAlignGroupElement::MathMLAlignGroupElement()
+MathMLAlignGroupElement::MathMLAlignGroupElement(const SmartPtr<class MathMLView>& view)
+  : MathMLElement(view)
 {
-  Init();
-}
-
-#if defined(HAVE_GMETADOM)
-MathMLAlignGroupElement::MathMLAlignGroupElement(const DOM::Element& node)
-  : MathMLElement(node)
-{
-  Init();
-}
-#endif
-
-void
-MathMLAlignGroupElement::Init()
-{
-  width = 0;
 }
 
 MathMLAlignGroupElement::~MathMLAlignGroupElement()
@@ -85,12 +71,6 @@ MathMLAlignGroupElement::SetAlignmentMark(const SmartPtr<class MathMLAlignMarkEl
   assert(mark);
   assert(!alignMarkElement);
   alignMarkElement = mark;
-}
-
-void
-MathMLAlignGroupElement::Normalize(const SmartPtr<class MathMLDocument>&)
-{
-  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 bool

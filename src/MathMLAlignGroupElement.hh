@@ -23,30 +23,17 @@
 #ifndef MathMLAlignGroupElement_hh
 #define MathMLAlignGroupElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLElement.hh"
 
-class MathMLAlignGroupElement: public MathMLElement
+class MathMLAlignGroupElement : public MathMLElement
 {
 protected:
-  MathMLAlignGroupElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLAlignGroupElement(const DOM::Element&);
-#endif
+  MathMLAlignGroupElement(const SmartPtr<class MathMLView>& view);
   virtual ~MathMLAlignGroupElement();
-private:
-  void Init(void);
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLAlignGroupElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLAlignGroupElement(el)); }
-#endif
+  static SmartPtr<MathMLAlignGroupElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLAlignGroupElement(view); }
 
   virtual void DoLayout(const class FormattingContext&);
 
@@ -59,7 +46,6 @@ public:
   const SmartPtr<class MathMLAlignMarkElement>& GetAlignmentMarkElement(void) const { return alignMarkElement; }
   const SmartPtr<class MathMLTokenElement>& GetDecimalPoint(void) const { return decimalPoint; }
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual bool IsSpaceLike(void) const;
 
 private:

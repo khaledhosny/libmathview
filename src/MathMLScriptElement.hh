@@ -23,10 +23,6 @@
 #ifndef MathMLScriptElement_hh
 #define MathMLScriptElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
@@ -35,19 +31,12 @@ class MathMLScriptElement
   : public MathMLContainerElement, private MathMLScriptCommonElement, public MathMLEmbellishment
 {
 protected:
-  MathMLScriptElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLScriptElement(const DOM::Element&);
-#endif
+  MathMLScriptElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLScriptElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLScriptElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLScriptElement(el)); }
-#endif
+  static SmartPtr<MathMLScriptElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLScriptElement(view); }
 
   void SetBase(const SmartPtr<MathMLElement>&);
   void SetSubScript(const SmartPtr<MathMLElement>&);
@@ -57,7 +46,7 @@ public:
   SmartPtr<MathMLElement> GetSuperScript(void) const { return superScript; }
   virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

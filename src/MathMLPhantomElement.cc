@@ -27,16 +27,10 @@
 #include "MathMLPhantomElement.hh"
 #include "MathMLOperatorElement.hh"
 
-MathMLPhantomElement::MathMLPhantomElement()
+MathMLPhantomElement::MathMLPhantomElement(const SmartPtr<class MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLPhantomElement::MathMLPhantomElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-}
-#endif
 
 MathMLPhantomElement::~MathMLPhantomElement()
 {

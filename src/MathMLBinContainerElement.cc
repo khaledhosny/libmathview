@@ -28,16 +28,11 @@
 #include "ChildList.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLBinContainerElement.hh"
+#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 
-MathMLBinContainerElement::MathMLBinContainerElement()
-{
-}
-
-#if defined(HAVE_GMETADOM)
-MathMLBinContainerElement::MathMLBinContainerElement(const DOM::Element& node)
-#endif
-  : MathMLContainerElement(node)
+MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLView>& view)
+  : MathMLContainerElement(view)
 {
 }
 
@@ -46,26 +41,23 @@ MathMLBinContainerElement::~MathMLBinContainerElement()
 }
 
 void
-MathMLBinContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLBinContainerElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
       if (children.get_length() > 0)
 	{
 	  DOM::Node node = children.item(0);
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
-	  // it might be that we get a NULL. In that case it would probably make
-	  // sense to create a dummy element, because we filtered MathML
-	  // elements only
+	  SmartPtr<MathMLElement> elem = getFormattingNode(node);
 	  assert(elem);
 	  SetChild(elem);
 	}
 #endif // HAVE_GMETADOM
 
-      if (child) child->Normalize(doc);
+      if (child) child->construct();
       ResetDirtyStructure();
     }
 }

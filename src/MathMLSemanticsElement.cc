@@ -24,44 +24,40 @@
 
 #include <cassert>
 
-#include "defs.h"
 #include "ChildList.hh"
 #include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLSemanticsElement.hh"
+#include "MathMLView.hh"
+#include "defs.h"
 
-MathMLSemanticsElement::MathMLSemanticsElement()
+MathMLSemanticsElement::MathMLSemanticsElement(const SmartPtr<class MathMLView>& view)
+  : MathMLBinContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLSemanticsElement::MathMLSemanticsElement(const DOM::Element& node)
-  : MathMLBinContainerElement(node)
-{
-}
-#endif
 
 MathMLSemanticsElement::~MathMLSemanticsElement()
 {
 }
 
 void
-MathMLSemanticsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
+MathMLSemanticsElement::construct()
 {
   if (DirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
+      if (getDOMElement())
 	{
 	  assert(IsA() == TAG_SEMANTICS);
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 
-	  if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 	    SetChild(e);
 	  else
 	    {
-	      ChildList children(GetDOMElement(), MATHML_NS_URI, "annotation-xml");
+	      ChildList children(getDOMElement(), MATHML_NS_URI, "annotation-xml");
 	      for (unsigned i = 0; i < children.get_length(); i++)
 		{
 		  DOM::Element elem = children.item(i);
@@ -69,20 +65,20 @@ MathMLSemanticsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 		  if (elem.getAttribute("encoding") == "MathML-Presentation")
 		    {
 		      ChildList children(elem, MATHML_NS_URI, "*");
-		      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+		      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
 			SetChild(e);
 		      else if (!is_a<MathMLDummyElement>(GetChild()))
-			SetChild(MathMLDummyElement::create());
+			SetChild(getFactory()->createDummyElement(getView()));
 		      break;
 		    }
 		}
 	      if (!is_a<MathMLDummyElement>(GetChild()))
-		SetChild(MathMLDummyElement::create());
+		SetChild(getFactory()->createDummyElement(getView()));
 	    }
 	}
 #endif
 
-      if (GetChild()) GetChild()->Normalize(doc);
+      if (GetChild()) GetChild()->construct();
 
       ResetDirtyStructure();
     }

@@ -23,10 +23,6 @@
 #ifndef MathMLUnderOverElement_hh
 #define MathMLUnderOverElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
@@ -35,19 +31,12 @@ class MathMLUnderOverElement
   : public MathMLContainerElement, private MathMLScriptCommonElement, public MathMLEmbellishment
 {
 protected:
-  MathMLUnderOverElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLUnderOverElement(const DOM::Element&);
-#endif
+  MathMLUnderOverElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLUnderOverElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLUnderOverElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLUnderOverElement(el)); }
-#endif
+  static SmartPtr<MathMLUnderOverElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLUnderOverElement(view); }
 
   void SetBase(const SmartPtr<MathMLElement>&);
   void SetUnderScript(const SmartPtr<MathMLElement>&);
@@ -57,7 +46,7 @@ public:
   SmartPtr<MathMLElement> GetOverScript(void) const { return overScript; }
   virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);

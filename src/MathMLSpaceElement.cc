@@ -31,27 +31,14 @@
 #include "FormattingContext.hh"
 #include "ValueConversion.hh"
 
-MathMLSpaceElement::MathMLSpaceElement()
+MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLView>& view)
+  : MathMLElement(view)
 {
   breakability = BREAK_AUTO;
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLSpaceElement::MathMLSpaceElement(const DOM::Element& node)
-  : MathMLElement(node)
-{
-  breakability = BREAK_AUTO;
-}
-#endif
 
 MathMLSpaceElement::~MathMLSpaceElement()
 {
-}
-
-void
-MathMLSpaceElement::Normalize(const SmartPtr<class MathMLDocument>&)
-{
-  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 void

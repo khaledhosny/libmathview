@@ -46,13 +46,6 @@ extern "C" {
 #define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
-  enum _FontManagerId {
-    FONT_MANAGER_UNKNOWN = -1,
-    FONT_MANAGER_GTK,
-    FONT_MANAGER_T1
-  };
-
-  typedef enum   _FontManagerId    FontManagerId;
   typedef struct _GtkMathView      GtkMathView;
   typedef struct _GtkMathViewClass GtkMathViewClass;
 
@@ -60,7 +53,6 @@ extern "C" {
   GtkWidget* 	 gtk_math_view_new(GtkAdjustment*, GtkAdjustment*);
   gboolean       gtk_math_view_freeze(GtkMathView*);
   gboolean       gtk_math_view_thaw(GtkMathView*);
-  gboolean     	 gtk_math_view_load_uri(GtkMathView*, const gchar*);
 #if defined(HAVE_GMETADOM)
   gboolean       gtk_math_view_load_doc(GtkMathView*, GdomeDocument*);
   gboolean       gtk_math_view_load_tree(GtkMathView*, GdomeElement*);
@@ -85,15 +77,8 @@ extern "C" {
   GtkDrawingArea* gtk_math_view_get_drawing_area(GtkMathView*);
   void           gtk_math_view_set_font_size(GtkMathView*, guint);
   guint          gtk_math_view_get_font_size(GtkMathView*);
-  void           gtk_math_view_set_anti_aliasing(GtkMathView*, gboolean);
-  gboolean       gtk_math_view_get_anti_aliasing(GtkMathView*);
-  void           gtk_math_view_set_transparency(GtkMathView*, gboolean);
-  gboolean       gtk_math_view_get_transparency(GtkMathView*);
   void           gtk_math_view_set_log_verbosity(GtkMathView*, gint);
   gint           gtk_math_view_get_log_verbosity(GtkMathView*);
-  void           gtk_math_view_export_to_postscript(GtkMathView*, gint, gint, gint, gint, gboolean, FILE*);
-  void           gtk_math_view_set_font_manager_type(GtkMathView*, FontManagerId);
-  FontManagerId  gtk_math_view_get_font_manager_type(GtkMathView*);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

@@ -29,16 +29,10 @@
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
 
-MathMLmathElement::MathMLmathElement()
+MathMLmathElement::MathMLmathElement(const SmartPtr<class MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLmathElement::MathMLmathElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-}
-#endif
 
 MathMLmathElement::~MathMLmathElement()
 {

@@ -23,10 +23,6 @@
 #ifndef MathMLFractionElement_hh
 #define MathMLFractionElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 
@@ -34,21 +30,14 @@ class MathMLFractionElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLFractionElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLFractionElement(const DOM::Element&);
-#endif
+  MathMLFractionElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLFractionElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLFractionElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLFractionElement(el)); }
-#endif
+  static SmartPtr<MathMLFractionElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLFractionElement(view); }
 
-  virtual void   Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void   construct(void);
   virtual void   Setup(RenderingEnvironment&);
   virtual void   refine(class AbstractRefinementContext&);
   virtual void   DoLayout(const class FormattingContext&);

@@ -25,11 +25,8 @@
 
 #include <bitset>
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "keyword.hh"
+#include "SmartPtr.hh"
 #include "MathMLFrame.hh"
 #include "BoundingBox.hh"
 #include "DrawingArea.hh"
@@ -37,23 +34,25 @@
 #include "FormattingContext.hh"
 
 // MathMLElement: base class for every MathML Element
-class MathMLElement: public MathMLFrame
+class MathMLElement : public MathMLFrame
 {
 protected:
-  MathMLElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLElement(const DOM::Element&);
-#endif
+  MathMLElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLElement();
-private:
-  void Init(void);
 
 public:
   virtual void SetParent(const SmartPtr<MathMLElement>&);
   void Link(const SmartPtr<MathMLElement>&);
   void Unlink(void);
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&) = 0;
+  SmartPtr<class MathMLView> getView(void) const;
+#if defined(HAVE_GMETADOM)
+  DOM::Element getDOMElement(void) const { return element; }
+  void setDOMElement(const DOM::Element&);
+  SmartPtr<MathMLElement> getFormattingNode(const DOM::Element&) const;
+#endif // HAVE_GMETADOM
+
+  virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&); // setup attributes
   virtual void DoLayout(const class FormattingContext&);
@@ -66,6 +65,9 @@ public:
   const class GraphicsContext* GetBackgroundGC(void) const { return bGC[Selected()]; }
 
 protected:
+  SmartPtr<class MathMLViewContext> getViewContext(void) const;
+  SmartPtr<class MathMLDOMLinker> getLinker(void) const;
+  SmartPtr<class MathMLFormattingEngineFactory> getFactory(void) const;
   SmartPtr<Value> getAttributeValue(const class MathMLAttributeSignature&) const;
   SmartPtr<Value> getAttributeValueNoDefault(const class MathMLAttributeSignature&) const;
   void refineAttribute(const class AbstractRefinementContext&, const class MathMLAttributeSignature&);
@@ -75,10 +77,6 @@ public:
 
   // some queries
   TagId        	 IsA(void) const;
-#if defined(HAVE_GMETADOM)
-  const DOM::Element& GetDOMElement(void) const { return node; }
-  static SmartPtr<MathMLElement> getRenderingInterface(const DOM::Element&);
-#endif
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsInside(const scaled&, const scaled&) const;
   bool           HasLink(void) const;
@@ -157,10 +155,11 @@ protected:
 
   RGBValue background; // background color
 
-private:
+  WeakPtr<class MathMLView> view;
+
 #if defined(HAVE_GMETADOM)
-  const DOM::Element node; // reference to the DOM node
-#endif
+  DOM::Element element;
+#endif // HAVE_GMETADOM
 };
 
 #endif // MathMLElement_hh

@@ -49,7 +49,10 @@
 #include "PS_T1_FontManager.hh"
 #include "T1_Gtk_DrawingArea.hh"
 #include "MathMLActionElement.hh"
-#include "MathMLRenderingEngine.hh"
+#include "MathMLDOMLinker.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLViewContext.hh"
+#include "MathMLView.hh"
 
 #include "Gtk_AreaFactory.hh"
 #include "ShaperManager.hh"
@@ -99,17 +102,17 @@ struct _GtkMathView {
   GdomeElement*  current_elem;
 #endif
 
-  FontManagerId  font_manager_id;
+//   FontManagerId  font_manager_id;
+//   FontManager*     font_manager;
+//   Gtk_AreaFactory* area_factory;
+//   ShaperManager*   shaper_manager;
+//   Gtk_PangoShaper* shaper_pango;
+//   Gtk_AdobeShaper* shaper_adobe;
 
-  FontManager*     font_manager;
   Gtk_DrawingArea* drawing_area;
+  FontManager* font_manager;
 
-  Gtk_AreaFactory* area_factory;
-  ShaperManager*   shaper_manager;
-  Gtk_PangoShaper* shaper_pango;
-  Gtk_AdobeShaper* shaper_adobe;
-
-  MathMLRenderingEngine* interface;
+  MathMLView* view;
 };
 
 struct _GtkMathViewClass {
@@ -174,6 +177,8 @@ static guint select_over_signal = 0;
 static guint select_end_signal = 0;
 static guint select_abort_signal = 0;
 static guint element_over_signal = 0;
+static guint new_counter = 0;
+static SmartPtr<MathMLViewContext> viewContext;
 
 /* widget implementation */
 
@@ -182,9 +187,9 @@ paint_widget_area(GtkMathView* math_view, gint x, gint y, gint width, gint heigh
 {
   GtkWidget* widget;
 
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->area != NULL);
-  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view);
+  g_return_if_fail(math_view->area);
+  g_return_if_fail(math_view->view);
 
   if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
@@ -199,7 +204,7 @@ paint_widget_area(GtkMathView* math_view, gint x, gint y, gint width, gint heigh
   rect.width = px2sp(width);
   rect.height = px2sp(height);
 
-  math_view->interface->Render(&rect);
+  math_view->view->render(&rect);
 }
 
 static void
@@ -345,93 +350,94 @@ gtk_math_view_get_type(void)
   return math_view_type;
 }
 
-static void gtk_math_view_class_init(GtkMathViewClass* klass)
+static void
+gtk_math_view_class_init(GtkMathViewClass* klass)
 {
 
-	GtkObjectClass* object_class;
-	GtkWidgetClass* widget_class;
+  GtkObjectClass* object_class;
+  GtkWidgetClass* widget_class;
 	
-	object_class = (GtkObjectClass*) klass;
-	widget_class = (GtkWidgetClass*) klass;
+  object_class = (GtkObjectClass*) klass;
+  widget_class = (GtkWidgetClass*) klass;
 	
-	klass->click = gtk_math_view_click;
-  	klass->select_begin = gtk_math_view_select_begin;
-  	klass->select_over = gtk_math_view_select_over;
-  	klass->select_end = gtk_math_view_select_end;
-  	klass->select_abort = gtk_math_view_select_abort;
-  	klass->element_over = gtk_math_view_element_over;
-  	klass->set_scroll_adjustments = gtk_math_view_set_adjustments;
+  klass->click = gtk_math_view_click;
+  klass->select_begin = gtk_math_view_select_begin;
+  klass->select_over = gtk_math_view_select_over;
+  klass->select_end = gtk_math_view_select_end;
+  klass->select_abort = gtk_math_view_select_abort;
+  klass->element_over = gtk_math_view_element_over;
+  klass->set_scroll_adjustments = gtk_math_view_set_adjustments;
 
-  	parent_class = (GtkEventBoxClass*) gtk_type_class(gtk_event_box_get_type());
+  parent_class = (GtkEventBoxClass*) gtk_type_class(gtk_event_box_get_type());
 
-  	object_class->destroy = gtk_math_view_destroy;
+  object_class->destroy = gtk_math_view_destroy;
 
-  	widget_class->size_request = gtk_math_view_size_request;
+  widget_class->size_request = gtk_math_view_size_request;
   	
-	widget_class->set_scroll_adjustments_signal = 
-		g_signal_new("set_scroll_adjustments",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_LAST,
-				G_STRUCT_OFFSET(GtkMathViewClass,set_scroll_adjustments),
-				NULL, NULL,
-				gtk_marshal_NONE__POINTER_POINTER,
-				G_TYPE_NONE , 2 , GTK_TYPE_ADJUSTMENT,GTK_TYPE_ADJUSTMENT); 
+  widget_class->set_scroll_adjustments_signal = 
+    g_signal_new("set_scroll_adjustments",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET(GtkMathViewClass,set_scroll_adjustments),
+		 NULL, NULL,
+		 gtk_marshal_NONE__POINTER_POINTER,
+		 G_TYPE_NONE , 2 , GTK_TYPE_ADJUSTMENT,GTK_TYPE_ADJUSTMENT); 
 	
-	click_signal = 
-		g_signal_new("click",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_FIRST,
-				G_STRUCT_OFFSET(GtkMathViewClass, click),
-				NULL, NULL,
-				gtk_marshal_NONE__POINTER_INT,
-				G_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
+  click_signal = 
+    g_signal_new("click",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass, click),
+		 NULL, NULL,
+		 gtk_marshal_NONE__POINTER_INT,
+		 G_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
 
-	select_begin_signal=
-		g_signal_new("select_begin",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_FIRST,
-				G_STRUCT_OFFSET(GtkMathViewClass,select_begin),
-				NULL,NULL,
-				gtk_marshal_NONE__POINTER_INT,
-				G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
+  select_begin_signal=
+    g_signal_new("select_begin",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass,select_begin),
+		 NULL,NULL,
+		 gtk_marshal_NONE__POINTER_INT,
+		 G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
 	
-	select_over_signal = 
-		g_signal_new("select_over",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_FIRST,
-				G_STRUCT_OFFSET(GtkMathViewClass,select_over),
-				NULL,NULL,
-				gtk_marshal_NONE__POINTER_INT,
-				G_TYPE_NONE, 2 ,GTK_TYPE_POINTER,GTK_TYPE_INT);
+  select_over_signal = 
+    g_signal_new("select_over",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass,select_over),
+		 NULL,NULL,
+		 gtk_marshal_NONE__POINTER_INT,
+		 G_TYPE_NONE, 2 ,GTK_TYPE_POINTER,GTK_TYPE_INT);
 	
-	select_end_signal = 
-		g_signal_new("select_end",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_FIRST,
-				G_STRUCT_OFFSET(GtkMathViewClass,select_end),
-				NULL,NULL,
-				gtk_marshal_NONE__POINTER_INT,
-				G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
+  select_end_signal = 
+    g_signal_new("select_end",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass,select_end),
+		 NULL,NULL,
+		 gtk_marshal_NONE__POINTER_INT,
+		 G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
 	
-	select_abort_signal = 
-		g_signal_new("select_abort",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_FIRST,
-				G_STRUCT_OFFSET(GtkMathViewClass,select_abort),
-				NULL,NULL,
-				gtk_marshal_NONE__NONE,
-				G_TYPE_NONE,0);
+  select_abort_signal = 
+    g_signal_new("select_abort",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass,select_abort),
+		 NULL,NULL,
+		 gtk_marshal_NONE__NONE,
+		 G_TYPE_NONE,0);
 	
-	element_over_signal = 
-		g_signal_new("element_over",
-				G_OBJECT_CLASS_TYPE(object_class),
-				G_SIGNAL_RUN_FIRST,
-				G_STRUCT_OFFSET(GtkMathViewClass,element_over),
-				NULL,NULL,
-				gtk_marshal_NONE__POINTER_INT,
-				G_TYPE_NONE, 2 , GTK_TYPE_POINTER,GTK_TYPE_INT);
+  element_over_signal = 
+    g_signal_new("element_over",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass,element_over),
+		 NULL,NULL,
+		 gtk_marshal_NONE__POINTER_INT,
+		 G_TYPE_NONE, 2 , GTK_TYPE_POINTER,GTK_TYPE_INT);
 	
-	Globals::InitGlobalData(getenv("MATHENGINECONF"));
+  Globals::InitGlobalData(getenv("MATHENGINECONF"));
 }
 
 static void
@@ -440,14 +446,9 @@ gtk_math_view_init(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
 
   math_view->pixmap          = NULL;
-  math_view->font_manager_id = FONT_MANAGER_UNKNOWN;
   math_view->font_manager    = NULL;
-  math_view->area_factory    = 0;
-  math_view->shaper_manager  = NULL;
-  math_view->shaper_pango    = NULL;
-  math_view->shaper_adobe    = NULL;
   math_view->drawing_area    = NULL;
-  math_view->interface       = NULL;
+  math_view->view            = 0;
   math_view->freeze_counter  = 0;
   math_view->select_state    = SELECT_STATE_NO;
   math_view->button_pressed  = FALSE;
@@ -503,9 +504,38 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
-  math_view->interface = new MathMLRenderingEngine();
 
-  gtk_math_view_set_font_manager_type(math_view, FONT_MANAGER_GTK);
+  if (new_counter++ == 0)
+    {
+      viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
+					      MathMLFormattingEngineFactory::create(),
+					      Gtk_AreaFactory::create(),
+					      ShaperManager::create());
+      SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
+      pangoShaper->setPangoContext(gtk_widget_create_pango_context(math_view->area));
+      viewContext->shaperManager->registerShaper(pangoShaper);
+      viewContext->shaperManager->registerShaper(Gtk_AdobeShaper::create());
+    }
+  assert(viewContext);
+
+  SmartPtr<MathMLView> view = MathMLView::create(viewContext);
+  view->ref();
+  math_view->view = view;
+
+  GraphicsContextValues values;
+  values.foreground = Globals::configuration.GetForeground();
+  values.background = Globals::configuration.GetBackground();
+  values.lineStyle  = LINE_STYLE_SOLID;
+  values.lineWidth  = px2sp(1);
+
+  math_view->drawing_area = new Gtk_DrawingArea(values, px2sp(MARGIN), px2sp(MARGIN),
+						GTK_WIDGET(math_view->area),
+						Globals::configuration.GetSelectForeground(),
+						Globals::configuration.GetSelectBackground());
+  math_view->drawing_area->SetPixmap(math_view->pixmap);
+
+  math_view->font_manager = new Gtk_FontManager();
+  view->Init(math_view->drawing_area, math_view->font_manager);
 
   return GTK_WIDGET(math_view);
 }
@@ -523,9 +553,14 @@ gtk_math_view_destroy(GtkObject* object)
 
   Globals::logger(LOG_DEBUG, "destroying the widget");
 
-  delete math_view->interface;
-  math_view->interface = 0;
+  if (math_view->view)
+    {
+      math_view->view->unref();
+      math_view->view = 0;
+    }
+
   delete math_view->font_manager;
+  if (--new_counter == 0) viewContext = 0;
   math_view->font_manager = 0;
   delete math_view->drawing_area;
   math_view->drawing_area = 0;
@@ -605,11 +640,10 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
   g_return_if_fail(GTK_IS_MATH_VIEW(widget));
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
-  g_assert(math_view != NULL);
-  g_assert(math_view->interface != NULL);
+  g_assert(math_view);
+  g_assert(math_view->view);
 
-  BoundingBox box;
-  math_view->interface->GetDocumentBoundingBox(box);
+  BoundingBox box = math_view->view->getBoundingBox();
 
   // the 10 is for the border, the frame thickness is missing. How can I get it?
   requisition->width = sp2ipx(box.horizontalExtent()) + 10;
@@ -623,7 +657,7 @@ gtk_math_view_button_press_event(GtkWidget* widget,
 {
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (event->button == 1)
@@ -650,7 +684,7 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 {
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (event->button == 1)
@@ -700,7 +734,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 {
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (event->x < 0) {
@@ -784,7 +818,7 @@ gtk_math_view_configure_event(GtkWidget* widget,
   g_return_val_if_fail(widget != NULL, FALSE);
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (math_view->pixmap != NULL) g_object_unref(math_view->pixmap);
@@ -898,10 +932,9 @@ setup_adjustments(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->area != NULL);
-  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view->view);
 
-  BoundingBox box;
-  math_view->interface->GetDocumentBoundingBox(box);
+  BoundingBox box = math_view->view->getBoundingBox();
 
   if (math_view->hadjustment != NULL) {
     gint width = sp2ipx(box.width) + 2 * MARGIN;
@@ -924,12 +957,13 @@ setup_adjustments(GtkMathView* math_view)
   }
 }
 
+#if 0
 extern "C" gboolean
 gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view, FALSE);
 
   bool res = math_view->interface->Load(name);
   if (!res) return FALSE;
@@ -955,32 +989,16 @@ gtk_math_view_load_doc(GtkMathView* math_view, GdomeDocument* doc)
 
   return TRUE;
 }
-
-#if 0
-extern "C" gboolean
-gtk_math_view_load_tree(GtkMathView* math_view, GdomeElement* elem)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(elem != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
-
-  bool res = math_view->interface->Load(DOM::Element(elem));
-  if (!res) return FALSE;
-
-  reset_adjustments(math_view);
-  paint_widget(math_view);
-
-  return TRUE;
-}
 #endif
 
 extern "C" void
-gtk_math_view_unload(GtkMathView* math_view)
+gtk_math_view_set_root(GtkMathView* math_view, GdomeElement* elem)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view);
+  g_return_if_fail(math_view->view);
 
-  math_view->interface->Unload();
+  math_view->view->setRoot(DOM::Element(elem));
+
   reset_adjustments(math_view);
   paint_widget(math_view);
 }
@@ -1075,33 +1093,28 @@ extern "C" void
 gtk_math_view_set_font_size(GtkMathView* math_view, guint size)
 {
   g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->area != NULL);
-  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view->view);
   g_return_if_fail(size > 0);
-
-  if (size == math_view->interface->GetDefaultFontSize()) return;
-
-  math_view->interface->SetDefaultFontSize(size);
+  math_view->view->setDefaultFontSize(size);
   paint_widget(math_view);
 }
 
 extern "C" guint
 gtk_math_view_get_font_size(GtkMathView* math_view)
 {
-  g_return_val_if_fail(math_view != NULL, 0);
-  g_return_val_if_fail(math_view->interface != NULL, 0);
-
-  return math_view->interface->GetDefaultFontSize();
+  g_return_val_if_fail(math_view, 0);
+  g_return_val_if_fail(math_view->view, 0);
+  return math_view->view->getDefaultFontSize();
 }
 
 extern "C" void
 gtk_math_view_select(GtkMathView* math_view, GdomeElement* elem)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
-  g_return_if_fail(elem != NULL);
+  g_return_if_fail(math_view);
+  g_return_if_fail(math_view->view);
+  g_return_if_fail(elem);
 
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(), DOM::Element(elem)))
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     {
       el->SetSelected();
       paint_widget(math_view);
@@ -1111,11 +1124,11 @@ gtk_math_view_select(GtkMathView* math_view, GdomeElement* elem)
 extern "C" void
 gtk_math_view_unselect(GtkMathView* math_view, GdomeElement* elem)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
-  g_return_if_fail(elem != NULL);
+  g_return_if_fail(math_view);
+  g_return_if_fail(math_view->view);
+  g_return_if_fail(elem);
 
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(), DOM::Element(elem)))
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
     {
       el->ResetSelected();
       paint_widget(math_view);
@@ -1125,15 +1138,14 @@ gtk_math_view_unselect(GtkMathView* math_view, GdomeElement* elem)
 extern "C" gboolean
 gtk_math_view_is_selected(GtkMathView* math_view, GdomeElement* elem)
 {
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
-  g_return_val_if_fail(elem != NULL, FALSE);
+  g_return_val_if_fail(math_view, FALSE);
+  g_return_val_if_fail(math_view->view, FALSE);
+  g_return_val_if_fail(elem, FALSE);
 
-  SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
-					    DOM::Element(elem));
-  if (!el) return FALSE;
-
-  return el->Selected() ? TRUE : FALSE;
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
+    return el->Selected() ? TRUE : FALSE;
+  else
+    return FALSE;
 }
 
 extern "C" gint
@@ -1154,13 +1166,14 @@ gtk_math_view_get_height(GtkMathView* math_view)
   return math_view->area->allocation.height;
 }
 
+#if 0
 extern "C" void
 gtk_math_view_set_anti_aliasing(GtkMathView* math_view, gboolean anti_aliasing)
 {
   g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view->view != NULL);
   
-  math_view->interface->SetAntiAliasing(anti_aliasing != FALSE);
+  math_view->view->SetAntiAliasing(anti_aliasing != FALSE);
   paint_widget(math_view);
 }
 
@@ -1191,17 +1204,18 @@ gtk_math_view_get_transparency(GtkMathView* math_view)
 
   return math_view->interface->GetTransparency() ? TRUE : FALSE;
 }
+#endif
 
 extern "C" GdomeElement*
 gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
-  g_return_val_if_fail(math_view->interface != NULL, NULL);
+  g_return_val_if_fail(math_view->view != NULL, NULL);
 
   gint x0 = (math_view->vadjustment != NULL) ? static_cast<int>(math_view->hadjustment->value) : 0;
   gint y0 = (math_view->hadjustment != NULL) ? static_cast<int>(math_view->vadjustment->value) : 0;
 
-  SmartPtr<MathMLElement> at = math_view->interface->GetElementAt(px2sp(x0 + x), px2sp(y0 + y));
+  SmartPtr<MathMLElement> at = math_view->view->getElementAt(px2sp(x0 + x), px2sp(y0 + y));
   return gdome_cast_el(findDOMNode(at).gdome_object());
 }
 
@@ -1209,38 +1223,38 @@ extern "C" gboolean
 gtk_math_view_get_element_coords(GtkMathView* math_view, GdomeElement* elem, gint* x, gint* y)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
-					    DOM::Element(elem));
-  if (!el) return FALSE;
-
-  if (x != NULL) *x = static_cast<gint>(sp2px(el->GetX()));
-  if (y != NULL) *y = static_cast<gint>(sp2px(el->GetY()));
-
-  return TRUE;
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
+    {
+      if (x != NULL) *x = static_cast<gint>(sp2px(el->GetX()));
+      if (y != NULL) *y = static_cast<gint>(sp2px(el->GetY()));
+      return TRUE;
+    }
+  else
+    return FALSE;
 }
 
 extern "C" gboolean
 gtk_math_view_get_element_rectangle(GtkMathView* math_view, GdomeElement* elem, GdkRectangle* rect)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
   g_return_val_if_fail(rect != NULL, FALSE);
 
-  SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
-					    DOM::Element(elem));
-  if (!el) return FALSE;
-
-  const BoundingBox& box = el->GetBoundingBox();
-  rect->x = sp2ipx(el->GetX());
-  rect->y = sp2ipx(el->GetY() - box.height);
-  rect->width = sp2ipx(box.horizontalExtent());
-  rect->height = sp2ipx(box.verticalExtent());
-
-  return TRUE;
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
+    {
+      BoundingBox box = el->GetBoundingBox();
+      rect->x = sp2ipx(el->GetX());
+      rect->y = sp2ipx(el->GetY() - box.height);
+      rect->width = sp2ipx(box.horizontalExtent());
+      rect->height = sp2ipx(box.verticalExtent());
+      return TRUE;
+    }
+  else
+    return FALSE;
 }
 
 extern "C" void
@@ -1277,11 +1291,12 @@ gtk_math_view_get_log_verbosity(GtkMathView*)
   return Globals::GetVerbosity();
 }
 
+#if 0
 extern "C" void
 gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
 {
   g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view->view != NULL);
   g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
 
   if (id == math_view->font_manager_id) return;
@@ -1324,19 +1339,6 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
     Globals::logger(LOG_WARNING, "the widget was compiled without support for T1 fonts, falling back to GTK fonts");
 #endif // HAVE_LIBT1
   case FONT_MANAGER_GTK:
-    math_view->font_manager = new Gtk_FontManager;
-    math_view->drawing_area = new Gtk_DrawingArea(values, px2sp(MARGIN), px2sp(MARGIN),
-						  GTK_WIDGET(math_view->area),
-						  Globals::configuration.GetSelectForeground(),
-						  Globals::configuration.GetSelectBackground());
-    math_view->drawing_area->SetPixmap(math_view->pixmap);
-    math_view->area_factory = new Gtk_AreaFactory();
-    math_view->shaper_manager = new ShaperManager();
-    math_view->shaper_pango = new Gtk_PangoShaper();
-    math_view->shaper_pango->setPangoContext(gtk_widget_create_pango_context(math_view->area));
-    math_view->shaper_manager->registerShaper(*math_view->shaper_pango);
-    math_view->shaper_adobe = new Gtk_AdobeShaper();
-    math_view->shaper_manager->registerShaper(*math_view->shaper_adobe);
     break;
   default:
     Globals::logger(LOG_ERROR, "could not switch to font manager type %d", id);
@@ -1403,6 +1405,7 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
   g_assert_not_reached();
 #endif // HAVE_LIBT1
 }
+#endif
 
 #if 0
 extern "C" guint

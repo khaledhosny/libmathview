@@ -29,27 +29,14 @@
 #include "FormattingContext.hh"
 #include "ValueConversion.hh"
 
-MathMLAlignMarkElement::MathMLAlignMarkElement()
+MathMLAlignMarkElement::MathMLAlignMarkElement(const SmartPtr<class MathMLView>& view)
+  : MathMLElement(view)
 {
   edge = MARK_ALIGN_NOTVALID;
 }
  
-#if defined(HAVE_GMETADOM)
-MathMLAlignMarkElement::MathMLAlignMarkElement(const DOM::Element& node)
-  : MathMLElement(node)
-{
-  edge = MARK_ALIGN_NOTVALID;
-}
-#endif
-
 MathMLAlignMarkElement::~MathMLAlignMarkElement()
 {
-}
-
-void
-MathMLAlignMarkElement::Normalize(const SmartPtr<class MathMLDocument>&)
-{
-  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 void

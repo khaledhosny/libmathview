@@ -23,30 +23,19 @@
 #ifndef MathMLFencedElement_hh
 #define MathMLFencedElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLBinContainerElement.hh"
 
-class MathMLFencedElement: public MathMLBinContainerElement
+class MathMLFencedElement : public MathMLBinContainerElement
 {
 protected:
-  MathMLFencedElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLFencedElement(const DOM::Element&);
-#endif
+  MathMLFencedElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLFencedElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLFencedElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLFencedElement(el)); }
-#endif
+  static SmartPtr<MathMLFencedElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLFencedElement(view); }
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);
 

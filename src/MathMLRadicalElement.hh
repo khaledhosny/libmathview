@@ -23,30 +23,19 @@
 #ifndef MathMLRadicalElement_hh
 #define MathMLRadicalElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLContainerElement.hh"
 
 class MathMLRadicalElement : public MathMLContainerElement
 {
 protected:
-  MathMLRadicalElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLRadicalElement(const DOM::Element&);
-#endif
+  MathMLRadicalElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLRadicalElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLRadicalElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLRadicalElement(el)); }
-#endif
+  static SmartPtr<MathMLRadicalElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLRadicalElement(view); }
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
+  virtual void construct(void);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
@@ -65,9 +54,6 @@ public:
   SmartPtr<class MathMLElement> GetIndex(void) const { return index; }
   void SetRadicand(const SmartPtr<class MathMLElement>&);
   void SetIndex(const SmartPtr<class MathMLElement>&);
-
-protected:
-  void Init(void);
 
 private:
   SmartPtr<class MathMLElement> GetNucleus(void) const;

@@ -34,16 +34,10 @@
 #include "RenderingEnvironment.hh"
 #include "AbstractRefinementContext.hh"
 
-MathMLStyleElement::MathMLStyleElement()
+MathMLStyleElement::MathMLStyleElement(const SmartPtr<class MathMLView>& view)
+  : MathMLNormalizingContainerElement(view)
 {
 }
-
-#if defined(HAVE_GMETADOM)
-MathMLStyleElement::MathMLStyleElement(const DOM::Element& node)
-  : MathMLNormalizingContainerElement(node)
-{
-}
-#endif
 
 MathMLStyleElement::~MathMLStyleElement()
 {
@@ -82,7 +76,7 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, Style, mathsize);
       REFINE_ATTRIBUTE(context, Style, mathcolor);
       REFINE_ATTRIBUTE(context, Style, mathbackground);
-      context.push(GetDOMElement());
+      context.push(getDOMElement());
       MathMLNormalizingContainerElement::refine(context);
       context.pop();
     }

@@ -23,10 +23,6 @@
 #ifndef MathMLOperatorElement_hh
 #define MathMLOperatorElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "MathMLEmbellishment.hh"
 #include "MathMLTokenElement.hh"
 #include "keyword.hh"
@@ -35,22 +31,12 @@ class MathMLOperatorElement
   : public MathMLTokenElement, public MathMLEmbellishment
 {
 protected:
-  MathMLOperatorElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLOperatorElement(const DOM::Element&);
-#endif
+  MathMLOperatorElement(const SmartPtr<class MathMLView>&);
   virtual ~MathMLOperatorElement();
 
-private:
-  void Init(void);
-
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLOperatorElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLOperatorElement(el)); }
-#endif
+  static SmartPtr<MathMLOperatorElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLOperatorElement(view); }
 
   virtual void Setup(class RenderingEnvironment&);
   virtual void refine(class AbstractRefinementContext&);

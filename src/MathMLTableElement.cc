@@ -27,38 +27,73 @@
 #include <algorithm>
 #include <functional>
 
-#include "defs.h"
 #include "Adaptors.hh"
 #include "ChildList.hh"
 #include "MathMLDocument.hh"
-#include "MathMLTableElement.hh"
+#include "MathMLFormattingEngineFactory.hh"
 #include "MathMLTableCellElement.hh"
+#include "MathMLTableElement.hh"
+#include "MathMLView.hh"
+#include "defs.h"
 
-MathMLTableElement::MathMLTableElement()
-{
-  Init();
-}
-
-#if defined(HAVE_GMETADOM)
-MathMLTableElement::MathMLTableElement(const DOM::Element& node)
-  : MathMLLinearContainerElement(node)
-{
-  Init();
-}
-#endif
-
-void
-MathMLTableElement::Init()
+MathMLTableElement::MathMLTableElement(const SmartPtr<class MathMLView>& view)
+  : MathMLLinearContainerElement(view)
 {
   nRows    = 0;
   nColumns = 0;
-  cell     = NULL;
-  column   = NULL;
-  row      = NULL;
-  rowLabel = NULL;
+  cell     = 0;
+  column   = 0;
+  row      = 0;
+  rowLabel = 0;
   width    = 0;
 
-  dGC[0] = dGC[1] = NULL;
+  dGC[0] = dGC[1] = 0;
+}
+
+MathMLTableElement::~MathMLTableElement()
+{
+  ReleaseAuxStructures();
+}
+
+void
+MathMLTableElement::construct()
+{
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      if (getDOMElement())
+	{
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
+	  unsigned n = children.get_length();
+
+	  std::vector< SmartPtr<MathMLElement> > newContent;
+	  newContent.reserve(n);
+	  for (unsigned i = 0; i < n; i++)
+	    {
+	      DOM::Element node = children.item(i);
+	      assert(node);
+	      if (nodeLocalName(node) == "mtr" || nodeLocalName(node) == "mlabeledtr")
+		{
+		  SmartPtr<MathMLElement> elem = getFormattingNode(node);
+		  assert(elem);
+		  newContent.push_back(elem);
+		}
+	      else
+		{
+		  // ISSUE WARNING
+		}
+	    }
+	  SwapChildren(newContent);
+	}
+#endif // HAVE_GMETADOM
+
+      if (content.size() == 0)
+	Append(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement(getView())));
+
+      std::for_each(content.begin(), content.end(), ConstructAdaptor());
+
+      ResetDirtyStructure();
+    }
 }
 
 void
@@ -85,52 +120,6 @@ MathMLTableElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, Table, minlabelspacing);
       REFINE_ATTRIBUTE(context, Table, width);
       MathMLLinearContainerElement::refine(context);
-    }
-}
-
-MathMLTableElement::~MathMLTableElement()
-{
-  ReleaseAuxStructures();
-}
-
-void
-MathMLTableElement::Normalize(const SmartPtr<MathMLDocument>& doc)
-{
-  if (DirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (GetDOMElement())
-	{
-	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
-	  unsigned n = children.get_length();
-
-	  std::vector< SmartPtr<MathMLElement> > newContent;
-	  newContent.reserve(n);
-	  for (unsigned i = 0; i < n; i++)
-	    {
-	      DOM::Element node = children.item(i);
-	      assert(node);
-	      if (nodeLocalName(node) == "mtr" || nodeLocalName(node) == "mlabeledtr")
-		{
-		  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
-		  assert(elem);
-		  newContent.push_back(elem);
-		}
-	      else
-		{
-		  // ISSUE WARNING
-		}
-	    }
-	  SwapChildren(newContent);
-	}
-#endif // HAVE_GMETADOM
-
-      if (content.size() == 0)
-	Append(smart_cast<MathMLTableRowElement>(MathMLTableRowElement::create()));
-
-      std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
-
-      ResetDirtyStructure();
     }
 }
 

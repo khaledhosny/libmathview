@@ -23,31 +23,19 @@
 #ifndef MathMLAlignMarkElement_hh
 #define MathMLAlignMarkElement_hh
 
-#if defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
-#endif
-
 #include "keyword.hh"
 #include "MathMLElement.hh"
 
-class MathMLAlignMarkElement: public MathMLElement
+class MathMLAlignMarkElement : public MathMLElement
 {
 protected:
-  MathMLAlignMarkElement(void);
-#if defined(HAVE_GMETADOM)
-  MathMLAlignMarkElement(const DOM::Element&);
-#endif
+  MathMLAlignMarkElement(const SmartPtr<class MathMLView>& view);
   virtual ~MathMLAlignMarkElement();
 
 public:
-  static SmartPtr<MathMLElement> create(void)
-  { return SmartPtr<MathMLElement>(new MathMLAlignMarkElement()); }
-#if defined(HAVE_GMETADOM)
-  static SmartPtr<MathMLElement> create(const DOM::Element& el)
-  { return SmartPtr<MathMLElement>(new MathMLAlignMarkElement(el)); }
-#endif
+  static SmartPtr<MathMLAlignMarkElement> create(const SmartPtr<class MathMLView>& view)
+  { return new MathMLAlignMarkElement(view); }
 
-  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
