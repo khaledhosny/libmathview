@@ -41,6 +41,7 @@ test_embedding_LDADD = \
 
 INCLUDES = \
   $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto/ \
   -I$(top_srcdir)/src/common/ \
