@@ -29,8 +29,7 @@ class AreaId
 {
 public:
   AreaId(void);
-  AreaId(unsigned);
-  AreaId(unsigned, const AreaId&);
+  AreaId(unsigned, const AreaId& = AreaId());
 
   bool operator==(const AreaId& id) const { return path == id.path; }
 

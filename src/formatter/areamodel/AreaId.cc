@@ -28,21 +28,11 @@ AreaId::AreaId()
 {
 }
 
-AreaId::AreaId(unsigned head)
-{
-  if (head > 0) path.push_back(head - 1);
-}
-
 AreaId::AreaId(unsigned head, const AreaId& tail)
 {
-  if (head == 0)
-    throw InvalidAreaId();
-  else
-    {
-      path.reserve(tail.path.size() + 1);
-      path.push_back(head - 1);
-      path.insert(path.end(), tail.path.begin(), tail.path.end());
-    }
+  path.reserve(tail.path.size() + 1);
+  path.push_back(head);
+  path.insert(path.end(), tail.path.begin(), tail.path.end());
 }
 
 AreaId::AreaId(const_iterator begin, const_iterator end) : path(begin, end)
@@ -55,7 +45,7 @@ AreaId::head() const
   if (path.empty())
     throw InvalidAreaId();
   else
-    return path[0] + 1;
+    return path[0];
 }
 
 AreaId

@@ -125,12 +125,14 @@ bool
 BinContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
 {
   if (area == this)
+    return true;
+  else
     {
       factory.append(0);
-      return true;
+      if (child->idOf(area, factory)) return true;
+      factory.backtrack();
+      return false;
     }
-  else
-    return child->idOf(area, factory);
 }
 
 void

@@ -79,13 +79,7 @@ SimpleArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) c
 bool
 SimpleArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
 {
-  if (area == this)
-    {
-      factory.append(0);
-      return true;
-    }
-  else
-    return false;
+  return area == this;
 }
 
 AreaRef

@@ -37,21 +37,17 @@ bool
 LinearContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
 {
   if (this == area)
-    {
-      factory.append(0);
-      return true;
-    }
+    return true;
   else
     {
       for (std::vector<AreaRef>::const_iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	{
-	  factory.append((p - content.begin()) + 1);
+	  factory.append(p - content.begin());
 	  if ((*p)->idOf(area, factory))
 	    return true;
-	  else
-	    factory.backtrack();
+	  factory.backtrack();
 	}
       return false;
     }

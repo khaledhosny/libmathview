@@ -22,28 +22,25 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "AreaIdFactory.hh"
 
 void
 AreaIdFactory::append(unsigned step)
 {
-  if (path.empty() || path.back() != 0)
-    path.push_back(step);
-  else
-    throw InvalidId();
+  path.push_back(step);
 }
 
 void
 AreaIdFactory::backtrack()
 {
-  if (!path.empty()) path.pop_back();
+  assert(!path.empty());
+  path.pop_back();
 }
 
 AreaId
 AreaIdFactory::id() const
 {
-  if (path.empty() || path.back() != 0)
-    throw InvalidId();
-  else
-    return AreaId(path.begin(), path.end() - 1);
+  return AreaId(path.begin(), path.end());
 }
