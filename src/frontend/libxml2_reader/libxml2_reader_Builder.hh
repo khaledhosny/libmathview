@@ -39,7 +39,8 @@ public:
 
 protected:
   SmartPtr<Element> linkerAssoc(const SmartPtr<libxmlXmlReader>&) const { return 0; }
-  void linkerAdd(const SmartPtr<libxmlXmlReader>&, const SmartPtr<Element>&) const { }
+  void linkerAdd(const SmartPtr<libxmlXmlReader>&, Element*) const { }
+  void linkerRemove(Element*) const { }
 };
 
 #endif // __libxml2_reader_Builder_hh__

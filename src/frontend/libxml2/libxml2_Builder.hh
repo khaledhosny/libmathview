@@ -47,7 +47,8 @@ public:
 protected:
   // methods for accessing the linker
   SmartPtr<Element> linkerAssoc(xmlElement* el) const { return linker.assoc(el); }
-  void linkerAdd(xmlElement* el, const SmartPtr<Element>& elem) const { linker.add(el, elem); }
+  void linkerAdd(xmlElement* el, Element* elem) const { linker.add(el, elem); }
+  void linkerRemove(Element* elem) const { linker.remove(elem); }
 
   void notifySubtreeModified(xmlNode*) const;
   void notifyAttributeChanged(xmlNode*, const String&) const;
