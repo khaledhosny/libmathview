@@ -32,7 +32,7 @@ class FormattingContext
 {
 public:
   FormattingContext(void) { }
-#if 0
+
   template <typename T>
   void set(const char* id, const T& v)
   { map.set(id, Variant<T>::create(v)); }
@@ -43,7 +43,7 @@ public:
 
   bool defined(const char* id) const
   { return map.defined(id); }
-#endif
+
 protected:
   template <typename T>
   void set(int id, const T& v)
