@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<math>
+  <mstyle mathvariant="bold">
+    <mtext>bold</mtext>
+  </mstyle>
+  <mtext fontstyle="italic">normal weight, but italics</mtext>
+</math>

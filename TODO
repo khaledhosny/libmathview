@@ -39,7 +39,6 @@ Minor improvements
 * using a glyph for the / in bevelled fractions
 * making the PostScript document conformant, what about fonts?
 * matching the nearest font (w.r.t. size, see LaTeX fonts)
-* libxml has iconv! Use it, don't call it directly!
 
 Configuration
 
@@ -54,9 +53,5 @@ Bugs
 * problem with color and PostScript generated files
 * in font-configuration.xml, the font map for monospace is not complete
 * if using libxml 1.x.y inline unicode chars greater that 0x7f doesn't work
-* mathvariant and similar attributes don't work in mstyle
 * what if there is a horizontal stretchy operator with minsize specified in a mrow?
 * getStretchyOperator does not always work properly, please check
-* GraphicsContext is never released??? (XGC is shared (maybe), but those
-  used by the widget? Yes, they are shared as well, and released when DrawingArea is
-  destroyed)
