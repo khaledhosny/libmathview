@@ -28,6 +28,7 @@
 #include "String.hh"
 #include "ValueConversion.hh"
 #include "MathFormattingContext.hh"
+#include "MathMLElement.hh"
 
 bool
 IsEmpty(const SmartPtr<Value>& value)
