@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso8859-1"?>
+<!ELEMENT math-engine-configuration (data-dir|color|font-size|link-color|select-color)>
+
+<!ELEMENT data-dir #PCDATA>
+
+<!ELEMENT font-size EMPTY>
+<!ATTLIST font-size
+  size CDATA #REQUIRED
+>
+
+<!ELEMENT color EMPTY>
+<!ATTLIST color
+  foreground CDATA #REQUIRED
+  background CDATA #REQUIRED
+>
+
+<!ELEMENT link-color EMPTY>
+<!ATTLIST link-color
+  foreground CDATA #REQUIRED
+  background CDATA #REQUIRED
+>
+
+<!ELEMENT select-color EMPTY>
+<!ATTLIST select-color
+  foreground CDATA #REQUIRED
+  background CDATA #REQUIRED
+>
+
+
+
