@@ -31,4 +31,11 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>
   <select-color  foreground="black" background="red"/>
+  <shaper name="pango-default"/>
+  <shaper name="space"/>
+<!--
+  <shaper name="pango"/>
+  <shaper name="adobe"/>
+-->
+  <shaper name="computer-modern"/>
 </math-engine-configuration>

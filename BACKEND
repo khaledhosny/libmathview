@@ -9,11 +9,13 @@ The backend is still rather messy
 
 T1lib support
 
-* fix bugs (crashes about invalid glyphs)
 * add support for loading fonts at different sizes for better quality (cmr5, ...)
-* add support for choosing shapers at runtime
 * implement TeX-compliant graphic device
 * operator minus should use a specific glyph
 * implement horizontal braces CM
-* implement large horizontal operators CM
+* implement large horizontal operators CM (fix glyph table)
 * fix default line thickness for fractions and square root
+* T1LibClose fails if no font is requested??
+* some glue glyphs like - have space around them and hence are
+  not suitable for the stretchying mechanism as is implemented now
+  use "tight" glyphs? use rules?

@@ -95,30 +95,33 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
 
 	  const scaled w = std::max(baseW, std::max(underW, overW));
 
-	  if (baseOp)
+	  if (baseOp && baseOp->IsStretchy())
 	    {
 	      ctxt.push(this);
 	      ctxt.setStretchToWidth(w);
 	      ctxt.setStretchOperator(baseOp);
-	      baseArea = getBase() ? getBase()->format(ctxt) : 0;
+	      getBase()->setDirtyLayout();
+	      baseArea = getBase()->format(ctxt);
 	      ctxt.pop();
 	    }
 	  
-	  if (underOp)
+	  if (underOp && underOp->IsStretchy())
 	    {
 	      ctxt.push(this);
 	      ctxt.setStretchToWidth(w);
 	      ctxt.setStretchOperator(underOp);
-	      underArea = getUnderScript() ? getUnderScript()->format(ctxt) : 0;
+	      getUnderScript()->setDirtyLayout();
+	      underArea = getUnderScript()->format(ctxt);
 	      ctxt.pop();
 	    }
 
-	  if (overOp)
+	  if (overOp && overOp->IsStretchy())
 	    {
 	      ctxt.push(this);
 	      ctxt.setStretchToWidth(w);
 	      ctxt.setStretchOperator(overOp);
-	      overArea = getOverScript() ? getOverScript()->format(ctxt) : 0;
+	      getOverScript()->setDirtyLayout();
+	      overArea = getOverScript()->format(ctxt);
 	      ctxt.pop();
 	    }
 
