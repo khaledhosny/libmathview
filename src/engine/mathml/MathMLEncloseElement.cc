@@ -44,12 +44,18 @@ MathMLEncloseElement::format(MathFormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      String notation = ToString(GET_ATTRIBUTE_VALUE(MathML, Enclose, notation));
+
       AreaRef res;
       if (getChild())
-	res = ctxt.getDevice()->enclose(ctxt, getChild()->format(ctxt), notation);
+	{
+	  res = getChild()->format(ctxt);
+	  SmartPtr<ValueSequence> type = ToSequence(GET_ATTRIBUTE_VALUE(MathML, Enclose, notation));
+	  for (unsigned i = 0; i < type->getSize(); i++)
+	    res = ctxt.getDevice()->enclose(ctxt, res, ToString(type->getValue(i)));
+	}
       else
 	res = 0;
+
       setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
       ctxt.pop();
       resetDirtyLayout();

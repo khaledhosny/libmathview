@@ -94,10 +94,11 @@ AreaFactory::middle(const AreaRef& area) const
 
   std::vector<AreaRef> v;
   v.reserve(3);
+  v.push_back(horizontalSpace(0));
   v.push_back(verticalFiller());
   v.push_back(shift(area, (areaBox.depth - areaBox.depth) / 2));
   v.push_back(verticalFiller());
-  return verticalArray(v, 1);
+  return verticalArray(v, 0);
 }
 
 AreaRef

@@ -444,5 +444,35 @@ MathGraphicDevice::enclose(const MathFormattingContext& context,
 			   const AreaRef& base,
 			   const String& notation) const
 {
-  return base;
+  if (notation == "radical") 
+    return radical(context, base, 0);
+  else
+    {
+      std::vector<AreaRef> c;
+      c.reserve(3);
+
+      AreaRef res = base;
+
+      AreaRef vobj = factory->verticalLine(defaultLineThickness(context), context.getColor());
+      AreaRef hobj = factory->horizontalLine(defaultLineThickness(context), context.getColor());
+
+      if (notation == "box" || notation == "longdiv" || notation == "left") c.push_back(vobj);
+      c.push_back(res);
+      if (notation == "box" || notation == "actuarial" || notation == "right") c.push_back(vobj);
+      if (c.size() > 1) res = factory->horizontalArray(c);
+
+      c.clear();
+      if (notation == "box" || notation == "bottom") c.push_back(hobj);
+      c.push_back(res);
+      if (notation == "box" || notation == "longdiv" || notation == "actuarial" || notation == "top") c.push_back(hobj);
+      if (c.size() > 1) res = factory->verticalArray(c, (notation == "top") ? 0 : 1);
+
+      c.clear();
+      c.push_back(res);
+      if (notation == "verticalstrike") c.push_back(factory->center(vobj));
+      else if (notation == "horizontalstrike") c.push_back(factory->middle(hobj));
+      if (c.size() > 1) res = factory->overlapArray(c);
+
+      return res;
+    }
 }
