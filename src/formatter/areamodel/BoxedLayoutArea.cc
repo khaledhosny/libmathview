@@ -92,8 +92,8 @@ BoxedLayoutArea::replace(const ReplacementContext& context) const
 	   p != content.end();
 	   p++)
 	{
-	  ReplacementContext newContext(context, (p - content.begin()) + 1);
-	  newContent.push_back(XYArea(p->dx, p->dy, content[(p - content.begin()) + 1].area->replace(newContext)));
+	  ReplacementContext newContext(context, p - content.begin());
+	  newContent.push_back(XYArea(p->dx, p->dy, content[p - content.begin()].area->replace(newContext)));
 	}
 
       if (content == newContent)

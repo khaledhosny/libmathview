@@ -29,7 +29,7 @@
 #include "VerticalArrayArea.hh"
 
 VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, unsigned r)
-  : LinearContainerArea(children), refArea(r - 1)
+  : LinearContainerArea(children), refArea(r)
 {
   assert(content.size() > 0 && refArea < content.size());
 }
@@ -37,14 +37,14 @@ VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, unsig
 SmartPtr<Area>
 VerticalArrayArea::clone() const
 {
-  return new VerticalArrayArea(content, refArea + 1);
+  return new VerticalArrayArea(content, refArea);
 }
 
 SmartPtr<Area>
 VerticalArrayArea::clone(const std::vector<AreaRef>& children) const
 {
   assert(children.size() == content.size());
-  return new VerticalArrayArea(children, refArea + 1);
+  return new VerticalArrayArea(children, refArea);
 }
 
 // unsigned
@@ -160,6 +160,8 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
        p != content.end();
        p++)
     {
+      std::cout << "fit vertical " << (p - content.begin()) << " width = " << width.toInt() << std::endl;
+
       int pw, ph, pd;
       (*p)->strength(pw, ph, pd);
       BoundingBox pbox = (*p)->box();
@@ -185,6 +187,8 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
 
       newContent.push_back((*p)->fit(width, pheight, pdepth));
     }
+
+  std::cout << "fit vertical done *** same? " << (newContent == content) << std::endl;
 
   if (newContent == content)
     return this;

@@ -68,7 +68,7 @@ BinContainerArea::replace(const ReplacementContext& context) const
     return newArea;
   else
     {
-      ReplacementContext newContext(context, 1);
+      ReplacementContext newContext(context, 0);
       AreaRef newChild = child->replace(newContext);
       if (child == newChild)
 	return this;
@@ -85,7 +85,7 @@ BinContainerArea::replace(const ReplacementContext& context) const
 AreaRef
 BinContainerArea::fit(const scaled& w, const scaled& h, const scaled& d) const
 {
-  return replace(ReplacementContext(AreaId(1), child->fit(w, h, d)));
+  return replace(ReplacementContext(AreaId(0), child->fit(w, h, d)));
 }
 
 AreaRef

@@ -40,6 +40,7 @@ HorizontalFillerArea::box() const
 AreaRef
 HorizontalFillerArea::fit(const scaled& width, const scaled&, const scaled&) const
 {
+  std::cout << "filler becoming space of " << width.toInt() << std::endl;
   return HorizontalSpaceArea::create(width);
 }
 

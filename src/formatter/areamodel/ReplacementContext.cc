@@ -38,7 +38,7 @@ ReplacementContext::ReplacementContext(const ReplacementContext& context, unsign
        p != context.subst.end();
        p++)
     if (!(*p).first.empty() && (*p).first.head() == head)
-      subst.push_back(*p);
+      subst.push_back(std::make_pair((*p).first.tail(), (*p).second));
 }
 
 ReplacementContext::~ReplacementContext()
