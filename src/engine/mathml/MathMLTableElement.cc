@@ -120,6 +120,9 @@ MathMLTableElement::format(FormattingContext& ctxt)
 	}
 
       std::cerr << "formatting table 2" << std::endl;
+      if (SmartPtr<Value> displayStyleV = GET_ATTRIBUTE_VALUE(MathML, Table, displaystyle))
+	ctxt.setDisplayStyle(ToBoolean(displayStyleV));
+
       for_each_if(cell.begin(), cell.end(),
 		  NotNullPredicate<MathMLTableCellElement>(),
 		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt));
