@@ -25,7 +25,7 @@
 #include "View.hh"
 #include "NamespaceContext.hh"
 
-NamespaceContext::NamespaceContext()
+NamespaceContext::NamespaceContext(const String& ns) : namespaceURI(ns)
 { }
 
 NamespaceContext::~NamespaceContext()

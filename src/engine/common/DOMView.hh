@@ -23,6 +23,7 @@
 #ifndef __DOMView_hh__
 #define __DOMView_hh__
 
+#include "DOM.hh"
 #include "View.hh"
 
 class DOMView : public View
@@ -34,10 +35,11 @@ protected:
 public:
   static SmartPtr<DOMView> create(void) { return new DOMView(); }
 
-  void setRoot(const DOM::Element&);
-  DOM::Element getRoot(void) const { return root; }
+  SmartPtr<class Linker> getLinker(void) const;
 
-  virtual SmartPtr<Element> getRootElement(void) const;
+  SmartPtr<class Element> findElement(const DOM::Element&) const;
+  void setRootDOMElement(const DOM::Element&);
+  DOM::Element getRootDOMElement(void) const { return rootDOMElement; }
 
 private:
   class DOMSubtreeModifiedListener : public DOM::EventListener
@@ -62,9 +64,10 @@ private:
     SmartPtr<DOMView> view;
   };
 
+  SmartPtr<class Linker> linker;
   DOMSubtreeModifiedListener* subtreeModifiedListener;
   DOMAttrModifiedListener* attrModifiedListener;
-  DOM::Element root;
+  DOM::Element rootDOMElement;
 };
 
 #endif // __DOMView_hh__

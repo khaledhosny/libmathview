@@ -31,18 +31,16 @@
 class NamespaceContext : public Object
 {
 protected:
-  NamespaceContext(const String& ns) : namespaceURI(ns);
+  NamespaceContext(const String&);
   virtual ~NamespaceContext();
 
 public:
   String getNamespaceURI(void) const { return namespaceURI; }
   SmartPtr<class View> getView(void) const;
 
-  virtual SmartPtr<class ElementFactory> getFactory(void) const = 0;
-  //virtual SmartPtr<class Element> construct(class AbstractReader&) const = 0;
+  // virtual SmartPtr<class Element> construct(class AbstractReader&) const = 0;
   virtual SmartPtr<class Element> construct(const DOM::Element&) const = 0;
-  virtual void refine(const SmartPtr<class Element>&, class AbstractRefinementContext&) const = 0;
-  virtual SmartPtr<const class Area> getArea(const SmartPtr<class Element>&) const = 0;
+  virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const = 0;
 
 private:
   WeakPtr<class View> view;

@@ -31,7 +31,9 @@ class ElementFactory : public Object
 {
 public:
   SmartPtr<class Element> getElement(const DOM::Element&) const;
+
   virtual SmartPtr<class Element> createElement(const String&) const = 0;
+  virtual SmartPtr<class Element> createAdapter(const String&) const = 0;
 
   SmartPtr<class Linker> getLinker(void) const;
 

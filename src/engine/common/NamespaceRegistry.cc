@@ -23,7 +23,7 @@
 #include <config.h>
 
 #include "NamespaceRegistry.hh"
-#include "namespaceContext.hh"
+#include "NamespaceContext.hh"
 
 NamespaceRegistry::NamespaceRegistry()
 { }
@@ -34,10 +34,10 @@ NamespaceRegistry::~NamespaceRegistry()
 bool
 NamespaceRegistry::add(const SmartPtr<NamespaceContext>& context)
 {
-  if (map.find(context->getURI()) != map.end())
+  if (map.find(context->getNamespaceURI()) != map.end())
     return false;
 
-  map[context->getURI()] = context;
+  map[context->getNamespaceURI()] = context;
   return true;
 }
 

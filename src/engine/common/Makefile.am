@@ -16,6 +16,7 @@ libengine_common_la_SOURCES = \
   NamespaceContext.cc \
   ElementFactory.cc \
   View.cc \
+  DOMView.cc \
   Element.cc \
   Linker.cc
 
@@ -31,10 +32,12 @@ noinst_HEADERS = \
   NamespaceContext.hh \
   ElementFactory.hh \
   View.hh \
+  DOMView.hh \
   Element.hh \
   Linker.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/formatter/areamodel
+  -I$(top_srcdir)/src/formatter/areamodel \
+  -I$(top_srcdir)/src/formatter/gtk_areamodel

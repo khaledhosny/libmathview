@@ -36,8 +36,7 @@ protected:
   virtual ~Linker();
 
 public:
-  static SmartPtr<Linker> create(void) 
-  { return new Linker(); }
+  static SmartPtr<Linker> create(void) { return new Linker(); }
 
   SmartPtr<class Element> get(const DOM::Element&) const;
   void add(const DOM::Element&, const SmartPtr<class Element>&);

@@ -22,136 +22,65 @@
 
 #include <config.h>
 
-#include "Clock.hh"
-#include "Globals.hh"
-#include "MathMLView.hh"
+#include "View.hh"
+#include "Element.hh"
+#include "NamespaceRegistry.hh"
+#include "NamespaceContext.hh"
+#include "SearchingContext.hh"
 #include "scaled.hh"
 #include "scaledConv.hh"
-#include "traverseAux.hh"
-#include "MathMLElementFactory.hh"
-#include "RefinementContext.hh"
-#include "MathGraphicDevice.hh"
-#include "MathFormattingContext.hh"
-#include "SearchingContext.hh"
+// FIXME:
 #include "Gtk_WrapperArea.hh"
-#include "Linker.hh"
 
-MathMLView::MathMLView(const SmartPtr<MathMLElementFactory>& f,
-		       const SmartPtr<MathGraphicDevice>& d)
-  : factory(f), device(d)
+View::View()
 {
   freezeCounter = 0;
-  defaultFontSize = Globals::configuration.GetFontSize();
 }
 
-MathMLView::~MathMLView()
+View::~View()
 { }
 
 bool
-MathMLView::freeze()
+View::freeze()
 {
   return freezeCounter++ == 0;
 }
 
 bool
-MathMLView::thaw()
+View::thaw()
 {
   assert(freezeCounter > 0);
   return --freezeCounter == 0;
 }
 
-SmartPtr<MathMLElement>
-MathMLView::getRootElement() const
-{
-  return root ? smart_cast<MathMLElement>(factory->getElement(root)) : 0;
-}
-
 void
-MathMLView::setDefaultFontSize(unsigned size)
+View::setRootElement(const SmartPtr<Element>& root)
 {
-  assert(size > 0);
-  if (defaultFontSize != size)
-    {
-      defaultFontSize = size;
-      if (SmartPtr<MathMLElement> elem = getRootElement())
-	{
-	  elem->setDirtyAttributeD();
-	  elem->setDirtyLayout();	  
-	}
-    }
+  rootElement = root;
 }
 
-void
-MathMLView::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
+SmartPtr<Element>
+View::getRootElement() const
 {
-  DOM::MutationEvent me(ev);
-  assert(me);
-
-  if (SmartPtr<MathMLElement> elem = findMathMLElement(view, DOM::Element(me.get_target())))
-    {
-      elem->setDirtyStructure();
-      elem->setDirtyAttributeD();
-    }
+  return rootElement;
 }
 
-void
-MathMLView::DOMAttrModifiedListener::handleEvent(const DOM::Event& ev)
-{
-  DOM::MutationEvent me(ev);
-  assert(me);
+AreaRef
+View::getElementArea(const SmartPtr<Element>& elem) const
+{ return elem ? elem->getNamespaceContext()->format(elem) : 0; }
 
-  if (SmartPtr<MathMLElement> elem = findMathMLElement(view, DOM::Element(me.get_target())))
-    elem->setDirtyAttribute();
-}
+AreaRef
+View::getRootArea() const
+{ return getElementArea(getRootElement()); }
 
-void
-MathMLView::setRoot(const DOM::Element& elem)
-{
-  if (root)
-    {
-      DOM::EventTarget et(root);
-      assert(et);
-
-      et.removeEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
-      et.removeEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
-      et.removeEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
-      et.removeEventListener("DOMAttrModified", *attrModifiedListener, false);
-
-      delete subtreeModifiedListener;
-      delete attrModifiedListener;
-      subtreeModifiedListener = 0;
-      attrModifiedListener = 0;
-    }
-
-  if (elem)
-    {
-      root = elem;
-
-      DOM::EventTarget et(root);
-      assert(et);
-
-      subtreeModifiedListener = new DOMSubtreeModifiedListener(this);
-      attrModifiedListener = new DOMAttrModifiedListener(this);
-
-      et.addEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
-      et.addEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
-      et.addEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
-      et.addEventListener("DOMAttrModified", *attrModifiedListener, false);
-    }
-}
-
-#include "Gtk_RenderingContext.hh"
-
-SmartPtr<MathMLElement>
-MathMLView::getElementAt(const scaled& x, const scaled& y) const
+SmartPtr<Element>
+View::getElementAt(const scaled& x, const scaled& y) const
 {
   if (AreaRef rootArea = getRootArea())
     {
       BoundingBox box = rootArea->box();
       SearchingContext context(x, y);
-#if 0
-      std::cerr << "searching at " << Gtk_RenderingContext::toGtkX(x) << "," << Gtk_RenderingContext::toGtkY(y) << std::endl;
-#endif
+      
       if (rootArea->find(context, -x0, -box.height - y0))
 	{
 	  SearchingContext::Result result = context.getResult();
@@ -161,7 +90,7 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
 		    << " has element? " << (smart_cast<const Gtk_WrapperArea>(result.area)->getElement() != 0) << std::endl;
 #endif
 	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(result.area))
-	    if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(area->getElement()))
+	    if (SmartPtr<Element> elem = smart_cast<Element>(area->getElement()))
 	      return elem;
 	}
     }
@@ -170,31 +99,37 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
 }
 
 bool
-MathMLView::getElementExtents(const DOM::Element& el, scaled& x, scaled& y, BoundingBox& box) const
+View::getElementExtents(const SmartPtr<Element>& elem, scaled& x, scaled& y, BoundingBox& box) const
 {
-  assert(el);
+  assert(elem);
   if (AreaRef rootArea = getRootArea())
-    if (SmartPtr<MathMLElement> elem = findMathMLElement(this, el))
-      if (AreaRef elemArea = elem->getArea())
-	{
-	  AreaId elemId = rootArea->idOf(elemArea);
+    if (AreaRef elemArea = elem->getArea())
+      {
+	AreaId elemId = rootArea->idOf(elemArea);
 
-	  for (AreaId id = elemId; !id.empty(); id = id.tail())
-	    std::cout << id.head() << "/";
-	  std::cout << std::endl;
+	for (AreaId id = elemId; !id.empty(); id = id.tail())
+	  std::cout << id.head() << "/";
+	std::cout << std::endl;
 
-	  std::pair<scaled,scaled> orig = rootArea->origin(elemId);
-	  x = orig.first;
-	  y = orig.second;
-	  box = elemArea->box();
-	  return true;
-	}
+	std::pair<scaled,scaled> orig = rootArea->origin(elemId);
+	x = orig.first;
+	y = orig.second;
+	box = elemArea->box();
+	return true;
+      }
 							    
   return false;
 }
 
+SmartPtr<NamespaceRegistry>
+View::getRegistry(void) const
+{
+  return registry;
+}
+
+#if 0
 AreaRef
-MathMLView::getRootArea() const
+View::getRootArea() const
 {
   if (root && !frozen())
     {
@@ -241,7 +176,7 @@ MathMLView::getRootArea() const
 }
 
 BoundingBox
-MathMLView::getBoundingBox() const
+View::getBoundingBox() const
 {
   if (AreaRef rootArea = getRootArea())
     return rootArea->box();
@@ -250,7 +185,7 @@ MathMLView::getBoundingBox() const
 }
 
 Rectangle
-MathMLView::getRectangle() const
+View::getRectangle() const
 {
   if (AreaRef rootArea = getRootArea())
     return Rectangle(scaled::zero(), scaled::zero(), rootArea->box());
@@ -259,7 +194,7 @@ MathMLView::getRectangle() const
 }
 
 void
-MathMLView::render(RenderingContext& ctxt) const
+View::render(RenderingContext& ctxt) const
 {
   if (AreaRef rootArea = getRootArea())
     {
@@ -272,8 +207,4 @@ MathMLView::render(RenderingContext& ctxt) const
     }
 }
 
-SmartPtr<Linker>
-MathMLView::getLinker() const
-{
-  return factory->getLinker();
-}
+#endif

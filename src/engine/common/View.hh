@@ -23,9 +23,9 @@
 #ifndef __View_hh__
 #define __View_hh__
 
-#include "View.hh"
-#include "Element.hh"
-#include "Rectangle.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
+#include "BoundingBox.hh"
 
 class View : public Object
 {
@@ -34,27 +34,30 @@ protected:
   virtual ~View();
 
 public:
+  static SmartPtr<View> create(void) { return new View(); }
+
   bool frozen(void) const { return freezeCounter > 0; }
-  virtual bool freeze(void);
-  virtual bool thaw(void);
+  bool freeze(void);
+  bool thaw(void);
 
   void setOrigin(const scaled& x, const scaled& y) { x0 = x; y0 = y; }
-  void getOriginX(void) const { return x0; }
-  void getOriginY(void) const { return y0; }
+  scaled getOriginX(void) const { return x0; }
+  scaled getOriginY(void) const { return y0; }
 
-  SmartPtr<Element> getElementAt(const scaled&, const scaled&) const;
-  bool getElementExtents(const SmartPtr<Element>&, scaled&, scaled&, BoundingBox&) const;
-  AreaRef getRootArea(void) const;
-  BoundingBox getBoundingBox(void) const;
-  Rectangle getRectangle(void) const;
-  virtual void render(class RenderingContext&) const;
+  void setRootElement(const SmartPtr<class Element>&);
+  SmartPtr<class Element> getRootElement(void) const;
 
-  virtual SmartPtr<Element> getRootElement(void) const = 0;
+  SmartPtr<const class Area> getRootArea(void) const;
+  SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
+  bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
+  SmartPtr<class Element> getElementAt(const scaled&, const scaled&) const;
 
-  // SmartPtr<Element> getElement(class AbstractReader&) const = 0;
+protected:
+  SmartPtr<class NamespaceRegistry> getRegistry(void) const;
 
 private:
   SmartPtr<class NamespaceRegistry> registry;
+  SmartPtr<class Element> rootElement;
   unsigned freezeCounter;
   scaled x0;
   scaled y0;
