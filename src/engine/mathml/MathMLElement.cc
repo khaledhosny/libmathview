@@ -155,7 +155,7 @@ MathMLElement::getNamespaceContext() const
 SmartPtr<MathMLElement>
 MathMLElement::getFormattingNode(const DOM::Element& el) const
 {
-  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(getFactory()->getElement(el)))
+  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(context->getLinker()->get(el, context->getFactory())))
     return elem;
 
   assert(false);

@@ -29,10 +29,13 @@
 #include "MathMLNamespaceContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElementFactory.hh"
+#include "Linker.hh"
 
-MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<MathMLElementFactory>& f,
+MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<View>& v,
+					       const SmartPtr<Linker>& l,
+					       const SmartPtr<MathMLElementFactory>& f,
 					       const SmartPtr<MathGraphicDevice>& d)
-  : NamespaceContext(MATHML_NS_URI), factory(f), device(d), context(d)
+  : NamespaceContext(MATHML_NS_URI, v, l), factory(f), device(d), context(d)
 {
   defaultFontSize = Globals::configuration.GetFontSize();
 }
@@ -59,7 +62,7 @@ SmartPtr<Element>
 MathMLNamespaceContext::construct(const DOM::Element& el) const
 {
   assert(el);
-  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(factory->getElement(el)))
+  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(getLinker()->get(el, getFactory())))
     {
       if (elem->dirtyStructure())
 	{

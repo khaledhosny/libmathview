@@ -29,14 +29,18 @@
 class MathMLNamespaceContext : public NamespaceContext
 {
 protected:
-  MathMLNamespaceContext(const SmartPtr<class MathMLElementFactory>&,
+  MathMLNamespaceContext(const SmartPtr<class View>&,
+			 const SmartPtr<class Linker>&,
+			 const SmartPtr<class MathMLElementFactory>&,
 			 const SmartPtr<class MathGraphicDevice>&);
   virtual ~MathMLNamespaceContext();
 
 public:
-  static SmartPtr<MathMLNamespaceContext> create(const SmartPtr<class MathMLElementFactory>& factory,
+  static SmartPtr<MathMLNamespaceContext> create(const SmartPtr<class View>& view,
+						 const SmartPtr<class Linker>& linker,
+						 const SmartPtr<class MathMLElementFactory>& factory,
 						 const SmartPtr<class MathGraphicDevice>& device)
-  { return new MathMLNamespaceContext(factory, device); }
+  { return new MathMLNamespaceContext(view, linker, factory, device); }
 
   unsigned getDefaultFontSize(void) const { return defaultFontSize; }
   void setDefaultFontSize(unsigned);
