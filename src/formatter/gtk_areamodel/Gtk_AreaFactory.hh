@@ -35,9 +35,13 @@
 
 class Gtk_AreaFactory : public AreaFactory
 {
-public:
+protected:
   Gtk_AreaFactory(void) { }
   virtual ~Gtk_AreaFactory() { }
+
+public:
+  static SmartPtr<Gtk_AreaFactory> create(void)
+  { return new Gtk_AreaFactory(); }
 
   // redefined methods
 

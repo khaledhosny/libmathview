@@ -41,9 +41,13 @@
 
 class AreaFactory : public Object
 {
-public:
+protected:
   AreaFactory(void) { }
   virtual ~AreaFactory() { }
+
+public:
+  static SmartPtr<AreaFactory> create(void)
+  { return new AreaFactory(); }
 
   virtual SmartPtr<BoxArea> createBoxArea(const AreaRef& area, const BoundingBox& box) const
   { return BoxArea::create(area, box); }
