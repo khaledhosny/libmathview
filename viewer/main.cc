@@ -22,7 +22,12 @@
 
 #include <config.h>
 #include <assert.h>
+#ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#endif // HAVE_GETOPT_H
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif // HAVE_UNISTD_H
 #include <stdlib.h>
 
 #include "defs.h"
@@ -65,10 +70,10 @@ printHelp()
 {
   static char* helpMsg = "\
 Usage: mathmlviewer [options] file ...\n\n\
-  -v, --version                 Output version information\n\
+  -V, --version                 Output version information\n\
   -d, --debug                   Debug mode\n\
   -h, --help                    This small usage guide\n\
-  --verbose[=0-3]               Display messages\n\
+  -v, --verbose[=0-3]           Display messages\n\
 ";
 
   printf("%s\n", helpMsg);
@@ -114,13 +119,13 @@ main(int argc, char *argv[])
       { NULL,            no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vdh", long_options, &option_index);
+    int c = getopt_long(argc, argv, "Vv:dh", long_options, &option_index);
 
     if (c == -1) break;
 
     switch (c) {
     case OPTION_VERSION:
-    case 'v':
+    case 'V':
       printVersion();
       break;
 
@@ -136,6 +141,7 @@ main(int argc, char *argv[])
       break;
 
     case OPTION_VERBOSE:
+    case 'v':
       if (optarg == NULL) MathEngine::logger.SetLogLevel(0);
       else MathEngine::logger.SetLogLevel(*optarg - '0');
       break;

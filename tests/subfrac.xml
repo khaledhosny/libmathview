@@ -1,0 +1,6 @@
+<?xml version="4.0" encoding="UTF-8"?>
+<math xmlns:math="http://www.w3.org/Math/REC-MathML" mode="display" overflow="scroll">
+<mrow><msub><mi>K</mi><mrow><mtext>Ic</mtext></mrow></msub><mo>=</mo>
+<mrow><msub><mi>K</mi><mtext>I</mtext></msub></mrow><mo>&it;</mo>
+<mrow><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>cos</mo><mfrac>
+<mrow><msub><mi>&theta;</mi><mtext>c</mtext></msub></mrow><mn>2</mn></mfrac></mrow></mrow></math>

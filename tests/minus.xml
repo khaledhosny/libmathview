@@ -1,5 +1,11 @@
 <math>
   <mi>ciao</mi>
-  <mo>-</mo>
-  <mi>minus</mi>
+  <mo>&minus;</mo>
+  <msup>
+    <mi>x</mi>
+    <mrow>
+      <mo>&minus;</mo>
+      <mn>2</mn>
+    </mrow>
+  </msup>
 </math>

@@ -24,7 +24,12 @@
 
 #include <stddef.h>
 #include <assert.h>
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
+#endif
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 #include "MathMLAttribute.hh"
 #include "StringTokenizer.hh"
@@ -262,7 +267,7 @@ bool StringTokenizer::ParseRGB(RGBValue* v)
     blue  = blue * 16 + hexOfChar(s.GetChar(i++));
   }
 
-  if (v != NULL) *v = RGB(red, green, blue);
+  if (v != NULL) *v = MKRGB(red, green, blue);
 
   return true;
 }

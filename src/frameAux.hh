@@ -23,14 +23,10 @@
 #ifndef frameAux_hh
 #define frameAux_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "MathMLElement.hh"
 
 const BoundingBox& getFrameBoundingBox(class MathMLFrame*, LayoutId = LAYOUT_AUTO);
 MathMLFrame* getFrameLeftSibling(const class MathMLFrame*);
 MathMLFrame* getFrameRightSibling(const class MathMLFrame*);
 
-#endif
+#endif // frameAux_hh

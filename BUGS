@@ -1,1 +1,2 @@
 * if using libxml 1.x.y inline unicode chars greater that 0x7f doesn't work
+* try putting scripts on a token with font size modified ;)

@@ -31,7 +31,7 @@ public:
   EntitiesTable(void);
   ~EntitiesTable();
 
-  bool          Load(const char*, bool);
+  bool          Load(const char*);
   void          LoadInternalTable(void);
   mDOMEntityRef GetEntity(mDOMConstStringRef) const;
   mDOMEntityRef GetErrorEntity(void) const;

@@ -23,16 +23,17 @@
 #include <config.h>
 #include <assert.h>
 #include <iconv.h>
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
+#endif
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 #include <string.h>
 #include <malloc.h>
-#include <glib.h>
 
 #include "stringAux.hh"
 #include "StringUnicode.hh"
-#include "allocTextNode.hh"
-#include "MathMLCharNode.hh"
-#include "MathMLStringNode.hh"
 
 union endian_union {
   Char8 b[4];

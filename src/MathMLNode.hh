@@ -34,6 +34,8 @@ public:
   void SetParent(class MathMLElement* p) { parent = p; }
   class MathMLElement* GetParent(void) const { return parent; }
 
+  virtual const class MathMLCharNode* GetCharNode(void) const;
+
 private:
   class MathMLElement* parent;
 };

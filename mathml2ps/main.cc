@@ -22,10 +22,12 @@
 
 #include <config.h>
 
-#define MATHML2PS_VERSION "0.0.5"
+#define MATHML2PS_VERSION "0.0.8"
 
 #include <assert.h>
+#ifdef HAVE_GETOPT_H
 #include <getopt.h>
+#endif // HAVE_GETOPT_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,6 +53,9 @@ enum CommandLineOptionId {
   OPTION_MARGINS,
   OPTION_FONT_SIZE,
   OPTION_COLORS,
+  OPTION_SUBSET,
+  OPTION_CROP,
+  OPTION_SHOW_MISSING,
   //OPTION_KERNING,
   OPTION_CONFIG
 };
@@ -64,6 +69,9 @@ static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = 10;
 static bool   colors = false;
+static bool   subsetting = true;
+static bool   cropping = true;
+static bool   showMissing = true;
 //static bool   kerning = false;
 static const char* configPath = NULL;
 static int logLevel = LOG_ERROR;
@@ -93,6 +101,9 @@ Usage: mathml2ps [options] file ...\n\n\
   -f, --font-size=<float>         Default font size (in pt, default=10)\n\
   -k, --kerning[=yes|no]          Enable/disable kerning (default='no')\n\
   -c, --colors[=yes|no]           Enable/disable colors (default='no')\n\
+  -s, --subset[=yes|no]           Enable/disable font subsetting (default='yes')\n\
+  -r, --crop[=yes|no]             Enable/disable cropping to bounding box (default='yes')\n\
+  -i, --show-missing[=yes|no]     Show missing characters (default='yes')\n\
   --config=<path>                 Configuration file path\n\
   --verbose[=0-3]                 Display messages\n\n\
 Valid units are:\n\n\
@@ -247,13 +258,16 @@ main(int argc, char *argv[])
       { "margins",       required_argument, NULL, OPTION_MARGINS },
       { "font-size",     required_argument, NULL, OPTION_FONT_SIZE },
       { "colors",        optional_argument, NULL, OPTION_COLORS },
+      { "subset",        optional_argument, NULL, OPTION_SUBSET },
+      { "crop",          optional_argument, NULL, OPTION_CROP },
+      { "show-missing",  optional_argument, NULL, OPTION_SHOW_MISSING },
       //{ "kerning",       optional_argument, NULL, OPTION_KERNING },
       { "config",        required_argument, NULL, OPTION_CONFIG },
 
       { NULL,            no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vhg:u:m:f:k::c::", long_options, &option_index);
+    int c = getopt_long(argc, argv, "vhg:u:m:f:k::c::s::", long_options, &option_index);
 
     if (c == -1) break;
 
@@ -301,6 +315,24 @@ main(int argc, char *argv[])
     case 'c':
       if (optarg == NULL) colors = true;
       else if (!parseBoolean(optarg, colors)) parseError("colors");
+      break;
+
+    case OPTION_SUBSET:
+    case 's':
+      if (optarg == NULL) subsetting = true;
+      else if (!parseBoolean(optarg, subsetting)) parseError("subset");
+      break;
+
+    case OPTION_CROP:
+    case 'r':
+      if (optarg == NULL) cropping = true;
+      else if (!parseBoolean(optarg, cropping)) parseError("crop");
+      break;
+
+    case OPTION_SHOW_MISSING:
+    case 'i':
+      if (optarg == NULL) showMissing = true;
+      else if (!parseBoolean(optarg, showMissing)) parseError("show-missing");
       break;
 
 #if 0
@@ -360,6 +392,13 @@ main(int argc, char *argv[])
   values.lineStyle = LINE_STYLE_SOLID;
   values.lineWidth = px2sp(1);
 
+  PS_DrawingArea area(values, x0, y0);
+  area.SetSize(w, h);
+  if (!colors) area.DisableColors();
+
+  PS_T1_FontManager fm;
+  engine.Init(&area, &fm);
+
   while (optind < argc) {
     MathEngine::logger(LOG_INFO, "Processing `%s'...", argv[optind]);
 
@@ -372,30 +411,36 @@ main(int argc, char *argv[])
       exit(1);
     }
 
-    PS_T1_FontManager fm;
-    PS_DrawingArea area(values, x0, y0, outFile);
-    area.SetSize(w, h);
-    if (!colors) area.DisableColors();
+    area.SetOutputFile(outFile);
 
-    engine.Init(&area, &fm);
     engine.SetVerbosity(logLevel);
     engine.SetDefaultFontSize(fontSize);
+    MathEngine::DrawMissingCharacter(showMissing);
 #if 0
     engine.SetKerning(kerning);
 #endif
+
+    fm.ResetUsedFonts();
     if (engine.Load(argv[optind])) {
       engine.Layout();
 
       Rectangle rect;
       engine.GetDocumentRectangle(rect);
-      area.DumpHeader(appName, argv[optind], rect);
-      fm.DumpFontDictionary(outFile);
 
       Rectangle sheet;
       sheet.x = 0;
       sheet.y = 0;
       sheet.width = w;
       sheet.height = h;
+
+      // the following invocations are needed just to mark the chars actually used :(
+      fm.ResetUsedChars();
+      area.SetOutputFile(NULL);
+      engine.Render(&sheet);
+      area.SetOutputFile(outFile);
+
+      area.DumpHeader(appName, argv[optind], cropping ? rect : sheet);
+      fm.DumpFontDictionary(outFile, subsetting);
 
       area.DumpPreamble();
       //area.DumpGrid();

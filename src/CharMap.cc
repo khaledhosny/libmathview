@@ -20,10 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <assert.h>
 
 #include "CharMap.hh"
@@ -50,7 +47,11 @@ CharMap::MapsChar(Char ch) const
     res = ch == single.code;
     break;
   case CHAR_MAP_STRETCHY:
-    res = ch == stretchy.code;
+    // res = ch == stretchy.code;
+    res = false;
+    break;
+  default:
+    assert(IMPOSSIBLE);
     break;
   }
 
@@ -68,17 +69,16 @@ CharMap::MapsChar(Char ch, bool stretchy) const
 bool
 CharMap::MapsSimpleChar(Char ch) const
 {
-  bool res = MapsChar(ch);
-
-  if (res && type == CHAR_MAP_STRETCHY && stretchy.simple[0] == NULLCHAR) res = false;
-
-  return res;
+  if (MapsChar(ch)) return true;
+  return (type == CHAR_MAP_STRETCHY && stretchy.code == ch && stretchy.simple[0] != NULLCHAR);
 }
 
 char
 CharMap::Map(Char ch, bool large) const
 {
-  if (!MapsChar(ch)) return NULLCHAR;
+  // WARNING: the following test has been suppressed. It is supposed that
+  // who's calling Map has already checked that this CharMap can render the char
+  //if (!MapsChar(ch)) return NULLCHAR;
 
   char res = NULLCHAR;
 
@@ -95,7 +95,7 @@ CharMap::Map(Char ch, bool large) const
   case CHAR_MAP_STRETCHY:
     if (large) {
       unsigned i;
-      for (i = 0; stretchy.simple[i] != NULLCHAR && i < MAX_SIMPLE_CHARS; i++) ;
+      for (i = 0; i < MAX_SIMPLE_CHARS && stretchy.simple[i] != NULLCHAR; i++) ;
       res = stretchy.simple[i / 2];
     } else      
       res = stretchy.simple[0];

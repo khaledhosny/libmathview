@@ -66,6 +66,10 @@ MathMLOperatorElement::GetAttributeSignature(AttributeId id) const
     { ATTR_SEPARATOR, 	  booleanParser,      	 new StringC("false"),          NULL },
     { ATTR_LSPACE,    	  spaceParser,    	 new StringC("thickmathspace"), NULL },
     { ATTR_RSPACE,    	  spaceParser,    	 new StringC("thickmathspace"), NULL },
+#ifdef ENABLE_EXTENSIONS
+    { ATTR_TSPACE,        numberUnitParser,      new StringC("0ex"),            NULL },
+    { ATTR_BSPACE,        numberUnitParser,      new StringC("0ex"),            NULL },
+#endif // ENABLE_EXTENSIONS
     { ATTR_STRETCHY,  	  booleanParser,      	 new StringC("false"),          NULL },
     { ATTR_SYMMETRIC, 	  booleanParser,      	 new StringC("true"),           NULL },
     { ATTR_MAXSIZE,   	  operatorMaxSizeParser, new StringC("infinity"),       NULL },
@@ -185,6 +189,18 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
   delete resValue;
   delete value;
 
+#ifdef ENABLE_EXTENSIONS
+  value = GetOperatorAttributeValue(ATTR_TSPACE, env);
+  assert(value != NULL && value->IsNumberUnit());
+  tSpace = env->ToScaledPoints(value->ToNumberUnit());
+  delete value;
+
+  value = GetOperatorAttributeValue(ATTR_BSPACE, env);
+  assert(value != NULL && value->IsNumberUnit());
+  bSpace = env->ToScaledPoints(value->ToNumberUnit());
+  delete value;
+#endif // ENABLE_EXTENSIONS
+
   value = GetOperatorAttributeValue(ATTR_STRETCHY, env);
   assert(value != NULL && value->IsBoolean());
   stretchy = value->ToBoolean() ? 1 : 0;
@@ -250,11 +266,19 @@ MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool str
   // If symmetric == true the we have to stretch to cover the maximum among
   // height and depth, otherwise we just stretch to ascent + descent
   desiredSize = symmetric ? (2 * scaledMax(height, depth)) : (height + depth);
+
+  // actually a slightly smaller fence is usually enough when symmetric is true
+  MathEngine::logger(LOG_DEBUG, "request for stretch to %d...", sp2ipx(desiredSize));
+  if (true || symmetric)
+    desiredSize = scaledMax(desiredSize - pt2sp(5), ((desiredSize * 901) / 1000));
+  MathEngine::logger(LOG_DEBUG, "%d will be enough!", sp2ipx(desiredSize));
+
   desiredSize = scaledMax(SP_EPSILON, desiredSize);
 
   // ...however, there may be some contraints over the size of the stretchable
   // operator. adjustedSize will be the final allowed size for the operator
   scaled minHeight = GetMinBoundingBox().GetHeight();
+  MathEngine::logger(LOG_DEBUG, "the minimum height is %d", sp2ipx(minHeight));
 
   scaled adjustedSize = desiredSize;
 
@@ -292,6 +316,8 @@ MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool str
     adjustedHeight = scaledProp(height, adjustedSize, desiredSize);
     adjustedDepth = scaledProp(depth, adjustedSize, desiredSize);
   }
+
+  MathEngine::logger(LOG_DEBUG, "adjusted stretchy size %d", sp2ipx(adjustedSize));
 
   sNode->DoVerticalStretchyLayout(adjustedHeight, adjustedDepth, axis, strict);
 

@@ -85,15 +85,11 @@ struct _GtkMathView {
 struct _GtkMathViewClass {
   GtkEventBoxClass parent_class;
 
-  GdkCursor* normal_cursor;
-  GdkCursor* link_cursor;
-  
   void (*set_scroll_adjustments) (GtkMathView *math_view,
 				  GtkAdjustment *hadjustment,
 				  GtkAdjustment *vadjustment);
   
   void (*clicked)           (GtkMathView*, mDOMNodeRef);
-  void (*jump)              (GtkMathView*, mDOMNodeRef);
   void (*selection_changed) (GtkMathView*, mDOMNodeRef);
   void (*element_changed)   (GtkMathView*, mDOMNodeRef);
   void (*action_changed)    (GtkMathView*, mDOMNodeRef);
@@ -121,7 +117,6 @@ static void     gtk_math_view_realize(GtkWidget*, GtkMathView*);
 /* GtkMathView signals */
 
 static void gtk_math_view_clicked(GtkMathView*, mDOMNodeRef);
-static void gtk_math_view_jump(GtkMathView*, mDOMNodeRef);
 static void gtk_math_view_selection_changed(GtkMathView*, mDOMNodeRef);
 static void gtk_math_view_element_changed(GtkMathView*, mDOMNodeRef);
 
@@ -129,12 +124,12 @@ static void gtk_math_view_element_changed(GtkMathView*, mDOMNodeRef);
 
 static void setup_adjustment(GtkAdjustment*, gfloat, gfloat);
 static void setup_adjustments(GtkMathView*);
+static void reset_adjustments(GtkMathView*);
 
 /* Local data */
 
 static GtkEventBoxClass* parent_class = NULL;
 static guint clicked_signal = 0;
-static guint jump_signal = 0;
 static guint selection_changed_signal = 0;
 static guint element_changed_signal = 0;
 static guint action_changed_signal = 0;
@@ -240,7 +235,7 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   math_view->old_top_y = math_view->top_y;
   math_view->top_y = adj->value;
   math_view->drawing_area->SetTopY(float2sp(adj->value));
-
+  
   if (math_view->old_top_y != math_view->top_y) {
 #if 0
     gint change = sp2ipx(float2sp(fabs(math_view->old_top_y - math_view->top_y)));
@@ -308,11 +303,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
   GtkObjectClass* object_class = (GtkObjectClass*) klass;
   GtkWidgetClass* widget_class = (GtkWidgetClass*) klass;
 
-  klass->normal_cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
-  klass->link_cursor = gdk_cursor_new(GDK_HAND2);
-
   klass->clicked            = gtk_math_view_clicked;
-  klass->jump               = gtk_math_view_jump;
   klass->selection_changed  = gtk_math_view_selection_changed;
   klass->element_changed    = gtk_math_view_element_changed;
 
@@ -339,16 +330,6 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 		   GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
   gtk_object_class_add_signals(object_class, &clicked_signal, 1);
-
-  jump_signal =
-    gtk_signal_new("jump",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET (GtkMathViewClass, jump),
-		   gtk_marshal_NONE__POINTER,
-		   GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-
-  gtk_object_class_add_signals(object_class, &jump_signal, 1);
 
   selection_changed_signal =
     gtk_signal_new("selection_changed",
@@ -609,12 +590,8 @@ gtk_math_view_button_release_event(GtkWidget* widget,
       if (elem != NULL) {
 	mDOMNodeRef node = (elem != NULL) ? findDOMNode(elem) : NULL;
 
-	if (node != NULL) {
+	if (node != NULL)
 	  gtk_signal_emit(GTK_OBJECT(math_view), clicked_signal, node);
-	
-	  if (mdom_node_has_attribute(node, DOM_CONST_STRING("href")))
-	    gtk_signal_emit(GTK_OBJECT(math_view), jump_signal, node);
-	}
       }
     }
     
@@ -744,13 +721,26 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
   adj->upper = size + 10 * SCALED_POINTS_PER_PX;
   if (adj->upper < 0) adj->upper = 0.0;
 
-  if (page_size < adj->upper && adj->value + page_size > adj->upper) {
-    adj->value = adj->upper - page_size;
+  if (adj->value > adj->upper - page_size) {
+    adj->value = floatMax(0, adj->upper - page_size);
     gtk_adjustment_value_changed(adj);
   }
 
   gtk_adjustment_changed(adj);
-  gtk_adjustment_set_value(adj, 0.0);
+}
+
+static void
+reset_adjustments(GtkMathView* math_view)
+{
+  g_return_if_fail(math_view != NULL);
+
+  math_view->old_top_x = math_view->old_top_y = math_view->top_x = math_view->top_y = 0;
+
+  if (math_view->hadjustment != NULL)
+    gtk_adjustment_set_value(math_view->hadjustment, 0.0);
+
+  if (math_view->vadjustment != NULL)
+    gtk_adjustment_set_value(math_view->vadjustment, 0.0);
 }
 
 static void
@@ -760,20 +750,28 @@ setup_adjustments(GtkMathView* math_view)
   g_return_if_fail(math_view->area != NULL);
   g_return_if_fail(math_view->interface != NULL);
 
-  math_view->old_top_x = math_view->old_top_y = math_view->top_x = math_view->top_y = 0;
-
   BoundingBox box;
   math_view->interface->GetDocumentBoundingBox(box);
 
-  if (math_view->hadjustment != NULL)
-    setup_adjustment(math_view->hadjustment,
-		     sp2float(box.width),
-		     sp2float(math_view->drawing_area->GetWidth()));
+  if (math_view->hadjustment != NULL) {
+    gfloat width = sp2float(box.width);
+    gfloat page_width = sp2float(math_view->drawing_area->GetWidth());
+    
+    if (math_view->top_x > width - page_width)
+      math_view->top_x = floatMax(0, width - page_width);
 
-  if (math_view->vadjustment != NULL)
-    setup_adjustment(math_view->vadjustment,
-		     sp2float(box.GetHeight()),
-		     sp2float(math_view->drawing_area->GetHeight()));
+    setup_adjustment(math_view->hadjustment, width, page_width);
+  }
+
+  if (math_view->vadjustment != NULL) {
+    gfloat height = sp2float(box.GetHeight());
+    gfloat page_height = sp2float(math_view->drawing_area->GetHeight());
+
+    if (math_view->top_y > height - page_height)
+      math_view->old_top_y = math_view->top_y = floatMax(0, height - page_height);
+
+    setup_adjustment(math_view->vadjustment, height, page_height);
+  }
 }
 
 extern "C" gboolean
@@ -789,6 +787,7 @@ gtk_math_view_load(GtkMathView* math_view, const gchar* name)
   math_view->interface->Layout();
 
   setup_adjustments(math_view);
+  reset_adjustments(math_view);
   paint_widget(math_view);
 
   return TRUE;
@@ -807,6 +806,7 @@ gtk_math_view_load_tree(GtkMathView* math_view, mDOMDocRef doc)
   math_view->interface->Layout();
 
   setup_adjustments(math_view);
+  reset_adjustments(math_view);
   paint_widget(math_view);
 
   return TRUE;
@@ -822,6 +822,7 @@ gtk_math_view_unload(GtkMathView* math_view)
   math_view->interface->Update();
 
   setup_adjustments(math_view);
+  reset_adjustments(math_view);
   paint_widget(math_view);
 }
 
@@ -892,13 +893,6 @@ gtk_math_view_clicked(GtkMathView* math_view, mDOMNodeRef node)
 }
 
 static void
-gtk_math_view_jump(GtkMathView* math_view, mDOMNodeRef node)
-{
-  g_return_if_fail(math_view != NULL);
-  // noop
-}
-
-static void
 gtk_math_view_selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
@@ -909,14 +903,7 @@ static void
 gtk_math_view_element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
-
-  GtkMathViewClass* klass = (GtkMathViewClass*) gtk_type_class(gtk_math_view_get_type());
-  g_return_if_fail(klass != NULL);
-
-  if (node != NULL && mdom_node_has_attribute(node, DOM_CONST_STRING("href")))
-    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, klass->link_cursor);
-  else
-    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, klass->normal_cursor);
+  // noop
 }
 
 extern "C" GtkAdjustment*
@@ -986,7 +973,7 @@ gtk_math_view_set_selection(GtkMathView* math_view, mDOMNodeRef node)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->interface != NULL);
 
-  MathMLElement* elem = (node != NULL) ? findMathMLElement(node) : NULL;
+  MathMLElement* elem = (node != NULL) ? getMathMLElement(node) : NULL;
   math_view->interface->SetSelected(elem);
 }
 
@@ -1153,7 +1140,7 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
     break;
 #else
     MathEngine::logger(LOG_WARNING, "the widget was compiled without support for T1 fonts, falling back to GTK fonts");
-#endif
+#endif // HAVE_LIBT1
   case FONT_MANAGER_GTK:
     math_view->font_manager = new Gtk_FontManager;
     math_view->drawing_area = new Gtk_DrawingArea(values, px2sp(5), px2sp(5),
@@ -1212,13 +1199,19 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
   MathMLElement* root = math_view->interface->GetRoot();
   if (root == NULL) return;
 
+  // the following invocations are needed just to mark the chars actually used :(
+  fm->ResetUsedChars();
+  area.SetOutputFile(NULL);
   root->SetDirty();
+  root->Render(area);
+  area.SetOutputFile(f);
 
   Rectangle rect;
   math_view->interface->GetDocumentRectangle(rect);
   area.DumpHeader(PACKAGE, "(no title)", rect);
   fm->DumpFontDictionary(f);
   area.DumpPreamble();
+  root->SetDirty();
   root->Render(area);
   area.DumpEpilogue();
 #else
@@ -1229,7 +1222,7 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
 /* experimental APIs */
 
 extern "C" mDOMNodeRef
-gtk_math_view_get_node(GtkMathView* math_view)
+gtk_math_view_get_element(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
   return math_view->node;
@@ -1267,6 +1260,7 @@ gtk_math_view_action_set_selected(GtkMathView* math_view, guint idx)
 
   math_view->interface->MinMaxLayout();
   math_view->interface->Layout();
+  setup_adjustments(math_view);
 
   paint_widget(math_view);
 }

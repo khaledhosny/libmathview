@@ -56,6 +56,7 @@ class ExtraFontAttributes {
 public:
   const char* GetProperty(const char*) const;
   void AddProperty(const char*, const char*);
+  void Dump(void) const;
 
 private:
   struct ExtraFontAttribute {
@@ -66,4 +67,4 @@ private:
   Container<ExtraFontAttribute*> content;
 };
 
-#endif
+#endif // FontAttributes.hh

@@ -71,6 +71,12 @@ T1_Font::GetDescent() const
   return pt2sp(scale * (-fontBox.lly) / 1000.0);
 }
 
+float
+T1_Font::GetItalicAngle() const
+{
+  return T1_GetItalicAngle(nativeFontId);
+}
+
 scaled
 T1_Font::GetEm() const
 {

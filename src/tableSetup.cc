@@ -66,6 +66,7 @@ MathMLTableElement::Setup(RenderingEnvironment* env)
 #endif
 
   color = env->GetColor();
+  lineThickness = env->GetRuleThickness();
 }
 
 void
@@ -245,6 +246,7 @@ void
 MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 {
   if (nColumns == 0) return;
+  unsigned i = 0;
 
   column = new TableColumn[nColumns];
   for (unsigned j = 0; j < nColumns; j++) {
@@ -259,7 +261,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_COLUMNWIDTH, env);
 
-  for (unsigned i = 0; i < nColumns; i++) {
+  for (i = 0; i < nColumns; i++) {
     const Value* v = Resolve(value, env, i);
     assert(v != NULL);
 
@@ -286,7 +288,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_COLUMNSPACING, env);
 
-  for (unsigned i = 0; i < nColumns; i++) {
+  for (i = 0; i < nColumns; i++) {
     const Value* v = Resolve(value, env, i);
     assert(v->IsNumberUnit());
 
@@ -371,16 +373,17 @@ void
 MathMLTableElement::SetupRows(RenderingEnvironment* env)
 {
   if (nRows == 0) return;
+  unsigned i = 0;
 
   row = new TableRow[nRows];
-  for (unsigned i = 0; i < nRows; i++) {
+  for (i = 0; i < nRows; i++) {
     row[i].mtr = NULL;
     row[i].spacingType = SPACING_NOTVALID;
     row[i].fixedSpacing = 0;
     row[i].lineType = TABLE_LINE_NOTVALID;
   }
 
-  unsigned i = 0;
+  i = 0;
   for (Iterator<MathMLElement*> rowElem(content); rowElem.More(); rowElem.Next()) {
     assert(i < nRows);
     assert(rowElem()->IsA() == TAG_MTR || rowElem()->IsA() == TAG_MLABELEDTR);
@@ -397,7 +400,7 @@ MathMLTableElement::SetupRows(RenderingEnvironment* env)
   const Value* value = GetAttributeValue(ATTR_ROWSPACING, env);
   assert(value != NULL);
 
-  for (unsigned i = 0; i < nRows; i++) {
+  for (i = 0; i < nRows; i++) {
     const Value* p = value->Get(i);
     assert(p != NULL && p->IsNumberUnit());
 
@@ -451,13 +454,15 @@ MathMLTableElement::SetupRowAlignAux(const Value* value,
 void
 MathMLTableElement::SetupLabels()
 {
+  unsigned i = 0;
+
   if (rowLabel != NULL) {
     delete rowLabel;
     rowLabel = NULL;
   }
 
   bool hasLabels = false;
-  for (unsigned i = 0; i < nRows && !hasLabels; i++) {
+  for (i = 0; i < nRows && !hasLabels; i++) {
     assert(row[i].mtr != NULL);
     hasLabels = (row[i].mtr->IsA() == TAG_MLABELEDTR);
   }
@@ -465,7 +470,7 @@ MathMLTableElement::SetupLabels()
   if (!hasLabels) return;
 
   rowLabel = new RowLabel[nRows];
-  for (unsigned i = 0; i < nRows; i++) {
+  for (i = 0; i < nRows; i++) {
     assert(row[i].mtr != NULL);
     rowLabel[i].labelElement = row[i].mtr->GetLabel();
     if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)

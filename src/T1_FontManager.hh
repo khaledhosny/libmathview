@@ -38,10 +38,16 @@ public:
   void SetLogLevel(int);
 
 protected:
+  int SearchNativeFontAux(const FontAttributes&,
+                          const ExtraFontAttributes*,
+                          float&) const;
+
   virtual const class AFont* SearchNativeFont(const FontAttributes&,
 					      const ExtraFontAttributes*) const;
 
 private:
+  int SearchT1FontId(const char*) const;
+
   static bool firstTime;
 };
 

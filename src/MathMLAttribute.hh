@@ -33,7 +33,7 @@ public:
   ~MathMLAttribute();
 
   const String* GetValue(void) const { return value; }
-  const Value*  GetParsedValue(const class AttributeSignature* = NULL) const;
+  const Value*  GetParsedValue(const struct AttributeSignature* = NULL) const;
   bool          Equal(const MathMLAttribute&) const;
 
   AttributeId   IsA(void) const { return id; }

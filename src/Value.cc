@@ -50,6 +50,16 @@ Value::operator new(size_t size)
   }
 }
 
+void Value::operator delete(void* p)
+{
+  assert(p != NULL);
+  (static_cast<Value*>(p))->next = firstFree;
+  firstFree = static_cast<Value*>(p);
+#ifdef DEBUG
+  counter--;
+#endif
+}
+
 void
 Value::operator delete(void* p, size_t)
 {

@@ -16,3 +16,8 @@ Makefile.in
 aclocal.m4
 gtkmathview.spec
 gmon.out
+*.eps
+ltconfig
+ltmain.sh
+missing
+mkinstalldirs

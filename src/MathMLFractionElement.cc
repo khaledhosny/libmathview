@@ -79,20 +79,24 @@ MathMLFractionElement::Setup(RenderingEnvironment* env)
 
   const Value* value = NULL;
 
-  scaled ruleThickness = env->GetRuleThickness();
+#ifdef TEXISH_MATHML
+  defaultRuleThickness = env->GetRuleThickness();
+#else
+  scaled defaultRuleThickness = env->GetRuleThickness();
+#endif // TEXISH_MATHML
 
   value = GetAttributeValue(ATTR_LINETHICKNESS, env, true);
   if (value != NULL) {
     if (value->IsKeyword()) {
       switch (value->ToKeyword()) {
       case KW_THIN:
-	lineThickness = ruleThickness / 2;
+	lineThickness = defaultRuleThickness / 2;
 	break;
       case KW_MEDIUM:
-	lineThickness = ruleThickness;
+	lineThickness = defaultRuleThickness;
 	break;
       case KW_THICK:
-	lineThickness = ruleThickness * 2;
+	lineThickness = defaultRuleThickness * 2;
 	break;
       default:
 	assert(IMPOSSIBLE);
@@ -106,13 +110,13 @@ MathMLFractionElement::Setup(RenderingEnvironment* env)
       assert(number != NULL);
       assert(unit != NULL);
 
-      if (unit->IsEmpty()) lineThickness = ruleThickness * roundFloat(number->ToNumber());
+      if (unit->IsEmpty()) lineThickness = defaultRuleThickness * roundFloat(number->ToNumber());
       else {
 	assert(unit->IsKeyword());
 	UnitId unitId = ToUnitId(unit);
 	if (unitId == UNIT_PERCENTAGE) {
 	  MathEngine::logger(LOG_WARNING, "line thickness given as percentage in `mfrac' element (taking default)");
-	  lineThickness = ruleThickness;
+	  lineThickness = defaultRuleThickness;
 	} else {
 	  UnitValue unitValue;
 	  unitValue.Set(number->ToNumber(), unitId);
@@ -147,9 +151,20 @@ MathMLFractionElement::Setup(RenderingEnvironment* env)
   color = env->GetColor();
 
   axis = env->GetAxis();
-  minShift = env->GetScaledPointsPerEx();
 
   displayStyle = env->GetDisplayStyle();
+
+#ifdef TEXISH_MATHML
+  if (displayStyle) {
+    numMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.676508);
+    denomMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.685951);
+  } else {
+    numMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * (lineThickness > 0 ? 0.393732 : 0.443731));
+    denomMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.344841);
+  }
+#else
+  minShift = env->GetScaledPointsPerEx();
+#endif // TEXISH_MATHML
 
   env->Push();
   if (!displayStyle) env->AddScriptLevel(1);
@@ -188,25 +203,46 @@ MathMLFractionElement::DoBoxedLayout(LayoutId id, BreakId, scaled maxWidth)
     const BoundingBox& numBox   = num->GetBoundingBox();
     const BoundingBox& denomBox = denom->GetBoundingBox();
 
+#ifdef TEXISH_MATHML
+    scaled u = numMinShift;
+    scaled v = denomMinShift;
+#else
     scaled u = minShift;
     scaled v = minShift;
+#endif // TEXISH_MATHML
 
-    scaled psi = displayStyle ? 3 * lineThickness : lineThickness;
+    if (lineThickness < EPSILON) {
+#ifdef TEXISH_MATHML
+      scaled psi = (displayStyle ? 7 : 3) * defaultRuleThickness;
+#else
+      scaled psi = displayStyle ? 3 * lineThickness : lineThickness;
+#endif // TEXISH_MATHML
+      scaled phi = (u - numBox.descent) - (denomBox.ascent - v);
 
-    scaled diff = psi - ((u - numBox.descent) - (axis + lineThickness / 2));
-    if (diff > 0) u += diff;
+      if (psi < phi) {
+	u += (phi - psi) / 2;
+	v += (phi - psi) / 2;
+      }
+    } else {
+      scaled phi = displayStyle ? 3 * lineThickness : lineThickness;
 
-    diff = psi - ((axis - lineThickness / 2) - (denomBox.ascent - v));
-    if (diff > 0) v += diff;
+      scaled diff = phi - ((u - numBox.descent) - (axis + lineThickness / 2));
+      if (diff > 0) u += diff;
+
+      diff = phi - ((axis - lineThickness / 2) - (denomBox.ascent - v));
+      if (diff > 0) v += diff;
+    }
 
     numShift   = u;
     denomShift = v;
-
+    
     box.Set(scaledMax(numBox.width, denomBox.width),
 	    numShift + numBox.ascent,
 	    denomShift + denomBox.descent);
     box.tAscent = numShift + numBox.tAscent;
     box.tDescent = denomShift + denomBox.tDescent;
+    box.rBearing = scaledMax(numBox.rBearing, denomBox.rBearing);
+    box.width = scaledMax(box.width, box.rBearing);
   }
 
   ConfirmLayout(id);
@@ -238,7 +274,7 @@ MathMLFractionElement::SetPosition(scaled x, scaled y)
     scaled numXOffset = 0;
     switch (numAlign) {
     case FRAC_ALIGN_CENTER:
-      numXOffset = (box.width - numBox.width) / 2;
+      numXOffset = (box.width - scaledMax(numBox.width, numBox.rBearing)) / 2;
       break;
     case FRAC_ALIGN_RIGHT:
       numXOffset = box.width - numBox.width;
@@ -251,7 +287,7 @@ MathMLFractionElement::SetPosition(scaled x, scaled y)
     scaled denomXOffset = 0;
     switch (denomAlign) {
     case FRAC_ALIGN_CENTER:
-      denomXOffset = (box.width - denomBox.width) / 2;
+      denomXOffset = (box.width - denomBox.width) / 2 - scaledMax(0, denomBox.rBearing - denomBox.width);
       break;
     case FRAC_ALIGN_RIGHT:
       denomXOffset = box.width - denomBox.width;

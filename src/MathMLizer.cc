@@ -24,7 +24,12 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
+#endif
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 #include "String.hh"
 #include "MathML.hh"
@@ -263,7 +268,10 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
       // if the entity is unknown, maybe it's one of the predefined entities of MathML
       if (s == NULL) s = MathEngine::entitiesTable.GetEntityContent(mdom_node_get_name(p));
 
-      if (s == NULL) s = MathEngine::entitiesTable.GetErrorEntityContent();
+      if (s == NULL) {
+	MathEngine::logger(LOG_WARNING, "cannot resolve entity reference `%s', a `?' will be used instead", mdom_node_get_name(p));
+	s = MathEngine::entitiesTable.GetErrorEntityContent();
+      }
       assert(s != NULL);
 
       if (sContent == NULL)

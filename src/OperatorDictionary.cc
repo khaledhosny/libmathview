@@ -92,6 +92,10 @@ OperatorDictionary::Load(const char* fileName)
 	getAttribute(op, "separator", def);
 	getAttribute(op, "lspace", def);
 	getAttribute(op, "rspace", def);
+#ifdef ENABLE_EXTENSIONS
+	getAttribute(op, "tspace", def);
+	getAttribute(op, "bspace", def);
+#endif // ENABLE_EXTENSIONS
 	getAttribute(op, "stretchy", def);
 	getAttribute(op, "direction", def);
 	getAttribute(op, "symmetric", def);
@@ -109,7 +113,7 @@ OperatorDictionary::Load(const char* fileName)
 	item->name     = opString;
 	item->defaults = defaults;
 
-	items.Append(item);
+	items.AddFirst(item);
       } else {
 	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
       }
@@ -133,7 +137,7 @@ OperatorDictionary::Unload()
   }
 
   while (items.GetSize() > 0) {
-    const OperatorDictionaryItem* item = items.RemoveFirst();
+    OperatorDictionaryItem* item = items.RemoveFirst();
     delete item;
   }
 }
@@ -160,7 +164,7 @@ OperatorDictionary::Search(const String* opName,
 
   *prefix = *infix = *postfix = NULL;
 
-  for (Iterator<const OperatorDictionaryItem*> p(items); p.More(); p.Next()) {
+  for (Iterator<OperatorDictionaryItem*> p(items); p.More(); p.Next()) {
     assert(p() != NULL);
     assert(p()->name != NULL);
     assert(p()->defaults != NULL);

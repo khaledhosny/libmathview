@@ -23,8 +23,6 @@
 #ifndef MathMLTableElement_hh
 #define MathMLTableElement_hh
 
-#include <config.h>
-
 #include "MathMLTableRowElement.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLAlignGroupElement.hh"
@@ -269,6 +267,7 @@ private:
   scaled        leftPadding;
 
   RGBValue      color; // color for frame and lines (if present)
+  scaled        lineThickness;
   const GraphicsContext* dGC[2]; // GC for dashed lines
 
   scaled        environmentAxis; // for axis alignment

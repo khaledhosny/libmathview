@@ -23,13 +23,13 @@
 #ifndef MathMLScriptElement_hh
 #define MathMLScriptElement_hh
 
-#include <config.h>
-
+#include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
 
-class MathMLScriptElement: public MathMLScriptCommonElement {
+class MathMLScriptElement: public MathMLContainerElement, public MathMLScriptCommonElement {
 public:
   MathMLScriptElement(mDOMNodeRef, TagId);
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
@@ -39,6 +39,12 @@ public:
 private:
   MathMLElement* subScript;
   MathMLElement* superScript;
+
+  scaled subShiftX;
+  scaled subShiftY;
+
+  scaled superShiftX;
+  scaled superShiftY;
 };
 
 #endif // MathMLScriptElement_hh

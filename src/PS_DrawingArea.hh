@@ -53,6 +53,9 @@ public:
   void DumpPreamble(void) const;
   void DumpEpilogue(void) const;
 
+  FILE* GetOutputFile(void) const { return output; }
+  void SetOutputFile(FILE*);
+
 protected:
   void DrawCharAux(unsigned char) const;
   void SetGraphicsContext(const GraphicsContext*) const;

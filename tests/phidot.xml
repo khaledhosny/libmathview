@@ -1,0 +1,11 @@
+<math>
+  <mover accent="true">
+    <mi mathvariant="normal">&Phi;</mi>
+    <mo lspace="0em" rspace="0em">&#x0307;</mo>
+  </mover>
+  <mspace width="2em"/>
+  <mover accent="true">
+    <mi>T</mi>
+    <mo lspace="0em" rspace="0em">&#x0307;</mo>
+  </mover>
+</math>

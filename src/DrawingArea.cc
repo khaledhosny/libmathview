@@ -59,9 +59,9 @@ DrawingArea::GetGC(const GraphicsContextValues& values, unsigned mask) const
   if ((mask & GC_MASK_LINE_STYLE) != 0) v.lineStyle = values.lineStyle;
   if ((mask & GC_MASK_LINE_WIDTH) != 0) v.lineWidth = values.lineWidth;
 
-  for (Iterator<const GraphicsContext*> gc(poolGC); gc.More(); gc.Next()) {
-    assert(gc() != NULL);
-    if (gc()->GetValues().Equals(v)) return gc();
+  for (Iterator<const GraphicsContext*> i(poolGC); i.More(); i.Next()) {
+    assert(i() != NULL);
+    if (i()->GetValues().Equals(v)) return i();
   }
 
   const GraphicsContext* gc = GetGC(v);

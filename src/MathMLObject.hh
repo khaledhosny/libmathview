@@ -37,6 +37,7 @@ public:
   virtual bool IsString(void) const;
   virtual bool IsChar(void) const;
   virtual bool IsStretchyChar(void) const;
+  virtual bool IsCombinedChar(void) const;
   virtual bool IsSpace(void) const;
   virtual bool IsMark(void) const;
   virtual bool IsElement(void) const;

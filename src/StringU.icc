@@ -49,6 +49,15 @@ StringU<CharX>::StringU(const char* s) : String()
   Set(s);
 }
 
+#ifndef __CHAR_UNSIGNED__
+template <typename CharX>
+StringU<CharX>::StringU(const char* s, unsigned n) : String()
+{
+  Init();
+  Set(s, n);
+}
+#endif 
+
 template <typename CharX>
 StringU<CharX>::StringU(const Char8* s, unsigned n) : String()
 {
@@ -180,8 +189,9 @@ void StringU<CharX>::Append(const String& s)
   Char* newData = new Char[newLength + 1];
   assert(newData != 0);
 
-  for (unsigned i = 0; i < GetLength(); i++) newData[i] = GetChar(i);
-  for (unsigned i = 0; i < s.GetLength(); i++) newData[i + GetLength()] = s.GetChar(i);
+  unsigned i;
+  for (i = 0; i < GetLength(); i++) newData[i] = GetChar(i);
+  for (i = 0; i < s.GetLength(); i++) newData[i + GetLength()] = s.GetChar(i);
 
   Set(newData, newLength);
   delete [] newData;

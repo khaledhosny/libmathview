@@ -28,11 +28,14 @@
 #include "MathMLParseFile.hh"
 
 static mDOMEntityRef
-myGetEntity(void* user_data, mDOMConstStringRef name)
+myVeryPrivateGetEntity(void* user_data, mDOMConstStringRef name)
 {
   mDOMEntityRef entity = mdom_get_predefined_entity(name);
   if (entity == NULL) entity = MathEngine::entitiesTable.GetEntity(name);
-  if (entity == NULL) entity = MathEngine::entitiesTable.GetErrorEntity();
+  if (entity == NULL) {
+    MathEngine::logger(LOG_WARNING, "cannot resolve entity reference `%s', a `?' will be used instead", name);
+    entity = MathEngine::entitiesTable.GetErrorEntity();
+  }
 
   return entity;
 }
@@ -40,6 +43,6 @@ myGetEntity(void* user_data, mDOMConstStringRef name)
 mDOMDocRef
 MathMLParseFile(const char* filename, bool subst)
 {
-  return mdom_load(filename, subst, myGetEntity);
+  return mdom_load(filename, subst, myVeryPrivateGetEntity);
 }
 

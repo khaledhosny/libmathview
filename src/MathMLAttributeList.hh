@@ -23,12 +23,11 @@
 #ifndef MathMLAttributeList_hh
 #define MathMLAttributeList_hh
 
-#include <config.h>
-
 #include "MathMLAttribute.hh"
 #include "Container.hh"
 
-class MathMLAttributeList : public Container<MathMLAttribute*> {
+class MathMLAttributeList : public Container<MathMLAttribute*>
+{
 public:
   MathMLAttributeList(void);
   ~MathMLAttributeList();

@@ -1,0 +1,35 @@
+<math>
+  <mrow>
+    <mi>sin</mi>
+    <mo>&ApplyFunction;</mo>
+    <mi>x</mi>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <mi>cos</mi>
+    <mo>&ApplyFunction;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mi>y</mi>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+  <mo>&minus;</mo>
+  <mrow>
+    <mi>tan</mi>
+    <mo>&ApplyFunction;</mo>
+    <mfenced>
+      <mi>z</mi>
+    </mfenced>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <mi>sin</mi>
+    <mo>&ApplyFunction;</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&InvisibleTimes;</mo>
+      <mi>&theta;</mi>
+    </mrow>
+  </mrow>
+</math>

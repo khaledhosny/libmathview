@@ -246,7 +246,8 @@ MathMLTableCellElement::CalcGroupsExtent()
   assert(cell != NULL);
   SetPosition(0, 0);
 
-  for (unsigned k = 0; k < cell->nAlignGroup; k++) {
+  unsigned k;
+  for (k = 0; k < cell->nAlignGroup; k++) {
     MathMLAlignGroupElement* group = cell->aGroup[k].group;
     assert(group != NULL);
 
@@ -269,7 +270,7 @@ MathMLTableCellElement::CalcGroupsExtent()
 
   scaled prevAlignPoint = 0;
 
-  for (unsigned k = 0; k < cell->nAlignGroup; k++) {
+  for (k = 0; k < cell->nAlignGroup; k++) {
     MathMLAlignGroupElement* group = cell->aGroup[k].group;
     assert(group != NULL);
 

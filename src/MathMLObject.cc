@@ -82,6 +82,12 @@ MathMLObject::IsStretchyChar() const
 }
 
 bool
+MathMLObject::IsCombinedChar() const
+{
+  return false;
+}
+
+bool
 MathMLObject::IsSpace() const
 {
   return false;

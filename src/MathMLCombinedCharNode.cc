@@ -32,11 +32,13 @@
 MathMLCombinedCharNode::MathMLCombinedCharNode(Char c, Char cc) :
   MathMLCharNode(c)
 {
-  cch = cc;
+  cChar = new MathMLCharNode(cc);
 }
 
 MathMLCombinedCharNode::~MathMLCombinedCharNode()
 {
+  delete cChar;
+  cChar = NULL;
 }
 
 void
@@ -45,63 +47,71 @@ MathMLCombinedCharNode::Setup(RenderingEnvironment* env)
   assert(env != NULL);
 
   MathMLCharNode::Setup(env);
-  assert(fChar.charMap != NULL);
 
-  if (!env->charMapper.FontifyChar(cChar, env->GetFontAttributes(), cch)) {
-    cChar.font = NULL;
-    cChar.charMap = NULL;
-  }
+  env->Push();
+  env->SetFontMode(FONT_MODE_ANY);
+  env->SetFontStyle(FONT_STYLE_NORMAL);
 
-  if (cChar.font == NULL)
-    MathEngine::logger(LOG_WARNING, "not able to render combining char `U+%04x'", cch);
-  else if (cChar.font != fChar.font)
-    MathEngine::logger(LOG_WARNING, "base char `U+%04x' and combining char `U+%04x' use different fonts", ch, cch);
+  assert(cChar != NULL);
+  // this is really ugly, but in some sense is also true...
+  cChar->SetParent(GetParent());
+  cChar->Setup(env);
+
+  if (cChar->GetFont() != fChar.font)
+    MathEngine::logger(LOG_WARNING, "base char `U+%04x' and combining char `U+%04x' use different fonts", ch, cChar->GetChar());
+
+  env->Drop();
 }
 
 void
 MathMLCombinedCharNode::DoLayout()
 {
   MathMLCharNode::DoLayout();
+  assert(cChar != NULL);
+  cChar->DoLayout();
 
-  if (cChar.font != NULL && cChar.charMap != NULL) {
-    BoundingBox cBox;
-    cChar.GetBoundingBox(cBox);
+  if (IsFontified() && cChar->IsFontified()) {
+    const BoundingBox& cBox = cChar->GetBoundingBox();
 
-#if 0
-    if (cChar.font == fChar.font)
-      shiftX = cChar.font->GetKerning(cChar.nch, fChar.nch);
-    else
-#endif
-      shiftX = 0;
+    bool res = CombineWith(cChar, shiftX, shiftY);
+    assert(res);
 
-    if (scaledEq(shiftX, 0))
-      shiftX = fChar.font->GetKerning(fChar.nch, 127);
-
-    if (isCombiningOverlay(cch))
-      shiftY = 0;
-    else
-      shiftY = box.ascent + cBox.descent + cChar.font->GetLineThickness();
-
-    charBox.ascent = scaledMax(box.ascent, cBox.ascent + shiftY);
-    charBox.descent = scaledMax(box.descent, cBox.descent - shiftY);
-    charBox.tAscent = scaledMax(box.tAscent, cBox.tAscent + shiftY);
-    charBox.tDescent = scaledMax(box.tDescent, cBox.tDescent - shiftY);
-    charBox.width = scaledMax(box.width, cBox.width + scaledAbs(shiftX));
-    charBox.lBearing = scaledMin(box.lBearing, cBox.lBearing + shiftX);
-    charBox.rBearing = scaledMax(box.rBearing, cBox.rBearing + shiftX);
-    box = charBox;
+    box.ascent = scaledMax(charBox.ascent, cBox.ascent + shiftY);
+    box.descent = scaledMax(charBox.descent, cBox.descent - shiftY);
+    box.tAscent = scaledMax(charBox.tAscent, cBox.tAscent + shiftY);
+    box.tDescent = scaledMax(charBox.tDescent, cBox.tDescent - shiftY);
+    box.width = scaledMax(charBox.width, cBox.width + scaledAbs(shiftX));
+    box.lBearing = scaledMin(charBox.lBearing, cBox.lBearing + shiftX);
+    box.rBearing = scaledMax(charBox.rBearing, cBox.rBearing + shiftX);
   }
+}
+
+void
+MathMLCombinedCharNode::SetPosition(scaled x, scaled y)
+{
+  MathMLCharNode::SetPosition(x, y);
+  assert(cChar != NULL);
+  cChar->SetPosition(x + shiftX, y - shiftY);
+}
+
+void
+MathMLCombinedCharNode::SetDirty(const Rectangle* rect)
+{
+  MathMLCharNode::SetDirty(rect);
+  assert(cChar != NULL);
+  cChar->SetDirty(rect);
 }
 
 void
 MathMLCombinedCharNode::Render(const DrawingArea& area)
 {
   MathMLCharNode::Render(area);
+  assert(cChar != NULL);
+  if (cChar->IsFontified()) cChar->Render(area);
+}
 
-  if (cChar.font != NULL) {
-    assert(GetParent() != NULL);
-    const GraphicsContext* gc = GetParent()->GetForegroundGC();
-
-    area.DrawChar(gc, cChar.font, GetX() + shiftX, GetY() - shiftY, cChar.nch);
-  }
+bool
+MathMLCombinedCharNode::IsCombinedChar() const
+{
+  return true;
 }

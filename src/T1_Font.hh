@@ -38,6 +38,7 @@ public:
   virtual scaled CharHeight(char) const;
   virtual scaled GetAscent(void) const;
   virtual scaled GetDescent(void) const;
+  virtual float  GetItalicAngle(void) const;
   virtual scaled GetEm(void) const;
   virtual scaled GetEx(void) const;
   virtual scaled GetAxis(void) const;

@@ -24,6 +24,8 @@
 #include <assert.h>
 
 #include "Layout.hh"
+#include "MathMLCharNode.hh"
+#include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
@@ -33,10 +35,19 @@ MathMLEmbellishedOperatorElement(MathMLOperatorElement* op) // the core operator
 {
   assert(op != NULL);
   coreOp = op;
+  script = false;
 }
 
 MathMLEmbellishedOperatorElement::~MathMLEmbellishedOperatorElement()
 {
+}
+
+void
+MathMLEmbellishedOperatorElement::Setup(RenderingEnvironment* env)
+{
+  assert(env != NULL);
+  script = env->GetScriptLevel() > 0;
+  MathMLContainerElement::Setup(env);
 }
 
 void
@@ -48,11 +59,26 @@ MathMLEmbellishedOperatorElement::DoBoxedLayout(LayoutId id, BreakId, scaled ava
   assert(content.GetFirst() != NULL);
   assert(coreOp != NULL);
 
-  scaled totalPadding = coreOp->GetLeftPadding() + coreOp->GetRightPadding();
+  scaled totalPadding = script ? 0 : coreOp->GetLeftPadding() + coreOp->GetRightPadding();
 
   content.GetFirst()->DoBoxedLayout(id, BREAK_NO, scaledMax(0, availWidth - totalPadding));
   box = content.GetFirst()->GetBoundingBox();
+
+  // WARNING: maybe in this case we should ask for the LAST char node...
+  const MathMLCharNode* node = coreOp->GetCharNode();
+  if (node != NULL && isIntegral(node->GetChar())) {
+    // WARNING
+    // the following patch is needed in order to have integral sign working
+    box.width = scaledMax(box.width, box.rBearing);
+  }
   box.width += totalPadding;
+
+#ifdef ENABLE_EXTENSIONS
+  box.ascent += coreOp->GetTopPadding();
+  box.tAscent += coreOp->GetTopPadding();
+  box.descent += coreOp->GetBottomPadding();
+  box.tDescent += coreOp->GetBottomPadding();
+#endif // ENABLE_EXTENSIONS
 
   ConfirmLayout(id);
 
@@ -83,11 +109,24 @@ MathMLEmbellishedOperatorElement::SetPosition(scaled x, scaled y)
   position.x = x;
   position.y = y;
 
-  content.GetFirst()->SetPosition(x + coreOp->GetLeftPadding(), y);
+#ifdef ENABLE_EXTENSIONS
+  content.GetFirst()->SetPosition(x + (script ? 0 : coreOp->GetLeftPadding()), y + coreOp->GetTopPadding());
+#else
+  content.GetFirst()->SetPosition(x + (script ? 0 : coreOp->GetLeftPadding()), y);
+#endif // ENABLE_EXTENSIONS
 }
 
 bool
 MathMLEmbellishedOperatorElement::IsEmbellishedOperator() const
 {
   return true;
+}
+
+const MathMLCharNode*
+MathMLEmbellishedOperatorElement::GetCharNode() const
+{
+  if (content.GetSize() != 1 || coreOp == NULL || content.GetFirst() != coreOp)
+    return NULL;
+
+  return coreOp->GetCharNode();
 }

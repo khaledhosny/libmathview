@@ -58,6 +58,7 @@ public:
   void     SetScriptMinSize(const UnitValue&);
   void     AddScriptLevel(int);
   void     SetScriptLevel(int);
+  int      GetScriptLevel(void) const;
 
   // font specific attributes
   void     SetFontFamily(const char*);

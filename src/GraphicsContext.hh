@@ -23,8 +23,6 @@
 #ifndef GraphicsContext_hh
 #define GraphicsContext_hh
 
-#include <config.h>
-
 #include "RGBValue.hh"
 #include "Rectangle.hh"
 #include "FontAttributes.hh"

@@ -1,0 +1,46 @@
+<math display="block">
+  <mpadded width="0em">
+    <munder>
+      <mrow>
+	<msup>
+	  <mi>x</mi>
+	  <mn>2</mn>
+	</msup>
+	<mo>+</mo>
+	<mrow>
+	  <mn>2</mn>
+	  <mo>&it;</mo>
+	  <mi>x</mi>
+	</mrow>
+	<mpadded width="0em">
+	  <mi>&ZeroWidthSpace;</mi>
+	  <mo>+</mo>
+	  <mn>1</mn>
+	</mpadded>
+      </mrow>
+      <mo>&UnderBrace;</mo>
+    </munder>
+  </mpadded>
+  <mrow>
+    <mphantom>
+      <msup>
+	<mi>x</mi>
+	<mn>2</mn>
+      </msup>
+      <mo>+</mo>
+      <mi>&ZeroWidthSpace;</mi>
+    </mphantom>    
+    <mover>
+      <mphantom>
+	<mrow>
+	  <mn>2</mn>
+	  <mo>&it;</mo>
+	  <mi>x</mi>
+	</mrow>
+	<mo>+</mo>
+	<mn>1</mn>
+      </mphantom>
+      <mo>&OverBrace;</mo>
+    </mover>
+  </mrow>
+</math>

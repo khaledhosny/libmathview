@@ -40,6 +40,8 @@ static GtkMenuItem* kerning_item;
 static GtkMenuItem* anti_aliasing_item;
 static GtkMenuItem* transparency_item;
 static GtkMenuItem* font_size_item;
+static GdkCursor* normal_cursor;
+static GdkCursor* link_cursor;  
 
 static gchar* doc_name = NULL;
 
@@ -144,6 +146,9 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
 
   gtk_widget_show(window);
 
+  normal_cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
+  link_cursor = gdk_cursor_new(GDK_HAND2);
+  
   GUI_set_font_manager(FONT_MANAGER_GTK);
 }
 
@@ -434,7 +439,14 @@ element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  /* printf("node changed: %p %s\n", node, (node != NULL) ? mdom_node_get_name(node) : "-"); */
+
+  while (node != NULL && !mdom_node_has_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI))
+    node = mdom_node_get_parent(node);
+
+  if (node != NULL && mdom_node_has_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI))
+    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
+  else
+    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, normal_cursor);
 }
 
 static void
@@ -442,7 +454,6 @@ action_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  /* printf("action changed: %p\n", node); */
 }
 
 static void
@@ -454,23 +465,21 @@ selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 }
 
 static void
-jump(GtkMathView* math_view, mDOMNodeRef node)
-{
-  mDOMStringRef href;
-
-  g_return_if_fail(node != NULL);
-  href = mdom_node_get_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI);
-
-  if (href != NULL) {
-    GUI_load_document(C_CONST_STRING(href));
-    mdom_string_free(href);
-  }
-}
-
-static void
 clicked(GtkMathView* math_view, gpointer user_data)
 {
-  if (gtk_math_view_get_action(math_view) != NULL)
+  mDOMNodeRef p1, p2, p3;
+
+  mDOMNodeRef p = gtk_math_view_get_element(math_view);
+  while (p != NULL && !mdom_node_has_attribute_ns(p, DOM_CONST_STRING("href"), XLINK_NS_URI))
+    p = mdom_node_get_parent(p);
+
+  if (p != NULL) {
+    mDOMStringRef href = mdom_node_get_attribute_ns(p, DOM_CONST_STRING("href"), XLINK_NS_URI);
+    g_assert(href != NULL);
+
+    GUI_load_document(C_CONST_STRING(href));
+    mdom_string_free(href);
+  } else if (gtk_math_view_get_action(math_view) != NULL)
     gtk_math_view_action_toggle(math_view);
 }
 
@@ -502,10 +511,6 @@ create_widget_set()
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "action_changed", GTK_SIGNAL_FUNC (action_changed),
-			     (gpointer) main_area);
-
-  gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "jump", GTK_SIGNAL_FUNC(jump),
 			     (gpointer) main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area), 

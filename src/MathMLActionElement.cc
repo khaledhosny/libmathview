@@ -61,9 +61,10 @@ MathMLActionElement::Setup(RenderingEnvironment* env)
   assert(env != NULL);
 
   const String* sValue = GetAttribute(ATTR_ACTIONTYPE, env, false);
-  if (sValue != NULL)
-    MathEngine::logger(LOG_WARNING, "action `%s' is not supported (ignored)", sValue->ToStaticC());
-  else
+  if (sValue != NULL) {
+    if (!sValue->Equal("toggle"))
+      MathEngine::logger(LOG_WARNING, "action `%s' is not supported (ignored)", sValue->ToStaticC());
+  } else
     MathEngine::logger(LOG_WARNING, "no action specified for `maction' element");
 
   const Value* value = GetAttributeValue(ATTR_SELECTION, env);

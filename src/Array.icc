@@ -50,7 +50,7 @@ Array<Type>::Array(const Array<Type>& cont)
 template <class Type>
 Array<Type>::~Array()
 {
-  delete data;
+  delete [] data;
 }
 
 template <class Type>
@@ -83,7 +83,7 @@ void Array<Type>::SetSize(unsigned n, Type obj)
     else newData[i] = obj;
   }
 
-  delete data;
+  delete [] data;
   size = n;
   data = newData;
 }

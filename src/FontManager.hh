@@ -33,6 +33,8 @@ public:
 
   virtual bool IsAvailable(const FontAttributes&, const class ExtraFontAttributes* = 0) const = 0;
   const class AFont* GetFont(const FontAttributes&, const class ExtraFontAttributes* = 0) const;
+
+  void ResetUsedFonts(void) const;
   void MarkAsUsed(const class AFont*) const;
 
 protected:

@@ -25,33 +25,25 @@
 #ifdef HAVE_LIBT1
 
 #include <assert.h>
-#ifdef HAVE_UNISTD_H
-#include <sys/types.h>
-#include <unistd.h>
-#endif
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-#ifdef HAVE_VFORK_H
-#include <vfork.h>
-#endif
+#include <malloc.h>
 
-#include <t1lib.h>
+#include "t1lib.h"
 
-#include "T1_Font.hh"
 #include "Iterator.hh"
 #include "Container.hh"
 #include "MathEngine.hh"
+#include "PS_T1_Font.hh"
 #include "PS_T1_FontManager.hh"
 
+#if 0
 // auxiliary functions' prototypes
 
 static const char* getFontFilePath(unsigned fontId);
 static void dumpFontFile(FILE* source, FILE* target);
 static void convertToPFA(const char* source, const char* target);
+#endif
 
 // PS_T1_FontManager implementation
 
@@ -63,39 +55,101 @@ PS_T1_FontManager::~PS_T1_FontManager()
 {
 }
 
+const AFont*
+PS_T1_FontManager::SearchNativeFont(const FontAttributes& fa,
+                                    const ExtraFontAttributes* efa) const
+{
+  float size;
+  int i = SearchNativeFontAux(fa, efa, size);
+  AFont* f = (i >= 0) ? new PS_T1_Font(i, size) : NULL;
+  return f;
+}
 
 void
-PS_T1_FontManager::DumpFontDictionary(FILE* output) const
+PS_T1_FontManager::ResetUsedChars() const
+{
+  for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
+    assert(i() != NULL);
+    if (i()->used) {
+      const AFont* font = i()->font;
+      assert(font != NULL);
+      const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
+      assert(ps_font != NULL);
+
+      ps_font->ResetUsedChars();
+    }
+  }
+}
+
+void
+PS_T1_FontManager::DumpFontDictionary(FILE* output, bool subset) const
 {
   assert(output != NULL);
 
-  Container<unsigned> fontId;
+  Container<T1_FontDesc*> fontDesc;
 
   for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
     assert(i() != NULL);
     if (i()->used) {
       const AFont* font = i()->font;
       assert(font != NULL);
-      const T1_Font* t1_font = TO_T1_FONT(font);
-      assert(t1_font != NULL);
+      const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
+      assert(ps_font != NULL);
 
+      if (subset)
+	SetUsedChars(fontDesc, ps_font->GetNativeFontId(), ps_font->GetUsedChars());
+      else
+	SetUsedChars(fontDesc, ps_font->GetNativeFontId());
+
+#if 0      
       unsigned id = t1_font->GetNativeFontId();
       if (!fontId.Contains(id)) fontId.Append(id);
+#endif
     }
   }
 
-  for (Iterator<unsigned> id(fontId); id.More(); id.Next()) {
-    if (id.IsFirst()) {
+  for (Iterator<T1_FontDesc*> i(fontDesc); i.More(); i.Next()) {
+    assert(i() != NULL);
+
+    if (i.IsFirst()) {
       fprintf(output, "%%%%DocumentSuppliedResources: font ");
     } else {
       fprintf(output, "%%%%+ font ");
     }
-    fprintf(output, "%s\n", T1_GetFontName(id()));
-    if (id.IsLast()) fprintf(output, "\n\n");
+
+    fprintf(output, "%s\n", T1_GetFontName(i()->id));
+
+    if (i.IsLast()) fprintf(output, "\n\n");
   }
 
   fprintf(output, "%%%%BeginSetup\n");
 
+  while (!fontDesc.IsEmpty()) {
+    T1_FontDesc* desc = fontDesc.RemoveFirst();
+    assert(desc != NULL);
+
+    MathEngine::logger(LOG_DEBUG, "subset font `%d'", desc->id);
+
+    unsigned count = 0;
+    for (unsigned i = 0; i < 256; i++)
+      if (desc->used[i]) count++;
+    MathEngine::logger(LOG_DEBUG, "subsetting %d chars", count);
+
+    unsigned long bufSize;
+    char* dump = T1_SubsetFont(desc->id, desc->used,
+			       T1_SUBSET_DEFAULT | T1_SUBSET_SKIP_REENCODE,
+			       64, 16384, &bufSize);
+    assert(dump != NULL);
+    fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(desc->id));
+    fwrite(dump, 1, bufSize, output);
+    fprintf(output, "%%%%EndResource\n\n");
+    MathEngine::logger(LOG_DEBUG, "done!");
+    free(dump);
+
+    delete desc;
+  }
+
+#if 0
   for (Iterator<unsigned> id(fontId); id.More(); id.Next()) {
     const char* fileName = getFontFilePath(id());
 
@@ -136,6 +190,7 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output) const
       MathEngine::logger(LOG_WARNING, "could not find file for font `%s'", T1_GetFontName(id()));
     }
   }
+#endif
 
   fprintf(output, "%%%%EndSetup\n\n");
 
@@ -155,6 +210,46 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output) const
   }
 }
 
+void
+PS_T1_FontManager::SetUsedChars(Container<T1_FontDesc*>& fontDesc, unsigned id,
+				const char used[])
+{
+  for (Iterator<T1_FontDesc*> desc(fontDesc); desc.More(); desc.Next()) {
+    assert(desc() != NULL);
+    if (desc()->id == id) {
+      for (unsigned i = 0; i < 256; i++)
+        desc()->used[i] |= used[i];
+      return;
+    }
+  }
+
+  T1_FontDesc* desc = new T1_FontDesc;
+  assert(desc != NULL);
+  desc->id = id;
+  for (unsigned i = 0; i < 256; i++) desc->used[i] = used[i];
+  fontDesc.Append(desc);
+}
+
+void
+PS_T1_FontManager::SetUsedChars(Container<T1_FontDesc*>& fontDesc, unsigned id)
+{
+  for (Iterator<T1_FontDesc*> desc(fontDesc); desc.More(); desc.Next()) {
+    assert(desc() != NULL);
+    if (desc()->id == id) {
+      for (unsigned i = 0; i < 256; i++)
+        desc()->used[i] = 1;
+      return;
+    }
+  }
+
+  T1_FontDesc* desc = new T1_FontDesc;
+  assert(desc != NULL);
+  desc->id = id;
+  for (unsigned i = 0; i < 256; i++) desc->used[i] = 1;
+  fontDesc.Append(desc);
+}
+
+#if 0
 // auxiliary functions
 
 static const char*
@@ -226,5 +321,6 @@ convertToPFA(const char* source, const char* target)
     MathEngine::logger(LOG_DEBUG, "child %d died, returning", child);
   }
 }
+#endif
 
 #endif // HAVE_LIBT1

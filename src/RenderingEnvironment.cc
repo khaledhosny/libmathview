@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <math.h>   // for pow(...)
 #include <string.h> // for strncpy(...)
+#include <stdlib.h> // for exit()
 
 #include "Iterator.hh"
 #include "CharMapper.hh"
@@ -31,6 +32,7 @@
 #include "StringTokenizer.hh"
 #include "ValueConversion.hh"
 #include "RenderingEnvironment.hh"
+
 
 RenderingEnvironment::RenderingEnvironment(CharMapper& cm) : charMapper(cm)
 {
@@ -185,6 +187,17 @@ RenderingEnvironment::AddScriptLevel(int delta)
     newFontSize = top->scriptMinSize;
 
   SetFontSize(newFontSize);
+}
+
+int
+RenderingEnvironment::GetScriptLevel() const
+{
+  assert(!level.IsEmpty());
+
+  AttributeLevel* top = level.Top();
+  assert(top != NULL);
+
+  return top->scriptLevel;
 }
 
 void
@@ -355,7 +368,10 @@ RenderingEnvironment::GetScaledPointsPerEm() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  charMapper.FontifyChar(fChar, top->fontAttributes, 'M');
+  if (!charMapper.FontifyChar(fChar, top->fontAttributes, 'M')) {
+    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
+    exit(1);
+  }
   assert(fChar.font != NULL);
 
   return fChar.font->GetEm();
@@ -370,7 +386,10 @@ RenderingEnvironment::GetScaledPointsPerEx() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  charMapper.FontifyChar(fChar, top->fontAttributes, 'x');
+  if (!charMapper.FontifyChar(fChar, top->fontAttributes, 'x')) {
+    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
+    exit(1);
+  }
   assert(fChar.font != NULL);
 
   return fChar.font->GetEx();
@@ -396,7 +415,10 @@ RenderingEnvironment::GetAxis() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  charMapper.FontifyChar(fChar, top->fontAttributes, '=');
+  if (!charMapper.FontifyChar(fChar, top->fontAttributes, '=')) {
+    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
+    exit(1);
+  }
   assert(fChar.font != NULL);
 
   BoundingBox eqBox;
@@ -414,7 +436,7 @@ RenderingEnvironment::GetRuleThickness() const
   assert(top != NULL);
 
   // don't know if this is the correct heuristics
-  scaled s = float2sp(sp2pt(top->fontAttributes.size.ToScaledPoints()) * 2500);
+  scaled s = float2sp(sp2float(top->fontAttributes.size.ToScaledPoints()) * 0.04);
   return s;
 
 #if 0

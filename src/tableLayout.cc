@@ -85,6 +85,8 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
   // ok, the available width cannot be negative
   availWidth = scaledMax(0, availWidth);
 
+  unsigned j;
+
   if (widthType == WIDTH_FIXED) availWidth = fixedWidth;
   else if (widthType == WIDTH_PERCENTAGE) availWidth = float2sp(availWidth * scaleWidth);
 
@@ -101,21 +103,21 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
 
     if (id == LAYOUT_AUTO) {
       // in any case all columns must be rendered to the max of the minimum widths!!!!!!
-      for (unsigned j = 0; j < nColumns; j++)
+      for (j = 0; j < nColumns; j++)
 	availPerColumn = scaledMax(availPerColumn, column[j].minimumWidth);
     }
 
     // then we render each column with a portion of the available space
-    for (unsigned j = 0; j < nColumns; j++) ColumnLayout(j, id, bid, availPerColumn);
+    for (j = 0; j < nColumns; j++) ColumnLayout(j, id, bid, availPerColumn);
 
     if (nFit == 0 && widthType == WIDTH_AUTO) {
       // oh, the table has no fit columns, so it could be smaller than the
       // whole available space, let's find the largest column
       scaled maxC = 0;
-      for (unsigned j = 0; j < nColumns; j++) maxC = scaledMax(maxC, column[j].contentWidth);
+      for (j = 0; j < nColumns; j++) maxC = scaledMax(maxC, column[j].contentWidth);
 
       // we assign each column the same width
-      for (unsigned j = 0; j < nColumns; j++) column[j].width = maxC;
+      for (j = 0; j < nColumns; j++) column[j].width = maxC;
 
       // we compute the fixed (non-%) part of the column
       scaled fixedWidth = GetColumnWidth() + GetSpacingWidth(SPACING_FIXED);
@@ -125,7 +127,7 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
       ConfirmHorizontalScaleSpacing(tableWidth);
     }
   } else {
-    for (unsigned j = 0; j < nColumns; j++)
+    for (j = 0; j < nColumns; j++)
       if (column[j].widthType == COLUMN_WIDTH_FIXED) {
 	ColumnLayout(j, id, BREAK_GOOD, column[j].fixedWidth);
 	column[j].width = scaledMax(column[j].contentWidth, column[j].fixedWidth);
@@ -155,7 +157,7 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
 
     unsigned n = nAuto + nFit;
 
-    for (unsigned j = 0; j < nColumns; j++) {
+    for (j = 0; j < nColumns; j++) {
       if (column[j].widthType == COLUMN_WIDTH_AUTO) {
 	ColumnLayout(j, id, bid, avail / n);
 	avail = scaledMax(0, avail - column[j].contentWidth);
@@ -166,7 +168,7 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
     if (nFit == 0 && nAuto > 0 && widthType == WIDTH_AUTO) {
       scaled tableWidth = 0;
       bool constraint = false;
-      for (unsigned j = 0; j < nColumns; j++) {
+      for (j = 0; j < nColumns; j++) {
 	if (column[j].widthType == COLUMN_WIDTH_PERCENTAGE) {
 	  assert(column[j].scaleWidth > EPSILON);
 	  tableWidth = scaledMax(tableWidth, float2sp(column[j].contentWidth / column[j].scaleWidth));
@@ -182,7 +184,7 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
       assert(1 - wScale > EPSILON);
       tableWidth = scaledMax(tableWidth, float2sp(fixedWidth / (1 - wScale)));
 
-      for (unsigned j = 0; j < nColumns; j++)
+      for (j = 0; j < nColumns; j++)
 	if (column[j].widthType == COLUMN_WIDTH_PERCENTAGE)
 	  column[j].width = float2sp(tableWidth * column[j].scaleWidth);
       ConfirmHorizontalScaleSpacing(tableWidth);
@@ -198,15 +200,15 @@ MathMLTableElement::DoHorizontalLayout(LayoutId id, BreakId bid, scaled availWid
       // give value. We set them all to the content width.
       float ratio = (constraint && avail > SP_EPSILON) ? sp2float(delta) / sp2float(avail) : 0;
 
-      for (unsigned j = 0; j < nColumns; j++)
+      for (j = 0; j < nColumns; j++)
 	if (column[j].widthType == COLUMN_WIDTH_AUTO)
 	  column[j].width = column[j].contentWidth +
 	    float2sp((column[j].width - column[j].contentWidth) * ratio);
     } else {
-      for (unsigned j = 0; j < nColumns; j++)
+      for (j = 0; j < nColumns; j++)
 	if (column[j].widthType == COLUMN_WIDTH_AUTO) column[j].width = column[j].contentWidth;
 
-      for (unsigned j = 0; j < nColumns; j++) {
+      for (j = 0; j < nColumns; j++) {
 	if (column[j].widthType == COLUMN_WIDTH_FIT) {
 	  ColumnLayout(j, id, bid, float2sp(sp2float(avail) / n));
 	  avail = scaledMax(0, avail - scaledMax(column[j].contentWidth, column[j].width));
@@ -227,14 +229,17 @@ MathMLTableElement::DoHorizontalMinimumLayout()
   // measures
   EnforceHorizontalInvariants();
 
-  for (unsigned j = 0; j < nColumns; j++) {
+  unsigned i;
+  unsigned j;
+
+  for (j = 0; j < nColumns; j++) {
     column[j].minimumWidth = 0;
     ColumnLayout(j, LAYOUT_MIN, BREAK_GOOD, 0);
     column[j].minimumWidth = column[j].contentWidth;
   }
 
-  for (unsigned i = 0; i < nRows; i++) {
-    for (unsigned j = 0; j < nColumns; j++) {
+  for (i = 0; i < nRows; i++) {
+    for (j = 0; j < nColumns; j++) {
       unsigned n = cell[i][j].colSpan;
       if (cell[i][j].mtd != NULL && !cell[i][j].spanned && n > 1) {
 	scaled minWidth = GetMinimumWidth(j, cell[i][j].colSpan);
@@ -253,10 +258,10 @@ MathMLTableElement::DoHorizontalMinimumLayout()
   }
 
   frameHorizontalSpacing = 0;
-  for (unsigned j = 0; j + 1 < nColumns; j++)
+  for (j = 0; j + 1 < nColumns; j++)
     column[j].spacing = MIN_COLUMN_SPACING;
 
-  for (unsigned j = 0; j < nColumns; j++)
+  for (j = 0; j < nColumns; j++)
     column[j].width = column[j].minimumWidth;
 }
 
@@ -351,16 +356,17 @@ float
 MathMLTableElement::GetHorizontalScale() const
 {
   float scale = 0;
+  unsigned j;
 
   if (frame != TABLE_LINE_NONE)
     if (frameHorizontalSpacingType == SPACING_PERCENTAGE)
       scale += 2 * frameHorizontalScaleSpacing;
 
-  for (unsigned j = 0; j < nColumns; j++)
+  for (j = 0; j < nColumns; j++)
     if (column[j].widthType == COLUMN_WIDTH_PERCENTAGE)
       scale += column[j].scaleWidth;
 
-  for (unsigned j = 0; j + 1 < nColumns; j++)
+  for (j = 0; j + 1 < nColumns; j++)
     if (column[j].spacingType == SPACING_PERCENTAGE)
       scale += column[j].scaleSpacing;
 
@@ -546,17 +552,20 @@ MathMLTableElement::ColumnGroupsLayout(unsigned j, LayoutId id)
 
   GroupExtent* gExtent = (nAlignGroup > 0) ? new GroupExtent[nAlignGroup] : NULL;
 
-  for (unsigned k = 0; k < nAlignGroup; k++)
+  unsigned k;
+  unsigned i;
+
+  for (k = 0; k < nAlignGroup; k++)
     gExtent[k].left = gExtent[k].right = 0;
 
-  for (unsigned i = 0; i < nRows; i++) {
+  for (i = 0; i < nRows; i++) {
     TableCell& tableCell = cell[i][j];
     if (tableCell.mtd != NULL &&
 	!tableCell.spanned && tableCell.colSpan == 1) {
       bool stretchyCell = isStretchyOperator(tableCell.mtd->content.GetFirst());
 
       if (!stretchyCell) {
-	for (unsigned k = 0; k < tableCell.nAlignGroup; k++) {
+	for (k = 0; k < tableCell.nAlignGroup; k++) {
 	  gExtent[k].left = scaledMax(gExtent[k].left, tableCell.aGroup[k].extent.left);
 	  gExtent[k].right = scaledMax(gExtent[k].right, tableCell.aGroup[k].extent.right);
 	}
@@ -565,17 +574,17 @@ MathMLTableElement::ColumnGroupsLayout(unsigned j, LayoutId id)
   }
 
   scaled alignedCellWidth = 0;
-  for (unsigned k = 0; k < nAlignGroup; k++)
+  for (k = 0; k < nAlignGroup; k++)
     alignedCellWidth += gExtent[k].left + gExtent[k].right;
 
   if (id == LAYOUT_AUTO) {
-    for (unsigned i = 0; i < nRows; i++) {
+    for (i = 0; i < nRows; i++) {
       TableCell& tableCell = cell[i][j];
       if (tableCell.mtd != NULL && !tableCell.spanned && tableCell.colSpan == 1) {
 	bool stretchyCell = isStretchyOperator(tableCell.mtd->content.GetFirst());
 	
 	if (!stretchyCell) {
-	  for (unsigned k = 0; k < tableCell.nAlignGroup; k++) {
+	  for (k = 0; k < tableCell.nAlignGroup; k++) {
 	    assert(tableCell.aGroup[k].group != NULL);
 
 	    scaled rightPrev = 0;
@@ -666,11 +675,14 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 
   ConfirmVerticalFixedSpacing();
 
-  for (unsigned i = 0; i < nRows; i++) {
+  unsigned i;
+  unsigned j;
+
+  for (i = 0; i < nRows; i++) {
     scaled ascent = 0;
     scaled descent = 0;
 
-    for (unsigned j = 0; j < nColumns; j++) 
+    for (j = 0; j < nColumns; j++) 
       if (cell[i][j].mtd != NULL &&
 	  !cell[i][j].spanned &&
 	  cell[i][j].rowAlign == ROW_ALIGN_BASELINE) {
@@ -688,7 +700,7 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
       }
     }
 
-    for (unsigned j = 0; j < nColumns; j++)
+    for (j = 0; j < nColumns; j++)
       if (cell[i][j].mtd != NULL &&
 	  !cell[i][j].spanned && cell[i][j].rowSpan == 1 &&
 	  cell[i][j].rowAlign != ROW_ALIGN_BASELINE) {
@@ -712,10 +724,10 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 
   if (equalRows) {
     scaled maxHeight = 0;
-    for (unsigned i = 0; i < nRows; i++)
+    for (i = 0; i < nRows; i++)
       maxHeight = scaledMax(maxHeight, row[i].GetHeight());
 
-    for (unsigned i = 0; i < nRows; i++)
+    for (i = 0; i < nRows; i++)
       if (row[i].GetHeight() < maxHeight)
 	row[i].descent += maxHeight - row[i].GetHeight();
   }
@@ -741,16 +753,17 @@ void
 MathMLTableElement::NormalizeHorizontalScale(float wScale)
 {
   assert(wScale > EPSILON);
+  unsigned j;
 
   if (frameHorizontalSpacingType == SPACING_PERCENTAGE)
     frameHorizontalScaleSpacing /= wScale;
   
-  for (unsigned j = 0; j < nColumns; j++) {
+  for (j = 0; j < nColumns; j++) {
     if (column[j].widthType == COLUMN_WIDTH_PERCENTAGE)
       column[j].scaleWidth /= wScale;
   }
 
-  for (unsigned j = 0; j < nColumns - 1; j++) {
+  for (j = 0; j < nColumns - 1; j++) {
     if (column[j].spacingType == SPACING_PERCENTAGE)
       column[j].scaleSpacing /= wScale;
   }
@@ -909,6 +922,7 @@ MathMLTableElement::GetTableHeight() const
 void
 MathMLTableElement::AdjustTableWidth(scaled availWidth)
 {
+  unsigned j;
   scaled tableWidth = GetTableWidth();
 
   if (scaledLeq(tableWidth, availWidth)) return;
@@ -920,12 +934,12 @@ MathMLTableElement::AdjustTableWidth(scaled availWidth)
 
   float ratio = 1 - sp2float(toKill) / sp2float(extraSpace);
 
-  for (unsigned j = 0; j < nColumns; j++)
+  for (j = 0; j < nColumns; j++)
     column[j].width = column[j].contentWidth + float2sp((column[j].width - column[j].contentWidth) * ratio);
 
   frameHorizontalSpacing = scaledMax(MIN_COLUMN_SPACING, float2sp(frameHorizontalSpacing * ratio));
 
-  for (unsigned j = 0; j + 1 < nColumns; j++)
+  for (j = 0; j + 1 < nColumns; j++)
     if (column[j].spacing > MIN_COLUMN_SPACING)
       column[j].spacing = scaledMax(MIN_COLUMN_SPACING, float2sp(column[j].spacing * ratio));
 }
@@ -934,7 +948,7 @@ void
 MathMLTableElement::AlignTable(scaled height, BoundingBox& box)
 {
   if (rowNumber > static_cast<int>(nRows)) rowNumber = nRows;
-  else if (-rowNumber > static_cast<int>(nRows)) rowNumber = -nRows;
+  else if (-rowNumber > static_cast<int>(nRows)) rowNumber = -static_cast<int>(nRows);
 
   if (rowNumber < 0) rowNumber = nRows + rowNumber + 1;
 

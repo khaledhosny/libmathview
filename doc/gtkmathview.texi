@@ -163,7 +163,7 @@ been added backward "compatibility" with version 1.8.x of libxml, however
 this compatibility is not fully effective due to some bugs of libxml. It is
 recommended to upgrade to version 2. See file INSTALL for more details.
 @item
-@code{minidom} (version 0.1.1 or higher) @url{http://www.cs.unibo.it/helm/mml-widget},
+@code{minidom} (version 0.1.3) @url{http://www.cs.unibo.it/helm/mml-widget},
 this is a minimal, partial implementation of the DOM used by the widget as
 an abstract interface to @code{libxml}. It will be eventually replaced by
 GDOME when there will be a package for it.
@@ -175,7 +175,7 @@ will probably compile and run without problems even with some previous versions)
 @itemize @bullet
 @item
 @comment FIXME: update the link for t1lib
-@code{t1lib} (version 1.0.1) @url{ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-x.y.z.tar.gz}
+@code{t1lib} (version 1.2 or higher) @url{ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-x.y.z.tar.gz}
 Actually, this library is not required, however, if you have it, you will
 be able to use Type1 fonts independently from the X font server. Furthermore,
 you will be able to render anti-aliased text and exploit kerning information,
@@ -900,14 +900,36 @@ font manager is availabe only if you have installed the @code{t1lib} library.
 Return the current font manager id.
 @end deftypefn
 
+@deftypefn {Method} mDOMNodeRef gtk_math_view_get_element (GtkMathView* @var{widget})
+Return the innermost element the mouse is currently on. Return NULL if the mouse is
+on an area not covered by an element.
+@end deftypefn
+
+@deftypefn {Method} mDOMNodeRef gtk_math_view_get_action (GtkMathView* @var{widget})
+Return the innermost @code{maction} element the mouse is currently on. Return NULL
+if the mouse is on an area not covered by a @code{maction} element.
+@end deftypefn
+
+@deftypefn {Method} guint gtk_math_view_action_get_selected (GtkMathView* @var{widget})
+Return the currently selected branch (1-based) in the @code{maction} element
+the mouse is currently on, or 0 if there is no such element.
+@end deftypefn
+
+@deftypefn {Method} void gtk_math_view_action_set_selected (GtkMathView* @var{widget}, guint @var{i})
+Select the @var{i}-th branch (1-based) in the @code{maction} element the mouse is currently on.
+If the mouse in not on an area covered by a @code{maction} element, this method has
+no effect.
+@end deftypefn
+
+@deftypefn {Method} void gtk_math_view_action_toggle(GtkMathView* @var{widget})
+Toggles to the next branch in the @code{maction} element the mouse is currently
+on, modulo the number of branches. If the mouse in not on an area covered by a
+@code{maction} element, this method has no effect.
+@end deftypefn
+
 @deftypefn {Signal} void "clicked" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
 emitted every time the user clicks on an element with a valid DOM reference @var{node}.
 The node is passed as a parameter to the function.
-@end deftypefn
-
-@deftypefn {Signal} void "jump" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})
-emitted subsequently a "clicked" signal, if the @var{node} has at least one
-attribute named @code{href}.
 @end deftypefn
 
 @deftypefn {Signal} void "selection_changed" (GtkMathView* @var{widget}, mDOMNodeRef @var{node})

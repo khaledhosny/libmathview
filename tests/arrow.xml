@@ -1,0 +1,19 @@
+<math>
+  <mrow>
+    <mi>A</mi>
+    <mo>&LongRightArrow;</mo>
+    <mi>B</mi>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <mi>A</mi>
+    <mover>
+      <mo>&#x2199;</mo>
+      <mtext>maps to</mtext>
+    </mover>
+    <mi>B</mi>
+  </mrow>
+  <mo>+</mo>
+  <mo stretchy="true" minsize="5">&#x21cc;</mo>
+  <mo minsize="5">&#x21a7;</mo>
+</math>

@@ -513,6 +513,10 @@ MathMLElement::ReleaseGCs()
 bool
 MathMLElement::HasLink() const
 {
-  if (GetDOMNode() == NULL) return false;
-  return mdom_node_has_attribute(GetDOMNode(), DOM_CONST_STRING("href"));
+  mDOMNodeRef p = GetDOMNode();
+
+  while (p != NULL && !mdom_node_has_attribute(p, DOM_CONST_STRING("href")))
+    p = mdom_node_get_parent(p);
+
+  return p != NULL;
 }

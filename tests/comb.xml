@@ -1,10 +1,11 @@
 
 <math>
-   <!--
-   <mi>&lt;</mi>
-   <mi>&#x0338;&NewLine;</mi>
+   <mtext>&#x0338;</mtext>
+   <mspace linebreak="newline"/>
    <mi>&gt;&#x0338;&NewLine;</mi>
-   -->
+   <mspace linebreak="newline"/>
    <mi>&alpha;&#x0308;</mi>
+   <mspace linebreak="newline"/>
+   <mtext>c&#x0327;</mtext>
 </math>
 

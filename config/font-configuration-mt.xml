@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE font-configuration SYSTEM "font-configuration.dtd">
+<!--
+Copyright (C) 2000, Luca Padovani (luca.padovani@cs.unibo.it).
+
+This file is part of GtkMathView, a Gtk widget for MathML.
+
+GtkMathView is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+GtkMathView is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GtkMathView; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+For details, see the GtkMathView World-Wide-Web page,
+http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+(luca.padovani@cs.unibo.it)
+-->
+
+<font-configuration>
+  <font type="ps" mode="math" map="mt-extra"
+	family="mtextra" style="normal" weight="normal"
+	ps-file="mtextra.pfa"
+	/>
+
+  <map id="mt-extra">
+    <single code="0x2A3F" index="67"/>
+    <single code="0x2210" index="67"/>
+    <single code="0x2A3C" index="70"/>    
+    <single code="0x2113" index="108"/>    
+    <single code="0x227A" index="112"/>
+    <single code="0x227B" index="102"/>
+    <single code="0x225C" index="64"/>
+    <single code="0x2423" index="124"/>
+    <single code="0xFB01" index="241"/>
+    <single code="0xFB02" index="241"/>
+    <single code="0x25AD" index="88"/>
+    <single code="0x301A" index="167"/>
+    <single code="0x301B" index="168"/>
+    <single code="0x2259" index="65"/>
+  </map>
+</font-configuration>

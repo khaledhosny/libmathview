@@ -26,6 +26,7 @@
 #include "Iterator.hh"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
+#include "MathMLRowElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
@@ -110,7 +111,7 @@ findCoreOperator(MathMLElement* root)
 	}
       }
 
-      return findCoreOperator(core);
+      return (core != NULL) ? findCoreOperator(core) : NULL;
     }
   case TAG_MSUP:
   case TAG_MSUB:
@@ -214,7 +215,7 @@ findDOMNode(MathMLElement* elem)
 }
 
 MathMLElement*
-findMathMLElement(mDOMNodeRef node)
+getMathMLElement(mDOMNodeRef node)
 {
   assert(node != NULL);
   // WARNING: the following is a very dangerous operation. It relies
@@ -223,6 +224,67 @@ findMathMLElement(mDOMNodeRef node)
   MathMLElement* elem = (MathMLElement*) mdom_node_get_user_data(node);
   assert(elem != NULL);
   assert(elem->GetDOMNode() == node);
+  return elem;
+}
+
+MathMLElement*
+findMathMLElement(mDOMNodeRef node)
+{
+  MathMLElement* elem = getMathMLElement(node);
+  assert(elem != NULL);
+
+  while (elem->IsA() == TAG_MROW && TO_CONTAINER(elem)->content.GetSize() == 1) {
+    elem = TO_CONTAINER(elem)->content.GetFirst();
+    assert(elem != NULL);
+  }
 
   return elem;
+}
+
+MathMLElement*
+findRightmostChild(MathMLElement* elem)
+{
+  if (elem == NULL || elem->IsA() != TAG_MROW) return elem;
+  MathMLRowElement* row = TO_ROW(elem);
+  assert(row != NULL);
+  if (row->content.GetSize() == 0) return elem;
+  else return findRightmostChild(row->content.GetLast());
+}
+
+MathMLElement*
+findLeftmostChild(MathMLElement* elem)
+{
+  if (elem == NULL || elem->IsA() != TAG_MROW) return elem;
+  MathMLRowElement* row = TO_ROW(elem);
+  assert(row != NULL);
+  if (row->content.GetSize() == 0) return elem;
+  else return findLeftmostChild(row->content.GetFirst());
+}
+
+MathMLElement*
+findRightSibling(MathMLElement* elem)
+{
+  mDOMNodeRef p = findDOMNode(elem);
+  if (p == NULL) return NULL;
+
+  for (p = mdom_node_get_next_sibling(p);
+       p != NULL && mdom_node_get_user_data(p) == NULL;
+       p = mdom_node_get_next_sibling(p)) ;
+
+  if (p != NULL) return findLeftmostChild(findMathMLElement(p));
+  else return findRightmostChild(findRightSibling(elem->GetParent()));
+}
+
+MathMLElement*
+findLeftSibling(MathMLElement* elem)
+{
+  mDOMNodeRef p = findDOMNode(elem);
+  if (p == NULL) return NULL;
+
+  for (p = mdom_node_get_prev_sibling(p);
+       p != NULL && mdom_node_get_user_data(p) == NULL;
+       p = mdom_node_get_prev_sibling(p)) ;
+
+  if (p != NULL) return findRightmostChild(findMathMLElement(p));
+  else return findLeftmostChild(findLeftSibling(elem->GetParent()));
 }

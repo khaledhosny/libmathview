@@ -53,11 +53,11 @@ StringFactory::Pack() const
   Char big = 0;
   unsigned len = 0;
 
-  for (Iterator<const String*> s(content); s.More(); s.Next()) {
-    assert(s() != NULL);
-    Char sBig = s()->GetBiggestChar();
+  for (Iterator<const String*> s1(content); s1.More(); s1.Next()) {
+    assert(s1() != NULL);
+    Char sBig = s1()->GetBiggestChar();
     if (sBig > big) big = sBig;
-    len += s()->GetLength();
+    len += s1()->GetLength();
   }
 
   String* res = NULL;
@@ -67,10 +67,10 @@ StringFactory::Pack() const
 
   unsigned offset = 0;
 
-  for (Iterator<const String*> s(content); s.More(); s.Next()) {
-    assert(s() != NULL);
-    for (unsigned i = 0; i < s()->GetLength(); i++) {
-      res->SetChar(offset, s()->GetChar(i));
+  for (Iterator<const String*> s2(content); s2.More(); s2.Next()) {
+    assert(s2() != NULL);
+    for (unsigned i = 0; i < s2()->GetLength(); i++) {
+      res->SetChar(offset, s2()->GetChar(i));
       offset++;
     }
   }

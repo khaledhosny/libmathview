@@ -23,11 +23,10 @@
 #ifndef MathMLUnderOverElement_hh
 #define MathMLUnderOverElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
+#include "MathMLScriptCommonElement.hh"
 
-class MathMLUnderOverElement : public MathMLContainerElement {
+class MathMLUnderOverElement : public MathMLContainerElement, public MathMLScriptCommonElement {
 public:
   MathMLUnderOverElement(mDOMNodeRef, TagId);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
@@ -40,24 +39,21 @@ public:
   virtual bool IsExpanding(void) const;
 
 protected:
-  bool   scriptize; // true if under and over are to be considered in script position
+  bool   scriptize;
 
   bool   accentUnder;
   bool   accent;
 
-  union {
-    scaled underSpacing; // if scriptize == false
-    scaled underShift;   // if scriptize == true
-  };
+  scaled baseShiftX;
 
-  union {
-    scaled overSpacing; // if scriptize == false
-    scaled overShift;   // if scriptize == true
-  };
+  scaled underSpacing;
+  scaled underShiftX;
+  scaled underShiftY;
 
-  scaled scriptSpacing; // script spacing from base (if scriptize == true)
+  scaled overSpacing;
+  scaled overShiftX;
+  scaled overShiftY;
 
-  MathMLElement* base;
   MathMLElement* underScript;
   MathMLElement* overScript;
 };

@@ -55,11 +55,14 @@ public:
   scaled         GetDecimalPointEdge(void) const;
 
   RGBValue       GetColor(void) const { return color; }
+  virtual const class MathMLCharNode* GetCharNode(void) const;
 
   const Container<class MathMLTextNode*>& GetContent(void) const { return content; }
+  unsigned       GetRawContentLength(void) const { return rawContentLength; }
 
 protected:
   void Free(void);
+  void AddItalicCorrection(Layout&);
 
   // for tokens the content is protected so that users have to
   // use the Append methods. For read-only operations there is

@@ -24,18 +24,43 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "traverseAux.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLScriptElement.hh"
 #include "RenderingEnvironment.hh"
 
 MathMLScriptElement::MathMLScriptElement(mDOMNodeRef node, TagId id) :
-  MathMLScriptCommonElement(node, id)
+  MathMLContainerElement(node, id)
 {
   subScript = superScript = NULL;
 }
 
 MathMLScriptElement::~MathMLScriptElement()
 {
+}
+
+const AttributeSignature*
+MathMLScriptElement::GetAttributeSignature(AttributeId id) const
+{
+  static AttributeSignature subSig[] = {
+    { ATTR_SUBSCRIPTSHIFT, numberUnitParser, NULL, NULL },
+    { ATTR_NOTVALID,       NULL,             NULL, NULL }
+  };
+
+  static AttributeSignature supSig[] = {
+    { ATTR_SUPERSCRIPTSHIFT, numberUnitParser, NULL, NULL },
+    { ATTR_NOTVALID,         NULL,             NULL, NULL }
+  };
+
+  const AttributeSignature* signature = NULL;
+  if (IsA() == TAG_MSUB || IsA() == TAG_MSUBSUP || IsA() == TAG_MMULTISCRIPTS)
+    signature = GetAttributeSignatureAux(id, subSig);
+  if ((IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP || IsA() == TAG_MMULTISCRIPTS) && signature == NULL)
+    signature = GetAttributeSignatureAux(id, supSig);
+
+  if (signature == NULL) signature = MathMLContainerElement::GetAttributeSignature(id);
+
+  return signature;
 }
 
 void
@@ -74,8 +99,9 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
 {
   assert(env != NULL);
 
-  MathMLScriptCommonElement::Setup(env);
+  ScriptSetup(env);
 
+  assert(base != NULL);
   base->Setup(env);
 
   env->Push();
@@ -130,7 +156,14 @@ MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   if (subScript != NULL) subScript->DoBoxedLayout(id, BREAK_NO, maxWidth / 2);
   if (superScript != NULL) superScript->DoBoxedLayout(id, BREAK_NO, maxWidth / 2);
 
+  const MathMLElement* rel = findRightmostChild(base);
+  assert(rel != NULL);
+
   const BoundingBox& baseBox = base->GetBoundingBox();
+  BoundingBox relBox = rel->GetBoundingBox();
+  relBox.rBearing = baseBox.rBearing;
+  relBox.width = baseBox.width;
+
   BoundingBox subScriptBox;
   BoundingBox superScriptBox;
 
@@ -140,26 +173,29 @@ MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
   superScriptBox.Null();
   if (superScript != NULL) superScriptBox = superScript->GetBoundingBox();
 
-  DoLayoutAux(baseBox, subScriptBox, superScriptBox);
+  DoScriptLayout(relBox, subScriptBox, superScriptBox, subShiftX, subShiftY, superShiftX, superShiftY);
 
   box = baseBox;
-  box.rBearing = scaledMax(box.width + scriptSpacing + subScriptBox.rBearing,
-			   box.rBearing + scriptSpacing + superScriptBox.rBearing);
-  box.width += scaledMax(scriptSpacing + subScriptBox.width,
-			 scriptSpacing + baseBox.rBearing - baseBox.width + superScriptBox.width);
+
+  box.width = scaledMax(box.width,
+			scaledMax(superShiftX + superScriptBox.width,
+				  subShiftX + subScriptBox.width));
+  box.rBearing = scaledMax(box.rBearing,
+			   scaledMax(superShiftX + superScriptBox.rBearing,
+				     subShiftX + subScriptBox.rBearing));
 
   if (subScript != NULL) {
-    box.ascent   = scaledMax(box.ascent, subScriptBox.ascent - subShift);
-    box.tAscent  = scaledMax(box.tAscent, subScriptBox.tAscent - subShift);
-    box.descent  = scaledMax(box.descent, subScriptBox.descent + subShift);
-    box.tDescent = scaledMax(box.tDescent, subScriptBox.tDescent + subShift);
+    box.ascent   = scaledMax(box.ascent, subScriptBox.ascent - subShiftY);
+    box.tAscent  = scaledMax(box.tAscent, subScriptBox.tAscent - subShiftY);
+    box.descent  = scaledMax(box.descent, subScriptBox.descent + subShiftY);
+    box.tDescent = scaledMax(box.tDescent, subScriptBox.tDescent + subShiftY);
   }
 
   if (superScript != NULL) {
-    box.ascent   = scaledMax(box.ascent, superScriptBox.ascent + superShift);
-    box.tAscent  = scaledMax(box.tAscent, superScriptBox.tAscent + superShift);
-    box.descent  = scaledMax(box.descent, superScriptBox.descent - superShift);
-    box.tDescent = scaledMax(box.tDescent, superScriptBox.tDescent - superShift);
+    box.ascent   = scaledMax(box.ascent, superScriptBox.ascent + superShiftY);
+    box.tAscent  = scaledMax(box.tAscent, superScriptBox.tAscent + superShiftY);
+    box.descent  = scaledMax(box.descent, superScriptBox.descent - superShiftY);
+    box.tDescent = scaledMax(box.tDescent, superScriptBox.tDescent - superShiftY);
   }
 
   ConfirmLayout(id);
@@ -175,12 +211,11 @@ MathMLScriptElement::SetPosition(scaled x, scaled y)
   position.x = x;
   position.y = y;
 
-  const BoundingBox& baseBox = base->GetBoundingBox();
-
   base->SetPosition(x, y);
 
-  if (subScript != NULL) subScript->SetPosition(x + baseBox.width + scriptSpacing, y + subShift);
+  if (subScript != NULL)
+    subScript->SetPosition(x + subShiftX, y + subShiftY);
 
   if (superScript != NULL)
-    superScript->SetPosition(x + baseBox.rBearing + scriptSpacing, y - superShift);
+    superScript->SetPosition(x + superShiftX, y - superShiftY);
 }

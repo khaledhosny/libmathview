@@ -1,0 +1,80 @@
+<math display="block">
+  <mi>x&#x0303;</mi><mspace width="1ex"/>
+  <mi>x&#x0302;</mi><mspace width="1ex"/>
+  <mi>x&#x0301;</mi><mspace width="1ex"/>
+  <mi>x&#x0307;</mi><mspace width="1ex"/>
+  <mi>T&#x0303;</mi><mspace width="1ex"/>
+  <mi>T&#x0302;</mi><mspace width="1ex"/>
+  <mi>T&#x0301;</mi><mspace width="1ex"/>
+  <mi>T&#x0307;</mi><mspace width="1ex"/>
+  <mi>A&#x0303;</mi><mspace width="1ex"/>
+  <mi>A&#x0302;</mi><mspace width="1ex"/>
+  <mi>A&#x0301;</mi><mspace width="1ex"/>
+  <mi>A&#x0307;</mi><mspace width="1ex"/>
+  <mi>&alpha;&#x0303;</mi><mspace width="1ex"/>
+  <mi>&alpha;&#x0302;</mi><mspace width="1ex"/>
+  <mi>&alpha;&#x0301;</mi><mspace width="1ex"/>
+  <mi>&alpha;&#x0307;</mi><mspace width="1ex"/>
+  <mi>&beta;&#x0303;</mi><mspace width="1ex"/>
+  <mi>&beta;&#x0302;</mi><mspace width="1ex"/>
+  <mi>&beta;&#x0301;</mi><mspace width="1ex"/>
+  <mi>&beta;&#x0307;</mi><mspace width="1ex"/>
+  <mi>&gamma;&#x0303;</mi><mspace width="1ex"/>
+  <mi>&gamma;&#x0302;</mi><mspace width="1ex"/>
+  <mi>&gamma;&#x0301;</mi><mspace width="1ex"/>
+  <mi>&gamma;&#x0307;</mi><mspace width="1ex"/>
+  <mspace linebreak="newline"/>
+  <mspace height="1ex"/>
+  <mspace linebreak="newline"/>
+  <mover accent="true"><mi mathvariant="normal">x</mi><mo stretchy="false" lspace="0em" rspace="0em">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>x</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>x</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>x</mi><mo>&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo>&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo>&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo>&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo>&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo>&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo>&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo>&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo>&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo>&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo>&#x0307;</mo></mover><mspace width="1ex"/>
+  <mspace linebreak="newline"/>
+  <mspace height="1ex"/>
+  <mspace linebreak="newline"/>
+  <mover><mi>x</mi><mo mathvariant="italic">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>x</mi><mo mathvariant="italic">&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>x</mi><mo mathvariant="italic">&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>x</mi><mo mathvariant="italic">&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo mathvariant="italic">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo mathvariant="italic">&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo mathvariant="italic">&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>T</mi><mo mathvariant="italic">&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo mathvariant="italic">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo mathvariant="italic">&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo mathvariant="italic">&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>A</mi><mo mathvariant="italic">&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo mathvariant="italic">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo mathvariant="italic">&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo mathvariant="italic">&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&alpha;</mi><mo mathvariant="italic">&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo mathvariant="italic">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo mathvariant="italic">&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo mathvariant="italic">&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&beta;</mi><mo mathvariant="italic">&#x0307;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo mathvariant="italic">&#x0303;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo mathvariant="italic">&#x0302;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo mathvariant="italic">&#x0301;</mo></mover><mspace width="1ex"/>
+  <mover><mi>&gamma;</mi><mo mathvariant="italic">&#x0307;</mo></mover><mspace width="1ex"/>
+</math>

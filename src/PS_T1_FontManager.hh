@@ -23,8 +23,6 @@
 #ifndef PS_T1_FontManager_hh
 #define PS_T1_FontManager_hh
 
-#include <config.h>
-
 #ifdef HAVE_LIBT1
 
 #include "T1_FontManager.hh"
@@ -34,11 +32,24 @@ public:
   PS_T1_FontManager(void);
   virtual ~PS_T1_FontManager();
 
-  void DumpFontDictionary(FILE*) const;
+  void DumpFontDictionary(FILE*, bool = true) const;
+  void ResetUsedChars(void) const;
 
 protected:
+#if 0
   const char* GetFontFilePath(unsigned) const;
+#endif
+  virtual const class AFont* SearchNativeFont(const FontAttributes&,
+                                              const ExtraFontAttributes*) const;
 
+private:
+  struct T1_FontDesc {
+    unsigned id;
+    char used[256];
+  };
+
+  static void SetUsedChars(Container<T1_FontDesc*>&, unsigned);
+  static void SetUsedChars(Container<T1_FontDesc*>&, unsigned, const char[]);
 };
 
 #define TO_PS_T1_FONT_MANAGER(fm) (dynamic_cast<PS_T1_FontManager*>(fm))

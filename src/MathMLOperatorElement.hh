@@ -54,6 +54,10 @@ public:
   void         ResetSymmetric(void) { forcedSymmetric = 1; symmetric = 0; }
   scaled       GetLeftPadding(void) const { return lSpace; }
   scaled       GetRightPadding(void) const { return rSpace; }
+#ifdef ENABLE_EXTENSIONS
+  scaled       GetTopPadding(void) const { return tSpace; }
+  scaled       GetBottomPadding(void) const { return bSpace; }
+#endif // ENABLE_EXTENSIONS
 
   void         HorizontalStretchTo(scaled, bool = false);
   void         VerticalStretchTo(scaled, scaled, bool = false);
@@ -88,6 +92,10 @@ private:
   unsigned accent : 1;
   scaled lSpace;
   scaled rSpace;
+#ifdef ENABLE_EXTENSIONS
+  scaled tSpace;
+  scaled bSpace;
+#endif // ENABLE_EXTENSIONS
   float  maxMultiplier;   // if <0 => absolute max size contraint
   scaled maxSize;
   float  minMultiplier;   // if <0 => absolute min size constraint

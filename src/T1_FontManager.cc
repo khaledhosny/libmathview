@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <t1lib.h>
+#include "t1lib.h"
 
 #include "T1_Font.hh"
 #include "Iterator.hh"
@@ -75,19 +75,9 @@ T1_FontManager::IsAvailable(const FontAttributes& fa,
   return true;
 }
 
-const AFont*
-T1_FontManager::SearchNativeFont(const FontAttributes& fa,
-				 const ExtraFontAttributes* efa) const
+int
+T1_FontManager::SearchT1FontId(const char* fileName) const
 {
-  assert(efa != NULL);
-
-  const char* type = efa->GetProperty("type");
-  assert(type != NULL);
-  assert(strcmp(type, "type1") == 0 || strcmp(type, "ps") == 0);
-
-  const char* fileName = efa->GetProperty("ps-file");
-  assert(fileName != NULL);
-
   int n = T1_Get_no_fonts();
   int i;
   for (i = 0; i < n && strcmp(fileName, T1_GetFontFileName(i)); i++) ;
@@ -97,18 +87,51 @@ T1_FontManager::SearchNativeFont(const FontAttributes& fa,
     i = T1_AddFont(const_cast<char*>(fileName));
     if (i < 0) {
       MathEngine::logger(LOG_WARNING, "could not load Type1 font file `%s'", fileName);
-      return NULL;
+      return -1;
     }
     MathEngine::logger(LOG_INFO, "loading font ID: %d", i);
     T1_LoadFont(i);
+  } else {
+    MathEngine::logger(LOG_INFO, "font file `%s' already loaded in the database", fileName);
   }
 
-  float size = 1.0;
+  return i;
+}
+
+int
+T1_FontManager::SearchNativeFontAux(const FontAttributes& fa,
+				    const ExtraFontAttributes* efa,
+				    float& size) const
+{
+  assert(efa != NULL);
+
+  const char* type = efa->GetProperty("type");
+  if (type == NULL) {
+    MathEngine::logger(LOG_ERROR, "could not determine font type (check the font configuration file)");
+    return -1;
+  }
+
+  if (strcmp(type, "type1") && strcmp(type, "ps")) return -1;
+
+  const char* fileName = efa->GetProperty("ps-file");
+  assert(fileName != NULL);
+
+  int i = SearchT1FontId(fileName);
+  
+  size = 1.0;
   if (fa.HasSize())
     size = (fa.size.GetUnitId() == UNIT_PT) ? fa.size.GetValue() : sp2pt(fa.size.ToScaledPoints());
 
-  AFont* f = (i >= 0) ? new T1_Font(i, size) : NULL;
+  return i;
+}
 
+const AFont*
+T1_FontManager::SearchNativeFont(const FontAttributes& fa,
+                                 const ExtraFontAttributes* efa) const
+{
+  float size;
+  int i = SearchNativeFontAux(fa, efa, size);
+  AFont* f = (i >= 0) ? new T1_Font(i, size) : NULL;
   return f;
 }
 

@@ -1,0 +1,27 @@
+<math>
+  <mstyle displaystyle="true">
+    <mfrac>
+      <msup>
+        <mi>c</mi>
+	<mo>&prime;</mo>
+      </msup>
+      <msup>
+        <mi>c</mi>
+	<mo>&prime;&prime;</mo>
+      </msup>
+    </mfrac>
+  </mstyle>
+  <mo>+</mo>
+  <mstyle displaystyle="false">
+    <mfrac>
+      <msup>
+        <mi>c</mi>
+	<mo>&prime;</mo>
+      </msup>
+      <msup>
+        <mi>c</mi>
+	<mo>&prime;&prime;</mo>
+      </msup>
+    </mfrac>
+  </mstyle>
+</math>

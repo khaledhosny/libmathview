@@ -50,16 +50,15 @@ public:
   void  Render(const struct Rectangle*);
   void  Update(const struct Rectangle* = NULL);
 
-  bool  IsOnLink(scaled, scaled) const;
-
   class MathMLElement* GetRoot(void) const { return root; }
   class MathMLElement* GetElementAt(scaled, scaled) const;
 
   void                 SetSelected(class MathMLElement*);
   class MathMLElement* GetSelected(void) const { return selected; }
 
-  void GetDocumentBoundingBox(class BoundingBox&) const;
-  void GetDocumentRectangle(class Rectangle&) const;
+  // BoundingBox, and Rectangle are structs, not classes, 
+  void GetDocumentBoundingBox(struct BoundingBox&) const;
+  void GetDocumentRectangle(struct Rectangle&) const;
 
   void     SetDefaultFontSize(unsigned);
   unsigned GetDefaultFontSize(void) const { return defaultFontSize; }
@@ -77,6 +76,8 @@ public:
   bool GetTransparency(void) const;
 
   static void InitGlobalData(const char*);
+  static bool  DrawMissingCharacter(void) { return drawMissingCharacter; }
+  static void  DrawMissingCharacter(bool dmc) { drawMissingCharacter = dmc; }
 
   static EntitiesTable      entitiesTable;
   static OperatorDictionary dictionary;
@@ -84,6 +85,7 @@ public:
   static Logger             logger;
 
 private:
+  static bool drawMissingCharacter;
   unsigned defaultFontSize;
 
   class MathMLDocument* document;

@@ -354,28 +354,28 @@ Layout::Row::DoLayout(LayoutId id, scaled totalWidth) const
   scaled fixedWidth = 0;
   scaled elemWidth = 0;
 
-  for (Iterator<Atom*> atom(content); atom.More(); atom.Next()) {
-    assert(atom() != NULL);
-    if (!atom()->IsSpace()) {
-      assert(atom()->frame != NULL);
-      if (atom()->frame->IsText()/* || atom()->frame->IsSpace()*/) {
-	fixedWidth += getFrameBoundingBox(atom()->frame).width;
+  for (Iterator<Atom*> atom1(content); atom1.More(); atom1.Next()) {
+    assert(atom1() != NULL);
+    if (!atom1()->IsSpace()) {
+      assert(atom1()->frame != NULL);
+      if (atom1()->frame->IsText()/* || atom1()->frame->IsSpace()*/) {
+	fixedWidth += getFrameBoundingBox(atom1()->frame).width;
       } else {
-	assert(atom()->frame->IsElement());
-	elemWidth += getFrameBoundingBox(atom()->frame, LAYOUT_MAX).width;
+	assert(atom1()->frame->IsElement());
+	elemWidth += getFrameBoundingBox(atom1()->frame, LAYOUT_MAX).width;
 	nElements++;
       }
     }
 
-    fixedWidth += atom()->spacing;
+    fixedWidth += atom1()->spacing;
   }
 
   bool moreSpace = fixedWidth + elemWidth < totalWidth;
   scaled availableWidth = scaledMax(0, totalWidth - fixedWidth);
 
-  for (Iterator<Atom*> atom(content); atom.More(); atom.Next()) {
-    if (atom()->IsFrame() && atom()->frame->IsElement()/* && !atom()->frame->IsSpace()*/) {
-      MathMLElement* elem = TO_ELEMENT(atom()->frame);
+  for (Iterator<Atom*> atom2(content); atom2.More(); atom2.Next()) {
+    if (atom2()->IsFrame() && atom2()->frame->IsElement()/* && !atom2()->frame->IsSpace()*/) {
+      MathMLElement* elem = TO_ELEMENT(atom2()->frame);
       assert(elem != NULL);
 
       if (id == LAYOUT_AUTO) {

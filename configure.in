@@ -3,7 +3,7 @@ AC_INIT(src/MathMLObject.cc)
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=2
-MATHVIEW_MICRO_VERSION=5
+MATHVIEW_MICRO_VERSION=9
 MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
 
@@ -22,14 +22,14 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	checks,
-	[  --enable-checks[=ARG]   include debugging checks [default=yes]],
+	debug,
+	[  --enable-debug[=ARG]    include debugging debug [default=yes]],
 	[
 		if test $enableval = yes; then
-			AC_DEFINE(ENABLE_CHECKS)
+			AC_DEFINE(ENABLE_DEBUG)
 		fi
 	],
-	AC_DEFINE(ENABLE_CHECKS)
+	AC_DEFINE(ENABLE_DEBUG)
 )
 
 AC_ARG_ENABLE(
@@ -44,11 +44,51 @@ AC_ARG_ENABLE(
 	AC_DEFINE(FLOATING_SCALED)
 )
 
+AC_ARG_ENABLE(
+	texish,
+	[  --enable-texish[=ARG]   enable TeX like layout when possible [default=no]],
+	[
+		if test $enableval = yes; then
+			AC_DEFINE(TEXISH_MATHML)
+		fi
+	],
+)
+
+AC_ARG_ENABLE(
+	extensions,
+	[  --enable-extensions[=ARG] enable MathML extensions [default=yes]],
+	[
+		if test $enableval = yes; then
+			AC_DEFINE(ENABLE_EXTENSIONS)
+		fi
+	],
+	AC_DEFINE(ENABLE_EXTENSIONS)
+)
+
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
 	t1lib=$withval,
 	t1lib=auto
+)
+
+AC_ARG_WITH(
+        t1lib-prefix,
+        [  --with-t1lib-prefix=PFX prefix dir where t1lib is installed],
+        [
+                with_t1lib_prefix=yes
+                T1LIB_PREFIX=$withval
+        ],
+        [
+                with_t1lib_prefix=no
+        ]
+)
+
+AC_ARG_WITH(
+	glib-config,
+	[  --with-glib-config[=ARG] use glib-config to determine glib configuration],
+	with_glib_config=$withval,
+	with_glib_config=no
 )
 
 AC_ARG_ENABLE(
@@ -70,22 +110,22 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LN_S
 AC_ISC_POSIX
-AC_CHECK_PROG(HAVE_PFB2PFA, pfb2pfa, yes, no)
 AC_CHECK_PROG(HAVE_COLORGCC, colorgcc, yes, no)
 AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
+AC_CHECK_PROG(HAVE_GLIB_CONFIG, glib-config, yes, no)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_HEADER_SYS_WAIT
-AC_CHECK_HEADER(wctype.h,,AC_MSG_ERROR(could not find required header file `wctype.h'))
-AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file `iconv.h'))
+AC_CHECK_HEADERS(wctype.h,,AC_MSG_WARN(could not find required header file wctype.h))
+AC_CHECK_HEADERS(wchar.h,,AC_MSG_WARN(could not find required header file wchar.h))
+AC_CHECK_HEADERS(getopt.h)
 AC_CHECK_HEADERS(unistd.h)
-AC_FUNC_VFORK
+AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file iconv.h))
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_CHAR_UNSIGNED
 AC_C_BIGENDIAN
-AC_TYPE_PID_T
 
 dnl Check for iconv and code names
 AC_MSG_CHECKING(for iconv encodings)
@@ -144,17 +184,37 @@ AC_CHECK_LIB(iberty, getopt_long,
 	,
 	-liberty
 )
-AC_CHECK_FUNC(getopt_long)
+AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG))
 
-AC_CHECK_LIB(glib, g_malloc,
-	[
+AC_LANG_C
+if test $with_glib_config = "no"; then
+	AM_PATH_GLIB(1.2.0,
+		[
+			CFLAGS="$CFLAGS $GLIB_CFLAGS"
+			CXXFLAGS="$CXXFLAGS $GLIB_CFLAGS"
+			LIBS="$LIBS $GLIB_LIBS"
+		],
+		AC_MSG_ERROR(could not find glib)
+	)
+else
+	if test $HAVE_GLIB_CONFIG = "yes"; then
 		CFLAGS="$CFLAGS `glib-config --cflags`"
 		CXXFLAGS="$CXXFLAGS `glib-config --cflags`"
 		LIBS="$LIBS `glib-config --libs`"
-	],
-	AC_MSG_ERROR(cound not find glib),
-	`glib-config --libs`
-)
+	else
+		AC_MSG_ERROR(could not find glib)
+	fi
+fi
+
+AM_PATH_GTK(1.2.0, gtklib="yes", gtklib="no")
+
+if test $gtklib = "yes"; then
+	CFLAGS="$CFLAGS $GTK_CFLAGS"
+	CXXFLAGS="$CXXFLAGS $GTK_CFLAGS"
+	LIBS="$LIBS $GTK_LIBS"
+else
+	AC_MSG_WARN(GTK is needed in order to use the widget),
+fi
 
 AC_CHECK_LIB(minidom, mdom_node_get_type,
 	[
@@ -166,23 +226,25 @@ AC_CHECK_LIB(minidom, mdom_node_get_type,
 	`minidom-config --libs` `glib-config --libs`
 )
 
-AC_CHECK_LIB(gtk, gtk_window_new, gtklib="yes", gtklib="no", `gtk-config --libs`)
-
-if test $gtklib = "yes"; then
-	CFLAGS="$CFLAGS `gtk-config --cflags`"
-	CXXFLAGS="$CXXFLAGS `gtk-config --cflags`"
-	LIBS="$LIBS `gtk-config --libs`"
-else
-	AC_MSG_WARN(GTK is needed in order to use the widget),
+vers=`minidom-config --version | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+minvers=`echo 0.1.3 | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+if test "$vers" -lt "$minvers"; then
+        AC_MSG_ERROR(you need at least minidom 0.1.3)
 fi
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no")
+	AC_CHECK_HEADER(t1lib.h, , t1lib="no")
 fi
 
 if test $t1lib = "yes"; then
 	LIBS="$LIBS -lt1x -lt1"
 	AC_DEFINE(HAVE_LIBT1)
+
+        if test $with_t1lib_prefix = "yes"; then
+                CFLAGS="-I$T1LIB_PREFIX/include $CFLAGS"
+                CXXFLAGS="-I$T1LIB_PREFIX/include $CXXFLAGS"
+        fi
 fi
 
 if test "(" $t1lib = "no" ")" -a "(" $export_PS = "yes" ")"; then
@@ -190,10 +252,7 @@ if test "(" $t1lib = "no" ")" -a "(" $export_PS = "yes" ")"; then
 	export_PS=no
 fi
 
-if test "(" $export_PS = "auto" ")" -a "(" $HAVE_PFB2PFA = "no" ")"; then
-	AC_MSG_WARN(cannot export to PostScript if 'pfb2pfa' is not installed)
-	export_PS=no
-else
+if test "(" $export_PS = "auto" ")"; then
 	export_PS=yes
 fi
 

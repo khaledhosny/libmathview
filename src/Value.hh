@@ -49,6 +49,8 @@ class ValueSequence;
 class Value {
 public:
   void* operator new(size_t);
+  // create a matching delete operator
+  void operator delete(void*);
   void operator delete(void*, size_t);
   static void Flush(void);
 #ifdef DEBUG

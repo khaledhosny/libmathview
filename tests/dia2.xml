@@ -1,8 +1,9 @@
 
 <math>
   <mover accent="true">
-    <mi><mchar name="beta"/></mi>
-    <mo>&ThinSpace;&#x0307;</mo>
+    <mi>&beta;</mi>
+    <mo>&#x0307;</mo>
   </mover>
+  <mi>&beta;&#x0307;</mi>
 </math>
 

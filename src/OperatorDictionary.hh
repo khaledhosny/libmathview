@@ -39,16 +39,17 @@ public:
 	      const class MathMLAttributeList**) const;
 
 private:
-  struct OperatorDictionaryItem {
+  struct OperatorDictionaryItem 
+  {
     const String* name;
-    const class MathMLAttributeList* defaults;
+    const MathMLAttributeList* defaults;
   };
 
   void Delete(void);
   const MathMLAttributeList* AlreadyDefined(const MathMLAttributeList&) const;
 
   Container<const class MathMLAttributeList*> defaults;
-  Container<const class OperatorDictionaryItem*> items;
+  Container<OperatorDictionaryItem*> items;
 };
 
-#endif
+#endif // OperatorDictionary_hh

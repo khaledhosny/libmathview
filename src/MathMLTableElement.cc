@@ -242,6 +242,7 @@ MathMLTableElement::Render(const DrawingArea& area)
     GraphicsContextValues values;
     values.foreground = IsSelected() ? area.GetSelectionForeground() : color;
     values.lineStyle = LINE_STYLE_SOLID;
+    values.lineWidth = lineThickness;
     fGC[IsSelected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
 
     values.lineStyle = LINE_STYLE_DASHED;

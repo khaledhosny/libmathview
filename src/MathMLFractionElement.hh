@@ -23,8 +23,6 @@
 #ifndef MathMLFractionElement_hh
 #define MathMLFractionElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLFractionElement: public MathMLContainerElement {
@@ -42,10 +40,15 @@ public:
 
 private:
   scaled          axis;
-  scaled          minShift;
   scaled          numShift;
   scaled          denomShift;
-
+#ifdef TEXISH_MATHML
+  scaled          numMinShift;
+  scaled          denomMinShift;
+  scaled          defaultRuleThickness;
+#else
+  scaled          minShift;
+#endif // TEXISH_MATHML
   scaled          lineThickness;
 
   FractionAlignId numAlign;

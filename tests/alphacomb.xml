@@ -1,0 +1,15 @@
+<math>
+  <mover><mi>&alpha;</mi><mo>&#x0311;</mo></mover>
+  <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
+  <munder><mi>&alpha;</mi><mo>&#x0323;</mo></munder>
+  <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
+  <munder>><mi>&alpha;</mi><mo>&#x0327;</mo></munder>
+  <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
+  <mover><mi>&alpha;</mi><mo>&#x030b;</mo></mover>
+  <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
+  <mover><mi>&alpha;</mi><mo>&#x030f;</mo></mover>
+  <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
+  <mover><mi>x</mi><mo>&#x20d0;</mo></mover>
+  <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
+  <mover><mi>x</mi><mo>&#x20d1;</mo></mover>
+</math>

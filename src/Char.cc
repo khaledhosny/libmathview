@@ -27,6 +27,7 @@
 
 #include "Char.hh"
 #include "String.hh"
+#include "unidefs.h"
 #include "keyword.hh"
 
 static struct NonMarkingCharData {
@@ -35,22 +36,26 @@ static struct NonMarkingCharData {
   int     spacing; // 1/18em
   BreakId breakability;
 } nmChar[] = {
-  { 0x0009, 0x0000, 9 * 8, BREAK_GOOD }, // Tab
-  { 0x000a, 0x0000, 0,     BREAK_YES },  // NewLine
-  { 0x0020, 0x0000, 9,     BREAK_GOOD }, // Space
-  { 0x00a0, 0x0000, 9,     BREAK_NO },   // NonBreakingSpace
-  { 0x200b, 0x0000, 0,     BREAK_NO },   // ZeroWidthSpace
-  { 0x200a, 0x0000, 1,     BREAK_NO },   // VeryThinSpace
-  { 0x2009, 0x0000, 3,     BREAK_NO },   // ThinSpace
-  { 0x2005, 0x0000, 4,     BREAK_NO },   // MediumSpace
-  { 0x200a, 0xfe00, -1,    BREAK_NO },   // NegativeVeryThinSpace
-  { 0x2009, 0xfe00, -3,    BREAK_NO },   // NegativeThinSPace
-  { 0x205f, 0xfe00, -4,    BREAK_NO },   // NegativeMediumSpace
-  { 0x2005, 0xfe00, -5,    BREAK_NO },   // NegativeThickSpace
-  { 0x2062, 0x0000, 2,     BREAK_NO },   // InvisibleTimes
-  { 0x2061, 0x0000, 3,     BREAK_NO },   // ApplyFunction
+  { 0x0009,           0x0000, 9 * 8, BREAK_GOOD }, // Tab
+  { 0x000a,           0x0000, 0,     BREAK_YES },  // NewLine
+  { 0x0020,           0x0000, 9,     BREAK_GOOD }, // Space
+  { 0x00a0,           0x0000, 9,     BREAK_NO },   // NonBreakingSpace
+  { 0x200b,           0x0000, 0,     BREAK_NO },   // ZeroWidthSpace
+  { 0x200a,           0x0000, 1,     BREAK_NO },   // VeryThinSpace
+  { 0x2009,           0x0000, 3,     BREAK_NO },   // ThinSpace
+  { 0x2005,           0x0000, 4,     BREAK_NO },   // MediumSpace
+  { 0x200a,           0xfe00, -1,    BREAK_NO },   // NegativeVeryThinSpace
+  { 0x2009,           0xfe00, -3,    BREAK_NO },   // NegativeThinSPace
+  { 0x205f,           0xfe00, -4,    BREAK_NO },   // NegativeMediumSpace
+  { 0x2005,           0xfe00, -5,    BREAK_NO },   // NegativeThickSpace
+#if 0
+  // these entries have been removed since now they are treated
+  // in a context-sensitive way
+  { U_INVISIBLETIMES, 0x0000, 3,     BREAK_NO },   // InvisibleTimes
+  { U_APPLYFUNCTION,  0x0000, 5,     BREAK_NO },   // ApplyFunction
+#endif
 
-  { 0x0000, 0x0000, 0,     BREAK_NO }
+  { 0x0000,           0x0000, 0,     BREAK_NO }
 };
 
 Char
@@ -143,15 +148,15 @@ bool
 isCombiningBelow(Char ch)
 {
   return 
-    ch >= 0x031c && ch <= 0x0333 ||
-    ch >= 0x0339 && ch <= 0x033c;
+    (ch >= 0x031c && ch <= 0x0333) ||
+    (ch >= 0x0339 && ch <= 0x033c);
 }
 
 bool
 isCombiningOverlay(Char ch)
 {
   return
-    ch >= 0x0334 && ch <= 0x0338 ||
+    (ch >= 0x0334 && ch <= 0x0338) ||
     ch == 0x20d2 || ch == 0x20d3 ||
     ch == 0x20e5;
 }

@@ -58,6 +58,13 @@ Gtk_Font::GetDescent() const
   return px2sp(font->descent);
 }
 
+float
+Gtk_Font::GetItalicAngle() const
+{
+  // no italic angle information available for X fonts
+  return 0.0;
+}
+
 scaled
 Gtk_Font::CharWidth(char ch) const
 {

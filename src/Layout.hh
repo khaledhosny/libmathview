@@ -50,7 +50,7 @@ public:
   scaled GetLineSpacing(void) const { return minLineSpacing; }
 
   void   SetPosition(scaled, scaled, ColumnAlignId = COLUMN_ALIGN_LEFT);
-  void   GetBoundingBox(class BoundingBox&, LayoutId = LAYOUT_AUTO) const;
+  void   GetBoundingBox(struct BoundingBox&, LayoutId = LAYOUT_AUTO) const;
 
 private:
   struct Atom {
@@ -59,7 +59,7 @@ private:
     int    penalty; // penalty if breaking after this atom
 
     scaled GetWidth(LayoutId) const;
-    void   GetBoundingBox(class BoundingBox&, LayoutId) const;
+    void   GetBoundingBox(struct BoundingBox&, LayoutId) const;
     bool   IsFrame(void) const { return frame != NULL; }
     bool   IsSpace(void) const { return frame == NULL; }
     bool   IsDiscardable(void) const { return IsSpace() && penalty < MAX_PENALTY; }
@@ -73,7 +73,7 @@ private:
     scaled minLineSpacing;
 
     scaled GetWidth(LayoutId) const;
-    void   GetBoundingBox(class BoundingBox&, LayoutId) const;
+    void   GetBoundingBox(struct BoundingBox&, LayoutId) const;
     scaled GetMinimumSpacing(void) const;
     scaled RemoveDiscardableSpacesRight(void);
     scaled RemoveDiscardableSpacesLeft(void);
@@ -103,4 +103,4 @@ private:
   scaled   minLineSpacing;
 };
 
-#endif
+#endif // Layout_hh

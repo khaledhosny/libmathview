@@ -23,6 +23,8 @@
 #include <config.h>
 #include <assert.h>
 
+#include <math.h>
+
 #include "MathEngine.hh"
 #include "CharMapper.hh"
 #include "MathMLElement.hh"
@@ -35,6 +37,11 @@ MathMLCharNode::MathMLCharNode(Char c)
   // The basic idea is that a stretchable char behaves exactly as an unstretchable
   // one as long as the layout is not allocated.
   layout = NULL;
+
+  // the following initialization is really important for
+  // subclasses of MathMLCharNode overriding the Setup method
+  fChar.font = NULL;
+  fChar.charMap = NULL;
 }
 
 MathMLCharNode::~MathMLCharNode()
@@ -50,21 +57,35 @@ MathMLCharNode::Setup(RenderingEnvironment* env)
   delete layout;
   layout = NULL;
 
-  fChar.font = NULL;
-  fChar.charMap = NULL;
-  env->charMapper.FontifyChar(fChar, env->GetFontAttributes(), ch);
-  assert(fChar.font != NULL);
-  assert(fChar.charMap != NULL);
+  if (env->charMapper.FontifyChar(fChar, env->GetFontAttributes(), ch)) {
+    assert(fChar.font != NULL);
+    assert(fChar.charMap != NULL);
+
+#ifdef DEBUG
+    MathEngine::logger(LOG_DEBUG, "successful layout for U+%04x simple index %02x", ch, fChar.nch);
+#endif // DEBUG
+  }
 
   FontifiedChar sChar;
-  sChar.font = NULL;
-  sChar.charMap = NULL;
-  env->charMapper.FontifyStretchyChar(sChar, env->GetFontAttributes(), ch);
-  if (sChar.font != NULL && sChar.charMap != NULL) {
+
+  if (env->charMapper.FontifyStretchyChar(sChar, env->GetFontAttributes(), ch)) {
+    assert(sChar.font != NULL);
+    assert(sChar.charMap != NULL);
+    
+#ifdef DEBUG
+    MathEngine::logger(LOG_DEBUG, "successful stretchy layout for U+%04x simple index %02x", ch, sChar.nch);
+#endif // DEBUG
+    
     layout = new StretchyCharLayout;
     layout->sChar = sChar;
     layout->simple = NULLCHAR;
     layout->n = 0;
+  }
+  
+  if (fChar.font == NULL && layout == NULL) {
+    // no glyph found
+    scaled sppex = env->GetScaledPointsPerEx();
+    box.Set(sppex, (2 * sppex) / 3, sppex / 3);
   }
 }
 
@@ -75,17 +96,31 @@ MathMLCharNode::SetDefaultLargeGlyph(bool large)
   assert(layout != NULL);
   assert(layout->sChar.font != NULL);
   assert(layout->sChar.charMap != NULL);
+#ifdef DEBUG
+  MathEngine::logger(LOG_DEBUG, "before setting large was %x", layout->sChar.nch);
+#endif // DEBUG
   layout->sChar.nch = layout->sChar.charMap->Map(ch, large);
+  fChar = layout->sChar;
+#ifdef DEBUG
+  MathEngine::logger(LOG_DEBUG, "char %x with large %d set to %x", ch, large, layout->sChar.nch);
+#endif // DEBUG
 }
 
 void
 MathMLCharNode::DoLayout()
 {
-  assert(IsFontified());
+  if (!IsFontified()) return;
+
   fChar.GetBoundingBox(charBox);
   box = charBox;
 
+#ifdef DEBUG
+  MathEngine::logger(LOG_DEBUG, "done char layout for %x resulting in %d height", fChar.nch, sp2ipx(box.GetHeight()));
+#endif // DEBUG
+
+#if 1
   if (box.descent > box.ascent && fChar.charMap->GetStretch() != STRETCH_NO) {
+    MathEngine::logger(LOG_DEBUG, "WARNING Texish code here");
     // BEWARE!
     // vertical stretchy char may have a meaningless bounding box. For example,
     // stretchy chars inside cmex font (for TeX) all have a (quasi) zero ascent.
@@ -110,6 +145,7 @@ MathMLCharNode::DoLayout()
     box.tAscent = fontAscent - delta;
     box.tDescent = fontDescent - delta;
   }
+#endif
 }
 
 void
@@ -138,10 +174,18 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(scaled desiredSize, bool)
   const char* nch = layout->sChar.charMap->stretchy.simple;
 
   layout->n = 0;
+  layout->simple = NULLCHAR;
 
-  // first of all let's see if there is some single char large enough
+  // first of all let's see if the small, unstretchable char is enough
+  fChar.GetBoundingBox(charBox);
+  if (scaledGeq(charBox.GetHeight(), desiredSize)) return;
+
+  // next let's see if there is some single large char large enough
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && nch[i] != NULLCHAR; i++) {
     layout->simple = nch[i];
+#if 0
+    MathEngine::logger(LOG_DEBUG, "trying simple char %x for desire %d", layout->simple, sp2ipx(desiredSize));
+#endif
     font->CharBox(layout->simple, charBox);
     if (scaledGeq(charBox.GetHeight(), desiredSize)) return;
   }
@@ -307,19 +351,22 @@ MathMLCharNode::Render(const DrawingArea& area)
   const GraphicsContext* gc = GetParent()->GetForegroundGC();
 
   if (IsStretchyFontified() && (layout->simple != NULLCHAR || layout->n > 0)) {
+#ifdef DEBUG
+    MathEngine::logger(LOG_DEBUG, "rendering stretchy char U+%04X with simple %02x and n %d", ch, layout->simple, layout->n);
+#endif // DEBUG
     if (layout->sChar.charMap->GetStretch() == STRETCH_VERTICAL)
       RenderVerticalStretchyChar(area, gc, GetX(), GetY() + box.descent);
     else
       RenderHorizontalStretchyChar(area, gc, GetX(), GetY());
-  } else {
+  } else if (IsFontified()) {
     area.DrawChar(gc, fChar.font, GetX(), GetY() + box.descent - charBox.descent, fChar.nch);
+  } else {
+    // no glyph available
+    if (MathEngine::DrawMissingCharacter())
+      RenderMissingCharacter(area, gc);
   }
 
-#if 0
-  box.Dump();
-  putchar('\n');
-  area.DrawBoundingBox(gc, GetX(), GetY(), box, true);
-#endif
+  // area.DrawBoundingBox(gc, GetX(), GetY(), box);
 
   ResetDirty();
 }
@@ -337,6 +384,9 @@ MathMLCharNode::RenderVerticalStretchyChar(const DrawingArea& area,
 
   if (layout->simple != NULLCHAR) {
     y -= charBox.descent;
+#ifdef DEBUG
+    MathEngine::logger(LOG_DEBUG, "rendering vertical stretchy char %x", layout->simple);
+#endif // DEBUG
     area.DrawChar(gc, font, x, y, layout->simple);
     return;
   }
@@ -356,10 +406,12 @@ MathMLCharNode::RenderVerticalStretchyChar(const DrawingArea& area,
     y -= layout->box[SC_LAST].ascent;
   }
 
+  unsigned i;
+
   if (nch[SC_MIDDLE] != NULLCHAR) {  
     assert((nRepeat % 2) == 0);
 
-    for (unsigned i = 0; i < nRepeat / 2; i++) {
+    for (i = 0; i < nRepeat / 2; i++) {
       y -= layout->box[SC_REPEAT].descent;
       area.DrawChar(gc, font, x, y, nch[SC_REPEAT]);
       y -= layout->box[SC_REPEAT].ascent;
@@ -369,13 +421,13 @@ MathMLCharNode::RenderVerticalStretchyChar(const DrawingArea& area,
     area.DrawChar(gc, font, x, y, nch[SC_MIDDLE]);
     y -= layout->box[SC_MIDDLE].ascent;
 
-    for (unsigned i = 0; i < nRepeat / 2; i++) {
+    for (i = 0; i < nRepeat / 2; i++) {
       y -= layout->box[SC_REPEAT].descent;
       area.DrawChar(gc, font, x, y, nch[SC_REPEAT]);
       y -= layout->box[SC_REPEAT].ascent;
     }
   } else {
-    for (unsigned i = 0; i < nRepeat; i++) {
+    for (i = 0; i < nRepeat; i++) {
       y -= layout->box[SC_REPEAT].descent;
       area.DrawChar(gc, font, x, y, nch[SC_REPEAT]);
       y -= layout->box[SC_REPEAT].ascent;
@@ -398,6 +450,7 @@ MathMLCharNode::RenderHorizontalStretchyChar(const DrawingArea& area,
   assert(layout->sChar.charMap != NULL);
 
   const AFont* font = layout->sChar.font;
+  unsigned i = 0;
 
   if (layout->n == 0) {
     assert(layout->simple != NULLCHAR);
@@ -422,7 +475,7 @@ MathMLCharNode::RenderHorizontalStretchyChar(const DrawingArea& area,
   if (nch[SC_MIDDLE] != NULLCHAR) {  
     assert((nRepeat % 2) == 0);
 
-    for (unsigned i = 0; i < nRepeat / 2; i++) {
+    for (i = 0; i < nRepeat / 2; i++) {
       area.DrawChar(gc, font, x, y, nch[SC_REPEAT]);
       x += layout->box[SC_REPEAT].width;
     }
@@ -430,12 +483,12 @@ MathMLCharNode::RenderHorizontalStretchyChar(const DrawingArea& area,
     area.DrawChar(gc, font, x, y, nch[SC_MIDDLE]);
     x += layout->box[SC_MIDDLE].width;
 
-    for (unsigned i = 0; i < nRepeat / 2; i++) {
+    for (i = 0; i < nRepeat / 2; i++) {
       area.DrawChar(gc, font, x, y, nch[SC_REPEAT]);
       x += layout->box[SC_REPEAT].width;
     }
   } else {
-    for (unsigned i = 0; i < nRepeat; i++) {
+    for (i = 0; i < nRepeat; i++) {
       area.DrawChar(gc, font, x, y, nch[SC_REPEAT]);
       x += layout->box[SC_REPEAT].width;
     }
@@ -444,6 +497,16 @@ MathMLCharNode::RenderHorizontalStretchyChar(const DrawingArea& area,
   if (nch[SC_LAST] != NULLCHAR) {
     area.DrawChar(gc, font, x, y, nch[SC_LAST]);
   }
+}
+
+void
+MathMLCharNode::RenderMissingCharacter(const DrawingArea& area, const GraphicsContext* gc)
+{
+  assert(gc != NULL);
+  area.MoveTo(GetX(), GetY());
+  area.DrawLineToDelta(gc, 0, box.descent / 2);
+  area.DrawLineToDelta(gc, box.width, 0);
+  area.DrawLineToDelta(gc, 0, - box.descent / 2);
 }
 
 bool
@@ -489,4 +552,53 @@ MathMLCharNode::GetStretch() const
 {
   if (!IsStretchyFontified()) return STRETCH_NO;
   else return layout->sChar.charMap->GetStretch();
+}
+
+bool
+MathMLCharNode::CombineWith(const MathMLCharNode* cChar, scaled& shiftX, scaled& shiftY) const
+{
+  assert(cChar != NULL);
+  if (!IsFontified() || cChar->IsCombinedChar() || !cChar->IsFontified()) return false;
+  if (!isCombining(cChar->GetChar())) return false;
+
+  Char cch = cChar->GetChar();
+  const AFont* cFont = cChar->GetFont();
+  assert(cFont != NULL);
+
+  const BoundingBox& cBox = cChar->GetBoundingBox();
+
+  if (isCombiningOverlay(cch)) {
+    shiftX = box.lBearing - cBox.lBearing + (box.rBearing - box.lBearing - cBox.rBearing + cBox.lBearing) / 2;
+    shiftY = 0;
+  } else if (isCombiningBelow(cch)) {
+    shiftX = 0;
+    shiftY = - box.descent - cBox.ascent;
+  } else {
+    /*
+    printf("italic angle of the base char is %f %f\n",
+	   fChar.font->GetItalicAngle(),
+	   cFont->GetItalicAngle()
+	   );
+    */
+
+    //shiftY = box.ascent + cBox.descent + cChar.font->GetLineThickness();
+    // the following computation assumes that the accent is taken from a TeX font
+    // and that that font has a valid glyph for x as position 'x'
+    shiftY = box.ascent - cFont->GetEx();
+    shiftY = scaledMax(shiftY, box.ascent + cBox.descent);
+
+    float ia = (M_PI * (90 + fChar.font->GetItalicAngle())) / 180;
+    scaled correction = pt2sp(sp2pt(shiftY) * cos(ia));
+    shiftX = correction + (box.width - cBox.width) / 2;
+#if 0
+    float ia = (M_PI * (90 + fChar.font->GetItalicAngle())) / 180;
+
+    scaled correction = (shiftY > 0) ? float2sp(sp2float(box.ascent) * cos(ia)) : 0;
+
+    shiftX = correction + (box.width - cBox.rBearing + cBox.lBearing) / 2 - cBox.lBearing;
+    //printf("%04x ic: %f height: %f\n", GetChar(), scaledMax(0, box.rBearing - box.width), box.ascent);
+#endif
+  }
+
+  return true;
 }

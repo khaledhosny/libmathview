@@ -24,7 +24,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
+#endif
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 #include "String.hh"
 #include "MathEngine.hh"

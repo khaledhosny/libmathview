@@ -25,187 +25,187 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <font-configuration>
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="5pt"
 	ps-file="cmr5.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="6pt"
 	ps-file="cmr6.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="7pt"
 	ps-file="cmr7.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="8pt"
 	ps-file="cmr8.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="9pt"
 	ps-file="cmr9.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="10pt"
 	ps-file="cmr10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="12pt"
 	ps-file="cmr12.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="normal" size="17pt"
 	ps-file="cmr17.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="5pt"
 	ps-file="cmbx5.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="6pt"
 	ps-file="cmbx6.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="7pt"
 	ps-file="cmbx7.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="8pt"
 	ps-file="cmbx8.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="9pt"
 	ps-file="cmbx9.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="10pt"
 	ps-file="cmb10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="serif" style="normal" weight="bold" size="12pt"
 	ps-file="cmbx12.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmti"
 	family="serif" style="italic" weight="normal" size="7pt"
 	ps-file="cmti7.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmti"
 	family="serif" style="italic" weight="normal" size="8pt"
 	ps-file="cmti8.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmti"
 	family="serif" style="italic" weight="normal" size="9pt"
 	ps-file="cmti9.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmti"
 	family="serif" style="italic" weight="normal" size="10pt"
 	ps-file="cmti10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmti"
 	family="serif" style="italic" weight="normal" size="12pt"
 	ps-file="cmti12.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmti"
 	family="serif" style="italic" weight="bold"
 	ps-file="cmbxti10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="normal" weight="normal" size="8pt"
 	ps-file="cmss8.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="normal" weight="normal" size="9pt"
 	ps-file="cmss9.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="normal" weight="normal" size="10pt"
 	ps-file="cmss10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="normal" weight="normal" size="12pt"
 	ps-file="cmss12.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="normal" weight="normal" size="17pt"
 	ps-file="cmss17.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="italic" weight="normal" size="8pt"
 	ps-file="cmssi8.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="italic" weight="normal" size="9pt"
 	ps-file="cmssi9.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="italic" weight="normal" size="10pt"
 	ps-file="cmssi10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="italic" weight="normal" size="12pt"
 	ps-file="cmssi12.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="italic" weight="normal" size="17pt"
 	ps-file="cmssi17.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmrom"
+  <font type="ps" mode="text" map="tex-cmr"
 	family="sans-serif" style="normal" weight="bold"
 	ps-file="cmssbx10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmti"
+  <font type="ps" mode="text" map="tex-cmtt"
 	family="monospace" style="normal" weight="normal" size="8pt"
 	ps-file="cmtt8.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmti"
+  <font type="ps" mode="text" map="tex-cmtt"
 	family="monospace" style="normal" weight="normal" size="9pt"
 	ps-file="cmtt9.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmti"
+  <font type="ps" mode="text" map="tex-cmtt"
 	family="monospace" style="normal" weight="normal" size="10pt"
 	ps-file="cmtt10.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmti"
+  <font type="ps" mode="text" map="tex-cmtt"
 	family="monospace" style="normal" weight="normal" size="12pt"
 	ps-file="cmtt12.pfb"
 	/>
 
-  <font type="ps" mode="text" map="tex-cmti"
+  <font type="ps" mode="text" map="tex-cmtt"
 	family="monospace" style="italic" weight="normal"
 	ps-file="cmitt10.pfb"
 	/>
@@ -304,7 +304,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	ps-file="cmex10.pfb"
 	/>
 
-  <map id="tex-cmrom">
+  <map id="tex-cmr">
     <multi first="0x0000" last="0x00ff" index="
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
@@ -326,10 +326,67 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <single code="0x0131" index="0xb3"/>
     <single code="0x0152" index="0xc1"/>
     <single code="0x0153" index="0xbe"/>
+    <single code="0x02dc" index="0x7e"/>
     <multi first="0x0300" last="0x03ff" index="
-	     -1 0xb5 0xb6 0x7e 0xb9   -1 0xb8 0x5f 0xc4   -1 0xba   -1 0xb7   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x17   -1 0x14   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1 0xbb   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1 0xa1 0xa2   -1   -1   -1 0xa3   -1   -1 0xa4   -1   -1 0xa5   -1 
+	   0xa6   -1   -1 0xa7   -1   -1 0xa9   -1 0xaa 0xad   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1 0xa8   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x2013" index="0x7b"/>
+    <single code="0x2014" index="0x7c"/>
+    <single code="0x2018" index="0x60"/>
+    <single code="0x2019" index="0x27"/>
+    <single code="0x201c" index="0x5c"/>
+    <single code="0x201d" index="0x22"/>
+    <single code="0x2033" index="0x7d"/>
+    <single code="0xed02" index="0xb4"/>
+    <single code="0xfb00" index="0xae"/>
+    <single code="0xfb01" index="0xaf"/>
+    <single code="0xfb02" index="0xb0"/>
+    <single code="0xfb03" index="0xb1"/>
+    <single code="0xfb04" index="0xb2"/>
+  </map>
+
+  <map id="tex-cmti">
+    <multi first="0x0000" last="0x00ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0x20 0x21   -1 0x23 0x24 0x25 0x26   -1 0x28 0x29 0x2a 0x2b 0x2c 0x2d 0x2e 0x2f 
+	   0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x3a 0x3b   -1 0x3d   -1 0x3f 
+	   0x40 0x41 0x42 0x43 0x44 0x45 0x46 0x47 0x48 0x49 0x4a 0x4b 0x4c 0x4d 0x4e 0x4f 
+	   0x50 0x51 0x52 0x53 0x54 0x55 0x56 0x57 0x58 0x59 0x5a 0x5b   -1 0x5d 0x5e   -1 
+	     -1 0x61 0x62 0x63 0x64 0x65 0x66 0x67 0x68 0x69 0x6a 0x6b 0x6c 0x6d 0x6e 0x6f 
+	   0x70 0x71 0x72 0x73 0x74 0x75 0x76 0x77 0x78 0x79 0x7a   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0x3c   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x3e 
+	     -1   -1   -1   -1   -1   -1 0xc0   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1 0xc2   -1   -1   -1   -1   -1   -1 0xbc 
+	     -1   -1   -1   -1   -1   -1 0xbd   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1 0xbf   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x0131" index="0xb3"/>
+    <single code="0x0152" index="0xc1"/>
+    <single code="0x0153" index="0xbe"/>
+    <single code="0x02dc" index="0x7e"/>
+    <multi first="0x0300" last="0x03ff" index="
+	   0x12 0x13 0x5e 0x7e 0xb9   -1 0x15 0x5f 0x7f   -1 0x17   -1 0x14   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1 0x5f   -1   -1   -1 0xbb   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
@@ -379,6 +436,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	   "/>
     <single code="0x0131" index="0x7b"/>
+    <single code="0x025b" index="0x22"/>
     <single code="0x02be" index="0x2d"/>
     <single code="0x02bf" index="0x2c"/>
     <multi first="0x0300" last="0x03ff" index="
@@ -400,9 +458,11 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	     -1 0x25   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	   "/>
     <single code="0x2040" index="0xc4"/>
-    <single code="0x20d7" index="0x7e"/>
+    <!--<single code="0x20d7" index="0x7e"/>-->
     <single code="0x2113" index="0x60"/>
     <single code="0x2118" index="0x7d"/>
+    <single code="0x2145" index="0104"/>
+    <single code="0x2146" index="0144"/>
     <single code="0x21bc" index="0x28"/>
     <single code="0x21bd" index="0x29"/>
     <single code="0x21c0" index="0x2a"/>
@@ -435,6 +495,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <single code="0x0338" index="0x36"/>
     <single code="0x2020" index="0x79"/>
     <single code="0x2021" index="0x7a"/>
+    <single code="0x2022" index="0x0f"/>
     <single code="0x2032" index="0x30"/>
     <multi first="0x2100" last="0x21ff" index="
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x48   -1   -1   -1   -1 
@@ -457,7 +518,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <multi first="0x2200" last="0x22ff" index="
 	   0x38   -1   -1 0x39   -1 0x3b   -1 0x72 0x32   -1   -1 0x33   -1   -1   -1   -1 
 	   0x71   -1 0xa1 0xa8   -1   -1   -1 0xa4 0xb1 0xb2 0x70   -1   -1 0x2f 0x31   -1 
-	     -1   -1   -1 0x6a   -1 0x6b   -1 0x5e 0x5f 0x5c 0x5b 0x73   -1   -1   -1   -1 
+	     -1   -1   -1 0x6a   -1 0x6b   -1 0x5e 0x5f 0x5c 0x5b   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0xbb   -1   -1   -1 
 	   0x6f   -1   -1 0x27   -1   -1   -1   -1 0xbc   -1   -1   -1   -1 0xb3   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
@@ -505,7 +566,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	   "/>
   </map>
 
-  <map id="tex-cmti">
+  <map id="tex-cmtt">
     <multi first="0x0000" last="0x00ff" index="
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
@@ -581,11 +642,11 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 
   <map id="tex-cmex">
     <stretchy code="(" direction="vertical">
-      <simple index="0000 0020 0040"/>
+      <simple index="0000 0020 0022 0040"/>
       <compound index="0060 -1 0100 0102"/>
     </stretchy>
     <stretchy code=")" direction="vertical">
-      <simple index="0001 0021 0041"/>
+      <simple index="0001 0021 0023 0041"/>
       <compound index="0061 -1 0101 0103"/>
     </stretchy> 
     <stretchy code="[" direction="vertical">
@@ -668,10 +729,10 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <stretchy name="Coproduct" direction="vertical">
       <simple index="0140 0141"/>
     </stretchy>
-    <stretchy name="Cap" direction="horizontal">
+    <stretchy name="Hat" direction="horizontal">
       <simple index="0142 0143 0144"/>
     </stretchy>
-    <stretchy name="Tilde" direction="horizontal">
+    <stretchy code="0x303" direction="horizontal">
       <simple index="0145 0146 0147"/>
     </stretchy>
     <stretchy name="Sqrt" direction="vertical">

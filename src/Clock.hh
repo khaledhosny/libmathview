@@ -23,11 +23,11 @@
 #ifndef Clock_hh
 #define Clock_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
+#ifdef WIN32
+#include <winsock.h>
+#else
 #include <sys/time.h>
+#endif
 
 class Clock {
 public:
@@ -45,4 +45,5 @@ private:
   struct timeval stop;
 };
 
-#endif
+#endif // Clock_hh
+

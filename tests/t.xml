@@ -1,9 +1,6 @@
-<math display="block">
-  <msup>
-    <mi>x</mi>
-    <mfrac>
-      <mn>1</mn>
-      <mn>2</mn>
-    </mfrac>
-  </msup>
+<math>
+  <mtext>hello</mtext>
+  <mspace linebreak="NewLine"/>
+  <mtext>luca</mtext>
 </math>
+

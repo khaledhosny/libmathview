@@ -1,0 +1,19 @@
+<math>
+  <munder>
+    <mrow>
+      <msup>
+        <mi>x</mi>
+	<mn>2</mn>
+      </msup>
+      <mo>+</mo>
+      <mrow>
+        <mn>2</mn>
+	<mo>&it;</mo>
+	<mi>x</mi>
+      </mrow>
+      <mo>+</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>&UnderBrace;</mo>
+  </munder>
+</math>

@@ -40,9 +40,9 @@
 /* If defined the widget will perform a huge amount
  * of validity checks while running
  */
-#undef ENABLE_CHECKS
+#undef ENABLE_DEBUG
 
-#ifdef ENABLE_CHECKS
+#ifdef ENABLE_DEBUG
 #define DEBUG
 #else
 #define NDEBUG
@@ -50,10 +50,19 @@
 #define G_DISABLE_CHECKS
 #endif
 
-/* If defined teh widget will collect some information
+/* If defined the widget will collect some information
  * for profiling purposes
  */
 #undef ENABLE_PROFILE
+
+/* If defined some layout is done using TeX algorithm,
+ * when possible
+ */
+#undef TEXISH_MATHML
+
+/* If defined allows some extensions to MathML (new attributes)
+ */
+#undef ENABLE_EXTENSIONS
 
 /* Define to compile with libxml 2.x (recommended) */
 #undef HAVE_LIBXML2
@@ -74,6 +83,9 @@
 #ifndef ICONV_UCS4
 #define ICONV_UCS4 "UCS-4"
 #endif
+
+/* Define if you have getopt_long */
+#undef HAVE_GETOPT_LONG
 
 @BOTTOM@
 

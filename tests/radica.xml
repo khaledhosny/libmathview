@@ -1,0 +1,7 @@
+<math mode="display"><msub><mi>&epsiv;</mi>
+<mtext>v</mtext></msub><mo>&equals;</mo><mfrac><mrow><mn>2</mn><msub><mi>K</mi>
+<mi>I</mi></msub></mrow><mrow><mi>E</mi><msqrt><mrow><mn>2</mn><mi>&pi;</mi>
+<mi>r</mi></mrow></msqrt></mrow></mfrac><mrow><mo>(</mo><mrow><mn>1</mn><mo>&minus;
+</mo><mi>&nu;</mi><mo>&minus;</mo><mn>2</mn><msup><mi>&nu;</mi><mn>2</mn></msup>
+</mrow><mo>)</mo></mrow>
+</math>

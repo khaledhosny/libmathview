@@ -23,8 +23,6 @@
 #ifndef MathMLTextNode_hh
 #define MathMLTextNode_hh
 
-#include <config.h>
-
 #include "String.hh"
 #include "MathMLFrame.hh"
 

@@ -34,16 +34,22 @@
 #include "MathMLizer.hh"
 #include "StringUnicode.hh"
 #include "MathMLDocument.hh"
-#include "T1_FontManager.hh"
+
 #include "MathMLParseFile.hh"
-#include "T1_Gtk_DrawingArea.hh"
+
 #include "MathMLActionElement.hh"
 #include "RenderingEnvironment.hh"
+
+#ifdef HAVE_LIBT1
+#include "T1_FontManager.hh"
+#include "T1_Gtk_DrawingArea.hh"
+#endif
 
 EntitiesTable      MathEngine::entitiesTable;
 OperatorDictionary MathEngine::dictionary;
 Configuration      MathEngine::configuration;
 Logger             MathEngine::logger;
+bool               MathEngine::drawMissingCharacter;
 
 MathEngine::MathEngine()
 {
@@ -51,6 +57,7 @@ MathEngine::MathEngine()
   fontManager = NULL;
   charMapper = NULL;
 
+  drawMissingCharacter = true;
   defaultFontSize = configuration.GetFontSize();
 
   document = NULL;

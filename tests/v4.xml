@@ -1,0 +1,10 @@
+<math mode="inline">
+  <munder>
+    <mo>&Union;</mo>
+    <mrow> <mi>i</mi> <mo>&le;</mo> <mn>100</mn> </mrow>
+  </munder>
+  <munder>
+    <mo>&Sum;</mo>
+    <mrow> <mi>i</mi> <mo>&le;</mo> <mn>100</mn> </mrow>
+  </munder>
+</math>

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-ENTITIES=`cut -d ',' -f1,2 | tr -d ',' | tr -s ' ' | tr ' ' ','`
+ENTITIES=`cut -d ',' -f1,2`
 
 echo "<?xml version=\"1.0\"?>"
 echo "<!DOCTYPE entities-table SYSTEM \"entities-table.dtd\">"

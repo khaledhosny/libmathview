@@ -1,0 +1,24 @@
+<?xml version="4.0" encoding="UTF-8"?><math xmlns:math="http://www.w3.org/Math/REC-MathML" mode="display" overflow="scroll">
+<mrow><mi>W</mi>
+  <mrow><mo>(</mo><mi>r</mi><mo>)</mo>
+  </mrow>
+  <mo>ⅆ</mo><mi>r</mi>
+  <mo>=</mo>
+  <mtext>const.</mtext><mo>×</mo>
+  <mi>exp</mi>
+    <mrow><mo>(</mo>
+      <mrow><mo>−</mo>
+         <mrow>
+           <msubsup><mo>∫</mo><mn>0</mn><mi>r</mi></msubsup>
+           <msup><mi>ℒ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup>
+           <mrow><mo>(</mo><mrow><mi>r</mi><mo>/</mo><mi>n</mi><mi>l</mi></mrow><mo>)</mo></mrow>
+           <mo>ⅆ</mo><mi>r</mi><mi>l</mi><mo>/</mo><mi>l</mi>
+         </mrow>
+       </mrow>
+       <mo>)</mo>
+    </mrow>
+  <mn>4</mn><mn>π</mn>
+  <msup><mi>r</mi><mn>2</mn></msup>
+  <mo>ⅆ</mo><mi>r</mi>
+</mrow>
+</math>

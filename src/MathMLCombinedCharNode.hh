@@ -30,14 +30,17 @@ public:
   MathMLCombinedCharNode(Char, Char);
   virtual void Setup(RenderingEnvironment*);
   virtual void DoLayout(void);
+  virtual void SetPosition(scaled, scaled);
   virtual void Render(const DrawingArea&);
   virtual ~MathMLCombinedCharNode();
 
-private:
-  FontifiedChar cChar;
-  Char          cch;
+  virtual void SetDirty(const Rectangle* = NULL);
+  virtual bool IsCombinedChar(void) const;
 
-  scaled shiftX; // due to kerning information
+private:
+  MathMLCharNode* cChar;
+
+  scaled shiftX; // due to kerning information or other heuristics
   scaled shiftY;
 };
 

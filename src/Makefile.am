@@ -26,10 +26,12 @@ T1HEADERS = \
   T1_Gtk_DrawingArea.hh
 
 PSSOURCES = \
+  PS_T1_Font.cc \
   PS_DrawingArea.cc \
   PS_T1_FontManager.cc
 
 PSHEADERS = \
+  PS_T1_Font.hh \
   PS_DrawingArea.hh \
   PS_T1_FontManager.hh
 
@@ -59,6 +61,7 @@ libgtkmathview_la_SOURCES = \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
+  MathMLApplyFunctionNode.cc \
   MathMLAttribute.cc \
   MathMLAttributeList.cc \
   MathMLCharNode.cc \
@@ -74,6 +77,8 @@ libgtkmathview_la_SOURCES = \
   MathMLFractionElement.cc \
   MathMLFrame.cc \
   MathMLGlyphNode.cc \
+  MathMLHorizBarNode.cc \
+  MathMLInvisibleTimesNode.cc \
   MathMLMarkNode.cc \
   MathMLMultiScriptsElement.cc \
   MathMLNode.cc \
@@ -154,7 +159,6 @@ noinst_HEADERS = \
   FontifiedString.hh \
   FontAttributes.hh \
   FontManager.hh \
-  FontMapper.hh \
   GraphicsContext.hh \
   Iterator.hh \
   Layout.hh \
@@ -164,6 +168,7 @@ noinst_HEADERS = \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \
+  MathMLApplyFunctionNode.hh \
   MathMLAttribute.hh \
   MathMLAttributeList.hh \
   MathMLCharNode.hh \
@@ -179,6 +184,8 @@ noinst_HEADERS = \
   MathMLFractionElement.hh \
   MathMLFrame.hh \
   MathMLGlyphNode.hh \
+  MathMLHorizBarNode.hh \
+  MathMLInvisibleTimesNode.hh \
   MathMLMarkNode.hh \
   MathMLMultiScriptsElement.hh \
   MathMLNode.hh \
@@ -233,6 +240,7 @@ noinst_HEADERS = \
   traverseAux.hh \
   mathVariantAux.hh \
   scaled.hh \
+  unidefs.h \
   $(GTKHEADERS) \
   $(T1HEADERS) \
   $(PSHEADERS)

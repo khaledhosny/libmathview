@@ -1,0 +1,22 @@
+<math>
+  <mfrac>
+    <mtable frame="solid">
+      <mtr>
+        <mtd>
+	  <mphantom>
+	    <mtext>M</mtext>
+	  </mphantom>
+	</mtd>
+      </mtr>
+    </mtable>
+    <mtable frame="solid">
+      <mtr>
+        <mtd>
+	  <mphantom>
+	    <mtext>M</mtext>
+	  </mphantom>
+	</mtd>
+      </mtr>
+    </mtable>
+  </mfrac>
+</math>

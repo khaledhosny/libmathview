@@ -23,13 +23,12 @@
 #ifndef MathMLRowElement_hh
 #define MathMLRowElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLRowElement: public MathMLContainerElement {
 public:
   MathMLRowElement(mDOMNodeRef);
+  // virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoLayout(LayoutId, class Layout&);
   virtual void DoStretchyLayout(void);

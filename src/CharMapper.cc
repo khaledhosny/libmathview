@@ -20,10 +20,13 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
+// WARNING! the following #include has been moved here because otherwise
+// there's a compilation problem on HPUX systems (Stephanie Nile)
+#include <stdlib.h>
+// WARNING!
 #include <config.h>
 #include <assert.h>
 #include <string.h>
-#include <stdlib.h>
 #include <ctype.h>
 
 #include "minidom.h"
@@ -58,16 +61,16 @@ CharMapper::CharMapper(FontManager& fm) : fontManager(fm)
 
 CharMapper::~CharMapper()
 {
-  for (Iterator<FontDescriptor*> i(fonts); i.More(); i.Next()) {
-    assert(i() != NULL);
+  for (Iterator<FontDescriptor*> fd(fonts); fd.More(); fd.Next()) {
+    assert(fd() != NULL);
     // TODO: more to be deleted...
-    delete i();
+    delete fd();
   }
 
-  for (Iterator<FontMap*> i(maps); i.More(); i.Next()) {
-    assert(i() != NULL);
+  for (Iterator<FontMap*> fm(maps); fm.More(); fm.Next()) {
+    assert(fm() != NULL);
     // TODO: more to be deleted...
-    delete i();
+    delete fm();
   }
 }
 
@@ -121,19 +124,12 @@ CharMapper::FontifyChar(FontifiedChar& fMap, const FontAttributes& fa, Char ch) 
   if (isalnum(ch)) alnumChars++;
 #endif // ENABLE_PROFILE
   
-  bool res = FontifyCharAux(fMap, fa, ch, false);
-  if (res) return true;
+  if (FontifyCharAux(fMap, fa, ch, false)) return true;
 
   if (isPlain(ch)) 
     MathEngine::logger(LOG_WARNING, "could not find a suitable font for `%c = U+%04x'", ch, ch);
   else
     MathEngine::logger(LOG_WARNING, "could not find a suitable font for `U+%04x'", ch);
-
-  res = FontifyCharAux(fMap, fa, '?', false);
-  if (!res) {
-    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
-    exit(1);
-  }
 
   return false;
 }
@@ -162,12 +158,13 @@ CharMapper::FontifyCharAux(FontifiedChar& fMap, const FontAttributes& fa, Char c
   FontDescriptor* bestDesc = NULL;
 
   FontAttributes myfa(fa);
-#if 0
-  MathEngine::logger(LOG_DEBUG, "requested font attributes:");
-  myfa.Dump();
-#endif
 
   do {
+#if 0
+    MathEngine::logger(LOG_DEBUG, "char: %x stretchy: %d trying attributes:", ch, stretchy);
+    myfa.Dump();
+#endif
+
     for (Iterator<FontDescriptor*> i(fonts); i.More() && bestEval > 0; i.Next()) {
       assert(i() != NULL);
 
@@ -185,23 +182,45 @@ CharMapper::FontifyCharAux(FontifiedChar& fMap, const FontAttributes& fa, Char c
       // the other are not considered any more. Finally, the availability of the
       // font is a call to a virtual function.
       if (i()->fontMap != NULL) {
+#if 0
+	MathEngine::logger(LOG_DEBUG, "asking for a charmap for U+%04x stretchy %d", ch, stretchy);
+#endif
 	const CharMap* charMap = i()->fontMap->GetCharMap(ch, stretchy);
 	if (charMap != NULL) {
 	  unsigned eval = i()->attributes.Compare(myfa);
+
+#if 0
+	  MathEngine::logger(LOG_DEBUG, "char: U+%04x comparing with: ", ch);
+	  i()->attributes.Dump();
+	  MathEngine::logger(LOG_DEBUG, "comparison = %d", eval);
+#endif
+
 	  if (eval < bestEval && fontManager.IsAvailable(myfa, &i()->extraAttributes)) {
 	    bestEval = eval;
 	    bestCharMap = charMap;
 	    bestDesc = i();
+	  } else if (eval < bestEval) {
+#if 0
+	    MathEngine::logger(LOG_DEBUG, "found a better font, but it's not available");
+	    i()->extraAttributes.Dump();
+#endif
 	  }
 	}
       }
     }
 
-    if (bestDesc != NULL) bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
+    if (bestDesc != NULL) {
+      bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
+      if (bestFont == NULL)
+	MathEngine::logger(LOG_WARNING, "a font for char U+%04x was configured, but the actual font file was not found", ch);
+    }
   } while (bestFont == NULL && myfa.DownGrade());
 
-  //MathEngine::logger(LOG_DEBUG, "attributes:");
-  //myfa.Dump();
+#if 0
+  MathEngine::logger(LOG_DEBUG, "resulting attributes:");
+  myfa.Dump();
+  MathEngine::logger(LOG_DEBUG, "\n");
+#endif
 
   if (bestFont == NULL || bestCharMap == NULL) {
     fMap.charMap = NULL;
@@ -240,7 +259,7 @@ CharMapper::FontMap::GetCharMap(Char ch, bool stretchy) const
 
   for (Iterator<CharMap*> charMap(single[CHAR_HASH(ch)]); m == NULL && charMap.More(); charMap.Next()) {
     assert(charMap() != NULL);
-    if ((!stretchy && charMap()->MapsSimpleChar(ch)) ||
+    if ((!stretchy && charMap()->MapsChar(ch)) ||
 	(stretchy && charMap()->MapsStretchyChar(ch))) m = charMap();
   }
 
@@ -361,9 +380,18 @@ CharMapper::ParseMap(mDOMNodeRef node)
 
   mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("id"));
   if (value == NULL) return;
+#if 0
+  else MathEngine::logger(LOG_DEBUG, "parsing font map `%s'", value);
+#endif
 
   FontMap* fontMap = new FontMap;
   fontMap->id = C_CONST_STRING(value);
+
+  if (SearchMapping(fontMap->id) != NULL) {
+    MathEngine::logger(LOG_WARNING, "there is already a font map with id `%s' (ignored)", fontMap->id);
+    delete fontMap;
+    return;
+  }
 
   for (mDOMNodeRef p = mdom_node_get_first_child(node);
        p != NULL;
@@ -503,7 +531,7 @@ CharMapper::ParseStretchy(mDOMNodeRef node, FontMap* fontMap)
   charMap->type = CHAR_MAP_STRETCHY;
 
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS; i++) charMap->stretchy.simple[i] = NULLCHAR;
-  for (unsigned i = 0; i < SC_REPEAT + 1; i++) charMap->stretchy.compound[i] = NULLCHAR;
+  for (unsigned j = 0; j < SC_REPEAT + 1; j++) charMap->stretchy.compound[j] = NULLCHAR;
 
   charMap->stretchy.code = parseCode(node);
   if (charMap->stretchy.code == 0) {
@@ -549,7 +577,7 @@ CharMapper::ParseStretchySimple(mDOMNodeRef node, CharMap* charMap)
   const char* ptr = C_CONST_STRING(value);
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
-    if (i < 4) charMap->stretchy.simple[i] = strtol(ptr, &newPtr, 0);
+    charMap->stretchy.simple[i] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
 
@@ -584,6 +612,9 @@ CharMapper::PatchConfiguration()
     assert(i() != NULL);
     assert(i()->fontMapId != NULL);
     i()->fontMap = SearchMapping(i()->fontMapId);
+#if 0
+    MathEngine::logger(LOG_DEBUG, "patching font with map `%s', results %p", i()->fontMapId, i()->fontMap);
+#endif
   }
 }
 

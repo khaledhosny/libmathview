@@ -23,11 +23,9 @@
 #ifndef MathMLRadicalElement_hh
 #define MathMLRadicalElement_hh
 
-#include <config.h>
+#include "MathMLNormalizingContainerElement.hh"
 
-#include "MathMLContainerElement.hh"
-
-class MathMLRadicalElement : public MathMLContainerElement {
+class MathMLRadicalElement : public MathMLNormalizingContainerElement {
 public:
   MathMLRadicalElement(mDOMNodeRef, TagId);
   virtual void Normalize(void);

@@ -23,7 +23,12 @@
 #include <config.h>
 #include <assert.h>
 #include <stdio.h>
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
+#endif
+#ifdef HAVE_WCHAR_H
+#include <wchar.h>
+#endif
 
 #include "AFont.hh"
 #include "Layout.hh"
@@ -31,10 +36,12 @@
 #include "Iterator.hh"
 #include "stringAux.hh"
 #include "MathEngine.hh"
+#include "traverseAux.hh"
 #include "ShapeFactory.hh"
 #include "allocTextNode.hh"
 #include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
+#include "MathMLCharNode.hh"
 #include "MathMLTextNode.hh"
 #include "mathVariantAux.hh"
 #include "ValueConversion.hh"
@@ -42,6 +49,8 @@
 #include "MathMLStringNode.hh"
 #include "MathMLTokenElement.hh"
 #include "RenderingEnvironment.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLEmbellishedOperatorElement.hh"
 
 MathMLTokenElement::MathMLTokenElement(mDOMNodeRef node, TagId t) : MathMLElement(node, t)
 {
@@ -89,8 +98,6 @@ MathMLTokenElement::Append(const String* s)
 
   if (s->GetLength() == 0) return;
 
-  rawContentLength += s->GetLength();
-
   MathMLTextNode* last = NULL;
   if (content.GetSize() > 0 &&
       content.GetLast() != NULL &&
@@ -115,16 +122,21 @@ MathMLTokenElement::Append(const String* s)
       } else
 	node = new MathMLSpaceNode(spacing, bid);
       i += len;
+      rawContentLength += len;
       lastBreak = true;
     } else if (i + 1 < sLength && isCombining(s->GetChar(i + 1))) {
       node = allocCombinedCharNode(s->GetChar(i), s->GetChar(i + 1));
       i += 2;
+      rawContentLength++;
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
     } else if (iswalnum(s->GetChar(i))) {
       unsigned start = i;
-      while (i < sLength && iswalnum(s->GetChar(i))) i++;
+      while (i < sLength && iswalnum(s->GetChar(i))) {
+	i++;
+	rawContentLength++;
+      }
       assert(start < i);
 
       const String* sText = allocString(*s, start, i - start);
@@ -135,12 +147,14 @@ MathMLTokenElement::Append(const String* s)
     } else if (!isVariant(s->GetChar(i))) {
       node = allocCharNode(s->GetChar(i));
       i++;
+      rawContentLength++;
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
     } else {
       MathEngine::logger(LOG_WARNING, "ignoring variant modifier char U+%04x", s->GetChar(i));
       i++;
+      rawContentLength++;
     }
     
     if (node != NULL) {
@@ -206,25 +220,36 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
   } else {
     value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
     if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontfamily` is deprecated in MathML 2");
+      MathEngine::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
       env->SetFontFamily(value->ToString());
     }
     delete value;
 
     value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
     if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
+      MathEngine::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
       env->SetFontWeight(ToFontWeightId(value));
     }
     delete value;
 
     value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
     if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
+      MathEngine::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
       env->SetFontStyle(ToFontStyleId(value));
     } else if (IsA() == TAG_MI) {
-      if (rawContentLength == 1) env->SetFontStyle(FONT_STYLE_ITALIC);
-      else {
+      if (rawContentLength == 1) {
+	MathMLTextNode* node = content.GetFirst();
+	assert(node != NULL);
+
+	if (node->IsChar()) {
+	  MathMLCharNode* cNode = TO_CHAR(node);
+	  assert(cNode != NULL);
+
+	  if (!isUpperCaseGreek(cNode->GetChar())) env->SetFontStyle(FONT_STYLE_ITALIC);
+	  else env->SetFontStyle(FONT_STYLE_NORMAL);
+	} else
+	  env->SetFontStyle(FONT_STYLE_NORMAL);
+      } else {
 	env->SetFontStyle(FONT_STYLE_NORMAL);
 	env->SetFontMode(FONT_MODE_TEXT);
       }
@@ -304,6 +329,8 @@ MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
 
     i.Next();
   }
+
+  AddItalicCorrection(layout);
 
   ResetDirtyLayout(id);
 }
@@ -471,4 +498,38 @@ MathMLTokenElement::IsLast() const
     return content.GetLast()->IsLast();
   } else
     return false;
+}
+
+const MathMLCharNode*
+MathMLTokenElement::GetCharNode() const
+{
+  if (content.GetSize() != 1) return NULL;
+
+  MathMLTextNode* node = content.GetFirst();
+  assert(node != NULL);
+  if (!node->IsChar() || node->IsCombinedChar()) return NULL;
+
+  return TO_CHAR(node);
+}
+
+void
+MathMLTokenElement::AddItalicCorrection(Layout& layout)
+{
+  if (IsA() != TAG_MI && IsA() != TAG_MN && IsA() != TAG_MTEXT) return;
+  
+  if (content.GetSize() == 0) return;
+
+  MathMLTextNode* lastNode = content.GetLast();
+  assert(lastNode != NULL);
+
+  MathMLElement* next = findRightSibling(this);
+  if (next == NULL || next->IsA() != TAG_MO) return;
+
+  MathMLOperatorElement* op = findCoreOperator(next);
+  if (op == NULL) return;
+  if (!op->IsFence()) return;
+
+  const BoundingBox& box = lastNode->GetBoundingBox();
+  MathEngine::logger(LOG_DEBUG, "adding italic correction: %d %d", sp2ipx(box.rBearing), sp2ipx(box.width));
+  if (box.rBearing > box.width) layout.Append(box.rBearing - box.width);
 }

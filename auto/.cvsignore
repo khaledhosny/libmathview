@@ -3,3 +3,6 @@ Makefile.in
 *.def
 *.dec
 config.dirs
+dumpEntitiesTable
+.libs
+.deps

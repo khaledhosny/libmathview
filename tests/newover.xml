@@ -1,0 +1,21 @@
+<math>
+  <mi>&beta;&#x0307;</mi><mspace linebreak="newline"/>
+  <mi>&beta;&#x0307;</mi><mspace linebreak="newline"/>
+  <mi>&beta;&#x0307;</mi><mspace linebreak="newline"/>
+  <mover>
+    <mi>&beta;</mi>
+    <mo>&#x0307;</mo>
+  </mover>
+  <mover accent="true">
+    <mi>&beta;</mi>
+    <mi>&#x0307;</mi>
+  </mover>
+  <mover accent="true">
+    <mi>&beta;</mi>
+    <mo rspace="0em">&#x0307;</mo>
+  </mover>
+  <mover accent="true">
+    <mi>&beta;</mi>
+    <mo lspace="0em">&#x0307;</mo>
+  </mover>
+</math>

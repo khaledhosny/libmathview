@@ -20,12 +20,15 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
+
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/time.h>
+#endif
 
 #include "Clock.hh"
 
@@ -37,12 +40,26 @@ Clock::Clock()
 
 void Clock::Start()
 {
+#ifdef WIN32
+  SYSTEMTIME st;
+  ::GetSystemTime(&st);
+  start.tv_sec = st.wSecond;
+  start.tv_usec = st.wMilliseconds;  
+#else
   gettimeofday(&start, NULL);
+#endif
 }
 
 void Clock::Stop()
 {
+#ifdef WIN32
+  SYSTEMTIME st;
+  ::GetSystemTime(&st); 
+  stop.tv_sec = st.wSecond;
+  stop.tv_usec = st.wMilliseconds;  
+#else
   gettimeofday(&stop, NULL);
+#endif
 }
 
 long Clock::Get() const

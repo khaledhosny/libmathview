@@ -64,12 +64,13 @@ MathMLmathElement::Setup(RenderingEnvironment* env)
 
   env->SetFontMode(FONT_MODE_MATH);
 
-  if (IsSet(ATTR_DISPLAY)) {
+  if (!IsSet(ATTR_MODE) || IsSet(ATTR_DISPLAY)) {
     value = GetAttributeValue(ATTR_DISPLAY, env, true);
     assert(value != NULL);
     if (value->IsKeyword(KW_BLOCK)) env->SetDisplayStyle(true);
     else env->SetDisplayStyle(false);
   } else {
+    MathEngine::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
     value = GetAttributeValue(ATTR_MODE, env, true);
     assert(value != NULL);
     if (value->IsKeyword(KW_DISPLAY)) env->SetDisplayStyle(true);

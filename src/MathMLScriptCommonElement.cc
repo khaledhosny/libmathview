@@ -23,81 +23,72 @@
 #include <config.h>
 #include <assert.h>
 
+#include "traverseAux.hh"
 #include "RenderingEnvironment.hh"
+#include "MathMLOperatorElement.hh"
 #include "MathMLScriptCommonElement.hh"
+#include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLScriptCommonElement::MathMLScriptCommonElement(mDOMNodeRef node, TagId id) :
-  MathMLContainerElement(node, id)
+MathMLScriptCommonElement::MathMLScriptCommonElement()
 {
-  assert(id == TAG_MSUP || id == TAG_MSUB || id == TAG_MSUBSUP || id == TAG_MMULTISCRIPTS);
   base = NULL;
 }
 
-MathMLScriptCommonElement::~MathMLScriptCommonElement()
-{
-}
-
-const AttributeSignature*
-MathMLScriptCommonElement::GetAttributeSignature(AttributeId id) const
-{
-  static AttributeSignature subSig[] = {
-    { ATTR_SUBSCRIPTSHIFT, numberUnitParser, NULL, NULL },
-    { ATTR_NOTVALID,       NULL,             NULL, NULL }
-  };
-
-  static AttributeSignature supSig[] = {
-    { ATTR_SUPERSCRIPTSHIFT, numberUnitParser, NULL, NULL },
-    { ATTR_NOTVALID,         NULL,             NULL, NULL }
-  };
-
-  const AttributeSignature* signature = NULL;
-  if (IsA() == TAG_MSUB || IsA() == TAG_MSUBSUP || IsA() == TAG_MMULTISCRIPTS)
-    signature = GetAttributeSignatureAux(id, subSig);
-  if ((IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP || IsA() == TAG_MMULTISCRIPTS) && signature == NULL)
-    signature = GetAttributeSignatureAux(id, supSig);
-
-  if (signature == NULL) signature = MathMLContainerElement::GetAttributeSignature(id);
-
-  return signature;
-}
-
 void
-MathMLScriptCommonElement::Setup(RenderingEnvironment* env)
+MathMLScriptCommonElement::ScriptSetup(RenderingEnvironment* env)
 {
   ruleThickness = env->GetRuleThickness();
+#ifdef TEXISH_MATHML
+  sppex = env->GetScaledPointsPerEx();
+  subMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.247217);
+  superMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.362892);
+#else
   sppex = subMinShift = superMinShift = env->GetAxis();
+#endif // TEXISH_MATHML
   scriptAxis    = env->GetAxis();
-  scriptSpacing = env->ToScaledPoints(env->GetMathSpace(MATH_SPACE_VERYTHIN));
-  background    = env->GetBackgroundColor();
 }
 
 void
-MathMLScriptCommonElement::DoLayoutAux(const BoundingBox& baseBox,
-				       const BoundingBox& subScriptBox,
-				       const BoundingBox& superScriptBox)
+MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
+					  const BoundingBox& subScriptBox,
+					  const BoundingBox& superScriptBox,
+					  scaled& subShiftX, scaled& subShiftY,
+					  scaled& superShiftX, scaled& superShiftY)
 {
   assert(base != NULL);
 
   scaled u;
   scaled v;
 
-  if (base->IsToken() && base->IsA() != TAG_MO) {
+  MathMLElement* rel = findRightmostChild(base);
+  assert(rel != NULL);
+
+  const MathMLOperatorElement* coreOp = NULL;
+  if (rel->IsOperator()) coreOp = TO_OPERATOR(rel);
+  else if (rel->IsEmbellishedOperator()) {
+    MathMLEmbellishedOperatorElement* eOp = TO_EMBELLISHED_OPERATOR(rel);
+    assert(eOp != NULL);
+    coreOp = eOp->GetCoreOperator();
+  }
+
+  if ((rel->IsToken() && coreOp == NULL) || (coreOp != NULL && !coreOp->IsStretchy() && coreOp->IsFence())) {
     u = v = 0;
   } else {
     u = baseBox.ascent - scriptAxis;
-    v = baseBox.descent + scriptAxis;
+    v = baseBox.descent + scriptAxis / 2;
   }
 
   if (superScriptBox.IsNull()) {
-    subShift = scaledMax(v, scaledMax(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
-    superShift = 0;
+    u = 0;
+    v = scaledMax(v, scaledMax(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
   } else {
-    u = scaledMax(u, scaledMax(superMinShift, sppex / 4));
+    u = scaledMax(u, scaledMax(superMinShift, superScriptBox.descent + sppex / 4));
 
     if (subScriptBox.IsNull()) {
-      subShift = 0;
-      superShift = u;
+      v = 0;
     } else {
+      v = scaledMax(v, subMinShift);
+
       if ((u - superScriptBox.descent) - (subScriptBox.ascent - v) < 4 * ruleThickness) {
 	v = 4 * ruleThickness - u + superScriptBox.descent + subScriptBox.ascent;
 
@@ -107,11 +98,14 @@ MathMLScriptCommonElement::DoLayoutAux(const BoundingBox& baseBox,
 	  v -= psi;
 	}
       }
-
-      subShift = v;
-      superShift = u;
     }
   }
+
+  superShiftY = u;
+  superShiftX = scaledMax(baseBox.width, baseBox.rBearing + sppex / 5);
+
+  subShiftY = v;
+  subShiftX = baseBox.width;
 }
 
 bool

@@ -56,7 +56,7 @@ EntitiesTable::~EntitiesTable()
 }
 
 bool
-EntitiesTable::Load(const char* fileName, bool dump)
+EntitiesTable::Load(const char* fileName)
 {
   mDOMDocRef doc = mdom_load(fileName, FALSE, NULL);
   if (doc == NULL) return false;
@@ -67,28 +67,13 @@ EntitiesTable::Load(const char* fileName, bool dump)
     return false;
   }
 
-  unsigned n = 0;
   mDOMNodeRef p = mdom_node_get_first_child(root);
   while (p != NULL) {
     if (!mdom_node_is_blank(p)) {
       mDOMStringRef name = mdom_node_get_attribute(p, DOM_CONST_STRING("name"));
       mDOMStringRef value = mdom_node_get_attribute(p, DOM_CONST_STRING("value"));
 
-      if (name != NULL && value != NULL) {
-	mdom_doc_add_entity(repository, name, value);
-	n++;
-
-	if (dump) {
-	  printf("{ \"%s\", \"", C_CONST_STRING(name));
-
-	  // WARNING: the line below is libxml dependent!!!
-	  for (xmlChar* s = value; s != NULL && *s != '\0'; s++) {
-	    printf("\\x%02x", *s);
-	  }
-	  
-	  printf("\\x00\" },\n");
-	}
-      }
+      if (name != NULL && value != NULL) mdom_doc_add_entity(repository, name, value);
 
       mdom_string_free(name);
       mdom_string_free(value);

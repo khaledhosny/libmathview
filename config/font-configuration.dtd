@@ -63,7 +63,7 @@
 <!ATTLIST stretchy
   name CDATA #IMPLIED
   code CDATA #IMPLIED
-  direction (vertical|horizontal) #REQUIRED
+  direction (vertical|horizontal|both) #REQUIRED
 >
 
 <!ELEMENT simple EMPTY>

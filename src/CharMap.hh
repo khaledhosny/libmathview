@@ -95,4 +95,4 @@ struct FontifiedChar {
   void   GetBoundingBox(BoundingBox&) const;
 };
 
-#endif
+#endif // CharMap_hh

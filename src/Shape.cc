@@ -54,9 +54,9 @@ Shape::IsInside(scaled x, scaled y) const
 bool
 Shape::Overlaps(const Rectangle& rect) const
 {
-  for (Iterator<Rectangle*> rect(content); rect.More(); rect.Next()) {
-    assert(rect() != NULL);
-    if (rect()->Overlaps(*(rect()))) return true;
+  for (Iterator<Rectangle*> r(content); r.More(); r.Next()) {
+    assert(r() != NULL);
+    if (r()->Overlaps(rect)) return true;
   }
 
   return false;

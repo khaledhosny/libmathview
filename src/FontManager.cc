@@ -85,6 +85,15 @@ FontManager::GetFont(const FontAttributes& fa, const class ExtraFontAttributes* 
 }
 
 void
+FontManager::ResetUsedFonts() const
+{
+  for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
+    assert(i() != NULL);
+    i()->used = false;
+  }
+}
+
+void
 FontManager::MarkAsUsed(const class AFont* font) const
 {
   assert(font != NULL);
