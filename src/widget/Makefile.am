@@ -8,21 +8,45 @@ DOM_LIBS = @DOM_LIBS@
 T1_CFLAGS = @T1_CFLAGS@
 T1_LIBS = @T1_LIBS@
 
-lib_LTLIBRARIES = libgtkmathview.la
+lib_LTLIBRARIES = \
+  libgtkmathview_custom_reader.la \
+  libgtkmathview_libxml2.la \
+  libgtkmathview_gmetadom.la
 
-libgtkmathview_la_LIBADD = \
+libgtkmathview_custom_reader_la_LIBADD = \
+  -lstdc++ \
+  $(GTK_LIBS) \
+  $(XML_LIBS) \
+  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
+  $(top_builddir)/src/frontend/custom_reader/libmathview_frontend_custom_reader.la
+
+libgtkmathview_libxml2_la_LIBADD = \
+  -lstdc++ \
+  $(GTK_LIBS) \
+  $(XML_LIBS) \
+  $(top_builddir)/src/frontend/libxml2/libmathview_frontend_libxml2.la
+
+libgtkmathview_gmetadom_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
   $(DOM_LIBS) \
   $(top_builddir)/src/frontend/gmetadom/libmathview_frontend_gmetadom.la
 
-libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
-libgtkmathview_la_SOURCES = \
-  gtkmathview.cc
+libgtkmathview_custom_reader_la_SOURCES = gtkmathview_custom_reader.cc
+libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc
+libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
+
+EXTRA_DIST = gtkmathview_common.cc
 
 pkginclude_HEADERS = \
-  gtkmathview.h
+  gtkmathview_common.h \
+  gtkmathview_custom_reader.h \
+  gtkmathview_libxml2.h \
+  gtkmathview_gmetadom.h
 
 INCLUDES = \
   $(GTK_CFLAGS) \
