@@ -1,10 +1,46 @@
-gtkmathview (0.2.2-1) unstable; urgency=low
+gtkmathview (0.3.0-1) unstable; urgency=low
 
-  * Initial Release.
+  * New upstream release
 
- -- Stefano Zacchiroli <zacchiro@cs.unibo.it>  Sun, 21 Jan 2001 17:48:44 +0100
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 13 Mar 2002 15:59:49 +0100
+
+gtkmathview (0.2.9-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 21 Nov 2001 11:38:42 +0100
+
+gtkmathview (0.2.8-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Stefano Zacchiroli <zack@debian.org>  Wed, 14 Nov 2001 08:28:24 +0100
+
+gtkmathview (0.2.7-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Stefano Zacchiroli <zack@debian.org>  Tue,  4 Sep 2001 21:41:18 +0200
+
+gtkmathview (0.2.5-2) unstable; urgency=low
+
+  * upgraded config.sub and config.guess in order to support hppa and other
+    architectures (closes: Bug#104694)
+
+ -- Stefano Zacchiroli <zack@debian.org>  Sat, 14 Jul 2001 22:48:17 +0200
+
+gtkmathview (0.2.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Stefano Zacchiroli <zack@debian.org>  Tue, 22 May 2001 23:35:46 +0200
+
+gtkmathview (0.2.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Stefano Zacchiroli <zack@debian.org>  Thu,  5 Apr 2001 10:05:16 +0200
 
 Local variables:
 mode: debian-changelog
-add-log-mailing-address "zacchiro@cs.unibo.it"
 End:

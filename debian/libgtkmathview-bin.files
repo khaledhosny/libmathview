@@ -1,2 +1,3 @@
 usr/bin/mathml2ps
 usr/bin/mathmlviewer
+usr/share/gtkmathview/*
