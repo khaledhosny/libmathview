@@ -241,13 +241,13 @@ RenderingEnvironment::SetFontSize(const UnitValue& size)
   switch (size.GetUnitId()) {
   case UNIT_EM:
     {
-      float sppm = GetScaledPointsPerEm();
+      float sppm = sp2float(GetScaledPointsPerEm());
       top->fontAttributes.size.Set((size.GetValue() * sppm) / SCALED_POINTS_PER_PT, UNIT_PT);
     }
     break;
   case UNIT_EX:
     {
-      float sppx = GetScaledPointsPerEx();
+      float sppx = sp2float(GetScaledPointsPerEx());
       top->fontAttributes.size.Set((size.GetValue() * sppx) / SCALED_POINTS_PER_PT, UNIT_PT);
     }
     break;
@@ -433,8 +433,8 @@ RenderingEnvironment::ToScaledPoints(const UnitValue& value) const
 {
   assert(!value.IsPercentage());
 
-  float sppm = GetScaledPointsPerEm();
-  float sppx = GetScaledPointsPerEx();
+  float sppm = sp2float(GetScaledPointsPerEm());
+  float sppx = sp2float(GetScaledPointsPerEx());
 
   return value.ToScaledPoints(sppm, sppx);
 }

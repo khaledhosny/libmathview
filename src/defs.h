@@ -37,12 +37,12 @@
 // changed these defs to float value, this will shut 
 // up the compliler complaining about double to float conversions
 
-#define SCALED_POINTS_PER_MM  186467.98f
-#define SCALED_POINTS_PER_CM 1864679.8f
-#define SCALED_POINTS_PER_PT   65536.0f
-#define SCALED_POINTS_PER_PC  786432.0f
+#define SCALED_POINTS_PER_PT (1 << scaled::getPrecision())
 #define SCALED_POINTS_PER_IN (SCALED_POINTS_PER_PT * 72.27f)
 #define SCALED_POINTS_PER_PX (SCALED_POINTS_PER_IN / DPI)
+#define SCALED_POINTS_PER_CM (SCALED_POINTS_PER_IN / 2.54f)
+#define SCALED_POINTS_PER_MM (SCALED_POINTS_PER_CM / 10.0f)
+#define SCALED_POINTS_PER_PC  786432.0f
 
 #define DEFAULT_FONT_SIZE         12
 #define DEFAULT_LINK_FOREGROUND   MKRGB(50, 100, 139)

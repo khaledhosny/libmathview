@@ -846,7 +846,7 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
 
   adj->lower = 0.0;
   adj->page_size = page_size;
-  adj->step_increment = px2sp(10);
+  adj->step_increment = sp2float(px2sp(10));
   adj->page_increment = page_size;
   adj->upper = size;
   if (adj->upper < 0) adj->upper = 0.0;
@@ -884,7 +884,7 @@ setup_adjustments(GtkMathView* math_view)
   math_view->interface->GetDocumentBoundingBox(box);
 
   if (math_view->hadjustment != NULL) {
-    gfloat width = sp2float(box.width) + px2sp(2 * MARGIN);
+    gfloat width = sp2float(box.width) + sp2float(px2sp(2 * MARGIN));
     gfloat page_width = sp2float(math_view->drawing_area->GetWidth());
     
     if (math_view->top_x > width - page_width)
@@ -894,7 +894,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    gfloat height = sp2float(box.GetHeight()) + px2sp(2 * MARGIN);
+    gfloat height = sp2float(box.GetHeight()) + sp2float(px2sp(2 * MARGIN));
     gfloat page_height = sp2float(math_view->drawing_area->GetHeight());
 
     if (math_view->top_y > height - page_height)
@@ -1238,8 +1238,8 @@ gtk_math_view_set_top(GtkMathView* math_view, gint x, gint y)
   g_return_if_fail(math_view->vadjustment != NULL);
   g_return_if_fail(math_view->hadjustment != NULL);
 
-  math_view->hadjustment->value = px2sp(x);
-  math_view->vadjustment->value = px2sp(y);
+  math_view->hadjustment->value = sp2float(px2sp(x));
+  math_view->vadjustment->value = sp2float(px2sp(y));
 
   gtk_adjustment_value_changed(math_view->hadjustment);
   gtk_adjustment_value_changed(math_view->vadjustment);

@@ -23,6 +23,8 @@
 #include <config.h>
 #include <stdio.h>
 
+#include <algorithm>
+
 #include "Rectangle.hh"
 #include "BoundingBox.hh"
 
@@ -35,7 +37,7 @@ BoundingBox::Null()
 }
 
 void
-BoundingBox::Set(scaled w, scaled a, scaled d, scaled l, scaled r)
+BoundingBox::Set(const scaled& w, const scaled& a, const scaled& d, const scaled& l, const scaled& r)
 {
   null     = false;
   width    = w;
@@ -54,15 +56,15 @@ BoundingBox::Append(const BoundingBox& box)
     Set(box.width, box.ascent, box.descent, box.lBearing, box.rBearing);
   else
     {
-      ascent   = scaledMax(ascent, box.ascent);
-      descent  = scaledMax(descent, box.descent);
+      ascent   = std::max(ascent, box.ascent);
+      descent  = std::max(descent, box.descent);
       rBearing = width + box.rBearing;
       width += box.width;
     }
 }
 
 void
-BoundingBox::Append(scaled w)
+BoundingBox::Append(const scaled& w)
 {
   width += w;
 }
@@ -77,15 +79,15 @@ BoundingBox::Max(const BoundingBox& box)
     return;
   }
 
-  ascent = scaledMax(ascent, box.ascent);
-  descent = scaledMax(descent, box.descent);
-  width = scaledMax(width, box.width);
-  lBearing = scaledMin(lBearing, box.lBearing);
-  rBearing = scaledMax(rBearing, box.rBearing);
+  ascent = std::max(ascent, box.ascent);
+  descent = std::max(descent, box.descent);
+  width = std::max(width, box.width);
+  lBearing = std::min(lBearing, box.lBearing);
+  rBearing = std::max(rBearing, box.rBearing);
 }
 
 Rectangle
-BoundingBox::GetRectangle(scaled x, scaled y) const
+BoundingBox::GetRectangle(const scaled& x, const scaled& y) const
 {
   Rectangle rect;
   rect.x = x;

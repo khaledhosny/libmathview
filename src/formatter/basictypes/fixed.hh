@@ -88,15 +88,15 @@ template <typename T, int p>
 inline fixed<T,p>
 abs(const fixed<T,p>& f)
 { 
-  return fixed<T,p>(std::abs(f.value));
+  return fixed<T,p>(std::abs(f.value), true);
 }
 
 template <typename T, int p>
 inline fixed<T,p>
 trunc(const fixed<T,p>& f)
 {
-  if (f.value > 0) return fixed<T,p>(f.value & ~(fixed<T,p>::one().value - 1));
-  else return fixed<T,p>(f.value | (fixed<T,p>::one().value - 1));
+  if (f.value > 0) return fixed<T,p>(f.value & ~(fixed<T,p>::one().value - 1), true);
+  else return fixed<T,p>(f.value | (fixed<T,p>::one().value - 1), true);
 }
 
 template <typename T, int p>
@@ -127,82 +127,82 @@ template <typename T, int p>
 inline fixed<T,p> 
 operator+(const fixed<T,p>& f1, const fixed<T,p>& f2)
 {
-  return fixed<T,p>(f1.value + f2.value);
+  return fixed<T,p>(f1.value + f2.value, true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p>
 operator-(const fixed<T,p>& f1, const fixed<T,p>& f2)
 {
-  return fixed<T,p>(f1.value - f2.value);
+  return fixed<T,p>(f1.value - f2.value, true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p> 
 operator-(const fixed<T,p>& f)
 { 
-  return fixed<T,p>(-f.value);
+  return fixed<T,p>(-f.value, true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p> 
 operator*(const fixed<T,p>& f, int v) 
 { 
-  return fixed<T,p>(f.value * v);
+  return fixed<T,p>(f.value * v, true);
 }
 
 template <typename T, int p> fixed<T,p> 
 operator*(const fixed<T,p>& f, float v)
 {
-  return fixed<T,p>(static_cast<T>(f.value * v));
+  return fixed<T,p>(static_cast<T>(f.value * v), true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p>
 operator*(const fixed<T,p>& f, double v) 
 { 
-  return fixed<T,p>(static_cast<T>(f.value * v));
+  return fixed<T,p>(static_cast<T>(f.value * v), true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p> 
 operator/(const fixed<T,p>& f, int v)
 { 
-  return fixed<T,p>(f.value / v);
+  return fixed<T,p>(f.value / v, true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p> 
 operator/(const fixed<T,p>& f, float v)
 {
-  return fixed<T,p>(static_cast<T>(f.value / v));
+  return fixed<T,p>(static_cast<T>(f.value / v), true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p> 
 operator/(const fixed<T,p>& f, double v)
 {
-  return fixed<T,p>(static_cast<T>(f.value / v));
+  return fixed<T,p>(static_cast<T>(f.value / v), true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p> 
 operator*(int v, const fixed<T,p>& f) 
 { 
-  return fixed<T,p>(f.value * v);
+  return fixed<T,p>(f.value * v, true);
 }
 
 template <typename T, int p> fixed<T,p> 
 operator*(float v, const fixed<T,p>& f)
 {
-  return fixed<T,p>(static_cast<T>(f.value * v));
+  return fixed<T,p>(static_cast<T>(f.value * v), true);
 }
 
 template <typename T, int p> 
 inline fixed<T,p>
 operator*(double v, const fixed<T,p>& f) 
 { 
-  return fixed<T,p>(static_cast<T>(f.value * v));
+  return fixed<T,p>(static_cast<T>(f.value * v), true);
 }
 
 template<typename S, int p> 

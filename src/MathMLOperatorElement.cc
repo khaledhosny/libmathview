@@ -291,7 +291,7 @@ MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool str
     desiredSize = scaledMax(desiredSize - pt2sp(5), ((desiredSize * 901) / 1000));
   Globals::logger(LOG_DEBUG, "%d will be enough!", sp2ipx(desiredSize));
 
-  desiredSize = scaledMax(SP_EPSILON, desiredSize);
+  desiredSize = scaledMax(0, desiredSize);
 
   // ...however, there may be some contraints over the size of the stretchable
   // operator. adjustedSize will be the final allowed size for the operator
@@ -301,13 +301,13 @@ MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool str
   scaled adjustedSize = desiredSize;
 
   if (minMultiplier > 0)
-    adjustedSize = scaledMax(adjustedSize, float2sp(minHeight * minMultiplier));
+    adjustedSize = scaledMax(adjustedSize, minHeight * minMultiplier);
   else
     adjustedSize = scaledMax(adjustedSize, minSize);
 
   if (!infiniteMaxSize) {
     if (maxMultiplier > 0)
-      adjustedSize = scaledMin(adjustedSize, float2sp(minHeight * maxMultiplier));
+      adjustedSize = scaledMin(adjustedSize, minHeight * maxMultiplier);
     else
       adjustedSize = scaledMin(adjustedSize, maxSize);
   }
@@ -357,7 +357,7 @@ MathMLOperatorElement::HorizontalStretchTo(scaled width, bool strict)
 
   scaled desiredSize = width;
 
-  desiredSize = scaledMax(SP_EPSILON, desiredSize);
+  desiredSize = scaledMax(0, desiredSize);
 
   // ...however, there may be some contraints over the size of the stretchable
   // operator. adjustedSize will be the final allowed size for the operator
@@ -365,13 +365,13 @@ MathMLOperatorElement::HorizontalStretchTo(scaled width, bool strict)
   scaled adjustedSize = desiredSize;
 
   if (minMultiplier > 0)
-    adjustedSize = scaledMax(adjustedSize, float2sp(minWidth * minMultiplier));
+    adjustedSize = scaledMax(adjustedSize, minWidth * minMultiplier);
   else
     adjustedSize = scaledMax(adjustedSize, minSize);
 
   if (!infiniteMaxSize) {
     if (maxMultiplier > 0)
-      adjustedSize = scaledMin(adjustedSize, float2sp(minWidth * maxMultiplier));
+      adjustedSize = scaledMin(adjustedSize, minWidth * maxMultiplier);
     else
       adjustedSize = scaledMin(adjustedSize, minSize);
   }

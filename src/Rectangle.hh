@@ -37,19 +37,13 @@ struct Rectangle {
     return Overlaps(rect.x, rect.y, rect.width, rect.height);
   }
 
-  bool Overlaps(scaled x0, scaled y0, scaled w0, scaled h0) const {
-    return
-      scaledLeq(x, x0 + w0) && scaledGeq(x + width, x0) &&
-      scaledLeq(y, y0 + h0) && scaledGeq(y + height, y0);
-  }
+  bool Overlaps(const scaled& x0, const scaled& y0, const scaled& w0, const scaled& h0) const
+  { return x <= x0 + w0 && x + width >= x0 && y <= y0 + h0 && y + height >= y0; }
 
-  bool IsNull(void) const { return (width < EPSILON) || (height < EPSILON); }
+  bool IsNull(void) const { return (width == scaled(0)) || (height == scaled(0)); }
 
-  bool IsInside(scaled x0, scaled y0) const {
-    return
-      scaledIn(x0, x, x + width) &&
-      scaledIn(y0, y, y + height);
-  }
+  bool IsInside(const scaled& x0, const scaled& y0) const
+  { return x <= x0 && x0 <= x + width && y <= y0 && y0 <= y + height; }
 
   void Union(const Rectangle&);
 

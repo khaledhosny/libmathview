@@ -178,8 +178,8 @@ DrawingArea::Update() const
 void
 DrawingArea::SetSize(scaled w, scaled h)
 {
-  assert(w > 0);
-  assert(h > 0);
+  assert(w != scaled(0));
+  assert(h != scaled(0));
 
   width = w;
   height = h;

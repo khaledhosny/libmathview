@@ -41,13 +41,13 @@ struct BoundingBox {
   scaled GetWidth(void) const { return width; }
   scaled GetHeight(void) const { return ascent + descent; }
 
-  void Set(scaled w, scaled a, scaled d) { Set(w, a, d, 0, w); }
-  void Set(scaled, scaled, scaled, scaled, scaled);
+  void Set(const scaled& w, const scaled& a, const scaled& d) { Set(w, a, d, 0, w); }
+  void Set(const scaled&, const scaled&, const scaled&, const scaled&, const scaled&);
   void Append(const BoundingBox&);
-  void Append(scaled);
+  void Append(const scaled&);
   void Max(const BoundingBox&);
 
-  struct Rectangle GetRectangle(scaled, scaled) const;
+  struct Rectangle GetRectangle(const scaled&, const scaled&) const;
 
   void Dump(void) const;
 };

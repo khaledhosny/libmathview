@@ -121,16 +121,15 @@ struct TableColumn {
   unsigned nAlignGroup;         // number of alignment groups within this column
 
   ColumnWidthId widthType;      // type of width computation for this column
-  union {
-    scaled      fixedWidth;     // when widthType = COLUMN_WIDTH_FIXED
-    float       scaleWidth;     // width (when widthType == % )
-  };
+  // NOTE: had to remove the union since the new scaled data type
+  // has a constructor
+  scaled      fixedWidth;     // when widthType = COLUMN_WIDTH_FIXED
+  float       scaleWidth;     // width (when widthType == % )
 
   SpacingId     spacingType;    // type of spacing
-  union {
-    scaled      fixedSpacing;   // spacing between columns (spacingType == FIXED)
-    float       scaleSpacing;   // spacing (spacingType == %)
-  };
+  // NOTE: same as above
+  scaled      fixedSpacing;   // spacing between columns (spacingType == FIXED)
+  float       scaleSpacing;   // spacing (spacingType == %)
   
   TableLineId   lineType;       // line type between columns
 
@@ -154,10 +153,8 @@ struct TableRow {
   Ptr<MathMLTableRowElement> mtr;   // Table Row element
 
   SpacingId   spacingType;      // type of spacing (absolute or %)
-  union {
-    scaled    fixedSpacing;     // spacing between rows (spacingType == FIXED)
-    float     scaleSpacing;     // spacing between rows (spacingType == %)
-  };
+  scaled    fixedSpacing;     // spacing between rows (spacingType == FIXED)
+  float     scaleSpacing;     // spacing between rows (spacingType == %)
 
   TableLineId lineType;         // line type between rows
 
@@ -307,24 +304,18 @@ private:
   int           rowNumber;
 
   WidthId       widthType;
-  union {
-    scaled      fixedWidth;
-    float       scaleWidth;
-  };
+  scaled      fixedWidth;
+  float       scaleWidth;
   scaled        width;
 
   SpacingId     frameHorizontalSpacingType;
-  union {
-    scaled      frameHorizontalFixedSpacing;
-    float       frameHorizontalScaleSpacing;
-  };
+  scaled      frameHorizontalFixedSpacing;
+  float       frameHorizontalScaleSpacing;
   scaled        frameHorizontalSpacing; // actual orizontal spacing
 
   SpacingId     frameVerticalSpacingType;
-  union {
-    scaled      frameVerticalFixedSpacing;
-    float       frameVerticalScaleSpacing;
-  };
+  scaled      frameVerticalFixedSpacing;
+  float       frameVerticalScaleSpacing;
   scaled        frameVerticalSpacing; // actual vertical spacing
 
   bool          equalRows;
@@ -334,10 +325,8 @@ private:
   TableSideId   side;
 
   SpacingId     minLabelSpacingType;
-  union {
-    scaled      minLabelFixedSpacing;
-    float       minLabelScaleSpacing;
-  };
+  scaled      minLabelFixedSpacing;
+  float       minLabelScaleSpacing;
   scaled        minLabelSpacing;
 
   // bool          overlappingLabels;

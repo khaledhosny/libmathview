@@ -270,7 +270,7 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 	scaled v = minShift;
 #endif // TEXISH_MATHML
 
-	if (lineThickness < EPSILON) {
+	if (lineThickness == scaled(0)) {
 #ifdef TEXISH_MATHML
 	  scaled psi = (displayStyle ? 7 : 3) * defaultRuleThickness;
 #else
@@ -286,10 +286,10 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 	  scaled phi = displayStyle ? 3 * lineThickness : lineThickness;
 
 	  scaled diff = phi - ((u - numBox.descent) - (axis + lineThickness / 2));
-	  if (diff > 0) u += diff;
+	  if (diff > scaled(0)) u += diff;
 
 	  diff = phi - ((axis - lineThickness / 2) - (denomBox.ascent - v));
-	  if (diff > 0) v += diff;
+	  if (diff > scaled(0)) v += diff;
 	}
 
 	numShift   = u;
@@ -379,7 +379,7 @@ MathMLFractionElement::Render(const DrawingArea& area)
       numerator->Render(area);
       denominator->Render(area);
 
-      if (lineThickness > SP_EPSILON)
+      if (lineThickness != scaled(0))
 	{
 	  if (bevelled)
 	    {

@@ -222,16 +222,16 @@ MathMLPaddedElement::EvalLengthDimension(scaled orig,
 
   if (dim.pseudo) {
     switch (dim.pseudoUnitId) {
-    case KW_WIDTH: res *= b.width; break;
+    case KW_WIDTH: res *= sp2float(b.width); break;
     case KW_LSPACE: res *= 0; break; // LUCA: BoundingBox does not have a lspace length!!!
-    case KW_HEIGHT: res *= b.ascent; break;
-    case KW_DEPTH: res *= b.descent; break;
+    case KW_HEIGHT: res *= sp2float(b.ascent); break;
+    case KW_DEPTH: res *= sp2float(b.descent); break;
     default:
       assert(IMPOSSIBLE);
       break;
     }
   } else {
-    res *= dim.unit;
+    res *= sp2float(dim.unit);
   }
 
   if      (dim.sign == -1) return orig - float2sp(res);

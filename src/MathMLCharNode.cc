@@ -246,14 +246,14 @@ MathMLCharNode::DoVerticalStretchyLayoutAux(scaled desiredSize, bool)
   if (nch[SC_REPEAT] != NULLCHAR)
     font->CharBox(nch[SC_REPEAT], layout->box[SC_REPEAT]);
 
-  if (nch[SC_REPEAT] != NULLCHAR && layout->box[SC_REPEAT].GetHeight() > SP_EPSILON) {
+  if (nch[SC_REPEAT] != NULLCHAR && layout->box[SC_REPEAT].GetHeight() > scaled(0)) {
     width = scaledMax(width, layout->box[SC_REPEAT].width);
     lBearing = scaledMin(lBearing, layout->box[SC_REPEAT].lBearing);
     rBearing = scaledMax(rBearing, layout->box[SC_REPEAT].rBearing);
-    while (desiredSize - size > SP_EPSILON) {
-      unsigned step = (nch[SC_MIDDLE] == NULLCHAR) ? 1 : 2;
+    while (desiredSize - size > scaled(0)) {
+      int step = (nch[SC_MIDDLE] == NULLCHAR) ? 1 : 2;
       layout->n += step;
-      size += step * layout->box[SC_REPEAT].GetHeight();
+      size += layout->box[SC_REPEAT].GetHeight() * step;
     }
   }
 
@@ -328,8 +328,8 @@ MathMLCharNode::DoHorizontalStretchyLayoutAux(scaled desiredSize, bool)
   if (nch[SC_REPEAT] != NULLCHAR)
     font->CharBox(nch[SC_REPEAT], layout->box[SC_REPEAT]);
 
-  if (nch[SC_REPEAT] != NULLCHAR && layout->box[SC_REPEAT].width > SP_EPSILON) {
-    while (desiredSize - charBox.width > SP_EPSILON) {
+  if (nch[SC_REPEAT] != NULLCHAR && layout->box[SC_REPEAT].width > scaled(0)) {
+    while (desiredSize - charBox.width > scaled(0)) {
       unsigned step = (nch[SC_MIDDLE] == NULLCHAR) ? 1 : 2;
       layout->n += step;
       charBox.Append(layout->box[SC_REPEAT]);

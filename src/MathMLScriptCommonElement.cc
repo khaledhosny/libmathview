@@ -105,7 +105,7 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
 	      v = 4 * ruleThickness - u + superScriptBox.descent + subScriptBox.ascent;
 
 	      scaled psi = (4 * sppex) / 5 - (u - superScriptBox.descent);
-	      if (psi > 0)
+	      if (psi > scaled(0))
 		{
 		  u += psi;
 		  v -= psi;
