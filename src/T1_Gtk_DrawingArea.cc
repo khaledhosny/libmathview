@@ -31,7 +31,7 @@
 #include <t1lib.h>
 #include <t1libx.h>
 
-#include <gdk/gdkprivate.h>
+#include <gdk/gdkx.h>
 
 #include "T1_Font.hh"
 #include "Globals.hh"
@@ -63,18 +63,21 @@ T1_Gtk_DrawingArea::Realize()
       exit(-1);
     }
 
-    GdkWindowPrivate* pwindow = (GdkWindowPrivate*) gtk_widget->window;
-    assert(pwindow != NULL);
-    GdkColormapPrivate* pcolormap = (GdkColormapPrivate*) gtk_widget_get_colormap(gtk_widget);
-    assert(pcolormap != NULL);
-    GdkVisualPrivate* pvisual = (GdkVisualPrivate*) pcolormap->visual;
-    assert(pvisual != NULL);
+    Display* xdisplay = GDK_DRAWABLE_XDISPLAY(gtk_widget->window);
+    assert(xdisplay != NULL);
+    GdkColormap* colormap = gtk_widget_get_colormap(gtk_widget);
+    assert(colormap != NULL);
+    Colormap xcolormap = GDK_COLORMAP_XCOLORMAP(colormap);
+    GdkVisual* visual = gdk_colormap_get_visual(colormap);
+    assert(visual != NULL);
+    Visual* xvisual = GDK_VISUAL_XVISUAL(visual);
+    assert(xvisual != NULL);
 
-    T1_AASetBitsPerPixel(pvisual->visual.depth);
-    Globals::logger(LOG_DEBUG, "X11 depth: %d", pvisual->visual.depth);
+    T1_AASetBitsPerPixel(visual->depth);
+    Globals::logger(LOG_DEBUG, "X11 depth: %d", visual->depth);
     Globals::logger(LOG_DEBUG, "X11 AAGetLevel() --> %d", T1_AAGetLevel());
     Globals::logger(LOG_DEBUG, "X11 AAGetBitsPerPixel() --> %d", T1_AAGetBitsPerPixel());
-    T1_SetX11Params(pwindow->xdisplay, pvisual->xvisual, pvisual->visual.depth, pcolormap->xcolormap);
+    T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
 
     firstTime = false;
   }
@@ -96,18 +99,15 @@ T1_Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
     return;
   }
 
-  GdkGCPrivate* pgc = (GdkGCPrivate*) gtk_gc->GetNativeGraphicsContext();
-  assert(pgc != NULL);
-
-  GdkPixmapPrivate* ppixmap = (GdkPixmapPrivate*) gdk_pixmap;
-  assert(ppixmap != NULL);
+  GC xgc = GDK_GC_XGC(gtk_gc->GetNativeGraphicsContext());
+  XID xdrawable = GDK_DRAWABLE_XID(gdk_pixmap);
 
   if (antiAliasing)
-    T1_AASetCharX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_AASetCharX(xdrawable, xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), ch, t1_font->GetScale(),
 		  NULL);
   else
-    T1_SetCharX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_SetCharX(xdrawable, xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		t1_font->GetNativeFontId(), ch, t1_font->GetScale(),
 		NULL);
 }
@@ -131,18 +131,15 @@ T1_Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
     return;
   }
 
-  GdkGCPrivate* pgc = (GdkGCPrivate*) gtk_gc->GetNativeGraphicsContext();
-  assert(pgc != NULL);
-
-  GdkPixmapPrivate* ppixmap = (GdkPixmapPrivate*) gdk_pixmap;
-  assert(ppixmap != NULL);
+  GC xgc = GDK_GC_XGC(gtk_gc->GetNativeGraphicsContext());
+  XID xdrawable = GDK_DRAWABLE_XID(gdk_pixmap);
 
   if (antiAliasing)
-    T1_AASetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_AASetStringX(xdrawable, xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		    t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
 		    0, t1_font->GetScale(), NULL);
   else
-    T1_SetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
+    T1_SetStringX(xdrawable, xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
 		  0, t1_font->GetScale(), NULL);
 }
