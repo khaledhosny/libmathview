@@ -305,6 +305,7 @@ gtk_math_view_init(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
 
+  math_view->pixmap       = NULL;
   math_view->drawing_area = NULL;
   math_view->interface    = NULL;
   math_view->select       = FALSE;
@@ -379,7 +380,7 @@ gtk_math_view_new(GtkAdjustment* hadj, GtkAdjustment* vadj, gboolean t1_font_man
       new T1_Gtk_DrawingArea(values, px2sp(5), px2sp(5), GTK_WIDGET(math_view->area),
 			     BLACK_COLOR, RGB(135, 206, 250));
   else
-#endif
+#endif // HAVE_LIBT1
     math_view->drawing_area =
       new Gtk_DrawingArea(values, px2sp(5), px2sp(5), GTK_WIDGET(math_view->area),
 			  BLACK_COLOR, RGB(135, 206, 250));
@@ -1007,6 +1008,18 @@ gtk_math_view_get_log_verbosity(GtkMathView* math_view)
   g_return_val_if_fail(math_view->interface != NULL, 0);
 
   return math_view->interface->GetVerbosity();
+}
+
+extern "C" void
+gtk_math_view_set_font_manager(GtkMathView* math_view, gboolean t1_font_manager)
+{
+  g_return_if_fail(math_view != NULL);
+
+  math_view->interface->Setup();
+  math_view->interface->Layout();
+  setup_adjustments(math_view);
+
+  if (GTK_WIDGET_MAPPED(GTK_WIDGET(math_view))) paint_widget(math_view);
 }
 
 extern "C" void

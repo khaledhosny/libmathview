@@ -46,8 +46,7 @@ extern "C" {
   typedef struct _GtkMathView      GtkMathView;
   typedef struct _GtkMathViewClass GtkMathViewClass;
 
-  struct _GtkMathView
-  {
+  struct _GtkMathView {
     GtkEventBox    parent;
 
     GtkWidget* 	   frame;
@@ -75,8 +74,7 @@ extern "C" {
     struct MathEngine*      interface;
   };
 
-  struct _GtkMathViewClass
-  {
+  struct _GtkMathViewClass {
     GtkEventBoxClass parent_class;
 
     GdkCursor* normal_cursor;

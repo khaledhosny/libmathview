@@ -12,6 +12,7 @@ Optimizations
 
 * optimize scrolling, it seems to work fine now (see gtkmathview.cc) but
   it has to be tested more heavily
+* FontifiedString is no more necessary?
 
 Minor improvements
 
