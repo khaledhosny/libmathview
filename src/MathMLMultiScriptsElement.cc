@@ -158,6 +158,7 @@ MathMLMultiScriptsElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth
 		 subShiftX, subShiftY, superShiftX, superShiftY);
 
   box = base->GetBoundingBox();
+  box.width = scaledMax(subShiftX, superShiftX) + totalWidth;
 
   if (!subScriptBox.IsNull()) {
     box.ascent  = scaledMax(box.ascent, subScriptBox.ascent - subShiftY);
