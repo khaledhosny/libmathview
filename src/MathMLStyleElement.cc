@@ -77,6 +77,22 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
 {
   assert(env != NULL);
 
+  MathMLAttributeList attributes;
+
+  for (mDOMAttrRef attribute = mdom_node_get_first_attribute(GetDOMNode());
+       attribute != NULL;
+       attribute = mdom_attr_get_next_sibling(attribute)) {
+    AttributeId id = AttributeIdOfName(C_CONST_STRING(mdom_attr_get_name(attribute)));
+    if (id != ATTR_NOTVALID) {
+      mDOMStringRef value = mdom_attr_get_value(attribute);
+      String* sValue = allocString(value);
+      attributes.Append(new MathMLAttribute(id, sValue));
+      mdom_string_free(value);
+    }
+  }
+  
+  env->Push(&attributes);
+
   const Value* value = NULL;
 
   value = GetAttributeValue(ATTR_DISPLAYSTYLE, NULL, false);
@@ -159,22 +175,6 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
 
   value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
   if (value != NULL) env->SetFontStyle(ToFontStyleId(value));
-
-  MathMLAttributeList attributes;
-
-  for (mDOMAttrRef attribute = mdom_node_get_first_attribute(GetDOMNode());
-       attribute != NULL;
-       attribute = mdom_attr_get_next_sibling(attribute)) {
-    AttributeId id = AttributeIdOfName(C_CONST_STRING(mdom_attr_get_name(attribute)));
-    if (id != ATTR_NOTVALID) {
-      mDOMStringRef value = mdom_attr_get_value(attribute);
-      String* sValue = allocString(value);
-      attributes.Append(new MathMLAttribute(id, sValue));
-      mdom_string_free(value);
-    }
-  }
-  
-  env->Push(&attributes);
 
   MathMLNormalizingContainerElement::Setup(env);
 

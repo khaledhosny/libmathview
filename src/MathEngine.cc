@@ -260,7 +260,7 @@ MathEngine::SelectMinimumTree(MathMLElement* first, MathMLElement* last)
 void
 MathEngine::SetSelectionLast(scaled x, scaled y)
 {
-  if (selectionFirst == NULL);
+  if (selectionFirst == NULL) return;
 
   MathMLElement* selectionLast = GetElementAt(x, y);
   if (selectionLast == NULL) return;

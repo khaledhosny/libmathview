@@ -543,7 +543,7 @@ fi
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=2
-MATHVIEW_MICRO_VERSION=1
+MATHVIEW_MICRO_VERSION=2
 MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
 
@@ -2823,10 +2823,9 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lgtk `gtk-config --libs`
- $LIBS"
+LIBS="-lgtk `gtk-config --libs` $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 2830 "configure"
+#line 2829 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -2837,7 +2836,7 @@ int main() {
 gtk_window_new()
 ; return 0; }
 EOF
-if { (eval echo configure:2841: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2840: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -2852,20 +2851,24 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  		
-		CFLAGS="$CFLAGS `gtk-config --cflags`"
-		CXXFLAGS="$CXXFLAGS `gtk-config --cflags`"
-		LIBS="$LIBS `gtk-config --libs`"
-	
+  gtklib="yes"
 else
   echo "$ac_t""no" 1>&6
-echo "configure: warning: GTK is needed in order to use the widget" 1>&2
+gtklib="no"
 fi
 
 
+if test $gtklib = "yes"; then
+	CFLAGS="$CFLAGS `gtk-config --cflags`"
+	CXXFLAGS="$CXXFLAGS `gtk-config --cflags`"
+	LIBS="$LIBS `gtk-config --libs`"
+else
+	echo "configure: warning: GTK is needed in order to use the widget" 1>&2,
+fi
+
 if test $t1lib = "auto"; then
 	echo $ac_n "checking for T1_InitLib in -lt1""... $ac_c" 1>&6
-echo "configure:2869: checking for T1_InitLib in -lt1" >&5
+echo "configure:2872: checking for T1_InitLib in -lt1" >&5
 ac_lib_var=`echo t1'_'T1_InitLib | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -2873,7 +2876,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lt1  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 2877 "configure"
+#line 2880 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -2884,7 +2887,7 @@ int main() {
 T1_InitLib()
 ; return 0; }
 EOF
-if { (eval echo configure:2888: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2891: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else

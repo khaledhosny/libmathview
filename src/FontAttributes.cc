@@ -23,6 +23,7 @@
 #include <config.h>
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "Iterator.hh"
 #include "MathEngine.hh"

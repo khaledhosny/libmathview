@@ -25,6 +25,7 @@
 
 #include <stddef.h>
 #include <wctype.h>
+#include <string.h>
 
 #include "StringU.hh"
 

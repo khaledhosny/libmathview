@@ -24,6 +24,8 @@
 #include <assert.h>
 #include <iconv.h>
 #include <wctype.h>
+#include <string.h>
+#include <malloc.h>
 
 #include "stringAux.hh"
 #include "StringUnicode.hh"
@@ -73,7 +75,12 @@ String* allocString(mDOMConstStringRef str)
   static Char32 buffer[128];
   size_t inBytesLeft = strlen(s);
   size_t outBytesLeft = sizeof(buffer);
-  const char* inbuf = s;
+  /* LUCA: iconv changed and now the 2 argument of iconv is not a const
+   * pointer any more, so we have to make a duplicate of the string since
+   * it can be modified. What's going on?
+   */
+  char* inbuf = strdup(s);
+  char* inbuf0 = inbuf;
   char* outbuf = reinterpret_cast<char*>(buffer);
   char* outbuf0 = outbuf;
   size_t nConv = 0;
@@ -120,6 +127,9 @@ String* allocString(mDOMConstStringRef str)
   }
 
   if (res == NULL) res = new StringC("?");
+
+  /* see the note above */
+  free(inbuf0);
 
   return res;
 }

@@ -3,7 +3,7 @@ AC_INIT(src/MathMLObject.cc)
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=2
-MATHVIEW_MICRO_VERSION=1
+MATHVIEW_MICRO_VERSION=2
 MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
 
@@ -85,15 +85,15 @@ AC_CHECK_LIB(minidom, mdom_node_get_type,
 	`minidom-config --libs` `glib-config --libs`
 )
 
-AC_CHECK_LIB(gtk, gtk_window_new,
-	[		
-		CFLAGS="$CFLAGS `gtk-config --cflags`"
-		CXXFLAGS="$CXXFLAGS `gtk-config --cflags`"
-		LIBS="$LIBS `gtk-config --libs`"
-	],
+AC_CHECK_LIB(gtk, gtk_window_new, gtklib="yes", gtklib="no", `gtk-config --libs`)
+
+if test $gtklib = "yes"; then
+	CFLAGS="$CFLAGS `gtk-config --cflags`"
+	CXXFLAGS="$CXXFLAGS `gtk-config --cflags`"
+	LIBS="$LIBS `gtk-config --libs`"
+else
 	AC_MSG_WARN(GTK is needed in order to use the widget),
-	`gtk-config --libs`
-)
+fi
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no")

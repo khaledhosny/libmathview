@@ -230,8 +230,9 @@ gtk_math_view_get_type()
       sizeof(GtkMathViewClass),
       (GtkClassInitFunc) gtk_math_view_class_init,
       (GtkObjectInitFunc) gtk_math_view_init,
-      (GtkArgSetFunc) NULL,
-      (GtkArgGetFunc) NULL
+      NULL,
+      NULL,
+      NULL
     };
 
     math_view_type = gtk_type_unique(gtk_event_box_get_type(), &math_view_info);
