@@ -528,13 +528,14 @@ MathMLTableFormatter::initTempHeights(const scaled& axis)
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow())
       for (unsigned j = 0; j < columns.size(); j++)
-	if (const Cell& cell = getCell(i, j))
-	  if (cell.getRowSpan() == 1 && cell.getRowAlign() != T_BASELINE && cell.getRowAlign() != T_AXIS)
-	    {
-	      const BoundingBox box = cell.getBoundingBox();
-	      if ((rows[i].getTempHeight() + rows[i].getTempDepth()) < box.verticalExtent())
-		rows[i].setTempDepth(box.verticalExtent() - rows[i].getTempHeight());
-	    }
+	if (columns[j].isContentColumn())
+	  if (const Cell& cell = getCell(i, j))
+	    if (cell.getRowSpan() == 1 && cell.getRowAlign() != T_BASELINE && cell.getRowAlign() != T_AXIS)
+	      {
+		const BoundingBox box = cell.getBoundingBox();
+		if ((rows[i].getTempHeight() + rows[i].getTempDepth()) < box.verticalExtent())
+		  rows[i].setTempDepth(box.verticalExtent() - rows[i].getTempHeight());
+	      }
 	
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow())
@@ -579,6 +580,7 @@ MathMLTableFormatter::calcTableHeightDepthT(int& numRig, float& sumScale, scaled
       if (rows[i].isContentRow())
 	{
 	  numRig++;
+	  std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
 	  max = std::max(max, rows[i].getTempHeight() + rows[i].getTempDepth());
 	  sumContHD += rows[i].getTempHeight() + rows[i].getTempDepth();
 	}
@@ -619,16 +621,16 @@ MathMLTableFormatter::initHeightsT()
   scaled sumFixHD;
   scaled sumContHD;
 	
-  const scaled tableHeightDepth = calcTableHeightDepthT(numRows, sumScale, sumContHD, sumFixHD);
-	
-  const scaled assignedHeightDepth = sumFixHD + sumContHD + tableHeightDepth * sumScale;
+  const scaled tableHeightDepth = calcTableHeightDepthT(numRows, sumScale, sumContHD, sumFixHD);	
+  const scaled assignedHeightDepth = sumFixHD + tableHeightDepth * sumScale;
   const scaled availHeightDepth = tableHeightDepth - assignedHeightDepth;
 	
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow())
       {
 	rows[i].setHeight(rows[i].getTempHeight());	
-	rows[i].setDepth(availHeightDepth / numRows);
+	rows[i].setDepth(availHeightDepth / numRows - rows[i].getHeight());
+	std::cerr << "for row" << i << " HD = " << rows[i].getHeight() + rows[i].getDepth() << std::endl;
       }
     else if (rows[i].getSpec() == Row::FIX)
       {
