@@ -24,6 +24,7 @@
 
 #include "Gtk_WrapperArea.hh"
 #include "Gtk_RenderingContext.hh"
+#include "SearchingContext.hh"
 
 Gtk_WrapperArea::Gtk_WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Object>& el)
   : BoxArea(area, b), element(el)
@@ -37,6 +38,19 @@ Gtk_WrapperArea::render(RenderingContext& context, const scaled& x, const scaled
   // ...
   getChild()->render(context, x, y);
   // ...
+}
+
+bool
+Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
+{
+  if (context.accept(this, x, y))
+    {
+      if (!BoxArea::find(context, x, y))
+	context.setResult(this);
+      return true;
+    }
+  else
+    return BoxArea::find(context, x, y);
 }
 
 SmartPtr<Object>
