@@ -64,6 +64,17 @@
 /* Define if iconv has a const second argument */
 #undef ICONV_CONST
 
+#undef ICONV_UTF8
+#undef ICONV_UCS4
+
+#ifndef ICONV_UTF8
+#define ICONV_UTF8 "UTF-8"
+#endif
+
+#ifndef ICONV_UCS4
+#define ICONV_UCS4 "UCS-4"
+#endif
+
 @BOTTOM@
 
 #endif /* config_h */

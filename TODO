@@ -14,6 +14,18 @@ Optimizations
   it has to be tested more heavily
 * FontifiedString is no more necessary
 
+Major improvements
+
+* definitely use iostream
+* use STL for containers and generic algorithms
+* trying to optimize the search for a suitable font, which seems to be
+  the major source of inefficiency
+* remove String class and use a more efficient implementation, based on the
+  consideration that the only multi-char strings are only made of
+  plain characters (or better, alnum characters), and that all the other
+  characters (and stretchable chars) can be store with no significant waste
+  of space in a 32bit field
+
 Minor improvements
 
 * making script elements breakable

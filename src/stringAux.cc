@@ -62,7 +62,7 @@ String* allocString(mDOMConstStringRef str)
 
   static iconv_t cd;
   if (first) {
-    cd = iconv_open("UCS4", "UTF-8");
+    cd = iconv_open(ICONV_UCS4, ICONV_UTF8);
     assert(cd != (iconv_t) -1);
     first = false;
   }

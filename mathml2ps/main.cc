@@ -292,6 +292,7 @@ main(int argc, char *argv[])
     exit(1);
   }
   
+  MathEngine engine;
   MathEngine::InitGlobalData(configPath);
 
   UnitValue uWidth;
@@ -331,7 +332,6 @@ main(int argc, char *argv[])
     area.SetSize(w, h);
     if (!colors) area.DisableColors();
 
-    MathEngine engine;
     engine.Init(&area, &fm);
 
     engine.SetDefaultFontSize(fontSize);

@@ -72,6 +72,7 @@ AC_PROG_LN_S
 AC_ISC_POSIX
 AC_CHECK_PROG(HAVE_PFB2PFA, pfb2pfa, yes, no)
 AC_CHECK_PROG(HAVE_COLORGCC, colorgcc, yes, no)
+AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -85,6 +86,36 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
 AC_TYPE_PID_T
+
+dnl Check for iconv and code names
+AC_MSG_CHECKING(for iconv encodings)
+if test $HAVE_ICONV = "yes"; then
+	if iconv -f UTF-8 -t UCS-4 /dev/null; then
+		AC_DEFINE(ICONV_UTF8, "UTF-8")
+		AC_DEFINE(ICONV_UCS4, "UCS-4")
+		AC_MSG_RESULT(UTF-8 ==> UCS-4)
+	elif iconv -f UTF8 -t UCS-4 /dev/null; then
+		AC_DEFINE(ICONV_UTF8, "UTF8")
+		AC_DEFINE(ICONV_UCS4, "UCS-4")
+		AC_MSG_RESULT(UTF8 ==> UCS-4)
+	elif iconv -f UTF-8 -t UCS4; then
+		AC_DEFINE(ICONV_UTF8, "UTF-8")
+		AC_DEFINE(ICONV_UCS4, "UCS4")
+		AC_MSG_RESULT(UTF-8 ==> UCS4)
+	elif iconv -f UTF8 -t UCS4; then
+		AC_DEFINE(ICONV_UTF8, "UTF8")
+		AC_DEFINE(ICONV_UCS4, "UCS4")
+		AC_MSG_RESULT(UTF8 ==> UCS4)
+	else
+		AC_DEFINE(ICONV_UTF8, "UTF-8")
+		AC_DEFINE(ICONV_UCS4, "UCS-4")
+		AC_MSG_RESULT(not found, using default UTF-8 ==> UCS-4)
+	fi
+else	
+	AC_DEFINE(ICONV_UTF8, "UTF-8")
+	AC_DEFINE(ICONV_UCS4, "UCS-4")
+	AC_MSG_RESULT(not found, using default UTF-8 ==> UCS-4)
+fi
 
 dnl Check for iconv with const pointer as second argument
 AC_LANG_C
@@ -108,6 +139,13 @@ AC_TRY_COMPILE(
 AC_LANG_RESTORE
 
 dnl Checks for libraries
+AC_CHECK_LIB(iberty, getopt_long,
+	LIBS="$LIBS -liberty",
+	,
+	-liberty
+)
+AC_CHECK_FUNC(getopt_long)
+
 AC_CHECK_LIB(glib, g_malloc,
 	[
 		CFLAGS="$CFLAGS `glib-config --cflags`"

@@ -44,14 +44,15 @@ EntitiesTable::EntitiesTable()
 {
   repository = mdom_doc_new(DOM_CONST_STRING("1.0"));
   assert(repository != NULL);
-
   // this is a default entity used to avoid parser errors while
   // parsing unknown entities (see command line options)
   mdom_doc_add_entity(repository, XML_ERROR_ENTITY, DOM_CONST_STRING("?"));
+  printf("1 %p\n", repository);
 }
 
 EntitiesTable::~EntitiesTable()
 {
+  printf("2 %p\n", repository);
   mdom_doc_free(repository);
   repository = NULL;
 }
@@ -106,6 +107,7 @@ EntitiesTable::Load(const char* fileName, bool dump)
 void
 EntitiesTable::LoadInternalTable()
 {
+  printf("3 %p\n", repository);  
   for (unsigned i = 0; internalTable[i].name != NULL; i++) {
     mdom_doc_add_entity(repository,
 			DOM_CONST_STRING(internalTable[i].name),
