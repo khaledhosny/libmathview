@@ -19,6 +19,13 @@ AREAMODEL_VERSION_INFO=$MATHVIEW_VERSION_INFO
 AC_SUBST(AREAMODEL_VERSION_INFO)
 
 AC_ARG_ENABLE(
+	pipe,
+	[  --enable-pipe[=ARG]     enable the -pipe option in the GCC compiler [default=no]],
+	enable_pipe=$enableval,
+	enable_pipe=no
+)
+
+AC_ARG_ENABLE(
 	profile,
 	[  --enable-profile[=ARG]  include profiling information [default=no]],
 	profile=$enableval,
@@ -408,6 +415,11 @@ if test $profile = yes; then
 	CFLAFS="$CFLAGS -O0 -pg"
 	CXXFLAGS="$CXXFLAGS -O0 -pg"
 	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
+fi
+
+if test $enable_pipe = yes; then
+	CFLAGS="$CFLAGS -pipe"
+	CXXFLAGS="$CXXFLAGS -pipe"
 fi
 
 AC_CONFIG_FILES([
