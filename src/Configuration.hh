@@ -56,6 +56,7 @@ public:
   RGBValue GetBackground(void) const { return HasColor() ? background : DEFAULT_BACKGROUND; }
 
   bool     HasLinkColor(void) const { return linkColorSet; }
+  bool     HasTransparentLinkBackground(void) const { return transparentLinkBackground; }
   RGBValue GetLinkForeground(void) const { return HasLinkColor() ? linkForeground : DEFAULT_LINK_FOREGROUND; }
   RGBValue GetLinkBackground(void) const { return HasLinkColor() ? linkBackground : DEFAULT_LINK_BACKGROUND; }
 
@@ -70,6 +71,7 @@ private:
 #elif defined(HAVE_GMETADOM)
   void ParseConfiguration(const DOM::Element&);
   bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&);
+  bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&, bool&);
 #endif // HAVE_GMETADOM
 
   std::vector<String*> dictionaries;
@@ -87,6 +89,7 @@ private:
   bool     linkColorSet;
   RGBValue linkForeground;
   RGBValue linkBackground;
+  bool     transparentLinkBackground;
 
   bool     selectColorSet;
   RGBValue selectForeground;

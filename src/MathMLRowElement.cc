@@ -35,6 +35,7 @@
 #include "traverseAux.hh"
 #include "MathMLDocument.hh"
 #include "MathMLRowElement.hh"
+#include "MathMLBreakableRowElement.hh"
 #include "MathMLSpaceElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
@@ -52,6 +53,26 @@ MathMLRowElement::MathMLRowElement(const DOM::Element& node)
 
 MathMLRowElement::~MathMLRowElement()
 {
+}
+
+Ptr<MathMLElement>
+MathMLRowElement::create()
+{
+#if defined(ENABLE_BREAKS)
+  return MathMLBreakableRowElement::create();
+#else
+  return new MathMLRowElement();
+#endif
+}
+
+Ptr<MathMLElement>
+MathMLRowElement::create(const DOM::Element& el)
+{
+#if defined(ENABLE_BREAKS)
+  return MathMLBreakableRowElement::create(el);
+#else
+  return new MathMLRowElement(el);
+#endif
 }
 
 #if 0

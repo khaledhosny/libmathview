@@ -79,8 +79,8 @@ MathMLUnderOverElement::SetBase(const Ptr<MathMLElement>& elem)
 {
   if (elem != base)
     {
-      if (base) base->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (base) base->Unlink();
+      if (elem) elem->Link(this);
       base = elem;
       SetDirtyLayout();
     }
@@ -91,8 +91,8 @@ MathMLUnderOverElement::SetUnderScript(const Ptr<MathMLElement>& elem)
 {
   if (elem != underScript)
     {
-      if (underScript) underScript->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (underScript) underScript->Unlink();
+      if (elem) elem->Link(this);
       underScript = elem;
       SetDirtyLayout();
     }
@@ -103,8 +103,8 @@ MathMLUnderOverElement::SetOverScript(const Ptr<MathMLElement>& elem)
 {
   if (elem != overScript)
     {
-      if (overScript) overScript->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (overScript) overScript->Unlink();
+      if (elem) elem->Link(this);
       overScript = elem;
       SetDirtyLayout();
     }

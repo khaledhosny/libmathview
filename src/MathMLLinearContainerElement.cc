@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "for_each_if.h"
 #include "Adaptors.hh"
 #include "ChildList.hh"
 #include "RenderingEnvironment.hh"
@@ -84,7 +85,7 @@ MathMLLinearContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
       // it is better to normalize elements only after all the rendering
       // interfaces have been collected, because the structure might change
       // depending on the actual number of children
-      std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(NormalizeAdaptor(), doc));
       ResetDirtyStructure();
     }
 }
@@ -95,7 +96,7 @@ MathMLLinearContainerElement::Setup(RenderingEnvironment& env)
   if (DirtyAttribute() || DirtyAttributeP())
     {
       background = env.GetBackgroundColor();
-      std::for_each(content.begin(), content.end(), std::bind2nd(SetupAdaptor(), &env));
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetupAdaptor(), &env));
       ResetDirtyAttribute();
     }
 }
@@ -105,7 +106,7 @@ MathMLLinearContainerElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt))
     {
-      std::for_each(content.begin(), content.end(), std::bind2nd(DoLayoutAdaptor(), &ctxt));
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(DoLayoutAdaptor(), &ctxt));
       ResetDirtyLayout(ctxt);
     }
 }
@@ -116,7 +117,7 @@ MathMLLinearContainerElement::Render(const DrawingArea& area)
   if (Dirty())
     {
       RenderBackground(area);
-      std::for_each(content.begin(), content.end(), std::bind2nd(RenderAdaptor(), &area));
+      for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(RenderAdaptor(), &area));
       ResetDirty();
     }
 }
@@ -143,7 +144,7 @@ void
 MathMLLinearContainerElement::ReleaseGCs()
 {
   MathMLElement::ReleaseGCs();
-  std::for_each(content.begin(), content.end(), ReleaseGCsAdaptor());
+  for_each_if(content.begin(), content.end(), NotNullPredicate(), ReleaseGCsAdaptor());
 }
 
 void
@@ -174,8 +175,8 @@ MathMLLinearContainerElement::SetChild(unsigned i, const Ptr<MathMLElement>& ele
   else if (content[i] != elem)
     {
       assert(!elem || !elem->GetParent());
-      if (content[i]) content[i]->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (content[i]) content[i]->Unlink();
+      if (elem) elem->Link(this);
       content[i] = elem;
       SetDirtyLayout();
     }
@@ -185,7 +186,7 @@ void
 MathMLLinearContainerElement::Append(const Ptr<MathMLElement>& elem)
 {
   assert(!elem->GetParent());
-  elem->SetParent(this);
+  elem->Link(this);
   content.push_back(elem);
   SetDirtyLayout();
 }
@@ -210,14 +211,14 @@ MathMLLinearContainerElement::SwapChildren(std::vector< Ptr<MathMLElement> >& ne
       for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
 	   p != content.end();
 	   p++)
-	(*p)->SetParent(0);
+	(*p)->Unlink();
 
       for (std::vector< Ptr<MathMLElement> >::iterator p = newContent.begin();
 	   p != newContent.end();
 	   p++)
 	{
 	  assert(*p);
-	  (*p)->SetParent(this);
+	  (*p)->Link(this);
 	}
 
       content.swap(newContent);
@@ -261,12 +262,12 @@ void
 MathMLLinearContainerElement::SetFlagDown(Flags f)
 {
   MathMLElement::SetFlagDown(f);
-  std::for_each(content.begin(), content.end(), std::bind2nd(SetFlagDownAdaptor(), f));
+  for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(SetFlagDownAdaptor(), f));
 }
 
 void
 MathMLLinearContainerElement::ResetFlagDown(Flags f)
 {
   MathMLElement::ResetFlagDown(f);
-  std::for_each(content.begin(), content.end(), std::bind2nd(ResetFlagDownAdaptor(), f));
+  for_each_if(content.begin(), content.end(), NotNullPredicate(), std::bind2nd(ResetFlagDownAdaptor(), f));
 }

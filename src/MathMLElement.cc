@@ -313,7 +313,10 @@ MathMLElement::DoLayout(const FormattingContext& ctxt)
 void
 MathMLElement::RenderBackground(const DrawingArea& area)
 {
-  if (bGC[Selected()] == NULL)
+//   if (IsA() == TAG_MSTYLE)
+//     printf("=== %s %d %06x\n", NameOfTagId(IsA()), DirtyBackground(), background);
+
+  if (true||bGC[Selected()] == NULL)
     {
       GraphicsContextValues values;
       values.background = values.foreground = Selected() ? area.GetSelectionBackground() : background;
@@ -548,7 +551,7 @@ MathMLElement::SetFlag(Flags f)
 void
 MathMLElement::SetDirty(const Rectangle* rect)
 {
-  if (!Dirty())
+  if (true || !Dirty())
     {
       if (!rect || GetRectangle().Overlaps(*rect))
 	{
@@ -602,6 +605,23 @@ void
 MathMLElement::ResetFlagDown(Flags f)
 {
   ResetFlag(f);
+}
+
+void
+MathMLElement::Unlink()
+{ Link(0); }
+
+void
+MathMLElement::Link(const Ptr<MathMLElement>& p)
+{
+  // if the element is connected to another element, we remove it
+  // from there first. This is to ensure that no node of the tree is shared
+  if (Ptr<MathMLContainerElement> oldP = smart_cast<MathMLContainerElement>(GetParent()))
+    {
+      MathMLNode::SetParent(0); // this is to break the recursion!
+      oldP->Remove(this);
+    }
+  SetParent(p);
 }
 
 void

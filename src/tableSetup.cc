@@ -36,6 +36,7 @@
 void
 MathMLTableElement::Setup(RenderingEnvironment& env)
 {
+  //printf("redoing table setup %p %d %d\n", this, (DirtyAttribute() || DirtyAttributeP()), (row ? sp2ipx(row[0].GetHeight()) : -1));
   if (DirtyAttribute() || DirtyAttributeP())
     {
       color = env.GetColor();
@@ -69,7 +70,9 @@ MathMLTableElement::Setup(RenderingEnvironment& env)
 	}
 #endif
       ResetDirtyAttribute();
+      SetDirtyLayout(); // DIRTY PATCH!
     }
+  //printf("done table setup %p %d %d\n", this, (DirtyAttribute() || DirtyAttributeP()), (row ? sp2ipx(row[0].GetHeight()) : -1));
 }
 
 void

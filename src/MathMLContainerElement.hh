@@ -48,6 +48,7 @@ public:
   virtual scaled GetRightEdge(void) const = 0;
 
   virtual void Replace(const Ptr<class MathMLElement>&, const Ptr<class MathMLElement>&) = 0;
+  void Remove(const Ptr<class MathMLElement>& el) { Replace(el, 0); }
 };
 
 #endif // MathMLContainerElement_hh

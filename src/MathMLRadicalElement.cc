@@ -72,8 +72,8 @@ MathMLRadicalElement::SetRadicand(const Ptr<MathMLElement>& elem)
   if (elem != radicand)
     {
       assert(!elem->GetParent());
-      if (elem) elem->SetParent(this);
-      if (radicand) radicand->SetParent(0);
+      if (radicand) radicand->Unlink();
+      if (elem) elem->Link(this);
       radicand = elem;
       SetDirtyLayout();
     }
@@ -85,8 +85,8 @@ MathMLRadicalElement::SetIndex(const Ptr<MathMLElement>& elem)
   if (elem != index)
     {
       assert(!elem->GetParent());
-      if (elem) elem->SetParent(this);
-      if (index) index->SetParent(0);
+      if (index) index->Unlink();
+      if (elem) elem->Link(this);
       index = elem;
       SetDirtyLayout();
     }

@@ -213,6 +213,9 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
       background = env.GetBackgroundColor();
       differentBackground = background != oldBackground;
 
+//       static int ctr = 0;
+//       printf("===================== BACKGROUND: %03d %06x\n", ctr++, background);
+
       value = GetAttributeValue(ATTR_VERYVERYTHINMATHSPACE, false);
       if (value != NULL) env.SetMathSpace(MATH_SPACE_VERYVERYTHIN, value->ToNumberUnit());
       delete value;

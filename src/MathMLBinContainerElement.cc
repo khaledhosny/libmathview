@@ -218,8 +218,8 @@ MathMLBinContainerElement::SetChild(const Ptr<MathMLElement>& elem)
 {
   if (elem != child)
     {
-      if (child) child->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (child) child->Unlink();
+      if (elem) elem->Link(this);
       child = elem;
       SetDirtyLayout();
     }

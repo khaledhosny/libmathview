@@ -36,7 +36,7 @@ MathMLTableElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt))
     {
-      //cout << "redoing table layout with type " << this << " " << ctxt.GetLayoutType() << endl;
+      //std::cout << "redoing table layout with type " << this << " " << ctxt.GetLayoutType() << std::endl;
       scaled aAvailWidth = PrepareLabelsLayout(ctxt);
 
       if (ctxt.GetLayoutType() == LAYOUT_MIN) DoHorizontalMinimumLayout();

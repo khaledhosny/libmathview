@@ -58,8 +58,8 @@ MathMLMultiScriptsElement::SetBase(const Ptr<MathMLElement>& elem)
 {
   if (elem != base)
     {
-      if (elem) elem->SetParent(this);
-      if (base) base->SetParent(0);
+      if (base) base->Unlink();
+      if (elem) elem->Link(this);
       base = elem;
       SetDirtyLayout();
     }
@@ -127,8 +127,8 @@ MathMLMultiScriptsElement::SetSubScript(unsigned i, const Ptr<MathMLElement>& el
     }
   else if (elem != subScript[i])
     {
-      if (subScript[i]) subScript[i]->SetParent(0);
-      elem->SetParent(this);
+      if (subScript[i]) subScript[i]->Unlink();
+      if (elem) elem->Link(this);
       subScript[i] = elem;
       SetDirtyLayout();
     }
@@ -146,8 +146,8 @@ MathMLMultiScriptsElement::SetSuperScript(unsigned i, const Ptr<MathMLElement>& 
     }
   else if (elem != superScript[i])
     {
-      if (superScript[i]) superScript[i]->SetParent(0);
-      elem->SetParent(this);
+      if (superScript[i]) superScript[i]->Unlink();
+      if (elem) elem->Link(this);
       superScript[i] = elem;
       SetDirtyLayout();
     }
@@ -179,8 +179,8 @@ MathMLMultiScriptsElement::SetPreSubScript(unsigned i, const Ptr<MathMLElement>&
     }
   else if (elem != preSubScript[i])
     {
-      if (preSubScript[i]) preSubScript[i]->SetParent(0);
-      elem->SetParent(this);
+      if (preSubScript[i]) preSubScript[i]->Unlink();
+      if (elem) elem->Link(this);
       preSubScript[i] = elem;
       SetDirtyLayout();
     }
@@ -198,8 +198,8 @@ MathMLMultiScriptsElement::SetPreSuperScript(unsigned i, const Ptr<MathMLElement
     }
   else if (elem != preSuperScript[i])
     {
-      if (preSuperScript[i]) preSuperScript[i]->SetParent(0);
-      elem->SetParent(this);
+      if (preSuperScript[i]) preSuperScript[i]->Unlink();
+      if (elem) elem->Link(this);
       preSuperScript[i] = elem;
       SetDirtyLayout();
     }

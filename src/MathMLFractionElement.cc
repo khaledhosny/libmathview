@@ -72,8 +72,8 @@ MathMLFractionElement::SetNumerator(const Ptr<MathMLElement>& elem)
 {
   if (elem != numerator)
     {
-      if (elem) elem->SetParent(this);
-      if (numerator) numerator->SetParent(0);
+      if (numerator) numerator->Unlink();
+      if (elem) elem->Link(this);
       numerator = elem;
       SetDirtyLayout();
     }
@@ -84,8 +84,8 @@ MathMLFractionElement::SetDenominator(const Ptr<MathMLElement>& elem)
 {
   if (elem != denominator)
     {
-      if (elem) elem->SetParent(this);
-      if (denominator) denominator->SetParent(0);
+      if (denominator) denominator->Unlink();
+      if (elem) elem->Link(this);
       denominator = elem;
       SetDirtyLayout();
     }
@@ -95,7 +95,9 @@ void
 MathMLFractionElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
 {
   assert(oldElem);
-  assert(0);
+  if (oldElem == numerator) SetNumerator(newElem);
+  else if (oldElem == denominator) SetDenominator(newElem);
+  else assert(false);
 }
 
 void

@@ -78,8 +78,8 @@ MathMLScriptElement::SetBase(const Ptr<MathMLElement>& elem)
 {
   if (elem != base)
     {
-      if (base) base->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (base) base->Unlink();
+      if (elem) elem->Link(this);
       base = elem;
       SetDirtyLayout();
     }
@@ -90,8 +90,8 @@ MathMLScriptElement::SetSubScript(const Ptr<MathMLElement>& elem)
 {
   if (elem != subScript)
     {
-      if (subScript) subScript->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (subScript) subScript->Unlink();
+      if (elem) elem->Link(this);
       subScript = elem;
       SetDirtyLayout();
     }
@@ -102,8 +102,8 @@ MathMLScriptElement::SetSuperScript(const Ptr<MathMLElement>& elem)
 {
   if (elem != superScript)
     {
-      if (superScript) superScript->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (superScript) superScript->Unlink();
+      if (elem) elem->Link(this);
       superScript = elem;
       SetDirtyLayout();
     }
@@ -114,8 +114,9 @@ MathMLScriptElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathML
 {
   assert(oldElem);
   if (oldElem == base) SetBase(newElem);
-  if (oldElem == subScript) SetSubScript(newElem);
-  if (oldElem == superScript) SetSuperScript(newElem);
+  else if (oldElem == subScript) SetSubScript(newElem);
+  else if (oldElem == superScript) SetSuperScript(newElem);
+  else assert(false);
 }
 
 Ptr<MathMLElement>
@@ -175,7 +176,7 @@ MathMLScriptElement::Normalize(const Ptr<MathMLDocument>& doc)
 		SetSuperScript(MathMLDummyElement::create());
 	      break;
 	    default:
-	      assert(0);
+	      assert(false);
 	    }
 	}
 #endif
@@ -251,6 +252,7 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt))
     {
+      assert(base);
       if (base) base->DoLayout(ctxt);
       if (subScript) subScript->DoLayout(ctxt);
       if (superScript) superScript->DoLayout(ctxt);

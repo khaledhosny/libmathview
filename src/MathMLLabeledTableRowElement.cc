@@ -128,8 +128,8 @@ MathMLLabeledTableRowElement::SetLabel(const Ptr<MathMLElement>& elem)
 {
   if (elem != label)
     {
-      if (label) label->SetParent(0);
-      if (elem) elem->SetParent(this);
+      if (label) label->Unlink();
+      if (elem) elem->Link(this);
       label = elem;
       SetDirtyLayout();
     }

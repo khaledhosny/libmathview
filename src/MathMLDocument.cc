@@ -30,6 +30,8 @@
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 
+#include "MathMLBreakableRowElement.hh"
+
 MathMLDocument::MathMLDocument()
 #if defined(HAVE_GMETADOM)
   : DOMdoc(0)
@@ -68,7 +70,9 @@ MathMLDocument::Init()
       subtreeModifiedListener = new DOMSubtreeModifiedListener(this);
       attrModifiedListener = new DOMAttrModifiedListener(this);
 
-      et.addEventListener("DOMSubtreeModified", *subtreeModifiedListener, false);
+      et.addEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
+      et.addEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
+      et.addEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
       et.addEventListener("DOMAttrModified", *attrModifiedListener, false);
     }
 }
@@ -82,7 +86,9 @@ MathMLDocument::~MathMLDocument()
       DOM::EventTarget et(DOMdoc);
       assert(et);
 
-      et.removeEventListener("DOMSubtreeModified", *subtreeModifiedListener, false);
+      et.removeEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
+      et.removeEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
+      et.removeEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
       et.removeEventListener("DOMAttrModified", *attrModifiedListener, false);
 
       delete subtreeModifiedListener;

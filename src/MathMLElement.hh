@@ -50,6 +50,8 @@ private:
 
 public:
   virtual void SetParent(const Ptr<MathMLElement>&);
+  void Link(const Ptr<MathMLElement>&);
+  void Unlink(void);
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(const Ptr<class MathMLDocument>&) = 0;
@@ -92,7 +94,7 @@ public:
 
   bool DirtyBackground(void) const
   {
-    return GetParent() && ((Selected() && !GetParent()->Selected()) ||
+    return GetParent() && ((Selected() != GetParent()->Selected()) ||
 			   (background != GetParent()->background));
   }
 

@@ -145,6 +145,8 @@ MathMLTableElement::SetPosition(scaled x, scaled y)
   position.x = x;
   position.y = y;
 
+  //printf("setposition for table (%d,%d) %d rows\n", sp2ipx(x), sp2ipx(y), nRows);
+
   scaled yOffset = frameVerticalSpacing - box.ascent;
 
   for (unsigned i = 0; i < nRows; i++) {
@@ -158,6 +160,8 @@ MathMLTableElement::SetPosition(scaled x, scaled y)
       xOffset += leftPadding;
     }
 
+    //printf("row set position %d %d height = %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + row[i].ascent), sp2ipx(row[i].GetHeight() + row[i].spacing));
+
     if (row[i].mtr)
       row[i].mtr->SetPosition(x + xOffset, y + yOffset + row[i].ascent);
 
@@ -166,6 +170,7 @@ MathMLTableElement::SetPosition(scaled x, scaled y)
 
       if (cell->mtd && !cell->spanned) {
 	const BoundingBox& cellBox = cell->mtd->GetBoundingBox();
+	//printf("cell set position %d %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + cellBox.ascent));
 	cell->mtd->SetPosition(x + xOffset, y + yOffset + cellBox.ascent);
       }
       

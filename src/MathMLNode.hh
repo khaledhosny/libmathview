@@ -33,6 +33,7 @@ protected:
   virtual ~MathMLNode();
 
 public:
+  virtual void Unlink(void);
   virtual void SetParent(const Ptr<class MathMLElement>&);
   // unfortunately GetParent cannot be inline here because that would require
   // that you can do ->ref() on the parent, which you don't unless you

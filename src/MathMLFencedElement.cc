@@ -137,7 +137,7 @@ MathMLFencedElement::DelayedNormalize(const Ptr<MathMLDocument>& doc)
 	  assert(elem);
 	  // we detach the element from its parent, which can be an
 	  // element created by mfenced when it expanded
-	  elem->SetParent(0);
+	  elem->Unlink();
 	}
 #endif // HAVE_GMETADOM
 

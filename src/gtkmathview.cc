@@ -1227,11 +1227,8 @@ extern "C" void
 gtk_math_view_get_top(GtkMathView* math_view, gint* x, gint* y)
 {
   g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->vadjustment != NULL);
-  g_return_if_fail(math_view->hadjustment != NULL);
-
-  if (x != NULL) *x = sp2ipx(math_view->hadjustment->value);
-  if (y != NULL) *y = sp2ipx(math_view->vadjustment->value);
+  if (x != NULL) *x = math_view->vadjustment ? sp2ipx(math_view->hadjustment->value) : 0;
+  if (y != NULL) *y = math_view->hadjustment ? sp2ipx(math_view->vadjustment->value) : 0;
 }
 
 extern "C" void

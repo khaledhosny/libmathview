@@ -298,7 +298,7 @@ Configuration::ParseConfiguration(const DOM::Element& node)
 	if (colorSet) Globals::logger(LOG_DEBUG, "default color set to %06x %06x", foreground, background);
 	else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
       } else if (name == "link-color") {
-	linkColorSet = ParseColor(elem, linkForeground, linkBackground);
+	linkColorSet = ParseColor(elem, linkForeground, linkBackground, transparentLinkBackground);
 	if (linkColorSet) Globals::logger(LOG_DEBUG, "default link color set to %06x %06x", linkForeground, linkBackground);
 	else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
       } else if (name == "select-color") {
@@ -318,6 +318,13 @@ Configuration::ParseConfiguration(const DOM::Element& node)
 bool
 Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b)
 {
+  bool unused;
+  return ParseColor(node, f, b, unused);
+}
+
+bool
+Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bool& transparent)
+{
   DOM::GdomeString fs = node.getAttribute("foreground");
   DOM::GdomeString bs = node.getAttribute("background");
 
@@ -336,7 +343,7 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b)
   StringTokenizer bst(bss);
 
   const Value* fv = colorParser(fst);
-  const Value* bv = colorParser(bst);
+  const Value* bv = backgroundParser(bst);
 
   if (fv == NULL || bv == NULL) {
     delete fv;
@@ -349,7 +356,8 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b)
   }
 
   f = ToRGB(fv);
-  b = ToRGB(bv);
+  transparent = bv->IsKeyword(KW_TRANSPARENT);
+  if (!transparent) b = ToRGB(bv);
 
   delete fv;
   delete bv;
