@@ -97,6 +97,16 @@ AC_TRY_COMPILE(
 AC_LANG_RESTORE
 
 dnl Checks for libraries
+AC_CHECK_LIB(glib, g_malloc,
+	[
+		CFLAGS="$CFLAGS `glib-config --cflags`"
+		CXXFLAGS="$CXXFLAGS `glib-config --cflags`"
+		LIBS="$LIBS `glib-config --libs`"
+	],
+	AC_MSG_ERROR(cound not find glib),
+	`glib-config --libs`
+)
+
 AC_CHECK_LIB(minidom, mdom_node_get_type,
 	[
 		CFLAGS="$CFLAGS `minidom-config --cflags`"

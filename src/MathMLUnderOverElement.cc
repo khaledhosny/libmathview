@@ -277,14 +277,16 @@ MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
       const BoundingBox& scriptBox = underScript->GetBoundingBox();
 
       box.width = scaledMax(box.width, scriptBox.width);
-      box.descent += scriptBox.GetHeight() + underSpacing;
+      box.tDescent = box.descent + underSpacing + scriptBox.ascent + scriptBox.tDescent;
+      box.descent  = box.descent + underSpacing + scriptBox.GetHeight();
     }
 
     if (overScript != NULL) {
       const BoundingBox& scriptBox = overScript->GetBoundingBox();
 
       box.width = scaledMax(box.width, scriptBox.width);
-      box.ascent += scriptBox.GetHeight() + overSpacing;
+      box.tAscent = box.ascent + overSpacing + scriptBox.descent + scriptBox.tAscent;
+      box.ascent  = box.ascent + overSpacing + scriptBox.GetHeight();
     }
   }
 
