@@ -9,6 +9,6 @@ Name: MathView
 Description: A rendering engine for MathML markup (libxml2 frontend)
 Version: @VERSION@
 Requires: glib-2.0 libxml-2.0
-Libs: @XML_LIBS@ -L${libdir} -lmathview_libxml2
+Libs: @XML_LIBS@ -L${libdir} -lmathview_libxml2 @T1_LIBS@
 Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@
 
