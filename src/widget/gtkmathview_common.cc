@@ -812,6 +812,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->view = view;
 
   math_view->renderingContext = new Gtk_RenderingContext;
+  math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
 }
 
 extern "C" GtkWidget*

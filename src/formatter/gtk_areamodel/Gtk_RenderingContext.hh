@@ -56,6 +56,8 @@ public:
   void getForegroundColor(GdkColor& c) { getColor<GdkColor, FOREGROUND_INDEX>(c); }
   void getBackgroundColor(GdkColor& c) { getColor<GdkColor, BACKGROUND_INDEX>(c); }
 
+  void setColorMap(const GObjectPtr<GdkColormap>& cm) { gdk_colormap = cm; }
+  GObjectPtr<GdkColormap> getColorMap(void) const { return gdk_colormap; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
   GObjectPtr<GdkGC> getGC(void) const { return data[getStyle()].gdk_gc; }

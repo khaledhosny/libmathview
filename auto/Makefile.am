@@ -1,5 +1,8 @@
 
-noinst_PROGRAMS = dumpEntitiesTable
+noinst_PROGRAMS =
+if COND_GMETADOM
+noinst_PROGRAMS += dumpEntitiesTable
+endif
 
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
 dumpEntitiesTable_LDADD = @DOM_LIBS@
