@@ -33,9 +33,7 @@ protected:
   virtual ~WrapperArea();
 
 public:
-  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-
-  SmartPtr<class Element> getElement(void) const;
+  virtual SmartPtr<class Element> getElement(void) const;
 
 private:
   WeakPtr<class Element> element;

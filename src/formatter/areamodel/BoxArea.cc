@@ -27,14 +27,21 @@
 #include "BoxArea.hh"
 #include "Rectangle.hh"
 
+BoxArea::BoxArea(const AreaRef& area, const BoundingBox& b)
+  : BinContainerArea(area->fit(b.width, b.height, b.depth)), bbox(b)
+{ }
+
 AreaRef
 BoxArea::fit(const scaled&, const scaled&, const scaled&) const
 {
+#if 0
   AreaRef newChild = getChild()->fit(bbox.width, bbox.height, bbox.depth);
   if (newChild == getChild())
     return this;
   else
     return clone(newChild);
+#endif
+  return this;
 }
 
 void

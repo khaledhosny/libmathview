@@ -32,12 +32,6 @@ WrapperArea::WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartP
 WrapperArea::~WrapperArea()
 { }
 
-AreaRef
-WrapperArea::fit(const scaled&, const scaled&, const scaled&) const
-{
-  return this;
-}
-
 SmartPtr<Element>
 WrapperArea::getElement() const
 { return static_cast<Element*>(element); }

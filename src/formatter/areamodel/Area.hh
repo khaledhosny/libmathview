@@ -58,6 +58,8 @@ public:
   virtual bool searchByIndex(class AreaId&, CharIndex) const = 0;
   virtual AreaRef flatten(void) const { return this; }
 
+  virtual SmartPtr<class Element> getElement(void) const;
+
   scaled originX(AreaIndex) const;
   scaled originY(AreaIndex) const;
 };

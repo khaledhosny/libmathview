@@ -26,6 +26,7 @@
 
 #include "Area.hh"
 #include "Point.hh"
+#include "Element.hh"
 #include "Rectangle.hh"
 
 scaled
@@ -51,3 +52,7 @@ Area::indexOfPosition(const scaled&, const scaled&, CharIndex&) const
 bool
 Area::positionOfIndex(CharIndex, class Point*, BoundingBox*) const
 { return false; }
+
+SmartPtr<Element>
+Area::getElement() const
+{ return 0; }

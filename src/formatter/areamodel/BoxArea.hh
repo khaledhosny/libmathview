@@ -28,7 +28,7 @@
 class BoxArea : public BinContainerArea
 {
 protected:
-  BoxArea(const AreaRef& area, const BoundingBox& b) : BinContainerArea(area), bbox(b) { }
+  BoxArea(const AreaRef&, const BoundingBox&);
   virtual ~BoxArea() { }
 
 public:
