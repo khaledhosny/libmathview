@@ -38,10 +38,6 @@ public:
   void SetAlignmentScope(bool b) { alignmentScope = b; }
 
   scaled   GetMinWidth(void) const { return minWidth; }
-  unsigned GetRowIndex(void) const { return rowIndex; }
-  unsigned GetColumnIndex(void) const { return columnIndex; }
-  unsigned GetRowSpan(void) const { return rowSpan; }
-  unsigned GetColumnSpan(void) const { return columnSpan; }
   bool     GetAlignmentScope(void) const { return alignmentScope; }
   bool     IsStretchyOperator(void) const;
 
@@ -51,6 +47,12 @@ public:
   virtual void setDirtyAttribute(void);
   virtual void setDirtyStructure(void);
   virtual void setDirtyLayout(void);
+
+  unsigned getRowSpan(void) const { return rowSpan; }
+  unsigned getColumnSpan(void) const { return columnSpan; }
+  void setSpan(unsigned, unsigned);
+  void setPosition(unsigned, unsigned);
+  void setAlignment(const SmartPtr<Value>&, const SmartPtr<Value>&, const SmartPtr<Value>&);
 
 protected:
   // the following method is declared static for efficiency reasons. In fact,
@@ -66,10 +68,10 @@ protected:
 #endif
 
 private:
-  scaled   minWidth;
   unsigned rowSpan;
   unsigned columnSpan;
 
+  scaled   minWidth;
   unsigned rowIndex;
   unsigned columnIndex;
   class TableCell* cell;

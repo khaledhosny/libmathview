@@ -79,6 +79,8 @@ MISSING
 
 BUGS
 
+* rendering a box:text with no text gives weird bounding box
+
 ARCH IMPROVEMENTS
 
 + The BoxML/MathML embedding mechanism is still ad-hoc and works

@@ -27,6 +27,7 @@
 
 #include "defs.h"
 #include "MathML.hh"
+#include "MathMLTableContentFactory.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
 #if ENABLE_BOXML
@@ -783,21 +784,34 @@ protected:
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Table, width));
     }
 
+    static const SmartPtr<Value>
+    refineAlignAttribute(const SmartPtr<Value>& cellAlign,
+			 const SmartPtr<Value>& rowAlign,
+			 const SmartPtr<Value>& tableAlign,
+			 unsigned columnIndex)
+    {
+      return
+	(cellAlign ? cellAlign : 
+	 (rowAlign ? GetComponent(rowAlign, columnIndex) :
+	  (tableAlign ? GetComponent(tableAlign, columnIndex) : 0)));
+    }
+
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLTableElement>& elem)
     {
-#if 0
+      MathMLTableContentFactory tableContentFactory;
+
       unsigned rowIndex = 0;
-      const TokenId tableRowAlign = ToTokenId(builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, rowalign)));
-      const TokenId tableColumnAlign = ToTokenId(builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, columnalign)));
-      const TokenId tableGroupAlign = ToTokenId(builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, groupalign));
+      const SmartPtr<Value> tableRowAlign = builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, rowalign));
+      const SmartPtr<Value> tableColumnAlign = builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, columnalign));
+      const SmartPtr<Value> tableGroupAlign = builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, groupalign));
       for (typename Model::ElementIterator iter(el, MATHML_NS_URI); iter.more(); iter.next())
 	{
 	  typename Model::Element row = iter.element();
 
-	  const TokenId rowRowAlign = ToTokenId(builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, rowalign)));
-	  const TokenId rowColumnAlign = ToTokenId(builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, columnalign)));
-	  const TokenId rowGroupAlign = ToTokenId(builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, groupalign)));
+	  const SmartPtr<Value> rowRowAlign = builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, rowalign));
+	  const SmartPtr<Value> rowColumnAlign = builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, columnalign));
+	  const SmartPtr<Value> rowGroupAlign = builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, groupalign));
 
 	  const String name = Model::getNodeName(Model::asNode(row));
 	  if (name == "mtr")
@@ -807,22 +821,24 @@ protected:
 		{
 		  typename Model::Element cell = iter.element();
 
-		  const TokenId cellRowAlign = ToTokenId(builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, rowalign)));
-		  const TokenId cellColumnAlign = ToTokenId(builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, columnalign)));
-		  const TokenId cellGroupAlign = ToTokenId(builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, groupalign)));
+		  const SmartPtr<Value> cellRowAlign = builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, rowalign));
+		  const SmartPtr<Value> cellColumnAlign = builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, columnalign));
+		  const SmartPtr<Value> cellGroupAlign = builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, groupalign));
 		  const int cellRowSpan = ToInteger(builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, rowspan)));
 		  const int cellColumnSpan = ToInteger(builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, columnspan)));
-		  const TokenId rowAlign = (cellRowAlign != T_NOTVALID) ? cellRowAlign : (rowRowAlign != T_NOTVALID) ? rowRowAlign : tableRowAlign;
-		  const TokenId columnAlign = (cellColumnAlign != T_NOTVALID) ? cellColumnAlign : (rowColumnAlign != T_NOTVALID) ? rowColumnAlign : tableColumnAlign;
-		  const TokenId groupAlign = (cellGroupAlign != T_NOTVALID) ? cellGroupAlign : (rowGroupAlign != T_NOTVALID) ? rowGroupAlign : tableGroupAlign;
-
 		  SmartPtr<MathMLElement> elem = builder.getMathMLElement(cell);
 		  SmartPtr<MathMLTableCellElement> cellElem = smart_cast<MathMLTableCellElement>(elem);
-		  cellElem->setSpanning(cellRowSpan, cellColumnSpan);
-		  cellElem->setAlignment(cellRowAlign, cellColumnAlign, cellGroupAlign);
+		  cellElem->setSpan(cellRowSpan, cellColumnSpan);
 
 		  columnIndex = tableContentFactory.addCell(rowIndex, columnIndex, cellElem);
+		  // now rowIndex and columnIndex are final values
 		  cellElem->setPosition(rowIndex, columnIndex);
+
+		  const SmartPtr<Value> rowAlign = refineAlignAttribute(cellRowAlign, rowRowAlign, tableRowAlign, columnIndex);
+		  const SmartPtr<Value> columnAlign = refineAlignAttribute(cellColumnAlign, rowColumnAlign, tableColumnAlign, columnIndex);
+		  const SmartPtr<Value> groupAlign = refineAlignAttribute(cellGroupAlign, rowGroupAlign, tableGroupAlign, columnIndex);
+
+		  cellElem->setAlignment(rowAlign, columnAlign, groupAlign);
 		}
 
 	      rowIndex++;
@@ -838,16 +854,6 @@ protected:
 	      // issue a warning message
 	    }
 	}
-
-
-      
-    content.clear();
-    for (typename Model::ElementIterator iter(el, MATHML_NS_URI); iter.more(); iter.next())
-      content.push_back(getMathMLElement(iter.element()));
-
-      // assert(false); // to be implemented
-						}
-#endif
     }
   };
 

@@ -5,6 +5,7 @@ noinst_LTLIBRARIES = libmathml.la
 
 libmathml_la_SOURCES = \
   traverseAux.cc \
+  MathMLTableContentFactory.cc \
   MathMLValueConversion.cc \
   mathVariantAux.cc \
   MathMLNamespaceContext.cc \
@@ -58,6 +59,7 @@ mathview_HEADERS = \
 
 noinst_HEADERS = \
   traverseAux.hh \
+  MathMLTableContentFactory.hh \
   MathML.hh \
   MathMLValueConversion.hh \
   mathVariantAux.hh \

@@ -45,6 +45,23 @@ MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLNamesp
 MathMLTableCellElement::~MathMLTableCellElement()
 { }
 
+void
+MathMLTableCellElement::setSpan(unsigned rSpan, unsigned cSpan)
+{
+}
+
+void
+MathMLTableCellElement::setPosition(unsigned i, unsigned j)
+{
+}
+
+void
+MathMLTableCellElement::setAlignment(const SmartPtr<Value>& rowAlign,
+				     const SmartPtr<Value>& columnAlign,
+				     const SmartPtr<Value>& groupAlign)
+{
+}
+
 #if 0
 void
 MathMLTableCellElement::refine(AbstractRefinementContext& context)
