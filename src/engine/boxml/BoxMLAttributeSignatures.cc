@@ -41,3 +41,5 @@ DEFINE_ATTRIBUTE(BoxML, G, "height", height, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, G, "depth", depth, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, At, "x", x, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, At, "y", y, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(BoxML, Action, "selection", selection, true, true, false, false, "1");
+DEFINE_ATTRIBUTE(BoxML, Action, "actiontype", actiontype, true, true, false, false, "toggle");

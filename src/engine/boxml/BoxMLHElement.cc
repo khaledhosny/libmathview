@@ -74,6 +74,7 @@ BoxMLHElement::format(MathFormattingContext& ctxt)
 	if (*p)
 	  {
 	    AreaRef area = (*p)->format(ctxt);
+	    assert(area);
 	    switch (align)
 	      {
 	      case T_TOP: area = ctxt.getDevice()->getFactory()->top(area); break;
@@ -81,7 +82,7 @@ BoxMLHElement::format(MathFormattingContext& ctxt)
 	      case T_CENTER: area = ctxt.getDevice()->getFactory()->middle(area); break;
 	      case T_BASELINE:
 		{
-		  std::cout << "making step of " << step.getValue() << std::endl;
+		  //std::cout << "making step of " << step.getValue() << std::endl;
 		  if (step != scaled::zero())
 		    area = ctxt.getDevice()->getFactory()->shift(area, step);
 		  step += (*p)->getStep();

@@ -41,5 +41,7 @@ typedef ParseLength Parse_BoxML_G_height;
 typedef ParseLength Parse_BoxML_G_depth;
 typedef ParseLength Parse_BoxML_At_x;
 typedef ParseLength Parse_BoxML_At_y;
+typedef ParseUnsignedInteger Parse_BoxML_Action_selection;
+typedef ParseString Parse_BoxML_Action_actiontype;
 
 #endif // __BoxMLAttributeParsers_hh__

@@ -41,5 +41,7 @@ DECLARE_ATTRIBUTE(BoxML, G, height);
 DECLARE_ATTRIBUTE(BoxML, G, depth);
 DECLARE_ATTRIBUTE(BoxML, At, x);
 DECLARE_ATTRIBUTE(BoxML, At, y);
+DECLARE_ATTRIBUTE(BoxML, Action, selection);
+DECLARE_ATTRIBUTE(BoxML, Action, actiontype);
 
 #endif // __BoxMLAttributeSignatures_hh__

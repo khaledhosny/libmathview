@@ -4,6 +4,7 @@ lib_LTLIBRARIES = libboxml.la
 libboxml_la_SOURCES = \
   BoxMLAttributeSignatures.cc \
   BoxMLElement.cc \
+  BoxMLActionElement.cc \
   BoxMLBinContainerElement.cc \
   BoxMLLinearContainerElement.cc \
   BoxMLboxElement.cc \
@@ -20,6 +21,7 @@ noinst_HEADERS = \
   BoxMLAttributeSignatures.hh \
   BoxMLAttributeParsers.hh \
   BoxMLElement.hh \
+  BoxMLActionElement.hh \
   BoxMLBinContainerElement.hh \
   BoxMLLinearContainerElement.hh \
   BoxMLboxElement.hh \
