@@ -5,6 +5,28 @@
 + = SHORT TERM
 - = LONG TERM
 
+// AbiWord
+
+* create AbiWord specific areas that forward rendering requests to the
+  AbiWord GraphicsContext
+* create AbiWord specific AreaFactory
+* split the Gtk_MathGraphicDevice into a Default_MathGraphicDevice, make
+  the AreaFactory and the Shapers customizable from outside
+* export basic (?) area .hh files so that it is possible to instantiate
+  abiword area classes from within abiword
+* export abstract AreaFactory class
+* create a AbiWord_RenderingContext (just a wrapper for the AbiWord
+  GraphicContext?)
+
+===
+List of .hh files to be exported:
+BoundingBox.hh
+Object.hh
+SmartPtr.hh
+scaled.hh
+fixed.hh
+formatter/areamodel/*.hh
+
 // MathML
 
 BUGS
@@ -26,6 +48,7 @@ BUGS
 
 ARCH IMPROVEMENTS
 
+* move the MathMLOperatorDictionary into MathMLNamespaceContext?
 + Gtk_PangoLayoutLineArea shares constructor with GtkPangoLayoutArea
   which computes bounding box as well
 ? make GlyphStringArea a leaf-like area?

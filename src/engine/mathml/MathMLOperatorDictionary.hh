@@ -28,12 +28,16 @@
 #include "SmartPtr.hh"
 #include "String.hh"
 #include "HashMap.hh"
+#include "Object.hh"
 
-class MathMLOperatorDictionary
+class MathMLOperatorDictionary : public Object
 {
-public:
+protected:
   MathMLOperatorDictionary(void);
-  ~MathMLOperatorDictionary();
+  virtual ~MathMLOperatorDictionary();
+
+public:
+  static SmartPtr<MathMLOperatorDictionary> create(void) { return new MathMLOperatorDictionary; }
 
   void add(const String&, const String&, const SmartPtr<class AttributeList>&);
   void search(const String&,

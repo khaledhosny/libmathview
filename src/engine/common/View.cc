@@ -35,9 +35,9 @@
 #include "scaled.hh"
 #include "WrapperArea.hh"
 
-View::View(const SmartPtr<Builder>& b)
+View::View()
 
-  : builder(b), defaultFontSize(Globals::configuration.getFontSize()), freezeCounter(0)
+  : defaultFontSize(Globals::configuration.getFontSize()), freezeCounter(0)
 { }
 
 View::~View()
@@ -47,37 +47,6 @@ View::~View()
   // view for de-registering themselves from the linker
   assert(!rootElement);
 }
-
-SmartPtr<View>
-View::create(const SmartPtr<Builder>& builder)
-{
-  SmartPtr<View> view = new View(builder);
-  return view;
-}
-
-#if ENABLE_BOXML
-void
-View::initialize(const SmartPtr<MathGraphicDevice>& mgd,
-		 const SmartPtr<BoxGraphicDevice>& bgd)
-{
-  // the following fields cannot be initialized within the constructor
-  // because there the reference counter is still 0, so it is
-  // harmful to pass `this' as pointer
-  mathmlContext = MathMLNamespaceContext::create(this, mgd);
-  boxmlContext = BoxMLNamespaceContext::create(this, bgd);
-  getBuilder()->setNamespaceContexts(mathmlContext, boxmlContext);
-}
-#else
-void
-View::initialize(const SmartPtr<MathGraphicDevice>& mgd)
-{
-  // the following fields cannot be initialized within the constructor
-  // because there the reference counter is still 0, so it is
-  // harmful to pass `this' as pointer
-  mathmlContext = MathMLNamespaceContext::create(this, mgd);
-  getBuilder()->setNamespaceContext(mathmlContext);
-}
-#endif // ENABLE_BOXML
 
 bool
 View::freeze()
@@ -90,6 +59,18 @@ View::thaw()
 {
   assert(freezeCounter > 0);
   return --freezeCounter == 0;
+}
+
+void
+View::setBuilder(const SmartPtr<Builder>& b)
+{
+  resetRootElement();
+  builder = b;
+#if ENABLE_BOXML
+  if (builder) builder->setNamespaceContexts(mathmlContext, boxmlContext);
+#else
+  if (builder) builder->setNamespaceContext(mathmlContext);
+#endif // ENABLE_BOXML
 }
 
 SmartPtr<Builder>
@@ -268,11 +249,25 @@ View::getCharExtents(const SmartPtr<Element>& elem, CharIndex index, Point* char
   return false;
 }
 
+void
+View::setMathMLNamespaceContext(const SmartPtr<MathMLNamespaceContext>& ctxt)
+{
+  mathmlContext = ctxt;
+  if (builder) builder->setNamespaceContext(mathmlContext);
+}
+
 SmartPtr<MathMLNamespaceContext>
 View::getMathMLNamespaceContext(void) const
 { return mathmlContext; }
 
 #if ENABLE_BOXML
+void
+View::setBoxMLNamespaceContext(const SmartPtr<BoxMLNamespaceContext>& ctxt)
+{
+  boxmlContext = ctxt;
+  if (builder) builder->setNamespaceContext(boxmlContext);
+}
+
 SmartPtr<BoxMLNamespaceContext>
 View::getBoxMLNamespaceContext(void) const
 { return boxmlContext; }

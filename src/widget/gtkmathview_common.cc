@@ -57,9 +57,8 @@ typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_libxml2"
 #include "libxml2_Setup.hh"
-#include "libxml2_Model.hh"
-#include "libxml2_Builder.hh"
-typedef libxml2_Builder GtkMathView_Builder;
+#include "libxml2_MathView.hh"
+typedef libxml2_MathView MathView;
 typedef libxml2_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_GMETADOM
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_GMetaDOM"
@@ -134,10 +133,7 @@ struct _GtkMathView {
   gfloat         button_press_y;
   guint32        button_press_time;
 
-#if GTKMATHVIEW_USES_LIBXML2
-  xmlDoc*        current_doc;
-  gboolean       doc_owner;
-#elif GTKMATHVIEW_USES_GMETADOM
+#if GTKMATHVIEW_USES_GMETADOM
   GdomeDocument* current_doc;
 #endif 
 
@@ -147,7 +143,11 @@ struct _GtkMathView {
   GtkMathViewModelId cursor_elem;
   gint           cursor_index;
 
+#if GTKMATHVIEW_USES_LIBXML2
+  MathView*      view;
+#else
   View*          view;
+#endif
   Gtk_RenderingContext* renderingContext;
 };
 
@@ -239,26 +239,6 @@ modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
   return 0;
 }
 
-#elif GTKMATHVIEW_USES_LIBXML2
-
-static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
-{
-  if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(b))
-    return builder->findElement(el);
-  else
-    return 0;
-}
-
-static GtkMathViewModelId
-modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
-{
-  if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(b))
-    return (xmlElement*) builder->findSelfOrAncestorModelElement(elem);
-  else
-    return 0;
-}
-
 #elif GTKMATHVIEW_USES_CUSTOM_READER
 
 static SmartPtr<Element>
@@ -292,9 +272,9 @@ modelElementOfElement(const SmartPtr<Builder>&, const SmartPtr<Element>&)
 #endif
 
 static SmartPtr<const Gtk_WrapperArea>
-findGtkWrapperArea(const SmartPtr<View>& view, GtkMathViewModelId node)
+findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
 {
-  if (SmartPtr<Element> elem = elementOfModelElement(view->getBuilder(), node))
+  if (SmartPtr<Element> elem = math_view->view->elementOfModelElement(node))
     if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
       return area;
   return 0;
@@ -538,19 +518,21 @@ initGlobalData(const char* confPath)
       exit(-1);
     }
 
+  Globals::dictionary = MathMLOperatorDictionary::create();
   if (!Globals::configuration.getDictionaries().empty())
     for (std::vector<std::string>::const_iterator dit = Globals::configuration.getDictionaries().begin();
 	 dit != Globals::configuration.getDictionaries().end();
 	 dit++)
       {
 	Globals::logger(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	if (!GtkMathView_Setup::loadOperatorDictionary(Globals::dictionary, (*dit).c_str()))
+	if (!GtkMathView_Setup::loadOperatorDictionary(*Globals::dictionary, (*dit).c_str()))
 	  Globals::logger(LOG_WARNING, "could not load `%s'", (*dit).c_str());
       }
-  else {
-    bool res = GtkMathView_Setup::loadOperatorDictionary(Globals::dictionary, "config/dictionary.xml");
-    if (!res) GtkMathView_Setup::loadOperatorDictionary(Globals::dictionary, PKGDATADIR"/dictionary.xml");
-  }
+  else
+    {
+      const bool res = GtkMathView_Setup::loadOperatorDictionary(*Globals::dictionary, "config/dictionary.xml");
+      if (!res) GtkMathView_Setup::loadOperatorDictionary(*Globals::dictionary, PKGDATADIR"/dictionary.xml");
+    }
 
   done = true;
 }
@@ -718,9 +700,6 @@ gtk_math_view_release_document_resources(GtkMathView* math_view)
 
   math_view->current_elem = NULL;
   math_view->cursor_elem = NULL;
-
-  if (math_view->doc_owner) xmlFreeDoc(math_view->current_doc);
-  math_view->current_doc = 0;
 }
 
 #elif GTKMATHVIEW_USES_GMETADOM
@@ -788,24 +767,21 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
+  SmartPtr<MathView> view = MathView::create();
 #if GTKMATHVIEW_USES_CUSTOM_READER
-  SmartPtr<View> view = View::create(custom_reader_Builder::create());
+  view->setBuilder(custom_reader_Builder::create());
 #elif GTKMATHVIEW_USES_LIBXML2_READER
-  SmartPtr<View> view = View::create(libxml2_reader_Builder::create());
-#elif GTKMATHVIEW_USES_LIBXML2
-  math_view->current_doc = NULL;
-  math_view->doc_owner = FALSE;
-  SmartPtr<View> view = View::create(libxml2_Builder::create());
+  view->setBuilder(libxml2_reader_Builder::create());
 #elif GTKMATHVIEW_USES_GMETADOM
   math_view->current_doc = NULL;
-  SmartPtr<View> view = View::create(gmetadom_Builder::create());
+  view->setBuilder(gmetadom_Builder::create());
 #endif
 
+  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view,
+								 Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view))));
 #if ENABLE_BOXML
-  view->initialize(Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view)),
-		   Gtk_BoxGraphicDevice::create(GTK_WIDGET(math_view)));
-#else
-  view->initialize(Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view)));
+  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view,
+							       Gtk_BoxGraphicDevice::create(GTK_WIDGET(math_view))));
 #endif // ENABLE_BOXML
 
   view->ref();
@@ -1369,22 +1345,10 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (xmlDoc* doc = libxml2_Model::document(name, true))
-    {
-      if (GTKMATHVIEW_METHOD_NAME(load_document)(math_view, doc))
-	{
-	  math_view->doc_owner = TRUE;
-	  return TRUE;
-	}
-      else
-	{
-	  xmlFreeDoc(doc);
-	  return FALSE;
-	}
-    }
-  
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  const bool res = math_view->view->loadURI(name);
+  if (!res) gtk_math_view_release_document_resources(math_view);
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" gboolean
@@ -1393,22 +1357,10 @@ GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(buffer != NULL, FALSE);
 
-  if (xmlDoc* doc = libxml2_Model::documentFromBuffer(buffer, true))
-    {
-      if (GTKMATHVIEW_METHOD_NAME(load_document)(math_view, doc))
-	{
-	  math_view->doc_owner = TRUE;
-	  return TRUE;
-	}
-      else
-	{
-	  xmlFreeDoc(doc);
-	  return FALSE;
-	}
-    }
-  
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  const bool res = math_view->view->loadBuffer(buffer);
+  if (!res) gtk_math_view_release_document_resources(math_view);
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" gboolean
@@ -1417,15 +1369,10 @@ GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, xmlDoc* doc)
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(doc != NULL, FALSE);
 
-  if (xmlNode* root = xmlDocGetRootElement(doc))
-    {
-      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, (xmlElement*) root);
-      if (res) math_view->current_doc = doc;
-      return res;
-    }
-
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  const bool res = math_view->view->loadDocument(doc);
+  if (!res) gtk_math_view_release_document_resources(math_view);
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" gboolean
@@ -1434,23 +1381,17 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
-  if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(math_view->view->getBuilder()))
-    {
-      builder->setRootModelElement(elem);
-      reset_adjustments(math_view);
-      paint_widget(math_view);
-      return TRUE;
-    }
-
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  const bool res = math_view->view->loadRootElement(elem);
+  if (!res) gtk_math_view_release_document_resources(math_view);
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" xmlDoc*
 GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
-  return math_view->current_doc;
+  return math_view->view->getDocument();
 }
 
 #elif GTKMATHVIEW_USES_CUSTOM_READER
@@ -1501,9 +1442,7 @@ GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView* math_view)
   g_return_if_fail(math_view->view != NULL);
   math_view->view->resetRootElement();
   gtk_math_view_release_document_resources(math_view);
-#if GTKMATHVIEW_USES_GMETADOM || GTKMATHVIEW_USES_LIBXML2
-  GTKMATHVIEW_METHOD_NAME(load_root)(math_view, NULL);
-#endif
+  paint_widget(math_view);
 }
 
 extern "C" GdkPixmap*
@@ -1615,11 +1554,11 @@ GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewMo
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-  if (SmartPtr<GtkMathView_Builder> builder = smart_cast<GtkMathView_Builder>(math_view->view->getBuilder()))
+
 #if GTKMATHVIEW_USES_GMETADOM
-    if (builder->notifyStructureChanged(DOM::Element(elem))) paint_widget(math_view);
+  if (math_view->view->notifyStructureChanged(DOM::Element(elem))) paint_widget(math_view);
 #else
-    if (builder->notifyStructureChanged(elem)) paint_widget(math_view);
+  if (math_view->view->notifyStructureChanged(elem)) paint_widget(math_view);
 #endif
 }
 
@@ -1628,11 +1567,11 @@ GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewMo
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-  if (SmartPtr<GtkMathView_Builder> builder = smart_cast<GtkMathView_Builder>(math_view->view->getBuilder()))
+
 #if GTKMATHVIEW_USES_GMETADOM
-    if (builder->notifyAttributeChanged(DOM::Element(elem), DOM::GdomeString(name))) paint_widget(math_view);
+  if (math_view->view->notifyAttributeChanged(DOM::Element(elem), DOM::GdomeString(name))) paint_widget(math_view);
 #else
-    if (builder->notifyAttributeChanged(elem, name)) paint_widget(math_view);
+  if (math_view->view->notifyAttributeChanged(elem, name)) paint_widget(math_view);
 #endif
 }
 
@@ -1643,7 +1582,7 @@ GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewModelId elem)
   g_return_if_fail(math_view->view);
   g_return_if_fail(elem);
 
-  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, elem))
+  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(1);
       paint_widget(math_view);
@@ -1657,7 +1596,7 @@ GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewModelId ele
   g_return_if_fail(math_view->view);
   g_return_if_fail(elem);
 
-  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, elem))
+  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(0);
       paint_widget(math_view);
@@ -1671,7 +1610,7 @@ GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView* math_view, GtkMathViewModelId 
   g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(elem, FALSE);
 
-  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, elem))
+  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     return area->getSelected();
   else
     return FALSE;
@@ -1721,7 +1660,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y,
 							     Gtk_RenderingContext::fromGtkY(y),
 							     result_orig ? &elemOrig : 0,
 							     result_box ? &elemBox : 0))
-    if (GtkMathViewModelId el = modelElementOfElement(math_view->view->getBuilder(), elem))
+    if (GtkMathViewModelId el = math_view->view->modelElementOfElement(elem))
       {
 	if (result) *result = el;
 
@@ -1753,7 +1692,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView* math_view, GtkMathView
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(el != NULL, FALSE);
 
-  if (SmartPtr<Element> elem = elementOfModelElement(math_view->view->getBuilder(), el))
+  if (SmartPtr<Element> elem = math_view->view->elementOfModelElement(el))
     {
       Point elemOrig;
       BoundingBox elemBox;
@@ -1796,7 +1735,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 							  charIndex,
 							  result_orig ? &charOrig : 0,
 							  result_box ? &charBox : 0))
-    if (GtkMathViewModelId el = modelElementOfElement(math_view->view->getBuilder(), elem))
+    if (GtkMathViewModelId el = math_view->view->modelElementOfElement(elem))
       {
 	if (result_elem) *result_elem = el;
 
@@ -1831,7 +1770,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView* math_view, GtkMathViewMod
   g_return_val_if_fail(el != NULL, FALSE);
   g_return_val_if_fail(index >= 0, FALSE);
 
-  if (SmartPtr<Element> elem = elementOfModelElement(math_view->view->getBuilder(), el))
+  if (SmartPtr<Element> elem = math_view->view->elementOfModelElement(el))
     {
       Point charOrig;
       BoundingBox charBox;

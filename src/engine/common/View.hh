@@ -31,25 +31,23 @@
 class View : public Object
 {
 protected:
-  View(const SmartPtr<class Builder>&);
+  View(void);
   virtual ~View();
 
 public:
-  static SmartPtr<View> create(const SmartPtr<class Builder>&);
-#if ENABLE_BOXML
-  void initialize(const SmartPtr<class MathGraphicDevice>&,
-		  const SmartPtr<class BoxGraphicDevice>&);
-#else
-  void initialize(const SmartPtr<class MathGraphicDevice>&);
-#endif // ENABLE_BOXML
+  static SmartPtr<View> create(void) { return new View(); }
 
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);
   bool thaw(void);
 
+  // configuration stuff
+  void setBuilder(const SmartPtr<class Builder>&);
   SmartPtr<class Builder> getBuilder(void) const;
+  void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
 #if ENABLE_BOXML
+  void setBoxMLNamespaceContext(const SmartPtr<class BoxMLNamespaceContext>&);
   SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
 #endif // ENABLE_BOXML
 

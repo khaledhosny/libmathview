@@ -24,6 +24,7 @@
 #define __MathGraphicDevice_hh__
 
 #include "Area.hh"
+#include "AreaFactory.hh"
 #include "Length.hh"
 #include "MathFormattingContext.hh"
 #include "Object.hh"
@@ -38,7 +39,8 @@ protected:
   virtual ~MathGraphicDevice();
 
 public:
-  virtual SmartPtr<class AreaFactory> getFactory(void) const = 0;
+  void setFactory(const SmartPtr<AreaFactory>& f) { factory = f; }
+  SmartPtr<AreaFactory> getFactory(void) const { return factory; }
   SmartPtr<ShaperManager> getShaperManager(void) const { return shaperManager; }
 
   // Length evaluation, fundamental properties
@@ -53,25 +55,25 @@ public:
 
   // token formatting
 
-  virtual AreaRef string(const MathFormattingContext& context, const String& str) const = 0;
+  virtual AreaRef string(const MathFormattingContext& context, const String& str) const;
   virtual AreaRef glyph(const MathFormattingContext& context,
 			const String& alt, const String& fontFamily,
-			unsigned long index) const = 0;
+			unsigned long index) const;
 
   // layout schemata
 
   virtual AreaRef fraction(const MathFormattingContext& context,
 			   const AreaRef& numerator, const AreaRef& denominator,
-			   const Length& lineThickness) const = 0;
+			   const Length& lineThickness) const;
   virtual AreaRef bevelledFraction(const MathFormattingContext& context,
 				   const AreaRef& numerator, const AreaRef& denominator,
-				   const Length& lineThickness) const = 0;
+				   const Length& lineThickness) const;
   virtual AreaRef radical(const MathFormattingContext& context,
-			  const AreaRef& radicand, const AreaRef& index) const = 0;
+			  const AreaRef& radicand, const AreaRef& index) const;
   virtual AreaRef script(const MathFormattingContext& context,
 			 const AreaRef& base,
 			 const AreaRef& subScript, const Length& subScriptShift,
-			 const AreaRef& superScript, const Length& superScriptShift) const = 0;
+			 const AreaRef& superScript, const Length& superScriptShift) const;
   virtual AreaRef multiScripts(const MathFormattingContext& context,
 			       const AreaRef& base,
 			       const std::vector<AreaRef>& subScripts,
@@ -79,21 +81,44 @@ public:
 			       const Length& subScriptShift,
 			       const std::vector<AreaRef>& superScripts,
 			       const std::vector<AreaRef>& preSuperScripts,
-			       const Length& superScriptShift) const = 0;
+			       const Length& superScriptShift) const;
   virtual AreaRef underOver(const MathFormattingContext& context,
 			    const AreaRef& base,
 			    const AreaRef& underScript, bool accentUnder,
-			    const AreaRef& overScript, bool accent) const = 0;
+			    const AreaRef& overScript, bool accent) const;
+  virtual AreaRef longDivision(const MathFormattingContext& context,
+			       const AreaRef& base) const;
+  virtual AreaRef actuarial(const MathFormattingContext& context,
+			    const AreaRef& base) const;
   virtual AreaRef enclose(const MathFormattingContext& context,
 			  const AreaRef& base,
-			  const String& notation) const = 0;
+			  const String& notation) const;
 
   // extra methods
 
   virtual AreaRef wrapper(const MathFormattingContext& context, const AreaRef& area) const;
   virtual AreaRef dummy(const MathFormattingContext& context) const;
 
+protected:
+  virtual AreaRef stretchStringV(const MathFormattingContext& context,
+				 const String& str,
+				 const scaled& height,
+				 const scaled& depth) const;
+  virtual void calculateDefaultScriptShift(const MathFormattingContext& context,
+					   const BoundingBox& baseBox,
+					   const BoundingBox& subScriptBox,
+					   const BoundingBox& superScriptBox,
+					   scaled& v, scaled& u) const;
+  virtual void calculateScriptShift(const MathFormattingContext& context,
+				    const BoundingBox& baseBox,
+				    const BoundingBox& subScriptBox,
+				    const Length& subScriptMinShift,
+				    const BoundingBox& superScriptBox,
+				    const Length& superScriptMinShift,
+				    scaled& v, scaled& u) const;
+
 private:
+  SmartPtr<AreaFactory> factory;
   SmartPtr<ShaperManager> shaperManager;
 };
 

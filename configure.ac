@@ -434,6 +434,7 @@ AC_CONFIG_FILES([
  src/formatter/gtk_mathml_graphic_device/Makefile
  src/formatter/boxml_graphic_device/Makefile
  src/formatter/gtk_boxml_graphic_device/Makefile
+ src/view/Makefile
  src/widget/Makefile
  viewer/Makefile
  doc/Makefile

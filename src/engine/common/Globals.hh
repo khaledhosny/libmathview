@@ -29,7 +29,7 @@
 
 namespace Globals {
 
-  extern MathMLOperatorDictionary dictionary;
+  extern SmartPtr<MathMLOperatorDictionary> dictionary;
   extern Configuration      configuration;
   extern Logger             logger;
 

@@ -38,8 +38,6 @@ public:
   { return new MathMLNamespaceContext(view, device); }
 
   SmartPtr<class MathGraphicDevice> getGraphicDevice(void) const;
-
-  //virtual SmartPtr<class Element> construct(const DOM::Element&) const;
   virtual SmartPtr<const class Area> format(const SmartPtr<class Element>&) const;
 
 private:

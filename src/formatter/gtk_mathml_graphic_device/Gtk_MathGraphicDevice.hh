@@ -37,66 +37,10 @@ public:
   static SmartPtr<Gtk_MathGraphicDevice> create(GtkWidget* widget)
   { return new Gtk_MathGraphicDevice(widget); }
 
-  virtual SmartPtr<class AreaFactory> getFactory(void) const;
-
-  virtual AreaRef string(const MathFormattingContext& context, const String& str) const;
-  virtual AreaRef glyph(const MathFormattingContext& context,
-			const String& alt, const String& fontFamily,
-			unsigned long index) const;
-
-  virtual AreaRef fraction(const MathFormattingContext& context,
-			   const AreaRef& numerator, const AreaRef& denominator,
-			   const Length& lineThickness) const;
-  virtual AreaRef bevelledFraction(const MathFormattingContext& context,
-				   const AreaRef& numerator, const AreaRef& denominator,
-				   const Length& lineThickness) const;
-  virtual AreaRef radical(const MathFormattingContext& context,
-			  const AreaRef& radicand, const AreaRef& index) const;
-  virtual AreaRef script(const MathFormattingContext& context,
-			 const AreaRef& base,
-			 const AreaRef& subScript, const Length& subScriptShift,
-			 const AreaRef& superScript, const Length& superScriptShift) const;
-  virtual AreaRef multiScripts(const MathFormattingContext& context,
-			       const AreaRef& base,
-			       const std::vector<AreaRef>& subScripts,
-			       const std::vector<AreaRef>& preSubScripts,
-			       const Length& subScriptShift,
-			       const std::vector<AreaRef>& superScripts,
-			       const std::vector<AreaRef>& preSuperScripts,
-			       const Length& superScriptShift) const;
-  virtual AreaRef underOver(const MathFormattingContext& context,
-			    const AreaRef& base,
-			    const AreaRef& underScript, bool accentUnder,
-			    const AreaRef& overScript, bool accent) const;
-  virtual AreaRef longDivision(const MathFormattingContext& context,
-			       const AreaRef& base) const;
-  virtual AreaRef actuarial(const MathFormattingContext& context,
-			    const AreaRef& base) const;
-  virtual AreaRef enclose(const MathFormattingContext& context,
-			  const AreaRef& base,
-			  const String& notation) const;
-  virtual AreaRef wrapper(const MathFormattingContext& context,
-			  const AreaRef& base) const;
-protected:
-  virtual AreaRef stretchStringV(const MathFormattingContext& context,
-				 const String& str,
-				 const scaled& height,
-				 const scaled& depth) const;
-  virtual void calculateDefaultScriptShift(const MathFormattingContext& context,
-					   const BoundingBox& baseBox,
-					   const BoundingBox& subScriptBox,
-					   const BoundingBox& superScriptBox,
-					   scaled& v, scaled& u) const;
-  virtual void calculateScriptShift(const MathFormattingContext& context,
-				    const BoundingBox& baseBox,
-				    const BoundingBox& subScriptBox,
-				    const Length& subScriptMinShift,
-				    const BoundingBox& superScriptBox,
-				    const Length& superScriptMinShift,
-				    scaled& v, scaled& u) const;
+  virtual AreaRef wrapper(const MathFormattingContext&, const AreaRef&) const;
 
 private:
-  SmartPtr<class Gtk_AreaFactory> factory;
+  SmartPtr<class Gtk_AreaFactory> gtk_factory;
 };
 
 #endif // __Gtk_MathGraphicDevice_hh__

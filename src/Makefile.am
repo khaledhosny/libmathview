@@ -1,5 +1,5 @@
 
-SUBDIRS = common engine formatter . frontend widget
+SUBDIRS = common engine formatter . frontend view widget
 
 lib_LTLIBRARIES = libmathview.la
 

@@ -65,7 +65,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       SmartPtr<AttributeList> postfix;
 
       String operatorName = GetRawContent();
-      Globals::dictionary.search(operatorName, prefix, infix, postfix);
+      Globals::dictionary->search(operatorName, prefix, infix, postfix);
 
       SmartPtr<AttributeList> defaults;
       if      (form == T_PREFIX && prefix) defaults = prefix;

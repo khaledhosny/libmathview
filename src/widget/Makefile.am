@@ -35,8 +35,7 @@ libgtkmathview_libxml2_reader_la_LIBADD = \
 libgtkmathview_libxml2_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
-  $(XML_LIBS) \
-  $(top_builddir)/src/frontend/libxml2/libmathview_frontend_libxml2.la
+  $(top_builddir)/src/view/libmathview_libxml2.la
 
 libgtkmathview_gmetadom_la_LIBADD = \
   -lstdc++ \
@@ -85,5 +84,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/gtk_mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/boxml_graphic_device \
-  -I$(top_srcdir)/src/formatter/gtk_boxml_graphic_device
+  -I$(top_srcdir)/src/formatter/gtk_boxml_graphic_device \
+  -I$(top_srcdir)/src/view
 
