@@ -40,7 +40,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 <!--
   <font-configuration-path>./config/font-configuration-wiley.xml</font-configuration-path>
 -->
-  <t1-config-path>./config/t1.config</t1-config-path>
+  <t1-config-path>./config/t1.config.debug</t1-config-path>
   <font-size     size="12pt"/>
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>

@@ -739,6 +739,9 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
       <simple index="112 113 114 115"/>
       <compound index="118 -1 116 117"/>
     </stretchy>
+    <stretchy code="0x2211" direction="vertical">
+      <simple index="0x50 0x58"/>
+    </stretchy>
   </map>
 
 </font-configuration>
