@@ -1,0 +1,10 @@
+.deps
+.libs
+Gtk_GlyphArea.lo
+Makefile
+Makefile.in
+libgtk_math_areamodel.la
+Gtk_InkArea.lo
+Gtk_LayoutArea.lo
+Gtk_MathGraphicDevice.lo
+Gtk_RenderingContext.lo
