@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,30 +17,18 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __StringAux_hh__
+#define __StringAux_hh__
 
-#include <sstream>
+#include <iostream>
 
-#include "RGBColorAux.hh"
+#include "String.hh"
 
-std::string
-toString(const RGBColor& color)
-{
-  std::ostringstream os;
-  if (color.transparent)
-    os << "transparent";
-  else
-    {
-      os.width(2);
-      os.fill('0');
-      os << "#" << std::hex << color.red << color.green << color.blue;
-    }
-  return os.str();
-}
+std::string escape(const UCS4String&);
+std::ostream& operator<<(std::ostream&, const UCS4String&);
 
-std::ostream&
-operator<<(std::ostream& os, const RGBColor& color)
-{ return os << toString(color); }
+#endif // __StringAux_hh__
+

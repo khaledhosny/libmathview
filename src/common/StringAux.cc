@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,30 +17,40 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
+#include <limits>
 #include <sstream>
 
-#include "RGBColorAux.hh"
+#include "StringAux.hh"
 
 std::string
-toString(const RGBColor& color)
+escape(const UCS4String& s)
 {
   std::ostringstream os;
-  if (color.transparent)
-    os << "transparent";
-  else
+  UCS4String::const_iterator i = s.begin();
+  while (i != s.end())
     {
-      os.width(2);
-      os.fill('0');
-      os << "#" << std::hex << color.red << color.green << color.blue;
+      if (*i >= std::numeric_limits<char>::min() && *i <= std::numeric_limits<char>::max())
+	os << static_cast<char>(*i);
+      else
+	{
+	  os << "&#x" << std::hex;
+	  os.width(4);
+	  os.fill('0');
+	  os << static_cast<int>(*i) << std::dec;
+	  os.width(0);
+	  os << ";";
+	}
+      i++;
     }
+
   return os.str();
 }
 
 std::ostream&
-operator<<(std::ostream& os, const RGBColor& color)
-{ return os << toString(color); }
+operator<<(std::ostream& os, const UCS4String& s)
+{ return os << escape(s); }

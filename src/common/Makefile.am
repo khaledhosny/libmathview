@@ -20,6 +20,7 @@ libcommon_la_SOURCES = \
   RGBColorAux.cc \
   Rectangle.cc \
   String.cc \
+  StringAux.cc \
   ValueConversion.cc \
   token.cc \
   $(NULL)
