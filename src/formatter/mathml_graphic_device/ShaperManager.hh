@@ -28,10 +28,15 @@
 #include "GlyphSpec.hh"
 #include "SparseMap.hh"
 
-class ShaperManager
+class ShaperManager : public Object
 {
-public:
+protected:
   ShaperManager(void);
+  virtual ~ShaperManager();
+
+public:
+  static SmartPtr<ShaperManager> create(void)
+  { return new ShaperManager(); }
 
   AreaRef shape(const SmartPtr<AreaFactory>&,
 		const DOM::UCS4String&, const scaled&) const;
@@ -39,7 +44,7 @@ public:
 			const DOM::UCS4String&, const scaled&,
 			const scaled& = 0, const scaled& = 0) const;
   
-  unsigned registerShaper(const class Shaper&);
+  unsigned registerShaper(const SmartPtr<class Shaper>&);
   GlyphSpec registerChar(DOM::Char32 ch, const GlyphSpec& spec);
   GlyphSpec registerStretchyChar(DOM::Char32 ch, const GlyphSpec& spec);
 
@@ -47,7 +52,7 @@ private:
   GlyphSpec map(DOM::Char32 ch) const;
   GlyphSpec mapStretchy(DOM::Char32 ch) const;
   AreaRef shapeAux(ShapingResult&) const;
-  const class Shaper& getShaper(unsigned) const;
+  SmartPtr<class Shaper> getShaper(unsigned) const;
 
   static const unsigned MAX_SHAPERS = 16;
   static const unsigned HIGH_BITS = 16;
@@ -59,7 +64,7 @@ private:
   SparseMap<GlyphSpec, HIGH_BITS + 1, LOW_BITS> glyphSpec;
 
   unsigned nextShaperId;
-  const class Shaper* shaper[MAX_SHAPERS];
+  SmartPtr<class Shaper> shaper[MAX_SHAPERS];
 };
 
 #endif // __ShaperManager_hh__

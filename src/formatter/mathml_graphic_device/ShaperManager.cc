@@ -33,12 +33,18 @@ ShaperManager::ShaperManager() : nextShaperId(0)
     shaper[i] = 0;
 }
 
+ShaperManager::~ShaperManager()
+{
+  for (unsigned i = 0; i < nextShaperId; i++)
+    shaper[i]->unregisterShaper(this, i);
+}
+
 AreaRef
 ShaperManager::shapeAux(ShapingResult& result) const
 {
   while (!result.done())
     {
-      if (getShaper(result.getShaperId()).shape(result) == 0)
+      if (getShaper(result.getShaperId())->shape(result) == 0)
 	return 0;
     }
 
@@ -73,12 +79,13 @@ ShaperManager::shapeStretchy(const SmartPtr<AreaFactory>& factory,
 }
 
 unsigned
-ShaperManager::registerShaper(const Shaper& s)
+ShaperManager::registerShaper(const SmartPtr<Shaper>& s)
 {
+  assert(s);
   assert(nextShaperId < MAX_SHAPERS);
   unsigned shaperId = nextShaperId++;
-  shaper[shaperId] = &s;
-  s.registerChars(*this, shaperId);
+  shaper[shaperId] = s;
+  s->registerShaper(this, shaperId);
   return shaperId;
 }
 
@@ -116,10 +123,10 @@ ShaperManager::mapStretchy(DOM::Char32 ch) const
   return spec.getShaperId() ? spec : map(ch);
 }
 
-const class Shaper&
+SmartPtr<class Shaper>
 ShaperManager::getShaper(unsigned si) const
 {
   assert(si < MAX_SHAPERS);
   assert(shaper[si]);
-  return *shaper[si];
+  return shaper[si];
 }

@@ -35,11 +35,17 @@ Gtk_PangoShaper::~Gtk_PangoShaper()
 { }
 
 void
-Gtk_PangoShaper::registerChars(class ShaperManager&, unsigned) const
+Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>&, unsigned)
 {
   // this method is empty because the Pango shaper is supposed to
   // be the default shaper. It will be called anyway as soon as there's a
   // Unicode char that cannot be shaped otherwise
+}
+
+void
+Gtk_PangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned)
+{
+  // nothing to do
 }
 
 unsigned

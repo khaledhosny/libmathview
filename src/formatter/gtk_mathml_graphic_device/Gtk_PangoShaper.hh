@@ -30,11 +30,16 @@
 
 class Gtk_PangoShaper : public Shaper
 {
-public:
+protected:
   Gtk_PangoShaper(void);
   virtual ~Gtk_PangoShaper();
 
-  virtual void registerChars(class ShaperManager&, unsigned shaperId) const;
+public:
+  static SmartPtr<Gtk_PangoShaper> create(void)
+  { return new Gtk_PangoShaper(); }
+
+  virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
+  virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual unsigned shape(class ShapingResult&) const;
 
   void setPangoContext(const GObjectPtr<PangoContext>& c) { context = c; }

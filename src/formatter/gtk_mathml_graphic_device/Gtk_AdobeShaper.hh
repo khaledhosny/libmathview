@@ -29,11 +29,16 @@
 
 class Gtk_AdobeShaper : public Shaper
 {
-public:
+protected:
   Gtk_AdobeShaper(void) { }
   virtual ~Gtk_AdobeShaper() { }
 
-  virtual void registerChars(class ShaperManager&, unsigned shaperId) const;
+public:
+  static SmartPtr<Gtk_AdobeShaper> create(void)
+  { return new Gtk_AdobeShaper(); }
+
+  virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
+  virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual unsigned shape(class ShapingResult&) const;
 
 protected:

@@ -23,12 +23,18 @@
 #ifndef __Shaper_hh__
 #define __Shaper_hh__
 
+#include "Object.hh"
 #include "ShapingResult.hh"
 
-class Shaper
+class Shaper : public Object
 {
+protected:
+  Shaper(void) { }
+  virtual ~Shaper() { }
+
 public:
-  virtual void registerChars(class ShaperManager&, unsigned) const = 0;
+  virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
+  virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
   virtual unsigned shape(ShapingResult&) const = 0;
 };
 
