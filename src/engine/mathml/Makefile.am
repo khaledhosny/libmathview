@@ -106,10 +106,10 @@ noinst_HEADERS = \
 INCLUDES = \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants/ \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/formatter/common \
-  -I$(top_srcdir)/src/formatter/basictypes/mathvariants/ \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device
 
