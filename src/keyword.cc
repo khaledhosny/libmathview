@@ -20,9 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <string.h>
 
@@ -33,25 +31,29 @@
 #include "attribute.def"
 #include "tag.def"
 
-void InitKeywordValues()
+void
+InitKeywordValues()
 {
   for (unsigned i = 1; sKeywordToken[i].name != NULL; i++)
     sKeywordToken[i].value = new Value(sKeywordToken[i].id);
 }
 
-KeywordId KeywordIdOfName(const char* s)
+KeywordId
+KeywordIdOfName(const char* s)
 {
   unsigned i;
   for (i = 1; sKeywordToken[i].name != 0 && strcmp(s, sKeywordToken[i].name); i++) ;
   return sKeywordToken[i].name != 0 ? sKeywordToken[i].id : KW_NOTVALID;
 }
 
-const char* NameOfKeywordId(KeywordId id)
+const char*
+NameOfKeywordId(KeywordId id)
 {
   return sKeywordToken[id].name;
 }
 
-const char* NameOfUnitId(UnitId id)
+const char*
+NameOfUnitId(UnitId id)
 {
   static const char* name[] = {
     "not-valid-unit-id",
@@ -62,7 +64,8 @@ const char* NameOfUnitId(UnitId id)
   return name[id + 1];
 }
 
-const Value* ValueOfKeywordId(KeywordId id)
+const Value*
+ValueOfKeywordId(KeywordId id)
 {
   return sKeywordToken[id].value;
 }
@@ -71,7 +74,7 @@ AttributeId
 AttributeIdOfName(const char* prefix, const char* s)
 {
   AttributeId id = AttributeIdOfName(s);
-  // TODO check the namespace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // TODO: check the namespace!
   return id;
 }
 
@@ -83,19 +86,22 @@ AttributeIdOfName(const char* s)
   return sAttributeToken[i].name != 0 ? sAttributeToken[i].id : ATTR_NOTVALID;
 }
 
-const char* NameOfAttributeId(AttributeId id)
+const char*
+NameOfAttributeId(AttributeId id)
 {
   return sAttributeToken[id].name;
 }
 
-TagId TagIdOfName(const char* s)
+TagId
+TagIdOfName(const char* s)
 {
   unsigned i;
   for (i = 1; sTagToken[i].name != 0 && strcmp(s, sTagToken[i].name); i++) ;
   return sTagToken[i].name != 0 ? sTagToken[i].id : TAG_NOTVALID;
 }
 
-const char* NameOfTagId(TagId id)
+const char*
+NameOfTagId(TagId id)
 {
   return sTagToken[id].name;
 }

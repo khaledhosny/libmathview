@@ -50,11 +50,15 @@ MathMLCharNode::Setup(RenderingEnvironment* env)
   delete layout;
   layout = NULL;
 
+  fChar.font = NULL;
+  fChar.charMap = NULL;
   env->charMapper.FontifyChar(fChar, env->GetFontAttributes(), ch);
   assert(fChar.font != NULL);
   assert(fChar.charMap != NULL);
 
   FontifiedChar sChar;
+  sChar.font = NULL;
+  sChar.charMap = NULL;
   env->charMapper.FontifyStretchyChar(sChar, env->GetFontAttributes(), ch);
   if (sChar.font != NULL && sChar.charMap != NULL) {
     layout = new StretchyCharLayout;

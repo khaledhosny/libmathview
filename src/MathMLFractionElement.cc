@@ -180,10 +180,10 @@ MathMLFractionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 
     scaled psi = displayStyle ? 3 * lineThickness : lineThickness;
 
-    scaled diff = psi - ((u - numBox.descent) - (axis + lineThickness / 2));
+    scaled diff = psi - ((u - numBox.tDescent) - (axis + lineThickness / 2));
     if (diff > 0) u += diff;
 
-    diff = psi - ((axis - lineThickness / 2) - (denomBox.ascent - v));
+    diff = psi - ((axis - lineThickness / 2) - (denomBox.tAscent - v));
     if (diff > 0) v += diff;
 
     numShift   = u;

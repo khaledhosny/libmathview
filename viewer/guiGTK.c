@@ -40,15 +40,16 @@ static GtkMenuItem* font_size_item;
 
 static guint statusbar_context;
 
-static void create_widget_set(gboolean);
+static void create_widget_set(void);
 static GtkWidget* get_main_menu(void);
 static void file_open(GtkWidget*, gpointer);
 static void options_font_size(GtkWidget*, guint);
+static void options_font_manager(GtkWidget*, guint);
 static void options_verbosity(GtkWidget*, guint);
 static void options_kerning(GtkWidget*, gpointer);
 static void options_anti_aliasing(GtkWidget*, gpointer);
 static void help_about(GtkWidget*, gpointer);
-static void export_to_ps(GtkWidget*, gpointer);
+static void export_to_ps(GtkWidget*);
 
 static GtkItemFactoryEntry menu_items[] = {
   { "/_File",                         NULL,         NULL,          0, "<Branch>" },
@@ -65,6 +66,9 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Default Font Size/14pt", NULL, options_font_size,     14, "/Options/Default Font Size/8pt" },
   { "/Options/Default Font Size/18pt", NULL, options_font_size,     18, "/Options/Default Font Size/8pt" },
   { "/Options/Default Font Size/24pt", NULL, options_font_size,     24, "/Options/Default Font Size/8pt" },
+  { "/Options/Font Manager",           NULL, NULL,                  0,  "<Branch>" },
+  { "/Options/Font Manager/_GTK",      NULL, options_font_manager,  1,  "<RadioItem>" },
+  { "/Options/Font Manager/_Type 1",   NULL, options_font_manager,  2,  "/Options/Font Manager/GTK" },
   { "/Options/Verbosity",              NULL, NULL,                  0,  "<Branch>" },
   { "/Options/Verbosity/_Errors",      NULL, options_verbosity,     0,  "<RadioItem>" },
   { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors" },
@@ -79,7 +83,7 @@ static GtkItemFactoryEntry menu_items[] = {
 };
 
 void
-GUI_init(int *argc, char ***argv, char *title, guint width, guint height, gboolean t1_font_manager)
+GUI_init(int *argc, char ***argv, char *title, guint width, guint height)
 {
   gtk_init(argc, argv);
 
@@ -87,7 +91,7 @@ GUI_init(int *argc, char ***argv, char *title, guint width, guint height, gboole
   gtk_window_set_title(GTK_WINDOW(window), title);
   gtk_window_set_default_size(GTK_WINDOW(window), width, height);
   gtk_signal_connect(GTK_OBJECT(window), "delete_event", (GtkSignalFunc) gtk_main_quit, NULL);
-  create_widget_set(t1_font_manager);
+  create_widget_set();
 
   gtk_widget_show(window);
 }
@@ -187,6 +191,19 @@ options_font_size(GtkWidget* widget, guint size)
 }
 
 static void
+options_font_manager(GtkWidget* widget, guint id)
+{
+  GtkMathView* math_view;
+
+  g_return_if_fail(main_area != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(main_area));
+  
+  math_view = GTK_MATH_VIEW(main_area);
+
+  gtk_math_view_set_font_manager_type(math_view, id);
+}
+
+static void
 options_anti_aliasing(GtkWidget* widget, gpointer data)
 {
   gboolean aa = gtk_math_view_get_anti_aliasing(GTK_MATH_VIEW(main_area));
@@ -233,18 +250,23 @@ export_filename(GtkFileSelection *selector, GtkWidget* user_data)
   FILE* f;
   GtkMathView* math_view;
   gchar* selected_filename;
-
+  
   selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
 
   math_view = GTK_MATH_VIEW(main_area);
 
   f = fopen(selected_filename, "wt");
-  gtk_math_view_export_to_postscript(math_view, f);
+  gtk_math_view_export_to_postscript(math_view,
+				     (21 * SCALED_POINTS_PER_CM) / SCALED_POINTS_PER_PX,
+				     (29 * SCALED_POINTS_PER_CM) / SCALED_POINTS_PER_PX,
+				     SCALED_POINTS_PER_IN / SCALED_POINTS_PER_PX,
+				     SCALED_POINTS_PER_IN / SCALED_POINTS_PER_PX,
+				     f);
   fclose(f);
 }
 
 static void
-export_to_ps(GtkWidget* widget, gpointer data)
+export_to_ps_get_file_name(GtkWidget* widget)
 {
   GtkWidget* fs = gtk_file_selection_new("Export to PostScript");
 
@@ -267,6 +289,44 @@ export_to_ps(GtkWidget* widget, gpointer data)
 }
 
 static void
+export_to_ps(GtkWidget* widget)
+{
+  export_to_ps_get_file_name(widget);
+#if 0
+  static GList* items = NULL;
+
+  GtkWidget* dialog;
+  GtkWidget* tmp;
+
+  if (items == NULL) {
+    items = g_list_append(items, "A4");
+    items = g_list_append(items, "A5");
+  }
+
+  dialog = gtk_dialog_new();
+  tmp = gtk_label_new("Paper size");
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+  tmp = gtk_combo_new();
+  gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+#if 0
+  tmp = gtk_check_button_new_with_label("Disable Colors");
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
+#endif
+
+  tmp = gtk_button_new_with_label("OK");
+  gtk_signal_connect_object(GTK_OBJECT(tmp), "clicked", GTK_SIGNAL_FUNC(export_to_ps_get_file_name), dialog);
+  gtk_signal_connect_object(GTK_OBJECT(tmp), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), dialog);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), tmp);
+  tmp = gtk_button_new_with_label("Cancel");
+  gtk_signal_connect_object(GTK_OBJECT(tmp), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), dialog);
+  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), tmp);
+
+  gtk_widget_show_all(dialog);
+#endif
+}
+
+static void
 selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
@@ -275,7 +335,7 @@ selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 }
 
 static void
-create_widget_set(gboolean t1_font_manager)
+create_widget_set()
 {
   GtkWidget* main_vbox;
   GtkWidget* menu_bar;
@@ -289,7 +349,7 @@ create_widget_set(gboolean t1_font_manager)
   gtk_box_pack_start(GTK_BOX(main_vbox), menu_bar, FALSE, TRUE, 0);
   gtk_widget_show(menu_bar);
 
-  main_area = gtk_math_view_new(NULL, NULL, t1_font_manager);
+  main_area = gtk_math_view_new(NULL, NULL);
   gtk_widget_show(main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
@@ -316,7 +376,7 @@ create_widget_set(gboolean t1_font_manager)
   if (gtk_math_view_get_kerning(GTK_MATH_VIEW(main_area)))
     gtk_menu_item_activate(kerning_item);
 
-  gtk_math_view_set_font_size(GTK_MATH_VIEW(main_area), 14);
+  gtk_math_view_set_font_size(GTK_MATH_VIEW(main_area), DEFAULT_FONT_SIZE);
   gtk_menu_item_activate(font_size_item);
 }
 
@@ -343,6 +403,9 @@ get_main_menu()
   menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Anti Aliasing");
   anti_aliasing_item = GTK_MENU_ITEM(menu_item);
 
+  /* !!!BEWARE!!! the default font size must be kept aligned with the definition
+   * in defs.h
+   */
   menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Default Font Size/14pt");
   font_size_item = GTK_MENU_ITEM(menu_item);
 

@@ -21,6 +21,9 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#ifdef HAVE_LIBT1
+
 #include <assert.h>
 #include <stddef.h>
 #include <ctype.h>
@@ -216,3 +219,5 @@ PS_DrawingArea::SetFont(const AFont* font) const
     lastFont = t1_font;
   }
 }
+
+#endif HAVE_LIBT1

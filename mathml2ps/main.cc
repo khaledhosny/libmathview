@@ -63,7 +63,7 @@ static double yMargin = 2;
 static double fontSize = 10;
 static bool   colors = true;
 
-extern void *parseMathMLFile(char *);
+extern void* parseMathMLFile(char*);
 
 static void
 printVersion()

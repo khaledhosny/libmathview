@@ -143,13 +143,17 @@ MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 			 scriptSpacing + baseBox.rBearing - baseBox.width + superScriptBox.width);
 
   if (subScript != NULL) {
-    box.ascent  = scaledMax(box.ascent, subScriptBox.ascent - subShift);
-    box.descent = scaledMax(box.descent, subScriptBox.descent + subShift);
+    box.ascent   = scaledMax(box.ascent, subScriptBox.ascent - subShift);
+    box.tAscent  = scaledMax(box.tAscent, subScriptBox.tAscent - subShift);
+    box.descent  = scaledMax(box.descent, subScriptBox.descent + subShift);
+    box.tDescent = scaledMax(box.tDescent, subScriptBox.tDescent + subShift);
   }
 
   if (superScript != NULL) {
-    box.ascent  = scaledMax(box.ascent, superScriptBox.ascent + superShift);
-    box.descent = scaledMax(box.descent, superScriptBox.descent - superShift);
+    box.ascent   = scaledMax(box.ascent, superScriptBox.ascent + superShift);
+    box.tAscent  = scaledMax(box.tAscent, superScriptBox.tAscent + superShift);
+    box.descent  = scaledMax(box.descent, superScriptBox.descent - superShift);
+    box.tDescent = scaledMax(box.tDescent, superScriptBox.tDescent - superShift);
   }
 
   ConfirmLayout(id);

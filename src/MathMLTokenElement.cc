@@ -42,8 +42,6 @@
 #include "MathMLTokenElement.hh"
 #include "RenderingEnvironment.hh"
 
-#define LINK_COLOR RGB(50, 100, 139)
-
 MathMLTokenElement::MathMLTokenElement(mDOMNodeRef node, TagId t) : MathMLElement(node, t)
 {
   rawContentLength = 0;
@@ -256,7 +254,7 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
       MathEngine::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
       env->SetColor(ToRGB(value));
     } else
-      if (HasLink()) env->SetColor(LINK_COLOR);
+      if (HasLink()) env->SetColor(DEFAULT_LINK_COLOR);
   }
 
   value = GetAttributeValue(ATTR_MATHBACKGROUND, NULL, false);

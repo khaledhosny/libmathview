@@ -23,9 +23,9 @@
 #ifndef T1_FontManager_hh
 #define T1_FontManager_hh
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+
+#ifdef HAVE_LIBT1
 
 #include "Container.hh"
 #include "FontManager.hh"
@@ -44,4 +44,6 @@ private:
   static bool firstTime;
 };
 
-#endif
+#endif // HAVE_LIBT1
+
+#endif // T1_FontManager_hh

@@ -24,6 +24,9 @@
 #define PS_DrawingArea_hh
 
 #include <config.h>
+
+#ifdef HAVE_LIBT1
+
 #include <stdio.h>
 
 #include "AFont.hh"
@@ -65,5 +68,7 @@ protected:
 };
 
 #define TO_PS_DRAWINGAREA(area) (dynamic_cast<PS_DrawingArea*>(area))
+
+#endif // HAVE_LIBT1
 
 #endif // PS_DrawingArea

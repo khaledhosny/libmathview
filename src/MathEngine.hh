@@ -33,8 +33,10 @@
 
 class MathEngine {
 public:
-  MathEngine(class DrawingArea&, class FontManager&, class MathMLDocument* = NULL);
+  MathEngine(void);
   ~MathEngine();
+
+  void  Init(class DrawingArea*, class FontManager*);
 
   bool  Load(const char*);
   void  Unload(void);
@@ -68,10 +70,10 @@ public:
   int   GetVerbosity(void) const;
 
   void  SetAntiAliasing(bool);
-  bool  GetAntiAliasing(void) const;
+  bool  GetAntiAliasing(void) const { return antiAliasing; }
 
-  void  SetKerning(bool);
-  bool  GetKerning(void) const;
+  void        SetKerning(bool);
+  static bool GetKerning(void) { return kerning; }
 
   static void InitGlobalData(void);
 
@@ -79,12 +81,13 @@ public:
   static OperatorDictionary dictionary;
   static Logger             logger;
 
-  static bool               kerning;
-
 private:
   static class MathMLElement* SelectMinimumTree(class MathMLElement*, class MathMLElement*);
 
-  unsigned defaultFontSize;
+  unsigned    defaultFontSize;
+  bool        antiAliasing;
+  static bool kerning;
+
 
   class MathMLDocument* document;
   class MathMLElement*  root;
@@ -93,8 +96,8 @@ private:
   class MathMLElement*  selectionRoot;
   class MathMLElement*  selection;
 
-  class DrawingArea& area;
-  class FontManager& fontManager;
+  class DrawingArea* area;
+  class FontManager* fontManager;
   class CharMapper*  charMapper;
 };
 

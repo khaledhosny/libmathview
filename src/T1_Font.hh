@@ -25,6 +25,8 @@
 
 #include <config.h>
 
+#ifdef HAVE_LIBT1
+
 #include "AFont.hh"
 #include "String.hh"
 #include "BoundingBox.hh"
@@ -61,5 +63,7 @@ private:
 };
 
 #define TO_T1_FONT(font) (dynamic_cast<const T1_Font*>(font))
+
+#endif // HAVE_LIBT1
 
 #endif // T1_Font_hh

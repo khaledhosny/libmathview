@@ -25,6 +25,8 @@
 
 #include <config.h>
 
+#ifdef HAVE_LIBT1
+
 #include "T1_FontManager.hh"
 
 class PS_T1_FontManager : public T1_FontManager {
@@ -40,5 +42,7 @@ protected:
 };
 
 #define TO_PS_T1_FONT_MANAGER(fm) (dynamic_cast<PS_T1_FontManager*>(fm))
+
+#endif // HAVE_LIBT1
 
 #endif // PS_T1_FontManager

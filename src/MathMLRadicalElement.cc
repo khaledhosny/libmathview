@@ -119,7 +119,9 @@ MathMLRadicalElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
   box.width += radBox.width + spacing;
   box.rBearing += radBox.width + spacing;
   box.ascent = scaledMax(box.ascent + spacing, radBox.ascent);
+  box.tAscent = scaledMax(box.tAscent, box.ascent);
   box.descent = scaledMax(box.descent, radBox.descent);
+  box.tDescent = scaledMax(box.tDescent, box.descent);
 
   if (IsA() == TAG_MROOT) {
     MathMLElement* script = content.GetLast();
@@ -132,6 +134,7 @@ MathMLRadicalElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 
     if (box.GetHeight() / 2 < scriptBox.GetHeight()) {
       box.ascent += scriptBox.GetHeight() - box.GetHeight() / 2;
+      box.tAscent += scriptBox.descent + scriptBox.tAscent - box.GetHeight() / 2;
     }
   }
 

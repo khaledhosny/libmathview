@@ -98,6 +98,7 @@ T1_Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
   assert(pgc != NULL);
 
   GdkPixmapPrivate* ppixmap = (GdkPixmapPrivate*) gdk_pixmap;
+  assert(ppixmap != NULL);
 
   if (antiAliasing)
     T1_AASetCharX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
@@ -132,15 +133,16 @@ T1_Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
   assert(pgc != NULL);
 
   GdkPixmapPrivate* ppixmap = (GdkPixmapPrivate*) gdk_pixmap;
+  assert(ppixmap != NULL);
 
   if (antiAliasing)
     T1_AASetStringX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
 		    t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
-		    MathEngine::kerning ? T1_KERNING : 0, t1_font->GetScale(), NULL);
+		    MathEngine::GetKerning() ? T1_KERNING : 0, t1_font->GetScale(), NULL);
   else
     T1_SetStringX(ppixmap->xwindow, pgc->xgc, T1_OPAQUE, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
-		  MathEngine::kerning ? T1_KERNING : 0, t1_font->GetScale(), NULL);
+		  MathEngine::GetKerning() ? T1_KERNING : 0, t1_font->GetScale(), NULL);
 }
 
 void

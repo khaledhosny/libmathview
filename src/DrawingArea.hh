@@ -77,6 +77,7 @@ public:
   scaled GetWidth(void) const { return width; }
   scaled GetHeight(void) const { return height; }
 
+  const GraphicsContextValues& GetDefaultGraphicsContextValues(void) const { return defaultValues; }
   RGBValue GetSelectionForeground(void) const { return selectionForeground; }
   RGBValue GetSelectionBackground(void) const { return selectionBackground; }
 
@@ -97,4 +98,4 @@ protected:
   mutable Container<const GraphicsContext*> poolGC;
 };
 
-#endif
+#endif // DrawingArea_hh

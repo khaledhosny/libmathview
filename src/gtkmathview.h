@@ -43,6 +43,13 @@ extern "C" {
 #define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
+  enum _FontManagerId {
+    FONT_MANAGER_UNKNOWN,
+    FONT_MANAGER_GTK,
+    FONT_MANAGER_T1
+  };
+
+  typedef enum   _FontManagerId    FontManagerId;
   typedef struct _GtkMathView      GtkMathView;
   typedef struct _GtkMathViewClass GtkMathViewClass;
 
@@ -69,6 +76,8 @@ extern "C" {
     gboolean 	   button_press;
     gboolean 	   select;
 
+    FontManagerId  font_manager_id;
+
     struct FontManager*     font_manager;
     struct Gtk_DrawingArea* drawing_area;
     struct MathEngine*      interface;
@@ -90,7 +99,7 @@ extern "C" {
   };
 
   GtkType    	 gtk_math_view_get_type(void);
-  GtkWidget* 	 gtk_math_view_new(GtkAdjustment*, GtkAdjustment*, gboolean);
+  GtkWidget* 	 gtk_math_view_new(GtkAdjustment*, GtkAdjustment*);
   gboolean     	 gtk_math_view_load(GtkMathView*, const gchar*);
   void           gtk_math_view_unload(GtkMathView*);
   mDOMNodeRef    gtk_math_view_get_selection(GtkMathView*);
@@ -112,7 +121,9 @@ extern "C" {
   gboolean       gtk_math_view_get_kerning(GtkMathView*);
   void           gtk_math_view_set_log_verbosity(GtkMathView*, gint);
   gint           gtk_math_view_get_log_verbosity(GtkMathView*);
-  void           gtk_math_view_export_to_postscript(GtkMathView*, FILE*);
+  void           gtk_math_view_export_to_postscript(GtkMathView*, gint, gint, gint, gint, FILE*);
+  void           gtk_math_view_set_font_manager_type(GtkMathView*, FontManagerId);
+  FontManagerId  gtk_math_view_get_font_manager_type(GtkMathView*);
 
 #ifdef __cplusplus
 }

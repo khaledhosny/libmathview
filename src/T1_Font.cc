@@ -25,7 +25,6 @@
 #ifdef HAVE_LIBT1
 
 #include <assert.h>
-
 #include <t1lib.h>
 
 #include "T1_Font.hh"
@@ -110,8 +109,8 @@ T1_Font::CharBox(char ch, BoundingBox& box) const
 void
 T1_Font::StringBox(const char* s, unsigned len, BoundingBox& box) const
 {
-  int sw = T1_GetStringWidth(nativeFontId, const_cast<char*>(s), len, 0, MathEngine::kerning ? T1_KERNING : 0);
-  BBox stringBox = T1_GetStringBBox(nativeFontId, const_cast<char*>(s), len, 0, MathEngine::kerning ? T1_KERNING : 0);
+  int sw = T1_GetStringWidth(nativeFontId, const_cast<char*>(s), len, 0, MathEngine::GetKerning() ? T1_KERNING : 0);
+  BBox stringBox = T1_GetStringBBox(nativeFontId, const_cast<char*>(s), len, 0, MathEngine::GetKerning() ? T1_KERNING : 0);
   box.Set(pt2sp(scale * sw / 1000.0),
 	  pt2sp(scale * stringBox.ury / 1000.0),
        	  pt2sp(scale * (-stringBox.lly) / 1000.0),

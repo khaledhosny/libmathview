@@ -54,24 +54,39 @@ MathEngine::InitGlobalData()
   firstTime = false;
 }
 
-MathEngine::MathEngine(DrawingArea& a, FontManager& fm, MathMLDocument* d) :
-  area(a), fontManager(fm)
+MathEngine::MathEngine()
 {
-  charMapper = new CharMapper(fontManager);
-  charMapper->Load("/usr/local/share/gtkmathview/font-configuration.xml");
-  charMapper->Load("config/font-configuration.xml");
+  area = NULL;
+  fontManager = NULL;
+  charMapper = NULL;
 
-  defaultFontSize = 10;
+  defaultFontSize = DEFAULT_FONT_SIZE;
+  antiAliasing = false;
+  kerning = false;
 
-  document = d;
-  if (document != NULL) root = document->GetRoot();
-  else root = NULL;
-
+  document = NULL;
+  root = NULL;
   selectionFirst = selectionRoot = selection = NULL;
 }
 
 MathEngine::~MathEngine()
 {
+  delete charMapper;
+}
+
+void
+MathEngine::Init(class DrawingArea* a, class FontManager* fm)
+{
+  assert(a != NULL);
+  assert(fm != NULL);
+
+  area = a;
+  fontManager = fm;
+
+  if (charMapper != NULL) delete charMapper;
+  charMapper = new CharMapper(*fm);
+  charMapper->Load("/usr/local/share/gtkmathview/font-configuration.xml");
+  charMapper->Load("config/font-configuration.xml");
 }
 
 bool
@@ -148,12 +163,14 @@ MathEngine::Setup()
 void
 MathEngine::Layout()
 {
+  assert(area != NULL);
+
   if (root == NULL) return;
 
   Clock perf;
   perf.Start();
-  root->DoBoxedLayout(LAYOUT_AUTO, scaledMax(0, area.GetWidth() -  2 * area.GetXMargin()));
-  root->SetPosition(area.GetXMargin(), area.GetYMargin() + root->GetBoundingBox().ascent);
+  root->DoBoxedLayout(LAYOUT_AUTO, scaledMax(0, area->GetWidth() -  2 * area->GetXMargin()));
+  root->SetPosition(area->GetXMargin(), area->GetYMargin() + root->GetBoundingBox().ascent);
   root->Freeze();
   perf.Stop();
   logger(LOG_INFO, "layout time: %dms", perf());
@@ -177,13 +194,15 @@ MathEngine::Render(const Rectangle* rect)
 void
 MathEngine::Update(const Rectangle* rect)
 {
+  assert(area != NULL);
+
   if (root == NULL) return;
 
   Clock perf;
   perf.Start();
-  root->Render(area);
-  if (rect != NULL) area.Update(*rect);
-  else area.Update();
+  root->Render(*area);
+  if (rect != NULL) area->Update(*rect);
+  else area->Update();
   perf.Stop();
   logger(LOG_INFO, "rendering time: %dms", perf());
 }
@@ -302,34 +321,25 @@ MathEngine::GetVerbosity() const
 void
 MathEngine::SetAntiAliasing(bool aa)
 {
+  assert(area != NULL);
+
+  antiAliasing = aa;
+
 #ifdef HAVE_LIBT1
-  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(&area);
+  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
   if (t1_area != NULL) {
     t1_area->SetAntiAliasing(aa);
     return;
   }
 #endif
-  logger(LOG_ERROR, "anti-aliasing is available with the T1 font manager only");
-}
-
-bool
-MathEngine::GetAntiAliasing() const
-{
-#ifdef HAVE_LIBT1
-  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(&area);
-  if (t1_area != NULL) return t1_area->GetAntiAliasing();
-#endif
-  logger(LOG_ERROR, "anti-aliasing is available with the T1 font manager only");
-
-  return false;
+  logger(LOG_WARNING, "anti-aliasing is available with the T1 font manager only");
 }
 
 void
 MathEngine::SetKerning(bool k)
 {
-#ifdef HAVE_LIBT1
   kerning = k;
-#else
-  logger(LOG_ERROR, "kerning is available with the T1 font manager only");
+#ifndef HAVE_LIBT1
+  logger(LOG_WARNING, "kerning is available with the T1 font manager only");
 #endif
 }

@@ -5,14 +5,14 @@ MathML Implementation
 * axis in rowalign
 * table layout is not precise sometimes (e.g. when there is a fit
   table inside a auto column)
-* handling of multichars (e.g. followed by modifiers 0x2063)
+* handling of multichars (e.g. followed by modifiers 0xfe00)
 ? enabling toggle in maction, maction computes the biggest bounding box
 
 Optimizations
 
 * optimize scrolling, it seems to work fine now (see gtkmathview.cc) but
   it has to be tested more heavily
-* FontifiedString is no more necessary?
+* FontifiedString is no more necessary
 
 Minor improvements
 

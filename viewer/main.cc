@@ -38,8 +38,7 @@ enum CommandLineOptionId {
   OPTION_VERSION = 256,
   OPTION_HELP,
   OPTION_DUMP_ENTITIES,
-  OPTION_VERBOSE,
-  OPTION_USE_TYPE1
+  OPTION_VERBOSE
 };
 
 // global options
@@ -74,7 +73,6 @@ Usage: viewer [options] file ...\n\n\
   -h, --help                    This small usage guide\n\
   --dump-entities               Dump a C table of the entities\n\
   --verbose[=0-3]               Display messages\n\
-  --type1                       Use Type1 Font Manager\n\
 ";
 
 #ifdef HAVE_IOSTREAM
@@ -91,7 +89,6 @@ main(int argc, char *argv[])
 {
   sprintf(appName, "MathML Viewer v%s", VERSION);
 
-  bool t1_font_manager = false;
   bool dumpEntities = false;
 
   while (TRUE) {
@@ -102,7 +99,6 @@ main(int argc, char *argv[])
       { "help",    	 no_argument, NULL, OPTION_HELP },
       { "verbose",       optional_argument, NULL, OPTION_VERBOSE },
       { "dump-entities", no_argument, NULL, OPTION_DUMP_ENTITIES },
-      { "type1",         no_argument, NULL, OPTION_USE_TYPE1 },
 
       { NULL,            no_argument, NULL, 0 }
     };
@@ -131,10 +127,6 @@ main(int argc, char *argv[])
       else MathEngine::logger.SetLogLevel(*optarg - '0');
       break;
 
-    case OPTION_USE_TYPE1:
-      t1_font_manager = TRUE;
-      break;
-
     case '?':
       break;
 
@@ -149,7 +141,7 @@ main(int argc, char *argv[])
   }
 
   if (optind < argc) {
-    GUI_init(&argc, &argv, appName, 500, 500, t1_font_manager);
+    GUI_init(&argc, &argv, appName, 500, 500);
 
     if (GUI_load_document(argv[optind]) < 0)
 #ifdef HAVE_IOSTREAM
