@@ -12,3 +12,4 @@ stamp-h
 Makefile
 Makefile.in
 *.gz
+aclocal.m4
