@@ -26,6 +26,7 @@ mathmlviewer_LDADD = \
 
 mathmlviewer_debug_SOURCES = main.cc aux.cc guiGTK.c
 
+mathmlviewer_debug_LDFLAGS = -no-install -static
 mathmlviewer_debug_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
@@ -33,6 +34,7 @@ mathmlviewer_debug_LDADD = \
 
 test_embedding_SOURCES = test_embedding.c
 
+test_embedding_LDFLAGS = -no-install -static
 test_embedding_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -42,6 +44,7 @@ test_embedding_LDADD = \
 
 test_loading_SOURCES = test_loading.c
 
+test_loading_LDFLASG = -no-install -static
 test_loading_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
