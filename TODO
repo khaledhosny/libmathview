@@ -1,33 +1,42 @@
 
-* re-enable actions
-* implement reader interface over DOM and XmlReader
-* add getId() method to reader interface
-* factor the Element class
-* factor ther View class
-* implement table formatting
-* implement AreaCanvas
-* implement PS area model
-* implement MGD for TeX fonts
-* implement shaper for TeX fonts
-* implement shaper for Mathematica fonts
-* make debugging methods in Areas optional (or remove them)
-* runtime selection of backend
-* runtime selection of reader
-* should be possible to exclude boxml classes at configuration time
-* implement cursor
-* improve/cleanup selection handling in Wrapper/RenderingContext
-* add documentation for boxml
+* = URGENT
++ = SHORTLY
+- = LONG TERM
+
+BUGS
+
+* mo not selectable???
 * re-implement methods for rectangle/bounding box in gtkmathview
-* implement support for stretchy operators
-* fix Configuration/Globals files 
-* add space in munderover between base and script
-* generalize embedding mechanism from BoxML (now MathML only)
-* move mathvariant files into src/common
 * make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
-* mmultiscripts
-* mpadded
-* mo not selectable???
-* mstyle
-* token
+- add space in munderover between base and script
+
+ARCH IMPROVEMENTS
+
++ factor the Element class
++ factor ther View class
+- make debugging methods in Areas optional (or remove them)
+- fix Configuration/Globals files 
+- move mathvariant files into src/common
+
+MISSING FEATURES
+
+* implement AreaCanvas for drawing lines (mdummy)
++ implement cursor
++ enable actions in boxml
++ implement reader interface over DOM and XmlReader
++ add getId() method to reader interface
+- implement table formatting
+- implement PS area model
+- implement MGD for TeX fonts
+- implement shaper for TeX fonts
+- implement shaper for Mathematica fonts
+- runtime selection of backend
+- runtime selection of reader
+- should be possible to exclude boxml classes at configuration time
+- add documentation for boxml
+- mmultiscripts
+- mpadded
+- mstyle
+- token
 
