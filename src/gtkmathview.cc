@@ -1269,7 +1269,7 @@ gtk_math_view_action_set_selected(GtkMathView* math_view, guint idx)
 
   math_view->interface->MinMaxLayout();
   math_view->interface->Layout();
-
+  setup_adjustments(math_view);
   paint_widget(math_view);
 }
 
