@@ -35,7 +35,6 @@ noinst_HEADERS = \
   MathVariant.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/formatter/basictypes
 
@@ -45,10 +44,10 @@ INCLUDES = \
 %.cc : %_gen.cc variant.top variant.bot
 	cat variant.top >$@
 	$(XSLTPROC) --novalid --param temp "false()" extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
-	$(CC) $(DOM_CFLAGS) $(DOM_LIBS) $<
-	echo "DOM::Char32 " >>$@
+	$(CXX) -I$(top_srcdir)/src/common $<
+	echo "Char32 " >>$@
 	echo -n "map_variant_$@" | cut -d '.' -f1 | tr "-" "_" >>$@
-	echo "(DOM::Char32 ch)" >>$@
+	echo "(Char32 ch)" >>$@
 	echo "{" >>$@
 	./a.out >>$@
 	echo "  return ch;" >>$@

@@ -11,9 +11,7 @@
 <xsl:param name="variant" />
 
 <xsl:template match="/">
-#include &lt;GdomeSmartDOM.hh&gt;
-
-namespace DOM = GdomeSmartDOM;
+#include &lt;Char.hh&gt;
 
   <xsl:apply-templates select="descendant::xh:table"/>
 </xsl:template>
@@ -21,8 +19,8 @@ namespace DOM = GdomeSmartDOM;
 <xsl:template match="xh:table">
 typedef struct TableEntry
 {
-  DOM::Char16 normal;
-  DOM::Char32 variant;
+  Char16 normal;
+  Char32 variant;
 } TableEntry;
 
 static TableEntry table[] =
