@@ -21,8 +21,8 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stdio.h>
+
+#include <cassert>
 
 #include "MathMLStringNode.hh"
 #include "MathMLTokenElement.hh"
@@ -30,8 +30,6 @@
 #include "Gtk_RenderingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
-
-unsigned MathMLStringNode::visited = 0;
 
 MathMLStringNode::MathMLStringNode(const String& c)
   : content(c)
@@ -48,53 +46,11 @@ MathMLStringNode::IsString() const
   return true;
 }
 
-#if 0
-void
-MathMLStringNode::Setup(RenderingEnvironment& env)
-{
-}
-
-void
-MathMLStringNode::DoLayout(const FormattingContext& ctxt)
-{
-#if 0
-  if (!area) area = env.shaperManager->shape(ctxt, toUCS4String(content));
-  assert(area);
-  box = area->box();
-#endif
-}
-#endif
-
 AreaRef
 MathMLStringNode::format(MathFormattingContext& ctxt)
 {
   return ctxt.getDevice()->string(ctxt, content);
 }
-
-#if 0
-void
-MathMLStringNode::Render(const DrawingArea& a)
-{
-#if 0
-  assert(GetParent());
-  assert(is_a<MathMLTokenElement>(GetParent()));
-
-  SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
-  assert(token);
-
-  const GraphicsContext* gc = token->GetForegroundGC();
-
-  const Gtk_DrawingArea& gtk_area = dynamic_cast<const Gtk_DrawingArea&>(a);
-  Gtk_RenderingContext rc;
-  rc.setDrawable(gtk_area.GetPixmap());
-  
-  assert(area);
-  area->render(rc, GetX() - a.GetTopX(), GetY() - a.GetTopY());
-
-  visited++;
-#endif
-}
-#endif
 
 bool
 MathMLStringNode::HasDecimalPoint() const

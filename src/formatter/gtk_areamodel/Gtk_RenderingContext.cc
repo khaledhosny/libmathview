@@ -76,8 +76,9 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
   gdk_drawable = drawable;
   if (gdk_drawable)
     {
-      gdk_gc = gdk_gc_new(gdk_drawable);
       gdk_colormap = gdk_rgb_get_colormap();
+      for (unsigned i = 0; i <= MAX_SELECTION_LEVEL; i++)
+	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
       
       xft_draw = XftDrawCreate(GDK_DISPLAY(),
 			       gdk_x11_drawable_get_xid(drawable),
@@ -87,7 +88,8 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
     }
   else
     {
-      gdk_gc = 0;
+      for (unsigned i = 0; i <= MAX_SELECTION_LEVEL; i++)
+	data[i].gdk_gc = 0;
       gdk_colormap = 0;
     }
 }

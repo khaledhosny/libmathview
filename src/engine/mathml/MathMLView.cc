@@ -201,10 +201,7 @@ MathMLView::getRootArea() const
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 
 	  if (AreaRef area = root->getArea())
-	    {
-	      if (area != rootArea)
-		rootArea = area->fit(scaled::zero(), scaled::zero(), scaled::zero());
-	    }
+	    rootArea = area->fit(scaled::zero(), scaled::zero(), scaled::zero());
 	  else
 	    rootArea = 0;
 	}

@@ -37,11 +37,6 @@ public:
   { return new MathMLStringNode(s); }
 
   virtual AreaRef  format(class MathFormattingContext&);
-#if 0
-  virtual void     Setup(class RenderingEnvironment&);
-  virtual void     DoLayout(const class FormattingContext&);
-  virtual void     Render(const DrawingArea&);
-#endif
 
   virtual bool     HasDecimalPoint(void) const;
   virtual bool     IsString(void) const;
@@ -52,8 +47,6 @@ public:
 
   virtual unsigned GetLogicalContentLength(void) const;
   virtual String   GetRawContent(void) const;
-
-  static unsigned visited;
 
 private:
   String content;

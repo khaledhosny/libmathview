@@ -42,12 +42,12 @@ public:
 
   SmartPtr<Object> getElement(void) const;
 
-  bool getSelected(void) const { return selected; }
-  void setSelected(bool b) { selected = b; }
+  int getSelected(void) const { return selected; }
+  void setSelected(int n) const { selected = n; }
 
 private:
   SmartPtr<Object> element; // element that has created this area
-  bool selected;
+  mutable int selected;
 };
 
 #endif // __Gtk_WrapperArea_hh__

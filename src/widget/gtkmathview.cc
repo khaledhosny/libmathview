@@ -52,6 +52,7 @@
 
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_RenderingContext.hh"
+#include "Gtk_WrapperArea.hh"
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250
@@ -164,6 +165,17 @@ static guint select_abort_signal = 0;
 static guint element_over_signal = 0;
 static guint new_counter = 0;
 static SmartPtr<MathMLViewContext> viewContext;
+
+/* auxiliary C++ functions */
+
+static SmartPtr<const Gtk_WrapperArea>
+findGtkWrapperArea(const SmartPtr<MathMLView>& view, const DOM::Element& node)
+{
+  if (SmartPtr<MathMLElement> elem = findMathMLElement(view, node))
+    if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
+      return area;
+  return 0;
+}
 
 /* widget implementation */
 
@@ -419,6 +431,8 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 
   math_view->renderingContext = new Gtk_RenderingContext;
   math_view->renderingContext->setDrawable(math_view->pixmap);
+  //math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
+  //math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);
 
   return GTK_WIDGET(math_view);
 }
@@ -704,6 +718,8 @@ gtk_math_view_configure_event(GtkWidget* widget,
   if (math_view->pixmap != NULL) g_object_unref(math_view->pixmap);
   math_view->pixmap = gdk_pixmap_new(widget->window, event->width, event->height, -1);
   math_view->renderingContext->setDrawable(math_view->pixmap);
+  math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
+  math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);
   paint_widget(math_view);
 
   return TRUE;
@@ -993,12 +1009,12 @@ gtk_math_view_select(GtkMathView* math_view, GdomeElement* elem)
   g_return_if_fail(math_view->view);
   g_return_if_fail(elem);
 
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
+  std::cerr << "SELECTING SOMETHING " << std::endl;
+  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, DOM::Element(elem)))
     {
-#if 0
-      el->SetSelected();
+      std::cerr << "OKKKKKKKKKKKKKK " << area << std::endl;
+      area->setSelected(1);
       paint_widget(math_view);
-#endif
     }
 }
 
@@ -1009,12 +1025,10 @@ gtk_math_view_unselect(GtkMathView* math_view, GdomeElement* elem)
   g_return_if_fail(math_view->view);
   g_return_if_fail(elem);
 
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
+  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, DOM::Element(elem)))
     {
-#if 0
-      el->ResetSelected();
+      area->setSelected(0);
       paint_widget(math_view);
-#endif
     }
 }
 
@@ -1025,11 +1039,9 @@ gtk_math_view_is_selected(GtkMathView* math_view, GdomeElement* elem)
   g_return_val_if_fail(math_view->view, FALSE);
   g_return_val_if_fail(elem, FALSE);
 
-#if 0
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
-    return el->Selected() ? TRUE : FALSE;
+  if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view->view, DOM::Element(elem)))
+    return area->getSelected();
   else
-#endif
     return FALSE;
 }
 
@@ -1051,56 +1063,11 @@ gtk_math_view_get_height(GtkMathView* math_view)
   return math_view->area->allocation.height;
 }
 
-#if 0
-extern "C" void
-gtk_math_view_set_anti_aliasing(GtkMathView* math_view, gboolean anti_aliasing)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->view != NULL);
-  
-  math_view->view->SetAntiAliasing(anti_aliasing != FALSE);
-  paint_widget(math_view);
-}
-
-extern "C" gboolean
-gtk_math_view_get_anti_aliasing(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
-
-  return math_view->interface->GetAntiAliasing() ? TRUE : FALSE;
-}
-
-extern "C" void
-gtk_math_view_set_transparency(GtkMathView* math_view, gboolean transparency)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
-  
-  math_view->interface->SetTransparency(transparency != FALSE);
-  paint_widget(math_view);
-}
-
-extern "C" gboolean
-gtk_math_view_get_transparency(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
-
-  return math_view->interface->GetTransparency() ? TRUE : FALSE;
-}
-#endif
-
 extern "C" GdomeElement*
 gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->view != NULL, NULL);
-
-#if 0
-  gint x0 = (math_view->vadjustment != NULL) ? static_cast<int>(math_view->hadjustment->value) : 0;
-  gint y0 = (math_view->hadjustment != NULL) ? static_cast<int>(math_view->vadjustment->value) : 0;
-#endif
 
   SmartPtr<MathMLElement> at = math_view->view->getElementAt(Gtk_RenderingContext::fromGtkX(x),
 							     Gtk_RenderingContext::fromGtkY(y));

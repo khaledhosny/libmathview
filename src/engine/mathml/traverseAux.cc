@@ -178,8 +178,6 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
 SmartPtr<MathMLElement>
 findMathMLElement(const SmartPtr<MathMLView>& view, const DOM::Element& node)
 {
-  
-  
   if (SmartPtr<MathMLElement> elem = view->getContext()->linker->get(node))
     {
       while (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))

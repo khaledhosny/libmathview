@@ -58,8 +58,6 @@ BoxMLVElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#include "scaledAux.hh"
-
 AreaRef
 BoxMLVElement::format(MathFormattingContext& ctxt)
 {
@@ -124,6 +122,8 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
 	step = 0;
       res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
+
+      std::cerr << "FORMATTING V BOX " << this << std::endl;
 
       ctxt.pop();
       resetDirtyLayout();

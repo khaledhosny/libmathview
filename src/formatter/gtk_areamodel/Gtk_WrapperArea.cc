@@ -27,21 +27,42 @@
 #include "SearchingContext.hh"
 
 Gtk_WrapperArea::Gtk_WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Object>& el)
-  : BoxArea(area, b), element(el)
+  : BoxArea(area, b), selected(0), element(el)
 { }
 
 void
-Gtk_WrapperArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
+Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& c = dynamic_cast<Gtk_RenderingContext&>(context);
+  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
 
 #if 0
   std::cerr << "Wrapper::render at " << Gtk_RenderingContext::toGtkX(x) << "," << Gtk_RenderingContext::toGtkY(y) << std::endl;
 #endif
 
-  // ...
+  std::cerr << "WRAPPER::RENDER " << this << " " << selected << std::endl;
+
+  int oldSelection = context.addSelection(selected);
+  if (oldSelection != context.getSelection())
+    {
+      GdkColor old_foregroundColor;
+      GdkColor backgroundColor;
+      context.getForegroundColor(old_foregroundColor, context.getSelection());
+      context.getBackgroundColor(backgroundColor, context.getSelection());
+      context.setForegroundColor(backgroundColor, context.getSelection());
+
+      BoundingBox bbox = box();
+      gdk_draw_rectangle(context.getDrawable(),
+			 context.getGC(),
+			 TRUE,
+			 Gtk_RenderingContext::toGtkX(x),
+			 Gtk_RenderingContext::toGtkY(y + bbox.height),
+			 Gtk_RenderingContext::toGtkPixels(bbox.width) + 1,
+			 Gtk_RenderingContext::toGtkPixels(bbox.height + bbox.depth) + 1);
+
+      context.setForegroundColor(old_foregroundColor, context.getSelection());
+    }
   getChild()->render(context, x, y);
-  // ...
+  context.setSelection(oldSelection);
 }
 
 #define PIX(x) (Gtk_RenderingContext::toGtkPixels(x))

@@ -42,42 +42,46 @@ public:
   Gtk_RenderingContext(void);
   virtual ~Gtk_RenderingContext();
 
-  void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND>(c); }
-  void setBackgroundColor(const RGBColor& c) { setColor<BACKGROUND>(c); }
-  void setForegroundColor(GdkColor& c) { setColor<FOREGROUND, gdk_gc_set_foreground>(c); }
-  void setBackgroundColor(GdkColor& c) { setColor<BACKGROUND, gdk_gc_set_background>(c); }
+  void setForegroundColor(const RGBColor& c, int i = 0) { setColor<FOREGROUND, gdk_gc_set_foreground>(c, i); }
+  void setBackgroundColor(const RGBColor& c, int i = 0) { setColor<BACKGROUND, gdk_gc_set_background>(c, i); }
+  void setForegroundColor(GdkColor& c, int i = 0) { setColor<FOREGROUND, gdk_gc_set_foreground>(c, i); }
+  void setBackgroundColor(GdkColor& c, int i = 0) { setColor<BACKGROUND, gdk_gc_set_background>(c, i); }
 
   // the return value is passed as an argument so that
   // we can use overloading
-  void getForegroundColor(RGBColor& c) { getColor<FOREGROUND>(c); }
-  void getBackgroundColor(RGBColor& c) { getColor<BACKGROUND>(c); }
-  void getForegroundColor(GdkColor& c) { getColor<FOREGROUND>(c); }
-  void getBackgroundColor(GdkColor& c) { getColor<BACKGROUND>(c); }
+  void getForegroundColor(RGBColor& c, int i = 0) { getColor<RGBColor, FOREGROUND>(c, i); }
+  void getBackgroundColor(RGBColor& c, int i = 0) { getColor<RGBColor, BACKGROUND>(c, i); }
+  void getForegroundColor(GdkColor& c, int i = 0) { getColor<GdkColor, FOREGROUND>(c, i); }
+  void getBackgroundColor(GdkColor& c, int i = 0) { getColor<GdkColor, BACKGROUND>(c, i); }
 
   void setWidget(const GObjectPtr<GtkWidget>&);
   GObjectPtr<GtkWidget> getWidget(void) const { return gtk_widget; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
-  GObjectPtr<GdkGC> getGC(void) const { return gdk_gc; }
+  GObjectPtr<GdkGC> getGC(void) const
+  {
+    assert(selection >= 0 && selection <= MAX_SELECTION_LEVEL);
+    return data[selection].gdk_gc;
+  }
+
   XftDraw* getXftDraw(void) const { return xft_draw; }
 
-  const XftColor* getXftForegroundColor(void) const { return &xft_color[FOREGROUND]; }
-  const XftColor* getXftBackgroundColor(void) const { return &xft_color[BACKGROUND]; }
+  const XftColor* getXftForegroundColor(int i = 0) const { return getXftColor<FOREGROUND>(i); }
+  const XftColor* getXftBackgroundColor(int i = 0) const { return getXftColor<BACKGROUND>(i); }
 
   void update(void) const;
   void update(const Rectangle&) const;
 
-  unsigned getSelection(void) const { return selection; }
-  unsigned setSelection(unsigned s)
+  int getSelection(void) const { return selection; }
+  int setSelection(int s)
   {
-    unsigned oldSelection = selection;
+    int oldSelection = selection;
     selection = s;
     return oldSelection;
   }
-  unsigned select(void)
-  { return selection++; }
-  unsigned unselect(void)
-  { return (selection > 0) ? selection-- : 0; }
+  int addSelection(int ds) { return setSelection(selection + ds); }
+  int select(void) { return selection++; }
+  int unselect(void) { return selection--; }
 
   static int toGtkPixels(const scaled& s)
   { return static_cast<int>(s.toFloat() * (72.27 / 72.0)); }
@@ -111,68 +115,108 @@ public:
   { return fromGtkY(y); }
 
 protected:
-  template <ColorIndex index>
-  void setColor(const RGBColor& c)
-  {
-    if (c.red != color[index].red ||
-	c.green != color[index].green ||
-	c.blue != color[index].blue)
-      {
-	color[index] = c;
+  enum { MAX_SELECTION_LEVEL = 1 };
 
-	gdk_color[index].red = c.red << 8;
-	gdk_color[index].green = c.green << 8;
-	gdk_color[index].blue = c.blue << 8;
-	gdk_color[index].pixel = 0;
-
-	gboolean ret = gdk_colormap_alloc_color(gdk_colormap, &gdk_color[index], FALSE, TRUE);
-	assert(ret == TRUE);
-
-	setForegroundColor(gdk_color[index]);
-      }
-  }
-
-  template <ColorIndex index>
-  void getColor(RGBColor& c)
-  { c = color[index]; }
-
-  // The only reason why the argument is not const is that
-  // the GDK function does not respect const-ness :-(
   template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
-  void setColor(/* const */ GdkColor& c)
+  void setColor(const RGBColor& c, int i)
   {
-    // Set the color in the GDK GC
-    set(gdk_gc, &c);
+    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
+    data[i].setColor<index,set>(c, gdk_colormap);
+  }
 
-    // Set the color for Xft, note that we reuse the same pixel field
-    // so that we don't need to reallocate the color
-    xft_color[index].color.red = c.red;
-    xft_color[index].color.green = c.green;
-    xft_color[index].color.blue = c.blue;
-    xft_color[index].color.alpha = 0xffff;
-    xft_color[index].pixel = c.pixel;
+  template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+  void setColor(GdkColor& c, int i)
+  {
+    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
+    data[i].setColor<index,set>(c);
+  }
+
+  template <typename C, ColorIndex index>
+  void getColor(C& c, int i) const
+  {
+    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
+    data[i].getColor<index>(c);
   }
 
   template <ColorIndex index>
-  void getColor(GdkColor& c)
-  { c = gdk_color[index]; }
+  const XftColor* getXftColor(int i) const
+  {
+    assert(i >= 0 && i <= MAX_SELECTION_LEVEL);
+    return data[i].getXftColor<index>();
+  }
+
+  struct ContextData
+  {
+    GObjectPtr<GdkGC> gdk_gc;
+    RGBColor color[2];
+    GdkColor gdk_color[2];
+    XftColor xft_color[2];
+    
+    template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+    void setColor(const RGBColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
+    {
+      if (c.red != color[index].red ||
+	  c.green != color[index].green ||
+	  c.blue != color[index].blue)
+	{
+	  color[index] = c;
+
+	  gdk_color[index].red = c.red << 8;
+	  gdk_color[index].green = c.green << 8;
+	  gdk_color[index].blue = c.blue << 8;
+	  gdk_color[index].pixel = 0;
+
+	  assert(gdk_colormap);
+	  gboolean ret = gdk_colormap_alloc_color(gdk_colormap, &gdk_color[index], FALSE, TRUE);
+	  assert(ret == TRUE);
+
+	  setColor<index,set>(gdk_color[index]);
+	}
+    }
+
+    template <ColorIndex index>
+    void getColor(RGBColor& c) const
+    { c = color[index]; }
+
+    // The only reason why the argument is not const is that
+    // the GDK function does not respect const-ness :-(
+    template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+    void setColor(/* const */ GdkColor& c)
+    {
+      // Set the color in the GDK GC
+      set(gdk_gc, &c);
+
+      // Set the color for Xft, note that we reuse the same pixel field
+      // so that we don't need to reallocate the color
+      xft_color[index].color.red = c.red;
+      xft_color[index].color.green = c.green;
+      xft_color[index].color.blue = c.blue;
+      xft_color[index].color.alpha = 0xffff;
+      xft_color[index].pixel = c.pixel;
+    }
+
+    template <ColorIndex index>
+    void getColor(GdkColor& c) const
+    { c = gdk_color[index]; }
+
+    template <ColorIndex index>
+    const XftColor* getXftColor(void) const
+    { return &xft_color[index]; }
+  };
 
   void releaseResources(void);
 
-  unsigned selection;
-  RGBColor color[2];
+  int selection;
+  ContextData data[1 + MAX_SELECTION_LEVEL];
 
   // GTK-specific fields
   GObjectPtr<GtkWidget> gtk_widget;
 
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;
-  GObjectPtr<GdkGC> gdk_gc;
   GObjectPtr<GdkColormap> gdk_colormap;
-  GdkColor gdk_color[2];
 
   // Xft-specific fields
-  XftColor xft_color[2];
   XftDraw* xft_draw;
 };
 
