@@ -37,43 +37,48 @@ BoundingBox::append(const BoundingBox& box)
 void
 BoundingBox::overlap(const BoundingBox& box)
 {
+  width = std::max(width, box.width);
   if (!box.defined())
     return;
   else if (defined())
     {
-      width = std::max(width, box.width);
       height = std::max(height, box.height);
       depth = std::max(depth, box.depth);
     }
   else
-    *this = box;
+    {
+      height = box.height;
+      depth = box.depth;
+    }
 }
 
 void
 BoundingBox::under(const BoundingBox& box)
 {
+  width = std::max(width, box.width);
   if (!box.defined())
     return;
   else if (defined())
-    {
-      width = std::max(width, box.width);
-      height += box.height + box.depth;
-    }
+    height += box.height + box.depth;
   else
-    *this = box;
+    {
+      height = box.height + box.depth;
+      depth = 0;
+    }
 }
 
 void
 BoundingBox::over(const BoundingBox& box)
 {
+  width = std::max(width, box.width);
   if (!box.defined())
     return;
   else if (defined())
-    {
-      width = std::max(width, box.width);
-      depth += box.height + box.depth;
-    }
+    depth += box.height + box.depth;
   else
-    *this = box;
+    {
+      height = 0;
+      depth = box.height + box.depth;
+    }
 }
 
