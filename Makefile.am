@@ -8,7 +8,8 @@ CLEANFILES = core *.log *.eps
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
   mathview-libxml2.pc \
-  gtkmathview-custom.pc \
+  gtkmathview-custom-reader.pc \
+  gtkmathview-libxml2-reader.pc \
   gtkmathview-libxml2.pc \
   gtkmathview-gmetadom.pc \
   $(NULL)
