@@ -7,14 +7,10 @@
 
 // AbiWord
 
-* make conversion functions in RenderingContext non-static and
+? make conversion functions in RenderingContext non-static and
   take zooming into account
-* create AbiWord specific areas that forward rendering requests to the
-  AbiWord GraphicsContext
 * split the Gtk_MathGraphicDevice into a Default_MathGraphicDevice, make
   the AreaFactory and the Shapers customizable from outside
-* create a AbiWord_RenderingContext (just a wrapper for the AbiWord
-  GraphicContext?)
 + remove xft support from gtk rendering context since it's not going to be used
 
 // MathML
