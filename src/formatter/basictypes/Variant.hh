@@ -23,6 +23,8 @@
 #ifndef __Variant_hh__
 #define __Variant_hh__
 
+#include <vector>
+
 #include "SmartPtr.hh"
 #include "Value.hh"
 
@@ -40,6 +42,41 @@ public:
 private:
   T value;
 };
+
+template <>
+class Variant<void> : public Value
+{
+protected:
+  Variant(void) { }
+  virtual ~Variant() { }
+
+public:
+  static SmartPtr< Variant<void> > create(void)
+  { return new Variant(); }
+};
+
+// The following full specialization is for sequences of Values
+// There are more accessor methods and getValue returns a
+// const reference instead of a copy fo the object
+template <>
+class Variant< std::vector< SmartPtr<Value> > > : public Value
+{
+protected:
+  Variant(const std::vector< SmartPtr<Value> >& v) : content(v) { }
+  virtual ~Variant() { }
+
+public:
+  static SmartPtr< Variant< std::vector< SmartPtr<Value> > > > create(const std::vector< SmartPtr<Value> >& v)
+  { return new Variant(v); }
+  const std::vector< SmartPtr<Value> >& getValue(void) const { return content; }
+  unsigned getSize(void) const { return content.size(); }
+  SmartPtr<Value> getValue(unsigned i) const { return content[i]; }
+
+private:
+  std::vector< SmartPtr<Value> > content;
+};
+
+typedef Variant< std::vector< SmartPtr<Value> > > ValueSequence;
 
 template <typename T>
 T as(const Value* v)

@@ -29,7 +29,7 @@ class Value : public Object
 {
 protected:
   Value(void) { }
-  virtual ~Value() = 0;
+  virtual ~Value() { };
 
 public:
   class TypeError { };
