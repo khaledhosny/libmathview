@@ -143,9 +143,11 @@ CXXFLAGS="$CXXFLAGS -Wall"
 AC_OUTPUT([
 Makefile
 config/Makefile
+config/math-engine-configuration.xml
 scripts/Makefile
 src/Makefile
 auto/Makefile
+auto/config.dirs
 doc/Makefile
 viewer/Makefile
 randomath/Makefile

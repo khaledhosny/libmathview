@@ -74,10 +74,11 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-AUTOFILES =    attribute.dec attribute.def   keyword.dec keyword.def   tag.dec tag.def   config.dirs
+AUTOFILES =    attribute.dec attribute.def   keyword.dec keyword.def   tag.dec tag.def
 
 
-EXTRA_DIST = keyword.list stretchy.list entitiesTable.inc $(AUTOFILES)
+EXTRA_DIST =    config.dirs.in   keyword.list   stretchy.list   entitiesTable.inc   $(AUTOFILES)
+
 
 MAINTAINERCLEANFILES = $(AUTOFILES)
 
@@ -86,10 +87,10 @@ noinst_HEADERS = $(AUTOFILES)
 SCRIPTDIR = ../scripts
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES = 
+CONFIG_CLEAN_FILES =  config.dirs
 HEADERS =  $(noinst_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in config.dirs.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -105,6 +106,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+config.dirs: $(top_builddir)/config.status config.dirs.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 tags: TAGS
 
@@ -237,9 +240,6 @@ attribute.dec: keyword.list
 
 attribute.def: keyword.list
 	@$(SCRIPTDIR)/makekeywords def Attribute ATTR attribute.def
-
-config.dirs:
-	echo "#define PKGDATADIR \""$(pkgdatadir)"\"" >config.dirs
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

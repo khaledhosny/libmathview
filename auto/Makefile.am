@@ -2,10 +2,14 @@
 AUTOFILES = \
   attribute.dec attribute.def \
   keyword.dec keyword.def \
-  tag.dec tag.def \
-  config.dirs
+  tag.dec tag.def
 
-EXTRA_DIST = keyword.list stretchy.list entitiesTable.inc $(AUTOFILES)
+EXTRA_DIST = \
+  config.dirs.in \
+  keyword.list \
+  stretchy.list \
+  entitiesTable.inc \
+  $(AUTOFILES)
 
 MAINTAINERCLEANFILES = $(AUTOFILES)
 
@@ -30,7 +34,4 @@ attribute.dec: keyword.list
 
 attribute.def: keyword.list
 	@$(SCRIPTDIR)/makekeywords def Attribute ATTR attribute.def
-
-config.dirs:
-	echo "#define PKGDATADIR \""$(pkgdatadir)"\"" >config.dirs
 

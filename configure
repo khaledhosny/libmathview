@@ -3095,9 +3095,11 @@ ac_given_INSTALL="$INSTALL"
 trap 'rm -fr `echo "
 Makefile
 config/Makefile
+config/math-engine-configuration.xml
 scripts/Makefile
 src/Makefile
 auto/Makefile
+auto/config.dirs
 doc/Makefile
 viewer/Makefile
 randomath/Makefile
@@ -3207,9 +3209,11 @@ cat >> $CONFIG_STATUS <<EOF
 
 CONFIG_FILES=\${CONFIG_FILES-"Makefile
 config/Makefile
+config/math-engine-configuration.xml
 scripts/Makefile
 src/Makefile
 auto/Makefile
+auto/config.dirs
 doc/Makefile
 viewer/Makefile
 randomath/Makefile

@@ -38,6 +38,25 @@ Configuration::Configuration(void)
 
 Configuration::~Configuration()
 {
+  while (dictionaries.GetSize() > 0) {
+    String* s = dictionaries.RemoveFirst();
+    delete s;
+  }
+
+  while (entities.GetSize() > 0) {
+    String* s = entities.RemoveFirst();
+    delete s;
+  }
+
+  while (fonts.GetSize() > 0) {
+    String* s = fonts.RemoveFirst();
+    delete s;
+  }
+
+  while (t1Configs.GetSize() > 0) {
+    String* s = t1Configs.RemoveFirst();
+    delete s;
+  }
 }
 
 bool
@@ -84,25 +103,37 @@ Configuration::ParseConfiguration(mDOMNodeRef node)
       mDOMStringRef path = mdom_node_get_content(p);
       if (path != NULL) {
 	MathEngine::logger(LOG_DEBUG, "found dictionary path `%s'", C_STRING(path));
-	dictionaries.Append(new StringC(C_STRING(path)));
+	String* s = new StringC(C_STRING(path));
+	s->TrimSpacesLeft();
+	s->TrimSpacesRight();
+	dictionaries.Append(s);
       }
     } else if (mdom_string_eq(name, DOM_CONST_STRING("font-configuration-path"))) {
       mDOMStringRef path = mdom_node_get_content(p);
       if (path != NULL) {
 	MathEngine::logger(LOG_DEBUG, "found font configuration path `%s'", C_STRING(path));
-	fonts.Append(new StringC(C_STRING(path)));
+	String* s = new StringC(C_STRING(path));
+	s->TrimSpacesLeft();
+	s->TrimSpacesRight();
+	fonts.Append(s);
       }
     } else if (mdom_string_eq(name, DOM_CONST_STRING("entities-table-path"))) {
       mDOMStringRef path = mdom_node_get_content(p);
       if (path != NULL) {
 	MathEngine::logger(LOG_DEBUG, "found entities table path `%s'", C_STRING(path));
-	entities.Append(new StringC(C_STRING(path)));
+	String* s = new StringC(C_STRING(path));
+	s->TrimSpacesLeft();
+	s->TrimSpacesRight();
+	entities.Append(s);
       }
     } else if (mdom_string_eq(name, DOM_CONST_STRING("t1-config-file"))) {
       mDOMStringRef path = mdom_node_get_content(p);
       if (path != NULL && t1Configs.GetSize() == 0) {
 	MathEngine::logger(LOG_DEBUG, "found t1lib config path `%s'", C_STRING(path));
-	t1Configs.Append(new StringC(C_STRING(path)));
+	String* s = new StringC(C_STRING(path));
+	s->TrimSpacesLeft();
+	s->TrimSpacesRight();
+	t1Configs.Append(s);
       }
     } else if (mdom_string_eq(name, DOM_CONST_STRING("font-size"))) {
       mDOMStringRef attr = mdom_node_get_attribute(p, DOM_CONST_STRING("size"));
