@@ -65,6 +65,7 @@ MathMLView::setDefaultFontSize(unsigned size)
   assert(size > 0);
   if (defaultFontSize != size)
     {
+      std::cerr << "setting default font size to " << size << std::endl;
       defaultFontSize = size;
       if (root)
 	{
@@ -168,9 +169,6 @@ MathMLView::getRootArea() const
 {
   if (root && !frozen())
     {
-      Clock layoutTime;
-      layoutTime.Start();
-
       if (root->dirtyStructure())
 	{
 	  Clock perf;
@@ -182,8 +180,8 @@ MathMLView::getRootArea() const
 
       if (root->dirtyAttribute() || root->dirtyAttributeP())
 	{
-	  Clock perf;
 	  RefinementContext rc;
+	  Clock perf;
 	  perf.Start();
 	  root->refine(rc);
 	  perf.Stop();
@@ -192,17 +190,17 @@ MathMLView::getRootArea() const
 
       if (root->dirtyLayout())
 	{
-	  Clock perf;
 	  MathFormattingContext ctxt(context->device);
 	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  ctxt.setSize(context->device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
+	  //ctxt.setSize(context->device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
+	  ctxt.setSize(l);
 	  ctxt.setActualSize(ctxt.getSize());
+	  Clock perf;
+	  perf.Start();
 	  root->format(ctxt);
+	  perf.Stop();
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 	}
-
-      layoutTime.Stop();
-      Globals::logger(LOG_INFO, "LAYOUT TIME: %dms", layoutTime());
 
       return root->getArea();
     }

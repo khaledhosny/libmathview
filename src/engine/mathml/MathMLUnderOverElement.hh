@@ -20,15 +20,15 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLUnderOverElement_hh
-#define MathMLUnderOverElement_hh
+#ifndef __MathMLUnderOverElement_hh__
+#define __MathMLUnderOverElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
-#include "MathMLScriptCommonElement.hh"
+#include "BinContainerTemplate.hh"
 
 class MathMLUnderOverElement
-  : public MathMLContainerElement, private MathMLScriptCommonElement, public MathMLEmbellishment
+  : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
   MathMLUnderOverElement(const SmartPtr<class MathMLView>&);
@@ -38,35 +38,21 @@ public:
   static SmartPtr<MathMLUnderOverElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLUnderOverElement(view); }
 
-  void SetBase(const SmartPtr<MathMLElement>&);
-  void SetUnderScript(const SmartPtr<MathMLElement>&);
-  void SetOverScript(const SmartPtr<MathMLElement>&);
-  SmartPtr<MathMLElement> GetBase(void) const { return base; }
-  SmartPtr<MathMLElement> GetUnderScript(void) const { return underScript; }
-  SmartPtr<MathMLElement> GetOverScript(void) const { return overScript; }
-#if 0
-  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
-#endif
+  void setBase(const SmartPtr<MathMLElement>& child) { base.setChild(this, child); }
+  void setUnderScript(const SmartPtr<MathMLElement>& child) { underScript.setChild(this, child); }
+  void setOverScript(const SmartPtr<MathMLElement>& child) { overScript.setChild(this, child); }
+  SmartPtr<MathMLElement> getBase(void) const { return base.getChild(); }
+  SmartPtr<MathMLElement> getUnderScript(void) const { return underScript.getChild(); }
+  SmartPtr<MathMLElement> getOverScript(void) const { return overScript.getChild(); }
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const class DrawingArea&);
-  virtual void ReleaseGCs(void);
-#endif
 
   virtual void setDirtyAttribute(void);
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
-#if 0
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
-#endif
+
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 protected:
@@ -85,8 +71,9 @@ protected:
   scaled overShiftX;
   scaled overShiftY;
 
-  SmartPtr<MathMLElement> underScript;
-  SmartPtr<MathMLElement> overScript;
+  BinContainerTemplate<MathMLUnderOverElement, SmartPtr<MathMLElement> > base;
+  BinContainerTemplate<MathMLUnderOverElement, SmartPtr<MathMLElement> > underScript;
+  BinContainerTemplate<MathMLUnderOverElement, SmartPtr<MathMLElement> > overScript;
 };
 
-#endif // MathMLUnderOverElement_hh
+#endif // __MathMLUnderOverElement_hh__

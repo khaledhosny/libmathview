@@ -56,7 +56,6 @@ typedef const AttributeSignature* AttributeId;
 #define REFINE_ATTRIBUTE(ctxt,ns,el,name) refineAttribute(ctxt, ATTRIBUTE_SIGNATURE(ns,el,name))
 #define GET_ATTRIBUTE_VALUE(ns,el,name) getAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name))
 #define GET_ATTRIBUTE_DEFAULT_VALUE(ns,el,name) (ATTRIBUTE_SIGNATURE(ns,el,name).getDefaultValue())
-#define GET_OPERATOR_ATTRIBUTE_VALUE(ns,el,name) getOperatorAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name))
 #define DECLARE_ATTRIBUTE(ns,el,name) extern const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name)
 #define DEFINE_ATTRIBUTE(ns,el,s,name,fe,fc,de,em,df) \
   const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name) = \

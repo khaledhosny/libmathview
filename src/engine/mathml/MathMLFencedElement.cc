@@ -37,9 +37,7 @@
 
 MathMLFencedElement::MathMLFencedElement(const SmartPtr<class MathMLView>& view)
   : MathMLBinContainerElement(view)
-{
-  normalized = false;
-}
+{ }
 
 MathMLFencedElement::~MathMLFencedElement()
 {
@@ -139,34 +137,3 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
       MathMLBinContainerElement::refine(context);
     }
 }
-
-#if 0
-void
-MathMLFencedElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fenced, open))
-	openFence = ToString(value);
-      else
-	openFence.clear();
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fenced, close))
-	closeFence = ToString(value);
-      else
-	closeFence.clear();
-
-      SmartPtr<Value> value;
-      if (getDOMElement() && getDOMElement().hasAttribute("separators"))
-	value = GET_ATTRIBUTE_VALUE(Fenced, separators);
-      else
-	value = GET_ATTRIBUTE_VALUE(Fenced, separators);
-      if (value) separators = ToString(value);
-      else separators.clear();
-
-      MathMLBinContainerElement::Setup(env);
-
-      resetDirtyAttribute();
-    }
-}
-#endif

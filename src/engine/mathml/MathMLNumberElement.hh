@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLNumberElement_hh
-#define MathMLNumberElement_hh
+#ifndef __MathMLNumberElement_hh__
+#define __MathMLNumberElement_hh__
 
 #include "MathMLTokenElement.hh"
 
@@ -36,4 +36,4 @@ public:
   { return new MathMLNumberElement(view); }
 };
 
-#endif // MathMLNumberElement_hh
+#endif // __MathMLNumberElement_hh__

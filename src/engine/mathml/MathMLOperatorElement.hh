@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLOperatorElement_hh
-#define MathMLOperatorElement_hh
+#ifndef __MathMLOperatorElement_hh__
+#define __MathMLOperatorElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLTokenElement.hh"
@@ -40,11 +40,6 @@ public:
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-#endif
 
   bool         IsStretchy(void) const { return stretchy != 0; }
   bool         IsAccent(void) const { return accent != 0; }
@@ -59,28 +54,16 @@ public:
   void         SetFence(void) { forcedFence = fence = 1; }
   void         SetSeparator(void) { forcedSeparator = separator = 1; }
   void         ResetSymmetric(void) { forcedSymmetric = 1; symmetric = 0; }
-  BoundingBox  GetMinBoundingBox(void) const { return minBox; }
-  scaled       GetLeftPadding(void) const { return lSpace; }
-  scaled       GetRightPadding(void) const { return rSpace; }
-#ifdef ENABLE_EXTENSIONS
-  scaled       GetTopPadding(void) const { return tSpace; }
-  scaled       GetBottomPadding(void) const { return bSpace; }
-#endif // ENABLE_EXTENSIONS
 
-  void         HorizontalStretchTo(const scaled&, bool = false);
-  void         VerticalStretchTo(const scaled&, const scaled&, bool = false);
+  scaled       getLeftPadding(void) const { return lSpace; }
+  scaled       getRightPadding(void) const { return rSpace; }
 
   virtual SmartPtr<MathMLOperatorElement> getCoreOperator(void);
 
 private:
-  TokenId InferOperatorForm(void);
-  SmartPtr<Value> getOperatorAttributeValue(const class AttributeSignature&) const;
-  void ParseLimitValue(const SmartPtr<Value>&, const class MathFormattingContext&, float&, scaled&);
-
-  TokenId form;
-  SmartPtr<class AttributeList> defaults;
-
-  scaled axis;
+  TokenId inferOperatorForm(void);
+  SmartPtr<Value> getOperatorAttributeValue(const class AttributeSignature&, const SmartPtr<class AttributeList>&) const;
+  void parseLimitValue(const SmartPtr<Value>&, const class MathFormattingContext&, float&, scaled&);
 
   unsigned largeOp : 1;
   unsigned forcedFence : 1;
@@ -95,16 +78,6 @@ private:
   unsigned accent : 1;
   scaled lSpace;
   scaled rSpace;
-#ifdef ENABLE_EXTENSIONS
-  scaled tSpace;
-  scaled bSpace;
-#endif // ENABLE_EXTENSIONS
-  float  maxMultiplier;   // if <0 => absolute max size contraint
-  scaled maxSize;
-  float  minMultiplier;   // if <0 => absolute min size constraint
-  scaled minSize;
-
-  BoundingBox minBox;
 };
 
-#endif // MathMLOperatorElement_hh
+#endif // __MathMLOperatorElement_hh__

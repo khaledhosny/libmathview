@@ -34,12 +34,10 @@
 
 MathMLSemanticsElement::MathMLSemanticsElement(const SmartPtr<class MathMLView>& view)
   : MathMLBinContainerElement(view)
-{
-}
+{ }
 
 MathMLSemanticsElement::~MathMLSemanticsElement()
-{
-}
+{ }
 
 #if 0
 void

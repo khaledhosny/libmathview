@@ -28,6 +28,8 @@
 #include "MathMLSpaceElement.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
@@ -52,46 +54,55 @@ MathMLSpaceElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#if 0
-void
-MathMLSpaceElement::Setup(RenderingEnvironment& env)
+AreaRef
+MathMLSpaceElement::format(MathFormattingContext& ctxt)
 {
-  if (dirtyAttribute())
+  if (dirtyLayout())
     {
-      background = env.GetBackgroundColor();
+      ctxt.push(this);
 
       scaled width;
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Space, width))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, width))
 	if (IsTokenId(value))
-	  width = env.ToScaledPoints(ToLength(Resolve(value, env)));
+	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(Resolve(value, ctxt)), scaled::zero());
 	else
-	  width = env.ToScaledPoints(ToLength(value));
+	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
       else
 	assert(IMPOSSIBLE);
 
       scaled height;
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Space, height))
-	height = env.ToScaledPoints(ToLength(value));
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, height))
+	height = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
 
       scaled depth;
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Space, depth))
-	depth = env.ToScaledPoints(ToLength(value));
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, depth))
+	depth = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
 
-      box.set(width, height, depth);
-
+      
       if (!IsSet(T_WIDTH) && !IsSet(T_HEIGHT) && !IsSet(T_DEPTH))
-	breakability = ToTokenId(GET_ATTRIBUTE_VALUE(Space, linebreak));
+	{
+	  lineBreak = true;
+	  autoLineBreak = IsSet(T_LINEBREAK);
+	  if (!autoLineBreak)
+	    breakability = ToTokenId(GET_ATTRIBUTE_VALUE(MathML, Space, linebreak));
+	}
+      else
+	lineBreak = false;
 
-      resetDirtyAttribute();
+      if (lineBreak)
+	setArea(0);
+      else
+	{
+	  AreaRef res = ctxt.getDevice()->getFactory()->box(ctxt.getDevice()->getFactory()->horizontalSpace(scaled::zero()), BoundingBox(width, height, depth));
+	  setArea(ctxt.getDevice()->wrapper(ctxt, res));
+	}
+
+      ctxt.pop();
+      resetDirtyLayout();
     }
+  
+  return getArea();
 }
-
-void
-MathMLSpaceElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt)) resetDirtyLayout(ctxt);
-}
-#endif
 
 bool
 MathMLSpaceElement::IsSpace() const
@@ -104,11 +115,3 @@ MathMLSpaceElement::IsSpaceLike() const
 {
   return true;
 }
-
-#if 0
-scaled
-MathMLSpaceElement::GetRightEdge() const
-{
-  return GetX() + (lineBreak ? box.width : 0);
-}
-#endif

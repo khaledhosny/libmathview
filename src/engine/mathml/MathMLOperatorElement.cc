@@ -35,6 +35,8 @@
 #include "AttributeList.hh"
 #include "MathMLAttributeSignatures.hh"
 
+#define GET_OPERATOR_ATTRIBUTE_VALUE(ns,el,name,def) getOperatorAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name),def)
+
 MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLView>& view)
   : MathMLTokenElement(view)
 {
@@ -67,129 +69,6 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#if 0
-void
-MathMLOperatorElement::Setup(RenderingEnvironment& env)
-{
-#if 0
-  if (dirtyAttribute())
-    {
-      axis = env.GetAxis();
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Operator, form))
-	form = ToTokenId(value);
-      else
-	form = InferOperatorForm();
-
-      SmartPtr<MathMLAttributeList> prefix;
-      SmartPtr<MathMLAttributeList> infix;
-      SmartPtr<MathMLAttributeList> postfix;
-
-      String operatorName = GetRawContent();
-      Globals::dictionary.Search(operatorName, prefix, infix, postfix);
-
-      if      (form == T_PREFIX && prefix) defaults = prefix;
-      else if (form == T_INFIX && infix) defaults = infix;
-      else if (form == T_POSTFIX && postfix) defaults = postfix;
-      else if (infix) defaults = infix;
-      else if (postfix) defaults = postfix;
-      else if (prefix) defaults = prefix;
-      else defaults = 0;
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, fence))
-	if (!ForcedFence()) fence = ToBoolean(value) ? 1 : 0;
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, separator))
-	if (!ForcedSeparator()) separator = ToBoolean(value) ? 1 : 0;
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, lspace))
-	{
-	  SmartPtr<Value> resValue = Resolve(value, env);
-	  if (env.GetScriptLevel() <= 0)
-	    lSpace = env.ToScaledPoints(ToLength(resValue));
-	  else
-	    lSpace = 0;
-	}
-      else
-	assert(IMPOSSIBLE);
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, rspace))
-	{
-	  SmartPtr<Value> resValue = Resolve(value, env);
-	  if (env.GetScriptLevel() <= 0)
-	    rSpace = env.ToScaledPoints(ToLength(resValue));
-	  else
-	    rSpace = 0;
-	}
-      else
-	assert(IMPOSSIBLE);
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, stretchy))
-	stretchy = ToBoolean(value) ? 1 : 0;
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, symmetric))
-	if (!ForcedSymmetric()) symmetric = ToBoolean(value) ? 1 : 0;
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, maxsize))
-	if (ToTokenId(value) == T_INFINITY)
-	  infiniteMaxSize = 1;
-	else
-	  {
-	    infiniteMaxSize = 0;
-	    ParseLimitValue(value, env, maxMultiplier, maxSize);
-	  }
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, minsize))
-	ParseLimitValue(value, env, minMultiplier, minSize);
-      else
-	assert(IMPOSSIBLE);
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, movablelimits))
-	movableLimits = ToBoolean(value) ? 1 : 0;
-      else
-	assert(IMPOSSIBLE);
-
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, accent))
-	accent = ToBoolean(value) ? 1 : 0;
-      else
-	assert(IMPOSSIBLE);
-
-      bool largeOp = false;
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, largeop))
-	largeOp = ToBoolean(value);
-
-      MathMLTokenElement::Setup(env);
-
-#if 0
-      if (GetSize() == 1 && largeOp && env.GetDisplayStyle())
-	{
-	  // WARNING: the fact that I'm using a local variable is probably due
-	  // to a GCC bug. If the method is called directly the compiler
-	  // reports an ambiguous overloading
-          SmartPtr<MathMLTextNode> child = GetChild(0);
-	  if (SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(child))
-	    if (sNode->IsStretchyChar()) sNode->SetDefaultLargeGlyph(true);
-	}
-#endif
-
-      resetDirtyAttribute();
-    }
-#endif
-}
-
-void
-MathMLOperatorElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      MathMLTokenElement::DoLayout(ctxt);
-      DoEmbellishmentLayout(this, box);
-      if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) minBox = box;
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
-
 #include "scaledAux.hh"
 #include "BoundingBoxAux.hh"
 
@@ -204,7 +83,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Operator, form))
 	form = ToTokenId(value);
       else
-	form = InferOperatorForm();
+	form = inferOperatorForm();
 
       SmartPtr<AttributeList> prefix;
       SmartPtr<AttributeList> infix;
@@ -213,6 +92,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       String operatorName = GetRawContent();
       Globals::dictionary.Search(operatorName, prefix, infix, postfix);
 
+      SmartPtr<AttributeList> defaults;
       if      (form == T_PREFIX && prefix) defaults = prefix;
       else if (form == T_INFIX && infix) defaults = infix;
       else if (form == T_POSTFIX && postfix) defaults = postfix;
@@ -221,13 +101,13 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       else if (prefix) defaults = prefix;
       else defaults = 0;
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, fence))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, fence, defaults))
 	fence = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, separator))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, separator, defaults))
 	separator = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, lspace))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, lspace, defaults))
 	{
 	  SmartPtr<Value> resValue = Resolve(value, ctxt);
 	  if (ctxt.getScriptLevel() <= 0)
@@ -238,7 +118,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       else
 	assert(false);
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, rspace))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, rspace, defaults))
 	{
 	  SmartPtr<Value> resValue = Resolve(value, ctxt);
 	  if (ctxt.getScriptLevel() <= 0)
@@ -249,39 +129,38 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       else
 	assert(false);
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, stretchy))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, stretchy, defaults))
 	stretchy = ToBoolean(value) ? 1 : 0;
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, symmetric))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, symmetric, defaults))
 	symmetric = ToBoolean(value) ? 1 : 0;
 
+      float maxMultiplier = 0.0f;
       scaled maxSize;
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, maxsize))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, maxsize, defaults))
 	if (ToTokenId(value) == T_INFINITY)
-	  {
-	    maxSize = scaled::max();
-	    maxMultiplier = 0.0f;
-	  }
+	  maxSize = scaled::max();
 	else
-	  ParseLimitValue(value, ctxt, maxMultiplier, maxSize);
+	  parseLimitValue(value, ctxt, maxMultiplier, maxSize);
 
+      float minMultiplier = 0.0f;
       scaled minSize;
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, minsize))
-	ParseLimitValue(value, ctxt, minMultiplier, minSize);
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, minsize, defaults))
+	parseLimitValue(value, ctxt, minMultiplier, minSize);
       else
 	assert(false);
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, movablelimits))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, movablelimits, defaults))
 	movableLimits = ToBoolean(value) ? 1 : 0;
       else
 	assert(false);
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, accent))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, accent, defaults))
 	accent = ToBoolean(value) ? 1 : 0;
       else
 	assert(false);
 
-      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop))
+      if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop, defaults))
 	largeOp = ToBoolean(value) ? 1 : 0;
 
       AreaRef res;
@@ -383,155 +262,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 }
 
 void
-MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& descent, bool strict)
-{
-  assert(stretchy);
-
-  scaled height = ascent - axis;
-  scaled depth = descent + axis;
-
-  scaled desiredSize = 0;
-
-  // Here we have to calculate the desired size of the stretchable symbol.
-  // If symmetric == true the we have to stretch to cover the maximum among
-  // height and depth, otherwise we just stretch to ascent + descent
-  desiredSize = symmetric ? (2 * std::max(height, depth)) : (height + depth);
-
-  // actually a slightly smaller fence is usually enough when symmetric is true
-  Globals::logger(LOG_DEBUG, "request for stretch to %d...", sp2ipx(desiredSize));
-  if (true || symmetric)
-    desiredSize = std::max(desiredSize - pt2sp(5), ((desiredSize * 901) / 1000));
-  Globals::logger(LOG_DEBUG, "%d will be enough!", sp2ipx(desiredSize));
-
-  desiredSize = std::max(scaled(0), desiredSize);
-
-  // ...however, there may be some contraints over the size of the stretchable
-  // operator. adjustedSize will be the final allowed size for the operator
-  scaled minHeight = minBox.verticalExtent();
-  Globals::logger(LOG_DEBUG, "the minimum height is %d", sp2ipx(minHeight));
-
-  scaled adjustedSize = desiredSize;
-
-  if (minMultiplier > 0)
-    adjustedSize = std::max(adjustedSize, minHeight * minMultiplier);
-  else
-    adjustedSize = std::max(adjustedSize, minSize);
-
-  if (!infiniteMaxSize) {
-    if (maxMultiplier > 0)
-      adjustedSize = std::min(adjustedSize, minHeight * maxMultiplier);
-    else
-      adjustedSize = std::min(adjustedSize, maxSize);
-  }
-
-  adjustedSize = std::max(scaled(0), adjustedSize);
-
-#if 0
-  assert(GetSize() == 1);
-  if (SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
-    {
-      if (!cNode->IsStretchyChar())
-	{
-	  Globals::logger(LOG_WARNING, "character `U+%04x' could not be stretched", cNode->GetChar());
-	  return;
-	}
-    }
-
-  SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(GetChild(0));
-  assert(sNode);
-
-  scaled adjustedHeight = 0;
-  scaled adjustedDepth = 0;
-
-  if (symmetric)
-    {
-      adjustedHeight = adjustedSize / 2;
-      adjustedDepth = adjustedSize / 2;
-    }
-  else
-    {
-      adjustedHeight = height * (adjustedSize.toFloat() / desiredSize.toFloat());
-      adjustedDepth = depth * (adjustedSize.toFloat() / desiredSize.toFloat());
-    }
-
-  Globals::logger(LOG_DEBUG, "adjusted stretchy size %d", sp2ipx(adjustedSize));
-
-  sNode->DoVerticalStretchyLayout(adjustedHeight, adjustedDepth, axis, strict);
-
-  // since the bounding box may have changed, we force dirtyLayout to true, so that
-  // a DoBoxedLayout done on this operator will have effect
-  setDirtyLayout();
-#endif
-}
-
-void
-MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
-{
-  assert(stretchy);
-
-  scaled desiredSize = width;
-
-  desiredSize = std::max(scaled(0), desiredSize);
-
-  // ...however, there may be some contraints over the size of the stretchable
-  // operator. adjustedSize will be the final allowed size for the operator
-  scaled minWidth = minBox.width;
-  scaled adjustedSize = desiredSize;
-
-  if (minMultiplier > 0)
-    adjustedSize = std::max(adjustedSize, minWidth * minMultiplier);
-  else
-    adjustedSize = std::max(adjustedSize, minSize);
-
-  if (!infiniteMaxSize) {
-    if (maxMultiplier > 0)
-      adjustedSize = std::min(adjustedSize, minWidth * maxMultiplier);
-    else
-      adjustedSize = std::min(adjustedSize, minSize);
-  }
-
-  adjustedSize = std::max(scaled(0), adjustedSize);
-
-#if 0
-  assert(GetSize() == 1);
-  if (SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
-    {
-      if (!cNode->IsStretchyChar())
-	{
-	  Globals::logger(LOG_WARNING, "character `U+%04x' could not be stretched", cNode->GetChar());
-	  return;
-	}
-    }
-
-  SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(GetChild(0));
-  assert(sNode);
-
-  // now we do the stretchy layout. fontAttributes will be used to find the
-  // proper font
-  sNode->DoHorizontalStretchyLayout(adjustedSize, strict);
-
-  // since the bounding box may have changed, we force dirtyLayout to true, so that
-  // a DoBoxedLayout done on this operator will have effect
-  setDirtyLayout();
-#endif
-}
-
-#if 0
-void
-MathMLOperatorElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-  SetEmbellishmentPosition(this, x, y);
-  SetContentPosition(x, y);
-}
-#endif
-
-void
-MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
+MathMLOperatorElement::parseLimitValue(const SmartPtr<Value>& value,
 				       const MathFormattingContext& ctxt,
 				       float& multiplier,
 				       scaled& size)
@@ -545,9 +276,7 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
       size = ctxt.getDevice()->evaluate(ctxt, ToLength(resValue), scaled::zero());
     }
   else if (IsNumber(value))
-    {
-      multiplier = std::max(EPSILON, ToNumber(value));
-    }
+    multiplier = std::max(EPSILON, ToNumber(value));
   else
     {
       assert(IsLength(value));
@@ -567,7 +296,8 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
 }
 
 SmartPtr<Value>
-MathMLOperatorElement::getOperatorAttributeValue(const AttributeSignature& signature) const
+MathMLOperatorElement::getOperatorAttributeValue(const AttributeSignature& signature,
+						 const SmartPtr<AttributeList>& defaults) const
 {
   // 1st attempt, the attribute may be set for the current operator
   if (SmartPtr<Value> value = getAttributeValueNoDefault(signature))
@@ -592,7 +322,7 @@ MathMLOperatorElement::getOperatorAttributeValue(const AttributeSignature& signa
 }
 
 TokenId
-MathMLOperatorElement::InferOperatorForm()
+MathMLOperatorElement::inferOperatorForm()
 {
   SmartPtr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
   assert(eOp);
@@ -610,26 +340,6 @@ MathMLOperatorElement::InferOperatorForm()
 
   return res;
 }
-
-#if 0
-StretchId
-MathMLOperatorElement::GetStretch() const
-{
-#if 0
-  if (!IsStretchy()) return STRETCH_NO;
-
-  //assert(GetSize() == 1);
-  if (!is_a<MathMLCharNode>(GetChild(0))) return STRETCH_NO;
-  SmartPtr<MathMLCharNode> sChar = smart_cast<MathMLCharNode>(GetChild(0));
-  assert(sChar);
-
-  if (!sChar->IsStretchyChar()) return STRETCH_NO;
-
-  return sChar->GetStretch();
-#endif
-  return STRETCH_NO;
-}
-#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLOperatorElement::getCoreOperator()

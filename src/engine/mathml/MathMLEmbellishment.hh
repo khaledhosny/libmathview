@@ -32,9 +32,9 @@ protected:
   ~MathMLEmbellishment() { };
 
 public:
-  AreaRef formatEmbellishment(const SmartPtr<MathMLElement>&, const class MathFormattingContext&, const AreaRef&);
-  void DoEmbellishmentLayout(const SmartPtr<MathMLElement>&, BoundingBox&);
-  void SetEmbellishmentPosition(const SmartPtr<MathMLElement>&, scaled&, scaled&);
+  AreaRef formatEmbellishment(const SmartPtr<MathMLElement>&,
+			      const class MathFormattingContext&,
+			      const AreaRef&) const;
 };
 
 #endif // __MathMLEmbellishment_hh__

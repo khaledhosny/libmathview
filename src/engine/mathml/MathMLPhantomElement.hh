@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLPhantomElement_hh
-#define MathMLPhantomElement_hh
+#ifndef __MathMLPhantomElement_hh__
+#define __MathMLPhantomElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -43,4 +43,4 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 };
 
-#endif // MathMLPhantomElement_hh
+#endif // __MathMLPhantomElement_hh__

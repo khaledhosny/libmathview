@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLRowElement_hh
-#define MathMLRowElement_hh
+#ifndef __MathMLRowElement_hh__
+#define __MathMLRowElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLLinearContainerElement.hh"
@@ -37,19 +37,11 @@ public:
   static SmartPtr<MathMLRowElement> create(const SmartPtr<class MathMLView>& view);
 
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-#endif
 
   virtual bool IsSpaceLike(void) const;
 
   TokenId GetOperatorForm(const SmartPtr<MathMLElement>&) const;
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
-
-protected:
-  void DoStretchyLayout(void);
 };
 
-#endif // MathMLRowElement_hh
+#endif // __MathMLRowElement_hh__

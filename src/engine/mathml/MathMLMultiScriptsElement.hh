@@ -74,4 +74,4 @@ private:
   scaled superShiftY;
 };
 
-#endif // MathMLMultiScriptsElement_hh
+#endif // __MathMLMultiScriptsElement_hh__

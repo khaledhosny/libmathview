@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLPaddedElement_hh
-#define MathMLPaddedElement_hh
+#ifndef __MathMLPaddedElement_hh__
+#define __MathMLPaddedElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -38,11 +38,6 @@ public:
   { return new MathMLPaddedElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-#endif
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
@@ -70,4 +65,4 @@ private:
   scaled lSpaceE; // evaluated
 };
 
-#endif // MathMLPaddedElement_hh
+#endif // __MathMLPaddedElement_hh__

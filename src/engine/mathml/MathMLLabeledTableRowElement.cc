@@ -71,23 +71,6 @@ MathMLLabeledTableRowElement::construct()
     }
 }
 
-#if 0
-void
-MathMLLabeledTableRowElement::Setup(RenderingEnvironment& env)
-{
-  SetupAux(env, true);
-}
-
-SmartPtr<MathMLElement>
-MathMLLabeledTableRowElement::Inside(const scaled& x, const scaled& y)
-{
-  SmartPtr<MathMLElement> inside;
-  if (inside = MathMLTableRowElement::Inside(x, y)) return inside;
-  if (label && (inside = label->Inside(x, y))) return inside;
-  return 0;
-}
-#endif
-
 void
 MathMLLabeledTableRowElement::setFlagDown(Flags f)
 {

@@ -30,31 +30,10 @@
 
 MathMLErrorElement::MathMLErrorElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
-{
-}
+{ }
 
 MathMLErrorElement::~MathMLErrorElement()
-{
-}
-
-#if 0
-void
-MathMLErrorElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      env.Push();
-      RGBColor color = env.GetColor();
-
-      if (color == RGBColor::RED()) env.SetColor(RGBColor::BLUE());
-      else env.SetColor(RGBColor::RED());
-
-      MathMLNormalizingContainerElement::Setup(env);
-      env.Drop();
-      resetDirtyAttribute();
-    }
-}
-#endif
+{ }
 
 AreaRef
 MathMLErrorElement::format(MathFormattingContext& ctxt)

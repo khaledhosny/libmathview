@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLNormalizingContainerElement_hh
-#define MathMLNormalizingContainerElement_hh
+#ifndef __MathMLNormalizingContainerElement_hh__
+#define __MathMLNormalizingContainerElement_hh__
 
 #include "MathMLBinContainerElement.hh"
 
@@ -36,12 +36,8 @@ protected:
 public:
   virtual void construct(void);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-#endif
 
   virtual void setDirtyStructure(void);
 };
 
-#endif // MathMLNormalizingContainerElement_hh
+#endif // __MathMLNormalizingContainerElement_hh__

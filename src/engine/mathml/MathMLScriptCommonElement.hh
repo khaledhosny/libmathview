@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLScriptCommonElement_hh
-#define MathMLScriptCommonElement_hh
+#ifndef __MathMLScriptCommonElement_hh__
+#define __MathMLScriptCommonElement_hh__
 
 #include "SmartPtr.hh"
 

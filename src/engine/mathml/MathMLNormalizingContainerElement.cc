@@ -36,12 +36,10 @@
 
 MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const SmartPtr<class MathMLView>& view)
   : MathMLBinContainerElement(view)
-{
-}
+{ }
 
 MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
-{
-}
+{ }
 
 void
 MathMLNormalizingContainerElement::construct()

@@ -25,10 +25,10 @@
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
-#include "MathMLScriptCommonElement.hh"
+#include "BinContainerTemplate.hh"
 
 class MathMLScriptElement
-  : public MathMLContainerElement, private MathMLScriptCommonElement, public MathMLEmbellishment
+  : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
   MathMLScriptElement(const SmartPtr<class MathMLView>&);
@@ -38,12 +38,12 @@ public:
   static SmartPtr<MathMLScriptElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLScriptElement(view); }
 
-  void SetBase(const SmartPtr<MathMLElement>&);
-  void SetSubScript(const SmartPtr<MathMLElement>&);
-  void SetSuperScript(const SmartPtr<MathMLElement>&);
-  SmartPtr<MathMLElement> GetBase(void) const { return base; }
-  SmartPtr<MathMLElement> GetSubScript(void) const { return subScript; }
-  SmartPtr<MathMLElement> GetSuperScript(void) const { return superScript; }
+  void setBase(const SmartPtr<MathMLElement>& child) { base.setChild(this, child); }
+  void setSubScript(const SmartPtr<MathMLElement>& child) { subScript.setChild(this, child); }
+  void setSuperScript(const SmartPtr<MathMLElement>& child) { superScript.setChild(this, child); }
+  SmartPtr<MathMLElement> getBase(void) const { return base.getChild(); }
+  SmartPtr<MathMLElement> getSubScript(void) const { return subScript.getChild(); }
+  SmartPtr<MathMLElement> getSuperScript(void) const { return superScript.getChild(); }
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
@@ -54,8 +54,9 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
-  SmartPtr<MathMLElement> subScript;
-  SmartPtr<MathMLElement> superScript;
+  BinContainerTemplate<MathMLScriptElement, SmartPtr<MathMLElement> > base;
+  BinContainerTemplate<MathMLScriptElement, SmartPtr<MathMLElement> > subScript;
+  BinContainerTemplate<MathMLScriptElement, SmartPtr<MathMLElement> > superScript;
 };
 
 #endif // __MathMLScriptElement_hh__

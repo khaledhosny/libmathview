@@ -39,11 +39,6 @@ public:
   virtual void refine(class AbstractRefinementContext&);
 
 private:
-  bool normalized;
-  String openFence;
-  String closeFence;
-  String separators;
-
   unsigned nArgs;
 };
 

@@ -36,19 +36,8 @@ public:
   static SmartPtr<MathMLEncloseElement> create(const SmartPtr<class MathMLView>& view)
   { return new MathMLEncloseElement(view); }
 
-  //virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-
-protected:
-  void NormalizeRadicalElement(const SmartPtr<class MathMLDocument>&);
-
-  bool normalized;
-
-  String notation;
-  scaled spacing;
-  scaled lineThickness;
-  RGBColor color;
 };
 
 #endif // __MathMLEncloseElement_hh__

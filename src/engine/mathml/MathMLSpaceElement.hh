@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLSpaceElement_hh
-#define MathMLSpaceElement_hh
+#ifndef __MathMLSpaceElement_hh__
+#define __MathMLSpaceElement_hh__
 
 #include "MathMLElement.hh"
 
@@ -36,6 +36,7 @@ public:
   { return new MathMLSpaceElement(view); }
 
   virtual void    refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
 
   virtual bool    IsSpace(void) const;
   virtual bool    IsSpaceLike(void) const;
@@ -47,4 +48,4 @@ private:
   TokenId breakability; // valid if auto == false
 };
 
-#endif // MathMLSpaceElement_hh
+#endif // __MathMLSpaceElement_hh__

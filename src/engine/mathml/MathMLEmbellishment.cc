@@ -32,14 +32,14 @@
 AreaRef
 MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
 					 const MathFormattingContext& context,
-					 const AreaRef& area)
+					 const AreaRef& area) const
 {
   assert(elem);
   if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
     {
       assert(!top->dirtyAttribute());
-      scaled leftPadding = top->GetLeftPadding();
-      scaled rightPadding = top->GetRightPadding();
+      scaled leftPadding = top->getLeftPadding();
+      scaled rightPadding = top->getRightPadding();
       if (leftPadding != scaled::zero() || rightPadding != scaled::zero())
 	{
 	  std::vector<AreaRef> row;
@@ -56,24 +56,3 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
     return area;
 }
 
-void
-MathMLEmbellishment::DoEmbellishmentLayout(const SmartPtr<MathMLElement>& elem, BoundingBox& box)
-{
-  assert(elem);
-  if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
-    {
-      assert(!top->dirtyAttribute());
-      box.width += top->GetLeftPadding() + top->GetRightPadding();
-    }
-}
-
-void
-MathMLEmbellishment::SetEmbellishmentPosition(const SmartPtr<MathMLElement>& elem, scaled& x, scaled&)
-{
-  assert(elem);
-  if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
-    {
-      assert(!top->dirtyAttribute());
-      x += top->GetLeftPadding();
-    }
-}

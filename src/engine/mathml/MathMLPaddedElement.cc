@@ -34,12 +34,10 @@
 
 MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
-{
-}
+{ }
 
 MathMLPaddedElement::~MathMLPaddedElement()
-{
-}
+{ }
 
 void
 MathMLPaddedElement::refine(AbstractRefinementContext& context)

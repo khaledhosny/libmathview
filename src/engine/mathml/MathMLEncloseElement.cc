@@ -33,50 +33,10 @@
 
 MathMLEncloseElement::MathMLEncloseElement(const SmartPtr<MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
-{
-  normalized = false;
-}
+{ }
 
 MathMLEncloseElement::~MathMLEncloseElement()
-{
-}
-
-#if 0
-void
-MathMLEncloseElement::NormalizeRadicalElement(const SmartPtr<MathMLDocument>& doc)
-{
-  assert(GetChild());
-
-  SmartPtr<MathMLRadicalElement> sqrt = smart_cast<MathMLRadicalElement>(MathMLRadicalElement::create());
-  assert(sqrt);
-
-  SmartPtr<MathMLElement> oldChild = GetChild();
-  SetChild(0);
-  sqrt->SetRadicand(oldChild);
-  SetChild(sqrt);
-  sqrt->Normalize(doc);
-}
-
-void
-MathMLEncloseElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (normalized && getDOMElement() &&
-	  GetChild() && is_a<MathMLRadicalElement>(GetChild()) && !GetChild()->GetParent())
-	{
-	  // this must be an inferred msqrt element
-	  SmartPtr<MathMLRadicalElement> inferredSqrt = smart_cast<MathMLRadicalElement>(GetChild());
-	  assert(inferredSqrt);
-	  SetChild(inferredSqrt->GetRadicand());
-	}
-#endif
-      normalized = false;
-      MathMLNormalizingContainerElement::construct(context);
-    }
-}
-#endif
+{ }
 
 void
 MathMLEncloseElement::refine(AbstractRefinementContext& context)
@@ -87,54 +47,6 @@ MathMLEncloseElement::refine(AbstractRefinementContext& context)
       MathMLNormalizingContainerElement::refine(context);
     }
 }
-
-#if 0
-void
-MathMLEncloseElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      notation = ToString(GET_ATTRIBUTE_VALUE(Enclose, notation));
-
-      spacing = env.ToScaledPoints(env.GetMathSpace(RenderingEnvironment::MATH_SPACE_MEDIUM));
-      lineThickness = env.GetRuleThickness();
-      color = env.GetColor();
-
-#if 0      
-      if (!normalized)
-	{
-	  if (notation == "radical") NormalizeRadicalElement(env.GetDocument());
-	  normalized = true;
-	}
-#endif
-
-      MathMLNormalizingContainerElement::Setup(env);
-
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      assert(child);
-
-      MathMLNormalizingContainerElement::DoLayout(ctxt);
-      box = child->GetBoundingBox();
-
-      if (notation == "actuarial" || notation == "longdiv")
-	{
-	  box = child->GetBoundingBox();
-	  box.height += spacing + lineThickness;
-	  box.width += spacing + lineThickness;
-	}
-
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
 
 AreaRef
 MathMLEncloseElement::format(MathFormattingContext& ctxt)
@@ -155,55 +67,3 @@ MathMLEncloseElement::format(MathFormattingContext& ctxt)
 
   return getArea();
 }
-
-#if 0
-void
-MathMLEncloseElement::SetPosition(const scaled& x, const scaled& y)
-{
-  assert(child);
-
-  position.x = x;
-  position.y = y;
-
-  if (notation == "longdiv")
-    child->SetPosition(x + spacing + lineThickness, y);
-  else
-    child->SetPosition(x, y);
-}
-
-void
-MathMLEncloseElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      MathMLNormalizingContainerElement::Render(area);
-
-      if (fGC[Selected()] == NULL) {
-	GraphicsContextValues values;
-	values.foreground = Selected() ? area.GetSelectionForeground() : color;
-	fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND);
-      }
-
-      if (notation == "longdiv") {
-        area.MoveTo(GetX() + lineThickness / 2, GetY() + box.depth);
-        area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.height + lineThickness / 2);
-        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height + lineThickness / 2);
-      } else if (notation == "actuarial") {
-        area.MoveTo(GetX(), GetY() - box.height + lineThickness / 2);
-        area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.height + lineThickness / 2);
-        area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.depth);
-      } else if (notation == "overstrike") {
-        area.MoveTo(GetX(), GetY() - box.height / 2);
-        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height / 2);
-      } else if (notation == "NESWslash") {
-        area.MoveTo(GetX(), GetY() + box.depth);
-        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height);
-      } else if (notation == "NWSEslash") {
-        area.MoveTo(GetX(), GetY() - box.height);
-        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() + box.depth);
-      }
-
-      ResetDirty();
-    }
-}
-#endif

@@ -32,53 +32,17 @@
 #include "MathMLView.hh"
 #include "ValueConversion.hh"
 #include "defs.h"
-#include "traverseAux.hh"
+//#include "traverseAux.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
 
 MathMLScriptElement::MathMLScriptElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)
-{
-  subScript = superScript = 0;  
-}
+{ }
 
 MathMLScriptElement::~MathMLScriptElement()
-{
-}
-
-void
-MathMLScriptElement::SetBase(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != base)
-    {
-      if (elem) elem->setParent(this);
-      base = elem;
-      setDirtyLayout();
-    }
-}
-
-void
-MathMLScriptElement::SetSubScript(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != subScript)
-    {
-      if (elem) elem->setParent(this);
-      subScript = elem;
-      setDirtyLayout();
-    }
-}
-
-void
-MathMLScriptElement::SetSuperScript(const SmartPtr<MathMLElement>& elem)
-{
-  if (elem != superScript)
-    {
-      if (elem) elem->setParent(this);
-      superScript = elem;
-      setDirtyLayout();
-    }
-}
+{ }
 
 void
 MathMLScriptElement::construct()
@@ -92,35 +56,35 @@ MathMLScriptElement::construct()
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
-	    SetBase(e);
-	  else if (!is_a<MathMLDummyElement>(GetBase()))
-	    SetBase(getFactory()->createDummyElement(getView()));
+	    setBase(e);
+	  else if (!is_a<MathMLDummyElement>(getBase()))
+	    setBase(getFactory()->createDummyElement(getView()));
 
 	  switch (IsA())
 	    {
 	    case T_MSUB:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		SetSubScript(e);
-	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
-		SetSubScript(getFactory()->createDummyElement(getView()));
-	      SetSuperScript(0);
+		setSubScript(e);
+	      else if (!is_a<MathMLDummyElement>(getSubScript()))
+		setSubScript(getFactory()->createDummyElement(getView()));
+	      setSuperScript(0);
 	      break;
 	    case T_MSUP:
-	      SetSubScript(0);
+	      setSubScript(0);
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		SetSuperScript(e);
-	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
-		SetSuperScript(getFactory()->createDummyElement(getView()));
+		setSuperScript(e);
+	      else if (!is_a<MathMLDummyElement>(getSuperScript()))
+		setSuperScript(getFactory()->createDummyElement(getView()));
 	      break;
 	    case T_MSUBSUP:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
-		SetSubScript(e);
-	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
-		SetSubScript(getFactory()->createDummyElement(getView()));
+		setSubScript(e);
+	      else if (!is_a<MathMLDummyElement>(getSubScript()))
+		setSubScript(getFactory()->createDummyElement(getView()));
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(2)))
-		SetSuperScript(e);
-	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
-		SetSuperScript(getFactory()->createDummyElement(getView()));
+		setSuperScript(e);
+	      else if (!is_a<MathMLDummyElement>(getSuperScript()))
+		setSuperScript(getFactory()->createDummyElement(getView()));
 	      break;
 	    default:
 	      assert(false);
@@ -128,9 +92,9 @@ MathMLScriptElement::construct()
 	}
 #endif
 
-      if (base) base->construct();
-      if (subScript) subScript->construct();
-      if (superScript) superScript->construct();
+      if (getBase()) getBase()->construct();
+      if (getSubScript()) getSubScript()->construct();
+      if (getSuperScript()) getSuperScript()->construct();
 
       resetDirtyStructure();
     }
@@ -143,9 +107,9 @@ MathMLScriptElement::refine(AbstractRefinementContext& context)
     {
       REFINE_ATTRIBUTE(context, MathML, Script, subscriptshift);
       REFINE_ATTRIBUTE(context, MathML, Script, superscriptshift);
-      if (GetBase()) GetBase()->refine(context);
-      if (GetSubScript()) GetSubScript()->refine(context);
-      if (GetSuperScript()) GetSuperScript()->refine(context);
+      if (getBase()) getBase()->refine(context);
+      if (getSubScript()) getSubScript()->refine(context);
+      if (getSuperScript()) getSuperScript()->refine(context);
       MathMLContainerElement::refine(context);
     }
 }
@@ -157,17 +121,17 @@ MathMLScriptElement::format(MathFormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      assert(base);
-      AreaRef baseArea = base->format(ctxt);
+      assert(getBase());
+      AreaRef baseArea = getBase()->format(ctxt);
 
       ctxt.addScriptLevel(1);
       ctxt.setDisplayStyle(false);
 
       Length subScriptShift;
       AreaRef subScriptArea;
-      if (subScript)
+      if (getSubScript())
 	{
-	  subScriptArea = subScript->format(ctxt);
+	  subScriptArea = getSubScript()->format(ctxt);
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Script, subscriptshift))
 	    {
@@ -178,9 +142,9 @@ MathMLScriptElement::format(MathFormattingContext& ctxt)
 
       Length superScriptShift;
       AreaRef superScriptArea;
-      if (superScript)
+      if (getSuperScript())
 	{
-	  superScriptArea = superScript->format(ctxt);
+	  superScriptArea = getSuperScript()->format(ctxt);
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Script, superscriptshift))
 	    {
@@ -205,23 +169,23 @@ MathMLScriptElement::format(MathFormattingContext& ctxt)
 SmartPtr<class MathMLOperatorElement>
 MathMLScriptElement::getCoreOperator()
 {
-  return base ? base->getCoreOperator() : 0;
+  return getBase() ? getBase()->getCoreOperator() : 0;
 }
 
 void
 MathMLScriptElement::setFlagDown(Flags f)
 {
-  MathMLElement::setFlagDown(f);
-  if (base) base->setFlagDown(f);
-  if (subScript) subScript->setFlagDown(f);
-  if (superScript) superScript->setFlagDown(f);
+  MathMLContainerElement::setFlagDown(f);
+  base.setFlagDown(f);
+  subScript.setFlagDown(f);
+  superScript.setFlagDown(f);
 }
 
 void
 MathMLScriptElement::resetFlagDown(Flags f)
 {
-  MathMLElement::resetFlagDown(f);
-  if (base) base->resetFlagDown(f);
-  if (subScript) subScript->resetFlagDown(f);
-  if (superScript) superScript->resetFlagDown(f);
+  MathMLContainerElement::resetFlagDown(f);
+  base.resetFlagDown(f);
+  subScript.resetFlagDown(f);
+  superScript.resetFlagDown(f);
 }
