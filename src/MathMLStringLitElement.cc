@@ -45,9 +45,9 @@ const AttributeSignature*
 MathMLStringLitElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_LQUOTE,   NULL, new StringC("\"") },
-    { ATTR_RQUOTE,   NULL, new StringC("\"") },
-    { ATTR_NOTVALID, NULL, NULL }
+    { ATTR_LQUOTE,   NULL, new StringC("\""), NULL },
+    { ATTR_RQUOTE,   NULL, new StringC("\""), NULL },
+    { ATTR_NOTVALID, NULL, NULL,              NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

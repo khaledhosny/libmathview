@@ -40,8 +40,8 @@ const AttributeSignature*
 MathMLAlignMarkElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_EDGE,     alignMarkEdgeParser, new StringC("left") },
-    { ATTR_NOTVALID, NULL,                NULL }
+    { ATTR_EDGE,     alignMarkEdgeParser, new StringC("left"), NULL },
+    { ATTR_NOTVALID, NULL,                NULL,                NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

@@ -60,19 +60,19 @@ const AttributeSignature*
 MathMLOperatorElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_FORM,      	  operatorFormParser, 	 NULL },
-    { ATTR_FENCE,     	  booleanParser,      	 new StringC("false") },
-    { ATTR_SEPARATOR, 	  booleanParser,      	 new StringC("false") },
-    { ATTR_LSPACE,    	  spaceParser,    	 new StringC("thickmathspace") },
-    { ATTR_RSPACE,    	  spaceParser,    	 new StringC("thickmathspace") },
-    { ATTR_STRETCHY,  	  booleanParser,      	 new StringC("false") },
-    { ATTR_SYMMETRIC, 	  booleanParser,      	 new StringC("true") },
-    { ATTR_MAXSIZE,   	  operatorMaxSizeParser, new StringC("infinity") },
-    { ATTR_MINSIZE,   	  operatorMinSizeParser, new StringC("1") },
-    { ATTR_LARGEOP,       booleanParser,         new StringC("false") },
-    { ATTR_MOVABLELIMITS, booleanParser,         new StringC("false") },
-    { ATTR_ACCENT,        booleanParser,         new StringC("false") },
-    { ATTR_NOTVALID,      NULL,                  NULL }
+    { ATTR_FORM,      	  operatorFormParser, 	 NULL,                          NULL },
+    { ATTR_FENCE,     	  booleanParser,      	 new StringC("false"),          NULL },
+    { ATTR_SEPARATOR, 	  booleanParser,      	 new StringC("false"),          NULL },
+    { ATTR_LSPACE,    	  spaceParser,    	 new StringC("thickmathspace"), NULL },
+    { ATTR_RSPACE,    	  spaceParser,    	 new StringC("thickmathspace"), NULL },
+    { ATTR_STRETCHY,  	  booleanParser,      	 new StringC("false"),          NULL },
+    { ATTR_SYMMETRIC, 	  booleanParser,      	 new StringC("true"),           NULL },
+    { ATTR_MAXSIZE,   	  operatorMaxSizeParser, new StringC("infinity"),       NULL },
+    { ATTR_MINSIZE,   	  operatorMinSizeParser, new StringC("1"),              NULL },
+    { ATTR_LARGEOP,       booleanParser,         new StringC("false"),          NULL },
+    { ATTR_MOVABLELIMITS, booleanParser,         new StringC("false"),          NULL },
+    { ATTR_ACCENT,        booleanParser,         new StringC("false"),          NULL },
+    { ATTR_NOTVALID,      NULL,                  NULL,                          NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

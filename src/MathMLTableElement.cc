@@ -47,25 +47,25 @@ const AttributeSignature*
 MathMLTableElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_ALIGN,           tableAlignParser,         new StringC("axis") },
-    { ATTR_ROWALIGN,        rowAlignListParser,       new StringC("baseline") },
-    { ATTR_COLUMNALIGN,     columnAlignListParser,    new StringC("center") },
-    { ATTR_GROUPALIGN,      groupAlignListListParser, new StringC("{ left }") },
-    { ATTR_ALIGNMENTSCOPE,  booleanListParser,        new StringC("true") },
-    { ATTR_COLUMNWIDTH,     columnWidthListParser,    new StringC("auto") },
-    { ATTR_ROWSPACING,      numberUnitListParser,     new StringC("1.0ex") },
-    { ATTR_COLUMNSPACING,   spaceListParser,          new StringC("0.8em") },
-    { ATTR_ROWLINES,        lineTypeListParser,       new StringC("none") },
-    { ATTR_COLUMNLINES,     lineTypeListParser,       new StringC("none") },
-    { ATTR_FRAME,           lineTypeParser,           new StringC("none") },
-    { ATTR_FRAMESPACING,    tableFrameSpacingParser,  new StringC("0.4em 0.5ex") },
-    { ATTR_EQUALROWS,       booleanParser,            new StringC("true") },
-    { ATTR_EQUALCOLUMNS,    booleanParser,            new StringC("true") },
-    { ATTR_DISPLAYSTYLE,    booleanParser,            new StringC("false") },
-    { ATTR_SIDE,            tableSideParser,          new StringC("right") },
-    { ATTR_MINLABELSPACING, numberUnitParser,         new StringC("0.8em") },
-    { ATTR_WIDTH,           tableWidthParser,         new StringC("auto") },
-    { ATTR_NOTVALID,        NULL,                     NULL }
+    { ATTR_ALIGN,           tableAlignParser,         new StringC("axis"),        NULL },
+    { ATTR_ROWALIGN,        rowAlignListParser,       new StringC("baseline"),    NULL },
+    { ATTR_COLUMNALIGN,     columnAlignListParser,    new StringC("center"),      NULL },
+    { ATTR_GROUPALIGN,      groupAlignListListParser, new StringC("{ left }"),    NULL },
+    { ATTR_ALIGNMENTSCOPE,  booleanListParser,        new StringC("true"),        NULL },
+    { ATTR_COLUMNWIDTH,     columnWidthListParser,    new StringC("auto"),        NULL },
+    { ATTR_ROWSPACING,      numberUnitListParser,     new StringC("1.0ex"),       NULL },
+    { ATTR_COLUMNSPACING,   spaceListParser,          new StringC("0.8em"),       NULL },
+    { ATTR_ROWLINES,        lineTypeListParser,       new StringC("none"),        NULL },
+    { ATTR_COLUMNLINES,     lineTypeListParser,       new StringC("none"),        NULL },
+    { ATTR_FRAME,           lineTypeParser,           new StringC("none"),        NULL },
+    { ATTR_FRAMESPACING,    tableFrameSpacingParser,  new StringC("0.4em 0.5ex"), NULL },
+    { ATTR_EQUALROWS,       booleanParser,            new StringC("true"),        NULL },
+    { ATTR_EQUALCOLUMNS,    booleanParser,            new StringC("true"),        NULL },
+    { ATTR_DISPLAYSTYLE,    booleanParser,            new StringC("false"),       NULL },
+    { ATTR_SIDE,            tableSideParser,          new StringC("right"),       NULL },
+    { ATTR_MINLABELSPACING, numberUnitParser,         new StringC("0.8em"),       NULL },
+    { ATTR_WIDTH,           tableWidthParser,         new StringC("auto"),        NULL },
+    { ATTR_NOTVALID,        NULL,                     NULL,                       NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

@@ -47,10 +47,10 @@ const AttributeSignature*
 MathMLFencedElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_OPEN,       fenceParser,      new StringC("(") },
-    { ATTR_CLOSE,      fenceParser,      new StringC(")") },
-    { ATTR_SEPARATORS, separatorsParser, new StringC(",") },
-    { ATTR_NOTVALID,   NULL,             NULL }
+    { ATTR_OPEN,       fenceParser,      new StringC("("), NULL },
+    { ATTR_CLOSE,      fenceParser,      new StringC(")"), NULL },
+    { ATTR_SEPARATORS, separatorsParser, new StringC(","), NULL },
+    { ATTR_NOTVALID,   NULL,             NULL,             NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

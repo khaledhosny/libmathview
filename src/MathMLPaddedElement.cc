@@ -43,11 +43,11 @@ const AttributeSignature*
 MathMLPaddedElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_WIDTH,    paddedWidthParser, NULL },
-    { ATTR_LSPACE,   paddedValueParser, new StringC("0em") },
-    { ATTR_HEIGHT,   paddedValueParser, NULL },
-    { ATTR_DEPTH,    paddedValueParser, NULL },
-    { ATTR_NOTVALID, NULL, NULL }
+    { ATTR_WIDTH,    paddedWidthParser, NULL,               NULL },
+    { ATTR_LSPACE,   paddedValueParser, new StringC("0em"), NULL },
+    { ATTR_HEIGHT,   paddedValueParser, NULL,               NULL },
+    { ATTR_DEPTH,    paddedValueParser, NULL,               NULL },
+    { ATTR_NOTVALID, NULL,              NULL,               NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);  

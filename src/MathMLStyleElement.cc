@@ -44,26 +44,26 @@ const AttributeSignature*
 MathMLStyleElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_SCRIPTLEVEL,            scriptLevelParser, NULL },
-    { ATTR_DISPLAYSTYLE,           booleanParser,     NULL },
-    { ATTR_SCRIPTSIZEMULTIPLIER,   numberParser,      NULL },
-    { ATTR_SCRIPTMINSIZE,          numberUnitParser,  NULL },
-    { ATTR_COLOR,                  colorParser,       NULL },
-    { ATTR_BACKGROUND,             backgroundParser,  NULL },
-    { ATTR_VERYVERYTHINMATHSPACE,  numberUnitParser,  NULL },
-    { ATTR_VERYTHINMATHSPACE,      numberUnitParser,  NULL },
-    { ATTR_THINMATHSPACE,          numberUnitParser,  NULL },
-    { ATTR_MEDIUMMATHSPACE,        numberUnitParser,  NULL },
-    { ATTR_THICKMATHSPACE,         numberUnitParser,  NULL },
-    { ATTR_VERYTHICKMATHSPACE,     numberUnitParser,  NULL },
-    { ATTR_VERYVERYTHICKMATHSPACE, numberUnitParser,  NULL },
+    { ATTR_SCRIPTLEVEL,            scriptLevelParser, NULL,                  NULL },
+    { ATTR_DISPLAYSTYLE,           booleanParser,     NULL,                  NULL },
+    { ATTR_SCRIPTSIZEMULTIPLIER,   numberParser,      NULL,                  NULL },
+    { ATTR_SCRIPTMINSIZE,          numberUnitParser,  NULL,                  NULL },
+    { ATTR_COLOR,                  colorParser,       NULL,                  NULL },
+    { ATTR_BACKGROUND,             backgroundParser,  NULL,                  NULL },
+    { ATTR_VERYVERYTHINMATHSPACE,  numberUnitParser,  NULL,                  NULL },
+    { ATTR_VERYTHINMATHSPACE,      numberUnitParser,  NULL,                  NULL },
+    { ATTR_THINMATHSPACE,          numberUnitParser,  NULL,                  NULL },
+    { ATTR_MEDIUMMATHSPACE,        numberUnitParser,  NULL,                  NULL },
+    { ATTR_THICKMATHSPACE,         numberUnitParser,  NULL,                  NULL },
+    { ATTR_VERYTHICKMATHSPACE,     numberUnitParser,  NULL,                  NULL },
+    { ATTR_VERYVERYTHICKMATHSPACE, numberUnitParser,  NULL,                  NULL },
     // inherited attributes (see below)
-    { ATTR_FONTSIZE,   numberUnitParser, NULL },
-    { ATTR_FONTWEIGHT, fontWeightParser, NULL },
-    { ATTR_FONTSTYLE,  fontStyleParser,  new StringC("normal") },
-    { ATTR_FONTFAMILY, stringParser,     NULL },
+    { ATTR_FONTSIZE,               numberUnitParser,  NULL,                  NULL },
+    { ATTR_FONTWEIGHT,             fontWeightParser,  NULL,                  NULL },
+    { ATTR_FONTSTYLE,              fontStyleParser,   new StringC("normal"), NULL },
+    { ATTR_FONTFAMILY,             stringParser,      NULL,                  NULL },
     //
-    { ATTR_NOTVALID,               NULL,              NULL }
+    { ATTR_NOTVALID,               NULL,              NULL,                  NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

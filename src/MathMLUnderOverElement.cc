@@ -46,13 +46,13 @@ const AttributeSignature*
 MathMLUnderOverElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature underSig[] = {
-    { ATTR_ACCENTUNDER, booleanParser, NULL },
-    { ATTR_NOTVALID,    NULL,          NULL }
+    { ATTR_ACCENTUNDER, booleanParser, NULL, NULL },
+    { ATTR_NOTVALID,    NULL,          NULL, NULL }
   };
 
   static AttributeSignature overSig[] = {
-    { ATTR_ACCENT,      booleanParser, NULL },
-    { ATTR_NOTVALID,    NULL,          NULL }
+    { ATTR_ACCENT,      booleanParser, NULL, NULL },
+    { ATTR_NOTVALID,    NULL,          NULL, NULL }
   };
 
   const AttributeSignature* signature = NULL;

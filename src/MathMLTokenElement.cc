@@ -62,17 +62,17 @@ const AttributeSignature*
 MathMLTokenElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_FONTSIZE,       numberUnitParser,  NULL },
-    { ATTR_FONTWEIGHT,     fontWeightParser,  NULL },
-    { ATTR_FONTSTYLE,      fontStyleParser,   NULL },
-    { ATTR_FONTFAMILY,     stringParser,      NULL },
-    { ATTR_COLOR,          colorParser,       NULL },
-    { ATTR_MATHVARIANT,    mathVariantParser, NULL },
-    { ATTR_MATHSIZE,       mathSizeParser,    NULL },
-    { ATTR_MATHCOLOR,      colorParser,       NULL },
-    { ATTR_MATHBACKGROUND, colorParser,       NULL },
+    { ATTR_FONTSIZE,       numberUnitParser,  NULL, NULL },
+    { ATTR_FONTWEIGHT,     fontWeightParser,  NULL, NULL },
+    { ATTR_FONTSTYLE,      fontStyleParser,   NULL, NULL },
+    { ATTR_FONTFAMILY,     stringParser,      NULL, NULL },
+    { ATTR_COLOR,          colorParser,       NULL, NULL },
+    { ATTR_MATHVARIANT,    mathVariantParser, NULL, NULL },
+    { ATTR_MATHSIZE,       mathSizeParser,    NULL, NULL },
+    { ATTR_MATHCOLOR,      colorParser,       NULL, NULL },
+    { ATTR_MATHBACKGROUND, colorParser,       NULL, NULL },
     
-    { ATTR_NOTVALID,       NULL,              NULL }
+    { ATTR_NOTVALID,       NULL,              NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

@@ -41,13 +41,13 @@ const AttributeSignature*
 MathMLScriptCommonElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature subSig[] = {
-    { ATTR_SUBSCRIPTSHIFT, numberUnitParser, NULL },
-    { ATTR_NOTVALID,       NULL,             NULL }
+    { ATTR_SUBSCRIPTSHIFT, numberUnitParser, NULL, NULL },
+    { ATTR_NOTVALID,       NULL,             NULL, NULL }
   };
 
   static AttributeSignature supSig[] = {
-    { ATTR_SUPERSCRIPTSHIFT, numberUnitParser, NULL },
-    { ATTR_NOTVALID,         NULL,             NULL }
+    { ATTR_SUPERSCRIPTSHIFT, numberUnitParser, NULL, NULL },
+    { ATTR_NOTVALID,         NULL,             NULL, NULL }
   };
 
   const AttributeSignature* signature = NULL;

@@ -42,8 +42,8 @@ const AttributeSignature*
 MathMLEncloseElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_NOTATION, notationParser, new StringC("longdiv") },
-    { ATTR_NOTVALID, NULL,           NULL }
+    { ATTR_NOTATION, notationParser, new StringC("longdiv"), NULL },
+    { ATTR_NOTVALID, NULL,           NULL,                   NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

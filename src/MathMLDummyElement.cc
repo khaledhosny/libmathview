@@ -42,8 +42,7 @@ MathMLDummyElement::Setup(RenderingEnvironment* env)
 
   FontifiedChar fChar;
 
-  bool res = env->charMapper.FontifyChar(fChar, env->GetFontAttributes(), 'a');
-  assert(res);
+  env->charMapper.FontifyChar(fChar, env->GetFontAttributes(), 'a');
   assert(fChar.font != NULL);
   
   fChar.font->GetBoundingBox(box);

@@ -42,9 +42,9 @@ const AttributeSignature*
 MathMLActionElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_ACTIONTYPE, NULL,          NULL },
-    { ATTR_SELECTION,  integerParser, new StringC("1") },
-    { ATTR_NOTVALID,   NULL,          NULL }
+    { ATTR_ACTIONTYPE, NULL,          NULL,             NULL },
+    { ATTR_SELECTION,  integerParser, new StringC("1"), NULL },
+    { ATTR_NOTVALID,   NULL,          NULL,             NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

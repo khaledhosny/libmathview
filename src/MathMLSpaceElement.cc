@@ -43,11 +43,11 @@ const AttributeSignature*
 MathMLSpaceElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_WIDTH,     spaceParser,      new StringC("0em") },
-    { ATTR_HEIGHT,    numberUnitParser, new StringC("0ex") },
-    { ATTR_DEPTH,     numberUnitParser, new StringC("0ex") },
-    { ATTR_LINEBREAK, lineBreakParser,  new StringC("auto") },
-    { ATTR_NOTVALID,  NULL,             NULL }
+    { ATTR_WIDTH,     spaceParser,      new StringC("0em"),  NULL },
+    { ATTR_HEIGHT,    numberUnitParser, new StringC("0ex"),  NULL },
+    { ATTR_DEPTH,     numberUnitParser, new StringC("0ex"),  NULL },
+    { ATTR_LINEBREAK, lineBreakParser,  new StringC("auto"), NULL },
+    { ATTR_NOTVALID,  NULL,             NULL,                NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

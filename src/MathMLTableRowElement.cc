@@ -48,11 +48,11 @@ MathMLTableRowElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
     //{ ATTR_ROWALIGN,        rowAlignListParser,       NULL },
-    { ATTR_ROWALIGN,        rowAlignParser,           NULL },
-    { ATTR_COLUMNALIGN,     columnAlignListParser,    NULL },
-    { ATTR_GROUPALIGN,      groupAlignListListParser, NULL },
+    { ATTR_ROWALIGN,        rowAlignParser,           NULL, NULL },
+    { ATTR_COLUMNALIGN,     columnAlignListParser,    NULL, NULL },
+    { ATTR_GROUPALIGN,      groupAlignListListParser, NULL, NULL },
 
-    { ATTR_NOTVALID,        NULL,                     NULL }
+    { ATTR_NOTVALID,        NULL,                     NULL, NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);

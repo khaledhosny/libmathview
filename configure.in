@@ -60,6 +60,7 @@ AC_PROG_CXX
 AC_PROG_LN_S
 AC_ISC_POSIX
 AC_CHECK_PROG(HAVE_PFB2PFA, pfb2pfa, yes, no)
+AC_CHECK_PROG(HAVE_COLORGCC, colorgcc, yes, no)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -137,8 +138,13 @@ else
 	export_PS=yes
 fi
 
-CFLAGS="$CFLAGS -Wall"
-CXXFLAGS="$CXXFLAGS -Wall"
+if test $HAVE_COLORGCC = "yes"; then
+	CC=colorgcc
+	CXX=colorgcc
+fi
+
+CFLAGS="$CFLAGS -W -Wall"
+CXXFLAGS="$CXXFLAGS -W -Wall"
 
 AC_OUTPUT([
 Makefile

@@ -23,9 +23,7 @@
 #ifndef FontManager_hh
 #define FontManager_hh
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "Container.hh"
 #include "FontAttributes.hh"
@@ -55,6 +53,4 @@ protected:
   mutable Container<Bucket*> content;
 };
 
-#endif
-
-
+#endif // FontManager_hh

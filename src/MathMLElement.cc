@@ -82,11 +82,11 @@ const AttributeSignature*
 MathMLElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_ID,         NULL, NULL },
-    { ATTR_CLASS,      NULL, NULL },
-    { ATTR_OTHER,      NULL, NULL },
+    { ATTR_ID,         NULL, NULL, NULL },
+    { ATTR_CLASS,      NULL, NULL, NULL },
+    { ATTR_OTHER,      NULL, NULL, NULL },
 
-    { ATTR_NOTVALID,   NULL, NULL }
+    { ATTR_NOTVALID,   NULL, NULL, NULL }
   };
 
   return GetAttributeSignatureAux(id, sig);

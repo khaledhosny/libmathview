@@ -44,7 +44,7 @@ MathMLMarkNode::Setup(RenderingEnvironment* env)
   // the rendering environment.
   // This is the price for having a more natural token element with just
   // text nodes as content... otherwise we would have frames.
-  static AttributeSignature sig = { ATTR_EDGE, alignMarkEdgeParser, new StringC("left") };
+  static AttributeSignature sig = { ATTR_EDGE, alignMarkEdgeParser, new StringC("left"), NULL };
 
   assert(env != NULL);
 

@@ -36,7 +36,7 @@ typedef Char32  Char;
 
 inline bool isPlain(Char ch) { return ch < 0x80; }
 inline bool isUnicode16(Char ch) { return ch < 0x10000; }
-inline bool isUnicode32(Char ch) { return true; }
+inline bool isUnicode32(Char) { return true; }
 
 Char        getBiggestChar(const Char*, unsigned);
 bool 	    isPlain(const char*);

@@ -28,7 +28,7 @@ if [ $1 = "def" ]; then
 	echo { $SUFFIX$TOKENID, $TOKENNAME, NULL }, >>$4
 	echo -n .
     done
-    echo { "$SUFFIX"NOT_LISTED_ABOVE_AND_WITHOUT_TRAILING_COMMA, 0, NULL } >>$4
+    echo { "$SUFFIX"NOT_LISTED_ABOVE_AND_WITHOUT_TRAILING_COMMA, NULL, NULL } >>$4
     echo }\; >>$4
     echo
 

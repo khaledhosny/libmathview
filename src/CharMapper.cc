@@ -96,6 +96,11 @@ CharMapper::FontifyChar(FontifiedChar& fMap, const FontAttributes& fa, Char ch) 
     MathEngine::logger(LOG_WARNING, "could not find a suitable font for `U+%04x'", ch);
 
   res = FontifyCharAux(fMap, fa, '?', false);
+  if (!res) {
+    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
+    exit(1);
+  }
+
   return false;
 }
 

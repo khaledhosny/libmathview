@@ -42,11 +42,11 @@ const AttributeSignature*
 MathMLFractionElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_LINETHICKNESS, lineThicknessParser, new StringC("1") },
-    { ATTR_NUMALIGN,      fracAlignParser,     new StringC("center") },
-    { ATTR_DENOMALIGN,    fracAlignParser,     new StringC("center") },
-    { ATTR_BEVELLED,      booleanParser,       new StringC("false") },
-    { ATTR_NOTVALID,      NULL,                NULL }
+    { ATTR_LINETHICKNESS, lineThicknessParser, new StringC("1"),      NULL },
+    { ATTR_NUMALIGN,      fracAlignParser,     new StringC("center"), NULL },
+    { ATTR_DENOMALIGN,    fracAlignParser,     new StringC("center"), NULL },
+    { ATTR_BEVELLED,      booleanParser,       new StringC("false"),  NULL },
+    { ATTR_NOTVALID,      NULL,                NULL,                  NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
