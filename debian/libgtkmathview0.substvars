@@ -1,1 +1,0 @@
-shlibs:Depends=libc6 (>= 2.2.1), libglib1.2 (>= 1.2.0), libgtk1.2 (>= 1.2.8-3), libminidom0, libxml2, xlibs (>= 4.0.1-11), zlib1g (>= 1:1.1.3)
