@@ -99,7 +99,7 @@ View::getElementAt(const scaled& x, const scaled& y) const
 #endif
       AreaId id(rootArea);
       std::cerr << "searching at " << (x) << "," << (y + box.height) << std::endl;
-      if (rootArea->searchByCoords(id, x, y + box.height))
+      if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
 	{
 	  std::cerr << "FOUND!" << std::endl;
 	  for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
@@ -232,6 +232,6 @@ View::render(RenderingContext& ctxt) const
       BoundingBox box = rootArea->box();
       rootArea->render(ctxt, -x0, -box.height - y0);
       perf.Stop();
-      std::cerr << "rendering time: " << perf() << "ms" << std::endl;
+      //Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }
 }

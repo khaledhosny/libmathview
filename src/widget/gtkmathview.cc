@@ -1157,8 +1157,8 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->view != NULL, NULL);
 
-  DOM::Element at = math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x + math_view->top_x - MARGIN),
-						     Gtk_RenderingContext::fromGtkY(y + math_view->top_y - MARGIN));
+  DOM::Element at = math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
+						     Gtk_RenderingContext::fromGtkY(y));
   return gdome_cast_el(at.gdome_object());
 }
 
