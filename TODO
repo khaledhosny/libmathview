@@ -4,7 +4,6 @@
 - = LONG TERM
 
 BUGS
-* selection of math inside boxes crashes
 * par without width attribute -> assert false
 + step in a boxml paragraph is wrong
 + make it possible for the content of a bin/linear container to
@@ -33,6 +32,10 @@ ARCH IMPROVEMENTS
   over areas by implementing a visitor
 + implement reader interface over DOM, libxml2 tree, XmlReader
 + implement caching mechanism for pango shaper
++ it seems like the choice of having that the first child of a
+  vertical area is the bottommost is a bit weird. Think of the cursor:
+  intuitively at increasing indices the cursor should go forward (that
+  is right or down depending on the container)
 - the default font size now need to be set on two different 
   namespacecontexts, ugly. (see gtkmathview.cc)
 - make debugging methods in Areas optional (or remove them)
