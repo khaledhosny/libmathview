@@ -126,11 +126,18 @@ struct _GtkMathView {
   gfloat         button_press_y;
   guint32        button_press_time;
 
+#if GTKMATHVIEW_USES_LIBXML2
+  xmlDoc*        current_doc;
+  gboolean       doc_owner;
+#elif GTKMATHVIEW_USES_GMETADOM
+  GdomeDocument* current_doc;
+#endif 
+
   GtkMathViewModelId current_elem;
 
+  GtkMathViewCursor cursor_visible;
   GtkMathViewModelId cursor_elem;
   gint           cursor_index;
-  GtkMathViewCursor cursor_visible;
 
   View*          view;
   Gtk_RenderingContext* renderingContext;
@@ -572,6 +579,64 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 
 #include "MathML.hh"
 
+#if GTKMATHVIEW_USES_LIBXML2
+
+static void
+gtk_math_view_release_document_resources(GtkMathView* math_view)
+{
+  g_return_if_fail(math_view != NULL);
+
+  math_view->current_elem = NULL;
+  math_view->cursor_elem = NULL;
+
+  if (math_view->doc_owner) xmlFreeDoc(math_view->current_doc);
+  math_view->current_doc = 0;
+}
+
+#elif GTKMATHVIEW_USES_GMETADOM
+
+static void
+gtk_math_view_release_document_resources(GtkMathView* math_view)
+{
+  g_return_if_fail(math_view != NULL);
+
+  GdomeException exc = 0;
+
+  if (math_view->current_elem != NULL)
+    {
+      gdome_el_unref(math_view->current_elem, &exc);
+      g_assert(exc == 0);
+      math_view->current_elem = NULL;
+    }
+
+  if (math_view->cursor_elem != NULL)
+    {
+      gdome_el_unref(math_view->cursor_elem, &exc);
+      g_assert(exc == 0);
+      math_view->cursor_elem = NULL;
+    }
+
+  if (math_view->current_doc != NULL)
+    {
+      gdome_doc_unref(math_view->current_doc, &exc);
+      g_assert(exc == 0);
+      math_view->current_doc = 0;
+    }
+}
+
+#else
+
+static void
+gtk_math_view_release_document_resources(GtkMathView* math_view)
+{
+  g_return_if_fail(math_view != NULL);
+
+  math_view->current_elem = NULL;
+  math_view->cursor_elem = NULL;
+}
+
+#endif
+
 static void
 gtk_math_view_init(GtkMathView* math_view)
 {
@@ -598,8 +663,11 @@ gtk_math_view_init(GtkMathView* math_view)
 #elif GTKMATHVIEW_USES_LIBXML2_READER
   SmartPtr<View> view = View::create(libxml2_reader_Builder::create());
 #elif GTKMATHVIEW_USES_LIBXML2
+  math_view->current_doc = NULL;
+  math_view->doc_owner = FALSE;
   SmartPtr<View> view = View::create(libxml2_Builder::create());
 #elif GTKMATHVIEW_USES_GMETADOM
+  math_view->current_doc = NULL;
   SmartPtr<View> view = View::create(gmetadom_Builder::create());
 #endif
 
@@ -667,25 +735,7 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->pixmap = NULL;
     }
 
-  if (math_view->current_elem != NULL)
-    {
-#if GTKMATHVIEW_USES_GMETADOM
-      GdomeException exc = 0;
-      gdome_el_unref(math_view->current_elem, &exc);
-      g_assert(exc == 0);
-#endif
-      math_view->current_elem = NULL;
-    }
-
-  if (math_view->cursor_elem != NULL)
-    {
-#if GTKMATHVIEW_USES_GMETADOM
-      GdomeException exc = 0;
-      gdome_el_unref(math_view->cursor_elem, &exc);
-      g_assert(exc == 0);
-#endif
-      math_view->cursor_elem = NULL;
-    }
+  gtk_math_view_release_document_resources(math_view);
 
   if (GTK_OBJECT_CLASS(parent_class)->destroy != NULL)
     (*GTK_OBJECT_CLASS(parent_class)->destroy)(object);
@@ -1103,37 +1153,50 @@ GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, GtkMathViewReader* 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
+  g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
 
   if (DOM::Document doc = gmetadom_Model::document(name, true))
-    if (DOM::Element root = gmetadom_Model::getDocumentElement(doc))
-      {
-	GdomeElement* r = gdome_cast_el(root.gdome_object());
-	g_assert(r != NULL);
-	const bool res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, r);
-	GdomeException exc = 0;
-	gdome_el_unref(r, &exc);
-	g_assert(exc == 0);
-	return res;
-      }
+    {
+      GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
+      g_assert(d != NULL);
+      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_document)(math_view, d);
+      GdomeException exc = 0;
+      gdome_doc_unref(d, &exc);
+      g_assert(exc == 0);
+      return res;
+    }
 
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
   return FALSE;
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_doc)(GtkMathView* math_view, GdomeDocument* doc)
+GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, GdomeDocument* doc)
 {
+  g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(doc != NULL, FALSE);
 
   GdomeException exc = 0;
   GdomeElement* root = gdome_doc_documentElement(doc, &exc);
-  if (exc != 0) return FALSE;
-  const bool res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, root);
+  if (exc == 0 && root != NULL)
+    {
+      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, root);
+      gdome_el_unref(root, &exc);
+      g_assert(exc == 0);
 
-  gdome_el_unref(root, &exc);
-  if (exc != 0) return FALSE;
+      if (res)
+	{
+	  math_view->current_doc = doc;
+	  gdome_doc_ref(doc, &exc);
+	  g_assert(exc == 0);
+	}
 
-  return res;
+      return res;
+    }
+
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
+  return FALSE;
 }
 
 extern "C" gboolean
@@ -1143,14 +1206,15 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
-    builder->setRootModelElement(DOM::Element(elem));
-  else
-    return FALSE;
+    {
+      builder->setRootModelElement(DOM::Element(elem));
+      reset_adjustments(math_view);
+      paint_widget(math_view);
+      return TRUE;
+    }
 
-  reset_adjustments(math_view);
-  paint_widget(math_view);
-
-  return TRUE;
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
+  return FALSE;
 }
 #elif GTKMATHVIEW_USES_LIBXML2
 extern "C" gboolean
@@ -1159,21 +1223,37 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
   g_return_val_if_fail(name != NULL, FALSE);
 
   if (xmlDoc* doc = libxml2_Model::document(name, true))
-    if (xmlElement* root = libxml2_Model::getDocumentElement(doc))
-      return GTKMATHVIEW_METHOD_NAME(load_root)(math_view, root);
-
+    {
+      if (GTKMATHVIEW_METHOD_NAME(load_document)(math_view, doc))
+	{
+	  math_view->doc_owner = TRUE;
+	  return TRUE;
+	}
+      else
+	{
+	  xmlFreeDoc(doc);
+	  return FALSE;
+	}
+    }
+  
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
   return FALSE;
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_doc)(GtkMathView* math_view, xmlDoc* doc)
+GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, xmlDoc* doc)
 {
   g_return_val_if_fail(doc != NULL, FALSE);
 
   if (xmlNode* root = xmlDocGetRootElement(doc))
-    return GTKMATHVIEW_METHOD_NAME(load_root)(math_view, (xmlElement*) root);
-  else
-    return FALSE;
+    {
+      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, (xmlElement*) root);
+      if (res) math_view->current_doc = doc;
+      return res;
+    }
+
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
+  return FALSE;
 }
 
 extern "C" gboolean
@@ -1183,14 +1263,15 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(math_view->view->getBuilder()))
-    builder->setRootModelElement(elem);
-  else
-    return FALSE;
+    {
+      builder->setRootModelElement(elem);
+      reset_adjustments(math_view);
+      paint_widget(math_view);
+      return TRUE;
+    }
 
-  reset_adjustments(math_view);
-  paint_widget(math_view);
-
-  return TRUE;
+  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
+  return FALSE;
 }
 #elif GTKMATHVIEW_USES_LIBXML2_READER
 extern "C" gboolean
@@ -1216,6 +1297,7 @@ GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
   math_view->view->resetRootElement();
+  gtk_math_view_release_document_resources(math_view);
 #if GTKMATHVIEW_USES_GMETADOM || GTKMATHVIEW_USES_LIBXML2
   GTKMATHVIEW_METHOD_NAME(load_root)(math_view, NULL);
 #endif

@@ -13,8 +13,6 @@ BUGS
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially
   for mo elements
-* when is it that the libxml2 tree gets freed in the libxml2
-  frontends?
 * restore handling of mo attributes with getAttributeValueNoDefault
 - units like cm are wrong (can be the dpi?)
 - add space in munderover between base and script

@@ -62,11 +62,13 @@ extern "C" {
 #include <libxml/tree.h>
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##libxml2
   typedef xmlElement*               GtkMathViewModelId;
+  typedef xmlDoc*                   GtkMathViewModelDocument;
   typedef const xmlChar*            GtkMathViewModelString;
 #elif GTKMATHVIEW_USES_GMETADOM
 #include <gdome.h>
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##gmetadom
   typedef GdomeElement*             GtkMathViewModelId;
+  typedef GdomeDocument*            GtkMathViewModelDocument;
   typedef GdomeDOMString*           GtkMathViewModelString;
 #endif
 
@@ -95,6 +97,7 @@ extern "C" {
   gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
 #else
   gboolean   GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView*, GtkMathViewModelDocument);
   gboolean   GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewModelId);
 #endif
   void       GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView*);
