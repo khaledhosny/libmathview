@@ -13,7 +13,8 @@ libbasictypes_la_SOURCES = \
   RGBColorAux.cc \
   BoundingBox.cc \
   BoundingBoxAux.cc \
-  LengthAux.cc
+  LengthAux.cc \
+  String.cc
 
 libbasictypes_la_LIBADD = \
   -lstdc++ \
@@ -23,7 +24,6 @@ noinst_HEADERS = \
   fixed.hh \
   scaled.hh \
   scaledAux.hh \
-  AbstractString.hh \
   Length.hh \
   LengthAux.hh \
   RGBColor.hh \
@@ -36,7 +36,10 @@ noinst_HEADERS = \
   ScopedHashMap.hh \
   SparseMap.hh \
   SmartPtr.hh \
+  String.hh \
   GObjectPtr.hh \
   Object.hh \
   DOM.hh
 
+INCLUDES = \
+  $(DOM_CFLAGS)
