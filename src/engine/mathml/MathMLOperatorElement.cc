@@ -284,6 +284,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop))
 	largeOp = ToBoolean(value) ? 1 : 0;
 
+      AreaRef res;
       if (stretchy && this == ctxt.getStretchOperator())
 	{
 	  // is it a good place to handle largeOp here???
@@ -295,12 +296,13 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	  AreaRef minArea = getArea();
 	  assert(minArea);
 
-	  BoundingBox minBox = minArea->box();
+	  const BoundingBox minBox = minArea->box();
 
 	  std::cerr << "minimum area bounding box = " << minBox << std::endl;
 
-	  scaled height = ctxt.getStretchToHeight() - axis;
-	  scaled depth = ctxt.getStretchToDepth() + axis;
+	  const scaled axis = ctxt.getDevice()->axis(ctxt);
+	  const scaled height = ctxt.getStretchToHeight() - axis;
+	  const scaled depth = ctxt.getStretchToDepth() + axis;
 
 	  // Here we have to calculate the desired size of the stretchable symbol.
 	  // If symmetric == true the we have to stretch to cover the maximum among
@@ -311,9 +313,9 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	  std::cerr << "desired V = " << v << " H = " << h << std::endl;
 
 	  // ...however, there may be some contraints over the size of the stretchable
-	  // operator. adjustedSize will be the final allowed size for the operator
-	  scaled minV = minBox.height + minBox.depth;
-	  scaled minH = minBox.width;
+	  // operator. 
+	  const scaled minV = minBox.height + minBox.depth;
+	  const scaled minH = minBox.width;
 	  
 	  std::cerr << "minV = " << minV << " minH = " << minH << std::endl;
 	  std::cerr << "minSize = " << minSize << " maxMult = " << minMultiplier << std::endl;
@@ -349,10 +351,27 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	  ctxt.setStretchH(h);
 	  
 	  std::cerr << "stretch by V = " << v << " H = " << h << std::endl;
-	}
 
-      AreaRef res = MathMLTokenElement::format(ctxt);
+	  res = MathMLTokenElement::format(ctxt);
+	  
+	  BoundingBox opBox = res->box();
+
+	  if (height + depth > scaled::zero())
+	    {
+	      const scaled aHeight = (symmetric ? v / 2 : (v * height.toFloat()) / (height + depth).toFloat()) + axis;
+	      const scaled aDepth = (symmetric ? v / 2 : (v * depth.toFloat()) / (height + depth).toFloat()) - axis;
+	      
+	      const scaled sh = (aHeight - aDepth - opBox.height + opBox.depth) / 2;
+
+	      res = ctxt.getDevice()->getFactory()->shift(res, sh);
+	    }
+	}
+      else
+	res = MathMLTokenElement::format(ctxt);
+
+      // the wrapper?
       res = formatEmbellishment(this, ctxt, res);
+
       ctxt.pop();
 
       setArea(res);

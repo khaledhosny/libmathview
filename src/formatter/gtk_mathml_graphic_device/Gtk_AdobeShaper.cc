@@ -36,7 +36,7 @@
 #include "MathGraphicDevice.hh"
 
 static struct {
-  unsigned char index;
+  guint8 index;
   DOM::Char16 ch;
 } symbolMap[] = {
   { 0x20, 0x0020 },  // SPACE // space
@@ -317,15 +317,6 @@ Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shap
 {
   assert(sm);
 
-  for (unsigned i = 0; symbolMap[i].ch; i++)
-    sm->registerChar(symbolMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, symbolMap[i].index));
-
-  for (unsigned i = 0; vMap[i].ch != 0; i++)
-    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | V_STRETCHY_BIT));
-
-  for (unsigned i = 0; hMap[i].ch != 0; i++)
-    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | H_STRETCHY_BIT));
-
   for (unsigned i = LATIN_BASE_INDEX; i < N_FONTS; i++)
     {
       for (DOM::Char16 ch = 0x20; ch < 0x100; ch++)
@@ -335,6 +326,15 @@ Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shap
 	    sm->registerChar(vch, GlyphSpec(shaperId, i, ch));
 	}
     }
+
+  for (unsigned i = 0; symbolMap[i].ch; i++)
+    sm->registerChar(symbolMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, symbolMap[i].index));
+
+  for (unsigned i = 0; vMap[i].ch != 0; i++)
+    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | V_STRETCHY_BIT));
+
+  for (unsigned i = 0; hMap[i].ch != 0; i++)
+    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | H_STRETCHY_BIT));
 }
 
 void
@@ -526,16 +526,16 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const Gly
 
   // Compute first the number of glue segments we have to use
   assert(glueSize > scaled::zero());
-  unsigned n = (span - leftSize - rightSize).getValue() / glueSize.getValue();
+  int n = std::max(0, (span - leftSize - rightSize).getValue() / glueSize.getValue());
 
   // Then the final number of glyphs
-  unsigned gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
+  int gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
 
   std::vector<AreaRef> h;
   h.reserve(gsN);
 
   if (left) h.push_back(left);
-  for (unsigned i = 0; i < n; i++) h.push_back(glue);
+  for (int i = 0; i < n; i++) h.push_back(glue);
   if (right) h.push_back(right);
 
   return factory->horizontalArray(h);
@@ -544,8 +544,10 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const Gly
 #include "scaledAux.hh"
 
 AreaRef
-Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
+Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
 { 
+  const scaled span = strictSpan - (1 * ctxt.getSize()) / 10;
+
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
 
@@ -573,13 +575,13 @@ Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const Gly
   scaled bottomSize = bottom ? bottom->box().verticalExtent() : 0;			
 
   assert(glueSize > scaled::zero());
-  unsigned n = (span - topSize - bottomSize - middleSize).getValue() / glueSize.getValue();
+  int n = std::max(0, (span - topSize - bottomSize - middleSize).getValue() / glueSize.getValue());
 
   std::cerr << "STRETCHYING: " << span << " N = " << n << std::endl;
 
   if (n % 2 == 1 && middle) n++;
   
-  unsigned gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
+  int gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
 
   std::vector<AreaRef> v;
   v.reserve(gsN);
@@ -587,9 +589,9 @@ Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const Gly
   if (bottom) v.push_back(bottom);
   if (middle)
     {
-      for (unsigned i = 0; i < n / 2; i++) v.push_back(glue);
+      for (int i = 0; i < n / 2; i++) v.push_back(glue);
       v.push_back(middle);
-      for (unsigned i = 0; i < n / 2; i++) v.push_back(glue);
+      for (int i = 0; i < n / 2; i++) v.push_back(glue);
     }
   else
     for (unsigned i = 0; i < n; i++) v.push_back(glue);

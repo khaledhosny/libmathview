@@ -54,8 +54,6 @@ MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
 #endif
 }
 
-#include "BoundingBoxAux.hh"
-
 AreaRef
 MathMLRowElement::format(MathFormattingContext& ctxt)
 {
@@ -85,8 +83,6 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
       AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(row);
       BoundingBox rowBox = res->box();
 
-      std::cerr << rowBox << std::endl;
-
       if (stretchy)
 	{
 	  ctxt.setStretchToHeight(rowBox.height);
@@ -107,7 +103,7 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 	}
 
       res = formatEmbellishment(this, ctxt, res);
-      setArea(res);
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
 
       ctxt.pop();
       resetDirtyLayout();
@@ -115,47 +111,6 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 
   return getArea();
 }
-
-#if 0
-void
-MathMLRowElement::DoStretchyLayout()
-{
-  unsigned nStretchy = 0; // # of stretchy operators in this line
-  unsigned nOther    = 0; // # of non-stretchy elements in this line
-
-  BoundingBox rowBox;
-  BoundingBox opBox;
-
-  for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem))
-      {
-	opBox.append(op->GetMinBoundingBox());
-	nStretchy++;      
-      } 
-    else if (*elem)
-      {
-	rowBox.append((*elem)->GetBoundingBox());
-	nOther++;
-      }
-
-  if (nStretchy > 0)
-    {
-      scaled toAscent  = (nOther == 0) ? opBox.height : rowBox.height;
-      scaled toDescent = (nOther == 0) ? opBox.depth : rowBox.depth;
-
-      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
-	   elem != content.end();
-	   elem++)
-	if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem))
-	  {
-	    op->VerticalStretchTo(toAscent, toDescent);
-	    (*elem)->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, 0));
-	  }
-    }
-}
-#endif
 
 bool
 MathMLRowElement::IsSpaceLike() const
@@ -200,10 +155,8 @@ MathMLRowElement::getCoreOperator()
        elem != content.end();
        elem++)
     if ((*elem) && !(*elem)->IsSpaceLike())
-      {
-	if (!candidate) candidate = *elem;
-	else return 0;
-      }
+      if (!candidate) candidate = *elem;
+      else return 0;
 
   return candidate ? candidate->getCoreOperator() : 0;
 }
