@@ -20,13 +20,12 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLTokenElement_hh
-#define MathMLTokenElement_hh
+#ifndef __MathMLTokenElement_hh__
+#define __MathMLTokenElement_hh__
 
-#include <vector>
-
-#include "RGBColor.hh"
-#include "MathMLContainerElement.hh"
+#include "MathMLElement.hh"
+#include "MathMLTextNode.hh"
+#include "LinearContainerTemplate.hh"
 
 // base class for token element. Token elemens can contain character data
 // and a very limited set of other MathML elements (e.g. <malignmark>)
@@ -37,54 +36,32 @@ protected:
   virtual ~MathMLTokenElement();
 
 public:
-  unsigned       GetSize(void) const { return content.size(); }
-  void           SetSize(unsigned);
-  SmartPtr<class MathMLTextNode> GetChild(unsigned) const;
-  void           SetChild(unsigned, const SmartPtr<MathMLTextNode>&);
-  void           RemoveChild(unsigned);
-  void           InsertChild(unsigned, const SmartPtr<MathMLTextNode>&);
-  void           AppendChild(const SmartPtr<class MathMLTextNode>&);
-  void           Append(const String&);
-  void           SwapChildren(std::vector< SmartPtr<MathMLTextNode> >&);
+  unsigned getSize(void) const { return content.getSize(); }
+  void setSize(unsigned i) { content.setSize(this, i); }
+  SmartPtr<class MathMLTextNode> getChild(unsigned i) const { return content.getChild(i); }
+  void setChild(unsigned i, const SmartPtr<class MathMLTextNode>& child) { content.setChild(this, i, child); }
+  void appendChild(const SmartPtr<class MathMLTextNode>& child) { content.appendChild(this, child); }
+  void append(const String&);
+  void swapContent(std::vector< SmartPtr<MathMLTextNode> >& newContent) { content.swapContent(this, newContent); }
+  const std::vector< SmartPtr<class MathMLTextNode> >& getContent(void) const { return content.getContent(); }
 
-  virtual void   construct(void);
-  virtual void   refine(class AbstractRefinementContext&);
+  virtual void construct(void);
+  virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void 	 Setup(class RenderingEnvironment&);
-  virtual void 	 DoLayout(const class FormattingContext&);
-  virtual void   SetPosition(const scaled&, const scaled&);
-  virtual void 	 Render(const class DrawingArea&);
-#endif
 
   bool           IsNonMarking(void) const;
 
-#if 0
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-  scaled         GetDecimalPointEdge(void) const;
-#endif
-
-  RGBColor       GetColor(void) const { return color; }
-
-  //virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
-  const std::vector< SmartPtr<class MathMLTextNode> >& GetContent(void) const { return content; }
   String         GetRawContent(void) const;
   unsigned       GetLogicalContentLength(void) const;
 
 private:
-  std::vector< SmartPtr<class MathMLTextNode> > content;
+  LinearContainerTemplate<MathMLTokenElement, SmartPtr<class MathMLTextNode> > content;
 
 protected:
-  void SetContentPosition(const scaled&, const scaled&);
-
-  static SmartPtr<class MathMLTextNode> SubstituteMGlyphElement(const DOM::Element&);
-  static SmartPtr<class MathMLTextNode> SubstituteAlignMarkElement(const DOM::Element&);
+  static SmartPtr<class MathMLTextNode> substituteMGlyphElement(const DOM::Element&);
+  static SmartPtr<class MathMLTextNode> substituteAlignMarkElement(const DOM::Element&);
   
   void AddItalicCorrection(void);
-
-  scaled sppm;
-  RGBColor color;
 };
 
-#endif // MathMLTokenElement_hh
+#endif // __MathMLTokenElement_hh__

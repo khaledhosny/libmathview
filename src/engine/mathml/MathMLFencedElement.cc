@@ -105,8 +105,8 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
 
       SmartPtr<MathMLOperatorElement> open = smart_cast<MathMLOperatorElement>(outerRow->getChild(0));
       assert(open);
-      open->SetSize(0);
-      open->Append(openFence);
+      open->setSize(0);
+      open->append(openFence);
       open->SetFence();
 
       if (nArgs > 1)
@@ -121,8 +121,8 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
 		{
 		  SmartPtr<MathMLOperatorElement> sep = smart_cast<MathMLOperatorElement>(innerRow->getChild(i * 2 + 1));
 		  unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
-		  sep->SetSize(0);
-		  sep->Append(separators.substr(offset, 1));
+		  sep->setSize(0);
+		  sep->append(separators.substr(offset, 1));
 		  sep->SetSeparator();
 		}
 	    }
@@ -130,8 +130,8 @@ MathMLFencedElement::refine(AbstractRefinementContext& context)
 
       SmartPtr<MathMLOperatorElement> close = smart_cast<MathMLOperatorElement>(outerRow->getChild((nArgs > 0) ? 2 : 1));
       assert(close);
-      close->SetSize(0);
-      close->Append(closeFence);
+      close->setSize(0);
+      close->append(closeFence);
       close->SetFence();
 
       MathMLBinContainerElement::refine(context);

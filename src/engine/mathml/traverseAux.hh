@@ -36,7 +36,7 @@ SmartPtr<class MathMLElement>         findCommonAncestor(const SmartPtr<class Ma
 SmartPtr<class MathMLActionElement>   findActionElement(const SmartPtr<class MathMLElement>&);
 #if defined(HAVE_GMETADOM)
 DOM::Element                findDOMNode(const SmartPtr<class MathMLElement>&);
-SmartPtr<class MathMLElement>         findMathMLElement(const SmartPtr<class MathMLView>&,
+SmartPtr<class MathMLElement>         findMathMLElement(const SmartPtr<const class MathMLView>&,
 							const DOM::Element&);
 #endif
 SmartPtr<class MathMLElement>         findRightmostChild(const SmartPtr<class MathMLElement>&);

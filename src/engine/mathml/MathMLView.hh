@@ -45,6 +45,7 @@ public:
   virtual void setRoot(const DOM::Element&);
   SmartPtr<MathMLElement> getRoot(void) const { return root; }
   SmartPtr<MathMLElement> getElementAt(const scaled&, const scaled&) const;
+  bool getElementExtents(const DOM::Element&, scaled&, scaled&, BoundingBox&) const;
   AreaRef getRootArea(void) const;
 
   void setOrigin(const scaled& x, const scaled& y) { x0 = x; y0 = y; }

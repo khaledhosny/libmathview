@@ -24,6 +24,7 @@
 
 #include <cassert>
 
+#include "ChildList.hh"
 #include "BoundingBoxAux.hh"
 #include "Globals.hh"
 #include "MathFormattingContext.hh"
@@ -37,7 +38,6 @@
 #include "MathMLSpaceNode.hh"
 #include "MathMLStringNode.hh"
 #include "MathMLTextElement.hh"
-#include "MathMLTextNode.hh"
 #include "MathMLTokenElement.hh"
 #include "ValueConversion.hh"
 #include "mathVariantAux.hh"
@@ -46,162 +46,82 @@
 
 MathMLTokenElement::MathMLTokenElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
-{
-}
+{ }
 
 MathMLTokenElement::~MathMLTokenElement()
-{
-}
+{ }
 
 void
-MathMLTokenElement::SetSize(unsigned i)
+MathMLTokenElement::append(const String& s)
 {
-  assert(i <= content.size());
-  while (i < content.size()) RemoveChild(content.size() - 1);
-  content.reserve(i);
-}
-
-SmartPtr<MathMLTextNode>
-MathMLTokenElement::GetChild(unsigned i) const
-{
-  if (i < content.size()) return content[i];
-  else return 0;
-}
-
-void
-MathMLTokenElement::SetChild(unsigned i, const SmartPtr<MathMLTextNode>& child)
-{
-  assert(i < content.size());
-  assert(child);
-  if (content[i] != child)
-    {
-      assert(!child->getParent());
-      child->setParent(this);
-      content[i] = child;
-      setDirtyLayout();
-    }
-}
-
-void
-MathMLTokenElement::Append(const String& s)
-{
-  SmartPtr<MathMLTextNode> node = MathMLStringNode::create(s);
-  AppendChild(node);
-}
-
-void
-MathMLTokenElement::AppendChild(const SmartPtr<MathMLTextNode>& node)
-{
-  assert(node);
-  node->setParent(this);
-  content.push_back(node);
-  setDirtyLayout();
-}
-
-void
-MathMLTokenElement::RemoveChild(unsigned i)
-{
-  assert(i < content.size());
-  content.erase(content.begin() + i);
-  setDirtyLayout();
-}
-
-void
-MathMLTokenElement::InsertChild(unsigned i, const SmartPtr<MathMLTextNode>& node)
-{
-  assert(i <= content.size());
-  assert(node);
-  node->setParent(this);
-  content.insert(content.begin() + i, node);
-  setDirtyLayout();
-}
-
-void
-MathMLTokenElement::SwapChildren(std::vector< SmartPtr<MathMLTextNode> >& newContent)
-{
-  if (newContent != content)
-    {
-#if 0
-      // reset parent should be done first because the same elements
-      // may be present in the following loop as well
-      for (std::vector< SmartPtr<MathMLTextNode> >::iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	(*p)->Unlink();
-#endif
-
-      for (std::vector< SmartPtr<MathMLTextNode> >::iterator p = newContent.begin();
-	   p != newContent.end();
-	   p++)
-	{
-	  assert(*p);
-	  (*p)->setParent(this);
-	}
-
-      content.swap(newContent);
-      setDirtyLayout();
-    }
+  content.appendChild(this, MathMLStringNode::create(s));
 }
 
 void
 MathMLTokenElement::construct()
 {
-  if (dirtyStructure() && getDOMElement())
+  if (dirtyStructure())
     {
 #if defined(HAVE_GMETADOM)
-      content.clear();
-
-      for (DOM::Node p = getDOMElement().get_firstChild(); 
-	   p;
-	   p = p.get_nextSibling()) 
+      if (getDOMElement())
 	{
-	  switch (p.get_nodeType())
+	  ChildList children(getDOMElement(), "*", "*");
+	  unsigned n = children.get_length();
+
+	  std::vector<SmartPtr<MathMLTextNode> > newContent;
+	  newContent.reserve(n);
+	  for (unsigned i = 0; i < n; i++)
 	    {
-	    case DOM::Node::TEXT_NODE:
-	      {
-		// ok, we have a chunk of text
-		String content = collapseSpaces(fromDOMString(p.get_nodeValue()));
-
-		// ...but spaces at the at the beginning (end) are deleted only if this
-		// is the very first (last) chunk in the token.
-		if (!p.get_previousSibling()) content = trimSpacesLeft(content);
-		if (!p.get_nextSibling()) content = trimSpacesRight(content);
-
-		Append(content);
-	      }
-	    break;
-
-	    case DOM::Node::ELEMENT_NODE:
-	      {	    
-		if (p.get_namespaceURI() == MATHML_NS_URI)
+	      DOM::Node node = children.item(i);
+	      switch (node.get_nodeType())
+		{
+		case DOM::Node::TEXT_NODE:
 		  {
-		    if (nodeLocalName(p) == "mglyph")
+		    // ok, we have a chunk of text
+		    String s = collapseSpaces(fromDOMString(node.get_nodeValue()));
+
+		    // ...but spaces at the at the beginning (end) are deleted only if this
+		    // is the very first (last) chunk in the token.
+		    if (!node.get_previousSibling()) s = trimSpacesLeft(s);
+		    if (!node.get_nextSibling()) s = trimSpacesRight(s);
+
+		    newContent.push_back(MathMLStringNode::create(s));
+		  }
+		break;
+
+		case DOM::Node::ELEMENT_NODE:
+		  {	    
+		    if (node.get_namespaceURI() == MATHML_NS_URI)
 		      {
-			if (SmartPtr<MathMLTextNode> text = SubstituteMGlyphElement(p))
-			  AppendChild(text);
-		      }
-		    else if (nodeLocalName(p) == "malignmark")
-		      {
-			if (SmartPtr<MathMLTextNode> text = SubstituteAlignMarkElement(p))
-			  AppendChild(text);
-		      }
+			if (nodeLocalName(node) == "mglyph")
+			  {
+			    if (SmartPtr<MathMLTextNode> text = substituteMGlyphElement(node))
+			      newContent.push_back(text);
+			  }
+			else if (nodeLocalName(node) == "malignmark")
+			  {
+			    if (SmartPtr<MathMLTextNode> text = substituteAlignMarkElement(node))
+			      newContent.push_back(text);
+			  }
+			else
+			  {
+			    std::string s_name = nodeLocalName(node);
+			    Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
+			  }
+		      } 
 		    else
 		      {
-			std::string s_name = nodeLocalName(p);
+			std::string s_name = node.get_nodeName();
 			Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
 		      }
-		  } 
-		else
-		  {
-		    std::string s_name = p.get_nodeName();
-		    Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
 		  }
-	      }
-	    break;
-	  
-	    default:
-	      break;
+		break;
+		
+		default:
+		  break;
+		}
 	    }
+	  swapContent(newContent);
 	}
 #endif // HAVE_GMETADOM
 
@@ -265,9 +185,9 @@ MathMLTokenElement::format(MathFormattingContext& ctxt)
       RGBColor newBackground = ctxt.getBackground();
 
       std::vector<AreaRef> c;
-      c.reserve(GetContent().size());
-      for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = GetContent().begin();
-	   p != GetContent().end();
+      c.reserve(getSize());
+      for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = content.begin();
+	   p != content.end();
 	   p++)
 	c.push_back((*p)->format(ctxt));
 
@@ -292,8 +212,8 @@ MathMLTokenElement::format(MathFormattingContext& ctxt)
 bool
 MathMLTokenElement::IsNonMarking() const
 {
-  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator text = GetContent().begin();
-       text != GetContent().end();
+  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator text = content.begin();
+       text != content.end();
        text++)
     {
       assert(*text);
@@ -310,9 +230,9 @@ MathMLTokenElement::AddItalicCorrection()
       !is_a<MathMLNumberElement>(SmartPtr<MathMLElement>(this)) &&
       !is_a<MathMLTextElement>(SmartPtr<MathMLElement>(this))) return;
   
-  if (GetSize() == 0) return;
+  if (getSize() == 0) return;
 
-  SmartPtr<MathMLTextNode> lastNode = GetChild(GetSize() - 1);
+  SmartPtr<MathMLTextNode> lastNode = getChild(getSize() - 1);
   assert(lastNode);
 
   SmartPtr<MathMLElement> next = findRightSibling(this);
@@ -325,7 +245,7 @@ MathMLTokenElement::AddItalicCorrection()
 }
 
 SmartPtr<MathMLTextNode>
-MathMLTokenElement::SubstituteMGlyphElement(const DOM::Element& node)
+MathMLTokenElement::substituteMGlyphElement(const DOM::Element& node)
 {
   assert(node);
 
@@ -346,7 +266,7 @@ MathMLTokenElement::SubstituteMGlyphElement(const DOM::Element& node)
 }
 
 SmartPtr<MathMLTextNode>
-MathMLTokenElement::SubstituteAlignMarkElement(const DOM::Element& node)
+MathMLTokenElement::substituteAlignMarkElement(const DOM::Element& node)
 {
   assert(node);
 
@@ -374,8 +294,8 @@ String
 MathMLTokenElement::GetRawContent() const
 {
   String res;
-  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = GetContent().begin();
-       i != GetContent().end();
+  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = content.begin();
+       i != content.end();
        i++)
     {
       assert(*i);
@@ -390,8 +310,8 @@ MathMLTokenElement::GetLogicalContentLength() const
 {
   unsigned len = 0;
 
-  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = GetContent().begin();
-       i != GetContent().end();
+  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = content.begin();
+       i != content.end();
        i++)
     {
       assert(*i);
