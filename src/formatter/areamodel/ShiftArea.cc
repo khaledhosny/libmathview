@@ -24,6 +24,7 @@
 
 #include "ShiftArea.hh"
 #include "AreaId.hh"
+#include "Point.hh"
 
 void
 ShiftArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
@@ -51,8 +52,8 @@ ShiftArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
 }
 
 void
-ShiftArea::origin(AreaIndex i, scaled&, scaled& y) const
+ShiftArea::origin(AreaIndex i, Point& p) const
 {
   assert(i == 0);
-  y += shift;
+  p.y += shift;
 }

@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include "AreaId.hh"
+#include "Point.hh"
 #include "HorizontalArrayArea.hh"
 
 SmartPtr<HorizontalArrayArea>
@@ -205,9 +206,9 @@ HorizontalArrayArea::fit(const scaled& width, const scaled& height, const scaled
 }
 
 void
-HorizontalArrayArea::origin(AreaIndex i, scaled& x, scaled&) const
+HorizontalArrayArea::origin(AreaIndex i, Point& point) const
 {
   assert(i >= 0 && i < content.size());
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
-    x += (*p)->box().horizontalExtent();
+    point.x += (*p)->box().horizontalExtent();
 }

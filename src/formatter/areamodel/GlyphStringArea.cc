@@ -24,6 +24,7 @@
 
 #include "GlyphStringArea.hh"
 #include "Rectangle.hh"
+#include "Point.hh"
 
 CharIndex
 GlyphStringArea::length() const
@@ -78,17 +79,20 @@ GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, CharIndex& i
   return false;
 }
 
+#include <iostream>
+
 bool
-GlyphStringArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
+GlyphStringArea::positionOfIndex(CharIndex index, Point* point, BoundingBox* b) const
 {
   for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.end(); p++)
-    if (index <= *p)
+    if (index < *p)
       {
-	if (content[p - counters.begin()]->positionOfIndex(index, dx, dy))
+	if (content[p - counters.begin()]->positionOfIndex(index, point, b))
 	  return true;
 	else if (index == *p)
 	  {
-	    dx += content[p - counters.begin()]->box().width;
+	    point->x += content[p - counters.begin()]->box().width;
+	    if (b) *b = content[p - counters.begin()]->box();
 	    return true;
 	  }
 	else
@@ -96,8 +100,9 @@ GlyphStringArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
       }
     else
       {
+	std::cerr << "GlyphStringArea::positionOfIndex iterating index = " << index << std::endl;
 	index -= *p;
-	dx += content[p - counters.begin()]->box().width;
+	point->x += content[p - counters.begin()]->box().width;
       }
 
   return false;

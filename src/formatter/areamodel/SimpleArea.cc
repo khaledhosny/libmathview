@@ -62,7 +62,7 @@ SimpleArea::node(AreaIndex) const
 }
 
 void
-SimpleArea::origin(AreaIndex, scaled&, scaled&) const
+SimpleArea::origin(AreaIndex, class Point&) const
 {
   // A leaf area cannot have children
   assert(false);

@@ -34,7 +34,7 @@ bool
 GlyphArea::searchByIndex(AreaId&, CharIndex index) const
 {
   std::cerr << "GlyphArea::searchByIndex " << index << " length = " << length() << std::endl;
-  return (index >= 0 && index <= length());
+  return (index >= 0 && index < length());
 }
 
 bool
@@ -51,11 +51,12 @@ GlyphArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) c
 }
 
 bool
-GlyphArea::positionOfIndex(CharIndex index, scaled& x, scaled& y) const
+GlyphArea::positionOfIndex(CharIndex index, Point*, BoundingBox* b) const
 {
-  if (index >= 0 && index < length())
+  if (index == 0 && index < length())
     {
-      x = y = 0;
+      // do nothing about the Point
+      if (b) *b = box();
       return true;
     }
   else

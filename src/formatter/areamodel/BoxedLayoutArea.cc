@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "AreaId.hh"
+#include "Point.hh"
 #include "BoxedLayoutArea.hh"
 
 void
@@ -133,11 +134,11 @@ BoxedLayoutArea::node(AreaIndex i) const
 }
 
 void
-BoxedLayoutArea::origin(AreaIndex i, scaled& x, scaled& y) const
+BoxedLayoutArea::origin(AreaIndex i, Point& p) const
 {
   assert(i >= 0 && i < content.size());
-  x += content[i].dx;
-  y += content[i].dy;
+  p.x += content[i].dx;
+  p.y += content[i].dy;
 }
 
 CharIndex

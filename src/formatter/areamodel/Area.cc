@@ -25,47 +25,29 @@
 #include <cassert>
 
 #include "Area.hh"
+#include "Point.hh"
 #include "Rectangle.hh"
 
 scaled
 Area::originX(AreaIndex i) const
 {
-  scaled x;
-  scaled y;
-  origin(i, x, y);
-  return x;
+  Point p;
+  origin(i, p);
+  return p.x;
 }
 
 scaled
 Area::originY(AreaIndex i) const
 {
-  scaled x;
-  scaled y;
-  origin(i, x, y);
-  return y;
+  Point p;
+  origin(i, p);
+  return p.y;
 }
 
 bool
-Area::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
-{
-  const BoundingBox bbox = box();
-  if (Rectangle(scaled::zero(), scaled::zero(), bbox).isInside(x, y))
-    {
-      index = (x < bbox.width / 2) ? 0 : length();
-      return true;
-    }
-  else
-    return false;
-}
+Area::indexOfPosition(const scaled&, const scaled&, CharIndex&) const
+{ return false; }
 
 bool
-Area::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
-{
-  if (index >= 0 && index <= length())
-    {
-      if (index == length()) dx += box().width;
-      return true;
-    }
-  else
-    return false;
-}
+Area::positionOfIndex(CharIndex, class Point*, BoundingBox*) const
+{ return false; }

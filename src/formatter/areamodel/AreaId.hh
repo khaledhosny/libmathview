@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "Area.hh"
+#include "Point.hh"
 
 class AreaId
 {
@@ -39,19 +40,16 @@ public:
 
   bool empty(void) const { return pathV.empty(); }
   int size(void) const { return pathV.size(); }
+  void clear(void) { pathV.clear(); areaV.clear(); originV.clear(); lengthV.clear(); }
 
   AreaRef getArea(int = -1) const;
-  void getOrigin(scaled&, scaled&) const;
-  void getOrigin(int, scaled&, scaled&) const;
-  void getOrigin(int, int, scaled&, scaled&) const;
-  void accumulateOrigin(scaled&, scaled&) const;
-  void accumulateOrigin(int, scaled&, scaled&) const;
-  void accumulateOrigin(int, int, scaled&, scaled&) const;
+  void getOrigin(class Point&, int = 0, int = -1) const;
+  void accumulateOrigin(class Point&, int = 0, int = -1) const;
   CharIndex getLength(int = 0, int = -1) const;
 
   typedef std::vector<AreaIndex> PathVector;
   typedef std::vector<AreaRef> AreaVector;
-  typedef std::vector< std::pair<scaled,scaled> > OriginVector;
+  typedef std::vector<Point> OriginVector;
   typedef std::vector<CharIndex> LengthVector;
 
   const PathVector& getPath(void) const { return pathV; }
@@ -63,8 +61,7 @@ protected:
   AreaId(const AreaRef& r, const PathVector::const_iterator& begin, const PathVector::const_iterator& end)
     : root(r), pathV(begin, end) { }
 
-  void accumulateOriginAux(const OriginVector::const_iterator&, const OriginVector::const_iterator&,
-			   scaled&, scaled&) const;
+  void accumulateOriginAux(const OriginVector::const_iterator&, const OriginVector::const_iterator&, class Point&) const;
   void accumulateLengthAux(const LengthVector::const_iterator&, const LengthVector::const_iterator&, CharIndex&) const;
 
 private:

@@ -36,7 +36,7 @@ GlyphWrapperArea::lengthTo(AreaIndex) const
 { assert(false); }
 
 void
-GlyphWrapperArea::origin(AreaIndex, scaled&, scaled&) const
+GlyphWrapperArea::origin(AreaIndex, Point&) const
 { assert(false); }
 
 bool
@@ -53,11 +53,12 @@ GlyphWrapperArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& i
 }
 
 bool 
-GlyphWrapperArea::positionOfIndex(CharIndex index, scaled& dx, scaled&) const
+GlyphWrapperArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
 {
-  if (index >= 0 && index <= contentLength)
+  if (index == 0 && index < contentLength)
     {
-      if (index == contentLength) dx += box().width;
+      // do nothing about the Point
+      if (b) *b = box();
       return true;
     }
   else
@@ -74,4 +75,4 @@ GlyphWrapperArea::searchByCoords(AreaId&, const scaled& x, const scaled& y) cons
 
 bool
 GlyphWrapperArea::searchByIndex(AreaId&, CharIndex index) const
-{ return index >= 0 && index <= contentLength; }
+{ return index >= 0 && index < contentLength; }

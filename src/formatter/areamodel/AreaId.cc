@@ -45,7 +45,7 @@ AreaId::append(AreaIndex step, const AreaRef& a, const scaled& x, const scaled& 
 {
   assert(pathV.size() == originV.size());
   append(step, a);
-  originV.push_back(std::make_pair(x, y));
+  originV.push_back(Point(x, y));
 }
 
 void
@@ -78,39 +78,7 @@ AreaId::getArea(int index) const
 }
 
 void
-AreaId::accumulateOrigin(scaled& x, scaled& y) const
-{
-  validateOrigins();
-  accumulateOriginAux(originV.begin(), originV.end(), x, y);
-}
-
-void
-AreaId::getOrigin(scaled& x, scaled& y) const
-{
-  x = y = scaled::zero();
-  accumulateOrigin(x, y);
-}
-
-void
-AreaId::accumulateOrigin(int end, scaled& x, scaled& y) const
-{
-  validateOrigins();
-
-  const int endA = (end >= 0) ? end : originV.size() + end + 1;
-  assert(endA >= 0 && endA <= originV.size());
-
-  accumulateOriginAux(originV.begin(), originV.begin() + endA, x, y);
-}
-
-void
-AreaId::getOrigin(int end, scaled& x, scaled& y) const
-{
-  x = y = scaled::zero();
-  accumulateOrigin(end, x, y);
-}
-
-void
-AreaId::accumulateOrigin(int begin, int end, scaled& x, scaled& y) const
+AreaId::accumulateOrigin(Point& p, int begin, int end) const
 {
   validateOrigins();
 
@@ -119,14 +87,14 @@ AreaId::accumulateOrigin(int begin, int end, scaled& x, scaled& y) const
   assert(beginA >= 0 && beginA <= originV.size());
   assert(endA >= 0 && endA <= originV.size());
 
-  accumulateOriginAux(originV.begin() + beginA, originV.begin() + endA, x, y);
+  accumulateOriginAux(originV.begin() + beginA, originV.begin() + endA, p);
 }
 
 void
-AreaId::getOrigin(int begin, int end, scaled& x, scaled& y) const
+AreaId::getOrigin(Point& p, int begin, int end) const
 {
-  x = y = scaled::zero();
-  accumulateOrigin(begin, end, x, y);
+  p.set(scaled::zero(), scaled::zero());
+  accumulateOrigin(p, begin, end);
 }
 
 CharIndex
@@ -154,12 +122,12 @@ AreaId::accumulateLengthAux(const LengthVector::const_iterator& begin, const Len
 
 void
 AreaId::accumulateOriginAux(const OriginVector::const_iterator& begin, const OriginVector::const_iterator& end,
-			    scaled& dx, scaled& dy) const
+			    Point& point) const
 {
   for (OriginVector::const_iterator p = begin; p != end; p++)
     {
-      dx += (*p).first;
-      dy += (*p).second;
+      point.x += p->x;
+      point.y += p->y;
     }
 }
 
@@ -182,8 +150,8 @@ AreaId::validateOrigins() const
   AreaRef prev = root;
   while (originV.size() < areaV.size())
     {
-      std::pair<scaled,scaled> o;
-      prev->origin(pathV[originV.size()], o.first, o.second);
+      Point o;
+      prev->origin(pathV[originV.size()], o);
       originV.push_back(o);
       prev = areaV[originV.size() - 1];
     }

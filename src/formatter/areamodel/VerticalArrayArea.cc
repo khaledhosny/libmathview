@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include "AreaId.hh"
+#include "Point.hh"
 #include "VerticalArrayArea.hh"
 
 VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, AreaIndex r)
@@ -226,32 +227,32 @@ VerticalArrayArea::searchByIndex(AreaId& id, CharIndex index) const
 }
 
 void
-VerticalArrayArea::origin(AreaIndex i, scaled&, scaled& y) const
+VerticalArrayArea::origin(AreaIndex i, Point& point) const
 {
   assert(i >= 0 && i < content.size());
   if (i < refArea)
     {
       if (BoundingBox idBox = content[i]->box())
-	y -= idBox.height;
+	point.y -= idBox.height;
       if (BoundingBox refBox = content[refArea]->box())
-	y -= refBox.depth;
+	point.y -= refBox.depth;
       for (std::vector<AreaRef>::const_iterator p = content.begin() + i + 1;
 	   p != content.begin() + refArea;
 	   p++)
 	if (BoundingBox b = (*p)->box())
-	  y -= b.verticalExtent();
+	  point.y -= b.verticalExtent();
     }
   else if (i > refArea)
     {
       if (BoundingBox refBox = content[refArea]->box())
-	y += refBox.height;
+	point.y += refBox.height;
       if (BoundingBox idBox = content[i]->box())
-	y += idBox.depth;
+	point.y += idBox.depth;
       for (std::vector<AreaRef>::const_iterator p = content.begin() + refArea + 1;
 	   p != content.begin() + i;
 	   p++)
 	if (BoundingBox b = (*p)->box())
-	  y += b.verticalExtent();
+	  point.y += b.verticalExtent();
     }
 }
 

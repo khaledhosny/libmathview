@@ -47,11 +47,11 @@ public:
   virtual void strength(int&, int&, int&) const = 0;
   virtual AreaIndex size(void) const { return 0; }
   virtual AreaRef node(AreaIndex) const = 0;
-  virtual void origin(AreaIndex, scaled&, scaled&) const = 0;
+  virtual void origin(AreaIndex, class Point&) const = 0;
   virtual CharIndex length(void) const { return 0; }
   virtual CharIndex lengthTo(AreaIndex) const = 0;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual bool positionOfIndex(CharIndex, class Point* = 0, BoundingBox* = 0) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const = 0;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const = 0;

@@ -41,7 +41,7 @@ public:
   virtual CharIndex length(void) const;
   virtual CharIndex lengthTo(AreaIndex) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
 
 private:
   std::vector<CharIndex> counters;

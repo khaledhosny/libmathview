@@ -42,12 +42,12 @@ public:
   virtual void strength(int&, int&, int&) const;
   virtual AreaIndex size(void) const { return 1; }
   virtual AreaRef node(AreaIndex) const;
-  virtual void origin(AreaIndex, scaled&, scaled&) const;
+  virtual void origin(AreaIndex, class Point&) const;
   virtual AreaRef replace(AreaIndex, const AreaRef&) const;
   virtual CharIndex length(void) const;
   virtual CharIndex lengthTo(AreaIndex) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;

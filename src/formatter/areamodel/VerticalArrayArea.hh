@@ -42,7 +42,7 @@ public:
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  virtual void origin(AreaIndex, scaled&, scaled&) const;
+  virtual void origin(AreaIndex, class Point&) const;
   virtual CharIndex lengthTo(AreaIndex) const;
 
   AreaIndex getRefArea(void) const { return refArea; }
