@@ -767,10 +767,17 @@ notationParser(StringTokenizer& st)
 const Value*
 mathVariantParser(StringTokenizer& st)
 {
+  /* The order of the following keywords is _VERY_ important.
+   * If a keyword is a prefix of another keyword and it is listed
+   * before the longer one, then the shortest keyword will always
+   * match first. Example: bold, bold-italic. bold is matched even
+   * if the attribute has value bold-italic
+   */
   KeywordId id[] = {
-    KW_NORMAL, KW_BOLD, KW_ITALIC, KW_BOLD_ITALIC, KW_DOUBLE_STRUCK, KW_BOLD_FRAKTUR,
-    KW_SCRIPT, KW_BOLD_SCRIPT, KW_FRAKTUR, KW_SANS_SERIF, KW_BOLD_SANS_SERIF,
-    KW_SANS_SERIF_ITALIC, KW_SANS_SERIF_BOLD_ITALIC, KW_MONOSPACE };
+    KW_NORMAL, KW_ITALIC, KW_DOUBLE_STRUCK, 
+    KW_SCRIPT, KW_FRAKTUR, KW_MONOSPACE,
+    KW_BOLD_SCRIPT, KW_BOLD_ITALIC, KW_BOLD_FRAKTUR, KW_BOLD_SANS_SERIF, KW_BOLD,
+    KW_SANS_SERIF_ITALIC, KW_SANS_SERIF_BOLD_ITALIC, KW_SANS_SERIF };
 
   return alternativeParser(id, 14, st);
 }
