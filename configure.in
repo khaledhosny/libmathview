@@ -161,7 +161,7 @@ if test $HAVE_ICONV = "yes"; then
 	if iconv -t UTF-8 -f UTF-8 </dev/null >/dev/null 2>&1; then
 		ICONV_UTF8="UTF-8"
 	else
-		AC_MSG_WARN(iconv UTF-8 is not supported, this may result in failed assertions)
+		AC_MSG_WARN(UTF-8 to UTF-8 is not supported. This may result in failed assertions)
 		ICONV_UTF8="UTF-8"
 	fi
 
@@ -171,7 +171,7 @@ if test $HAVE_ICONV = "yes"; then
 		AC_MSG_WARN(assuming that iconv UCS-4 is bigendian)
 		ICONV_UCS4BE="UCS-4"
 	else
-		AC_MSG_WARN(iconv UCS-4 is not supported, this may result in failed assertions)
+		AC_MSG_WARN(UCS-4 to UCS-4 is not supported. This may result in failed assertions)
 		ICONV_UCS4BE="UCS-4"
 	fi
 
@@ -181,7 +181,7 @@ if test $HAVE_ICONV = "yes"; then
 		ICONV_UCS4LE="no"
 	fi
 else
-	AC_MSG_WARN(iconv not found, assuming that UTF-8, UCS-4 exist, this may result in failed assertions)
+	AC_MSG_WARN(iconv not found. Assuming that UTF-8 and UCS-4 exist. This may result in failed assertions)
 	ICONV_UTF8="UTF-8"
 	ICONV_UCS4BE="UCS-4"
 	ICONV_UCS4LE="no"
