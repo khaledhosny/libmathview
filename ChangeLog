@@ -1,0 +1,8 @@
+Thu, 17 Jul 2003 12:20:55 +0200
+	* the widget does not allocate a Frame anymore
+
+Thu, 22 May 2003 12:20:34 +0200
+
+	* configure.ac now uses pkg-config for detecting most
+	  libraries (those having pkg-config conf files)
+

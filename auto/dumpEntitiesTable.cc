@@ -24,52 +24,7 @@
 #include <stdlib.h> // for exit(...)
 #include <stdio.h>
 
-#if defined(HAVE_MINIDOM)
-
-#include <minidom.h>
-
-bool
-dump(const char* fileName)
-{
-  mDOMDocRef doc = mdom_load(fileName, FALSE, NULL);
-  if (doc == NULL) return false;
-  
-  mDOMNodeRef root = mdom_doc_get_root_node(doc);
-  if (root == NULL) {
-    mdom_unload(doc);
-    return false;
-  }
-
-  mDOMNodeRef p = mdom_node_get_first_child(root);
-  while (p != NULL) {
-    if (!mdom_node_is_blank(p)) {
-      mDOMStringRef name = mdom_node_get_attribute(p, DOM_CONST_STRING("name"));
-      mDOMStringRef value = mdom_node_get_attribute(p, DOM_CONST_STRING("value"));
-
-      if (name != NULL && value != NULL) {
-	printf("{ \"%s\", \"", C_CONST_STRING(name));
-	
-	// WARNING: the line below is libxml dependent!!!
-	for (xmlChar* s = value; s != NULL && *s != '\0'; s++) {
-	  printf("\\x%02x", *s);
-	}
-	
-	printf("\\x00\", 0, 0 },\n");
-      }
-
-      mdom_string_free(name);
-      mdom_string_free(value);
-    }
-
-    p = mdom_node_get_next_sibling(p);
-  }
-
-  mdom_unload(doc);
-
-  return true;
-}
-
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 
 #include "gmetadom.hh"
 
