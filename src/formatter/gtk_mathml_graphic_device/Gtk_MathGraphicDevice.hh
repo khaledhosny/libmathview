@@ -75,7 +75,8 @@ public:
   virtual AreaRef enclose(const MathFormattingContext& context,
 			  const AreaRef& base,
 			  const String& notation) const;
-
+  virtual AreaRef wrapper(const MathFormattingContext& context,
+			  const AreaRef& base) const;
 protected:
   virtual AreaRef stretchStringV(const MathFormattingContext& context,
 				 const String& str,

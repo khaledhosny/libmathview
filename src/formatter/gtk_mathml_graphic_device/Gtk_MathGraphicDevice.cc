@@ -85,16 +85,16 @@ Gtk_MathGraphicDevice::fraction(const MathFormattingContext& context,
 				const AreaRef& denominator,
 				const Length& lineThickness) const
 {
+  const scaled RULE = defaultLineThickness(context);
+
   std::vector<AreaRef> v;
+
+  AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle() ? RULE * 3 : RULE, scaled::zero());
+
   v.reserve(5);
   v.push_back(denominator);
-  
-  AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle()
-					  ? defaultLineThickness(context) * 3 : defaultLineThickness(context),
-					  scaled::zero());
-
   v.push_back(s);
-  v.push_back(getFactory()->horizontalLine(defaultLineThickness(context), context.getColor()));
+  v.push_back(getFactory()->horizontalLine(evaluate(context, lineThickness, RULE), context.getColor()));
   v.push_back(s);
   v.push_back(numerator);
 
@@ -275,4 +275,12 @@ Gtk_MathGraphicDevice::enclose(const MathFormattingContext& context,
 			       const String& notation) const
 {
   return base;
+}
+
+AreaRef
+Gtk_MathGraphicDevice::wrapper(const MathFormattingContext& context,
+			       const AreaRef& base) const
+{
+  BoundingBox box = base->box();
+  return base->fit(box.width, box.height, box.depth);
 }
