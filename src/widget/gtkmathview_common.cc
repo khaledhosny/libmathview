@@ -447,6 +447,8 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
   initGlobalData(getenv("MATHENGINECONF"));
 }
 
+#include "MathML.hh"
+
 static void
 gtk_math_view_init(GtkMathView* math_view)
 {
@@ -494,34 +496,34 @@ gtk_math_view_init(GtkMathView* math_view)
   // BOHHHHHHHHHHHHHHH
 
   g_signal_connect(GTK_OBJECT(math_view->area),
-		  "configure_event",
-		  G_CALLBACK(gtk_math_view_configure_event), 
-		  math_view);
+		   "configure_event",
+		   G_CALLBACK(gtk_math_view_configure_event), 
+		   math_view);
 
   g_signal_connect(GTK_OBJECT(math_view->area), 
-		  "expose_event",
-		  G_CALLBACK(gtk_math_view_expose_event), 
-		  math_view);
+		   "expose_event",
+		   G_CALLBACK(gtk_math_view_expose_event), 
+		   math_view);
 
   g_signal_connect(GTK_OBJECT(math_view->area), 
-		  "realize",
-		  G_CALLBACK(gtk_math_view_realize), 
-		  math_view);
+		   "realize",
+		   G_CALLBACK(gtk_math_view_realize), 
+		   math_view);
 
   g_signal_connect(GTK_OBJECT(math_view->area), 
-		  "button_press_event",
-		  G_CALLBACK(gtk_math_view_button_press_event), 
-		  math_view);
+		   "button_press_event",
+		   G_CALLBACK(gtk_math_view_button_press_event), 
+		   math_view);
 
   g_signal_connect(GTK_OBJECT(math_view->area), 
-		  "button_release_event",
-		  G_CALLBACK(gtk_math_view_button_release_event), 
-		  math_view);
+		   "button_release_event",
+		   G_CALLBACK(gtk_math_view_button_release_event), 
+		   math_view);
 
   g_signal_connect(GTK_OBJECT(math_view->area), 
-		  "motion_notify_event",
-		  G_CALLBACK(gtk_math_view_motion_notify_event), 
-		  math_view);
+		   "motion_notify_event",
+		   G_CALLBACK(gtk_math_view_motion_notify_event), 
+		   math_view);
 
   gtk_widget_add_events(GTK_WIDGET(math_view->area),
 			GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
@@ -535,6 +537,8 @@ GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*)
   return GTK_WIDGET(math_view);
 }
 
+#include <iostream>
+
 static void
 gtk_math_view_destroy(GtkObject* object)
 {
@@ -546,8 +550,10 @@ gtk_math_view_destroy(GtkObject* object)
   math_view = GTK_MATH_VIEW(object);
   g_assert(math_view != NULL);
 
+  std::cerr << " DENTRO widget_destroy, view? " << math_view->view << std::endl;
   if (math_view->view)
     {
+      math_view->view->resetRootElement();
       math_view->view->unref();
       math_view->view = 0;
     }
@@ -595,7 +601,8 @@ gtk_math_view_destroy(GtkObject* object)
 #endif
       math_view->cursor_elem = NULL;
     }
-  
+
+#if 1
   /* ATTEMPT: since this class is derived from a container
    * then contained object will be destroyed by the parent class'
    * method
@@ -603,6 +610,7 @@ gtk_math_view_destroy(GtkObject* object)
 
   if (GTK_OBJECT_CLASS(parent_class)->destroy != NULL)
     (*GTK_OBJECT_CLASS(parent_class)->destroy)(object);
+#endif
 }
 
 
@@ -1125,6 +1133,8 @@ extern "C" void
 GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->view != NULL);
+  math_view->view->resetRootElement();
 #if GTKMATHVIEW_USES_GMETADOM || GTKMATHVIEW_USES_LIBXML2
   GTKMATHVIEW_METHOD_NAME(load_root)(math_view, NULL);
 #endif

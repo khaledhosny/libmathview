@@ -70,6 +70,7 @@ extern "C" {
   gboolean       GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewElementId);
 #endif
   void           GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView*);
+  void           GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*);
   void           GTKMATHVIEW_METHOD_NAME(select)(GtkMathView*, GtkMathViewElementId);
   void           GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewElementId);
   gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewElementId);
