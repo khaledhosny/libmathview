@@ -2,7 +2,6 @@
 noinst_LTLIBRARIES = libboxml.la
 
 libboxml_la_SOURCES = \
-  BoxedParagraph.cc \
   BoxMLNamespaceContext.cc \
   BoxMLAttributeSignatures.cc \
   BoxMLElement.cc \
@@ -14,14 +13,12 @@ libboxml_la_SOURCES = \
   BoxMLHElement.cc \
   BoxMLVElement.cc \
   BoxMLGroupElement.cc \
-  BoxMLParagraphElement.cc \
   BoxMLLayoutElement.cc \
   BoxMLAtElement.cc \
   BoxMLSpaceElement.cc \
   BoxMLInkElement.cc
 
 noinst_HEADERS = \
-  BoxedParagraph.hh \
   BoxMLNamespaceContext.hh \
   BoxML.hh \
   BoxMLAttributeSignatures.hh \
@@ -31,7 +28,6 @@ noinst_HEADERS = \
   BoxMLBinContainerElement.hh \
   BoxMLLinearContainerElement.hh \
   BoxMLboxElement.hh \
-  BoxMLParagraphElement.hh \
   BoxMLTextElement.hh \
   BoxMLHElement.hh \
   BoxMLVElement.hh \

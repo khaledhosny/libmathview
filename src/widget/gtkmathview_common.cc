@@ -1284,12 +1284,15 @@ GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
   setup_adjustments(math_view);
 }
 
-extern "C" GtkAdjustment*
-GTKMATHVIEW_METHOD_NAME(get_hadjustment)(GtkMathView* math_view)
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(get_adjustments)(GtkMathView* math_view,
+					 GtkAdjustment** hadjustment,
+					 GtkAdjustment** vadjustment)
 {
-  g_return_val_if_fail(math_view != NULL, NULL);
+  g_return_if_fail(math_view != NULL);
 
-  return math_view->hadjustment;
+  if (hadjustment) *hadjustment = math_view->hadjustment;
+  if (vadjustment) *vadjustment = math_view->vadjustment;
 }
 
 extern "C" GtkAdjustment*

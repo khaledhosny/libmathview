@@ -33,6 +33,5 @@
 #include "BoxMLVElement.hh"
 #include "BoxMLboxElement.hh"
 #include "BoxMLActionElement.hh"
-#include "BoxMLParagraphElement.hh"
 
 #endif // __BoxML_hh__

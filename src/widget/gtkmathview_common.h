@@ -87,46 +87,45 @@ extern "C" {
   typedef void (*GtkMathViewModelSignal)(GtkMathView*, const GtkMathViewModelEvent*);
   typedef void (*GtkMathViewSelectAbortSignal)(GtkMathView*);
 
-  GtkType    	 GTKMATHVIEW_METHOD_NAME(get_type)(void);
-  GtkWidget* 	 GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(freeze)(GtkMathView*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView*);
+  GtkType    GTKMATHVIEW_METHOD_NAME(get_type)(void);
+  GtkWidget* GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(freeze)(GtkMathView*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView*);
 #if GTKMATHVIEW_USES_CUSTOM_READER
-  gboolean       GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
+  gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
 #else
-  gboolean       GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewModelId);
+  gboolean   GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView*, GtkMathViewModelId);
 #endif
-  void           GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView*);
-  void           GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView*, GtkMathViewModelId);
-  void           GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView*, GtkMathViewModelId, GtkMathViewModelString);
-  void           GTKMATHVIEW_METHOD_NAME(select)(GtkMathView*, GtkMathViewModelId);
-  void           GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewModelId);
-  gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewModelId);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewModelId*,
-							 GtkMathViewPoint*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView*, GtkMathViewModelId,
-							      GtkMathViewPoint*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*,
-						      GtkMathViewPoint*, GtkMathViewBoundingBox*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView*, GtkMathViewModelId, gint,
-							   GtkMathViewPoint*, GtkMathViewBoundingBox*);
-  void           GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
-  void           GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
-  void           GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, GtkMathViewCursor);
+  void       GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView*, GtkMathViewModelId);
+  void       GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView*, GtkMathViewModelId, GtkMathViewModelString);
+  void       GTKMATHVIEW_METHOD_NAME(select)(GtkMathView*, GtkMathViewModelId);
+  void       GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView*, GtkMathViewModelId);
+  gboolean   GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewModelId);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, GtkMathViewBoundingBox*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewModelId*,
+						     GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView*, GtkMathViewModelId,
+							  GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*,
+						  GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView*, GtkMathViewModelId, gint,
+						       GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  void       GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
+  void       GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
+  void       GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, GtkMathViewCursor);
   GtkMathViewCursor GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView*);
-  void      	 GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView*, gint*, gint*);
-  void       	 GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView*, gint*, gint*);
-  void       	 GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView*, gint, gint);
-  void       	 GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView*, GtkAdjustment*, GtkAdjustment*);
-  GtkAdjustment* GTKMATHVIEW_METHOD_NAME(get_hadjustment)(GtkMathView*);
-  GtkAdjustment* GTKMATHVIEW_METHOD_NAME(get_vadjustment)(GtkMathView*);
-  GdkPixmap*     GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView*);
-  void           GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView*, guint);
-  guint          GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView*);
-  void           GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint);
-  gint           GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView*, gint*, gint*);
+  void       GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView*, gint*, gint*);
+  void       GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView*, gint, gint);
+  void       GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView*, GtkAdjustment*, GtkAdjustment*);
+  void       GTKMATHVIEW_METHOD_NAME(get_adjustments)(GtkMathView*, GtkAdjustment**, GtkAdjustment**);
+  GdkPixmap* GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView*, guint);
+  guint      GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint);
+  gint       GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView*);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

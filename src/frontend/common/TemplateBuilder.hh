@@ -150,7 +150,6 @@ protected:
       { "box",           &TemplateBuilder::updateElement<BoxML_box_ElementBuilder> },
       { "action",        &TemplateBuilder::updateElement<BoxML_action_ElementBuilder> },
       { "obj",           &TemplateBuilder::update_BoxML_obj_Element },
-      { "par",           &TemplateBuilder::updateElement<BoxML_par_ElementBuilder> },
       { "",              0 }
     };
 
@@ -985,6 +984,7 @@ protected:
     }
   };
 
+#if 0
   struct BoxML_par_ElementBuilder : public BoxMLElementBuilder
   {
     typedef BoxMLParagraphElement type;
@@ -1017,6 +1017,7 @@ protected:
       elem->swapContent(content);
     }
   };
+#endif
 
   struct BoxML_space_ElementBuilder : public BoxMLElementBuilder
   {

@@ -47,7 +47,6 @@ public:
   virtual scaled defaultLineThickness(const class BoxFormattingContext&) const;
 
   virtual AreaRef string(const class BoxFormattingContext&, const String&, const scaled&) const = 0;
-  virtual AreaRef paragraph(const class BoxFormattingContext&, const class BoxedParagraph&, const scaled&) const = 0;
   virtual AreaRef dummy(const class BoxFormattingContext&) const;
   virtual AreaRef wrapper(const class BoxFormattingContext&, const AreaRef&) const = 0;
 };

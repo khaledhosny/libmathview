@@ -72,6 +72,7 @@ Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
   return factory->pangoLayout(layout);
 }
 
+#if 0
 #include "BoundingBoxAux.hh"
 #include "scaledAux.hh"
 
@@ -187,6 +188,7 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
   
   return factory->boxedLayout(finalBox, c);
 }
+#endif
 
 AreaRef
 Gtk_BoxGraphicDevice::wrapper(const BoxFormattingContext& context,

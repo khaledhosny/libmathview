@@ -73,12 +73,6 @@ MISSING
 
 BUGS
 
-* par without width attribute -> assert false
-+ step in a boxml paragraph is wrong
-+ a box having a step within a paragraph is aligned correctly,
-  but the text that follows the box is not. HARD! perhaps we should
-  change/remove things like exit entry point?
-
 ARCH IMPROVEMENTS
 
 + The BoxML/MathML embedding mechanism is still ad-hoc and works
@@ -86,12 +80,6 @@ ARCH IMPROVEMENTS
 
 MISSING
 
-? justification of paragraphs
-+ minlabelspacing -> spacing in paragraph, use pango layout spacing
-+ cleanup code for box paragraph, create an auxiliary class for
-  collecting things and handle groups inside paragraphs. What
-  about groups inside paragraphs? What about colors inside paragraphs?
 - implement overstrike and underline for box text ?
-- implement available width propagation for boxes?
 - add documentation for boxml
 
