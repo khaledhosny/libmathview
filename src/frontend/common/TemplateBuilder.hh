@@ -26,7 +26,6 @@
 #include <vector>
 
 #include "defs.h"
-#include "Clock.hh"
 #include "MathML.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
@@ -1236,32 +1235,20 @@ protected:
 public:
   static SmartPtr<typename Model::Builder> create(void) { return new TemplateBuilder(); }
 
+  virtual void
+  forgetElement(Element* elem) const
+  { linkerRemove(elem); }
+
   virtual SmartPtr<Element>
   getRootElement() const
   {
-    Clock perf;
-	
-    SmartPtr<Element> oldRootElement = rootElement;
-    bool rootDirty = rootElement && (rootElement->dirtyStructure() || rootElement->dirtyAttribute() || rootElement->dirtyAttributeP());
     if (typename Model::Element root = getRootModelElement())
       {
-	perf.Start();
 	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
-	if (ns == MATHML_NS_URI) rootElement = getMathMLElement(root);
-	else if (ns == BOXML_NS_URI) rootElement = getBoxMLElement(root);
-	perf.Stop();
-#if 0
-	std::cerr << "FOUND ROOT ELEMENT = " << static_cast<Element*>(res)
-		  << " DIRTY? " << res->dirtyLayout() << std::endl;
-#endif
+	if (ns == MATHML_NS_URI) return getMathMLElement(root);
+	else if (ns == BOXML_NS_URI) return getBoxMLElement(root);
       }
-    else
-      rootElement = 0;
-
-    if (rootDirty || rootElement != oldRootElement)
-      Globals::logger(LOG_INFO, "build time: %dms", perf());
-
-    return rootElement;
+    return 0;
   }
 
 private:
@@ -1274,7 +1261,6 @@ private:
   MathMLBuilderMap mathmlMap;
   BoxMLBuilderMap boxmlMap;
 
-  mutable SmartPtr<Element> rootElement;
   mutable typename Model::RefinementContext refinementContext;
 };
 
