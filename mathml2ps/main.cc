@@ -311,7 +311,7 @@ main(int argc, char *argv[])
   sheet.height = h;
 
   area.DumpPreamble();
-  area.DumpGrid();
+  //area.DumpGrid();
   engine.Render(&sheet);
   area.DumpEpilogue();
 #else 
