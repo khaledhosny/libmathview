@@ -124,8 +124,7 @@ MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) co
 }
 
 AreaRef
-MathGraphicDevice::dummy(const MathFormattingContext&) const
+MathGraphicDevice::dummy(const MathFormattingContext& context) const
 {
-  //assert(false);
-  return getFactory()->horizontalSpace(scaled::zero());
+  return getFactory()->color(string(context, fromUCS4String(DOM::UCS4String(1, 0xfffd))), RGBColor::RED());
 }

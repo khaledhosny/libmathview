@@ -4,9 +4,10 @@
 - = LONG TERM
 
 BUGS
-
-* make it possible for the content of a bin/linear container to
++ selection of math inside boxes crashes
++ make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
++ again problems with colors
 - applying the variant map before shaping is problematic when
   using the PangoShaper because Pango doesn't know about variant
   chars. This can be seen as a bug of pango or as a bug of our architecture
@@ -17,10 +18,8 @@ BUGS
 
 ARCH IMPROVEMENTS
 
-+ factor the Element class
-+ factor ther View class
-+ split formatting engine factories for mathml and boxml and
-  make a super-factory keyed by the namespace
++ The BoxML/MathML embedding mechanism is still ad-hoc and works
+  only for MathML inside BoxML
 + remove the linker from Element. What is the most sensible
   place to put the linker? Perhaps the linker and the reader should
   be merged?
@@ -30,18 +29,29 @@ ARCH IMPROVEMENTS
   over areas by implementing a visitor
 + implement reader interface over DOM, libxml2 tree, XmlReader
 + implement caching mechanism for pango shaper
+- the default font size now need to be set on two different 
+  namespacecontexts, ugly. (see gtkmathview.cc)
 - make debugging methods in Areas optional (or remove them)
 - fix Configuration/Globals files 
 - move mathvariant files into src/common
 - operations visiting areas might be factored in a better way
 - not sure the Origin information should go in the view
 
-MISSING FEATURES
+MISSING
 
-* implement AreaCanvas for drawing lines (mdummy)
++ make setSelected virtual in Gtk_WrapperArea and implement
+  an open Wrapper area that selects all its children. Use the
+  open wrapper for groups
++ minlabelspacing -> spacing in paragraph, use pango layout spacing
++ implement overstrike and underline for box text
++ cleanup code for box paragraph, create an auxiliary class for
+  collecting things and handle groups inside paragraphs. What
+  about groups inside paragraphs?
 + implement cursor
 + enable actions in boxml
 + add getId() method to reader interface
+- implement available width propagation for boxes?
+- implement AreaCanvas for drawing lines
 - implement table formatting
 - implement PS area model
 - implement T1lib area model
@@ -55,6 +65,6 @@ MISSING FEATURES
 - add documentation for boxml
 - mmultiscripts
 - mpadded
-- mstyle
+- mstyle ?
 - token
 
