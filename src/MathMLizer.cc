@@ -87,12 +87,6 @@ MathMLizer::MathMLizeNode(const GMetaDOM::Node& node, MathMLContainerElement* pa
   assert(node != 0);
   assert(parent != NULL);
 
-  // TODO: namespaces
-  //  if (node->ns != NULL && xmlStrcmp(node->ns->prefix, XMLSTRING(MATHML_NS_PREFIX))) {
-  //  if (verbose) fprintf(stderr, "WARNING: skipping element with namespace `%s'\n", node->ns->prefix);
-  //  return;
-  //}
-
 #if defined(HAVE_MINIDOM)
   if (!mdom_node_is_element(node)) {
     MathEngine::logger(LOG_WARNING, "skipping unrecognized node (type %d)\n", mdom_node_get_type(node));
@@ -107,7 +101,13 @@ MathMLizer::MathMLizeNode(const GMetaDOM::Node& node, MathMLContainerElement* pa
     return;
   }
 
-  char* s_tag = node.get_nodeName().toC();
+  char* s_tag = NULL;
+  // for now, namespaces are simply ignored.
+  if (node.get_namespaceURI() == 0)
+    s_tag = node.get_nodeName().toC();
+  else
+    s_tag = node.get_localName().toC();
+
   TagId tag = TagIdOfName(s_tag);
   delete [] s_tag;
   MathMLElement* elem = NULL;
@@ -410,6 +410,11 @@ MathMLizer::MathMLizeTokenContent(const GMetaDOM::Element& node, MathMLTokenElem
 	  delete s;
 	}
       }
+      break;
+
+    case GMetaDOM::Node::ENTITY_REFERENCE_NODE:
+      for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling())
+        MathMLizeTokenContent(p, parent);
       break;
 
     case GMetaDOM::Node::ELEMENT_NODE:
