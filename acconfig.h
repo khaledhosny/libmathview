@@ -27,16 +27,6 @@
 
 @TOP@
 
-/* Is FLOATING_SCALED is defined use floating-points arithmetics
- * for scaled values (slower, larger, better precision). Otherwise
- * use fixed point arithmetics (faster, smaller).
- */
-#undef FLOATING_SCALED
-
-#ifndef FLOATING_SCALED
-#define FIXED_SCALED
-#endif
-
 /* If defined the widget will perform a huge amount
  * of validity checks while running
  */

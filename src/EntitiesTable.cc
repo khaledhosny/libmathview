@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#if defined(HAVE MINIDOM)
+#if defined(HAVE_MINIDOM)
 
 #include <assert.h>
 #include <stdio.h>

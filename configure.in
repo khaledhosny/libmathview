@@ -32,17 +32,13 @@ AC_ARG_ENABLE(
 	AC_DEFINE(ENABLE_DEBUG)
 )
 
-AC_ARG_ENABLE(
-	floating,
-	[  --enable-floating[=ARG] use floating point arithmentics for internal
-                          computations [default=yes]],
-	[
-		if test $enableval = yes; then
-			AC_DEFINE(FLOATING_SCALED)
-		fi
-	],
-	AC_DEFINE(FLOATING_SCALED)
+AC_ARG_WITH(
+	scaled-type,
+	[  --with-scaled-type[=TYPE] define the type for scaled points [default=float]],
+	SCALED_TYPE=$withval,
+	SCALED_TYPE="float"
 )
+AC_SUBST(SCALED_TYPE)
 
 AC_ARG_ENABLE(
 	texish,
@@ -119,7 +115,6 @@ dnl AC_DISABLE_SHARED
 AM_PROG_LIBTOOL
 
 dnl Checks for programs.
-AC_LANG_C
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LN_S
@@ -260,20 +255,27 @@ if test $gmetadom = "yes" -a $minidom = "yes"; then
 	AC_MSG_WARN(both gmetadom and minidom were found, using gmetadom)
 fi
 
+if test $minidom = "yes"; then
+	gmetadom="no"
+fi
+
 if test $gmetadom = "yes"; then
 	DOM_CFLAGS=`gmetadom-config --module=gdome_cpp_smart --cflags`
 	DOM_LIBS=`gmetadom-config --module=gdome_cpp_smart --libs`
 	DOM_IMPLEMENTATION="GMETADOM"
 	AC_DEFINE(HAVE_GMETADOM)
 else
-	DOM_CFLAGS=`minidom-config --cflags`
-	DOM_LIBS=`minidom-config --libs`
+	DOM_CFLAGS="$GLIB_CFLAGS `minidom-config --cflags`"
+	DOM_LIBS="$GLIB_LIBS `minidom-config --libs`"
 	DOM_IMPLEMENTATION="MINIDOM"
 	AC_DEFINE(HAVE_MINIDOM)
 fi
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
 AC_SUBST(DOM_IMPLEMENTATION)
+
+echo $DOM_CFLAGS
+echo $DOM_LIBS
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no")
@@ -322,6 +324,7 @@ config/Makefile
 config/math-engine-configuration.xml
 scripts/Makefile
 src/Makefile
+src/scaled.hh
 auto/Makefile
 auto/config.dirs
 doc/Makefile

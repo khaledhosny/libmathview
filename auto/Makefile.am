@@ -2,6 +2,7 @@
 noinst_PROGRAMS = dumpEntitiesTable
 
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
+dumpEntitiesTable_LDADD = @DOM_LIBS@
 
 AUTOFILES = \
   attribute.dec attribute.def \
@@ -44,3 +45,5 @@ attribute.def: keyword.list $(SCRIPTDIR)/makekeywords
 
 entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 	./dumpEntitiesTable $< >$@
+
+INCLUDES = @DOM_CFLAGS@

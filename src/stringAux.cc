@@ -35,26 +35,12 @@
 #include "stringAux.hh"
 #include "StringUnicode.hh"
 
-union endian_union {
-  Char8 b[4];
-  Char32 ch;
-};
-
-#ifndef WORDS_BIGENDIAN
-static Char32 swac(Char32 ch)
-{
-  endian_union u1;
-  endian_union u2;
-
-  u1.ch = ch;
-  u2.b[0] = u1.b[3];
-  u2.b[1] = u1.b[2];
-  u2.b[2] = u1.b[1];
-  u2.b[3] = u1.b[0];
-
-  return u2.ch;
-}
-#endif // WORDS_BIGENDIAN
+#define ICONV_UTF8 "UTF-8"
+#ifdef WORDS_BIGENDIAN
+#define ICONV_UCS4 "UCS-4BE"
+#else
+#define ICONV_UCS4 "UCS-4LE"
+#endif
 
 String* allocString(mDOMConstStringRef str)
 {
@@ -102,12 +88,7 @@ String* allocString(mDOMConstStringRef str)
       nConv = iconv(cd, &inbuf, &inBytesLeft, &outbuf, &outBytesLeft);
       if (nConv != (size_t) -1) {
 	unsigned n = (outbuf - outbuf0) / sizeof(Char32);
-	if (n > 0) {
-#ifndef WORDS_BIGENDIAN
-	  for (unsigned i = 0; i < n; i++) buffer[i] = swac(buffer[i]);
-#endif // WORDS_BIGENDIAN
-	  chunk = new StringU<Char32>(buffer, n);
-	}
+	if (n > 0) chunk = new StringU<Char32>(buffer, n);
       } else {
 	// the error "invalid argument" is probably due to an old version
 	// of libxml (1.x.y)

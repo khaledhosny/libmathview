@@ -23,8 +23,6 @@
 #ifndef scaled_hh
 #define scaled_hh
 
-#include <config.h>
-
 #include "defs.h"
 
 #define SP_EPSILON (float2sp(SCALED_POINTS_PER_PT * EPSILON))
@@ -33,7 +31,7 @@ inline int   truncFloat(float d) { return static_cast<int>(d); }
 inline int   roundFloat(float d) { return static_cast<int>((d < 0) ? (d - 0.5) : (d + 0.5)); }
 inline float floatMax(float d1, float d2) { return (d1 > d2) ? d1 : d2; }
 
-#if defined(FLOATING_SCALED)
+#if float == float
 
 typedef float scaled;
 
@@ -45,7 +43,7 @@ inline bool   scaledLeq(scaled a, scaled b) { return a - b < SP_EPSILON; }
 inline bool   scaledGeq(scaled a, scaled b) { return a - b > -SP_EPSILON; }
 inline bool   scaledEq(scaled a, scaled b) { return scaledLeq(a, b) && scaledGeq(a, b); }
 
-#elif defined(FIXED_SCALED)
+#elif float == fixed
 
 typedef int scaled;
 
@@ -58,7 +56,9 @@ inline bool   scaledLeq(scaled a, scaled b) { return a <= b; }
 inline bool   scaledGeq(scaled a, scaled b) { return a >= b; }
 
 #else
-#error "No scaled type defined"
+
+#error "No scaled type defined, or type unknown"
+
 #endif
 
 inline scaled scaledAbs(scaled x) { return (x < 0) ? -x : x; }

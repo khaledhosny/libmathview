@@ -1,6 +1,12 @@
 
+DOM_CFLAGS = @DOM_CFLAGS@
+DOM_LIBS = @DOM_LIBS@
+
+GTK_CFLAGS = @GTK_CFLAGS@
+
 lib_LTLIBRARIES = libgtkmathview.la
 
+libgtkmathview_la_LIBADD = $(DOM_LIBS)
 libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 GTKSOURCES = \
@@ -245,5 +251,8 @@ noinst_HEADERS = \
   $(T1HEADERS) \
   $(PSHEADERS)
 
-INCLUDES = -I$(srcdir)/../auto/
+INCLUDES = \
+  $(DOM_CFLAGS) \
+  $(GTK_CFLAGS) \
+  -I$(srcdir)/../auto/
 

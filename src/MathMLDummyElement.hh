@@ -35,9 +35,9 @@ class MathMLDummyElement : public MathMLElement
 {
 public:
 #if defined(HAVE_MINIDOM)
-  MathMLDummyElement(mDOMNodeRef);
+  MathMLDummyElement(mDOMNodeRef = NULL);
 #elif defined(HAVE_GMETADOM)
-  MathMLDummyElement(GMetaDOM::Element&);
+  MathMLDummyElement(GMetaDOM::Element& = 0);
 #endif
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

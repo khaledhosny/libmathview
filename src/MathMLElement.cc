@@ -47,6 +47,7 @@ int MathMLElement::counter = 0;
 MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
 #elif defined(HAVE_GMETADOM)
 MathMLElement::MathMLElement(GMetaDOM::Element n, TagId t)
+#endif
 {
   node = n;
 
