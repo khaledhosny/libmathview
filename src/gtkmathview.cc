@@ -71,11 +71,11 @@ struct _GtkMathView {
   GtkAdjustment* hadjustment;
   GtkAdjustment* vadjustment;
 
-  gfloat     	 top_x;
-  gfloat     	 top_y;
+  gint     	 top_x;
+  gint     	 top_y;
 
-  gfloat 	 old_top_x;
-  gfloat 	 old_top_y;
+  gint 	         old_top_x;
+  gint 	         old_top_y;
 
   guint          freeze_counter;
 
@@ -178,8 +178,8 @@ paint_widget_area(GtkMathView* math_view, gint x, gint y, gint width, gint heigh
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, x, y, width, height);
 
   Rectangle rect;
-  rect.x = px2sp(x) + float2sp(math_view->top_x);
-  rect.y = px2sp(y) + float2sp(math_view->top_y);
+  rect.x = px2sp(x + math_view->top_x);
+  rect.y = px2sp(y + math_view->top_y);
   rect.width = px2sp(width);
   rect.height = px2sp(height);
 
@@ -213,12 +213,12 @@ hadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   if (adj->value < adj->lower) adj->value = adj->lower;
 
   math_view->old_top_x = math_view->top_x;
-  math_view->top_x = adj->value;
-  math_view->drawing_area->SetTopX(float2sp(adj->value));
+  math_view->top_x = static_cast<int>(adj->value);
+  math_view->drawing_area->SetTopX(px2sp(static_cast<int>(adj->value)));
 
   if (math_view->old_top_x != math_view->top_x) {
 #if 0
-    gint change = sp2ipx(float2sp(fabs(math_view->old_top_x - math_view->top_x)));
+    gint change = abs(math_view->old_top_x - math_view->top_x));
     GtkWidget* widget = math_view->area;
     if (change < widget->allocation.width) {
       if (math_view->old_top_x < math_view->top_x) {
@@ -264,12 +264,12 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   if (adj->value < adj->lower) adj->value = adj->lower;
 
   math_view->old_top_y = math_view->top_y;
-  math_view->top_y = adj->value;
-  math_view->drawing_area->SetTopY(float2sp(adj->value));
+  math_view->top_y = static_cast<int>(adj->value);
+  math_view->drawing_area->SetTopY(px2sp(static_cast<int>(adj->value)));
   
   if (math_view->old_top_y != math_view->top_y) {
 #if 0
-    gint change = sp2ipx(float2sp(fabs(math_view->old_top_y - math_view->top_y)));
+    gint change = abs(math_view->old_top_y - math_view->top_y);
     GtkWidget* widget = math_view->area;
     if (change < widget->allocation.height) {
       if (math_view->old_top_y < math_view->top_y) {
@@ -846,7 +846,7 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
 
   adj->lower = 0.0;
   adj->page_size = page_size;
-  adj->step_increment = sp2float(px2sp(10));
+  adj->step_increment = 10;
   adj->page_increment = page_size;
   adj->upper = size;
   if (adj->upper < 0) adj->upper = 0.0;
@@ -884,8 +884,8 @@ setup_adjustments(GtkMathView* math_view)
   math_view->interface->GetDocumentBoundingBox(box);
 
   if (math_view->hadjustment != NULL) {
-    gfloat width = sp2float(box.width) + sp2float(px2sp(2 * MARGIN));
-    gfloat page_width = sp2float(math_view->drawing_area->GetWidth());
+    gfloat width = sp2px(box.width) + 2 * MARGIN;
+    gfloat page_width = sp2px(math_view->drawing_area->GetWidth());
     
     if (math_view->top_x > width - page_width)
       math_view->top_x = std::max(0.0f, width - page_width);
@@ -894,8 +894,8 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    gfloat height = sp2float(box.GetHeight()) + sp2float(px2sp(2 * MARGIN));
-    gfloat page_height = sp2float(math_view->drawing_area->GetHeight());
+    gfloat height = sp2px(box.GetHeight()) + 2 * MARGIN;
+    gfloat page_height = sp2px(math_view->drawing_area->GetHeight());
 
     if (math_view->top_y > height - page_height)
       math_view->old_top_y = math_view->top_y = std::max(0.0f, height - page_height);
@@ -1238,8 +1238,8 @@ gtk_math_view_set_top(GtkMathView* math_view, gint x, gint y)
   g_return_if_fail(math_view->vadjustment != NULL);
   g_return_if_fail(math_view->hadjustment != NULL);
 
-  math_view->hadjustment->value = sp2float(px2sp(x));
-  math_view->vadjustment->value = sp2float(px2sp(y));
+  math_view->hadjustment->value = x;
+  math_view->vadjustment->value = y;
 
   gtk_adjustment_value_changed(math_view->hadjustment);
   gtk_adjustment_value_changed(math_view->vadjustment);

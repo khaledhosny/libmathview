@@ -30,12 +30,7 @@
 
 #define EPSILON 0.01f
 
-#define NULLPTR 0
-
 #define DPI 72
-
-// changed these defs to float value, this will shut 
-// up the compliler complaining about double to float conversions
 
 #define SP_PER_MM  186467.98
 #define SP_PER_CM 1864679.8
