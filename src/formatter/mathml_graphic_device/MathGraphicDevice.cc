@@ -25,6 +25,17 @@
 #include <cassert>
 
 #include "MathGraphicDevice.hh"
+#include "SpaceShaper.hh"
+
+MathGraphicDevice::MathGraphicDevice(const SmartPtr<AreaFactory>& f)
+  : factory(f), shaperManager(ShaperManager::create())
+{
+  shaperManager->registerShaper(SpaceShaper::create());
+}
+
+MathGraphicDevice::~MathGraphicDevice()
+{
+}
 
 double
 MathGraphicDevice::dpi(const MathFormattingContext&) const
@@ -108,159 +119,14 @@ MathGraphicDevice::defaultLineThickness(const MathFormattingContext& context) co
 }
 
 AreaRef
-MathGraphicDevice::horizontalArray(const MathFormattingContext&,
-				   const std::vector<AreaRef>& content) const
-{
-  return factory->createHorizontalArrayArea(content);
-}
-
-AreaRef
-MathGraphicDevice::verticalArray(const MathFormattingContext&,
-				 const std::vector<AreaRef>& content,
-				 unsigned ref) const
-{
-  return factory->createVerticalArrayArea(content, ref);
-}
-
-AreaRef
-MathGraphicDevice::overlapArray(const MathFormattingContext&,
-				const std::vector<AreaRef>& content) const
-{
-  return factory->createOverlapArrayArea(content);
-}
-
-AreaRef
-MathGraphicDevice::horizontalSpace(const MathFormattingContext&, const scaled& width) const
-{
-  return factory->createHorizontalSpaceArea(width);
-}
-
-AreaRef
-MathGraphicDevice::verticalSpace(const MathFormattingContext&, const scaled& height, const scaled& depth) const
-{
-  return factory->createVerticalSpaceArea(height, depth);
-}
-
-AreaRef
-MathGraphicDevice::horizontalFiller(const MathFormattingContext&) const
-{
-  return factory->createHorizontalFillerArea();
-}
-
-AreaRef
-MathGraphicDevice::verticalFiller(const MathFormattingContext&) const
-{
-  return factory->createVerticalFillerArea();
-}
-
-AreaRef
-MathGraphicDevice::color(const MathFormattingContext& context, const AreaRef& area) const
-{
-  return factory->createColorArea(area, context.getColor());
-}
-
-AreaRef
-MathGraphicDevice::ink(const MathFormattingContext&, const AreaRef& area) const
-{
-  return factory->createInkArea(area);
-}
-
-AreaRef
-MathGraphicDevice::box(const MathFormattingContext&, const AreaRef& area, const BoundingBox& b) const
-{
-  return factory->createBoxArea(area, b);
-}
-
-AreaRef
-MathGraphicDevice::shift(const MathFormattingContext&, const AreaRef& area, const scaled& s) const
-{
-  return factory->createShiftArea(area, s);
-}
-
-AreaRef
-MathGraphicDevice::horizontalLine(const MathFormattingContext& context, const scaled& thickness) const
-{
-  scaled halfThickness = thickness / 2;
-  std::vector<AreaRef> h(2);
-  h.push_back(verticalSpace(context, halfThickness, thickness - halfThickness));
-  h.push_back(horizontalFiller(context));
-  return color(context, ink(context, horizontalArray(context, h)));
-}
-
-AreaRef
-MathGraphicDevice::verticalLine(const MathFormattingContext& context, const scaled& thickness) const
-{
-  std::vector<AreaRef> v(2);
-  v.push_back(horizontalSpace(context, thickness));
-  v.push_back(verticalFiller(context));
-  return color(context, ink(context, verticalArray(context, v, 1)));
-}
-
-AreaRef
-MathGraphicDevice::center(const MathFormattingContext& context, const AreaRef& area) const
-{
-  std::vector<AreaRef> h(3);
-  h.push_back(horizontalFiller(context));
-  h.push_back(area);
-  h.push_back(horizontalFiller(context));
-  return horizontalArray(context, h);
-}
-
-AreaRef
-MathGraphicDevice::left(const MathFormattingContext& context, const AreaRef& area) const
-{
-  std::vector<AreaRef> h(2);
-  h.push_back(area);
-  h.push_back(horizontalFiller(context));
-  return horizontalArray(context, h);
-}
-
-AreaRef
-MathGraphicDevice::right(const MathFormattingContext& context, const AreaRef& area) const
-{
-  std::vector<AreaRef> h(2);
-  h.push_back(horizontalFiller(context));
-  h.push_back(area);
-  return horizontalArray(context, h);
-}
-
-AreaRef
-MathGraphicDevice::middle(const MathFormattingContext& context, const AreaRef& area) const
-{
-  std::vector<AreaRef> v(3);
-  v.push_back(verticalFiller(context));
-  v.push_back(area);
-  v.push_back(verticalFiller(context));
-  return verticalArray(context, v, 1);
-}
-
-AreaRef
-MathGraphicDevice::top(const MathFormattingContext& context, const AreaRef& area) const
-{
-  std::vector<AreaRef> v(2);
-  v.push_back(verticalFiller(context));
-  v.push_back(area);
-  return verticalArray(context, v, 0);
-}
-
-AreaRef
-MathGraphicDevice::bottom(const MathFormattingContext& context, const AreaRef& area) const
-{
-  std::vector<AreaRef> v(2);
-  v.push_back(area);
-  v.push_back(verticalFiller(context));
-  return verticalArray(context, v, 1);
-}
-
-AreaRef
-MathGraphicDevice::freeze(const MathFormattingContext& context, const AreaRef& area) const
-{
-  return box(context, area, area->box());
-}
-
-AreaRef
 MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) const
 {
   return area;
 }
 
+AreaRef
+MathGraphicDevice::dummy(const MathFormattingContext&) const
+{
+  assert(false);
+  return 0;
+}
