@@ -1,3 +1,9 @@
+gtkmathview (0.3.0-2) unstable; urgency=low
+
+  * Rebuilt against gmetadom 0.0.3-4
+
+ -- Stefano Zacchiroli <zack@debian.org>  Tue, 26 Mar 2002 18:58:35 +0100
+
 gtkmathview (0.3.0-1) unstable; urgency=low
 
   * New upstream release
