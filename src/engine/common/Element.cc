@@ -157,9 +157,18 @@ Element::setDirtyLayout()
 {
   if (!dirtyLayout())
     {
-      //setFlagDown(FDirtyLayout);
       setFlag(FDirtyLayout);
       setFlagUp(FDirtyLayout);
+    }
+}
+
+void
+Element::setDirtyLayoutD()
+{
+  if (!dirtyLayout())
+    {
+      setFlagDown(FDirtyLayout);
+      setDirtyLayout();
     }
 }
 

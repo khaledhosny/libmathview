@@ -70,10 +70,10 @@ MathMLActionElement::format(FormattingContext& ctxt)
 	getLogger()->out(LOG_WARNING, "no action specified for `maction' element");
 
       AreaRef res;
-      if (SmartPtr<MathMLElement> elem = getChild(selection))
-	res = elem->format(ctxt);
-      else
-	res = ctxt.MGD()->dummy(ctxt);
+      if (selection < getSize())
+	if (SmartPtr<MathMLElement> elem = getChild(selection))
+	  res = elem->format(ctxt);
+      if (!res) res = ctxt.MGD()->dummy(ctxt);
       assert(res);
 
       setArea(ctxt.MGD()->wrapper(ctxt, res));

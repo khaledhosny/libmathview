@@ -356,7 +356,7 @@ View::setDefaultFontSize(unsigned size)
       if (SmartPtr<Element> elem = getRootElement())
 	{
 	  //elem->setDirtyAttributeD();
-	  elem->setDirtyLayout();	  
+	  elem->setDirtyLayoutD();	  
 	}
     }
 }

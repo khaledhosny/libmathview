@@ -69,6 +69,7 @@ public:
   bool dirtyAttributeP(void) const { return getFlag(FDirtyAttributeP); }
   bool dirtyAttributeD(void) const { return getFlag(FDirtyAttributeD); }
   virtual void setDirtyLayout(void);
+  virtual void setDirtyLayoutD(void);
   void resetDirtyLayout(void) { resetFlag(FDirtyLayout); }
   bool dirtyLayout(void) const { return getFlag(FDirtyLayout); }
 

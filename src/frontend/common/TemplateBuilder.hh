@@ -77,10 +77,6 @@ protected:
 	ElementBuilder::begin(*this, el, elem);
 	ElementBuilder::refine(*this, el, elem);
 	ElementBuilder::construct(*this, el, elem);
-	// NOTE: it is necessary to reset the dirtyAttribute flag after
-	// construction because construction might set the dirtyAttributeP flag
-	elem->resetDirtyStructure();
-	elem->resetDirtyAttribute();
 	ElementBuilder::end(*this, el, elem);
       }
 #if 0
@@ -256,7 +252,10 @@ protected:
 	      {
 		// this element can probably be associated with the model element
 		SmartPtr<MathMLBoxMLAdapter> adapter = getElement<MathMLBoxMLAdapterBuilder>(el);
+		assert(adapter);
 		adapter->setChild(getBoxMLElement(typename Model::ElementIterator(e, BOXML_NS_URI).element()));
+		adapter->resetDirtyStructure();
+		adapter->resetDirtyAttribute();
 		return adapter;
 	      }
 	  }
@@ -321,7 +320,10 @@ protected:
       {
 	// this element can be associated to the corresponding model element
 	SmartPtr<BoxMLMathMLAdapter> adapter = getElement<BoxMLMathMLAdapterBuilder>(el);
+	assert(adapter);
 	adapter->setChild(getMathMLElement(typename Model::ElementIterator(el, MATHML_NS_URI).element()));
+	adapter->resetDirtyStructure();
+	adapter->resetDirtyAttribute();
 	return adapter;
       }
 #if 0
@@ -1240,8 +1242,15 @@ protected:
 	//std::cout << "createMathMLElement " << el.get_localName() << std::endl;
 	typename MathMLBuilderMap::const_iterator m = mathmlMap.find(Model::getNodeName(Model::asNode(el)));
 	if (m != mathmlMap.end()) 
-	  return (this->*(m->second))(el);
+	  {
+	    SmartPtr<MathMLElement> elem = (this->*(m->second))(el);
+	    assert(elem);
+	    elem->resetDirtyStructure();
+	    elem->resetDirtyAttribute();
+	    return elem;
+	  }
       }
+
     return 0;
   }
 
@@ -1346,7 +1355,10 @@ protected:
   SmartPtr<MathMLElement>
   createMathMLDummyElement(void) const
   {
-    return MathMLDummyElement::create(this->getMathMLNamespaceContext());
+    SmartPtr<MathMLElement> elem = MathMLDummyElement::create(this->getMathMLNamespaceContext());
+    elem->resetDirtyStructure();
+    elem->resetDirtyAttribute();
+    return elem;
   }
 
 #if ENABLE_BOXML
@@ -1361,8 +1373,15 @@ protected:
       {
 	typename BoxMLBuilderMap::const_iterator m = boxmlMap.find(Model::getNodeName(Model::asNode(el)));
 	if (m != boxmlMap.end())
-	  return (this->*(m->second))(el);
+	  {
+	    SmartPtr<BoxMLElement> elem = (this->*(m->second))(el);
+	    assert(elem);
+	    elem->resetDirtyStructure();
+	    elem->resetDirtyAttribute();
+	    return elem;
+	  }
       }
+
     return createBoxMLDummyElement();
   }
 
