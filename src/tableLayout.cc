@@ -36,7 +36,7 @@ MathMLTableElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt))
     {
-      //cout << "redoing table layout with type " << ctxt.GetLayoutType() << endl;
+      //cout << "redoing table layout with type " << this << " " << ctxt.GetLayoutType() << endl;
       scaled aAvailWidth = PrepareLabelsLayout(ctxt);
 
       if (ctxt.GetLayoutType() == LAYOUT_MIN) DoHorizontalMinimumLayout();
@@ -46,7 +46,7 @@ MathMLTableElement::DoLayout(const FormattingContext& ctxt)
 
       if (ctxt.GetLayoutType() == LAYOUT_AUTO) {
 	StretchyCellsLayout();
-	AdjustTableWidth(ctxt.GetAvailableWidth());
+	//AdjustTableWidth(ctxt.GetAvailableWidth());
       }
 
       DoVerticalLayout(ctxt.GetLayoutType());
@@ -336,7 +336,10 @@ MathMLTableElement::ConfirmHorizontalFixedSpacing()
 
   for (unsigned j = 0; j + 1 < nColumns; j++) {
     if (column[j].spacingType == SPACING_FIXED)
-      column[j].spacing = column[j].fixedSpacing;
+      {
+	//cout << "confirming horizontal fixed spacing " << sp2ipx(column[j].fixedSpacing) << endl;
+	column[j].spacing = column[j].fixedSpacing;
+      }
   }
 }
 
@@ -450,7 +453,7 @@ MathMLTableElement::GetColumnWidth(unsigned j, unsigned n) const
 
   for (unsigned k = 0; k < n; k++) {
     width += column[j].width;
-    if (k < n - 1) width += column[j].spacing;
+    if (k < n - 1) width += column[j + k].spacing;
   }
 
   return width;

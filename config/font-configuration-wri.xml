@@ -204,6 +204,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
 	   "/>
+    <single code="0x0307" index="160"/>
     <single code="0x2010" index="0x80"/>
     <single code="0x2022" index="0xb7"/>
     <single code="0x2026" index="0xbc"/>
