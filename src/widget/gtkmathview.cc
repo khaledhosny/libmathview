@@ -52,7 +52,13 @@ typedef gmetadom_Setup GtkMathView_Setup;
 #include "libxml2_Builder.hh"
 
 typedef libxml2_Setup GtkMathView_Setup;
-#endif /* USE_LIBXML2 */
+#elif USE_LIBXML2_READER
+#include "libxml2_reader_Model.hh"
+#include "libxml2_reader_Setup.hh"
+#include "libxml2_reader_Builder.hh"
+
+typedef libxml2_reader_Setup GtkMathView_Setup;
+#endif /* USE_LIBXML2_READER */
 
 #include "Globals.hh"
 #include "Rectangle.hh"
@@ -194,7 +200,11 @@ elementOfModelElement(const SmartPtr<Builder>& b, GtkMathView_Model_Element el)
       return elem;
   return 0;
 }
-#endif // USE_LIBXML2
+#else
+static SmartPtr<Element>
+elementOfModelElement(const SmartPtr<Builder>&, GtkMathView_Model_Element)
+{ return 0; }
+#endif
 
 static SmartPtr<const Gtk_WrapperArea>
 findGtkWrapperArea(const SmartPtr<View>& view, GtkMathView_Model_Element node)
@@ -464,7 +474,9 @@ gtk_math_view_init(GtkMathView* math_view)
   SmartPtr<View> view = View::create(gmetadom_Builder::create());
 #elif USE_LIBXML2
   SmartPtr<View> view = View::create(libxml2_Builder::create());
-#endif // USE_LIBXML2
+#elif USE_LIBXML2_READER
+  SmartPtr<View> view = View::create(libxml2_reader_Builder::create());
+#endif
   view->initialize(Gtk_MathGraphicDevice::create(math_view->area),
 		   Gtk_BoxGraphicDevice::create(math_view->area));
   view->ref();
@@ -994,13 +1006,13 @@ gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (DOM::Document doc = gmetadom_Model::parseXML(name, true))
+  if (DOM::Element root = gmetadom_Model::parseXML(name, true))
     {
-      GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
-      g_assert(d != NULL);
-      const bool res = gtk_math_view_load_doc(math_view, d);
+      GdomeElement* r = gdome_cast_el(root.gdome_object());
+      g_assert(r != NULL);
+      const bool res = gtk_math_view_load_root(math_view, r);
       GdomeException exc = 0;
-      gdome_doc_unref(d, &exc);
+      gdome_el_unref(r, &exc);
       g_assert(exc == 0);
       return res;
     }
@@ -1046,8 +1058,8 @@ gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (xmlNode* doc = libxml2_Model::parseXML(name, true))
-    return gtk_math_view_load_doc(math_view, (xmlDoc*) doc);
+  if (xmlElement* root = libxml2_Model::parseXML(name, true))
+    return gtk_math_view_load_root(math_view, root);
   else
     return FALSE;
 }
@@ -1079,13 +1091,29 @@ gtk_math_view_load_root(GtkMathView* math_view, GtkMathView_Model_Element elem)
 
   return TRUE;
 }
-#endif // USE_LIBXML2
+#elif USE_LIBXML2_READER
+extern "C" gboolean
+gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
+{
+  g_return_val_if_fail(name != NULL, FALSE);
+
+  if (SmartPtr<libxmlXmlReader> reader = libxml2_reader_Model::parseXML(name, true))
+    if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(math_view->view->getBuilder()))
+      {
+	builder->setReader(reader);
+	return TRUE;
+      }
+  return FALSE;
+}
+#endif // USE_LIBXML2_READER
 
 extern "C" void
 gtk_math_view_unload(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
+#if USE_GMETADOM || USE_LIBXML2
   gtk_math_view_load_root(math_view, NULL);
+#endif
 }
 
 extern "C" GdkPixmap*

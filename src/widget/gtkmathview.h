@@ -40,15 +40,18 @@ extern "C" {
 #define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
-#define USE_GMETADOM 1
-#define USE_LIBXML2  (1 - USE_GMETADOM)
+#define USE_GMETADOM       1
+#define USE_LIBXML2        0
+#define USE_LIBXML2_READER 0
 
 #if USE_GMETADOM
 #include <gdome.h>
-typedef GdomeElement* GtkMathView_Model_Element;
+  typedef GdomeElement* GtkMathView_Model_Element;
 #elif USE_LIBXML2
 #include <libxml/tree.h>
-typedef xmlElement* GtkMathView_Model_Element;
+  typedef xmlElement* GtkMathView_Model_Element;
+#elif USE_LIBXML2_READER
+  typedef void* GtkMathView_Model_Element;
 #endif // USE_LIBXML2
 
   typedef struct _GtkMathView      GtkMathView;
@@ -64,7 +67,9 @@ typedef xmlElement* GtkMathView_Model_Element;
 #elif USE_LIBXML2
   gboolean       gtk_math_view_load_doc(GtkMathView*, xmlDoc*);
 #endif // USE_LIBXML2
+#if !USE_LIBXML2_READER
   gboolean       gtk_math_view_load_root(GtkMathView*, GtkMathView_Model_Element);
+#endif
   void           gtk_math_view_unload(GtkMathView*);
   void           gtk_math_view_select(GtkMathView*, GtkMathView_Model_Element);
   void           gtk_math_view_unselect(GtkMathView*, GtkMathView_Model_Element);

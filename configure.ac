@@ -47,6 +47,12 @@ if test "x$enable_breaks" = "xyes"; then
 	AC_DEFINE(ENABLE_BREAKS,,[Define to 1 if you want to enable linebreaking using mspace elements])
 fi
 
+AC_ARG_WITH(frontends,
+	[  --with-frontends=[frontend list|all]   Specify the set of frontends to be built [default=all]],
+	GMETADOM_MODULES=$withval,
+	GMETADOM_MODULES="all"
+)
+	
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
@@ -302,11 +308,21 @@ PKG_CHECK_MODULES(XFT, xft)
 AC_SUBST(XFT_CFLAGS)
 AC_SUBST(XFT_LIBS)
 
+available_frontends="c_custom"
+PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.0.0,
+  AC_DEFINE(HAVE_LIBXML,,[Define to 1 is libxml2 is installed])
+  available_frontends="$available_frontends libxml2 libxml2_frontend",
+  AC_MSG_WARN([could not find libxml2]))
+AC_SUBST(XML_CFLAGS)
+AC_SUBST(XML_LIBS)
+
 PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
-  AC_DEFINE(HAVE_GMETADOM,,[Define to 1 if using gmetadom as DOM implementation]),
-  AC_MSG_ERROR(could not find GMetaDOM))
+  AC_DEFINE(HAVE_GMETADOM,,[Define to 1 if gmetadom is installed])
+  available_frontends="$available_frontends gmetadom",
+  AC_MSG_WARN([could not find GMetaDOM]))
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
+echo "Available frontends: $available_frontends"
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no", -lm)
@@ -362,6 +378,7 @@ AC_CONFIG_FILES([
  src/frontend/Makefile
  src/frontend/common/Makefile
  src/frontend/libxml2/Makefile
+ src/frontend/libxml2_reader/Makefile
  src/frontend/gmetadom/Makefile
  src/engine/Makefile
  src/engine/common/Makefile
