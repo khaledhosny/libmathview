@@ -13,7 +13,7 @@ EXTRA_DIST = \
   entities-table.xml \
   font-configuration.dtd \
   font-configuration.xml \
-  math-engine-configuration.in \
+  math-engine-configuration.xml.in \
   math-engine-configuration.dtd \
   math-engine-configuration.xml \
   t1.config

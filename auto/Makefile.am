@@ -6,6 +6,7 @@ AUTOFILES = \
 
 EXTRA_DIST = \
   config.dirs.in \
+  config.dirs \
   keyword.list \
   stretchy.list \
   entitiesTable.inc \

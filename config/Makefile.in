@@ -77,7 +77,7 @@ VERSION = @VERSION@
 MAINTAINERCLEANFILES =    dictionary.xml   entities-table.xml   math-engine-configuration.xml
 
 
-EXTRA_DIST =    dictionary.in   dictionary.dtd   dictionary.xml   entities-table.in   entities-table.dtd   entities-table.xml   font-configuration.dtd   font-configuration.xml   math-engine-configuration.in   math-engine-configuration.dtd   math-engine-configuration.xml   t1.config
+EXTRA_DIST =    dictionary.in   dictionary.dtd   dictionary.xml   entities-table.in   entities-table.dtd   entities-table.xml   font-configuration.dtd   font-configuration.xml   math-engine-configuration.xml.in   math-engine-configuration.dtd   math-engine-configuration.xml   t1.config
 
 
 pkgdata_DATA =    dictionary.dtd   dictionary.xml   entities-table.dtd   entities-table.xml   font-configuration.dtd   font-configuration.xml   math-engine-configuration.dtd   math-engine-configuration.xml   t1.config

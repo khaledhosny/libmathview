@@ -77,7 +77,7 @@ VERSION = @VERSION@
 AUTOFILES =    attribute.dec attribute.def   keyword.dec keyword.def   tag.dec tag.def
 
 
-EXTRA_DIST =    config.dirs.in   keyword.list   stretchy.list   entitiesTable.inc   $(AUTOFILES)
+EXTRA_DIST =    config.dirs.in   config.dirs   keyword.list   stretchy.list   entitiesTable.inc   $(AUTOFILES)
 
 
 MAINTAINERCLEANFILES = $(AUTOFILES)
