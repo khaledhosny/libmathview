@@ -49,8 +49,10 @@ protected:
   }
 
   void
-  linkerAdd(const SmartPtr<customXmlReader>& reader, const SmartPtr<Element>& elem) const
+  linkerAdd(const SmartPtr<customXmlReader>& reader, Element* elem) const
   { if (void* id = reader->getNodeId()) linker.add(id, elem); }
+
+  void linkerRemove(Element* elem) const { linker.remove(elem); }
 
 private:
   mutable custom_reader_Model::Linker linker;
