@@ -22,9 +22,9 @@
 
 #include <config.h>
 
-#include "Globals.hh"
 #include "for_each_if.h"
 #include "Adapters.hh"
+#include "AbstractLogger.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "ValueConversion.hh"
 #include "BoxMLActionElement.hh"
@@ -65,10 +65,10 @@ BoxMLActionElement::format(BoxFormattingContext& ctxt)
 	      selection %= getSize();
 	    }
 	  else
-	    Globals::logger->out(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
+	    getLogger()->out(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
 	}
       else
-	Globals::logger->out(LOG_WARNING, "no action specified for `maction' element");
+	getLogger()->out(LOG_WARNING, "no action specified for `maction' element");
 
       AreaRef res;
       if (SmartPtr<BoxMLElement> elem = getChild(selection))

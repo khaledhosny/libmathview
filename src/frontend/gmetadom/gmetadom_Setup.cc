@@ -22,40 +22,41 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
 #include "gmetadom_Setup.hh"
 #include "gmetadom_Model.hh"
 #include "TemplateSetup.hh"
 
 bool
-gmetadom_Setup::loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const String& path)
+gmetadom_Setup::loadOperatorDictionary(const AbstractLogger& logger, MathMLOperatorDictionary& dictionary, const String& path)
 {
   try
     {
-      return TemplateSetup<gmetadom_Model>::load<MathMLOperatorDictionary, true>(dictionary,
+      return TemplateSetup<gmetadom_Model>::load<MathMLOperatorDictionary, true>(logger, dictionary,
 										 "operator dictionary",
 										 "dictionary", path);
     }
   catch (DOM::DOMException e)
     {
       String msg = e.msg;
-      Globals::logger->out(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
+      logger.out(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
       return false;
     }
 }
 
 bool
-gmetadom_Setup::loadConfiguration(Configuration& conf, const String& path)
+gmetadom_Setup::loadConfiguration(const AbstractLogger& logger, Configuration& conf, const String& path)
 {
   try
     {
-      return TemplateSetup<gmetadom_Model>::load<Configuration, false>(conf,
+      return TemplateSetup<gmetadom_Model>::load<Configuration, false>(logger, conf,
 								       "configuration", 
 								       "math-engine-configuration", path);
     }
   catch (DOM::DOMException e)
     {
       String msg = e.msg;
-      Globals::logger->out(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
+      logger.out(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
       return false;
     }
 }

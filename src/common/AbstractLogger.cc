@@ -26,7 +26,7 @@
 
 #include "AbstractLogger.hh"
 
-AbstractLogger::AbstractLogger() : logLevel(LOG_DEBUG)
+AbstractLogger::AbstractLogger() : logLevel(LOG_INFO)
 { }
 
 AbstractLogger::~AbstractLogger()
@@ -57,7 +57,6 @@ AbstractLogger::out(LogLevelId id, const char* fmt, ...) const
       res += buffer;
       vsnprintf(buffer, 256, fmt, args);
       res += buffer;
-      res += "\n";
       outString(res);
     }
 

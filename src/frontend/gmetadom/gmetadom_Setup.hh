@@ -27,8 +27,8 @@
 
 struct gmetadom_Setup
 {
-  static bool loadConfiguration(class Configuration&, const String&);
-  static bool loadOperatorDictionary(class MathMLOperatorDictionary&, const String&);
+  static bool loadConfiguration(const class AbstractLogger&, class Configuration&, const String&);
+  static bool loadOperatorDictionary(const class AbstractLogger&, class MathMLOperatorDictionary&, const String&);
 };
 
 #endif // __gmetadom_Setup_hh__

@@ -1,4 +1,6 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libboxml.la
 
 libboxml_la_SOURCES = \

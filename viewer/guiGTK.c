@@ -143,7 +143,7 @@ load_error_msg(const char* name)
 }
 
 void
-GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
+GUI_init(int* argc, char*** argv, char* title, guint width, guint height, gint logLevel)
 {
   gtk_init(argc, argv);
 
@@ -156,6 +156,9 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
 		  (GtkSignalFunc) gtk_main_quit, NULL);
   
   create_widget_set();
+  g_assert(main_area != NULL);
+  g_assert(GTK_IS_MATH_VIEW(main_area));
+  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), logLevel);
 
   gtk_widget_show(window);
 

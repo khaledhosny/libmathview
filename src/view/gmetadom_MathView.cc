@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
 #include "gmetadom_Model.hh"
 #include "gmetadom_Builder.hh"
 // WARNING: the following #includes MUST be the last one (???)
@@ -47,7 +48,7 @@ gmetadom_MathView::unload()
 bool
 gmetadom_MathView::loadURI(const String& name)
 {
-  if (DOM::Document doc = gmetadom_Model::document(name, true))
+  if (DOM::Document doc = gmetadom_Model::document(*getLogger(), name, true))
     if (loadDocument(doc))
       return true;
 
@@ -58,7 +59,7 @@ gmetadom_MathView::loadURI(const String& name)
 bool
 gmetadom_MathView::loadBuffer(const String& buffer)
 {
-  if (DOM::Document doc = gmetadom_Model::documentFromBuffer(buffer, true))
+  if (DOM::Document doc = gmetadom_Model::documentFromBuffer(*getLogger(), buffer, true))
     if (loadDocument(doc))
       return true;
 

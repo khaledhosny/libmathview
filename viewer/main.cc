@@ -35,7 +35,6 @@
 #include "defs.h"
 #include "guiGTK.h"
 #include "String.hh"
-#include "Globals.hh"
 #include "MathMLTokenElement.hh"
 #ifdef DEBUG
 #include "Gtk_GraphicsContext.hh"
@@ -80,22 +79,11 @@ Usage: mathmlviewer [options] file ...\n\n\
   printf("%s\n", helpMsg);
 }
 
-#ifdef DEBUG
-static void
-checkCounters()
-{
-  Globals::dictionary.Unload();
-  Globals::logger(LOG_DEBUG, "Elements : %d", MathMLElement::GetCounter());
-  Globals::logger(LOG_DEBUG, "GCs      : %d", Gtk_GraphicsContext::GetCounter());
-  Globals::logger(LOG_DEBUG, "Strings  : %d", String::GetCounter());
-  Globals::logger(LOG_DEBUG, "Values   : %d (cached %d)", Value::GetCounter(), Value::GetCached());
-}
-#endif // DEBUG
-
 int
 main(int argc, char *argv[])
 {
   bool debugMode = false;
+  gint logLevel = -1; 
 
   sprintf(appName, "mathmlviewer v%s", VERSION);
 
@@ -134,8 +122,8 @@ main(int argc, char *argv[])
 
     case OPTION_VERBOSE:
     case 'v':
-      if (optarg == NULL) Globals::logger.SetLogLevel(0);
-      else Globals::logger.SetLogLevel(*optarg - '0');
+      if (optarg == NULL) logLevel = -1;
+      else logLevel = *optarg - '0';
       break;
 
     case '?':
@@ -152,7 +140,7 @@ main(int argc, char *argv[])
 #endif // DEBUG
 
   if (optind < argc) {
-    GUI_init(&argc, &argv, appName, 500, 600);
+    GUI_init(&argc, &argv, appName, 500, 600, logLevel);
 
     while (optind < argc) {
 

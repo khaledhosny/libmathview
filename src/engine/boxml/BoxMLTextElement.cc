@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include "View.hh"
-#include "Globals.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLTextElement.hh"
 #include "BoxFormattingContext.hh"
