@@ -99,7 +99,7 @@ MathMLTableElement::format(FormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      std::cerr << "formatting table 1" << std::endl;
+      //std::cerr << "formatting table 1" << std::endl;
       if (!tableFormatter)
 	{
 	  tableFormatter = MathMLTableFormatter::create();
@@ -119,7 +119,7 @@ MathMLTableElement::format(FormattingContext& ctxt)
 			       GET_ATTRIBUTE_VALUE(MathML, Table, minlabelspacing));
 	}
 
-      std::cerr << "formatting table 2" << std::endl;
+      //std::cerr << "formatting table 2" << std::endl;
       if (SmartPtr<Value> displayStyleV = GET_ATTRIBUTE_VALUE(MathML, Table, displaystyle))
 	ctxt.setDisplayStyle(ToBoolean(displayStyleV));
 
@@ -129,7 +129,7 @@ MathMLTableElement::format(FormattingContext& ctxt)
       for_each_if(label.begin(), label.end(),
 		  NotNullPredicate<MathMLTableCellElement>(),
 		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt));
-      std::cerr << "formatting table 2 bis" << std::endl;
+      //std::cerr << "formatting table 2 bis" << std::endl;
 
       AreaRef res = tableFormatter->format(ctxt,
 					   numRows,
@@ -147,7 +147,7 @@ MathMLTableElement::format(FormattingContext& ctxt)
 	  content.push_back(lines);
 	  res = ctxt.MGD()->getFactory()->overlapArray(content);
 	}
-      std::cerr << "formatting table 3" << std::endl;
+      //std::cerr << "formatting table 3" << std::endl;
       res = ctxt.MGD()->wrapper(ctxt, res);
       setArea(res);
       

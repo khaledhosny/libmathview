@@ -62,7 +62,7 @@ MathMLTableContentFactory::setChild(unsigned i, unsigned j,
 				    unsigned rowSpan, unsigned columnSpan,
 				    const SmartPtr<MathMLTableCellElement>& child)
 {
-  std::cerr << "MathMLTableContentFactory::setChild " << i << " " << j << " " << rowSpan << " " << columnSpan << std::endl;
+  //std::cerr << "MathMLTableContentFactory::setChild " << i << " " << j << " " << rowSpan << " " << columnSpan << std::endl;
   j = findCell(i, j, rowSpan, columnSpan);
   initCell(i, j, rowSpan, columnSpan);
   rows[i].setChild(j, columnSpan, child);

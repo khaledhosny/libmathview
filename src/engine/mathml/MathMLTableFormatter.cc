@@ -90,15 +90,17 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
   assert(nGridRows >= 0);
   assert(nGridColumns >= 0);
 
+#if 0
   std::cerr << "CI SIAMO: " << nRows << "x" << nColumns << std::endl
 	    << "grid: " << nGridRows << "x" << nGridColumns << std::endl
 	    << "frame? " << hasFrame << " labels? " << hasLabels << std::endl;
+#endif
 
   std::vector<Row>(nGridRows).swap(rows);
   std::vector<Column>(nGridColumns).swap(columns);
   std::vector<Cell>(nGridRows * nGridColumns).swap(cells);
 
-  std::cerr << "HAS FRAME?" << hasFrame << std::endl;
+  //std::cerr << "HAS FRAME?" << hasFrame << std::endl;
   if (hasFrame)
     {
       const Length hFrameSpacing = resolveLength(ctxt, frameSpacingV, 0);
@@ -109,7 +111,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
       columns.back().setWidthSpec(ctxt, hFrameSpacing);
     }
 
-  std::cerr << "HAS LABELS?" << hasLabels << std::endl;
+  //std::cerr << "HAS LABELS?" << hasLabels << std::endl;
   if (hasLabels)
     {
       const Length minLabelSpacing = resolveLength(ctxt, minLabelSpacingV);
@@ -127,11 +129,11 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 	}
     }
 
-  std::cerr << "SETUP COLUMNS" << std::endl;
+  //std::cerr << "SETUP COLUMNS" << std::endl;
   for (unsigned j = 0; j < nColumns; j++)
     {
       const unsigned jj = contentColumnOffset + j * 2;
-      std::cerr << "setup column " << jj << std::endl;
+      //std::cerr << "setup column " << jj << std::endl;
       if (equalColumns)
 	columns[jj].setWidthSpec(Column::AUTO);
       else
@@ -150,7 +152,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 	columns[jj + 1].setWidthSpec(ctxt, resolveLength(ctxt, columnSpacingV, j));
     }
 
-  std::cerr << "SETUP ROWS" << std::endl;
+  //std::cerr << "SETUP ROWS" << std::endl;
   for (unsigned i = 0; i < nRows; i++)
     {
       const unsigned ii = contentRowOffset + i * 2;
@@ -202,7 +204,7 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 	    assert(el);
 	    const unsigned i = el->getRowIndex();
 	    const unsigned j = el->getColumnIndex();
-	    std::cerr << "LINES: FOUND ELEMENT at " << i << "," << j << std::endl;
+	    //std::cerr << "LINES: FOUND ELEMENT at " << i << "," << j << std::endl;
 	    if (i + el->getRowSpan() < nRows && ToTokenId(GetComponent(rowLinesV, i)) != T_NONE)
 	      {
 		const scaled dx0 =
@@ -220,7 +222,7 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 		BoxedLayoutArea::XYArea area(dx0, dy,
 					     ctxt.MGD()->getFactory()->fixedHorizontalLine(defaultLineThickness,
 											   dx1 - dx0, color));
-		std::cerr << "draw x line " << dx0 << "," << dy << " to " << dx1 << std::endl;
+		//std::cerr << "draw x line " << dx0 << "," << dy << " to " << dx1 << std::endl;
 		content.push_back(area);
 	      }
 
@@ -242,14 +244,14 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 					     ctxt.MGD()->getFactory()->fixedVerticalLine(defaultLineThickness,
 											 scaled::zero(),
 											 dy0 - dy1, color));
-		std::cerr << "draw y line " << dx << "," << dy0 << " to " << dy1 << std::endl;
+		//std::cerr << "draw y line " << dx << "," << dy0 << " to " << dy1 << std::endl;
 		content.push_back(area);
 	      }
 	  }
 
   if (frame != T_NONE)
     {			
-      std::cerr << "HAS FRAME" << std::endl;
+      //std::cerr << "HAS FRAME" << std::endl;
       const scaled left = columns.front().getLeftDisplacement();
       const scaled right = columns.back().getRightDisplacement();
       const scaled top = rows.front().getTopDisplacement();
@@ -274,22 +276,22 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
 			     const SmartPtr<Value>& equalRowsV,
 			     const SmartPtr<Value>& equalColumnsV)
 {
-  std::cerr << "MathMLTableFormatter::format" << std::endl;
+  //std::cerr << "MathMLTableFormatter::format" << std::endl;
 
   const bool equalRows = ToBoolean(equalRowsV);
   const bool equalColumns = ToBoolean(equalColumnsV);
   const scaled& axis = ctxt.MGD()->axis(ctxt);
 
-  std::cerr << "COMPUTING TABLE WIDTH" << std::endl;
+  //std::cerr << "COMPUTING TABLE WIDTH" << std::endl;
   initTempWidths();
   if (equalColumns) initWidthsT();
   else initWidthsF();
 
-  std::cerr << "COMPUTING TABLE HEIGHT" << std::endl;
+  //std::cerr << "COMPUTING TABLE HEIGHT" << std::endl;
   initTempHeights(axis);
   const scaled tableHeightDepth = equalRows ? initHeightsT() : initHeightsF();
 
-  std::cerr << "TABLE ALIGNMENT" << std::endl;
+  //std::cerr << "TABLE ALIGNMENT" << std::endl;
   TokenId align = ToTokenId(GetComponent(alignV, 0));
   if (IsEmpty(GetComponent(alignV, 1)))
     alignTable(tableHeightDepth, axis, align);
@@ -300,13 +302,15 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
       const unsigned gridRow = contentRowOffset + 2 * ((row < 0) ? (nRows + row) : (row - 1));
       alignTable(tableHeightDepth, axis, align, gridRow);
     }
+#if 0
   std::cerr << "TABLE BBOX = " << BoundingBox(getWidth(), getHeight(), getDepth()) << std::endl;
   std::cerr << "SETTING ROW AND COLUMN DISPLACEMENTS" << std::endl;
+#endif
   setDisplacements();
-  std::cerr << "CELL POSITION" << std::endl;
+  //std::cerr << "CELL POSITION" << std::endl;
   setCellPositions(axis);
 
-  std::cerr << "TABLE AREA CREATION" << std::endl;
+  //std::cerr << "TABLE AREA CREATION" << std::endl;
   std::vector<BoxedLayoutArea::XYArea> content;
   for (std::vector<Cell>::const_iterator p = cells.begin();
        p != cells.end();
@@ -333,7 +337,7 @@ MathMLTableFormatter::getColumnContentWidth(unsigned j) const
 	  if (cell.getColumnSpan() == 1)
 	    maxWidth = std::max(maxWidth, cell.getBoundingBox().width);
     }
-  std::cerr << "content width[" << j << "] = " << maxWidth << std::endl;
+  //std::cerr << "content width[" << j << "] = " << maxWidth << std::endl;
   return maxWidth;
 }
 
@@ -361,7 +365,7 @@ MathMLTableFormatter::initTempWidths()
 	  if (const Cell& cell = getCell(i, j))
 	    if (cell.getColumnSpan() > 1)
 	      {
-		std::cerr << "CELL " << i << "," << j << " " << cell.getColumnSpan() << " " << cell.getBoundingBox() << std::endl;
+		//std::cerr << "CELL " << i << "," << j << " " << cell.getColumnSpan() << " " << cell.getBoundingBox() << std::endl;
 		const scaled cellWidth = cell.getBoundingBox().width;
 		scaled spannedTempWidth = 0;
 		int n = 0;
@@ -467,10 +471,12 @@ MathMLTableFormatter::initWidthsF()
 
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
   const scaled extraWidth = tableWidth - assignedWidth - sumCont;
-			
+
+#if 0			
   std::cerr << "initWidthsF sumScale = " << sumScale << std::endl
 	  << "assignedWidth = " << assignedWidth << std::endl
 	  << "extraWidth = " << extraWidth << std::endl;
+#endif
 
   for (unsigned j = 0; j < columns.size(); j++)
     if ((columns[j].isContentColumn()
@@ -558,9 +564,11 @@ MathMLTableFormatter::initTempHeights(const scaled& axis)
 		    spannedTempHeightDepth += rows[z].getTempHeight() + rows[z].getTempDepth();
 		    if (rows[z].isContentRow()) n++;
 		  }
+#if 0
 		std::cerr << "CELL " << i << "," << j
 			  << " cellHeightDepth = " << cellHeightDepth
 			  << " spannedTempHeightDepth = " << spannedTempHeightDepth << std::endl;
+#endif
 		if (cellHeightDepth > spannedTempHeightDepth)
 		  {
 		    for (unsigned z = i; z <= i + cell.getRowSpan() - 1; z++)
@@ -579,14 +587,14 @@ MathMLTableFormatter::calcTableHeightDepthT(int& numRig, float& sumScale, scaled
   sumContHD = 0;
   sumFixHD = 0;
 
-  std::cerr << "calcTableHeightDepthT" << std::endl;
+  //std::cerr << "calcTableHeightDepthT" << std::endl;
 
   for (unsigned i = 0; i < rows.size(); i++)
     {
       if (rows[i].isContentRow())
 	{
 	  numRig++;
-	  std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
+	  //std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
 	  max = std::max(max, rows[i].getTempHeight() + rows[i].getTempDepth());
 	  sumContHD += rows[i].getTempHeight() + rows[i].getTempDepth();
 	}
@@ -605,12 +613,12 @@ MathMLTableFormatter::calcTableHeightDepthF()
   scaled sumContFix = 0;
   float sumScale = 0;
 
-  std::cerr << "calcTableHeightDepthF" << std::endl;
+  //std::cerr << "calcTableHeightDepthF" << std::endl;
 
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow() || rows[i].getSpec() == Row::FIX)
       {
-	std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
+	//std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
 	sumContFix += rows[i].getTempHeight() + rows[i].getTempDepth();
       }
     else if (rows[i].getSpec() == Row::SCALE)
@@ -636,7 +644,7 @@ MathMLTableFormatter::initHeightsT()
       {
 	rows[i].setHeight(rows[i].getTempHeight());	
 	rows[i].setDepth(availHeightDepth / numRows - rows[i].getHeight());
-	std::cerr << "for row" << i << " HD = " << rows[i].getHeight() + rows[i].getDepth() << std::endl;
+	//std::cerr << "for row" << i << " HD = " << rows[i].getHeight() + rows[i].getDepth() << std::endl;
       }
     else if (rows[i].getSpec() == Row::FIX)
       {
@@ -756,7 +764,7 @@ MathMLTableFormatter::setDisplacements()
     {
       rows[i].setDisplacement(v - rows[i].getHeight());
       v -= rows[i].getVerticalExtent();
-      std::cerr << "ROW[" << i << "].displacement = " << rows[i].getDisplacement() << std::endl;
+      //std::cerr << "ROW[" << i << "].displacement = " << rows[i].getDisplacement() << std::endl;
     }
 
   scaled h = scaled::zero();
@@ -764,7 +772,7 @@ MathMLTableFormatter::setDisplacements()
     {
       columns[j].setDisplacement(h);
       h += columns[j].getWidth();
-      std::cerr << "COL[" << j << "].displacement = " << columns[j].getDisplacement() << std::endl;
+      //std::cerr << "COL[" << j << "].displacement = " << columns[j].getDisplacement() << std::endl;
     }
 }
 
@@ -784,7 +792,7 @@ MathMLTableFormatter::setCellPositions(const scaled& axis)
 		const BoundingBox box = cell.getBoundingBox();
 		const BoundingBox cellBox = getCellBoundingBox(i, j, cell.getRowSpan(), cell.getColumnSpan());
 
-		std::cerr << "CELL BOX = " << cellBox << std::endl << " CONTENT BOX = " << box << std::endl;
+		//std::cerr << "CELL BOX = " << cellBox << std::endl << " CONTENT BOX = " << box << std::endl;
 
 		switch (cell.getColumnAlign())
 		  {
@@ -822,7 +830,7 @@ MathMLTableFormatter::setCellPositions(const scaled& axis)
 		    assert(false);
 		  }
 
-		std::cerr << "setting displacement for (" << i << "," << j << ") = " << dx << "," << dy << std::endl;
+		//std::cerr << "setting displacement for (" << i << "," << j << ") = " << dx << "," << dy << std::endl;
 		cell.setDisplacement(columns[j].getDisplacement() + dx, rows[i].getDisplacement() + dy);
 	      }
 	  }
