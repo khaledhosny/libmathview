@@ -23,7 +23,9 @@
 #ifndef __Gtk_RenderingContext_hh__
 #define __Gtk_RenderingContext_hh__
 
+#include <ft2build.h>
 #include <X11/Xft/Xft.h>
+#include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
 #include "GObjectPtr.hh"
@@ -42,11 +44,16 @@ public:
   void getForegroundColor(RGBColor& c) { c = foregroundColor; }
   void getForegroundColor(GdkColor& c) { c = gdk_foregroundColor; }
 
+  void setWidget(const GObjectPtr<GtkWidget>&);
+  GObjectPtr<GtkWidget> getWidget(void) const { return gtk_widget; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
   GObjectPtr<GdkGC> getGC(void) const { return gdk_gc; }
   XftDraw* getXftDraw(void) const { return xft_draw; }
   const XftColor* getXftColor(void) const { return &xft_foregroundColor; }
+
+  void update(void) const;
+  void update(const Rectangle&) const;
 
   scaled getXOrigin(void) const { return region.x; }
   scaled getYOrigin(void) const { return region.y; }
@@ -68,6 +75,9 @@ protected:
 
   RGBColor foregroundColor;
   Rectangle region;
+
+  // GTK-specific fields
+  GObjectPtr<GtkWidget> gtk_widget;
 
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;

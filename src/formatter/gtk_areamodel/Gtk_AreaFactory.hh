@@ -45,18 +45,18 @@ public:
 
   // redefined methods
 
-  virtual SmartPtr<ColorArea> createColorArea(const AreaRef& area, const RGBColor& color) const
+  virtual SmartPtr<ColorArea> color(const AreaRef& area, const RGBColor& color) const
   { return Gtk_ColorArea::create(area, color); }
-  virtual SmartPtr<InkArea> createInkArea(const AreaRef& area) const
+  virtual SmartPtr<InkArea> ink(const AreaRef& area) const
   { return Gtk_InkArea::create(area); }
 
   // new methods
 
-  virtual SmartPtr<Gtk_PangoGlyphArea> createPangoGlyphArea(PangoFont* f, PangoGlyphString* gs)
+  virtual SmartPtr<Gtk_PangoGlyphArea> pangoGlyph(PangoFont* f, PangoGlyphString* gs)
   { return Gtk_PangoGlyphArea::create(f, gs); }
-  virtual SmartPtr<Gtk_PangoLayoutArea> createPangoLayoutArea(PangoLayout* layout)
+  virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayout(PangoLayout* layout)
   { return Gtk_PangoLayoutArea::create(layout); }
-  virtual SmartPtr<Gtk_XftGlyphArea> createXftGlyphArea(XftFont* font, FT_UInt glyph)
+  virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FT_UInt glyph)
   { return Gtk_XftGlyphArea::create(font, glyph); }
 };
 

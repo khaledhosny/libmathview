@@ -23,6 +23,7 @@
 #ifndef __Gtk_XftGlyphArea_hh__
 #define __Gtk_XftGlyphArea_hh__
 
+#include <ft2build.h>
 #include <X11/Xft/Xft.h>
 
 #include "SimpleArea.hh"

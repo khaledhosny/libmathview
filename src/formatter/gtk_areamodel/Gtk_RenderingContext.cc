@@ -31,6 +31,7 @@
 Gtk_RenderingContext::Gtk_RenderingContext()
 {
   xft_draw = 0;
+  gtk_widget = 0;
 }
 
 Gtk_RenderingContext::~Gtk_RenderingContext()
@@ -52,19 +53,45 @@ Gtk_RenderingContext::releaseResources()
 }
 
 void
+Gtk_RenderingContext::setWidget(const GObjectPtr<GtkWidget>& widget)
+{
+  gtk_widget = widget;
+}
+
+void
+Gtk_RenderingContext::update() const
+{
+  if (gtk_widget) gtk_widget_draw(gtk_widget, NULL);
+}
+
+void
+Gtk_RenderingContext::update(const Rectangle& rect) const
+{
+  assert(false);
+}
+
+void
 Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 {
   releaseResources();
 
   gdk_drawable = drawable;
-  gdk_gc = gdk_gc_new(gdk_drawable);
-  gdk_colormap = gdk_rgb_get_colormap();
-
-  xft_draw = XftDrawCreate(GDK_DISPLAY(),
-			   gdk_x11_drawable_get_xid(drawable),
-			   GDK_VISUAL_XVISUAL(gdk_drawable_get_visual(drawable)),
-			   GDK_COLORMAP_XCOLORMAP(gdk_colormap));
-  assert(xft_draw);
+  if (gdk_drawable)
+    {
+      gdk_gc = gdk_gc_new(gdk_drawable);
+      gdk_colormap = gdk_rgb_get_colormap();
+      
+      xft_draw = XftDrawCreate(GDK_DISPLAY(),
+			       gdk_x11_drawable_get_xid(drawable),
+			       GDK_VISUAL_XVISUAL(gdk_drawable_get_visual(drawable)),
+			       GDK_COLORMAP_XCOLORMAP(gdk_colormap));
+      assert(xft_draw);
+    }
+  else
+    {
+      gdk_gc = 0;
+      gdk_colormap = 0;
+    }
 }
 
 void
