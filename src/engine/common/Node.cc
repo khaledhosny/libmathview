@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include "Node.hh"
-#include "Element.hh"
 
 Node::~Node()
 { }
