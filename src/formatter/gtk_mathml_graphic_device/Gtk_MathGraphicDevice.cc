@@ -54,11 +54,9 @@ Gtk_MathGraphicDevice::string(const MathFormattingContext& context,
 			      const String& str) const
 {
   if (context.getElement() == context.getStretchOperator())
-    {
-      assert(false);
-      // should stretch the string and the possibly shift it vertically
-      // to match height and depth
-    }
+    return getShaperManager()->shapeStretchy(context, toUCS4String(str),
+					     context.getStretchV(),
+					     context.getStretchH());
   else
     return getShaperManager()->shape(context, toUCS4String(str));
 }
@@ -87,7 +85,8 @@ Gtk_MathGraphicDevice::fraction(const MathFormattingContext& context,
 				const AreaRef& denominator,
 				const Length& lineThickness) const
 {
-  std::vector<AreaRef> v(5);
+  std::vector<AreaRef> v;
+  v.reserve(5);
   v.push_back(denominator);
   
   AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle()
@@ -111,7 +110,8 @@ Gtk_MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
   BoundingBox n = numerator->box();
   BoundingBox d = denominator->box();
 
-  std::vector<AreaRef> h(3);
+  std::vector<AreaRef> h;
+  h.reserve(3);
   h.push_back(numerator);
   h.push_back(stretchStringV(context, "/", std::max(n.height, d.height), std::max(n.depth, d.depth)));
   h.push_back(denominator);
@@ -127,14 +127,12 @@ Gtk_MathGraphicDevice::radical(const MathFormattingContext& context,
 }
 
 void
-Gtk_MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context,
-					    const BoundingBox& baseBox,
-					    const BoundingBox& subScriptBox,
-					    const scaled& subScriptMinShift,
-					    const BoundingBox& superScriptBox,
-					    const scaled& superScriptMinShift,
-					    scaled& v,
-					    scaled& u) const
+Gtk_MathGraphicDevice::calculateDefaultScriptShift(const MathFormattingContext& context,
+						   const BoundingBox& baseBox,
+						   const BoundingBox& subScriptBox,
+						   const BoundingBox& superScriptBox,
+						   scaled& v,
+						   scaled& u) const
 {
   assert(baseBox.defined());
 
@@ -143,23 +141,22 @@ Gtk_MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context
   scaled RULE = defaultLineThickness(context);
 
   u = std::max(EX, baseBox.height - AXIS);
-  v = std::max(AXIS, baseBox.depth - AXIS);
+  v = std::max(AXIS, baseBox.depth + AXIS);
 
   if (!superScriptBox.defined())
     {
       u = 0;
-      v = std::max(v, std::max(subScriptMinShift, subScriptBox.height - (EX * 4) / 5));
+      v = std::max(v, subScriptBox.height - (EX * 4) / 5);
     }
   else
     {
-      u = std::max(u, std::max(superScriptMinShift, superScriptBox.depth + EX / 4));
+      u = std::max(u, superScriptBox.depth + EX / 4);
       if (!subScriptBox.defined())
 	{
 	  v = 0;
 	}
       else
 	{
-	  v = std::max(v, subScriptMinShift);
           if ((u - superScriptBox.depth) - (subScriptBox.height - v) < 4 * RULE)
             {
               v = 4 * RULE - u + superScriptBox.depth + subScriptBox.height;
@@ -174,6 +171,23 @@ Gtk_MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context
         }
     }
 }
+
+void
+Gtk_MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context,
+					    const BoundingBox& baseBox,
+					    const BoundingBox& subScriptBox,
+					    const Length& subScriptMinShift,
+					    const BoundingBox& superScriptBox,
+					    const Length& superScriptMinShift,
+					    scaled& v,
+					    scaled& u) const
+{
+  calculateDefaultScriptShift(context, baseBox, subScriptBox, superScriptBox, v, u);
+  v = std::max(v, evaluate(context, subScriptMinShift, v));
+  u = std::max(u, evaluate(context, superScriptMinShift, u));
+}
+
+#include "scaledAux.hh"
 
 AreaRef
 Gtk_MathGraphicDevice::script(const MathFormattingContext& context,
@@ -191,22 +205,24 @@ Gtk_MathGraphicDevice::script(const MathFormattingContext& context,
   calculateScriptShift(context,
 		       base->box(),
 		       subScript ? subScript->box() : BoundingBox(),
-		       evaluate(context, subScriptMinShift, 0),
+		       subScriptMinShift,
 		       superScript ? superScript->box() : BoundingBox(),
-		       evaluate(context, superScriptMinShift, 0),
+		       superScriptMinShift,
 		       subScriptShift,
 		       superScriptShift);
 
-  std::vector<AreaRef> o(2);
+  std::vector<AreaRef> o;
+  o.reserve(2);
   if (subScript) o.push_back(getFactory()->shift(subScript, -subScriptShift));
   if (superScript) o.push_back(getFactory()->shift(superScript, superScriptShift));
 
-  std::vector<AreaRef> h(2);
+  std::vector<AreaRef> h;
+  h.reserve(2);
   h.push_back(base);
   if (o.size() > 1)
     h.push_back(getFactory()->overlapArray(o));
   else
-    h.push_back(o[1]);
+    h.push_back(o[0]);
 
   return getFactory()->horizontalArray(h);
 }
@@ -230,7 +246,8 @@ Gtk_MathGraphicDevice::underOver(const MathFormattingContext& context,
 				 const AreaRef& underScript, bool accentUnder,
 				 const AreaRef& overScript, bool accent) const
 {
-  std::vector<AreaRef> v(3);
+  std::vector<AreaRef> v;
+  v.reserve(3);
   if (underScript) v.push_back(getFactory()->center(underScript));
   v.push_back(getFactory()->center(base));
   if (overScript) v.push_back(getFactory()->center(overScript));

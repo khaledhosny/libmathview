@@ -81,12 +81,17 @@ protected:
 				 const String& str,
 				 const scaled& height,
 				 const scaled& depth) const;
+  virtual void calculateDefaultScriptShift(const MathFormattingContext& context,
+					   const BoundingBox& baseBox,
+					   const BoundingBox& subScriptBox,
+					   const BoundingBox& superScriptBox,
+					   scaled& v, scaled& u) const;
   virtual void calculateScriptShift(const MathFormattingContext& context,
 				    const BoundingBox& baseBox,
 				    const BoundingBox& subScriptBox,
-				    const scaled& subScriptMinShift,
+				    const Length& subScriptMinShift,
 				    const BoundingBox& superScriptBox,
-				    const scaled& superScriptMinShift,
+				    const Length& superScriptMinShift,
 				    scaled& v, scaled& u) const;
 
 private:
