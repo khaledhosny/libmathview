@@ -801,10 +801,23 @@ protected:
 			 const SmartPtr<Value>& tableAlign,
 			 unsigned columnIndex)
     {
+      if (cellAlign)
+	return cellAlign;
+      else if (rowAlign)
+	return GetComponent(rowAlign, columnIndex);
+      else if (tableAlign)
+	return GetComponent(tableAlign, columnIndex);
+      else
+	return 0;
+#if 0
+      // Because of a bug in GCC-3.4 the following code, which is
+      // syntactically and semantically correct, does not compile
+      // and the compiler issues a misleading error message
       return
 	(cellAlign ? cellAlign : 
 	 (rowAlign ? GetComponent(rowAlign, columnIndex) :
 	  (tableAlign ? GetComponent(tableAlign, columnIndex) : 0)));
+#endif
     }
 
     static void
