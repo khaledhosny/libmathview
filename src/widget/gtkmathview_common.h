@@ -56,6 +56,11 @@ extern "C" {
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##custom_reader
   typedef void*                     GtkMathViewModelId;
   typedef const char*               GtkMathViewModelString;
+#elif GTKMATHVIEW_USES_LIBXML2_READER
+#include <libxml/xmlreader.h>
+#define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##libxml2_reader
+  typedef void*                     GtkMathViewModelId;
+  typedef const xmlChar*            GtkMathViewModelString;
 #elif GTKMATHVIEW_USES_LIBXML2
 #include <libxml/tree.h>
 #define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##libxml2
@@ -93,6 +98,8 @@ extern "C" {
   gboolean   GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView*);
 #if GTKMATHVIEW_USES_CUSTOM_READER
   gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
+#elif GTKMATHVIEW_USES_LIBXML2_READER
+  gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, xmlTextReaderPtr);
 #else
   gboolean   GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView*, const gchar*);
   gboolean   GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView*, const gchar*);

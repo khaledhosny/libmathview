@@ -30,7 +30,6 @@ libxmlXmlReader::libxmlXmlReader(xmlTextReaderPtr r)
   : reader(r), fresh(true), error(1), depth(xmlTextReaderDepth(r))
 {
   assert(reader);
-  assert(xmlTextReaderNodeType(reader) == ELEMENT_NODE);
 }
 
 libxmlXmlReader::~libxmlXmlReader()
@@ -128,8 +127,10 @@ void
 libxmlXmlReader::reset()
 {
   // currently there is no way to reset a libxml text reader
-  // so this method just fails.
-  assert(false);
+  // so this method just seeks the element node (assuming
+  // that it's called only once)
+  while (valid() && xmlTextReaderNodeType(reader) != XML_ELEMENT_NODE)
+    error = xmlTextReaderRead(reader);
 }
 
 void

@@ -41,7 +41,7 @@ libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libgtkmathview_custom_reader_la_SOURCES = gtkmathview_custom_reader.cc
-libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_custom_reader.cc
+libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_libxml2_reader.cc
 libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc
 libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
 
@@ -52,6 +52,7 @@ gtk_HEADERS = \
   gtkmathview.h \
   gtkmathview_common.h \
   gtkmathview_custom_reader.h \
+  gtkmathview_libxml2_reader.h \
   gtkmathview_libxml2.h \
   gtkmathview_gmetadom.h
 

@@ -823,6 +823,8 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLTableElement>& elem)
     {
+      return;
+
       MathMLTableContentFactory tableContentFactory;
 
       unsigned rowIndex = 0;
