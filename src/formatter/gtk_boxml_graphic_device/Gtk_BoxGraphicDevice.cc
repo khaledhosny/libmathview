@@ -29,7 +29,6 @@
 #include "Gtk_RenderingContext.hh"
 #include "BoxFormattingContext.hh"
 #include "BoxMLElement.hh"
-#include "BoxedParagraph.hh"
 
 Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice(GtkWidget* widget)
 {
