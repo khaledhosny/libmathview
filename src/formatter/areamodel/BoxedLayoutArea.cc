@@ -154,11 +154,12 @@ std::pair<scaled,scaled>
 BoxedLayoutArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
 			const scaled& x, const scaled& y) const
 {
-  assert(false); // IS THIS MEANT TO BE IMPLEMENTED SERIOUSLY?
   if (id == empty)
     return std::make_pair(x, y);
-  else
+  else if (*id >= content.size())
     throw InvalidId();
+  else
+    return content[*id].area->origin(id + 1, empty, content[*id].dx, content[*id].dy);
 }
 
 scaled
