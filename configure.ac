@@ -28,8 +28,8 @@ AC_ARG_ENABLE(
 AC_ARG_ENABLE(
 	profile,
 	[  --enable-profile[=ARG]  include profiling information [default=no]],
-	profile=$enableval,
-	profile=no
+	enable_profile=$enableval,
+	enable_profile=no
 )
 
 AC_ARG_ENABLE(
@@ -411,11 +411,12 @@ if test $enable_debug = yes; then
 	AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
 fi
 
-if test $profile = yes; then
+if test $enable_profile = yes; then
 	CFLAFS="$CFLAGS -O0 -pg"
 	CXXFLAGS="$CXXFLAGS -O0 -pg"
 	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
 fi
+AM_CONDITIONAL([COND_PROFILE], [test "$enable_profile" = "yes"])
 
 if test $enable_pipe = yes; then
 	CFLAGS="$CFLAGS -pipe"
