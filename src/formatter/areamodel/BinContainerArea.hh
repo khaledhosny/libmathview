@@ -45,7 +45,8 @@ public:
 
   virtual bool idOf(const AreaRef&, AreaIdFactory&) const;
   virtual AreaRef node(AreaId::const_iterator, AreaId::const_iterator) const;
-  virtual scaled origin(AreaId::const_iterator, AreaId::const_iterator) const;
+  virtual scaled hOffset(AreaId::const_iterator, AreaId::const_iterator) const;
+  virtual scaled vOffset(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual scaled leftSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual scaled rightSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual void strength(int&, int&, int&) const;
