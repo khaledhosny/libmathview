@@ -51,8 +51,8 @@ public:
 protected:
   // methods for accessing the linker
   SmartPtr<Element> linkerAssoc(const DOM::Element& el) const { return linker.assoc(el); }
-  void linkerAdd(const DOM::Element& el, Element* elem) const { linker.add(el, elem); }
-  void linkerRemove(Element* elem) const { linker.remove(elem); }
+  void linkerAdd(const DOM::Element& el, Element* elem) const;
+  void linkerRemove(Element* elem) const;
 
   class DOMSubtreeModifiedListener : public DOM::EventListener
   {

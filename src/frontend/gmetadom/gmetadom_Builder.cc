@@ -133,3 +133,11 @@ gmetadom_Builder::setRootModelElement(const DOM::Element& el)
       et.addEventListener("DOMAttrModified", *attrModifiedListener, false);
     }
 }
+
+void
+gmetadom_Builder::linkerAdd(const DOM::Element& el, Element* elem) const
+{ linker.add(el, elem); }
+
+void
+gmetadom_Builder::linkerRemove(Element* elem) const
+{ linker.remove(elem); }
