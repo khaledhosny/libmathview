@@ -20,28 +20,25 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_WrapperArea_hh__
-#define __Gtk_WrapperArea_hh__
+#ifndef __WrapperArea_hh__
+#define __WrapperArea_hh__
 
-#include "WrapperArea.hh"
+#include "BoxArea.hh"
+#include "WeakPtr.hh"
 
-class Gtk_WrapperArea : public WrapperArea
+class WrapperArea : public BoxArea
 {
 protected:
-  Gtk_WrapperArea(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
-  virtual ~Gtk_WrapperArea() { }
+  WrapperArea(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
+  virtual ~WrapperArea();
 
 public:
-  static SmartPtr<Gtk_WrapperArea> create(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
-  virtual AreaRef clone(const AreaRef&) const;
+  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
 
-  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
-
-  int getSelected(void) const { return selected; }
-  void setSelected(int n) const { selected = n; }
+  SmartPtr<class Element> getElement(void) const;
 
 private:
-  mutable int selected;
+  WeakPtr<class Element> element;
 };
 
-#endif // __Gtk_WrapperArea_hh__
+#endif // __WrapperArea_hh__

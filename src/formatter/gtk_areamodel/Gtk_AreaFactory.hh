@@ -64,7 +64,7 @@ public:
   { return Gtk_PangoLayoutLineArea::create(layout); }
   virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FT_UInt glyph) const
   { return Gtk_XftGlyphArea::create(font, glyph); }
-  virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<Object>& el) const
+  virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
   { return Gtk_WrapperArea::create(area, box, el); }
 };
 

@@ -25,16 +25,19 @@
 #include "Gtk_WrapperArea.hh"
 #include "Gtk_RenderingContext.hh"
 #include "SearchingContext.hh"
+#include "Element.hh"
 
-Gtk_WrapperArea::Gtk_WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Object>& el)
-  : BoxArea(area, b), selected(0), element(el)
+Gtk_WrapperArea::Gtk_WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Element>& el)
+  : WrapperArea(area, b, el), selected(0)
 { }
 
+SmartPtr<Gtk_WrapperArea>
+Gtk_WrapperArea::create(const AreaRef& area, const BoundingBox& b, const SmartPtr<class Element>& el)
+{ return new Gtk_WrapperArea(area, b, el); }
+
 AreaRef
-Gtk_WrapperArea::fit(const scaled&, const scaled&, const scaled&) const
-{
-  return this;
-}
+Gtk_WrapperArea::clone(const AreaRef& area) const
+{ return create(area, box(), getElement()); }
 
 void
 Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
@@ -115,13 +118,5 @@ Gtk_WrapperArea::find(SearchingContext& context, const scaled& x, const scaled& 
     }
   else
     return BoxArea::find(context, x, y);
-}
-#endif
-
-#if 0
-SmartPtr<Object>
-Gtk_WrapperArea::getElement(void) const
-{
-  return element;
 }
 #endif

@@ -27,6 +27,7 @@ libareamodel_la_SOURCES = \
   BinContainerArea.cc \
   HorizontalArrayArea.cc \
   LinearContainerArea.cc \
+  WrapperArea.cc \
   SimpleArea.cc
 
 noinst_HEADERS = \
@@ -42,6 +43,7 @@ noinst_HEADERS = \
   ContainerArea.hh \
   HorizontalSpaceArea.hh \
   OverlapArrayArea.hh \
+  WrapperArea.hh \
   SimpleArea.hh \
   FillerArea.hh \
   IdArea.hh \
@@ -58,5 +60,6 @@ noinst_HEADERS = \
   VerticalFillerArea.hh
 
 INCLUDES = \
-  -I$(top_srcdir)/src/common
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/engine/common
 

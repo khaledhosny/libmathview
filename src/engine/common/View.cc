@@ -34,8 +34,7 @@
 #include "AreaId.hh"
 #include "scaled.hh"
 #include "scaledConv.hh"
-// FIXME:
-#include "Gtk_WrapperArea.hh"
+#include "WrapperArea.hh"
 
 View::View(const SmartPtr<Builder>& b)
 
@@ -141,8 +140,8 @@ View::getElementAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem) co
       AreaId id(rootArea);
       if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
 	for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
-	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
-	    if ((elem = smart_cast<Element>(area->getElement())))
+	  if (SmartPtr<const WrapperArea> area = smart_cast<const WrapperArea>(*p))
+	    if ((elem = area->getElement()))
 	      return true;
     }
   
@@ -177,8 +176,8 @@ View::getCharAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem, int& 
       AreaId id(rootArea);
       if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
 	for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
-	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
-	    if ((elem = smart_cast<Element>(area->getElement())))
+	  if (SmartPtr<const WrapperArea> area = smart_cast<const WrapperArea>(*p))
+	    if ((elem = area->getElement()))
 	      {
 		index = 0; // FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		return true;

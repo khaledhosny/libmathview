@@ -20,28 +20,24 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_WrapperArea_hh__
-#define __Gtk_WrapperArea_hh__
+#include <config.h>
 
 #include "WrapperArea.hh"
+#include "Element.hh"
 
-class Gtk_WrapperArea : public WrapperArea
+WrapperArea::WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Element>& el)
+  : BoxArea(area, b), element(el)
+{ }
+
+WrapperArea::~WrapperArea()
+{ }
+
+AreaRef
+WrapperArea::fit(const scaled&, const scaled&, const scaled&) const
 {
-protected:
-  Gtk_WrapperArea(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
-  virtual ~Gtk_WrapperArea() { }
+  return this;
+}
 
-public:
-  static SmartPtr<Gtk_WrapperArea> create(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
-  virtual AreaRef clone(const AreaRef&) const;
-
-  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
-
-  int getSelected(void) const { return selected; }
-  void setSelected(int n) const { selected = n; }
-
-private:
-  mutable int selected;
-};
-
-#endif // __Gtk_WrapperArea_hh__
+SmartPtr<Element>
+WrapperArea::getElement() const
+{ return static_cast<Element*>(element); }

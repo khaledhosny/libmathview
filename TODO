@@ -38,10 +38,6 @@ ARCH IMPROVEMENTS
 + implement auxiliary methods for searching into the area model
 + The BoxML/MathML embedding mechanism is still ad-hoc and works
   only for MathML inside BoxML
-+ View.cc depends on Gtk_WrapperArea, make a WrapperArea which is
-  independent of the platform and make Gtk_WrapperArea depend
-  on it. Then it may be feasible to generalize searching functions
-  over areas by implementing a visitor
 + implement caching mechanism for pango shaper
 + it seems like the choice of having that the first child of a
   vertical area is the bottommost is a bit weird. Think of the cursor:
@@ -51,6 +47,8 @@ ARCH IMPROVEMENTS
   creating it each time
 + in TemplateBuilder do not use the hash map for retrieving old
   elements, but use accessor methods instead. Much faster 
+- It may be feasible to generalize searching functions
+  over areas by implementing a visitor
 - fix Configuration/Globals files 
   create a class for them and refer them from the View
 - move mathvariant files into src/common
