@@ -25,6 +25,13 @@
 #include "AreaFactory.hh"
 
 AreaRef
+AreaFactory::background(const AreaRef& base, const RGBColor& c) const
+{
+  assert(false);
+  return 0;
+}
+
+AreaRef
 AreaFactory::horizontalLine(const scaled& thickness, const RGBColor& c) const
 {
   scaled halfThickness = thickness / 2;
