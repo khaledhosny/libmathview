@@ -15,6 +15,10 @@ libbasictypes_la_SOURCES = \
   BoundingBoxAux.cc \
   LengthAux.cc
 
+libbasictypes_la_LIBADD = \
+  -lstdc++ \
+  $(top_builddir)/src/formatter/basictypes/mathvariants/libmathvariants.la
+
 noinst_HEADERS = \
   fixed.hh \
   scaled.hh \
