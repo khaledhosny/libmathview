@@ -86,7 +86,7 @@ Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>& sm, unsigne
 {
   for (unsigned i = NORMAL_VARIANT; i <= MONOSPACE_VARIANT; i++)
     {
-      for (Char16 ch = 0x20; ch < 0x100; ch++)
+      for (Char16 ch = 0x21; ch < 0x100; ch++)
 	{
 	  Char32 vch = mapMathVariant(MathVariant(i), ch);
 	  if (i == NORMAL_VARIANT || vch != ch)

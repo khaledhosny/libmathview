@@ -1140,7 +1140,7 @@ protected:
 	{
 	  // ok, we have a chunk of text
 	  String s = collapseSpaces(node.get_nodeValue());
-	  
+
 	  // ...but spaces at the at the beginning (end) are deleted only if this
 	  // is the very first (last) chunk in the token.
 	  if (!node.get_previousSibling()) s = trimSpacesLeft(s);
