@@ -28,7 +28,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include <gdome.h>
-#include "gtkmathview.h"
+#include "gtkmathview_gmetadom.h"
 #include "guiGTK.h"
 
 extern GdomeDOMString* find_hyperlink(GdomeElement*, const char*, const char*);

@@ -27,8 +27,6 @@
 
 #include <glib.h>
 
-#include "gtkmathview.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

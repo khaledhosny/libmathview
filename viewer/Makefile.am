@@ -12,21 +12,20 @@ mathmlviewer_SOURCES = main.cc aux.cc guiGTK.c
 mathmlviewer_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview.la
+  $(top_builddir)/src/widget/libgtkmathview_gmetadom.la
 
 mathmlviewer_debug_SOURCES = main.cc aux.cc guiGTK.c
 
 mathmlviewer_debug_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview.la
+  $(top_builddir)/src/widget/libgtkmathview_gmetadom.la
 
 INCLUDES = \
   $(GTK_CFLAGS) \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto/ \
   -I$(top_srcdir)/src/common/ \
-  -I$(top_srcdir)/src/frontend/custom_reader/ \
   -I$(top_srcdir)/src/frontend/gmetadom/ \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
