@@ -27,14 +27,13 @@
 #include "defs.h"
 #include "MathMLSpaceElement.hh"
 #include "RenderingEnvironment.hh"
-#include "AttributeParser.hh"
 #include "FormattingContext.hh"
 #include "ValueConversion.hh"
 
 MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
 {
-  breakability = BREAK_AUTO;
+  breakability = T_AUTO;
 }
 
 MathMLSpaceElement::~MathMLSpaceElement()
@@ -63,25 +62,25 @@ MathMLSpaceElement::Setup(RenderingEnvironment& env)
 
       scaled width;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Space, width))
-	if (IsKeyword(value))
-	  width = env.ToScaledPoints(ToNumberUnit(Resolve(value, env)));
+	if (IsTokenId(value))
+	  width = env.ToScaledPoints(ToLength(Resolve(value, env)));
 	else
-	  width = env.ToScaledPoints(ToNumberUnit(value));
+	  width = env.ToScaledPoints(ToLength(value));
       else
 	assert(IMPOSSIBLE);
 
       scaled height;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Space, height))
-	height = env.ToScaledPoints(ToNumberUnit(value));
+	height = env.ToScaledPoints(ToLength(value));
 
       scaled depth;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Space, depth))
-	depth = env.ToScaledPoints(ToNumberUnit(value));
+	depth = env.ToScaledPoints(ToLength(value));
 
       box.set(width, height, depth);
 
-      if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH))
-	breakability = ToBreakId(GET_ATTRIBUTE_VALUE(Space, linebreak));
+      if (!IsSet(T_WIDTH) && !IsSet(T_HEIGHT) && !IsSet(T_DEPTH))
+	breakability = ToTokenId(GET_ATTRIBUTE_VALUE(Space, linebreak));
 
       ResetDirtyAttribute();
     }

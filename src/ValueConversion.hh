@@ -24,40 +24,32 @@
 #define __ValueConversion_hh__
 
 #include "SmartPtr.hh"
-#include "UnitValue.hh"
+#include "Length.hh"
 #include "Value.hh"
 #include "Variant.hh"
-#include "keyword.hh"
-#include "RGBValue.hh"
+#include "token.hh"
+#include "RGBColor.hh"
 #include "String.hh"
 
-bool            IsEmpty(const SmartPtr<Value>&);
-bool            IsKeyword(const SmartPtr<Value>&);
-bool            IsSequence(const SmartPtr<Value>&);
-bool            IsNumberUnit(const SmartPtr<Value>&);
-bool            IsRGBValue(const SmartPtr<Value>&);
+bool IsEmpty(const SmartPtr<Value>&);
+bool IsTokenId(const SmartPtr<Value>&);
+bool IsSequence(const SmartPtr<Value>&);
+bool IsLength(const SmartPtr<Value>&);
+bool IsRGBColor(const SmartPtr<Value>&);
+bool IsNumber(const SmartPtr<Value>&);
 
-bool            ToBoolean(const SmartPtr<Value>&);
-int             ToInteger(const SmartPtr<Value>&);
-float           ToNumber(const SmartPtr<Value>&);
-String          ToString(const SmartPtr<Value>&);
+bool ToBoolean(const SmartPtr<Value>&);
+int ToInteger(const SmartPtr<Value>&);
+float ToNumber(const SmartPtr<Value>&);
+String ToString(const SmartPtr<Value>&);
 SmartPtr<ValueSequence> ToSequence(const SmartPtr<Value>&);
-RGBValue        ToRGBValue(const SmartPtr<Value>&);
-KeywordId       ToKeywordId(const SmartPtr<Value>&);
-RowAlignId      ToRowAlignId(const SmartPtr<Value>&);
-ColumnAlignId   ToColumnAlignId(const SmartPtr<Value>&);
-GroupAlignId 	ToGroupAlignId(const SmartPtr<Value>&);
-TableLineId  	ToLineId(const SmartPtr<Value>&);
-MathSpaceId    	ToNamedSpaceId(const SmartPtr<Value>&);
-UnitId         	ToUnitId(const SmartPtr<Value>&);
-FontWeightId 	ToFontWeightId(const SmartPtr<Value>&);
-FontStyleId  	ToFontStyleId(const SmartPtr<Value>&);
-RGBValue      	ToRGB(const SmartPtr<Value>&);
-OperatorFormId  ToFormId(const SmartPtr<Value>&);
-FractionAlignId ToFractionAlignId(const SmartPtr<Value>&);
-MarkAlignType   ToMarkAlignId(const SmartPtr<Value>&);
-UnitValue       ToNumberUnit(const SmartPtr<Value>&);
-BreakId         ToBreakId(const SmartPtr<Value>&);
+RGBColor ToRGBColor(const SmartPtr<Value>&);
+RGBColor ToRGB(const SmartPtr<Value>&);
+TokenId ToTokenId(const SmartPtr<Value>&);
+Length::Unit toUnitId(TokenId);
+Length::Unit toUnitId(const SmartPtr<Value>&);
+Length ToLength(const SmartPtr<Value>&);
+RGBColor ToRGBColor(const SmartPtr<Value>&);
 
 SmartPtr<Value> GetComponent(const SmartPtr<Value>&, int = -1, int = -1);
 SmartPtr<Value> Resolve(const SmartPtr<Value>&, const class RenderingEnvironment&, int i = -1, int j = -1);

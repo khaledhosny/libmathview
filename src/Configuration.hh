@@ -32,7 +32,7 @@
 #include "defs.h"
 #include "scaled.hh"
 #include "String.hh"
-#include "RGBValue.hh"
+#include "RGBColor.hh"
 
 class Configuration
 {
@@ -51,23 +51,23 @@ public:
   unsigned GetFontSize(void) const { return HasFontSize() ? fontSize : DEFAULT_FONT_SIZE; }
 
   bool     HasColor(void) const { return colorSet; }
-  RGBValue GetForeground(void) const { return HasColor() ? foreground : DEFAULT_FOREGROUND; }
-  RGBValue GetBackground(void) const { return HasColor() ? background : DEFAULT_BACKGROUND; }
+  RGBColor GetForeground(void) const { return HasColor() ? foreground : DEFAULT_FOREGROUND; }
+  RGBColor GetBackground(void) const { return HasColor() ? background : DEFAULT_BACKGROUND; }
 
   bool     HasLinkColor(void) const { return linkColorSet; }
   bool     HasTransparentLinkBackground(void) const { return transparentLinkBackground; }
-  RGBValue GetLinkForeground(void) const { return HasLinkColor() ? linkForeground : DEFAULT_LINK_FOREGROUND; }
-  RGBValue GetLinkBackground(void) const { return HasLinkColor() ? linkBackground : DEFAULT_LINK_BACKGROUND; }
+  RGBColor GetLinkForeground(void) const { return HasLinkColor() ? linkForeground : DEFAULT_LINK_FOREGROUND; }
+  RGBColor GetLinkBackground(void) const { return HasLinkColor() ? linkBackground : DEFAULT_LINK_BACKGROUND; }
 
   bool     HasSelectColor(void) const { return selectColorSet; }
-  RGBValue GetSelectForeground(void) const { return HasSelectColor() ? selectForeground : DEFAULT_SELECT_FOREGROUND; }
-  RGBValue GetSelectBackground(void) const { return HasSelectColor() ? selectBackground : DEFAULT_SELECT_BACKGROUND; }
+  RGBColor GetSelectForeground(void) const { return HasSelectColor() ? selectForeground : DEFAULT_SELECT_FOREGROUND; }
+  RGBColor GetSelectBackground(void) const { return HasSelectColor() ? selectBackground : DEFAULT_SELECT_BACKGROUND; }
 
 private:
 #if defined(HAVE_GMETADOM)
   void ParseConfiguration(const DOM::Element&);
-  bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&);
-  bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&, bool&);
+  bool ParseColor(const DOM::Element&, RGBColor&, RGBColor&);
+  bool ParseColor(const DOM::Element&, RGBColor&, RGBColor&, bool&);
 #endif // HAVE_GMETADOM
 
   std::vector<std::string> dictionaries;
@@ -79,17 +79,17 @@ private:
   unsigned fontSize;
 
   bool     colorSet;
-  RGBValue foreground;
-  RGBValue background;
+  RGBColor foreground;
+  RGBColor background;
 
   bool     linkColorSet;
-  RGBValue linkForeground;
-  RGBValue linkBackground;
+  RGBColor linkForeground;
+  RGBColor linkBackground;
   bool     transparentLinkBackground;
 
   bool     selectColorSet;
-  RGBValue selectForeground;
-  RGBValue selectBackground;
+  RGBColor selectForeground;
+  RGBColor selectBackground;
 };
 
 #endif // Configuration_hh

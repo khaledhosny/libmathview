@@ -23,14 +23,12 @@
 #ifndef RenderingEnvironment_hh
 #define RenderingEnvironment_hh
 
-#include <stddef.h>
-
 #include <list>
 
 #include "AFont.hh"
 #include "String.hh"
-#include "RGBValue.hh"
-#include "UnitValue.hh"
+#include "RGBColor.hh"
+#include "Length.hh"
 #include "FontAttributes.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLAttributeList.hh"
@@ -54,7 +52,7 @@ public:
   void     SetDisplayStyle(bool);
   bool     GetDisplayStyle(void) const;
   void     SetScriptSizeMultiplier(float);
-  void     SetScriptMinSize(const UnitValue&);
+  void     SetScriptMinSize(const Length&);
   void     AddScriptLevel(int);
   void     SetScriptLevel(int);
   int      GetScriptLevel(void) const;
@@ -62,27 +60,45 @@ public:
   // font specific attributes
   void     SetFontFamily(const char*);
   void     SetFontFamily(const String&);
-  void     SetFontSize(const UnitValue&);
-  void     SetFontWeight(FontWeightId);
-  void     SetFontStyle(FontStyleId);
+  void     SetFontSize(const Length&);
+  void     SetFontWeight(TokenId);
+  void     SetFontStyle(TokenId);
   const FontAttributes& GetFontAttributes(void) const;
-  void     SetFontMode(FontModeId);
-  FontModeId GetFontMode(void) const;
 
   // math spaces
-  const UnitValue& GetMathSpace(MathSpaceId) const;
-  void     SetMathSpace(MathSpaceId, const UnitValue&);
+  enum MathSpaceId {
+    MATH_SPACE_NEGATIVEVERYVERYTHICK,
+    MATH_SPACE_NEGATIVEVERYTHICK,
+    MATH_SPACE_NEGATIVETHICK,
+    MATH_SPACE_NEGATIVEMEDIUM,
+    MATH_SPACE_NEGATIVETHIN,
+    MATH_SPACE_NEGATIVEVERYTHIN,
+    MATH_SPACE_NEGATIVEVERYVERYTHIN,
+    MATH_SPACE_VERYVERYTHIN,
+    MATH_SPACE_VERYTHIN,
+    MATH_SPACE_THIN,
+    MATH_SPACE_MEDIUM,
+    MATH_SPACE_THICK,
+    MATH_SPACE_VERYTHICK,
+    MATH_SPACE_VERYVERYTHICK,
+
+    MATH_SPACE_LAST
+  };
+
+  static MathSpaceId mathSpaceIdOfTokenId(TokenId);
+  const Length& GetMathSpace(MathSpaceId) const;
+  void SetMathSpace(MathSpaceId, const Length&);
 
   // colors
-  void     SetColor(RGBValue);
-  void     SetBackgroundColor(RGBValue);
-  RGBValue GetColor(void) const;
-  RGBValue GetBackgroundColor(void) const;
+  void     SetColor(const RGBColor&);
+  void     SetBackgroundColor(const RGBColor&);
+  RGBColor GetColor(void) const;
+  RGBColor GetBackgroundColor(void) const;
 
   // conversions
   scaled   GetScaledPointsPerEm(void) const;
   scaled   GetScaledPointsPerEx(void) const;
-  scaled   ToScaledPoints(const UnitValue&) const;
+  scaled   ToScaledPoints(const Length&) const;
   scaled   GetAxis(void) const;
   scaled   GetRuleThickness(void) const;
 
@@ -94,15 +110,15 @@ private:
     bool      displayStyle;
     
     int       scriptLevel;      // Indeed scriptLevel can be negative!
-    UnitValue scriptMinSize;
+    Length scriptMinSize;
     float     scriptSizeMultiplier;
 
     FontAttributes fontAttributes;
     
-    UnitValue mathSpace[MATH_SPACE_LAST];
+    Length mathSpace[14];
     
-    RGBValue  color;
-    RGBValue  background;
+    RGBColor  color;
+    RGBColor  background;
     bool      transparentBackground;
     SmartPtr<MathMLAttributeList> defaults;
   };

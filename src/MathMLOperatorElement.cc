@@ -66,6 +66,9 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
     }
 }
 
+#include "scaledAux.hh"
+#include "LengthAux.hh"
+
 void
 MathMLOperatorElement::Setup(RenderingEnvironment& env)
 {
@@ -74,7 +77,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       axis = env.GetAxis();
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Operator, form))
-	form = ToFormId(value);
+	form = ToTokenId(value);
       else
 	form = InferOperatorForm();
 
@@ -85,9 +88,9 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
       String operatorName = GetRawContent();
       Globals::dictionary.Search(operatorName, prefix, infix, postfix);
 
-      if      (form == OP_FORM_PREFIX && prefix) defaults = prefix;
-      else if (form == OP_FORM_INFIX && infix) defaults = infix;
-      else if (form == OP_FORM_POSTFIX && postfix) defaults = postfix;
+      if      (form == T_PREFIX && prefix) defaults = prefix;
+      else if (form == T_INFIX && infix) defaults = infix;
+      else if (form == T_POSTFIX && postfix) defaults = postfix;
       else if (infix) defaults = infix;
       else if (postfix) defaults = postfix;
       else if (prefix) defaults = prefix;
@@ -103,7 +106,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 	{
 	  SmartPtr<Value> resValue = Resolve(value, env);
 	  if (env.GetScriptLevel() <= 0)
-	    lSpace = env.ToScaledPoints(ToNumberUnit(resValue));
+	    lSpace = env.ToScaledPoints(ToLength(resValue));
 	  else
 	    lSpace = 0;
 	}
@@ -114,7 +117,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 	{
 	  SmartPtr<Value> resValue = Resolve(value, env);
 	  if (env.GetScriptLevel() <= 0)
-	    rSpace = env.ToScaledPoints(ToNumberUnit(resValue));
+	    rSpace = env.ToScaledPoints(ToLength(resValue));
 	  else
 	    rSpace = 0;
 	}
@@ -128,7 +131,7 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 	if (!ForcedSymmetric()) symmetric = ToBoolean(value) ? 1 : 0;
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(Operator, maxsize))
-	if (ToKeywordId(value) == KW_INFINITY)
+	if (ToTokenId(value) == T_INFINITY)
 	  infiniteMaxSize = 1;
 	else
 	  {
@@ -180,7 +183,7 @@ MathMLOperatorElement::DoLayout(const class FormattingContext& ctxt)
     {
       MathMLTokenElement::DoLayout(ctxt);
       DoEmbellishmentLayout(this, box);
-      if (ctxt.GetLayoutType() == LAYOUT_MIN) minBox = box;
+      if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) minBox = box;
       ResetDirtyLayout(ctxt);
     }
 }
@@ -339,41 +342,30 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
 {
   assert(value);
 
-  if (IsKeyword(value))
+  if (IsTokenId(value))
     { // it must be a named math space
       SmartPtr<Value> resValue = Resolve(value, env);
       multiplier = -1;
-      size = env.ToScaledPoints(ToNumberUnit(resValue));
+      size = env.ToScaledPoints(ToLength(resValue));
+    }
+  else if (IsNumber(value))
+    {
+      multiplier = std::max(EPSILON, ToNumber(value));
     }
   else
     {
-      SmartPtr<ValueSequence> seq = ToSequence(value);
-      assert(seq);
-      assert(seq->getSize() == 2);
-      SmartPtr<Value> v = seq->getValue(0);
-      SmartPtr<Value> unitV = seq->getValue(1);
-      assert(v);
-      assert(unitV);
-
-      if (IsEmpty(unitV)) 
-	multiplier = std::max(EPSILON, ToNumber(v));
+      assert(IsLength(value));
+      Length siz = ToLength(value);
+      
+      if (siz.type == Length::PERCENTAGE_UNIT)
+	{
+	  Globals::logger(LOG_WARNING, "percentage value specified in maxsize attribute (mo) (ignored)");
+	  multiplier = std::max(EPSILON, siz.value);
+	} 
       else
 	{
-	  assert(IsKeyword(unitV));
 	  multiplier = -1;
-
-	  UnitValue siz(ToNumber(v), ToUnitId(unitV));
-
-	  if (siz.IsPercentage())
-	    {
-	      Globals::logger(LOG_WARNING, "percentage value specified in maxsize attribute (mo) (ignored)");
-	      multiplier = std::max(EPSILON, siz.GetValue());
-	    } 
-	  else
-	    {
-	      multiplier = -1;
-	      size = env.ToScaledPoints(siz);
-	    }
+	  size = env.ToScaledPoints(siz);
 	}
     }
 }
@@ -381,8 +373,6 @@ MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
 SmartPtr<Value>
 MathMLOperatorElement::getOperatorAttributeValue(const MathMLAttributeSignature& signature) const
 {
-  //printf("`%s': searching for attribute `%s'\n", NameOfTagId(IsA()), NameOfAttributeId(id));
-
   // 1st attempt, the attribute may be set for the current operator
   if (SmartPtr<Value> value = getAttributeValueNoDefault(signature))
     return value;
@@ -405,7 +395,7 @@ MathMLOperatorElement::getOperatorAttributeValue(const MathMLAttributeSignature&
   return 0;
 }
 
-OperatorFormId
+TokenId
 MathMLOperatorElement::InferOperatorForm()
 {
   SmartPtr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
@@ -413,9 +403,9 @@ MathMLOperatorElement::InferOperatorForm()
   SmartPtr<MathMLElement> elem = eOp->GetParent();
   assert(elem);
 
-  OperatorFormId res = OP_FORM_INFIX;
+  TokenId res = T_INFIX;
 
-  if (elem->IsA() == TAG_MROW)
+  if (elem->IsA() == T_MROW)
     {
       SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem);
       assert(row);
@@ -425,6 +415,7 @@ MathMLOperatorElement::InferOperatorForm()
   return res;
 }
 
+#if 0
 StretchId
 MathMLOperatorElement::GetStretch() const
 {
@@ -442,6 +433,7 @@ MathMLOperatorElement::GetStretch() const
 #endif
   return STRETCH_NO;
 }
+#endif
 
 SmartPtr<MathMLOperatorElement>
 MathMLOperatorElement::GetCoreOperator()

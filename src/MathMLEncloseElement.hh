@@ -23,7 +23,7 @@
 #ifndef MathMLEncloseElement_hh
 #define MathMLEncloseElement_hh
 
-#include "RGBValue.hh"
+#include "RGBColor.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLEncloseElement : public MathMLNormalizingContainerElement
@@ -51,7 +51,7 @@ protected:
   String notation;
   scaled spacing;
   scaled lineThickness;
-  RGBValue color;
+  RGBColor color;
 };
 
 #endif // MathMLEncloseElement_hh

@@ -20,35 +20,35 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#include <assert.h>
+#include <config.h>
 
-#include <stddef.h>
+#include <cassert>
 
 #include "mathVariantAux.hh"
 
 static MathVariantAttributes vattr[] = {
-  { KW_NORMAL,            "serif",         FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-  { KW_BOLD,              "serif",         FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-  { KW_ITALIC,            "serif",         FONT_WEIGHT_NORMAL,   FONT_STYLE_ITALIC },
-  { KW_BOLD_ITALIC,       "serif",         FONT_WEIGHT_BOLD,     FONT_STYLE_ITALIC },
-  { KW_DOUBLE_STRUCK,     "double-struck", FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-  { KW_BOLD_FRAKTUR,      "fraktur",       FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-  { KW_SCRIPT,            "script",        FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-  { KW_BOLD_SCRIPT,       "script",        FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-  { KW_FRAKTUR,           "fraktur",       FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-  { KW_SANS_SERIF,        "sans-serif",    FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
-  { KW_BOLD_SANS_SERIF,   "sans-serif",    FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
-  { KW_SANS_SERIF_ITALIC, "sans-serif",    FONT_WEIGHT_NORMAL,   FONT_STYLE_ITALIC },
-  { KW_MONOSPACE,         "monospace",     FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
+  { T_NORMAL,            "serif",         T_NORMAL,    T_NORMAL },
+  { T_BOLD,              "serif",         T_BOLD,      T_NORMAL },
+  { T_ITALIC,            "serif",         T_NORMAL,    T_ITALIC },
+  { T_BOLD_ITALIC,       "serif",         T_BOLD,      T_ITALIC },
+  { T_DOUBLE_STRUCK,     "double-struck", T_NORMAL,    T_NORMAL },
+  { T_BOLD_FRAKTUR,      "fraktur",       T_BOLD,      T_NORMAL },
+  { T_SCRIPT,            "script",        T_NORMAL,    T_NORMAL },
+  { T_BOLD_SCRIPT,       "script",        T_BOLD,      T_NORMAL },
+  { T_FRAKTUR,           "fraktur",       T_NORMAL,    T_NORMAL },
+  { T_SANS_SERIF,        "sans-serif",    T_NORMAL,    T_NORMAL },
+  { T_BOLD_SANS_SERIF,   "sans-serif",    T_BOLD,      T_NORMAL },
+  { T_SANS_SERIF_ITALIC, "sans-serif",    T_NORMAL,    T_ITALIC },
+  { T_MONOSPACE,         "monospace",     T_NORMAL,    T_NORMAL },
   
-  { KW_NOTVALID,          NULL,            FONT_WEIGHT_NOTVALID, FONT_STYLE_NOTVALID }
+  { T__NOTVALID,         0,               T__NOTVALID, T__NOTVALID }
 };
 
 const MathVariantAttributes&
-attributesOfVariant(KeywordId id)
+attributesOfVariant(TokenId id)
 {
   unsigned i;
-  for (i = 0; vattr[i].kw != KW_NOTVALID && vattr[i].kw != id; i++) ;
-  assert(vattr[i].kw != KW_NOTVALID);
+  for (i = 0; vattr[i].kw != T__NOTVALID && vattr[i].kw != id; i++) ;
+  assert(vattr[i].kw != T__NOTVALID);
   return vattr[i];
 }

@@ -86,7 +86,7 @@ MathMLRadicalElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  if (IsA() == TAG_MSQRT)
+	  if (IsA() == T_MSQRT)
 	    {
 	      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	      if (children.get_length() == 1)
@@ -102,7 +102,7 @@ MathMLRadicalElement::construct()
 	    }
 	  else
 	    {
-	      assert(IsA() == TAG_MROOT);	      
+	      assert(IsA() == T_MROOT);	      
 	      ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 
 	      switch (children.get_length())
@@ -142,7 +142,7 @@ MathMLRadicalElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      spacing       = env.ToScaledPoints(env.GetMathSpace(MATH_SPACE_MEDIUM));
+      spacing       = env.ToScaledPoints(env.GetMathSpace(RenderingEnvironment::MATH_SPACE_MEDIUM));
       color         = env.GetColor();
       background    = env.GetBackgroundColor();
       lineThickness = env.GetRuleThickness();

@@ -44,17 +44,18 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
 private:
-  struct LengthDimension {
-    bool      valid;        // true if this attribute was set
-    int       sign;         // -1 => -, 0 => no sign specified, +1 => +
-    float     number;       // the (unsigned) number specified
-    bool      percentage;   // true if % was set (=> pseudo == true)
-    bool      pseudo;       // true if pseudo unit used
-    KeywordId pseudoUnitId; // pseudo-unit (valid if pseudo == true)
-    scaled    unit;         // standard unit (valid if pseudo == false)
+  struct LengthDimension
+  {
+    bool valid;        // true if this attribute was set
+    int sign;         // -1 => -, 0 => no sign specified, +1 => +
+    float number;       // the (unsigned) number specified
+    bool percentage;   // true if % was set (=> pseudo == true)
+    bool pseudo;       // true if pseudo unit used
+    TokenId pseudoUnitId; // pseudo-unit (valid if pseudo == true)
+    scaled unit;         // standard unit (valid if pseudo == false)
   };
 
-  void   ParseLengthDimension(RenderingEnvironment&, const SmartPtr<Value>&, LengthDimension&, KeywordId);
+  void ParseLengthDimension(RenderingEnvironment&, const SmartPtr<Value>&, LengthDimension&, TokenId);
   scaled EvalLengthDimension(const scaled&, const LengthDimension&, const BoundingBox&) const;
 
   LengthDimension width;

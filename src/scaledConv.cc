@@ -20,30 +20,30 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLMarkNode_hh
-#define MathMLMarkNode_hh
+#include <config.h>
 
-#include "token.hh"
-#include "MathMLTextNode.hh"
+#include <cassert>
 
-class MathMLMarkNode : public MathMLTextNode
+#include "Length.hh"
+#include "scaledConv.hh"
+
+#include <iostream>
+
+scaled
+ToScaledPoints(const Length& length)
 {
-protected:
-  MathMLMarkNode(TokenId = T__NOTVALID);
-  virtual ~MathMLMarkNode();
+  switch (length.type)
+    {
+    case Length::PX_UNIT: return px2sp(length.value);
+    case Length::IN_UNIT: return in2sp(length.value);
+    case Length::CM_UNIT: return cm2sp(length.value);
+    case Length::MM_UNIT: return mm2sp(length.value);
+    case Length::PT_UNIT: return pt2sp(length.value);
+    case Length::PC_UNIT: return pc2sp(length.value);
+    case Length::EM_UNIT: 
+    case Length::EX_UNIT:
+    default: 
+      assert(false);
+    }
+}
 
-public:
-  static SmartPtr<MathMLMarkNode> create(TokenId t)
-  { return new MathMLMarkNode(t); }
-  
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-
-  TokenId GetAlignmentEdge(void) const { return edge; }
-
-protected:
-  TokenId edge;
-};
-
-#endif // MathMLMarkNode_hh

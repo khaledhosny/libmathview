@@ -64,24 +64,24 @@ private:
   SmartPtr<MathMLElement> numerator;
   SmartPtr<MathMLElement> denominator;
 
-  scaled          axis;
-  scaled          numShift;
-  scaled          denomShift;
+  scaled axis;
+  scaled numShift;
+  scaled denomShift;
 #ifdef TEXISH_MATHML
-  scaled          numMinShift;
-  scaled          denomMinShift;
-  scaled          defaultRuleThickness;
+  scaled numMinShift;
+  scaled denomMinShift;
+  scaled defaultRuleThickness;
 #else
-  scaled          minShift;
+  scaled minShift;
 #endif // TEXISH_MATHML
-  scaled          lineThickness;
+  scaled lineThickness;
 
-  FractionAlignId numAlign;
-  FractionAlignId denomAlign;
-  bool            displayStyle;
-  RGBValue        color;
+  TokenId numAlign;
+  TokenId denomAlign;
+  bool displayStyle;
+  RGBColor color;
 
-  bool            bevelled;
+  bool bevelled;
 };
 
 #endif // MathMLFractionElement_hh

@@ -25,18 +25,23 @@
 #include <cassert>
 
 #include "MathMLAttributeSignature.hh"
+#include "MathMLAttributeParsers.hh"
 #include "MathMLAttributeSignatures.icc"
 
 SmartPtr<Value>
 MathMLAttributeSignature::getDefaultValue() const
 {
   if (!defaultValue && defaultUnparsedValue)
-    {
-      assert(parser);
-      assert(defaultUnparsedValue);
-      StringTokenizer st(defaultUnparsedValue);
-      defaultValue = parser(st);
-    }
+    defaultValue = parseValue(defaultUnparsedValue);
 
   return defaultValue;
+}
+
+SmartPtr<Value>
+MathMLAttributeSignature::parseValue(const String& v) const
+{
+  assert(parser);
+  UCS4String s = toUCS4String(v);
+  UCS4String::const_iterator next;
+  return parser(s.begin(), s.end(), next);
 }

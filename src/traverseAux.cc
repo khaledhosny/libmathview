@@ -112,6 +112,7 @@ findStretchyOperator(const SmartPtr<MathMLElement>& elem)
   return 0;
 }
 
+#if 0
 SmartPtr<MathMLOperatorElement>
 findStretchyOperator(const SmartPtr<MathMLElement>& elem, StretchId id)
 {
@@ -119,6 +120,7 @@ findStretchyOperator(const SmartPtr<MathMLElement>& elem, StretchId id)
     if (coreOp->GetStretch() == id) return coreOp;
   return 0;
 }
+#endif
 
 SmartPtr<MathMLElement>
 findCommonAncestor(const SmartPtr<MathMLElement>& first, const SmartPtr<MathMLElement>& last)
@@ -163,7 +165,7 @@ findActionElement(const SmartPtr<MathMLElement>& elem)
 {
   SmartPtr<MathMLElement> elemP(elem);
 
-  while (elemP && elemP->IsA() != TAG_MACTION)
+  while (elemP && elemP->IsA() != T_MACTION)
     elemP = elemP->GetParent();
 
   return (elemP) ? smart_cast<MathMLActionElement>(elemP) : SmartPtr<MathMLActionElement>(0);

@@ -100,7 +100,7 @@ MathMLRowElement::DoStretchyLayout()
   for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
        elem++)
-    if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
+    if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem))
       {
 	opBox.append(op->GetMinBoundingBox());
 	nStretchy++;      
@@ -124,10 +124,10 @@ MathMLRowElement::DoStretchyLayout()
       for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
-	if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
+	if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem))
 	  {
 	    op->VerticalStretchTo(toAscent, toDescent);
-	    (*elem)->DoLayout(FormattingContext(LAYOUT_AUTO, 0));
+	    (*elem)->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, 0));
 	  }
     }
 }
@@ -158,12 +158,12 @@ MathMLRowElement::IsSpaceLike() const
 		      std::not1(IsSpaceLikePredicate())) == content.end();
 }
 
-OperatorFormId
+TokenId
 MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
 {
   assert(eOp);
 
-  OperatorFormId res = OP_FORM_INFIX;
+  TokenId res = T_INFIX;
 
   unsigned rowLength = 0;
   unsigned position  = 0;
@@ -178,8 +178,8 @@ MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
     
   if (rowLength > 1) 
     {
-      if (position == 0) res = OP_FORM_PREFIX;
-      else if (position == rowLength - 1) res = OP_FORM_POSTFIX;
+      if (position == 0) res = T_PREFIX;
+      else if (position == rowLength - 1) res = T_POSTFIX;
     }
 
   return res;

@@ -41,10 +41,10 @@ void MathMLErrorElement::Setup(RenderingEnvironment& env)
   if (DirtyAttribute() || DirtyAttributeP())
     {
       env.Push();
-      RGBValue color = env.GetColor();
+      RGBColor color = env.GetColor();
 
-      if (color == RED_COLOR) env.SetColor(BLUE_COLOR);
-      else env.SetColor(RED_COLOR);
+      if (color == RGBColor::RED()) env.SetColor(RGBColor::BLUE());
+      else env.SetColor(RGBColor::RED());
 
       MathMLNormalizingContainerElement::Setup(env);
       env.Drop();

@@ -31,7 +31,8 @@
 
 class Gtk_DrawingArea : public DrawingArea {
 public:
-  Gtk_DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&, GtkWidget*, RGBValue, RGBValue);
+  Gtk_DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&, GtkWidget*,
+		  const RGBColor&, const RGBColor&);
   virtual ~Gtk_DrawingArea();
 
   virtual const GraphicsContext* GetGC(const GraphicsContextValues&) const;

@@ -43,8 +43,8 @@ VerticalLayout::Add(const SmartPtr<MathMLElement>& el)
 
   if (SmartPtr<MathMLSpaceElement> space = smart_cast<MathMLSpaceElement>(el))
     {
-      if (space->GetBreakability() == BREAK_YES ||
-	  space->GetBreakability() == BREAK_INDENT)
+      if (space->GetBreakability() == T_NEWLINE ||
+	  space->GetBreakability() == T_INDENTINGNEWLINE)
 	content.push_back(HorizontalLayout::create());
     }
 }

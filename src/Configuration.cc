@@ -25,14 +25,13 @@
 #include <functional>
 #include <algorithm>
 
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
 
 #include "Globals.hh"
 #include "Configuration.hh"
-#include "AttributeParser.hh"
 #include "MathMLParseFile.hh"
 #include "ValueConversion.hh"
+#include "MathMLAttributeSignature.hh"
 
 Configuration::Configuration(void)
 {
@@ -115,19 +114,13 @@ Configuration::ParseConfiguration(const DOM::Element& node)
 	  Globals::logger(LOG_DEBUG, "default font size set to %d points", fontSize);
 	  fontSizeSet = true;
 	}
-      } else if (name == "color") {
+      } else if (name == "color")
 	colorSet = ParseColor(elem, foreground, background);
-	if (colorSet) Globals::logger(LOG_DEBUG, "default color set to %06x %06x", foreground, background);
-	else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
-      } else if (name == "link-color") {
+      else if (name == "link-color")
 	linkColorSet = ParseColor(elem, linkForeground, linkBackground, transparentLinkBackground);
-	if (linkColorSet) Globals::logger(LOG_DEBUG, "default link color set to %06x %06x", linkForeground, linkBackground);
-	else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
-      } else if (name == "select-color") {
+      else if (name == "select-color")
 	selectColorSet = ParseColor(elem, selectForeground, selectBackground);
-	if (selectColorSet) Globals::logger(LOG_DEBUG, "default selection color set to %06x %06x", selectForeground, selectBackground);
-	else Globals::logger(LOG_WARNING, "color parsing error in configuration file");
-      } else {
+      else {
 	Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
       }
     } else if (!DOM::nodeIsBlank(p)) {
@@ -137,14 +130,14 @@ Configuration::ParseConfiguration(const DOM::Element& node)
 }
 
 bool
-Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b)
+Configuration::ParseColor(const DOM::Element& node, RGBColor& f, RGBColor& b)
 {
   bool unused;
   return ParseColor(node, f, b, unused);
 }
 
 bool
-Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bool& transparent)
+Configuration::ParseColor(const DOM::Element& node, RGBColor& f, RGBColor& b, bool& transparent)
 {
   String fs = fromDOMString(node.getAttribute("foreground"));
   String bs = fromDOMString(node.getAttribute("background"));
@@ -155,11 +148,8 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bo
     return false;
   }
 
-  StringTokenizer fst(fs);
-  StringTokenizer bst(bs);
-
-  SmartPtr<Value> fv = colorParser(fst);
-  SmartPtr<Value> bv = backgroundParser(bst);
+  SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(Style,color).parseValue(fs);
+  SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(Style,background).parseValue(bs);
 
   if (!fv || !bv)
     {
@@ -169,7 +159,7 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bo
     }
 
   f = ToRGB(fv);
-  transparent = ToKeywordId(bv) == KW_TRANSPARENT;
+  transparent = ToTokenId(bv) == T_TRANSPARENT;
   if (!transparent) b = ToRGB(bv);
 
   return true;

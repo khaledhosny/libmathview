@@ -26,8 +26,8 @@
 #include <string>
 #include <vector>
 
-#include "keyword.hh"
-#include "UnitValue.hh"
+#include "token.hh"
+#include "Length.hh"
 
 enum FontModeId { FONT_MODE_ANY, FONT_MODE_TEXT, FONT_MODE_MATH };
 
@@ -37,9 +37,9 @@ struct FontAttributes {
 
   bool HasMode(void) const { return (mode != FONT_MODE_ANY); }
   bool HasFamily(void) const { return (family != ""); }
-  bool HasStyle(void) const { return (style != FONT_STYLE_NOTVALID); }
-  bool HasWeight(void) const { return (weight != FONT_WEIGHT_NOTVALID); }
-  bool HasSize(void) const { return !size.IsNull(); }
+  bool HasStyle(void) const { return (style != T__NOTVALID); }
+  bool HasWeight(void) const { return (weight != T__NOTVALID); }
+  bool HasSize(void) const { return size.defined(); }
   bool Equals(const FontAttributes&) const;
   unsigned Compare(const FontAttributes&) const;
   void Dump(void) const;
@@ -48,10 +48,10 @@ struct FontAttributes {
   bool DownGrade(void);
 
   std::string  family;
-  UnitValue    size; // cannot be < 0
-  FontWeightId weight;
-  FontStyleId  style;
-  FontModeId   mode;
+  Length size; // cannot be < 0
+  TokenId weight;
+  TokenId style;
+  FontModeId mode;
 };
 
 class ExtraFontAttributes {

@@ -49,7 +49,7 @@ MathMLSemanticsElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  assert(IsA() == TAG_SEMANTICS);
+	  assert(IsA() == T_SEMANTICS);
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))

@@ -23,7 +23,7 @@
 #ifndef MathMLAlignMarkElement_hh
 #define MathMLAlignMarkElement_hh
 
-#include "keyword.hh"
+#include "token.hh"
 #include "MathMLElement.hh"
 
 class MathMLAlignMarkElement : public MathMLElement
@@ -43,10 +43,10 @@ public:
   virtual bool IsSpaceLike(void) const;
   virtual void SetDirty(const Rectangle* = NULL);
 
-  MarkAlignType GetAlignmentEdge(void) const { return edge; }
+  TokenId GetAlignmentEdge(void) const { return edge; }
 
 protected:
-  MarkAlignType edge;
+  TokenId edge;
 };
 
 #endif // MathMLAlignMarkElement_hh

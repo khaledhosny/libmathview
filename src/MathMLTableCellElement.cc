@@ -24,17 +24,17 @@
 
 #include <cassert>
 
-#include "frameAux.hh"
+#include "FormattingContext.hh"
 #include "Globals.hh"
-#include "operatorAux.hh"
-#include "MathMLMarkNode.hh"
-#include "ValueConversion.hh"
-#include "MathMLTableElement.hh"
-#include "MathMLTokenElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignMarkElement.hh"
+#include "MathMLMarkNode.hh"
 #include "MathMLTableCellElement.hh"
-#include "FormattingContext.hh"
+#include "MathMLTableElement.hh"
+#include "MathMLTokenElement.hh"
+#include "ValueConversion.hh"
+#include "frameAux.hh"
+#include "operatorAux.hh"
 
 MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
@@ -83,7 +83,7 @@ MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 
       // remember that the first mn element, if present, always contains
       // the alignment for decimal point
-      if (status.group != NULL && token->IsA() == TAG_MN &&
+      if (status.group != NULL && token->IsA() == T_MN &&
 	  status.group->GetDecimalPoint() == NULL)
 	status.group->SetDecimalPoint(token);
 
@@ -108,8 +108,8 @@ MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 
       switch (container->IsA())
 	{
-	case TAG_MPADDED:
-	case TAG_MSQRT:
+	case T_MPADDED:
+	case T_MSQRT:
 	  if (status.group != NULL)
 	    {
 	      while (p.More())
@@ -119,18 +119,18 @@ MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 		}
 	    }
 	  break;
-	case TAG_MSUB:
-	case TAG_MSUP:
-	case TAG_MSUBSUP:
-	case TAG_MUNDER:
-	case TAG_MOVER:
-	case TAG_MUNDEROVER:
-	case TAG_MMULTISCRIPTS:
-	case TAG_MROOT:
+	case T_MSUB:
+	case T_MSUP:
+	case T_MSUBSUP:
+	case T_MUNDER:
+	case T_MOVER:
+	case T_MUNDEROVER:
+	case T_MMULTISCRIPTS:
+	case T_MROOT:
 	  if (status.group != NULL)
 	    SetupGroups(p(), false, countGroups, status);
 	  break;
-	case TAG_MACTION:
+	case T_MACTION:
 	  {
 	    SmartPtr<MathMLActionElement> action = smart_cast<MathMLActionElement>(container);
 	    assert(action);
@@ -138,7 +138,7 @@ MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 	      SetupGroups(action->GetSelectedElement(), allowedGroup, countGroups, status);
 	  }
 	  break;
-	case TAG_MTD:
+	case T_MTD:
 	  {
 	    SmartPtr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(container);
 	    assert(mtd);
@@ -147,9 +147,9 @@ MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 	      SetupGroups(p(), false, countGroups, status);
 	  }
 	  break;
-	case TAG_MTABLE:
-	case TAG_MTR:
-	case TAG_MLABELEDTR:
+	case T_MTABLE:
+	case T_MTR:
+	case T_MLABELEDTR:
 	default:
 	  while (p.More())
 	    {
@@ -229,16 +229,16 @@ MathMLTableCellElement::Setup(RenderingEnvironment& env)
       if (cell)
 	{
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableCell, rowalign))
-	    cell->rowAlign = ToRowAlignId(value);
+	    cell->rowAlign = ToTokenId(value);
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableCell, columnalign))
-	    cell->columnAlign = ToColumnAlignId(value);
+	    cell->columnAlign = ToTokenId(value);
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(TableCell, groupalign))
 	    for (unsigned k = 0; k < cell->nAlignGroup; k++)
 	      {
 		SmartPtr<Value> p = GetComponent(value, k);
-		cell->aGroup[k].alignment = ToGroupAlignId(p);
+		cell->aGroup[k].alignment = ToTokenId(p);
 	      }
 	}
       
@@ -278,7 +278,7 @@ MathMLTableCellElement::DoLayout(const FormattingContext& ctxt)
   else
     box.unset();
 
-  if (ctxt.GetLayoutType() == LAYOUT_MIN) minWidth = box.width;
+  if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) minWidth = box.width;
 
   ResetDirtyLayout(ctxt);
 }
@@ -326,7 +326,7 @@ MathMLTableCellElement::CalcGroupsExtent()
 	  group->GetAlignmentMarkNode())
 	{
 	  SmartPtr<MathMLFrame> mark = 0;
-	  MarkAlignType alignType = MARK_ALIGN_NOTVALID;
+	  TokenId alignType = T__NOTVALID;
 
 	  if (group->GetAlignmentMarkElement())
 	    {
@@ -339,9 +339,9 @@ MathMLTableCellElement::CalcGroupsExtent()
 	      alignType = group->GetAlignmentMarkNode()->GetAlignmentEdge();
 	    }
 	  assert(mark);
-	  assert(alignType != MARK_ALIGN_NOTVALID);
+	  assert(alignType != T__NOTVALID);
       
-	  if (alignType == MARK_ALIGN_LEFT)
+	  if (alignType == T_LEFT)
 	    {
 	      SmartPtr<MathMLFrame> frame = getRightSibling(mark);
 	      if (frame) alignPoint = frame->GetLeftEdge();
@@ -354,7 +354,7 @@ MathMLTableCellElement::CalcGroupsExtent()
 	      else alignPoint = mark->GetX();
 	    }
 	} 
-      else if (cell->aGroup[k].alignment == GROUP_ALIGN_DECIMALPOINT)
+      else if (cell->aGroup[k].alignment == T_DECIMALPOINT)
 	{
 	  SmartPtr<MathMLTokenElement> token = group->GetDecimalPoint();
 	  if (token) alignPoint = token->GetDecimalPointEdge();
@@ -364,13 +364,13 @@ MathMLTableCellElement::CalcGroupsExtent()
 	{
 	  switch (cell->aGroup[k].alignment)
 	    {
-	    case GROUP_ALIGN_LEFT:
+	    case T_LEFT:
 	      alignPoint = cell->aGroup[k].leftEdge;
 	      break;
-	    case GROUP_ALIGN_RIGHT:
+	    case T_RIGHT:
 	      alignPoint = cell->aGroup[k].rightEdge;
 	      break;
-	    case GROUP_ALIGN_CENTER:
+	    case T_CENTER:
 	      alignPoint = (cell->aGroup[k].leftEdge + cell->aGroup[k].rightEdge) / 2;
 	      break;
 	    default:
@@ -419,13 +419,13 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 
 	  scaled cellXOffset = 0;
 	  switch (cell->columnAlign) {
-	  case COLUMN_ALIGN_RIGHT:
+	  case T_RIGHT:
 	    cellXOffset = availableWidth - elemBox.width;
 	    break;
-	  case COLUMN_ALIGN_CENTER:
+	  case T_CENTER:
 	    cellXOffset = (availableWidth - elemBox.width) / 2;
 	    break;
-	  case COLUMN_ALIGN_LEFT:
+	  case T_LEFT:
 	  default:
 	    cellXOffset = 0;
 	    break;
@@ -433,20 +433,20 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 
 	  scaled cellYOffset = 0;
 	  switch (cell->rowAlign) {
-	  case ROW_ALIGN_BOTTOM:
+	  case T_BOTTOM:
 	    cellYOffset = box.depth - elemBox.depth;
 	    break;
-	  case ROW_ALIGN_CENTER:
+	  case T_CENTER:
 	    cellYOffset = (box.verticalExtent() - elemBox.verticalExtent()) / 2 +
 	      elemBox.height - box.height;
 	    break;
-	  case ROW_ALIGN_BASELINE:
+	  case T_BASELINE:
 	    cellYOffset = 0;
 	    break;
-	  case ROW_ALIGN_AXIS:
+	  case T_AXIS:
 	    assert(IMPOSSIBLE);
 	    break;
-	  case ROW_ALIGN_TOP:
+	  case T_TOP:
 	    cellYOffset = elemBox.height - box.height;
 	    break;
 	  default:

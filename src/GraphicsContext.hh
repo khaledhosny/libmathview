@@ -23,7 +23,7 @@
 #ifndef GraphicsContext_hh
 #define GraphicsContext_hh
 
-#include "RGBValue.hh"
+#include "RGBColor.hh"
 #include "Rectangle.hh"
 #include "FontAttributes.hh"
 
@@ -40,13 +40,15 @@ enum GraphicsContextValuesMask {
   GC_MASK_LINE_STYLE = 1 << 3
 };
 
-struct GraphicsContextValues {
-  RGBValue  foreground;
-  RGBValue  background;
+struct GraphicsContextValues
+{
+  RGBColor  foreground;
+  RGBColor  background;
   LineStyle lineStyle;
   scaled    lineWidth;
 
-  bool Equals(const GraphicsContextValues& v) const {
+  bool Equals(const GraphicsContextValues& v) const
+  {
     return
       foreground == v.foreground &&
       background == v.background &&
@@ -60,8 +62,8 @@ public:
   GraphicsContext(const GraphicsContextValues&);
   virtual ~GraphicsContext();
 
-  RGBValue  GetForeground(void) const { return values.foreground; }
-  RGBValue  GetBackground(void) const { return values.background; }
+  RGBColor GetForeground(void) const { return values.foreground; }
+  RGBColor GetBackground(void) const { return values.background; }
   LineStyle GetLineStyle(void) const { return values.lineStyle; }
   scaled    GetLineWidth(void) const { return values.lineWidth; }
 

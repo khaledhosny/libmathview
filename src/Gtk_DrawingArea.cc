@@ -26,13 +26,12 @@
 #include <gtk/gtk.h>
 
 #include "Gtk_Font.hh"
-#include "UnitValue.hh"
 #include "Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
 #include "scaledConv.hh"
 
-Gtk_DrawingArea::Gtk_DrawingArea(const GraphicsContextValues& v, const scaled& xm, const scaled& ym, GtkWidget* widget,
-				 RGBValue f, RGBValue b) :
+Gtk_DrawingArea::Gtk_DrawingArea(const GraphicsContextValues& v, const scaled& xm, const scaled& ym,
+				 GtkWidget* widget, const RGBColor& f, const RGBColor& b) :
   DrawingArea(v, xm, ym, f, b)
 {
   assert(widget != NULL);
@@ -62,15 +61,15 @@ Gtk_DrawingArea::GetGC(const GraphicsContextValues& values) const
   GdkGCValues gdk_values;
   unsigned gdk_mask = 0;
 
-  gdk_values.foreground.red = GETRED(values.foreground) * 256;
-  gdk_values.foreground.green = GETGREEN(values.foreground) * 256;
-  gdk_values.foreground.blue = GETBLUE(values.foreground) * 256;    
+  gdk_values.foreground.red = values.foreground.red * 256;
+  gdk_values.foreground.green = values.foreground.green * 256;
+  gdk_values.foreground.blue = values.foreground.blue * 256;    
   gdk_colormap_alloc_color(gdk_colormap, &gdk_values.foreground, FALSE, TRUE);
   gdk_mask |= GDK_GC_FOREGROUND;
 
-  gdk_values.background.red = GETRED(values.background) * 256;
-  gdk_values.background.green = GETGREEN(values.background) * 256;
-  gdk_values.background.blue = GETBLUE(values.background) * 256;
+  gdk_values.background.red = values.background.red * 256;
+  gdk_values.background.green = values.background.green * 256;
+  gdk_values.background.blue = values.background.blue * 256;
   gdk_colormap_alloc_color(gdk_colormap, &gdk_values.background, FALSE, TRUE);
   gdk_mask |= GDK_GC_BACKGROUND;
 

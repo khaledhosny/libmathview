@@ -69,13 +69,17 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, Style, verythickmathspace);
       REFINE_ATTRIBUTE(context, Style, veryverythickmathspace);
       REFINE_ATTRIBUTE(context, Style, fontsize);
+#if 0
       REFINE_ATTRIBUTE(context, Style, fontweight);
       REFINE_ATTRIBUTE(context, Style, fontstyle);
       REFINE_ATTRIBUTE(context, Style, fontfamily);
       REFINE_ATTRIBUTE(context, Style, mathvariant);
+#endif
       REFINE_ATTRIBUTE(context, Style, mathsize);
+#if 0
       REFINE_ATTRIBUTE(context, Style, mathcolor);
       REFINE_ATTRIBUTE(context, Style, mathbackground);
+#endif
       context.push(getDOMElement());
       MathMLNormalizingContainerElement::refine(context);
       context.pop();
@@ -97,7 +101,7 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	env.SetScriptSizeMultiplier(ToNumber(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, scriptminsize))
-	env.SetScriptMinSize(ToNumberUnit(value));
+	env.SetScriptMinSize(ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, scriptlevel))
 	{
@@ -113,7 +117,7 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	    }
 	  else
 	    {
-	      int sign = (ToKeywordId(p) == KW_MINUS) ? -1 : 1;
+	      int sign = (ToTokenId(p) == T__MINUS) ? -1 : 1;
 	      p = GetComponent(value, 1);
 	      assert(p);
       
@@ -123,92 +127,99 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	    }
 	}
 
+#if 0
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathcolor))
 	{
-	  if (IsSet(ATTR_COLOR))
+	  if (IsSet(T_COLOR))
 	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
-	  env.SetColor(ToRGB(value));
+	  env.SetColor(ToRGBColor(value));
 	} 
-      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, color))
+      else
+#endif
+	if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, color))
 	{
-	  Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
-	  env.SetColor(ToRGB(value));
+	  //Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
+	  env.SetColor(ToRGBColor(value));
 	}
 
-      RGBValue oldBackground = env.GetBackgroundColor();
+      RGBColor oldBackground = env.GetBackgroundColor();
+#if 0
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathbackground))
 	{
-	  if (IsSet(ATTR_BACKGROUND))
+	  if (IsSet(T_BACKGROUND))
 	    Globals::logger(LOG_WARNING, "attribute `mathbackground' overrides deprecated attribute `background'");
-	  if (!IsKeyword(value) || ToKeywordId(value) != KW_TRANSPARENT)
-	    env.SetBackgroundColor(ToRGB(value));
+	  if (!IsTokenId(value) || ToTokenId(value) != T_TRANSPARENT)
+	    env.SetBackgroundColor(ToRGBColor(value));
 	}
-      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, background))
+      else
+#endif
+	if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, background))
 	{
-	  Globals::logger(LOG_WARNING, "attribute `background' is deprecated in MathML 2");
-	  if (!IsKeyword(value) || ToKeywordId(value) != KW_TRANSPARENT)
-	    env.SetBackgroundColor(ToRGB(value));
+	  //Globals::logger(LOG_WARNING, "attribute `background' is deprecated in MathML 2");
+	  if (!IsTokenId(value) || ToTokenId(value) != T_TRANSPARENT)
+	    env.SetBackgroundColor(ToRGBColor(value));
 	}
       background = env.GetBackgroundColor();
       differentBackground = background != oldBackground;
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, veryverythinmathspace))
-	env.SetMathSpace(MATH_SPACE_VERYVERYTHIN, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYVERYTHIN, ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, verythinmathspace))
-	env.SetMathSpace(MATH_SPACE_VERYTHIN, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYTHIN, ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, thinmathspace))
-	env.SetMathSpace(MATH_SPACE_THIN, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_THIN, ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mediummathspace))
-	env.SetMathSpace(MATH_SPACE_MEDIUM, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_MEDIUM, ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, thickmathspace))
-	env.SetMathSpace(MATH_SPACE_THICK, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_THICK, ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, verythinmathspace))
-	env.SetMathSpace(MATH_SPACE_VERYTHICK, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYTHICK, ToLength(value));
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, veryverythickmathspace))
-	env.SetMathSpace(MATH_SPACE_VERYVERYTHICK, ToNumberUnit(value));
+	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYVERYTHICK, ToLength(value));
 
       // the following attributes, thought not directly supported by <mstyle>
       // must be parsed here since they are always inherited by other elements
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathsize))
 	{
-	  if (IsSet(ATTR_FONTSIZE))
+	  if (IsSet(T_FONTSIZE))
 	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
     
-	  if (IsKeyword(value))
-	    switch (ToKeywordId(value))
+	  if (IsTokenId(value))
+	    switch (ToTokenId(value))
 	      {
-	      case KW_SMALL: env.AddScriptLevel(1); break;
-	      case KW_BIG: env.AddScriptLevel(-1); break;
-	      case KW_NORMAL: break; // noop
+	      case T_SMALL: env.AddScriptLevel(1); break;
+	      case T_BIG: env.AddScriptLevel(-1); break;
+	      case T_NORMAL: break; // noop
 	      default: assert(IMPOSSIBLE); break;
 	      }
 	  else
-	    env.SetFontSize(ToNumberUnit(value));
+	    env.SetFontSize(ToLength(value));
 	}
       else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontsize))
 	{
 	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
-	  env.SetFontSize(ToNumberUnit(value));
+	  env.SetFontSize(ToLength(value));
 	}
 
+#if 0
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathvariant))
 	{
-	  assert(IsKeyword(value));
+	  assert(IsTokenId(value));
 
-	  const MathVariantAttributes& attr = attributesOfVariant(ToKeywordId(value));
-	  assert(attr.kw != KW_NOTVALID);
+	  const MathVariantAttributes& attr = attributesOfVariant(ToTokenId(value));
+	  assert(attr.kw != T__NOTVALID);
 	  env.SetFontFamily(attr.family);
 	  env.SetFontWeight(attr.weight);
 	  env.SetFontStyle(attr.style);
 
-	  if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+	  if (IsSet(T_FONTFAMILY) || IsSet(T_FONTWEIGHT) || IsSet(T_FONTSTYLE))
 	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
 	} 
       else
@@ -222,15 +233,16 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontweight))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
-	      env.SetFontWeight(ToFontWeightId(value));
+	      env.SetFontWeight(ToTokenId(value));
 	    }
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontstyle))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
-	      env.SetFontStyle(ToFontStyleId(value));
+	      env.SetFontStyle(ToTokenId(value));
 	    }
 	}
+#endif
 
       MathMLNormalizingContainerElement::Setup(env);
       env.Drop();

@@ -23,15 +23,15 @@
 #ifndef mathVariantAux_hh
 #define mathVariantAux_hh
 
-#include "keyword.hh"
+#include "token.hh"
 
 struct MathVariantAttributes {
-  KeywordId    kw;     // math variant
-  const char*  family; // family
-  FontWeightId weight; // weight
-  FontStyleId  style;  // style
+  TokenId     kw;     // math variant
+  const char* family; // family
+  TokenId     weight; // weight
+  TokenId     style;  // style
 };
 
-const MathVariantAttributes& attributesOfVariant(KeywordId);
+const MathVariantAttributes& attributesOfVariant(TokenId);
 
 #endif // mathVariantAux_hh

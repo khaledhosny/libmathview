@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "AttributeParser.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLAttributeSignature.hh"
 
@@ -41,9 +40,7 @@ MathMLAttribute::getValue() const
 {
   if (!value)
     {
-      assert(signature.parser);
-      StringTokenizer st(unparsedValue);
-      value = signature.parser(st);
+      value = signature.parseValue(unparsedValue);
       if (!value)
 	{
 	  // issue warning

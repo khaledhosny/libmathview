@@ -23,7 +23,6 @@
 #include <config.h>
 #include <assert.h>
 
-#include "keyword.hh"
 #include "Globals.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLParseFile.hh"

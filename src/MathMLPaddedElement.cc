@@ -63,16 +63,16 @@ MathMLPaddedElement::Setup(RenderingEnvironment& env)
       width.valid = lSpace.valid = height.valid = depth.valid = false;
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, width))
-	ParseLengthDimension(env, value, width, KW_WIDTH);
+	ParseLengthDimension(env, value, width, T_WIDTH);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, lspace))
-	ParseLengthDimension(env, value, lSpace, KW_LSPACE);
+	ParseLengthDimension(env, value, lSpace, T_LSPACE);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, height))
-	ParseLengthDimension(env, value, height, KW_HEIGHT);
+	ParseLengthDimension(env, value, height, T_HEIGHT);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Padded, depth))
-	ParseLengthDimension(env, value, depth, KW_DEPTH);
+	ParseLengthDimension(env, value, depth, T_DEPTH);
 
       MathMLNormalizingContainerElement::Setup(env);
       ResetDirtyAttribute();
@@ -83,7 +83,7 @@ void
 MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
 					  const SmartPtr<Value>& value,
 					  LengthDimension& dim,
-					  KeywordId pseudoUnitId)
+					  TokenId pseudoUnitId)
 {
   assert(value);
 
@@ -92,10 +92,10 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
   assert(seq->getSize() == 3);
 
   if (SmartPtr<Value> v = seq->getValue(0))
-    switch (ToKeywordId(v))
+    switch (ToTokenId(v))
       {
-      case KW_PLUS:  dim.sign = +1; break;
-      case KW_MINUS: dim.sign = -1; break;
+      case T__PLUS:  dim.sign = +1; break;
+      case T__MINUS: dim.sign = -1; break;
       default: dim.sign = 0; break;
       }
   else
@@ -124,13 +124,13 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
 	} 
       else
 	{
-	  assert(IsKeyword(v));
+	  assert(IsTokenId(v));
 
-	  KeywordId id = ToKeywordId(v);
-	  if (id == KW_WIDTH ||
-	      id == KW_LSPACE ||
-	      id == KW_HEIGHT ||
-	      id == KW_DEPTH)
+	  TokenId id = ToTokenId(v);
+	  if (id == T_WIDTH ||
+	      id == T_LSPACE ||
+	      id == T_HEIGHT ||
+	      id == T_DEPTH)
 	    {
 	      dim.pseudo = true;
 	      dim.pseudoUnitId = id;
@@ -139,12 +139,12 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
 	    {
 	      dim.pseudo = false;
 
-	      UnitId unitId = ToUnitId(v);
-	      if (unitId != UNIT_NOTVALID)
-		dim.unit = env.ToScaledPoints(UnitValue(1.0, unitId));
+	      Length::Unit unitId = toUnitId(v);
+	      if (unitId != Length::UNDEFINED_UNIT)
+		dim.unit = env.ToScaledPoints(Length(1.0, unitId));
 	      else
 		{
-		  MathSpaceId spaceId = ToNamedSpaceId(v);
+		  RenderingEnvironment::MathSpaceId spaceId = RenderingEnvironment::mathSpaceIdOfTokenId(ToTokenId(v));
 		  dim.unit = env.ToScaledPoints(env.GetMathSpace(spaceId));
 		}
 	    }
@@ -194,23 +194,27 @@ MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
   if (!dim.valid) return orig;
   
   float f = dim.number;
-  if (dim.percentage) f *= 0.01;
+  if (dim.percentage) f *= 0.01f;
 
   scaled res = 0;
 
-  if (dim.pseudo) {
-    switch (dim.pseudoUnitId) {
-    case KW_WIDTH: res = b.width * f; break;
-    case KW_LSPACE: break; // LUCA: BoundingBox does not have a lspace length!!!
-    case KW_HEIGHT: res = b.height * f; break;
-    case KW_DEPTH: res = b.depth * f; break;
-    default:
-      assert(false);
-      break;
+  if (dim.pseudo)
+    {
+    switch (dim.pseudoUnitId)
+      {
+      case T_WIDTH: res = b.width * f; break;
+      case T_LSPACE: break; // LUCA: BoundingBox does not have a lspace length!!!
+      case T_HEIGHT: res = b.height * f; break;
+      case T_DEPTH: res = b.depth * f; break;
+      default:
+	assert(false);
+	break;
+      }
+    } 
+  else
+    {
+      res = dim.unit * f;
     }
-  } else {
-    res = dim.unit * f;
-  }
 
   if      (dim.sign == -1) return orig - res;
   else if (dim.sign == +1) return orig + res;

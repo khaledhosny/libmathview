@@ -207,7 +207,7 @@ MathMLView::layout() const
 	  root->refine(rc);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "refinement time: %dms", perf());
-	  UnitValue size(defaultFontSize, UNIT_PT);
+	  Length size(defaultFontSize, Length::PT_UNIT);
 	  RenderingEnvironment env(getContext()->areaFactory, getContext()->shaperManager);
 	  env.SetFontSize(size);
 	  perf.Start();
@@ -220,12 +220,12 @@ MathMLView::layout() const
 	{
 	  Clock perf;
 	  perf.Start();
-	  root->DoLayout(FormattingContext(LAYOUT_MIN,0));
+	  root->DoLayout(FormattingContext(FormattingContext::LAYOUT_MIN,0));
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "minimum layout time: %dms", perf());
 
 	  perf.Start();
-	  root->DoLayout(FormattingContext(LAYOUT_AUTO, std::max(scaled(0), area->GetWidth() -  2 * area->GetXMargin())));
+	  root->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, std::max(scaled(0), area->GetWidth() -  2 * area->GetXMargin())));
 	  root->SetPosition(area->GetXMargin(), area->GetYMargin() + root->GetBoundingBox().height);
 	  perf.Stop();
 	  Globals::logger(LOG_INFO, "layout time: %dms", perf());

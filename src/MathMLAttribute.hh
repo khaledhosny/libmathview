@@ -26,7 +26,6 @@
 #include "SmartPtr.hh"
 #include "Object.hh"
 #include "Value.hh"
-#include "keyword.hh"
 #include "String.hh"
 #include "MathMLAttributeSignature.hh"
 

@@ -23,12 +23,18 @@
 #ifndef __FormattingContext_hh__
 #define __FormattingContext_hh__
 
-#include "keyword.hh"
 #include "scaled.hh"
 
 class FormattingContext
 {
 public:
+  enum LayoutId
+    {
+      LAYOUT_MIN,
+      LAYOUT_MAX,
+      LAYOUT_AUTO
+    };
+
   FormattingContext(LayoutId lt, const scaled& aw) : layoutType(lt), availableWidth(aw) { }
   ~FormattingContext() { }
 
@@ -37,7 +43,7 @@ public:
 
 private:
   LayoutId layoutType;
-  scaled   availableWidth;
+  scaled availableWidth;
 };
 
 #endif // __FormattingContext_hh__

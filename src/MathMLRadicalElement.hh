@@ -67,7 +67,7 @@ private:
   SmartPtr<class MathMLElement> radicand;
   SmartPtr<class MathMLElement> index;
 
-  RGBValue color;
+  RGBColor color;
 };
 
 #endif // MathMLRadicalElement_hh

@@ -38,6 +38,18 @@ enum WidthId {
   WIDTH_PERCENTAGE
 };
 
+enum SpacingId {
+  SPACING_FIXED,
+  SPACING_PERCENTAGE
+};
+
+enum ColumnWidthId {
+  COLUMN_WIDTH_AUTO,
+  COLUMN_WIDTH_FIXED,
+  COLUMN_WIDTH_PERCENTAGE,
+  COLUMN_WIDTH_FIT
+};
+
 struct GroupExtent {
   scaled left;  // left width (from group start to alignment point)
   scaled right; // right width (from alignment point to group end)
@@ -49,12 +61,12 @@ struct AlignmentGroup {
   void Reset(void)
   {
     group = 0;
-    alignment = GROUP_ALIGN_NOTVALID;
+    alignment = T__NOTVALID;
     leftEdge = rightEdge = extent.left = extent.right = 0;
   }
 
   MathMLAlignGroupElement* group; // ptr to the element
-  GroupAlignId alignment;         // alignment for this group
+  TokenId alignment;         // alignment for this group
   scaled leftEdge;                // left edge (different from left width)
   scaled rightEdge;               // right edge (different from right width)
   GroupExtent extent;
@@ -69,8 +81,8 @@ struct TableCell {
     rowSpan = colSpan = 0;
     nAlignGroup = 0;
     aGroup = 0;
-    rowAlign = ROW_ALIGN_NOTVALID;
-    columnAlign = COLUMN_ALIGN_NOTVALID;
+    rowAlign = T__NOTVALID;
+    columnAlign = T__NOTVALID;
     iGroup = 0;
   }
 
@@ -84,8 +96,8 @@ struct TableCell {
   unsigned nAlignGroup;         // number of alignment groups
   AlignmentGroup* aGroup;
 
-  RowAlignId rowAlign;
-  ColumnAlignId columnAlign;
+  TokenId rowAlign;
+  TokenId columnAlign;
 
   // following fields are only temporarily used while arranging groups
   unsigned iGroup;                // group index
@@ -105,11 +117,11 @@ struct TableColumn {
   void Reset(void)
   {
     nAlignGroup = 0;
-    widthType = COLUMN_WIDTH_NOTVALID;
+    widthType = COLUMN_WIDTH_AUTO;
     fixedWidth = 0;
-    spacingType = SPACING_NOTVALID;
+    spacingType = SPACING_FIXED;
     fixedSpacing = 0;
-    lineType = TABLE_LINE_NOTVALID;
+    lineType = T__NOTVALID;
     contentWidth = minimumWidth = width = spacing = 0;
   }
 
@@ -122,17 +134,17 @@ struct TableColumn {
   scaled      fixedWidth;     // when widthType = COLUMN_WIDTH_FIXED
   float       scaleWidth;     // width (when widthType == % )
 
-  SpacingId     spacingType;    // type of spacing
+  SpacingId   spacingType;    // type of spacing
   // NOTE: same as above
   scaled      fixedSpacing;   // spacing between columns (spacingType == FIXED)
   float       scaleSpacing;   // spacing (spacingType == %)
   
-  TableLineId   lineType;       // line type between columns
+  TokenId     lineType;       // line type between columns
 
-  scaled        contentWidth;   // minimum width for actual content (set by RenderColumn)
-  scaled        minimumWidth;   // minimum width for this column
-  scaled        width;          // width of last rendering (>= contentWidth)
-  scaled        spacing;
+  scaled      contentWidth;   // minimum width for actual content (set by RenderColumn)
+  scaled      minimumWidth;   // minimum width for this column
+  scaled      width;          // width of last rendering (>= contentWidth)
+  scaled      spacing;
 };
 
 struct TableRow {
@@ -140,24 +152,24 @@ struct TableRow {
 
   void Reset(void)
   {
-    spacingType = SPACING_NOTVALID;
+    spacingType = SPACING_FIXED;
     fixedSpacing = 0;
-    lineType = TABLE_LINE_NOTVALID;
+    lineType = T__NOTVALID;
     height = depth = spacing = 0;
   }
 
   SmartPtr<MathMLTableRowElement> mtr;   // Table Row element
 
-  SpacingId   spacingType;      // type of spacing (absolute or %)
+  SpacingId spacingType;      // type of spacing (absolute or %)
   scaled    fixedSpacing;     // spacing between rows (spacingType == FIXED)
   float     scaleSpacing;     // spacing between rows (spacingType == %)
 
-  TableLineId lineType;         // line type between rows
+  TokenId   lineType;         // line type between rows
 
-  scaled      height;
-  scaled      depth;
-  scaled      verticalExtent(void) const { return height + depth; }
-  scaled      spacing;
+  scaled    height;
+  scaled    depth;
+  scaled    verticalExtent(void) const { return height + depth; }
+  scaled    spacing;
 };
 
 struct RowLabel {
@@ -165,13 +177,13 @@ struct RowLabel {
 
   void Reset(void)
   {
-    rowAlign = ROW_ALIGN_NOTVALID;
-    columnAlign = COLUMN_ALIGN_NOTVALID;
+    rowAlign = T__NOTVALID;
+    columnAlign = T__NOTVALID;
   }
 
   SmartPtr<MathMLElement> labelElement;
-  RowAlignId     rowAlign;
-  ColumnAlignId  columnAlign;
+  TokenId rowAlign;
+  TokenId columnAlign;
 };
 
 class MathMLTableElement
@@ -231,13 +243,13 @@ protected:
   // table layout
   void         DoHorizontalLayout(const class FormattingContext&);
   void         DoHorizontalMinimumLayout(void);
-  void         DoVerticalLayout(LayoutId);
+  void         DoVerticalLayout(FormattingContext::LayoutId);
   void         ConfirmHorizontalFixedSpacing(void);
   void         ConfirmHorizontalScaleSpacing(const scaled&);
   void         ConfirmVerticalFixedSpacing(void);
   void         ConfirmVerticalScaleSpacing(const scaled&);
   void         AdjustTableWidth(const scaled&);
-  void         SpanRowHeight(LayoutId);
+  void         SpanRowHeight(FormattingContext::LayoutId);
   void         ColumnLayout(unsigned, const class FormattingContext&);
   void         ScaleColumnsLayout(const class FormattingContext&);
   void         SpannedCellsLayout(const class FormattingContext&);
@@ -280,48 +292,48 @@ private:
   unsigned      nColumns;  // total # of columns in the table
   TableCellMatrix cell;    // table data
 
-  TableColumn*  column;
-  TableRow*     row;
+  TableColumn* column;
+  TableRow*    row;
 
-  TableLineId   frame;
+  TokenId      frame;
 
-  TableAlignId  align;
-  int           rowNumber;
+  TokenId      align;
+  int          rowNumber;
 
-  WidthId       widthType;
-  scaled      fixedWidth;
-  float       scaleWidth;
-  scaled        width;
+  WidthId      widthType;
+  scaled       fixedWidth;
+  float        scaleWidth;
+  scaled       width;
 
-  SpacingId     frameHorizontalSpacingType;
-  scaled      frameHorizontalFixedSpacing;
-  float       frameHorizontalScaleSpacing;
-  scaled        frameHorizontalSpacing; // actual orizontal spacing
+  SpacingId    frameHorizontalSpacingType;
+  scaled       frameHorizontalFixedSpacing;
+  float        frameHorizontalScaleSpacing;
+  scaled       frameHorizontalSpacing; // actual orizontal spacing
 
-  SpacingId     frameVerticalSpacingType;
-  scaled      frameVerticalFixedSpacing;
-  float       frameVerticalScaleSpacing;
-  scaled        frameVerticalSpacing; // actual vertical spacing
+  SpacingId    frameVerticalSpacingType;
+  scaled       frameVerticalFixedSpacing;
+  float        frameVerticalScaleSpacing;
+  scaled       frameVerticalSpacing; // actual vertical spacing
 
-  bool          equalRows;
-  bool          equalColumns;
-  bool          displayStyle;
+  bool         equalRows;
+  bool         equalColumns;
+  bool         displayStyle;
 
-  TableSideId   side;
+  TokenId      side;
 
-  SpacingId     minLabelSpacingType;
-  scaled      minLabelFixedSpacing;
-  float       minLabelScaleSpacing;
-  scaled        minLabelSpacing;
+  SpacingId    minLabelSpacingType;
+  scaled       minLabelFixedSpacing;
+  float        minLabelScaleSpacing;
+  scaled       minLabelSpacing;
 
-  // bool          overlappingLabels;
-  RowLabel*     rowLabel;
-  scaled        labelsWidth;
-  scaled        tableWidth;
-  scaled        leftPadding;
+  // bool         overlappingLabels;
+  RowLabel*    rowLabel;
+  scaled       labelsWidth;
+  scaled       tableWidth;
+  scaled       leftPadding;
 
-  RGBValue      color; // color for frame and lines (if present)
-  scaled        lineThickness;
+  RGBColor     color; // color for frame and lines (if present)
+  scaled       lineThickness;
   const GraphicsContext* dGC[2]; // GC for dashed lines
 
   scaled        environmentAxis; // for axis alignment

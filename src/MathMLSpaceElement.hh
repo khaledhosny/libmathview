@@ -41,13 +41,13 @@ public:
 
   virtual bool    IsSpace(void) const;
   virtual bool    IsSpaceLike(void) const;
-  BreakId         GetBreakability(void) const { return breakability; }
+  TokenId         GetBreakability(void) const { return breakability; }
   virtual scaled  GetRightEdge(void) const;
 
 private:
   bool    lineBreak;
   bool    autoLineBreak; // valid if lineBreaking == true
-  BreakId breakability; // valid if auto == false
+  TokenId breakability; // valid if auto == false
 };
 
 #endif // MathMLSpaceElement_hh

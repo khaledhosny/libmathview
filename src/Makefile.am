@@ -16,7 +16,6 @@ libgtkmathview_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
   $(DOM_LIBS) \
-  $(T1_LIBS) \
   $(top_builddir)/src/formatter/gtk_mathml_graphic_device/libgtk_mathml_graphic_device.la
 
 libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
@@ -62,7 +61,6 @@ GUISOURCES = \
   gtkmathview.cc
 
 libgtkmathview_la_SOURCES = \
-  AttributeParser.cc \
   Clock.cc \
   Configuration.cc \
   EntitiesTable.cc \
@@ -128,21 +126,18 @@ libgtkmathview_la_SOURCES = \
   Rectangle.cc \
   RenderingEnvironment.cc \
   RefinementContext.cc \
-  StringTokenizer.cc \
-  UnitValue.cc \
   ValueConversion.cc \
   frameAux.cc \
   gmetadom.cc \
-  keyword.cc \
+  scaledConv.cc \
+  token.cc \
   operatorAux.cc \
   tableLayout.cc \
   tableSetup.cc \
   traverseAux.cc \
   mathVariantAux.cc \
   $(GUISOURCES) \
-  $(GTKSOURCES) \
-  $(T1SOURCES) \
-  $(PSSOURCES)
+  $(GTKSOURCES)
 
 pkginclude_HEADERS = \
   defs.h \
@@ -151,7 +146,6 @@ pkginclude_HEADERS = \
 noinst_HEADERS = \
   AFont.hh \
   Adaptors.hh \
-  AttributeParser.hh \
   Clock.hh \
   Configuration.hh \
   Coords.hh \
@@ -167,8 +161,9 @@ noinst_HEADERS = \
   HorizontalLayout.hh \
   VerticalLayout.hh \
   FormattingContext.hh \
+  MathMLAttributeParsers.hh \
   MathMLDOMLinker.hh \
-  MathMLFormattingEngineFactory.cc \
+  MathMLFormattingEngineFactory.hh \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \
@@ -220,31 +215,25 @@ noinst_HEADERS = \
   MathMLViewContext.hh \
   MathMLmathElement.hh \
   OperatorDictionary.hh \
-  RGBValue.hh \
   Rectangle.hh \
   RenderingEnvironment.hh \
   AbstractRefinementContext.hh \
   RefinementContext.hh \
-  StringTokenizer.hh \
-  UnitValue.hh \
   ValueConversion.hh \
   frameAux.hh \
   gmetadom.hh \
-  keyword.hh \
+  token.hh \
   operatorAux.hh \
   traverseAux.hh \
   mathVariantAux.hh \
   scaledConv.hh \
   for_each_if.h \
   unidefs.h \
-  $(GTKHEADERS) \
-  $(T1HEADERS) \
-  $(PSHEADERS)
+  $(GTKHEADERS)
 
 INCLUDES = \
   $(GTK_CFLAGS) \
   $(DOM_CFLAGS) \
-  $(T1_CFLAGS) \
   -I$(top_builddir) \
   -I$(top_srcdir)/auto/ \
   -I$(srcdir)/formatter/basictypes \

@@ -29,7 +29,6 @@
 
 #include "Globals.hh"
 #include "scaledConv.hh"
-#include "StringTokenizer.hh"
 #include "ValueConversion.hh"
 #include "RenderingEnvironment.hh"
 
@@ -44,20 +43,23 @@ RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af,
   top->displayStyle = true;
 
   top->scriptLevel = 0;
-  top->scriptMinSize.Set(6.0, UNIT_PT);
+  top->scriptMinSize.set(6.0, Length::PT_UNIT);
   top->scriptSizeMultiplier = 0.71;
 
   top->fontAttributes.family = "serif";
-  top->fontAttributes.size.Set(Globals::configuration.GetFontSize(), UNIT_PT);
-  top->fontAttributes.weight = FONT_WEIGHT_NORMAL;
-  top->fontAttributes.style  = FONT_STYLE_NORMAL;
+  top->fontAttributes.size.set(Globals::configuration.GetFontSize(), Length::PT_UNIT);
+  top->fontAttributes.weight = T_NORMAL;
+  top->fontAttributes.style  = T_NORMAL;
 
   top->color = Globals::configuration.GetForeground();
   top->background = Globals::configuration.GetBackground();
   top->transparentBackground = true;
 
-  for (unsigned i = 1; i <= 7; i++)
-    top->mathSpace[i - 1].Set(i / 18.0, UNIT_EM);
+  for (unsigned i = 0; i < 7; i++)
+    {
+      top->mathSpace[MATH_SPACE_NEGATIVEVERYVERYTHICK + i].set(-(7 - i) / 18.0, Length::EM_UNIT);
+      top->mathSpace[MATH_SPACE_VERYVERYTHIN + i].set((i + 1) / 18.0, Length::EM_UNIT);
+    }
 
   top->defaults = NULL;
 
@@ -138,10 +140,10 @@ RenderingEnvironment::GetDisplayStyle(void) const
 }
 
 void
-RenderingEnvironment::SetScriptMinSize(const UnitValue& size)
+RenderingEnvironment::SetScriptMinSize(const Length& size)
 {
   assert(!level.empty());
-  assert(!size.IsPercentage());
+  assert(!size.type == Length::PERCENTAGE_UNIT);
 
   AttributeLevel* top = level.front();
   assert(top != NULL);
@@ -188,8 +190,8 @@ RenderingEnvironment::AddScriptLevel(int delta)
   float multiplier = pow(top->scriptSizeMultiplier, static_cast<float>(delta));
   top->scriptLevel += delta;
 
-  UnitValue newFontSize(top->fontAttributes.size.GetValue() * multiplier,
-			top->fontAttributes.size.GetUnitId());
+  Length newFontSize(top->fontAttributes.size.value * multiplier,
+		     top->fontAttributes.size.type);
 
   // WARNING: if scriptMinSize cannot be em or ex, than the
   // following test can be implemented much more efficiently, because
@@ -230,7 +232,7 @@ RenderingEnvironment::SetFontFamily(const String& family)
 }
 
 void
-RenderingEnvironment::SetFontSize(const UnitValue& size)
+RenderingEnvironment::SetFontSize(const Length& size)
 {
   assert(!level.empty());
 
@@ -239,25 +241,26 @@ RenderingEnvironment::SetFontSize(const UnitValue& size)
 
   // WARNING: a fontSize attribute is to be converted if
   // it's expressed in terms of em ex or %
-  switch (size.GetUnitId()) {
-  case UNIT_EM:
-    top->fontAttributes.size.Set((GetScaledPointsPerEm() * size.GetValue()).toFloat(), UNIT_PT);
-    break;
-  case UNIT_EX:
-    top->fontAttributes.size.Set((GetScaledPointsPerEx() * size.GetValue()).toFloat(), UNIT_PT);
-    break;
-  case UNIT_PERCENTAGE:
-    top->fontAttributes.size.Set(top->fontAttributes.size.GetValue() * size.GetValue(),
-				 top->fontAttributes.size.GetUnitId());
-    break;
-  default:
-    top->fontAttributes.size = size;
-    break;
-  }
+  switch (size.type)
+    {
+    case Length::EM_UNIT:
+      top->fontAttributes.size.set((GetScaledPointsPerEm() * size.value).toFloat(), Length::PT_UNIT);
+      break;
+    case Length::EX_UNIT:
+      top->fontAttributes.size.set((GetScaledPointsPerEx() * size.value).toFloat(), Length::PT_UNIT);
+      break;
+    case Length::PERCENTAGE_UNIT:
+      top->fontAttributes.size.set(top->fontAttributes.size.value * size.value,
+				   top->fontAttributes.size.type);
+      break;
+    default:
+      top->fontAttributes.size = size;
+      break;
+    }
 }
 
 void
-RenderingEnvironment::SetFontWeight(FontWeightId weight)
+RenderingEnvironment::SetFontWeight(TokenId weight)
 {
   assert(!level.empty());
 
@@ -267,7 +270,7 @@ RenderingEnvironment::SetFontWeight(FontWeightId weight)
 }
 
 void
-RenderingEnvironment::SetFontStyle(FontStyleId style)
+RenderingEnvironment::SetFontStyle(TokenId style)
 {
   assert(!level.empty());
 
@@ -289,7 +292,7 @@ RenderingEnvironment::GetFontAttributes() const
 }
 
 void
-RenderingEnvironment::SetColor(RGBValue c)
+RenderingEnvironment::SetColor(const RGBColor& c)
 {
   assert(!level.empty());
 
@@ -300,7 +303,7 @@ RenderingEnvironment::SetColor(RGBValue c)
 }
 
 void
-RenderingEnvironment::SetBackgroundColor(RGBValue c)
+RenderingEnvironment::SetBackgroundColor(const RGBColor& c)
 {
   assert(!level.empty());
 
@@ -311,7 +314,7 @@ RenderingEnvironment::SetBackgroundColor(RGBValue c)
   top->transparentBackground = false;
 }
 
-RGBValue
+RGBColor
 RenderingEnvironment::GetColor() const
 {
   assert(!level.empty());
@@ -322,7 +325,7 @@ RenderingEnvironment::GetColor() const
   return top->color;
 }
 
-RGBValue
+RGBColor
 RenderingEnvironment::GetBackgroundColor() const
 {
   assert(!level.empty());
@@ -334,22 +337,44 @@ RenderingEnvironment::GetBackgroundColor() const
 }
 
 void
-RenderingEnvironment::SetMathSpace(MathSpaceId id,
-				   const UnitValue& value)
+RenderingEnvironment::SetMathSpace(MathSpaceId id, const Length& value)
 {
   assert(!level.empty());
 
   AttributeLevel* top = level.front();
   assert(top != NULL);
 
-  assert(id != MATH_SPACE_NOTVALID);
-  assert(id != MATH_SPACE_LAST);
-  assert(!value.IsPercentage());
+  assert(id >= MATH_SPACE_NEGATIVEVERYVERYTHICK &&
+	 id <= MATH_SPACE_VERYVERYTHICK);
+  assert(!value.type == Length::PERCENTAGE_UNIT);
 
   top->mathSpace[id] = value;
 }
 
-const UnitValue&
+RenderingEnvironment::MathSpaceId
+RenderingEnvironment::mathSpaceIdOfTokenId(TokenId id)
+{
+  switch (id)
+    {
+    case T_NEGATIVEVERYVERYTHICKMATHSPACE: return MATH_SPACE_NEGATIVEVERYVERYTHICK;
+    case T_NEGATIVEVERYTHICKMATHSPACE: return MATH_SPACE_NEGATIVEVERYTHICK;
+    case T_NEGATIVETHICKMATHSPACE: return MATH_SPACE_NEGATIVETHICK;
+    case T_NEGATIVEMEDIUMMATHSPACE: return MATH_SPACE_NEGATIVEMEDIUM;
+    case T_NEGATIVETHINMATHSPACE: return MATH_SPACE_NEGATIVETHIN;
+    case T_NEGATIVEVERYTHINMATHSPACE: return MATH_SPACE_NEGATIVEVERYTHIN;
+    case T_NEGATIVEVERYVERYTHINMATHSPACE: return MATH_SPACE_NEGATIVEVERYVERYTHIN;
+    case T_VERYVERYTHINMATHSPACE: return MATH_SPACE_VERYVERYTHIN;
+    case T_VERYTHINMATHSPACE: return MATH_SPACE_VERYTHIN;
+    case T_THINMATHSPACE: return MATH_SPACE_THIN;
+    case T_MEDIUMMATHSPACE: return MATH_SPACE_MEDIUM;
+    case T_THICKMATHSPACE: return MATH_SPACE_THICK;
+    case T_VERYTHICKMATHSPACE: return MATH_SPACE_VERYTHICK;
+    case T_VERYVERYTHICKMATHSPACE: return MATH_SPACE_VERYVERYTHICK;
+    default: assert(false);
+    }
+}
+
+const Length&
 RenderingEnvironment::GetMathSpace(MathSpaceId id) const
 {
   assert(!level.empty());
@@ -357,8 +382,8 @@ RenderingEnvironment::GetMathSpace(MathSpaceId id) const
   AttributeLevel* top = level.front();
   assert(top != NULL);
 
-  assert(id != MATH_SPACE_NOTVALID);
-  assert(id != MATH_SPACE_LAST);
+  assert(id >= MATH_SPACE_NEGATIVEVERYVERYTHICK &&
+	 id <= MATH_SPACE_VERYVERYTHICK);
 
   return top->mathSpace[id];
 }
@@ -380,8 +405,8 @@ RenderingEnvironment::GetScaledPointsPerEm() const
 #endif
 
   assert(top->fontAttributes.HasSize());
-  assert(top->fontAttributes.size.IsAbsolute());
-  return top->fontAttributes.size.ToScaledPoints();
+  assert(top->fontAttributes.size.absolute());
+  return ToScaledPoints(top->fontAttributes.size);
 }
 
 scaled
@@ -401,15 +426,19 @@ RenderingEnvironment::GetScaledPointsPerEx() const
 #endif
 
   assert(top->fontAttributes.HasSize());
-  assert(top->fontAttributes.size.IsAbsolute());
-  return top->fontAttributes.size.ToScaledPoints() * (2.0 / 3.0);
+  assert(top->fontAttributes.size.absolute());
+  return ToScaledPoints(top->fontAttributes.size) * (2.0 / 3.0);
 }
 
 scaled
-RenderingEnvironment::ToScaledPoints(const UnitValue& value) const
+RenderingEnvironment::ToScaledPoints(const Length& length) const
 {
-  assert(!value.IsPercentage());
-  return value.ToScaledPoints(GetScaledPointsPerEm(), GetScaledPointsPerEx());
+  switch (length.type)
+    {
+    case Length::EM_UNIT: return GetScaledPointsPerEm() * length.value;
+    case Length::EX_UNIT: return GetScaledPointsPerEx() * length.value;
+    default: return ::ToScaledPoints(length);
+    }
 }
 
 scaled
@@ -445,14 +474,15 @@ RenderingEnvironment::GetRuleThickness() const
 
 #ifdef TEXISH_MATHML
   // don't know if this is the correct heuristics
-  scaled s = top->fontAttributes.size.ToScaledPoints() * 0.04;
+  scaled s = ToScaledPoints(top->fontAttributes.size) * 0.04;
   return s;
 #else
-  scaled s = std::min(px2sp(1), top->fontAttributes.size.ToScaledPoints() * 0.1);
+  scaled s = std::min(px2sp(1), ToScaledPoints(top->fontAttributes.size) * 0.1);
   return s;
 #endif
 }
 
+#if 0
 void
 RenderingEnvironment::SetFontMode(FontModeId mode)
 {
@@ -474,3 +504,4 @@ RenderingEnvironment::GetFontMode() const
 
   return top->fontAttributes.mode;
 }
+#endif

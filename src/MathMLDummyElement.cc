@@ -64,7 +64,7 @@ MathMLDummyElement::Render(const DrawingArea& area)
       if (fGC[Selected()] == NULL)
 	{
 	  GraphicsContextValues values;
-	  values.foreground = Selected() ? area.GetSelectionForeground() : RED_COLOR;
+	  values.foreground = Selected() ? area.GetSelectionForeground() : RGBColor::RED();
 	  values.lineStyle = LINE_STYLE_SOLID;
 	  fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
 	}

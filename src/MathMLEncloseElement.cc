@@ -94,7 +94,7 @@ MathMLEncloseElement::Setup(RenderingEnvironment& env)
     {
       notation = ToString(GET_ATTRIBUTE_VALUE(Enclose, notation));
 
-      spacing = env.ToScaledPoints(env.GetMathSpace(MATH_SPACE_MEDIUM));
+      spacing = env.ToScaledPoints(env.GetMathSpace(RenderingEnvironment::MATH_SPACE_MEDIUM));
       lineThickness = env.GetRuleThickness();
       color = env.GetColor();
 

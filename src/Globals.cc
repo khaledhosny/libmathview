@@ -27,10 +27,7 @@
 #include <string.h>
 
 #include "Globals.hh"
-
-#ifdef HAVE_LIBT1
-#include <t1lib.h>
-#endif
+#include "token.hh"
 
 #include "config.dirs"
 
@@ -50,6 +47,8 @@ namespace Globals {
   InitGlobalData(const char* confPath)
   {
     assert(!done);
+
+    initTokens();
 
     bool res = false;
     if (confPath != NULL) res = configuration.Load(confPath);
@@ -83,13 +82,6 @@ namespace Globals {
       if (!res) dictionary.Load(PKGDATADIR"/dictionary.xml");
     }
 
-    if (getenv("T1LIB_CONFIG") == NULL && configuration.GetT1ConfigFiles().size() == 1)
-      {
-	std::string s = "T1LIB_CONFIG=";
-	s += configuration.GetT1ConfigFiles()[0];
-	putenv(const_cast<char*>(s.c_str()));
-      }
-
     done = true;
   }
 
@@ -97,9 +89,6 @@ namespace Globals {
   SetVerbosity(int level)
   {
     logger.SetLogLevel(level);
-#ifdef HAVE_LIBT1
-    T1_SetLogLevel(level + 1);
-#endif // HAVE_LIBT1
   }
 
   int

@@ -102,7 +102,7 @@ MathMLUnderOverElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  assert(IsA() == TAG_MUNDER || IsA() == TAG_MOVER || IsA() == TAG_MUNDEROVER);
+	  assert(IsA() == T_MUNDER || IsA() == T_MOVER || IsA() == T_MUNDEROVER);
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
@@ -112,21 +112,21 @@ MathMLUnderOverElement::construct()
 
 	  switch (IsA())
 	    {
-	    case TAG_MUNDER:
+	    case T_MUNDER:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetUnderScript()))
 		SetUnderScript(getFactory()->createDummyElement(getView()));
 	      SetOverScript(0);
 	      break;
-	    case TAG_MOVER:
+	    case T_MOVER:
 	      SetUnderScript(0);
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetOverScript()))
 		SetOverScript(getFactory()->createDummyElement(getView()));
 	      break;
-	    case TAG_MUNDEROVER:
+	    case T_MUNDEROVER:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetUnderScript()))
@@ -281,7 +281,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	} 
       else
 	{    
-	  if (ctxt.GetLayoutType() != LAYOUT_AUTO)
+	  if (ctxt.GetLayoutType() != FormattingContext::LAYOUT_AUTO)
 	    {
 	      base->DoLayout(ctxt);
 	      if (underScript) underScript->DoLayout(ctxt);
@@ -295,9 +295,9 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	      scaled wOp      = 0;
 	      scaled wOther   = 0;
 
-	      SmartPtr<MathMLOperatorElement> baseOp  = findStretchyOperator(base, STRETCH_HORIZONTAL);
-	      SmartPtr<MathMLOperatorElement> underOp = findStretchyOperator(underScript, STRETCH_HORIZONTAL);
-	      SmartPtr<MathMLOperatorElement> overOp  = findStretchyOperator(overScript, STRETCH_HORIZONTAL);
+	      SmartPtr<MathMLOperatorElement> baseOp  = findStretchyOperator(base);
+	      SmartPtr<MathMLOperatorElement> underOp = findStretchyOperator(underScript);
+	      SmartPtr<MathMLOperatorElement> overOp  = findStretchyOperator(overScript);
 
 	      Globals::logger(LOG_DEBUG, "stretchy: %p %p %p",
 			      static_cast<MathMLElement*>(baseOp),

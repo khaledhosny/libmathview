@@ -42,15 +42,16 @@ MathMLTableElement::DoLayout(const FormattingContext& ctxt)
       //std::cout << "redoing table layout with type " << this << " " << ctxt.GetLayoutType() << std::endl;
       scaled aAvailWidth = PrepareLabelsLayout(ctxt);
 
-      if (ctxt.GetLayoutType() == LAYOUT_MIN) DoHorizontalMinimumLayout();
+      if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) DoHorizontalMinimumLayout();
       else DoHorizontalLayout(ctxt);
 
       if (HasLabels()) DoLabelsLayout(ctxt);
 
-      if (ctxt.GetLayoutType() == LAYOUT_AUTO) {
-	StretchyCellsLayout();
-	//AdjustTableWidth(ctxt.GetAvailableWidth());
-      }
+      if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO)
+	{
+	  StretchyCellsLayout();
+	  //AdjustTableWidth(ctxt.GetAvailableWidth());
+	}
 
       DoVerticalLayout(ctxt.GetLayoutType());
 
@@ -108,7 +109,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
     scaled avail = std::max(scaled(0), availWidth - GetSpacingWidth());
     scaled availPerColumn = avail / static_cast<int>(nColumns);
 
-    if (ctxt.GetLayoutType() == LAYOUT_AUTO) {
+    if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO) {
       // in any case all columns must be rendered to the max of the minimum widths!!!!!!
       for (j = 0; j < nColumns; j++)
 	availPerColumn = std::max(availPerColumn, column[j].minimumWidth);
@@ -241,7 +242,7 @@ MathMLTableElement::DoHorizontalMinimumLayout()
 
   for (j = 0; j < nColumns; j++) {
     column[j].minimumWidth = 0;
-    ColumnLayout(j, FormattingContext(LAYOUT_MIN, 0));
+    ColumnLayout(j, FormattingContext(FormattingContext::LAYOUT_MIN, 0));
     column[j].minimumWidth = column[j].contentWidth;
   }
 
@@ -250,7 +251,7 @@ MathMLTableElement::DoHorizontalMinimumLayout()
       unsigned n = cell[i][j].colSpan;
       if (cell[i][j].mtd && !cell[i][j].spanned && n > 1) {
 	scaled minWidth = GetMinimumWidth(j, cell[i][j].colSpan);
-	cell[i][j].mtd->DoLayout(FormattingContext(LAYOUT_MIN, 0));
+	cell[i][j].mtd->DoLayout(FormattingContext(FormattingContext::LAYOUT_MIN, 0));
 	scaled cellWidth = cell[i][j].mtd->GetBoundingBox().width;
 	if (cellWidth > minWidth) {
 	  for (unsigned k = 0; k < n; k++) 
@@ -323,7 +324,7 @@ unsigned
 MathMLTableElement::CountHorizontalSpacingTypes(SpacingId id) const
 {
   unsigned counter = 0;
-  if (frame != TABLE_LINE_NONE && frameHorizontalSpacingType == id) counter += 2;
+  if (frame != T_NONE && frameHorizontalSpacingType == id) counter += 2;
   for (unsigned j = 0; j + 1 < nColumns; j++) if (column[j].spacingType == id) counter++;
   return counter;
 }
@@ -331,7 +332,7 @@ MathMLTableElement::CountHorizontalSpacingTypes(SpacingId id) const
 void
 MathMLTableElement::ConfirmHorizontalFixedSpacing()
 {
-  if (frame != TABLE_LINE_NONE) {
+  if (frame != T_NONE) {
     if (frameHorizontalSpacingType == SPACING_FIXED)
       frameHorizontalSpacing = frameHorizontalFixedSpacing;
   } else
@@ -351,7 +352,7 @@ MathMLTableElement::ConfirmHorizontalScaleSpacing(const scaled& tableWidth)
 {
   assert(tableWidth >= scaled(0));
 
-  if (frame != TABLE_LINE_NONE) {
+  if (frame != T_NONE) {
     if (frameHorizontalSpacingType == SPACING_PERCENTAGE)
       frameHorizontalSpacing = tableWidth * frameHorizontalScaleSpacing;
   }
@@ -368,7 +369,7 @@ MathMLTableElement::GetHorizontalScale() const
   float scale = 0;
   unsigned j;
 
-  if (frame != TABLE_LINE_NONE)
+  if (frame != T_NONE)
     if (frameHorizontalSpacingType == SPACING_PERCENTAGE)
       scale += 2 * frameHorizontalScaleSpacing;
 
@@ -388,7 +389,7 @@ MathMLTableElement::GetVerticalScale() const
 {
   float scale = 0;
 
-  if (frame != TABLE_LINE_NONE)
+  if (frame != T_NONE)
     if (frameVerticalSpacingType == SPACING_PERCENTAGE)
       scale += 2 * frameVerticalScaleSpacing;
 
@@ -507,7 +508,7 @@ MathMLTableElement::ColumnLayout(unsigned j, const FormattingContext& ctxt)
     if (tableCell.mtd &&
 	!tableCell.spanned && tableCell.colSpan == 1) {
 
-      if (ctxt.GetLayoutType() != LAYOUT_AUTO || !tableCell.mtd->IsStretchyOperator())
+      if (ctxt.GetLayoutType() != FormattingContext::LAYOUT_AUTO || !tableCell.mtd->IsStretchyOperator())
 	{
 	  // CONFLICT: well, hard to explain. It is obvious that group
 	  // alignment must be taken into account here, because we want to
@@ -591,7 +592,7 @@ MathMLTableElement::ColumnGroupsLayout(unsigned j, const FormattingContext& ctxt
   for (k = 0; k < nAlignGroup; k++)
     alignedCellWidth += gExtent[k].left + gExtent[k].right;
 
-  if (ctxt.GetLayoutType() == LAYOUT_AUTO)
+  if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO)
     {
       for (i = 0; i < nRows; i++) {
 	TableCell& tableCell = cell[i][j];
@@ -608,7 +609,7 @@ MathMLTableElement::ColumnGroupsLayout(unsigned j, const FormattingContext& ctxt
 		if (k > 0) rightPrev = gExtent[k - 1].right - tableCell.aGroup[k - 1].extent.right;
 
 		tableCell.aGroup[k].group->SetWidth(rightPrev + gExtent[k].left - tableCell.aGroup[k].extent.left);
-		tableCell.aGroup[k].group->DoLayout(FormattingContext(LAYOUT_AUTO, 0));
+		tableCell.aGroup[k].group->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, 0));
 	      }
 	  }
 
@@ -647,8 +648,8 @@ MathMLTableElement::SpannedCellsLayout(const FormattingContext& ctxt)
     for (unsigned j = 0; j < nColumns; j++) {
       if (cell[i][j].mtd &&
 	  !cell[i][j].spanned && cell[i][j].colSpan > 1) {
-	if (ctxt.GetLayoutType() == LAYOUT_MIN) {
-	  cell[i][j].mtd->DoLayout(FormattingContext(LAYOUT_MIN, 0));
+	if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) {
+	  cell[i][j].mtd->DoLayout(FormattingContext(FormattingContext::LAYOUT_MIN, 0));
 	  const BoundingBox& cellBox = cell[i][j].mtd->GetBoundingBox();
 	  scaled widthPerColumn = std::max(scaled(0), cellBox.width / static_cast<int>(cell[i][j].colSpan));
 	  for (unsigned k = 0; k < cell[i][j].colSpan; k++)
@@ -678,6 +679,7 @@ MathMLTableElement::StretchyCellsLayout()
 		{
 		  scaled width = GetColumnWidth(j, cell[i][j].colSpan);
 
+#if 0
 		  if (op->GetStretch() == STRETCH_VERTICAL)
 		    {
 		      scaled height = GetRowHeight(i, cell[i][j].rowSpan);
@@ -687,8 +689,9 @@ MathMLTableElement::StretchyCellsLayout()
 		    {
 		      op->HorizontalStretchTo(width);
 		    }
+#endif
 
-		  cell[i][j].mtd->DoLayout(FormattingContext(LAYOUT_AUTO, width));
+		  cell[i][j].mtd->DoLayout(FormattingContext(FormattingContext::LAYOUT_AUTO, width));
 		}
 	    }
 	}
@@ -696,9 +699,9 @@ MathMLTableElement::StretchyCellsLayout()
 }
 
 void
-MathMLTableElement::DoVerticalLayout(LayoutId id)
+MathMLTableElement::DoVerticalLayout(FormattingContext::LayoutId id)
 {
-  if (id == LAYOUT_MIN) EnforceVerticalInvariants();
+  if (id == FormattingContext::LAYOUT_MIN) EnforceVerticalInvariants();
 
   ConfirmVerticalFixedSpacing();
 
@@ -712,7 +715,7 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
     for (j = 0; j < nColumns; j++) 
       if (cell[i][j].mtd &&
 	  !cell[i][j].spanned &&
-	  cell[i][j].rowAlign == ROW_ALIGN_BASELINE) {
+	  cell[i][j].rowAlign == T_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
         ascent = std::max(ascent, box.height);
         if (cell[i][j].rowSpan == 1) descent = std::max(descent, box.depth);
@@ -720,7 +723,7 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement != NULL &&
-          rowLabel[i].rowAlign == ROW_ALIGN_BASELINE) {
+          rowLabel[i].rowAlign == T_BASELINE) {
         const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
         ascent = std::max(ascent, labelBox.height);
         descent = std::max(descent, labelBox.depth);
@@ -730,14 +733,14 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
     for (j = 0; j < nColumns; j++)
       if (cell[i][j].mtd &&
 	  !cell[i][j].spanned && cell[i][j].rowSpan == 1 &&
-	  cell[i][j].rowAlign != ROW_ALIGN_BASELINE) {
+	  cell[i][j].rowAlign != T_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
 	if (box.verticalExtent() > ascent + descent) descent = box.verticalExtent() - ascent;
       }
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement &&
-	  rowLabel[i].rowAlign != ROW_ALIGN_BASELINE) {
+	  rowLabel[i].rowAlign != T_BASELINE) {
 	const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
 	if (labelBox.verticalExtent() > ascent + descent) descent = labelBox.verticalExtent() - ascent;
       }
@@ -813,7 +816,7 @@ MathMLTableElement::NormalizeVerticalScale(float hScale)
 void
 MathMLTableElement::ConfirmVerticalFixedSpacing()
 {
-  if (frame != TABLE_LINE_NONE) {
+  if (frame != T_NONE) {
     if (frameVerticalSpacingType == SPACING_FIXED)
       frameVerticalSpacing = frameVerticalFixedSpacing;
   } else
@@ -828,7 +831,7 @@ MathMLTableElement::ConfirmVerticalFixedSpacing()
 void
 MathMLTableElement::ConfirmVerticalScaleSpacing(const scaled& tableHeight)
 {
-  if (frame != TABLE_LINE_NONE) {
+  if (frame != T_NONE) {
     if (frameVerticalSpacingType == SPACING_PERCENTAGE)
       frameVerticalSpacing = tableHeight * frameVerticalScaleSpacing;
   }
@@ -840,7 +843,7 @@ MathMLTableElement::ConfirmVerticalScaleSpacing(const scaled& tableHeight)
 }
 
 void
-MathMLTableElement::SpanRowHeight(LayoutId id)
+MathMLTableElement::SpanRowHeight(FormattingContext::LayoutId)
 {
   for (unsigned j = 0; j < nColumns; j++)
     {
@@ -988,17 +991,17 @@ MathMLTableElement::AlignTable(const scaled& height, BoundingBox& box)
 
   if (rowNumber == 0) {
     switch (align) {
-    case TABLE_ALIGN_TOP:
+    case T_TOP:
       box.height  = 0;
       break;
-    case TABLE_ALIGN_BOTTOM:
+    case T_BOTTOM:
       box.height  = height;
       break;
-    case TABLE_ALIGN_AXIS:
+    case T_AXIS:
       box.height  = height / 2 + environmentAxis;
       break;
-    case TABLE_ALIGN_CENTER:
-    case TABLE_ALIGN_BASELINE:
+    case T_CENTER:
+    case T_BASELINE:
     default:
       box.height  = height / 2;
       break;
@@ -1009,19 +1012,19 @@ MathMLTableElement::AlignTable(const scaled& height, BoundingBox& box)
     upTo += frameVerticalSpacing;
 
     switch (align) {
-    case TABLE_ALIGN_TOP:
+    case T_TOP:
       box.height = upTo - row[rowNumber - 1].verticalExtent();
       break;
-    case TABLE_ALIGN_BOTTOM:
+    case T_BOTTOM:
       box.height = upTo;
       break;
-    case TABLE_ALIGN_AXIS:
+    case T_AXIS:
       box.height = upTo - row[rowNumber - 1].verticalExtent() / 2 + environmentAxis;
       break;
-    case TABLE_ALIGN_BASELINE:
+    case T_BASELINE:
       box.height = upTo - row[rowNumber - 1].depth;
       break;
-    case TABLE_ALIGN_CENTER:
+    case T_CENTER:
     default:
       box.height = upTo - row[rowNumber - 1].verticalExtent() / 2;
       break;      
@@ -1041,7 +1044,7 @@ MathMLTableElement::PrepareLabelsLayout(const FormattingContext& ctxt)
   // overlappingLabels = false;
   scaled aAvailWidth = ctxt.GetAvailableWidth();
 
-  if (ctxt.GetLayoutType() == LAYOUT_AUTO && HasLabels()) {
+  if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO && HasLabels()) {
     // FIXME: what if the minLabelSpacing is a percentage value?
     assert(minLabelSpacingType == SPACING_FIXED);
     minLabelSpacing = std::max(scaled(0), minLabelFixedSpacing);
@@ -1051,7 +1054,7 @@ MathMLTableElement::PrepareLabelsLayout(const FormattingContext& ctxt)
 #if 0
     if (GetMaxBoundingBox().width - maxLabelWidth - minLabelSpacing <= availWidth &&
 	availWidth < GetMaxBoundingBox().width &&
-	(side == TABLE_SIDE_LEFTOVERLAP || side == TABLE_SIDE_RIGHTOVERLAP)) {
+	(side == T_LEFTOVERLAP || side == T_RIGHTOVERLAP)) {
       // ok, there is not enough room to render the labels aside the
       // table, however is we drop the labels the table could fit well, so
       // the labels will overlap
@@ -1114,14 +1117,14 @@ MathMLTableElement::AdjustTableLayoutWithLabels(const FormattingContext& ctxt)
 
   tableWidth = box.width;
 
-  if (ctxt.GetLayoutType() == LAYOUT_AUTO &&
+  if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO &&
       ctxt.GetAvailableWidth() > labelsWidth + minLabelSpacing + tableWidth) {
     scaled extra = ctxt.GetAvailableWidth() - tableWidth;
 
     if (extra > (minLabelSpacing + labelsWidth) * 2) {
       leftPadding = extra / 2;
     } else {
-      if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)
+      if (side == T_LEFT || side == T_LEFTOVERLAP)
 	leftPadding = labelsWidth + minLabelSpacing;
       else
 	leftPadding = extra - minLabelSpacing - labelsWidth;
@@ -1129,7 +1132,7 @@ MathMLTableElement::AdjustTableLayoutWithLabels(const FormattingContext& ctxt)
 
     box.width = std::max(ctxt.GetAvailableWidth(), tableWidth + labelsWidth + minLabelSpacing);
   } else {
-    if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)
+    if (side == T_LEFT || side == T_LEFTOVERLAP)
       leftPadding = labelsWidth + minLabelSpacing;
     else
       leftPadding = 0;

@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "FormattingContext.hh"
 #include "ValueConversion.hh"
@@ -32,7 +31,7 @@
 MathMLAlignMarkElement::MathMLAlignMarkElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
 {
-  edge = MARK_ALIGN_NOTVALID;
+  edge = T__NOTVALID;
 }
  
 MathMLAlignMarkElement::~MathMLAlignMarkElement()
@@ -54,8 +53,8 @@ MathMLAlignMarkElement::Setup(RenderingEnvironment&)
 {
   if (DirtyAttribute())
     {
-      edge = ToMarkAlignId(GET_ATTRIBUTE_VALUE(AlignMark, edge));
-      assert(edge != MARK_ALIGN_NOTVALID);
+      edge = ToTokenId(GET_ATTRIBUTE_VALUE(AlignMark, edge));
+      assert(edge != T__NOTVALID);
       box.unset();
       ResetDirtyAttribute();
     }

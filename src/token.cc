@@ -20,30 +20,55 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLMarkNode_hh
-#define MathMLMarkNode_hh
+#include <config.h>
 
+#include <cassert>
+
+#include "HashMap.hh"
 #include "token.hh"
-#include "MathMLTextNode.hh"
 
-class MathMLMarkNode : public MathMLTextNode
+struct Entry
 {
-protected:
-  MathMLMarkNode(TokenId = T__NOTVALID);
-  virtual ~MathMLMarkNode();
-
-public:
-  static SmartPtr<MathMLMarkNode> create(TokenId t)
-  { return new MathMLMarkNode(t); }
-  
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
-
-  TokenId GetAlignmentEdge(void) const { return edge; }
-
-protected:
-  TokenId edge;
+  TokenId id;
+  const char* literal;
 };
 
-#endif // MathMLMarkNode_hh
+static Entry token[] =
+  {
+#include "token.def"
+    { T__NOTVALID, 0 }
+  };
+
+typedef HASH_MAP_NS::hash_map<String,TokenId,StringHash,StringEq> Map;
+static bool initialized = false;
+static Map map;
+
+void
+initTokens()
+{
+  assert(!initialized);
+  for (unsigned i = 1; token[i].literal; i++)
+    map[String(token[i].literal)] = token[i].id;
+  initialized = true;
+}
+
+TokenId
+tokenIdOfString(const char* s)
+{
+  assert(s);
+  return tokenIdOfString(String(s));
+}
+
+TokenId
+tokenIdOfString(const String& s)
+{
+  Map::iterator p = map.find(s);
+  return (p != map.end()) ? (*p).second : T__NOTVALID;
+}
+
+const char*
+stringOfTokenId(TokenId id)
+{
+  assert(id >= 0 && id < sizeof(token) / sizeof(Entry));
+  return token[id].literal;
+}

@@ -26,12 +26,13 @@
 
 #include <assert.h>
 
-#include "frameAux.hh"
-#include "MathMLFrame.hh"
-#include "MathMLTextNode.hh"
-#include "MathMLRowElement.hh"
-#include "MathMLTokenElement.hh"
+#include "FormattingContext.hh"
 #include "MathMLContainerElement.hh"
+#include "MathMLFrame.hh"
+#include "MathMLRowElement.hh"
+#include "MathMLTextNode.hh"
+#include "MathMLTokenElement.hh"
+#include "frameAux.hh"
 
 const BoundingBox&
 getFrameBoundingBox(const SmartPtr<MathMLFrame>& frame)

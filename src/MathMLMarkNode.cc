@@ -28,7 +28,7 @@
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
 
-MathMLMarkNode::MathMLMarkNode(MarkAlignType e)
+MathMLMarkNode::MathMLMarkNode(TokenId e)
 {
   edge = e;
 }

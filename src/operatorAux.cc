@@ -34,8 +34,10 @@ isStretchyOperator(const SmartPtr<MathMLElement>& elem)
   return findStretchyOperator(elem);
 }
 
+#if 0
 bool
 isStretchyOperator(const SmartPtr<MathMLElement>& elem, StretchId id)
 {
   return findStretchyOperator(elem, id);
 }
+#endif

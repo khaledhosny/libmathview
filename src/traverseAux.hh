@@ -28,11 +28,10 @@
 #endif
 
 #include "SmartPtr.hh"
-#include "keyword.hh"
 
 SmartPtr<class MathMLElement>         findEmbellishedOperatorRoot(const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&);
-SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
+//SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
 SmartPtr<class MathMLElement>         findCommonAncestor(const SmartPtr<class MathMLElement>&,
 							 const SmartPtr<class MathMLElement>&);
 SmartPtr<class MathMLActionElement>   findActionElement(const SmartPtr<class MathMLElement>&);

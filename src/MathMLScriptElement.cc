@@ -114,7 +114,7 @@ MathMLScriptElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  assert(IsA() == TAG_MSUB || IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP);
+	  assert(IsA() == T_MSUB || IsA() == T_MSUP || IsA() == T_MSUBSUP);
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  
 	  if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(0)))
@@ -124,21 +124,21 @@ MathMLScriptElement::construct()
 
 	  switch (IsA())
 	    {
-	    case TAG_MSUB:
+	    case T_MSUB:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
 		SetSubScript(getFactory()->createDummyElement(getView()));
 	      SetSuperScript(0);
 	      break;
-	    case TAG_MSUP:
+	    case T_MSUP:
 	      SetSubScript(0);
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
 		SetSuperScript(getFactory()->createDummyElement(getView()));
 	      break;
-	    case TAG_MSUBSUP:
+	    case T_MSUBSUP:
 	      if (SmartPtr<MathMLElement> e = getFormattingNode(children.item(1)))
 		SetSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
@@ -193,9 +193,9 @@ MathMLScriptElement::Setup(RenderingEnvironment& env)
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, subscriptshift))
 	    {
-	      assert(IsNumberUnit(value));
-	      UnitValue unitValue = ToNumberUnit(value);
-	      assert(!unitValue.IsPercentage());
+	      assert(IsLength(value));
+	      Length unitValue = ToLength(value);
+	      assert(!unitValue.type == Length::PERCENTAGE_UNIT);
 	      subMinShift = env.ToScaledPoints(unitValue);
 	    }
 	}
@@ -206,9 +206,9 @@ MathMLScriptElement::Setup(RenderingEnvironment& env)
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, superscriptshift))
 	    {
-	      assert(IsNumberUnit(value));
-	      UnitValue unitValue = ToNumberUnit(value);
-	      assert(!unitValue.IsPercentage());
+	      assert(IsLength(value));
+	      Length unitValue = ToLength(value);
+	      assert(!unitValue.type == Length::PERCENTAGE_UNIT);
 	      superMinShift = env.ToScaledPoints(unitValue);
 	    }
 	}

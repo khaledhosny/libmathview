@@ -56,7 +56,7 @@ MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v)
   fGC[0] = fGC[1] = NULL;
   bGC[0] = bGC[1] = NULL;
   
-  background = BLACK_COLOR;
+  background = RGBColor::BLACK();
 }
 
 MathMLElement::~MathMLElement()
@@ -165,10 +165,10 @@ MathMLElement::getFormattingNode(const DOM::Element& elem) const
 #endif // HAVE_GMETADOM
 
 bool
-MathMLElement::IsSet(AttributeId id) const
+MathMLElement::IsSet(TokenId id) const
 {
 #if defined(HAVE_GMETADOM)
-  return getDOMElement() && getDOMElement().hasAttribute(NameOfAttributeId(id));
+  return getDOMElement() && getDOMElement().hasAttribute(stringOfTokenId(id));
 #else // HAVE_GMETADOM
   return false;
 #endif
@@ -306,13 +306,13 @@ MathMLElement::GetCoreOperatorTop()
   return 0;
 }
 
-TagId
+TokenId
 MathMLElement::IsA() const
 {
   if (DOM::Element el = getDOMElement())
-    return TagIdOfName(std::string(nodeLocalName(el)).c_str());
+    return tokenIdOfString(std::string(nodeLocalName(el)).c_str());
   else
-    return TAG_NOTVALID;
+    return T__NOTVALID;
 }
 
 void

@@ -28,7 +28,6 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "UnitValue.hh"
 #include "DrawingArea.hh"
 
 // definition of local adaptors
@@ -40,7 +39,7 @@ struct DeleteGraphicsContextAdaptor
 };
 
 DrawingArea::DrawingArea(const GraphicsContextValues& v, const scaled& xMargin, const scaled& yMargin,
-			 RGBValue f, RGBValue b)
+			 const RGBColor& f, const RGBColor& b)
 {
   width = height = 0;
 

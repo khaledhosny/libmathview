@@ -37,10 +37,10 @@ IsEmpty(const SmartPtr<Value>& value)
 }
 
 bool
-IsKeyword(const SmartPtr<Value>& value)
+IsTokenId(const SmartPtr<Value>& value)
 {
   assert(value);
-  return is_a< Variant<KeywordId> >(value);
+  return is_a< Variant<TokenId> >(value);
 }
 
 bool
@@ -51,30 +51,33 @@ IsSequence(const SmartPtr<Value>& value)
 }
 
 bool
-IsNumberUnit(const SmartPtr<Value>& value)
+IsLength(const SmartPtr<Value>& value)
 {
   assert(value);
-  return is_a< Variant<UnitValue> >(value);
+  return is_a< Variant<Length> >(value);
 }
 
 bool
-IsRGBValue(const SmartPtr<Value>& value)
+IsRGBColor(const SmartPtr<Value>& value)
 {
   assert(value);
-  return is_a< Variant<RGBValue> >(value);
+  return is_a< Variant<RGBColor> >(value);
+}
+
+bool
+IsNumber(const SmartPtr<Value>& value)
+{
+  assert(value);
+  return is_a< Variant<float> >(value);
 }
 
 bool
 ToBoolean(const SmartPtr<Value>& value)
 {
-  switch (ToKeywordId(value))
-    {
-    case KW_FALSE: return false;
-    case KW_TRUE: return true;
-    default:
-      assert(IMPOSSIBLE);
-      return false;
-    }
+  if (SmartPtr< Variant<bool> > v = smart_cast< Variant<bool> >(value))
+    return v->getValue();
+  assert(false);
+  return bool();
 }
 
 float
@@ -83,7 +86,7 @@ ToNumber(const SmartPtr<Value>& value)
   if (SmartPtr< Variant<float> > v = smart_cast< Variant<float> >(value))
     return v->getValue();
   assert(false);
-  return 0;
+  return float();
 }
 
 int
@@ -92,7 +95,7 @@ ToInteger(const SmartPtr<Value>& value)
   if (SmartPtr< Variant<int> > v = smart_cast< Variant<int> >(value))
     return v->getValue();
   assert(false);
-  return 0;
+  return int();
 }
 
 String
@@ -101,36 +104,36 @@ ToString(const SmartPtr<Value>& value)
   if (SmartPtr< Variant<String> > v = smart_cast< Variant<String> >(value))
     return v->getValue();
   assert(false);
-  return 0;
+  return String();
 }
 
-UnitValue
-ToNumberUnit(const SmartPtr<Value>& value)
+Length
+ToLength(const SmartPtr<Value>& value)
 {
-  if (SmartPtr< Variant<UnitValue> > v = smart_cast< Variant<UnitValue> >(value))
+  if (SmartPtr< Variant<Length> > v = smart_cast< Variant<Length> >(value))
     return v->getValue();
   assert(false);
-  return UnitValue();
+  return Length();
 }
 
-RGBValue
-ToRGBValue(const SmartPtr<Value>& value)
+RGBColor
+ToRGBColor(const SmartPtr<Value>& value)
 {
-  if (SmartPtr< Variant<RGBValue> > v = smart_cast< Variant<RGBValue> >(value))
+  if (SmartPtr< Variant<RGBColor> > v = smart_cast< Variant<RGBColor> >(value))
     return v->getValue();
   assert(false);
-  return BLACK_COLOR;
+  return RGBColor();
 }
 
-KeywordId
-ToKeywordId(const SmartPtr<Value>& value)
+TokenId
+ToTokenId(const SmartPtr<Value>& value)
 {
   assert(value);
 
-  if (SmartPtr< Variant<KeywordId> > v = smart_cast< Variant<KeywordId> >(value))
+  if (SmartPtr< Variant<TokenId> > v = smart_cast< Variant<TokenId> >(value))
     return v->getValue();
   else
-    return KW_NOTVALID;
+    return T__NOTVALID;
 }
 
 SmartPtr<ValueSequence>
@@ -139,151 +142,87 @@ ToSequence(const SmartPtr<Value>& value)
   return smart_cast<ValueSequence>(value);
 }
 
-RowAlignId
-ToRowAlignId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case KW_TOP: return ROW_ALIGN_TOP;
-    case KW_BOTTOM: return ROW_ALIGN_BOTTOM;
-    case KW_CENTER: return ROW_ALIGN_CENTER;
-    case KW_BASELINE: return ROW_ALIGN_BASELINE;
-    case KW_AXIS: return ROW_ALIGN_AXIS;
-    default: return ROW_ALIGN_NOTVALID;
-    }
-}
-
-ColumnAlignId
-ToColumnAlignId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case KW_LEFT: return COLUMN_ALIGN_LEFT;
-    case KW_RIGHT: return COLUMN_ALIGN_RIGHT;
-    case KW_CENTER: return COLUMN_ALIGN_CENTER;
-    default: return COLUMN_ALIGN_NOTVALID;
-    }
-}
-
-GroupAlignId
-ToGroupAlignId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case KW_LEFT: return GROUP_ALIGN_LEFT;
-    case KW_RIGHT: return GROUP_ALIGN_RIGHT;
-    case KW_CENTER: return GROUP_ALIGN_CENTER;
-    case KW_DECIMALPOINT: return GROUP_ALIGN_DECIMALPOINT;
-    default: return GROUP_ALIGN_NOTVALID;
-    }
-}
-
-TableLineId
-ToLineId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case KW_NONE: return TABLE_LINE_NONE;
-    case KW_SOLID: return TABLE_LINE_SOLID;
-    case KW_DASHED: return TABLE_LINE_DASHED;
-    default: return TABLE_LINE_NOTVALID;
-    }
-}
-
-MathSpaceId
+#if 0
+RenderingEnvironment::MathSpaceId
 ToNamedSpaceId(const SmartPtr<Value>& value)
 {
   switch (ToKeywordId(value))
     {
-    case KW_VERYVERYTHINMATHSPACE: return MATH_SPACE_VERYVERYTHIN;
-    case KW_VERYTHINMATHSPACE: return MATH_SPACE_VERYTHIN;
-    case KW_THINMATHSPACE: return MATH_SPACE_THIN;
-    case KW_MEDIUMMATHSPACE: return MATH_SPACE_MEDIUM;
-    case KW_THICKMATHSPACE: return MATH_SPACE_THICK;
-    case KW_VERYTHICKMATHSPACE: return MATH_SPACE_VERYTHICK;
-    case KW_VERYVERYTHICKMATHSPACE: return MATH_SPACE_VERYVERYTHICK;
+    case T_VERYVERYTHINMATHSPACE: return MATH_SPACE_VERYVERYTHIN;
+    case T_VERYTHINMATHSPACE: return MATH_SPACE_VERYTHIN;
+    case T_THINMATHSPACE: return MATH_SPACE_THIN;
+    case T_MEDIUMMATHSPACE: return MATH_SPACE_MEDIUM;
+    case T_THICKMATHSPACE: return MATH_SPACE_THICK;
+    case T_VERYTHICKMATHSPACE: return MATH_SPACE_VERYTHICK;
+    case T_VERYVERYTHICKMATHSPACE: return MATH_SPACE_VERYVERYTHICK;
     default: return MATH_SPACE_NOTVALID;
     }
 }
+#endif
 
-UnitId
-ToUnitId(const SmartPtr<Value>& value)
+Length::Unit
+toUnitId(TokenId id)
 {
-  switch (ToKeywordId(value))
+  switch (id)
     {
-    case KW_PERCENTAGE: return UNIT_PERCENTAGE;
-    case KW_EM: return UNIT_EM;
-    case KW_EX: return UNIT_EX;
-    case KW_PX: return UNIT_PX;
-    case KW_IN: return UNIT_IN;
-    case KW_CM: return UNIT_CM;
-    case KW_MM: return UNIT_MM;
-    case KW_PT: return UNIT_PT;
-    case KW_PC: return UNIT_PC;
-    default: return UNIT_NOTVALID;
+    case T__PERCENTAGE: return Length::PERCENTAGE_UNIT;
+    case T_EM: return Length::EM_UNIT;
+    case T_EX: return Length::EX_UNIT;
+    case T_PX: return Length::PX_UNIT;
+    case T_IN: return Length::IN_UNIT;
+    case T_CM: return Length::CM_UNIT;
+    case T_MM: return Length::MM_UNIT;
+    case T_PT: return Length::PT_UNIT;
+    case T_PC: return Length::PC_UNIT;
+    default: return Length::UNDEFINED_UNIT;
     }
 }
 
-FontStyleId
-ToFontStyleId(const SmartPtr<Value>& value)
+Length::Unit
+toUnitId(const SmartPtr<Value>& value)
 {
-  switch (ToKeywordId(value))
-    {
-    case KW_NORMAL: return FONT_STYLE_NORMAL;
-    case KW_ITALIC: return FONT_STYLE_ITALIC;
-    default: return FONT_STYLE_NOTVALID;
-    }
+  return toUnitId(ToTokenId(value));
 }
 
-FontWeightId
-ToFontWeightId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case KW_NORMAL: return FONT_WEIGHT_NORMAL;
-    case KW_BOLD: return FONT_WEIGHT_BOLD;
-    default: return FONT_WEIGHT_NOTVALID;
-    }
-}
-
-RGBValue
+RGBColor
 ToRGB(const SmartPtr<Value>& value)
 {
-  if (IsRGBValue(value))
-    return ToRGBValue(value);
+  if (IsRGBColor(value))
+    return ToRGBColor(value);
 
-  switch (ToKeywordId(value))
+  switch (ToTokenId(value))
     {
-    case KW_BLACK: return BLACK_COLOR;
-    case KW_SILVER: return SILVER_COLOR;
-    case KW_GRAY: return GRAY_COLOR;
-    case KW_WHITE: return WHITE_COLOR;
-    case KW_MAROON: return MAROON_COLOR;
-    case KW_RED: return RED_COLOR;
-    case KW_PURPLE: return PURPLE_COLOR;
-    case KW_FUCHSIA: return FUCHSIA_COLOR;
-    case KW_GREEN: return GREEN_COLOR;
-    case KW_LIME: return LIME_COLOR;
-    case KW_OLIVE: return OLIVE_COLOR;
-    case KW_YELLOW: return YELLOW_COLOR;
-    case KW_NAVY: return NAVY_COLOR;
-    case KW_BLUE: return BLUE_COLOR;
-    case KW_TEAL: return TEAL_COLOR;
-    case KW_AQUA: return AQUA_COLOR;
+    case T_BLACK: return RGBColor::BLACK();
+    case T_SILVER: return RGBColor::SILVER();
+    case T_GRAY: return RGBColor::GRAY();
+    case T_WHITE: return RGBColor::WHITE();
+    case T_MAROON: return RGBColor::MAROON();
+    case T_RED: return RGBColor::RED();
+    case T_PURPLE: return RGBColor::PURPLE();
+    case T_FUCHSIA: return RGBColor::FUCHSIA();
+    case T_GREEN: return RGBColor::GREEN();
+    case T_LIME: return RGBColor::LIME();
+    case T_OLIVE: return RGBColor::OLIVE();
+    case T_YELLOW: return RGBColor::YELLOW();
+    case T_NAVY: return RGBColor::NAVY();
+    case T_BLUE: return RGBColor::BLUE();
+    case T_TEAL: return RGBColor::TEAL();
+    case T_AQUA: return RGBColor::AQUA();
     default:
       assert(false);
-      return BLACK_COLOR;
+      return RGBColor::BLACK();
     }
 }
 
+#if 0
 OperatorFormId
 ToFormId(const SmartPtr<Value>& value)
 {
   switch (ToKeywordId(value))
     {
-    case KW_PREFIX: return OP_FORM_PREFIX;
-    case KW_INFIX: return OP_FORM_INFIX;
-    case KW_POSTFIX: return OP_FORM_POSTFIX;
+    case T_PREFIX: return OP_FORM_PREFIX;
+    case T_INFIX: return OP_FORM_INFIX;
+    case T_POSTFIX: return OP_FORM_POSTFIX;
     default: return OP_FORM_NOTVALID;
     }
 }
@@ -293,9 +232,9 @@ ToFractionAlignId(const SmartPtr<Value>& value)
 {
   switch (ToKeywordId(value))
     {
-    case KW_LEFT: return FRAC_ALIGN_LEFT;
-    case KW_RIGHT: return FRAC_ALIGN_RIGHT;
-    case KW_CENTER: return FRAC_ALIGN_CENTER;
+    case T_LEFT: return FRAC_ALIGN_LEFT;
+    case T_RIGHT: return FRAC_ALIGN_RIGHT;
+    case T_CENTER: return FRAC_ALIGN_CENTER;
     default: return FRAC_ALIGN_NOTVALID;
     }
 }
@@ -305,8 +244,8 @@ ToMarkAlignId(const SmartPtr<Value>& value)
 {
   switch (ToKeywordId(value))
     {
-    case KW_LEFT: return MARK_ALIGN_LEFT;
-    case KW_RIGHT: return MARK_ALIGN_RIGHT;
+    case T_LEFT: return MARK_ALIGN_LEFT;
+    case T_RIGHT: return MARK_ALIGN_RIGHT;
     default: return MARK_ALIGN_NOTVALID;
     }
 }
@@ -316,17 +255,18 @@ ToBreakId(const SmartPtr<Value>& value)
 {
   switch (ToKeywordId(value))
     {
-    case KW_AUTO: return BREAK_AUTO;
-    case KW_NEWLINE: return BREAK_YES;
-    case KW_INDENTINGNEWLINE: return BREAK_INDENT;
-    case KW_NOBREAK: return BREAK_NO;
-    case KW_BADBREAK: return BREAK_BAD;
-    case KW_GOODBREAK:return BREAK_GOOD;
+    case T_AUTO: return BREAK_AUTO;
+    case T_NEWLINE: return BREAK_YES;
+    case T_INDENTINGNEWLINE: return BREAK_INDENT;
+    case T_NOBREAK: return BREAK_NO;
+    case T_BADBREAK: return BREAK_BAD;
+    case T_GOODBREAK:return BREAK_GOOD;
     default: 
       assert(IMPOSSIBLE);
       return BREAK_AUTO;
     }
 }
+#endif
 
 SmartPtr<Value>
 GetComponent(const SmartPtr<Value>& value, int i, int j)
@@ -343,16 +283,15 @@ GetComponent(const SmartPtr<Value>& value, int i, int j)
 }
 
 SmartPtr<Value>
-Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env,
-	int i, int j)
+Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env, int i, int j)
 {
   assert(value);
 
   SmartPtr<Value> realValue = GetComponent(value, i, j);
   assert(realValue);
 
-  if (IsKeyword(value))
-    return Variant<UnitValue>::create(env.GetMathSpace(ToNamedSpaceId(value)));
+  if (IsTokenId(value))
+    return Variant<Length>::create(env.GetMathSpace(RenderingEnvironment::mathSpaceIdOfTokenId(ToTokenId(value))));
   else
     return realValue;
 }

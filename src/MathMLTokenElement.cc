@@ -25,25 +25,25 @@
 #include <cassert>
 
 #include "AFont.hh"
-#include "frameAux.hh"
-#include "Globals.hh"
-#include "traverseAux.hh"
-#include "MathMLMarkNode.hh"
-#include "MathMLTextNode.hh"
-#include "MathMLStringNode.hh"
-#include "mathVariantAux.hh"
-#include "ValueConversion.hh"
-#include "MathMLGlyphNode.hh"
-#include "MathMLSpaceNode.hh"
-#include "MathMLTextElement.hh"
-#include "MathMLTokenElement.hh"
-#include "MathMLNumberElement.hh"
-#include "RenderingEnvironment.hh"
-#include "MathMLOperatorElement.hh"
-#include "MathMLIdentifierElement.hh"
-#include "MathMLFormattingEngineFactory.hh"
-#include "FormattingContext.hh"
 #include "BoundingBoxAux.hh"
+#include "FormattingContext.hh"
+#include "Globals.hh"
+#include "MathMLFormattingEngineFactory.hh"
+#include "MathMLGlyphNode.hh"
+#include "MathMLIdentifierElement.hh"
+#include "MathMLMarkNode.hh"
+#include "MathMLNumberElement.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLSpaceNode.hh"
+#include "MathMLStringNode.hh"
+#include "MathMLTextElement.hh"
+#include "MathMLTextNode.hh"
+#include "MathMLTokenElement.hh"
+#include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
+#include "frameAux.hh"
+#include "mathVariantAux.hh"
+#include "traverseAux.hh"
 
 MathMLTokenElement::MathMLTokenElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
@@ -238,43 +238,45 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
     {
       env.Push();
 
+#if 0
       if (!is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)) &&
 	  !is_a<MathMLOperatorElement>(SmartPtr<MathMLElement>(this)))
 	env.SetFontMode(FONT_MODE_TEXT);
+#endif
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathsize))
 	{
-	  if (IsSet(ATTR_FONTSIZE))
+	  if (IsSet(T_FONTSIZE))
 	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
 
-	  if (IsKeyword(value))
-	    switch (ToKeywordId(value))
+	  if (IsTokenId(value))
+	    switch (ToTokenId(value))
 	      {
-	      case KW_SMALL: env.AddScriptLevel(1); break;
-	      case KW_BIG: env.AddScriptLevel(-1); break;
-	      case KW_NORMAL: break; // noop
+	      case T_SMALL: env.AddScriptLevel(1); break;
+	      case T_BIG: env.AddScriptLevel(-1); break;
+	      case T_NORMAL: break; // noop
 	      default: assert(IMPOSSIBLE); break;
 	      }
 	  else
-	    env.SetFontSize(ToNumberUnit(value));
+	    env.SetFontSize(ToLength(value));
 	} 
       else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontsize))
 	{
 	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
-	  env.SetFontSize(ToNumberUnit(value));
+	  env.SetFontSize(ToLength(value));
 	}
   
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathvariant))
 	{
-	  assert(IsKeyword(value));
+	  assert(IsTokenId(value));
 
-	  const MathVariantAttributes& attr = attributesOfVariant(ToKeywordId(value));
-	  assert(attr.kw != KW_NOTVALID);
+	  const MathVariantAttributes& attr = attributesOfVariant(ToTokenId(value));
+	  assert(attr.kw != T__NOTVALID);
 	  env.SetFontFamily(attr.family);
 	  env.SetFontWeight(attr.weight);
 	  env.SetFontStyle(attr.style);
 
-	  if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+	  if (IsSet(T_FONTFAMILY) || IsSet(T_FONTWEIGHT) || IsSet(T_FONTSTYLE))
 	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
 	}
       else
@@ -288,29 +290,26 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontweight))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
-	      env.SetFontWeight(ToFontWeightId(value));
+	      env.SetFontWeight(ToTokenId(value));
 	    }
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontstyle))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
-	      env.SetFontStyle(ToFontStyleId(value));
+	      env.SetFontStyle(ToTokenId(value));
 	    } 
 	  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)))
 	    {
 	      if (GetLogicalContentLength() == 1)
-		env.SetFontStyle(FONT_STYLE_ITALIC);
+		env.SetFontStyle(T_ITALIC);
 	      else
-		{
-		  env.SetFontStyle(FONT_STYLE_NORMAL);
-		  env.SetFontMode(FONT_MODE_TEXT);
-		}
+		env.SetFontStyle(T_NORMAL);
 	    }
 	}
       
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathcolor))
 	{
-	  if (IsSet(ATTR_COLOR))
+	  if (IsSet(T_COLOR))
 	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
 	  env.SetColor(ToRGB(value));
 	} 
@@ -356,7 +355,7 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 	   text++)
 	{
 	  assert(*text);
-	  if (ctxt.GetLayoutType() == LAYOUT_MIN) (*text)->DoLayout(ctxt);
+	  if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_MIN) (*text)->DoLayout(ctxt);
 
 	  // if we do not insert MathMLSpaceNodes in the layout, they will not be
 	  // positioned correctly, since positioning is done thru the layout.
@@ -554,12 +553,12 @@ MathMLTokenElement::SubstituteAlignMarkElement(const DOM::Element& node)
 
   DOM::GdomeString edge = node.getAttribute("edge");
 
-  MarkAlignType align = MARK_ALIGN_NOTVALID;
+  TokenId align = T__NOTVALID;
 
   if (!edge.empty())
     {
-      if      (edge == "left") align = MARK_ALIGN_LEFT;
-      else if (edge == "right") align = MARK_ALIGN_RIGHT;
+      if      (edge == "left") align = T_LEFT;
+      else if (edge == "right") align = T_RIGHT;
       else
 	{
 	  std::string s_edge = edge;

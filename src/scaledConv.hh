@@ -26,6 +26,8 @@
 #include "defs.h"
 #include "scaled.hh"
 
+scaled ToScaledPoints(const class Length&);
+
 inline scaled mm2sp(float mm) { return scaled(mm * SP_PER_MM / SP_PER_PT); }
 inline scaled cm2sp(float cm) { return scaled(cm * SP_PER_CM / SP_PER_PT); }
 inline scaled pt2sp(float pt) { return scaled(pt * SP_PER_PT / SP_PER_PT); }

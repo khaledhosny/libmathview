@@ -24,10 +24,9 @@
 #define operatorAux_hh
 
 #include "SmartPtr.hh"
-#include "keyword.hh"
 
 bool isStretchyOperator(const SmartPtr<class MathMLElement>&);
-bool isStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
+//bool isStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
 
 #endif // operatorAux_hh
 

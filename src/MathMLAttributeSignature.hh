@@ -24,12 +24,17 @@
 #define __MathMLAttributeSignature_hh__
 
 #include "String.hh"
-#include "AttributeParser.hh"
+#include "Value.hh"
+#include "SmartPtr.hh"
+
+typedef SmartPtr<Value> (*MathMLAttributeParser)(const UCS4String::const_iterator&,
+						 const UCS4String::const_iterator&,
+						 UCS4String::const_iterator&);
 
 struct MathMLAttributeSignature
 {
   String name;
-  AttributeParser parser;
+  MathMLAttributeParser parser;
   bool fromElement;
   bool fromContext;
   bool deprecated;
@@ -38,6 +43,7 @@ struct MathMLAttributeSignature
   mutable SmartPtr<Value> defaultValue;
 
   SmartPtr<Value> getDefaultValue(void) const;
+  SmartPtr<Value> parseValue(const String&) const;
 };
 
 typedef const MathMLAttributeSignature* MathMLAttributeId;
@@ -45,12 +51,15 @@ typedef const MathMLAttributeSignature* MathMLAttributeId;
 #define ATTRIBUTE_SIGNATURE(ns,name) sig_##ns##_##name
 #define ATTRIBUTE_ID_OF_SIGNATURE(sig) (&(sig))
 #define ATTRIBUTE_ID(ns,name) (ATTRIBUTE_ID_OF_SIGNATURE(ATTRIBUTE_SIGNATURE(ns,name)))
+#define ATTRIBUTE_PARSER(ns,name) &Parse_##ns##_##name::parse
 #define ATTRIBUTE_NAME_OF_ID(id) ((id)->name)
 #define REFINE_ATTRIBUTE(ctxt,ns,name) refineAttribute(ctxt, ATTRIBUTE_SIGNATURE(ns,name))
 #define GET_ATTRIBUTE_VALUE(ns,name) getAttributeValue(ATTRIBUTE_SIGNATURE(ns,name))
 #define GET_OPERATOR_ATTRIBUTE_VALUE(ns,name) getOperatorAttributeValue(ATTRIBUTE_SIGNATURE(ns,name))
-#define DEFINE_ATTRIBUTE(ns,s,name,p,fe,fc,de,em,df) const MathMLAttributeSignature ATTRIBUTE_SIGNATURE(ns,name) = { s, p, fe, fc, de, em, df, 0 }
 #define DECLARE_ATTRIBUTE(ns,name) extern const MathMLAttributeSignature ATTRIBUTE_SIGNATURE(ns,name)
+#define DEFINE_ATTRIBUTE(ns,s,name,fe,fc,de,em,df) \
+  const MathMLAttributeSignature ATTRIBUTE_SIGNATURE(ns,name) = \
+  { s, ATTRIBUTE_PARSER(ns,name), fe, fc, de, em, df, 0 }
 
 #include "MathMLAttributeSignatures.ihh"
 

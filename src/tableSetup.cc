@@ -267,23 +267,23 @@ MathMLTableElement::SetupColumns(RenderingEnvironment& env)
       SmartPtr<Value> v = Resolve(value, env, i);
       assert(v);
 
-      if (IsKeyword(v))
-	switch (ToKeywordId(v))
+      if (IsTokenId(v))
+	switch (ToTokenId(v))
 	  {
-	  case KW_AUTO: column[i].widthType = COLUMN_WIDTH_AUTO; break;
-	  case KW_FIT: column[i].widthType = COLUMN_WIDTH_FIT; break;
+	  case T_AUTO: column[i].widthType = COLUMN_WIDTH_AUTO; break;
+	  case T_FIT: column[i].widthType = COLUMN_WIDTH_FIT; break;
 	  default: assert(IMPOSSIBLE); break;
 	  }
       else
 	{
-	  assert(IsNumberUnit(v));
+	  assert(IsLength(v));
 	
-	  UnitValue unitValue = ToNumberUnit(v);
+	  Length unitValue = ToLength(v);
 
-	  if (unitValue.IsPercentage())
+	  if (unitValue.type == Length::PERCENTAGE_UNIT)
 	    {
 	      column[i].widthType  = COLUMN_WIDTH_PERCENTAGE;
-	      column[i].scaleWidth = unitValue.GetValue();
+	      column[i].scaleWidth = unitValue.value;
 	    } 
 	  else
 	    {
@@ -298,14 +298,14 @@ MathMLTableElement::SetupColumns(RenderingEnvironment& env)
   for (i = 0; i < nColumns; i++)
     {
       SmartPtr<Value> v = Resolve(value, env, i);
-      assert(IsNumberUnit(v));
+      assert(IsLength(v));
 
-      UnitValue unitValue = ToNumberUnit(v);
+      Length unitValue = ToLength(v);
 
-      if (unitValue.IsPercentage())
+      if (unitValue.type == Length::PERCENTAGE_UNIT)
 	{
 	  column[i].spacingType  = SPACING_PERCENTAGE;
-	  column[i].scaleSpacing = unitValue.GetValue();
+	  column[i].scaleSpacing = unitValue.value;
 	} 
       else
 	{
@@ -356,7 +356,7 @@ MathMLTableElement::SetupColumnAlignAux(const SmartPtr<Value>& value,
       SmartPtr<Value> p = GetComponent(value, j);
       assert(p);
 
-      ColumnAlignId columnAlign = ToColumnAlignId(p);
+      TokenId columnAlign = ToTokenId(p);
       
       if (labeledRow && j == 0)
 	{
@@ -371,7 +371,7 @@ MathMLTableElement::SetupColumnAlignAux(const SmartPtr<Value>& value,
 	  // the same alignment given in the mtable element. The kind of
 	  // alignment cannot be overridden by inner elements (mtr, mtd)
 	  for (unsigned i = 0; i < n; i++)
-	    if (cell[rowStart + i][j - j0].columnAlign == COLUMN_ALIGN_NOTVALID ||
+	    if (cell[rowStart + i][j - j0].columnAlign == T__NOTVALID ||
 		cell[rowStart + i][j - j0].nAlignGroup == 0)
 	      cell[rowStart + i][j - j0].columnAlign = columnAlign;
 	}
@@ -409,14 +409,14 @@ MathMLTableElement::SetupRows(RenderingEnvironment& env)
   for (i = 0; i < nRows; i++)
     {
       SmartPtr<Value> p = GetComponent(value, i);
-      assert(p && IsNumberUnit(p));
+      assert(p && IsLength(p));
 
-      UnitValue unitValue = ToNumberUnit(p);
+      Length unitValue = ToLength(p);
 
-      if (unitValue.IsPercentage())
+      if (unitValue.type == Length::PERCENTAGE_UNIT)
 	{
 	  row[i].spacingType  = SPACING_PERCENTAGE;
-	  row[i].scaleSpacing = unitValue.GetValue();
+	  row[i].scaleSpacing = unitValue.value;
 	} 
       else
 	{
@@ -447,7 +447,7 @@ MathMLTableElement::SetupRowAlignAux(const SmartPtr<Value>& value,
   assert(value);
   assert(i < nRows);
 
-  RowAlignId rowAlign = ToRowAlignId(value);
+  TokenId rowAlign = ToTokenId(value);
 
   if (labeledRow)
     {
@@ -482,11 +482,11 @@ MathMLTableElement::SetupLabels()
 	{
 	  assert(row[i].mtr);
 	  rowLabel[i].labelElement = row[i].mtr->GetLabel();
-	  if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)
-	    rowLabel[i].columnAlign = COLUMN_ALIGN_LEFT;
+	  if (side == T_LEFT || side == T_LEFTOVERLAP)
+	    rowLabel[i].columnAlign = T_LEFT;
 	  else
-	    rowLabel[i].columnAlign = COLUMN_ALIGN_RIGHT;
-	  rowLabel[i].rowAlign = ROW_ALIGN_BASELINE;
+	    rowLabel[i].columnAlign = T_RIGHT;
+	  rowLabel[i].rowAlign = T_BASELINE;
 	}
     }
 }
@@ -548,7 +548,7 @@ MathMLTableElement::SetupGroupAlignAux(const SmartPtr<Value>& value,
 	  SmartPtr<Value> p = GetComponent(value, j, k);
 	  assert(p);
 
-	  GroupAlignId groupAlignment = ToGroupAlignId(p);
+	  TokenId groupAlignment = ToTokenId(p);
 
 	  for (unsigned i = 0; i + 1 <= n; i++)
 	    {
@@ -580,7 +580,7 @@ MathMLTableElement::SetupAlignMarks()
 void
 MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 {
-  UnitValue unitValue;
+  Length unitValue;
 
   // align
 
@@ -590,18 +590,8 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
   SmartPtr<Value> p = GetComponent(value, 0);
   assert(p);
 
-  switch (ToKeywordId(p))
-    {
-    case KW_TOP: align = TABLE_ALIGN_TOP; break;
-    case KW_BOTTOM: align = TABLE_ALIGN_BOTTOM; break;
-    case KW_CENTER: align = TABLE_ALIGN_CENTER; break;
-    case KW_BASELINE: align = TABLE_ALIGN_BASELINE; break;
-    case KW_AXIS:
-      align = TABLE_ALIGN_AXIS;
-      environmentAxis = env.GetAxis();
-      break;
-    default: assert(IMPOSSIBLE); break;
-    }
+  align = ToTokenId(p);
+  environmentAxis = env.GetAxis();
 
   p = GetComponent(value, 1);
   if (IsEmpty(p))
@@ -618,7 +608,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
     {
       p = GetComponent(value, i);
       assert(p);
-      row[i].lineType = ToLineId(p);
+      row[i].lineType = ToTokenId(p);
     }
 
   // columnlines
@@ -630,33 +620,33 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
     {
       p = GetComponent(value, j);
       assert(p);
-      column[j].lineType = ToLineId(p);
+      column[j].lineType = ToTokenId(p);
     }
 
   // frame
 
   value = GET_ATTRIBUTE_VALUE(Table, frame);
   assert(value);
-  frame = ToLineId(value);
+  frame = ToTokenId(value);
 
   // width
 
   value = GET_ATTRIBUTE_VALUE(Table, width);
   assert(value);
 
-  if (IsKeyword(value))
+  if (IsTokenId(value))
     {
-      assert(ToKeywordId(value) == KW_AUTO);
+      assert(ToTokenId(value) == T_AUTO);
       widthType = WIDTH_AUTO;
     } 
   else
     {
-      assert(IsNumberUnit(value));
-      unitValue = ToNumberUnit(value);
-      if (unitValue.IsPercentage())
+      assert(IsLength(value));
+      unitValue = ToLength(value);
+      if (unitValue.type == Length::PERCENTAGE_UNIT)
 	{
 	  widthType = WIDTH_PERCENTAGE;
-	  scaleWidth = unitValue.GetValue();
+	  scaleWidth = unitValue.value;
 	} 
       else
 	{
@@ -671,13 +661,13 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
   assert(value);
 
   p = Resolve(value, env, 0);
-  assert(p && IsNumberUnit(p));
+  assert(p && IsLength(p));
 
-  unitValue = ToNumberUnit(p);
-  if (unitValue.IsPercentage())
+  unitValue = ToLength(p);
+  if (unitValue.type == Length::PERCENTAGE_UNIT)
     {
       frameHorizontalSpacingType  = SPACING_PERCENTAGE;
-      frameHorizontalScaleSpacing = unitValue.GetValue();
+      frameHorizontalScaleSpacing = unitValue.value;
     } 
   else
     {
@@ -686,13 +676,13 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
     }
 
   p = Resolve(value, env, 1);
-  assert(p && IsNumberUnit(p));
+  assert(p && IsLength(p));
 
-  unitValue = ToNumberUnit(p);
-  if (unitValue.IsPercentage())
+  unitValue = ToLength(p);
+  if (unitValue.type == Length::PERCENTAGE_UNIT)
     {
       frameVerticalSpacingType  = SPACING_PERCENTAGE;
-      frameVerticalScaleSpacing = unitValue.GetValue();
+      frameVerticalScaleSpacing = unitValue.value;
     } 
   else
     {
@@ -700,7 +690,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
       frameVerticalFixedSpacing = env.ToScaledPoints(unitValue);
     }
 
-  if (frame == TABLE_LINE_NONE)
+  if (frame == T_NONE)
     {
       frameHorizontalSpacingType = frameVerticalSpacingType = SPACING_FIXED;
       frameHorizontalFixedSpacing = frameVerticalFixedSpacing = 0;
@@ -722,26 +712,18 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 
   value = GET_ATTRIBUTE_VALUE(Table, side);
   assert(value);
-
-  switch (ToKeywordId(value))
-    {
-    case KW_LEFT: side = TABLE_SIDE_LEFT; break;
-    case KW_RIGHT: side = TABLE_SIDE_RIGHT; break;
-    case KW_LEFTOVERLAP: side = TABLE_SIDE_LEFTOVERLAP; break;
-    case KW_RIGHTOVERLAP: side = TABLE_SIDE_RIGHTOVERLAP; break;
-    default: assert(IMPOSSIBLE); break;
-    }
+  side = ToTokenId(value);
 
   // minlabelspacing
 
   value = GET_ATTRIBUTE_VALUE(Table, minlabelspacing);
-  assert(value && IsNumberUnit(value));
+  assert(value && IsLength(value));
 
-  unitValue = ToNumberUnit(value);
-  if (unitValue.IsPercentage())
+  unitValue = ToLength(value);
+  if (unitValue.type == Length::PERCENTAGE_UNIT)
     {
       minLabelSpacingType  = SPACING_PERCENTAGE;
-      minLabelScaleSpacing = unitValue.GetValue();
+      minLabelScaleSpacing = unitValue.value;
     } 
   else
     {

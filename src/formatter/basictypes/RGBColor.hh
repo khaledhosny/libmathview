@@ -30,11 +30,31 @@ struct RGBColor
   RGBColor(unsigned r = 0, unsigned g = 0, unsigned b = 0)
     : red(r), green(g), blue(b), transparent(0) { }
 
+  static RGBColor BLACK   (void) { return RGBColor(0x00,0x00,0x00); }
+  static RGBColor SILVER  (void) { return RGBColor(0xc0,0xc0,0xc0); }
+  static RGBColor GRAY    (void) { return RGBColor(0x80,0x80,0x80); }
+  static RGBColor WHITE   (void) { return RGBColor(0xff,0xff,0xff); }
+  static RGBColor MAROON  (void) { return RGBColor(0x80,0x00,0x00); }
+  static RGBColor RED     (void) { return RGBColor(0xff,0x00,0x00); }
+  static RGBColor PURPLE  (void) { return RGBColor(0x80,0x00,0x80); }
+  static RGBColor FUCHSIA (void) { return RGBColor(0xff,0x00,0xff); }
+  static RGBColor GREEN   (void) { return RGBColor(0x00,0x80,0x00); }
+  static RGBColor LIME    (void) { return RGBColor(0x00,0xff,0x00); }
+  static RGBColor OLIVE   (void) { return RGBColor(0x80,0x80,0x00); }
+  static RGBColor YELLOW  (void) { return RGBColor(0xff,0xff,0x00); }
+  static RGBColor NAVY    (void) { return RGBColor(0x00,0x00,0x80); }
+  static RGBColor BLUE    (void) { return RGBColor(0x00,0x00,0xff); }
+  static RGBColor TEAL    (void) { return RGBColor(0x00,0x80,0x80); }
+  static RGBColor AQUA    (void) { return RGBColor(0x00,0xff,0xff); }
+
   std::string toString(void) const;
 
-  bool operator==(const RGBColor& c)
+  void set(unsigned r, unsigned g, unsigned b, bool t = false)
+  { red = r; green = g; blue = b; transparent = t ? 1 : 0; }
+
+  bool operator==(const RGBColor& c) const
   { return red == c.red && green == c.green && blue == c.blue && transparent == c.transparent; }
-  bool operator!=(const RGBColor& c)
+  bool operator!=(const RGBColor& c) const
   { return !(*this == c); }
 
   unsigned red : 8;

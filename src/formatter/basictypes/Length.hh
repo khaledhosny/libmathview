@@ -57,14 +57,16 @@ struct Length
     LAST_UNIT
   };
   
-  Length(void) : type(UNDEFINED_UNIT), value(0.0) { }
+  Length(float v = 0.0f, Unit u = UNDEFINED_UNIT) : value(v), type(u) { }
 
+  void set(float v = 0.0f, Unit u = UNDEFINED_UNIT) { value = v; type = u; }
   void unset(void) { type = UNDEFINED_UNIT; value = 0.0f; }
   bool defined(void) const { return type != UNDEFINED_UNIT; }
+  bool absolute(void) const { return type >= IN_UNIT && type <= PC_UNIT; }
   bool isSpace(void) const { return type >= NEGATIVE_VERYVERYTHIN_SPACE && type <= VERYVERYTHICK_SPACE; }
 
-  Unit  type;
   float value;
+  Unit  type;
 };
 
 #endif // __Length_hh__

@@ -20,30 +20,20 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLMarkNode_hh
-#define MathMLMarkNode_hh
+#ifndef __token_hh__
+#define __token_hh__
 
-#include "token.hh"
-#include "MathMLTextNode.hh"
+#include "String.hh"
 
-class MathMLMarkNode : public MathMLTextNode
-{
-protected:
-  MathMLMarkNode(TokenId = T__NOTVALID);
-  virtual ~MathMLMarkNode();
+enum TokenId
+  {
+#include "token.dec"
+    T__NOTVALID
+  };
 
-public:
-  static SmartPtr<MathMLMarkNode> create(TokenId t)
-  { return new MathMLMarkNode(t); }
-  
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void Render(const DrawingArea&);
+void initTokens(void);
+TokenId tokenIdOfString(const char*);
+TokenId tokenIdOfString(const String&);
+const char* stringOfTokenId(TokenId);
 
-  TokenId GetAlignmentEdge(void) const { return edge; }
-
-protected:
-  TokenId edge;
-};
-
-#endif // MathMLMarkNode_hh
+#endif // __token_hh__

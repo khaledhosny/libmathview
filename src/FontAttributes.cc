@@ -60,9 +60,9 @@ void
 FontAttributes::Null()
 {
   family = "";
-  style  = FONT_STYLE_NOTVALID;
-  weight = FONT_WEIGHT_NOTVALID;
-  size.Null();
+  style  = T__NOTVALID;
+  weight = T__NOTVALID;
+  size.unset();
   mode = FONT_MODE_ANY;
 }
 
@@ -75,10 +75,10 @@ FontAttributes::DownGrade()
   if (HasMode()) mode = FONT_MODE_ANY;
   else
 #endif
-    if (HasWeight()) weight = FONT_WEIGHT_NOTVALID;
-  else if (HasStyle()) style = FONT_STYLE_NOTVALID;
+    if (HasWeight()) weight = T__NOTVALID;
+  else if (HasStyle()) style = T__NOTVALID;
   else if (HasFamily()) family = "";
-  else if (HasSize()) size.Null();
+  else if (HasSize()) size.unset();
   else res = false;
 
   return res;
@@ -93,8 +93,8 @@ FontAttributes::Equals(const FontAttributes& fa) const
   if ((family == "" && fa.family != "") ||
       (family != "" && fa.family == "")) return false;
   if (family != "" && family != fa.family) return false;
-  if (size.IsNull() != fa.size.IsNull()) return false;
-  if (!size.IsNull() && size.ToScaledPoints() != fa.size.ToScaledPoints()) return false;
+  if (size.defined() != fa.size.defined()) return false;
+  if (size.defined() && ToScaledPoints(size) != ToScaledPoints(fa.size)) return false;
 
   return true;
 }
@@ -139,7 +139,7 @@ FontAttributes::Compare(const FontAttributes& fa) const
 
   if (HasSize()) {
     if (fa.HasSize()) {
-      scaled d = abs(size.ToScaledPoints() - fa.size.ToScaledPoints());
+      scaled d = abs(ToScaledPoints(size) - ToScaledPoints(fa.size));
       eval += static_cast<int>(sp2pt(d));
     } else {
       eval++;
@@ -187,7 +187,7 @@ FontAttributes::Dump() const
   const char* m[] = { "*", "text", "math" };
 
   Globals::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s,%s)",
-		  HasSize() ? static_cast<int>(sp2pt(size.ToScaledPoints())) : -1,
+		  HasSize() ? static_cast<int>(sp2pt(ToScaledPoints(size))) : -1,
 		  HasFamily() ? family.c_str() : "_", w[weight + 1], s[style + 1], m[mode]);
 }
 

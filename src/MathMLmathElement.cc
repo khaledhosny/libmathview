@@ -57,23 +57,23 @@ MathMLmathElement::Setup(RenderingEnvironment& env)
       background = env.GetBackgroundColor();
       env.Push();
 
-      env.SetFontMode(FONT_MODE_MATH);
+      //env.SetFontMode(FONT_MODE_MATH);
 
-      if (!IsSet(ATTR_MODE))
+      if (!IsSet(T_MODE))
 	{
 	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, display);
 	  assert(value);
-	  env.SetDisplayStyle(ToKeywordId(value) == KW_BLOCK);
+	  env.SetDisplayStyle(ToTokenId(value) == T_BLOCK);
 	} 
       else
 	{
 	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, mode);
 	  assert(value);
 	  Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
-	  env.SetDisplayStyle(ToKeywordId(value) == KW_DISPLAY);
+	  env.SetDisplayStyle(ToTokenId(value) == T_DISPLAY);
 	}
 
-      if (IsSet(ATTR_MODE) && IsSet(ATTR_DISPLAY))
+      if (IsSet(T_MODE) && IsSet(T_DISPLAY))
 	Globals::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
 
       MathMLNormalizingContainerElement::Setup(env);

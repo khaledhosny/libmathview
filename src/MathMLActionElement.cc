@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "Globals.hh"
-#include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"

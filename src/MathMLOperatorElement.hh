@@ -25,7 +25,7 @@
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLTokenElement.hh"
-#include "keyword.hh"
+#include "token.hh"
 
 class MathMLOperatorElement
   : public MathMLTokenElement, public MathMLEmbellishment
@@ -44,7 +44,6 @@ public:
   virtual void SetPosition(const scaled&, const scaled&);
 
   bool         IsStretchy(void) const { return stretchy != 0; }
-  StretchId    GetStretch(void) const;
   bool         IsAccent(void) const { return accent != 0; }
   bool         ForcedFence(void) const { return forcedFence != 0; }
   bool         IsFence(void) const { return fence != 0; }
@@ -71,11 +70,11 @@ public:
   virtual SmartPtr<MathMLOperatorElement> GetCoreOperator(void);
 
 private:
-  OperatorFormId InferOperatorForm(void);
+  TokenId InferOperatorForm(void);
   SmartPtr<Value> getOperatorAttributeValue(const class MathMLAttributeSignature&) const;
   void ParseLimitValue(const SmartPtr<Value>&, const class RenderingEnvironment&, float&, scaled&);
 
-  OperatorFormId form;
+  TokenId form;
   SmartPtr<class MathMLAttributeList> defaults;
 
   scaled axis;

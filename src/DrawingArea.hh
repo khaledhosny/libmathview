@@ -33,8 +33,8 @@
 class DrawingArea {
 public:
   DrawingArea(const GraphicsContextValues&, const scaled&, const scaled&,
-	      RGBValue = WHITE_COLOR,
-	      RGBValue = BLUE_COLOR);
+	      const RGBColor& = RGBColor::WHITE(),
+	      const RGBColor& = RGBColor(0x00, 0x00, 0xff));
   virtual ~DrawingArea();
 
   virtual const GraphicsContext* GetGC(const GraphicsContextValues&) const = 0;
@@ -80,8 +80,8 @@ public:
   //{ return (x >= x0 || x + w <= x0 + width) && (y >= y0 || y + h <= y0 + height); }
 
   const GraphicsContextValues& GetDefaultGraphicsContextValues(void) const { return defaultValues; }
-  RGBValue GetSelectionForeground(void) const { return selectionForeground; }
-  RGBValue GetSelectionBackground(void) const { return selectionBackground; }
+  RGBColor GetSelectionForeground(void) const { return selectionForeground; }
+  RGBColor GetSelectionBackground(void) const { return selectionBackground; }
 
 protected:
   mutable scaled x; // current x point for drawing lines
@@ -96,8 +96,8 @@ protected:
   scaled my; // bottom margin
 
   GraphicsContextValues defaultValues;
-  RGBValue selectionForeground;
-  RGBValue selectionBackground;
+  RGBColor selectionForeground;
+  RGBColor selectionBackground;
 
   mutable std::vector<const GraphicsContext*> poolGC;
 };

@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include "RGBValue.hh"
+#include "RGBColor.hh"
 #include "FontAttributes.hh"
 #include "MathMLContainerElement.hh"
 
@@ -61,7 +61,7 @@ public:
   virtual scaled GetRightEdge(void) const;
   scaled         GetDecimalPointEdge(void) const;
 
-  RGBValue       GetColor(void) const { return color; }
+  RGBColor       GetColor(void) const { return color; }
 
   //virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
   const std::vector< SmartPtr<class MathMLTextNode> >& GetContent(void) const { return content; }
@@ -79,8 +79,8 @@ protected:
   
   void AddItalicCorrection(void);
 
-  scaled   sppm;
-  RGBValue color;
+  scaled sppm;
+  RGBColor color;
 };
 
 #endif // MathMLTokenElement_hh

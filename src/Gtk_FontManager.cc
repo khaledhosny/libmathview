@@ -95,10 +95,10 @@ Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
   if (family == "") family = fa.HasFamily() ? fa.family : "*";
 
   if (weight == "")
-    weight = fa.HasWeight() ? ((fa.weight == FONT_WEIGHT_NORMAL) ? "medium" : "bold") : "*";
+    weight = fa.HasWeight() ? ((fa.weight == T_NORMAL) ? "medium" : "bold") : "*";
 
   if (slant == "")
-    slant = fa.HasStyle() ? ((fa.style == FONT_STYLE_NORMAL) ? "r" : "i") : "*";
+    slant = fa.HasStyle() ? ((fa.style == T_NORMAL) ? "r" : "i") : "*";
 
   if (width == "") width = "*";
   if (style == "") style = "*";
@@ -106,9 +106,9 @@ Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
 
   if (points == "") {
     if (fa.HasSize()) {
-      int ptSize = (fa.size.GetUnitId() == UNIT_PT) ?
-	roundf(fa.size.GetValue() * 10) :
-	roundf(sp2pt(fa.size.ToScaledPoints()) * 10);
+      int ptSize = (fa.size.type == Length::PT_UNIT) ?
+	roundf(fa.size.value * 10) :
+	roundf(sp2pt(ToScaledPoints(fa.size)) * 10);
 
       // we round the size (in points) to be a multiple of five
       ptSize = (ptSize + 4) / 5;

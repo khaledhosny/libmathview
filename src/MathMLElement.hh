@@ -25,7 +25,6 @@
 
 #include <bitset>
 
-#include "keyword.hh"
 #include "SmartPtr.hh"
 #include "MathMLFrame.hh"
 #include "BoundingBox.hh"
@@ -73,10 +72,10 @@ protected:
   void refineAttribute(const class AbstractRefinementContext&, const class MathMLAttributeSignature&);
 
 public:
-  bool IsSet(AttributeId) const;
+  bool IsSet(TokenId) const;
 
   // some queries
-  TagId        	 IsA(void) const;
+  TokenId      	 IsA(void) const;
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsInside(const scaled&, const scaled&) const;
   bool           HasLink(void) const;
@@ -85,7 +84,7 @@ public:
 			GetY() - GetBoundingBox().height, 
 			GetBoundingBox().horizontalExtent(),
 			GetBoundingBox().verticalExtent()); }
-  RGBValue     	 GetBackgroundColor(void) const { return background; }
+  RGBColor     	 GetBackgroundColor(void) const { return background; }
   unsigned     	 GetDepth(void) const;
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
@@ -100,7 +99,7 @@ public:
 
   bool DirtyLayout(const class FormattingContext&) const { return DirtyLayout(); }
   void ResetDirtyLayout(const FormattingContext& ctxt)
-  { if (ctxt.GetLayoutType() == LAYOUT_AUTO) ResetDirtyLayout(); }
+  { if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO) ResetDirtyLayout(); }
 
 public:
   virtual void SetDirtyStructure(void);
@@ -153,7 +152,7 @@ protected:
   const class GraphicsContext* fGC[2];
   const class GraphicsContext* bGC[2];
 
-  RGBValue background; // background color
+  RGBColor background; // background color
 
   WeakPtr<class MathMLView> view;
 

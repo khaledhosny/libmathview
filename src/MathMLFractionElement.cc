@@ -87,7 +87,7 @@ MathMLFractionElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  assert(IsA() == TAG_MFRAC);
+	  assert(IsA() == T_MFRAC);
 	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  unsigned n = children.get_length();
 
@@ -139,17 +139,17 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
       
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, linethickness))
 	{
-	  if (IsKeyword(value))
+	  if (IsTokenId(value))
 	    {
-	      switch (ToKeywordId(value))
+	      switch (ToTokenId(value))
 		{
-		case KW_THIN:
+		case T_THIN:
 		  lineThickness = defaultRuleThickness / 2;
 		  break;
-		case KW_MEDIUM:
+		case T_MEDIUM:
 		  lineThickness = defaultRuleThickness;
 		  break;
-		case KW_THICK:
+		case T_THICK:
 		  lineThickness = defaultRuleThickness * 2;
 		  break;
 		default:
@@ -157,39 +157,27 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
 		  break;
 		}
 	    }
+	  else if (IsNumber(value))
+	    {
+	      lineThickness = defaultRuleThickness * ToNumber(value);
+	    }
 	  else
 	    {
-	      assert(IsSequence(value));
-	      SmartPtr<Value> number = GetComponent(value, 0);
-	      SmartPtr<Value> unit = GetComponent(value, 1);
-	      
-	      assert(number);
-	      assert(unit);
-	      
-	      if (IsEmpty(unit))
-		lineThickness = defaultRuleThickness * ToNumber(number);
+	      Length unitValue = ToLength(value);
+	      if (unitValue.type == Length::PERCENTAGE_UNIT)
+		lineThickness = defaultRuleThickness * unitValue.value / 100;
 	      else
-		{
-		  assert(IsKeyword(unit));
-		  UnitId unitId = ToUnitId(unit);
-		  if (unitId == UNIT_PERCENTAGE)
-		    lineThickness = defaultRuleThickness * ToNumber(number) / 100;
-		  else
-		    {
-		      UnitValue unitValue(ToNumber(number), unitId);
-		      lineThickness = env.ToScaledPoints(unitValue);
-		    }
-		}
+		lineThickness = env.ToScaledPoints(unitValue);
 	    }
 	  
 	  lineThickness = std::max(scaled(0), lineThickness);
 	}
       
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, numalign))
-	numAlign = ToFractionAlignId(value);
+	numAlign = ToTokenId(value);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, denomalign))
-	denomAlign = ToFractionAlignId(value);
+	denomAlign = ToTokenId(value);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, bevelled))
 	bevelled = ToBoolean(value);
@@ -314,10 +302,10 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
   } else {
     scaled numXOffset = 0;
     switch (numAlign) {
-    case FRAC_ALIGN_CENTER:
+    case T_CENTER:
       numXOffset = (box.width - numBox.width) / 2;
       break;
-    case FRAC_ALIGN_RIGHT:
+    case T_RIGHT:
       numXOffset = box.width - numBox.width;
       break;
     default:
@@ -327,10 +315,10 @@ MathMLFractionElement::SetPosition(const scaled& x0, const scaled& y0)
 
     scaled denomXOffset = 0;
     switch (denomAlign) {
-    case FRAC_ALIGN_CENTER:
+    case T_CENTER:
       denomXOffset = (box.width - denomBox.width) / 2;
       break;
-    case FRAC_ALIGN_RIGHT:
+    case T_RIGHT:
       denomXOffset = box.width - denomBox.width;
       break;
     default:

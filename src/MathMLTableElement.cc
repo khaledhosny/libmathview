@@ -135,7 +135,7 @@ MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement &&
-	  (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP))
+	  (side == T_LEFT || side == T_LEFTOVERLAP))
 	  SetLabelPosition(i, x, y + yOffset + row[i].height);
       
       xOffset += leftPadding;
@@ -163,7 +163,7 @@ MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
       xOffset += frameHorizontalSpacing;
 
       if (rowLabel[i].labelElement &&
-	  (side == TABLE_SIDE_RIGHT || side == TABLE_SIDE_RIGHTOVERLAP))
+	  (side == T_RIGHT || side == T_RIGHTOVERLAP))
 	SetLabelPosition(i, x + xOffset, y + yOffset + row[i].height);
     }
 
@@ -187,19 +187,19 @@ MathMLTableElement::SetLabelPosition(unsigned i, const scaled& x0, const scaled&
   const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
 
   switch (rowLabel[i].rowAlign) {
-  case ROW_ALIGN_BOTTOM:
+  case T_BOTTOM:
     y += row[i].depth - labelBox.depth;
     break;
-  case ROW_ALIGN_CENTER:
+  case T_CENTER:
     y += (row[i].verticalExtent() - labelBox.verticalExtent()) / 2 +
       labelBox.height - row[i].height;
     break;
-  case ROW_ALIGN_BASELINE:
+  case T_BASELINE:
     break;
-  case ROW_ALIGN_AXIS:
+  case T_AXIS:
     assert(IMPOSSIBLE);
     break;
-  case ROW_ALIGN_TOP:
+  case T_TOP:
     y += labelBox.height - row[i].height;
     break;
   default:
@@ -207,17 +207,17 @@ MathMLTableElement::SetLabelPosition(unsigned i, const scaled& x0, const scaled&
   }
 
   scaled columnWidth;
-  if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP) columnWidth = leftPadding;
+  if (side == T_LEFT || side == T_LEFTOVERLAP) columnWidth = leftPadding;
   else columnWidth = box.width - leftPadding - tableWidth;
 
   switch (rowLabel[i].columnAlign) {
-  case COLUMN_ALIGN_RIGHT:
+  case T_RIGHT:
     x += columnWidth - labelBox.width;
     break;
-  case COLUMN_ALIGN_CENTER:
+  case T_CENTER:
     x += (columnWidth - labelBox.width) / 2;
     break;
-  case COLUMN_ALIGN_LEFT:
+  case T_LEFT:
   default:
     break;
   }
@@ -268,7 +268,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 
       //area.DrawRectangle(gc, GetX(), GetY(), box);
 
-      if (frame != TABLE_LINE_NONE) {
+      if (frame != T_NONE) {
 	Rectangle rect;
 
 	if (HasLabels()) {
@@ -279,7 +279,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 	} else
 	  rect = Rectangle(GetX(), GetY(), box);
 
-	area.DrawRectangle((frame == TABLE_LINE_DASHED) ? dGC[Selected()] : fGC[Selected()], rect);
+	area.DrawRectangle((frame == T_DASHED) ? dGC[Selected()] : fGC[Selected()], rect);
       }
 
       scaled yOffset = frameVerticalSpacing - box.height;
@@ -290,7 +290,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 	for (unsigned j = 0; j < nColumns; j++) {
 	  TableCell* cell = GetCell(i, j);
 
-	  if (i != nRows - 1 && row[i].lineType != TABLE_LINE_NONE) {
+	  if (i != nRows - 1 && row[i].lineType != T_NONE) {
 	    // horizontal lines
 	    if (cell->rowSpan <= 1) {
 	      scaled lineX = position.x + xOffset;
@@ -311,12 +311,12 @@ MathMLTableElement::Render(const DrawingArea& area)
 		len   += column[j].spacing / 2;
 	      }
 
-	      area.DrawLine((row[i].lineType == TABLE_LINE_DASHED) ? dGC[Selected()] : fGC[Selected()],
+	      area.DrawLine((row[i].lineType == T_DASHED) ? dGC[Selected()] : fGC[Selected()],
 			    lineX, lineY, lineX + len, lineY);
 	    }
 	  }
 
-	  if (j != nColumns - 1 && column[j].lineType != TABLE_LINE_NONE) {
+	  if (j != nColumns - 1 && column[j].lineType != T_NONE) {
 	    // vertical lines
 	    if (cell->colSpan <= 1) {
 	      scaled lineX = position.x + xOffset + column[j].width + column[j].spacing / 2;
@@ -336,7 +336,7 @@ MathMLTableElement::Render(const DrawingArea& area)
 		len   += row[i].spacing / 2;
 	      }
 
-	      area.DrawLine((column[j].lineType == TABLE_LINE_DASHED) ? dGC[Selected()] : fGC[Selected()],
+	      area.DrawLine((column[j].lineType == T_DASHED) ? dGC[Selected()] : fGC[Selected()],
 			    lineX, lineY, lineX, lineY + len);
 	    }
 	  }
