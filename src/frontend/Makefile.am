@@ -1,3 +1,3 @@
 
-SUBDIRS = common gmetadom
+SUBDIRS = common libxml2 gmetadom
 

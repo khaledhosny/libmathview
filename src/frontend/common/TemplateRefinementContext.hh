@@ -25,7 +25,6 @@
 
 #include <list>
 
-#include "gmetadom.hh"
 #include "Attribute.hh"
 #include "AttributeList.hh"
 
@@ -44,9 +43,9 @@ public:
 	
 	if (SmartPtr<Attribute> attr = c.attributes->get(ATTRIBUTE_ID_OF_SIGNATURE(sig)))
 	  return attr;
-	else if (c.elem.hasAttribute(sig.name))
+	else if (Model::hasAttribute(c.elem, sig.name))
 	  {
-	    SmartPtr<Attribute> attr = Attribute::create(sig, c.elem.getAttribute(sig.name));
+	    SmartPtr<Attribute> attr = Attribute::create(sig, Model::getAttribute(c.elem, sig.name));
 	    c.attributes->set(attr);
 	    return attr;
 	  }

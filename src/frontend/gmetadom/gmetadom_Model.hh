@@ -30,71 +30,50 @@
 
 #include "TemplateLinker.hh"
 #include "TemplateRefinementContext.hh"
+#include "TemplateNodeIterator.hh"
+#include "TemplateElementIterator.hh"
 
 struct gmetadom_Model
 {
-  typedef DOM::GdomeString String;
+  enum {
+    TEXT_NODE = DOM::Node::TEXT_NODE,
+    ELEMENT_NODE = DOM::Node::ELEMENT_NODE
+  };
+
   typedef DOM::Node Node;
   typedef DOM::Element Element;
   typedef TemplateLinker<gmetadom_Model> Linker;
+  typedef TemplateNodeIterator<gmetadom_Model> NodeIterator;
+  typedef TemplateElementIterator<gmetadom_Model> ElementIterator;
+  typedef TemplateRefinementContext<gmetadom_Model> RefinementContext;
   typedef class gmetadom_Builder Builder;
-  typedef class TemplateRefinementContext<gmetadom_Model> RefinementContext;
 
-  static DOM::Document parseXML(const ::String&, bool = false);
-  static bool nodeIsBlank(const Node&);
-  static ::String elementValue(const Element&);
-  static ::String nodeLocalName(const Node&);
-  inline static ::String fromModelString(const DOM::GdomeString& s) { return s; }
-  inline static DOM::GdomeString toModelString(const ::String& s) { return s; }
+  // method for parsing a model
+  // MUST be available
+  static DOM::Document parseXML(const String&, bool = false);
 
-  class NodeIterator
-  {
-  public:
-    NodeIterator(const DOM::Node& root) : currentNode(root.get_firstChild()) { }
+  // conversion methods
+  static DOM::Element asNode(const DOM::Element& el) { return el; }
+  static DOM::Node asElement(const DOM::Node& n) { return n; }
 
-    DOM::Node node(void) const { return currentNode; }
-    bool more(void) const { return currentNode; }
-    void next(void) { currentNode = currentNode.get_nextSibling(); }
+  // methods for querying nodes and elements
+  // MUST be available for TemplateBuilder and TemplateSetup to work
+  static String getAttribute(const Element& el, const String& name) { return el.getAttribute(name); }
+  static unsigned getNodeType(const Node& n) { return n.get_nodeType(); }
+  static String getNodeName(const Node&);
+  static String getNodeValue(const Node& n) { return n.get_nodeValue(); }
+  static String getElementValue(const Element&);
+  static String getNamespaceURI(const Node& n)
+  { if (DOM::GdomeString ns = n.get_namespaceURI()) return ns; else return String(); }
+  // MUST be implemented if the default RefinementContext is used
+  static bool hasAttribute(const Element& el, const String& name) { return el.hasAttribute(name); }
 
-  private:
-    DOM::Node currentNode;
-  };
+  // methods for navigating the model
+  // must be available if the default iterators are used
+  static DOM::Node getNextSibling(const Node& n) { return n.get_nextSibling(); }
+  static DOM::Node getFirstChild(const Node& n) { return n.get_firstChild(); }
 
-  class ElementIterator
-  {
-  public:
-    ElementIterator(const DOM::Node& root, const String& ns = "*", const String& n = "*")
-      : namespaceURI(ns), name(n)
-    { currentElement = findValidNode(root.get_firstChild()); }
-
-    DOM::Element element(void) const { return currentElement; }
-    bool more(void) const { return currentElement; }
-
-    bool valid(const DOM::Node& p) const
-    {
-      return (p.get_nodeType() == DOM::Node::ELEMENT_NODE)
-	&& (namespaceURI == "*" || namespaceURI == p.get_namespaceURI())
-	&& (name == "*" || name == gmetadom_Model::nodeLocalName(p));
-    }
-    
-    void next(void)
-    { currentElement = findValidNode(currentElement.get_nextSibling()); }
-
-  protected:
-    DOM::Element
-    findValidNode(const DOM::Node& p0) const
-    {
-      for (DOM::Node p = p0; p; p = p.get_nextSibling())
-	if (valid(p)) return p;
-      return DOM::Element();
-    }
-    
-  private:
-    DOM::Element currentElement;
-    DOM::GdomeString namespaceURI;
-    DOM::GdomeString name;
-  };
-
+  // MUST be available if the default linker is used
   struct Hash
   {
     size_t operator()(const DOM::Element& el) const

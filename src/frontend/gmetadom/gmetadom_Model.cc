@@ -28,7 +28,7 @@
 #include "MathMLEntitiesTable.hh"
 
 DOM::Document
-gmetadom_Model::parseXML(const ::String& path, bool subst)
+gmetadom_Model::parseXML(const String& path, bool subst)
 {
   if (!subst)
     {
@@ -69,29 +69,8 @@ gmetadom_Model::parseXML(const ::String& path, bool subst)
     }
 }
 
-bool
-gmetadom_Model::nodeIsBlank(const DOM::Node& node)
-{
-  assert(node);
-
-  switch (node.get_nodeType())
-    {
-    case DOM::Node::COMMENT_NODE:
-      return true;
-      
-    case DOM::Node::TEXT_NODE:
-      {
-	DOM::GdomeString content = node.get_nodeValue();
-	return content.empty();
-      }
-    
-    default:
-      return false;
-    }
-}
-
-::String
-gmetadom_Model::elementValue(const DOM::Element& elem)
+String
+gmetadom_Model::getElementValue(const DOM::Element& elem)
 {
   DOM::GdomeString res = "";
   
@@ -110,8 +89,8 @@ gmetadom_Model::elementValue(const DOM::Element& elem)
   return res;
 }
 
-::String
-gmetadom_Model::nodeLocalName(const DOM::Node& node)
+String
+gmetadom_Model::getNodeName(const DOM::Node& node)
 {
   assert(node);
   if (!node.get_namespaceURI().null()) return node.get_localName();

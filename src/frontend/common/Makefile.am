@@ -9,6 +9,8 @@ noinst_HEADERS = \
   TemplateBuilder.hh \
   TemplateLinker.hh \
   TemplateRefinementContext.hh \
+  TemplateNodeIterator.hh \
+  TemplateElementIterator.hh \
   TemplateSetup.hh \
   Reader.hh
 

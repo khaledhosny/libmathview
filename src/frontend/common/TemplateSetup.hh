@@ -40,12 +40,12 @@ struct TemplateSetup
   static bool
   parseColor(const typename Model::Element& node, RGBColor& f, RGBColor& b)
   {
-    String fs = node.getAttribute("foreground");
-    String bs = node.getAttribute("background");
+    const String fs = Model::getAttribute(node, "foreground");
+    const String bs = Model::getAttribute(node, "background");
     
     if (fs.empty() || bs.empty())
       {
-	String s_name = node.get_nodeName();
+	const String s_name = Model::getNodeName(Model::asNode(node));
 	Globals::logger(LOG_WARNING, "malformed `%s' element in configuration file", s_name.c_str());
 	return false;
       }
@@ -55,7 +55,7 @@ struct TemplateSetup
 
     if (!fv || !bv)
       {
-	String s_name = node.get_nodeName();
+	const String s_name = Model::getNodeName(Model::asNode(node));
 	Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
 	return false;
       }
@@ -70,15 +70,15 @@ struct TemplateSetup
   static void
   parse(Configuration& conf, const typename Model::Element& node)
   {
-    for (typename Model::ElementIterator iter(node); iter.more(); iter.next())
+    for (typename Model::ElementIterator iter(Model::asNode(node)); iter.more(); iter.next())
       {
 	typename Model::Element elem = iter.element();
 	assert(elem);
-	std::string name = elem.get_nodeName();
+	const String name = Model::getNodeName(Model::asNode(elem));
     
 	if (name == "dictionary-path")
 	  {
-	    std::string path = Model::elementValue(elem);
+	    const String path = Model::getElementValue(elem);
 	    if (!path.empty())
 	      {
 		Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
@@ -87,7 +87,7 @@ struct TemplateSetup
 	  } 
 	else if (name == "font-size")
 	  {
-	    std::string attr = elem.getAttribute("size");
+	    const String attr = Model::getAttribute(elem, "size");
 	    if (attr.empty())
 	      Globals::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
 	    else
@@ -137,7 +137,7 @@ struct TemplateSetup
   {
     assert(aList);
 
-    String attrVal = node.getAttribute(signature.name);
+    const String attrVal = Model::getAttribute(node, signature.name);
     if (attrVal.empty()) return;
 
     aList->set(Attribute::create(signature, attrVal));
@@ -146,10 +146,10 @@ struct TemplateSetup
   static void
   parse(MathMLOperatorDictionary& dictionary, const typename Model::Element& root)
   {
-    for (typename Model::ElementIterator iter(root, "*", "operator"); iter.more(); iter.next())
+    for (typename Model::ElementIterator iter(Model::asNode(root), "*", "operator"); iter.more(); iter.next())
       {
 	typename Model::Element elem = iter.element();
-	String opName = elem.getAttribute("name");
+	const String opName = Model::getAttribute(elem, "name");
       
 	if (!opName.empty())
 	  {
@@ -168,7 +168,7 @@ struct TemplateSetup
 	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
 	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
 	  
-	    dictionary.add(opName, elem.getAttribute("form"), defaults);
+	    dictionary.add(opName, Model::getAttribute(elem, "form"), defaults);
 	  } 
 	else
 	  Globals::logger(LOG_WARNING, "operator dictionary: could not find operator name");
