@@ -4,7 +4,7 @@ Version: @VERSION@
 Release: 1
 Copyright: GPL
 Group: Development/Libraries
-Source: www.cs.unibo.it:/~lpadovan/mml-widget/@PACKAGE@-@VERSION@.tar.gz
+Source: www.cs.unibo.it:/helm/mml-widget/@PACKAGE@-@VERSION@.tar.gz
 %description
 GtkMathView is a GTK Widget for rendering MathML documents.
 
@@ -32,3 +32,6 @@ make install
 /usr/local/include/gtkmathview/
 /usr/local/share/gtkmathview/
 /usr/local/info/gtkmathview.info
+/usr/local/man/mathmlviewer.1
+/usr/local/man/mathml2ps.1
+
