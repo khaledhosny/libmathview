@@ -27,6 +27,9 @@ BUGS
 
 ARCH IMPROVEMENTS
 
+? add text/math flag in formatting context, split sparsemap in
+  3 maps (text, math, stretchy), default pango shaper registers
+  itself as text (is the fallback)
 ? make GlyphStringArea a leaf-like area?
 - change the clone method for areas so that it checks if the
   content is unchanged, and possibly implement the replace this

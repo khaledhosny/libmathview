@@ -33,13 +33,15 @@ public:
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
 
-  enum FontMapId { NIL, CMR, CMM, CMS, CME };
+  enum FontNameId { FN_NIL, FN_CMR, FN_CMB, FN_CMBXTI, FN_CMTI, FN_CMSS, FN_CMSSI,
+		    FN_CMSSBX, FN_CMTT, FN_CMSY, FN_CMBSY, FN_CMMI, FN_CMMIB, 
+		    FN_CMEX, FN_NOT_VALID };
 
   struct GlyphIndex
   {
-    Char8 map;
+    Char8 fontName;
     Char8 index;
-    bool valid(void) const { return map != NIL; }
+    bool valid(void) const { return fontName > FN_NIL && fontName < FN_NOT_VALID; }
   };
   
   struct PlainChar {
@@ -67,10 +69,10 @@ public:
   };
 
 protected:
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8 map, Char8 index, const scaled&) const = 0;
+  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, FontNameId, Char8, const scaled&) const = 0;
   AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, const GlyphIndex&, const scaled&) const;
 
-  AreaRef shapeChar(const class ShapingContext&, Char8) const;
+  AreaRef shapeChar(const class ShapingContext&, FontNameId) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
 };

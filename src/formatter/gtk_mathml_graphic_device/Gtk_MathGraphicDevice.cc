@@ -30,7 +30,6 @@
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
-#include "Gtk_ComputerModernShaper.hh"
 #if HAVE_LIBT1
 #include "T1FontManager.hh"
 #include "Gtk_T1ComputerModernShaper.hh"
@@ -70,7 +69,6 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice()
   SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
   adobeShaper->setFontManager(xftFontManager);
   //getShaperManager()->registerShaper(adobeShaper);
-  getShaperManager()->registerShaper(cmShaper);
 #endif
 }
 

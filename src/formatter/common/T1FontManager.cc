@@ -39,10 +39,6 @@ T1FontManager::T1FontManager()
       assert(res != 0);
       firstTime = false;
       T1_SetLogLevel(T1LOG_DEBUG);
-
-      int i = T1_AddFont("cmr10.pfb");
-      assert(i >= 0);
-      T1_LoadFont(i);
     }
 }
 
@@ -53,6 +49,19 @@ T1FontManager::~T1FontManager()
   firstTime = true;
 
   // should free the structures
+}
+
+bool
+T1FontManager::loadFont(const String& name) const
+{
+  const int n = T1_GetNoFonts();
+  for (int i = 0; i < n; i++)
+    if (name == T1_GetFontFileName(i))
+      return true; // font already in the database
+  const int fontId = T1_AddFont(const_cast<char*>(name.c_str())); // DANGER, const cast
+  if (fontId >= 0) T1_LoadFont(fontId);
+  std::cerr << "loading font " << name << " => " << fontId << std::endl;
+  return fontId >= 0;
 }
 
 SmartPtr<T1Font>

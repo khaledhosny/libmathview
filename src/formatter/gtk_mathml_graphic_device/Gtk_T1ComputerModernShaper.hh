@@ -38,7 +38,10 @@ public:
   void setFontManager(const SmartPtr<class T1FontManager>&);
 
 protected:
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8 map, Char8 index, const scaled&) const;
+  SmartPtr<class T1Font> getT1Font(ComputerModernShaper::FontNameId, const scaled&) const;
+  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&,
+			       ComputerModernShaper::FontNameId,
+			       Char8, const scaled&) const;
 
 private:
   SmartPtr<class T1FontManager> t1FontManager;

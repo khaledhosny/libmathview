@@ -158,7 +158,7 @@ void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<T1Font>& font, Char8 glyph) const
 {
 #if HAVE_LIBT1
-  T1_SetCharX(GDK_DRAWABLE_XID(getDrawable()),
+  T1_AASetCharX(GDK_DRAWABLE_XID(getDrawable()),
 	      GDK_GC_XGC(getGC()), T1_OPAQUE,
 	      Gtk_RenderingContext::toGtkX(x),
 	      Gtk_RenderingContext::toGtkY(y),

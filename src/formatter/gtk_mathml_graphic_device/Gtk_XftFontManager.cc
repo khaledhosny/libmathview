@@ -81,11 +81,13 @@ Gtk_XftFontManager::createXftFont(const XLFD& fd) const
   XftFont* font = XftFontOpen(GDK_DISPLAY(),
 			      gdk_x11_get_default_screen(),
 			      XFT_FAMILY, XftTypeString, fd.family.c_str(),
+#if 0
 			      XFT_SLANT, XftTypeInteger, XFT_SLANT_ROMAN,
 			      XFT_WEIGHT, XftTypeInteger, XFT_WEIGHT_MEDIUM,
+#endif
 			      XFT_SIZE, XftTypeDouble, fd.size,
 			      NULL);
-  //FcPatternPrint(font->pattern);
+  FcPatternPrint(font->pattern);
 #endif			      
 
   assert(font);

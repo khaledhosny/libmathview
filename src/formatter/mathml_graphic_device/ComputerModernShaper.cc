@@ -34,11 +34,11 @@
 
 enum
   {
-    NIL = ComputerModernShaper::NIL,
-    CMR = ComputerModernShaper::CMR,
-    CMM = ComputerModernShaper::CMM,
-    CMS = ComputerModernShaper::CMS,
-    CME = ComputerModernShaper::CME
+    NIL = ComputerModernShaper::FN_NIL,
+    CMR = ComputerModernShaper::FN_CMR,
+    CMM = ComputerModernShaper::FN_CMMI,
+    CMS = ComputerModernShaper::FN_CMSY,
+    CME = ComputerModernShaper::FN_CMEX
   };
 
 static ComputerModernShaper::PlainChar cmmMap[] =
@@ -525,16 +525,19 @@ static ComputerModernShaper::PlainChar cmexMap[] = {
 struct FontDesc
 {
   MathVariant variant;
-  char* name;
+  ComputerModernShaper::FontNameId name;
 };
 
 static FontDesc variantDesc[] =
   {
-    { NORMAL_VARIANT, "cmr" },
-    { BOLD_VARIANT, "cmb" },
-    { ITALIC_VARIANT, "cmti" },
-    { BOLD_ITALIC_VARIANT, "cmbxti" },
-    { SANS_SERIF_VARIANT, "cmss" }
+    { NORMAL_VARIANT, ComputerModernShaper::FN_CMR },
+    { BOLD_VARIANT, ComputerModernShaper::FN_CMB },
+    { ITALIC_VARIANT, ComputerModernShaper::FN_CMTI },
+    { BOLD_ITALIC_VARIANT, ComputerModernShaper::FN_CMBXTI },
+    { SANS_SERIF_VARIANT, ComputerModernShaper::FN_CMSS },
+    { BOLD_SANS_SERIF_VARIANT, ComputerModernShaper::FN_CMSSBX },
+    { SANS_SERIF_ITALIC_VARIANT, ComputerModernShaper::FN_CMSSI },
+    { MONOSPACE_VARIANT, ComputerModernShaper::FN_CMTT }
   };
 
 enum FontIndex
@@ -542,8 +545,6 @@ enum FontIndex
     V_STRETCHY_FONT_INDEX,
     H_STRETCHY_FONT_INDEX,
     H_BIG_FONT_INDEX,
-    MATH_ITALIC_FONT_INDEX,
-    MATH_SYMBOLS_FONT_INDEX,
     NORMAL_FONT_INDEX
   };
 
@@ -561,14 +562,24 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       {
 	const Char32 vch = mapMathVariant(variantDesc[j].variant, cmrMap[i].ch);
 	if (variantDesc[j].variant == NORMAL_VARIANT || vch != cmrMap[i].ch)
-	  sm->registerChar(vch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + j, cmrMap[i].index));
+	  sm->registerChar(vch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + variantDesc[j].name, cmrMap[i].index));
       }
 
   for (unsigned i = 0; cmmMap[i].ch; i++)
-    sm->registerChar(cmmMap[i].ch, GlyphSpec(shaperId, MATH_ITALIC_FONT_INDEX, cmmMap[i].index));
+    {
+      const Char32 ch = mapMathVariant(ITALIC_VARIANT, cmmMap[i].ch);
+      const Char32 vch = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
+      sm->registerChar(ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMMI, cmmMap[i].index));
+      if (vch != ch) sm->registerChar(vch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMMIB, cmmMap[i].index));
+    }
 
   for (unsigned i = 0; cmsMap[i].ch; i++)
-    sm->registerChar(cmsMap[i].ch, GlyphSpec(shaperId, MATH_SYMBOLS_FONT_INDEX, cmsMap[i].index));
+    {
+      const Char32 ch = cmsMap[i].ch;
+      const Char32 vch = mapMathVariant(BOLD_VARIANT, ch);
+      sm->registerChar(ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMSY, cmsMap[i].index));
+      if (vch != ch) sm->registerChar(vch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMBSY, cmsMap[i].index));
+    }
 
   for (unsigned i = 0; vMap[i].ch; i++)
     sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, V_STRETCHY_FONT_INDEX, i));
@@ -604,14 +615,12 @@ ComputerModernShaper::shape(ShapingContext& context) const
 	case V_STRETCHY_FONT_INDEX:
 	  res = shapeStretchyCharV(context);
 	  break;
-	case MATH_ITALIC_FONT_INDEX:
-	  res = shapeChar(context, CMM);
-	  break;
-	case MATH_SYMBOLS_FONT_INDEX:
-	  res = shapeChar(context, CMS);
-	  break;
 	default:
-	  res = shapeChar(context, CMR);
+	  {
+	    const int fontName = context.getSpec().getFontId() - NORMAL_FONT_INDEX;
+	    assert(fontName > FN_NIL && fontName < FN_NOT_VALID);
+	    res = shapeChar(context, FontNameId(fontName));
+	  }
 	  break;
 	}
 
@@ -622,9 +631,9 @@ ComputerModernShaper::shape(ShapingContext& context) const
 }
 
 AreaRef
-ComputerModernShaper::shapeChar(const ShapingContext& context, Char8 map) const
+ComputerModernShaper::shapeChar(const ShapingContext& context, FontNameId name) const
 {
-  return getGlyphArea(context.getFactory(), map, context.getSpec().getGlyphId(), context.getSize());
+  return getGlyphArea(context.getFactory(), name, context.getSpec().getGlyphId(), context.getSize());
 }
 
 AreaRef
@@ -656,7 +665,9 @@ ComputerModernShaper::shapeStretchyCharH(const ShapingContext& context) const
 }
 
 AreaRef
-ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, const GlyphIndex& index, const scaled& size) const
+ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, 
+				   const GlyphIndex& glyph, const scaled& size) const
 {
-  return getGlyphArea(factory, index.map, index.index, size);
+  assert(glyph.valid());
+  return getGlyphArea(factory, FontNameId(glyph.fontName), glyph.index, size);
 }

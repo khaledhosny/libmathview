@@ -43,7 +43,7 @@ Gtk_ComputerModernShaper::setFontManager(const SmartPtr<Gtk_XftFontManager>& fm)
 
 AreaRef
 Gtk_ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& f,
-				       Char8 map, Char8 index,
+				       ComputerModernShaper::FontMapId map, Char8 index,
 				       const scaled& size) const
 {
   std::cerr << "requesting glyph " << (int) map << " " << (int) index << " " << index << std::endl;

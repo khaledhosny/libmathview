@@ -32,7 +32,6 @@ libgtk_mathml_graphic_device_la_SOURCES = \
   Gtk_DefaultPangoShaper.cc \
   Gtk_PangoShaper.cc \
   Gtk_AdobeShaper.cc \
-  Gtk_ComputerModernShaper.cc \
   $(MAYBE_T1_S) \
   $(NULL)
 
@@ -43,7 +42,6 @@ noinst_HEADERS = \
   Gtk_DefaultPangoShaper.hh \
   Gtk_PangoShaper.hh \
   Gtk_AdobeShaper.hh \
-  Gtk_ComputerModernShaper.hh \
   $(MAYBE_T1_H) \
   $(NULL)
 

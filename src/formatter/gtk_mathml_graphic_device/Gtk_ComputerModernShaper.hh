@@ -38,7 +38,9 @@ public:
   void setFontManager(const SmartPtr<Gtk_XftFontManager>&);
 
 protected:
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8 map, Char8 index, const scaled&) const;
+  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, 
+			       ComputerModernShaper::FontMapId map,
+			       Char8 index, const scaled&) const;
 
 private:
   SmartPtr<class Gtk_XftFontManager> xftFontManager;

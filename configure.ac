@@ -417,13 +417,13 @@ CFLAGS="$CFLAGS -W -Wall"
 CXXFLAGS="$CXXFLAGS -W -Wall"
 
 if test $enable_debug = yes; then
-	CFLAFS="$CFLAGS -O0"
+	CFLAGS="$CFLAGS -O0"
 	CXXFLAGS="$CXXFLAGS -O0"
 	AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
 fi
 
 if test $enable_profile = yes; then
-	CFLAFS="$CFLAGS -pg"
+	CFLAGS="$CFLAGS -pg"
 	CXXFLAGS="$CXXFLAGS -pg"
 	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
 fi
