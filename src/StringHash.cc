@@ -1,43 +1,47 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2002, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef Shape_hh
-#define Shape_hh
+#include <config.h>
 
-#include <stddef.h>
+#include <assert.h>
 
-#include "Rectangle.hh"
-#include "Container.hh"
+#include "String.hh"
+#include "StringHash.hh"
 
-class Shape {
-public:
-  Shape(Rectangle* = NULL);
-  ~Shape();
-  
-  bool IsInside(scaled, scaled) const;
-  bool Overlaps(const Rectangle&) const;
-  void Dump(void) const;
+size_t
+StringHash::operator()(const String* s) const
+{
+  assert(s != 0);
 
-  Container<Rectangle*> content;
-};
+  size_t h = 0;
+  for (unsigned i = 0; i < s->GetLength(); i++)
+    {
+      h = (h << 4) + s->GetChar(i);
+      if (size_t g = h & 0xf0000000)
+	{
+	  h = h ^ (g >> 24);
+	  h = h ^ g;
+	}
+    }
 
-#endif // Shape_hh
+  return h;
+}

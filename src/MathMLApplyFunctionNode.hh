@@ -25,12 +25,21 @@
 
 #include "MathMLSpaceNode.hh"
 
-class MathMLApplyFunctionNode: public MathMLSpaceNode {
-public:
+class MathMLApplyFunctionNode: public MathMLSpaceNode
+{
+protected:
   MathMLApplyFunctionNode(void);
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoLayout(void);
   virtual ~MathMLApplyFunctionNode();
+
+public:
+  static Ptr<MathMLApplyFunctionNode> create(void)
+  { return Ptr<MathMLApplyFunctionNode>(new MathMLApplyFunctionNode()); }
+
+  virtual void     Setup(class RenderingEnvironment&);
+  virtual void     DoLayout(const class FormattingContext&);
+
+  virtual unsigned  GetLogicalContentLength(void) const;
+  virtual String*   GetRawContent(void) const;
 
 protected:
   scaled sppm;

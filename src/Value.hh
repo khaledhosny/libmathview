@@ -79,7 +79,7 @@ public:
   KeywordId ToKeyword(void) const;
   RGBValue  ToRGB(void) const;
   const     UnitValue& ToNumberUnit(void) const;
-  const     String* ToString(void) const;
+  const String* ToString(void) const;
   const ValueSequence* ToValueSequence(void) const;
 
   void 	    SetChar(Char);
@@ -90,7 +90,7 @@ public:
   void 	    SetKeyword(KeywordId);
   void 	    SetRGB(RGBValue);
   void 	    SetNumberUnit(const UnitValue&);
-  void 	    SetString(const String*);
+  void      SetString(const String*);
   void 	    SetSequence(const ValueSequence*);
    
   ValueType IsA(void) const { return type; }

@@ -131,8 +131,6 @@ Gtk_Font::StringBox(const char* s, unsigned length, BoundingBox& box) const
 		   &ascent, &descent);
 
   box.Set(px2sp(width), px2sp(ascent), px2sp(descent), px2sp(lbearing), px2sp(rbearing));
-  box.tAscent = GetAscent();
-  box.tDescent = GetDescent();
 }
 
 void

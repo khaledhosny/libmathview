@@ -76,3 +76,4 @@ do
 	$1/cutlicence.pl <$i >>/tmp/f
 	mv /tmp/f $i
 done
+

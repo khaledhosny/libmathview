@@ -33,35 +33,38 @@
 #include "MathMLCombinedCharNode.hh"
 #include "MathMLApplyFunctionNode.hh"
 #include "MathMLInvisibleTimesNode.hh"
+#if 0
 #include "MathMLStringNode.hh"
+#endif
 
-MathMLTextNode*
+Ptr<MathMLTextNode>
 allocCharNode(Char ch)
 {
   switch (ch) {
   case U_APPLYFUNCTION:
-    return new MathMLApplyFunctionNode();
+    return MathMLApplyFunctionNode::create();
    
   case U_INVISIBLETIMES:
-    return new MathMLInvisibleTimesNode();
+    return MathMLInvisibleTimesNode::create();
 
   case U_UNDERLINE:
   case U_OVERLINE:
   case U_HORIZBAR:
-    return new MathMLHorizBarNode(ch);
+    return MathMLHorizBarNode::create(ch);
 
   default:
-    return new MathMLCharNode(ch);
+    return MathMLCharNode::create(ch);
   }
 }
 
-MathMLTextNode*
+Ptr<MathMLTextNode>
 allocCombinedCharNode(Char ch, Char cch)
 {
-  return new MathMLCombinedCharNode(ch, cch);
+  return MathMLCombinedCharNode::create(ch, cch);
 }
 
-MathMLTextNode*
+#if 0
+Ptr<MathMLTextNode>
 allocTextNode(const String** str)
 {
   assert(str != NULL);
@@ -71,13 +74,14 @@ allocTextNode(const String** str)
 
   unsigned len = s->GetLength();
 
-  MathMLTextNode* node = NULL;
+  Ptr<MathMLTextNode> node = 0;
 
   if (len == 1) {
     node = allocCharNode(s->GetChar(0));
     delete s;
     *str = NULL;
-  } else if (len > 1) node = new MathMLStringNode(s);
+  } else if (len > 1) node = MathMLStringNode::create(s);
 
   return node;
 }
+#endif

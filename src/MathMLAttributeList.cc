@@ -21,11 +21,31 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <functional>
+#include <algorithm>
+
 #include <assert.h>
 #include <stddef.h>
 
-#include "Iterator.hh"
 #include "MathMLAttributeList.hh"
+
+struct DeleteAdaptor
+  : public std::unary_function<MathMLAttribute*,void>
+{
+  void operator()(MathMLAttribute* attr) const
+  { delete attr; }
+};
+
+struct IsPredicate
+  : public std::binary_function<MathMLAttribute*,AttributeId,bool>
+{
+  bool operator()(MathMLAttribute* attr, AttributeId id) const
+  {
+    assert(attr);
+    return attr->IsA() == id;
+  }
+};
 
 MathMLAttributeList::MathMLAttributeList()
 {
@@ -33,34 +53,40 @@ MathMLAttributeList::MathMLAttributeList()
 
 MathMLAttributeList::~MathMLAttributeList()
 {
-  for (Iterator<MathMLAttribute*> i(*this); i.More(); i.Next())
-    delete i();
+  std::for_each(content.begin(), content.end(), DeleteAdaptor());
+}
+
+void
+MathMLAttributeList::Append(MathMLAttribute* attr)
+{
+  assert(attr != 0);
+  content.push_back(attr);
 }
 
 MathMLAttribute*
 MathMLAttributeList::GetAttribute(AttributeId id) const
 {
-  for (Iterator<MathMLAttribute*> i(*this); i.More(); i.Next()) {
-    MathMLAttribute* attribute = i();
-    assert(attribute != NULL);
-
-    if (attribute->IsA() == id) return attribute;
-  }
-
-  return NULL;
+  std::vector<MathMLAttribute*>::const_iterator p =
+    std::find_if(content.begin(), content.end(),
+		 std::bind2nd(IsPredicate(), id));
+  if (p != content.end()) return *p;
+  else return 0;
 }
 
 bool
 MathMLAttributeList::Equal(const MathMLAttributeList& aList) const
 {
-  if (GetSize() != aList.GetSize()) return false;
+  if (content.size() != aList.content.size()) return false;
 
-  for (Iterator<MathMLAttribute*> i(*this); i.More(); i.Next()) {
-    assert(i() != NULL);
-    MathMLAttribute* attribute = aList.GetAttribute(i()->IsA());
-    if (attribute == NULL) return false;
-    if (!i()->Equal(*attribute)) return false;
-  }
+  for (std::vector<MathMLAttribute*>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      assert(*p);
+      MathMLAttribute* attribute = aList.GetAttribute((*p)->IsA());
+      if (attribute == 0) return false;
+      if (!(*p)->Equal(*attribute)) return false;
+    }
 
   return true;
 }

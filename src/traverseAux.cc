@@ -23,341 +23,236 @@
 #include <config.h>
 #include <assert.h>
 
-#include "Iterator.hh"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
+#include "MathMLDocument.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLEmbellishedOperatorElement.hh"
+// the following are needed for the dynamic casts
+#include "MathMLScriptElement.hh"
+#include "MathMLUnderOverElement.hh"
+#include "MathMLFractionElement.hh"
+#include "MathMLMultiScriptsElement.hh"
+#include "MathMLSemanticsElement.hh"
+#include "MathMLStyleElement.hh"
+#include "MathMLPhantomElement.hh"
+#include "MathMLPaddedElement.hh"
 
-MathMLElement*
-findEmbellishedOperatorRoot(MathMLElement* root)
+Ptr<MathMLElement>
+findEmbellishedOperatorRoot(const Ptr<MathMLElement>& op)
 {
-  assert(root != NULL);
+  Ptr<MathMLElement> root = op;
 
-  if (root->GetParent() == NULL) return root;
-
-  assert(root->GetParent()->IsContainer());
-  MathMLContainerElement* rootParent = TO_CONTAINER(root->GetParent());
-  assert(rootParent != NULL);
-
-  switch (rootParent->IsA()) {
-  case TAG_MROW:
+  while (root && root->GetParent())
     {
-      for (Iterator<MathMLElement*> i(rootParent->content); i.More(); i.Next()) {
-	MathMLElement* elem = i();
-	assert(elem != NULL);
+      Ptr<MathMLElement> newRoot = op->GetParent()->GetCoreOperator();
+      if (newRoot != root) break;
+      else root = op->GetParent();
+    }
 
-	if (!elem->IsSpaceLike() && root != elem) return root;
-      }
+  return root;
+}
+
+#if 0
+Ptr<MathMLElement>
+findEmbellishedOperatorRoot(const Ptr<MathMLElement>& root)
+{
+  assert(root);
+
+  if (!root->GetParent()) return root;
+
+  Ptr<MathMLContainerElement> rootParent = smart_cast<MathMLContainerElement>(root->GetParent());
+  assert(rootParent);
+
+  if (is_a<MathMLRowElement>(rootParent))
+    {
+      Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(rootParent);
+      assert(row);
+
+      for (std::vector< Ptr<MathMLElement> >::const_iterator i = row->GetContent().begin();
+	   i != row->GetContent().end();
+	   i++)
+	{
+	  Ptr<MathMLElement> elem = *i;
+	  assert(elem);
+	  if (!elem->IsSpaceLike() && root != elem) return root;
+	}
 
       return findEmbellishedOperatorRoot(rootParent);
     }
-  case TAG_MSUP:
-  case TAG_MSUB:
-  case TAG_MSUBSUP:
-  case TAG_MUNDER:
-  case TAG_MOVER:
-  case TAG_MUNDEROVER:
-  case TAG_MMULTISCRIPTS:
-  case TAG_MFRAC:
-  case TAG_SEMANTICS:
+  else if (is_a<MathMLScriptElement>(rootParent) ||
+	   is_a<MathMLUnderOverElement>(rootParent) ||
+	   is_a<MathMLMultiScriptsElement>(rootParent) ||
+	   is_a<MathMLFractionElement>(rootParent) ||
+	   is_a<MathMLSemanticsElement>(rootParent))
     {
-      if (rootParent->content.GetSize() > 0 &&
-	  rootParent->content.GetFirst() != root) return root;
+      Ptr<MathMLLinearContainerElement> cont = smart_cast<MathMLLinearContainerElement>(rootParent);
+      assert(cont);
+
+      if (cont->GetSize() > 0 && cont->GetChild(0) != root) return root;
       else return findEmbellishedOperatorRoot(rootParent);
     }
-  case TAG_MSTYLE:
-  case TAG_MPHANTOM:
-  case TAG_MPADDED:
+  else if (is_a<MathMLStyleElement>(rootParent) ||
+	   is_a<MathMLPhantomElement>(rootParent) ||
+	   is_a<MathMLPaddedElement>(rootParent))
     return findEmbellishedOperatorRoot(rootParent);
-  default:
+  else
     return root;
-  }
+}
+#endif
+
+Ptr<MathMLOperatorElement>
+findStretchyOperator(const Ptr<MathMLElement>& elem)
+{
+  if (elem)
+    if (Ptr<MathMLOperatorElement> coreOp = elem->GetCoreOperator())
+      if (coreOp->IsStretchy()) return coreOp;
+  return 0;
 }
 
-MathMLOperatorElement*
-findCoreOperator(MathMLElement* root)
+Ptr<MathMLOperatorElement>
+findStretchyOperator(const Ptr<MathMLElement>& elem, StretchId id)
 {
-  assert(root != NULL);
+  if (Ptr<MathMLOperatorElement> coreOp = findStretchyOperator(elem))
+    if (coreOp->GetStretch() == id) return coreOp;
+  return 0;
+}
 
-  if (root->IsOperator()) return TO_OPERATOR(root);
+Ptr<MathMLElement>
+findCommonAncestor(const Ptr<MathMLElement>& first, const Ptr<MathMLElement>& last)
+{
+  assert(first);
+  assert(last);
 
-  if (!root->IsContainer()) return NULL;
+  Ptr<MathMLElement> firstP(first);
+  Ptr<MathMLElement> lastP(last);
 
-  MathMLContainerElement* rootContainer = TO_CONTAINER(root);
-  assert(rootContainer != NULL);
-
-  switch (rootContainer->IsA()) {
-  case TAG_MO:
-    // WARNING: this is an embellished operator! We cannot use the
-    // GetCoreOperator because it returns a const ptr
+  if (firstP != lastP)
     {
-      assert(rootContainer->content.GetSize() > 0);
-      return findCoreOperator(rootContainer->content.GetFirst());
-    }
-  case TAG_MROW:
-    {
-      MathMLElement* core = NULL;
+      unsigned firstDepth = first->GetDepth();
+      unsigned lastDepth  = last->GetDepth();
 
-      for (Iterator<MathMLElement*> i(rootContainer->content); i.More(); i.Next()) {
-	MathMLElement* elem = i();
-	assert(elem != NULL);
-
-	if (!elem->IsSpaceLike()) {
-	  if (core == NULL) core = elem;
-	  else return NULL;
+      while (firstP && firstDepth > lastDepth)
+	{
+	  firstP = firstP->GetParent();
+	  firstDepth--;
 	}
+
+      while (lastP && lastDepth > firstDepth)
+	{
+	  lastP = lastP->GetParent();
+	  lastDepth--;
+	}
+
+      assert(firstDepth == lastDepth);
+
+      while (firstP && lastP && firstP != lastP)
+	{
+	  firstP = firstP->GetParent();
+	  lastP = lastP->GetParent();
+	}
+    }
+  
+  return firstP;
+}
+
+Ptr<MathMLActionElement>
+findActionElement(const Ptr<MathMLElement>& elem)
+{
+  Ptr<MathMLElement> elemP(elem);
+
+  while (elemP && elemP->IsA() != TAG_MACTION)
+    elemP = elemP->GetParent();
+
+  return (elemP) ? smart_cast<MathMLActionElement>(elemP) : Ptr<MathMLActionElement>(0);
+}
+
+#if defined(HAVE_GMETADOM)
+
+DOM::Element
+findDOMNode(const Ptr<MathMLElement>& elem)
+{
+  Ptr<MathMLElement> elemP(elem);
+
+  while (elemP && !elemP->GetDOMElement())
+    elemP = elemP->GetParent();
+
+  if (elemP) return elemP->GetDOMElement();
+  else return DOM::Element(0);
+}
+
+Ptr<MathMLElement>
+findMathMLElement(const Ptr<MathMLDocument>& doc, const DOM::Element& node)
+{
+  Ptr<MathMLElement> elem = doc->getFormattingNodeNoCreate(node);
+  
+  if (elem)
+    while (Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
+      {
+	if (row->GetSize() != 1) break;
+	elem = row->GetChild(0);
       }
 
-      return (core != NULL) ? findCoreOperator(core) : NULL;
-    }
-  case TAG_MSUP:
-  case TAG_MSUB:
-  case TAG_MSUBSUP:
-  case TAG_MUNDER:
-  case TAG_MOVER:
-  case TAG_MUNDEROVER:
-  case TAG_MMULTISCRIPTS:
-  case TAG_MFRAC:
-  case TAG_SEMANTICS:
-  case TAG_MSTYLE:
-  case TAG_MPHANTOM:
-  case TAG_MPADDED:
+  return elem;
+}
+
+#endif // HAVE_GMETADOM
+
+Ptr<MathMLElement>
+findRightmostChild(const Ptr<MathMLElement>& elem)
+{
+  if (Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
     {
-      if (rootContainer->content.GetSize() > 0 &&
-	  rootContainer->content.GetFirst() != NULL)
-	return findCoreOperator(rootContainer->content.GetFirst());
-      else
-	return NULL;
+      if (row->GetSize() == 0) return elem;
+      else return findRightmostChild(row->GetChild(row->GetSize() - 1));
     }
-  default:
-    return NULL;
-  }
+  else
+    return elem;
 }
 
-MathMLOperatorElement*
-findStretchyOperator(MathMLElement* elem)
+Ptr<MathMLElement>
+findLeftmostChild(const Ptr<MathMLElement>& elem)
 {
-  if (elem == NULL) return NULL;
-
-  if (elem->IsEmbellishedOperator()) {
-    MathMLEmbellishedOperatorElement* eop = TO_EMBELLISHED_OPERATOR(elem);
-    assert(eop != NULL);
-    MathMLOperatorElement* op = eop->GetCoreOperator();
-    assert(op != NULL);
-
-    if (op->IsStretchy()) return op;
-    else return NULL;
-  } else if (elem->IsOperator()) {
-    MathMLOperatorElement* op = TO_OPERATOR(elem);
-    if (op->IsStretchy()) return op;
-    else return NULL;
-  } else
-    return NULL;
-}
-
-MathMLOperatorElement*
-findStretchyOperator(MathMLElement* elem, StretchId id)
-{
-  MathMLOperatorElement* op = findStretchyOperator(elem);
-  if (op == NULL) return NULL;
-  if (op->GetStretch() != id) return NULL;
-  return op;
-}
-
-MathMLElement*
-findCommonAncestor(MathMLElement* first, MathMLElement* last)
-{
-  assert(first != NULL);
-  assert(last != NULL);
-
-  if (first != last) {
-    unsigned firstDepth = first->GetDepth();
-    unsigned lastDepth  = last->GetDepth();
-
-    while (firstDepth > lastDepth) {
-      first = first->GetParent();
-      firstDepth--;
+  if (Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
+    {
+      if (row->GetSize() == 0) return elem;
+      else return findLeftmostChild(row->GetChild(0));
     }
+  else
+    return elem;
+}
 
-    while (lastDepth > firstDepth) {
-      last = last->GetParent();
-      lastDepth--;
+Ptr<MathMLElement>
+findRightSibling(const Ptr<MathMLElement>& elem)
+{
+  if (!elem)
+    return 0;
+  else if (Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent()))
+    {
+      std::vector< Ptr<MathMLElement> >::const_iterator p =
+	std::find(row->GetContent().begin(), row->GetContent().end(), elem);
+      assert(p != row->GetContent().end());
+      if (p + 1 != row->GetContent().end()) return findLeftmostChild(*(p + 1));
+      else return findRightSibling(row);
     }
+  else
+    return findRightSibling(elem->GetParent());
+}
 
-    assert(firstDepth == lastDepth);
-
-    while (first != NULL && last != NULL && first != last) {
-      first = first->GetParent();
-      last = last->GetParent();
+Ptr<MathMLElement>
+findLeftSibling(const Ptr<MathMLElement>& elem)
+{
+  if (!elem)
+    return 0;
+  else if (Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent()))
+    {
+      std::vector< Ptr<MathMLElement> >::const_iterator p =
+	std::find(row->GetContent().begin(), row->GetContent().end(), elem);
+      assert(p != row->GetContent().end());
+      if (p != row->GetContent().begin()) return findRightmostChild(*(p - 1));
+      else return findLeftSibling(row);
     }
-  }
-
-  assert(first == last);
-
-  return first;
+  else
+    return findLeftSibling(elem->GetParent());
 }
-
-MathMLActionElement*
-findActionElement(MathMLElement* elem)
-{
-  while (elem != NULL && elem->IsA() != TAG_MACTION) elem = elem->GetParent();
-  return (elem != NULL) ? TO_ACTION(elem) : NULL;
-}
-
-#if defined(HAVE_MINIDOM)
-
-mDOMNodeRef
-findDOMNode(MathMLElement* elem)
-{
-  while (elem != NULL && elem->GetDOMNode() == NULL) elem = elem->GetParent();
-  return (elem != NULL) ? elem->GetDOMNode() : NULL;
-}
-
-MathMLElement*
-getMathMLElement(mDOMNodeRef node)
-{
-  assert(node != NULL);
-  // WARNING: the following is a very dangerous operation. It relies
-  // of the assumption that the user will NEVER modify the user data field
-  // in the DOM tree elements!!!
-  MathMLElement* elem = (MathMLElement*) mdom_node_get_user_data(node);
-  assert(elem != NULL);
-  assert(elem->GetDOMNode() == node);
-  return elem;
-}
-
-MathMLElement*
-findMathMLElement(mDOMNodeRef node)
-{
-  MathMLElement* elem = getMathMLElement(node);
-  assert(elem != NULL);
-
-  while (elem->IsA() == TAG_MROW && TO_CONTAINER(elem)->content.GetSize() == 1) {
-    elem = TO_CONTAINER(elem)->content.GetFirst();
-    assert(elem != NULL);
-  }
-
-  return elem;
-}
-
-#elif defined(HAVE_GMETADOM)
-
-GMetaDOM::Element
-findDOMNode(MathMLElement* elem)
-{
-  while (elem != NULL && elem->GetDOMNode() == 0) elem = elem->GetParent();
-  return (elem != NULL) ? elem->GetDOMNode() : 0;
-}
-
-MathMLElement*
-getMathMLElement(const GMetaDOM::Element& node)
-{
-  // WARNING: the following is a very dangerous operation. It relies
-  // of the assumption that the user will NEVER modify the user data field
-  // in the DOM tree elements!!!
-  MathMLElement* elem = (MathMLElement*) node.get_userData();
-  assert(elem != NULL);
-  assert(elem->GetDOMNode() == node);
-  return elem;
-}
-
-MathMLElement*
-findMathMLElement(const GMetaDOM::Element& node)
-{
-  MathMLElement* elem = getMathMLElement(node);
-  assert(elem != NULL);
-
-  while (elem->IsA() == TAG_MROW && TO_CONTAINER(elem)->content.GetSize() == 1) {
-    elem = TO_CONTAINER(elem)->content.GetFirst();
-    assert(elem != NULL);
-  }
-
-  return elem;
-}
-
-#endif // HAVE_GMETADOM
-
-MathMLElement*
-findRightmostChild(MathMLElement* elem)
-{
-  if (elem == NULL || elem->IsA() != TAG_MROW) return elem;
-  MathMLRowElement* row = TO_ROW(elem);
-  assert(row != NULL);
-  if (row->content.GetSize() == 0) return elem;
-  else return findRightmostChild(row->content.GetLast());
-}
-
-MathMLElement*
-findLeftmostChild(MathMLElement* elem)
-{
-  if (elem == NULL || elem->IsA() != TAG_MROW) return elem;
-  MathMLRowElement* row = TO_ROW(elem);
-  assert(row != NULL);
-  if (row->content.GetSize() == 0) return elem;
-  else return findLeftmostChild(row->content.GetFirst());
-}
-
-#if defined(HAVE_MINIDOM)
-
-MathMLElement*
-findRightSibling(MathMLElement* elem)
-{
-  mDOMNodeRef p = findDOMNode(elem);
-  if (p == NULL) return NULL;
-
-  for (p = mdom_node_get_next_sibling(p);
-       p != NULL && mdom_node_get_user_data(p) == NULL;
-       p = mdom_node_get_next_sibling(p)) ;
-
-  if (p != NULL) return findLeftmostChild(findMathMLElement(p));
-  else return findRightmostChild(findRightSibling(elem->GetParent()));
-}
-
-MathMLElement*
-findLeftSibling(MathMLElement* elem)
-{
-  mDOMNodeRef p = findDOMNode(elem);
-  if (p == NULL) return NULL;
-
-  for (p = mdom_node_get_prev_sibling(p);
-       p != NULL && mdom_node_get_user_data(p) == NULL;
-       p = mdom_node_get_prev_sibling(p)) ;
-
-  if (p != NULL) return findRightmostChild(findMathMLElement(p));
-  else return findLeftmostChild(findLeftSibling(elem->GetParent()));
-}
-
-#elif defined(HAVE_GMETADOM)
-
-MathMLElement*
-findRightSibling(MathMLElement* elem)
-{
-  GMetaDOM::Node p = findDOMNode(elem);
-  if (p == 0) return NULL;
-
-  for (p = p.get_nextSibling();
-       p != 0 && p.get_userData() == NULL;
-       p = p.get_nextSibling()) ;
-  
-  if (p != 0) return findLeftmostChild(findMathMLElement(p));
-  else return findRightmostChild(findRightSibling(elem->GetParent()));
-}
-
-MathMLElement*
-findLeftSibling(MathMLElement* elem)
-{
-  GMetaDOM::Node p = findDOMNode(elem);
-  if (p == NULL) return NULL;
-
-  for (p = p.get_previousSibling();
-       p != 0 && p.get_userData() == NULL;
-       p = p.get_previousSibling()) ;
-
-  if (p != 0) return findRightmostChild(findMathMLElement(p));
-  else return findLeftmostChild(findLeftSibling(elem->GetParent()));
-}
-
-#endif // HAVE_GMETADOM

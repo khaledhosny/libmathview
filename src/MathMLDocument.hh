@@ -23,40 +23,108 @@
 #ifndef MathMLDocument_hh
 #define MathMLDocument_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+// !!! BEGIN WARNING: hash_map is not part of the STL !!!
+#if defined(HAVE_EXT_HASH_MAP)
+#include <ext/hash_map>
+#elif defined(HAVE_HASH_MAP)
+#include <hash_map>
+#else
+#error "no implementation of hash_map could be found"
+#endif
+// !!! END WARNING: hash_map is not part of the STL !!!
+
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLContainerElement.hh"
+#include "MathMLBinContainerElement.hh"
 
-class MathMLDocument: public MathMLContainerElement
+class MathMLDocument : public MathMLBinContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLDocument(mDOMDocRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLDocument(const GMetaDOM::Document&);
+protected:
+  MathMLDocument(void);
+#if defined(HAVE_GMETADOM)
+  MathMLDocument(const DOM::Document&);
+  MathMLDocument(const DOM::Element&);
+  void Init(void);
 #endif
-  virtual void Normalize(void);
-  virtual bool IsDocument(void) const;
   virtual ~MathMLDocument();
 
-  MathMLElement* GetRoot(void) const;
-#if defined(HAVE_MINIDOM)
-  mDOMDocRef     GetDOMDocument(void) const { return DOMdoc; }
-protected:
-  mDOMDocRef DOMdoc;
-#elif defined(HAVE_GMETADOM)
-  const GMetaDOM::Document& GetDOMDocument(void) const { return DOMdoc; }
-protected:
-  GMetaDOM::Document DOMdoc;
+public:
+  static Ptr<MathMLDocument> create(void)
+  { return Ptr<MathMLDocument>(new MathMLDocument()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLDocument> create(const DOM::Document& doc)
+  { return Ptr<MathMLDocument>(new MathMLDocument(doc)); }
+  static Ptr<MathMLDocument> create(const DOM::Element& root)
+  { return Ptr<MathMLDocument>(new MathMLDocument(root)); }
 #endif
+
+  virtual void Normalize(void);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void SetDirtyAttribute(void);
+
+  Ptr<MathMLElement> GetRoot(void) const { return GetChild(); }
+
+  Ptr<MathMLElement> findFormattingNode(const DOM::Node&) const;
+  Ptr<MathMLElement> getFormattingNodeNoCreate(const DOM::Node&) const;
+  Ptr<MathMLElement> getFormattingNode(const DOM::Node&) const;
+  void               setFormattingNode(const DOM::Node&, const Ptr<MathMLElement>&) const;
+
+  void               notifySubtreeModified(const DOM::Node&) const;
+  void               notifyAttributeModified(const DOM::Node&) const;
+
+#if defined(HAVE_GMETADOM)
+  const DOM::Document& GetDOMDocument(void) const { return DOMdoc; }
+  const DOM::Element& GetDOMElement(void) const { return DOMroot; }
+
+protected:
+
+  class DOMSubtreeModifiedListener : public DOM::EventListener
+  {
+  public:
+    DOMSubtreeModifiedListener(const Ptr<MathMLDocument>& d) : doc(d) { };
+    virtual ~DOMSubtreeModifiedListener() { };
+    virtual void handleEvent(const DOM::Event&);
+
+  private:
+    Ptr<MathMLDocument> doc;
+  };
+
+  class DOMAttrModifiedListener : public DOM::EventListener
+  {
+  public:
+    DOMAttrModifiedListener(const Ptr<MathMLDocument>& d) : doc(d) { };
+    virtual ~DOMAttrModifiedListener() { };
+    virtual void handleEvent(const DOM::Event&);
+
+  private:
+    Ptr<MathMLDocument> doc;
+  };
+
+  DOMSubtreeModifiedListener* subtreeModifiedListener;
+  DOMAttrModifiedListener*    attrModifiedListener;
+
+  DOM::Document DOMdoc;  // can be 0
+  DOM::Element  DOMroot; // cannot be 0
+
+  struct DOM_hash : public std::unary_function< DOM::Node, size_t >
+  {
+    size_t operator()(const DOM::Node& node) const
+    {
+      assert(node);
+      size_t res = reinterpret_cast<size_t>(static_cast<GdomeNode*>(node));
+      return res;
+    }
+  };
+
+#if defined(HAVE_EXT_HASH_MAP)
+  typedef __gnu_cxx::hash_map< DOM::Node, Ptr<MathMLElement>, DOM_hash > DOMNodeMap;
+#elif defined(HAVE_HASH_MAP)
+  typedef std::hash_map< DOM::Node, Ptr<MathMLElement>, DOM_hash > DOMNodeMap;
+#endif
+  mutable DOMNodeMap nodeMap;
+#endif // HAVE_GMETADOM
 };
-
-typedef MathMLDocument* MathMLDocumentPtr;
-
-#define TO_DOCUMENT(object) ((MathMLDocumentPtr) (object))
 
 #endif // MathMLDocument_hh

@@ -1,4 +1,4 @@
-<math display="block">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
   <mover><mi>x</mi><mo mathvariant="normal">&#x0303;</mo></mover><mspace width="1ex"/>
   <mover><mi>x</mi><mo>&#x0302;</mo></mover><mspace width="1ex"/>
   <mover><mi>x</mi><mo>&#x0301;</mo></mover><mspace width="1ex"/>

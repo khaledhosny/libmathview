@@ -23,33 +23,62 @@
 #ifndef MathMLScriptElement_hh
 #define MathMLScriptElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
 
-class MathMLScriptElement: public MathMLContainerElement, public MathMLScriptCommonElement
+class MathMLScriptElement
+  : public MathMLContainerElement, private MathMLScriptCommonElement, public MathMLEmbellishment
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLScriptElement(mDOMNodeRef, TagId);
-#elif defined(HAVE_GMETADOM)
-  MathMLScriptElement(const GMetaDOM::Element&, TagId);
+protected:
+  MathMLScriptElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLScriptElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(void);
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
   virtual ~MathMLScriptElement();
 
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLScriptElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLScriptElement(el)); }
+#endif
+
+  void SetBase(const Ptr<MathMLElement>&);
+  void SetSubScript(const Ptr<MathMLElement>&);
+  void SetSuperScript(const Ptr<MathMLElement>&);
+  Ptr<MathMLElement> GetBase(void) const { return base; }
+  Ptr<MathMLElement> GetSubScript(void) const { return subScript; }
+  Ptr<MathMLElement> GetSuperScript(void) const { return superScript; }
+  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Render(const class DrawingArea&);
+
+#if 0
+  virtual void SetDirty(const Rectangle* = 0);
+  virtual void SetDirtyLayout(bool = false);
+#endif
+  virtual void SetFlagDown(Flags);
+  virtual void ResetFlagDown(Flags);
+  virtual scaled GetLeftEdge(void) const;
+  virtual scaled GetRightEdge(void) const;
+  virtual void   ReleaseGCs(void);
+  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+
 private:
-  MathMLElement* subScript;
-  MathMLElement* superScript;
+  Ptr<MathMLElement> subScript;
+  Ptr<MathMLElement> superScript;
 
   scaled subShiftX;
   scaled subShiftY;

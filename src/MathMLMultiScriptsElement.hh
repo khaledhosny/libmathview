@@ -23,32 +23,73 @@
 #ifndef MathMLMultiScriptsElement_hh
 #define MathMLMultiScriptsElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#include <vector>
+
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
 
-class MathMLMultiScriptsElement : public MathMLContainerElement, public MathMLScriptCommonElement
+class MathMLMultiScriptsElement
+  : public MathMLContainerElement, public MathMLScriptCommonElement, public MathMLEmbellishment
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLMultiScriptsElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLMultiScriptsElement(const GMetaDOM::Element&);
+protected:
+  MathMLMultiScriptsElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLMultiScriptsElement(const DOM::Element&);
 #endif
-  virtual void Normalize(void);
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
   virtual ~MathMLMultiScriptsElement();
 
+public:
+  unsigned GetScriptsSize(void) const { return subScript.size(); }
+  void     SetScriptsSize(unsigned);
+  unsigned GetPreScriptsSize(void) const { return preSubScript.size(); }
+  void     SetPreScriptsSize(unsigned);
+  void     SetBase(const Ptr<MathMLElement>&);
+  void     SetSubScript(unsigned, const Ptr<MathMLElement>&);
+  void     SetSuperScript(unsigned, const Ptr<MathMLElement>&);
+  void     SetPreSubScript(unsigned, const Ptr<MathMLElement>&);
+  void     SetPreSuperScript(unsigned, const Ptr<MathMLElement>&);
+  Ptr<MathMLElement> GetBase(void) const { return base; }
+  Ptr<MathMLElement> GetSubScript(unsigned) const;
+  Ptr<MathMLElement> GetSuperScript(unsigned) const;
+  Ptr<MathMLElement> GetPreSubScript(unsigned) const;
+  Ptr<MathMLElement> GetPreSuperScript(unsigned) const;
+
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLMultiScriptsElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLMultiScriptsElement(el)); }
+#endif
+
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Render(const class DrawingArea&);
+  virtual void ReleaseGCs(void);
+
+#if 0
+  virtual void SetDirty(const Rectangle* = 0);
+  virtual void SetDirtyLayout(bool = false);
+#endif
+  virtual void SetFlagDown(Flags);
+  virtual void ResetFlagDown(Flags);
+  virtual scaled GetLeftEdge(void) const;
+  virtual scaled GetRightEdge(void) const;
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
+
 private:
-  unsigned nPre;
-  unsigned nPost;
+  std::vector< Ptr<MathMLElement> > subScript;
+  std::vector< Ptr<MathMLElement> > superScript;
+  std::vector< Ptr<MathMLElement> > preSubScript;
+  std::vector< Ptr<MathMLElement> > preSuperScript;
 
   scaled subShiftX;
   scaled subShiftY;

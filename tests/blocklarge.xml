@@ -1,4 +1,4 @@
-<math display="block">
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
   <mrow>
     <mo stretchy="false" largeop="false">&sum;</mo>
     <mi>x</mi>

@@ -27,7 +27,7 @@
 #include <assert.h>
 
 #include "PS_T1_Font.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 
 PS_T1_Font::PS_T1_Font(unsigned id, float s) : T1_Font(id, s)
 {

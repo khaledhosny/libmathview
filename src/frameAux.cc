@@ -21,84 +21,114 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <algorithm>
+
 #include <assert.h>
 
 #include "frameAux.hh"
-#include "Iterator.hh"
 #include "MathMLFrame.hh"
 #include "MathMLTextNode.hh"
+#include "MathMLRowElement.hh"
 #include "MathMLTokenElement.hh"
 #include "MathMLContainerElement.hh"
 
 const BoundingBox&
-getFrameBoundingBox(MathMLFrame* frame, LayoutId id)
+getFrameBoundingBox(const Ptr<MathMLFrame>& frame)
 {
-  assert(frame != NULL);
-
-  if (id == LAYOUT_AUTO || !frame->IsElement()) return frame->GetBoundingBox();
-  else {
-    MathMLElement* elem = TO_ELEMENT(frame);
-    assert(elem != NULL);
-    if (id == LAYOUT_MIN) return elem->GetMinBoundingBox();
-    else return elem->GetMaxBoundingBox();
-  }
+  assert(frame != Ptr<MathMLFrame>(0));
+  return frame->GetBoundingBox();
 }
 
-MathMLFrame*
-getFrameLeftSibling(const MathMLFrame* frame)
+static Ptr<MathMLTextNode>
+getLeftSibling(const Ptr<MathMLTextNode>& node)
 {
-  assert(frame != NULL);
-  assert(frame->GetParent() != NULL);
+  assert(node);
+  assert(node->GetParent());
+  assert(is_a<MathMLTokenElement>(node->GetParent()));
 
-  if (frame->GetParent()->IsToken()) {
-    MathMLTokenElement* token = TO_TOKEN(frame->GetParent());
-    assert(token != NULL);
+  Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(node->GetParent());
+  assert(token);
+  std::vector< Ptr<MathMLTextNode> >::const_iterator p = std::find(token->GetContent().begin(),
+								   token->GetContent().end(),
+								   node);
+  assert(p != token->GetContent().end());
+  if (p != token->GetContent().begin()) return *(p - 1);
+  else return 0;
+}
 
-    MathMLFrame* left = NULL;
-    for (Iterator<MathMLTextNode*> p(token->GetContent()); p.More(); p.Next()) {
-      if (p() == frame) return left;
-      left = p();
+static Ptr<MathMLElement>
+getLeftSibling(const Ptr<MathMLElement>& elem)
+{
+  assert(elem);
+  assert(elem->GetParent());
+  assert(is_a<MathMLRowElement>(elem->GetParent()));
+  Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent());
+  assert(row);
+  std::vector< Ptr<MathMLElement> >::const_iterator p = std::find(row->GetContent().begin(),
+								  row->GetContent().end(),
+								  elem);
+  assert(p != row->GetContent().end());
+  if (p != row->GetContent().begin()) return *(p - 1);
+  else return 0;
+}
+
+Ptr<MathMLFrame>
+getLeftSibling(const Ptr<MathMLFrame>& frame)
+{
+  assert(frame);
+  if (is_a<MathMLTextNode>(frame)) return getLeftSibling(smart_cast<MathMLTextNode>(frame));
+  else if (is_a<MathMLElement>(frame)) return getLeftSibling(smart_cast<MathMLElement>(frame));
+  else
+    {
+      assert(0);
+      return 0;
     }
-  } else if (frame->GetParent()->IsContainer()) {
-    MathMLContainerElement* container = TO_CONTAINER(frame->GetParent());
-    assert(container != NULL);
-
-    MathMLElement* left = NULL;
-    for (Iterator<MathMLElement*> p(container->content); p.More(); p.Next()) {
-      if (p() == frame) return left;
-      left = p();
-    }
-  }
-
-  assert(IMPOSSIBLE);
-  return NULL;
 }
 
-MathMLFrame*
-getFrameRightSibling(const MathMLFrame* frame)
+static Ptr<MathMLTextNode>
+getRightSibling(const Ptr<MathMLTextNode>& node)
 {
-  assert(frame != NULL);
-  assert(frame->GetParent() != NULL);
+  assert(node);
+  assert(node->GetParent());
+  assert(is_a<MathMLTokenElement>(node->GetParent()));
 
-  if (frame->GetParent()->IsToken()) {
-    MathMLTokenElement* token = TO_TOKEN(frame->GetParent());
-    assert(token != NULL);
-
-    for (Iterator<MathMLTextNode*> p(token->GetContent()); p.More(); p.Next())
-      if (p() == frame) {
-	p.Next();
-	if (p.More()) return p();
-      }
-  } else if (frame->GetParent()->IsContainer()) {
-    MathMLContainerElement* container = TO_CONTAINER(frame->GetParent());
-    assert(container != NULL);
-
-    for (Iterator<MathMLElement*> p(container->content); p.More(); p.Next())
-      if (p() == frame) {
-	p.Next();
-	if (p.More()) return p();
-      }
-  }
-
-  return NULL;
+  Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(node->GetParent());
+  assert(token);
+  std::vector< Ptr<MathMLTextNode> >::const_iterator p = std::find(token->GetContent().begin(),
+								   token->GetContent().end(),
+								   node);
+  assert(p != token->GetContent().end());
+  if (p != token->GetContent().end() - 1) return *(p + 1);
+  else return 0;
 }
+
+static Ptr<MathMLElement>
+getRightSibling(const Ptr<MathMLElement>& elem)
+{
+  assert(elem);
+  assert(elem->GetParent());
+  assert(is_a<MathMLRowElement>(elem->GetParent()));
+  Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent());
+  assert(row);
+  std::vector< Ptr<MathMLElement> >::const_iterator p = std::find(row->GetContent().begin(),
+								  row->GetContent().end(),
+								  elem);
+  assert(p != row->GetContent().end());
+  if (p != row->GetContent().end() - 1) return *(p + 1);
+  else return 0;
+}
+
+Ptr<MathMLFrame>
+getRightSibling(const Ptr<MathMLFrame>& frame)
+{
+  assert(frame);
+  if (is_a<MathMLTextNode>(frame)) return getRightSibling(smart_cast<MathMLTextNode>(frame));
+  else if (is_a<MathMLElement>(frame)) return getRightSibling(smart_cast<MathMLElement>(frame));
+  else
+    {
+      assert(0);
+      return 0;
+    }
+}
+

@@ -1,4 +1,4 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
     <mtable frame="solid" columnlines="solid" rowlines="solid" equalrows="false" equalcolumns="false"
     columnwidth="fit">
     <mtr>
@@ -15,31 +15,37 @@
       <mtd rowspan="2" rowalign="bottom" columnalign="right">
         <mstyle fontsize="10pt" color="Navy">
           <mtable frame="solid">
-            <mi>row span=2</mi>
-	    <mi>row align=bottom</mi>
-	    <mi>column align=right</mi>
+	   <mtr>
+            <mtd> <mi>row span=2</mi> </mtd>
+	   </mtr>
+	   <mtr>
+	    <mtd> <mi>row align=bottom</mi> </mtd>
+	   </mtr>
+	   <mtr>
+	    <mtd> <mi>column align=right</mi> </mtd>
+	   </mtr>
 	  </mtable>
 	</mstyle>
       </mtd>
       <mtd columnspan="2" rowalign="center" columnalign="left">
         <mtable frame="solid" framespacing="0 0" columnspacing="0" rowspacing="0">
 	  <mtr>
-	    <mstyle background="#f08000"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#e08010"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#d08020"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#c08030"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#b08040"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#a08050"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#908060"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#808070"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#708080"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#608090"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#5080a0"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#4080b0"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#3080c0"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#2080d0"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#1080e0"><mspace width="3mm" height="1cm"/></mstyle>
-	    <mstyle background="#0080f0"><mspace width="3mm" height="1cm"/></mstyle>
+	    <mtd> <mstyle background="#f08000"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#e08010"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#d08020"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#c08030"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#b08040"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#a08050"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#908060"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#808070"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#708080"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#608090"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#5080a0"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#4080b0"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#3080c0"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#2080d0"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#1080e0"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
+	    <mtd> <mstyle background="#0080f0"><mspace width="3mm" height="1cm"/></mstyle> </mtd>
 	  </mtr>
 	</mtable>
       </mtd>

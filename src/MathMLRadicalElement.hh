@@ -23,41 +23,69 @@
 #ifndef MathMLRadicalElement_hh
 #define MathMLRadicalElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLNormalizingContainerElement.hh"
+#include "MathMLContainerElement.hh"
 
-class MathMLRadicalElement : public MathMLNormalizingContainerElement
+class MathMLRadicalElement : public MathMLContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLRadicalElement(mDOMNodeRef, TagId);
-#elif defined(HAVE_GMETADOM)
-  MathMLRadicalElement(const GMetaDOM::Element&, TagId);
+protected:
+  MathMLRadicalElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLRadicalElement(const DOM::Element&);
 #endif
-  virtual void Normalize(void);
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLRadicalElement();
 
-  virtual bool IsExpanding(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLRadicalElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLRadicalElement(el)); }
+#endif
+
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+#if 0
+  virtual void SetDirtyLayout(bool = false);
+  virtual void SetDirty(const Rectangle* = 0);
+  virtual void SetSelected(void);
+  virtual void ResetSelected(void);
+#endif
+  virtual void SetFlagDown(Flags);
+  virtual void ResetFlagDown(Flags);
+  virtual void Render(const DrawingArea&);
+
+  virtual void Replace(const Ptr<class MathMLElement>&, const Ptr<class MathMLElement>&);
+
+  virtual scaled GetRightEdge(void) const;
   virtual scaled GetLeftEdge(void) const;
+  virtual void ReleaseGCs(void);
+  virtual Ptr<class MathMLElement> Inside(scaled, scaled);
+
+  Ptr<class MathMLElement> GetRadicand(void) const { return radicand; }
+  Ptr<class MathMLElement> GetIndex(void) const { return index; }
+  void SetRadicand(const Ptr<class MathMLElement>&);
+  void SetIndex(const Ptr<class MathMLElement>&);
+
+protected:
+  void Init(void);
 
 private:
-  class MathMLElement* GetNucleus(void) const;
-  class MathMLCharNode* GetRadicalSign(void) const;
+  Ptr<class MathMLElement> GetNucleus(void) const;
+  Ptr<class MathMLCharNode> GetRadicalSign(void) const;
   void DoBaseLayoutAux(BoundingBox&, const BoundingBox&);
 
   scaled spacing;
   scaled lineThickness;
 
-  MathMLCharNode* radical;
+  Ptr<class MathMLCharNode> radical;
+  Ptr<class MathMLElement> radicand;
+  Ptr<class MathMLElement> index;
 
   RGBValue color;
 };

@@ -23,33 +23,64 @@
 #ifndef MathMLFractionElement_hh
 #define MathMLFractionElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 
-class MathMLFractionElement: public MathMLContainerElement
+class MathMLFractionElement
+  : public MathMLContainerElement, public MathMLEmbellishment
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLFractionElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLFractionElement(const GMetaDOM::Element&);
+protected:
+  MathMLFractionElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLFractionElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(void);
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLFractionElement();
 
-  virtual bool IsExpanding(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLFractionElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLFractionElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void   Normalize(const Ptr<class MathMLDocument>&);
+  virtual void   Setup(RenderingEnvironment&);
+  virtual void   DoLayout(const class FormattingContext&);
+  virtual void   SetPosition(scaled, scaled);
+#if 0
+  virtual void   SetDirtyLayout(bool = false);
+  virtual void   SetDirty(const Rectangle* = 0);
+  virtual void   SetSelected(void);
+  virtual void   ResetSelected(void);
+#endif
+  virtual void   SetFlagDown(Flags);
+  virtual void   ResetFlagDown(Flags);
+
+  virtual void   Render(const DrawingArea&);
+
+  virtual void   Replace(const Ptr<class MathMLElement>&, const Ptr<class MathMLElement>&);
+
+  virtual scaled GetLeftEdge(void) const;
+  virtual scaled GetRightEdge(void) const;
+  virtual void   ReleaseGCs(void);
+  virtual Ptr<class MathMLElement> Inside(scaled, scaled);
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+
+  Ptr<MathMLElement> GetNumerator(void) const { return numerator; }
+  Ptr<MathMLElement> GetDenominator(void) const { return denominator; }
+  void SetNumerator(const Ptr<MathMLElement>&);
+  void SetDenominator(const Ptr<MathMLElement>&);
 
 private:
+  Ptr<MathMLElement> numerator;
+  Ptr<MathMLElement> denominator;
+
   scaled          axis;
   scaled          numShift;
   scaled          denomShift;

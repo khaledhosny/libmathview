@@ -1,4 +1,4 @@
-<math mode="inline">
+<math mode="inline" xmlns="http://www.w3.org/1998/Math/MathML">
   <munder>
     <mo>&Union;</mo>
     <mrow> <mi>i</mi> <mo>&le;</mo> <mn>100</mn> </mrow>

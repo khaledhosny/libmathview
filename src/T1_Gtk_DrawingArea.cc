@@ -34,12 +34,11 @@
 #include <gdk/gdkprivate.h>
 
 #include "T1_Font.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "T1_Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
 
 bool T1_Gtk_DrawingArea::firstTime = true;
-int  T1_Gtk_DrawingArea::kerning = 0;
 
 T1_Gtk_DrawingArea::T1_Gtk_DrawingArea(const GraphicsContextValues& values, scaled xm, scaled ym,
 				       GtkWidget* widget, RGBValue f, RGBValue b) :
@@ -60,7 +59,7 @@ T1_Gtk_DrawingArea::Realize()
 
   if (firstTime) {
     if (T1_QueryX11Support() == 0) {
-      MathEngine::logger(LOG_ERROR, "T1 library has no X11 support (aborted)");
+      Globals::logger(LOG_ERROR, "T1 library has no X11 support (aborted)");
       exit(-1);
     }
 
@@ -72,9 +71,9 @@ T1_Gtk_DrawingArea::Realize()
     assert(pvisual != NULL);
 
     T1_AASetBitsPerPixel(pvisual->visual.depth);
-    MathEngine::logger(LOG_DEBUG, "X11 depth: %d", pvisual->visual.depth);
-    MathEngine::logger(LOG_DEBUG, "X11 AAGetLevel() --> %d", T1_AAGetLevel());
-    MathEngine::logger(LOG_DEBUG, "X11 AAGetBitsPerPixel() --> %d", T1_AAGetBitsPerPixel());
+    Globals::logger(LOG_DEBUG, "X11 depth: %d", pvisual->visual.depth);
+    Globals::logger(LOG_DEBUG, "X11 AAGetLevel() --> %d", T1_AAGetLevel());
+    Globals::logger(LOG_DEBUG, "X11 AAGetBitsPerPixel() --> %d", T1_AAGetBitsPerPixel());
     T1_SetX11Params(pwindow->xdisplay, pvisual->xvisual, pvisual->visual.depth, pcolormap->xcolormap);
 
     firstTime = false;
@@ -141,24 +140,11 @@ T1_Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
   if (antiAliasing)
     T1_AASetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		    t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
-		    kerning, t1_font->GetScale(), NULL);
+		    0, t1_font->GetScale(), NULL);
   else
     T1_SetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
-		  kerning, t1_font->GetScale(), NULL);
-}
-
-void
-T1_Gtk_DrawingArea::SetKerning(bool k)
-{
-  if (k) kerning = T1_KERNING;
-  else kerning = 0;
-}
-
-bool
-T1_Gtk_DrawingArea::GetKerning()
-{
-  return kerning == T1_KERNING;
+		  0, t1_font->GetScale(), NULL);
 }
 
 void

@@ -36,7 +36,7 @@
 #endif // HAVE_GMETADOM
 
 #include "stringAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "MathMLParseFile.hh"
 
 #if defined(HAVE_MINIDOM)
@@ -44,10 +44,10 @@ static mDOMEntityRef
 myVeryPrivateGetEntity(void* user_data, mDOMConstStringRef name)
 {
   mDOMEntityRef entity = mdom_get_predefined_entity(name);
-  if (entity == NULL) entity = MathEngine::entitiesTable.GetEntity(name);
+  if (entity == NULL) entity = Globals::entitiesTable.GetEntity(name);
   if (entity == NULL) {
-    MathEngine::logger(LOG_WARNING, "cannot resolve entity reference `%s', a `?' will be used instead", name);
-    entity = MathEngine::entitiesTable.GetErrorEntity();
+    Globals::logger(LOG_WARNING, "cannot resolve entity reference `%s', a `?' will be used instead", name);
+    entity = Globals::entitiesTable.GetErrorEntity();
   }
 
   return entity;
@@ -61,11 +61,11 @@ MathMLParseFile(const char* filename, bool subst)
 
 #elif defined(HAVE_GMETADOM)
 
-GMetaDOM::Document
+DOM::Document
 MathMLParseFile(const char* filename, bool subst)
 {
   if (!subst) {
-    GMetaDOM::DOMImplementation di;
+    DOM::DOMImplementation di;
     return di.createDocumentFromURI(filename);
   } else {
     GdomeDOMImplementation* di = gdome_di_mkref();
@@ -79,16 +79,16 @@ MathMLParseFile(const char* filename, bool subst)
     if (exc != 0) {
       gdome_di_unref(di, &exc);
       gdome_doc_unref(doc, &exc);
-      return 0;
+      return DOM::Document(0);
     }
 
     if (doc == 0) {
       // FIXME: this should be signalled as an exception, I think
       gdome_di_unref(di, &exc);
-      return 0;
+      return DOM::Document(0);
     }
 
-    GMetaDOM::Document res(doc);
+    DOM::Document res(doc);
     gdome_di_unref(di, &exc);
     assert(exc == 0);
     gdome_doc_unref(doc, &exc);

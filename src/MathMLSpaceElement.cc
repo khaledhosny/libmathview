@@ -28,16 +28,20 @@
 #include "MathMLSpaceElement.hh"
 #include "RenderingEnvironment.hh"
 #include "AttributeParser.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLSpaceElement::MathMLSpaceElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLSpaceElement::MathMLSpaceElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLElement(node, TAG_MSPACE)
+MathMLSpaceElement::MathMLSpaceElement()
 {
   breakability = BREAK_AUTO;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLSpaceElement::MathMLSpaceElement(const DOM::Element& node)
+  : MathMLElement(node)
+{
+  breakability = BREAK_AUTO;
+}
+#endif
 
 MathMLSpaceElement::~MathMLSpaceElement()
 {
@@ -61,66 +65,85 @@ MathMLSpaceElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLSpaceElement::Setup(RenderingEnvironment* env)
+MathMLSpaceElement::Normalize(const Ptr<class MathMLDocument>&)
 {
-  assert(env != NULL);
-
-  background = env->GetBackgroundColor();
-
-  const Value* value = NULL;
-
-  value = GetAttributeValue(ATTR_WIDTH);
-  assert(value != NULL && value->IsNumberUnit());
-  scaled width = env->ToScaledPoints(value->ToNumberUnit());
-  delete value;
-
-  value = GetAttributeValue(ATTR_HEIGHT);
-  assert(value != NULL && value->IsNumberUnit());
-  scaled height = env->ToScaledPoints(value->ToNumberUnit());
-  delete value;
-
-  value = GetAttributeValue(ATTR_DEPTH);
-  assert(value != NULL && value->IsNumberUnit());
-  scaled depth = env->ToScaledPoints(value->ToNumberUnit());
-  delete value;
-
-  box.Set(width, height, depth);
-
-  if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH)) {
-    value = GetAttributeValue(ATTR_LINEBREAK);
-    assert(value != NULL && value->IsKeyword());
-    switch (value->ToKeyword()) {
-    case KW_AUTO:
-      breakability = BREAK_AUTO;
-      break;
-    case KW_NEWLINE:
-      breakability = BREAK_YES;
-      break;
-    case KW_INDENTINGNEWLINE:
-      breakability = BREAK_INDENT;
-      break;
-    case KW_NOBREAK:
-      breakability = BREAK_NO;
-      break;
-    case KW_BADBREAK:
-      breakability = BREAK_BAD;
-      break;
-    case KW_GOODBREAK:
-      breakability = BREAK_GOOD;
-      break;
-    default:
-      assert(IMPOSSIBLE);
-      break;
-    }
-    delete value;
-  }
+  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 void
-MathMLSpaceElement::DoBoxedLayout(LayoutId id, BreakId, scaled)
+MathMLSpaceElement::Setup(RenderingEnvironment& env)
 {
-  ConfirmLayout(id);
-  ResetDirtyLayout(id);
+  if (DirtyAttribute())
+    {
+      background = env.GetBackgroundColor();
+
+      const Value* value = NULL;
+
+      value = GetAttributeValue(ATTR_WIDTH);
+      assert(value != NULL);
+      scaled width;
+      if (value->IsKeyword())
+	{
+	  const Value* resValue = Resolve(value, env);
+	  assert(resValue->IsNumberUnit());
+	  width = env.ToScaledPoints(resValue->ToNumberUnit());
+	  delete resValue;
+	}
+      else
+	width = env.ToScaledPoints(value->ToNumberUnit());
+      delete value;
+
+      value = GetAttributeValue(ATTR_HEIGHT);
+      assert(value != NULL && value->IsNumberUnit());
+      scaled height = env.ToScaledPoints(value->ToNumberUnit());
+      delete value;
+
+      value = GetAttributeValue(ATTR_DEPTH);
+      assert(value != NULL && value->IsNumberUnit());
+      scaled depth = env.ToScaledPoints(value->ToNumberUnit());
+      delete value;
+
+      box.Set(width, height, depth);
+
+      if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH))
+	{
+	  value = GetAttributeValue(ATTR_LINEBREAK);
+	  assert(value != NULL && value->IsKeyword());
+	  switch (value->ToKeyword())
+	    {
+	    case KW_AUTO:
+	      breakability = BREAK_AUTO;
+	      break;
+	    case KW_NEWLINE:
+	      breakability = BREAK_YES;
+	      break;
+	    case KW_INDENTINGNEWLINE:
+	      breakability = BREAK_INDENT;
+	      break;
+	    case KW_NOBREAK:
+	      breakability = BREAK_NO;
+	      break;
+	    case KW_BADBREAK:
+	      breakability = BREAK_BAD;
+	      break;
+	    case KW_GOODBREAK:
+	      breakability = BREAK_GOOD;
+	      break;
+	    default:
+	      assert(IMPOSSIBLE);
+	      break;
+	    }
+	  delete value;
+	}
+
+      ResetDirtyAttribute();
+    }
+}
+
+void
+MathMLSpaceElement::DoLayout(const FormattingContext& ctxt)
+{
+  if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
 
 bool
@@ -133,12 +156,6 @@ bool
 MathMLSpaceElement::IsSpaceLike() const
 {
   return true;
-}
-
-BreakId
-MathMLSpaceElement::GetBreakability() const
-{
-  return breakability;
 }
 
 scaled

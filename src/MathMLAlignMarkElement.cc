@@ -26,16 +26,20 @@
 #include "StringUnicode.hh"
 #include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLAlignMarkElement::MathMLAlignMarkElement(mDOMNodeRef node) : 
-#elif defined(HAVE_GMETADOM)
-MathMLAlignMarkElement::MathMLAlignMarkElement(const GMetaDOM::Element& node) : 
-#endif
-  MathMLElement(node, TAG_MALIGNMARK)
+MathMLAlignMarkElement::MathMLAlignMarkElement()
 {
   edge = MARK_ALIGN_NOTVALID;
 }
+ 
+#if defined(HAVE_GMETADOM)
+MathMLAlignMarkElement::MathMLAlignMarkElement(const DOM::Element& node)
+  : MathMLElement(node)
+{
+  edge = MARK_ALIGN_NOTVALID;
+}
+#endif
 
 MathMLAlignMarkElement::~MathMLAlignMarkElement()
 {
@@ -56,24 +60,31 @@ MathMLAlignMarkElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLAlignMarkElement::Setup(RenderingEnvironment* env)
+MathMLAlignMarkElement::Normalize(const Ptr<class MathMLDocument>&)
 {
-  const Value* value = GetAttributeValue(ATTR_EDGE, env);
-  assert(value != NULL);
-  assert(value->IsKeyword());
-  if   (value->IsKeyword(KW_RIGHT)) edge = MARK_ALIGN_RIGHT;
-  else edge = MARK_ALIGN_LEFT;
-  delete value;
-
-  box.Null();
+  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 void
-MathMLAlignMarkElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
+MathMLAlignMarkElement::Setup(RenderingEnvironment& env)
 {
-  if (!HasDirtyLayout(id, availWidth)) return;
-  ConfirmLayout(id);
-  ResetDirtyLayout(id, availWidth);
+  if (DirtyAttribute())
+    {
+      const Value* value = GetAttributeValue(ATTR_EDGE, env);
+      assert(value != NULL);
+      assert(value->IsKeyword());
+      if   (value->IsKeyword(KW_RIGHT)) edge = MARK_ALIGN_RIGHT;
+      else edge = MARK_ALIGN_LEFT;
+      delete value;
+      box.Null();
+      ResetDirtyAttribute();
+    }
+}
+
+void
+MathMLAlignMarkElement::DoLayout(const FormattingContext& ctxt)
+{
+  if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
 
 bool

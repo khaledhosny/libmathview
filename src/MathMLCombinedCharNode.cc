@@ -23,8 +23,9 @@
 #include <config.h>
 #include <assert.h>
 
+#include "Globals.hh"
+#include "stringAux.hh"
 #include "CharMapper.hh"
-#include "MathEngine.hh"
 #include "MathMLElement.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLCombinedCharNode.hh"
@@ -32,43 +33,39 @@
 MathMLCombinedCharNode::MathMLCombinedCharNode(Char c, Char cc) :
   MathMLCharNode(c)
 {
-  cChar = new MathMLCharNode(cc);
+  cChar = MathMLCharNode::create(cc);
 }
 
 MathMLCombinedCharNode::~MathMLCombinedCharNode()
 {
-  delete cChar;
-  cChar = NULL;
 }
 
 void
-MathMLCombinedCharNode::Setup(RenderingEnvironment* env)
+MathMLCombinedCharNode::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
-
   MathMLCharNode::Setup(env);
 
-  env->Push();
-  env->SetFontMode(FONT_MODE_ANY);
-  env->SetFontStyle(FONT_STYLE_NORMAL);
+  env.Push();
+  env.SetFontMode(FONT_MODE_ANY);
+  env.SetFontStyle(FONT_STYLE_NORMAL);
 
-  assert(cChar != NULL);
   // this is really ugly, but in some sense is also true...
   cChar->SetParent(GetParent());
   cChar->Setup(env);
 
   if (cChar->GetFont() != fChar.font)
-    MathEngine::logger(LOG_WARNING, "base char `U+%04x' and combining char `U+%04x' use different fonts", ch, cChar->GetChar());
+    Globals::logger(LOG_WARNING, "base char `U+%04x' and combining char `U+%04x' use different fonts",
+		    ch, cChar->GetChar());
 
-  env->Drop();
+  env.Drop();
 }
 
 void
-MathMLCombinedCharNode::DoLayout()
+MathMLCombinedCharNode::DoLayout(const FormattingContext& ctxt)
 {
-  MathMLCharNode::DoLayout();
-  assert(cChar != NULL);
-  cChar->DoLayout();
+  MathMLCharNode::DoLayout(ctxt);
+  assert(cChar);
+  cChar->DoLayout(ctxt);
 
   if (IsFontified() && cChar->IsFontified()) {
     const BoundingBox& cBox = cChar->GetBoundingBox();
@@ -78,8 +75,6 @@ MathMLCombinedCharNode::DoLayout()
 
     box.ascent = scaledMax(charBox.ascent, cBox.ascent + shiftY);
     box.descent = scaledMax(charBox.descent, cBox.descent - shiftY);
-    box.tAscent = scaledMax(charBox.tAscent, cBox.tAscent + shiftY);
-    box.tDescent = scaledMax(charBox.tDescent, cBox.tDescent - shiftY);
     if (cChar->GetChar() != 0x20dd)
       box.width = scaledMax(charBox.width, cBox.width + shiftX);
     else
@@ -111,18 +106,10 @@ MathMLCombinedCharNode::SetPosition(scaled x, scaled y)
 }
 
 void
-MathMLCombinedCharNode::SetDirty(const Rectangle* rect)
-{
-  MathMLCharNode::SetDirty(rect);
-  assert(cChar != NULL);
-  cChar->SetDirty(rect);
-}
-
-void
 MathMLCombinedCharNode::Render(const DrawingArea& area)
 {
   MathMLCharNode::Render(area);
-  assert(cChar != NULL);
+  assert(cChar);
   if (cChar->IsFontified()) cChar->Render(area);
 }
 
@@ -130,4 +117,17 @@ bool
 MathMLCombinedCharNode::IsCombinedChar() const
 {
   return true;
+}
+
+String*
+MathMLCombinedCharNode::GetRawContent() const
+{
+  assert(cChar);
+
+  Char c[2];
+
+  c[0] = ch;
+  c[1] = cChar->GetChar();
+
+  return allocString(c, 2);
 }

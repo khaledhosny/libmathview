@@ -28,21 +28,27 @@
 
 class MathMLMarkNode: public MathMLTextNode
 {
-public:
+protected:
   MathMLMarkNode(MarkAlignType = MARK_ALIGN_NOTVALID);
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoLayout(void);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLMarkNode();
 
-  virtual bool IsMark(void) const;  
+public:
+  static Ptr<MathMLMarkNode> create(MarkAlignType t)
+  { return Ptr<MathMLMarkNode>(new MathMLMarkNode(t)); }
+  
+  virtual void     Setup(class RenderingEnvironment&);
+  virtual void     DoLayout(const class FormattingContext&);
+  virtual void     Render(const DrawingArea&);
 
-  MarkAlignType GetAlignmentEdge(void) const { return edge; }
+  virtual unsigned GetLogicalContentLength(void) const;
+  virtual String*  GetRawContent(void) const;
+
+  virtual bool     IsMark(void) const;  
+
+  MarkAlignType    GetAlignmentEdge(void) const { return edge; }
 
 protected:
   MarkAlignType edge;
 };
-
-#define TO_MARK(object) (dynamic_cast<MathMLMarkNode*>(object))
 
 #endif // MathMLMarkNode_hh

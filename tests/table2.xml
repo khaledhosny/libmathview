@@ -1,8 +1,8 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <!-- example of forbidden table-->
   <mtable frame="solid" columnlines="solid" rowlines="solid" columnalign="right" rowalign="bottom">
     <mtr>
-      <mi>ciao</mi>
+      <mtd> <mi>ciao</mi> </mtd>
       <mtd rowspan="2">
         <mi>O</mi>
       </mtd>

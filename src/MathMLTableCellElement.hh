@@ -23,30 +23,40 @@
 #ifndef MathMLTableCellElement_hh
 #define MathMLTableCellElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLTableElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLTableCellElement: public MathMLNormalizingContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLTableCellElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLTableCellElement(const GMetaDOM::Element&);
+protected:
+  MathMLTableCellElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLTableCellElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(RenderingEnvironment*);
-  virtual void SetPosition(scaled, scaled);
   virtual ~MathMLTableCellElement();
+
+private:
+  void Init(void);
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLTableCellElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLTableCellElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Setup(RenderingEnvironment&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void DoLayout(const class FormattingContext&);
 
   void SetAlignmentScope(bool b) { alignmentScope = b; }
 
+  scaled   GetMinWidth(void) const { return minWidth; }
   unsigned GetRowIndex(void) const { return rowIndex; }
   unsigned GetColumnIndex(void) const { return columnIndex; }
   unsigned GetRowSpan(void) const { return rowSpan; }
@@ -57,30 +67,31 @@ public:
   friend class MathMLTableElement;
   friend class MathMLTableRowElement;
 
+  virtual void SetDirtyAttribute(void);
+  virtual void SetDirtyStructure(void);
+  virtual void SetDirtyLayout(void);
+
 protected:
   // the following method is declared static for efficiency reasons. In fact,
   // it does not access any non-static method of the class but it is recursive
   // (and relevant to the table cell)
-  static void SetupGroups(MathMLElement*, bool, bool, TableCell&);
+  static void SetupGroups(const Ptr<MathMLElement>&, bool, bool, class TableCell&);
   void CalcGroupsExtent(void);
 
   void SetupCellPosition(unsigned, unsigned, unsigned);
-  void SetupCellSpanning(RenderingEnvironment*);
-  void SetupCell(TableCell*);
+  void SetupCellSpanning(RenderingEnvironment&);
+  void SetupCell(class TableCell*);
 
 private:
+  scaled   minWidth;
   unsigned rowSpan;
   unsigned columnSpan;
 
   unsigned rowIndex;
   unsigned columnIndex;
-  TableCell* cell;
+  class TableCell* cell;
 
   bool     alignmentScope;      // TRUE if this cell is within an alignment scope
 };
-
-typedef MathMLTableCellElement* MathMLTableCellElementPtr;
-
-#define TO_TABLECELL(object) (dynamic_cast<MathMLTableCellElement*>(object))
 
 #endif // MathMLTableCellElement_hh

@@ -24,7 +24,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "CharMapper.hh"
 #include "MathMLElement.hh"
 #include "MathMLGlyphNode.hh"
@@ -56,18 +56,16 @@ MathMLGlyphNode::~MathMLGlyphNode()
 }
 
 void
-MathMLGlyphNode::Setup(RenderingEnvironment* env)
+MathMLGlyphNode::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
-
-  FontAttributes glyphAttributes = env->GetFontAttributes();
+  FontAttributes glyphAttributes = env.GetFontAttributes();
   glyphAttributes.family = fontFamily;
   glyphAttributes.mode = FONT_MODE_ANY;
-  font = env->charMapper.GetFont(glyphAttributes);
+  font = env.charMapper.GetFont(glyphAttributes);
 }
 
 void
-MathMLGlyphNode::DoLayout()
+MathMLGlyphNode::DoLayout(const FormattingContext&)
 {
   if (font != NULL) font->CharBox(nch, box);
   else box.Null();
@@ -76,18 +74,27 @@ MathMLGlyphNode::DoLayout()
 void
 MathMLGlyphNode::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
+  if (font != NULL)
+    {
+      assert(GetParent());
+      assert(is_a<MathMLTokenElement>(GetParent()));
+      Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
+      assert(token);
 
-  if (font != NULL) {
-    assert(GetParent() != NULL);
-    assert(GetParent()->IsToken());
-    MathMLTokenElement* token = TO_TOKEN(GetParent());
-    assert(token != NULL);
+      const GraphicsContext* gc = token->GetForegroundGC();
 
-    const GraphicsContext* gc = token->GetForegroundGC();
+      area.DrawChar(gc, font, GetX(), GetY(), nch);
+    }
+}
 
-    area.DrawChar(gc, font, GetX(), GetY(), nch);
-  }
+unsigned
+MathMLGlyphNode::GetLogicalContentLength() const
+{
+  return 1;
+}
 
-  ResetDirty();
+String*
+MathMLGlyphNode::GetRawContent() const
+{
+  return NULL;
 }

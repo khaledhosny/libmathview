@@ -29,7 +29,6 @@
 #include <ctype.h>
 #include <time.h>
 
-#include "Iterator.hh"
 #include "UnitValue.hh"
 #include "PS_T1_Font.hh"
 #include "PS_DrawingArea.hh"

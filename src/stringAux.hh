@@ -34,10 +34,10 @@
 #if defined(HAVE_MINIDOM)
 String* allocString(mDOMConstStringRef);
 #elif defined(HAVE_GMETADOM)
-String* allocString(const GMetaDOM::DOMString&);
+String* allocString(const DOM::GdomeString&);
 #endif
 
 String* allocString(const String&, unsigned, unsigned);
+String* allocString(const Char*, unsigned);
 
 #endif // stringAux_hh
-

@@ -24,25 +24,36 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "Iterator.hh"
 #include "frameAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "operatorAux.hh"
 #include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "ValueConversion.hh"
+#include "MathMLTableElement.hh"
 #include "MathMLTokenElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLTableCellElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLTableCellElement::MathMLTableCellElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLTableCellElement::MathMLTableCellElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLNormalizingContainerElement(node, TAG_MTD)
+MathMLTableCellElement::MathMLTableCellElement()
 {
+  Init();
+}
+
+#if defined(HAVE_GMETADOM)
+MathMLTableCellElement::MathMLTableCellElement(const DOM::Element& node)
+  : MathMLNormalizingContainerElement(node)
+{
+  Init();
+}
+#endif
+
+void
+MathMLTableCellElement::Init()
+{
+  minWidth = 0;
   rowIndex = 0;
   columnIndex = 0;
   cell = NULL;
@@ -71,128 +82,148 @@ MathMLTableCellElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLTableCellElement::SetupGroups(MathMLElement* elem,
+MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 				    bool allowedGroup,
 				    bool countGroups,
 				    TableCell& status)
 {
-  assert(elem != NULL);
-
+  // this static method is probably to be rewritten completely
+  // as a set of virtual methods in the various Element classes
+  assert(elem);
+#if 0
   // if countGroups == TRUE  requires: normalization, alignment scopes
   // if countGroups == FALSE requires: normalization, alignment scopes, group alignment 
 
-  if (elem->IsToken()) {
-    MathMLTokenElement* token = TO_TOKEN(elem);
-    assert(token != NULL);
+  if (elem->IsToken())
+    {
+      Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(elem);
+      assert(token);
 
-    // remember that the first mn element, if present, always contains
-    // the alignment for decimal point
-    if (status.group != NULL && token->IsA() == TAG_MN &&
-	status.group->GetDecimalPoint() == NULL)
-      status.group->SetDecimalPoint(token);
+      // remember that the first mn element, if present, always contains
+      // the alignment for decimal point
+      if (status.group != NULL && token->IsA() == TAG_MN &&
+	  status.group->GetDecimalPoint() == NULL)
+	status.group->SetDecimalPoint(token);
 
-    for (Iterator<MathMLTextNode*> p(token->GetContent()); p.More(); p.Next()) {
-      if (p()->IsMark() && status.group != NULL) {
-	MathMLMarkNode* mark = TO_MARK(p());
-	assert(mark != NULL);
-	status.group->SetAlignmentMark(mark);
-	// only the first alignment mark (if present) in a token is ever taken into account
-	break;
-      }
-    }
-  } else if (elem->IsContainer()) {
-    MathMLContainerElement* container = TO_CONTAINER(elem);
-    assert(container != NULL);
-
-    Iterator<MathMLElement*> p(container->content);
-
-    switch (container->IsA()) {
-    case TAG_MPADDED:
-    case TAG_MSQRT:
-      if (status.group != NULL) {
-	while (p.More()) {
-	  SetupGroups(p(), false, countGroups, status);
-	  p.Next();
+      for (Iterator< Ptr<MathMLTextNode> > p(token->GetContent()); p.More(); p.Next())
+	{
+	  if (p()->IsMark() && status.group != NULL)
+	    {
+	      Ptr<MathMLMarkNode> mark = smart_cast<MathMLMarkNode>(p());
+	      assert(mark);
+	      status.group->SetAlignmentMark(mark);
+	      // only the first alignment mark (if present) in a token is ever taken into account
+	      break;
+	    }
 	}
-      }
-      break;
-    case TAG_MSUB:
-    case TAG_MSUP:
-    case TAG_MSUBSUP:
-    case TAG_MUNDER:
-    case TAG_MOVER:
-    case TAG_MUNDEROVER:
-    case TAG_MMULTISCRIPTS:
-    case TAG_MROOT:
-      if (status.group != NULL)
-	SetupGroups(p(), false, countGroups, status);
-      break;
-    case TAG_MACTION:
-      {
-	MathMLActionElement* action = TO_ACTION(container);
-	assert(action != NULL);
-	if (action->GetSelectedElement() != NULL)
-	  SetupGroups(action->GetSelectedElement(), allowedGroup, countGroups, status);
-      }
-      break;
-    case TAG_MTD:
-      {
-	MathMLTableCellElement* mtd = TO_TABLECELL(container);
-	assert(mtd != NULL);
-
-	if (status.group != NULL && !mtd->GetAlignmentScope())
-	  SetupGroups(p(), false, countGroups, status);
-      }
-      break;
-    case TAG_MTABLE:
-    case TAG_MTR:
-    case TAG_MLABELEDTR:
-    default:
-      while (p.More()) {
-	SetupGroups(p(), allowedGroup, countGroups, status);
-	p.Next();
-      }
-      break;
     }
-  } else {
-    switch (elem->IsA()) {
-    case TAG_MALIGNGROUP:
-      if (allowedGroup) {
-	if (countGroups) {
-	  status.nAlignGroup++;
-	} else {
-	  MathMLAlignGroupElement* group = dynamic_cast<MathMLAlignGroupElement*>(elem);
-	  assert(group != NULL);
+  else if (elem->IsContainer())
+    {
+      Ptr<MathMLContainerElement> container = smart_cast<MathMLContainerElement>(elem);
+      assert(container);
 
-	  status.aGroup[status.iGroup].group = group;
-	  status.group = group;
-	  status.iGroup++;
+      Iterator< Ptr<MathMLElement> > p(container->GetContent());
+
+      switch (container->IsA())
+	{
+	case TAG_MPADDED:
+	case TAG_MSQRT:
+	  if (status.group != NULL)
+	    {
+	      while (p.More())
+		{
+		  SetupGroups(p(), false, countGroups, status);
+		  p.Next();
+		}
+	    }
+	  break;
+	case TAG_MSUB:
+	case TAG_MSUP:
+	case TAG_MSUBSUP:
+	case TAG_MUNDER:
+	case TAG_MOVER:
+	case TAG_MUNDEROVER:
+	case TAG_MMULTISCRIPTS:
+	case TAG_MROOT:
+	  if (status.group != NULL)
+	    SetupGroups(p(), false, countGroups, status);
+	  break;
+	case TAG_MACTION:
+	  {
+	    Ptr<MathMLActionElement> action = smart_cast<MathMLActionElement>(container);
+	    assert(action);
+	    if (action->GetSelectedElement())
+	      SetupGroups(action->GetSelectedElement(), allowedGroup, countGroups, status);
+	  }
+	  break;
+	case TAG_MTD:
+	  {
+	    Ptr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(container);
+	    assert(mtd);
+
+	    if (status.group != NULL && !mtd->GetAlignmentScope())
+	      SetupGroups(p(), false, countGroups, status);
+	  }
+	  break;
+	case TAG_MTABLE:
+	case TAG_MTR:
+	case TAG_MLABELEDTR:
+	default:
+	  while (p.More())
+	    {
+	      SetupGroups(p(), allowedGroup, countGroups, status);
+	      p.Next();
+	    }
+	  break;
 	}
-      }
-      break;
-    case TAG_MALIGNMARK:
-      if (status.group != NULL) {
-	MathMLAlignMarkElement* align = TO_ALIGN_MARK(elem);
-	assert(align != NULL);
-	status.group->SetAlignmentMark(align);
-      }
-      break;
-    case TAG_MSPACE:
-    default:
-      break;
+    } 
+  else
+    {
+      switch (elem->IsA())
+	{
+	case TAG_MALIGNGROUP:
+	  if (allowedGroup)
+	    {
+	      if (countGroups)
+		{
+		  status.nAlignGroup++;
+		} 
+	      else
+		{
+		  Ptr<MathMLAlignGroupElement> group = smart_cast<MathMLAlignGroupElement>(elem);
+		  assert(group);
+
+		  status.aGroup[status.iGroup].group = group;
+		  status.group = group;
+		  status.iGroup++;
+		}
+	    }
+	  break;
+	case TAG_MALIGNMARK:
+	  if (status.group != NULL)
+	    {
+	      Ptr<MathMLAlignMarkElement> align = smart_cast<MathMLAlignMarkElement>(elem);
+	      assert(align);
+	      status.group->SetAlignmentMark(align);
+	    }
+	  break;
+	case TAG_MSPACE:
+	default:
+	  break;
+	}
     }
-  }
+#endif
 }
 
 void
-MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment* env)
+MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
 {
   const Value* value;
 
   value = GetAttributeValue(ATTR_ROWSPAN, env);
   rowSpan = value->ToInteger();
   if (rowSpan <= 0) {
-    MathEngine::logger(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
+    Globals::logger(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
     rowSpan = 1;
   }
   delete value;
@@ -200,37 +231,44 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment* env)
   value = GetAttributeValue(ATTR_COLUMNSPAN, env);
   columnSpan = value->ToInteger();
   if (columnSpan <= 0) {
-    MathEngine::logger(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
+    Globals::logger(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
     columnSpan = 1;
   }
   delete value;
 }
 
 void
-MathMLTableCellElement::Setup(RenderingEnvironment* env)
+MathMLTableCellElement::Setup(RenderingEnvironment& env)
 {
-  assert(cell != NULL);
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      // if the <mtd> element is not used inside a table, 
+      // the cell field is null
+      if (cell)
+	{
+	  const Value* value;
 
-  const Value* value;
+	  value = GetAttributeValue(ATTR_ROWALIGN, false);
+	  if (value != NULL) cell->rowAlign = ToRowAlignId(value);
+	  delete value;
 
-  value = GetAttributeValue(ATTR_ROWALIGN, NULL, false);
-  if (value != NULL) cell->rowAlign = ToRowAlignId(value);
-  delete value;
+	  value = GetAttributeValue(ATTR_COLUMNALIGN, false);
+	  if (value != NULL) cell->columnAlign = ToColumnAlignId(value);
+	  delete value;
 
-  value = GetAttributeValue(ATTR_COLUMNALIGN, NULL, false);
-  if (value != NULL) cell->columnAlign = ToColumnAlignId(value);
-  delete value;
+	  value = GetAttributeValue(ATTR_GROUPALIGN, false);
+	  if (value != NULL) {
+	    for (unsigned k = 0; k < cell->nAlignGroup; k++) {
+	      const Value* p = value->Get(k);
+	      cell->aGroup[k].alignment = ToGroupAlignId(p);
+	    }
+	  }
+	  delete value;
+	}
 
-  value = GetAttributeValue(ATTR_GROUPALIGN, NULL, false);
-  if (value != NULL) {
-    for (unsigned k = 0; k < cell->nAlignGroup; k++) {
-      const Value* p = value->Get(k);
-      cell->aGroup[k].alignment = ToGroupAlignId(p);
+      MathMLNormalizingContainerElement::Setup(env);
+      ResetDirtyAttribute();
     }
-  }
-  delete value;
-
-  MathMLNormalizingContainerElement::Setup(env);
 }
 
 void
@@ -239,17 +277,34 @@ MathMLTableCellElement::SetupCellPosition(unsigned i, unsigned j, unsigned nRows
   rowIndex = i;
   columnIndex = j;
 
-  if (i + rowSpan > nRows) {
-    MathEngine::logger(LOG_WARNING, "`mtd' spans over the last row (truncated)");
-    rowSpan = nRows - i;
-  }
+  if (i + rowSpan > nRows)
+    {
+      Globals::logger(LOG_WARNING, "`mtd' spans over the last row (truncated)");
+      rowSpan = nRows - i;
+    }
 }
 
 void
 MathMLTableCellElement::SetupCell(TableCell* p)
 {
-  assert(p != NULL);
+  assert(p);
   cell = p;
+}
+
+void
+MathMLTableCellElement::DoLayout(const FormattingContext& ctxt)
+{
+  if (GetChild())
+    {
+      GetChild()->DoLayout(ctxt);
+      box = GetChild()->GetBoundingBox();
+    }
+  else
+    box.Null();
+
+  if (ctxt.GetLayoutType() == LAYOUT_MIN) minWidth = box.width;
+
+  ResetDirtyLayout(ctxt);
 }
 
 void
@@ -259,94 +314,109 @@ MathMLTableCellElement::CalcGroupsExtent()
   SetPosition(0, 0);
 
   unsigned k;
-  for (k = 0; k < cell->nAlignGroup; k++) {
-    MathMLAlignGroupElement* group = cell->aGroup[k].group;
-    assert(group != NULL);
+  for (k = 0; k < cell->nAlignGroup; k++)
+    {
+      Ptr<MathMLAlignGroupElement> group = cell->aGroup[k].group;
+      assert(group);
 
-    MathMLFrame* leftSibling = getFrameLeftSibling(group);
-    MathMLFrame* rightSibling = getFrameRightSibling(group);
+      Ptr<MathMLFrame> leftSibling = getLeftSibling(group);
+      Ptr<MathMLFrame> rightSibling = getRightSibling(group);
 
-    if (k == 0) cell->aGroup[k].leftEdge = GetLeftEdge();
-    else if (rightSibling != NULL) cell->aGroup[k].leftEdge = rightSibling->GetLeftEdge();
-    else cell->aGroup[k].leftEdge = group->GetX();
+      if (k == 0) cell->aGroup[k].leftEdge = GetLeftEdge();
+      else if (rightSibling) cell->aGroup[k].leftEdge = rightSibling->GetLeftEdge();
+      else cell->aGroup[k].leftEdge = group->GetX();
 
-    if (k > 0) {
-      if (leftSibling != NULL) cell->aGroup[k - 1].rightEdge = leftSibling->GetRightEdge();
-      else cell->aGroup[k - 1].rightEdge = group->GetX();
+      if (k > 0) 
+	{
+	  if (leftSibling) cell->aGroup[k - 1].rightEdge = leftSibling->GetRightEdge();
+	  else cell->aGroup[k - 1].rightEdge = group->GetX();
+	}
+
+      if (k == cell->nAlignGroup - 1) cell->aGroup[k].rightEdge = GetRightEdge();
     }
-
-    if (k == cell->nAlignGroup - 1) cell->aGroup[k].rightEdge = GetRightEdge();
-  }
 
   scaled cellWidth = GetBoundingBox().width;
 
   scaled prevAlignPoint = 0;
 
-  for (k = 0; k < cell->nAlignGroup; k++) {
-    MathMLAlignGroupElement* group = cell->aGroup[k].group;
-    assert(group != NULL);
+  for (k = 0; k < cell->nAlignGroup; k++) 
+    {
+      Ptr<MathMLAlignGroupElement> group = cell->aGroup[k].group;
+      assert(group);
 
-    scaled alignPoint = 0;
+      scaled alignPoint = 0;
 
-    if (group->GetAlignmentMarkElement() != NULL ||
-	group->GetAlignmentMarkNode() != NULL) {
-      MathMLFrame* mark = NULL;
-      MarkAlignType alignType = MARK_ALIGN_NOTVALID;
+      if (group->GetAlignmentMarkElement() ||
+	  group->GetAlignmentMarkNode())
+	{
+	  Ptr<MathMLFrame> mark = 0;
+	  MarkAlignType alignType = MARK_ALIGN_NOTVALID;
 
-      if (group->GetAlignmentMarkElement() != NULL) {
-	mark = group->GetAlignmentMarkElement();
-	alignType = group->GetAlignmentMarkElement()->GetAlignmentEdge();
-      } else {
-	mark = group->GetAlignmentMarkNode();
-	alignType = group->GetAlignmentMarkNode()->GetAlignmentEdge();
-      }
-      assert(mark != NULL);
-      assert(alignType != MARK_ALIGN_NOTVALID);
+	  if (group->GetAlignmentMarkElement())
+	    {
+	      mark = group->GetAlignmentMarkElement();
+	      alignType = group->GetAlignmentMarkElement()->GetAlignmentEdge();
+	    }
+	  else
+	    {
+	      mark = group->GetAlignmentMarkNode();
+	      alignType = group->GetAlignmentMarkNode()->GetAlignmentEdge();
+	    }
+	  assert(mark);
+	  assert(alignType != MARK_ALIGN_NOTVALID);
       
-      if (alignType == MARK_ALIGN_LEFT) {
-	MathMLFrame* frame = getFrameRightSibling(mark);
-	if (frame != NULL) alignPoint = frame->GetLeftEdge();
-	else alignPoint = alignPoint = mark->GetX();
-      } else {
-	MathMLFrame* frame = getFrameLeftSibling(mark);
-	if (frame != NULL) alignPoint = frame->GetRightEdge();
-	else alignPoint = mark->GetX();
-      }
-    } else if (cell->aGroup[k].alignment == GROUP_ALIGN_DECIMALPOINT) {
-      MathMLTokenElement* token = group->GetDecimalPoint();
-      if (token != NULL) alignPoint = token->GetDecimalPointEdge();
-      else alignPoint = cell->aGroup[k].rightEdge;
-    } else {
-      switch (cell->aGroup[k].alignment) {
-      case GROUP_ALIGN_LEFT:
-	alignPoint = cell->aGroup[k].leftEdge;
-	break;
-      case GROUP_ALIGN_RIGHT:
-	alignPoint = cell->aGroup[k].rightEdge;
-	break;
-      case GROUP_ALIGN_CENTER:
-	alignPoint = (cell->aGroup[k].leftEdge + cell->aGroup[k].rightEdge) / 2;
-	break;
-      default:
-	assert(IMPOSSIBLE);
-	break;
-      }
+	  if (alignType == MARK_ALIGN_LEFT)
+	    {
+	      Ptr<MathMLFrame> frame = getRightSibling(mark);
+	      if (frame) alignPoint = frame->GetLeftEdge();
+	      else alignPoint = alignPoint = mark->GetX();
+	    } 
+	  else
+	    {
+	      Ptr<MathMLFrame> frame = getLeftSibling(mark);
+	      if (frame) alignPoint = frame->GetRightEdge();
+	      else alignPoint = mark->GetX();
+	    }
+	} 
+      else if (cell->aGroup[k].alignment == GROUP_ALIGN_DECIMALPOINT)
+	{
+	  Ptr<MathMLTokenElement> token = group->GetDecimalPoint();
+	  if (token) alignPoint = token->GetDecimalPointEdge();
+	  else alignPoint = cell->aGroup[k].rightEdge;
+	} 
+      else
+	{
+	  switch (cell->aGroup[k].alignment)
+	    {
+	    case GROUP_ALIGN_LEFT:
+	      alignPoint = cell->aGroup[k].leftEdge;
+	      break;
+	    case GROUP_ALIGN_RIGHT:
+	      alignPoint = cell->aGroup[k].rightEdge;
+	      break;
+	    case GROUP_ALIGN_CENTER:
+	      alignPoint = (cell->aGroup[k].leftEdge + cell->aGroup[k].rightEdge) / 2;
+	      break;
+	    default:
+	      assert(IMPOSSIBLE);
+	      break;
+	    }
+	}
+
+      if (k == 0) cell->aGroup[k].extent.left = alignPoint;
+      else cell->aGroup[k].extent.left = alignPoint - group->GetX();
+
+      if (k > 0) cell->aGroup[k - 1].extent.right = group->GetX() - prevAlignPoint;
+      if (k == cell->nAlignGroup - 1) cell->aGroup[k].extent.right = cellWidth - alignPoint;
+      prevAlignPoint = alignPoint;
     }
 
-    if (k == 0) cell->aGroup[k].extent.left = alignPoint;
-    else cell->aGroup[k].extent.left = alignPoint - group->GetX();
-
-    if (k > 0) cell->aGroup[k - 1].extent.right = group->GetX() - prevAlignPoint;
-    if (k == cell->nAlignGroup - 1) cell->aGroup[k].extent.right = cellWidth - alignPoint;
-    prevAlignPoint = alignPoint;
-  }
-
 #if 0
-    cout << "group " << k;
-    cout << " right: " << sp2ipx(rightEdge);
-    cout << " left: " << sp2ipx(leftEdge);
-    cout << " align: " << sp2ipx(alignPoint);
-    cout << endl;
+  cout << "group " << k;
+  cout << " right: " << sp2ipx(rightEdge);
+  cout << " left: " << sp2ipx(leftEdge);
+  cout << " align: " << sp2ipx(alignPoint);
+  cout << endl;
 #endif
 
 #if 0
@@ -360,66 +430,97 @@ MathMLTableCellElement::CalcGroupsExtent()
 void
 MathMLTableCellElement::SetPosition(scaled x, scaled y)
 {
-  assert(cell != NULL);
+  if (GetChild())
+    {
+      if (cell)
+	{
+	  const BoundingBox& elemBox = child->GetBoundingBox();
 
-  MathMLElement* elem = GetContent();
-  assert(elem != NULL);
+	  position.x = x;
+	  position.y = y;
 
-  const BoundingBox& elemBox = elem->GetBoundingBox();
+	  scaled availableWidth  = box.width;
 
-  position.x = x;
-  position.y = y;
+	  scaled cellXOffset = 0;
+	  switch (cell->columnAlign) {
+	  case COLUMN_ALIGN_RIGHT:
+	    cellXOffset = availableWidth - elemBox.width;
+	    break;
+	  case COLUMN_ALIGN_CENTER:
+	    cellXOffset = (availableWidth - elemBox.width) / 2;
+	    break;
+	  case COLUMN_ALIGN_LEFT:
+	  default:
+	    cellXOffset = 0;
+	    break;
+	  }
 
-  scaled availableWidth  = box.width;
+	  scaled cellYOffset = 0;
+	  switch (cell->rowAlign) {
+	  case ROW_ALIGN_BOTTOM:
+	    cellYOffset = box.descent - elemBox.descent;
+	    break;
+	  case ROW_ALIGN_CENTER:
+	    cellYOffset = (box.GetHeight() - elemBox.GetHeight()) / 2 +
+	      elemBox.ascent - box.ascent;
+	    break;
+	  case ROW_ALIGN_BASELINE:
+	    cellYOffset = 0;
+	    break;
+	  case ROW_ALIGN_AXIS:
+	    assert(IMPOSSIBLE);
+	    break;
+	  case ROW_ALIGN_TOP:
+	    cellYOffset = elemBox.ascent - box.ascent;
+	    break;
+	  default:
+	    cellYOffset = 0;
+	    break;
+	  }
 
-  scaled cellXOffset = 0;
-  switch (cell->columnAlign) {
-  case COLUMN_ALIGN_RIGHT:
-    cellXOffset = availableWidth - elemBox.width;
-    break;
-  case COLUMN_ALIGN_CENTER:
-    cellXOffset = (availableWidth - elemBox.width) / 2;
-    break;
-  case COLUMN_ALIGN_LEFT:
-  default:
-    cellXOffset = 0;
-    break;
-  }
-
-  scaled cellYOffset = 0;
-  switch (cell->rowAlign) {
-  case ROW_ALIGN_BOTTOM:
-    cellYOffset = box.descent - elemBox.descent;
-    break;
-  case ROW_ALIGN_CENTER:
-    cellYOffset = (box.GetHeight() - elemBox.GetHeight()) / 2 +
-      elemBox.ascent - box.ascent;
-    break;
-  case ROW_ALIGN_BASELINE:
-    cellYOffset = 0;
-    break;
-  case ROW_ALIGN_AXIS:
-    assert(IMPOSSIBLE);
-    break;
-  case ROW_ALIGN_TOP:
-    cellYOffset = elemBox.ascent - box.ascent;
-    break;
-  default:
-    cellYOffset = 0;
-    break;
-  }
-
-  if (cell->nAlignGroup == 0)
-    elem->SetPosition(x + cellXOffset, y + cellYOffset, cell->columnAlign);
-  else
-    elem->SetPosition(x + cellXOffset, y + cellYOffset);
+	  GetChild()->SetPosition(x + cellXOffset, y + cellYOffset);
+	}
+      else
+	GetChild()->SetPosition(x, y);
+    }
 }
 
 bool
 MathMLTableCellElement::IsStretchyOperator() const
 {
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
+  if (GetChild()) return isStretchyOperator(GetChild());
+  else return false;
+}
 
-  return isStretchyOperator(content.GetFirst());
+void
+MathMLTableCellElement::SetDirtyStructure()
+{
+  assert(GetParent());
+  assert(is_a<MathMLTableRowElement>(GetParent()));
+  Ptr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  assert(row);
+  row->SetDirtyStructure();
+  MathMLNormalizingContainerElement::SetDirtyStructure();
+}
+
+void
+MathMLTableCellElement::SetDirtyAttribute()
+{
+  assert(GetParent());
+  assert(is_a<MathMLTableRowElement>(GetParent()));
+  Ptr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  assert(row);
+  row->SetDirtyAttribute();
+  MathMLNormalizingContainerElement::SetDirtyAttribute();
+}
+
+void
+MathMLTableCellElement::SetDirtyLayout()
+{
+  assert(GetParent());
+  assert(is_a<MathMLTableRowElement>(GetParent()));
+  Ptr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  assert(row);
+  row->SetDirtyLayout();
+  MathMLNormalizingContainerElement::SetDirtyLayout();
 }

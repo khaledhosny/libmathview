@@ -23,10 +23,11 @@
 #ifndef operatorAux_hh
 #define operatorAux_hh
 
+#include "Ptr.hh"
 #include "CharMap.hh"
 
-bool isStretchyOperator(class MathMLElement*);
-bool isStretchyOperator(class MathMLElement*, StretchId);
+bool isStretchyOperator(const Ptr<class MathMLElement>&);
+bool isStretchyOperator(const Ptr<class MathMLElement>&, StretchId);
 
 #endif // operatorAux_hh
 

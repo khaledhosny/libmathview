@@ -21,85 +21,28 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+#include <assert.h>
 
 #include "MathMLFrame.hh"
 #include "MathMLElement.hh"
 
 MathMLFrame::MathMLFrame()
 {
-  selected = last = dirty = dirtyChildren = dirtyBackground = 0;
-  dirtyLayout = 0;
 }
 
 MathMLFrame::~MathMLFrame()
 {
 }
 
-bool
-MathMLFrame::IsFrame() const
-{
-  return true;
-}
-
-bool
-MathMLFrame::IsLast() const
-{
-  return last != 0;
-}
-
 void
-MathMLFrame::SetDirty(const Rectangle*)
+MathMLFrame::SetPosition(scaled x, scaled y)
 {
-  dirtyBackground =
-    (GetParent() != NULL && (GetParent()->IsSelected() != IsSelected())) ? 1 : 0;
-  
-  if (IsDirty()) return;
-  dirty = 1;
-  SetDirtyChildren();
+  position.x = x;
+  position.y = y;
 }
 
-void
-MathMLFrame::SetDirtyChildren()
+Rectangle
+MathMLFrame::GetRectangle() const
 {
-  if (HasDirtyChildren()) return;
-  dirtyChildren = 1;
-  for (MathMLElement* elem = GetParent(); elem != NULL && !elem->HasDirtyChildren(); elem = elem->GetParent())
-    elem->dirtyChildren = 1;
-}
-
-void
-MathMLFrame::SetDirtyLayout(bool)
-{
-  if (HasDirtyLayout()) return;
-  dirtyLayout = 1;
-  for (MathMLElement* elem = GetParent(); elem != NULL && !elem->HasDirtyLayout(); elem = elem->GetParent())
-    elem->dirtyLayout = 1;
-}
-
-void
-MathMLFrame::SetSelected()
-{
-  if (IsSelected()) return;
-  selected = 1;
-  SetDirty();
-}
-
-void
-MathMLFrame::ResetSelected()
-{
-  if (!IsSelected()) return;
-  SetDirty();
-  selected = 0;
-}
-
-void
-MathMLFrame::ResetLast()
-{
-  last = 0;
-}
-
-BreakId
-MathMLFrame::GetBreakability() const
-{
-  return BREAK_AUTO;
+  return GetBoundingBox().GetRectangle(GetX(), GetY());
 }

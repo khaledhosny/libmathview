@@ -23,48 +23,34 @@
 #ifndef MathMLObject_hh
 #define MathMLObject_hh
 
-#include <stddef.h>
-
 #include "defs.h"
 
 #define INDENT_AMOUNT 2
 
-class MathMLObject {
-public:
+class MathMLObject
+{
+protected:
+  // Having a protected constructor make it impossible for users
+  // to create directly instances of this class. We want to be sure
+  // that all the instances are created dynamically, because of the
+  // memory management
   MathMLObject(void);
-  virtual bool IsNode(void) const;
-  virtual bool IsText(void) const;
-  virtual bool IsString(void) const;
-  virtual bool IsChar(void) const;
-  virtual bool IsStretchyChar(void) const;
-  virtual bool IsCombinedChar(void) const;
-  virtual bool IsSpace(void) const;
-  virtual bool IsMark(void) const;
-  virtual bool IsElement(void) const;
-  virtual bool IsToken(void) const;
-  virtual bool IsContainer(void) const;
-  virtual bool IsDocument(void) const;
-  virtual bool IsOperator(void) const;
-  virtual bool IsEmbellishedOperator(void) const;
-  virtual bool IsBreakable(void) const;
+
+  // Having a protected destructor make it impossible for users
+  // to call delete on an object of this class. Thus they are
+  // forced to use the AddRef/Release mechanism
   virtual ~MathMLObject();
+
+public:
+  void ref(void) const;
+  void unref(void) const;
 
 #ifdef DEBUG
   static int GetCounter(void) { return counter; }
 #endif // DEBUG
 
-protected:
-  void PrintIndentation(void) const;
-  void IndentMore(void) const { indentLevel += INDENT_AMOUNT; }
-  void IndentLess(void) const { indentLevel -= INDENT_AMOUNT; }
-
 private:
-#ifdef DEBUG
-  static int counter;
-#endif // DEBUG
-  static unsigned indentLevel;
+  mutable unsigned refCounter;
 };
-
-typedef MathMLObject* MathMLObjectPtr;
 
 #endif // MathMLObject_hh

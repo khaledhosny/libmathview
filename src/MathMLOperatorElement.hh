@@ -23,31 +23,41 @@
 #ifndef MathMLOperatorElement_hh
 #define MathMLOperatorElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
 #include "CharMap.hh"
+#include "MathMLEmbellishment.hh"
 #include "MathMLTokenElement.hh"
 
-class MathMLOperatorElement: public MathMLTokenElement {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLOperatorElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLOperatorElement(const GMetaDOM::Element&);
+class MathMLOperatorElement
+  : public MathMLTokenElement, public MathMLEmbellishment
+{
+protected:
+  MathMLOperatorElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLOperatorElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void Normalize(void);
   virtual ~MathMLOperatorElement();
 
-  virtual void Append(const String*);
+private:
+  void Init(void);
 
-  virtual bool IsOperator(void) const;
-  virtual bool IsBreakable(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLOperatorElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLOperatorElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  //virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+
   bool         IsStretchy(void) const { return stretchy != 0; }
   StretchId    GetStretch(void) const;
   bool         IsAccent(void) const { return accent != 0; }
@@ -62,6 +72,7 @@ public:
   void         SetFence(void) { forcedFence = fence = 1; }
   void         SetSeparator(void) { forcedSeparator = separator = 1; }
   void         ResetSymmetric(void) { forcedSymmetric = 1; symmetric = 0; }
+  BoundingBox  GetMinBoundingBox(void) const { return minBox; }
   scaled       GetLeftPadding(void) const { return lSpace; }
   scaled       GetRightPadding(void) const { return rSpace; }
 #ifdef ENABLE_EXTENSIONS
@@ -72,20 +83,18 @@ public:
   void         HorizontalStretchTo(scaled, bool = false);
   void         VerticalStretchTo(scaled, scaled, bool = false);
 
-  const String* GetOperatorName(void) const { return operatorName; }
+  virtual Ptr<MathMLOperatorElement> GetCoreOperator(void);
+  //Ptr<class MathMLEmbellishedOperatorElement> GetEmbellishment(void) const;
 
 private:
-  OperatorFormId InferOperatorForm(void) const;
+  OperatorFormId InferOperatorForm(void);
   const Value* GetOperatorAttributeValue(AttributeId,
-					 const class RenderingEnvironment*) const;
-  void ParseLimitValue(const Value*, const class RenderingEnvironment*, float&, scaled&);
+					 const class RenderingEnvironment&) const;
+  void ParseLimitValue(const Value*, const class RenderingEnvironment&, float&, scaled&);
 
-  MathMLElement*          eOp; // ptr to the root of the embellished operator
+  //Ptr<class MathMLEmbellishedOperatorElement> eOp; // ptr to the root of the embellished operator
 
-  class StringFactory*    nameFactory;
-  const String*           operatorName;
-
-  OperatorFormId          form;
+  OperatorFormId form;
   const class MathMLAttributeList* defaults;
 
   scaled axis;
@@ -110,10 +119,8 @@ private:
   scaled maxSize;
   float  minMultiplier;   // if <0 => absolute min size constraint
   scaled minSize;
+
+  BoundingBox minBox;
 };
-
-typedef MathMLOperatorElement* MathMLOperatorElementPtr;
-
-#define TO_OPERATOR(node) (dynamic_cast<MathMLOperatorElement*>(node))
 
 #endif // MathMLOperatorElement_hh

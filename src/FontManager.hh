@@ -23,7 +23,8 @@
 #ifndef FontManager_hh
 #define FontManager_hh
 
-#include "Container.hh"
+#include <vector>
+
 #include "FontAttributes.hh"
 
 class FontManager {
@@ -50,7 +51,7 @@ protected:
   virtual const class AFont* SearchNativeFont(const FontAttributes&,
 					      const class ExtraFontAttributes*) const = 0;
 
-  mutable Container<Bucket*> content;
+  mutable std::vector<Bucket*> content;
 };
 
 #endif // FontManager_hh

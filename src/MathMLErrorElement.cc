@@ -26,31 +26,33 @@
 #include "MathMLErrorElement.hh"
 #include "RenderingEnvironment.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLErrorElement::MathMLErrorElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLErrorElement::MathMLErrorElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLNormalizingContainerElement(node, TAG_MERROR)
+MathMLErrorElement::MathMLErrorElement()
 {
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLErrorElement::MathMLErrorElement(const DOM::Element& node)
+  : MathMLNormalizingContainerElement(node)
+{
+}
+#endif
 
 MathMLErrorElement::~MathMLErrorElement()
 {
 }
 
-void MathMLErrorElement::Setup(RenderingEnvironment* env)
+void MathMLErrorElement::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      env.Push();
+      RGBValue color = env.GetColor();
 
-  env->Push();
+      if (color == RED_COLOR) env.SetColor(BLUE_COLOR);
+      else env.SetColor(RED_COLOR);
 
-  RGBValue color = env->GetColor();
-
-  if (color == RED_COLOR) env->SetColor(BLUE_COLOR);
-  else env->SetColor(RED_COLOR);
-
-  MathMLNormalizingContainerElement::Setup(env);
-
-  env->Drop();
+      MathMLNormalizingContainerElement::Setup(env);
+      env.Drop();
+      ResetDirtyAttribute();
+    }
 }

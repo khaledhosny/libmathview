@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mstyle mathvariant="sans-serif">
     <mtable columnalign="left" equalrows="false">
       <mtr> <mtd columnalign="center"><mtext mathvariant="sans-serif" mathsize="24pt">GtkMathView</mtext></mtd> </mtr>

@@ -23,10 +23,21 @@
 #ifndef OperatorDictionary_hh
 #define OperatorDictionary_hh
 
-#include "String.hh"
-#include "Container.hh"
+#include <vector>
+// !!! BEGIN WARNING: hash_map is not part of the STL !!!
+#if defined(HAVE_EXT_HASH_MAP)
+#include <ext/hash_map>
+#elif defined(HAVE_HASH_MAP)
+#include <hash_map>
+#else
+#error "no implementation of hash_map could be found"
+#endif
+// !!! END WARNING: hash_map is not part of the STL !!!
 
-class OperatorDictionary {
+#include "String.hh"
+
+class OperatorDictionary
+{
 public:
   OperatorDictionary(void);
   ~OperatorDictionary();
@@ -39,17 +50,23 @@ public:
 	      const class MathMLAttributeList**) const;
 
 private:
-  struct OperatorDictionaryItem 
+  struct FormDefaults
   {
-    const String* name;
-    const MathMLAttributeList* defaults;
+    FormDefaults(void) { prefix = infix = postfix = 0; };
+    ~FormDefaults();
+    const class MathMLAttributeList* prefix;
+    const class MathMLAttributeList* infix;
+    const class MathMLAttributeList* postfix;
   };
 
   void Delete(void);
-  const MathMLAttributeList* AlreadyDefined(const MathMLAttributeList&) const;
 
-  Container<const class MathMLAttributeList*> defaults;
-  Container<OperatorDictionaryItem*> items;
+#if defined(HAVE_EXT_HASH_MAP)
+  typedef __gnu_cxx::hash_map<const String*, FormDefaults, String::Hash, String::Eq> Dictionary;
+#elif defined(HAVE_HASH_MAP)
+  typedef std::hash_map<const String*, FormDefaults, String::Hash, String::Eq> Dictionary;
+#endif
+  Dictionary items;
 };
 
 #endif // OperatorDictionary_hh

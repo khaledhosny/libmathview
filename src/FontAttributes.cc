@@ -21,13 +21,29 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <functional>
+#include <algorithm>
+
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
 
-#include "Iterator.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "FontAttributes.hh"
+
+// local definition of adaptors
+struct DumpAttributeAdaptor
+  : public std::unary_function<ExtraFontAttributes::ExtraFontAttribute*,void>
+{
+  void operator()(ExtraFontAttributes::ExtraFontAttribute* attr) const
+  {
+    assert(attr);
+    assert(attr->name != "");
+    assert(attr->value != "");
+    Globals::logger(LOG_DEBUG, "%s = '%s'", attr->name.c_str(), attr->value.c_str());
+  }
+};
 
 FontAttributes::FontAttributes()
 {
@@ -42,7 +58,7 @@ FontAttributes::FontAttributes(const FontAttributes& source, const FontAttribute
 void
 FontAttributes::Null()
 {
-  family = NULL;
+  family = "";
   style  = FONT_STYLE_NOTVALID;
   weight = FONT_WEIGHT_NOTVALID;
   size.Null();
@@ -60,7 +76,7 @@ FontAttributes::DownGrade()
 #endif
     if (HasWeight()) weight = FONT_WEIGHT_NOTVALID;
   else if (HasStyle()) style = FONT_STYLE_NOTVALID;
-  else if (HasFamily()) family = NULL;
+  else if (HasFamily()) family = "";
   else if (HasSize()) size.Null();
   else res = false;
 
@@ -73,9 +89,9 @@ FontAttributes::Equals(const FontAttributes& fa) const
   //if (mode != fa.mode) return false;
   if (style != fa.style) return false;
   if (weight != fa.weight) return false;
-  if ((family == NULL && fa.family != NULL) ||
-      (family != NULL && fa.family == NULL)) return false;
-  if (family != NULL && strcmp(family, fa.family)) return false;
+  if ((family == "" && fa.family != "") ||
+      (family != "" && fa.family == "")) return false;
+  if (family != "" && family != fa.family) return false;
   if (size.IsNull() != fa.size.IsNull()) return false;
   if (!size.IsNull() && !scaledEq(size.ToScaledPoints(), fa.size.ToScaledPoints())) return false;
 
@@ -112,7 +128,7 @@ FontAttributes::Compare(const FontAttributes& fa) const
 
   if (HasFamily()) {
     if (fa.HasFamily()) {
-      if (strcmp(family, fa.family)) return UINT_MAX;
+      if (family != fa.family) return UINT_MAX;
     } else {
       eval++;
     }
@@ -169,51 +185,41 @@ FontAttributes::Dump() const
   const char* s[] = { "_", "normal", "italic" };
   const char* m[] = { "*", "text", "math" };
 
-  MathEngine::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s,%s)",
+  Globals::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s,%s)",
 		     HasSize() ? truncFloat(sp2pt(size.ToScaledPoints())) : -1,
-		     HasFamily() ? family : "_", w[weight + 1], s[style + 1], m[mode]);
+		     HasFamily() ? family.c_str() : "_", w[weight + 1], s[style + 1], m[mode]);
 }
 
 // ExtraFontAttributes
 
-const char*
-ExtraFontAttributes::GetProperty(const char* name) const
+std::string
+ExtraFontAttributes::GetProperty(const std::string& name) const
 {
-  assert(name != NULL);
+  for (std::vector<ExtraFontAttribute*>::const_iterator i = content.begin();
+       i != content.end();
+       i++)
+    {
+      assert(*i);
+      assert((*i)->name != "");
+      assert((*i)->value != "");
+      if ((*i)->name == name) return (*i)->value;
+    }
 
-  for (Iterator<ExtraFontAttribute*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    assert(i()->name != NULL);
-    assert(i()->value != NULL);
-    if (!strcmp(i()->name, name)) return i()->value;
-  }
-
-  return NULL;
+  return "";
 }
 
 void
-ExtraFontAttributes::AddProperty(const char* name, const char* value)
+ExtraFontAttributes::AddProperty(const std::string& name, const std::string& value)
 {
-  assert(name != NULL);
-  assert(value != NULL);
-
   ExtraFontAttribute* attribute = new ExtraFontAttribute;
   attribute->name = name;
   attribute->value = value;
-
-  content.Append(attribute);
+  content.push_back(attribute);
 }
 
 void
 ExtraFontAttributes::Dump() const
 {
-  MathEngine::logger(LOG_DEBUG, "extra font attributes dump:");
-
-  for (Iterator<ExtraFontAttribute*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    assert(i()->name != NULL);
-    assert(i()->value != NULL);
-
-    MathEngine::logger(LOG_DEBUG, "%s = '%s'", i()->name, i()->value);
-  }
+  Globals::logger(LOG_DEBUG, "extra font attributes dump:");
+  std::for_each(content.begin(), content.end(), DumpAttributeAdaptor());
 }

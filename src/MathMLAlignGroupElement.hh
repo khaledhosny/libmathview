@@ -23,9 +23,7 @@
 #ifndef MathMLAlignGroupElement_hh
 #define MathMLAlignGroupElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
@@ -33,32 +31,43 @@
 
 class MathMLAlignGroupElement: public MathMLElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLAlignGroupElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLAlignGroupElement(const GMetaDOM::Element&);
+protected:
+  MathMLAlignGroupElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLAlignGroupElement(const DOM::Element&);
 #endif
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual ~MathMLAlignGroupElement();
+private:
+  void Init(void);
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLAlignGroupElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLAlignGroupElement(el)); }
+#endif
+
+  virtual void DoLayout(const class FormattingContext&);
 
   void SetWidth(scaled);
-  void SetDecimalPoint(class MathMLTokenElement*);
-  void SetAlignmentMark(class MathMLMarkNode*);
-  void SetAlignmentMark(class MathMLAlignMarkElement*);
+  void SetDecimalPoint(const Ptr<class MathMLTokenElement>&);
+  void SetAlignmentMark(const Ptr<class MathMLMarkNode>&);
+  void SetAlignmentMark(const Ptr<class MathMLAlignMarkElement>&);
 
-  class MathMLMarkNode* GetAlignmentMarkNode(void) const { return alignMarkNode; }
-  class MathMLAlignMarkElement* GetAlignmentMarkElement(void) const { return alignMarkElement; }
-  class MathMLTokenElement* GetDecimalPoint(void) const { return decimalPoint; }
+  const Ptr<class MathMLMarkNode>& GetAlignmentMarkNode(void) const { return alignMarkNode; }
+  const Ptr<class MathMLAlignMarkElement>& GetAlignmentMarkElement(void) const { return alignMarkElement; }
+  const Ptr<class MathMLTokenElement>& GetDecimalPoint(void) const { return decimalPoint; }
 
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
   virtual bool IsSpaceLike(void) const;
 
 private:
   scaled width;
 
-  class MathMLMarkNode*         alignMarkNode;
-  class MathMLAlignMarkElement* alignMarkElement;
-  class MathMLTokenElement*     decimalPoint;
+  Ptr<class MathMLMarkNode>         alignMarkNode;
+  Ptr<class MathMLAlignMarkElement> alignMarkElement;
+  Ptr<class MathMLTokenElement>     decimalPoint;
 };
 
 #endif // MathMLAlignGroupElement_hh

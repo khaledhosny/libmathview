@@ -1,4 +1,4 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mtable>
     <mtr><mtd><mtext>normal table row</mtext></mtd></mtr>
     <mlabeledtr><mtd><mtext>labeled row... with no label!</mtext></mtd></mlabeledtr>

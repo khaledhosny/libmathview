@@ -23,19 +23,21 @@
 #include <config.h>
 #include <assert.h>
 
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "StringUnicode.hh"
 #include "MathMLmathElement.hh"
 #include "RenderingEnvironment.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLmathElement::MathMLmathElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLmathElement::MathMLmathElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLNormalizingContainerElement(node, TAG_MATH)
+MathMLmathElement::MathMLmathElement()
 {
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLmathElement::MathMLmathElement(const DOM::Element& node)
+  : MathMLNormalizingContainerElement(node)
+{
+}
+#endif
 
 MathMLmathElement::~MathMLmathElement()
 {
@@ -57,42 +59,38 @@ MathMLmathElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLmathElement::Setup(RenderingEnvironment* env)
+MathMLmathElement::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      background = env.GetBackgroundColor();
+      env.Push();
 
-  env->Push();
+      const Value* value = NULL;
 
-  const Value* value = NULL;
+      env.SetFontMode(FONT_MODE_MATH);
 
-  env->SetFontMode(FONT_MODE_MATH);
+      if (!IsSet(ATTR_MODE) || IsSet(ATTR_DISPLAY)) {
+	value = GetAttributeValue(ATTR_DISPLAY, env, true);
+	assert(value != NULL);
+	if (value->IsKeyword(KW_BLOCK)) env.SetDisplayStyle(true);
+	else env.SetDisplayStyle(false);
+      } else {
+	Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
+	value = GetAttributeValue(ATTR_MODE, env, true);
+	assert(value != NULL);
+	if (value->IsKeyword(KW_DISPLAY)) env.SetDisplayStyle(true);
+	else env.SetDisplayStyle(false);
+      }
 
-  if (!IsSet(ATTR_MODE) || IsSet(ATTR_DISPLAY)) {
-    value = GetAttributeValue(ATTR_DISPLAY, env, true);
-    assert(value != NULL);
-    if (value->IsKeyword(KW_BLOCK)) env->SetDisplayStyle(true);
-    else env->SetDisplayStyle(false);
-  } else {
-    MathEngine::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
-    value = GetAttributeValue(ATTR_MODE, env, true);
-    assert(value != NULL);
-    if (value->IsKeyword(KW_DISPLAY)) env->SetDisplayStyle(true);
-    else env->SetDisplayStyle(false);
-  }
+      delete value;
 
-  delete value;
+      if (IsSet(ATTR_MODE) && IsSet(ATTR_DISPLAY))
+	Globals::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
 
-  if (IsSet(ATTR_MODE) && IsSet(ATTR_DISPLAY))
-    MathEngine::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
-
-  MathMLNormalizingContainerElement::Setup(env);
-
-  env->Drop();
-}
-
-bool
-MathMLmathElement::IsBreakable() const
-{
-  return true;
+      MathMLNormalizingContainerElement::Setup(env);
+      env.Drop();
+      ResetDirtyAttribute();
+    }
 }
 

@@ -25,20 +25,27 @@
 
 #include "MathMLCharNode.hh"
 
-class MathMLCombinedCharNode : public MathMLCharNode {
-public:
+class MathMLCombinedCharNode : public MathMLCharNode
+{
+protected:
   MathMLCombinedCharNode(Char, Char);
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoLayout(void);
-  virtual void SetPosition(scaled, scaled);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLCombinedCharNode();
 
-  virtual void SetDirty(const Rectangle* = NULL);
-  virtual bool IsCombinedChar(void) const;
+public:
+  static Ptr<MathMLCombinedCharNode> create(Char c, Char cc)
+  { return Ptr<MathMLCombinedCharNode>(new MathMLCombinedCharNode(c, cc)); }
+
+  virtual void    Setup(class RenderingEnvironment&);
+  virtual void    DoLayout(const class FormattingContext&);
+  virtual void    SetPosition(scaled, scaled);
+  virtual void    Render(const DrawingArea&);
+
+  virtual String* GetRawContent(void) const;
+
+  virtual bool    IsCombinedChar(void) const;
 
 private:
-  MathMLCharNode* cChar;
+  Ptr<MathMLCharNode> cChar;
 
   scaled shiftX; // due to kerning information or other heuristics
   scaled shiftY;

@@ -25,284 +25,129 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <font-configuration>
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="5pt"
-	ps-file="cmr5.pfb"
-	/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="5pt" ps-file="cmr5.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="6pt" ps-file="cmr6.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="7pt" ps-file="cmr7.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="8pt" ps-file="cmr8.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="9pt" ps-file="cmr9.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="10pt" ps-file="cmr10.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="12pt" ps-file="cmr12.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="normal" size="17pt" ps-file="cmr17.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="5pt" ps-file="cmbx5.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="6pt" ps-file="cmbx6.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="7pt" ps-file="cmbx7.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="8pt" ps-file="cmbx8.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="9pt" ps-file="cmbx9.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="10pt" ps-file="cmb10.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="serif" style="normal" weight="bold" size="12pt" ps-file="cmbx12.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="6pt"
-	ps-file="cmr6.pfb"
-	/>
+  <font type="ps" mode="text" map="tex-cmti" family="serif" style="italic" weight="normal" size="7pt" ps-file="cmti7.pfb"/>
+  <font type="ps" mode="text" map="tex-cmti" family="serif" style="italic" weight="normal" size="8pt" ps-file="cmti8.pfb"/>
+  <font type="ps" mode="text" map="tex-cmti" family="serif" style="italic" weight="normal" size="9pt" ps-file="cmti9.pfb"/>
+  <font type="ps" mode="text" map="tex-cmti" family="serif" style="italic" weight="normal" size="10pt" ps-file="cmti10.pfb"/>
+  <font type="ps" mode="text" map="tex-cmti" family="serif" style="italic" weight="normal" size="12pt" ps-file="cmti12.pfb"/>
+  <font type="ps" mode="text" map="tex-cmti" family="serif" style="italic" weight="bold" ps-file="cmbxti10.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="7pt"
-	ps-file="cmr7.pfb"
-	/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="normal" weight="normal" size="8pt" ps-file="cmss8.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="normal" weight="normal" size="9pt" ps-file="cmss9.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="normal" weight="normal" size="10pt" ps-file="cmss10.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="normal" weight="normal" size="12pt" ps-file="cmss12.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="normal" weight="normal" size="17pt" ps-file="cmss17.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="italic" weight="normal" size="8pt" ps-file="cmssi8.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="italic" weight="normal" size="9pt" ps-file="cmssi9.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="italic" weight="normal" size="10pt" ps-file="cmssi10.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="italic" weight="normal" size="12pt" ps-file="cmssi12.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="italic" weight="normal" size="17pt" ps-file="cmssi17.pfb"/>
+  <font type="ps" mode="text" map="tex-cmr" family="sans-serif" style="normal" weight="bold" ps-file="cmssbx10.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="8pt"
-	ps-file="cmr8.pfb"
-	/>
+  <font type="ps" mode="text" map="tex-cmtt" family="monospace" style="normal" weight="normal" size="8pt" ps-file="cmtt8.pfb"/>
+  <font type="ps" mode="text" map="tex-cmtt" family="monospace" style="normal" weight="normal" size="9pt" ps-file="cmtt9.pfb"/>
+  <font type="ps" mode="text" map="tex-cmtt" family="monospace" style="normal" weight="normal" size="10pt" ps-file="cmtt10.pfb"/>
+  <font type="ps" mode="text" map="tex-cmtt" family="monospace" style="normal" weight="normal" size="12pt" ps-file="cmtt12.pfb"/>
+  <font type="ps" mode="text" map="tex-cmtt" family="monospace" style="italic" weight="normal" ps-file="cmitt10.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="9pt"
-	ps-file="cmr9.pfb"
-	/>
+  <font type="ps" mode="math" map="tex-cmtex" family="monospace" style="normal" weight="normal" size="8pt" ps-file="cmtex8.pfb"/>
+  <font type="ps" mode="math" map="tex-cmtex" family="monospace" style="normal" weight="normal" size="9pt" ps-file="cmtex9.pfb"/>
+  <font type="ps" mode="math" map="tex-cmtex" family="monospace" style="normal" weight="normal" size="10pt" ps-file="cmtex10.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="10pt"
-	ps-file="cmr10.pfb"
-	/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="5pt" ps-file="cmmi5.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="6pt" ps-file="cmmi6.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="7pt" ps-file="cmmi7.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="8pt" ps-file="cmmi8.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="9pt" ps-file="cmmi9.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="10pt" ps-file="cmmi10.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="normal" size="12pt" ps-file="cmmi12.pfb"/>
+  <font type="ps" mode="math" map="tex-cmmi" family="serif" style="italic" weight="bold" ps-file="cmmib10.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="12pt"
-	ps-file="cmr12.pfb"
-	/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="normal" size="5pt" ps-file="cmsy5.pfb"/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="normal" size="6pt" ps-file="cmsy6.pfb"/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="normal" size="7pt" ps-file="cmsy7.pfb"/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="normal" size="8pt" ps-file="cmsy8.pfb"/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="normal" size="9pt" ps-file="cmsy9.pfb"/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="normal" size="10pt" ps-file="cmsy10.pfb"/>
+  <font type="ps" mode="math" map="tex-cmsy" weight="bold" ps-file="cmbsy10.pfb"/>
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="normal" size="17pt"
-	ps-file="cmr17.pfb"
-	/>
+  <font type="ps" mode="math" map="tex-cmex" ps-file="cmex10.pfb" /> 
 
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="5pt"
-	ps-file="cmbx5.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="6pt"
-	ps-file="cmbx6.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="7pt"
-	ps-file="cmbx7.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="8pt"
-	ps-file="cmbx8.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="9pt"
-	ps-file="cmbx9.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="10pt"
-	ps-file="cmb10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="serif" style="normal" weight="bold" size="12pt"
-	ps-file="cmbx12.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmti"
-	family="serif" style="italic" weight="normal" size="7pt"
-	ps-file="cmti7.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmti"
-	family="serif" style="italic" weight="normal" size="8pt"
-	ps-file="cmti8.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmti"
-	family="serif" style="italic" weight="normal" size="9pt"
-	ps-file="cmti9.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmti"
-	family="serif" style="italic" weight="normal" size="10pt"
-	ps-file="cmti10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmti"
-	family="serif" style="italic" weight="normal" size="12pt"
-	ps-file="cmti12.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmti"
-	family="serif" style="italic" weight="bold"
-	ps-file="cmbxti10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="normal" weight="normal" size="8pt"
-	ps-file="cmss8.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="normal" weight="normal" size="9pt"
-	ps-file="cmss9.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="normal" weight="normal" size="10pt"
-	ps-file="cmss10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="normal" weight="normal" size="12pt"
-	ps-file="cmss12.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="normal" weight="normal" size="17pt"
-	ps-file="cmss17.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="italic" weight="normal" size="8pt"
-	ps-file="cmssi8.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="italic" weight="normal" size="9pt"
-	ps-file="cmssi9.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="italic" weight="normal" size="10pt"
-	ps-file="cmssi10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="italic" weight="normal" size="12pt"
-	ps-file="cmssi12.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="italic" weight="normal" size="17pt"
-	ps-file="cmssi17.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmr"
-	family="sans-serif" style="normal" weight="bold"
-	ps-file="cmssbx10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmtt"
-	family="monospace" style="normal" weight="normal" size="8pt"
-	ps-file="cmtt8.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmtt"
-	family="monospace" style="normal" weight="normal" size="9pt"
-	ps-file="cmtt9.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmtt"
-	family="monospace" style="normal" weight="normal" size="10pt"
-	ps-file="cmtt10.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmtt"
-	family="monospace" style="normal" weight="normal" size="12pt"
-	ps-file="cmtt12.pfb"
-	/>
-
-  <font type="ps" mode="text" map="tex-cmtt"
-	family="monospace" style="italic" weight="normal"
-	ps-file="cmitt10.pfb"
-	/>
-  
-  <font type="ps" mode="math" map="tex-cmtex"
-	family="monospace" style="normal" weight="normal" size="8pt"
-	ps-file="cmtex8.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmtex"
-	family="monospace" style="normal" weight="normal" size="9pt"
-	ps-file="cmtex9.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmtex"
-	family="monospace" style="normal" weight="normal" size="10pt"
-	ps-file="cmtex10.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="5pt"
-	ps-file="cmmi5.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="6pt"
-	ps-file="cmmi6.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="7pt"
-	ps-file="cmmi7.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="8pt"
-	ps-file="cmmi8.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="9pt"
-	ps-file="cmmi9.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="10pt"
-	ps-file="cmmi10.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="normal" size="12pt"
-	ps-file="cmmi12.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmmi"
-	family="serif" style="italic" weight="bold"
-	ps-file="cmmib10.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal" size="5pt"
-	ps-file="cmsy5.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal" size="6pt"
-	ps-file="cmsy6.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal" size="7pt"
-	ps-file="cmsy7.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal" size="8pt"
-	ps-file="cmsy8.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal" size="9pt"
-	ps-file="cmsy9.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="normal" size="10pt"
-	ps-file="cmsy10.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmsy"
-	weight="bold"
-	ps-file="cmbsy10.pfb"
-	/>
-
-  <font type="ps" mode="math" map="tex-cmex"
-	ps-file="cmex10.pfb"
-	/>
+<!--
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="5pt" x-family="cmr5" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="6pt" x-family="cmr6" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="7pt" x-family="cmr7" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="8pt" x-family="cmr8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="9pt" x-family="cmr9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="10pt" x-family="cmr10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="12pt" x-family="cmr12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="17pt" x-family="cmr17" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="bold" style="normal" size="5pt" x-family="cmbx5" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="6pt" x-family="cmbx6" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="7pt" x-family="cmbx7" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="8pt" x-family="cmbx8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="9pt" x-family="cmbx9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="10pt" x-family="cmbx10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="12pt" x-family="cmbx12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="serif" weight="normal" style="normal" size="17pt" x-family="cmbx17" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmti" family="serif" weight="normal" style="italic" size="7pt" x-family="cmti7" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmti" family="serif" weight="normal" style="italic" size="8pt" x-family="cmti8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmti" family="serif" weight="normal" style="italic" size="9pt" x-family="cmti9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmti" family="serif" weight="normal" style="italic" size="10pt" x-family="cmti10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmti" family="serif" weight="normal" style="italic" size="12pt" x-family="cmti12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmti" family="serif" weight="bold" style="italic" x-family="cmbxti10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="normal" size="8pt" x-family="cmss8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="normal" size="9pt" x-family="cmss9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="normal" size="10pt" x-family="cmss10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="normal" size="12pt" x-family="cmss12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="normal" size="17pt" x-family="cmss17" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="italic" size="8pt" x-family="cmssi8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="italic" size="9pt" x-family="cmssi9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="italic" size="10pt" x-family="cmssi10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="italic" size="12pt" x-family="cmssi12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="normal" style="italic" size="17pt" x-family="cmssi17" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmr" family="sans-serif" weight="bold" style="normal" x-family="cmssbx10" x-weight="bold" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmtt" family="monospace" weight="normal" style="normal" size="8pt" x-family="cmtt8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmtt" family="monospace" weight="normal" style="normal" size="9pt" x-family="cmtt9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmtt" family="monospace" weight="normal" style="normal" size="10pt" x-family="cmtt10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmtt" family="monospace" weight="normal" style="normal" size="12pt" x-family="cmtt12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="text" map="tex-cmtt" family="monospace" weight="normal" style="normal" x-family="cmtt8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmtex" family="monospace" weight="normal" style="normal" size="8pt" x-family="cmtex8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmtex" family="monospace" weight="normal" style="normal" size="9pt" x-family="cmtex9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmtex" family="monospace" weight="normal" style="normal" size="10pt" x-family="cmtex10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="5pt" x-family="cmmi5" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="6pt" x-family="cmmi6" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="7pt" x-family="cmmi7" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="8pt" x-family="cmmi8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="9pt" x-family="cmmi9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="10pt" x-family="cmmi10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="normal" style="italic" size="12pt" x-family="cmmi12" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmmi" family="serif" weight="bold" style="italic" x-family="cmmi5" x-weight="bold" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="normal" size="5pt" x-family="cmsy5" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="normal" size="6pt" x-family="cmsy6" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="normal" size="7pt" x-family="cmsy7" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="normal" size="8pt" x-family="cmsy8" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="normal" size="9pt" x-family="cmsy9" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="normal" size="10pt" x-family="cmsy10" x-weight="medium" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmsy" weight="bold" x-family="cmbsy10" x-weight="bold" x-slant="r"/>
+  <font type="x" mode="math" map="tex-cmex" x-family="cmex10" x-weight="medium" x-slant="r"/>
+-->
 
   <font type="ps" mode="math" map="tex-circle"
         ps-file="lcircle1.pfb"
@@ -739,7 +584,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <stretchy code="0x303" direction="horizontal">
       <simple index="0145 0146 0147"/>
     </stretchy>
-    <stretchy name="Sqrt" direction="vertical">
+    <stretchy code="0x221a" direction="vertical">
       <simple index="112 113 114 115"/>
       <compound index="118 -1 116 117"/>
     </stretchy>

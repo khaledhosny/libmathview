@@ -35,7 +35,8 @@
 #include "defs.h"
 #include "guiGTK.h"
 #include "String.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
+#include "MathMLRenderingEngine.hh"
 #include "MathMLTokenElement.hh"
 #ifdef DEBUG
 #include "Gtk_GraphicsContext.hh"
@@ -85,11 +86,11 @@ Usage: mathmlviewer [options] file ...\n\n\
 static void
 checkCounters()
 {
-  MathEngine::dictionary.Unload();
-  MathEngine::logger(LOG_DEBUG, "Elements : %d", MathMLElement::GetCounter());
-  MathEngine::logger(LOG_DEBUG, "GCs      : %d", Gtk_GraphicsContext::GetCounter());
-  MathEngine::logger(LOG_DEBUG, "Strings  : %d", String::GetCounter());
-  MathEngine::logger(LOG_DEBUG, "Values   : %d (cached %d)", Value::GetCounter(), Value::GetCached());
+  Globals::dictionary.Unload();
+  Globals::logger(LOG_DEBUG, "Elements : %d", MathMLElement::GetCounter());
+  Globals::logger(LOG_DEBUG, "GCs      : %d", Gtk_GraphicsContext::GetCounter());
+  Globals::logger(LOG_DEBUG, "Strings  : %d", String::GetCounter());
+  Globals::logger(LOG_DEBUG, "Values   : %d (cached %d)", Value::GetCounter(), Value::GetCached());
 }
 #endif // DEBUG
 
@@ -97,8 +98,8 @@ checkCounters()
 static void
 checkProfileCounters()
 {
-  MathEngine::logger(LOG_DEBUG, "Total : %d", CharMapper::GetChars());
-  MathEngine::logger(LOG_DEBUG, "alnum : %d", CharMapper::GetAlnumChars());
+  Globals::logger(LOG_DEBUG, "Total : %d", CharMapper::GetChars());
+  Globals::logger(LOG_DEBUG, "alnum : %d", CharMapper::GetAlnumChars());
 }
 #endif // ENABLE_PROFILE
 
@@ -144,8 +145,8 @@ main(int argc, char *argv[])
 
     case OPTION_VERBOSE:
     case 'v':
-      if (optarg == NULL) MathEngine::logger.SetLogLevel(0);
-      else MathEngine::logger.SetLogLevel(*optarg - '0');
+      if (optarg == NULL) Globals::logger.SetLogLevel(0);
+      else Globals::logger.SetLogLevel(*optarg - '0');
       break;
 
     case '?':

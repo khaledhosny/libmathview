@@ -23,11 +23,11 @@
 #ifndef MathMLTokenElement_hh
 #define MathMLTokenElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
+
+#include <vector>
 
 #include "RGBValue.hh"
 #include "FontAttributes.hh"
@@ -37,56 +37,64 @@
 // and a very limited set of other MathML elements (e.g. <malignmark>)
 class MathMLTokenElement : public MathMLElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLTokenElement(mDOMNodeRef, TagId t = TAG_NOTVALID);
-#elif defined(HAVE_GMETADOM)
-  MathMLTokenElement(const GMetaDOM::Element&, TagId t = TAG_NOTVALID);
+protected:
+  MathMLTokenElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLTokenElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void 	 Setup(class RenderingEnvironment*);
-  virtual void 	 DoLayout(LayoutId, class Layout&);
-  virtual void 	 Freeze(void);
-  virtual void 	 Render(const class DrawingArea&);
   virtual ~MathMLTokenElement();
 
-  virtual void   Append(const String*);
-  void           Append(class MathMLTextNode*);
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLTokenElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLTokenElement(el)); }
+#endif
 
-  virtual bool   IsLast(void) const;
-  virtual bool 	 IsToken(void) const;
-  virtual bool 	 IsBreakable(void) const;
+  unsigned       GetSize(void) const { return content.size(); }
+  void           SetSize(unsigned);
+  Ptr<class MathMLTextNode> GetChild(unsigned) const;
+  void           SetChild(unsigned, const Ptr<MathMLTextNode>&);
+  void           RemoveChild(unsigned);
+  void           InsertChild(unsigned, const Ptr<MathMLTextNode>&);
+  void           AppendChild(const Ptr<class MathMLTextNode>&);
+  void           Append(const String*);
+  void           SwapChildren(std::vector< Ptr<MathMLTextNode> >&);
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void   Normalize(const Ptr<class MathMLDocument>&);
+  virtual void 	 Setup(class RenderingEnvironment&);
+  virtual void 	 DoLayout(const class FormattingContext&);
+  virtual void   SetPosition(scaled, scaled);
+  virtual void 	 Render(const class DrawingArea&);
+
   bool           IsNonMarking(void) const;
-  virtual void 	 GetLinearBoundingBox(BoundingBox&) const;
-  virtual void 	 SetDirty(const Rectangle* = NULL);
-  virtual BreakId GetBreakability(void) const;
 
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
   scaled         GetDecimalPointEdge(void) const;
 
   RGBValue       GetColor(void) const { return color; }
-  virtual const class MathMLCharNode* GetCharNode(void) const;
 
-  const Container<class MathMLTextNode*>& GetContent(void) const { return content; }
-  unsigned       GetRawContentLength(void) const { return rawContentLength; }
+  virtual Ptr<class MathMLCharNode> GetCharNode(void) const;
+  const std::vector< Ptr<class MathMLTextNode> >& GetContent(void) const { return content; }
+  String*        GetRawContent(void) const;
+  unsigned       GetLogicalContentLength(void) const;
+
+private:
+  std::vector< Ptr<class MathMLTextNode> > content;
 
 protected:
-  void Free(void);
-  void AddItalicCorrection(Layout&);
+  void SetContentPosition(scaled, scaled);
 
-  // for tokens the content is protected so that users have to
-  // use the Append methods. For read-only operations there is
-  // the access method GetContent
-  Container<class MathMLTextNode*> content;
-  unsigned rawContentLength;
+  static Ptr<class MathMLTextNode> SubstituteMGlyphElement(const DOM::Element&);
+  static Ptr<class MathMLTextNode> SubstituteAlignMarkElement(const DOM::Element&);
+  
+  void AddItalicCorrection(void);
+
   scaled   sppm;
   RGBValue color;
 };
-
-typedef MathMLTokenElement* MathMLTokenElementPtr;
-
-#define TO_TOKEN(object) (dynamic_cast<MathMLTokenElement*>(object))
-#define TO_CONST_TOKEN(object) (dynamic_cast<const MathMLTokenElement*>(object))
 
 #endif // MathMLTokenElement_hh

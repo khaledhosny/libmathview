@@ -24,15 +24,18 @@
 #include <assert.h>
 
 #include "unidefs.h"
+#include "stringAux.hh"
 #include "traverseAux.hh"
 #include "BoundingBox.hh"
 #include "MathMLElement.hh"
 #include "MathMLRowElement.hh"
 #include "RenderingEnvironment.hh"
+#include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"
+#include "MathMLIdentifierElement.hh"
 #include "MathMLInvisibleTimesNode.hh"
 
-MathMLInvisibleTimesNode::MathMLInvisibleTimesNode() : MathMLSpaceNode(0, BREAK_NO)
+MathMLInvisibleTimesNode::MathMLInvisibleTimesNode() : MathMLSpaceNode(0)
 {
 }
 
@@ -41,14 +44,13 @@ MathMLInvisibleTimesNode::~MathMLInvisibleTimesNode()
 }
 
 void
-MathMLInvisibleTimesNode::Setup(class RenderingEnvironment* env)
+MathMLInvisibleTimesNode::Setup(class RenderingEnvironment& env)
 {
-  assert(env != NULL);  
-  sppm = env->GetScaledPointsPerEm();
+  sppm = env.GetScaledPointsPerEm();
 }
 
 void
-MathMLInvisibleTimesNode::DoLayout()
+MathMLInvisibleTimesNode::DoLayout(const FormattingContext&)
 {
   // the following calculation cannot be done at setup time because
   // we need to know if the element *next* to this is a fence, and this
@@ -56,33 +58,52 @@ MathMLInvisibleTimesNode::DoLayout()
   // left to right, at setup time for this node the information is not
   // available
 
-  assert(GetParent() != NULL);
+  assert(GetParent());
 
   box.Set(0, 0, 0);
 
-  if (!GetParent()->IsOperator()) return;
+  // maybe we should seek for the top embellishment
+  if (!is_a<MathMLOperatorElement>(GetParent())) return;
 
-  MathMLElement* prev = findLeftSibling(GetParent());
-  MathMLElement* next = findRightSibling(GetParent());
-  if (prev == NULL || next == NULL) return;
+  Ptr<MathMLElement> prev = findLeftSibling(GetParent());
+  Ptr<MathMLElement> next = findRightSibling(GetParent());
+  if (!prev || !next) return;
 
-  if (prev->IsA() == TAG_MI && next->IsA() == TAG_MI) {
-    MathMLTokenElement* prevToken = TO_TOKEN(prev);
-    MathMLTokenElement* nextToken = TO_TOKEN(next);
-    assert(prevToken != NULL && nextToken != NULL);
+  if (is_a<MathMLIdentifierElement>(prev) && is_a<MathMLIdentifierElement>(next))
+    {
+      Ptr<MathMLTokenElement> prevToken = smart_cast<MathMLTokenElement>(prev);
+      Ptr<MathMLTokenElement> nextToken = smart_cast<MathMLTokenElement>(next);
+      assert(prevToken && nextToken);
     
-    if (prevToken->GetRawContentLength() <= 1 && nextToken->GetRawContentLength() <= 1) return;
+      if (prevToken->GetLogicalContentLength() <= 1 &&
+	  nextToken->GetLogicalContentLength() <= 1) return;
     
-    // FIXME: the following constants should be defined somewhere
-    box.Set((sppm * 5) / 18, 0, 0);
-  } else if (prev->IsA() == TAG_MI) {
-    MathMLTokenElement* prevToken = TO_TOKEN(prev);
-    assert(prevToken != NULL);
-    
-    box.Set((sppm * 4) / 18, 0, 0);
-  } else if (prev->IsA() == TAG_MFRAC && next->IsA() == TAG_MFRAC) {
-    box.Set((sppm * 5) / 18, 0, 0);
-  } else if (prev->IsA() == TAG_MFRAC || next->IsA() == TAG_MFRAC) {
-    box.Set((sppm * 4) / 18, 0, 0);
-  }
+      // FIXME: the following constants should be defined somewhere
+      box.Set((sppm * 5) / 18, 0, 0);
+    } 
+  else if (is_a<MathMLIdentifierElement>(prev))
+    {
+      box.Set((sppm * 4) / 18, 0, 0);
+    }
+  else if (is_a<MathMLFractionElement>(prev) && is_a<MathMLFractionElement>(next))
+    {
+      box.Set((sppm * 5) / 18, 0, 0);
+    } 
+  else if (is_a<MathMLFractionElement>(prev) || is_a<MathMLFractionElement>(next))
+    {
+      box.Set((sppm * 4) / 18, 0, 0);
+    }
+}
+
+unsigned
+MathMLInvisibleTimesNode::GetLogicalContentLength() const
+{
+  return 1;
+}
+
+String*
+MathMLInvisibleTimesNode::GetRawContent() const
+{
+  Char ch = U_INVISIBLETIMES;
+  return allocString(&ch, 1);
 }

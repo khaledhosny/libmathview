@@ -23,31 +23,56 @@
 #ifndef MathMLUnderOverElement_hh
 #define MathMLUnderOverElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLScriptCommonElement.hh"
 
-class MathMLUnderOverElement : public MathMLContainerElement, public MathMLScriptCommonElement
+class MathMLUnderOverElement
+  : public MathMLContainerElement, private MathMLScriptCommonElement, public MathMLEmbellishment
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLUnderOverElement(mDOMNodeRef, TagId);
-#elif defined(HAVE_GMETADOM)
-  MathMLUnderOverElement(const GMetaDOM::Element&, TagId);
+protected:
+  MathMLUnderOverElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLUnderOverElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(void);
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
   virtual ~MathMLUnderOverElement();
 
-  virtual bool IsExpanding(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLUnderOverElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLUnderOverElement(el)); }
+#endif
+
+  void SetBase(const Ptr<MathMLElement>&);
+  void SetUnderScript(const Ptr<MathMLElement>&);
+  void SetOverScript(const Ptr<MathMLElement>&);
+  Ptr<MathMLElement> GetBase(void) const { return base; }
+  Ptr<MathMLElement> GetUnderScript(void) const { return underScript; }
+  Ptr<MathMLElement> GetOverScript(void) const { return overScript; }
+  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Render(const class DrawingArea&);
+  virtual void ReleaseGCs(void);
+
+  virtual void SetDirtyAttribute(void);
+  virtual void SetFlagDown(Flags);
+  virtual void ResetFlagDown(Flags);
+  virtual scaled GetLeftEdge(void) const;
+  virtual scaled GetRightEdge(void) const;
+  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 
 protected:
   bool   scriptize;
@@ -65,8 +90,8 @@ protected:
   scaled overShiftX;
   scaled overShiftY;
 
-  MathMLElement* underScript;
-  MathMLElement* overScript;
+  Ptr<MathMLElement> underScript;
+  Ptr<MathMLElement> overScript;
 };
 
 #endif // MathMLUnderOverElement_hh

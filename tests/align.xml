@@ -1,9 +1,12 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
 <mtable columnalign="right" frame="solid"
         groupalign="{ decimalpoint left left decimalpoint left left decimalpoint }">
+ <mtr>
   <mtd>
     <mtext>This-is-a-very-long-cell-please-check-alignment</mtext>
   </mtd>
+ </mtr>
+ <mtr>
   <mtd>
     <mrow>
       <mrow>
@@ -28,6 +31,8 @@
     <maligngroup/>
     <mn> 0 </mn>
   </mtd>
+ </mtr>
+ <mtr>
   <mtd>
     <mrow>
       <mrow>
@@ -55,5 +60,6 @@
       <mn> 1.1 </mn>
     </mrow>
   </mtd>
+ </mtr>
 </mtable>
 </math>

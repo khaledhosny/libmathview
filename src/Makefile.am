@@ -10,7 +10,7 @@ GTK_LIBS = @GTK_LIBS@
 
 lib_LTLIBRARIES = libgtkmathview.la
 
-libgtkmathview_la_LIBADD = $(DOM_LIBS) $(GTK_LIBS) $(T1_LIBS)
+libgtkmathview_la_LIBADD = $(DOM_LIBS) $(GTK_LIBS) $(T1_LIBS) -lstdc++
 libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 GTKSOURCES = \
@@ -62,12 +62,11 @@ libgtkmathview_la_SOURCES = \
   Char.cc \
   Clock.cc \
   Configuration.cc \
-  DocumentElement.cc \
   EntitiesTable.cc \
-  FontifiedString.cc \
-  Layout.cc \
   Logger.cc \
-  MathEngine.cc \
+  Globals.cc \
+  ChildList.cc \
+  MathMLRenderingEngine.cc \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
   MathMLAlignMarkElement.cc \
@@ -77,10 +76,12 @@ libgtkmathview_la_SOURCES = \
   MathMLCharNode.cc \
   MathMLCombinedCharNode.cc \
   MathMLContainerElement.cc \
+  MathMLBinContainerElement.cc \
+  MathMLLinearContainerElement.cc \
   MathMLDocument.cc \
   MathMLDummyElement.cc \
   MathMLElement.cc \
-  MathMLEmbellishedOperatorElement.cc \
+  MathMLEmbellishment.cc \
   MathMLEncloseElement.cc \
   MathMLErrorElement.cc \
   MathMLFencedElement.cc \
@@ -88,11 +89,14 @@ libgtkmathview_la_SOURCES = \
   MathMLFrame.cc \
   MathMLGlyphNode.cc \
   MathMLHorizBarNode.cc \
+  MathMLIdentifierElement.cc \
   MathMLInvisibleTimesNode.cc \
+  MathMLLabeledTableRowElement.cc \
   MathMLMarkNode.cc \
   MathMLMultiScriptsElement.cc \
   MathMLNode.cc \
   MathMLNormalizingContainerElement.cc \
+  MathMLNumberElement.cc \
   MathMLObject.cc \
   MathMLOperatorElement.cc \
   MathMLPaddedElement.cc \
@@ -106,7 +110,6 @@ libgtkmathview_la_SOURCES = \
   MathMLSpaceElement.cc \
   MathMLSpaceNode.cc \
   MathMLStringLitElement.cc \
-  MathMLStringNode.cc \
   MathMLStyleElement.cc \
   MathMLTableCellElement.cc \
   MathMLTableElement.cc \
@@ -117,11 +120,8 @@ libgtkmathview_la_SOURCES = \
   MathMLUnderOverElement.cc \
   MathMLmathElement.cc \
   OperatorDictionary.cc \
-  MathMLizer.cc \
   Rectangle.cc \
   RenderingEnvironment.cc \
-  Shape.cc \
-  ShapeFactory.cc \
   String.cc \
   StringFactory.cc \
   StringTokenizer.cc \
@@ -150,9 +150,9 @@ pkginclude_HEADERS = \
   gtkmathview.h
 
 noinst_HEADERS = \
+  Ptr.hh \
   AFont.hh \
-  Array.hh \
-  Array.icc \
+  Adaptors.hh \
   AttributeParser.hh \
   AttributeSignature.hh \
   BoundingBox.hh \
@@ -161,21 +161,18 @@ noinst_HEADERS = \
   CharMapper.hh \
   Clock.hh \
   Configuration.hh \
-  Container.hh \
-  Container.icc \
   Coords.hh \
-  DocumentElement.hh \
   DrawingArea.hh \
   EntitiesTable.hh \
-  FontifiedString.hh \
   FontAttributes.hh \
   FontManager.hh \
   GraphicsContext.hh \
-  Iterator.hh \
-  Layout.hh \
   Logger.hh \
+  Globals.hh \
   MathML.hh \
-  MathEngine.hh \
+  ChildList.hh \
+  FormattingContext.hh \
+  MathMLRenderingEngine.hh \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \
   MathMLAlignMarkElement.hh \
@@ -185,10 +182,12 @@ noinst_HEADERS = \
   MathMLCharNode.hh \
   MathMLCombinedCharNode.hh \
   MathMLContainerElement.hh \
+  MathMLBinContainerElement.hh \
+  MathMLLinearContainerElement.hh \
   MathMLDocument.hh \
   MathMLDummyElement.hh \
   MathMLElement.hh \
-  MathMLEmbellishedOperatorElement.hh \
+  MathMLEmbellishment.hh \
   MathMLEncloseElement.hh \
   MathMLErrorElement.hh \
   MathMLFencedElement.hh \
@@ -196,11 +195,14 @@ noinst_HEADERS = \
   MathMLFrame.hh \
   MathMLGlyphNode.hh \
   MathMLHorizBarNode.hh \
+  MathMLIdentifierElement.hh \
   MathMLInvisibleTimesNode.hh \
+  MathMLLabeledTableRowElement.hh \
   MathMLMarkNode.hh \
   MathMLMultiScriptsElement.hh \
   MathMLNode.hh \
   MathMLNormalizingContainerElement.hh \
+  MathMLNumberElement.hh \
   MathMLObject.hh \
   MathMLOperatorElement.hh \
   MathMLPaddedElement.hh \
@@ -214,7 +216,6 @@ noinst_HEADERS = \
   MathMLSpaceElement.hh \
   MathMLSpaceNode.hh \
   MathMLStringLitElement.hh \
-  MathMLStringNode.hh \
   MathMLStyleElement.hh \
   MathMLTableCellElement.hh \
   MathMLTableElement.hh \
@@ -226,13 +227,9 @@ noinst_HEADERS = \
   MathMLmathElement.hh \
   MultiString.hh \
   OperatorDictionary.hh \
-  MathMLizer.hh \
   RGBValue.hh \
   Rectangle.hh \
   RenderingEnvironment.hh \
-  Shape.hh \
-  ShapeFactory.hh \
-  Stack.hh \
   String.hh \
   StringFactory.hh \
   StringTokenizer.hh \
@@ -252,6 +249,7 @@ noinst_HEADERS = \
   traverseAux.hh \
   mathVariantAux.hh \
   scaled.hh \
+  for_each_if.h \
   unidefs.h \
   $(GTKHEADERS) \
   $(T1HEADERS) \
@@ -261,5 +259,6 @@ INCLUDES = \
   $(DOM_CFLAGS) \
   $(T1_CFLAGS) \
   $(GTK_CFLAGS) \
-  -I$(srcdir)/../auto/
+  -I$(top_builddir) \
+  -I$(top_srcdir)/auto/
 

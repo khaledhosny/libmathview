@@ -23,9 +23,7 @@
 #ifndef MathMLDummyElement_hh
 #define MathMLDummyElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
@@ -33,16 +31,25 @@
 
 class MathMLDummyElement : public MathMLElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLDummyElement(mDOMNodeRef = NULL);
-#elif defined(HAVE_GMETADOM)
-  MathMLDummyElement(const GMetaDOM::Element& = 0);
+protected:
+  MathMLDummyElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLDummyElement(const DOM::Element&);
 #endif
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLDummyElement();
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLDummyElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLDummyElement(el)); }
+#endif
+
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void Render(const DrawingArea&);
 };
 
 #endif // MathMLDummyElement_hh

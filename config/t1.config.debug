@@ -2,4 +2,4 @@
 #
 ENCODING=.
 AFM=.
-TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:/home/luca/Fonts/Mathematica/Type1/:.
+TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:/home/luca/Fonts/CM/pfb/:.

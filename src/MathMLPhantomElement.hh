@@ -23,27 +23,38 @@
 #ifndef MathMLPhantomElement_hh
 #define MathMLPhantomElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLPhantomElement: public MathMLNormalizingContainerElement
+class MathMLPhantomElement
+  : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 public:
-#if defined(HAVE_MINIDOM)
-  MathMLPhantomElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLPhantomElement(const GMetaDOM::Element&);
+  MathMLPhantomElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLPhantomElement(const DOM::Element&);
 #endif
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLPhantomElement();
 
-  virtual bool IsBreakable(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLPhantomElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLPhantomElement(el)); }
+#endif
+
+  //virtual void Normalize(const Ptr<MathMLDocument>&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Render(const DrawingArea&);
+
   virtual bool IsSpaceLike(void) const;
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 };
 
 #endif // MathMLPhantomElement_hh

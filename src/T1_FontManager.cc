@@ -32,8 +32,7 @@
 #include "t1lib.h"
 
 #include "T1_Font.hh"
-#include "Iterator.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "T1_FontManager.hh"
 
 bool T1_FontManager::firstTime = true;
@@ -43,7 +42,7 @@ T1_FontManager::T1_FontManager()
   if (firstTime) {
     void* res = T1_InitLib(LOGFILE | IGNORE_FONTDATABASE);
     if (res == NULL) {
-      MathEngine::logger(LOG_ERROR, "could not initialize T1 library (aborted)");
+      Globals::logger(LOG_ERROR, "could not initialize T1 library (aborted)");
       exit(-1);
     }
     assert(res != NULL);
@@ -55,7 +54,7 @@ T1_FontManager::~T1_FontManager()
 {
   int res = T1_CloseLib();
   if (res != 0)
-    MathEngine::logger(LOG_WARNING, "T1 lib could not uninitialize itself properly, please consult the log file");
+    Globals::logger(LOG_WARNING, "T1 lib could not uninitialize itself properly, please consult the log file");
 
   firstTime = true;
 }
@@ -66,11 +65,11 @@ T1_FontManager::IsAvailable(const FontAttributes& fa,
 {
   if (efa == NULL) return false;
 
-  const char* type = efa->GetProperty("type");
-  if (type == NULL || (strcmp(type, "type1") && strcmp(type, "ps"))) return false;
+  const std::string type = efa->GetProperty("type");
+  if (type != "type1" && type != "ps") return false;
 
-  const char* fileName = efa->GetProperty("ps-file");
-  if (fileName == NULL) return false;
+  const std::string fileName = efa->GetProperty("ps-file");
+  if (fileName == "") return false;
 
   return true;
 }
@@ -83,16 +82,18 @@ T1_FontManager::SearchT1FontId(const char* fileName) const
   for (i = 0; i < n && strcmp(fileName, T1_GetFontFileName(i)); i++) ;
 
   if (i == n) {
-    MathEngine::logger(LOG_INFO, "adding font file `%s' to the font database", fileName);
-    i = T1_AddFont(const_cast<char*>(fileName));
+    Globals::logger(LOG_INFO, "adding font file `%s' to the font database", fileName);
+    //i = T1_AddFont(const_cast<char*>(fileName));
+    // this causes a memory leak, but T1 is really buggy
+    i = T1_AddFont(strdup(fileName));
     if (i < 0) {
-      MathEngine::logger(LOG_WARNING, "could not load Type1 font file `%s'", fileName);
+      Globals::logger(LOG_WARNING, "could not load Type1 font file `%s'", fileName);
       return -1;
     }
-    MathEngine::logger(LOG_INFO, "loading font ID: %d", i);
+    Globals::logger(LOG_INFO, "loading font ID: %d", i);
     T1_LoadFont(i);
   } else {
-    MathEngine::logger(LOG_INFO, "font file `%s' already loaded in the database", fileName);
+    Globals::logger(LOG_INFO, "font file `%s' already loaded in the database", fileName);
   }
 
   return i;
@@ -105,18 +106,18 @@ T1_FontManager::SearchNativeFontAux(const FontAttributes& fa,
 {
   assert(efa != NULL);
 
-  const char* type = efa->GetProperty("type");
-  if (type == NULL) {
-    MathEngine::logger(LOG_ERROR, "could not determine font type (check the font configuration file)");
+  const std::string type = efa->GetProperty("type");
+  if (type == "") {
+    Globals::logger(LOG_ERROR, "could not determine font type (check the font configuration file)");
     return -1;
   }
 
-  if (strcmp(type, "type1") && strcmp(type, "ps")) return -1;
+  if (type != "type1" && type != "ps") return -1;
 
-  const char* fileName = efa->GetProperty("ps-file");
-  assert(fileName != NULL);
+  const std::string fileName = efa->GetProperty("ps-file");
+  assert(fileName != "");
 
-  int i = SearchT1FontId(fileName);
+  int i = SearchT1FontId(fileName.c_str());
   
   size = 1.0;
   if (fa.HasSize())
@@ -133,12 +134,6 @@ T1_FontManager::SearchNativeFont(const FontAttributes& fa,
   int i = SearchNativeFontAux(fa, efa, size);
   AFont* f = (i >= 0) ? new T1_Font(i, size) : NULL;
   return f;
-}
-
-void
-T1_FontManager::SetLogLevel(int level)
-{
-  T1_SetLogLevel(level + 1);
 }
 
 #endif // HAVE_LIBT1

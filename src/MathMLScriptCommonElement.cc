@@ -27,25 +27,32 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLScriptCommonElement.hh"
-#include "MathMLEmbellishedOperatorElement.hh"
 
 MathMLScriptCommonElement::MathMLScriptCommonElement()
 {
-  base = NULL;
 }
 
 void
-MathMLScriptCommonElement::ScriptSetup(RenderingEnvironment* env)
+MathMLScriptCommonElement::SetBase(const Ptr<MathMLElement>& elem)
 {
-  ruleThickness = env->GetRuleThickness();
+  if (elem != base)
+    {
+      
+    }
+}
+
+void
+MathMLScriptCommonElement::ScriptSetup(RenderingEnvironment& env)
+{
+  ruleThickness = env.GetRuleThickness();
 #ifdef TEXISH_MATHML
-  sppex = env->GetScaledPointsPerEx();
-  subMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.247217);
-  superMinShift = float2sp(sp2float(env->GetFontAttributes().size.ToScaledPoints()) * 0.362892);
+  sppex = env.GetScaledPointsPerEx();
+  subMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.247217);
+  superMinShift = float2sp(sp2float(env.GetFontAttributes().size.ToScaledPoints()) * 0.362892);
 #else
-  sppex = subMinShift = superMinShift = env->GetAxis();
+  sppex = subMinShift = superMinShift = env.GetAxis();
 #endif // TEXISH_MATHML
-  scriptAxis    = env->GetAxis();
+  scriptAxis    = env.GetAxis();
 }
 
 void
@@ -55,62 +62,61 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
 					  scaled& subShiftX, scaled& subShiftY,
 					  scaled& superShiftX, scaled& superShiftY)
 {
-  assert(base != NULL);
+  assert(base);
 
   scaled u;
   scaled v;
 
-  MathMLElement* rel = findRightmostChild(base);
-  assert(rel != NULL);
+  Ptr<MathMLElement> rel = findRightmostChild(base);
+  assert(rel);
 
-  const MathMLOperatorElement* coreOp = NULL;
-  if (rel->IsOperator()) coreOp = TO_OPERATOR(rel);
-  else if (rel->IsEmbellishedOperator()) {
-    MathMLEmbellishedOperatorElement* eOp = TO_EMBELLISHED_OPERATOR(rel);
-    assert(eOp != NULL);
-    coreOp = eOp->GetCoreOperator();
-  }
+  Ptr<MathMLOperatorElement> coreOp = rel->GetCoreOperator();
 
-  if ((rel->IsToken() && coreOp == NULL) || (coreOp != NULL && !coreOp->IsStretchy() && coreOp->IsFence())) {
-    u = v = 0;
-  } else {
-    u = baseBox.ascent - scriptAxis;
-    v = baseBox.descent + scriptAxis / 2;
-  }
-
-  if (superScriptBox.IsNull()) {
-    u = 0;
-    v = scaledMax(v, scaledMax(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
-  } else {
-    u = scaledMax(u, scaledMax(superMinShift, superScriptBox.descent + sppex / 4));
-
-    if (subScriptBox.IsNull()) {
-      v = 0;
-    } else {
-      v = scaledMax(v, subMinShift);
-
-      if ((u - superScriptBox.descent) - (subScriptBox.ascent - v) < 4 * ruleThickness) {
-	v = 4 * ruleThickness - u + superScriptBox.descent + subScriptBox.ascent;
-
-	scaled psi = (4 * sppex) / 5 - (u - superScriptBox.descent);
-	if (psi > 0) {
-	  u += psi;
-	  v -= psi;
-	}
-      }
+  if ((is_a<MathMLTokenElement>(rel) && !coreOp) ||
+      (coreOp && !coreOp->IsStretchy() && coreOp->IsFence()))
+    {
+      u = v = 0;
+    } 
+  else
+    {
+      u = baseBox.ascent - scriptAxis;
+      v = baseBox.descent + scriptAxis / 2;
     }
-  }
+
+  if (superScriptBox.IsNull())
+    {
+      u = 0;
+      v = scaledMax(v, scaledMax(subMinShift, subScriptBox.ascent - (4 * sppex) / 5));
+    } 
+  else
+    {
+      u = scaledMax(u, scaledMax(superMinShift, superScriptBox.descent + sppex / 4));
+
+      if (subScriptBox.IsNull())
+	{
+	  v = 0;
+	} 
+      else
+	{
+	  v = scaledMax(v, subMinShift);
+
+	  if ((u - superScriptBox.descent) - (subScriptBox.ascent - v) < 4 * ruleThickness)
+	    {
+	      v = 4 * ruleThickness - u + superScriptBox.descent + subScriptBox.ascent;
+
+	      scaled psi = (4 * sppex) / 5 - (u - superScriptBox.descent);
+	      if (psi > 0)
+		{
+		  u += psi;
+		  v -= psi;
+		}
+	    }
+	}
+    }
 
   superShiftY = u;
   superShiftX = scaledMax(baseBox.width, baseBox.rBearing + sppex / 5);
 
   subShiftY = v;
   subShiftX = baseBox.width;
-}
-
-bool
-MathMLScriptCommonElement::IsExpanding() const
-{
-  assert(base != NULL);
-  return base->IsExpanding();
 }

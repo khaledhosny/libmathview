@@ -1,16 +1,16 @@
-<math>
-  <mfenced>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfenced separators="">
     <mi>ciao</mi>
     <mi>x</mi>
     <mi>da</mi>
     <mi>Luca</mi>
     <mtable>
       <mtr>
-        <mi>a</mi>
-	<mi>b</mi>
+        <mtd><mi>a</mi></mtd>
+	<mtd><mi>b</mi></mtd>
       </mtr>
       <mtr>
-        <mi>c</mi>
+        <mtd><mi>c</mi></mtd>
       </mtr>
     </mtable>
   </mfenced>

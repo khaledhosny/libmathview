@@ -23,7 +23,6 @@
 #ifndef Gtk_FontManager_hh
 #define Gtk_FontManager_hh
 
-#include "Container.hh"
 #include "FontManager.hh"
 #include "FontAttributes.hh"
 

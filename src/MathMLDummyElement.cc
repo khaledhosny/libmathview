@@ -26,55 +26,63 @@
 #include "CharMapper.hh"
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLDummyElement::MathMLDummyElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLDummyElement::MathMLDummyElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLElement(node, TAG_DUMMY)
+MathMLDummyElement::MathMLDummyElement()
 {
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLDummyElement::MathMLDummyElement(const DOM::Element& node)
+  : MathMLElement(node)
+{
+}
+#endif
 
 MathMLDummyElement::~MathMLDummyElement()
 {
 }
 
 void
-MathMLDummyElement::Setup(RenderingEnvironment* env)
+MathMLDummyElement::Normalize(const Ptr<class MathMLDocument>&)
 {
-  assert(env != NULL);
-
-  FontifiedChar fChar;
-
-  env->charMapper.FontifyChar(fChar, env->GetFontAttributes(), 'a');
-  assert(fChar.font != NULL);
-  
-  fChar.font->GetBoundingBox(box);
+  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 void
-MathMLDummyElement::DoBoxedLayout(LayoutId id, BreakId, scaled)
+MathMLDummyElement::Setup(RenderingEnvironment& env)
 {
-  ConfirmLayout(id);
-  ResetDirtyLayout(id);
+  if (DirtyAttribute())
+    {
+      background = env.GetBackgroundColor();
+      scaled size = env.ToScaledPoints(env.GetFontAttributes().size);
+      box.Set(size, size, 0);
+      ResetDirtyAttribute();
+    }
+}
+
+void
+MathMLDummyElement::DoLayout(const FormattingContext& ctxt)
+{
+  if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
 
 void
 MathMLDummyElement::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
+  if (Dirty())
+    {
+      RenderBackground(area);
+      if (fGC[Selected()] == NULL)
+	{
+	  GraphicsContextValues values;
+	  values.foreground = Selected() ? area.GetSelectionForeground() : RED_COLOR;
+	  values.lineStyle = LINE_STYLE_SOLID;
+	  fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
+	}
 
-  RenderBackground(area);
+      area.DrawRectangle(fGC[Selected()], GetX(), GetY(), GetBoundingBox());
 
-  if (fGC[IsSelected()] == NULL) {
-    GraphicsContextValues values;
-    values.foreground = IsSelected() ? area.GetSelectionForeground() : RED_COLOR;
-    values.lineStyle = LINE_STYLE_SOLID;
-    fGC[IsSelected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
-  }
-
-  area.DrawRectangle(fGC[IsSelected()], GetShape());
-
-  ResetDirty();
+      ResetDirty();
+    }
 }

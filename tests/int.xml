@@ -1,4 +1,4 @@
-<math mode="display">
+<math mode="display" xmlns="http://www.w3.org/1998/Math/MathML">
   <msubsup>
     <mo largeop="false" stretchy="false">&Integral;</mo>
     <mi>r</mi>

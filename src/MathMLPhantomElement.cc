@@ -21,19 +21,23 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
 #include <assert.h>
 #include <stddef.h>
 
 #include "MathMLPhantomElement.hh"
+#include "MathMLOperatorElement.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLPhantomElement::MathMLPhantomElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLPhantomElement::MathMLPhantomElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLNormalizingContainerElement(node, TAG_MPHANTOM)
+MathMLPhantomElement::MathMLPhantomElement()
 {
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLPhantomElement::MathMLPhantomElement(const DOM::Element& node)
+  : MathMLNormalizingContainerElement(node)
+{
+}
+#endif
 
 MathMLPhantomElement::~MathMLPhantomElement()
 {
@@ -42,24 +46,57 @@ MathMLPhantomElement::~MathMLPhantomElement()
 bool
 MathMLPhantomElement::IsSpaceLike() const
 {
-  assert(content.GetSize() == 1);
-
-  MathMLElement* elem = content.GetFirst();
-  assert(elem != NULL);
-
-  return elem->IsSpaceLike();
+  assert(child);
+  return child->IsSpaceLike();
 }
 
-bool
-MathMLPhantomElement::IsBreakable() const
+#if 0
+void
+MathMLPhantomElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
-  return true;
+  if (DirtyStructure())
+    {
+      MathMLNormalizingContainerElement::Normalize(doc);
+      if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+	{
+	  Ptr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
+	  assert(eOp && eOp->GetParent() == this);
+	  eOp->Lift(doc);
+	}
+      ResetDirtyStructure();
+    }
+}
+#endif
+
+void
+MathMLPhantomElement::DoLayout(const FormattingContext& ctxt)
+{
+  if (DirtyLayout(ctxt))
+    {
+      MathMLNormalizingContainerElement::DoLayout(ctxt);
+      DoEmbellishmentLayout(this, box);
+      ResetDirtyLayout(ctxt);
+    }
+}
+
+void
+MathMLPhantomElement::SetPosition(scaled x, scaled y)
+{
+  position.x = x;
+  position.y = y;
+  SetEmbellishmentPosition(this, x, y);
+  if (GetChild()) GetChild()->SetPosition(x, y);
 }
 
 void
 MathMLPhantomElement::Render(const DrawingArea&)
 {
-  if (!HasDirtyChildren()) return;
+  if (Dirty()) ResetDirty();
+}
 
-  ResetDirty();
+Ptr<MathMLOperatorElement>
+MathMLPhantomElement::GetCoreOperator()
+{
+  if (GetChild()) return GetChild()->GetCoreOperator();
+  else return 0;
 }

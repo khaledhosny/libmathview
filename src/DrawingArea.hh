@@ -23,10 +23,10 @@
 #ifndef DrawingArea_hh
 #define DrawingArea_hh
 
+#include <vector>
+
 #include "AFont.hh"
-#include "Shape.hh"
 #include "String.hh"
-#include "Container.hh"
 #include "BoundingBox.hh"
 #include "GraphicsContext.hh"
 
@@ -55,13 +55,10 @@ public:
   void DrawLineToDelta(const GraphicsContext*, scaled, scaled) const;
   void DrawRectangle(const GraphicsContext*, scaled, scaled, const BoundingBox&) const;
   void DrawRectangle(const GraphicsContext*, const Rectangle&) const;
-  void DrawRectangle(const GraphicsContext*, const Shape&) const;
   void DrawBoundingBox(const GraphicsContext*, scaled, scaled, const BoundingBox&, bool = true) const;
-  void DrawShape(const GraphicsContext*, const Shape&) const;
   void DrawString(const GraphicsContext*, const AFont*, scaled, scaled, const String*) const;
   void Clear(const GraphicsContext*, scaled, scaled, const BoundingBox&) const;
   void Clear(const GraphicsContext*, const Rectangle&) const;
-  void Clear(const GraphicsContext*, const Shape&) const;
 
   void Update(const Rectangle&) const;
 
@@ -93,7 +90,7 @@ protected:
   RGBValue selectionForeground;
   RGBValue selectionBackground;
 
-  mutable Container<const GraphicsContext*> poolGC;
+  mutable std::vector<const GraphicsContext*> poolGC;
 };
 
 #endif // DrawingArea_hh

@@ -17,6 +17,7 @@ mathml2ps_debug_LDADD = \
 
 INCLUDES = \
   $(DOM_CFLAGS) \
+  -I$(top_builddir) \
   -I$(top_srcdir)/src/ \
   -I$(top_srcdir)/auto/
 

@@ -23,28 +23,33 @@
 #ifndef MathMLEmbellishedOperatorElement_hh
 #define MathMLEmbellishedOperatorElement_hh
 
-#include "MathMLContainerElement.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLBinContainerElement.hh"
 
-class MathMLEmbellishedOperatorElement: public MathMLContainerElement {
-public:
-  MathMLEmbellishedOperatorElement(class MathMLOperatorElement*);
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
+class MathMLEmbellishedOperatorElement : public MathMLBinContainerElement
+{
+protected:
+  MathMLEmbellishedOperatorElement(const Ptr<MathMLOperatorElement>&);
   virtual ~MathMLEmbellishedOperatorElement();
 
-  virtual bool IsEmbellishedOperator(void) const;
-  class MathMLOperatorElement* GetCoreOperator(void) const { return coreOp; }
+public:
+  static Ptr<MathMLEmbellishedOperatorElement> create(const Ptr<MathMLOperatorElement>& elem)
+  { return Ptr<MathMLEmbellishedOperatorElement>(new MathMLEmbellishedOperatorElement(elem)); }
 
-  virtual const class MathMLCharNode* GetCharNode(void) const;
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+
+  virtual bool IsEmbellishedOperator(void) const;
+  virtual Ptr<MathMLOperatorElement> GetCoreOperator(void) { return coreOp; }
+  virtual Ptr<class MathMLCharNode> GetCharNode(void) const;
+
+  void Lift(void);
 
 private:
-  class MathMLOperatorElement* coreOp;
+  Ptr<MathMLOperatorElement> coreOp;
   bool  script;
 };
-
-typedef MathMLEmbellishedOperatorElement* MathMLEmbellishedOperatorElementPtr;
-
-#define TO_EMBELLISHED_OPERATOR(node) (dynamic_cast<MathMLEmbellishedOperatorElement*>(node))
 
 #endif // MathMLEmbellishedOperatorElement_hh

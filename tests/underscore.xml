@@ -1,4 +1,4 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mtext>QUESTA_E'_UNA_PROVA_DI_UTILIZZO_DELL'UNDERSCORE&NonBreakingSpace;</mtext>
   <mtext mathvariant="sans-serif-bold-italic">questa e' una prova</mtext>
 </math>

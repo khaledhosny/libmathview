@@ -31,7 +31,7 @@ BoundingBox::Null()
 {
   null     = true;
   width = ascent = descent = 0;
-  lBearing = rBearing = tAscent = tDescent = 0;
+  lBearing = rBearing = 0;
 }
 
 void
@@ -39,8 +39,8 @@ BoundingBox::Set(scaled w, scaled a, scaled d, scaled l, scaled r)
 {
   null     = false;
   width    = w;
-  ascent   = tAscent = a;
-  descent  = tDescent = d;
+  ascent   = a;
+  descent  = d;
   lBearing = l;
   rBearing = r;
 }
@@ -50,18 +50,15 @@ BoundingBox::Append(const BoundingBox& box)
 {  
   if (box.IsNull()) return;
 
-  if (null) {
+  if (null)
     Set(box.width, box.ascent, box.descent, box.lBearing, box.rBearing);
-    tAscent = box.tAscent;
-    tDescent = box.tDescent;
-  } else {
-    ascent   = scaledMax(ascent, box.ascent);
-    descent  = scaledMax(descent, box.descent);
-    rBearing = width + box.rBearing;
-    width += box.width;
-    tAscent  = scaledMax(tAscent, box.tAscent);
-    tDescent = scaledMax(tDescent, box.tDescent);
-  }
+  else
+    {
+      ascent   = scaledMax(ascent, box.ascent);
+      descent  = scaledMax(descent, box.descent);
+      rBearing = width + box.rBearing;
+      width += box.width;
+    }
 }
 
 void
@@ -83,27 +80,27 @@ BoundingBox::Max(const BoundingBox& box)
   ascent = scaledMax(ascent, box.ascent);
   descent = scaledMax(descent, box.descent);
   width = scaledMax(width, box.width);
-  tAscent = scaledMax(tAscent, box.tAscent);
-  tDescent = scaledMax(tDescent, box.tDescent);
   lBearing = scaledMin(lBearing, box.lBearing);
   rBearing = scaledMax(rBearing, box.rBearing);
 }
 
-void
-BoundingBox::ToRectangle(scaled x, scaled y, Rectangle& rect) const
+Rectangle
+BoundingBox::GetRectangle(scaled x, scaled y) const
 {
+  Rectangle rect;
   rect.x = x;
   rect.y = y - ascent;
   rect.width = width;
   rect.height = GetHeight();
+  return rect;
 }
 
 void
 BoundingBox::Dump() const
 {
   if (IsNull()) printf("[null box]");
-  else printf("[%d,+%d,-%d,l:%d,r:%d,a:%d,d:%d]",
+  else printf("[%d,+%d,-%d,l:%d,r:%d]",
 	      sp2ipx(width), sp2ipx(ascent), sp2ipx(descent),
-	      sp2ipx(lBearing), sp2ipx(rBearing), sp2ipx(tAscent), sp2ipx(tDescent));
+	      sp2ipx(lBearing), sp2ipx(rBearing));
 }
 

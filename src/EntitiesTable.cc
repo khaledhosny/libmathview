@@ -31,7 +31,7 @@
 #include <stdio.h>
 
 #include "stringAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "EntitiesTable.hh"
 #include "MathMLParseFile.hh"
 

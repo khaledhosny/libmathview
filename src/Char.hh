@@ -27,21 +27,21 @@
 
 #include "keyword.hh"
 
-#if defined(HAVE_MINIDOM)
+#if defined(HAVE_GMETADOM)
+
+#include "gmetadom.hh"
+
+typedef DOM::Char8  Char8;
+typedef DOM::Char16 Char16;
+typedef DOM::Char32 Char32;
+
+#else
 
 #include <glib.h>
 
 typedef guint8  Char8;
 typedef guint16 Char16;
 typedef guint32 Char32;
-
-#elif defined(HAVE_GMETADOM)
-
-#include "gmetadom.hh"
-
-typedef GMetaDOM::Char8  Char8;
-typedef GMetaDOM::Char16 Char16;
-typedef GMetaDOM::Char32 Char32;
 
 #endif
 

@@ -28,25 +28,29 @@
 
 class MathMLStringNode: public MathMLTextNode
 {
-public:
+protected:
   MathMLStringNode(const String*);
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoLayout(void);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLStringNode();
 
-  virtual bool HasDecimalPoint(void) const;
-  virtual bool IsString(void) const;
+public:
+  static Ptr<MathMLStringNode> create(const String* s)
+  { return Ptr<MathMLStringNode>(new MathMLStringNode(s)); }
 
-  virtual scaled GetDecimalPointEdge(void) const;
+  virtual void     Setup(class RenderingEnvironment&);
+  virtual void     DoLayout(const class FormattingContext&);
+  virtual void     Render(const DrawingArea&);
 
-  const String* GetContent(void) const { return content; }
+  virtual bool     HasDecimalPoint(void) const;
+  virtual bool     IsString(void) const;
+
+  virtual scaled   GetDecimalPointEdge(void) const;
+
+  virtual unsigned GetLogicalContentLength(void) const;
+  virtual String*  GetRawContent(void) const;
 
 private:
   const String* content;
   const FontifiedString* fContent;
 };
-
-#define TO_STRING(node) (dynamic_cast<MathMLStringNode*>(node))
 
 #endif // MathMLStringNode_hh

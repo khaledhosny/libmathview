@@ -24,21 +24,25 @@
 #include <config.h>
 #include <assert.h>
 
-#include "MathEngine.hh"
-#include "ShapeFactory.hh"
+#include "Globals.hh"
 #include "StringUnicode.hh"
 #include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
+#include "MathMLOperatorElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLActionElement::MathMLActionElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-  MathMLActionElement::MathMLActionElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLContainerElement(node, TAG_MACTION)
+MathMLActionElement::MathMLActionElement(void)
 {
   selection = 0;
 }
+
+#if defined(HAVE_GMETADOM)
+  MathMLActionElement::MathMLActionElement(const DOM::Element& node)
+  : MathMLLinearContainerElement(node)
+{
+  selection = 0;
+}
+#endif
 
 MathMLActionElement::~MathMLActionElement()
 {
@@ -60,57 +64,44 @@ MathMLActionElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLActionElement::Setup(RenderingEnvironment* env)
+MathMLActionElement::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      const String* sValue = GetAttribute(ATTR_ACTIONTYPE, env, false);
+      if (sValue != NULL) {
+	if (!sValue->Equal("toggle"))
+	  Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", sValue->ToStaticC());
+      } else
+	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
 
-  const String* sValue = GetAttribute(ATTR_ACTIONTYPE, env, false);
-  if (sValue != NULL) {
-    if (!sValue->Equal("toggle"))
-      MathEngine::logger(LOG_WARNING, "action `%s' is not supported (ignored)", sValue->ToStaticC());
-  } else
-    MathEngine::logger(LOG_WARNING, "no action specified for `maction' element");
+      const Value* value = GetAttributeValue(ATTR_SELECTION, env);
+      if (value != NULL) SetSelectedIndex(value->ToInteger());
 
-  const Value* value = GetAttributeValue(ATTR_SELECTION, env);
-  if (value != NULL) {
-    selection = value->ToInteger() - 1;
-    if (selection >= content.GetSize()) selection = content.GetSize() - 1;
-  }
+      if (Ptr<MathMLElement> elem = GetSelectedElement()) elem->Setup(env);
+      //MathMLLinearContainerElement::Setup(env);
 
-  MathMLContainerElement::Setup(env);
+      ResetDirtyAttribute();
+    }
 }
 
 void
-MathMLActionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
+MathMLActionElement::DoLayout(const class FormattingContext& ctxt)
 {
-  if (!HasDirtyLayout(id, availWidth)) return;
+  if (DirtyLayout(ctxt))
+    {
+      if (Ptr<MathMLElement> elem = GetSelectedElement())
+	{
+	  elem->DoLayout(ctxt);
+	  box = elem->GetBoundingBox();
+	}
+      else
+	box.Null();
 
-  MathMLElement* elem = GetSelectedElement();
+      DoEmbellishmentLayout(this, box);
 
-  if (elem != NULL) {
-    elem->DoBoxedLayout(id, bid, availWidth);
-    box = elem->GetBoundingBox();
-  } else
-    box.Null();
-
-  ConfirmLayout(id);
-
-  ResetDirtyLayout(id, availWidth);
-}
-
-void
-MathMLActionElement::DoLayout(LayoutId id, Layout& layout)
-{
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->DoLayout(id, layout);
-  ResetDirtyLayout(id);
-}
-
-void
-MathMLActionElement::DoStretchyLayout()
-{
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->DoStretchyLayout();
+      ResetDirtyLayout(ctxt);
+    }
 }
 
 void
@@ -118,129 +109,98 @@ MathMLActionElement::SetPosition(scaled x, scaled y)
 {
   position.x = x;
   position.y = y;
-
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->SetPosition(x, y);
-}
-
-void
-MathMLActionElement::Freeze()
-{
-  MathMLElement* elem = GetSelectedElement();
-  assert(elem != NULL);
-
-  elem->Freeze();
-
-  if (!IsBreakable() || HasLayout()) MathMLElement::Freeze();
-  else {
-    if (shape != NULL) delete shape;
-    ShapeFactory shapeFactory;
-    shapeFactory.Add(elem->GetShape());
-    if (elem->IsLast()) shapeFactory.SetNewRow();
-    shape = shapeFactory.GetShape();
-  }
+  SetEmbellishmentPosition(this, x, y);
+  if (Ptr<MathMLElement> elem = GetSelectedElement()) elem->SetPosition(x, y);
 }
 
 void
 MathMLActionElement::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
-
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->Render(area);
-
-  ResetDirty();
+  if (Dirty())
+    {
+      if (Ptr<MathMLElement> elem = GetSelectedElement()) elem->Render(area);
+      ResetDirty();
+    }
 }
 
+#if 0
 void
 MathMLActionElement::SetDirty(const Rectangle* rect)
 {
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) {
-    elem->SetDirty(rect);
-    // dirty-children has to be called explicitly because if the child is already
-    // dirty, then it does not invoke SetDirtyChildren by itself
-    // (see MathMLFrame.hh)
-    SetDirtyChildren();
-    //dirty = elem->IsDirty();
-  }
+  if (Ptr<MathMLElement> elem = GetSelectedElement())
+    {
+      elem->SetDirty(rect);
+      // dirty-children has to be called explicitly because if the child is already
+      // dirty, then it does not invoke SetDirtyChildren by itself
+      // (see MathMLFrame.hh)
+      SetDirtyChildren();
+      //dirty = elem->IsDirty();
+    }
 }
+#endif
 
-bool
-MathMLActionElement::IsBreakable() const
-{
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->IsBreakable() : false;
-}
-
-bool
-MathMLActionElement::IsExpanding() const
-{
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->IsExpanding() : false;
-}
-
-bool
-MathMLActionElement::IsLast() const
-{
-  if (last != 0) return true;
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->IsLast() : false;
-}
-
-MathMLElement*
+Ptr<MathMLElement>
 MathMLActionElement::GetSelectedElement() const
 {
-  return (selection < content.GetSize()) ? content.Get(selection) : NULL;
+  return (selection < content.size()) ? content[selection] : Ptr<MathMLElement>(0);
 }
 
 void
 MathMLActionElement::SetSelectedIndex(unsigned i)
 {
-  assert(i > 0 && i <= content.GetSize());
-  if (selection == i - 1) return;
-  selection = i - 1;
-
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->SetDirtyLayout(true);
+  if (content.size() > 0 && selection != (i - 1) % content.size())
+    {
+      selection = (i - 1) % content.size();
+      if (Ptr<MathMLElement> elem = GetSelectedElement())
+	{
+	  elem->SetDirtyLayout();
+	  if (elem->DirtyAttribute() || elem->DirtyAttributeP()) this->SetDirtyAttribute();
+	}
+      // has to set DirtyLayout itself because if the children hasn't been visited yet
+      // then its Dirtylayout flag is still set and it won't be propagated up
+      SetDirtyLayout();
+    }
 }
 
 unsigned
 MathMLActionElement::GetSelectedIndex() const
 {
-  return (content.GetSize() > 0) ? selection + 1 : 0;
-}
-
-BreakId
-MathMLActionElement::GetBreakability() const
-{
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->GetBreakability() : BREAK_AUTO;
+  return (content.size() > 0) ? selection + 1 : 0;
 }
 
 scaled
 MathMLActionElement::GetLeftEdge() const
 {
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->GetLeftEdge() : GetX();
+  if (Ptr<MathMLElement> elem = GetSelectedElement())
+    return elem->GetLeftEdge();
+  else
+    return GetX();
 }
 
 scaled
 MathMLActionElement::GetRightEdge() const
 {
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->GetRightEdge() : GetX();
+  if (Ptr<MathMLElement> elem = GetSelectedElement())
+    return elem->GetRightEdge();
+  else
+    return GetX();
 }
 
-MathMLElement*
+Ptr<MathMLElement>
 MathMLActionElement::Inside(scaled x, scaled y)
 {
-  if (!IsInside(x, y)) return NULL;
-
-  MathMLElement* elem = GetSelectedElement();
-  return (elem != NULL) ? elem->Inside(x, y) : this;
+  if (IsInside(x, y))
+    {
+      if (Ptr<MathMLElement> elem = GetSelectedElement())
+	return elem->Inside(x, y);
+      else
+	return this;
+    }
+  else
+    return 0;
 }
 
+#if 0
 void
 MathMLActionElement::SetSelected()
 {
@@ -248,8 +208,8 @@ MathMLActionElement::SetSelected()
 
   selected = 1;
 
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->SetSelected();
+  Ptr<MathMLElement> elem = GetSelectedElement();
+  if (elem) elem->SetSelected();
 
   SetDirty();
 }
@@ -261,18 +221,10 @@ MathMLActionElement::ResetSelected()
 
   SetDirty();
 
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->ResetSelected();
+  Ptr<MathMLElement> elem = GetSelectedElement();
+  if (elem) elem->ResetSelected();
 
   selected = 0;
-}
-
-void
-MathMLActionElement::ResetLast()
-{
-  last = 0;
-  MathMLElement* elem = GetSelectedElement();
-  if (elem != NULL) elem->ResetLast();
 }
 
 void
@@ -280,7 +232,33 @@ MathMLActionElement::SetDirtyLayout(bool children)
 {
   MathMLElement::SetDirtyLayout(children);
   if (children) {
-    MathMLElement* elem = GetSelectedElement();
-    if (elem != NULL) elem->SetDirtyLayout(children);
+    Ptr<MathMLElement> elem = GetSelectedElement();
+    if (elem) elem->SetDirtyLayout(children);
   }
+}
+#endif
+
+#if 0
+void
+MathMLActionElement::SetFlagDown(Flags f)
+{
+  MathMLElement::SetFlag(f);
+  if (Ptr<MathMLElement> elem = GetSelectedElement()) elem->SetFlagDown(f);
+}
+
+void
+MathMLActionElement::ResetFlagDown(Flags f)
+{
+  MathMLElement::ResetFlag(f);
+  if (Ptr<MathMLElement> elem = GetSelectedElement()) elem->ResetFlagDown(f);
+}
+#endif
+
+Ptr<MathMLOperatorElement>
+MathMLActionElement::GetCoreOperator()
+{
+  if (Ptr<MathMLElement> elem = GetSelectedElement())
+    return elem->GetCoreOperator();
+  else
+    return 0;
 }

@@ -25,7 +25,6 @@
 
 #ifdef HAVE_LIBT1
 
-#include "Container.hh"
 #include "FontManager.hh"
 #include "FontAttributes.hh"
 
@@ -35,7 +34,6 @@ public:
   virtual ~T1_FontManager();
 
   virtual bool IsAvailable(const FontAttributes&, const ExtraFontAttributes* = 0) const;
-  void SetLogLevel(int);
 
 protected:
   int SearchNativeFontAux(const FontAttributes&,

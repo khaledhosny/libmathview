@@ -23,6 +23,8 @@
 #ifndef Configuration_hh
 #define Configuration_hh
 
+#include <vector>
+
 #if defined(HAVE_MINIDOM)
 #include <minidom.h>
 #elif defined(HAVE_GMETADOM)
@@ -32,19 +34,19 @@
 #include "scaled.hh"
 #include "String.hh"
 #include "RGBValue.hh"
-#include "Container.hh"
 
-class Configuration {
+class Configuration
+{
 public:
   Configuration(void);
   ~Configuration();
 
   bool Load(const char*);
 
-  const Container<String*>& GetDictionaries(void) const { return dictionaries; }
-  const Container<String*>& GetFonts(void) const { return fonts; }
-  const Container<String*>& GetEntities(void) const { return entities; }
-  const Container<String*>& GetT1ConfigFiles(void) const { return t1Configs; }
+  const std::vector<String*>& GetDictionaries(void) const { return dictionaries; }
+  const std::vector<String*>& GetFonts(void) const { return fonts; }
+  const std::vector<String*>& GetEntities(void) const { return entities; }
+  const std::vector<String*>& GetT1ConfigFiles(void) const { return t1Configs; }
 
   bool     HasFontSize(void) const { return fontSizeSet; }
   unsigned GetFontSize(void) const { return HasFontSize() ? fontSize : DEFAULT_FONT_SIZE; }
@@ -66,14 +68,14 @@ private:
   void ParseConfiguration(mDOMNodeRef);
   bool ParseColor(mDOMNodeRef, RGBValue&, RGBValue&);
 #elif defined(HAVE_GMETADOM)
-  void ParseConfiguration(const GMetaDOM::Element&);
-  bool ParseColor(const GMetaDOM::Element&, RGBValue&, RGBValue&);
+  void ParseConfiguration(const DOM::Element&);
+  bool ParseColor(const DOM::Element&, RGBValue&, RGBValue&);
 #endif // HAVE_GMETADOM
 
-  Container<String*> dictionaries;
-  Container<String*> fonts;
-  Container<String*> entities;
-  Container<String*> t1Configs;
+  std::vector<String*> dictionaries;
+  std::vector<String*> fonts;
+  std::vector<String*> entities;
+  std::vector<String*> t1Configs;
 
   bool     fontSizeSet;
   unsigned fontSize;

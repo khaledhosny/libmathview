@@ -21,8 +21,10 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #ifdef HAVE_WCTYPE_H
 #include <wctype.h>
 #endif
@@ -31,46 +33,42 @@
 #endif
 
 #include "AFont.hh"
-#include "Layout.hh"
 #include "frameAux.hh"
-#include "Iterator.hh"
 #include "stringAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "traverseAux.hh"
-#include "ShapeFactory.hh"
+#include "StringFactory.hh"
 #include "allocTextNode.hh"
 #include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "MathMLCharNode.hh"
+#include "MathMLCombinedCharNode.hh"
 #include "MathMLTextNode.hh"
 #include "mathVariantAux.hh"
 #include "ValueConversion.hh"
+#include "MathMLGlyphNode.hh"
 #include "MathMLSpaceNode.hh"
-#include "MathMLStringNode.hh"
+#include "MathMLTextElement.hh"
 #include "MathMLTokenElement.hh"
+#include "MathMLNumberElement.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLEmbellishedOperatorElement.hh"
+#include "MathMLIdentifierElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLTokenElement::MathMLTokenElement(mDOMNodeRef node, TagId t)
-#elif defined(HAVE_GMETADOM)
-MathMLTokenElement::MathMLTokenElement(const GMetaDOM::Element& node, TagId t)
-#endif
-  : MathMLElement(node, t)
+MathMLTokenElement::MathMLTokenElement()
 {
-  rawContentLength = 0;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLTokenElement::MathMLTokenElement(const DOM::Element& node)
+  : MathMLElement(node)
+{
+}
+#endif
 
 MathMLTokenElement::~MathMLTokenElement()
 {
-  Free();
-}
-
-void
-MathMLTokenElement::Free()
-{
-  for (Iterator<MathMLTextNode*> i(content); i.More(); i.Next()) delete i();
 }
 
 const AttributeSignature*
@@ -97,353 +95,432 @@ MathMLTokenElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
+MathMLTokenElement::SetSize(unsigned i)
+{
+  assert(i <= content.size());
+  while (i < content.size()) RemoveChild(content.size() - 1);
+  content.reserve(i);
+}
+
+Ptr<MathMLTextNode>
+MathMLTokenElement::GetChild(unsigned i) const
+{
+  assert(i < content.size());
+  return content[i];
+}
+
+void
+MathMLTokenElement::SetChild(unsigned i, const Ptr<MathMLTextNode>& child)
+{
+  assert(i < content.size());
+  assert(child);
+  if (content[i] != child)
+    {
+      assert(!child->GetParent());
+      content[i]->SetParent(0);
+      child->SetParent(this);
+      content[i] = child;
+      SetDirtyLayout();
+    }
+}
+
+void
 MathMLTokenElement::Append(const String* s)
 {
   assert(s != NULL);
 
   if (s->GetLength() == 0) return;
 
-  MathMLTextNode* last = NULL;
-  if (content.GetSize() > 0 &&
-      content.GetLast() != NULL &&
-      content.GetLast()->IsText()) {
-    last = TO_TEXT(content.GetLast());
-    assert(last != NULL);
-  }
+  Ptr<MathMLTextNode> last = 0;
+  if (GetSize() > 0 && GetChild(GetSize() - 1)->IsText())
+    {
+      last = smart_cast<MathMLTextNode>(GetChild(GetSize() - 1));
+      assert(last);
+    }
 
   unsigned i = 0;
-  bool lastBreak = true;
   unsigned sLength = s->GetLength();
-  while (i < sLength) {
-    MathMLTextNode* node = NULL;
+  while (i < sLength)
+    {
+      Ptr<MathMLTextNode> node = 0;
 
-    int spacing;
-    BreakId bid;
-    unsigned len = isNonMarkingChar(*s, i, &spacing, &bid);
-    if (len > 0) {
-      if (last != NULL && last->GetBreakability() < BREAK_YES) {
-	last->AddSpacing(spacing);
-	last->AddBreakability(bid);
-      } else
-	node = new MathMLSpaceNode(spacing, bid);
-      i += len;
-      rawContentLength += len;
-      lastBreak = true;
-    } else if (i + 1 < sLength && isCombining(s->GetChar(i + 1))) {
-      node = allocCombinedCharNode(s->GetChar(i), s->GetChar(i + 1));
-      i += 2;
-      rawContentLength++;
-
-      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
-      lastBreak = false;
+      int spacing;
+      unsigned len = isNonMarkingChar(*s, i, &spacing);
+      if (len > 0)
+	{
+	  node = MathMLSpaceNode::create(spacing);
+	  i += len;
+	} 
+      else if (i + 1 < sLength && isCombining(s->GetChar(i + 1)))
+	{
+	  node = allocCombinedCharNode(s->GetChar(i), s->GetChar(i + 1));
+	  i += 2;
 #if 0
-    } else if (iswalnum(s->GetChar(i))) {
-      unsigned start = i;
-      while (i < sLength && iswalnum(s->GetChar(i))) {
-	i++;
-	rawContentLength++;
-      }
-      assert(start < i);
+	}
+      else if (iswalnum(s->GetChar(i)))
+	{
+	  unsigned start = i;
+	  while (i < sLength && iswalnum(s->GetChar(i))) i++;
+	  assert(start < i);
 
-      const String* sText = allocString(*s, start, i - start);
-      node = allocTextNode(&sText);
-
-      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
-      lastBreak = false;
+	  const String* sText = allocString(*s, start, i - start);
+	  node = allocTextNode(&sText);
 #endif
-    } else if (!isVariant(s->GetChar(i))) {
-      node = allocCharNode(s->GetChar(i));
-      i++;
-      rawContentLength++;
-
-      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
-      lastBreak = false;
-    } else {
-      MathEngine::logger(LOG_WARNING, "ignoring variant modifier char U+%04x", s->GetChar(i));
-      i++;
-      rawContentLength++;
-    }
+	}
+      else if (!isVariant(s->GetChar(i)))
+	{
+	  node = allocCharNode(s->GetChar(i));
+	  i++;
+	}
+      else
+	{
+	  Globals::logger(LOG_WARNING, "ignoring variant modifier char U+%04x", s->GetChar(i));
+	  i++;
+	}
     
-    if (node != NULL) {
-      Append(node);
-      last = node;
+      if (node)
+	{
+	  AppendChild(node);
+	  last = node;
+	}
     }
-  }
 }
 
 void
-MathMLTokenElement::Append(MathMLTextNode* node)
+MathMLTokenElement::AppendChild(const Ptr<MathMLTextNode>& node)
 {
-  assert(node != NULL);
+  assert(node);
+  assert(!node->GetParent());
   node->SetParent(this);
-  content.Append(node);
+  content.push_back(node);
+  SetDirtyLayout();
 }
 
 void
-MathMLTokenElement::Setup(RenderingEnvironment* env)
+MathMLTokenElement::RemoveChild(unsigned i)
 {
-  assert(env != NULL);
-
-  env->Push();
-
-  if (IsA() == TAG_MTEXT || IsA() == TAG_MN) {
-    env->SetFontMode(FONT_MODE_TEXT);
-  }
-
-  const Value* value = NULL;
-
-  value = GetAttributeValue(ATTR_MATHSIZE, NULL, false);
-  if (value != NULL) {
-    if (IsSet(ATTR_FONTSIZE))
-      MathEngine::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
-    
-    if (value->IsKeyword(KW_SMALL)) env->AddScriptLevel(1);
-    else if (value->IsKeyword(KW_BIG)) env->AddScriptLevel(-1);
-    else if (value->IsKeyword(KW_NORMAL)) ; // noop
-    else env->SetFontSize(value->ToNumberUnit());
-  } else {
-    value = GetAttributeValue(ATTR_FONTSIZE, NULL, false);
-    if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
-      env->SetFontSize(value->ToNumberUnit());
-    }
-  }
-  delete value;
-  
-  value = GetAttributeValue(ATTR_MATHVARIANT, NULL, false);
-  if (value != NULL) {
-    assert(value->IsKeyword());
-
-    const MathVariantAttributes& attr = attributesOfVariant(value->ToKeyword());
-    assert(attr.kw != KW_NOTVALID);
-    env->SetFontFamily(attr.family);
-    env->SetFontWeight(attr.weight);
-    env->SetFontStyle(attr.style);
-
-    if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
-      MathEngine::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
-
-    delete value;
-  } else {
-    value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
-    if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
-      env->SetFontFamily(value->ToString());
-    }
-    delete value;
-
-    value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
-    if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
-      env->SetFontWeight(ToFontWeightId(value));
-    }
-    delete value;
-
-    value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
-    if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
-      env->SetFontStyle(ToFontStyleId(value));
-    } else if (IsA() == TAG_MI) {
-      if (rawContentLength == 1) {
-	MathMLTextNode* node = content.GetFirst();
-	assert(node != NULL);
-
-	if (node->IsChar()) {
-	  MathMLCharNode* cNode = TO_CHAR(node);
-	  assert(cNode != NULL);
-
-	  if (!isUpperCaseGreek(cNode->GetChar())) env->SetFontStyle(FONT_STYLE_ITALIC);
-	  else env->SetFontStyle(FONT_STYLE_NORMAL);
-	} else
-	  env->SetFontStyle(FONT_STYLE_NORMAL);
-      } else {
-	env->SetFontStyle(FONT_STYLE_NORMAL);
-	env->SetFontMode(FONT_MODE_TEXT);
-      }
-    }
-    delete value;
-  }
-
-  value = GetAttributeValue(ATTR_MATHCOLOR, NULL, false);
-  if (value != NULL) {
-    if (IsSet(ATTR_COLOR))
-      MathEngine::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
-    env->SetColor(ToRGB(value));
-  } else {
-    value = GetAttributeValue(ATTR_COLOR, NULL, false);
-    if (value != NULL) {
-      MathEngine::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
-      env->SetColor(ToRGB(value));
-    } else
-      if (HasLink()) env->SetColor(MathEngine::configuration.GetLinkForeground());
-  }
-  delete value;
-
-  value = GetAttributeValue(ATTR_MATHBACKGROUND, NULL, false);
-  if (value != NULL) env->SetBackgroundColor(ToRGB(value));
-  else if (HasLink()) env->SetBackgroundColor(MathEngine::configuration.GetLinkBackground());
-  delete value;
-
-  color      = env->GetColor();
-  background = env->GetBackgroundColor();
-  sppm       = env->GetScaledPointsPerEm();
-
-  for (Iterator<MathMLTextNode*> p(content); p.More(); p.Next()) {
-    assert(p() != NULL);
-    p()->Setup(env);
-  }
-
-  env->Drop();
+  assert(i < content.size());
+  content[i]->SetParent(0);
+  content.erase(content.begin() + i);
+  SetDirtyLayout();
 }
 
 void
-MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
+MathMLTokenElement::InsertChild(unsigned i, const Ptr<MathMLTextNode>& node)
 {
-  Iterator<MathMLTextNode*> i(content);
-  while (i.More()) {
-    assert(i() != NULL);
-    MathMLTextNode* text = i();
-    assert(text != NULL);
+  assert(i <= content.size());
+  assert(node);
+  assert(!node->GetParent());
+  node->SetParent(this);
+  content.insert(content.begin() + i, node);
+  SetDirtyLayout();
+}
 
-    scaled spacing = (sppm * text->GetSpacing()) / 18;
-    BreakId breakability = text->GetBreakability();
-    
-    // the breakability after the token will be set by the
-    // surrounding context
-    if (!MathEngine::LineBreaking() || i.IsLast()) breakability = BREAK_NO;
-    else if (breakability == BREAK_AUTO) breakability = BREAK_GOOD;
-    
-    // ok, we do the actual layout of the chunk only if we are
-    // doing minimum layout. In all the other cases the layout is exactly the same
-    // as the minimum layout, that we have previously done,
-    // so we save some work.
-    if (id == LAYOUT_MIN) text->DoLayout();
+void
+MathMLTokenElement::SwapChildren(std::vector< Ptr<MathMLTextNode> >& newContent)
+{
+  if (newContent != content)
+    {
+      // reset parent should be done first because the same elements
+      // may be present in the following loop as well
+      for (std::vector< Ptr<MathMLTextNode> >::iterator p = content.begin();
+	   p != content.end();
+	   p++)
+	(*p)->SetParent(0);
 
-    // if we do not insert MathMLSpaceNodes in the layout, they will not be
-    // positioned correctly, since positioning is done thru the layout.
-    // In such way, If a space node is the first inside a token, it will produce
-    // a zero-origin rectangle which is obviously incorrect
-    if (text->IsSpace()) layout.SetLastBreakability(breakability);
-    layout.Append(text, spacing, breakability);
+      for (std::vector< Ptr<MathMLTextNode> >::iterator p = newContent.begin();
+	   p != newContent.end();
+	   p++)
+	{
+	  assert(*p);
+	  (*p)->SetParent(this);
+	}
+
+      content.swap(newContent);
+
+      SetDirtyLayout();
+    }
+}
+
+void
+MathMLTokenElement::Normalize(const Ptr<class MathMLDocument>&)
+{
+  if (DirtyStructure() && GetDOMElement())
+    {
+#if defined(HAVE_GMETADOM)
+      content.clear();
+
+      String* sContent = NULL;
+      for (DOM::Node p = GetDOMElement().get_firstChild(); 
+	   p;
+	   p = p.get_nextSibling()) 
+	{
+	  switch (p.get_nodeType())
+	    {
+	    case DOM::Node::TEXT_NODE:
+	      {
+		// ok, we have a chunk of text
+		DOM::GdomeString content = p.get_nodeValue();
+		String* s = allocString(content);
+		assert(s != NULL);
+
+		// white-spaces are always collapsed...
+		s->CollapseSpaces();
+	      
+		// ...but spaces at the at the beginning (end) are deleted only if this
+		// is the very first (last) chunk in the token.
+		if (!p.get_previousSibling()) s->TrimSpacesLeft();
+		if (!p.get_nextSibling()) s->TrimSpacesRight();
+
+		Append(s);
+		delete s;
+	      }
+	    break;
+
 #if 0
-    if (!text->IsSpace())
-      layout.Append(text, spacing, breakability);
-    else {
-      layout.SetLastBreakability(breakability);
-      layout.Append(spacing, breakability);
+	    // to be rewritten or deleted
+	    case DOM::Node::ENTITY_REFERENCE_NODE:
+	      for (DOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling())
+		MathMLizeTokenContent(p, parent);
+	      break;
+#endif 0
+
+	    case DOM::Node::ELEMENT_NODE:
+	      {	    
+		if (p.get_namespaceURI() == MATHML_NS_URI)
+		  {
+		    if (nodeLocalName(p) == "mglyph")
+		      {
+			Ptr<MathMLTextNode> text = SubstituteMGlyphElement(p);
+			if (text) AppendChild(text);
+		      }
+		    else if (nodeLocalName(p) == "malignmark")
+		      {
+			Ptr<MathMLTextNode> text = SubstituteAlignMarkElement(p);
+			if (text) AppendChild(text);
+		      }
+		    else
+		      {
+			std::string s_name = nodeLocalName(p);
+			Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
+		      }
+		  } else
+		    {
+		      std::string s_name = p.get_nodeName();
+		      Globals::logger(LOG_WARNING, "element `%s' inside token (ignored)\n", s_name.c_str());
+		    }
+	      }
+	    break;
+	  
+	    default:
+	      break;
+	    }
+	}
+#endif // HAVE_GMETADOM
+
+      ResetDirtyStructure();
     }
-#endif
-
-    i.Next();
-  }
-
-  AddItalicCorrection(layout);
-
-  ResetDirtyLayout(id);
 }
 
 void
-MathMLTokenElement::Freeze()
+MathMLTokenElement::Setup(RenderingEnvironment& env)
 {
-  if (HasLayout()) MathMLElement::Freeze();
-  else {
-    if (shape != NULL) delete shape;
-    ShapeFactory shapeFactory;
-    for (Iterator<MathMLTextNode*> i(content); i.More(); i.Next()) {
-      assert(i() != NULL);
+  if (DirtyAttribute())
+    {
+      env.Push();
 
-      Rectangle* rect = new Rectangle;
-      getFrameBoundingBox(i(), LAYOUT_AUTO).ToRectangle(i()->GetX(), i()->GetY(), *rect);
-      shapeFactory.Add(rect);
-      if (i()->IsLast()) shapeFactory.SetNewRow();
+      if (!is_a<MathMLIdentifierElement>(Ptr<MathMLElement>(this)) &&
+	  !is_a<MathMLOperatorElement>(Ptr<MathMLElement>(this)))
+	env.SetFontMode(FONT_MODE_TEXT);
+
+      const Value* value = NULL;
+
+      value = GetAttributeValue(ATTR_MATHSIZE, env, false);
+      if (value != NULL) {
+	if (IsSet(ATTR_FONTSIZE))
+	  Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
+    
+	if (value->IsKeyword(KW_SMALL)) env.AddScriptLevel(1);
+	else if (value->IsKeyword(KW_BIG)) env.AddScriptLevel(-1);
+	else if (value->IsKeyword(KW_NORMAL)) ; // noop
+	else env.SetFontSize(value->ToNumberUnit());
+      } else {
+	value = GetAttributeValue(ATTR_FONTSIZE, env, false);
+	if (value != NULL) {
+	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
+	  env.SetFontSize(value->ToNumberUnit());
+	}
+      }
+      delete value;
+  
+      value = GetAttributeValue(ATTR_MATHVARIANT, env, false);
+      if (value != NULL) {
+	assert(value->IsKeyword());
+
+	const MathVariantAttributes& attr = attributesOfVariant(value->ToKeyword());
+	assert(attr.kw != KW_NOTVALID);
+	env.SetFontFamily(attr.family);
+	env.SetFontWeight(attr.weight);
+	env.SetFontStyle(attr.style);
+
+	if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+	  Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+
+	delete value;
+      } else {
+	value = GetAttributeValue(ATTR_FONTFAMILY, env, false);
+	if (value != NULL) {
+	  Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
+	  env.SetFontFamily(value->ToString());
+	}
+	delete value;
+
+	value = GetAttributeValue(ATTR_FONTWEIGHT, env, false);
+	if (value != NULL) {
+	  Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
+	  env.SetFontWeight(ToFontWeightId(value));
+	}
+	delete value;
+
+	value = GetAttributeValue(ATTR_FONTSTYLE, env, false);
+	if (value != NULL) {
+	  Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
+	  env.SetFontStyle(ToFontStyleId(value));
+	} else if (is_a<MathMLIdentifierElement>(Ptr<MathMLElement>(this))) {
+	  if (GetLogicalContentLength() == 1) {
+	    Ptr<MathMLTextNode> node = GetChild(0);
+	    assert(node);
+
+	    if (is_a<MathMLCharNode>(node)) {
+	      Ptr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(node);
+	      assert(cNode);
+
+	      if (!isUpperCaseGreek(cNode->GetChar())) env.SetFontStyle(FONT_STYLE_ITALIC);
+	      else env.SetFontStyle(FONT_STYLE_NORMAL);
+	    } else
+	      env.SetFontStyle(FONT_STYLE_NORMAL);
+	  } else {
+	    env.SetFontStyle(FONT_STYLE_NORMAL);
+	    env.SetFontMode(FONT_MODE_TEXT);
+	  }
+	}
+	delete value;
+      }
+
+      value = GetAttributeValue(ATTR_MATHCOLOR, env, false);
+      if (value != NULL) {
+	if (IsSet(ATTR_COLOR))
+	  Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
+	env.SetColor(ToRGB(value));
+      } else {
+	value = GetAttributeValue(ATTR_COLOR, env, false);
+	if (value != NULL) {
+	  Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
+	  env.SetColor(ToRGB(value));
+	} else
+	  if (HasLink()) env.SetColor(Globals::configuration.GetLinkForeground());
+      }
+      delete value;
+
+      value = GetAttributeValue(ATTR_MATHBACKGROUND, env, false);
+      if (value != NULL) env.SetBackgroundColor(ToRGB(value));
+      else if (HasLink()) env.SetBackgroundColor(Globals::configuration.GetLinkBackground());
+      delete value;
+
+      color      = env.GetColor();
+      background = env.GetBackgroundColor();
+      sppm       = env.GetScaledPointsPerEm();
+
+      for (std::vector< Ptr<MathMLTextNode> >::const_iterator p = GetContent().begin();
+	   p != GetContent().end();
+	   p++)
+	{
+	  assert(*p);
+	  (*p)->Setup(env);
+	}
+
+      env.Drop();
+
+      ResetDirtyAttribute();
     }
-    shape = shapeFactory.GetShape();
-  }
+}
+
+void
+MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
+{
+  if (DirtyLayout(ctxt))
+    {
+      box.Null();
+      for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
+	   text != GetContent().end();
+	   text++)
+	{
+	  assert(*text);
+	  if (ctxt.GetLayoutType() == LAYOUT_MIN) (*text)->DoLayout(ctxt);
+
+	  // if we do not insert MathMLSpaceNodes in the layout, they will not be
+	  // positioned correctly, since positioning is done thru the layout.
+	  // In such way, If a space node is the first inside a token, it will produce
+	  // a zero-origin rectangle which is obviously incorrect
+	  box.Append((*text)->GetBoundingBox());
+	  box.Append((sppm * (*text)->GetSpacing()) / 18);
+	}
+
+      AddItalicCorrection();
+
+      ResetDirtyLayout(ctxt);
+    }
+}
+
+void
+MathMLTokenElement::SetPosition(scaled x, scaled y)
+{
+  MathMLElement::SetPosition(x, y);
+  SetContentPosition(x, y);
+}
+
+void
+MathMLTokenElement::SetContentPosition(scaled x, scaled y)
+{
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin(); 
+       text != GetContent().end();
+       text++)
+    {
+      assert(*text);
+      (*text)->SetPosition(x, y);
+      x += (*text)->GetBoundingBox().width;
+      x += (sppm * (*text)->GetSpacing()) / 18;
+    }
 }
 
 void
 MathMLTokenElement::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
+  if (Dirty())
+    {
+      RenderBackground(area);
 
-  RenderBackground(area);
+      if (fGC[Selected()] == NULL)
+	{
+	  GraphicsContextValues values;
 
-  if (fGC[IsSelected()] == NULL) {
-    GraphicsContextValues values;
+	  values.foreground = Selected() ? area.GetSelectionForeground() : color;
+	  values.background = Selected() ? area.GetSelectionBackground() : background;
+	  fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
+	}
 
-    values.foreground = IsSelected() ? area.GetSelectionForeground() : color;
-    values.background = IsSelected() ? area.GetSelectionBackground() : background;
-    fGC[IsSelected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
-  }
+      for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
+	   text != GetContent().end();
+	   text++)
+	{
+	  assert(*text);
+	  (*text)->Render(area);
+	}
 
-  for (Iterator<MathMLTextNode*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    i()->Render(area);
-  }
+      //area.DrawRectangle(fGC[0], *shape);
 
-  //area.DrawRectangle(fGC[0], *shape);
-
-  ResetDirty();
-}
-
-void
-MathMLTokenElement::GetLinearBoundingBox(BoundingBox& b) const
-{
-  b.Null();
-  for (Iterator<MathMLTextNode*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    const BoundingBox& textBox = i()->GetBoundingBox();
-    b.Append(textBox);
-  }
-}
-
-bool
-MathMLTokenElement::IsToken() const
-{
-  return true;
-}
-
-bool
-MathMLTokenElement::IsBreakable() const
-{
-  return true;
-}
-
-BreakId
-MathMLTokenElement::GetBreakability() const
-{
-  // we have to skip some empty elements (malignmark) and get
-  // the breakability of the last text node
-
-  Iterator<MathMLTextNode*> text(content);
-  text.ResetLast();
-  while (text.More()) {
-    assert(text() != NULL);
-    if (!text()->IsMark()) break;
-    text.Prev();
-  }
-
-  return text.More() ? text()->GetBreakability() : BREAK_AUTO;
-}
-
-void
-MathMLTokenElement::SetDirty(const Rectangle* rect)
-{
-  assert(IsShaped());
-
-  dirtyBackground =
-    (GetParent() != NULL && (GetParent()->IsSelected() != IsSelected())) ? 1 : 0;
-
-  if (IsDirty()) return;
-  if (rect != NULL && !shape->Overlaps(*rect)) return;
-
-  dirty = 1;
-  SetDirtyChildren();
-
-  for (Iterator<MathMLTextNode*> text(content); text.More(); text.Next()) {
-    assert(text() != NULL);
-    text()->SetDirty(rect);
-  }
+      ResetDirty();
+    }
 }
 
 scaled
@@ -451,11 +528,14 @@ MathMLTokenElement::GetLeftEdge() const
 {
   scaled edge = 0;
 
-  for (Iterator<MathMLTextNode*> text(content); text.More(); text.Next()) {
-    assert(text() !=  NULL);
-    if (text.IsFirst()) edge = text()->GetLeftEdge();
-    else edge = scaledMin(edge, text()->GetLeftEdge());
-  }
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
+       text != GetContent().end();
+       text++)
+    {
+      assert(*text);
+      if (text == GetContent().begin()) edge = (*text)->GetLeftEdge();
+      else edge = scaledMin(edge, (*text)->GetLeftEdge());
+    }
 
   return edge;
 }
@@ -465,11 +545,14 @@ MathMLTokenElement::GetRightEdge() const
 {
   scaled edge = 0;
 
-  for (Iterator<MathMLTextNode*> text(content); text.More(); text.Next()) {
-    assert(text() !=  NULL);
-    if (text.IsFirst()) edge = text()->GetRightEdge();
-    else edge = scaledMax(edge, text()->GetRightEdge());
-  }
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
+       text != GetContent().end();
+       text++)
+    {
+      assert(*text);
+      if (text == GetContent().begin()) edge = (*text)->GetRightEdge();
+      else edge = scaledMax(edge, (*text)->GetRightEdge());
+    }
 
   return edge;
 }
@@ -477,10 +560,13 @@ MathMLTokenElement::GetRightEdge() const
 scaled
 MathMLTokenElement::GetDecimalPointEdge() const
 {
-  for (Iterator<MathMLTextNode*> text(content); text.More(); text.Next()) {
-    assert(text() != NULL);
-    if (text()->HasDecimalPoint()) return text()->GetDecimalPointEdge();
-  }
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
+       text != GetContent().end();
+       text++)
+    {
+      assert(*text);
+      if ((*text)->HasDecimalPoint()) return (*text)->GetDecimalPointEdge();
+    }
 
   return GetRightEdge();
 }
@@ -488,55 +574,142 @@ MathMLTokenElement::GetDecimalPointEdge() const
 bool
 MathMLTokenElement::IsNonMarking() const
 {
-  for (Iterator<MathMLTextNode*> text(content); text.More(); text.Next()) {
-    assert(text() != NULL);
-    if (!text()->IsSpace()) return false;
-  }
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator text = GetContent().begin();
+       text != GetContent().end();
+       text++)
+    {
+      assert(*text);
+      if (!is_a<MathMLSpaceNode>(*text)) return false;
+    }
 
   return true;
 }
 
-bool
-MathMLTokenElement::IsLast() const
-{
-  if (last != 0) return true;
-  if (content.GetSize() > 0) {
-    assert(content.GetLast() != NULL);
-    return content.GetLast()->IsLast();
-  } else
-    return false;
-}
-
-const MathMLCharNode*
+Ptr<MathMLCharNode>
 MathMLTokenElement::GetCharNode() const
 {
-  if (content.GetSize() != 1) return NULL;
+  if (GetSize() != 1) return 0;
 
-  MathMLTextNode* node = content.GetFirst();
-  assert(node != NULL);
-  if (!node->IsChar() || node->IsCombinedChar()) return NULL;
+  Ptr<MathMLTextNode> node = GetChild(0);
+  assert(node);
+  if (!is_a<MathMLCharNode>(node) || is_a<MathMLCombinedCharNode>(node)) return 0;
 
-  return TO_CHAR(node);
+  return smart_cast<MathMLCharNode>(node);
 }
 
 void
-MathMLTokenElement::AddItalicCorrection(Layout& layout)
+MathMLTokenElement::AddItalicCorrection()
 {
-  if (IsA() != TAG_MI && IsA() != TAG_MN && IsA() != TAG_MTEXT) return;
+  if (!is_a<MathMLIdentifierElement>(Ptr<MathMLElement>(this)) &&
+      !is_a<MathMLNumberElement>(Ptr<MathMLElement>(this)) &&
+      !is_a<MathMLTextElement>(Ptr<MathMLElement>(this))) return;
   
-  if (content.GetSize() == 0) return;
+  if (GetSize() == 0) return;
 
-  MathMLTextNode* lastNode = content.GetLast();
-  assert(lastNode != NULL);
+  Ptr<MathMLTextNode> lastNode = GetChild(GetSize() - 1);
+  assert(lastNode);
 
-  MathMLElement* next = findRightSibling(this);
-  if (next == NULL || next->IsA() != TAG_MO) return;
+  Ptr<MathMLElement> next = findRightSibling(this);
+  if (!next) return;
 
-  MathMLOperatorElement* op = findCoreOperator(next);
-  if (op == NULL) return;
-  if (!op->IsFence()) return;
+  Ptr<MathMLOperatorElement> coreOp = next->GetCoreOperatorTop();
+  if (!coreOp) return;
+  bool isFence = coreOp->IsFence();
+  if (!isFence) return;
 
-  const BoundingBox& box = lastNode->GetBoundingBox();
-  MathEngine::logger(LOG_DEBUG, "adding italic correction: %d %d", sp2ipx(box.rBearing), sp2ipx(box.width));
-  if (box.rBearing > box.width) layout.Append(box.rBearing - box.width);
+  const BoundingBox& lastBox = lastNode->GetBoundingBox();
+  Globals::logger(LOG_DEBUG, "adding italic correction: %d %d", sp2ipx(box.rBearing), sp2ipx(box.width));
+  if (lastBox.rBearing > lastBox.width) box.Append(lastBox.rBearing - lastBox.width);
+}
+
+Ptr<MathMLTextNode>
+MathMLTokenElement::SubstituteMGlyphElement(const DOM::Element& node)
+{
+  assert(node);
+
+  DOM::GdomeString alt        = node.getAttribute("alt");
+  DOM::GdomeString fontFamily = node.getAttribute("fontfamily");
+  DOM::GdomeString index      = node.getAttribute("index");
+
+  if (alt.empty() || fontFamily.empty() || index.empty()) {
+    Globals::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
+    return MathMLCharNode::create('?');
+  }
+
+  std::string s_index = index;
+  char* endPtr;
+  unsigned nch = strtoul(s_index.c_str(), &endPtr, 10);
+
+  if (endPtr == NULL || *endPtr != '\0') {
+    Globals::logger(LOG_WARNING, "malformed `mglyph' element (parsing error in `index' attribute)\n");
+    nch = '?';
+  }
+
+  std::string s_alt = alt;
+  std::string s_fontFamily = fontFamily;
+  Ptr<MathMLGlyphNode> glyph = MathMLGlyphNode::create(s_alt.c_str(), s_fontFamily.c_str(), nch);
+
+  return glyph;
+}
+
+Ptr<MathMLTextNode>
+MathMLTokenElement::SubstituteAlignMarkElement(const DOM::Element& node)
+{
+  assert(node);
+
+  DOM::GdomeString edge = node.getAttribute("edge");
+
+  MarkAlignType align = MARK_ALIGN_NOTVALID;
+
+  if (!edge.empty())
+    {
+      if      (edge == "left") align = MARK_ALIGN_LEFT;
+      else if (edge == "right") align = MARK_ALIGN_RIGHT;
+      else
+	{
+	  std::string s_edge = edge;
+	  Globals::logger(LOG_WARNING,
+			  "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
+			  s_edge.c_str());
+	}
+    }
+
+  return MathMLMarkNode::create(align);
+}
+
+String*
+MathMLTokenElement::GetRawContent() const
+{
+  StringFactory c;
+
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator i = GetContent().begin();
+       i != GetContent().end();
+       i++)
+    {
+      assert(*i);
+      String* s = (*i)->GetRawContent();
+      if (s != NULL)
+	{
+	  c.Append(s);
+	  delete s;
+	}
+    }
+
+  return c.Pack();
+}
+
+unsigned
+MathMLTokenElement::GetLogicalContentLength() const
+{
+  unsigned len = 0;
+
+  for (std::vector< Ptr<MathMLTextNode> >::const_iterator i = GetContent().begin();
+       i != GetContent().end();
+       i++)
+    {
+      assert(*i);
+      len += (*i)->GetLogicalContentLength();
+    }
+
+  return len;
 }

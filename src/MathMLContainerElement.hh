@@ -23,9 +23,7 @@
 #ifndef MathMLContainerElement_hh
 #define MathMLContainerElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
@@ -34,44 +32,22 @@
 // base class for every non-empty MathML container element
 class MathMLContainerElement: public MathMLElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLContainerElement(mDOMNodeRef, TagId = TAG_NOTVALID);
-#elif defined(HAVE_GMETADOM)
-  MathMLContainerElement(const GMetaDOM::Element&, TagId = TAG_NOTVALID);
+protected:
+  MathMLContainerElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLContainerElement(const DOM::Element&);
 #endif
-  virtual void Normalize(void);
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoLayout(LayoutId, Layout&);
-  virtual void DoBoxedLayout(LayoutId, BreakId = BREAK_NO, scaled = 0);
-  virtual void DoStretchyLayout(void);
-  virtual void Freeze(void);
-  virtual void Render(const DrawingArea&);
-  virtual void ReleaseGCs(void);
-  virtual bool IsContainer(void) const;
-  virtual MathMLElement* Inside(scaled, scaled);
   virtual ~MathMLContainerElement();
 
-  virtual void SetDirtyLayout(bool = false);
-  virtual void SetDirty(const Rectangle* = NULL);
-  virtual void SetSelected(void);
-  virtual void ResetSelected(void);
-  virtual void ResetLast(void);
+public:
+  virtual void Render(const DrawingArea&) = 0;
+  virtual void ReleaseGCs(void) = 0;
+  virtual Ptr<class MathMLElement> Inside(scaled, scaled) = 0;
 
-  virtual bool IsLast(void) const;
-  virtual bool IsExpanding(void) const;
-  virtual void GetLinearBoundingBox(BoundingBox&) const;
-  virtual BreakId GetBreakability(void) const;
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
+  virtual scaled GetLeftEdge(void) const = 0;
+  virtual scaled GetRightEdge(void) const = 0;
 
-  void    Append(MathMLElement*);
-
-  Container<MathMLElement*> content;
+  virtual void Replace(const Ptr<class MathMLElement>&, const Ptr<class MathMLElement>&) = 0;
 };
-
-typedef MathMLContainerElement* MathMLContainerElementPtr;
-
-#define TO_CONTAINER(object) (dynamic_cast<MathMLContainerElement*>(object))
 
 #endif // MathMLContainerElement_hh

@@ -142,32 +142,25 @@ allocString(mDOMConstStringRef str)
 #elif defined(HAVE_GMETADOM)
 
 String*
-allocString(const GMetaDOM::DOMString& str)
+allocString(const DOM::GdomeString& str)
 {
-  if (str.isNull()) return new StringC("?");
+  if (str.null()) return new StringC("?");
 
   Char big = 0;
-  for (unsigned i = 0; i < str.length(); i++)
-    if (str.at(i) > big) big = str.at(i);
+  DOM::UCS4String s4 = str;
+  for (unsigned i = 0; i < s4.length(); i++)
+    if (s4[i] > big) big = s4[i];
 
   String* res = NULL;
 
   if (isPlain(big)) {
-    unsigned length;
-    Char8* buffer = str.toUTF8(length);
-    res = new StringU<Char8>(buffer, length);
-    delete [] buffer;
+    DOM::UTF8String s = str;
+    res = new StringU<Char8>(s.data(), s.length());
   } else if (isUnicode16(big)) {
-    unsigned length;
-    Char16* buffer = str.toUTF16(length);
-    res = new StringU<Char16>(buffer, length);
-    delete [] buffer;
-  } else {
-    unsigned length;
-    Char32* buffer = str.toUnicode(length);
-    res = new StringU<Char32>(buffer, length);
-    delete [] buffer;
-  }
+    DOM::UTF16String s = str;
+    res = new StringU<Char16>(s.data(), s.length());
+  } else
+    res = new StringU<Char32>(s4.data(), s4.length());
 
   return res;
 }
@@ -185,6 +178,20 @@ allocString(const String& str, unsigned offset, unsigned length)
   if      (isPlain(big)) sValue = new StringU<Char8>(str, offset, length);
   else if (isUnicode16(big)) sValue = new StringU<Char16>(str, offset, length);
   else sValue = new StringU<Char32>(str, offset, length);
+
+  return sValue;
+}
+
+String*
+allocString(const Char* s, unsigned length)
+{
+  assert(length >= 1);
+
+  String* sValue = NULL;
+  Char big = getBiggestChar(s, length);
+  if      (isPlain(big)) sValue = new StringU<Char8>(s, length);
+  else if (isUnicode16(big)) sValue = new StringU<Char16>(s, length);
+  else sValue = new StringU<Char32>(s, length);
 
   return sValue;
 }

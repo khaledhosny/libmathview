@@ -23,26 +23,26 @@
 #ifndef MathMLNode_hh
 #define MathMLNode_hh
 
+#include "Ptr.hh"
 #include "MathMLObject.hh"
 
 class MathMLNode: public MathMLObject
 {
-public:
+protected:
   MathMLNode(void);
-  virtual bool IsNode(void) const;
   virtual ~MathMLNode();
 
-  void SetParent(class MathMLElement* p) { parent = p; }
-  class MathMLElement* GetParent(void) const { return parent; }
+public:
+  virtual void SetParent(const Ptr<class MathMLElement>&);
+  // unfortunately GetParent cannot be inline here because that would require
+  // that you can do ->ref() on the parent, which you don't unless you
+  // include MathMLElement => circular include
+  Ptr<class MathMLElement> GetParent(void) const;
 
-  virtual const class MathMLCharNode* GetCharNode(void) const;
+  virtual Ptr<class MathMLCharNode> GetCharNode(void) const;
 
 private:
-  class MathMLElement* parent;
+  Ptr<MathMLElement> parent;
 };
-
-typedef MathMLNode* MathMLNodePtr;
-
-#define TO_NODE(object) (dynamic_cast<MathMLNode*>(object))
 
 #endif // MathMLNode_hh

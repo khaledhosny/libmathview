@@ -35,8 +35,6 @@ public:
 
   virtual void Realize(void);
 
-  static bool GetKerning(void);
-  static void SetKerning(bool);
   bool GetAntiAliasing(void) const { return antiAliasing; }
   void SetAntiAliasing(bool);
   bool GetTransparency(void) const;
@@ -47,10 +45,6 @@ private:
 
   bool antiAliasing;
   int  mode;
-
-  // kerning must be static because it is required inside T1_Font to calculate the width
-  // of a string.
-  static int kerning;
 };
 
 #define TO_T1_GTK_DRAWING_AREA(area) (dynamic_cast<T1_Gtk_DrawingArea*>(area))

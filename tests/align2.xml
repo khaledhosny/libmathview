@@ -1,4 +1,4 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mtable frame="solid" rowalign="center" groupalign="{ right }" rowlines="solid">
     <mtr>
       <mtd><maligngroup/><mtext>This-is-right-aligned</mtext></mtd>

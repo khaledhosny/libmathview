@@ -24,9 +24,9 @@
 #define FontifiedString_hh
 
 #include "scaled.hh"
-#include "Container.hh"
 
-class FontifiedString {
+class FontifiedString
+{
 public:
   FontifiedString(const class String&, const class FontAttributes&, const class CharMapper&);
   ~FontifiedString();
@@ -36,13 +36,14 @@ public:
   void   Draw(scaled x, scaled y, const class DrawingArea&, const class GraphicsContext*) const;
 
 private:
-  struct Chunk {
+  struct Chunk
+  {
     unsigned length;
     const class AFont* font;
     char* data;
   };
 
-  Container<Chunk*> content;
+  std::vector<Chunk> content;
 };
 
 #endif // FontifiedString_hh

@@ -23,19 +23,29 @@
 #include <config.h>
 #include <assert.h>
 
+#include "MathMLMarkNode.hh"
+#include "MathMLTokenElement.hh"
+#include "MathMLAlignMarkElement.hh"
 #include "MathMLAlignGroupElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLAlignGroupElement::MathMLAlignGroupElement(mDOMNodeRef node) :
-#elif defined(HAVE_GMETADOM)
-MathMLAlignGroupElement::MathMLAlignGroupElement(const GMetaDOM::Element& node) :
+MathMLAlignGroupElement::MathMLAlignGroupElement()
+{
+  Init();
+}
+
+#if defined(HAVE_GMETADOM)
+MathMLAlignGroupElement::MathMLAlignGroupElement(const DOM::Element& node)
+  : MathMLElement(node)
+{
+  Init();
+}
 #endif
-  MathMLElement(node, TAG_MALIGNGROUP)
+
+void
+MathMLAlignGroupElement::Init()
 {
   width = 0;
-  decimalPoint = NULL;
-  alignMarkNode = NULL;
-  alignMarkElement = NULL;
 }
 
 MathMLAlignGroupElement::~MathMLAlignGroupElement()
@@ -43,36 +53,43 @@ MathMLAlignGroupElement::~MathMLAlignGroupElement()
 }
 
 void
-MathMLAlignGroupElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
+MathMLAlignGroupElement::DoLayout(const FormattingContext& ctxt)
 {
-  if (!HasDirtyLayout(id, availWidth)) return;
-  box.Set(width, 0, 0);
-  ConfirmLayout(id);
-  ResetDirtyLayout(id, availWidth);
+  if (DirtyLayout(ctxt))
+    {
+      box.Set(width, 0, 0);
+      ResetDirtyLayout(ctxt);
+    }
 }
 
 void
-MathMLAlignGroupElement::SetDecimalPoint(class MathMLTokenElement* token)
+MathMLAlignGroupElement::SetDecimalPoint(const Ptr<class MathMLTokenElement>& token)
 {
-  assert(token != NULL);
-  assert(decimalPoint == NULL);
+  assert(token);
+  assert(!decimalPoint);
   decimalPoint = token;
 }
 
 void
-MathMLAlignGroupElement::SetAlignmentMark(class MathMLMarkNode* mark)
+MathMLAlignGroupElement::SetAlignmentMark(const Ptr<class MathMLMarkNode>& mark)
 {
-  assert(mark != NULL);
-  assert(alignMarkNode == NULL);
+  assert(mark);
+  assert(!alignMarkNode);
   alignMarkNode = mark;
 }
 
 void
-MathMLAlignGroupElement::SetAlignmentMark(class MathMLAlignMarkElement* mark)
+MathMLAlignGroupElement::SetAlignmentMark(const Ptr<class MathMLAlignMarkElement>& mark)
 {
-  assert(mark != NULL);
-  assert(alignMarkElement == NULL);
+  assert(mark);
+  assert(!alignMarkElement);
   alignMarkElement = mark;
+}
+
+void
+MathMLAlignGroupElement::Normalize(const Ptr<class MathMLDocument>&)
+{
+  if (DirtyStructure()) ResetDirtyStructure();
 }
 
 bool

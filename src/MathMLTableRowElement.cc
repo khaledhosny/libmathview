@@ -21,27 +21,35 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <algorithm>
+
 #include <assert.h>
 #include <stddef.h>
 
-#include "Iterator.hh"
-#include "MathEngine.hh"
+#include "Adaptors.hh"
+#include "ChildList.hh"
+#include "Globals.hh"
 #include "StringUnicode.hh"
 #include "ValueConversion.hh"
+#include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLTableRowElement::MathMLTableRowElement(mDOMNodeRef node, TagId id)
-#elif defined(HAVE_GMETADOM)
-MathMLTableRowElement::MathMLTableRowElement(const GMetaDOM::Element& node, TagId id)
-#endif
-  : MathMLContainerElement(node, id)
+MathMLTableRowElement::MathMLTableRowElement()
 {
-  assert(id == TAG_MTR || id == TAG_MLABELEDTR);
   rowIndex = 0;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLTableRowElement::MathMLTableRowElement(const DOM::Element& node)
+  : MathMLLinearContainerElement(node)
+{
+  rowIndex = 0;
+}
+#endif
 
 MathMLTableRowElement::~MathMLTableRowElement()
 {
@@ -66,36 +74,33 @@ MathMLTableRowElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLTableRowElement::Normalize()
+MathMLTableRowElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
-  if (IsA() == TAG_MLABELEDTR &&
-      (content.GetSize() == 0 ||
-       (content.GetSize() > 0 &&
-	content.GetFirst() != NULL &&
-	content.GetFirst()->IsA() == TAG_MTD))) {
-    MathEngine::logger(LOG_WARNING, "`mlabeledtr' element without label (dummy label added)");
-    MathMLElement* mdummy = new MathMLDummyElement();
-    mdummy->SetParent(this);
-    content.AddFirst(mdummy);
-  }
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      if (GetDOMElement())
+	{
+	  ChildList children(GetDOMElement(), MATHML_NS_URI, "mtd");
+	  unsigned n = children.get_length();
 
-  for (unsigned i = 0; i < content.GetSize(); i++) {
-    MathMLElement* elem = content.RemoveFirst();
-    assert(elem != NULL);
+	  std::vector< Ptr<MathMLElement> > newContent;
+	  newContent.reserve(n);
+	  for (unsigned i = 0; i < n; i++)
+	    {
+	      DOM::Node node = children.item(i);
+	      Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+	      assert(elem);
+	      newContent.push_back(elem);
+	    }
+	  SwapChildren(newContent);
+	}
+#endif
+      
+      std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
 
-    // if this is a labeled row, then the first child is always the label
-    // because of normalization (see above)
-    if (elem->IsA() != TAG_MTD && (IsA() == TAG_MTR || i > 0)) {
-      MathMLTableCellElement* inferredTableCell = new MathMLTableCellElement(NULL);
-      inferredTableCell->SetParent(this);
-      inferredTableCell->content.Append(elem);
-
-      elem->SetParent(inferredTableCell);
-      elem = inferredTableCell;
+      ResetDirtyStructure();
     }
-    elem->Normalize();
-    content.Append(elem);
-  }
 }
 
 void
@@ -105,76 +110,115 @@ MathMLTableRowElement::SetupRowIndex(unsigned i)
 }
 
 void
-MathMLTableRowElement::SetupCellSpanning(RenderingEnvironment* env)
+MathMLTableRowElement::SetupCellSpanning(RenderingEnvironment& env)
 {
-  for (Iterator<MathMLElement*> p(content); p.More(); p.Next()) {
-    assert(p() != NULL);
-
-    if (IsA() == TAG_MTR || p() != content.GetFirst()) {
-      assert(p()->IsA() == TAG_MTD);
-
-      MathMLTableCellElement* mtd = TO_TABLECELL(p());
-      assert(mtd != NULL);
-
+  for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      assert(is_a<MathMLTableCellElement>(*p));
+      Ptr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(*p);
+      assert(mtd);
       mtd->SetupCellSpanning(env);
     }
-  }
 }
 
 void
-MathMLTableRowElement::Setup(RenderingEnvironment* env)
+MathMLTableRowElement::Setup(RenderingEnvironment& env)
 {
-  assert(GetParent() != NULL);
-  MathMLTableElement* mtable = TO_TABLE(GetParent());
-  assert(mtable != NULL);
-
-  const Value* value;
-
-  value = GetAttributeValue(ATTR_COLUMNALIGN, NULL, false);
-  if (value != NULL) mtable->SetupColumnAlignAux(value, rowIndex, 1, IsA() == TAG_MLABELEDTR);
-
-  value = GetAttributeValue(ATTR_ROWALIGN, NULL, false);
-  if (value != NULL) mtable->SetupRowAlignAux(value, rowIndex, IsA() == TAG_MLABELEDTR);
-
-  value = GetAttributeValue(ATTR_GROUPALIGN, NULL, false);
-  if (value != NULL) mtable->SetupGroupAlignAux(value, rowIndex, 1);
-
-  MathMLContainerElement::Setup(env);
+  SetupAux(env, false);
 }
 
+void
+MathMLTableRowElement::SetupAux(RenderingEnvironment& env, bool labeledRow)
+{
+#if 0
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+#endif
+      assert(GetParent());
+      Ptr<MathMLTableElement> mtable = smart_cast<MathMLTableElement>(GetParent());
+      assert(mtable);
+
+      const Value* value;
+
+      value = GetAttributeValue(ATTR_COLUMNALIGN, false);
+      if (value != 0) mtable->SetupColumnAlignAux(value, rowIndex, 1, labeledRow);
+
+      value = GetAttributeValue(ATTR_ROWALIGN, false);
+      if (value != 0) mtable->SetupRowAlignAux(value, rowIndex, labeledRow);
+
+      value = GetAttributeValue(ATTR_GROUPALIGN, false);
+      if (value != 0) mtable->SetupGroupAlignAux(value, rowIndex, 1);
+
+      MathMLLinearContainerElement::Setup(env);
+      ResetDirtyAttribute();
+#if 0
+    }
+#endif
+}
+
+#if 0
 void
 MathMLTableRowElement::SetDirty(const Rectangle* rect)
 {
-  // this function is needed because a table row does not have a
+  // this method is needed because a table row does not have a
   // valid shape, its sole purpose is to call recursively SetDirty on
   // its children
-  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-    assert(elem() != NULL);
-    elem()->SetDirty(rect);
-  }
+  std::for_each(content.begin(), content.end(), std::bind2nd(SetDirtyAdaptor(), rect));
 }
+#endif
 
 bool
 MathMLTableRowElement::IsInside(scaled x, scaled y) const
 {
   // same arguments as for the SetDirty method above
-  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-    assert(elem() != NULL);
-    if (elem()->IsInside(x, y)) return true;
-  }
+  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+       elem != content.end();
+       elem++)
+    {
+      assert(*elem);
+      if ((*elem)->IsInside(x, y)) return true;
+    }
 
   return false;
 }
 
-MathMLElement*
+Ptr<MathMLElement>
 MathMLTableRowElement::GetLabel(void) const
 {
-  if (IsA() != TAG_MLABELEDTR) return NULL;
-
-  assert(content.GetSize() > 0);
-  assert(content.GetFirst() != NULL);
-  assert(content.GetFirst()->IsA() != TAG_MTD);
-
-  return content.GetFirst();
+  return 0;
 }
 
+void
+MathMLTableRowElement::SetDirtyStructure()
+{
+  assert(GetParent());
+  assert(is_a<MathMLTableElement>(GetParent()));
+  Ptr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
+  assert(table);
+  table->SetDirtyStructure();
+  MathMLLinearContainerElement::SetDirtyStructure();
+}
+
+void
+MathMLTableRowElement::SetDirtyAttribute()
+{
+  assert(GetParent());
+  assert(is_a<MathMLTableElement>(GetParent()));
+  Ptr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
+  assert(table);
+  table->SetDirtyAttribute();
+  MathMLLinearContainerElement::SetDirtyAttribute();
+}
+
+void
+MathMLTableRowElement::SetDirtyLayout()
+{
+  assert(GetParent());
+  assert(is_a<MathMLTableElement>(GetParent()));
+  Ptr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
+  assert(table);
+  table->SetDirtyLayout();
+  MathMLLinearContainerElement::SetDirtyLayout();
+}

@@ -26,11 +26,11 @@
 #include "MathMLAttribute.hh"
 #include "UnitValue.hh"
 #include "RGBValue.hh"
-#include "String.hh"
 
 #define TEMP_BUFFER_SIZE 128
 
-class StringTokenizer {
+class StringTokenizer
+{
 public:
   StringTokenizer(const String&);
   ~StringTokenizer();

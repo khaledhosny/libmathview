@@ -23,43 +23,53 @@
 #ifndef MathMLTableRowElement_hh
 #define MathMLTableRowElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLContainerElement.hh"
+#include "MathMLLinearContainerElement.hh"
 
-class MathMLTableRowElement: public MathMLContainerElement
+class MathMLTableRowElement
+  : public MathMLLinearContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLTableRowElement(mDOMNodeRef, TagId = TAG_MTR);
-#elif defined(HAVE_GMETADOM)
-  MathMLTableRowElement(const GMetaDOM::Element&, TagId = TAG_MTR);
+protected:
+  MathMLTableRowElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLTableRowElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(void);
-  virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLTableRowElement();
 
-  virtual void SetDirty(const Rectangle*);
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLTableRowElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLTableRowElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
+  
+  //virtual void SetDirty(const Rectangle*);
   virtual bool IsInside(scaled, scaled) const;
 
-  MathMLElement* GetLabel(void) const;
+  virtual Ptr<MathMLElement> GetLabel(void) const;
 
   friend class MathMLTableElement;
 
+  virtual void SetDirtyStructure(void);
+  virtual void SetDirtyAttribute(void);
+  virtual void SetDirtyLayout(void);
+
 protected:
-  void SetupCellSpanning(RenderingEnvironment*);
-  void SetupGroupAlign(RenderingEnvironment*);
+  void SetupAux(RenderingEnvironment&, bool);
+  void SetupCellSpanning(RenderingEnvironment&);
+  void SetupGroupAlign(RenderingEnvironment&);
   void SetupRowIndex(unsigned);
 
 private:
   unsigned rowIndex;
 };
-
-#define TO_TABLEROW(object) (dynamic_cast<MathMLTableRowElement*>(object))
 
 #endif // MathMLTableRowElement_hh

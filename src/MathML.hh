@@ -23,7 +23,6 @@
 #ifndef MathML_hh
 #define MathML_hh
 
-#include "DocumentElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignGroupElement.hh"
 #include "MathMLAlignMarkElement.hh"
@@ -37,6 +36,7 @@
 #include "MathMLFencedElement.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLGlyphNode.hh"
+#include "MathMLIdentifierElement.hh"
 #include "MathMLMarkNode.hh"
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLNode.hh"
@@ -52,11 +52,11 @@
 #include "MathMLSpaceElement.hh"
 #include "MathMLSpaceNode.hh"
 #include "MathMLStringLitElement.hh"
-#include "MathMLStringNode.hh"
 #include "MathMLStyleElement.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
+#include "MathMLLabeledTableRowElement.hh"
 #include "MathMLTextElement.hh"
 #include "MathMLTextNode.hh"
 #include "MathMLTokenElement.hh"
@@ -64,4 +64,3 @@
 #include "MathMLmathElement.hh"
 
 #endif // MathML_hh
-

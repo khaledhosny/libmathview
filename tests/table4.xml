@@ -1,4 +1,4 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <!-- example of a table with missing cells -->
   <mtable rowlines="solid" frame="solid" columnlines="solid">
     <mtr>

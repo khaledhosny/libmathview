@@ -24,7 +24,7 @@
 #include <assert.h>
 
 #include "unidefs.h"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "CharMapper.hh"
 #include "MathMLElement.hh"
 #include "MathMLHorizBarNode.hh"
@@ -41,14 +41,13 @@ MathMLHorizBarNode::~MathMLHorizBarNode()
 }
 
 void
-MathMLHorizBarNode::Setup(RenderingEnvironment* env)
+MathMLHorizBarNode::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
-  thickness = env->GetRuleThickness();
+  thickness = env.GetRuleThickness();
 }
 
 void
-MathMLHorizBarNode::DoLayout()
+MathMLHorizBarNode::DoLayout(const FormattingContext&)
 {
   box.Set(0, thickness / 2, thickness - thickness / 2);
 }
@@ -69,14 +68,9 @@ MathMLHorizBarNode::DoHorizontalStretchyLayout(scaled desiredSize, bool)
 void
 MathMLHorizBarNode::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
-
-  assert(GetParent() != NULL);
+  assert(GetParent());
   const GraphicsContext* gc = GetParent()->GetForegroundGC();
-
   area.Clear(gc, GetX(), GetY() - box.descent, box.width, box.GetHeight());
-
-  ResetDirty();
 }
 
 bool

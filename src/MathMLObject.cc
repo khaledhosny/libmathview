@@ -22,17 +22,18 @@
 
 #include <config.h>
 
+#include <assert.h>
 #include <stdio.h>
 
 #include "MathMLObject.hh"
 
-unsigned MathMLObject::indentLevel = 0;
 #ifdef DEBUG
 int MathMLObject::counter = 0;
 #endif
 
 MathMLObject::MathMLObject()
 {
+  refCounter = 1;
 #ifdef DEBUG
   counter++;
 #endif
@@ -40,103 +41,20 @@ MathMLObject::MathMLObject()
 
 MathMLObject::~MathMLObject()
 {
+  assert(refCounter == 0);
 #ifdef DEBUG
   counter--;
 #endif
 }
 
 void
-MathMLObject::PrintIndentation() const
+MathMLObject::ref() const
 {
-  for (unsigned i = 0; i < indentLevel; i++) putchar(' ');
+  refCounter++;
 }
 
-bool
-MathMLObject::IsNode() const
+void
+MathMLObject::unref() const
 {
-  return false;
-}
-
-bool
-MathMLObject::IsText() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsString() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsChar() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsStretchyChar() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsCombinedChar() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsSpace() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsElement() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsToken() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsContainer() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsDocument() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsOperator() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsEmbellishedOperator() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsBreakable() const
-{
-  return false;
-}
-
-bool
-MathMLObject::IsMark() const
-{
-  return false;
+  if (--refCounter == 0) delete this;
 }

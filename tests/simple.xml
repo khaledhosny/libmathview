@@ -1,5 +1,5 @@
 <document>
-  <math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
     <mtext>ciao da luca Padovani, questa e' una prova per vedere se l'andata a capo funziona</mtext>
     <mtext fontsize="150%">questa e' una stringa leggermente piu' grande</mtext>
     <mstyle fontweight="bold">

@@ -36,14 +36,14 @@ static GtkWidget* window;
 static GtkWidget* main_area;
 static GtkWidget* scrolled_area;
 static GtkWidget* status_bar;
-static GtkMenuItem* kerning_item;
 static GtkMenuItem* anti_aliasing_item;
 static GtkMenuItem* transparency_item;
-static GtkMenuItem* font_size_item;
 static GdkCursor* normal_cursor;
 static GdkCursor* link_cursor;  
 
 static gchar* doc_name = NULL;
+static GdomeElement* first_selected = NULL;
+static GdomeElement* root_selected = NULL;
 
 static guint statusbar_context;
 
@@ -52,34 +52,36 @@ static GtkWidget* get_main_menu(void);
 static void file_open(GtkWidget*, gpointer);
 static void file_re_open(GtkWidget*, gpointer);
 static void file_close(GtkWidget*, gpointer);
-static void options_font_size(GtkWidget*, guint);
 static void options_font_manager(GtkWidget*, FontManagerId);
+static void options_set_font_size(GtkWidget*, gpointer);
+static void options_change_font_size(GtkWidget*, gboolean);
 static void options_verbosity(GtkWidget*, guint);
-static void options_kerning(GtkWidget*, gpointer);
 static void options_anti_aliasing(GtkWidget*, gpointer);
 static void options_transparency(GtkWidget*, gpointer);
+static void selection_delete(GtkWidget*, gpointer);
+static void selection_parent(GtkWidget*, gpointer);
+static void selection_reset(GtkWidget*, gpointer);
 static void help_about(GtkWidget*, gpointer);
-static void export_to_ps(GtkWidget*);
 
 static GtkItemFactoryEntry menu_items[] = {
-  { "/_File",                         NULL,         NULL,          0, "<Branch>" },
-  { "/File/_Open...",                 "<control>O", file_open,     0, NULL },
-  { "/File/_Reopen",                  NULL,         file_re_open,  0, NULL },
-  { "/File/_Export to PostScript...", NULL,         export_to_ps,  0, NULL },
-  { "/File/_Close",                   "<control>W", file_close,    0, NULL },
-  { "/File/sep1",                     NULL,         NULL,          0, "<Separator>" },
-  { "/File/_Quit",                    "<control>Q", gtk_main_quit, 0, NULL },
+  { "/_File",                          NULL,         NULL,          0, "<Branch>" },
+  { "/File/_Open...",                  "<control>O", file_open,     0, NULL },
+  { "/File/_Reopen",                   NULL,         file_re_open,  0, NULL },
+  { "/File/_Close",                    "<control>W", file_close,    0, NULL },
+  { "/File/sep1",                      NULL,         NULL,          0, "<Separator>" },
+  { "/File/_Quit",                     "<control>Q", gtk_main_quit, 0, NULL },
+
+  { "/_Selection",                     NULL, NULL,                  0,  "<Branch>" },
+  { "/Selection/Reset",                NULL, selection_reset,       0, NULL },
+  { "/Selection/Delete",               NULL, selection_delete,      0, NULL },
+  { "/Selection/Select Parent",        NULL, selection_parent,      0, NULL },
 
   { "/_Options",                       NULL, NULL,                  0,  "<Branch>" },
   { "/Options/Default _Font Size",     NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Default Font Size/8pt",  NULL, options_font_size,     8,  "<RadioItem>" },
-  { "/Options/Default Font Size/10pt", NULL, options_font_size,     10, "/Options/Default Font Size/8pt" },
-  { "/Options/Default Font Size/12pt", NULL, options_font_size,     12, "/Options/Default Font Size/8pt" },
-  { "/Options/Default Font Size/14pt", NULL, options_font_size,     14, "/Options/Default Font Size/8pt" },
-  { "/Options/Default Font Size/18pt", NULL, options_font_size,     18, "/Options/Default Font Size/8pt" },
-  { "/Options/Default Font Size/24pt", NULL, options_font_size,     24, "/Options/Default Font Size/8pt" },
-  { "/Options/Default Font Size/48pt", NULL, options_font_size,     48, "/Options/Default Font Size/8pt" },
-  { "/Options/Default Font Size/72pt", NULL, options_font_size,     72, "/Options/Default Font Size/8pt" },
+  { "/Options/Default Font Size/Set...", NULL, options_set_font_size, 0,  NULL },
+  { "/Options/Default Font Size/sep1", NULL, NULL,                  0,  "<Separator>" },
+  { "/Options/Default Font Size/Larger", "<control>2", options_change_font_size, TRUE, NULL },
+  { "/Options/Default Font Size/Smaller", "<control>1", options_change_font_size, FALSE, NULL },
   { "/Options/Font Manager",           NULL, NULL,                  0,  "<Branch>" },
   { "/Options/Font Manager/_GTK",      NULL, options_font_manager,  FONT_MANAGER_GTK, "<RadioItem>" },
   { "/Options/Font Manager/_Type 1",   NULL, options_font_manager,  FONT_MANAGER_T1, "/Options/Font Manager/GTK" },
@@ -89,7 +91,6 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Verbosity/_Info",        NULL, options_verbosity,     2,  "/Options/Verbosity/Errors" },
   { "/Options/Verbosity/_Debug",       NULL, options_verbosity,     3,  "/Options/Verbosity/Errors" },
   { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>" },
-  { "/Options/_Kerning",               NULL, options_kerning,       0,  "<ToggleItem>" },
   { "/Options/_Anti Aliasing",         NULL, options_anti_aliasing, 0,  "<ToggleItem>" },
   { "/Options/_Transparency",          NULL, options_transparency,  0,  "<ToggleItem>" },
 
@@ -148,8 +149,6 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
 
   normal_cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
   link_cursor = gdk_cursor_new(GDK_HAND2);
-  
-  GUI_set_font_manager(FONT_MANAGER_GTK);
 }
 
 void
@@ -168,7 +167,7 @@ GUI_load_document(const char* name)
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  if (!gtk_math_view_load(math_view, name)) {
+  if (!gtk_math_view_load_uri(math_view, name)) {
     load_error_msg(name);
     return -1;
   }
@@ -224,18 +223,21 @@ GUI_set_font_manager(FontManagerId id)
 
   math_view = GTK_MATH_VIEW(main_area);
 
+  gtk_math_view_freeze(math_view);
+
   if (id != gtk_math_view_get_font_manager_type(math_view))
     gtk_math_view_set_font_manager_type(math_view, id);
 
-  gtk_widget_set_sensitive(kerning_item, t1);
   gtk_widget_set_sensitive(anti_aliasing_item, t1);
   gtk_widget_set_sensitive(transparency_item, t1);
 
-  if (t1) {
-    gtk_math_view_set_kerning(math_view, GTK_CHECK_MENU_ITEM(kerning_item)->active);
-    gtk_math_view_set_anti_aliasing(math_view, GTK_CHECK_MENU_ITEM(anti_aliasing_item)->active);
-    gtk_math_view_set_transparency(math_view, GTK_CHECK_MENU_ITEM(transparency_item)->active);
-  }
+  if (t1)
+    {
+      gtk_math_view_set_anti_aliasing(math_view, GTK_CHECK_MENU_ITEM(anti_aliasing_item)->active);
+      gtk_math_view_set_transparency(math_view, GTK_CHECK_MENU_ITEM(transparency_item)->active);
+    }
+
+  gtk_math_view_thaw(math_view);
 }
 
 static void
@@ -284,19 +286,6 @@ file_open(GtkWidget* widget, gpointer data)
 }
 
 static void
-options_font_size(GtkWidget* widget, guint size)
-{
-  GtkMathView* math_view;
-
-  g_return_if_fail(main_area != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(main_area));
-
-  math_view = GTK_MATH_VIEW(main_area);
-
-  gtk_math_view_set_font_size(math_view, size);
-}
-
-static void
 options_font_manager(GtkWidget* widget, FontManagerId id)
 {
   g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
@@ -308,13 +297,6 @@ options_anti_aliasing(GtkWidget* widget, gpointer data)
 {
   gboolean aa = gtk_math_view_get_anti_aliasing(GTK_MATH_VIEW(main_area));
   gtk_math_view_set_anti_aliasing(GTK_MATH_VIEW(main_area), !aa);
-}
-
-static void
-options_kerning(GtkWidget* widget, gpointer data)
-{
-  gboolean k = gtk_math_view_get_kerning(GTK_MATH_VIEW(main_area));
-  gtk_math_view_set_kerning(GTK_MATH_VIEW(main_area), !k);
 }
 
 static void
@@ -331,6 +313,50 @@ options_verbosity(GtkWidget* widget, guint level)
 }
 
 static void
+selection_delete(GtkWidget* widget, gpointer data)
+{
+  if (root_selected != NULL)
+    {
+      GdomeException exc;
+      gtk_math_view_freeze(GTK_MATH_VIEW(main_area));
+      printf("about to remove element %p\n", root_selected);
+      delete_element(root_selected);
+      gdome_el_unref(root_selected, &exc);
+      g_assert(exc == 0);
+      root_selected = NULL;
+      gtk_math_view_thaw(GTK_MATH_VIEW(main_area));
+    }
+}
+
+static void
+selection_parent(GtkWidget* widget, gpointer data)
+{
+  if (root_selected != NULL)
+    {
+      GdomeException exc = 0;
+      GdomeElement* parent = gdome_n_parentNode(root_selected, &exc);
+      g_assert(exc == 0);
+      gdome_el_unref(root_selected, &exc);
+      g_assert(exc == 0);
+      root_selected = parent;
+      gtk_math_view_select(GTK_MATH_VIEW(main_area), root_selected);
+    }
+}
+
+static void
+selection_reset(GtkWidget* widget, gpointer data)
+{
+  if (root_selected != NULL)
+    {
+      GdomeException exc = 0;
+      gtk_math_view_unselect(GTK_MATH_VIEW(main_area), root_selected);
+      gdome_el_unref(root_selected, &exc);
+      g_assert(exc == 0);
+      root_selected = NULL;
+    }
+}
+
+static void
 help_about(GtkWidget* widget, gpointer data)
 {
   GtkWidget* dialog;
@@ -338,7 +364,7 @@ help_about(GtkWidget* widget, gpointer data)
   GtkWidget* ok;
 
   dialog = gtk_dialog_new();
-  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2001 Luca Padovani    \n");
+  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2003 Luca Padovani    \n");
   ok = gtk_button_new_with_label("Close");
 
   gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
@@ -352,173 +378,201 @@ help_about(GtkWidget* widget, gpointer data)
 }
 
 static void
-export_filename(GtkFileSelection* selector, GtkWidget* user_data)
+change_default_font_size(GtkSpinButton* widget, GtkSpinButton* spin)
 {
-  FILE* f;
-  GtkMathView* math_view;
-  gchar* selected_filename;
-  
-  selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
-
-  math_view = GTK_MATH_VIEW(main_area);
-
-  f = fopen(selected_filename, "wt");
-  gtk_math_view_export_to_postscript(math_view,
-				     (21 * SCALED_POINTS_PER_CM) / SCALED_POINTS_PER_PX,
-				     (29 * SCALED_POINTS_PER_CM) / SCALED_POINTS_PER_PX,
-				     SCALED_POINTS_PER_IN / SCALED_POINTS_PER_PX,
-				     SCALED_POINTS_PER_IN / SCALED_POINTS_PER_PX,
-				     FALSE,
-				     f);
-  fclose(f);
+  g_return_if_fail(spin != NULL);
+  gtk_math_view_set_font_size( GTK_MATH_VIEW(main_area), gtk_spin_button_get_value_as_int(spin));
 }
 
 static void
-export_to_ps_get_file_name(GtkWidget* widget)
+options_change_font_size(GtkWidget* widget, gboolean larger)
 {
-  GtkWidget* fs = gtk_file_selection_new("Export to PostScript");
-
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
-		      "clicked", GTK_SIGNAL_FUNC (export_filename), (gpointer) fs);
-                             
-  /* Ensure that the dialog box is destroyed when the user clicks a button. */
-     
-  gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
-			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
-			     (gpointer) fs);
-
-  gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION(fs)->cancel_button),
-			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
-			     (gpointer) fs);
-     
-  /* Display that dialog */
-     
-  gtk_widget_show (fs);
+  gfloat size = gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area));
+  if (larger) size = size / 0.71;
+  else size = size * 0.71;
+  if (size < 1) size = 1;
+  gtk_math_view_set_font_size (GTK_MATH_VIEW(main_area), (gint) size + 0.5);
 }
 
 static void
-export_to_ps(GtkWidget* widget)
+options_set_font_size(GtkWidget* widget, gpointer data)
 {
-  export_to_ps_get_file_name(widget);
-#if 0
-  static GList* items = NULL;
-
   GtkWidget* dialog;
-  GtkWidget* tmp;
-
-  if (items == NULL) {
-    items = g_list_append(items, "A4");
-    items = g_list_append(items, "A5");
-  }
+  GtkWidget* label;
+  GtkWidget* ok;
+  GtkWidget* cancel;
+  GtkWidget* spin;
+  GtkObject* adj;
 
   dialog = gtk_dialog_new();
-  tmp = gtk_label_new("Paper size");
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
-  tmp = gtk_combo_new();
-  gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
-#if 0
-  tmp = gtk_check_button_new_with_label("Disable Colors");
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), tmp);
-#endif
+  label = gtk_label_new("Default font size:");
+  ok = gtk_button_new_with_label("OK");
+  cancel = gtk_button_new_with_label("Cancel");
 
-  tmp = gtk_button_new_with_label("OK");
-  gtk_signal_connect_object(GTK_OBJECT(tmp), "clicked", GTK_SIGNAL_FUNC(export_to_ps_get_file_name), dialog);
-  gtk_signal_connect_object(GTK_OBJECT(tmp), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), dialog);
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), tmp);
-  tmp = gtk_button_new_with_label("Cancel");
-  gtk_signal_connect_object(GTK_OBJECT(tmp), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), dialog);
-  gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), tmp);
+  adj = gtk_adjustment_new (gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area)), 1, 200, 1, 1, 1);
+  spin = gtk_spin_button_new (GTK_ADJUSTMENT(adj), 1, 0);
+  gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spin), TRUE);
 
-  gtk_widget_show_all(dialog);
-#endif
+  gtk_signal_connect (GTK_OBJECT (ok), "clicked",
+		      GTK_SIGNAL_FUNC (change_default_font_size), (gpointer) spin);
+
+  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+
+  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+
+  gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+
+  gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 5);
+
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), ok);
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), cancel);
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), spin);
+
+  gtk_widget_show_all (dialog);
 }
 
-#if defined(HAVE_MINIDOM)
+#if defined(HAVE_GMETADOM)
 static void
-element_changed(GtkMathView* math_view, mDOMNodeRef node)
+element_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-
-  while (node != NULL && !mdom_node_has_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI))
-    node = mdom_node_get_parent(node);
-
-  if (node != NULL && mdom_node_has_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI))
-    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
-  else
-    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, normal_cursor);
-}
-#elif defined(HAVE_GMETADOM)
-static void
-element_changed(GtkMathView* math_view, GdomeElement* node)
-{
-  GdomeException exc;
-  GdomeDOMString* name;
-  GdomeDOMString* ns_uri;
+  GdomeDOMString* link = NULL;
 
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 
-  name = gdome_str_mkref("href");
-  ns_uri = gdome_str_mkref(XLINK_NS_URI);
+  printf("*** element_over signal: %p %x\n", elem, state);
 
-  while (node != NULL && !gdome_el_hasAttributeNS(node, ns_uri, name, &exc))
-    node = gdome_cast_el(gdome_el_parentNode(node, &exc));
-
-  if (node != NULL && gdome_el_hasAttributeNS(node, ns_uri, name, &exc))
+  link = find_hyperlink(elem, XLINK_NS_URI, "href");
+  if (link != NULL)
     gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
   else
     gdk_window_set_cursor(GTK_WIDGET(math_view)->window, normal_cursor);
 
-  gdome_str_unref(name);
-  gdome_str_unref(ns_uri);
+  if (link != NULL)
+    gdome_str_unref(link);
 }
-#endif
 
 static void
-#if defined(HAVE_MINIDOM)
-action_changed(GtkMathView* math_view, mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-action_changed(GtkMathView* math_view, GdomeElement* node)
-#endif
+select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+
+  printf("*** select_begin signal: %p %x\n", elem, state);
+  
+  if (elem != NULL)
+    {
+      GdomeException exc = 0;
+
+      g_assert(first_selected == NULL);
+      gdome_el_ref(elem, &exc);
+      g_assert(exc == 0);
+
+      gtk_math_view_freeze(math_view);
+
+      if (root_selected != NULL)
+	{
+	  gtk_math_view_unselect(math_view, root_selected);
+	  gdome_el_unref(root_selected, &exc);
+	  g_assert(exc == 0);
+	  root_selected = NULL;
+	}
+
+      first_selected = root_selected = elem;
+
+      if (root_selected != NULL)
+	{
+	  gtk_math_view_select(math_view, root_selected);
+	  gdome_el_ref(root_selected, &exc);
+	  g_assert(exc == 0);
+	}
+
+      gtk_math_view_thaw(math_view);
+    }
 }
 
 static void
-#if defined(HAVE_MINIDOM)
-selection_changed(GtkMathView* math_view, mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-selection_changed(GtkMathView* math_view, GdomeElement* node)
-#endif
+select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  gtk_math_view_set_selection(math_view, node);
+
+  printf("*** select_over signal: %p %x\n", elem, state);
+
+  if (first_selected != NULL && elem != NULL)
+    {
+      GdomeException exc = 0;
+
+      gtk_math_view_freeze(math_view);
+
+      if (root_selected != NULL)
+	{
+	  gtk_math_view_unselect(math_view, root_selected);
+	  gdome_el_unref(root_selected, &exc);
+	  g_assert(exc == 0);
+	  root_selected = NULL;
+	}
+
+      root_selected = find_common_ancestor(first_selected, elem);
+/*       printf("selecting root %p\n", first, last, root_selected); */
+      gtk_math_view_select(math_view, root_selected);
+      g_assert(exc == 0);
+
+      gtk_math_view_thaw(math_view);
+    }
 }
 
-#if defined(HAVE_MINIDOM)
 static void
-clicked(GtkMathView* math_view, gpointer user_data)
+select_end(GtkMathView* math_view, GdomeElement* elem, gint state)
 {
-  mDOMNodeRef p = gtk_math_view_get_element(math_view);
-  while (p != NULL && !mdom_node_has_attribute_ns(p, DOM_CONST_STRING("href"), XLINK_NS_URI))
-    p = mdom_node_get_parent(p);
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 
-  if (p != NULL) {
-    mDOMStringRef href = mdom_node_get_attribute_ns(p, DOM_CONST_STRING("href"), XLINK_NS_URI);
-    g_assert(href != NULL);
+  printf("*** select_end signal: %p %x\n", elem, state);
 
-    GUI_load_document(C_CONST_STRING(href));
-    mdom_string_free(href);
-  } else if (gtk_math_view_get_action(math_view) != NULL)
-    gtk_math_view_action_toggle(math_view);
+  if (first_selected != NULL)
+    {
+      GdomeException exc = 0;
+      gdome_el_unref(first_selected, &exc);
+      g_assert(exc == 0);
+      first_selected = NULL;
+    }
 }
-#elif defined(HAVE_GMETADOM)
+
 static void
-clicked(GtkMathView* math_view, gpointer user_data)
+select_abort(GtkMathView* math_view)
+{
+  GdomeException exc = 0;
+
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+
+  printf("*** select_abort signal\n");
+
+  if (first_selected != NULL)
+    {
+      gdome_el_unref(first_selected, &exc);
+      g_assert(exc == 0);
+      first_selected = NULL;
+    }
+
+  if (root_selected != NULL)
+    {
+      gtk_math_view_freeze(math_view);
+      gtk_math_view_unselect(math_view, root_selected);
+      gtk_math_view_thaw(math_view);
+      gdome_el_unref(root_selected, &exc);
+      g_assert(exc == 0);
+      root_selected = NULL;
+    }
+}
+
+static void
+click(GtkMathView* math_view, GdomeElement* elem, gint state)
 {
   GdomeException exc;
   GdomeDOMString* name;
@@ -527,23 +581,42 @@ clicked(GtkMathView* math_view, gpointer user_data)
 
   g_return_if_fail(math_view != NULL);
 
-  name = gdome_str_mkref("href");
-  ns_uri = gdome_str_mkref(XLINK_NS_URI);
+  printf("*** click signal: %p %x\n", elem, state);
 
-  p = gtk_math_view_get_element(math_view);
-  while (p != NULL && !gdome_el_hasAttributeNS(p, ns_uri, name, &exc))
-    p = gdome_cast_el(gdome_el_parentNode(p, &exc));
+  if (elem != NULL)
+    {
+      GdomeElement* action;
+      GdomeDOMString* href = find_hyperlink(elem, XLINK_NS_URI, "href");
+      if (href != NULL)
+	{
+/* 	  printf("hyperlink %s\n", href->str); */
+	  gdome_str_unref(href);
+	}
 
-  if (p != NULL) {
-    GdomeDOMString* href = gdome_el_getAttributeNS(p, ns_uri, name, &exc);
-    g_assert(href != NULL);
+      action = find_self_or_ancestor(elem, MATHML_NS_URI, "maction");
+/*       printf("action? %p\n", action); */
+      if (action != NULL)
+	{
+	  gtk_math_view_freeze(math_view);
+	  action_toggle(action);
+	  gtk_math_view_thaw(math_view);
+	  gdome_el_unref(action, &exc);
+	  g_assert(exc == 0);
+	  return;
+	}
+    }
 
-    GUI_load_document(href->str);
-    gdome_str_unref(href);
-  } else if (gtk_math_view_get_action(math_view) != NULL)
-    gtk_math_view_action_toggle(math_view);
+  if (root_selected != NULL)
+    {
+      gtk_math_view_freeze(math_view);
+      gtk_math_view_unselect(math_view, root_selected);
+      gtk_math_view_thaw(math_view);
+      gdome_el_unref(root_selected, &exc);
+      g_assert(exc == 0);
+      root_selected = NULL;
+    }
 }
-#endif
+#endif // HAVE_GMETADOM
 
 static void
 create_widget_set()
@@ -564,20 +637,33 @@ create_widget_set()
   gtk_widget_show(main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "selection_changed", GTK_SIGNAL_FUNC (selection_changed),
+			     "select_begin", GTK_SIGNAL_FUNC (select_begin),
 			     (gpointer) main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "element_changed", GTK_SIGNAL_FUNC (element_changed),
+			     "select_over", GTK_SIGNAL_FUNC (select_over),
 			     (gpointer) main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area),
-			     "action_changed", GTK_SIGNAL_FUNC (action_changed),
+			     "select_end", GTK_SIGNAL_FUNC (select_end),
+			     (gpointer) main_area);
+
+  gtk_signal_connect_object (GTK_OBJECT (main_area),
+			     "select_abort", GTK_SIGNAL_FUNC (select_abort),
+			     (gpointer) main_area);
+
+  gtk_signal_connect_object (GTK_OBJECT (main_area),
+			     "element_over", GTK_SIGNAL_FUNC (element_over),
 			     (gpointer) main_area);
 
   gtk_signal_connect_object (GTK_OBJECT (main_area), 
-			     "clicked", GTK_SIGNAL_FUNC(clicked),
+			     "click", GTK_SIGNAL_FUNC(click),
 			     (gpointer) main_area);
+
+  gtk_widget_add_events(GTK_WIDGET(main_area),
+			GDK_BUTTON_PRESS_MASK
+			| GDK_BUTTON_RELEASE_MASK
+			| GDK_POINTER_MOTION_MASK);
 
   scrolled_area = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
@@ -595,11 +681,6 @@ create_widget_set()
 
   if (gtk_math_view_get_anti_aliasing(GTK_MATH_VIEW(main_area)))
     gtk_menu_item_activate(anti_aliasing_item);
-
-  if (gtk_math_view_get_kerning(GTK_MATH_VIEW(main_area)))
-    gtk_menu_item_activate(kerning_item);
-
-  gtk_menu_item_activate(font_size_item);
 }
 
 GtkWidget*
@@ -619,20 +700,11 @@ get_main_menu()
 
   gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
-  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Kerning");
-  kerning_item = GTK_MENU_ITEM(menu_item);
-
   menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Anti Aliasing");
   anti_aliasing_item = GTK_MENU_ITEM(menu_item);
 
   menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Transparency");
   transparency_item = GTK_MENU_ITEM(menu_item);
-
-  /* !!!BEWARE!!! the default font size must be kept aligned with the definition
-   * in math-engine-configuration.xml
-   */
-  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Default Font Size/12pt");
-  font_size_item = GTK_MENU_ITEM(menu_item);
 
   return gtk_item_factory_get_widget(item_factory, "<main>");
 }

@@ -131,16 +131,13 @@ T1_Font::CharBox(char ch, BoundingBox& box) const
 void
 T1_Font::StringBox(const char* s, unsigned len, BoundingBox& box) const
 {
-  int sw = T1_GetStringWidth(nativeFontId, const_cast<char*>(s), len, 0, T1_Gtk_DrawingArea::GetKerning() ? T1_KERNING : 0);
-  BBox stringBox = T1_GetStringBBox(nativeFontId, const_cast<char*>(s), len, 0, T1_Gtk_DrawingArea::GetKerning() ? T1_KERNING : 0);
+  int sw = T1_GetStringWidth(nativeFontId, const_cast<char*>(s), len, 0, 0);
+  BBox stringBox = T1_GetStringBBox(nativeFontId, const_cast<char*>(s), len, 0, 0);
   box.Set(pt2sp(scale * sw / 1000.0),
 	  pt2sp(scale * stringBox.ury / 1000.0),
        	  pt2sp(scale * (-stringBox.lly) / 1000.0),
 	  pt2sp(scale * stringBox.llx / 1000.0),
 	  pt2sp(scale * stringBox.urx / 1000.0));
-
-  box.tAscent = GetAscent();
-  box.tDescent = GetDescent();
 }
 
 #endif // HAVE_LIBT1

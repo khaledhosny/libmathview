@@ -23,17 +23,22 @@
 #ifndef MathMLAttributeList_hh
 #define MathMLAttributeList_hh
 
-#include "MathMLAttribute.hh"
-#include "Container.hh"
+#include <vector>
 
-class MathMLAttributeList : public Container<MathMLAttribute*>
+#include "MathMLAttribute.hh"
+
+class MathMLAttributeList
 {
 public:
   MathMLAttributeList(void);
   ~MathMLAttributeList();
 
+  void Append(MathMLAttribute*);
   MathMLAttribute* GetAttribute(AttributeId) const;
   bool Equal(const MathMLAttributeList&) const;
+
+private:
+  std::vector<MathMLAttribute*> content;
 };
 
 #endif // MathMLAttributeList_hh

@@ -27,16 +27,20 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLEncloseElement::MathMLEncloseElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLEncloseElement::MathMLEncloseElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLNormalizingContainerElement(node, TAG_MENCLOSE)
+MathMLEncloseElement::MathMLEncloseElement()
 {
   normalized = false;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLEncloseElement::MathMLEncloseElement(const DOM::Element& node)
+  : MathMLNormalizingContainerElement(node)
+{
+  normalized = false;
+}
+#endif
 
 MathMLEncloseElement::~MathMLEncloseElement()
 {
@@ -57,113 +61,131 @@ MathMLEncloseElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLEncloseElement::NormalizeRadicalElement()
+MathMLEncloseElement::NormalizeRadicalElement(const Ptr<MathMLDocument>& doc)
 {
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
+  assert(GetChild());
 
-  MathMLElement* child = content.RemoveFirst();
+  Ptr<MathMLRadicalElement> sqrt = smart_cast<MathMLRadicalElement>(MathMLRadicalElement::create());
+  assert(sqrt);
 
-  MathMLContainerElement* sqrt = new MathMLRadicalElement(NULL, TAG_MSQRT);
-  sqrt->content.Append(child);
-  child->SetParent(sqrt);
-  sqrt->SetParent(this);
-  sqrt->Normalize();
-
-  content.Append(sqrt);
+  Ptr<MathMLElement> oldChild = GetChild();
+  SetChild(0);
+  sqrt->SetRadicand(oldChild);
+  SetChild(sqrt);
+  sqrt->Normalize(doc);
 }
 
 void
-MathMLEncloseElement::Setup(RenderingEnvironment* env)
+MathMLEncloseElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
-  assert(env != NULL);
-
-  const Value* value = GetAttributeValue(ATTR_NOTATION, env);
-  assert(value != NULL);
-  if (value->IsKeyword(KW_LONGDIV)) notation = NOTATION_LONGDIV;
-  else if (value->IsKeyword(KW_ACTUARIAL)) notation = NOTATION_ACTUARIAL;
-  else if (value->IsKeyword(KW_RADICAL)) notation = NOTATION_RADICAL;
-  else assert(IMPOSSIBLE);
-  delete value;
-
-  spacing = env->ToScaledPoints(env->GetMathSpace(MATH_SPACE_MEDIUM));
-  lineThickness = env->GetRuleThickness();
-  color = env->GetColor();
-
-  if (!normalized) {
-    if (notation == NOTATION_RADICAL) NormalizeRadicalElement();
-    normalized = true;
-  }
-
-  MathMLContainerElement::Setup(env);
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      if (normalized && GetDOMElement() &&
+	  GetChild() && is_a<MathMLRadicalElement>(GetChild()) && !GetChild()->GetParent())
+	{
+	  // this must be an inferred msqrt element
+	  Ptr<MathMLRadicalElement> inferredSqrt = smart_cast<MathMLRadicalElement>(GetChild());
+	  assert(inferredSqrt);
+	  SetChild(inferredSqrt->GetRadicand());
+	}
+#endif
+      normalized = false;
+      MathMLNormalizingContainerElement::Normalize(doc);
+    }
 }
 
 void
-MathMLEncloseElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
+MathMLEncloseElement::Setup(RenderingEnvironment& env)
 {
-  if (!HasDirtyLayout(id, availWidth)) return;
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      const Value* value = GetAttributeValue(ATTR_NOTATION, env);
+      assert(value != NULL);
+      if (value->IsKeyword(KW_LONGDIV)) notation = NOTATION_LONGDIV;
+      else if (value->IsKeyword(KW_ACTUARIAL)) notation = NOTATION_ACTUARIAL;
+      else if (value->IsKeyword(KW_RADICAL)) notation = NOTATION_RADICAL;
+      else assert(IMPOSSIBLE);
+      delete value;
+      
+      spacing = env.ToScaledPoints(env.GetMathSpace(MATH_SPACE_MEDIUM));
+      lineThickness = env.GetRuleThickness();
+      color = env.GetColor();
+      
+      if (!normalized)
+	{
+	  if (notation == NOTATION_RADICAL) NormalizeRadicalElement(env.GetDocument());
+	  normalized = true;
+	}
 
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
+      MathMLNormalizingContainerElement::Setup(env);
 
-  MathMLNormalizingContainerElement::DoBoxedLayout(id, BREAK_NO, availWidth);
-  box = content.GetFirst()->GetBoundingBox();
+      ResetDirtyAttribute();
+    }
+}
 
-  if (notation != NOTATION_RADICAL) {
-    box = content.GetFirst()->GetBoundingBox();
-    box.ascent += spacing + lineThickness;
-    box.width += spacing + lineThickness;
-  }
+void
+MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
+{
+  if (DirtyLayout(ctxt))
+    {
+      assert(child);
 
-  ConfirmLayout(id);
+      MathMLNormalizingContainerElement::DoLayout(ctxt);
+      box = child->GetBoundingBox();
 
-  ResetDirtyLayout(id, availWidth);
+      if (notation != NOTATION_RADICAL)
+	{
+	  box = child->GetBoundingBox();
+	  box.ascent += spacing + lineThickness;
+	  box.width += spacing + lineThickness;
+	}
+
+      ResetDirtyLayout(ctxt);
+    }
 }
 
 void
 MathMLEncloseElement::SetPosition(scaled x, scaled y)
 {
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
+  assert(child);
 
   position.x = x;
   position.y = y;
 
   if (notation == NOTATION_RADICAL)
-    content.GetFirst()->SetPosition(x, y);
+    child->SetPosition(x, y);
   else {
     if (notation == NOTATION_LONGDIV)
-      content.GetFirst()->SetPosition(x + spacing + lineThickness, y);
+      child->SetPosition(x + spacing + lineThickness, y);
     else
-      content.GetFirst()->SetPosition(x, y);
+      child->SetPosition(x, y);
   }
 }
 
 void
 MathMLEncloseElement::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
+  if (Dirty())
+    {
+      MathMLNormalizingContainerElement::Render(area);
 
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
+      if (fGC[Selected()] == NULL) {
+	GraphicsContextValues values;
+	values.foreground = Selected() ? area.GetSelectionForeground() : color;
+	fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND);
+      }
 
-  MathMLNormalizingContainerElement::Render(area);
+      if (notation == NOTATION_LONGDIV) {
+	area.MoveTo(GetX() + lineThickness / 2, GetY() + box.descent);
+	area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
+	area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.ascent + lineThickness / 2);
+      } else if (notation == NOTATION_ACTUARIAL) {
+	area.MoveTo(GetX(), GetY() - box.ascent + lineThickness / 2);
+	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
+	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.descent);
+      }
 
-  if (fGC[IsSelected()] == NULL) {
-    GraphicsContextValues values;
-    values.foreground = IsSelected() ? area.GetSelectionForeground() : color;
-    fGC[IsSelected()] = area.GetGC(values, GC_MASK_FOREGROUND);
-  }
-
-  if (notation == NOTATION_LONGDIV) {
-    area.MoveTo(GetX() + lineThickness / 2, GetY() + box.descent);
-    area.DrawLineTo(fGC[IsSelected()], GetX() + lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
-    area.DrawLineTo(fGC[IsSelected()], GetX() + box.width, GetY() - box.ascent + lineThickness / 2);
-  } else if (notation == NOTATION_ACTUARIAL) {
-    area.MoveTo(GetX(), GetY() - box.ascent + lineThickness / 2);
-    area.DrawLineTo(fGC[IsSelected()], GetX() + box.width - lineThickness / 2, GetY() - box.ascent + lineThickness / 2);
-    area.DrawLineTo(fGC[IsSelected()], GetX() + box.width - lineThickness / 2, GetY() + box.descent);
-  }
-
-  ResetDirty();
+      ResetDirty();
+    }
 }

@@ -32,7 +32,7 @@ namespace GdomeSmartDOM {
 bool
 nodeIsBlank(const Node& node)
 {
-  assert(node != 0);
+  assert(node);
 
   switch (node.get_nodeType()) {
   case Node::COMMENT_NODE:
@@ -40,8 +40,8 @@ nodeIsBlank(const Node& node)
 
   case Node::TEXT_NODE:
     {
-      DOMString content = node.get_nodeValue();
-      return content.isEmpty();
+      GdomeString content = node.get_nodeValue();
+      return content.empty();
     }
 
   default:
@@ -49,16 +49,16 @@ nodeIsBlank(const Node& node)
   }
 }
 
-DOMString
+GdomeString
 elementValue(const Element& elem)
 {
-  DOMString res = "";
+  GdomeString res = "";
 
-  for (Node p = elem.get_firstChild(); p != 0; p = p.get_nextSibling()) {
+  for (Node p = elem.get_firstChild(); p; p = p.get_nextSibling()) {
     switch (p.get_nodeType()) {
     case Node::CDATA_SECTION_NODE:
     case Node::TEXT_NODE:
-      res += p.get_nodeValue();
+      res = res + p.get_nodeValue();
       break;
     default:
       break;
@@ -66,6 +66,14 @@ elementValue(const Element& elem)
   }
 
   return res;
+}
+
+GdomeString
+nodeLocalName(const Node& node)
+{
+  assert(node);
+  if (!node.get_namespaceURI().null()) return node.get_localName();
+  else return node.get_nodeName();
 }
 
 }

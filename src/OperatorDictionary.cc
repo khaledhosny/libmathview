@@ -24,9 +24,8 @@
 #include <assert.h>
 
 #include "keyword.hh"
-#include "Iterator.hh"
 #include "stringAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLParseFile.hh"
 #include "OperatorDictionary.hh"
@@ -52,12 +51,12 @@ getAttribute(mDOMNodeRef node, const char* attr, MathMLAttributeList* aList)
 #elif defined(HAVE_GMETADOM)
 
 void
-getAttribute(const GMetaDOM::Element& node, const char* attr, MathMLAttributeList* aList)
+getAttribute(const DOM::Element& node, const char* attr, MathMLAttributeList* aList)
 {
   assert(aList != NULL);
 
-  GMetaDOM::DOMString attrVal = node.getAttribute(attr);
-  if (attrVal.isEmpty()) return;
+  DOM::GdomeString attrVal = node.getAttribute(attr);
+  if (attrVal.empty()) return;
 
   MathMLAttribute* attribute =
     new MathMLAttribute(AttributeIdOfName(attr), allocString(attrVal));
@@ -89,13 +88,13 @@ OperatorDictionary::Load(const char* fileName)
   mDOMNodeRef root = mdom_doc_get_root_node(doc);
   if (root == NULL) {
     mdom_doc_free(doc);
-    MathEngine::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
+    Globals::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
     return false;
   }
 
   if (!mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("dictionary"))) {
     mdom_doc_free(doc);
-    MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
+    Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
     return false;
   }
 
@@ -107,7 +106,7 @@ OperatorDictionary::Load(const char* fileName)
       mDOMStringRef opName = mdom_node_get_attribute(op, DOM_CONST_STRING("name"));
       if (opName != NULL) {
 	const String* opString = allocString(opName);
-	MathMLAttributeList* def = new MathMLAttributeList;
+	MathMLAttributeList* defaults = new MathMLAttributeList;
 
 	getAttribute(op, "form", def);
 	getAttribute(op, "fence", def);
@@ -127,20 +126,16 @@ OperatorDictionary::Load(const char* fileName)
 	getAttribute(op, "movablelimits", def);
 	getAttribute(op, "accent", def);
 
-	const MathMLAttributeList* defaults = AlreadyDefined(*def);
-	if (defaults == NULL) defaults = def;
-	else delete def;
-
 	OperatorDictionaryItem* item = new OperatorDictionaryItem;
 	item->name     = opString;
 	item->defaults = defaults;
 
 	items.AddFirst(item);
       } else {
-	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
+	Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
       }
     } else if (!mdom_node_is_blank(op)) {
-      MathEngine::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName,
+      Globals::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName,
 			 C_CONST_STRING(mdom_node_get_name(op)));
     }
   }
@@ -156,67 +151,80 @@ bool
 OperatorDictionary::Load(const char* fileName)
 {
   try {
-    GMetaDOM::Document doc = MathMLParseFile(fileName, true);
+    DOM::Document doc = MathMLParseFile(fileName, true);
 
-    GMetaDOM::Element root = doc.get_documentElement();
-    if (root == 0) {
-      MathEngine::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
+    DOM::Element root = doc.get_documentElement();
+    if (!root) {
+      Globals::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
       return false;
     }
 
     if (root.get_nodeName() != "dictionary") {
-      MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
+      Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
       return false;
     }
 
-    for (GMetaDOM::Node op = root.get_firstChild(); op != 0; op = op.get_nextSibling()) {
-      if (op.get_nodeType() == GMetaDOM::Node::ELEMENT_NODE && op.get_nodeName() == "operator") {
-	GMetaDOM::Element elem = op;
-	GMetaDOM::DOMString opName = elem.getAttribute("name");
+    for (DOM::Node op = root.get_firstChild(); op; op = op.get_nextSibling()) {
+      if (op.get_nodeType() == DOM::Node::ELEMENT_NODE && op.get_nodeName() == "operator") {
+	DOM::Element elem = op;
+	DOM::GdomeString opName = elem.getAttribute("name");
 
-	if (!opName.isEmpty()) {
+	if (!opName.empty()) {
 	  const String* opString = allocString(opName);
-	  MathMLAttributeList* def = new MathMLAttributeList;
+	  MathMLAttributeList* defaults = new MathMLAttributeList;
 
-	  getAttribute(op, "form", def);
-	  getAttribute(op, "fence", def);
-	  getAttribute(op, "separator", def);
-	  getAttribute(op, "lspace", def);
-	  getAttribute(op, "rspace", def);
-#ifdef ENABLE_EXTENSIONS
-	  getAttribute(op, "tspace", def);
-	  getAttribute(op, "bspace", def);
+	  getAttribute(op, "form", defaults);
+	  getAttribute(op, "fence", defaults);
+	  getAttribute(op, "separator", defaults);
+	  getAttribute(op, "lspace", defaults);
+	  getAttribute(op, "rspace", defaults);
+#if defined(ENABLE_EXTENSIONS)
+	  getAttribute(op, "tspace", defaults);
+	  getAttribute(op, "bspace", defaults);
 #endif // ENABLE_EXTENSIONS
-	  getAttribute(op, "stretchy", def);
-	  getAttribute(op, "direction", def);
-	  getAttribute(op, "symmetric", def);
-	  getAttribute(op, "maxsize", def);
-	  getAttribute(op, "minsize", def);
-	  getAttribute(op, "largeop", def);
-	  getAttribute(op, "movablelimits", def);
-	  getAttribute(op, "accent", def);
+	  getAttribute(op, "stretchy", defaults);
+	  getAttribute(op, "direction", defaults);
+	  getAttribute(op, "symmetric", defaults);
+	  getAttribute(op, "maxsize", defaults);
+	  getAttribute(op, "minsize", defaults);
+	  getAttribute(op, "largeop", defaults);
+	  getAttribute(op, "movablelimits", defaults);
+	  getAttribute(op, "accent", defaults);
 
-	  const MathMLAttributeList* defaults = AlreadyDefined(*def);
-	  if (defaults == NULL) defaults = def;
-	  else delete def;
-
-	  OperatorDictionaryItem* item = new OperatorDictionaryItem;
-	  item->name     = opString;
-	  item->defaults = defaults;
-
-	  items.AddFirst(item);
+	  FormDefaults& formDefaults = items[opString];
+	  if (elem.getAttribute("form") == "prefix")
+	    if (formDefaults.prefix)
+	      Globals::logger(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
+			      opString->ToStaticC());
+	    else
+	      formDefaults.prefix = defaults;
+	  else if (elem.getAttribute("form") == "infix")
+	    if (formDefaults.prefix)
+	      Globals::logger(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
+			      opString->ToStaticC());
+	    else
+	      formDefaults.infix = defaults;
+	  else if (elem.getAttribute("form") == "postfix")
+	    if (formDefaults.prefix)
+	      Globals::logger(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
+			      opString->ToStaticC());
+	    else
+	      formDefaults.postfix = defaults;
+	  else
+	    Globals::logger(LOG_WARNING, 
+			    "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
+			    opString->ToStaticC());
 	} else {
-	  MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
+	  Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
 	}
-      } else if (!GMetaDOM::nodeIsBlank(op)) {
-	char* s_name = op.get_nodeName().toC();
-	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName, s_name);
-	delete [] s_name;
+      } else if (!DOM::nodeIsBlank(op)) {
+	std::string s_name = op.get_nodeName();
+	Globals::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName, s_name.c_str());
       }
     }
 
     return true;
-  } catch (GMetaDOM::DOMException) {
+  } catch (DOM::DOMException) {
     return false;
   }
 }
@@ -226,26 +234,12 @@ OperatorDictionary::Load(const char* fileName)
 void
 OperatorDictionary::Unload()
 {
-  while (defaults.GetSize() > 0) {
-    const MathMLAttributeList* aList = defaults.RemoveFirst();
-    delete aList;
-  }
-
-  while (items.GetSize() > 0) {
-    OperatorDictionaryItem* item = items.RemoveFirst();
-    delete item;
-  }
-}
-
-const MathMLAttributeList*
-OperatorDictionary::AlreadyDefined(const MathMLAttributeList& def) const
-{
-  for (Iterator<const MathMLAttributeList*> i(defaults); i.More(); i.Next()) {
-    assert(i() != NULL);
-    if (i()->Equal(def)) return i();
-  }
-
-  return NULL;
+  while (items.begin() != items.end())
+    {
+      const String* key = (*items.begin()).first;
+      items.erase(key);
+      delete key;
+    }
 }
 
 void
@@ -254,27 +248,24 @@ OperatorDictionary::Search(const String* opName,
 			   const MathMLAttributeList** infix,
 			   const MathMLAttributeList** postfix) const
 {
-  assert(opName != NULL);
-  assert(prefix != NULL && infix != NULL && postfix != NULL);
+  assert(opName != 0);
+  assert(prefix != 0 && infix != 0 && postfix != 0);
 
-  *prefix = *infix = *postfix = NULL;
+  *prefix = *infix = *postfix = 0;
 
-  for (Iterator<OperatorDictionaryItem*> p(items); p.More(); p.Next()) {
-    assert(p() != NULL);
-    assert(p()->name != NULL);
-    assert(p()->defaults != NULL);
-
-    if (p()->name->Equal(*opName)) {
-      const MathMLAttribute* attribute = p()->defaults->GetAttribute(ATTR_FORM);
-      if (attribute != NULL && attribute->GetValue() != NULL) {
-	const String* form = attribute->GetValue();
-	if (*prefix == NULL && form->Equal("prefix")) *prefix = p()->defaults;
-	else if (*infix == NULL && form->Equal("infix")) *infix = p()->defaults;
-	else if (*postfix == NULL && form->Equal("postfix")) *postfix = p()->defaults;
-      } else
-	MathEngine::logger(LOG_WARNING, 
-			   "entry for `%s' in operator dictionary has no mandatory `form' attribute",
-			   p()->name->ToStaticC());
+  Dictionary::const_iterator p = items.find(opName);
+  if (p != items.end())
+    {
+      assert((*p).first != 0);
+      *prefix = (*p).second.prefix;
+      *infix = (*p).second.infix;
+      *postfix = (*p).second.postfix;
     }
-  }
+}
+
+OperatorDictionary::FormDefaults::~FormDefaults()
+{
+  delete prefix;
+  delete infix;
+  delete postfix;
 }

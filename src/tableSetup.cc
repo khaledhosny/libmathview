@@ -24,64 +24,115 @@
 
 #include <assert.h>
 #include <stddef.h>
-#include <stdio.h>
 
-#include "Array.hh"
-#include "Iterator.hh"
+#include <vector>
+
 #include "ValueConversion.hh"
 #include "MathMLTableElement.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLTableCellElement.hh"
+#include "MathMLLabeledTableRowElement.hh"
 
 void
-MathMLTableElement::Setup(RenderingEnvironment* env)
+MathMLTableElement::Setup(RenderingEnvironment& env)
 {
-  ReleaseAuxStructures();
-  assert(env != NULL);
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      color = env.GetColor();
+      lineThickness = env.GetRuleThickness();
 
-  SetupCellSpanning(env);
-  CalcTableSize();
-  SetupCells();
+      ReleaseAuxStructures();
 
-  SetupAlignmentScopes(env);
-  SetupColumns(env);
-  SetupColumnAlign(env);
+      SetupCellSpanning(env);
+      CalcTableSize();
+      SetupCells();
 
-  SetupRows(env);
-  SetupRowAlign(env);
+      SetupAlignmentScopes(env);
+      SetupColumns(env);
+      SetupColumnAlign(env);
 
-  SetupGroups();
-  SetupGroupAlign(env);
+      SetupRows(env);
+      SetupRowAlign(env);
 
-  SetupTableAttributes(env);
-  SetupLabels();
-  MathMLContainerElement::Setup(env);
-  SetupAlignMarks();
+      SetupGroups();
+      SetupGroupAlign(env);
+
+      SetupTableAttributes(env);
+      SetupLabels();
+      MathMLLinearContainerElement::Setup(env);
+      SetupAlignMarks();
 
 #if 0
-  for (unsigned i = 0; i < nRows; i++)
-    for (unsigned j = 0; j < nColumns; j++) {
-      printf("(%d,%d) rowAlign: %d columnAlign: %d\n", i, j, cell[i][j].rowAlign, cell[i][j].columnAlign);
-    }
+      for (unsigned i = 0; i < nRows; i++)
+	for (unsigned j = 0; j < nColumns; j++) {
+	  printf("(%d,%d) rowAlign: %d columnAlign: %d\n", i, j, cell[i][j].rowAlign, cell[i][j].columnAlign);
+	}
 #endif
-
-  color = env->GetColor();
-  lineThickness = env->GetRuleThickness();
+      ResetDirtyAttribute();
+    }
 }
 
 void
-MathMLTableElement::SetupCellSpanning(RenderingEnvironment* env)
+MathMLTableElement::SetupCellSpanning(RenderingEnvironment& env)
 {
-  for (Iterator<MathMLElement*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    assert(i()->IsA() == TAG_MTR || i()->IsA() == TAG_MLABELEDTR);
+  for (std::vector< Ptr<MathMLElement> >::const_iterator i = GetContent().begin();
+       i != GetContent().end();
+       i++)
+    {
+      assert(*i);
+      assert(is_a<MathMLTableRowElement>(*i));
 
-    MathMLTableRowElement* mtr = TO_TABLEROW(i());
-    assert(mtr != NULL);
+      Ptr<MathMLTableRowElement> mtr = smart_cast<MathMLTableRowElement>(*i);
+      assert(mtr);
 
-    mtr->SetupCellSpanning(env);
-  }
+      mtr->SetupCellSpanning(env);
+    }
 }
+
+// BEGIN OF PRIVATE CLASS
+class TempRow {
+public:
+  TempRow(void)
+  {
+    first = 0;
+  }
+
+  void AddSpanningCell(unsigned j, unsigned n = 1)
+  {
+    assert(n >= 1);
+
+    if (j + n > content.size()) content.resize(j + n, false);
+    for (unsigned k = 0; k < n; k++) content[j + k] = true;
+  }
+
+  unsigned AddCell(unsigned n)
+  {
+    assert(n >= 1);
+
+    unsigned j = first;
+    unsigned k = 0;
+    while (k < n && j < content.size()) {
+      for (k = 0; k < n && j + k < content.size() && !content[j + k]; k++) ;
+      if (k < n) j += k + 1;
+    }
+
+    if (j >= content.size()) content.resize(j + n, false);
+    for (k = 0; k < n; k++) content[j + k] = true;
+    first = j + n;
+
+    return j;
+  }
+
+  unsigned GetColumns(void) const
+  {
+    return (first > content.size()) ? first : content.size();
+  }
+
+private:
+  unsigned first;
+  std::vector<bool> content;
+};
+// END OF PRIVATE CLASS
 
 // CalcTableSize: requires normalization and spanning attributes
 // compute total number of rows and columns within this table
@@ -90,96 +141,55 @@ MathMLTableElement::CalcTableSize()
 {
   unsigned i;
 
-  nRows = content.GetSize();
+  nRows = GetSize();
   nColumns = 0;
 
   if (nRows == 0) return;
 
-  class TempRow {
-  public:
-    TempRow(void)
-    {
-      first = 0;
-    }
-
-    void AddSpanningCell(unsigned j, unsigned n = 1)
-    {
-      assert(n >= 1);
-
-      if (j + n > content.GetSize()) content.SetSize(j + n, false);
-      for (unsigned k = 0; k < n; k++) content.Set(j + k, true);
-    }
-
-    unsigned AddCell(unsigned n)
-    {
-      assert(n >= 1);
-
-      unsigned j = first;
-      unsigned k = 0;
-      while (k < n && j < content.GetSize()) {
-	for (k = 0; k < n && j + k < content.GetSize() && !content.Get(j + k); k++) ;
-	if (k < n) j += k + 1;
-      }
-
-      if (j >= content.GetSize()) content.SetSize(j + n, false);
-      for (k = 0; k < n; k++) content.Set(j + k, true);
-      first = j + n;
-
-      return j;
-    }
-
-    unsigned GetColumns(void) const
-    {
-      return (first > content.GetSize()) ? first : content.GetSize();
-    }
-
-  private:
-    unsigned    first;
-    Array<bool> content;
-  };
-
-
-  TempRow* r = new TempRow[nRows];
+  std::vector<TempRow> r(nRows);
 
   i = 0;
-  for (Iterator<MathMLElement*> p(content); p.More(); p.Next()) {
-    assert(i < nRows);
-    assert(p() != NULL);
-    assert(p()->IsA() == TAG_MTR || p()->IsA() == TAG_MLABELEDTR);
+  for (std::vector< Ptr<MathMLElement> >::const_iterator p = GetContent().begin();
+       p != GetContent().end();
+       p++)
+    {
+      assert(*p);
+      assert(is_a<MathMLTableRowElement>(*p));
 
-    MathMLTableRowElement* mtr = TO_TABLEROW(p());
-    assert(mtr != NULL);
+      Ptr<MathMLTableRowElement> mtr = smart_cast<MathMLTableRowElement>(*p);
+      assert(mtr);
 
-    Iterator<MathMLElement*> q(mtr->content);
-    if (mtr->IsA() == TAG_MLABELEDTR) {
-      assert(q.More());
-      q.Next();
+      std::vector< Ptr<MathMLElement> >::const_iterator q = mtr->GetContent().begin();
+      if (is_a<MathMLLabeledTableRowElement>(mtr))
+	{
+	  assert(q != mtr->GetContent().end());
+	  q++;
+	}
+
+      while (q != mtr->GetContent().end())
+	{
+	  assert(*q);
+	  assert(is_a<MathMLTableCellElement>(*q));
+
+	  Ptr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(*q);
+	  assert(mtd);
+
+	  unsigned j = r[i].AddCell(mtd->GetColumnSpan());
+
+	  for (unsigned k = 1; k < mtd->GetRowSpan(); k++)
+	    {
+	      r[i + k].AddSpanningCell(j, mtd->GetColumnSpan());
+	    }
+
+	  mtd->SetupCellPosition(i, j, nRows);
+
+	  q++;
+	}
+
+      i++;
     }
-
-    while (q.More()) {
-      assert(q() != NULL);
-      assert(q()->IsA() == TAG_MTD);
-
-      MathMLTableCellElement* mtd = TO_TABLECELL(q());
-      assert(mtd != NULL);
-
-      unsigned j = r[i].AddCell(mtd->GetColumnSpan());
-
-      for (unsigned k = 1; i + k < nRows && k < mtd->GetRowSpan(); k++) {
-	r[i + k].AddSpanningCell(j, mtd->GetColumnSpan());
-      }
-
-      mtd->SetupCellPosition(i, j, nRows);
-
-      q.Next();
-    }
-
-    i++;
-  }
 
   for (i = 0; i < nRows; i++) if (r[i].GetColumns() > nColumns) nColumns = r[i].GetColumns();
-
-  delete [] r;
 }
 
 // create a matrix of TableCells for easy access to the table's elements
@@ -189,74 +199,62 @@ MathMLTableElement::SetupCells()
   if (nRows == 0 || nColumns == 0) return;
 
   cell = new TableCellPtr[nRows];
-  for (unsigned i = 0; i < nRows; i++) {
-    cell[i] = new TableCell[nColumns];
+  for (unsigned i = 0; i < nRows; i++) cell[i] = new TableCell[nColumns];
 
-    for (unsigned j = 0; j < nColumns; j++) {
-      cell[i][j].mtd = NULL;
-      cell[i][j].rowSpan = 0;
-      cell[i][j].colSpan = 0;
-      cell[i][j].spanned = false;
-      // following init is necessary (see SetupColumnAlign)
-      cell[i][j].columnAlign = COLUMN_ALIGN_NOTVALID;
-    }
-  }
+  for (std::vector< Ptr<MathMLElement> >::const_iterator p = GetContent().begin();
+       p != GetContent().end();
+       p++)
+    {
+      assert(*p);
+      assert(is_a<MathMLTableRowElement>(*p));
 
-  for (Iterator<MathMLElement*> p(content); p.More(); p.Next()) {
-    assert(p() != NULL);
-    assert(p()->IsA() == TAG_MTR || p()->IsA() == TAG_MLABELEDTR);
+      Ptr<MathMLTableRowElement> mtr = smart_cast<MathMLTableRowElement>(*p);
+      assert(mtr);
 
-    MathMLTableRowElement* mtr = TO_TABLEROW(p());
-    assert(mtr != NULL);
-
-    Iterator<MathMLElement*> q(mtr->content);
-    if (mtr->IsA() == TAG_MLABELEDTR) {
-      assert(q.More());
-      q.Next();
-    }
-
-    while (q.More()) {
-      assert(q() != NULL);
-      assert(q()->IsA() == TAG_MTD);
-
-      MathMLTableCellElement* mtd = TO_TABLECELL(q());
-      assert(mtd != NULL);
-
-      unsigned i0 = mtd->GetRowIndex();
-      unsigned j0 = mtd->GetColumnIndex();
-      unsigned n = mtd->GetRowSpan();
-      unsigned m = mtd->GetColumnSpan();
-
-      mtd->SetupCell(&cell[i0][j0]);
-
-      for (unsigned i = 0; i < n; i++)
-	for (unsigned j = 0; j < m; j++) {
-	  assert(cell[i0 + i][j0 + j].mtd == NULL);
-	  cell[i0 + i][j0 + j].mtd = mtd;
-	  cell[i0 + i][j0 + j].rowSpan = n - i;
-	  cell[i0 + i][j0 + j].colSpan = m - j;
-	  cell[i0 + i][j0 + j].spanned = (i > 0) || (j > 0);
+      std::vector< Ptr<MathMLElement> >::const_iterator q = mtr->GetContent().begin();
+      if (is_a<MathMLLabeledTableRowElement>(mtr))
+	{
+	  assert(q != mtr->GetContent().end());
+	  q++;
 	}
 
-      q.Next();
+      while (q != mtr->GetContent().end())
+	{
+	  assert(*q);
+	  assert(is_a<MathMLTableCellElement>(*q));
+
+	  Ptr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(*q);
+	  assert(mtd);
+
+	  unsigned i0 = mtd->GetRowIndex();
+	  unsigned j0 = mtd->GetColumnIndex();
+	  unsigned n = mtd->GetRowSpan();
+	  unsigned m = mtd->GetColumnSpan();
+
+	  mtd->SetupCell(&cell[i0][j0]);
+
+	  for (unsigned i = 0; i < n; i++)
+	    for (unsigned j = 0; j < m; j++) 
+	      {
+		assert(!cell[i0 + i][j0 + j].mtd);
+		cell[i0 + i][j0 + j].mtd = mtd;
+		cell[i0 + i][j0 + j].rowSpan = n - i;
+		cell[i0 + i][j0 + j].colSpan = m - j;
+		cell[i0 + i][j0 + j].spanned = (i > 0) || (j > 0);
+	      }
+
+	  q++;
+	}
     }
-  }
 }
 
 void
-MathMLTableElement::SetupColumns(RenderingEnvironment* env)
+MathMLTableElement::SetupColumns(RenderingEnvironment& env)
 {
   if (nColumns == 0) return;
   unsigned i = 0;
 
   column = new TableColumn[nColumns];
-  for (unsigned j = 0; j < nColumns; j++) {
-    column[j].widthType = COLUMN_WIDTH_NOTVALID;
-    column[j].fixedWidth = 0;
-    column[j].spacingType = SPACING_NOTVALID;
-    column[j].fixedSpacing = 0;
-    column[j].lineType = TABLE_LINE_NOTVALID;
-  }
 
   const Value* value = NULL;
 
@@ -278,7 +276,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 	column[i].scaleWidth = unitValue.GetValue();
       } else {
 	column[i].widthType  = COLUMN_WIDTH_FIXED;
-	column[i].fixedWidth = env->ToScaledPoints(unitValue);
+	column[i].fixedWidth = env.ToScaledPoints(unitValue);
       }
     }
 
@@ -300,7 +298,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
       column[i].scaleSpacing = unitValue.GetValue();
     } else {
       column[i].spacingType  = SPACING_FIXED;
-      column[i].fixedSpacing = env->ToScaledPoints(unitValue);
+      column[i].fixedSpacing = env.ToScaledPoints(unitValue);
     }
 
     delete v;
@@ -310,7 +308,7 @@ MathMLTableElement::SetupColumns(RenderingEnvironment* env)
 }
 
 void
-MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment* env)
+MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment& env)
 {
   const Value* value = GetAttributeValue(ATTR_ALIGNMENTSCOPE, env);
   assert(value != NULL);
@@ -319,7 +317,7 @@ MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment* env)
     const Value* p = value->Get(j);
     assert(p != NULL && p->IsBoolean());
     for (unsigned i = 0; i < nRows; i++)
-      if (cell[i][j].mtd != NULL)
+      if (cell[i][j].mtd)
 	cell[i][j].mtd->SetAlignmentScope(p->ToBoolean());
   }
 
@@ -327,7 +325,7 @@ MathMLTableElement::SetupAlignmentScopes(RenderingEnvironment* env)
 }
 
 void
-MathMLTableElement::SetupColumnAlign(RenderingEnvironment* env)
+MathMLTableElement::SetupColumnAlign(RenderingEnvironment& env)
 {
   const Value* value = GetAttributeValue(ATTR_COLUMNALIGN, env);
   SetupColumnAlignAux(value, 0, nRows);
@@ -354,7 +352,7 @@ MathMLTableElement::SetupColumnAlignAux(const Value* value,
     ColumnAlignId columnAlign = ToColumnAlignId(p);
 
     if (labeledRow && j == 0) {
-      assert(rowLabel != NULL);
+      assert(rowLabel);
       assert(n == 1);
 
       rowLabel[rowStart].columnAlign = columnAlign;
@@ -371,32 +369,29 @@ MathMLTableElement::SetupColumnAlignAux(const Value* value,
 }
 
 void
-MathMLTableElement::SetupRows(RenderingEnvironment* env)
+MathMLTableElement::SetupRows(RenderingEnvironment& env)
 {
   if (nRows == 0) return;
   unsigned i = 0;
 
   row = new TableRow[nRows];
-  for (i = 0; i < nRows; i++) {
-    row[i].mtr = NULL;
-    row[i].spacingType = SPACING_NOTVALID;
-    row[i].fixedSpacing = 0;
-    row[i].lineType = TABLE_LINE_NOTVALID;
-  }
 
   i = 0;
-  for (Iterator<MathMLElement*> rowElem(content); rowElem.More(); rowElem.Next()) {
-    assert(i < nRows);
-    assert(rowElem()->IsA() == TAG_MTR || rowElem()->IsA() == TAG_MLABELEDTR);
+  for (std::vector< Ptr<MathMLElement> >::const_iterator rowElem = GetContent().begin();
+       rowElem != GetContent().end();
+       rowElem++)
+    {
+      assert(i < nRows);
+      assert(is_a<MathMLTableRowElement>(*rowElem));
 
-    MathMLTableRowElement* mtr = TO_TABLEROW(rowElem());
-    assert(mtr != NULL);
+      Ptr<MathMLTableRowElement> mtr = smart_cast<MathMLTableRowElement>(*rowElem);
+      assert(mtr);
 
-    row[i].mtr = mtr;
-    mtr->SetupRowIndex(i);
+      row[i].mtr = mtr;
+      mtr->SetupRowIndex(i);
 
-    i++;
-  }
+      i++;
+    }
 
   const Value* value = GetAttributeValue(ATTR_ROWSPACING, env);
   assert(value != NULL);
@@ -412,7 +407,7 @@ MathMLTableElement::SetupRows(RenderingEnvironment* env)
       row[i].scaleSpacing = unitValue.GetValue();
     } else {
       row[i].spacingType  = SPACING_FIXED;
-      row[i].fixedSpacing = env->ToScaledPoints(unitValue);
+      row[i].fixedSpacing = env.ToScaledPoints(unitValue);
     }
   }
 
@@ -420,7 +415,7 @@ MathMLTableElement::SetupRows(RenderingEnvironment* env)
 }
 
 void
-MathMLTableElement::SetupRowAlign(RenderingEnvironment* env)
+MathMLTableElement::SetupRowAlign(RenderingEnvironment& env)
 {
   const Value* value = GetAttributeValue(ATTR_ROWALIGN, env);
   assert(value != NULL);
@@ -444,7 +439,7 @@ MathMLTableElement::SetupRowAlignAux(const Value* value,
   RowAlignId rowAlign = ToRowAlignId(value);
 
   if (labeledRow) {
-    assert(rowLabel != NULL);
+    assert(rowLabel);
     rowLabel[i].rowAlign = rowAlign;
   }
 
@@ -455,31 +450,32 @@ MathMLTableElement::SetupRowAlignAux(const Value* value,
 void
 MathMLTableElement::SetupLabels()
 {
-  unsigned i = 0;
-
-  if (rowLabel != NULL) {
+  if (rowLabel) {
     delete rowLabel;
     rowLabel = NULL;
   }
 
   bool hasLabels = false;
-  for (i = 0; i < nRows && !hasLabels; i++) {
-    assert(row[i].mtr != NULL);
-    hasLabels = (row[i].mtr->IsA() == TAG_MLABELEDTR);
-  }
+  for (unsigned i = 0; i < nRows && !hasLabels; i++)
+    {
+      assert(row[i].mtr);
+      hasLabels = is_a<MathMLLabeledTableRowElement>(row[i].mtr);
+    }
 
-  if (!hasLabels) return;
-
-  rowLabel = new RowLabel[nRows];
-  for (i = 0; i < nRows; i++) {
-    assert(row[i].mtr != NULL);
-    rowLabel[i].labelElement = row[i].mtr->GetLabel();
-    if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)
-      rowLabel[i].columnAlign = COLUMN_ALIGN_LEFT;
-    else
-      rowLabel[i].columnAlign = COLUMN_ALIGN_RIGHT;
-    rowLabel[i].rowAlign = ROW_ALIGN_BASELINE;
-  }
+  if (hasLabels)
+    {
+      rowLabel = new RowLabel[nRows];
+      for (unsigned i = 0; i < nRows; i++)
+	{
+	  assert(row[i].mtr);
+	  rowLabel[i].labelElement = row[i].mtr->GetLabel();
+	  if (side == TABLE_SIDE_LEFT || side == TABLE_SIDE_LEFTOVERLAP)
+	    rowLabel[i].columnAlign = COLUMN_ALIGN_LEFT;
+	  else
+	    rowLabel[i].columnAlign = COLUMN_ALIGN_RIGHT;
+	  rowLabel[i].rowAlign = ROW_ALIGN_BASELINE;
+	}
+    }
 }
 
 void
@@ -494,23 +490,19 @@ MathMLTableElement::SetupGroups()
       cell[i][j].group       = NULL;
       cell[i][j].aGroup      = NULL;
 
-      if (!cell[i][j].spanned && cell[i][j].mtd != NULL) {
+      if (!cell[i][j].spanned && cell[i][j].mtd) {
+#if 0
+	// to be restored
 	MathMLTableCellElement::SetupGroups(cell[i][j].mtd->content.GetFirst(),
 					    true, true,
 					    cell[i][j]);
+#endif
 
 	if (cell[i][j].nAlignGroup > column[j].nAlignGroup) 
 	  column[j].nAlignGroup = cell[i][j].nAlignGroup;
 
 	if (cell[i][j].nAlignGroup > 0) {
 	  AlignmentGroup* aGroup = new AlignmentGroup[cell[i][j].nAlignGroup];
-
-	  for (unsigned k = 0; k < cell[i][j].nAlignGroup; k++) {
-	    aGroup[k].group = NULL;
-	    aGroup[k].alignment = GROUP_ALIGN_NOTVALID;
-	    aGroup[k].extent.left = aGroup[k].extent.right = 0;
-	  }
-
 	  cell[i][j].aGroup = aGroup;
 	}
       }
@@ -519,7 +511,7 @@ MathMLTableElement::SetupGroups()
 }
 
 void
-MathMLTableElement::SetupGroupAlign(RenderingEnvironment* env)
+MathMLTableElement::SetupGroupAlign(RenderingEnvironment& env)
 {
   const Value* value = GetAttributeValue(ATTR_GROUPALIGN, env);
   SetupGroupAlignAux(value, 0, nRows);
@@ -554,17 +546,20 @@ MathMLTableElement::SetupAlignMarks()
 {
   for (unsigned i = 0; i < nRows; i++)
     for (unsigned j = 0; j < nColumns; j++)
-      if (!cell[i][j].spanned && cell[i][j].mtd != NULL) {
+      if (!cell[i][j].spanned && cell[i][j].mtd) {
+#if 0
+	// to be restored
 	MathMLTableCellElement::SetupGroups(cell[i][j].mtd->content.GetFirst(),
 					    true, false,
 					    cell[i][j]);
+#endif
       }
 }
 
 // finally, setup any attribute relative to the table itself and not
 // any sub-element
 void
-MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
+MathMLTableElement::SetupTableAttributes(RenderingEnvironment& env)
 {
   const Value* value = NULL;
   const Value* p = NULL;
@@ -584,7 +579,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
   else if (p->IsKeyword(KW_BASELINE)) align = TABLE_ALIGN_BASELINE;
   else if (p->IsKeyword(KW_AXIS)) {
     align = TABLE_ALIGN_AXIS;
-    environmentAxis = env->GetAxis();
+    environmentAxis = env.GetAxis();
   } else assert(IMPOSSIBLE);
 
   p = value->Get(1);
@@ -645,7 +640,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
       scaleWidth = unitValue.GetValue();
     } else {
       widthType = WIDTH_FIXED;
-      fixedWidth = env->ToScaledPoints(unitValue);
+      fixedWidth = env.ToScaledPoints(unitValue);
     }
   }
 
@@ -665,7 +660,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
     frameHorizontalScaleSpacing = unitValue.GetValue();
   } else {
     frameHorizontalSpacingType  = SPACING_FIXED;
-    frameHorizontalFixedSpacing = env->ToScaledPoints(unitValue);
+    frameHorizontalFixedSpacing = env.ToScaledPoints(unitValue);
   }
 
   delete p;
@@ -679,7 +674,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
     frameVerticalScaleSpacing = unitValue.GetValue();
   } else {
     frameVerticalSpacingType  = SPACING_FIXED;
-    frameVerticalFixedSpacing = env->ToScaledPoints(unitValue);
+    frameVerticalFixedSpacing = env.ToScaledPoints(unitValue);
   }
 
   delete p;
@@ -736,7 +731,7 @@ MathMLTableElement::SetupTableAttributes(RenderingEnvironment* env)
     minLabelScaleSpacing = unitValue.GetValue();
   } else {
     minLabelSpacingType  = SPACING_FIXED;
-    minLabelFixedSpacing = env->ToScaledPoints(unitValue);
+    minLabelFixedSpacing = env.ToScaledPoints(unitValue);
   }
 
   delete value;

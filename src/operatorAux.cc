@@ -26,15 +26,16 @@
 
 #include "operatorAux.hh"
 #include "traverseAux.hh"
+#include "MathMLOperatorElement.hh"
 
 bool
-isStretchyOperator(MathMLElement* elem)
+isStretchyOperator(const Ptr<MathMLElement>& elem)
 {
-  return findStretchyOperator(elem) != NULL;
+  return findStretchyOperator(elem);
 }
 
 bool
-isStretchyOperator(MathMLElement* elem, StretchId id)
+isStretchyOperator(const Ptr<MathMLElement>& elem, StretchId id)
 {
-  return findStretchyOperator(elem, id) != NULL;
+  return findStretchyOperator(elem, id);
 }

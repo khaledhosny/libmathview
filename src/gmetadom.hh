@@ -25,14 +25,14 @@
 
 #include <GdomeSmartDOM.hh>
 
-namespace GMetaDOM = GdomeSmartDOM;
+namespace DOM = GdomeSmartDOM;
 
 namespace GdomeSmartDOM {
 
   bool nodeIsBlank(const Node&);
-  DOMString elementValue(const Element&);
+  GdomeString elementValue(const Element&);
+  GdomeString nodeLocalName(const Node&);
 
 }
 
 #endif // gmetadom_hh
-

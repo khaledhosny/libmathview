@@ -48,5 +48,6 @@ entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 
 INCLUDES = \
   @DOM_CFLAGS@ \
-  -I$(top_srcdir)/src
+  -I$(top_srcdir)/src \
+  -I$(top_builddir)
 

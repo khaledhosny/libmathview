@@ -25,7 +25,6 @@
 
 #include "Char.hh"
 #include "AFont.hh"
-#include "Container.hh"
 
 enum StretchId {
   STRETCH_NO,

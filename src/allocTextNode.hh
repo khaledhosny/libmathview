@@ -23,10 +23,11 @@
 #ifndef allocTextNode_hh
 #define allocTextNode_hh
 
+#include "Ptr.hh"
 #include "String.hh"
 
-class MathMLTextNode* allocCharNode(Char);
-class MathMLTextNode* allocCombinedCharNode(Char, Char);
-class MathMLTextNode* allocTextNode(const String**);
+Ptr<class MathMLTextNode> allocCharNode(Char);
+Ptr<class MathMLTextNode> allocCombinedCharNode(Char, Char);
+Ptr<class MathMLTextNode> allocTextNode(const String**);
 
 #endif

@@ -23,54 +23,60 @@
 #ifndef MathMLActionElement_hh
 #define MathMLActionElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLContainerElement.hh"
+#include "MathMLEmbellishment.hh"
+#include "MathMLLinearContainerElement.hh"
 
-class MathMLActionElement : public MathMLContainerElement {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLActionElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLActionElement(const GMetaDOM::Element&);
+class MathMLActionElement
+  : public MathMLLinearContainerElement, public MathMLEmbellishment
+{
+protected:
+  MathMLActionElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLActionElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void DoLayout(LayoutId, class Layout&);
-  virtual void DoStretchyLayout(void);
-  virtual void SetPosition(scaled, scaled);
-  virtual void Freeze(void);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLActionElement();
 
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLActionElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLActionElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Render(const DrawingArea&);
+
+#if 0
   virtual void SetDirtyLayout(bool = false);
   virtual void SetDirty(const Rectangle* = NULL);  
   virtual void SetSelected(void);
   virtual void ResetSelected(void);
-  virtual void ResetLast(void);
+#endif
 
-  virtual bool IsLast(void) const;
-  virtual bool IsBreakable(void) const;
-  virtual bool IsExpanding(void) const;
-  virtual BreakId GetBreakability(void) const;
+  //virtual void SetFlagDown(Flags);
+  //virtual void ResetFlagDown(Flags);
+
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
-  virtual MathMLElement* Inside(scaled, scaled);
-  MathMLElement* GetSelectedElement(void) const;
+  virtual Ptr<MathMLElement> Inside(scaled, scaled);
+  Ptr<MathMLElement> GetSelectedElement(void) const;
 
   unsigned GetSelectedIndex(void) const;
   void     SetSelectedIndex(unsigned);
 
+  virtual Ptr<MathMLOperatorElement> GetCoreOperator(void);
+
 private:
   unsigned selection;
 };
-
-#define TO_ACTION(obj) (dynamic_cast<MathMLActionElement*>(obj))
 
 #endif // MathMLActionElement_hh

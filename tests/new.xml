@@ -1,4 +1,4 @@
-<math><mtext>&alpha;&#x20d0;</mtext>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mtext>&alpha;&#x20d0;</mtext>
 <mover accent="false"><mi>&alpha;</mi><mo>&#x20d0;</mo></mover>
 <mover accent="true"><mi>&alpha;</mi><mo>&#x20d0;</mo></mover>
 </math>

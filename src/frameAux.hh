@@ -23,10 +23,10 @@
 #ifndef frameAux_hh
 #define frameAux_hh
 
-#include "MathMLElement.hh"
+#include "MathMLFrame.hh"
 
-const BoundingBox& getFrameBoundingBox(class MathMLFrame*, LayoutId = LAYOUT_AUTO);
-MathMLFrame* getFrameLeftSibling(const class MathMLFrame*);
-MathMLFrame* getFrameRightSibling(const class MathMLFrame*);
+const BoundingBox& getFrameBoundingBox(const Ptr<MathMLFrame>&, LayoutId = LAYOUT_AUTO);
+Ptr<MathMLFrame>   getLeftSibling(const Ptr<MathMLFrame>&);
+Ptr<MathMLFrame>   getRightSibling(const Ptr<MathMLFrame>&);
 
 #endif // frameAux_hh

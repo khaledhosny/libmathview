@@ -1,9 +1,9 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mover><mi>&alpha;</mi><mo>&#x0311;</mo></mover>
   <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
   <munder><mi>&alpha;</mi><mo>&#x0323;</mo></munder>
   <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
-  <munder>><mi>&alpha;</mi><mo>&#x0327;</mo></munder>
+  <munder>&gt;<mi>&alpha;</mi><mo>&#x0327;</mo></munder>
   <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>
   <mover><mi>&alpha;</mi><mo>&#x030b;</mo></mover>
   <mspace linebreak="newline"/><mspace height="1ex"/><mspace linebreak="newline"/>

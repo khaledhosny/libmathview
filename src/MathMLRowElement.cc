@@ -21,163 +21,112 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <functional>
+#include <algorithm>
+
 #include <assert.h>
 #include <stddef.h>
 
-#include "Layout.hh"
+#include "Adaptors.hh"
 #include "CharMap.hh"
-#include "MathEngine.hh"
-#include "Iterator.hh"
+#include "ChildList.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"
+#include "MathMLDocument.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLSpaceElement.hh"
-#include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLEmbellishedOperatorElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLRowElement::MathMLRowElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLRowElement::MathMLRowElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLContainerElement(node, TAG_MROW)
+MathMLRowElement::MathMLRowElement()
 {
-  lastElement = NULL;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLRowElement::MathMLRowElement(const DOM::Element& node)
+  : MathMLLinearContainerElement(node)
+{
+}
+#endif
 
 MathMLRowElement::~MathMLRowElement()
 {
 }
 
 #if 0
+// Row must redefine Normalize because it can be inferred
+// when a Row is inferred, it has no DOm node attached, hence
+// the LinearContainer::Normalize would stop normalizing
 void
-MathMLRowElement::Normalize()
+MathMLRowElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
+  if (DirtyStructure())
+    {
+      // editing is supported with DOM only
+#if defined(HAVE_GMETADOM)
+      if (GetDOMElement() || (GetParent() && GetParent()->GetDOMElement()))
+	{
+	  ChildList children(GetDOMElement() ? GetDOMElement() : GetParent()->GetDOMElement(),
+			     MATHML_NS_URI, "*");
+	  unsigned n = children.get_length();
+
+	}
+
+      //assert(GetDOMElement() || !GetParent() || !GetParent()->GetDOMElement() || GetSize() != 1);
+#endif // HAVE_GMETADOM
+
+      // it is better to normalize elements only after all the rendering
+      // interfaces have been collected, because the structure might change
+      // depending on the actual number of children
+      //std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
+      std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
+#if 0
+      for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
+	   p != content.end();
+	   p++)
+	{
+	  (*p)->Normalize(doc);
+	}
+#endif
+      ResetDirtyStructure();
+    }
 }
 #endif
 
 void
-MathMLRowElement::Setup(RenderingEnvironment* env)
+MathMLRowElement::Setup(RenderingEnvironment& env)
 {
-  MathMLContainerElement::Setup(env);
-
-  Iterator<MathMLElement*> i(content);
-  i.ResetLast();
-  while (i.More() && i() != NULL &&
-	 (i()->IsSpaceLike() || i()->IsEmbellishedOperator())) {
-    i.Prev();
-  }
-	      
-  if (i.More() && i() != NULL) lastElement = i();
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      MathMLLinearContainerElement::Setup(env);
+      ResetDirtyAttribute();
+    }
 }
 
 void
-MathMLRowElement::DoLayout(LayoutId id, Layout& layout)
+MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
 {
-  enum { STATE_A, STATE_B, STATE_C, STATE_D, STATE_E } state = STATE_A;
-
-  layout.In();
-
-  BreakId lastBreakability = BREAK_AUTO;
-
-  for (Iterator<MathMLElement*> i(content); i.More(); i.Next())
+  if (DirtyLayout(ctxt))
     {
-      MathMLElement* elem = i();
-      assert(elem != NULL);
-
-      if (MathEngine::LineBreaking())
+      box.Null();
+      for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+	   elem != content.end();
+	   elem++)
 	{
-	  BreakId bid = BREAK_NO;
-
-	  if (elem == lastElement)
-	    {
-	      // if elem is the last element but it preceeded by a separator,
-	      // then we have still to set the right breakability after that
-	      // separator, which otherwise would get a BREAK_NO.
-	      if (state == STATE_C &&
-		  !elem->IsEmbellishedOperator() && 
-		  !elem->IsSpaceLike()) bid = BREAK_BAD;
-	      state = STATE_E;
-	    } 
-	  else
-	    {
-	      switch (state)
-		{
-		case STATE_A:
-		  if (!elem->IsEmbellishedOperator() && !elem->IsSpaceLike()) state = STATE_B;
-		  break;
-		case STATE_B:
-		  if (elem->IsEmbellishedOperator())
-		    {
-		      MathMLOperatorElement* op = findCoreOperator(elem);
-		      assert(op != NULL);
-		      // we cannot allow the expression to be broken
-		      // before or after the operator if it is non-marking
-		      // (i.e. it is only made of non-marking characters)
-		      if (!op->IsNonMarking())
-			{
-			  if (op->IsSeparator()) state = STATE_C;
-			  else
-			    {
-			      bid = BREAK_BAD;
-			      state = STATE_D;
-			    }
-			}
-		    }
-		  break;
-		case STATE_C:
-		  if (elem->IsSpaceLike())
-		    {
-		      bid = BREAK_BAD;
-		      state = STATE_D;
-		    } 
-		  else if (elem->IsEmbellishedOperator())
-		    {
-		      MathMLOperatorElement* op = findCoreOperator(elem);
-		      assert(op != NULL);
-		      if (!op->IsSeparator())
-			{
-			  bid = BREAK_BAD;
-			  state = STATE_D;
-			}
-		    } 
-		  else
-		    {
-		      bid = BREAK_BAD;
-		      state = STATE_B;
-		    }
-		  break;
-		case STATE_D:
-		  if (!elem->IsSpaceLike() && !elem->IsEmbellishedOperator()) state = STATE_B;
-		  break;
-		case STATE_E:
-		  break;
-		}
-	    }
-
-	  if (lastBreakability != BREAK_AUTO) bid = lastBreakability;
-
-	  lastBreakability = elem->GetBreakability();
-	  layout.SetLastBreakability(bid);
+	  (*elem)->DoLayout(ctxt);
+	  box.Append((*elem)->GetBoundingBox());
 	}
-      else
-	layout.SetLastBreakability(BREAK_NO);
 
-      if (elem->IsBreakable()) elem->DoLayout(id, layout);
-      else layout.Append(elem, 0);
+      DoStretchyLayout();
+      DoEmbellishmentLayout(this, box);
+      ResetDirtyLayout(ctxt);
     }
-
-  layout.Out();
-
-  ResetDirtyLayout(id);
 }
 
 void
 MathMLRowElement::DoStretchyLayout()
 {
-  MathMLContainerElement::DoStretchyLayout();
-
   unsigned nStretchy = 0; // # of stretchy operators in this line
   unsigned nOther    = 0; // # of non-stretchy elements in this line
 
@@ -186,66 +135,129 @@ MathMLRowElement::DoStretchyLayout()
   rowBox.Null();
   opBox.Null();
 
-  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-    assert(elem() != NULL);
-    BoundingBox elemLinearBox;
+  for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+       elem != content.end();
+       elem++)
+    if (Ptr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
+      {
+	opBox.Append(op->GetMinBoundingBox());
+	nStretchy++;      
+      } 
+    else
+      {
+	rowBox.Append((*elem)->GetBoundingBox());
+	nOther++;
+      }
 
-    MathMLOperatorElement* op = findStretchyOperator(elem(), STRETCH_VERTICAL);
-    if (op != NULL) {
-      opBox.Append(op->GetMinBoundingBox());
-      nStretchy++;      
-    } else {
-      elem()->GetLinearBoundingBox(elemLinearBox);
-      rowBox.Append(elemLinearBox);
-      nOther++;
-    }
-  }
-
-  if (nStretchy > 0) {
-    scaled toAscent  = (nOther == 0) ? opBox.ascent : rowBox.ascent;
-    scaled toDescent = (nOther == 0) ? opBox.descent : rowBox.descent;
+  if (nStretchy > 0)
+    {
+      scaled toAscent  = (nOther == 0) ? opBox.ascent : rowBox.ascent;
+      scaled toDescent = (nOther == 0) ? opBox.descent : rowBox.descent;
 
 #if 0
-    printf("%s(%p): found %d stretchy (%d other), now stretch to %d %d\n",
-	   NameOfTagId(IsA()), this, nStretchy, nOther, sp2ipx(toAscent), sp2ipx(toDescent));
+      printf("%s(%p): found %d stretchy (%d other), now stretch to %d %d\n",
+	     NameOfTagId(IsA()), this, nStretchy, nOther, sp2ipx(toAscent), sp2ipx(toDescent));
 #endif
 
-    for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-      assert(elem() != NULL);
-      MathMLOperatorElement* op = findStretchyOperator(elem(), STRETCH_VERTICAL);
-
-      if (op != NULL) {
-	op->VerticalStretchTo(toAscent, toDescent);
-	elem()->DoBoxedLayout(LAYOUT_AUTO, BREAK_NO, elem()->GetMaxBoundingBox().width);
-      }
+      for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+	   elem != content.end();
+	   elem++)
+	if (Ptr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
+	  {
+	    op->VerticalStretchTo(toAscent, toDescent);
+	    (*elem)->DoLayout(FormattingContext(LAYOUT_AUTO, 0));
+	  }
     }
-  }
+}
+
+void
+MathMLRowElement::SetPosition(scaled x, scaled y)
+{
+  position.x = x;
+  position.y = y;
+  SetEmbellishmentPosition(this, x, y);
+  for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+       elem != content.end();
+       elem++)
+    {
+      (*elem)->SetPosition(x, y);
+      x += (*elem)->GetBoundingBox().width;
+    }
 }
 
 bool
 MathMLRowElement::IsSpaceLike() const
 {
-  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-    assert(elem() != NULL);
-    if (!elem()->IsSpaceLike()) return false;
-  }
-
-  return true;
+  return std::find_if(content.begin(), content.end(),
+		      std::not1(IsSpaceLikePredicate())) == content.end();
 }
 
-bool
-MathMLRowElement::IsBreakable() const
+OperatorFormId
+MathMLRowElement::GetOperatorForm(const Ptr<MathMLElement>& eOp) const
 {
-  return true;
+  assert(eOp);
+
+  OperatorFormId res = OP_FORM_INFIX;
+
+  unsigned rowLength = 0;
+  unsigned position  = 0;
+  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+       elem != content.end();
+       elem++)
+    {
+      Ptr<const MathMLElement> p = *elem;
+
+      if (!p->IsSpaceLike())
+	{
+	  if (p == eOp) position = rowLength;
+	  rowLength++;
+	}
+    }
+    
+  if (rowLength > 1) 
+    {
+      if (position == 0) res = OP_FORM_PREFIX;
+      else if (position == rowLength - 1) res = OP_FORM_POSTFIX;
+    }
+
+  return res;
 }
 
-bool
-MathMLRowElement::IsExpanding() const
+#if 0
+Ptr<class MathMLOperatorElement>
+MathMLRowElement::GetCoreOperator()
 {
-  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
-    assert(elem() != NULL);
-    if (elem()->IsExpanding()) return true;
-  }
+  Ptr<MathMLElement> core = 0;
 
-  return false;
+  for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+       elem != content.end();
+       elem++)
+    {
+      if (!(*elem)->IsSpaceLike())
+	{
+	  if (!core) core = *elem;
+	  else return 0;
+	}
+    }
+
+  return core ? core->GetCoreOperator() : Ptr<class MathMLOperatorElement>(0);
+}
+#endif
+
+Ptr<class MathMLOperatorElement>
+MathMLRowElement::GetCoreOperator()
+{
+  Ptr<MathMLElement> candidate = 0;
+
+  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+       elem != content.end();
+       elem++)
+    if (!(*elem)->IsSpaceLike())
+      {
+	if (!candidate) candidate = *elem;
+	else return 0;
+      }
+
+  if (candidate) return candidate->GetCoreOperator();
+  else return 0;
 }

@@ -24,16 +24,16 @@
 #define MathMLAttribute_hh
 
 #include "Value.hh"
-#include "String.hh"
 #include "keyword.hh"
 
-class MathMLAttribute {
+class MathMLAttribute
+{
 public:
   MathMLAttribute(AttributeId, const String*);
   ~MathMLAttribute();
 
   const String* GetValue(void) const { return value; }
-  const Value*  GetParsedValue(const struct AttributeSignature* = NULL) const;
+  const Value*  GetParsedValue(const struct AttributeSignature* = 0) const;
   bool          Equal(const MathMLAttribute&) const;
 
   AttributeId   IsA(void) const { return id; }

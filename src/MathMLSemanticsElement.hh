@@ -23,27 +23,35 @@
 #ifndef MathMLSemanticsElement_hh
 #define MathMLSemanticsElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLContainerElement.hh"
+#include "MathMLEmbellishment.hh"
+#include "MathMLBinContainerElement.hh"
 
-class MathMLSemanticsElement: public MathMLContainerElement
+class MathMLSemanticsElement
+  : public MathMLBinContainerElement, public MathMLEmbellishment
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLSemanticsElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLSemanticsElement(const GMetaDOM::Element&);
+protected:
+  MathMLSemanticsElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLSemanticsElement(const DOM::Element&);
 #endif
-  virtual void Normalize(void);
   virtual ~MathMLSemanticsElement();
 
-  virtual bool IsBreakable(void) const;
-  virtual bool IsExpanding(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLSemanticsElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLSemanticsElement(el)); }
+#endif
+
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 };
 
 #endif // MathMLSemanticsElement_hh

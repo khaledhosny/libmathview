@@ -23,27 +23,38 @@
 #ifndef MathMLPaddedElement_hh
 #define MathMLPaddedElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLPaddedElement: public MathMLNormalizingContainerElement
+class MathMLPaddedElement
+  : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLPaddedElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLPaddedElement(const GMetaDOM::Element&);
+protected:
+  MathMLPaddedElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLPaddedElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
   virtual ~MathMLPaddedElement();
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLPaddedElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLPaddedElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  //virtual void Normalize(const Ptr<MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  //virtual void SetDirty(const Rectangle* = NULL);
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 
 private:
   struct LengthDimension {
@@ -56,7 +67,7 @@ private:
     scaled    unit;         // standard unit (valid if pseudo == false)
   };
 
-  void   ParseLengthDimension(RenderingEnvironment*, const Value*, LengthDimension&, KeywordId);
+  void   ParseLengthDimension(RenderingEnvironment&, const Value*, LengthDimension&, KeywordId);
   scaled EvalLengthDimension(scaled, const LengthDimension&, const BoundingBox&) const;
 
   LengthDimension width;

@@ -23,9 +23,7 @@
 #ifndef MathMLAlignMarkElement_hh
 #define MathMLAlignMarkElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
@@ -34,16 +32,25 @@
 
 class MathMLAlignMarkElement: public MathMLElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLAlignMarkElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLAlignMarkElement(const GMetaDOM::Element&);
+protected:
+  MathMLAlignMarkElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLAlignMarkElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual ~MathMLAlignMarkElement();
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLAlignMarkElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLAlignMarkElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
 
   virtual bool IsSpaceLike(void) const;
   virtual void SetDirty(const Rectangle* = NULL);
@@ -53,7 +60,5 @@ public:
 protected:
   MarkAlignType edge;
 };
-
-#define TO_ALIGN_MARK(obj) (dynamic_cast<MathMLAlignMarkElement*>(obj))
 
 #endif // MathMLAlignMarkElement_hh

@@ -28,8 +28,7 @@
 #include <gdk/gdk.h>
 
 #include "Gtk_Font.hh"
-#include "Iterator.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "Gtk_FontManager.hh"
 
 Gtk_FontManager::Gtk_FontManager()
@@ -45,8 +44,8 @@ Gtk_FontManager::IsAvailable(const FontAttributes& fa,
 			     const ExtraFontAttributes* efa) const
 {
   if (efa != NULL) {
-    const char* type = efa->GetProperty("type");
-    if (type == NULL || strcmp(type, "x")) return false;
+    const std::string type = efa->GetProperty("type");
+    if (type != "x") return false;
   }
 
   return true;
@@ -56,24 +55,24 @@ const AFont*
 Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
 				  const ExtraFontAttributes* efa) const
 {
-  const char* foundry = NULL;
-  const char* family = NULL;
-  const char* weight = NULL;
-  const char* slant = NULL;
-  const char* width = NULL;
-  const char* style = NULL;
-  const char* pixels = NULL;
-  const char* points = NULL;
-  const char* hres = NULL;
-  const char* vres = NULL;
-  const char* spacing = NULL;
-  const char* avgwidth = NULL;
-  const char* registry = NULL;
-  const char* encoding = NULL;
+  std::string foundry;
+  std::string family;
+  std::string weight;
+  std::string slant;
+  std::string width;
+  std::string style;
+  std::string pixels;
+  std::string points;
+  std::string hres;
+  std::string vres;
+  std::string spacing;
+  std::string avgwidth;
+  std::string registry;
+  std::string encoding;
 
   if (efa != NULL) {
-    const char* type = efa->GetProperty("type");
-    assert(type != NULL && strcmp(type, "x") == 0);
+    const std::string type = efa->GetProperty("type");
+    assert(type == "x");
 
     foundry = efa->GetProperty("x-foundry");
     family = efa->GetProperty("x-family");
@@ -91,20 +90,20 @@ Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
     encoding = efa->GetProperty("x-encoding");
   }
 
-  if (foundry == NULL) foundry = "*";
-  if (family == NULL) family = fa.HasFamily() ? fa.family : "*";
+  if (foundry == "") foundry = "*";
+  if (family == "") family = fa.HasFamily() ? fa.family : "*";
 
-  if (weight == NULL)
+  if (weight == "")
     weight = fa.HasWeight() ? ((fa.weight == FONT_WEIGHT_NORMAL) ? "medium" : "bold") : "*";
 
-  if (slant == NULL)
+  if (slant == "")
     slant = fa.HasStyle() ? ((fa.style == FONT_STYLE_NORMAL) ? "r" : "i") : "*";
 
-  if (width == NULL) width = "*";
-  if (style == NULL) style = "*";
-  if (pixels == NULL) pixels = "*";
+  if (width == "") width = "*";
+  if (style == "") style = "*";
+  if (pixels == "") pixels = "*";
 
-  if (points == NULL) {
+  if (points == "") {
     if (fa.HasSize()) {
       int ptSize = (fa.size.GetUnitId() == UNIT_PT) ?
 	roundFloat(fa.size.GetValue() * 10) :
@@ -123,24 +122,22 @@ Gtk_FontManager::SearchNativeFont(const FontAttributes& fa,
       points = "*";
   }
 
-  if (hres == NULL) hres = "*";
-  if (vres == NULL) vres = "*";
-  if (spacing == NULL) spacing = "*";
-  if (avgwidth == NULL) avgwidth = "*";
-  if (registry == NULL) registry = "*";
-  if (encoding == NULL) encoding = "*";
+  if (hres == "") hres = "*";
+  if (vres == "") vres = "*";
+  if (spacing == "") spacing = "*";
+  if (avgwidth == "") avgwidth = "*";
+  if (registry == "") registry = "*";
+  if (encoding == "") encoding = "*";
 
-  static char fontName[128];
+  std::string fontName = "-" + foundry + "-" + family + "-" + weight + "-" + slant +
+    "-" + width + "-" + style + "-" + pixels + "-" + points + "-" + hres + "-" + vres +
+    "-" + spacing + "-" + avgwidth + "-" + registry + "-" + encoding;
 
-  g_snprintf(fontName, 127, "-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
-	     foundry, family, weight, slant, width, style, pixels, points,
-	     hres, vres, spacing, avgwidth, registry, encoding);
-
-  GdkFont* font = gdk_font_load(fontName);
-  MathEngine::logger(LOG_DEBUG, "loading font: %s --> %p", fontName, font);
+  GdkFont* font = gdk_font_load(fontName.c_str());
+  Globals::logger(LOG_DEBUG, "loading font: %s --> %p", fontName.c_str(), font);
 
   if (font == NULL)
-    MathEngine::logger(LOG_WARNING, "unable to find X font `%s'", fontName);
+    Globals::logger(LOG_WARNING, "unable to find X font `%s'", fontName.c_str());
 
   AFont* f = (font != NULL) ? new Gtk_Font(font) : NULL;
 

@@ -48,16 +48,16 @@ MathMLStringNode::IsString() const
 }
 
 void
-MathMLStringNode::Setup(RenderingEnvironment* env)
+MathMLStringNode::Setup(RenderingEnvironment& env)
 {
   assert(content != NULL);
 
   if (fContent != NULL) delete fContent;
-  fContent = new FontifiedString(*content, env->GetFontAttributes(), env->charMapper);
+  fContent = new FontifiedString(*content, env.GetFontAttributes(), env.charMapper);
 }
 
 void
-MathMLStringNode::DoLayout()
+MathMLStringNode::DoLayout(const FormattingContext&)
 {
   assert(fContent != NULL);
   fContent->GetBoundingBox(box);
@@ -66,20 +66,15 @@ MathMLStringNode::DoLayout()
 void
 MathMLStringNode::Render(const DrawingArea& area)
 {
-  assert(GetParent() != NULL);
-  assert(GetParent()->IsToken());
+  assert(GetParent());
+  assert(is_a<MathMLTokenElement>(GetParent()));
   assert(fContent != NULL);
 
-  if (!HasDirtyChildren()) return;
-
-  MathMLTokenElement* token = TO_TOKEN(GetParent());
-  assert(token != NULL);
+  Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
+  assert(token);
 
   const GraphicsContext* gc = token->GetForegroundGC();
-
   fContent->Draw(GetX(), GetY(), area, gc);
-
-  ResetDirty();
 }
 
 bool
@@ -97,15 +92,29 @@ scaled
 MathMLStringNode::GetDecimalPointEdge() const
 {
   assert(content != NULL);
-  assert(GetParent() != NULL);
-  assert(GetParent()->IsToken());
+  assert(GetParent());
+  assert(is_a<MathMLTokenElement>(GetParent()));
 
-  const MathMLTokenElement* parent = TO_CONST_TOKEN(GetParent());
-  assert(parent != NULL);
+  Ptr<MathMLTokenElement> parent = smart_cast<MathMLTokenElement>(GetParent());
+  assert(parent);
 
   // let's find the position of the decimal point
   unsigned i;
   for (i = 0; i < content->GetLength() && content->GetChar(i) != '.'; i++) ;
 
   return GetX() + fContent->WidthTo(i);
+}
+
+unsigned
+MathMLStringNode::GetLogicalContentLength() const
+{
+  assert(content != NULL);
+  return content->GetLength();
+}
+
+String*
+MathMLStringNode::GetRawContent() const
+{
+  assert(content != NULL);
+  return content->Clone();
 }

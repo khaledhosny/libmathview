@@ -24,22 +24,22 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "Layout.hh"
 #include "StringUnicode.hh"
 #include "MathMLCharNode.hh"
-#include "MathMLStringNode.hh"
 #include "MathMLStringLitElement.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLStringLitElement::MathMLStringLitElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLStringLitElement::MathMLStringLitElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLTokenElement(node, TAG_MS)
+MathMLStringLitElement::MathMLStringLitElement()
 {
-  lQuote = rQuote = NULL;
   setupDone = false;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLStringLitElement::MathMLStringLitElement(const DOM::Element& node)
+  : MathMLTokenElement(node)
+{
+  setupDone = false;
+}
+#endif
 
 MathMLStringLitElement::~MathMLStringLitElement()
 {
@@ -61,36 +61,35 @@ MathMLStringLitElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLStringLitElement::Setup(RenderingEnvironment* env)
+MathMLStringLitElement::Setup(RenderingEnvironment& env)
 {
-  assert(env != NULL);
+  if (DirtyAttribute())
+    {
+      const String* s = NULL;
 
-  const String* s = NULL;
+      if (setupDone)
+	{
+	  assert(GetSize() >= 2);
+	  RemoveChild(GetSize() - 1);
+	  RemoveChild(0);
+	}
 
-  if (setupDone) {
-    MathMLFrame* frame = content.RemoveFirst();
-    delete frame;
-    frame = content.RemoveLast();
-    delete frame;
-  }
+      s = GetAttribute(ATTR_LQUOTE, env);
+      assert(s != NULL);
+      if (s->GetLength() >= 1) lQuote = MathMLCharNode::create(s->GetChar(0));
+      assert(lQuote);
+      InsertChild(0, lQuote);
 
-  s = GetAttribute(ATTR_LQUOTE, env);
-  assert(s != NULL);
-  if (s->GetLength() == 1) lQuote = new MathMLCharNode(s->GetChar(0));
-  else if (s->GetLength() > 1) lQuote = new MathMLStringNode(s->Clone());
-  assert(lQuote != NULL);
-  lQuote->SetParent(this);
-  content.AddFirst(lQuote);
+      s = GetAttribute(ATTR_RQUOTE, env);
+      assert(s != NULL);
+      if (s->GetLength() >= 1) rQuote = MathMLCharNode::create(s->GetChar(0));
+      assert(rQuote);
+      InsertChild(GetSize(), rQuote);
 
-  s = GetAttribute(ATTR_RQUOTE, env);
-  assert(s != NULL);
-  if (s->GetLength() == 1) rQuote = new MathMLCharNode(s->GetChar(0));
-  else if (s->GetLength() > 0) rQuote = new MathMLStringNode(s->Clone());
-  assert(rQuote != NULL);
-  rQuote->SetParent(this);
-  content.AddLast(rQuote);
+      MathMLTokenElement::Setup(env);
 
-  MathMLTokenElement::Setup(env);
+      setupDone = true;
 
-  setupDone = true;
+      ResetDirtyAttribute();
+    }
 }

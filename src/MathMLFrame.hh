@@ -28,55 +28,27 @@
 #include "MathMLNode.hh"
 #include "DrawingArea.hh"
 
-class MathMLFrame : public MathMLNode {
-public:
+class MathMLFrame : public MathMLNode
+{
+protected:
   MathMLFrame(void);
-  virtual void   SetPosition(scaled, scaled) = 0;
-  virtual void   Render(const DrawingArea&) = 0;
   virtual ~MathMLFrame();
+
+public:
+  virtual void   SetPosition(scaled, scaled);
+  virtual void   Render(const DrawingArea&) = 0;
 
   scaled         GetX(void) const { return position.x; }
   scaled         GetY(void) const { return position.y; }
   const BoundingBox& GetBoundingBox(void) const { return box; }
+  Rectangle      GetRectangle(void) const;
   virtual scaled GetLeftEdge(void) const = 0;
   virtual scaled GetRightEdge(void) const = 0;
-
-  // flags facilities
-  virtual bool 	 IsFrame(void) const;
   virtual bool 	 IsInside(scaled, scaled) const = 0;
-  virtual bool 	 IsLast(void) const;
-  bool         	 IsSelected(void) const { return selected != 0; }
-  bool         	 IsDirty(void) const { return dirty != 0; }
-  bool         	 HasDirtyChildren(void) const { return dirtyChildren != 0; }
-  bool         	 HasDirtyBackground(void) const { return dirtyBackground != 0; }
-  bool           HasDirtyLayout(void) const { return dirtyLayout != 0; }
-
-  void         	 SetLast(void) { last = 1; }
-  virtual void 	 SetDirty(const Rectangle* = NULL);
-  virtual void 	 SetDirtyChildren(void);
-  virtual void 	 SetSelected(void);
-  virtual void 	 ResetSelected(void);
-  void         	 ResetDirty(void) { dirty = dirtyChildren = dirtyBackground = 0; }
-  void           ResetDirtyLayout(void) { dirtyLayout = 0; }
-  virtual void 	 ResetLast(void);
-  virtual void   SetDirtyLayout(bool = false);  
-
-  virtual BreakId GetBreakability(void) const;
 
 protected:
   Coords      position;
   BoundingBox box;
-
-  unsigned    selected : 1;
-  unsigned    dirty : 1;
-  unsigned    dirtyChildren : 1;
-  unsigned    dirtyBackground : 1;
-  unsigned    dirtyLayout : 1;
-  unsigned    last : 1; // is != 0 is this frame is the last in a row
 };
-
-typedef MathMLFrame* MathMLFramePtr;
-
-#define TO_FRAME(object) (dynamic_cast<MathMLFrame*>(object))
 
 #endif // MathMLFrame_hh

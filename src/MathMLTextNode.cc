@@ -36,7 +36,6 @@
 MathMLTextNode::MathMLTextNode()
 {
   SetSpacing(0);
-  SetBreakability(BREAK_AUTO);
 }
 
 MathMLTextNode::~MathMLTextNode()
@@ -67,35 +66,6 @@ void
 MathMLTextNode::AddSpacing(int ds)
 {
   spacing += ds;
-}
-
-void
-MathMLTextNode::SetBreakability(BreakId bid)
-{
-  breakability = bid;
-}
-
-void
-MathMLTextNode::AddBreakability(BreakId bid)
-{
-  breakability = (bid > breakability) ? bid : breakability;
-}
-
-BreakId
-MathMLTextNode::GetBreakability() const
-{
-  return static_cast<BreakId>(breakability);
-}
-
-void
-MathMLTextNode::SetDirty(const Rectangle* rect)
-{
-  if (IsDirty()) return;
-
-  if (rect != NULL && !rect->Overlaps(GetX(), GetY() - box.ascent, box.width, box.GetHeight()))
-    return;
-
-  MathMLFrame::SetDirty(rect);
 }
 
 bool

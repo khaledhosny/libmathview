@@ -31,9 +31,7 @@
 
 #include "t1lib.h"
 
-#include "Iterator.hh"
-#include "Container.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "PS_T1_Font.hh"
 #include "PS_T1_FontManager.hh"
 
@@ -68,17 +66,21 @@ PS_T1_FontManager::SearchNativeFont(const FontAttributes& fa,
 void
 PS_T1_FontManager::ResetUsedChars() const
 {
-  for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    if (i()->used) {
-      const AFont* font = i()->font;
-      assert(font != NULL);
-      const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
-      assert(ps_font != NULL);
+  for (std::vector<Bucket*>::const_iterator i = content.begin();
+       i != content.end();
+       i++)
+    {
+      assert(*i);
+      if ((*i)->used)
+	{
+	  const AFont* font = (*i)->font;
+	  assert(font != NULL);
+	  const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
+	  assert(ps_font != NULL);
 
-      ps_font->ResetUsedChars();
+	  ps_font->ResetUsedChars();
+	}
     }
-  }
 }
 
 void
@@ -88,54 +90,61 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output, bool embed, bool subset) con
 
   if (embed)
     {
-      Container<T1_FontDesc*> fontDesc;
-
-      for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
-	assert(i() != NULL);
-	if (i()->used) {
-	  const AFont* font = i()->font;
-	  assert(font != NULL);
-	  const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
-	  assert(ps_font != NULL);
-
-	  if (subset)
-	    SetUsedChars(fontDesc, ps_font->GetNativeFontId(), ps_font->GetUsedChars());
-	  else
-	    SetUsedChars(fontDesc, ps_font->GetNativeFontId());
+      std::list<T1_FontDesc*> fontDesc;
+      
+      for (std::vector<Bucket*>::const_iterator i = content.begin();
+	   i != content.end();
+	   i++)
+	{
+	  assert(*i);
+	  if ((*i)->used)
+	    {
+	      const AFont* font = (*i)->font;
+	      assert(font != NULL);
+	      const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
+	      assert(ps_font != NULL);
+	      
+	      if (subset)
+		SetUsedChars(fontDesc, ps_font->GetNativeFontId(), ps_font->GetUsedChars());
+	      else
+		SetUsedChars(fontDesc, ps_font->GetNativeFontId());
 
 #if 0      
-	  unsigned id = t1_font->GetNativeFontId();
-	  if (!fontId.Contains(id)) fontId.Append(id);
+	      unsigned id = t1_font->GetNativeFontId();
+	      if (!fontId.Contains(id)) fontId.Append(id);
 #endif
-	}
-      }
-
-      for (Iterator<T1_FontDesc*> i(fontDesc); i.More(); i.Next()) {
-	assert(i() != NULL);
-
-	if (i.IsFirst()) {
-	  fprintf(output, "%%%%DocumentSuppliedResources: font ");
-	} else {
-	  fprintf(output, "%%%%+ font ");
+	    }
 	}
 
-	fprintf(output, "%s\n", T1_GetFontName(i()->id));
+      for (std::list<T1_FontDesc*>::const_iterator i = fontDesc.begin();
+	   i != fontDesc.end();
+	   i++)
+	{
+	  assert(*i);
+	  
+	  if (i == fontDesc.begin())
+	    fprintf(output, "%%%%DocumentSuppliedResources: font ");
+	  else 
+	    fprintf(output, "%%%%+ font ");
+	  
+	  fprintf(output, "%s\n", T1_GetFontName((*i)->id));
 
-	if (i.IsLast()) fprintf(output, "\n\n");
-      }
+	  if (i == fontDesc.end()) fprintf(output, "\n\n");
+	}
 
       fprintf(output, "%%%%BeginSetup\n");
 
-      while (!fontDesc.IsEmpty()) {
-	T1_FontDesc* desc = fontDesc.RemoveFirst();
+      while (!fontDesc.empty()) {
+	T1_FontDesc* desc = fontDesc.front();
 	assert(desc != NULL);
+	fontDesc.pop_front();
 
-	MathEngine::logger(LOG_DEBUG, "subset font `%d'", desc->id);
+	Globals::logger(LOG_DEBUG, "subset font `%d'", desc->id);
 
 	unsigned count = 0;
 	for (unsigned i = 0; i < 256; i++)
 	  if (desc->used[i]) count++;
-	MathEngine::logger(LOG_DEBUG, "subsetting %d chars", count);
+	Globals::logger(LOG_DEBUG, "subsetting %d chars", count);
 
 	unsigned long bufSize;
 	char* dump = T1_SubsetFont(desc->id, desc->used,
@@ -145,7 +154,7 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output, bool embed, bool subset) con
 	fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(desc->id));
 	fwrite(dump, 1, bufSize, output);
 	fprintf(output, "%%%%EndResource\n\n");
-	MathEngine::logger(LOG_DEBUG, "done!");
+	Globals::logger(LOG_DEBUG, "done!");
 	free(dump);
 
 	delete desc;
@@ -194,62 +203,71 @@ PS_T1_FontManager::DumpFontDictionary(FILE* output, bool embed, bool subset) con
       }
 #endif
 
-      fprintf(output, "%%%%EndSetup\n\n");
+      for (std::vector<Bucket*>::iterator i = content.begin();
+	   i != content.end();
+	   i++)
+	{
+	  assert(*i);
+	  if ((*i)->used)
+	    {
+	      const AFont* font = (*i)->font;
+	      assert(font != NULL);
+	      const T1_Font* t1_font = TO_T1_FONT(font);
+	      assert(t1_font != NULL);
+	      
+	      fprintf(output, "/F%d /%s findfont %f scalefont def\n",
+		      t1_font->GetFontId(),
+		      T1_GetFontName(t1_font->GetNativeFontId()),
+		      t1_font->GetScale());
+	    }
+	}
     }
-
-  for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    if (i()->used) {
-      const AFont* font = i()->font;
-      assert(font != NULL);
-      const T1_Font* t1_font = TO_T1_FONT(font);
-      assert(t1_font != NULL);
-
-      fprintf(output, "/F%d /%s findfont %f scalefont def\n",
-	      t1_font->GetFontId(),
-	      T1_GetFontName(t1_font->GetNativeFontId()),
-	      t1_font->GetScale());
-    }
-  }
 }
 
 void
-PS_T1_FontManager::SetUsedChars(Container<T1_FontDesc*>& fontDesc, unsigned id,
+PS_T1_FontManager::SetUsedChars(std::list<T1_FontDesc*>& fontDesc, unsigned id,
 				const char used[])
 {
-  for (Iterator<T1_FontDesc*> desc(fontDesc); desc.More(); desc.Next()) {
-    assert(desc() != NULL);
-    if (desc()->id == id) {
-      for (unsigned i = 0; i < 256; i++)
-        desc()->used[i] |= used[i];
-      return;
+  for (std::list<T1_FontDesc*>::iterator desc = fontDesc.begin();
+       desc != fontDesc.end();
+       desc++)
+    {
+      assert(*desc);
+      if ((*desc)->id == id)
+	{
+	  for (unsigned i = 0; i < 256; i++)
+	    (*desc)->used[i] |= used[i];
+	  return;
+	}
     }
-  }
 
   T1_FontDesc* desc = new T1_FontDesc;
   assert(desc != NULL);
   desc->id = id;
   for (unsigned i = 0; i < 256; i++) desc->used[i] = used[i];
-  fontDesc.Append(desc);
+  fontDesc.push_back(desc);
 }
 
 void
-PS_T1_FontManager::SetUsedChars(Container<T1_FontDesc*>& fontDesc, unsigned id)
+PS_T1_FontManager::SetUsedChars(std::list<T1_FontDesc*>& fontDesc, unsigned id)
 {
-  for (Iterator<T1_FontDesc*> desc(fontDesc); desc.More(); desc.Next()) {
-    assert(desc() != NULL);
-    if (desc()->id == id) {
-      for (unsigned i = 0; i < 256; i++)
-        desc()->used[i] = 1;
-      return;
+  for (std::list<T1_FontDesc*>::iterator desc = fontDesc.begin();
+       desc != fontDesc.end();
+       desc++) 
+    {
+      assert(*desc);
+      if ((*desc)->id == id) {
+	for (unsigned i = 0; i < 256; i++)
+	  (*desc)->used[i] = 1;
+	return;
+      }
     }
-  }
 
   T1_FontDesc* desc = new T1_FontDesc;
   assert(desc != NULL);
   desc->id = id;
   for (unsigned i = 0; i < 256; i++) desc->used[i] = 1;
-  fontDesc.Append(desc);
+  fontDesc.push_back(desc);
 }
 
 #if 0
@@ -272,7 +290,7 @@ getFontFilePath(unsigned fontId)
     if (path[strlen(path) - 1] != '/') strcat(path, "/");
     strcat(path, fontFileName);
 
-    MathEngine::logger(LOG_DEBUG, "trying to find font file `%s'", path);
+    Globals::logger(LOG_DEBUG, "trying to find font file `%s'", path);
     FILE* f = fopen(path, "rb");
     if (f != NULL) {
       fclose(f);
@@ -308,20 +326,20 @@ convertToPFA(const char* source, const char* target)
   assert(source != NULL);
   assert(target != NULL);
 
-  MathEngine::logger(LOG_DEBUG, "found font file `%s', converting...", source);
+  Globals::logger(LOG_DEBUG, "found font file `%s', converting...", source);
 
   pid_t child = vfork();
 
-  MathEngine::logger(LOG_DEBUG, "new pid %d", child);
+  Globals::logger(LOG_DEBUG, "new pid %d", child);
 
   if (child == 0) {
     int res = execlp("pfb2pfa", "pfb2pfa", source, target, NULL);  
-    if (res == -1) MathEngine::logger(LOG_ERROR, "unable to convert PFB font to PFA");
+    if (res == -1) Globals::logger(LOG_ERROR, "unable to convert PFB font to PFA");
     exit(-1);
   } else {
-    MathEngine::logger(LOG_DEBUG, "waiting for PID: %d", child);
+    Globals::logger(LOG_DEBUG, "waiting for PID: %d", child);
     waitpid(child, NULL, 0);
-    MathEngine::logger(LOG_DEBUG, "child %d died, returning", child);
+    Globals::logger(LOG_DEBUG, "child %d died, returning", child);
   }
 }
 #endif

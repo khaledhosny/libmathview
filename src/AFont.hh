@@ -23,7 +23,6 @@
 #ifndef AFont_hh
 #define AFont_hh
 
-#include "String.hh"
 #include "BoundingBox.hh"
 
 #define NULLCHAR ((char) -1)

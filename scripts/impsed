@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if cp $2 /tmp/f; then
+	sed $1 </tmp/f >$2
+else
+	echo "cp error"
+fi
+

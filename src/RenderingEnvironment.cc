@@ -21,18 +21,17 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
 #include <assert.h>
 #include <math.h>   // for pow(...)
 #include <string.h> // for strncpy(...)
 #include <stdlib.h> // for exit()
 
-#include "Iterator.hh"
 #include "CharMapper.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "StringTokenizer.hh"
 #include "ValueConversion.hh"
 #include "RenderingEnvironment.hh"
-
 
 RenderingEnvironment::RenderingEnvironment(CharMapper& cm) : charMapper(cm)
 {
@@ -44,32 +43,35 @@ RenderingEnvironment::RenderingEnvironment(CharMapper& cm) : charMapper(cm)
   top->scriptSizeMultiplier = 0.71;
 
   top->fontAttributes.family = "serif";
-  top->fontAttributes.size.Set(MathEngine::configuration.GetFontSize(), UNIT_PT);
+  top->fontAttributes.size.Set(Globals::configuration.GetFontSize(), UNIT_PT);
   top->fontAttributes.weight = FONT_WEIGHT_NORMAL;
   top->fontAttributes.style  = FONT_STYLE_NORMAL;
 
-  top->color = MathEngine::configuration.GetForeground();
-  top->background = MathEngine::configuration.GetBackground();
+  top->color = Globals::configuration.GetForeground();
+  top->background = Globals::configuration.GetBackground();
   top->transparentBackground = true;
+
+  top->doc = 0;
 
   for (unsigned i = 1; i <= 7; i++)
     top->mathSpace[i - 1].Set(i / 18.0, UNIT_EM);
 
   top->defaults = NULL;
 
-  level.Push(top);
+  level.push_front(top);
 }
 
 RenderingEnvironment::~RenderingEnvironment()
 {
+  while (!level.empty()) Drop();
 }
 
 void
 RenderingEnvironment::Push(const MathMLAttributeList* aList)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   AttributeLevel* newLevel = new AttributeLevel;
@@ -77,38 +79,45 @@ RenderingEnvironment::Push(const MathMLAttributeList* aList)
   *newLevel = *top; // inherit previous environment
   newLevel->defaults = aList;
 
-  level.Push(newLevel);
+  level.push_front(newLevel);
 }
 
 void
 RenderingEnvironment::Drop()
 {
-  assert(level.GetSize() > 1);
-  level.Drop();
+  assert(level.size() > 0);
+  AttributeLevel* top = level.front();
+  assert(top != 0);
+  delete top;
+  level.pop_front();
 }
 
 const MathMLAttribute*
 RenderingEnvironment::GetAttribute(AttributeId id) const
 {
-  for (Iterator<AttributeLevel*> i(level); i.More(); i.Next()) {
-    AttributeLevel* thisLevel = i();
-    assert(thisLevel != NULL);
+  for (std::list<AttributeLevel*>::const_iterator i = level.begin();
+       i != level.end();
+       i++)
+    {
+      AttributeLevel* thisLevel = *i;
+      assert(thisLevel != 0);
 
-    if (thisLevel->defaults != NULL) {
-      const MathMLAttribute* attribute = thisLevel->defaults->GetAttribute(id);
-      if (attribute != NULL) return attribute;
+      if (thisLevel->defaults != 0)
+	{
+	  const MathMLAttribute* attribute = thisLevel->defaults->GetAttribute(id);
+	  if (attribute != 0) return attribute;
+	}
     }
-  }
 
-  return NULL;
+  return 0;
 }
 
 void
 RenderingEnvironment::SetDisplayStyle(bool b)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   top->displayStyle = b;
@@ -117,9 +126,9 @@ RenderingEnvironment::SetDisplayStyle(bool b)
 bool
 RenderingEnvironment::GetDisplayStyle(void) const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   return top->displayStyle;
@@ -128,10 +137,10 @@ RenderingEnvironment::GetDisplayStyle(void) const
 void
 RenderingEnvironment::SetScriptMinSize(const UnitValue& size)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
   assert(!size.IsPercentage());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   // WARNING: we admit for scriptminsize a value of kind 1em
@@ -143,9 +152,9 @@ RenderingEnvironment::SetScriptMinSize(const UnitValue& size)
 void
 RenderingEnvironment::SetScriptSizeMultiplier(float mult)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   top->scriptSizeMultiplier = mult;
@@ -154,9 +163,9 @@ RenderingEnvironment::SetScriptSizeMultiplier(float mult)
 void
 RenderingEnvironment::SetScriptLevel(int l)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   assert(l >= 0);
@@ -166,9 +175,9 @@ RenderingEnvironment::SetScriptLevel(int l)
 void
 RenderingEnvironment::AddScriptLevel(int delta)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   if (delta == 0) return; // no change
@@ -192,9 +201,9 @@ RenderingEnvironment::AddScriptLevel(int delta)
 int
 RenderingEnvironment::GetScriptLevel() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   return top->scriptLevel;
@@ -203,9 +212,9 @@ RenderingEnvironment::GetScriptLevel() const
 void
 RenderingEnvironment::SetFontFamily(const char* family)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   assert(family != NULL);
@@ -222,9 +231,9 @@ RenderingEnvironment::SetFontFamily(const String* family)
 void
 RenderingEnvironment::SetFontSize(const UnitValue& size)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   // WARNING: a fontSize attribute is to be converted if
@@ -255,9 +264,9 @@ RenderingEnvironment::SetFontSize(const UnitValue& size)
 void
 RenderingEnvironment::SetFontWeight(FontWeightId weight)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
   top->fontAttributes.weight = weight;
 }
@@ -265,9 +274,9 @@ RenderingEnvironment::SetFontWeight(FontWeightId weight)
 void
 RenderingEnvironment::SetFontStyle(FontStyleId style)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   top->fontAttributes.style = style;
@@ -276,9 +285,9 @@ RenderingEnvironment::SetFontStyle(FontStyleId style)
 const FontAttributes&
 RenderingEnvironment::GetFontAttributes() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   return top->fontAttributes;
@@ -287,9 +296,9 @@ RenderingEnvironment::GetFontAttributes() const
 void
 RenderingEnvironment::SetColor(RGBValue c)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
 
   assert(top != NULL);
   top->color = c;
@@ -298,9 +307,9 @@ RenderingEnvironment::SetColor(RGBValue c)
 void
 RenderingEnvironment::SetBackgroundColor(RGBValue c)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   top->background = c;
@@ -310,9 +319,9 @@ RenderingEnvironment::SetBackgroundColor(RGBValue c)
 RGBValue
 RenderingEnvironment::GetColor() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   return top->color;
@@ -321,9 +330,9 @@ RenderingEnvironment::GetColor() const
 RGBValue
 RenderingEnvironment::GetBackgroundColor() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   return top->background;
@@ -333,9 +342,9 @@ void
 RenderingEnvironment::SetMathSpace(MathSpaceId id,
 				   const UnitValue& value)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   assert(id != MATH_SPACE_NOTVALID);
@@ -345,12 +354,12 @@ RenderingEnvironment::SetMathSpace(MathSpaceId id,
   top->mathSpace[id] = value;
 }
 
-const
-UnitValue& RenderingEnvironment::GetMathSpace(MathSpaceId id) const
+const UnitValue&
+RenderingEnvironment::GetMathSpace(MathSpaceId id) const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   assert(id != MATH_SPACE_NOTVALID);
@@ -359,12 +368,34 @@ UnitValue& RenderingEnvironment::GetMathSpace(MathSpaceId id) const
   return top->mathSpace[id];
 }
 
+void
+RenderingEnvironment::SetDocument(const Ptr<MathMLDocument>& doc)
+{
+  assert(!level.empty());
+
+  AttributeLevel* top = level.front();
+  assert(top != NULL);
+
+  top->doc = doc;
+}
+
+Ptr<MathMLDocument>
+RenderingEnvironment::GetDocument() const
+{
+  assert(!level.empty());
+
+  AttributeLevel* top = level.front();
+  assert(top != NULL);
+
+  return top->doc;
+}
+
 scaled
 RenderingEnvironment::GetScaledPointsPerEm() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   FontifiedChar fChar;
@@ -381,9 +412,9 @@ RenderingEnvironment::GetScaledPointsPerEm() const
 scaled
 RenderingEnvironment::GetScaledPointsPerEx() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   FontifiedChar fChar;
@@ -411,9 +442,9 @@ RenderingEnvironment::ToScaledPoints(const UnitValue& value) const
 scaled
 RenderingEnvironment::GetAxis() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   FontifiedChar fChar;
@@ -432,33 +463,28 @@ RenderingEnvironment::GetAxis() const
 scaled
 RenderingEnvironment::GetRuleThickness() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
+#ifdef TEXISH_MATHML
   // don't know if this is the correct heuristics
   scaled s = float2sp(sp2float(top->fontAttributes.size.ToScaledPoints()) * 0.04);
   return s;
-
-#if 0
-  const FontifiedChar* fChar = charMapper.FontifyChar(top->fontAttributes, '-');
-  assert(fChar != NULL);
-
-  BoundingBox minusBox;
-  fChar->GetBoundingBox(minusBox);
-  delete fChar;
-
-  return scaledMax(SCALED_POINTS_PER_PX, minusBox.ascent + minusBox.descent);
+#else
+  scaled s = scaledMin(SCALED_POINTS_PER_PX,
+		       float2sp(sp2float(top->fontAttributes.size.ToScaledPoints()) * 0.1));
+  return s;
 #endif
 }
 
 void
 RenderingEnvironment::SetFontMode(FontModeId mode)
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   top->fontAttributes.mode = mode;
@@ -467,9 +493,9 @@ RenderingEnvironment::SetFontMode(FontModeId mode)
 FontModeId
 RenderingEnvironment::GetFontMode() const
 {
-  assert(!level.IsEmpty());
+  assert(!level.empty());
 
-  AttributeLevel* top = level.Top();
+  AttributeLevel* top = level.front();
   assert(top != NULL);
 
   return top->fontAttributes.mode;

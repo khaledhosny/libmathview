@@ -1,4 +1,4 @@
-<math mode="display"><msub><mi>&epsiv;</mi>
+<math mode="display" xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>&epsiv;</mi>
 <mtext>v</mtext></msub><mo>&equals;</mo><mfrac><mrow><mn>2</mn><msub><mi>K</mi>
 <mi>I</mi></msub></mrow><mrow><mi>E</mi><msqrt><mrow><mn>2</mn><mi>&pi;</mi>
 <mi>r</mi></mrow></msqrt></mrow></mfrac><mrow><mo>(</mo><mrow><mn>1</mn><mo>&minus;

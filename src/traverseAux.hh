@@ -23,32 +23,27 @@
 #ifndef traverseAux_hh
 #define traverseAux_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "Ptr.hh"
 #include "CharMap.hh"
 
-class MathMLElement*         findEmbellishedOperatorRoot(class MathMLElement*);
-class MathMLOperatorElement* findCoreOperator(class MathMLElement*);
-class MathMLOperatorElement* findStretchyOperator(class MathMLElement*);
-class MathMLOperatorElement* findStretchyOperator(class MathMLElement*, StretchId);
-class MathMLElement*         findCommonAncestor(class MathMLElement*, class MathMLElement*);
-class MathMLActionElement*   findActionElement(class MathMLElement*);
-#if defined(HAVE_MINIDOM)
-mDOMNodeRef                  findDOMNode(class MathMLElement*);
-class MathMLElement*         getMathMLElement(mDOMNodeRef);
-class MathMLElement*         findMathMLElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-GMetaDOM::Element            findDOMNode(class MathMLElement*);
-class MathMLElement*         getMathMLElement(const GMetaDOM::Element&);
-class MathMLElement*         findMathMLElement(const GMetaDOM::Element&);
+Ptr<class MathMLElement>         findEmbellishedOperatorRoot(const Ptr<class MathMLElement>&);
+Ptr<class MathMLOperatorElement> findStretchyOperator(const Ptr<class MathMLElement>&);
+Ptr<class MathMLOperatorElement> findStretchyOperator(const Ptr<class MathMLElement>&, StretchId);
+Ptr<class MathMLElement>         findCommonAncestor(const Ptr<class MathMLElement>&,
+						    const Ptr<class MathMLElement>&);
+Ptr<class MathMLActionElement>   findActionElement(const Ptr<class MathMLElement>&);
+#if defined(HAVE_GMETADOM)
+DOM::Element                findDOMNode(const Ptr<class MathMLElement>&);
+Ptr<class MathMLElement>         findMathMLElement(const Ptr<class MathMLDocument>&,
+						   const DOM::Element&);
 #endif
-class MathMLElement*         findRightmostChild(class MathMLElement*);
-class MathMLElement*         findLeftmostChild(class MathMLElement*);
-class MathMLElement*         findRightSibling(class MathMLElement*);
-class MathMLElement*         findLeftSibling(class MathMLElement*);
+Ptr<class MathMLElement>         findRightmostChild(const Ptr<class MathMLElement>&);
+Ptr<class MathMLElement>         findLeftmostChild(const Ptr<class MathMLElement>&);
+Ptr<class MathMLElement>         findRightSibling(const Ptr<class MathMLElement>&);
+Ptr<class MathMLElement>         findLeftSibling(const Ptr<class MathMLElement>&);
 
 #endif // traverseAux_hh

@@ -23,9 +23,7 @@
 #ifndef MathMLStringLitElement_hh
 #define MathMLStringLitElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
@@ -33,19 +31,27 @@
 
 class MathMLStringLitElement : public MathMLTokenElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLStringLitElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLStringLitElement(const GMetaDOM::Element&);
+protected:
+  MathMLStringLitElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLStringLitElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLStringLitElement();
 
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLStringLitElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLStringLitElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Setup(RenderingEnvironment&);
+
 protected:
-  class MathMLTextNode* lQuote;
-  class MathMLTextNode* rQuote;
+  Ptr<class MathMLTextNode> lQuote;
+  Ptr<class MathMLTextNode> rQuote;
 
 private:
   bool setupDone;

@@ -23,31 +23,35 @@
 #ifndef MathMLFencedElement_hh
 #define MathMLFencedElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLNormalizingContainerElement.hh"
+#include "MathMLBinContainerElement.hh"
 
-class MathMLFencedElement: public MathMLNormalizingContainerElement
+class MathMLFencedElement: public MathMLBinContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLFencedElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLFencedElement(const GMetaDOM::Element&);
+protected:
+  MathMLFencedElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLFencedElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(void);
-  virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLFencedElement();
 
-  virtual bool IsBreakable(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLFencedElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLFencedElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(RenderingEnvironment&);
 
 private:
-  void NormalizeFencedElement(void);
+  void DelayedNormalize(const Ptr<class MathMLDocument>&);
 
   bool normalized;
   const String* openFence;

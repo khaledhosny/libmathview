@@ -22,9 +22,14 @@
 
 // WARNING! the following #include has been moved here because otherwise
 // there's a compilation problem on HPUX systems (Stephanie Nile)
+
 #include <stdlib.h>
 // WARNING!
 #include <config.h>
+
+#include <algorithm>
+#include <functional>
+
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
@@ -37,9 +42,8 @@
 #include "gmetadom.hh"
 #endif
 
-#include "Iterator.hh"
 #include "stringAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "CharMapper.hh"
 #include "FontManager.hh"
 #include "StringUnicode.hh"
@@ -62,7 +66,7 @@ unsigned CharMapper::chars = 0;
 #ifdef HAVE_MINIDOM
 static Char parseCode(mDOMNodeRef);
 #else
-static Char parseCode(const GMetaDOM::Element&);
+static Char parseCode(const DOM::Element&);
 #endif
 
 // CharMapper, default constructor
@@ -72,27 +76,21 @@ CharMapper::CharMapper(FontManager& fm) : fontManager(fm)
 
 CharMapper::~CharMapper()
 {
-  for (Iterator<FontDescriptor*> fd(fonts); fd.More(); fd.Next()) {
-    assert(fd() != NULL);
-    // TODO: more to be deleted...
-    delete fd();
-  }
-
-  for (Iterator<FontMap*> fm(maps); fm.More(); fm.Next()) {
-    assert(fm() != NULL);
-    // TODO: more to be deleted...
-    delete fm();
-  }
+  std::for_each(fonts.begin(), fonts.end(), DeleteFontDescriptorAdaptor());
+  std::for_each(maps.begin(), maps.end(), DeleteFontMapAdaptor());
 }
 
 StretchId
 CharMapper::GetStretch(Char ch) const
 {
-  for (Iterator<FontMap*> fontMap(maps); fontMap.More(); fontMap.Next()) {
-    assert(fontMap() != NULL);
-    StretchId id = fontMap()->GetStretch(ch);
-    if (id != STRETCH_NO) return id;
-  }
+  for (std::vector<FontMap*>::const_iterator fontMap = maps.begin();
+       fontMap != maps.end();
+       fontMap++)
+    {
+      assert(*fontMap);
+      StretchId id = (*fontMap)->GetStretch(ch);
+      if (id != STRETCH_NO) return id;
+    }
 
   return STRETCH_NO;
 }
@@ -106,21 +104,27 @@ CharMapper::GetFont(const FontAttributes& fa) const
 
   FontAttributes myfa(fa);
 
-  do {
-    for (Iterator<FontDescriptor*> i(fonts); i.More() && bestEval > 0; i.Next()) {
-      assert(i() != NULL);
-
-      if (i()->fontMap != NULL) {
-	unsigned eval = i()->attributes.Compare(myfa);
-	if (eval < bestEval && fontManager.IsAvailable(myfa, &i()->extraAttributes)) {
-	  bestEval = eval;
-	  bestDesc = i();
+  do
+    {
+      for (std::vector<FontDescriptor*>::const_iterator i = fonts.begin();
+	   i != fonts.end() && bestEval > 0;
+	   i++)
+	{
+	  assert(*i != NULL);
+	  if ((*i)->fontMap != NULL)
+	    {
+	      unsigned eval = (*i)->attributes.Compare(myfa);
+	      if (eval < bestEval && fontManager.IsAvailable(myfa, &(*i)->extraAttributes))
+		{
+		  bestEval = eval;
+		  bestDesc = *i;
+		}
+	    }
 	}
-      }
-    }
 
-    if (bestDesc != NULL) bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
-  } while (bestFont == NULL && myfa.DownGrade());
+      if (bestDesc != NULL) bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
+    }
+  while (bestFont == NULL && myfa.DownGrade());
 
   if (bestFont != NULL) fontManager.MarkAsUsed(bestFont);
 
@@ -138,9 +142,9 @@ CharMapper::FontifyChar(FontifiedChar& fMap, const FontAttributes& fa, Char ch) 
   if (FontifyCharAux(fMap, fa, ch, false)) return true;
 
   if (isPlain(ch)) 
-    MathEngine::logger(LOG_WARNING, "could not find a suitable font for `%c = U+%04x'", ch, ch);
+    Globals::logger(LOG_WARNING, "could not find a suitable font for `%c = U+%04x'", ch, ch);
   else
-    MathEngine::logger(LOG_WARNING, "could not find a suitable font for `U+%04x'", ch);
+    Globals::logger(LOG_WARNING, "could not find a suitable font for `U+%04x'", ch);
 
   return false;
 }
@@ -169,68 +173,80 @@ CharMapper::FontifyCharAux(FontifiedChar& fMap, const FontAttributes& fa, Char c
   FontDescriptor* bestDesc = NULL;
 
   FontAttributes myfa(fa);
+  Globals::logger(LOG_DEBUG, "!!! FONTIFY BEGIN: char: %x %c with attributes:", ch, ch);
+  fa.Dump();
 
   do {
-#if 0
-    MathEngine::logger(LOG_DEBUG, "char: %x stretchy: %d trying attributes:", ch, stretchy);
+#if 1
+    Globals::logger(LOG_DEBUG, "trying attributes:", ch, stretchy);
     myfa.Dump();
 #endif
 
-    for (Iterator<FontDescriptor*> i(fonts); i.More() && bestEval > 0; i.Next()) {
-      assert(i() != NULL);
+    for (std::vector<FontDescriptor*>::const_iterator i = fonts.begin();
+	 i != fonts.end() && bestEval > 0;
+	 i++)
+      {
+	assert(*i);
 
-      // NOTE: the order of the following tests is very important for
-      // performances. Basically, there are 3 tests to be done:
-      // 1) whether this font can render the requested char
-      // 2) whether this font is better than a previously found font
-      // 3) whether this font is available with the current font manager
-      // The order for the tests should be choosen with the most-likely-to-fail
-      // test first, and so on for the other. This must be weighted in order to consider
-      // the computational cost for performing the test. For example, the
-      // charMap is a very cheap test and it is likely to fail on a pretty wide range
-      // of fonts, especially for mathematical symbols. By contrast, `eval' has
-      // a complex procedure to be computed, but once a good font is found, then all
-      // the other are not considered any more. Finally, the availability of the
-      // font is a call to a virtual function.
-      if (i()->fontMap != NULL) {
+	// NOTE: the order of the following tests is very important for
+	// performances. Basically, there are 3 tests to be done:
+	// 1) whether this font can render the requested char
+	// 2) whether this font is better than a previously found font
+	// 3) whether this font is available with the current font manager
+	// The order for the tests should be choosen with the most-likely-to-fail
+	// test first, and so on for the other. This must be weighted in order to consider
+	// the computational cost for performing the test. For example, the
+	// charMap is a very cheap test and it is likely to fail on a pretty wide range
+	// of fonts, especially for mathematical symbols. By contrast, `eval' has
+	// a complex procedure to be computed, but once a good font is found, then all
+	// the other are not considered any more. Finally, the availability of the
+	// font is a call to a virtual function.
+	if ((*i)->fontMap != NULL)
+	  {
 #if 0
-	MathEngine::logger(LOG_DEBUG, "asking for a charmap for U+%04x stretchy %d", ch, stretchy);
+	    Globals::logger(LOG_DEBUG, "asking for a charmap for U+%04x stretchy %d", ch, stretchy);
 #endif
-	const CharMap* charMap = i()->fontMap->GetCharMap(ch, stretchy);
-	if (charMap != NULL) {
-	  unsigned eval = i()->attributes.Compare(myfa);
+	    const CharMap* charMap = (*i)->fontMap->GetCharMap(ch, stretchy);
+	    if (charMap != NULL) 
+	      {
+		unsigned eval = (*i)->attributes.Compare(myfa);
 
 #if 0
-	  MathEngine::logger(LOG_DEBUG, "char: U+%04x comparing with: ", ch);
-	  i()->attributes.Dump();
-	  MathEngine::logger(LOG_DEBUG, "comparison = %d", eval);
+		Globals::logger(LOG_DEBUG, "char: U+%04x comparing with: ", ch);
+		(*i)->attributes.Dump();
+		Globals::logger(LOG_DEBUG, "comparison = %d", eval);
 #endif
 
-	  if (eval < bestEval && fontManager.IsAvailable(myfa, &i()->extraAttributes)) {
-	    bestEval = eval;
-	    bestCharMap = charMap;
-	    bestDesc = i();
-	  } else if (eval < bestEval) {
+		if (eval < bestEval && fontManager.IsAvailable(myfa, &(*i)->extraAttributes))
+		  {
+		    bestEval = eval;
+		    bestCharMap = charMap;
+		    bestDesc = *i;
+		  } 
+		else if (eval < bestEval)
+		  {
 #if 0
-	    MathEngine::logger(LOG_DEBUG, "found a better font, but it's not available");
-	    i()->extraAttributes.Dump();
+		    Globals::logger(LOG_DEBUG, "found a better font, but it's not available");
+		    (*i)->extraAttributes.Dump();
 #endif
+		  }
+	      }
 	  }
-	}
       }
-    }
 
-    if (bestDesc != NULL) {
-      bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
-      if (bestFont == NULL)
-	MathEngine::logger(LOG_WARNING, "a font for char U+%04x was configured, but the actual font file was not found", ch);
-    }
-  } while (bestFont == NULL && myfa.DownGrade());
+    if (bestDesc)
+      {
+	bestFont = fontManager.GetFont(myfa, &bestDesc->extraAttributes);
+	if (!bestFont)
+	  Globals::logger(LOG_WARNING, "a font for char U+%04x was configured, but the actual font file was not found", ch);
+      }
+  } 
+  while (bestFont == NULL && myfa.DownGrade());
 
-#if 0
-  MathEngine::logger(LOG_DEBUG, "resulting attributes:");
+#if 1
+  Globals::logger(LOG_DEBUG, "!!! FONTIFY END: resulting attributes:");
   myfa.Dump();
-  MathEngine::logger(LOG_DEBUG, "\n");
+  Globals::logger(LOG_DEBUG, "\n");
 #endif
 
   if (bestFont == NULL || bestCharMap == NULL) {
@@ -255,10 +271,13 @@ CharMapper::FontifyCharAux(FontifiedChar& fMap, const FontAttributes& fa, Char c
 StretchId
 CharMapper::FontMap::GetStretch(Char ch) const
 {
-  for (Iterator<CharMap*> charMap(single[CHAR_HASH(ch)]); charMap.More(); charMap.Next()) {
-    assert(charMap() != NULL);
-    if (charMap()->MapsStretchyChar(ch)) return charMap()->GetStretch();
-  }
+  for (std::vector<CharMap*>::const_iterator charMap = single[CHAR_HASH(ch)].begin();
+       charMap != single[CHAR_HASH(ch)].end();
+       charMap++)
+    {
+      assert(*charMap);
+      if ((*charMap)->MapsStretchyChar(ch)) return (*charMap)->GetStretch();
+    }
 
   return STRETCH_NO;
 }
@@ -268,18 +287,25 @@ CharMapper::FontMap::GetCharMap(Char ch, bool stretchy) const
 {
   const CharMap* m = NULL;
 
-  for (Iterator<CharMap*> charMap(single[CHAR_HASH(ch)]); m == NULL && charMap.More(); charMap.Next()) {
-    assert(charMap() != NULL);
-    if ((!stretchy && charMap()->MapsChar(ch)) ||
-	(stretchy && charMap()->MapsStretchyChar(ch))) m = charMap();
-  }
-
-  if (m == NULL && !stretchy) {
-    for (Iterator<CharMap*> charMap(multi); m == NULL && charMap.More(); charMap.Next()) {
-      assert(charMap() != NULL);
-      if (charMap()->MapsChar(ch)) m = charMap();
+  for (std::vector<CharMap*>::const_iterator charMap = single[CHAR_HASH(ch)].begin();
+       m == NULL && charMap != single[CHAR_HASH(ch)].end();
+       charMap++)
+    {
+      assert(*charMap);
+      if ((!stretchy && (*charMap)->MapsChar(ch)) ||
+	  (stretchy && (*charMap)->MapsStretchyChar(ch))) m = *charMap;
     }
-  }
+
+  if (m == NULL && !stretchy)
+    {
+      for (std::vector<CharMap*>::const_iterator charMap = multi.begin();
+	   m == NULL && charMap != multi.end();
+	   charMap++)
+	{
+	  assert(*charMap);
+	  if ((*charMap)->MapsChar(ch)) m = *charMap;
+	}
+    }
 
   return m;
 }
@@ -308,17 +334,17 @@ CharMapper::Load(const char* fileName)
 
 #ifdef HAVE_GMETADOM
   try {
-    GMetaDOM::Document doc = MathMLParseFile(fileName, false);
+    DOM::Document doc = MathMLParseFile(fileName, false);
 
-    GMetaDOM::Element root = doc.get_documentElement();
-    if (root == 0) return false;
+    DOM::Element root = doc.get_documentElement();
+    if (!root) return false;
 
     if (root.get_nodeName() == "font-configuration")
       ParseFontConfiguration(root);
     else
       return false;
 
-  } catch (GMetaDOM::DOMException exc) {
+  } catch (DOM::DOMException exc) {
     return false;
   }
 #endif // HAVE_GMETADOM
@@ -345,11 +371,11 @@ CharMapper::ParseFontConfiguration(mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseFontConfiguration(const GMetaDOM::Element& node)
+CharMapper::ParseFontConfiguration(const DOM::Element& node)
 {
   // a conf file is made of a single <font-configuration> element
 
-  for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
+  for (DOM::Node p = node.get_firstChild(); p; p = p.get_nextSibling()) {
     // every child of <font-configuration> must be a particular font map
     if      (p.get_nodeName() == "font") ParseFont(p);
     else if (p.get_nodeName() == "map") ParseMap(p);
@@ -427,23 +453,23 @@ CharMapper::ParseFont(mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseFont(const GMetaDOM::Element& node)
+CharMapper::ParseFont(const DOM::Element& node)
 {
   FontDescriptor* desc = new FontDescriptor;
-  desc->fontMapId = NULL;
+  desc->fontMapId = "";
   desc->fontMap = NULL;
 
-  GMetaDOM::NamedNodeMap attributes = node.get_attributes();
+  DOM::NamedNodeMap attributes = node.get_attributes();
 
   for (unsigned i = 0; i < attributes.get_length(); i++) {
-    GMetaDOM::Attr attr = attributes.item(i);
-    assert(attr != 0);
+    DOM::Attr attr = attributes.item(i);
+    assert(attr);
 
-    GMetaDOM::DOMString name = attr.get_nodeName();
-    GMetaDOM::DOMString value = attr.get_nodeValue();
+    DOM::GdomeString name = attr.get_nodeName();
+    std::string value = attr.get_nodeValue();
 
     if (name == "family") {
-      desc->attributes.family = value.toC();
+      desc->attributes.family = value;
     } else if (name == "style") {
       if (value == "normal") 
 	desc->attributes.style = FONT_STYLE_NORMAL;
@@ -455,30 +481,28 @@ CharMapper::ParseFont(const GMetaDOM::Element& node)
       else if (value == "bold")
 	desc->attributes.weight = FONT_WEIGHT_BOLD;
     } else if (name == "map") {
-      desc->fontMapId = value.toC();
+      desc->fontMapId = value;
     } else if (name == "mode") {
       if (value == "text")
 	desc->attributes.mode = FONT_MODE_TEXT;
       else if (value == "math")
 	desc->attributes.mode = FONT_MODE_MATH;
     } else if (name == "size") {
-      char* s_value = value.toC();
-      StringC sName(s_value);
+      StringC sName(value.c_str());
       StringTokenizer st(sName);
       const Value* v = numberUnitParser(st);
       if (v != NULL) {
 	desc->attributes.size = v->ToNumberUnit();
 	delete v;
       }
-      delete [] s_value;
     } else
-      desc->extraAttributes.AddProperty(name.toC(), value.toC());
+      desc->extraAttributes.AddProperty(name, value);
   }
   
-  if (desc->fontMapId == NULL && desc->attributes.HasFamily())
-    desc->fontMapId = strdup(desc->attributes.family);
+  if (desc->fontMapId == "" && desc->attributes.HasFamily())
+    desc->fontMapId = desc->attributes.family;
 
-  if (desc->fontMapId != NULL) fonts.Append(desc);
+  if (desc->fontMapId != "") fonts.push_back(desc);
   else delete desc;
 }
 #endif // HAVE_GMETADOM
@@ -493,14 +517,14 @@ CharMapper::ParseMap(mDOMNodeRef node)
   mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("id"));
   if (value == NULL) return;
 #if 0
-  else MathEngine::logger(LOG_DEBUG, "parsing font map `%s'", value);
+  else Globals::logger(LOG_DEBUG, "parsing font map `%s'", value);
 #endif
 
   FontMap* fontMap = new FontMap;
   fontMap->id = C_CONST_STRING(value);
 
   if (SearchMapping(fontMap->id) != NULL) {
-    MathEngine::logger(LOG_WARNING, "there is already a font map with id `%s' (ignored)", fontMap->id);
+    Globals::logger(LOG_WARNING, "there is already a font map with id `%s' (ignored)", fontMap->id);
     delete fontMap;
     return;
   }
@@ -521,28 +545,28 @@ CharMapper::ParseMap(mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseMap(const GMetaDOM::Element& node)
+CharMapper::ParseMap(const DOM::Element& node)
 {
   if (!node.hasAttribute("id")) return;
 
   FontMap* fontMap = new FontMap;
-  fontMap->id = node.getAttribute("id").toC();
+  fontMap->id = node.getAttribute("id");
 
   if (SearchMapping(fontMap->id) != NULL) {
-    MathEngine::logger(LOG_WARNING, "there is already a font map with id `%s' (ignored)", fontMap->id);
+    Globals::logger(LOG_WARNING, "there is already a font map with id `%s' (ignored)", fontMap->id.c_str());
     delete fontMap;
     return;
   }
 
-  for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
-    GMetaDOM::DOMString name = p.get_nodeName();
+  for (DOM::Node p = node.get_firstChild(); p; p = p.get_nextSibling()) {
+    DOM::GdomeString name = p.get_nodeName();
     if      (name == "range") ParseRange(p, fontMap);
     else if (name == "multi") ParseMulti(p, fontMap);
     else if (name == "single") ParseSingle(p, fontMap);
     else if (name == "stretchy") ParseStretchy(p, fontMap);
   }
 
-  maps.Append(fontMap);
+  maps.push_back(fontMap);
 }
 
 #endif // HAVE_GMETADOM
@@ -593,46 +617,44 @@ CharMapper::ParseRange(mDOMNodeRef node, FontMap* fontMap)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseRange(const GMetaDOM::Element& node, FontMap* fontMap)
+CharMapper::ParseRange(const DOM::Element& node, FontMap* fontMap)
 {
   assert(fontMap != NULL);
 
   CharMap* charMap = new CharMap;
   charMap->type = CHAR_MAP_RANGE;
 
-  GMetaDOM::DOMString value = node.getAttribute("first");
-  if (value.isEmpty()) {
+  DOM::GdomeString value = node.getAttribute("first");
+  if (value.empty()) {
     delete charMap;
     return;
   }
-  char* s_value = value.toC();
-  charMap->range.first = strtol(s_value, NULL, 0);
-  delete [] s_value;
+
+  std::string s_value = value;
+  charMap->range.first = strtol(s_value.c_str(), NULL, 0);
 
   value = node.getAttribute("last");
-  if (value.isEmpty()) {
+  if (value.empty()) {
     delete charMap;
     return;
   }
-  s_value = value.toC();
-  charMap->range.last = strtol(s_value, NULL, 0);
-  delete [] s_value;
+  s_value = value;
+  charMap->range.last = strtol(s_value.c_str(), NULL, 0);
 
   value = node.getAttribute("offset");
-  if (value.isEmpty()) {
+  if (value.empty()) {
     delete charMap;
     return;
   }
-  s_value = value.toC();
-  charMap->range.offset = strtol(s_value, NULL, 0);
-  delete [] s_value;
+  s_value = value;
+  charMap->range.offset = strtol(s_value.c_str(), NULL, 0);
 
   if (charMap->range.last < charMap->range.first) {
     delete charMap;
     return;
   }
 
-  fontMap->multi.Append(charMap);
+  fontMap->multi.push_back(charMap);
 }
 
 #endif // HAVE_GMETADOM
@@ -690,30 +712,29 @@ CharMapper::ParseMulti(mDOMNodeRef node, FontMap* fontMap)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseMulti(const GMetaDOM::Element& node, FontMap* fontMap)
+CharMapper::ParseMulti(const DOM::Element& node, FontMap* fontMap)
 {
   assert(fontMap != NULL);
 
   CharMap* charMap = new CharMap;
   charMap->type = CHAR_MAP_MULTI;
 
-  GMetaDOM::DOMString value = node.getAttribute("first");
-  if (value.isEmpty()) {
+  DOM::GdomeString value = node.getAttribute("first");
+  if (value.empty()) {
     delete charMap;
     return;
   }
-  char* s_value = value.toC();
-  charMap->multi.first = strtol(s_value, NULL, 0);
-  delete [] s_value;
+
+  std::string s_value = value;
+  charMap->multi.first = strtol(s_value.c_str(), NULL, 0);
 
   value = node.getAttribute("last");
-  if (value.isEmpty()) {
+  if (value.empty()) {
     delete charMap;
     return;
   }
-  s_value = value.toC();
-  charMap->multi.last = strtol(s_value, NULL, 0);
-  delete [] s_value;
+  s_value = value;
+  charMap->multi.last = strtol(s_value.c_str(), NULL, 0);
 
   if (charMap->multi.last < charMap->multi.first) {
     delete charMap;
@@ -721,22 +742,21 @@ CharMapper::ParseMulti(const GMetaDOM::Element& node, FontMap* fontMap)
   }
 
   value = node.getAttribute("index");
-  if (value.isEmpty()) {
+  if (value.empty()) {
     delete charMap;
     return;
   }
   charMap->multi.index = new char[charMap->multi.last - charMap->multi.first + 1];
 
-  s_value = value.toC();
-  const char* ptr = s_value;
+  s_value = value;
+  const char* ptr = s_value.c_str();
   for (Char ch = charMap->multi.first; ch < charMap->multi.last; ch++) {
     char* newPtr;
     charMap->multi.index[ch - charMap->multi.first] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
-  delete [] s_value;
 
-  fontMap->multi.Append(charMap);
+  fontMap->multi.push_back(charMap);
 }
 
 #endif // HAVE_GMETADOM
@@ -772,7 +792,7 @@ CharMapper::ParseSingle(mDOMNodeRef node, FontMap* fontMap)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseSingle(const GMetaDOM::Element& node, FontMap* fontMap)
+CharMapper::ParseSingle(const DOM::Element& node, FontMap* fontMap)
 {
   assert(fontMap != NULL);
 
@@ -785,16 +805,15 @@ CharMapper::ParseSingle(const GMetaDOM::Element& node, FontMap* fontMap)
     return;
   }
 
-  GMetaDOM::DOMString value = node.getAttribute("index");
-  if (value.isEmpty()) {
+  DOM::GdomeString value = node.getAttribute("index");
+  if (value.empty()) {
     delete charMap;
     return;
   }
-  char* s_value = value.toC();
-  charMap->single.index = strtol(s_value, NULL, 0);
-  delete [] s_value;
+  std::string s_value = value;
+  charMap->single.index = strtol(s_value.c_str(), NULL, 0);
 
-  fontMap->single[CHAR_HASH(charMap->single.code)].Append(charMap);
+  fontMap->single[CHAR_HASH(charMap->single.code)].push_back(charMap);
 }
 
 #endif // HAVE_GMETADOM
@@ -848,7 +867,7 @@ CharMapper::ParseStretchy(mDOMNodeRef node, FontMap* fontMap)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseStretchy(const GMetaDOM::Element& node, FontMap* fontMap)
+CharMapper::ParseStretchy(const DOM::Element& node, FontMap* fontMap)
 {
   assert(fontMap != NULL);
 
@@ -864,8 +883,8 @@ CharMapper::ParseStretchy(const GMetaDOM::Element& node, FontMap* fontMap)
     return;
   }
 
-  GMetaDOM::DOMString value = node.getAttribute("direction");
-  if (!value.isEmpty())
+  DOM::GdomeString value = node.getAttribute("direction");
+  if (!value.empty())
     if      (value == "horizontal")
       charMap->stretchy.direction = STRETCH_HORIZONTAL;
     else if (value == "vertical")
@@ -877,13 +896,13 @@ CharMapper::ParseStretchy(const GMetaDOM::Element& node, FontMap* fontMap)
   else
     charMap->stretchy.direction = STRETCH_NO;
 
-  for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
-    GMetaDOM::DOMString name = p.get_nodeName();
+  for (DOM::Node p = node.get_firstChild(); p; p = p.get_nextSibling()) {
+    DOM::GdomeString name = p.get_nodeName();
     if      (name == "simple") ParseStretchySimple(p, charMap);
     else if (name == "compound") ParseStretchyCompound(p, charMap);
   }
 
-  fontMap->single[CHAR_HASH(charMap->stretchy.code)].Append(charMap);
+  fontMap->single[CHAR_HASH(charMap->stretchy.code)].push_back(charMap);
 }
 
 #endif // HAVE_GMETADOM
@@ -931,41 +950,37 @@ CharMapper::ParseStretchyCompound(mDOMNodeRef node, CharMap* charMap)
 #elif defined(HAVE_GMETADOM)
 
 void
-CharMapper::ParseStretchySimple(const GMetaDOM::Element& node, CharMap* charMap)
+CharMapper::ParseStretchySimple(const DOM::Element& node, CharMap* charMap)
 {
   assert(charMap != NULL);
 
-  GMetaDOM::DOMString value = node.getAttribute("index");
-  if (value.isEmpty()) return;
+  DOM::GdomeString value = node.getAttribute("index");
+  if (value.empty()) return;
 
-  char* s_value = value.toC();
-  const char* ptr = s_value;
+  std::string s_value = value;
+  const char* ptr = s_value.c_str();
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
     charMap->stretchy.simple[i] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
-
-  delete [] s_value;
 }
 
 void
-CharMapper::ParseStretchyCompound(const GMetaDOM::Element& node, CharMap* charMap)
+CharMapper::ParseStretchyCompound(const DOM::Element& node, CharMap* charMap)
 {
   assert(charMap != NULL);
 
-  GMetaDOM::DOMString value = node.getAttribute("index");
-  if (value.isEmpty()) return;
+  DOM::GdomeString value = node.getAttribute("index");
+  if (value.empty()) return;
 
-  char* s_value = value.toC();
-  const char* ptr = s_value;
+  std::string s_value = value;
+  const char* ptr = s_value.c_str();
   for (unsigned i = 0; i < SC_REPEAT + 1 && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
     if (i < SC_REPEAT + 1) charMap->stretchy.compound[i] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
-
-  delete [] s_value;
 }
 
 #endif // HAVE_GMETADOM
@@ -975,26 +990,31 @@ CharMapper::PatchConfiguration()
 {
   // this method is to patch the font configuration, giving each
   // fontMap its mapping
-  for (Iterator<FontDescriptor*> i(fonts); i.More(); i.Next()) {
-    assert(i() != NULL);
-    assert(i()->fontMapId != NULL);
-    i()->fontMap = SearchMapping(i()->fontMapId);
+  for (std::vector<FontDescriptor*>::iterator i = fonts.begin();
+       i != fonts.end();
+       i++)
+    {
+      assert(*i);
+      assert((*i)->fontMapId != "");
+      (*i)->fontMap = SearchMapping((*i)->fontMapId);
 #if 0
-    MathEngine::logger(LOG_DEBUG, "patching font with map `%s', results %p", i()->fontMapId, i()->fontMap);
+      Globals::logger(LOG_DEBUG, "patching font with map `%s', results %p",
+		      (*i)->fontMapId, (*i)->fontMap);
 #endif
-  }
+    }
 }
 
 const CharMapper::FontMap*
-CharMapper::SearchMapping(const char* id) const
+CharMapper::SearchMapping(const std::string& id) const
 {
-  assert(id != NULL);
-
-  for (Iterator<FontMap*> i(maps); i.More(); i.Next()) {
-    assert(i() != NULL);
-    assert(i()->id != NULL);
-    if (!strcmp(i()->id, id)) return i();
-  }
+  for (std::vector<FontMap*>::const_iterator i = maps.begin();
+       i != maps.end();
+       i++)
+    {
+      assert(*i);
+      assert((*i)->id != "");
+      if ((*i)->id == id) return *i;
+    }
 
   return NULL;
 }
@@ -1016,7 +1036,7 @@ parseCode(mDOMNodeRef node)
     if (*value == '\0') ch = 0;
     else if (*value == '0' && tolower(*(value + 1)) == 'x') ch = strtol(C_CONST_STRING(value), NULL, 0);
     else if (isPlain(*value) && *(value + 1) == '\0') ch = *value;
-    else MathEngine::logger(LOG_WARNING, "UTF8 character(s) inside font configuration file (ignored)");
+    else Globals::logger(LOG_WARNING, "UTF8 character(s) inside font configuration file (ignored)");
     mdom_string_free(value);
 
     return ch;
@@ -1024,7 +1044,7 @@ parseCode(mDOMNodeRef node)
 
   value = mdom_node_get_attribute(node, DOM_CONST_STRING("name"));
   if (value != NULL) {
-    String* s = MathEngine::entitiesTable.GetEntityContent(value);
+    String* s = Globals::entitiesTable.GetEntityContent(value);
     
     Char ch = 0;
     
@@ -1033,7 +1053,7 @@ parseCode(mDOMNodeRef node)
       ch = s->GetChar(0);
       delete s;
     } else
-      if (s == NULL) MathEngine::logger(LOG_WARNING, "unknown entity `%s' in font configuration file (ignored)", value);
+      if (s == NULL) Globals::logger(LOG_WARNING, "unknown entity `%s' in font configuration file (ignored)", value);
 
     mdom_string_free(value);
 
@@ -1046,20 +1066,18 @@ parseCode(mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
 
 static Char
-parseCode(const GMetaDOM::Element& node)
+parseCode(const DOM::Element& node)
 {
-  GMetaDOM::DOMString value = node.getAttribute("code");
-  if (!value.isEmpty()) {
-    char* s_value = value.toC();
-    assert(s_value != NULL);
+  DOM::GdomeString value = node.getAttribute("code");
+  if (!value.empty()) {
+    std::string s_value = value;
 
     Char ch = 0;
 
-    if (*s_value == '\0') ch = 0;
-    else if (*s_value == '0' && tolower(*(s_value + 1)) == 'x') ch = strtol(s_value, NULL, 0);
-    else if (isPlain(*s_value) && *(s_value + 1) == '\0') ch = *s_value;
-    else MathEngine::logger(LOG_WARNING, "UTF8 character(s) inside font configuration file (ignored)");
-    delete [] s_value;
+    if (s_value.length() == 0) ch = 0;
+    else if (s_value[0] == '0' && tolower(s_value[1]) == 'x') ch = strtol(s_value.c_str(), NULL, 0);
+    else if (s_value.length() == 1 && isPlain(s_value[0])) ch = s_value[0];
+    else Globals::logger(LOG_WARNING, "UTF8 character(s) inside font configuration file (ignored)");
 
     return ch;
   }
@@ -1067,7 +1085,7 @@ parseCode(const GMetaDOM::Element& node)
 #if 0
   value = node.getAttribute("name");
   if (!value.isEmpty()) {
-    String* s = MathEngine::entitiesTable.GetEntityContent(value);
+    String* s = Globals::entitiesTable.GetEntityContent(value);
     
     Char ch = 0;
     
@@ -1076,7 +1094,7 @@ parseCode(const GMetaDOM::Element& node)
       ch = s->GetChar(0);
       delete s;
     } else
-      if (s == NULL) MathEngine::logger(LOG_WARNING, "unknown entity `%s' in font configuration file (ignored)", value);
+      if (s == NULL) Globals::logger(LOG_WARNING, "unknown entity `%s' in font configuration file (ignored)", value);
 
     return ch;
   }

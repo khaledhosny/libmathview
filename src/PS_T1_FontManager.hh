@@ -25,6 +25,8 @@
 
 #ifdef HAVE_LIBT1
 
+#include <list>
+
 #include "T1_FontManager.hh"
 
 class PS_T1_FontManager : public T1_FontManager
@@ -49,8 +51,8 @@ private:
     char used[256];
   };
 
-  static void SetUsedChars(Container<T1_FontDesc*>&, unsigned);
-  static void SetUsedChars(Container<T1_FontDesc*>&, unsigned, const char[]);
+  static void SetUsedChars(std::list<T1_FontDesc*>&, unsigned);
+  static void SetUsedChars(std::list<T1_FontDesc*>&, unsigned, const char[]);
 };
 
 #define TO_PS_T1_FONT_MANAGER(fm) (dynamic_cast<PS_T1_FontManager*>(fm))

@@ -23,10 +23,13 @@
 #ifndef String_hh
 #define String_hh
 
+#include <functional>
+
 #include "defs.h"
 #include "Char.hh"
 
-class String {
+class String
+{
 public:
   String(void);
   virtual ~String();
@@ -48,7 +51,6 @@ public:
 
   virtual void Set(const String&) = 0;
   virtual void Set(const char*) = 0;
-  virtual void Set(const char*, unsigned) = 0;
   virtual void Set(const Char8*, unsigned) = 0;
   virtual void Set(const Char16*, unsigned) = 0;
   virtual void Set(const Char32*, unsigned) = 0;
@@ -64,6 +66,12 @@ public:
 #ifdef DEBUG
   static int GetCounter(void) { return counter; }
 #endif
+
+  struct Hash : public std::unary_function< class String*, size_t >
+  { size_t operator()(const class String*) const; };
+
+  struct Eq : public std::binary_function< class String*, class String*, bool >
+  { bool operator()(const class String*, const class String*) const; };
 
 private:
   void ToCAux(char*) const;

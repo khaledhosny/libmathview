@@ -23,14 +23,13 @@
 #ifndef MathMLTableElement_hh
 #define MathMLTableElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLTableCellElement.hh"
 #include "MathMLTableRowElement.hh"
-#include "MathMLContainerElement.hh"
+#include "MathMLLinearContainerElement.hh"
 #include "MathMLAlignGroupElement.hh"
 
 #define MIN_COLUMN_SPACING (float2sp(3 * SCALED_POINTS_PER_PX))
@@ -49,6 +48,15 @@ struct GroupExtent {
 };
 
 struct AlignmentGroup {
+  AlignmentGroup(void) { Reset(); }
+
+  void Reset(void)
+  {
+    group = 0;
+    alignment = GROUP_ALIGN_NOTVALID;
+    leftEdge = rightEdge = extent.left = extent.right = 0;
+  }
+
   MathMLAlignGroupElement* group; // ptr to the element
   GroupAlignId alignment;         // alignment for this group
   scaled leftEdge;                // left edge (different from left width)
@@ -57,8 +65,21 @@ struct AlignmentGroup {
 };
 
 struct TableCell {
+  TableCell(void) { Reset(); }
+
+  void Reset(void)
+  {
+    spanned = false;
+    rowSpan = colSpan = 0;
+    nAlignGroup = 0;
+    aGroup = 0;
+    rowAlign = ROW_ALIGN_NOTVALID;
+    columnAlign = COLUMN_ALIGN_NOTVALID;
+    iGroup = 0;
+  }
+
   // phase 1: MathMLTableElement::SetupTable
-  MathMLTableCellElement* mtd;  // ptr to <mtd> element
+  Ptr<MathMLTableCellElement> mtd;  // ptr to <mtd> element
   bool     spanned;             // true if mtd is a pointer to the spanning cell
   unsigned rowSpan;             // spanning rows
   unsigned colSpan;             // spanning columns
@@ -72,17 +93,30 @@ struct TableCell {
 
   // following fields are only temporarily used while arranging groups
   unsigned iGroup;                // group index
-  MathMLAlignGroupElement* group; // last group found
+  Ptr<MathMLAlignGroupElement> group; // last group found
 
   // some facilities
-  bool ColumnSpanning(void) { return mtd != NULL && !spanned && colSpan > 1; }
-  bool RowSpanning(void) { return mtd != NULL && !spanned && rowSpan > 1; }
+  bool ColumnSpanning(void) { return mtd && !spanned && colSpan > 1; }
+  bool RowSpanning(void) { return mtd && !spanned && rowSpan > 1; }
 };
 
 typedef TableCell* TableCellPtr;
 typedef TableCellPtr* TableCellMatrix;
 
 struct TableColumn {
+  TableColumn(void) { Reset(); }
+
+  void Reset(void)
+  {
+    nAlignGroup = 0;
+    widthType = COLUMN_WIDTH_NOTVALID;
+    fixedWidth = 0;
+    spacingType = SPACING_NOTVALID;
+    fixedSpacing = 0;
+    lineType = TABLE_LINE_NOTVALID;
+    contentWidth = minimumWidth = width = spacing = 0;
+  }
+
   // phase 3: MathMLTableElement::arrangeGroupsAlignment
   unsigned nAlignGroup;         // number of alignment groups within this column
 
@@ -107,7 +141,17 @@ struct TableColumn {
 };
 
 struct TableRow {
-  MathMLTableRowElement* mtr;   // Table Row element
+  TableRow(void) { Reset(); }
+
+  void Reset(void)
+  {
+    spacingType = SPACING_NOTVALID;
+    fixedSpacing = 0;
+    lineType = TABLE_LINE_NOTVALID;
+    ascent = descent = spacing = 0;
+  }
+
+  Ptr<MathMLTableRowElement> mtr;   // Table Row element
 
   SpacingId   spacingType;      // type of spacing (absolute or %)
   union {
@@ -124,37 +168,62 @@ struct TableRow {
 };
 
 struct RowLabel {
-  MathMLElement* labelElement;
+  RowLabel(void) { Reset(); }
+
+  void Reset(void)
+  {
+    rowAlign = ROW_ALIGN_NOTVALID;
+    columnAlign = COLUMN_ALIGN_NOTVALID;
+  }
+
+  Ptr<MathMLElement> labelElement;
   RowAlignId     rowAlign;
   ColumnAlignId  columnAlign;
 };
 
-class MathMLTableElement: public MathMLContainerElement
+class MathMLTableElement
+  : public MathMLLinearContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLTableElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLTableElement(const GMetaDOM::Element&);
+protected:
+  MathMLTableElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLTableElement(const DOM::Element&);
 #endif
+  virtual ~MathMLTableElement();
+
+private:
+  void Init(void);
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLTableElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLTableElement(el)); }
+#endif
+
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(void);
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
+  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(scaled, scaled);
   virtual void Render(const class DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual ~MathMLTableElement();
 
-  virtual MathMLElement* Inside(scaled x, scaled y);
+  virtual Ptr<MathMLElement> Inside(scaled x, scaled y);
 
   void 	       SetupColumnAlignAux(const Value*, unsigned, unsigned, bool = false);
   void 	       SetupRowAlignAux(const Value*, unsigned, bool = false);
   void 	       SetupGroupAlignAux(const Value*, unsigned, unsigned);
 
-  virtual void SetDirty(const Rectangle* rect);
-  virtual bool IsExpanding(void) const;
+  //virtual void SetDirty(const Rectangle* rect);
   bool         HasLabels(void) const { return rowLabel != NULL; }
+
+  virtual void SetDirtyAttribute(void)
+  {
+    MathMLLinearContainerElement::SetDirtyAttribute();
+    SetDirtyStructure();
+  };
 
 protected:
   TableCell*   GetCell(unsigned r, unsigned c) { return &cell[r][c]; }
@@ -162,23 +231,23 @@ protected:
 
   // table setup
   void 	       CalcTableSize(void);
-  void 	       SetupCellSpanning(class RenderingEnvironment*);
+  void 	       SetupCellSpanning(class RenderingEnvironment&);
   void 	       SetupCells(void);
-  void 	       SetupColumns(class RenderingEnvironment*);
-  void 	       SetupAlignmentScopes(class RenderingEnvironment*);
-  void 	       SetupColumnAlign(class RenderingEnvironment*);
-  void 	       SetupRows(class RenderingEnvironment*);
-  void 	       SetupRowAlign(class RenderingEnvironment*);
+  void 	       SetupColumns(class RenderingEnvironment&);
+  void 	       SetupAlignmentScopes(class RenderingEnvironment&);
+  void 	       SetupColumnAlign(class RenderingEnvironment&);
+  void 	       SetupRows(class RenderingEnvironment&);
+  void 	       SetupRowAlign(class RenderingEnvironment&);
   void         SetupLabels(void);
   void 	       SetupGroups(void);
-  void 	       SetupGroupAlign(class RenderingEnvironment*);
+  void 	       SetupGroupAlign(class RenderingEnvironment&);
   void 	       SetupAlignMarks(void);
-  void 	       SetupTableAttributes(class RenderingEnvironment*);
+  void 	       SetupTableAttributes(class RenderingEnvironment&);
   void 	       AlignTable(scaled, BoundingBox&);
   void         ReleaseAuxStructures(void);
 
   // table layout
-  void         DoHorizontalLayout(LayoutId, BreakId, scaled);
+  void         DoHorizontalLayout(const class FormattingContext&);
   void         DoHorizontalMinimumLayout(void);
   void         DoVerticalLayout(LayoutId);
   void         ConfirmHorizontalFixedSpacing(void);
@@ -187,14 +256,14 @@ protected:
   void         ConfirmVerticalScaleSpacing(scaled);
   void         AdjustTableWidth(scaled);
   void         SpanRowHeight(LayoutId);
-  void         ColumnLayout(unsigned, LayoutId, BreakId, scaled);
-  void         ScaleColumnsLayout(LayoutId, BreakId, scaled);
-  void         SpannedCellsLayout(LayoutId);
+  void         ColumnLayout(unsigned, const class FormattingContext&);
+  void         ScaleColumnsLayout(const class FormattingContext&);
+  void         SpannedCellsLayout(const class FormattingContext&);
   void         StretchyCellsLayout(void);
-  scaled       ColumnGroupsLayout(unsigned, LayoutId);
-  scaled       PrepareLabelsLayout(LayoutId, scaled);
-  void         DoLabelsLayout(LayoutId, scaled);
-  void         AdjustTableLayoutWithLabels(LayoutId, scaled);
+  scaled       ColumnGroupsLayout(unsigned, const class FormattingContext&);
+  scaled       PrepareLabelsLayout(const class FormattingContext&);
+  void         DoLabelsLayout(const class FormattingContext&);
+  void         AdjustTableLayoutWithLabels(const class FormattingContext&);
   void         SetLabelPosition(unsigned, scaled, scaled);
 
   // table invariants
@@ -291,7 +360,5 @@ private:
   float         wScale;
   float         hScale;
 };
-
-#define TO_TABLE(object) (dynamic_cast<MathMLTableElement*>(object))
 
 #endif // MathMLTableElement_hh

@@ -49,15 +49,6 @@ StringU<CharX>::StringU(const char* s) : String()
   Set(s);
 }
 
-#ifndef __CHAR_UNSIGNED__
-template <typename CharX>
-StringU<CharX>::StringU(const char* s, unsigned n) : String()
-{
-  Init();
-  Set(s, n);
-}
-#endif 
-
 template <typename CharX>
 StringU<CharX>::StringU(const Char8* s, unsigned n) : String()
 {
@@ -214,16 +205,6 @@ template <typename CharX>
 void StringU<CharX>::Set(const char* s)
 {
   Set(s, strlen(s));
-}
-
-template <typename CharX>
-void StringU<CharX>::Set(const char* s, unsigned n)
-{
-  assert(s != NULL || n == 0);
-
-  Delete();
-  Init(n);
-  for (unsigned i = 0; i < length; i++) data[i] = s[i];
 }
 
 template <typename CharX>

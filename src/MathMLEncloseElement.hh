@@ -23,9 +23,7 @@
 #ifndef MathMLEncloseElement_hh
 #define MathMLEncloseElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
@@ -40,21 +38,30 @@ enum NotationType {
 
 class MathMLEncloseElement: public MathMLNormalizingContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLEncloseElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLEncloseElement(const GMetaDOM::Element&);
+protected:
+  MathMLEncloseElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLEncloseElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLEncloseElement();
 
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLEncloseElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLEncloseElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void Normalize(const Ptr<MathMLDocument>&);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Render(const DrawingArea&);
+
 protected:
-  void NormalizeRadicalElement(void);
+  void NormalizeRadicalElement(const Ptr<class MathMLDocument>&);
 
   bool         normalized;
 

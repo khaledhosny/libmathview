@@ -1,4 +1,95 @@
-* if using libxml 1.x.y inline unicode chars greater that 0x7f doesn't work
 * try putting scripts on a token with font size modified ;)
-* esm082: checking vertical spacing of horizontal bars
-* xm156 equation 57 in section 5
+* check rendering of backgrounds (mstyle, mtokens, selected elements)
+* try exporting to postscript a token with an apostrophe ' -> crash
+
+*** TESTSUITE November 30 2002 ***
+
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TokenElements/ms/msAquotes3.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/GeneralLayout/mfrac/mfracAkeyword9.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/GeneralLayout/menclose/rec-enclose3.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TablesAndMatrices/mtable/mtableAwidth1.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TablesAndMatrices/mtable/mtableAwidth3.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TablesAndMatrices/mtable/mtableAwidth4.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TablesAndMatrices/mtable/mtableBgap1.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TablesAndMatrices/nested/nestedAwidth1.mml
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/DynamicExpressions/maction/mactionBhigh1.mml
+
+Deprecated features we should support:
+
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TablesAndMatrices/mtable/deprecated-test3.mml
+
+Stretchy:
+
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TokenElements/mo/moAlargeop12.mml
+
+Crash:
+
+file:///home/luca/Projects/edit-gtkmathview/T1/testsuite/Presentation/TokenElements/mo/moAlrspace13.mml
+
+*** TESTSUITE ***
+
+Bugs in gtkmathview:
+
+Presentation/TokenElements/mo/moAaccent10.xml	# no stretch
+Presentation/TokenElements/mo/moAaccent9.xml	# no stretch
+Presentation/TokenElements/mo/moAlargeop12.xml	# assertion fails
+Presentation/TokenElements/mo/moAlrspace13.xml	# assertion fails for % in rspace
+Presentation/TokenElements/mtext/mtextAtoken3.xml	# courier font instead of helvetica
+Presentation/TokenElements/mtext/mtextStoken6.xml	# courier font instead of helvetica
+Presentation/TokenElements/mspace/mspace2.xml	# no background
+Presentation/TokenElements/ms/msAdisplaystyle2.xml	# courier instead of helvetica
+Presentation/TokenElements/ms/msAtoken4.xml	# courier instead of helvetica
+Presentation/TokenElements/ms/msAtoken5.xml	# courier instead of helvetica
+Presentation/TokenElements/ms/msSinheritance8.xml	# many fonts wrong
+Presentation/TokenElements/CommonAttributes/sizeunits4.xml	# last script 2 too low
+Presentation/GeneralLayout/mrow/mrowBinferred2.xml	# does not infer mrow in msqrt
+Presentation/GeneralLayout/mfrac/mfrac2.xml	# &DifferentialD; does not render
+Presentation/GeneralLayout/mfrac/mfrac3.xml	# fraction line too thin?
+Presentation/GeneralLayout/mfrac/mfracAcss8.xml	# 2nd line too thin?
+Presentation/GeneralLayout/mfrac/mfracAkeyword9.xml	# line thickness
+Presentation/GeneralLayout/mfrac/mfracAmultiplier10.xml	# line thickness
+Presentation/GeneralLayout/msqrt-mroot/mrootB1.xml	# does not find big root
+Presentation/GeneralLayout/msqrt-mroot/msqrt5.xml	# does not infer mrow in msqrt
+Presentation/GeneralLayout/msqrt-mroot/msqrtB7.xml# does not find big root
+Presentation/GeneralLayout/msqrt-mroot/msqrtBimplied8.xml	# assertion fails
+Presentation/GeneralLayout/mstyle/mstyleAminscript1.xml	# ?
+Presentation/GeneralLayout/mpadded/mpadded10.xml	# does not find entity
+Presentation/GeneralLayout/mpadded/mpadded13.xml	# how to paint the background when width < 0???
+Presentation/GeneralLayout/mpadded/mpadded14.xml	# how to paint the background when width < 0???
+Presentation/GeneralLayout/mpadded/mpadded15.xml	# what happens when -depth > height???
+Presentation/GeneralLayout/mpadded/mpadded16.xml	# what happens when -height > depth???
+Presentation/GeneralLayout/mpadded/mpadded18.xml	# ???
+Presentation/GeneralLayout/mpadded/mpadded4.xml		# wrong
+Presentation/GeneralLayout/mpadded/mpadded8.xml		# does not color everything
+Presentation/GeneralLayout/mpadded/mpaddedAleft4.xml	# some As overlap
+Presentation/GeneralLayout/mpadded/mpaddedAmixed5.xml	# a mess
+Presentation/GeneralLayout/mpadded/mpaddedScolor7.xml	# wrong
+Presentation/GeneralLayout/mphantom/mphantomSinheritance5.xml	# wrong
+Presentation/GeneralLayout/menclose/rec-enclose3.xml	# assertion failed
+Presentation/ScriptsAndLimits/msubsup/msubsup1.xml	# missing glyphs
+Presentation/ScriptsAndLimits/munder/munder1.xml	# check size of under/over bars
+Presentation/ScriptsAndLimits/munder/munder2.xml	# check spacing of second underbrace
+Presentation/ScriptsAndLimits/mover/mover1.xml		# no accents
+Presentation/ScriptsAndLimits/mover/mover2.xml		# check size and spacing of overbars
+Presentation/ScriptsAndLimits/mmultiscripts/mmultiscripts1.xml	# assertion fails
+Presentation/ScriptsAndLimits/mmultiscripts/mmultiscripts2.xml	# assertion fails
+Presentation/TablesAndMatrices/mtable/deprecated-test3.xml	# assertion fails (but test deprecated)
+Presentation/TablesAndMatrices/mtable/maligngroup1.xml	# does not align (there is commented code)
+Presentation/TablesAndMatrices/mtable/mtable1.xml	# assertion failed
+Presentation/TablesAndMatrices/mlabeledtr/mlabeledtr1.xml	# seg faults!!!
+Presentation/TablesAndMatrices/mlabeledtr/mlabeledtrAside1.xml	# seg faults!!!
+Presentation/TablesAndMatrices/mlabeledtr/mlabeledtrAside2.xml	# assertion fails
+Presentation/TablesAndMatrices/mlabeledtr/rec-mlabeledtr.xml	# seg faults
+
+Bugs in test:
+
+Presentation/TokenElements/mo/moAmovable15.xml	# file names does not match with name in test
+Presentation/GeneralLayout/mfrac/mfrac4.xml	# same as mfrac5.xml
+Presentation/GeneralLayout/mfrac/mfracAbevelled16.xml	# the sample is not bevelled
+Presentation/GeneralLayout/mfenced/mfencedAdelims6.xml	# lbrace is expanded in attribute
+Presentation/GeneralLayout/mfenced/mfencedSfonts9.xml	# only the first mfenced is coloured
+Presentation/GeneralLayout/mpadded/mpadded1.xml	# wrong syntax for width attribute
+
+Multitests (test files with more that one math fragment):
+
+Presentation/GeneralLayout/mfrac/mfracZComp1.xml

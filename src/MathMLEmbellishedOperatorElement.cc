@@ -23,18 +23,18 @@
 #include <config.h>
 #include <assert.h>
 
-#include "Layout.hh"
+#include "Globals.hh"
 #include "MathMLCharNode.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
+#include "FormattingContext.hh"
 
 MathMLEmbellishedOperatorElement::
-MathMLEmbellishedOperatorElement(MathMLOperatorElement* op) // the core operator
-  : MathMLContainerElement(NULL, TAG_MO)
+MathMLEmbellishedOperatorElement(const Ptr<MathMLOperatorElement>& op)
+  : coreOp(op)
 {
-  assert(op != NULL);
-  coreOp = op;
+  assert(coreOp);
   script = false;
 }
 
@@ -43,90 +43,131 @@ MathMLEmbellishedOperatorElement::~MathMLEmbellishedOperatorElement()
 }
 
 void
-MathMLEmbellishedOperatorElement::Setup(RenderingEnvironment* env)
+MathMLEmbellishedOperatorElement::Normalize(const Ptr<class MathMLDocument>& doc)
 {
-  assert(env != NULL);
-  script = env->GetScriptLevel() > 0;
-  MathMLContainerElement::Setup(env);
+#if 0
+  if (DirtyStructure())
+    {
+#endif
+      assert(GetChild());
+      assert(coreOp);
+      coreOp->SetDirtyStructure();
+
+      Ptr<MathMLElement> p = GetParent();
+      assert(p);
+
+      Ptr<MathMLContainerElement> pContainer = smart_cast<MathMLContainerElement>(p);
+      assert(pContainer);
+      cout << "removing embellishment " << endl; 
+
+      Ptr<MathMLElement> oldChild = GetChild();
+      SetChild(0);
+      pContainer->Replace(this, oldChild);
+      oldChild->SetDirtyStructure();
+      oldChild->SetDirtyAttributeD();
+      oldChild->Normalize(doc);
+
+#if defined(HAVE_GMETADOM)
+      doc->setFormattingNode(oldChild->GetDOMElement(), oldChild);
+#endif
+
+      ResetDirtyStructure();
+#if 0
+    }
+#endif
 }
 
 void
-MathMLEmbellishedOperatorElement::DoBoxedLayout(LayoutId id, BreakId, scaled availWidth)
+MathMLEmbellishedOperatorElement::Setup(RenderingEnvironment& env)
 {
-  if (!HasDirtyLayout(id, availWidth)) return;
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      script = env.GetScriptLevel() > 0;
+      MathMLBinContainerElement::Setup(env);
+    }
+}
 
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-  assert(coreOp != NULL);
+void
+MathMLEmbellishedOperatorElement::DoLayout(const class FormattingContext& ctxt)
+{
+  cout << "embellishment layout " << this << " dirty " << DirtyLayout(ctxt) << endl;
 
-  scaled totalPadding = script ? 0 : coreOp->GetLeftPadding() + coreOp->GetRightPadding();
+  if (DirtyLayout(ctxt))
+    {
+      assert(child);
+      assert(coreOp);
 
-  content.GetFirst()->DoBoxedLayout(id, BREAK_NO, scaledMax(0, availWidth - totalPadding));
-  box = content.GetFirst()->GetBoundingBox();
+      scaled totalPadding = script ? 0 : coreOp->GetLeftPadding() + coreOp->GetRightPadding();
 
-  // WARNING: maybe in this case we should ask for the LAST char node...
-  const MathMLCharNode* node = coreOp->GetCharNode();
-  if (node != NULL && isIntegral(node->GetChar())) {
-    // WARNING
-    // the following patch is needed in order to have integral sign working
-    box.width = scaledMax(box.width, box.rBearing);
-  }
-  box.width += totalPadding;
+      //Globals::logger(LOG_DEBUG, "layout of embellishment %p script %d padding %d", this, script, sp2ipx(totalPadding));
+
+      cout << "child " << static_cast<MathMLElement*>(child) << " dirty layout " << child->DirtyLayout() << endl;
+
+      child->DoLayout(ctxt);
+      box = child->GetBoundingBox();
+
+      // WARNING: maybe in this case we should ask for the LAST char node...
+      Ptr<const MathMLCharNode> node = coreOp->GetCharNode();
+      if (node && isIntegral(node->GetChar())) {
+	// WARNING
+	// the following patch is needed in order to have integral sign working
+	box.width = scaledMax(box.width, box.rBearing);
+      }
+      box.width += totalPadding;
 
 #ifdef ENABLE_EXTENSIONS
-  box.ascent += coreOp->GetTopPadding();
-  box.tAscent += coreOp->GetTopPadding();
-  box.descent += coreOp->GetBottomPadding();
-  box.tDescent += coreOp->GetBottomPadding();
+      box.ascent += coreOp->GetTopPadding();
+      box.descent += coreOp->GetBottomPadding();
 #endif // ENABLE_EXTENSIONS
 
-  ConfirmLayout(id);
-
-  ResetDirtyLayout(id, availWidth);
+      ResetDirtyLayout(ctxt);
+    }
 }
-
-#if 0
-void
-MathMLEmbellishedOperatorElement::DoLayout(LayoutId id, Layout& layout)
-{
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-  assert(coreOp != NULL);
-
-  layout.Append(coreOp->GetLeftPadding());
-  layout.Append(coreOp);
-  layout.Append(coreOp->GetRightPadding());
-}
-#endif
 
 void
 MathMLEmbellishedOperatorElement::SetPosition(scaled x, scaled y)
 {
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-  assert(coreOp != NULL);
+  assert(coreOp);
+  assert(child);
 
   position.x = x;
   position.y = y;
 
 #ifdef ENABLE_EXTENSIONS
-  content.GetFirst()->SetPosition(x + (script ? 0 : coreOp->GetLeftPadding()), y + coreOp->GetTopPadding());
+  child->SetPosition(x + (script ? 0 : coreOp->GetLeftPadding()), y + coreOp->GetTopPadding());
 #else
-  content.GetFirst()->SetPosition(x + (script ? 0 : coreOp->GetLeftPadding()), y);
+  child->SetPosition(x + (script ? 0 : coreOp->GetLeftPadding()), y);
 #endif // ENABLE_EXTENSIONS
 }
 
-bool
-MathMLEmbellishedOperatorElement::IsEmbellishedOperator() const
-{
-  return true;
-}
-
-const MathMLCharNode*
+Ptr<MathMLCharNode>
 MathMLEmbellishedOperatorElement::GetCharNode() const
 {
-  if (content.GetSize() != 1 || coreOp == NULL || content.GetFirst() != coreOp)
-    return NULL;
+  if (!coreOp || child != coreOp)
+    return 0;
+  else
+    return coreOp->GetCharNode();
+}
 
-  return coreOp->GetCharNode();
+void
+MathMLEmbellishedOperatorElement::Lift(const Ptr<MathMLDocument>& doc)
+{
+  assert(GetChild());
+
+  Ptr<MathMLContainerElement> parent = smart_cast<MathMLContainerElement>(GetParent());
+  assert(parent);
+
+  Ptr<MathMLContainerElement> grandParent = smart_cast<MathMLContainerElement>(parent->GetParent());
+  assert(grandParent);
+
+  cout << "lifting " << this << " from " << static_cast<MathMLContainerElement*>(parent) << " to " 
+       << static_cast<MathMLContainerElement*>(grandParent) << endl;
+
+  parent->Replace(this, GetChild());
+  grandParent->Replace(parent, this);
+
+#if defined(HAVE_GMETADOM)
+  doc->setFormattingNode(GetChild()->GetDOMElement(), GetChild());
+  doc->setFormattingNode(parent->GetDOMElement(), this);
+#endif
 }

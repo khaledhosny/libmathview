@@ -24,124 +24,111 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include "Layout.hh"
-#include "MathEngine.hh"
+#include "ChildList.hh"
+#include "MathMLDocument.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(mDOMNodeRef node, TagId t)
-#elif defined(HAVE_GMETADOM)
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const GMetaDOM::Element& node, TagId t)
-#endif
-  : MathMLContainerElement(node, t)
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement()
 {
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const DOM::Element& node)
+  : MathMLBinContainerElement(node)
+{
+}
+#endif
 
 MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
 {
 }
 
 void
-MathMLNormalizingContainerElement::Normalize()
+MathMLNormalizingContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
-  if (content.GetSize() == 0 && MathEngine::ShowEmptyElements()) {
-    MathMLElement* dummy = new MathMLDummyElement();
-    dummy->SetParent(this);
-    content.Append(dummy);
-  } else if (content.GetSize() != 1) {
-    MathMLContainerElement* mrow = new MathMLRowElement(NULL);
-    mrow->SetParent(this);
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+      unsigned n = children.get_length();
+      if (n == 1)
+	{
+	  DOM::Node node = children.item(0);
+	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
+	  Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+	  assert(elem);
+	  SetChild(elem);
+	}
+      else 
+	{
+	  Ptr<MathMLRowElement> row;
+	  if (GetChild() && is_a<MathMLRowElement>(GetChild()) && !GetChild()->GetDOMElement())
+	    // this must be an inferred mrow
+	    row = smart_cast<MathMLRowElement>(GetChild());
+	  else
+	    row = smart_cast<MathMLRowElement>(MathMLRowElement::create());
+	  assert(row && !row->GetDOMElement());
+	  SetChild(row);
 
-    while (!content.IsEmpty()) {
-      MathMLElement* elem = content.RemoveFirst();
-      elem->SetParent(mrow);
-      mrow->content.Append(elem);
+	  std::vector< Ptr<MathMLElement> > newContent;
+	  newContent.reserve(n);
+	  for (unsigned i = 0; i < n; i++)
+	    {
+	      Ptr<MathMLElement> elem = doc->getFormattingNode(children.item(i));
+	      assert(elem);
+	      newContent.push_back(elem);
+	    }
+
+	  row->SwapChildren(newContent);
+	}
+#else
+      if (!GetChild()) SetChild(MathMLRowElement::create());
+#endif
+
+      assert(GetChild());
+      GetChild()->Normalize(doc);
+
+      ResetDirtyStructure();
     }
-    content.Append(mrow);
-  }
-  
-  MathMLContainerElement::Normalize();
 }
 
 void
-MathMLNormalizingContainerElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
+MathMLNormalizingContainerElement::DoLayout(const class FormattingContext& ctxt)
 {
-  if (!HasDirtyLayout(id, maxWidth)) return;
-
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-
-  content.GetFirst()->DoBoxedLayout(id, bid, maxWidth);
-  box = content.GetFirst()->GetBoundingBox();
-
-  ConfirmLayout(id);
-
-  ResetDirtyLayout(id, maxWidth);
-
-#if 0
-  printf("`%s' DoBoxedLayout (%d,%d,%d) [%d,%d]\n",
-	 NameOfTagId(IsA()), id, bid, sp2ipx(maxWidth),
-	 sp2ipx(box.width), sp2ipx(box.GetHeight()));
-#endif  
-}
-
-void
-MathMLNormalizingContainerElement::RecalcBoundingBox(LayoutId id, scaled minWidth)
-{
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-
-  content.GetFirst()->RecalcBoundingBox(id, minWidth);
-  box = content.GetFirst()->GetBoundingBox();
-
-  ConfirmLayout(id);
-}
-
-void
-MathMLNormalizingContainerElement::SetPosition(scaled x, scaled y)
-{
-  position.x = x;
-  position.y = y;
-
-  if (HasLayout()) layout->SetPosition(x, y);
-  else {
-    MathMLElement* elem = GetContent();
-    assert(elem != NULL);
-    elem->SetPosition(x, y);
-  }
+  if (DirtyLayout(ctxt))
+    {
+      if (child)
+	{
+	  child->DoLayout(ctxt);
+	  box = child->GetBoundingBox();
+	}
+      else
+	box.Null();
+      ResetDirtyLayout(ctxt);
+    }
 }
 
 void
 MathMLNormalizingContainerElement::Render(const DrawingArea& area)
 {
-  if (!HasDirtyChildren()) return;
-
-  RenderBackground(area);
-
-  assert(content.GetSize() == 1);
-  MathMLElement* elem = content.GetFirst();
-  assert(elem != NULL);
-
-  elem->Render(area);
-
-  ResetDirty();
+  if (Dirty())
+    {
+      RenderBackground(area);
+      if (child) child->Render(area);
+      ResetDirty();
+    }
 }
 
-bool
-MathMLNormalizingContainerElement::IsExpanding() const
+void
+MathMLNormalizingContainerElement::SetDirtyStructure()
 {
-  MathMLElement* elem = content.GetFirst();
-  assert(elem != NULL);
-  return elem->IsExpanding();
+  MathMLBinContainerElement::SetDirtyStructure();
+  // if the structure of this element gets dirty, and there is
+  // an inferred mrow, then the mrow itself has a dirty strcuture,
+  // even if it has no corresponding DOM element
+  if (child && !child->GetDOMElement() && is_a<MathMLRowElement>(child))
+    child->SetDirtyStructure();
 }
-
-MathMLElement*
-MathMLNormalizingContainerElement::GetContent() const
-{
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-  return content.GetFirst();
-}
-

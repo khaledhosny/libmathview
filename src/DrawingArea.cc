@@ -21,12 +21,23 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <functional>
+#include <algorithm>
+
 #include <assert.h>
 #include <stddef.h>
 
-#include "Iterator.hh"
 #include "UnitValue.hh"
 #include "DrawingArea.hh"
+
+// definition of local adaptors
+struct DeleteGraphicsContextAdaptor
+  : public std::unary_function<const GraphicsContext*,void>
+{
+  void operator()(const GraphicsContext* gc) const
+  { delete gc; }
+};
 
 DrawingArea::DrawingArea(const GraphicsContextValues& v, scaled xMargin, scaled yMargin,
 			 RGBValue f, RGBValue b)
@@ -59,13 +70,16 @@ DrawingArea::GetGC(const GraphicsContextValues& values, unsigned mask) const
   if ((mask & GC_MASK_LINE_STYLE) != 0) v.lineStyle = values.lineStyle;
   if ((mask & GC_MASK_LINE_WIDTH) != 0) v.lineWidth = values.lineWidth;
 
-  for (Iterator<const GraphicsContext*> i(poolGC); i.More(); i.Next()) {
-    assert(i() != NULL);
-    if (i()->GetValues().Equals(v)) return i();
-  }
+  for (std::vector<const GraphicsContext*>::iterator i = poolGC.begin();
+       i != poolGC.end();
+       i++)
+    {
+      assert(*i);
+      if ((*i)->GetValues().Equals(v)) return *i;
+    }
 
   const GraphicsContext* gc = GetGC(v);
-  poolGC.Append(gc);
+  poolGC.push_back(gc);
 
   return gc;
 }
@@ -73,10 +87,8 @@ DrawingArea::GetGC(const GraphicsContextValues& values, unsigned mask) const
 void
 DrawingArea::ReleaseGCs()
 {
-  while (poolGC.GetSize() > 0) {
-    const GraphicsContext* gc = poolGC.RemoveFirst();
-    delete gc;
-  }
+  std::for_each(poolGC.begin(), poolGC.end(), DeleteGraphicsContextAdaptor());
+  poolGC.resize(0);
 }
 
 void
@@ -112,23 +124,14 @@ DrawingArea::DrawRectangle(const GraphicsContext* gc, const Rectangle& rect) con
 }
 
 void
-DrawingArea::DrawRectangle(const GraphicsContext* gc, const Shape& shape) const
-{
-  for (Iterator<Rectangle*> rect(shape.content); rect.More(); rect.Next()) {
-    assert(rect() != NULL);
-    DrawRectangle(gc, *(rect()));
-  }
-}
-
-void
 DrawingArea::DrawBoundingBox(const GraphicsContext* gc,
 			     scaled x, scaled y,
 			     const BoundingBox& box,
 			     bool drawExtra) const
 {
   scaled width = box.width;
-  scaled height = box.GetTotalHeight();
-  scaled ascent = box.tAscent;
+  scaled height = box.GetHeight();
+  scaled ascent = box.ascent;
   DrawRectangle(gc, x, y - ascent, width, height);
   if (drawExtra) {
     DrawLine(gc, x, y, x + box.width, y);
@@ -160,15 +163,6 @@ DrawingArea::Clear(const GraphicsContext* gc, const Rectangle& rect) const
   Clear(gc, rect.x, rect.y, rect.width, rect.height);
 }
 
-void
-DrawingArea::Clear(const GraphicsContext* gc, const Shape& shape) const
-{
-  for (Iterator<Rectangle*> rect(shape.content); rect.More(); rect.Next()) {
-    assert(rect() != NULL);
-    Clear(gc, *rect());
-  }
-}
-		   
 void
 DrawingArea::Update(const Rectangle& rect) const
 {

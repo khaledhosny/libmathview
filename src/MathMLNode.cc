@@ -22,25 +22,34 @@
 
 #include <config.h>
 
-#include "MathMLNode.hh"
+#include <assert.h>
 
-MathMLNode::MathMLNode()
+#include "MathMLNode.hh"
+#include "MathMLElement.hh"
+#include "MathMLCharNode.hh"
+
+MathMLNode::MathMLNode() : parent(0)
 {
-  parent = NULL;
 }
 
 MathMLNode::~MathMLNode()
 {
 }
 
-bool
-MathMLNode::IsNode() const
-{
-  return true;
-}
-
-const class MathMLCharNode*
+Ptr<MathMLCharNode>
 MathMLNode::GetCharNode() const
 {
-  return NULL;
+  return 0;
+}
+
+Ptr<MathMLElement>
+MathMLNode::GetParent() const
+{
+  return parent;
+}
+
+void
+MathMLNode::SetParent(const Ptr<MathMLElement>& p)
+{
+  parent = p;
 }

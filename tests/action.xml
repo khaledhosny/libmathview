@@ -1,6 +1,6 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <maction>
+    <maction selection="1">
       <mtext>ciao</mtext>
       <mtext>da</mtext>
       <mtext>Luca</mtext>

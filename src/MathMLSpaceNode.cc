@@ -26,10 +26,9 @@
 #include "BoundingBox.hh"
 #include "MathMLSpaceNode.hh"
 
-MathMLSpaceNode::MathMLSpaceNode(int s, BreakId bid)
+MathMLSpaceNode::MathMLSpaceNode(int s)
 {
   SetSpacing(s);
-  SetBreakability(bid);
 }
 
 MathMLSpaceNode::~MathMLSpaceNode()
@@ -37,7 +36,7 @@ MathMLSpaceNode::~MathMLSpaceNode()
 }
 
 void
-MathMLSpaceNode::Setup(class RenderingEnvironment*)
+MathMLSpaceNode::Setup(class RenderingEnvironment&)
 {
   // if the box is set to be null then a possible spacing is not added
   // or, better, it is added, but the box remains null
@@ -45,7 +44,7 @@ MathMLSpaceNode::Setup(class RenderingEnvironment*)
 }
 
 void
-MathMLSpaceNode::DoLayout()
+MathMLSpaceNode::DoLayout(const FormattingContext&)
 {
 }
 
@@ -60,3 +59,14 @@ MathMLSpaceNode::IsSpace() const
   return true;
 }
 
+unsigned
+MathMLSpaceNode::GetLogicalContentLength() const
+{
+  return 0;
+}
+
+String*
+MathMLSpaceNode::GetRawContent() const
+{
+  return NULL;
+}

@@ -23,29 +23,41 @@
 #ifndef MathMLStyleElement_hh
 #define MathMLStyleElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
+#include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLStyleElement: public MathMLNormalizingContainerElement
+class MathMLStyleElement
+  : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 public:
-#if defined(HAVE_MINIDOM)
-  MathMLStyleElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLStyleElement(const GMetaDOM::Element&);
+  MathMLStyleElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLStyleElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Setup(class RenderingEnvironment*);
-  virtual void Render(const DrawingArea&);
   virtual ~MathMLStyleElement();
 
-  virtual bool IsBreakable(void) const;
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLStyleElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLStyleElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  //virtual void Normalize(const Ptr<MathMLDocument>&);
+  virtual void DoLayout(const class FormattingContext&);
+  virtual void SetPosition(scaled, scaled);
+  virtual void Setup(class RenderingEnvironment&);
+  virtual void Render(const DrawingArea&);
+
   virtual bool IsSpaceLike(void) const;
+  virtual void SetDirtyAttribute(void);
+  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
 
   bool HasDifferentBackground(void) const { return differentBackground; }
   

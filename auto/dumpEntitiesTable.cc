@@ -20,7 +20,7 @@
 // http://www.cs.unibo.it/helm/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#include <config.h>
+#include "config.h"
 #include <stdlib.h> // for exit(...)
 #include <stdio.h>
 
@@ -76,39 +76,34 @@ dump(const char* fileName)
 bool
 dump(const char* fileName)
 {
-  GMetaDOM::DOMImplementation di;
+  DOM::DOMImplementation di;
 
   try {
-    GMetaDOM::Document doc = di.createDocumentFromURI(fileName, 0);
-    if (doc == NULL) return false;
+    DOM::Document doc = di.createDocumentFromURI(fileName, 0);
+    if (!doc) return false;
   
-    GMetaDOM::Element root = doc.get_documentElement();
-    if (root == 0) return false;
+    DOM::Element root = doc.get_documentElement();
+    if (!root) return false;
 
-    for (GMetaDOM::Node p = root.get_firstChild(); p != 0; p = p.get_nextSibling()) {
-      if (p.get_nodeType() == GMetaDOM::Node::ELEMENT_NODE) {
-	GMetaDOM::Element elem(p);
+    for (DOM::Node p = root.get_firstChild(); p; p = p.get_nextSibling()) {
+      if (p.get_nodeType() == DOM::Node::ELEMENT_NODE) {
+	DOM::Element elem(p);
 
-	GMetaDOM::DOMString name = elem.getAttribute("name");
-	GMetaDOM::DOMString value = elem.getAttribute("value");
+	std::string name = elem.getAttribute("name");
+	DOM::GdomeString value = elem.getAttribute("value");
 
-	if (!name.isEmpty() && !value.isEmpty()) {
-	  char* s_name = name.toC();
-	  unsigned length;
-	  GMetaDOM::Char8* s_value = value.toUTF8(length);
+	if (!name.empty() && !value.empty()) {
+	  DOM::UTF8String s_value = value;
 
-	  printf("{ \"%s\", \"", s_name);
-	  for (unsigned i = 0; i < length; i++) printf("\\x%02x", s_value[i] & 0xff);
+	  printf("{ \"%s\", \"", name.c_str());
+	  for (unsigned i = 0; i < s_value.length(); i++) printf("\\x%02x", s_value[i] & 0xff);
 	  printf("\\x00\", 0, 0 },\n");
-
-	  delete [] s_name;
-	  delete [] s_value;
 	}
       }
     }
 
     return true;
-  } catch (GMetaDOM::DOMException) {
+  } catch (DOM::DOMException) {
     return false;
   }
 }

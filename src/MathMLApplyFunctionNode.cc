@@ -24,6 +24,7 @@
 #include <assert.h>
 
 #include "unidefs.h"
+#include "stringAux.hh"
 #include "traverseAux.hh"
 #include "BoundingBox.hh"
 #include "MathMLElement.hh"
@@ -31,9 +32,9 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLApplyFunctionNode.hh"
-#include "MathMLEmbellishedOperatorElement.hh"
+#include "MathMLFencedElement.hh"
 
-MathMLApplyFunctionNode::MathMLApplyFunctionNode() : MathMLSpaceNode(0, BREAK_NO)
+MathMLApplyFunctionNode::MathMLApplyFunctionNode() : MathMLSpaceNode(0)
 {
 }
 
@@ -42,14 +43,13 @@ MathMLApplyFunctionNode::~MathMLApplyFunctionNode()
 }
 
 void
-MathMLApplyFunctionNode::Setup(class RenderingEnvironment* env)
+MathMLApplyFunctionNode::Setup(class RenderingEnvironment& env)
 {
-  assert(env != NULL);  
-  sppm = env->GetScaledPointsPerEm();
+  sppm = env.GetScaledPointsPerEm();
 }
 
 void
-MathMLApplyFunctionNode::DoLayout()
+MathMLApplyFunctionNode::DoLayout(const FormattingContext&)
 {
   // the following calculation cannot be done at setup time because
   // we need to know if the element *next* to this is a fence, and this
@@ -57,41 +57,33 @@ MathMLApplyFunctionNode::DoLayout()
   // left to right, at setup time for this node the information is not
   // available
 
-  assert(GetParent() != NULL);
+  assert(GetParent());
 
   box.Set(0, 0, 0);
 
-  if (!GetParent()->IsOperator()) return;
+  if (!is_a<MathMLOperatorElement>(GetParent())) return;
 
-  MathMLElement* next = findRightSibling(GetParent());
-  if (next == NULL) return;
+  Ptr<MathMLElement> next = findRightSibling(GetParent());
+  if (!next) return;
 
-  switch (next->IsA()) {
-  case TAG_MFENCED:
-    return;
+  if (is_a<MathMLFencedElement>(next)) return;
+  
+  if (Ptr<MathMLOperatorElement> coreOp = next->GetCoreOperatorTop())
+    if (coreOp->IsFence()) return;
 
-  case TAG_MO:
-    {
-      MathMLOperatorElement* coreOp;
+  // FIXME: the following constant should be defined somewhere
+  box.Set((sppm * 5) / 18, 0, 0);
+}
 
-      if (next->IsEmbellishedOperator()) {
-	MathMLEmbellishedOperatorElement* op = TO_EMBELLISHED_OPERATOR(next);
-	assert(op != NULL);
-	coreOp = op->GetCoreOperator();
-      } else {
-	coreOp = TO_OPERATOR(next);
-      }
-      assert(coreOp != NULL);
+unsigned
+MathMLApplyFunctionNode::GetLogicalContentLength() const
+{
+  return 1;
+}
 
-      if (coreOp->IsFence()) return;
-    }
-
-    // OK fallback
-
-  default:
-    {
-      // FIXME: the following constant should be defined somewhere
-      box.Set((sppm * 5) / 18, 0, 0);
-    }
-  }
+String*
+MathMLApplyFunctionNode::GetRawContent() const
+{
+  Char ch = U_APPLYFUNCTION;
+  return allocString(&ch, 1);
 }

@@ -40,14 +40,17 @@ static struct NonMarkingCharData {
   { 0x000a,           0x0000, 0,     BREAK_YES },  // NewLine
   { 0x0020,           0x0000, 9,     BREAK_GOOD }, // Space
   { 0x00a0,           0x0000, 9,     BREAK_NO },   // NonBreakingSpace
-  { 0x200b,           0x0000, 0,     BREAK_NO },   // ZeroWidthSpace
-  { 0x200a,           0x0000, 1,     BREAK_NO },   // VeryThinSpace
-  { 0x2009,           0x0000, 3,     BREAK_NO },   // ThinSpace
+  { 0x2002,           0x0000, 9,     BREAK_NO },   // EN SPACE (half EM)
+  { 0x2003,           0x0000, 18,    BREAK_NO },   // EM SPACE
   { 0x2005,           0x0000, 4,     BREAK_NO },   // MediumSpace
-  { 0x200a,           0xfe00, -1,    BREAK_NO },   // NegativeVeryThinSpace
-  { 0x2009,           0xfe00, -3,    BREAK_NO },   // NegativeThinSPace
-  { 0x205f,           0xfe00, -4,    BREAK_NO },   // NegativeMediumSpace
+  { 0x2009,           0x0000, 3,     BREAK_NO },   // ThinSpace
+  { 0x200a,           0x0000, 1,     BREAK_NO },   // VeryThinSpace
+  { 0x200b,           0x0000, 0,     BREAK_NO },   // ZeroWidthSpace
+  { 0x205f,           0x0000, 4,     BREAK_NO },   // MediumSpace
   { 0x2005,           0xfe00, -5,    BREAK_NO },   // NegativeThickSpace
+  { 0x2009,           0xfe00, -3,    BREAK_NO },   // NegativeThinSPace
+  { 0x200a,           0xfe00, -1,    BREAK_NO },   // NegativeVeryThinSpace
+  { 0x205f,           0xfe00, -4,    BREAK_NO },   // NegativeMediumSpace
 #if 0
   // these entries have been removed since now they are treated
   // in a context-sensitive way

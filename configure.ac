@@ -1,8 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/MathMLObject.cc)
+AC_INIT
+AC_CONFIG_SRCDIR([src/MathMLObject.cc])
 
 MATHVIEW_MAJOR_VERSION=0
-MATHVIEW_MINOR_VERSION=3
+MATHVIEW_MINOR_VERSION=4
 MATHVIEW_MICRO_VERSION=2
 MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO_VERSION
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
@@ -110,14 +111,14 @@ AC_ARG_ENABLE(
 )
 
 dnl Automake configuration
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
 dnl AC_DISABLE_SHARED
 AM_PROG_LIBTOOL
 
 dnl config.h top and bottom
 AH_TOP([
-/* Copyright (C) 2000-2001, Luca Padovani <luca.padovani@cs.unibo.it>.
+/* Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
  *
  * This file is part of GtkMathView, a Gtk widget for MathML.
  * 
@@ -136,7 +137,7 @@ AH_TOP([
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * 
  * For details, see the GtkMathView World-Wide-Web page,
- * http://www.cs.unibo.it/helm/mml-widget, or send a mail to
+ * http://helm.cs.unibo.it/mml-widget, or send a mail to
  * <luca.padovani@cs.unibo.it>
  */
 
@@ -199,6 +200,10 @@ AC_TRY_COMPILE(
 		AC_MSG_RESULT(no)
 	]
 )
+
+AC_CHECK_HEADERS(hash_map)
+AC_CHECK_HEADERS(ext/hash_map)
+
 AC_LANG_POP(C++)
 
 AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
@@ -245,7 +250,7 @@ AC_CHECK_LIB(iberty, getopt_long,
 )
 AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,,[Define to 1 if you have getopt_long]))
 
-AC_LANG_C
+AC_LANG([C])
 if test $with_glib_config = "no"; then
 	AM_PATH_GLIB(1.2.0,,AC_MSG_ERROR(could not find glib))
 else
@@ -285,7 +290,7 @@ if test $HAVE_GMETADOM_CONFIG = "no"; then
 fi
 
 if test $gmetadom = "auto"; then
-	GMETADOM_MIN_VERSION=0.0.3
+	GMETADOM_MIN_VERSION=0.1.5
 	AC_MSG_CHECKING(for gmetadom >= $GMETADOM_MIN_VERSION)
 	vers=`gmetadom-config --module=gdome_cpp_smart --version | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 	minvers=`echo $GMETADOM_MIN_VERSION | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
@@ -340,24 +345,24 @@ if test $gmetadom = "yes"; then
 	DOM_CFLAGS=`gmetadom-config --module=gdome_cpp_smart --cflags`
 	DOM_LIBS=`gmetadom-config --module=gdome_cpp_smart --libs`
 	DOM_IMPLEMENTATION="GMETADOM"
-	AC_DEFINE(HAVE_GMETADOM,,[Define to 1 to compile with GMetaDOM (recommended)])
+	AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 to compile with GMetaDOM (recommended)])
 else
 	DOM_CFLAGS="$GLIB_CFLAGS `minidom-config --cflags`"
 	DOM_LIBS="$GLIB_LIBS `minidom-config --libs`"
 	DOM_IMPLEMENTATION="MINIDOM"
-	AC_DEFINE(HAVE_MINIDOM,,[Define to 1 to compile with minidom (deprecated)])
+	AC_DEFINE(HAVE_MINIDOM,1,[Define to 1 to compile with minidom (deprecated)])
 fi
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
 AC_SUBST(DOM_IMPLEMENTATION)
 
 if test $t1lib = "auto"; then
-	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no")
-	AC_CHECK_HEADER(t1lib.h, , t1lib="no")
+	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no", -lm)
+	AC_CHECK_HEADER(t1lib.h,, t1lib="no")
 fi
 
 if test $t1lib = "yes"; then
-	AC_DEFINE(HAVE_LIBT1,,[Define to 1 to compile with t1lib for Type 1 fonts])
+	AC_DEFINE(HAVE_LIBT1,1,[Define to 1 to compile with t1lib for Type 1 fonts])
 
         if test $with_t1lib_prefix = "yes"; then
                 T1_CFLAGS="-I$T1LIB_PREFIX/include"
@@ -391,7 +396,7 @@ if test $profile = yes; then
 	AC_DEFINE(ENABLE_PROFILE,,[Define to 1 to let the widget collect some information for profiling purposes])
 fi
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 gtkmathview.spec
 config/Makefile
@@ -405,6 +410,7 @@ doc/Makefile
 viewer/Makefile
 randomath/Makefile
 mathml2ps/Makefile
-getopt/Makefile
-debian/Makefile
 ])
+AC_OUTPUT
+
+dnl getopt/Makefile

@@ -24,68 +24,59 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "Layout.hh"
 #include "stringAux.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
+#include "traverseAux.hh"
 #include "DrawingArea.hh"
 #include "MathMLElement.hh"
 #include "MathMLDocument.hh"
 #include "ValueConversion.hh"
 #include "MathMLStyleElement.hh"
 #include "MathMLAttributeList.hh"
+#include "MathMLOperatorElement.hh"
 #include "RenderingEnvironment.hh"
+#include "FormattingContext.hh"
 
 #ifdef DEBUG
 int MathMLElement::counter = 0;
 #endif // DEBUG
 
+MathMLElement::MathMLElement()
+#if defined(HAVE_GMETADOM)
+  : node(0)
+#endif
+{
+  Init();
+}
+
 // MathMLElement: this is the base class for every MathML presentation element.
 // It implements the basic skeleton of every such element, moreover it handles
 // the attributes and provides some facility functions to access and parse
 // attributes.
-#if defined(HAVE_MINIDOM)
-MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
-#elif defined(HAVE_GMETADOM)
-MathMLElement::MathMLElement(const GMetaDOM::Element& n, TagId t)
-#endif
+#if defined(HAVE_GMETADOM)
+MathMLElement::MathMLElement(const DOM::Element& n)
   : node(n)
 {
-#if defined(HAVE_MINIDOM)
-  if (node != NULL) mdom_node_set_user_data(node, this);
-#elif defined(HAVE_GMETADOM)
-  if (node != 0) node.set_userData(this);
+  Init();
+}
 #endif
 
-  tag  = t;
-
-  layout = NULL;
-  shape  = NULL;
+void
+MathMLElement::Init()
+{
+  SetDirtyStructure();
+  SetDirtyAttribute();
+  SetDirtyLayout();
 
   fGC[0] = fGC[1] = NULL;
   bGC[0] = bGC[1] = NULL;
-
-#ifdef DEBUG
-  counter++;
-#endif //DEBUG
+  
+  background = BLACK_COLOR;
 }
 
 MathMLElement::~MathMLElement()
 {
-  //MathEngine::logger(LOG_DEBUG, "destroying `%s' (DOM %p)", NameOfTagId(IsA()), node);
-#if defined(HAVE_MINIDOM)
-  if (node != NULL) mdom_node_set_user_data(node, NULL);
-#elif defined(HAVE_GMETADOM)
-  if (node != 0) node.set_userData(0);
-#endif
-
-  delete layout;
-  delete shape;
-
   ReleaseGCs();
-
-#ifdef DEBUG
-  counter--;
-#endif // DEBUG
 }
 
 // GetAttributeSignatureAux: this is an auxiliary function used to retrieve
@@ -117,12 +108,6 @@ MathMLElement::GetAttributeSignature(AttributeId id) const
   return GetAttributeSignatureAux(id, sig);
 }
 
-void
-MathMLElement::Normalize()
-{
-  // nothing to normalize since nothing has been parsed
-}
-
 const String*
 MathMLElement::GetDefaultAttribute(AttributeId id) const
 {
@@ -140,49 +125,56 @@ MathMLElement::GetDefaultAttributeValue(AttributeId id) const
 }
 
 const String*
-MathMLElement::GetAttribute(AttributeId id,
-			    const RenderingEnvironment* env,
-			    bool searchDefault) const
+MathMLElement::GetAttribute(AttributeId id, bool searchDefault) const
 {
-  const String* sValue = NULL;
+  const String* sValue = 0;
 
   // if this element is not connected with a DOM element
   // then it cannot have attributes. This may happen for
   // elements inferred with normalization
 #if defined(HAVE_MINIDOM)
-  if (node != NULL) {
-    mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
-    if (value != NULL) {
-      sValue = allocString(value);
-      mdom_string_free(value);
+  if (node != 0)
+    {
+      mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
+      if (value != 0)
+	{
+	  sValue = allocString(value);
+	  mdom_string_free(value);
+	}
     }
-  }
 #elif defined(HAVE_GMETADOM)
-  if (node != 0) {
-    if (node.hasAttribute(NameOfAttributeId(id)))
-      {
-	GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
-	sValue = allocString(value);
-      }
-    else
-      sValue = NULL;
-  }
+  if (node)
+    {
+      DOM::GdomeString value = node.getAttribute(NameOfAttributeId(id));
+      if (!value.empty()) sValue = allocString(value);
+    }
 #endif // HAVE_GMETADOM
 
-  if (sValue == NULL && env != NULL) {
-    const MathMLAttribute* attr = env->GetAttribute(id);
-    if (attr != NULL) sValue = attr->GetValue();
-  }
+  if (sValue == 0 && searchDefault) sValue = GetDefaultAttribute(id);
 
-  if (sValue == NULL && searchDefault) sValue = GetDefaultAttribute(id);
+  return sValue;
+}
+
+const String*
+MathMLElement::GetAttribute(AttributeId id,
+			    const RenderingEnvironment& env,
+			    bool searchDefault) const
+{
+  const String* sValue = GetAttribute(id, false);
+
+  if (sValue == 0)
+    {
+      const MathMLAttribute* attr = env.GetAttribute(id);
+      if (attr != 0) sValue = attr->GetValue();
+    }
+
+  if (sValue == 0 && searchDefault) sValue = GetDefaultAttribute(id);
 
   return sValue;
 }
 
 const Value*
-MathMLElement::GetAttributeValue(AttributeId id,
-				 const RenderingEnvironment* env,
-				 bool searchDefault) const
+MathMLElement::GetAttributeValue(AttributeId id, bool searchDefault) const
 {
   const Value* value = NULL;
 
@@ -192,75 +184,88 @@ MathMLElement::GetAttributeValue(AttributeId id,
   const String* sValue = NULL;
 
 #if defined(HAVE_MINIDOM)
-  if (node != NULL) {
-    mDOMStringRef value = mdom_node_get_attribute(node,
-						  DOM_CONST_STRING(NameOfAttributeId(id)));
-    if (value != NULL) {
-      sValue = allocString(value);
-      mdom_string_free(value);
-    }
-  }
-#elif defined(HAVE_GMETADOM)
-  if (node != 0) {
-    if (node.hasAttribute(NameOfAttributeId(id)))
-      {
-	GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
+  if (node != 0)
+    {
+      mDOMStringRef value = mdom_node_get_attribute(node,
+						    DOM_CONST_STRING(NameOfAttributeId(id)));
+      if (value != 0) {
 	sValue = allocString(value);
+	mdom_string_free(value);
       }
-    else
-      sValue = NULL;
-  }
+    }
+#elif defined(HAVE_GMETADOM)
+  if (node)
+    {
+      DOM::GdomeString value = node.getAttribute(NameOfAttributeId(id));
+      if (!value.empty()) sValue = allocString(value);
+    }
 #endif // HAVE_GMETADOM
 
-  if (sValue != NULL) {
-    AttributeParser parser = aSignature->GetParser();
-    assert(parser != NULL);
+  if (sValue != 0)
+    {
+      AttributeParser parser = aSignature->GetParser();
+      assert(parser != 0);
 
-    StringTokenizer st(*sValue);
-    value = parser(st);
+      StringTokenizer st(*sValue);
+      value = parser(st);
 
-    if (value == NULL) {
-      MathEngine::logger(LOG_WARNING, "in element `%s' parsing error in attribute `%s'",
-			 NameOfTagId(IsA()), NameOfAttributeId(id));
+      if (value == 0)
+	Globals::logger(LOG_WARNING, "in element `%s' parsing error in attribute `%s'",
+			NameOfTagId(IsA()), NameOfAttributeId(id));
+
+      delete sValue;
+      sValue = 0;
+    } 
+
+  if (value == 0 && searchDefault) value = GetDefaultAttributeValue(id);
+
+  return value;
+}
+
+const Value*
+MathMLElement::GetAttributeValue(AttributeId id, 
+				 const RenderingEnvironment& env,
+				 bool searchDefault) const
+{
+  const Value* value = GetAttributeValue(id, false);
+
+  if (value == 0)
+    {
+      const AttributeSignature* aSignature = GetAttributeSignature(id);
+      assert(aSignature != 0);
+      const MathMLAttribute* attr = env.GetAttribute(id);    
+      if (attr != 0) value = attr->GetParsedValue(aSignature);
     }
 
-    delete sValue;
-    sValue = NULL;
-  } else if (env != NULL) {
-    const MathMLAttribute* attr = env->GetAttribute(id);    
-    if (attr != NULL) value = attr->GetParsedValue(aSignature);
-  }
-
-  if (value == NULL && searchDefault) value = GetDefaultAttributeValue(id);
+  if (value == 0 && searchDefault) value = GetDefaultAttributeValue(id);
 
   return value;
 }
 
 const Value*
 MathMLElement::Resolve(const Value* value,
-		       const RenderingEnvironment* env,
+		       const RenderingEnvironment& env,
 		       int i, int j)
 {
   assert(value != NULL);
-  assert(env != NULL);
 
   const Value* realValue = value->Get(i, j);
   assert(realValue != NULL);
 
   if      (realValue->IsKeyword(KW_VERYVERYTHINMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_VERYVERYTHIN));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYVERYTHIN));
   else if (realValue->IsKeyword(KW_VERYTHINMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_VERYTHIN));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYTHIN));
   else if (realValue->IsKeyword(KW_THINMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_THIN));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_THIN));
   else if (realValue->IsKeyword(KW_MEDIUMMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_MEDIUM));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_MEDIUM));
   else if (realValue->IsKeyword(KW_THICKMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_THICK));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_THICK));
   else if (realValue->IsKeyword(KW_VERYTHICKMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_VERYTHICK));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYTHICK));
   else if (realValue->IsKeyword(KW_VERYVERYTHICKMATHSPACE))
-    realValue = new Value(env->GetMathSpace(MATH_SPACE_VERYVERYTHICK));
+    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYVERYTHICK));
   else
     // the following cloning is necessary because values returned by
     // the resolving function must always be deleted (never cached)
@@ -284,185 +289,48 @@ MathMLElement::IsSet(AttributeId id) const
 
   return false;
 #elif defined(HAVE_GMETADOM)
-  if (node == 0) return false;
+  if (!node) return false;
   return node.hasAttribute(NameOfAttributeId(id));
 #endif // HAVE_GMETADOM
 }
 
 void
-MathMLElement::Setup(RenderingEnvironment*)
+MathMLElement::Setup(RenderingEnvironment& env)
 {
-  // this function is defined to be empty but not pure-virtual
-  // because some "space-like" elements such as <mspace>
-  // <maligngroup>, <malignmark> effectively do nothing.
-  // So we don't have to implement this function as empty
-  // in every such element.
-  // The same holds for Render below.
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      background = env.GetBackgroundColor();
+      ResetDirtyAttribute();
+    }
 }
 
 void
-MathMLElement::ResetLayout()
+MathMLElement::DoLayout(const FormattingContext& ctxt)
 {
-  delete layout;
-  layout = NULL;
-}
-
-bool
-MathMLElement::HasDirtyLayout(LayoutId id, scaled w) const
-{
-  return true || HasDirtyLayout() || (id == LAYOUT_AUTO && !scaledEq(w, lastLayoutWidth));
-}
-
-void
-MathMLElement::ResetDirtyLayout(LayoutId id, scaled w)
-{
-  if (id == LAYOUT_AUTO) {
-    ResetDirtyLayout();
-    lastLayoutWidth = w;
-  }
-}
-
-void
-MathMLElement::ResetDirtyLayout(LayoutId id)
-{
-  if (id == LAYOUT_AUTO) ResetDirtyLayout();
-}
-
-void
-MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
-{
-  if (!HasDirtyLayout(id, maxWidth)) return;
-
-  ResetLayout();
-
-  layout = new Layout(maxWidth, IsBreakable() ? bid : BREAK_NO);
-  DoLayout(id, *layout);
-  layout->DoLayout(id);
-  if (id == LAYOUT_AUTO) DoStretchyLayout();
-  layout->GetBoundingBox(box, id);
-
-  ConfirmLayout(id);
-
-#if 0
-  cout << '`' << NameOfTagId(IsA()) << "' (" << this << ") DoBoxedLayout " << box << endl;
-#endif
-
-  ResetDirtyLayout(id, maxWidth);
-}
-
-void
-MathMLElement::DoLayout(LayoutId id, Layout&)
-{
-  // Well, there are some empty elements, such as <none/> or <prescripts/>
-  // that do not have a layout, nonetheless they are unbreakable
-  ResetDirtyLayout(id);
-}
-
-void
-MathMLElement::RecalcBoundingBox(LayoutId id, scaled minWidth)
-{
-  if (HasLayout()) layout->GetBoundingBox(box, id);
-  box.width = scaledMax(box.width, minWidth);
-  ConfirmLayout(id);
-}
-
-void
-MathMLElement::DoStretchyLayout()
-{
-}
-
-void
-MathMLElement::SetPosition(scaled x, scaled y)
-{
-  position.x = x;
-  position.y = y;
-  if (HasLayout()) layout->SetPosition(x, y);
-}
-
-void
-MathMLElement::SetPosition(scaled x, scaled y, ColumnAlignId id)
-{
-  if (HasLayout()) {
-      position.x = x;
-      position.y = y;
-      layout->SetPosition(x, y, id);
-  } else
-    SetPosition(x, y);
+  if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
 
 void
 MathMLElement::RenderBackground(const DrawingArea& area)
 {
-  if (bGC[IsSelected()] == NULL) {
-    GraphicsContextValues values;
-    values.background = values.foreground = IsSelected() ? area.GetSelectionBackground() : background;
-    bGC[IsSelected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
-  }
+  if (bGC[Selected()] == NULL)
+    {
+      GraphicsContextValues values;
+      values.background = values.foreground = Selected() ? area.GetSelectionBackground() : background;
+      bGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
+    }
 
-  if (HasDirtyBackground()) {
-#if 0
-    printf("`%s' has dirty background : shape = ", NameOfTagId(IsA()));
-    shape->Dump();
-    printf("\n");
-#endif
-    assert(IsShaped());
-    area.Clear(bGC[IsSelected()], GetShape());
-  }
+  if (DirtyBackground()) area.Clear(bGC[Selected()], GetX(), GetY(), GetBoundingBox());
 }
 
 void
 MathMLElement::Render(const DrawingArea& area)
 {
-  if (!IsDirty()) return;
-
-  RenderBackground(area);
-
-  ResetDirty();
-}
-
-void
-MathMLElement::Freeze()
-{
-  assert(!IsBreakable() || HasLayout());
-
-  if (shape != NULL) delete shape;
-  
-  Rectangle* rect = new Rectangle;
-  if (!IsBreakable()) GetBoundingBox().ToRectangle(GetX(), GetY(), *rect);
-  else {
-    assert(HasLayout());
-    BoundingBox box;
-    layout->GetBoundingBox(box);
-    box.ToRectangle(GetX(), GetY(), *rect);
-  }
-  shape = new Shape(rect);
-
-#if 0
-  printf("freezing: %s  ", NameOfTagId(IsA()));
-  shape->Dump();
-  printf("\n");
-#endif
-
-  ResetLayout();
-}
-
-void
-MathMLElement::SetDirty(const Rectangle* rect)
-{
-  assert(IsShaped());
-
-  dirtyBackground =
-    (GetParent() != NULL && (GetParent()->IsSelected() != IsSelected())) ? 1 : 0;
-#if 0
-  if (GetParent() != NULL && (GetParent()->IsSelected() != IsSelected()))
-    dirtyBackground = 1;
-#endif
-
-  if (IsDirty()) return;
-  if (rect != NULL && !shape->Overlaps(*rect)) return;
-
-  dirty = 1;
-  SetDirtyChildren();
+  if (Dirty())
+    {
+      RenderBackground(area);
+      ResetDirty();
+    }
 }
 
 bool
@@ -472,63 +340,30 @@ MathMLElement::IsSpaceLike() const
 }
 
 bool
-MathMLElement::IsElement() const
-{
-  return true;
-}
-
-bool
-MathMLElement::IsExpanding() const
-{
-  return false;
-}
-
-bool
 MathMLElement::IsInside(scaled x, scaled y) const
 {
-  assert(IsShaped());
-  return shape->IsInside(x, y);
+  return GetRectangle().IsInside(x, y);
 }
 
-void
-MathMLElement::GetLinearBoundingBox(BoundingBox& b) const
-{
-  assert(!IsBreakable());
-  b = box;
-}
-
-MathMLElement*
+Ptr<MathMLElement>
 MathMLElement::Inside(scaled x, scaled y)
 {
-  return IsInside(x, y) ? this : NULL;
+  return IsInside(x, y) ? this : 0;
 }
 
 unsigned
 MathMLElement::GetDepth() const
 {
   unsigned depth = 0;
-  const MathMLElement* p = this;
+  Ptr<const MathMLElement> p = this;
   
-  while (p != NULL) {
-    depth++;
-    p = p->GetParent();
-  }
+  while (p)
+    {
+      depth++;
+      p = p->GetParent();
+    }
 
   return depth;
-}
-
-const Layout&
-MathMLElement::GetLayout() const
-{
-  assert(HasLayout());
-  return *layout;
-}
-
-const Shape&
-MathMLElement::GetShape() const
-{
-  assert(IsShaped());
-  return *shape;
 }
 
 scaled
@@ -554,20 +389,234 @@ bool
 MathMLElement::HasLink() const
 {
 #if defined(HAVE_MINIDOM)
-  mDOMNodeRef p = GetDOMNode();
+  mDOMNodeRef p = GetDOMElement();
 
   while (p != NULL && !mdom_node_has_attribute(p, DOM_CONST_STRING("href")))
     p = mdom_node_get_parent(p);
 
   return p != NULL;
 #elif defined(HAVE_GMETADOM)
-  GMetaDOM::Element p = GetDOMNode();
+  DOM::Element p = GetDOMElement();
 
-  while (p != 0 && !p.hasAttribute("href")) {
-    GMetaDOM::Node parent = p.get_parentNode();
+  while (p && !p.hasAttribute("href")) {
+    DOM::Node parent = p.get_parentNode();
     p = parent;
   }
 
-  return p != 0;
+  return p;
 #endif // HAVE_GMETADOM
+}
+
+Ptr<MathMLOperatorElement>
+MathMLElement::GetCoreOperator()
+{
+  return 0;
+}
+
+Ptr<MathMLOperatorElement>
+MathMLElement::GetCoreOperatorTop()
+{
+  if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+    if (!GetParent() || GetParent()->GetCoreOperator() != coreOp)
+      return coreOp;
+  return 0;
+}
+
+TagId
+MathMLElement::IsA() const
+{
+  if (!node) return TAG_NOTVALID;
+
+  std::string s_tag = nodeLocalName(node);
+  TagId res = TagIdOfName(s_tag.c_str());
+
+  return res;
+}
+
+#if 0
+void
+MathMLElement::SetDirtyStructure()
+{
+  dirtyStructure = 1;
+  
+  Ptr<MathMLElement> parent = GetParent();
+  while (parent)
+    {
+      parent->childWithDirtyStructure = 1;
+      parent = parent->GetParent();
+    }
+}
+
+void
+MathMLElement::SetDirtyAttribute()
+{
+  dirtyAttribute = 1;
+
+  Ptr<MathMLElement> parent = GetParent();
+  while (parent)
+    {
+      parent->childWithDirtyAttribute = 1;
+      parent = parent->GetParent();
+    }
+}
+
+void
+MathMLElement::SetDirtyChildren()
+{
+  if (HasDirtyChildren()) return;
+  dirtyChildren = 1;
+  for (Ptr<MathMLElement> elem = GetParent(); 
+       elem && !elem->HasDirtyChildren(); 
+       elem = elem->GetParent())
+    elem->dirtyChildren = 1;
+}
+
+void
+MathMLElement::SetDirtyLayout(bool)
+{
+  if (HasDirtyLayout()) return;
+  dirtyLayout = 1;
+  for (Ptr<MathMLElement> elem = GetParent(); 
+       elem && !elem->dirtyLayout; 
+       elem = elem->GetParent())
+    elem->dirtyLayout = 1;
+}
+
+void
+MathMLElement::SetSelected()
+{
+  if (IsSelected()) return;
+  selected = 1;
+  SetDirty();
+}
+
+void
+MathMLElement::ResetSelected()
+{
+  if (!IsSelected()) return;
+  SetDirty();
+  selected = 0;
+}
+#endif
+
+void
+MathMLElement::SetDirtyStructure()
+{
+  if (!DirtyStructure())
+    {
+      SetFlag(FDirtyStructure);
+      SetFlagUp(FDirtyStructure);
+    }
+}
+
+void
+MathMLElement::SetDirtyAttribute()
+{
+  if (!DirtyAttribute())
+    {
+      SetFlag(FDirtyAttribute);
+      SetFlagUp(FDirtyAttributeP);
+    }
+}
+
+void
+MathMLElement::SetDirtyAttributeD()
+{
+  if (!DirtyAttributeD())
+    {
+      SetFlagDown(FDirtyAttributeD);
+      SetFlagUp(FDirtyAttributeP);
+    }
+}
+
+void
+MathMLElement::SetDirtyLayout()
+{
+  if (!DirtyLayout())
+    {
+      SetFlagDown(FDirtyLayout);
+      SetFlagUp(FDirtyLayout);
+    }
+}
+
+void
+MathMLElement::SetFlag(Flags f)
+{
+  flags.set(f);
+}
+
+void
+MathMLElement::SetDirty(const Rectangle* rect)
+{
+  if (!Dirty())
+    {
+      if (!rect || GetRectangle().Overlaps(*rect))
+	{
+	  SetFlagDown(FDirty);
+	  SetFlagUp(FDirtyP);
+	}
+    }
+}
+
+void
+MathMLElement::SetSelected()
+{
+  if (!Selected())
+    {
+      SetFlagDown(FSelected);
+      SetDirty();
+    }
+}
+
+void
+MathMLElement::ResetSelected()
+{
+  if (Selected())
+    {
+      ResetFlagDown(FSelected);
+      SetDirty();
+    }
+}
+
+void
+MathMLElement::SetFlagUp(Flags f)
+{
+  for (Ptr<MathMLElement> p = GetParent(); p && !p->GetFlag(f); p = p->GetParent())
+    p->SetFlag(f);
+}
+
+void
+MathMLElement::ResetFlagUp(Flags f)
+{
+  for (Ptr<MathMLElement> p = GetParent(); p && p->GetFlag(f); p = p->GetParent())
+    p->ResetFlag(f);
+}
+
+void
+MathMLElement::SetFlagDown(Flags f)
+{
+  SetFlag(f);
+}
+
+void
+MathMLElement::ResetFlagDown(Flags f)
+{
+  ResetFlag(f);
+}
+
+void
+MathMLElement::SetParent(const Ptr<MathMLElement>& p)
+{
+  MathMLNode::SetParent(p);
+  if (p)
+    {
+      if (DirtyStructure()) SetFlagUp(FDirtyStructure);
+      if (DirtyAttribute()) SetFlagUp(FDirtyAttributeP);
+      if (p->DirtyAttributeD()) SetFlagDown(FDirtyAttributeD);
+      if (DirtyLayout()) SetFlagUp(FDirtyLayout);
+      if (Dirty()) SetFlagUp(FDirty);
+      if (p->DirtyLayout()) SetFlagDown(FDirtyLayout);
+      if (p->Dirty()) SetFlagDown(FDirty);
+      if (p->Selected()) SetFlagDown(FSelected);
+    }
 }

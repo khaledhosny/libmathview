@@ -23,32 +23,37 @@
 #ifndef MathMLSpaceElement_hh
 #define MathMLSpaceElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "Layout.hh"
 #include "MathMLElement.hh"
 
 class MathMLSpaceElement: public MathMLElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  MathMLSpaceElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  MathMLSpaceElement(const GMetaDOM::Element&);
+protected:
+  MathMLSpaceElement(void);
+#if defined(HAVE_GMETADOM)
+  MathMLSpaceElement(const DOM::Element&);
 #endif
-  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void    Setup(class RenderingEnvironment*);
-  virtual void    DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual ~MathMLSpaceElement();
+
+public:
+  static Ptr<MathMLElement> create(void)
+  { return Ptr<MathMLElement>(new MathMLSpaceElement()); }
+#if defined(HAVE_GMETADOM)
+  static Ptr<MathMLElement> create(const DOM::Element& el)
+  { return Ptr<MathMLElement>(new MathMLSpaceElement(el)); }
+#endif
+
+  virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
+  virtual void    Normalize(const Ptr<class MathMLDocument>&);
+  virtual void    Setup(class RenderingEnvironment&);
+  virtual void    DoLayout(const class FormattingContext&);
 
   virtual bool    IsSpace(void) const;
   virtual bool    IsSpaceLike(void) const;
-  virtual BreakId GetBreakability(void) const;
-
+  BreakId         GetBreakability(void) const { return breakability; }
   virtual scaled  GetRightEdge(void) const;
 
 private:
@@ -63,9 +68,5 @@ private:
   bool    autoLineBreak; // valid if lineBreaking == true
   BreakId breakability; // valid if auto == false
 };
-
-typedef MathMLSpaceElement* MathMLSpaceElementPtr;
-
-#define TO_SPACE(node) (dynamic_cast<MathMLSpaceElement*>(node))
 
 #endif // MathMLSpaceElement_hh

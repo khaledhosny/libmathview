@@ -70,8 +70,9 @@ Logger::operator()(LogLevelId id, const char* fmt, ...) const
 
   if (id > logLevel) return;
 
-  fprintf(logFile, "*** %s: ", msg[id]);
+  fprintf(logFile, "*** %s[%d:%d]: ", msg[id], id, logLevel);
   vfprintf(logFile, fmt, args);
   fprintf(logFile, "\n");
   va_end(args);
 }
+

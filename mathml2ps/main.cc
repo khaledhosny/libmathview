@@ -36,7 +36,7 @@
 
 #include "defs.h"
 #include "String.hh"
-#include "MathEngine.hh"
+#include "Globals.hh"
 #include "CharMapper.hh"
 #include "EntitiesTable.hh"
 #include "MathMLElement.hh"
@@ -45,6 +45,7 @@
 #include "PS_T1_FontManager.hh"
 #include "OperatorDictionary.hh"
 #include "RenderingEnvironment.hh"
+#include "MathMLRenderingEngine.hh"
 
 enum CommandLineOptionId {
   OPTION_VERSION = 256,
@@ -204,7 +205,7 @@ parseUnit(const char* s)
 
   if (unit[i].name == NULL) return false;
 
-  MathEngine::logger(LOG_INFO, "Setting units to `%s'", unit[i].name);
+  Globals::logger(LOG_INFO, "Setting units to `%s'", unit[i].name);
   unitId = unit[i].id;
 
   return true;
@@ -398,20 +399,20 @@ main(int argc, char *argv[])
   }
 
   if (configPath == NULL) configPath = getenv("MATHENGINECONF");
-  
-  MathEngine::logger.SetLogLevel(logLevel);
-  MathEngine::logger(LOG_INFO, "Font size : %f", fontSize);
-  MathEngine::logger(LOG_INFO, "Paper size: %fx%f", width, height);
-  MathEngine::logger(LOG_INFO, "Margins   : %fx%f", xMargin, yMargin);
+
+  Globals::InitGlobalData(configPath);  
+  Globals::logger.SetLogLevel(logLevel);
+  Globals::logger(LOG_INFO, "Font size : %f", fontSize);
+  Globals::logger(LOG_INFO, "Paper size: %fx%f", width, height);
+  Globals::logger(LOG_INFO, "Margins   : %fx%f", xMargin, yMargin);
 
 #ifdef HAVE_LIBT1
   if (optind >= argc) {
     printHelp();
     exit(1);
   }
-  
-  MathEngine engine;
-  MathEngine::InitGlobalData(configPath);
+
+  MathMLRenderingEngine engine;
 
   UnitValue uWidth;
   UnitValue uHeight;
@@ -441,32 +442,27 @@ main(int argc, char *argv[])
   engine.Init(&area, &fm);
 
   while (optind < argc) {
-    MathEngine::logger(LOG_INFO, "Processing `%s'...", argv[optind]);
+    Globals::logger(LOG_INFO, "Processing `%s'...", argv[optind]);
 
     char* outName = getOutputFileName(argv[optind]);
     assert(outName != NULL);
 
     FILE* outFile = fopen(outName, "wt");
     if (outFile == NULL) {
-      MathEngine::logger(LOG_ERROR, "could not open output file `%s' for writing", outName);
+      Globals::logger(LOG_ERROR, "could not open output file `%s' for writing", outName);
       exit(1);
     }
 
     area.SetOutputFile(outFile);
 
-    engine.SetVerbosity(logLevel);
     engine.SetDefaultFontSize(fontSize);
-    MathEngine::DrawMissingCharacter(showMissing);
-    MathEngine::LineBreaking(lineBreaking);
-    MathEngine::ShowEmptyElements(showEmptyRows);
+    Globals::DrawMissingCharacter(showMissing);
 #if 0
     engine.SetKerning(kerning);
 #endif
 
     fm.ResetUsedFonts();
     if (engine.Load(argv[optind])) {
-      engine.Layout();
-
       Rectangle rect;
       engine.GetDocumentRectangle(rect);
 

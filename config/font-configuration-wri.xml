@@ -361,7 +361,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
     <single code="0xef82" index="0xcf"/>
     <single code="0xf8e7" index="0xd6"/>
 
-    <stretchy name="Sqrt" direction="vertical">
+    <stretchy code="0x221a" direction="vertical">
       <simple index="0x30 0x31 0x32 0x33"/>
       <compound index="0x36   -1 0x34 0x35"/>
     </stretchy>

@@ -23,8 +23,10 @@
 #ifndef FontAttributes_hh
 #define FontAttributes_hh
 
+#include <string>
+#include <vector>
+
 #include "keyword.hh"
-#include "Container.hh"
 #include "UnitValue.hh"
 
 enum FontModeId { FONT_MODE_ANY, FONT_MODE_TEXT, FONT_MODE_MATH };
@@ -34,7 +36,7 @@ struct FontAttributes {
   FontAttributes(const FontAttributes&, const FontAttributes&);
 
   bool HasMode(void) const { return (mode != FONT_MODE_ANY); }
-  bool HasFamily(void) const { return (family != 0); }
+  bool HasFamily(void) const { return (family != ""); }
   bool HasStyle(void) const { return (style != FONT_STYLE_NOTVALID); }
   bool HasWeight(void) const { return (weight != FONT_WEIGHT_NOTVALID); }
   bool HasSize(void) const { return !size.IsNull(); }
@@ -45,7 +47,7 @@ struct FontAttributes {
 
   bool DownGrade(void);
 
-  const char*  family;
+  std::string  family;
   UnitValue    size; // cannot be < 0
   FontWeightId weight;
   FontStyleId  style;
@@ -54,17 +56,17 @@ struct FontAttributes {
 
 class ExtraFontAttributes {
 public:
-  const char* GetProperty(const char*) const;
-  void AddProperty(const char*, const char*);
+  std::string GetProperty(const std::string&) const;
+  void AddProperty(const std::string&, const std::string&);
   void Dump(void) const;
 
-private:
   struct ExtraFontAttribute {
-    const char* name;
-    const char* value;
+    std::string name;
+    std::string value;
   };
 
-  Container<ExtraFontAttribute*> content;
+private:
+  std::vector<ExtraFontAttribute*> content;
 };
 
 #endif // FontAttributes.hh

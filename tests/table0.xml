@@ -1,5 +1,5 @@
-<math>
-  <mtable frame="solid" equalcolumns="false" columnwidth="10% fit" columnlines="solid">
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtable frame="solid" equalcolumns="false" columnwidth="10% 20%" columnlines="solid">
     <mtr>
       <mtd><mi>ciao</mi></mtd>
       <mtd><mi>da</mi></mtd>

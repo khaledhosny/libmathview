@@ -28,7 +28,7 @@
 mDOMDocRef MathMLParseFile(const char*, bool);
 #elif defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
-GMetaDOM::Document MathMLParseFile(const char*, bool);
+DOM::Document MathMLParseFile(const char*, bool);
 #endif
 
 #endif

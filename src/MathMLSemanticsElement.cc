@@ -23,53 +23,102 @@
 #include <config.h>
 #include <assert.h>
 
+#include "ChildList.hh"
+#include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
+#include "MathMLOperatorElement.hh"
 #include "MathMLSemanticsElement.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLSemanticsElement::MathMLSemanticsElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLSemanticsElement::MathMLSemanticsElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLContainerElement(node, TAG_SEMANTICS)
+MathMLSemanticsElement::MathMLSemanticsElement()
 {
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLSemanticsElement::MathMLSemanticsElement(const DOM::Element& node)
+  : MathMLBinContainerElement(node)
+{
+}
+#endif
 
 MathMLSemanticsElement::~MathMLSemanticsElement()
 {
 }
 
 void
-MathMLSemanticsElement::Normalize()
+MathMLSemanticsElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
-  while (content.GetSize() > 1) {
-    MathMLElement* elem = content.RemoveLast();
-    delete elem;
-  }
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      if (GetDOMElement())
+	{
+	  assert(IsA() == TAG_SEMANTICS);
+	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 
-  if (content.GetSize() == 0) {
-    MathMLElement* mdummy = new MathMLDummyElement();
-    mdummy->SetParent(this);
-    content.Append(mdummy);
-  }
+	  if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	    SetChild(e);
+	  else
+	    {
+	      ChildList children(GetDOMElement(), MATHML_NS_URI, "annotation-xml");
+	      for (unsigned i = 0; i < children.get_length(); i++)
+		{
+		  DOM::Element elem = children.item(i);
+		  assert(elem);
+		  if (elem.getAttribute("encoding") == "MathML-Presentation")
+		    {
+		      ChildList children(elem, MATHML_NS_URI, "*");
+		      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+			SetChild(e);
+		      else if (!is_a<MathMLDummyElement>(GetChild()))
+			SetChild(MathMLDummyElement::create());
+		      break;
+		    }
+		}
+	      if (!is_a<MathMLDummyElement>(GetChild()))
+		SetChild(MathMLDummyElement::create());
+	    }
+	}
+#endif
 
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-  content.GetFirst()->Normalize();
+      if (GetChild()) GetChild()->Normalize(doc);
+
+      ResetDirtyStructure();
+    }
 }
 
-bool
-MathMLSemanticsElement::IsBreakable() const
+void
+MathMLSemanticsElement::DoLayout(const FormattingContext& ctxt)
 {
-  assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
-  return content.GetFirst()->IsBreakable();
+  if (DirtyLayout(ctxt))
+    {
+      MathMLBinContainerElement::DoLayout(ctxt);
+      DoEmbellishmentLayout(this, box);
+      ResetDirtyLayout(ctxt);
+    }
 }
 
+void
+MathMLSemanticsElement::SetPosition(scaled x, scaled y)
+{
+  position.x = x;
+  position.y = y;
+  SetEmbellishmentPosition(this, x, y);
+  if (GetChild()) GetChild()->SetPosition(x, y);
+}
+
+#if 0
 bool
 MathMLSemanticsElement::IsExpanding() const
 {
   assert(content.GetSize() == 1);
-  assert(content.GetFirst() != NULL);
+  assert(content.GetFirst());
   return content.GetFirst()->IsExpanding();
+}
+#endif
+
+Ptr<MathMLOperatorElement>
+MathMLSemanticsElement::GetCoreOperator()
+{
+  if (GetChild()) return GetChild()->GetCoreOperator();
+  else return 0;
 }

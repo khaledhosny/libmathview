@@ -23,6 +23,9 @@
 #ifndef CharMapper_hh
 #define CharMapper_hh
 
+#include <vector>
+#include <functional>
+
 #if defined(HAVE_MINIDOM)
 #include "minidom.h"
 #elif defined(HAVE_GMETADOM)
@@ -56,9 +59,9 @@ public:
 
 private:
   struct FontMap {
-    const char* id;
-    Container<CharMap*> multi; // actually, RANGE and MULTI maps
-    Container<CharMap*> single[CHAR_MAP_HASH_TABLE_SIZE]; // actually, SINGLE and STRETCHY
+    std::string id;
+    std::vector<CharMap*> multi; // actually, RANGE and MULTI maps
+    std::vector<CharMap*> single[CHAR_MAP_HASH_TABLE_SIZE]; // actually, SINGLE and STRETCHY
 
     StretchId GetStretch(Char) const;
     const CharMap* GetCharMap(Char, bool = false) const;
@@ -68,8 +71,23 @@ private:
     FontAttributes      attributes;
     ExtraFontAttributes extraAttributes;
 
-    const char*         fontMapId;
+    std::string         fontMapId;
     const FontMap*      fontMap;
+  };
+
+  // definition of local adaptors
+  struct DeleteFontDescriptorAdaptor
+    : public std::unary_function<FontDescriptor*,void>
+  {
+    void operator()(FontDescriptor* desc) const
+    { delete desc; }
+  };
+
+  struct DeleteFontMapAdaptor
+    : public std::unary_function<FontMap*,void>
+  {
+    void operator()(FontMap* map) const
+    { delete map; }
   };
 
   bool FontifyCharAux(FontifiedChar&, const FontAttributes&, Char, bool = false) const;
@@ -85,22 +103,22 @@ private:
   void ParseStretchySimple(mDOMNodeRef, CharMap*);
   void ParseStretchyCompound(mDOMNodeRef, CharMap*);
 #elif defined(HAVE_GMETADOM)
-  void ParseFontConfiguration(const GMetaDOM::Element&);
-  void ParseFont(const GMetaDOM::Element&);
-  void ParseMap(const GMetaDOM::Element&);
-  void ParseRange(const GMetaDOM::Element&, FontMap*);
-  void ParseMulti(const GMetaDOM::Element&, FontMap*);
-  void ParseSingle(const GMetaDOM::Element&, FontMap*);
-  void ParseStretchy(const GMetaDOM::Element&, FontMap*);
-  void ParseStretchySimple(const GMetaDOM::Element&, CharMap*);
-  void ParseStretchyCompound(const GMetaDOM::Element&, CharMap*);
+  void ParseFontConfiguration(const DOM::Element&);
+  void ParseFont(const DOM::Element&);
+  void ParseMap(const DOM::Element&);
+  void ParseRange(const DOM::Element&, FontMap*);
+  void ParseMulti(const DOM::Element&, FontMap*);
+  void ParseSingle(const DOM::Element&, FontMap*);
+  void ParseStretchy(const DOM::Element&, FontMap*);
+  void ParseStretchySimple(const DOM::Element&, CharMap*);
+  void ParseStretchyCompound(const DOM::Element&, CharMap*);
 #endif // HAVE_GMETADOM
 
   void PatchConfiguration(void);
-  const FontMap* SearchMapping(const char*) const;
+  const FontMap* SearchMapping(const std::string&) const;
 
-  Container<FontDescriptor*> fonts;
-  Container<FontMap*>        maps;
+  std::vector<FontDescriptor*> fonts;
+  std::vector<FontMap*>        maps;
 
   class FontManager& fontManager;
 

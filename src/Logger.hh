@@ -27,7 +27,8 @@
 
 enum LogLevelId { LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG };
 
-class Logger {
+class Logger
+{
 public:
   Logger(void);
   Logger(FILE*);
@@ -47,3 +48,4 @@ private:
 };
 
 #endif // Logger_hh
+

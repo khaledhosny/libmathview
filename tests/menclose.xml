@@ -1,4 +1,4 @@
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
   <menclose notation="radical">
     <mspace height="0.5cm" depth="0.25cm"/>
     <mtext>menclose test</mtext>

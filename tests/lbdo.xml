@@ -1,6 +1,4 @@
-<html>
-<body>
-<math>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
 <mstyle>
 <mtext>
 \documentclass[a4paper,draft,11pt]{article}
@@ -424,5 +422,3 @@ pi\`u significative possono essere riassunte come segue:
 </mtext>
 </mstyle>
 </math>
-</body>
-</html>

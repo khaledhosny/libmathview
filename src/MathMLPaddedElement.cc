@@ -28,16 +28,19 @@
 #include "ValueConversion.hh"
 #include "MathMLPaddedElement.hh"
 #include "RenderingEnvironment.hh"
+#include "MathMLOperatorElement.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLPaddedElement::MathMLPaddedElement(mDOMNodeRef node)
-#elif defined(HAVE_GMETADOM)
-MathMLPaddedElement::MathMLPaddedElement(const GMetaDOM::Element& node)
-#endif
-  : MathMLNormalizingContainerElement(node, TAG_MPADDED)
+MathMLPaddedElement::MathMLPaddedElement()
 {
-  width.valid = lSpace.valid = height.valid = depth.valid = false;
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLPaddedElement::MathMLPaddedElement(const DOM::Element& node)
+  : MathMLNormalizingContainerElement(node)
+{
+}
+#endif
 
 MathMLPaddedElement::~MathMLPaddedElement()
 {
@@ -46,7 +49,8 @@ MathMLPaddedElement::~MathMLPaddedElement()
 const AttributeSignature*
 MathMLPaddedElement::GetAttributeSignature(AttributeId id) const
 {
-  static AttributeSignature sig[] = {
+  static AttributeSignature sig[] =
+  {
     { ATTR_WIDTH,    paddedWidthParser, NULL,               NULL },
     { ATTR_LSPACE,   paddedValueParser, new StringC("0em"), NULL },
     { ATTR_HEIGHT,   paddedValueParser, NULL,               NULL },
@@ -60,39 +64,58 @@ MathMLPaddedElement::GetAttributeSignature(AttributeId id) const
   return signature;
 }
 
+#if 0
 void
-MathMLPaddedElement::Setup(RenderingEnvironment* env)
+MathMLPaddedElement::Normalize(const Ptr<MathMLDocument>& doc)
 {
-  assert(env != NULL);
+  if (DirtyStructure())
+    {
+      MathMLNormalizingContainerElement::Normalize(doc);
+      if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+	{
+	  Ptr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
+	  assert(eOp && eOp->GetParent() == this);
+	  eOp->Lift(doc);
+	}
+      ResetDirtyStructure();
+    }
+}
+#endif
 
-  const Value* value = NULL;
+void
+MathMLPaddedElement::Setup(RenderingEnvironment& env)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      width.valid = lSpace.valid = height.valid = depth.valid = false;
 
-  value = GetAttributeValue(ATTR_WIDTH, NULL, false);
-  if (value != NULL) ParseLengthDimension(env, value, width, KW_WIDTH);
-  delete value;
+      const Value* value = GetAttributeValue(ATTR_WIDTH, false);
+      if (value != NULL) ParseLengthDimension(env, value, width, KW_WIDTH);
+      delete value;
 
-  value = GetAttributeValue(ATTR_LSPACE, NULL, true);
-  if (value != NULL) ParseLengthDimension(env, value, lSpace, KW_LSPACE);
-  delete value;
+      value = GetAttributeValue(ATTR_LSPACE);
+      if (value != NULL) ParseLengthDimension(env, value, lSpace, KW_LSPACE);
+      delete value;
 
-  value = GetAttributeValue(ATTR_HEIGHT, NULL, false);
-  if (value != NULL) ParseLengthDimension(env, value, height, KW_HEIGHT);
-  delete value;
+      value = GetAttributeValue(ATTR_HEIGHT, false);
+      if (value != NULL) ParseLengthDimension(env, value, height, KW_HEIGHT);
+      delete value;
 
-  value = GetAttributeValue(ATTR_DEPTH, NULL, false);
-  if (value != NULL) ParseLengthDimension(env, value, depth, KW_DEPTH);
-  delete value;
+      value = GetAttributeValue(ATTR_DEPTH, false);
+      if (value != NULL) ParseLengthDimension(env, value, depth, KW_DEPTH);
+      delete value;
 
-  MathMLNormalizingContainerElement::Setup(env);
+      MathMLNormalizingContainerElement::Setup(env);
+      ResetDirtyAttribute();
+    }
 }
 
 void
-MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment* env,
+MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
 					  const Value* value,
 					  LengthDimension& dim,
 					  KeywordId pseudoUnitId)
 {
-  assert(env != NULL);
   assert(value != NULL);
 
   assert(value->IsSequence());
@@ -104,7 +127,7 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment* env,
 
   v = seq->GetFirstValue();
   assert(v != NULL);
-  if      (v->IsKeyword(KW_PLUS)) dim.sign = 1;
+  if      (v->IsKeyword(KW_PLUS)) dim.sign = +1;
   else if (v->IsKeyword(KW_MINUS)) dim.sign = -1;
   else dim.sign = 0;
 
@@ -146,10 +169,10 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment* env,
       if (unitId != UNIT_NOTVALID) {
 	UnitValue unitValue;
 	unitValue.Set(1.0, unitId);
-	dim.unit = env->ToScaledPoints(unitValue);
+	dim.unit = env.ToScaledPoints(unitValue);
       } else {
 	MathSpaceId spaceId = ToNamedSpaceId(v);
-	dim.unit = env->ToScaledPoints(env->GetMathSpace(spaceId));
+	dim.unit = env.ToScaledPoints(env.GetMathSpace(spaceId));
       }
     }
   }
@@ -158,31 +181,32 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment* env,
 }
 
 void
-MathMLPaddedElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
+MathMLPaddedElement::DoLayout(const class FormattingContext& ctxt)
 {
-  if (!HasDirtyLayout(id, maxWidth)) return;
+  if (DirtyLayout(ctxt))
+    {
+      assert(child);
+      child->DoLayout(ctxt);
+      const BoundingBox& elemBox = child->GetBoundingBox();
 
-  assert(content.GetSize() == 1);
-  MathMLElement* elem = content.GetFirst();
-  assert(elem != NULL);
+      lSpaceE = EvalLengthDimension(0, lSpace, elemBox);
+      box.Set(lSpaceE + EvalLengthDimension(elemBox.width, width, elemBox),
+	      EvalLengthDimension(elemBox.ascent, height, elemBox),
+	      EvalLengthDimension(elemBox.descent, depth, elemBox));
 
-  elem->DoBoxedLayout(id, bid, maxWidth);
-  const BoundingBox& elemBox = elem->GetBoundingBox();
+      DoEmbellishmentLayout(this, box);
 
-  box.Set(EvalLengthDimension(elemBox.width, width, elemBox),
-	  EvalLengthDimension(elemBox.ascent, height, elemBox),
-	  EvalLengthDimension(elemBox.descent, depth, elemBox));
-  lSpaceE     = EvalLengthDimension(0, lSpace, elemBox);
-
-  ConfirmLayout(id);
-
-  ResetDirtyLayout(id, maxWidth);
+      ResetDirtyLayout(ctxt);
+    }
 }
 
 void
 MathMLPaddedElement::SetPosition(scaled x, scaled y)
 {
-  MathMLNormalizingContainerElement::SetPosition(x + lSpaceE, y);
+  position.x = x;
+  position.y = y;
+  SetEmbellishmentPosition(this, x, y);
+  if (GetChild()) GetChild()->SetPosition(x + lSpaceE, y);
 }
 
 scaled
@@ -213,4 +237,20 @@ MathMLPaddedElement::EvalLengthDimension(scaled orig,
   if      (dim.sign == -1) return orig - float2sp(res);
   else if (dim.sign == +1) return orig + float2sp(res);
   else return float2sp(res);
+}
+
+#if 0
+void
+MathMLPaddedElement::SetDirty(const Rectangle* rect)
+{
+  assert(child);
+  child->SetDirty(rect);
+}
+#endif
+
+Ptr<MathMLOperatorElement>
+MathMLPaddedElement::GetCoreOperator()
+{
+  if (GetChild()) return GetChild()->GetCoreOperator();
+  else return 0;
 }

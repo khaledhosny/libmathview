@@ -23,26 +23,30 @@
 #ifndef DocumentElement_hh
 #define DocumentElement_hh
 
-#if defined(HAVE_MINIDOM)
-#include <minidom.h>
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
 #endif
 
-#include "MathMLContainerElement.hh"
+#include "MathMLLinearContainerElement.hh"
 
-class DocumentElement : public MathMLContainerElement
+class DocumentElement : public MathMLLinearContainerElement
 {
-public:
-#if defined(HAVE_MINIDOM)
-  DocumentElement(mDOMNodeRef);
-#elif defined(HAVE_GMETADOM)
-  DocumentElement(const GMetaDOM::Document&);
+protected:
+  DocumentElement(void);
+#if defined(HAVE_GMETADOM)
+  DocumentElement(const DOM::Document&);
 #endif
-  virtual void Setup(RenderingEnvironment*);
-  virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
-  virtual void SetPosition(scaled, scaled);
   virtual ~DocumentElement();
+
+public:
+  static MathMLElement* create(void) { return new DocumentElement(); }
+#if defined(HAVE_GMETADOM)
+  static MathMLElement* create(const DOM::Document& el) { return new DocumentElement(el); }
+#endif
+
+  virtual void Setup(RenderingEnvironment*);
+  virtual void DoLayout(scaled);
+  virtual void SetPosition(scaled, scaled);
 
 private:
   scaled sppm;

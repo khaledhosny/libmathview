@@ -24,20 +24,26 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "ChildList.hh"
 #include "traverseAux.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLScriptElement.hh"
+#include "MathMLOperatorElement.hh"
 #include "RenderingEnvironment.hh"
+#include "FormattingContext.hh"
 
-#if defined(HAVE_MINIDOM)
-MathMLScriptElement::MathMLScriptElement(mDOMNodeRef node, TagId id)
-#elif defined(HAVE_GMETADOM)
-MathMLScriptElement::MathMLScriptElement(const GMetaDOM::Element& node, TagId id)
-#endif
-  : MathMLContainerElement(node, id)
+MathMLScriptElement::MathMLScriptElement()
 {
-  subScript = superScript = NULL;
+  subScript = superScript = 0;  
 }
+
+#if defined(HAVE_GMETADOM)
+MathMLScriptElement::MathMLScriptElement(const DOM::Element& node)
+  : MathMLContainerElement(node)
+{
+  subScript = superScript = 0;
+}
+#endif
 
 MathMLScriptElement::~MathMLScriptElement()
 {
@@ -68,158 +74,341 @@ MathMLScriptElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLScriptElement::Normalize()
+MathMLScriptElement::SetBase(const Ptr<MathMLElement>& elem)
 {
-  unsigned n = (IsA() == TAG_MSUBSUP) ? 3 : 2;
-
-  while (content.GetSize() > n) {
-    MathMLElement* elem = content.RemoveLast();
-    delete elem;
-  }
-
-  while (content.GetSize() < n) {
-    MathMLElement* mdummy = new MathMLDummyElement();
-    mdummy->SetParent(this);
-    content.Append(mdummy);
-  }
-
-  // BEWARE: normalization has to be done here, since it may
-  // change the content!!!
-  MathMLContainerElement::Normalize();
-
-  base = content.GetFirst();
-  assert(base != NULL);
-
-  if (IsA() == TAG_MSUB) subScript = content.GetLast();
-  else if (IsA() == TAG_MSUP) superScript = content.GetLast();
-  else {
-    subScript   = content.Get(1);
-    superScript = content.Get(2);
-  }
+  if (elem != base)
+    {
+      if (base) base->SetParent(0);
+      if (elem) elem->SetParent(this);
+      base = elem;
+      SetDirtyLayout();
+    }
 }
 
 void
-MathMLScriptElement::Setup(RenderingEnvironment* env)
+MathMLScriptElement::SetSubScript(const Ptr<MathMLElement>& elem)
 {
-  assert(env != NULL);
-
-  ScriptSetup(env);
-
-  assert(base != NULL);
-  base->Setup(env);
-
-  env->Push();
-  env->AddScriptLevel(1);
-  env->SetDisplayStyle(false);
-
-  const Value* value = NULL;
-
-  if (subScript != NULL) {
-    subScript->Setup(env);
-
-    value = GetAttributeValue(ATTR_SUBSCRIPTSHIFT, env, false);
-    if (value != NULL) {
-      assert(value->IsNumberUnit());
-
-      UnitValue unitValue = value->ToNumberUnit();
-      assert(!unitValue.IsPercentage());
-
-      subMinShift = env->ToScaledPoints(unitValue);
-
-      delete value;
+  if (elem != subScript)
+    {
+      if (subScript) subScript->SetParent(0);
+      if (elem) elem->SetParent(this);
+      subScript = elem;
+      SetDirtyLayout();
     }
-  }
+}
 
-  if (superScript != NULL) {
-    superScript->Setup(env);
+void
+MathMLScriptElement::SetSuperScript(const Ptr<MathMLElement>& elem)
+{
+  if (elem != superScript)
+    {
+      if (superScript) superScript->SetParent(0);
+      if (elem) elem->SetParent(this);
+      superScript = elem;
+      SetDirtyLayout();
+    }
+}
 
-    value = GetAttributeValue(ATTR_SUPERSCRIPTSHIFT, env, false);
-    if (value != NULL) {
-      assert(value->IsNumberUnit());
+void
+MathMLScriptElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
+{
+  assert(oldElem);
+  if (oldElem == base) SetBase(newElem);
+  if (oldElem == subScript) SetSubScript(newElem);
+  if (oldElem == superScript) SetSuperScript(newElem);
+}
+
+Ptr<MathMLElement>
+MathMLScriptElement::Inside(scaled x, scaled y)
+{
+  if (!IsInside(x, y)) return 0;
+
+  Ptr<MathMLElement> inside;
+  assert(base);
+  if (inside = base->Inside(x, y)) return inside;
+  if (subScript && (inside = subScript->Inside(x, y))) return inside;
+  if (superScript && (inside = superScript->Inside(x, y))) return inside;
+
+  return this;
+}
+
+void
+MathMLScriptElement::Normalize(const Ptr<MathMLDocument>& doc)
+{
+  if (DirtyStructure())
+    {
+#if defined(HAVE_GMETADOM)
+      if (GetDOMElement())
+	{
+	  assert(IsA() == TAG_MSUB || IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP);
+	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
+	  
+	  if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	    SetBase(e);
+	  else if (!is_a<MathMLDummyElement>(GetBase()))
+	    SetBase(MathMLDummyElement::create());
+
+	  switch (IsA())
+	    {
+	    case TAG_MSUB:
+	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+		SetSubScript(e);
+	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
+		SetSubScript(MathMLDummyElement::create());
+	      SetSuperScript(0);
+	      break;
+	    case TAG_MSUP:
+	      SetSubScript(0);
+	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+		SetSuperScript(e);
+	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
+		SetSuperScript(MathMLDummyElement::create());
+	      break;
+	    case TAG_MSUBSUP:
+	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+		SetSubScript(e);
+	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
+		SetSubScript(MathMLDummyElement::create());
+	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
+		SetSuperScript(e);
+	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
+		SetSuperScript(MathMLDummyElement::create());
+	      break;
+	    default:
+	      assert(0);
+	    }
+	}
+#endif
+
+      if (base) base->Normalize(doc);
+      if (subScript) subScript->Normalize(doc);
+      if (superScript) superScript->Normalize(doc);
+
+      ResetDirtyStructure();
+    }
+}
+
+void
+MathMLScriptElement::Setup(RenderingEnvironment& env)
+{
+  if (DirtyAttribute() || DirtyAttributeP())
+    {
+      MathMLElement::Setup(env);
+      ScriptSetup(env);
+
+      if (base) base->Setup(env);
+
+      env.Push();
+      env.AddScriptLevel(1);
+      env.SetDisplayStyle(false);
+
+      const Value* value = NULL;
+
+      if (subScript)
+	{
+	  subScript->Setup(env);
+
+	  value = GetAttributeValue(ATTR_SUBSCRIPTSHIFT, env, false);
+	  if (value != NULL)
+	    {
+	      assert(value->IsNumberUnit());
+
+	      UnitValue unitValue = value->ToNumberUnit();
+	      assert(!unitValue.IsPercentage());
+
+	      subMinShift = env.ToScaledPoints(unitValue);
+
+	      delete value;
+	    }
+	}
+
+      if (superScript)
+	{
+	  superScript->Setup(env);
+
+	  value = GetAttributeValue(ATTR_SUPERSCRIPTSHIFT, env, false);
+	  if (value != NULL)
+	    {
+	      assert(value->IsNumberUnit());
       
-      UnitValue unitValue = value->ToNumberUnit();
-      assert(!unitValue.IsPercentage());
+	      UnitValue unitValue = value->ToNumberUnit();
+	      assert(!unitValue.IsPercentage());
 
-      superMinShift = env->ToScaledPoints(unitValue);
+	      superMinShift = env.ToScaledPoints(unitValue);
 
-      delete value;
+	      delete value;
+	    }
+	}
+
+      env.Drop();
+
+      ResetDirtyAttribute();
     }
-  }
-
-  env->Drop();
 }
 
 void
-MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
+MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
 {
-  if (!HasDirtyLayout(id, maxWidth)) return;
+  if (DirtyLayout(ctxt))
+    {
+      if (base) base->DoLayout(ctxt);
+      if (subScript) subScript->DoLayout(ctxt);
+      if (superScript) superScript->DoLayout(ctxt);
 
-  assert(base != NULL);
+      Ptr<MathMLElement> rel = findRightmostChild(base);
+      assert(rel);
 
-  base->DoBoxedLayout(id, BREAK_NO, maxWidth / 2);
-  if (subScript != NULL) subScript->DoBoxedLayout(id, BREAK_NO, maxWidth / 2);
-  if (superScript != NULL) superScript->DoBoxedLayout(id, BREAK_NO, maxWidth / 2);
+      const BoundingBox& baseBox = base->GetBoundingBox();
+      BoundingBox relBox = rel->GetBoundingBox();
+      relBox.rBearing = baseBox.rBearing;
+      relBox.width = baseBox.width;
 
-  const MathMLElement* rel = findRightmostChild(base);
-  assert(rel != NULL);
+      BoundingBox subScriptBox;
+      BoundingBox superScriptBox;
 
-  const BoundingBox& baseBox = base->GetBoundingBox();
-  BoundingBox relBox = rel->GetBoundingBox();
-  relBox.rBearing = baseBox.rBearing;
-  relBox.width = baseBox.width;
+      subScriptBox.Null();
+      if (subScript) subScriptBox = subScript->GetBoundingBox();
 
-  BoundingBox subScriptBox;
-  BoundingBox superScriptBox;
+      superScriptBox.Null();
+      if (superScript) superScriptBox = superScript->GetBoundingBox();
 
-  subScriptBox.Null();
-  if (subScript != NULL) subScriptBox = subScript->GetBoundingBox();
+      DoScriptLayout(relBox, subScriptBox, superScriptBox, subShiftX, subShiftY, superShiftX, superShiftY);
 
-  superScriptBox.Null();
-  if (superScript != NULL) superScriptBox = superScript->GetBoundingBox();
+      box = baseBox;
 
-  DoScriptLayout(relBox, subScriptBox, superScriptBox, subShiftX, subShiftY, superShiftX, superShiftY);
+      box.width = scaledMax(box.width,
+			    scaledMax(superShiftX + superScriptBox.width,
+				      subShiftX + subScriptBox.width));
+      box.rBearing = scaledMax(box.rBearing,
+			       scaledMax(superShiftX + superScriptBox.rBearing,
+					 subShiftX + subScriptBox.rBearing));
 
-  box = baseBox;
+      if (subScript)
+	{
+	  box.ascent   = scaledMax(box.ascent, subScriptBox.ascent - subShiftY);
+	  box.descent  = scaledMax(box.descent, subScriptBox.descent + subShiftY);
+	}
 
-  box.width = scaledMax(box.width,
-			scaledMax(superShiftX + superScriptBox.width,
-				  subShiftX + subScriptBox.width));
-  box.rBearing = scaledMax(box.rBearing,
-			   scaledMax(superShiftX + superScriptBox.rBearing,
-				     subShiftX + subScriptBox.rBearing));
+      if (superScript)
+	{
+	  box.ascent   = scaledMax(box.ascent, superScriptBox.ascent + superShiftY);
+	  box.descent  = scaledMax(box.descent, superScriptBox.descent - superShiftY);
+	}
 
-  if (subScript != NULL) {
-    box.ascent   = scaledMax(box.ascent, subScriptBox.ascent - subShiftY);
-    box.tAscent  = scaledMax(box.tAscent, subScriptBox.tAscent - subShiftY);
-    box.descent  = scaledMax(box.descent, subScriptBox.descent + subShiftY);
-    box.tDescent = scaledMax(box.tDescent, subScriptBox.tDescent + subShiftY);
-  }
+      DoEmbellishmentLayout(this, box);
 
-  if (superScript != NULL) {
-    box.ascent   = scaledMax(box.ascent, superScriptBox.ascent + superShiftY);
-    box.tAscent  = scaledMax(box.tAscent, superScriptBox.tAscent + superShiftY);
-    box.descent  = scaledMax(box.descent, superScriptBox.descent - superShiftY);
-    box.tDescent = scaledMax(box.tDescent, superScriptBox.tDescent - superShiftY);
-  }
-
-  ConfirmLayout(id);
-
-  ResetDirtyLayout(id, maxWidth);
+      ResetDirtyLayout(ctxt);
+    }
 }
 
 void
 MathMLScriptElement::SetPosition(scaled x, scaled y)
 {
-  assert(base != NULL);
-
   position.x = x;
   position.y = y;
 
-  base->SetPosition(x, y);
+  SetEmbellishmentPosition(this, x, y);
 
-  if (subScript != NULL)
+  if (base) base->SetPosition(x, y);
+
+  if (subScript)
     subScript->SetPosition(x + subShiftX, y + subShiftY);
 
-  if (superScript != NULL)
+  if (superScript)
     superScript->SetPosition(x + superShiftX, y - superShiftY);
+}
+
+void
+MathMLScriptElement::Render(const DrawingArea& area)
+{
+  if (Dirty())
+    {
+      RenderBackground(area);
+      assert(base);
+      base->Render(area);
+      if (subScript) subScript->Render(area);
+      if (superScript) superScript->Render(area);
+      ResetDirty();
+    }
+}
+
+void
+MathMLScriptElement::ReleaseGCs()
+{
+  MathMLElement::ReleaseGCs();
+  assert(base);
+  base->ReleaseGCs();
+  if (subScript) subScript->ReleaseGCs();
+  if (superScript) superScript->ReleaseGCs();
+}
+
+scaled
+MathMLScriptElement::GetLeftEdge() const
+{
+  assert(base);
+  scaled m = base->GetLeftEdge();
+  if (subScript) m = scaledMin(m, subScript->GetLeftEdge());
+  if (superScript) m = scaledMin(m, superScript->GetLeftEdge());
+  return m;
+}
+
+scaled
+MathMLScriptElement::GetRightEdge() const
+{
+  assert(base);
+  scaled m = base->GetRightEdge();
+  if (subScript) m = scaledMax(m, subScript->GetRightEdge());
+  if (superScript) m = scaledMax(m, superScript->GetRightEdge());
+  return m;
+}
+
+Ptr<class MathMLOperatorElement>
+MathMLScriptElement::GetCoreOperator()
+{
+  if (base) return base->GetCoreOperator();
+  else return 0;
+}
+
+#if 0
+void
+MathMLScriptElement::SetDirty(const Rectangle* rect)
+{
+  if (!IsDirty() && !HasDirtyChildren())
+    {
+      MathMLElement::SetDirty(rect);
+      if (base) base->SetDirty(rect);
+      if (subScript) subScript->SetDirty(rect);
+      if (superScript) superScript->SetDirty(rect);
+    }
+}
+
+void
+MathMLScriptElement::SetDirtyLayout(bool children)
+{
+  MathMLElement::SetDirtyLayout(children);
+  if (children)
+    {
+      if (base) base->SetDirtyLayout(children);
+      if (subScript) subScript->SetDirtyLayout(children);
+      if (superScript) superScript->SetDirtyLayout(children);
+    }
+}
+#endif
+
+void
+MathMLScriptElement::SetFlagDown(Flags f)
+{
+  MathMLElement::SetFlagDown(f);
+  if (base) base->SetFlagDown(f);
+  if (subScript) subScript->SetFlagDown(f);
+  if (superScript) superScript->SetFlagDown(f);
+}
+
+void
+MathMLScriptElement::ResetFlagDown(Flags f)
+{
+  MathMLElement::ResetFlagDown(f);
+  if (base) base->ResetFlagDown(f);
+  if (subScript) subScript->ResetFlagDown(f);
+  if (superScript) superScript->ResetFlagDown(f);
 }

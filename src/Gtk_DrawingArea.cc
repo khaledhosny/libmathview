@@ -26,7 +26,6 @@
 #include <gtk/gtk.h>
 
 #include "Gtk_Font.hh"
-#include "Iterator.hh"
 #include "UnitValue.hh"
 #include "Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
@@ -192,6 +191,8 @@ Gtk_DrawingArea::Clear(const GraphicsContext* gc,
 		     sp2ipx(x - x0), sp2ipx(y - y0), sp2ipx(width) + 1, sp2ipx(height) + 1);
 }
 
+#include <stdio.h>
+
 void
 Gtk_DrawingArea::Update(scaled x, scaled y, scaled width, scaled height) const
 {
@@ -202,6 +203,8 @@ Gtk_DrawingArea::Update(scaled x, scaled y, scaled width, scaled height) const
   updateRect.y = sp2ipx(y - y0);
   updateRect.width = sp2ipx(width);
   updateRect.height = sp2ipx(height);
+
+  //printf("about to update rect %f %f %f %f\n", (double) updateRect.x, (double) updateRect.y, (double) updateRect.width, (double) updateRect.height);
 
   gtk_widget_draw(gtk_widget, &updateRect);
 }
