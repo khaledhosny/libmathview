@@ -46,6 +46,7 @@ public:
 
 private:
   GObjectPtr<PangoLayout> layout;
+  BoundingBox bbox;
 };
 
 #endif // __Gtk_PangoLayoutArea_hh__

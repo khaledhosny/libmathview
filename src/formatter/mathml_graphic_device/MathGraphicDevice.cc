@@ -115,7 +115,7 @@ scaled
 MathGraphicDevice::defaultLineThickness(const MathFormattingContext& context) const
 {
   // at least 1px thick
-  return std::max(context.getSize() / 100, scaled(72.27 / dpi(context)));
+  return std::max(context.getSize() / 10, scaled(72.27 / dpi(context)));
 }
 
 AreaRef

@@ -143,10 +143,12 @@ MathMLFractionElement::format(MathFormattingContext& ctxt)
       AreaRef res;
 
       ctxt.push(this);
+      ctxt.push(this);
       if (ctxt.getDisplayStyle()) ctxt.setDisplayStyle(false);
       else ctxt.addScriptLevel(1);
       AreaRef num = getNumerator()->format(ctxt);
       AreaRef denom = getDenominator()->format(ctxt);
+      ctxt.pop();
 
       if (bevelled)
 	res = ctxt.getDevice()->bevelledFraction(ctxt, num, denom, thickness);

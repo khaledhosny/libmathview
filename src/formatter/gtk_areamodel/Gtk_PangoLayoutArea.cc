@@ -29,20 +29,30 @@
 
 Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout)
   : layout(_layout)
-{ }
+{
+  PangoRectangle ink_rect;
+
+  PangoLayoutLine* line = pango_layout_get_line(layout, 0);
+  pango_layout_line_get_extents(line, &ink_rect, 0);
+
+#if 0
+  printf("%s Ink Ascent = %6d Ink Descent = %6d Ink y = %6d Ink height = %6d\n",
+	 pango_layout_get_text(layout),
+	 PANGO_ASCENT(ink_rect), PANGO_DESCENT(ink_rect),
+	 ink_rect.y, ink_rect.height);
+#endif
+	 
+  bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(ink_rect.width),
+		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
+		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
+}
 
 Gtk_PangoLayoutArea::~Gtk_PangoLayoutArea()
 { }
 
 BoundingBox
 Gtk_PangoLayoutArea::box() const
-{
-  PangoRectangle rect;
-  pango_layout_get_extents(layout, &rect, 0);
-  return BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
-}
+{ return bbox; }
 
 scaled
 Gtk_PangoLayoutArea::leftEdge() const
@@ -69,11 +79,13 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 // 	 x.getValue(), context.getXOrigin().getValue(),
 // 	 Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
 // 	 Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()));
-  gdk_draw_layout(context.getDrawable(),
-		  context.getGC(),
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y),
-		  layout);
+
+  PangoLayoutLine* line = pango_layout_get_line(layout, 0);
+  gdk_draw_layout_line(context.getDrawable(),
+		       context.getGC(),
+		       Gtk_RenderingContext::toGtkX(x),
+		       Gtk_RenderingContext::toGtkY(y),
+		       line);
 }
 
 DOM::Element

@@ -7,28 +7,38 @@ BUGS
 
 * make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
+- applying the variant map before shaping is problematic when
+  using the PangoShaper because Pango doesn't know about variant
+  chars. This can be seen as a bug of pango or as a bug of our architecture
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
+- cleanup configure.ac (remove tex stuff, some variables in
+  config.h are unset)
 
 ARCH IMPROVEMENTS
 
 + factor the Element class
 + factor ther View class
++ split formatting engine factories for mathml and boxml and
+  make a super-factory keyed by the namespace
++ implement reader interface over DOM, libxml2 tree, XmlReader
 - make debugging methods in Areas optional (or remove them)
 - fix Configuration/Globals files 
 - move mathvariant files into src/common
+- operations visiting areas might be factored in a better way
 
 MISSING FEATURES
 
 * implement AreaCanvas for drawing lines (mdummy)
 + implement cursor
 + enable actions in boxml
-+ implement reader interface over DOM and XmlReader
 + add getId() method to reader interface
 - implement table formatting
 - implement PS area model
+- implement T1lib area model
 - implement MGD for TeX fonts
-- implement shaper for TeX fonts
+- implement shaper for TeX fonts (this should be usable with
+  both the T1lib and PS area models)
 - implement shaper for Mathematica fonts
 - runtime selection of backend
 - runtime selection of reader

@@ -33,8 +33,15 @@ Gtk_PangoGlyphArea::Gtk_PangoGlyphArea(PangoFont* f, PangoGlyphString* g)
 {
   PangoRectangle ink_rect;
   PangoRectangle logical_rect;
-  //pango_glyph_string_extents(glyphs, font, &ink_rect, NULL);
   pango_font_get_glyph_extents(font, glyphs->glyphs[0].glyph, &ink_rect, &logical_rect);
+
+#if 0
+  printf("%c Ink Ascent = %6d Ink Descent = %6d Ink y = %6d Ink height = %6d\n",
+	 glyphs->glyphs[0].glyph,
+	 PANGO_ASCENT(ink_rect), PANGO_DESCENT(ink_rect),
+	 ink_rect.y, ink_rect.height);
+#endif
+	 
   bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(logical_rect.width),
 		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
 		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
