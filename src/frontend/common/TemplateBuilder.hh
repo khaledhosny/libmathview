@@ -37,6 +37,7 @@
 #endif // ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
+#include "HashMap.hh"
 
 template <class Model>
 class TemplateBuilder : public Model::Builder
