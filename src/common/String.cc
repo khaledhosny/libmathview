@@ -44,7 +44,7 @@ trimSpacesRight(const String& s)
   String::const_iterator i = s.end();
   while (i != s.begin() && isXmlSpace(*(i - 1))) i--;
   if (i != s.end())
-    return String(s.begin(), i + 1);
+    return String(s.begin(), i);
   else
     return s;
 }

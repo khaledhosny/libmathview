@@ -1309,7 +1309,7 @@ protected:
 	      // ...but spaces at the at the beginning (end) are deleted only if this
 	      // is the very first (last) chunk in the token.
 	      if (first) s = trimSpacesLeft(s);
-	      if (iter.more()) s = trimSpacesRight(s);
+	      if (!iter.more()) s = trimSpacesRight(s);
 	      
 	      content.push_back(createMathMLTextNode(s));
 	    }
