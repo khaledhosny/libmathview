@@ -73,6 +73,7 @@ MathMLFormattingEngineFactory::MathMLFormattingEngineFactory()
     { "text",          &MathMLFormattingEngineFactory::createBoxMLTextElement },
     { "v",             &MathMLFormattingEngineFactory::createVElement },
     { "box",           &MathMLFormattingEngineFactory::createBoxElement },
+    { "action",        &MathMLFormattingEngineFactory::createBoxMLActionElement },
 
     { "",              0 }
   };

@@ -114,6 +114,8 @@ public:
   { return BoxMLVElement::create(view); }
   virtual SmartPtr<MathMLElement> createBoxElement(const SmartPtr<class MathMLView>& view) const
   { return BoxMLboxElement::create(view); }
+  virtual SmartPtr<MathMLElement> createBoxMLActionElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLActionElement::create(view); }
 
 private:
   typedef SmartPtr<MathMLElement> (MathMLFormattingEngineFactory::* FactoryMethod)(const SmartPtr<class MathMLView>&) const;

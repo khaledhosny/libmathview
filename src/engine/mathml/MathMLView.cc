@@ -149,6 +149,7 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
 #if 0
   return root ? root->Inside(x, y) : 0;
 #endif
+  return 0;
 }
 
 BoundingBox
@@ -172,6 +173,8 @@ MathMLView::getRectangle() const
 #endif
     return Rectangle();
 }
+
+#include "BoundingBoxAux.hh"
 
 void
 MathMLView::layout() const
@@ -205,9 +208,10 @@ MathMLView::layout() const
 	  Clock perf;
 	  MathFormattingContext ctxt(context->device);
 	  scaled l = context->device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
-	  ctxt.setSize(context->device->evaluate(ctxt, Length(48, Length::PT_UNIT), scaled::zero()));
+	  //ctxt.setSize(context->device->evaluate(ctxt, Length(48, Length::PT_UNIT), scaled::zero()));
 	  ctxt.setActualSize(ctxt.getSize());
 	  root->format(ctxt);
+std::cout << root->getArea()->box() << std::endl;
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
 	}
 
