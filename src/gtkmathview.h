@@ -26,8 +26,8 @@
 #define gtkmathview_h
 
 #include "defs.h"
-#include "minidom.h"
 
+#include <minidom.h>
 #include <stdio.h>
 
 #include <gtk/gtkframe.h>
