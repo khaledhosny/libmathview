@@ -37,6 +37,8 @@ struct UnitValue {
   float  GetValue(void) const { return value; }
   UnitId GetUnitId(void) const { return unitId; }
   bool   IsNull(void) const { return unitId == UNIT_NOTVALID; }
+  bool   IsAbsolute(void) const { return !IsNull() && !IsPercentage() &&
+				    unitId != UNIT_EM && unitId != UNIT_EX; }
   bool   IsPercentage(void) const { return unitId == UNIT_PERCENTAGE; }
   scaled ToScaledPoints(void) const;
   scaled ToScaledPoints(float, float) const;

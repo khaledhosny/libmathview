@@ -368,13 +368,14 @@ RenderingEnvironment::GetScaledPointsPerEm() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  if (!charMapper.FontifyChar(fChar, top->fontAttributes, 'M')) {
-    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
-    exit(1);
+  if (charMapper.FontifyChar(fChar, top->fontAttributes, 'M')) {
+    assert(fChar.font != NULL);
+    return fChar.font->GetEm();
   }
-  assert(fChar.font != NULL);
 
-  return fChar.font->GetEm();
+  assert(top->fontAttributes.HasSize());
+  assert(top->fontAttributes.size.IsAbsolute());
+  return top->fontAttributes.size.ToScaledPoints();
 }
 
 scaled
@@ -386,13 +387,14 @@ RenderingEnvironment::GetScaledPointsPerEx() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  if (!charMapper.FontifyChar(fChar, top->fontAttributes, 'x')) {
-    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
-    exit(1);
+  if (charMapper.FontifyChar(fChar, top->fontAttributes, 'x')) {
+    assert(fChar.font != NULL);
+    return fChar.font->GetEx();
   }
-  assert(fChar.font != NULL);
 
-  return fChar.font->GetEx();
+  assert(top->fontAttributes.HasSize());
+  assert(top->fontAttributes.size.IsAbsolute());
+  return scaledProp(top->fontAttributes.size.ToScaledPoints(), 2, 3);
 }
 
 scaled
@@ -415,16 +417,16 @@ RenderingEnvironment::GetAxis() const
   assert(top != NULL);
 
   FontifiedChar fChar;
-  if (!charMapper.FontifyChar(fChar, top->fontAttributes, '=')) {
-    MathEngine::logger(LOG_ERROR, "fatal: could not find default fonts, maybe the font configuration is wrong");
-    exit(1);
+  if (charMapper.FontifyChar(fChar, top->fontAttributes, '=')) {
+    assert(fChar.font != NULL);
+
+    BoundingBox eqBox;
+    fChar.GetBoundingBox(eqBox);
+
+    return eqBox.ascent - (eqBox.ascent + eqBox.descent) / 2;
   }
-  assert(fChar.font != NULL);
 
-  BoundingBox eqBox;
-  fChar.GetBoundingBox(eqBox);
-
-  return eqBox.ascent - (eqBox.ascent + eqBox.descent) / 2;
+  return GetScaledPointsPerEx() / 2;
 }
 
 scaled

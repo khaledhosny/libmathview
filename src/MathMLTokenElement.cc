@@ -136,6 +136,7 @@ MathMLTokenElement::Append(const String* s)
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
+#if 0
     } else if (iswalnum(s->GetChar(i))) {
       unsigned start = i;
       while (i < sLength && iswalnum(s->GetChar(i))) {
@@ -149,6 +150,7 @@ MathMLTokenElement::Append(const String* s)
 
       if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       lastBreak = false;
+#endif
     } else if (!isVariant(s->GetChar(i))) {
       node = allocCharNode(s->GetChar(i));
       i++;

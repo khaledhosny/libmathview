@@ -40,12 +40,13 @@ FontifiedString::FontifiedString(const String& s,
     FontifiedChar fch;
 
     bool res = cm.FontifyChar(fch, fa, s.GetChar(i));
-    assert(fch.font != NULL);
-    assert(fch.charMap != NULL);
 
     Chunk* chunk = new Chunk;
 
     if (res) {
+      assert(fch.font != NULL);
+      assert(fch.charMap != NULL);
+
       unsigned start = i;
       
       do i++; while (i < s.GetLength() && fch.charMap->MapsChar(s.GetChar(i)));
@@ -61,7 +62,7 @@ FontifiedString::FontifiedString(const String& s,
 
       chunk->length = 1;
       chunk->font   = fch.font;
-      chunk->data   = new char;
+      chunk->data   = new char[1];
       chunk->data[0] = fch.nch;
     }
     
@@ -73,6 +74,7 @@ FontifiedString::~FontifiedString()
 {
   for (Iterator<Chunk*> p(content); p.More(); p.Next()) {
     assert(p() != NULL);
+    delete [] p()->data;
     delete p();
   }
 }

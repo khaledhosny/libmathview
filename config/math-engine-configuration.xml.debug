@@ -28,6 +28,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <dictionary-path>./config/dictionary.xml</dictionary-path>
   <dictionary-path>./config/dictionary-local.xml</dictionary-path>
   <dictionary-path>./config/dictionary-combining.xml</dictionary-path>
+  <dictionary-path>./config/dictionary-debug.xml</dictionary-path>
   <entities-table-path>./config/entities-table.xml</entities-table-path>
   <font-configuration-path>./config/font-configuration.xml</font-configuration-path>
   <font-configuration-path>./config/font-configuration-adobe.xml</font-configuration-path>

@@ -34,13 +34,14 @@ MathMLDocument::MathMLDocument(mDOMDocRef doc)
 MathMLDocument::MathMLDocument(const GMetaDOM::Document& doc)
 #endif
   : MathMLContainerElement(0)
-  , DOMdoc(0)
+  , DOMdoc(doc)
 {
   assert(doc != 0);
 }
 
 MathMLDocument::~MathMLDocument()
 {
+  DOMdoc = 0;
 }
 
 void

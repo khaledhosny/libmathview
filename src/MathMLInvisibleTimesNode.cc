@@ -76,7 +76,7 @@ MathMLInvisibleTimesNode::DoLayout()
     // FIXME: the following constants should be defined somewhere
     box.Set((sppm * 5) / 18, 0, 0);
   } else if (prev->IsA() == TAG_MFRAC && next->IsA() == TAG_MFRAC) {
-    box.Set((sppm * 3) / 18, 0, 0);
+    box.Set((sppm * 5) / 18, 0, 0);
   } else if (prev->IsA() == TAG_MFRAC || next->IsA() == TAG_MFRAC) {
     box.Set((sppm * 4) / 18, 0, 0);
   }

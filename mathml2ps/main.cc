@@ -56,6 +56,7 @@ enum CommandLineOptionId {
   OPTION_SUBSET,
   OPTION_CROP,
   OPTION_SHOW_MISSING,
+  OPTION_CUT_FILENAME,
   //OPTION_KERNING,
   OPTION_CONFIG
 };
@@ -72,6 +73,7 @@ static bool   colors = false;
 static bool   subsetting = true;
 static bool   cropping = true;
 static bool   showMissing = true;
+static bool   cutFileName = true;
 //static bool   kerning = false;
 static const char* configPath = NULL;
 static int logLevel = LOG_ERROR;
@@ -104,6 +106,7 @@ Usage: mathml2ps [options] file ...\n\n\
   -s, --subset[=yes|no]           Enable/disable font subsetting (default='yes')\n\
   -r, --crop[=yes|no]             Enable/disable cropping to bounding box (default='yes')\n\
   -i, --show-missing[=yes|no]     Show missing characters (default='yes')\n\
+      --cut-filename[=yes|no]     Cut the prefix dir from the output file (default='yes')\n\
   --config=<path>                 Configuration file path\n\
   --verbose[=0-3]                 Display messages\n\n\
 Valid units are:\n\n\
@@ -225,7 +228,7 @@ getOutputFileName(const char* in)
   assert(in != NULL);
   const char* dot = strrchr(in, '.');
   const char* slash = strrchr(in, '/');
-  if (slash != NULL) in = slash + 1;
+  if (cutFileName && slash != NULL) in = slash + 1;
 
   if (dot == NULL) {
     out = new char[strlen(in) + 5];
@@ -261,6 +264,7 @@ main(int argc, char *argv[])
       { "subset",        optional_argument, NULL, OPTION_SUBSET },
       { "crop",          optional_argument, NULL, OPTION_CROP },
       { "show-missing",  optional_argument, NULL, OPTION_SHOW_MISSING },
+      { "cut-filename",  optional_argument, NULL, OPTION_CUT_FILENAME },
       //{ "kerning",       optional_argument, NULL, OPTION_KERNING },
       { "config",        required_argument, NULL, OPTION_CONFIG },
 
@@ -333,6 +337,11 @@ main(int argc, char *argv[])
     case 'i':
       if (optarg == NULL) showMissing = true;
       else if (!parseBoolean(optarg, showMissing)) parseError("show-missing");
+      break;
+
+    case OPTION_CUT_FILENAME:
+      if (optarg == NULL) cutFileName = true;
+      else if (!parseBoolean(optarg, cutFileName)) parseError("cut-filename");
       break;
 
 #if 0
