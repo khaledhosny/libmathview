@@ -22,3 +22,25 @@
 
 #include <config.h>
 
+#include <sstream>
+
+#include "RGBColorAux.hh"
+
+std::string
+toString(const RGBColor& color)
+{
+  std::ostringstream os;
+  if (color.transparent)
+    os << "transparent";
+  else
+    {
+      os.width(2);
+      os.fill('0');
+      os << std::ios::hex << "#" << color.red << color.green << color.blue;
+    }
+  return os.str();
+}
+
+std::ostream&
+operator<<(std::ostream& os, const RGBColor& color)
+{ return os << toString(color); }
