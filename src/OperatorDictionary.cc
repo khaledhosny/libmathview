@@ -163,12 +163,9 @@ OperatorDictionary::Search(const String* opName,
       const MathMLAttribute* attribute = p()->defaults->GetAttribute(ATTR_FORM);
       if (attribute != NULL && attribute->GetValue() != NULL) {
 	const String* form = attribute->GetValue();
-	if (form->Equal("prefix")) *prefix = p()->defaults;
-	else if (form->Equal("infix")) *infix = p()->defaults;
-	else if (form->Equal("postfix")) *postfix = p()->defaults;
-	else {
-	  assert(IMPOSSIBLE);
-	}
+	if (*prefix == NULL && form->Equal("prefix")) *prefix = p()->defaults;
+	else if (*infix == NULL && form->Equal("infix")) *infix = p()->defaults;
+	else if (*postfix == NULL && form->Equal("postfix")) *postfix = p()->defaults;
       } else
 	MathEngine::logger(LOG_WARNING, 
 			   "entry for `%s' in operator dictionary has no mandatory `form' attribute",

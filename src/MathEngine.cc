@@ -71,8 +71,8 @@ MathEngine::InitGlobalData(const char* confPath)
 
   bool res = false;
   if (confPath != NULL) res = configuration.Load(confPath);
-  if (!res) res = configuration.Load("config/math-engine-configuration.xml");
   if (!res) res = configuration.Load(PKGDATADIR"/math-engine-configuration.xml");
+  if (!res) res = configuration.Load("config/math-engine-configuration.xml");
   if (!res) {
     logger(LOG_ERROR, "could not find configuration file");
     exit(-1);

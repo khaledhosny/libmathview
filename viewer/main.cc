@@ -31,13 +31,11 @@
 #include "Parser.hh"
 #include "String.hh"
 #include "MathEngine.hh"
-#include "EntitiesTable.hh"
 #include "MathMLTokenElement.hh"
 
 enum CommandLineOptionId {
   OPTION_VERSION = 256,
   OPTION_HELP,
-  OPTION_DUMP_ENTITIES,
   OPTION_VERBOSE
 };
 
@@ -71,7 +69,6 @@ printHelp()
 Usage: viewer [options] file ...\n\n\
   -v, --version                 Output version information\n\
   -h, --help                    This small usage guide\n\
-  --dump-entities               Dump a C table of the entities\n\
   --verbose[=0-3]               Display messages\n\
 ";
 
@@ -89,8 +86,6 @@ main(int argc, char *argv[])
 {
   sprintf(appName, "MathML Viewer v%s", VERSION);
 
-  bool dumpEntities = false;
-
   while (TRUE) {
     int option_index = 0;
     static struct option long_options[] =
@@ -98,7 +93,6 @@ main(int argc, char *argv[])
       { "version", 	 no_argument, NULL, OPTION_VERSION },
       { "help",    	 no_argument, NULL, OPTION_HELP },
       { "verbose",       optional_argument, NULL, OPTION_VERBOSE },
-      { "dump-entities", no_argument, NULL, OPTION_DUMP_ENTITIES },
 
       { NULL,            no_argument, NULL, 0 }
     };
@@ -116,10 +110,6 @@ main(int argc, char *argv[])
     case OPTION_HELP:
     case 'h':
       printHelp();
-      break;
-
-    case OPTION_DUMP_ENTITIES:
-      dumpEntities = true;
       break;
 
     case OPTION_VERBOSE:
@@ -150,9 +140,6 @@ main(int argc, char *argv[])
       printf("viewer: fatal error: cannot load document `%s'\n", argv[optind]);
 #endif
     else {
-
-      if (dumpEntities) assert(NOT_IMPLEMENTED); //MathEngine::entitiesTable.Dump();
-
       GUI_run();
       GUI_uninit();
       GUI_unload_document();

@@ -31,6 +31,6 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <t1-config-file>/usr/local/share/gtkmathview/t1.config</t1-config-file>
   <font-size     size="14pt"/>
   <color         foreground="black" background="white"/>
-  <link-color    foreground="green" background="white"/>
-  <select-color  foreground="white" background="blue"/>
+  <link-color    foreground="#32648b" background="white"/>
+  <select-color  foreground="black" background="#87cefa"/>
 </math-engine-configuration>
