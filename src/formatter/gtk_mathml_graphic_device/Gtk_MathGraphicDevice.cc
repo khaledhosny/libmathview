@@ -24,34 +24,54 @@
 
 #include <cassert>
 
+#include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
+#include "Gtk_PangoShaper.hh"
+#include "Gtk_AdobeShaper.hh"
+
+Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<Gtk_AreaFactory>& f, GtkWidget* widget)
+  : MathGraphicDevice(f)
+{
+  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
+  pangoShaper->setPangoContext(gtk_widget_create_pango_context(widget));
+  shaperManager->registerShaper(pangoShaper);
+  shaperManager->registerShaper(Gtk_AdobeShaper::create());
+}
+
+Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
+{
+}
 
 AreaRef
 Gtk_MathGraphicDevice::string(const MathFormattingContext& context,
-			      const DOM::GdomeString& str) const
+			      const String& str) const
 {
   if (context.getElement() == context.getStretchOperator())
     {
+      assert(false);
+      // should stretch the string and the possibly shift it vertically
+      // to match height and depth
     }
   else
-    {
-    }
+    return shaperManager->shape(context, toUCS4String(str));
 }
 
 AreaRef
 Gtk_MathGraphicDevice::stretchStringV(const MathFormattingContext& context,
-				      const DOM::GdomeString& str,
+				      const String& str,
 				      const scaled& height,
 				      const scaled& depth) const
 {
+  assert(false);
 }
 
 AreaRef
 Gtk_MathGraphicDevice::glyph(const MathFormattingContext& context,
-			     const DOM::GdomeString& alt,
-			     const DOM::GdomeString& fontFamily,
+			     const String& alt,
+			     const String& fontFamily,
 			     unsigned long index) const
 {
+  assert(false);
 }
 
 AreaRef
@@ -63,22 +83,23 @@ Gtk_MathGraphicDevice::fraction(const MathFormattingContext& context,
   std::vector<AreaRef> v(5);
   v.push_back(denominator);
   
-  AreaRef s = verticalSpace(context,
-			    context.getDisplayStyle() ? defaultLineThickness(context) * 3 : defaultLineThickness(context),
-			    scaled::zero());
+  AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle()
+					  ? defaultLineThickness(context) * 3 : defaultLineThickness(context),
+					  scaled::zero());
 
   v.push_back(s);
-  v.push_back(horizontalLine(context, defaultLineThickness(context)));
+  v.push_back(getFactory()->horizontalLine(defaultLineThickness(context), context.getColor()));
   v.push_back(s);
   v.push_back(numerator);
 
-  return shift(context, verticalArray(context, v, 2), axis(context));
+  return getFactory()->shift(getFactory()->verticalArray(v, 2), axis(context));
 }
 
 AreaRef
 Gtk_MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
 					const AreaRef& numerator,
-					const AreaRef& denominator) const
+					const AreaRef& denominator,
+					const Length& lineThickness) const
 {
   BoundingBox n = numerator->box();
   BoundingBox d = denominator->box();
@@ -88,7 +109,7 @@ Gtk_MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
   h.push_back(stretchStringV(context, "/", std::max(n.height, d.height), std::max(n.depth, d.depth)));
   h.push_back(denominator);
   
-  return horizontalArray(context, h);
+  return getFactory()->horizontalArray(h);
 }
 
 AreaRef
@@ -170,17 +191,17 @@ Gtk_MathGraphicDevice::script(const MathFormattingContext& context,
 		       superScriptShift);
 
   std::vector<AreaRef> o(2);
-  if (subScript) o.push_back(shift(context, subScript, -subScriptShift));
-  if (superScript) o.push_back(shift(context, superScript, superScriptShift));
+  if (subScript) o.push_back(getFactory()->shift(subScript, -subScriptShift));
+  if (superScript) o.push_back(getFactory()->shift(superScript, superScriptShift));
 
   std::vector<AreaRef> h(2);
   h.push_back(base);
   if (o.size() > 1)
-    h.push_back(overlapArray(context, o));
+    h.push_back(getFactory()->overlapArray(o));
   else
     h.push_back(o[1]);
 
-  return horizontalArray(context, h);
+  return getFactory()->horizontalArray(h);
 }
 
 AreaRef
@@ -203,11 +224,11 @@ Gtk_MathGraphicDevice::underOver(const MathFormattingContext& context,
 				 const AreaRef& overScript, bool accent) const
 {
   std::vector<AreaRef> v(3);
-  if (underScript) v.push_back(center(context, underScript));
-  v.push_back(center(context, base));
-  if (overScript) v.push_back(center(context, overScript));
+  if (underScript) v.push_back(getFactory()->center(underScript));
+  v.push_back(getFactory()->center(base));
+  if (overScript) v.push_back(getFactory()->center(overScript));
 
-  return verticalArray(context, v, underScript ? 1 : 0);
+  return getFactory()->verticalArray(v, underScript ? 1 : 0);
 }
 
 AreaRef
@@ -224,4 +245,10 @@ Gtk_MathGraphicDevice::actuarial(const MathFormattingContext& context,
   return base;
 }
 
-
+AreaRef
+Gtk_MathGraphicDevice::enclose(const MathFormattingContext& context,
+			       const AreaRef& base,
+			       const String& notation) const
+{
+  return base;
+}

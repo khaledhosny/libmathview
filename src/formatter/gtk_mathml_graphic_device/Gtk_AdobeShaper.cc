@@ -33,6 +33,7 @@
 #include "MathVariant.hh"
 #include "MathVariantMap.hh"
 #include "ShaperManager.hh"
+#include "MathGraphicDevice.hh"
 
 static struct {
   DOM::Char8 index;
@@ -345,7 +346,7 @@ Gtk_AdobeShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
 }
 
 unsigned
-Gtk_AdobeShaper::shape(ShapingResult& result) const
+Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   unsigned n0 = result.chunkSize();
   unsigned n = n0;
@@ -356,13 +357,13 @@ Gtk_AdobeShaper::shape(ShapingResult& result) const
       switch (spec.getFontId())
 	{
 	case V_STRETCHY_SYMBOL_INDEX:
-	  res = shapeStretchyCharV(result, spec);
+	  res = shapeStretchyCharV(ctxt, result, spec);
 	  break;
 	case H_STRETCHY_SYMBOL_INDEX:
-	  res = shapeStretchyCharH(result, spec);
+	  res = shapeStretchyCharH(ctxt, result, spec);
 	  break;
 	default:
-	  res = shapeChar(result, spec);
+	  res = shapeChar(ctxt, result, spec);
 	  break;
 	}
       if (!res) break;
@@ -408,13 +409,14 @@ Gtk_AdobeShaper::getFont(unsigned fi, const scaled& size, PangoXSubfont& subfont
 }
 
 bool
-Gtk_AdobeShaper::shapeChar(ShapingResult& result, const GlyphSpec& spec) const
+Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
+			   ShapingResult& result, const GlyphSpec& spec) const
 {
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice().getFactory());
   assert(factory);
 
   PangoXSubfont subfont;
-  PangoFont* font = getFont(spec.getFontId(), result.getFontSize(), subfont);
+  PangoFont* font = getFont(spec.getFontId(), ctxt.getSize(), subfont);
   assert(font);
 
   //printf("creating glyph area with glyph id = %d\n", spec.getGlyphId());
@@ -441,13 +443,14 @@ Gtk_AdobeShaper::getGlyphExtents(PangoFont* font, PangoGlyphString* gs, PangoRec
 }
 
 bool
-Gtk_AdobeShaper::shapeStretchyCharH(ShapingResult& result, const GlyphSpec& spec) const
+Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt,
+				    ShapingResult& result, const GlyphSpec& spec) const
 {
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice().getFactory());
   assert(factory);
 #if 0
 
-  PangoFont* font = getFont(spec.getFontId(), result.getFontSize());
+  PangoFont* font = getFont(spec.getFontId(), ctxt.getFontSize());
   assert(font);
 
   const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
@@ -493,9 +496,10 @@ Gtk_AdobeShaper::shapeStretchyCharH(ShapingResult& result, const GlyphSpec& spec
 }
 
 bool
-Gtk_AdobeShaper::shapeStretchyCharV(ShapingResult& result, const GlyphSpec& spec) const
+Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt,
+				    ShapingResult& result, const GlyphSpec& spec) const
 { 
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice().getFactory());
   assert(factory);
 
 #if 0

@@ -27,6 +27,7 @@
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_RenderingContext.hh"
+#include "MathGraphicDevice.hh"
 
 Gtk_PangoShaper::Gtk_PangoShaper()
 { }
@@ -49,7 +50,7 @@ Gtk_PangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned
 }
 
 unsigned
-Gtk_PangoShaper::shape(ShapingResult& result) const
+Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   assert(context);
 
@@ -68,13 +69,13 @@ Gtk_PangoShaper::shape(ShapingResult& result) const
   PangoLayout* layout = pango_layout_new(context);
   pango_layout_set_text(layout, buffer, length);
   // PangoAttribute is not a GObject?
-  PangoAttribute* sizeAttr = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(result.getFontSize()));
+  PangoAttribute* sizeAttr = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
   //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
   PangoAttrList* attrList = pango_attr_list_new();
   pango_attr_list_insert(attrList, sizeAttr);
   pango_layout_set_attributes(layout, attrList);
 
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice().getFactory());
   assert(factory);
   result.pushArea(factory->createPangoLayoutArea(layout));
 

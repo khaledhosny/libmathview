@@ -23,25 +23,31 @@
 #ifndef __Gtk_MathGraphicDevice_hh__
 #define __Gtk_MathGraphicDevice_hh__
 
-#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 #include "MathGraphicDevice.hh"
 
 class Gtk_MathGraphicDevice : public MathGraphicDevice
 {
-public:
-  Gtk_MathGraphicDevice(GdkDrawable*);
+protected:
+  Gtk_MathGraphicDevice(const SmartPtr<class Gtk_AreaFactory>&, GtkWidget*);
+  virtual ~Gtk_MathGraphicDevice();
 
-  virtual AreaRef string(const MathFormattingContext& context, const DOM::GdomeString& str) const;
+public:
+  SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<Gtk_AreaFactory>& factory, GtkWidget* widget)
+  { return new Gtk_MathGraphicDevice(factory, widget); }
+
+  virtual AreaRef string(const MathFormattingContext& context, const String& str) const;
   virtual AreaRef glyph(const MathFormattingContext& context,
-			const DOM::GdomeString& alt, const DOM::GdomeString& fontFamily,
+			const String& alt, const String& fontFamily,
 			unsigned long index) const;
 
   virtual AreaRef fraction(const MathFormattingContext& context,
 			   const AreaRef& numerator, const AreaRef& denominator,
 			   const Length& lineThickness) const;
   virtual AreaRef bevelledFraction(const MathFormattingContext& context,
-				   const AreaRef& numerator, const AreaRef& denominator) const;
+				   const AreaRef& numerator, const AreaRef& denominator,
+				   const Length& lineThickness) const;
   virtual AreaRef radical(const MathFormattingContext& context,
 			  const AreaRef& radicand, const AreaRef& index) const;
   virtual AreaRef script(const MathFormattingContext& context,
@@ -64,10 +70,13 @@ public:
 			       const AreaRef& base) const;
   virtual AreaRef actuarial(const MathFormattingContext& context,
 			    const AreaRef& base) const;
+  virtual AreaRef enclose(const MathFormattingContext& context,
+			  const AreaRef& base,
+			  const String& notation) const;
 
 protected:
   virtual AreaRef stretchStringV(const MathFormattingContext& context,
-				 const DOM::GdomeString& str,
+				 const String& str,
 				 const scaled& height,
 				 const scaled& depth) const;
   virtual void calculateScriptShift(const MathFormattingContext& context,

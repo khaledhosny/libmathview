@@ -39,14 +39,14 @@ public:
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
-  virtual unsigned shape(class ShapingResult&) const;
+  virtual unsigned shape(const class MathFormattingContext&, class ShapingResult&) const;
 
 protected:
   PangoFont* getFont(unsigned, const scaled&, PangoXSubfont&) const;
   void getGlyphExtents(PangoFont*, PangoGlyphString*, PangoRectangle*) const;
-  bool shapeChar(class ShapingResult&, const class GlyphSpec&) const;
-  bool shapeStretchyCharV(class ShapingResult&, const class GlyphSpec&) const;
-  bool shapeStretchyCharH(class ShapingResult&, const class GlyphSpec&) const;
+  bool shapeChar(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
+  bool shapeStretchyCharV(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
+  bool shapeStretchyCharH(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
 };
 
 #endif // __Gtk_AdobeShaper_hh__
