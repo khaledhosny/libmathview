@@ -366,7 +366,7 @@ MathMLCharNode::Render(const DrawingArea& area)
       RenderMissingCharacter(area, gc);
   }
 
-  // area.DrawBoundingBox(gc, GetX(), GetY(), box);
+  area.DrawBoundingBox(gc, GetX(), GetY(), box);
 
   ResetDirty();
 }
@@ -569,7 +569,9 @@ MathMLCharNode::CombineWith(const MathMLCharNode* cChar, scaled& shiftX, scaled&
 
   if (isCombiningOverlay(cch)) {
     shiftX = box.lBearing - cBox.lBearing + (box.rBearing - box.lBearing - cBox.rBearing + cBox.lBearing) / 2;
-    shiftY = 0;
+    shiftY = (cBox.ascent - cBox.descent - box.ascent + box.descent) / 2;
+    printf("h = %d d = %d h' = %d d' = %d shift = %d\n", sp2ipx(box.ascent), sp2ipx(box.descent),
+		    sp2ipx(cBox.ascent), sp2ipx(cBox.descent), sp2ipx(shiftY));
   } else if (isCombiningBelow(cch)) {
     shiftX = 0;
     shiftY = - box.descent - cBox.ascent;

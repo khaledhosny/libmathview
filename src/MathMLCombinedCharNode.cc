@@ -83,12 +83,14 @@ MathMLCombinedCharNode::DoLayout()
     box.width = scaledMax(charBox.width, cBox.width + scaledAbs(shiftX));
     box.lBearing = scaledMin(charBox.lBearing, cBox.lBearing + shiftX);
     box.rBearing = scaledMax(charBox.rBearing, cBox.rBearing + shiftX);
+    charBox = box; // WARNING: watch this
   }
 }
 
 void
 MathMLCombinedCharNode::SetPosition(scaled x, scaled y)
 {
+  printf("set position: x %d y %d dx %d dy %d\n", sp2ipx(x), sp2ipx(y), sp2ipx(shiftX), sp2ipx(shiftY));
   MathMLCharNode::SetPosition(x, y);
   assert(cChar != NULL);
   cChar->SetPosition(x + shiftX, y - shiftY);
