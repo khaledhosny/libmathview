@@ -53,7 +53,7 @@ protected:
 
   mDOMDocRef  doc;
 #elif defined(HAVE_GMETADOM)
-  void MathMLizeNode(const GMetaDOM::Element&, class MathMLContainerElement*);
+  void MathMLizeNode(const GMetaDOM::Node&, class MathMLContainerElement*);
   void MathMLizeContainerContent(const GMetaDOM::Element&, class MathMLContainerElement*);
   void MathMLizeTokenContent(const GMetaDOM::Element&, class MathMLTokenElement*);
   class MathMLTextNode* SubstituteMGlyphElement(const GMetaDOM::Element&);

@@ -81,12 +81,10 @@ void
 #if defined(HAVE_MINIDOM)
 MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
 #elif defined(HAVE_GMETADOM)
-MathMLizer::MathMLizeNode(const GMetaDOM::Element& node, MathMLContainerElement* parent)
+MathMLizer::MathMLizeNode(const GMetaDOM::Node& node, MathMLContainerElement* parent)
 #endif
 {
-#if defined(HAVE_MINIDOM)
-  assert(node != NULL);
-#endif
+  assert(node != 0);
   assert(parent != NULL);
 
   // TODO: namespaces
@@ -254,6 +252,7 @@ MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* 
 #elif defined(HAVE_GMETADOM)
 MathMLizer::MathMLizeContainerContent(const GMetaDOM::Element& node, MathMLContainerElement* parent)
 {
+  assert(node != 0);
   assert(parent != NULL);
 
   for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
@@ -383,6 +382,7 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
 void
 MathMLizer::MathMLizeTokenContent(const GMetaDOM::Element& node, MathMLTokenElement* parent)
 {
+  assert(node != 0);
   assert(parent != NULL);
 
   String* sContent = NULL;
@@ -549,6 +549,8 @@ MathMLizer::SubstituteAlignMarkElement(mDOMNodeRef node)
 MathMLTextNode*
 MathMLizer::SubstituteMGlyphElement(const GMetaDOM::Element& node)
 {
+  assert(node != 0);
+
   GMetaDOM::DOMString alt        = node.getAttribute("alt");
   GMetaDOM::DOMString fontFamily = node.getAttribute("fontfamily");
   GMetaDOM::DOMString index      = node.getAttribute("index");
@@ -580,6 +582,8 @@ MathMLizer::SubstituteMGlyphElement(const GMetaDOM::Element& node)
 MathMLTextNode*
 MathMLizer::SubstituteAlignMarkElement(const GMetaDOM::Element& node)
 {
+  assert(node != 0);
+
   GMetaDOM::DOMString edge = node.getAttribute("edge");
 
   MarkAlignType align = MARK_ALIGN_NOTVALID;
