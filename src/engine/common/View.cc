@@ -115,7 +115,6 @@ View::formatElement(const SmartPtr<Element>& elem) const
 SmartPtr<Element>
 View::getRootElement() const
 {
-  const SmartPtr<Element> oldRootElement = rootElement;
   bool rootDirty = !rootElement ||
     rootElement->dirtyStructure() || rootElement->dirtyAttribute() ||
     rootElement->dirtyAttributeP();

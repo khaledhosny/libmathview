@@ -23,7 +23,6 @@ libmathml_la_SOURCES = \
   MathMLFractionElement.cc \
   MathMLGlyphNode.cc \
   MathMLIdentifierElement.cc \
-  MathMLLabeledTableRowElement.cc \
   MathMLLinearContainerElement.cc \
   MathMLMarkNode.cc \
   MathMLMultiScriptsElement.cc \
@@ -44,7 +43,6 @@ libmathml_la_SOURCES = \
   MathMLStyleElement.cc \
   MathMLTableCellElement.cc \
   MathMLTableElement.cc \
-  MathMLTableRowElement.cc \
   MathMLTextElement.cc \
   MathMLTextNode.cc \
   MathMLTokenElement.cc \
@@ -81,7 +79,6 @@ noinst_HEADERS = \
   MathMLFractionElement.hh \
   MathMLGlyphNode.hh \
   MathMLIdentifierElement.hh \
-  MathMLLabeledTableRowElement.hh \
   MathMLLinearContainerElement.hh \
   MathMLMarkNode.hh \
   MathMLMultiScriptsElement.hh \
@@ -102,7 +99,6 @@ noinst_HEADERS = \
   MathMLStyleElement.hh \
   MathMLTableCellElement.hh \
   MathMLTableElement.hh \
-  MathMLTableRowElement.hh \
   MathMLTextElement.hh \
   MathMLTextNode.hh \
   MathMLTokenElement.hh \

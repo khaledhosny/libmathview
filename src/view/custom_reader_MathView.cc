@@ -44,6 +44,7 @@ custom_reader_MathView::loadReader(const c_customXmlReader* reader,
 {
   if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(getBuilder()))
     {
+      resetRootElement();
       builder->setReader(customXmlReader::create(reader, data));
       return true;
     }

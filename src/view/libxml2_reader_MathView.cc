@@ -45,6 +45,7 @@ libxml2_reader_MathView::loadReader(xmlTextReaderPtr reader)
 {
   if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(getBuilder()))
     {
+      resetRootElement();
       builder->setReader(libxmlXmlReader::create(reader));
       return true;
     }

@@ -91,6 +91,7 @@ gmetadom_MathView::loadRootElement(const DOM::Element& elem)
 
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(getBuilder()))
     {
+      resetRootElement();
       builder->setRootModelElement(elem);
       return true;
     }

@@ -137,9 +137,7 @@ ToTokenId(const SmartPtr<Value>& value)
 
 SmartPtr<ValueSequence>
 ToSequence(const SmartPtr<Value>& value)
-{
-  return smart_cast<ValueSequence>(value);
-}
+{ return smart_cast<ValueSequence>(value); }
 
 Length::Unit
 toUnitId(TokenId id)
