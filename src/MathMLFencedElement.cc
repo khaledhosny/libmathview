@@ -34,11 +34,12 @@
 #include "MathMLFencedElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
 
 MathMLFencedElement::MathMLFencedElement()
 {
   normalized = false;
-  openFence = closeFence = separators = NULL;
+  openFence = closeFence = separators = 0;
 }
 
 #if defined(HAVE_GMETADOM)
@@ -93,25 +94,26 @@ MathMLFencedElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      const Value* value = NULL;
+      delete openFence;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_OPEN, env))
+	openFence = ToString(value);
+      else
+	openFence = 0;
 
-      value = GetAttributeValue(ATTR_OPEN, env);
-      if (value != NULL && value->ToString() != NULL) openFence = value->ToString()->Clone();
-      else openFence = NULL;
-      delete value;
+      delete closeFence;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_CLOSE, env))
+	closeFence = ToString(value);
+      else
+	closeFence = 0;
 
-      value = GetAttributeValue(ATTR_CLOSE, env);
-      if (value != NULL && value->ToString() != NULL) closeFence = value->ToString()->Clone();
-      else closeFence = NULL;
-      delete value;
-
+      delete separators;
+      SmartPtr<Value> value;
       if (GetDOMElement() && GetDOMElement().hasAttribute("separators"))
 	value = GetAttributeValue(ATTR_SEPARATORS, env, false);
       else
 	value = GetAttributeValue(ATTR_SEPARATORS, env);
-      if (value != NULL && value->ToString() != NULL) separators = value->ToString()->Clone();
-      else separators = NULL;
-      delete value;
+      if (value) separators = ToString(value);
+      else separators = 0;
 
       DelayedNormalize(env.GetDocument());
       MathMLBinContainerElement::Setup(env);

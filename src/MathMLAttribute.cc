@@ -36,36 +36,24 @@ MathMLAttribute::MathMLAttribute(AttributeId i, const String* v)
 
 MathMLAttribute::~MathMLAttribute()
 {
-  delete value;
-#ifdef DEBUG
-  if (parsedValue != NULL) Value::RemoveCached();
-#endif // DEBUG
-  delete parsedValue;
 }
 
-const Value*
+SmartPtr<Value>
 MathMLAttribute::GetParsedValue(const AttributeSignature* aSignature) const
 {
-  if (parsedValue == NULL) {
-    assert(aSignature != NULL);
-    assert(value != NULL);
+  if (!parsedValue)
+    {
+      assert(aSignature);
+      assert(value);
 
-    AttributeParser parser = aSignature->GetParser();
-    assert(parser != NULL);
+      AttributeParser parser = aSignature->GetParser();
+      assert(parser);
 
-    StringTokenizer st(*value);
-    parsedValue = parser(st);
-#ifdef DEBUG
-    if (parsedValue != NULL) Value::AddCached();
-#endif // DEBUG
-  }
+      StringTokenizer st(*value);
+      parsedValue = parser(st);
+    }
 
-  // the value must be cloned because outside they are always freed.
-  // It's ugly and inefficient, but don't know how to do better without
-  // garbage collector (yes, reference counter could be a solution,
-  // but would imply one more field inside Value and the bookeeping
-  // of the information)
-  return (parsedValue != NULL) ? new Value(*parsedValue) : NULL;
+  return parsedValue;
 }
 
 bool
@@ -76,9 +64,8 @@ MathMLAttribute::Equal(const MathMLAttribute& attribute) const
   const String* aValue = value;
   const String* bValue = attribute.GetValue();
 
-  if (aValue == NULL && bValue != NULL) return false;
-  if (aValue != NULL && bValue == NULL) return false;
-  if (aValue != NULL && bValue != NULL) return aValue->Equal(*bValue);
-
-  return true;
+  if (!aValue && bValue) return false;
+  else if (aValue && !bValue) return false;
+  else if (aValue && bValue) return aValue->Equal(*bValue);
+  else return true;
 }

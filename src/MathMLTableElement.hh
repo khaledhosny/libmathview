@@ -209,9 +209,9 @@ public:
 
   virtual SmartPtr<MathMLElement> Inside(const scaled& x, const scaled& y);
 
-  void 	       SetupColumnAlignAux(const Value*, unsigned, unsigned, bool = false);
-  void 	       SetupRowAlignAux(const Value*, unsigned, bool = false);
-  void 	       SetupGroupAlignAux(const Value*, unsigned, unsigned);
+  void 	       SetupColumnAlignAux(const SmartPtr<Value>&, unsigned, unsigned, bool = false);
+  void 	       SetupRowAlignAux(const SmartPtr<Value>&, unsigned, bool = false);
+  void 	       SetupGroupAlignAux(const SmartPtr<Value>&, unsigned, unsigned);
 
   //virtual void SetDirty(const Rectangle* rect);
   bool         HasLabels(void) const { return rowLabel != NULL; }

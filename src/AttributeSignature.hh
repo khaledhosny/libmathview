@@ -27,16 +27,17 @@
 #include "String.hh"
 #include "AttributeParser.hh"
 
-struct AttributeSignature {
+struct AttributeSignature
+{
   AttributeId     id;
   AttributeParser parser;
   const String*   defaultValue;
-  mutable const Value* defaultParsedValue;
+  mutable SmartPtr<Value> defaultParsedValue;
 
   AttributeId     GetAttributeId(void) const { return id; }
   AttributeParser GetParser(void) const { return parser; }
   const String*   GetDefaultValue(void) const { return defaultValue; }
-  const Value*    GetDefaultParsedValue(void) const;
+  SmartPtr<Value> GetDefaultParsedValue(void) const;
 };
 
 #endif // AttributeSignature_hh

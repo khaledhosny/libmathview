@@ -1,224 +1,210 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
 
+#include <cassert>
+
+#include <vector>
+
+#include "Variant.hh"
 #include "StringUnicode.hh"
 #include "AttributeParser.hh"
-#include "ValueSequence.hh"
+//#include "ValueSequence.hh"
 #include "ValueConversion.hh"
 
-const Value*
+SmartPtr<Value>
 keywordParser(KeywordId id, StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
-  const Value* res = NULL;
+  SmartPtr<Value> res;
 
   st.SkipSpaces();
-  if (!st.MoreTokens()) return NULL;
+  if (!st.MoreTokens()) return res;
 
-  if (st.Parse(id)) res = new Value(id);
+  if (st.Parse(id)) res = Variant<KeywordId>::create(id);
   else st.SetMark(mark);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 integerParser(StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
-  const Value* res = NULL;
+  SmartPtr<Value> res;
   int n;
 
   st.SkipSpaces();
-  if (!st.MoreTokens()) return NULL;
+  if (!st.MoreTokens()) return res;
 
-  if (st.ParseInteger(&n)) res = new Value(n);
+  if (st.ParseInteger(&n)) res = Variant<int>::create(n);
   else st.SetMark(mark);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 unsignedIntegerParser(StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
-  const Value* res = NULL;
+  SmartPtr<Value> res;
   int n;
 
   st.SkipSpaces();
-  if (!st.MoreTokens()) return NULL;
+  if (!st.MoreTokens()) return res;
 
-  if (st.ParseUnsignedInteger(&n)) res = new Value(n);
+  if (st.ParseUnsignedInteger(&n)) res = Variant<int>::create(n);
   else st.SetMark(mark);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 sequenceParser(AttributeParser parser[], unsigned n, StringTokenizer& st)
 {
-  assert(parser != NULL);
+  assert(parser);
   assert(n > 1);
 
-  ValueSequence* sequence = new ValueSequence;
-  for (unsigned i = 0; i < n; i++) {
-    const Value* value = (parser[i])(st);
-    if (value == NULL) {
-      delete sequence;
-      return NULL;
+  std::vector< SmartPtr<Value> > sequence;
+  sequence.reserve(n);
+  for (unsigned i = 0; i < n; i++)
+    {
+      SmartPtr<Value> value = (parser[i])(st);
+      if (!value) return 0;
+      sequence.push_back(value);
     }
-    sequence->AddValue(value);
-  }
 
-  const Value* res = new Value(sequence);
-
-  return res;
+  return Variant< std::vector< SmartPtr<Value> > >::create(sequence);
 }
 
-const Value*
+SmartPtr<Value>
 alternativeParser(AttributeParser parser[], unsigned n, StringTokenizer& st)
 {
-  assert(parser != NULL);
+  assert(parser);
 
-  const Value* res = NULL;
-  unsigned i = 0;
+  for (unsigned i = 0; i < n; i++)
+    if (SmartPtr<Value> res = (parser[i](st)))
+      return res;
 
-  while (res == NULL && i < n) {
-    res = (parser[i])(st);
-    if (res == NULL) i++;
-  }
-
-  return res;
+  return 0;
 }
 
-const Value*
+SmartPtr<Value>
 alternativeParser(KeywordId id[], unsigned n, StringTokenizer& st)
 {
-  assert(id != NULL);
+  assert(id);
 
-  const Value* res = NULL;
-  unsigned i = 0;
+  for (unsigned i = 0; i < n; i++)
+    if (SmartPtr<Value> res = keywordParser(id[i], st))
+      return res;
 
-  while (res == NULL && i < n) {
-    res = keywordParser(id[i], st);
-    if (res == NULL) i++;
-  }
-
-  return res;
+  return 0;
 }
 
-const Value*
+SmartPtr<Value>
 listParser(AttributeParser start, AttributeParser parser, AttributeParser end,
 	   StringTokenizer& st, bool possiblyEmpty)
 {
-  assert(parser != NULL);
-
-  ValueSequence* seq = new ValueSequence;
-  assert(seq != NULL);
+  assert(parser);
 
   unsigned mark = st.GetMark();
 
   st.SkipSpaces();
-  if (!st.MoreTokens()) return NULL;
+  if (!st.MoreTokens()) return 0;
 
-  if (start != NULL) {
-    const Value* startValue = start(st);
-    if (startValue == NULL) {
-      st.SetMark(mark);
-      return NULL;
+  if (start)
+    {
+      SmartPtr<Value> startValue = start(st);
+      if (!startValue)
+	{
+	  st.SetMark(mark);
+	  return 0;
+	}
     }
-    delete startValue;
-  }
 
-  const Value* p = parser(st);
+  std::vector< SmartPtr<Value> > seq;
+  for (SmartPtr<Value> p = parser(st); p; p = parser(st))
+    seq.push_back(p);
 
-  while (p != NULL) {
-    seq->AddValue(p);
-    p = parser(st);
-  }
-
-  if (end != NULL) {
-    const Value* endValue = end(st);
-    if (endValue == NULL) {
-      st.SetMark(mark);
-      delete p;
-      return NULL;
+  if (end)
+    {
+      SmartPtr<Value> endValue = end(st);
+      if (!endValue)
+	{
+	  st.SetMark(mark);
+	  return 0;
+	}
     }
-    delete endValue;
-  }
 
-  if (!possiblyEmpty && seq->IsEmpty()) return NULL;
+  if (!possiblyEmpty && seq.empty()) return 0;
 
-  const Value* res = new Value(seq);
-
-  return res;
+  return Variant< std::vector< SmartPtr<Value> > >::create(seq);
 }
 
-const Value*
+SmartPtr<Value>
 optionParser(AttributeParser parser, StringTokenizer& st)
 {
-  assert(parser != NULL);
+  assert(parser);
 
-  const Value* res = parser(st);
-  if (res == NULL) res = new Value;
+  SmartPtr<Value> res = parser(st);
+  if (!res) res = Variant<void>::create();
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 numberParser(StringTokenizer& st)
 {
   float n;
   unsigned mark = st.GetMark();
-  const Value* res = NULL;
+  SmartPtr<Value> res;
 
   st.SkipSpaces();
   if (!st.MoreTokens()) return NULL;
 
-  if (st.ParseNumber(&n)) res = new Value(n);
+  if (st.ParseNumber(&n)) res = Variant<float>::create(n);
   else st.SetMark(mark);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 unsignedNumberParser(StringTokenizer& st)
 {
   float n;
   unsigned mark = st.GetMark();
-  const Value* res = NULL;
+  SmartPtr<Value> res;
 
   st.SkipSpaces();
   if (!st.MoreTokens()) return NULL;
 
-  if (st.ParseUnsignedNumber(&n)) res = new Value(n);
+  if (st.ParseUnsignedNumber(&n)) res = Variant<float>::create(n);
   else st.SetMark(mark);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 unitParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_EM, KW_EX, KW_PT, KW_PC, KW_PX, KW_IN, KW_CM, KW_MM };
@@ -226,54 +212,61 @@ unitParser(StringTokenizer& st)
   return alternativeParser(id, 8, st);
 }
 
-const Value*
+SmartPtr<Value>
 percentageParser(StringTokenizer& st)
 {
   return keywordParser(KW_PERCENTAGE, st);
 }
 
-const Value*
+SmartPtr<Value>
 unitPercentageParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    unitParser,
-    percentageParser
-  };
+  AttributeParser parser[] =
+    {
+      unitParser,
+      percentageParser
+    };
 
   return alternativeParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 unitOptionParser(StringTokenizer& st)
 {
   return optionParser(unitPercentageParser, st);
 }
 
-const Value*
+SmartPtr<Value>
 numberUnitParser(StringTokenizer& st)
 {
   float n;
   unsigned mark = st.GetMark();
-  const Value* res = NULL;
+  SmartPtr<Value> res;
 
   st.SkipSpaces();
   if (!st.MoreTokens()) return NULL;
 
-  if (st.ParseNumber(&n)) {
-    const Value* unit = unitPercentageParser(st);
-    if (unit != NULL) {
-      UnitId unitId = ToUnitId(unit);
-      delete unit;
-      if (unitId == UNIT_PERCENTAGE) res = new Value(n / 100, UNIT_PERCENTAGE);
-      else res = new Value(n, unitId);
-    } else if (n == 0.0) res = new Value(0.0, UNIT_ZERO);
-    else st.SetMark(mark);
-  } else st.SetMark(mark);
+  if (st.ParseNumber(&n))
+    {
+      SmartPtr<Value> unit = unitPercentageParser(st);
+      if (unit)
+	{
+	  UnitId unitId = ToUnitId(unit);
+	  if (unitId == UNIT_PERCENTAGE)
+	    res = Variant<UnitValue>::create(UnitValue(n / 100, UNIT_PERCENTAGE));
+	  else
+	    res = Variant<UnitValue>::create(UnitValue(n, unitId));
+	} else if (n == 0.0)
+	  res = Variant<UnitValue>::create(UnitValue(0.0, UNIT_ZERO));
+      else
+	st.SetMark(mark);
+  } else
+    st.SetMark(mark);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 numberUnitOptionParser(StringTokenizer& st)
 {
   AttributeParser parser[] = { numberParser, unitOptionParser };
@@ -281,55 +274,55 @@ numberUnitOptionParser(StringTokenizer& st)
   return sequenceParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 numberUnitListParser(StringTokenizer& st)
 {
-  return listParser(NULL, numberUnitParser, NULL, st);
+  return listParser(0, numberUnitParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 booleanParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_TRUE, KW_FALSE };
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 booleanListParser(StringTokenizer& st)
 {
-  return listParser(NULL, booleanParser, NULL, st);
+  return listParser(0, booleanParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 fontWeightParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_NORMAL, KW_BOLD };
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 fontStyleParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_NORMAL, KW_ITALIC };
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 stringParser(StringTokenizer& st)
 {
   unsigned mark = st.GetMark();
 
   st.SkipSpaces();
-  if (!st.MoreTokens()) return NULL;
+  if (!st.MoreTokens()) return 0;
 
   String* s = new StringUnicode;
-  if (st.ParseString(s)) return new Value(s);
+  if (st.ParseString(s)) return Variant<String*>::create(s);
   else st.SetMark(mark);
 
-  return NULL;
+  return 0;
 }
 
-const Value*
+SmartPtr<Value>
 colorParser(StringTokenizer& st)
 {
   KeywordId id[] = {
@@ -340,39 +333,38 @@ colorParser(StringTokenizer& st)
 
   const String& source = st.GetString();
   String* sourceNC = source.Clone();
-  assert(sourceNC != NULL);
+  assert(sourceNC);
   sourceNC->ToLowerCase();
   StringTokenizer stNC(*sourceNC);
 
-  const Value* res = alternativeParser(id, 16, stNC);
+  SmartPtr<Value> res = alternativeParser(id, 16, stNC);
   delete sourceNC;
-  if (res != NULL) return res;
+  if (res) return res;
 
   unsigned mark = st.GetMark();
 
   st.SkipSpaces();
-  if (!st.MoreTokens()) return NULL;
+  if (!st.MoreTokens()) return 0;
 
   RGBValue v;
-  if (st.ParseRGB(&v)) {
-    Value* res = new Value;
-    res->SetRGB(v);
-    return res;
-  } else st.SetMark(mark);
+  if (st.ParseRGB(&v))
+    return Variant<RGBValue>::create(v);
+  else
+    st.SetMark(mark);
 
-  return NULL;
+  return 0;
 }
 
-const Value*
+SmartPtr<Value>
 backgroundParser(StringTokenizer& st)
 {
-  const Value* res = keywordParser(KW_TRANSPARENT, st);
-  if (res == NULL) res = colorParser(st);
+  SmartPtr<Value> res = keywordParser(KW_TRANSPARENT, st);
+  if (!res) res = colorParser(st);
 
   return res;
 }
 
-const Value*
+SmartPtr<Value>
 alignParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_TOP, KW_BOTTOM, KW_CENTER, KW_BASELINE, KW_AXIS };
@@ -380,36 +372,37 @@ alignParser(StringTokenizer& st)
   return alternativeParser(id, 5, st);
 }
 
-const Value*
+SmartPtr<Value>
 integerOptionParser(StringTokenizer& st)
 {
   return optionParser(integerParser, st);
 }
 
-const Value*
+SmartPtr<Value>
 tableAlignParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    alignParser,
-    integerOptionParser
-  };
+  AttributeParser parser[] =
+    {
+      alignParser,
+      integerOptionParser
+    };
 
   return sequenceParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 rowAlignParser(StringTokenizer& st)
 {
   return alignParser(st);
 }
 
-const Value*
+SmartPtr<Value>
 rowAlignListParser(StringTokenizer& st)
 {
-  return listParser(NULL, alignParser, NULL, st);
+  return listParser(0, alignParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 columnAlignParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_CENTER, KW_RIGHT };
@@ -417,13 +410,13 @@ columnAlignParser(StringTokenizer& st)
   return alternativeParser(id, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 columnAlignListParser(StringTokenizer& st)
 {
-  return listParser(NULL, columnAlignParser, NULL, st);
+  return listParser(0, columnAlignParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 groupAlignParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_CENTER, KW_RIGHT, KW_DECIMALPOINT };
@@ -431,87 +424,89 @@ groupAlignParser(StringTokenizer& st)
   return alternativeParser(id, 4, st);
 }
 
-const Value*
+SmartPtr<Value>
 groupAlignListParser(StringTokenizer& st)
 {
-  return listParser(NULL, groupAlignParser, NULL, st);
+  return listParser(0, groupAlignParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 leftBraceParser(StringTokenizer& st)
 {
   return keywordParser(KW_LBRACE, st);
 }
 
-const Value*
+SmartPtr<Value>
 rightBraceParser(StringTokenizer& st)
 {
   return keywordParser(KW_RBRACE, st);
 }
 
-const Value*
+SmartPtr<Value>
 bracedGroupAlignListParser(StringTokenizer& st)
 {
   return listParser(leftBraceParser, groupAlignParser, rightBraceParser, st);
 }
 
-const Value*
+SmartPtr<Value>
 groupAlignListListParser(StringTokenizer& st)
 {
-  return listParser(NULL, bracedGroupAlignListParser, NULL, st);
+  return listParser(0, bracedGroupAlignListParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 namedSpaceParser(StringTokenizer& st)
 {
-  KeywordId id[] = {
-    KW_VERYVERYTHINMATHSPACE,
-    KW_VERYTHINMATHSPACE,
-    KW_THINMATHSPACE,
-    KW_MEDIUMMATHSPACE,
-    KW_THICKMATHSPACE,
-    KW_VERYTHICKMATHSPACE,
-    KW_VERYVERYTHICKMATHSPACE
-  };
+  KeywordId id[] =
+    {
+      KW_VERYVERYTHINMATHSPACE,
+      KW_VERYTHINMATHSPACE,
+      KW_THINMATHSPACE,
+      KW_MEDIUMMATHSPACE,
+      KW_THICKMATHSPACE,
+      KW_VERYTHICKMATHSPACE,
+      KW_VERYVERYTHICKMATHSPACE
+    };
 
   return alternativeParser(id, 7, st);
 }
 
-const Value*
+SmartPtr<Value>
 spaceParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    namedSpaceParser,
-    numberUnitParser
-  };
+  AttributeParser parser[] =
+    {
+      namedSpaceParser,
+      numberUnitParser
+    };
 
   return alternativeParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 spaceListParser(StringTokenizer& st)
 {
-  return listParser(NULL, spaceParser, NULL, st);
+  return listParser(0, spaceParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 columnWidthParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_AUTO, KW_FIT };
 
-  const Value* value = alternativeParser(id, 2, st);
-  if (value == NULL) value = spaceParser(st);
+  SmartPtr<Value> value = alternativeParser(id, 2, st);
+  if (!value) value = spaceParser(st);
 
   return value;
 }
 
-const Value*
+SmartPtr<Value>
 columnWidthListParser(StringTokenizer& st)
 {
-  return listParser(NULL, columnWidthParser, NULL, st);
+  return listParser(0, columnWidthParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 lineTypeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_NONE, KW_SOLID, KW_DASHED };
@@ -519,34 +514,30 @@ lineTypeParser(StringTokenizer& st)
   return alternativeParser(id, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 lineTypeListParser(StringTokenizer& st)
 {
-  return listParser(NULL, lineTypeParser, NULL, st);
+  return listParser(0, lineTypeParser, 0, st);
 }
 
-const Value*
+SmartPtr<Value>
 tableFrameSpacingParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    spaceParser,
-    spaceParser
-  };
+  AttributeParser parser[] = { spaceParser, spaceParser };
 
   return sequenceParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 tableWidthParser(StringTokenizer& st)
 {
-  const Value* res = keywordParser(KW_AUTO, st);
-
-  if (res != NULL) return res;
+  if (SmartPtr<Value> res = keywordParser(KW_AUTO, st))
+    return res;
 
   return numberUnitParser(st);
 }
 
-const Value*
+SmartPtr<Value>
 tableSideParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_RIGHT, KW_LEFTOVERLAP, KW_RIGHTOVERLAP };
@@ -554,7 +545,7 @@ tableSideParser(StringTokenizer& st)
   return alternativeParser(id, 4, st);
 }
 
-const Value*
+SmartPtr<Value>
 plusMinusParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_PLUS, KW_MINUS };
@@ -562,24 +553,25 @@ plusMinusParser(StringTokenizer& st)
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 plusMinusOptionParser(StringTokenizer& st)
 {
   return optionParser(plusMinusParser, st);
 }
   
-const Value*
+SmartPtr<Value>
 scriptLevelParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    plusMinusOptionParser,
-    unsignedIntegerParser
-  };
+  AttributeParser parser[] =
+    {
+      plusMinusOptionParser,
+      unsignedIntegerParser
+    };
 
   return sequenceParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 operatorFormParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_PREFIX, KW_INFIX, KW_POSTFIX };
@@ -587,71 +579,73 @@ operatorFormParser(StringTokenizer& st)
   return alternativeParser(id, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 operatorMinSizeParser(StringTokenizer& st)
 {
-  const Value* res = namedSpaceParser(st);
-  if (res != NULL) return res;
+  if (SmartPtr<Value> res = namedSpaceParser(st))
+    return res;
 
-  AttributeParser parser[] = {
-    unsignedNumberParser,
-    unitOptionParser
-  };
+  AttributeParser parser[] =
+    {
+      unsignedNumberParser,
+      unitOptionParser
+    };
   
   return sequenceParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 operatorMaxSizeParser(StringTokenizer& st)
 {
-  const Value* res = keywordParser(KW_INFINITY, st);
-  if (res != NULL) return res;
-
-  return operatorMinSizeParser(st);
+  if (SmartPtr<Value> res = keywordParser(KW_INFINITY, st))
+    return res;
+  else
+    return operatorMinSizeParser(st);
 }
 
-const Value*
+SmartPtr<Value>
 fenceParser(StringTokenizer& st)
 {
-  const Value* value = new Value(st.GetString().Clone());
-  return value;
+  return Variant<String*>::create(st.GetString().Clone());
 }
 
-const Value*
+SmartPtr<Value>
 separatorsParser(StringTokenizer& st)
 {
   String* sep = st.GetString().Clone();
   sep->DeleteSpaces();
 
-  const Value* value = NULL;
+  SmartPtr<Value> value;
 
-  if (sep->GetLength() > 0) value = new Value(sep);
-  else {
-    value = new Value(static_cast<String*>(NULL));
-    delete sep;
-  }
+  if (sep->GetLength() > 0)
+    value = Variant<String*>::create(sep);
+  else
+    {
+      value = Variant<String*>::create(0);
+      delete sep;
+    }
 
   return value;
 }
 
-const Value*
+SmartPtr<Value>
 fracAlignParser(StringTokenizer& st)
 {
   return columnAlignParser(st);
 }
 
-const Value*
+SmartPtr<Value>
 lineThicknessParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_THIN, KW_MEDIUM, KW_THICK };
 
-  const Value* value = alternativeParser(id, 3, st);
-  if (value != NULL) return value;
-
-  return numberUnitOptionParser(st);
+  if (SmartPtr<Value> value = alternativeParser(id, 3, st))
+    return value;
+  else
+    return numberUnitOptionParser(st);
 }
 
-const Value*
+SmartPtr<Value>
 pseudoUnitParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_WIDTH, KW_LSPACE, KW_HEIGHT, KW_DEPTH };
@@ -659,71 +653,76 @@ pseudoUnitParser(StringTokenizer& st)
   return alternativeParser(id, 4, st);
 }
 
-const Value*
+SmartPtr<Value>
 pseudoUnitOptionParser(StringTokenizer& st)
 {
   return optionParser(pseudoUnitParser, st);
 }
 
-const Value*
+SmartPtr<Value>
 percentagePseudoUnitParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    percentageParser,
-    pseudoUnitOptionParser
-  };
+  AttributeParser parser[] =
+    {
+      percentageParser,
+      pseudoUnitOptionParser
+    };
 
   return sequenceParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 dimensionParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    percentagePseudoUnitParser,
-    pseudoUnitParser,
-    unitParser
-  };
+  AttributeParser parser[] =
+    {
+      percentagePseudoUnitParser,
+      pseudoUnitParser,
+      unitParser
+    };
 
   return alternativeParser(parser, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 paddedWidthDimensionParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    dimensionParser,
-    namedSpaceParser
-  };
+  AttributeParser parser[] =
+    {
+      dimensionParser,
+      namedSpaceParser
+    };
 
   return alternativeParser(parser, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 paddedWidthParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    plusMinusOptionParser,
-    unsignedNumberParser,
-    paddedWidthDimensionParser
-  };
+  AttributeParser parser[] =
+    {
+      plusMinusOptionParser,
+      unsignedNumberParser,
+      paddedWidthDimensionParser
+    };
 
   return sequenceParser(parser, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 paddedValueParser(StringTokenizer& st)
 {
-  AttributeParser parser[] = {
-    plusMinusOptionParser,
-    unsignedNumberParser,
-    dimensionParser
-  };
+  AttributeParser parser[] =
+    {
+      plusMinusOptionParser,
+      unsignedNumberParser,
+      dimensionParser
+    };
 
   return sequenceParser(parser, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 modeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_DISPLAY, KW_INLINE };
@@ -731,7 +730,7 @@ modeParser(StringTokenizer& st)
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 displayParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_BLOCK, KW_INLINE };
@@ -739,7 +738,7 @@ displayParser(StringTokenizer& st)
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 lineBreakParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_AUTO, KW_NEWLINE, KW_INDENTINGNEWLINE,
@@ -748,7 +747,7 @@ lineBreakParser(StringTokenizer& st)
   return alternativeParser(id, 6, st);
 }
 
-const Value*
+SmartPtr<Value>
 alignMarkEdgeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LEFT, KW_RIGHT };
@@ -756,7 +755,7 @@ alignMarkEdgeParser(StringTokenizer& st)
   return alternativeParser(id, 2, st);
 }
 
-const Value*
+SmartPtr<Value>
 notationParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_LONGDIV, KW_ACTUARIAL, KW_RADICAL };
@@ -764,7 +763,7 @@ notationParser(StringTokenizer& st)
   return alternativeParser(id, 3, st);
 }
 
-const Value*
+SmartPtr<Value>
 mathVariantParser(StringTokenizer& st)
 {
   /* The order of the following keywords is _VERY_ important.
@@ -782,13 +781,13 @@ mathVariantParser(StringTokenizer& st)
   return alternativeParser(id, 14, st);
 }
 
-const Value*
+SmartPtr<Value>
 mathSizeParser(StringTokenizer& st)
 {
   KeywordId id[] = { KW_SMALL, KW_NORMAL, KW_BIG };
 
-  const Value* value = alternativeParser(id, 3, st);
-  if (value != NULL) return value;
-
-  return numberUnitParser(st);
+  if (SmartPtr<Value> value = alternativeParser(id, 3, st))
+    return value;
+  else
+    return numberUnitParser(st);
 }

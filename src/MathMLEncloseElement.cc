@@ -28,10 +28,12 @@
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
 #include "FormattingContext.hh"
+#include "ValueConversion.hh"
 
 MathMLEncloseElement::MathMLEncloseElement()
 {
   normalized = false;
+  notation = 0;
 }
 
 #if defined(HAVE_GMETADOM)
@@ -39,19 +41,25 @@ MathMLEncloseElement::MathMLEncloseElement(const DOM::Element& node)
   : MathMLNormalizingContainerElement(node)
 {
   normalized = false;
+  notation = 0;
 }
 #endif
 
 MathMLEncloseElement::~MathMLEncloseElement()
 {
+  if (notation)
+    {
+      delete notation;
+      notation = 0;
+    }
 }
 
 const AttributeSignature*
 MathMLEncloseElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_NOTATION, notationParser, new StringC("longdiv"), NULL },
-    { ATTR_NOTVALID, NULL,           NULL,                   NULL }
+    { ATTR_NOTATION, stringParser, new StringC("longdiv"), NULL },
+    { ATTR_NOTVALID, NULL,         NULL,                   NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -100,21 +108,17 @@ MathMLEncloseElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
-      const Value* value = GetAttributeValue(ATTR_NOTATION, env);
-      assert(value != NULL);
-      if (value->IsKeyword(KW_LONGDIV)) notation = NOTATION_LONGDIV;
-      else if (value->IsKeyword(KW_ACTUARIAL)) notation = NOTATION_ACTUARIAL;
-      else if (value->IsKeyword(KW_RADICAL)) notation = NOTATION_RADICAL;
-      else assert(IMPOSSIBLE);
-      delete value;
-      
+      if (notation) delete notation;
+      notation = ToString(GetAttributeValue(ATTR_NOTATION, env));
+      assert(notation);
+
       spacing = env.ToScaledPoints(env.GetMathSpace(MATH_SPACE_MEDIUM));
       lineThickness = env.GetRuleThickness();
       color = env.GetColor();
       
       if (!normalized)
 	{
-	  if (notation == NOTATION_RADICAL) NormalizeRadicalElement(env.GetDocument());
+	  if (notation->Equal("radical")) NormalizeRadicalElement(env.GetDocument());
 	  normalized = true;
 	}
 
@@ -134,7 +138,7 @@ MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
       MathMLNormalizingContainerElement::DoLayout(ctxt);
       box = child->GetBoundingBox();
 
-      if (notation != NOTATION_RADICAL)
+      if (notation->Equal("actuarial") || notation->Equal("longdiv"))
 	{
 	  box = child->GetBoundingBox();
 	  box.height += spacing + lineThickness;
@@ -153,14 +157,10 @@ MathMLEncloseElement::SetPosition(const scaled& x, const scaled& y)
   position.x = x;
   position.y = y;
 
-  if (notation == NOTATION_RADICAL)
+  if (notation->Equal("longdiv"))
+    child->SetPosition(x + spacing + lineThickness, y);
+  else
     child->SetPosition(x, y);
-  else {
-    if (notation == NOTATION_LONGDIV)
-      child->SetPosition(x + spacing + lineThickness, y);
-    else
-      child->SetPosition(x, y);
-  }
 }
 
 void
@@ -176,14 +176,23 @@ MathMLEncloseElement::Render(const DrawingArea& area)
 	fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND);
       }
 
-      if (notation == NOTATION_LONGDIV) {
-	area.MoveTo(GetX() + lineThickness / 2, GetY() + box.depth);
-	area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.height + lineThickness / 2);
-	area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height + lineThickness / 2);
-      } else if (notation == NOTATION_ACTUARIAL) {
-	area.MoveTo(GetX(), GetY() - box.height + lineThickness / 2);
-	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.height + lineThickness / 2);
-	area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.depth);
+      if (notation->Equal("longdiv")) {
+        area.MoveTo(GetX() + lineThickness / 2, GetY() + box.depth);
+        area.DrawLineTo(fGC[Selected()], GetX() + lineThickness / 2, GetY() - box.height + lineThickness / 2);
+        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height + lineThickness / 2);
+      } else if (notation->Equal("actuarial")) {
+        area.MoveTo(GetX(), GetY() - box.height + lineThickness / 2);
+        area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() - box.height + lineThickness / 2);
+        area.DrawLineTo(fGC[Selected()], GetX() + box.width - lineThickness / 2, GetY() + box.depth);
+      } else if (notation->Equal("overstrike")) {
+        area.MoveTo(GetX(), GetY() - box.height / 2);
+        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height / 2);
+      } else if (notation->Equal("NESWslash")) {
+        area.MoveTo(GetX(), GetY() + box.depth);
+        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() - box.height);
+      } else if (notation->Equal("NWSEslash")) {
+        area.MoveTo(GetX(), GetY() - box.height);
+        area.DrawLineTo(fGC[Selected()], GetX() + box.width, GetY() + box.depth);
       }
 
       ResetDirty();

@@ -342,25 +342,19 @@ Configuration::ParseColor(const DOM::Element& node, RGBValue& f, RGBValue& b, bo
   StringTokenizer fst(fss);
   StringTokenizer bst(bss);
 
-  const Value* fv = colorParser(fst);
-  const Value* bv = backgroundParser(bst);
+  SmartPtr<Value> fv = colorParser(fst);
+  SmartPtr<Value> bv = backgroundParser(bst);
 
-  if (fv == NULL || bv == NULL) {
-    delete fv;
-    delete bv;
-
-    std::string s_name = node.get_nodeName();
-    Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
-
-    return false;
-  }
+  if (!fv || !bv)
+    {
+      std::string s_name = node.get_nodeName();
+      Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
+      return false;
+    }
 
   f = ToRGB(fv);
-  transparent = bv->IsKeyword(KW_TRANSPARENT);
+  transparent = ToKeywordId(bv) == KW_TRANSPARENT;
   if (!transparent) b = ToRGB(bv);
-
-  delete fv;
-  delete bv;
 
   return true;
 }

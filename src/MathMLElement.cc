@@ -1,27 +1,28 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include <cassert>
 #include <stdio.h>
 
 #include "stringAux.hh"
@@ -36,6 +37,7 @@
 #include "MathMLOperatorElement.hh"
 #include "RenderingEnvironment.hh"
 #include "FormattingContext.hh"
+#include "Variant.hh"
 
 #ifdef DEBUG
 int MathMLElement::counter = 0;
@@ -116,7 +118,7 @@ MathMLElement::GetDefaultAttribute(AttributeId id) const
   return aSignature->GetDefaultValue();
 }
 
-const Value*
+SmartPtr<Value>
 MathMLElement::GetDefaultAttributeValue(AttributeId id) const
 {
   const AttributeSignature* aSignature = GetAttributeSignature(id);
@@ -173,10 +175,10 @@ MathMLElement::GetAttribute(AttributeId id,
   return sValue;
 }
 
-const Value*
+SmartPtr<Value>
 MathMLElement::GetAttributeValue(AttributeId id, bool searchDefault) const
 {
-  const Value* value = NULL;
+  SmartPtr<Value> value = NULL;
 
   const AttributeSignature* aSignature = GetAttributeSignature(id);
   assert(aSignature != NULL);
@@ -222,14 +224,14 @@ MathMLElement::GetAttributeValue(AttributeId id, bool searchDefault) const
   return value;
 }
 
-const Value*
+SmartPtr<Value>
 MathMLElement::GetAttributeValue(AttributeId id, 
 				 const RenderingEnvironment& env,
 				 bool searchDefault) const
 {
-  const Value* value = GetAttributeValue(id, false);
+  SmartPtr<Value> value = GetAttributeValue(id, false);
 
-  if (value == 0)
+  if (!value)
     {
       const AttributeSignature* aSignature = GetAttributeSignature(id);
       assert(aSignature != 0);
@@ -237,61 +239,36 @@ MathMLElement::GetAttributeValue(AttributeId id,
       if (attr != 0) value = attr->GetParsedValue(aSignature);
     }
 
-  if (value == 0 && searchDefault) value = GetDefaultAttributeValue(id);
+  if (!value && searchDefault) value = GetDefaultAttributeValue(id);
 
   return value;
 }
 
-const Value*
-MathMLElement::Resolve(const Value* value,
+SmartPtr<Value>
+MathMLElement::Resolve(const SmartPtr<Value>& value,
 		       const RenderingEnvironment& env,
 		       int i, int j)
 {
-  assert(value != NULL);
+  assert(value);
 
-  const Value* realValue = value->Get(i, j);
-  assert(realValue != NULL);
+  SmartPtr<Value> realValue = GetComponent(value, i, j);
+  assert(realValue);
 
-  if      (realValue->IsKeyword(KW_VERYVERYTHINMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYVERYTHIN));
-  else if (realValue->IsKeyword(KW_VERYTHINMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYTHIN));
-  else if (realValue->IsKeyword(KW_THINMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_THIN));
-  else if (realValue->IsKeyword(KW_MEDIUMMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_MEDIUM));
-  else if (realValue->IsKeyword(KW_THICKMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_THICK));
-  else if (realValue->IsKeyword(KW_VERYTHICKMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYTHICK));
-  else if (realValue->IsKeyword(KW_VERYVERYTHICKMATHSPACE))
-    realValue = new Value(env.GetMathSpace(MATH_SPACE_VERYVERYTHICK));
+  if (IsKeyword(value))
+    return Variant<UnitValue>::create(env.GetMathSpace(ToNamedSpaceId(value)));
   else
-    // the following cloning is necessary because values returned by
-    // the resolving function must always be deleted (never cached)
-    realValue = new Value(*realValue);
-
-  return realValue;
+    return realValue;
 }
 
 bool
 MathMLElement::IsSet(AttributeId id) const
 {
-#if defined(HAVE_MINIDOM)
-  if (node == NULL) return false;
-
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING(NameOfAttributeId(id)));
-
-  if (value != NULL) {
-    mdom_string_free(value);
-    return true;
-  }
-
-  return false;
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
   if (!node) return false;
   return node.hasAttribute(NameOfAttributeId(id));
-#endif // HAVE_GMETADOM
+#else // HAVE_GMETADOM
+  return false;
+#endif
 }
 
 void
@@ -391,23 +368,12 @@ MathMLElement::ReleaseGCs()
 bool
 MathMLElement::HasLink() const
 {
-#if defined(HAVE_MINIDOM)
-  mDOMNodeRef p = GetDOMElement();
-
-  while (p != NULL && !mdom_node_has_attribute(p, DOM_CONST_STRING("href")))
-    p = mdom_node_get_parent(p);
-
-  return p != NULL;
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
   DOM::Element p = GetDOMElement();
-
-  while (p && !p.hasAttribute("href")) {
-    DOM::Node parent = p.get_parentNode();
-    p = parent;
-  }
-
-  return p;
-#endif // HAVE_GMETADOM
+  return p && p.hasAttribute("href");
+#else // HAVE_GMETADOM
+  return false;
+#endif
 }
 
 SmartPtr<MathMLOperatorElement>

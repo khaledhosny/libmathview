@@ -25,12 +25,13 @@
 #include <stddef.h>
 
 #include "ChildList.hh"
-#include "traverseAux.hh"
-#include "MathMLDummyElement.hh"
-#include "MathMLScriptElement.hh"
-#include "MathMLOperatorElement.hh"
-#include "RenderingEnvironment.hh"
 #include "FormattingContext.hh"
+#include "MathMLDummyElement.hh"
+#include "MathMLOperatorElement.hh"
+#include "MathMLScriptElement.hh"
+#include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
+#include "traverseAux.hh"
 
 MathMLScriptElement::MathMLScriptElement()
 {
@@ -203,23 +204,16 @@ MathMLScriptElement::Setup(RenderingEnvironment& env)
       env.AddScriptLevel(1);
       env.SetDisplayStyle(false);
 
-      const Value* value = NULL;
-
       if (subScript)
 	{
 	  subScript->Setup(env);
 
-	  value = GetAttributeValue(ATTR_SUBSCRIPTSHIFT, env, false);
-	  if (value != NULL)
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_SUBSCRIPTSHIFT, env, false))
 	    {
-	      assert(value->IsNumberUnit());
-
-	      UnitValue unitValue = value->ToNumberUnit();
+	      assert(IsNumberUnit(value));
+	      UnitValue unitValue = ToNumberUnit(value);
 	      assert(!unitValue.IsPercentage());
-
 	      subMinShift = env.ToScaledPoints(unitValue);
-
-	      delete value;
 	    }
 	}
 
@@ -227,17 +221,12 @@ MathMLScriptElement::Setup(RenderingEnvironment& env)
 	{
 	  superScript->Setup(env);
 
-	  value = GetAttributeValue(ATTR_SUPERSCRIPTSHIFT, env, false);
-	  if (value != NULL)
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_SUPERSCRIPTSHIFT, env, false))
 	    {
-	      assert(value->IsNumberUnit());
-      
-	      UnitValue unitValue = value->ToNumberUnit();
+	      assert(IsNumberUnit(value));
+	      UnitValue unitValue = ToNumberUnit(value);
 	      assert(!unitValue.IsPercentage());
-
 	      superMinShift = env.ToScaledPoints(unitValue);
-
-	      delete value;
 	    }
 	}
 

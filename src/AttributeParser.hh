@@ -23,76 +23,79 @@
 #ifndef AttributeParser_hh
 #define AttributeParser_hh
 
+#include "SmartPtr.hh"
 #include "StringTokenizer.hh"
 #include "MathMLObject.hh"
 #include "Value.hh"
 
-#define PARSER(name) const Value* name(StringTokenizer&);
+#define ATTRIBUTE_PARSER(name) SmartPtr<Value> name(StringTokenizer&);
 
-typedef const Value* (*AttributeParser)(StringTokenizer&);
-typedef const Value* (*AttributeListParser)(AttributeParser,
-					    AttributeParser,
-					    AttributeParser,
-					    StringTokenizer&);
+typedef SmartPtr<Value> (*AttributeParser)(StringTokenizer&);
+typedef SmartPtr<Value> (*AttributeListParser)(AttributeParser,
+					       AttributeParser,
+					       AttributeParser,
+					       StringTokenizer&);
 
-const Value* keywordParser(StringTokenizer&);
+SmartPtr<Value> keywordParser(StringTokenizer&);
 
-const Value* listParser(AttributeParser,
-			AttributeParser,
-			AttributeParser,
-			StringTokenizer&,
-			bool = false);
+SmartPtr<Value> listParser(AttributeParser,
+			   AttributeParser,
+			   AttributeParser,
+			   StringTokenizer&,
+			   bool = false);
 
-const Value* sequenceParser(AttributeParser*, unsigned, StringTokenizer&);
-const Value* alternativeParser(AttributeParser*, unsigned, StringTokenizer&);
-const Value* alternativeParser(KeywordId*, unsigned, StringTokenizer&);
-const Value* optionParser(AttributeParser, StringTokenizer&);
+SmartPtr<Value> sequenceParser(AttributeParser*, unsigned, StringTokenizer&);
+SmartPtr<Value> alternativeParser(AttributeParser*, unsigned, StringTokenizer&);
+SmartPtr<Value> alternativeParser(KeywordId*, unsigned, StringTokenizer&);
+SmartPtr<Value> optionParser(AttributeParser, StringTokenizer&);
 
-PARSER(booleanParser);
-PARSER(booleanListParser);
-PARSER(integerParser);
-PARSER(unsignedIntegerParser);
-PARSER(numberParser);
-PARSER(unsignedNumberParser);
-PARSER(numberUnitParser);
-PARSER(numberUnitListParser);
-PARSER(stringParser);
-PARSER(colorParser);
-PARSER(backgroundParser);
-PARSER(spaceParser);
-PARSER(spaceListParser);
-PARSER(fontWeightParser);
-PARSER(fontStyleParser);
-PARSER(groupAlignListListParser);
-PARSER(groupAlignListParser);
-PARSER(lineTypeParser);
-PARSER(lineTypeListParser);
-PARSER(rowAlignParser);
-PARSER(rowAlignListParser);
-PARSER(columnAlignParser);
-PARSER(columnAlignListParser);
-PARSER(columnWidthListParser);
-PARSER(tableAlignParser);
-PARSER(tableFrameParser);
-PARSER(tableFrameSpacingParser);
-PARSER(tableSideParser);
-PARSER(tableWidthParser);
-PARSER(scriptLevelParser);
-PARSER(operatorFormParser);
-PARSER(operatorMaxSizeParser);
-PARSER(operatorMinSizeParser);
-PARSER(fenceParser);
-PARSER(separatorsParser);
-PARSER(lineThicknessParser);
-PARSER(fracAlignParser);
-PARSER(paddedWidthParser);
-PARSER(paddedValueParser);
-PARSER(modeParser);
-PARSER(displayParser);
-PARSER(lineBreakParser);
-PARSER(alignMarkEdgeParser);
-PARSER(notationParser);
-PARSER(mathVariantParser);
-PARSER(mathSizeParser);
+ATTRIBUTE_PARSER(booleanParser);
+ATTRIBUTE_PARSER(booleanListParser);
+ATTRIBUTE_PARSER(integerParser);
+ATTRIBUTE_PARSER(unsignedIntegerParser);
+ATTRIBUTE_PARSER(numberParser);
+ATTRIBUTE_PARSER(unsignedNumberParser);
+ATTRIBUTE_PARSER(numberUnitParser);
+ATTRIBUTE_PARSER(numberUnitListParser);
+ATTRIBUTE_PARSER(stringParser);
+ATTRIBUTE_PARSER(colorParser);
+ATTRIBUTE_PARSER(backgroundParser);
+ATTRIBUTE_PARSER(spaceParser);
+ATTRIBUTE_PARSER(spaceListParser);
+ATTRIBUTE_PARSER(fontWeightParser);
+ATTRIBUTE_PARSER(fontStyleParser);
+ATTRIBUTE_PARSER(groupAlignListListParser);
+ATTRIBUTE_PARSER(groupAlignListParser);
+ATTRIBUTE_PARSER(lineTypeParser);
+ATTRIBUTE_PARSER(lineTypeListParser);
+ATTRIBUTE_PARSER(rowAlignParser);
+ATTRIBUTE_PARSER(rowAlignListParser);
+ATTRIBUTE_PARSER(columnAlignParser);
+ATTRIBUTE_PARSER(columnAlignListParser);
+ATTRIBUTE_PARSER(columnWidthListParser);
+ATTRIBUTE_PARSER(tableAlignParser);
+ATTRIBUTE_PARSER(tableFrameParser);
+ATTRIBUTE_PARSER(tableFrameSpacingParser);
+ATTRIBUTE_PARSER(tableSideParser);
+ATTRIBUTE_PARSER(tableWidthParser);
+ATTRIBUTE_PARSER(scriptLevelParser);
+ATTRIBUTE_PARSER(operatorFormParser);
+ATTRIBUTE_PARSER(operatorMaxSizeParser);
+ATTRIBUTE_PARSER(operatorMinSizeParser);
+ATTRIBUTE_PARSER(fenceParser);
+ATTRIBUTE_PARSER(separatorsParser);
+ATTRIBUTE_PARSER(lineThicknessParser);
+ATTRIBUTE_PARSER(fracAlignParser);
+ATTRIBUTE_PARSER(paddedWidthParser);
+ATTRIBUTE_PARSER(paddedValueParser);
+ATTRIBUTE_PARSER(modeParser);
+ATTRIBUTE_PARSER(displayParser);
+ATTRIBUTE_PARSER(lineBreakParser);
+ATTRIBUTE_PARSER(alignMarkEdgeParser);
+ATTRIBUTE_PARSER(notationParser);
+ATTRIBUTE_PARSER(mathVariantParser);
+ATTRIBUTE_PARSER(mathSizeParser);
+
+#undef ATTRIBUTE_PARSER
 
 #endif // AttributeParser_hh

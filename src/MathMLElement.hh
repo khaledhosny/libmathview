@@ -67,13 +67,13 @@ public:
 
   // attributes
   const String* GetDefaultAttribute(AttributeId) const;
-  const Value*  GetDefaultAttributeValue(AttributeId) const;
+  SmartPtr<Value> GetDefaultAttributeValue(AttributeId) const;
   const String* GetAttribute(AttributeId, bool = true) const;
   const String* GetAttribute(AttributeId, const RenderingEnvironment&, bool = true) const;
-  const Value*  GetAttributeValue(AttributeId, bool = true) const;
-  const Value*  GetAttributeValue(AttributeId, const RenderingEnvironment&, bool = true) const;
-  const Value*  ParseAttribute(AttributeId, const String*) const;
-  static const Value* Resolve(const Value*, const RenderingEnvironment&, int = -1, int = -1);
+  SmartPtr<Value> GetAttributeValue(AttributeId, bool = true) const;
+  SmartPtr<Value> GetAttributeValue(AttributeId, const RenderingEnvironment&, bool = true) const;
+  SmartPtr<Value> ParseAttribute(AttributeId, const String*) const;
+  static SmartPtr<Value> Resolve(const SmartPtr<Value>&, const RenderingEnvironment&, int = -1, int = -1);
   bool IsSet(AttributeId) const;
 
   // some queries

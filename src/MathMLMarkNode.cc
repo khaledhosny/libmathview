@@ -21,12 +21,14 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include <cassert>
 
 #include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "AttributeSignature.hh"
 #include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
 
 MathMLMarkNode::MathMLMarkNode(MarkAlignType e)
 {
@@ -50,10 +52,9 @@ MathMLMarkNode::Setup(RenderingEnvironment& env)
   const MathMLAttribute* attribute = env.GetAttribute(ATTR_EDGE);
   // ok, we have to do something only in case the attribute edge
   // wasn't explicitly set inside the mark (see Parser.cc)
-  if (edge == MARK_ALIGN_NOTVALID && attribute != NULL) {
-    const Value* value = attribute->GetParsedValue(&sig);
-    if (value != NULL && value->IsKeyword(KW_RIGHT))
-      edge = MARK_ALIGN_RIGHT;
+  if (edge == MARK_ALIGN_NOTVALID && attribute) {
+    SmartPtr<Value> value = attribute->GetParsedValue(&sig);
+    if (value) edge = ToMarkAlignId(value);
   }
 
   // since left is the default value for the edge attribute,

@@ -190,9 +190,8 @@ RenderingEnvironment::AddScriptLevel(int delta)
   float multiplier = pow(top->scriptSizeMultiplier, static_cast<float>(delta));
   top->scriptLevel += delta;
 
-  UnitValue newFontSize;
-  newFontSize.Set(top->fontAttributes.size.GetValue() * multiplier,
-		  top->fontAttributes.size.GetUnitId());
+  UnitValue newFontSize(top->fontAttributes.size.GetValue() * multiplier,
+			top->fontAttributes.size.GetUnitId());
 
   // WARNING: if scriptMinSize cannot be em or ex, than the
   // following test can be implemented much more efficiently, because

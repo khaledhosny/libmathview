@@ -21,7 +21,8 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include <cassert>
 #include <stddef.h>
 
 #include "StringUnicode.hh"
@@ -29,6 +30,7 @@
 #include "RenderingEnvironment.hh"
 #include "AttributeParser.hh"
 #include "FormattingContext.hh"
+#include "ValueConversion.hh"
 
 MathMLSpaceElement::MathMLSpaceElement()
 {
@@ -77,64 +79,27 @@ MathMLSpaceElement::Setup(RenderingEnvironment& env)
     {
       background = env.GetBackgroundColor();
 
-      const Value* value = NULL;
-
-      value = GetAttributeValue(ATTR_WIDTH);
-      assert(value != NULL);
       scaled width;
-      if (value->IsKeyword())
-	{
-	  const Value* resValue = Resolve(value, env);
-	  assert(resValue->IsNumberUnit());
-	  width = env.ToScaledPoints(resValue->ToNumberUnit());
-	  delete resValue;
-	}
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_WIDTH))
+	if (IsKeyword(value))
+	  width = env.ToScaledPoints(ToNumberUnit(Resolve(value, env)));
+	else
+	  width = env.ToScaledPoints(ToNumberUnit(value));
       else
-	width = env.ToScaledPoints(value->ToNumberUnit());
-      delete value;
+	assert(IMPOSSIBLE);
 
-      value = GetAttributeValue(ATTR_HEIGHT);
-      assert(value != NULL && value->IsNumberUnit());
-      scaled height = env.ToScaledPoints(value->ToNumberUnit());
-      delete value;
+      scaled height;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_HEIGHT))
+	height = env.ToScaledPoints(ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_DEPTH);
-      assert(value != NULL && value->IsNumberUnit());
-      scaled depth = env.ToScaledPoints(value->ToNumberUnit());
-      delete value;
+      scaled depth;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_DEPTH))
+	depth = env.ToScaledPoints(ToNumberUnit(value));
 
       box.set(width, height, depth);
 
       if (!IsSet(ATTR_WIDTH) && !IsSet(ATTR_HEIGHT) && !IsSet(ATTR_DEPTH))
-	{
-	  value = GetAttributeValue(ATTR_LINEBREAK);
-	  assert(value != NULL && value->IsKeyword());
-	  switch (value->ToKeyword())
-	    {
-	    case KW_AUTO:
-	      breakability = BREAK_AUTO;
-	      break;
-	    case KW_NEWLINE:
-	      breakability = BREAK_YES;
-	      break;
-	    case KW_INDENTINGNEWLINE:
-	      breakability = BREAK_INDENT;
-	      break;
-	    case KW_NOBREAK:
-	      breakability = BREAK_NO;
-	      break;
-	    case KW_BADBREAK:
-	      breakability = BREAK_BAD;
-	      break;
-	    case KW_GOODBREAK:
-	      breakability = BREAK_GOOD;
-	      break;
-	    default:
-	      assert(IMPOSSIBLE);
-	      break;
-	    }
-	  delete value;
-	}
+	breakability = ToBreakId(GetAttributeValue(ATTR_LINEBREAK));
 
       ResetDirtyAttribute();
     }

@@ -25,23 +25,19 @@
 
 #include "AttributeSignature.hh"
 
-const Value*
+SmartPtr<Value>
 AttributeSignature::GetDefaultParsedValue(void) const
 {
-  assert(parser != NULL);
-  assert(defaultValue != NULL);
+  assert(parser);
+  assert(defaultValue);
 
-  if (defaultParsedValue == NULL) {
-    StringTokenizer st(*defaultValue);
-    defaultParsedValue = parser(st);
-    // a default value cannot be wrong
-    assert(defaultParsedValue != NULL);
-#ifdef DEBUG
-    // this is to notify that this value is cached and will be never freed
-    Value::AddCached();
-#endif
-  }
+  if (!defaultParsedValue)
+    {
+      StringTokenizer st(*defaultValue);
+      defaultParsedValue = parser(st);
+      // a default value cannot be null
+      assert(defaultParsedValue);
+    }
 
-  // the value must be cloned, because outside it is always freed
-  return new Value(*defaultParsedValue);
+  return defaultParsedValue;
 }

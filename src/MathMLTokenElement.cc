@@ -589,100 +589,104 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	  !is_a<MathMLOperatorElement>(SmartPtr<MathMLElement>(this)))
 	env.SetFontMode(FONT_MODE_TEXT);
 
-      const Value* value = NULL;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHSIZE, env, false))
+	{
+	  if (IsSet(ATTR_FONTSIZE))
+	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
 
-      value = GetAttributeValue(ATTR_MATHSIZE, env, false);
-      if (value != NULL) {
-	if (IsSet(ATTR_FONTSIZE))
-	  Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
-    
-	if (value->IsKeyword(KW_SMALL)) env.AddScriptLevel(1);
-	else if (value->IsKeyword(KW_BIG)) env.AddScriptLevel(-1);
-	else if (value->IsKeyword(KW_NORMAL)) ; // noop
-	else env.SetFontSize(value->ToNumberUnit());
-      } else {
-	value = GetAttributeValue(ATTR_FONTSIZE, env, false);
-	if (value != NULL) {
+	  if (IsKeyword(value))
+	    switch (ToKeywordId(value))
+	      {
+	      case KW_SMALL: env.AddScriptLevel(1); break;
+	      case KW_BIG: env.AddScriptLevel(-1); break;
+	      case KW_NORMAL: break; // noop
+	      default: assert(IMPOSSIBLE); break;
+	      }
+	  else
+	    env.SetFontSize(ToNumberUnit(value));
+	} 
+      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTSIZE, env, false))
+	{
 	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
-	  env.SetFontSize(value->ToNumberUnit());
+	  env.SetFontSize(ToNumberUnit(value));
 	}
-      }
-      delete value;
   
-      value = GetAttributeValue(ATTR_MATHVARIANT, env, false);
-      if (value != NULL) {
-	assert(value->IsKeyword());
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHVARIANT, env, false))
+	{
+	  assert(IsKeyword(value));
 
-	const MathVariantAttributes& attr = attributesOfVariant(value->ToKeyword());
-	assert(attr.kw != KW_NOTVALID);
-	env.SetFontFamily(attr.family);
-	env.SetFontWeight(attr.weight);
-	env.SetFontStyle(attr.style);
+	  const MathVariantAttributes& attr = attributesOfVariant(ToKeywordId(value));
+	  assert(attr.kw != KW_NOTVALID);
+	  env.SetFontFamily(attr.family);
+	  env.SetFontWeight(attr.weight);
+	  env.SetFontStyle(attr.style);
 
-	if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
-	  Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
-
-	delete value;
-      } else {
-	value = GetAttributeValue(ATTR_FONTFAMILY, env, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
-	  env.SetFontFamily(value->ToString());
+	  if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
 	}
-	delete value;
+      else
+	{
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTFAMILY, env, false))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
+	      env.SetFontFamily(ToString(value));
+	    }
 
-	value = GetAttributeValue(ATTR_FONTWEIGHT, env, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
-	  env.SetFontWeight(ToFontWeightId(value));
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTWEIGHT, env, false))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
+	      env.SetFontWeight(ToFontWeightId(value));
+	    }
+
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTSTYLE, env, false))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
+	      env.SetFontStyle(ToFontStyleId(value));
+	    } 
+	  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)))
+	    {
+	      if (GetLogicalContentLength() == 1)
+		{
+		  SmartPtr<MathMLTextNode> node = GetChild(0);
+		  assert(node);
+
+		  if (is_a<MathMLCharNode>(node))
+		    {
+		      SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(node);
+		      assert(cNode);
+		      
+		      if (!isUpperCaseGreek(cNode->GetChar())) env.SetFontStyle(FONT_STYLE_ITALIC);
+		      else env.SetFontStyle(FONT_STYLE_NORMAL);
+		    }
+		  else
+		    env.SetFontStyle(FONT_STYLE_NORMAL);
+		} 
+	      else
+		{
+		  env.SetFontStyle(FONT_STYLE_NORMAL);
+		  env.SetFontMode(FONT_MODE_TEXT);
+		}
+	    }
 	}
-	delete value;
-
-	value = GetAttributeValue(ATTR_FONTSTYLE, env, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
-	  env.SetFontStyle(ToFontStyleId(value));
-	} else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this))) {
-	  if (GetLogicalContentLength() == 1) {
-	    SmartPtr<MathMLTextNode> node = GetChild(0);
-	    assert(node);
-
-	    if (is_a<MathMLCharNode>(node)) {
-	      SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(node);
-	      assert(cNode);
-
-	      if (!isUpperCaseGreek(cNode->GetChar())) env.SetFontStyle(FONT_STYLE_ITALIC);
-	      else env.SetFontStyle(FONT_STYLE_NORMAL);
-	    } else
-	      env.SetFontStyle(FONT_STYLE_NORMAL);
-	  } else {
-	    env.SetFontStyle(FONT_STYLE_NORMAL);
-	    env.SetFontMode(FONT_MODE_TEXT);
-	  }
-	}
-	delete value;
-      }
-
-      value = GetAttributeValue(ATTR_MATHCOLOR, env, false);
-      if (value != NULL) {
-	if (IsSet(ATTR_COLOR))
-	  Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
-	env.SetColor(ToRGB(value));
-      } else {
-	value = GetAttributeValue(ATTR_COLOR, env, false);
-	if (value != NULL) {
+      
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHCOLOR, env, false))
+	{
+	  if (IsSet(ATTR_COLOR))
+	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
+	  env.SetColor(ToRGB(value));
+	} 
+      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLOR, env, false))
+	{
 	  Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
 	  env.SetColor(ToRGB(value));
-	} else
-	  if (HasLink()) env.SetColor(Globals::configuration.GetLinkForeground());
-      }
-      delete value;
+	} 
+      else
+	if (HasLink()) env.SetColor(Globals::configuration.GetLinkForeground());
 
-      value = GetAttributeValue(ATTR_MATHBACKGROUND, env, false);
-      if (value != NULL) env.SetBackgroundColor(ToRGB(value));
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHBACKGROUND, env, false))
+	env.SetBackgroundColor(ToRGB(value));
       else if (HasLink() && !Globals::configuration.HasTransparentLinkBackground())
 	env.SetBackgroundColor(Globals::configuration.GetLinkBackground());
-      delete value;
 
       color      = env.GetColor();
       background = env.GetBackgroundColor();

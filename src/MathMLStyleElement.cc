@@ -142,165 +142,147 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 
       env.Push(&attributes);
 
-      const Value* value = NULL;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_DISPLAYSTYLE, false))
+	env.SetDisplayStyle(ToBoolean(value));
 
-      value = GetAttributeValue(ATTR_DISPLAYSTYLE, false);
-      if (value != NULL) env.SetDisplayStyle(value->ToBoolean());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_SCRIPTSIZEMULTIPLIER, false))
+	env.SetScriptSizeMultiplier(ToNumber(value));
 
-      value = GetAttributeValue(ATTR_SCRIPTSIZEMULTIPLIER, false);
-      if (value != NULL) env.SetScriptSizeMultiplier(value->ToNumber());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_SCRIPTMINSIZE, false))
+	env.SetScriptMinSize(ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_SCRIPTMINSIZE, false);
-      if (value != NULL) env.SetScriptMinSize(value->ToNumberUnit());
-      delete value;
-
-      value = GetAttributeValue(ATTR_SCRIPTLEVEL, false);
-      if (value != NULL) {
-	const Value* p = value->Get(0);
-	assert(p != NULL);
-
-	if (p->IsEmpty()) {
-	  p = value->Get(1);
-	  assert(p != NULL);
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_SCRIPTLEVEL, false))
+	{
+	  SmartPtr<Value> p = GetComponent(value, 0);
+	  if (IsEmpty(p))
+	    {
+	      SmartPtr<Value> p = GetComponent(value, 1);
+	      assert(p);
       
-	  int scriptLevel = p->ToInteger();
-	  if (scriptLevel < 0) scriptLevel = 0;
-	  env.SetScriptLevel(scriptLevel);
-	} else {
-	  int sign = 1;
-	  if (p->IsKeyword(KW_PLUS)) sign = 1;
-	  else sign = -1;
-	  p = value->Get(1);
-	  assert(p != NULL);
+	      int scriptLevel = ToInteger(p);
+	      if (scriptLevel < 0) scriptLevel = 0;
+	      env.SetScriptLevel(scriptLevel);
+	    }
+	  else
+	    {
+	      int sign = (ToKeywordId(p) == KW_MINUS) ? -1 : 1;
+	      p = GetComponent(value, 1);
+	      assert(p);
       
-	  int scriptLevel = p->ToInteger();
-	  if (scriptLevel < 0) scriptLevel = 0;
-	  env.AddScriptLevel(sign * scriptLevel);
+	      int scriptLevel = ToInteger(p);
+	      if (scriptLevel < 0) scriptLevel = 0;
+	      env.AddScriptLevel(sign * scriptLevel);
+	    }
 	}
-      }
-      delete value;
 
-      value = GetAttributeValue(ATTR_MATHCOLOR, false);
-      if (value != NULL) {
-	if (IsSet(ATTR_COLOR))
-	  Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
-	env.SetColor(ToRGB(value));
-      } else {
-	value = GetAttributeValue(ATTR_COLOR, false);
-	if (value != NULL) {
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHCOLOR, false))
+	{
+	  if (IsSet(ATTR_COLOR))
+	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
+	  env.SetColor(ToRGB(value));
+	} 
+      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLOR, false))
+	{
 	  Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
 	  env.SetColor(ToRGB(value));
 	}
-      }
-      delete value;
 
       RGBValue oldBackground = env.GetBackgroundColor();
-      value = GetAttributeValue(ATTR_MATHBACKGROUND, false);
-      if (value != NULL) {
-	if (IsSet(ATTR_BACKGROUND))
-	  Globals::logger(LOG_WARNING, "attribute `mathbackground' overrides deprecated attribute `background'");
-	if (!value->IsKeyword(KW_TRANSPARENT)) env.SetBackgroundColor(ToRGB(value));
-      } else {
-	value = GetAttributeValue(ATTR_BACKGROUND, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "attribute `background' is deprecated in MathML 2");
-	  if (!value->IsKeyword(KW_TRANSPARENT)) env.SetBackgroundColor(ToRGB(value));
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHBACKGROUND, false))
+	{
+	  if (IsSet(ATTR_BACKGROUND))
+	    Globals::logger(LOG_WARNING, "attribute `mathbackground' overrides deprecated attribute `background'");
+	  if (!IsKeyword(value) || ToKeywordId(value) != KW_TRANSPARENT)
+	    env.SetBackgroundColor(ToRGB(value));
 	}
-      }
-      delete value;
+      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_BACKGROUND, false))
+	{
+	  Globals::logger(LOG_WARNING, "attribute `background' is deprecated in MathML 2");
+	  if (!IsKeyword(value) || ToKeywordId(value) != KW_TRANSPARENT)
+	    env.SetBackgroundColor(ToRGB(value));
+	}
       background = env.GetBackgroundColor();
       differentBackground = background != oldBackground;
 
-//       static int ctr = 0;
-//       printf("===================== BACKGROUND: %03d %06x\n", ctr++, background);
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_VERYVERYTHINMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_VERYVERYTHIN, ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_VERYVERYTHINMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_VERYVERYTHIN, value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_VERYTHINMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_VERYTHIN, ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_VERYTHINMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_VERYTHIN, value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_THINMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_THIN, ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_THINMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_THIN, value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MEDIUMMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_MEDIUM, ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_MEDIUMMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_MEDIUM, value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_THICKMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_THICK, ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_THICKMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_THICK, value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_VERYTHINMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_VERYTHICK, ToNumberUnit(value));
 
-      value = GetAttributeValue(ATTR_VERYTHINMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_VERYTHICK, value->ToNumberUnit());
-      delete value;
-
-      value = GetAttributeValue(ATTR_VERYVERYTHICKMATHSPACE, false);
-      if (value != NULL) env.SetMathSpace(MATH_SPACE_VERYVERYTHICK, value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_VERYVERYTHICKMATHSPACE, false))
+	env.SetMathSpace(MATH_SPACE_VERYVERYTHICK, ToNumberUnit(value));
 
       // the following attributes, thought not directly supported by <mstyle>
       // must be parsed here since they are always inherited by other elements
 
-      value = GetAttributeValue(ATTR_MATHSIZE, false);
-      if (value != NULL) {
-	if (IsSet(ATTR_FONTSIZE))
-	  Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHSIZE, false))
+	{
+	  if (IsSet(ATTR_FONTSIZE))
+	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
     
-	if (value->IsKeyword(KW_SMALL)) env.AddScriptLevel(1);
-	else if (value->IsKeyword(KW_BIG)) env.AddScriptLevel(-1);
-	else if (value->IsKeyword(KW_NORMAL)) ; // noop
-	else env.SetFontSize(value->ToNumberUnit());
-      } else {
-	value = GetAttributeValue(ATTR_FONTSIZE, false);
-	if (value != NULL) {
+	  if (IsKeyword(value))
+	    switch (ToKeywordId(value))
+	      {
+	      case KW_SMALL: env.AddScriptLevel(1); break;
+	      case KW_BIG: env.AddScriptLevel(-1); break;
+	      case KW_NORMAL: break; // noop
+	      default: assert(IMPOSSIBLE); break;
+	      }
+	  else
+	    env.SetFontSize(ToNumberUnit(value));
+	}
+      else if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTSIZE, false))
+	{
 	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
-	  env.SetFontSize(value->ToNumberUnit());
+	  env.SetFontSize(ToNumberUnit(value));
 	}
-      }
-      delete value;
 
-      value = GetAttributeValue(ATTR_MATHVARIANT, false);
-      if (value != NULL) {
-	assert(value->IsKeyword());
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_MATHVARIANT, false))
+	{
+	  assert(IsKeyword(value));
 
-	const MathVariantAttributes& attr = attributesOfVariant(value->ToKeyword());
-	assert(attr.kw != KW_NOTVALID);
-	env.SetFontFamily(attr.family);
-	env.SetFontWeight(attr.weight);
-	env.SetFontStyle(attr.style);
+	  const MathVariantAttributes& attr = attributesOfVariant(ToKeywordId(value));
+	  assert(attr.kw != KW_NOTVALID);
+	  env.SetFontFamily(attr.family);
+	  env.SetFontWeight(attr.weight);
+	  env.SetFontStyle(attr.style);
 
-	if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
-	  Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+	  if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+	} 
+      else
+	{
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTFAMILY, false))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontfamily` is deprecated in MathML 2");
+	      env.SetFontFamily(ToString(value));
+	    }
 
-	delete value;
-      } else {
-	value = GetAttributeValue(ATTR_FONTFAMILY, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "the attribute `fontfamily` is deprecated in MathML 2");
-	  env.SetFontFamily(value->ToString());
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTWEIGHT, false))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
+	      env.SetFontWeight(ToFontWeightId(value));
+	    }
+
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_FONTSTYLE, false))
+	    {
+	      Globals::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
+	      env.SetFontStyle(ToFontStyleId(value));
+	    }
 	}
-	delete value;
-
-	value = GetAttributeValue(ATTR_FONTWEIGHT, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
-	  env.SetFontWeight(ToFontWeightId(value));
-	}
-	delete value;
-
-	value = GetAttributeValue(ATTR_FONTSTYLE, false);
-	if (value != NULL) {
-	  Globals::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
-	  env.SetFontStyle(ToFontStyleId(value));
-	}
-	delete value;
-      }
 
       MathMLNormalizingContainerElement::Setup(env);
 

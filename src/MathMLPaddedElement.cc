@@ -21,15 +21,17 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
 
-#include "ValueSequence.hh"
+#include <cassert>
+
+#include "ValueConversion.hh"
 #include "StringUnicode.hh"
 #include "ValueConversion.hh"
 #include "MathMLPaddedElement.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
+#include "Variant.hh"
 
 MathMLPaddedElement::MathMLPaddedElement()
 {
@@ -89,21 +91,17 @@ MathMLPaddedElement::Setup(RenderingEnvironment& env)
     {
       width.valid = lSpace.valid = height.valid = depth.valid = false;
 
-      const Value* value = GetAttributeValue(ATTR_WIDTH, false);
-      if (value != NULL) ParseLengthDimension(env, value, width, KW_WIDTH);
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_WIDTH, false))
+	ParseLengthDimension(env, value, width, KW_WIDTH);
 
-      value = GetAttributeValue(ATTR_LSPACE);
-      if (value != NULL) ParseLengthDimension(env, value, lSpace, KW_LSPACE);
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_LSPACE))
+	ParseLengthDimension(env, value, lSpace, KW_LSPACE);
 
-      value = GetAttributeValue(ATTR_HEIGHT, false);
-      if (value != NULL) ParseLengthDimension(env, value, height, KW_HEIGHT);
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_HEIGHT, false))
+	ParseLengthDimension(env, value, height, KW_HEIGHT);
 
-      value = GetAttributeValue(ATTR_DEPTH, false);
-      if (value != NULL) ParseLengthDimension(env, value, depth, KW_DEPTH);
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_DEPTH, false))
+	ParseLengthDimension(env, value, depth, KW_DEPTH);
 
       MathMLNormalizingContainerElement::Setup(env);
       ResetDirtyAttribute();
@@ -112,71 +110,76 @@ MathMLPaddedElement::Setup(RenderingEnvironment& env)
 
 void
 MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
-					  const Value* value,
+					  const SmartPtr<Value>& value,
 					  LengthDimension& dim,
 					  KeywordId pseudoUnitId)
 {
-  assert(value != NULL);
+  assert(value);
 
-  assert(value->IsSequence());
-  const ValueSequence* seq = value->ToValueSequence();
-  assert(seq != NULL);
-  assert(seq->GetSize() == 3);
+  SmartPtr<ValueSequence> seq = ToSequence(value);
+  assert(seq);
+  assert(seq->getSize() == 3);
 
-  const Value* v = NULL;
-
-  v = seq->GetFirstValue();
-  assert(v != NULL);
-  if      (v->IsKeyword(KW_PLUS)) dim.sign = +1;
-  else if (v->IsKeyword(KW_MINUS)) dim.sign = -1;
-  else dim.sign = 0;
-
-  v = seq->GetValue(1);
-  assert(v != NULL);
-  assert(v->IsNumber());
-  dim.number = v->ToNumber();
-
-  v = seq->GetLastValue();
-  assert(v != NULL);
-  if (v->IsSequence()) {
-    dim.percentage = true;
-
-    const ValueSequence* seq = v->ToValueSequence();
-    assert(seq != NULL);
-    assert(seq->GetSize() == 2);
-    
-    v = seq->GetLastValue();
-  } else
-    dim.percentage = false;
-
-  if (v->IsEmpty()) {
-    dim.pseudo = true;
-    dim.pseudoUnitId = pseudoUnitId;
-  } else {
-    assert(v->IsKeyword());
-
-    KeywordId id = v->ToKeyword();
-    if (id == KW_WIDTH ||
-	id == KW_LSPACE ||
-	id == KW_HEIGHT ||
-	id == KW_DEPTH) {
-      dim.pseudo = true;
-      dim.pseudoUnitId = id;
-    } else {
-      dim.pseudo = false;
-
-      UnitId unitId = ToUnitId(v);
-      if (unitId != UNIT_NOTVALID) {
-	UnitValue unitValue;
-	unitValue.Set(1.0, unitId);
-	dim.unit = env.ToScaledPoints(unitValue);
-      } else {
-	MathSpaceId spaceId = ToNamedSpaceId(v);
-	dim.unit = env.ToScaledPoints(env.GetMathSpace(spaceId));
+  if (SmartPtr<Value> v = seq->getValue(0))
+    switch (ToKeywordId(v))
+      {
+      case KW_PLUS:  dim.sign = +1; break;
+      case KW_MINUS: dim.sign = -1; break;
+      default: dim.sign = 0; break;
       }
-    }
-  }
+  else
+    assert(IMPOSSIBLE);
+  
+  if (SmartPtr<Value> v = seq->getValue(1))
+    dim.number = ToNumber(v);
+  else
+    assert(IMPOSSIBLE);
+  
+  if (SmartPtr<Value> v = seq->getValue(2))
+    {
+      if (SmartPtr<ValueSequence> vSeq = ToSequence(v))
+	{
+	  assert(vSeq->getSize() == 2);
+	  dim.percentage = true;
+	  v = vSeq->getValue(1);
+	}
+      else
+	dim.percentage = false;
 
+      if (IsEmpty(v))
+	{
+	  dim.pseudo = true;
+	  dim.pseudoUnitId = pseudoUnitId;
+	} 
+      else
+	{
+	  assert(IsKeyword(v));
+
+	  KeywordId id = ToKeywordId(v);
+	  if (id == KW_WIDTH ||
+	      id == KW_LSPACE ||
+	      id == KW_HEIGHT ||
+	      id == KW_DEPTH)
+	    {
+	      dim.pseudo = true;
+	      dim.pseudoUnitId = id;
+	    } 
+	  else
+	    {
+	      dim.pseudo = false;
+
+	      UnitId unitId = ToUnitId(v);
+	      if (unitId != UNIT_NOTVALID)
+		dim.unit = env.ToScaledPoints(UnitValue(1.0, unitId));
+	      else
+		{
+		  MathSpaceId spaceId = ToNamedSpaceId(v);
+		  dim.unit = env.ToScaledPoints(env.GetMathSpace(spaceId));
+		}
+	    }
+	}
+    }
+  
   dim.valid = true;
 }
 

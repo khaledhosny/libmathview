@@ -27,6 +27,7 @@
 #include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "FormattingContext.hh"
+#include "ValueConversion.hh"
 
 MathMLAlignMarkElement::MathMLAlignMarkElement()
 {
@@ -70,12 +71,8 @@ MathMLAlignMarkElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute())
     {
-      const Value* value = GetAttributeValue(ATTR_EDGE, env);
-      assert(value != NULL);
-      assert(value->IsKeyword());
-      if   (value->IsKeyword(KW_RIGHT)) edge = MARK_ALIGN_RIGHT;
-      else edge = MARK_ALIGN_LEFT;
-      delete value;
+      edge = ToMarkAlignId(GetAttributeValue(ATTR_EDGE, env));
+      assert(edge != MARK_ALIGN_NOTVALID);
       box.unset();
       ResetDirtyAttribute();
     }

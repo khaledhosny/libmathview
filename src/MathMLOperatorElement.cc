@@ -22,22 +22,20 @@
 
 #include <config.h>
 
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
 
+#include "FormattingContext.hh"
 #include "Globals.hh"
-#include "scaledConv.hh"
-#include "operatorAux.hh"
-#include "traverseAux.hh"
-#include "ValueSequence.hh"
-#include "StringFactory.hh"
-#include "StringUnicode.hh"
 #include "MathMLCharNode.hh"
-#include "ValueConversion.hh"
+#include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
 #include "RenderingEnvironment.hh"
-#include "MathMLOperatorElement.hh"
-#include "FormattingContext.hh"
+#include "StringFactory.hh"
+#include "StringUnicode.hh"
+#include "ValueConversion.hh"
+#include "operatorAux.hh"
+#include "scaledConv.hh"
+#include "traverseAux.hh"
 
 MathMLOperatorElement::MathMLOperatorElement()
 {
@@ -131,117 +129,101 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute())
     {
-      const Value* value = NULL;
-      const Value* resValue = NULL;
-
       axis = env.GetAxis();
 
-      value = GetAttributeValue(ATTR_FORM, env, false);
-      if (value != NULL) form = ToFormId(value);
-      else form = InferOperatorForm();
-      delete value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_FORM, env, false))
+	form = ToFormId(value);
+      else
+	form = InferOperatorForm();
 
-      const MathMLAttributeList* prefix  = NULL;
-      const MathMLAttributeList* infix   = NULL;
-      const MathMLAttributeList* postfix = NULL;
+      const MathMLAttributeList* prefix  = 0;
+      const MathMLAttributeList* infix   = 0;
+      const MathMLAttributeList* postfix = 0;
 
       String* operatorName = GetRawContent();
-      if (operatorName != NULL)
+      if (operatorName)
 	{
 	  Globals::dictionary.Search(operatorName, &prefix, &infix, &postfix);
 	  delete operatorName;
 	}
 
-      if      (form == OP_FORM_PREFIX && prefix != NULL) defaults = prefix;
-      else if (form == OP_FORM_INFIX && infix != NULL) defaults = infix;
-      else if (form == OP_FORM_POSTFIX && postfix != NULL) defaults = postfix;
-      else if (infix != NULL) defaults = infix;
-      else if (postfix != NULL) defaults = postfix;
-      else if (prefix != NULL) defaults = prefix;
-      else defaults = NULL;
+      if      (form == OP_FORM_PREFIX && prefix) defaults = prefix;
+      else if (form == OP_FORM_INFIX && infix) defaults = infix;
+      else if (form == OP_FORM_POSTFIX && postfix) defaults = postfix;
+      else if (infix) defaults = infix;
+      else if (postfix) defaults = postfix;
+      else if (prefix) defaults = prefix;
+      else defaults = 0;
 
-      value = GetOperatorAttributeValue(ATTR_FENCE, env);
-      assert(value != NULL && value->IsBoolean());
-      if (!ForcedFence()) fence = value->ToBoolean() ? 1 : 0;
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_FENCE, env))
+	if (!ForcedFence()) fence = ToBoolean(value) ? 1 : 0;
 
-      value = GetOperatorAttributeValue(ATTR_SEPARATOR, env);
-      assert(value != NULL && value->IsBoolean());
-      if (!ForcedSeparator()) separator = value->ToBoolean() ? 1 : 0;
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_SEPARATOR, env))
+	if (!ForcedSeparator()) separator = ToBoolean(value) ? 1 : 0;
 
-      value = GetOperatorAttributeValue(ATTR_LSPACE, env);
-      assert(value != NULL);
-      resValue = Resolve(value, env);
-      assert(resValue != NULL && resValue->IsNumberUnit());
-      if (env.GetScriptLevel() <= 0)
-	lSpace = env.ToScaledPoints(resValue->ToNumberUnit());
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_LSPACE, env))
+	{
+	  SmartPtr<Value> resValue = Resolve(value, env);
+	  if (env.GetScriptLevel() <= 0)
+	    lSpace = env.ToScaledPoints(ToNumberUnit(resValue));
+	  else
+	    lSpace = 0;
+	}
       else
-	lSpace = 0;
-      delete resValue;
-      delete value;
+	assert(IMPOSSIBLE);
 
-      value = GetOperatorAttributeValue(ATTR_RSPACE, env);
-      assert(value != NULL);
-      resValue = Resolve(value, env);
-      assert(resValue != NULL && resValue->IsNumberUnit());
-      if (env.GetScriptLevel() <= 0)
-	rSpace = env.ToScaledPoints(resValue->ToNumberUnit());
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_RSPACE, env))
+	{
+	  SmartPtr<Value> resValue = Resolve(value, env);
+	  if (env.GetScriptLevel() <= 0)
+	    rSpace = env.ToScaledPoints(ToNumberUnit(resValue));
+	  else
+	    rSpace = 0;
+	}
       else
-	rSpace = 0;
-      delete resValue;
-      delete value;
+	assert(IMPOSSIBLE);
 
 #ifdef ENABLE_EXTENSIONS
-      value = GetOperatorAttributeValue(ATTR_TSPACE, env);
-      assert(value != NULL && value->IsNumberUnit());
-      tSpace = env.ToScaledPoints(value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_TSPACE, env))
+	tSpace = env.ToScaledPoints(ToNumberUnit(value));
 
-      value = GetOperatorAttributeValue(ATTR_BSPACE, env);
-      assert(value != NULL && value->IsNumberUnit());
-      bSpace = env.ToScaledPoints(value->ToNumberUnit());
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_BSPACE, env))
+	bSpace = env.ToScaledPoints(ToNumberUnit(value));
 #endif // ENABLE_EXTENSIONS
 
-      value = GetOperatorAttributeValue(ATTR_STRETCHY, env);
-      assert(value != NULL && value->IsBoolean());
-      stretchy = value->ToBoolean() ? 1 : 0;
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_STRETCHY, env))
+	stretchy = ToBoolean(value) ? 1 : 0;
 
-      value = GetOperatorAttributeValue(ATTR_SYMMETRIC, env);
-      assert(value != NULL && value->IsBoolean());
-      if (!ForcedSymmetric()) symmetric = value->ToBoolean() ? 1 : 0;
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_SYMMETRIC, env))
+	if (!ForcedSymmetric()) symmetric = ToBoolean(value) ? 1 : 0;
 
-      value = GetOperatorAttributeValue(ATTR_MAXSIZE, env);
-      assert(value != NULL);
-      if (value->IsKeyword(KW_INFINITY)) infiniteMaxSize = 1;
-      else {
-	infiniteMaxSize = 0;
-	ParseLimitValue(value, env, maxMultiplier, maxSize);
-      }
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_MAXSIZE, env))
+	if (ToKeywordId(value) == KW_INFINITY)
+	  infiniteMaxSize = 1;
+	else
+	  {
+	    infiniteMaxSize = 0;
+	    ParseLimitValue(value, env, maxMultiplier, maxSize);
+	  }
 
-      value = GetOperatorAttributeValue(ATTR_MINSIZE, env);
-      assert(value != NULL);
-      ParseLimitValue(value, env, minMultiplier, minSize);
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_MINSIZE, env))
+	ParseLimitValue(value, env, minMultiplier, minSize);
+      else
+	assert(IMPOSSIBLE);
 
-      value = GetOperatorAttributeValue(ATTR_MOVABLELIMITS, env);
-      assert(value != NULL && value->IsBoolean());
-      movableLimits = value->ToBoolean() ? 1 : 0;
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_MOVABLELIMITS, env))
+	movableLimits = ToBoolean(value) ? 1 : 0;
+      else
+	assert(IMPOSSIBLE);
 
-      value = GetOperatorAttributeValue(ATTR_ACCENT, env);
-      assert(value != NULL && value->IsBoolean());
-      accent = value->ToBoolean() ? 1 : 0;
-      delete value;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_ACCENT, env))
+	accent = ToBoolean(value) ? 1 : 0;
+      else
+	assert(IMPOSSIBLE);
 
-      value = GetOperatorAttributeValue(ATTR_LARGEOP, env);
-      assert(value != NULL && value->IsBoolean());
-      bool largeOp = value->ToBoolean();
-      delete value;
+      bool largeOp = false;
+      if (SmartPtr<Value> value = GetOperatorAttributeValue(ATTR_LARGEOP, env))
+	largeOp = ToBoolean(value);
 
       MathMLTokenElement::Setup(env);
 
@@ -414,42 +396,37 @@ MathMLOperatorElement::SetPosition(const scaled& x0, const scaled& y0)
 }
 
 void
-MathMLOperatorElement::ParseLimitValue(const Value* value,
+MathMLOperatorElement::ParseLimitValue(const SmartPtr<Value>& value,
 				       const RenderingEnvironment& env,
 				       float& multiplier,
 				       scaled& size)
 {
-  assert(value != NULL);
+  assert(value);
 
-  if (value->IsKeyword())
+  if (IsKeyword(value))
     { // it must be a named math space
-      const Value* resValue = Resolve(value, env);
-      assert(resValue->IsNumberUnit());
+      SmartPtr<Value> resValue = Resolve(value, env);
       multiplier = -1;
-      size = env.ToScaledPoints(resValue->ToNumberUnit());
-      delete resValue;
+      size = env.ToScaledPoints(ToNumberUnit(resValue));
     }
   else
     {
-      assert(value->IsSequence());
-      const ValueSequence* seq = value->ToValueSequence();
-      const Value* v = seq->GetFirstValue();
-      const Value* unitV = seq->GetLastValue();
-      assert(v != NULL);
-      assert(v->IsNumber());
-      assert(unitV != NULL);
-    
-      if (unitV->IsEmpty()) 
-	{
-	  multiplier = std::max(EPSILON, v->ToNumber());
-	}
+      SmartPtr<ValueSequence> seq = ToSequence(value);
+      assert(seq);
+      assert(seq->getSize() == 2);
+      SmartPtr<Value> v = seq->getValue(0);
+      SmartPtr<Value> unitV = seq->getValue(1);
+      assert(v);
+      assert(unitV);
+
+      if (IsEmpty(unitV)) 
+	multiplier = std::max(EPSILON, ToNumber(v));
       else
 	{
-	  assert(unitV->IsKeyword());
+	  assert(IsKeyword(unitV));
 	  multiplier = -1;
 
-	  UnitValue siz;
-	  siz.Set(v->ToNumber(), ToUnitId(unitV));
+	  UnitValue siz(ToNumber(v), ToUnitId(unitV));
 
 	  if (siz.IsPercentage())
 	    {
@@ -465,18 +442,18 @@ MathMLOperatorElement::ParseLimitValue(const Value* value,
     }
 }
 
-const Value*
+SmartPtr<Value>
 MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
 						 const RenderingEnvironment& env) const
 {
   //printf("`%s': searching for attribute `%s'\n", NameOfTagId(IsA()), NameOfAttributeId(id));
 
   // 1st attempt, the attribute may be set for the current operator
-  const Value* value = GetAttributeValue(id, env, false);
+  SmartPtr<Value> value = GetAttributeValue(id, env, false);
 
   //if (value != NULL) printf("found directly\n");
 
-  if (value == NULL && defaults != NULL) {
+  if (!value && defaults) {
     // no, it is not explicitly set, but this operator has an entry in
     // the operator dictionary, so let's see if the attribute has a
     // default value
@@ -492,8 +469,8 @@ MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
 
   // if the attribute hasn't still a value, then take its default
   // for the mo element
-  if (value == NULL) value = GetAttributeValue(id);
-  assert(value != NULL);
+  if (!value) value = GetAttributeValue(id);
+  assert(value);
 
   return value;
 }

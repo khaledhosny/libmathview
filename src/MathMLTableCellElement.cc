@@ -218,23 +218,23 @@ MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 void
 MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
 {
-  const Value* value;
+  SmartPtr<Value> value;
 
   value = GetAttributeValue(ATTR_ROWSPAN, env);
-  rowSpan = value->ToInteger();
-  if (rowSpan <= 0) {
-    Globals::logger(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
-    rowSpan = 1;
-  }
-  delete value;
+  rowSpan = ToInteger(value);
+  if (rowSpan <= 0)
+    {
+      Globals::logger(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
+      rowSpan = 1;
+    }
 
   value = GetAttributeValue(ATTR_COLUMNSPAN, env);
-  columnSpan = value->ToInteger();
-  if (columnSpan <= 0) {
-    Globals::logger(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
-    columnSpan = 1;
-  }
-  delete value;
+  columnSpan = ToInteger(value);
+  if (columnSpan <= 0)
+    {
+      Globals::logger(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
+      columnSpan = 1;
+    }
 }
 
 void
@@ -246,26 +246,20 @@ MathMLTableCellElement::Setup(RenderingEnvironment& env)
       // the cell field is null
       if (cell)
 	{
-	  const Value* value;
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_ROWALIGN, false))
+	    cell->rowAlign = ToRowAlignId(value);
 
-	  value = GetAttributeValue(ATTR_ROWALIGN, false);
-	  if (value != NULL) cell->rowAlign = ToRowAlignId(value);
-	  delete value;
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLUMNALIGN, false))
+	    cell->columnAlign = ToColumnAlignId(value);
 
-	  value = GetAttributeValue(ATTR_COLUMNALIGN, false);
-	  if (value != NULL) cell->columnAlign = ToColumnAlignId(value);
-	  delete value;
-
-	  value = GetAttributeValue(ATTR_GROUPALIGN, false);
-	  if (value != NULL) {
-	    for (unsigned k = 0; k < cell->nAlignGroup; k++) {
-	      const Value* p = value->Get(k);
-	      cell->aGroup[k].alignment = ToGroupAlignId(p);
-	    }
-	  }
-	  delete value;
+	  if (SmartPtr<Value> value = GetAttributeValue(ATTR_GROUPALIGN, false))
+	    for (unsigned k = 0; k < cell->nAlignGroup; k++)
+	      {
+		SmartPtr<Value> p = GetComponent(value, k);
+		cell->aGroup[k].alignment = ToGroupAlignId(p);
+	      }
 	}
-
+      
       MathMLNormalizingContainerElement::Setup(env);
       ResetDirtyAttribute();
     }

@@ -23,25 +23,26 @@
 #ifndef MathMLAttribute_hh
 #define MathMLAttribute_hh
 
+#include "SmartPtr.hh"
 #include "Value.hh"
 #include "keyword.hh"
 
 class MathMLAttribute
 {
 public:
-  MathMLAttribute(AttributeId, const String*);
+  MathMLAttribute(AttributeId, const class String*);
   ~MathMLAttribute();
 
-  const String* GetValue(void) const { return value; }
-  const Value*  GetParsedValue(const struct AttributeSignature* = 0) const;
-  bool          Equal(const MathMLAttribute&) const;
+  const class String* GetValue(void) const { return value; }
+  SmartPtr<Value> GetParsedValue(const struct AttributeSignature* = 0) const;
+  bool Equal(const MathMLAttribute&) const;
 
-  AttributeId   IsA(void) const { return id; }
+  AttributeId IsA(void) const { return id; }
 
 private:
-  AttributeId          id;
-  const String*        value;
-  mutable const Value* parsedValue;
+  AttributeId id;
+  const class String* value;
+  mutable SmartPtr<Value> parsedValue;
 };
 
 typedef MathMLAttribute* MathMLAttributePtr;

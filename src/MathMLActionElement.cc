@@ -30,6 +30,7 @@
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
+#include "ValueConversion.hh"
 
 MathMLActionElement::MathMLActionElement(void)
 {
@@ -75,8 +76,8 @@ MathMLActionElement::Setup(RenderingEnvironment& env)
       } else
 	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
 
-      const Value* value = GetAttributeValue(ATTR_SELECTION, env);
-      if (value != NULL) SetSelectedIndex(value->ToInteger());
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_SELECTION, env))
+	SetSelectedIndex(ToInteger(value));
 
       if (SmartPtr<MathMLElement> elem = GetSelectedElement()) elem->Setup(env);
       //MathMLLinearContainerElement::Setup(env);

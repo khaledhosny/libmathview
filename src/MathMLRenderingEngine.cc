@@ -196,8 +196,7 @@ MathMLRenderingEngine::Layout() const
 
       if (document->DirtyAttribute() || document->DirtyAttributeP())
 	{
-	  UnitValue size;
-	  size.Set(defaultFontSize, UNIT_PT);
+	  UnitValue size(defaultFontSize, UNIT_PT);
 	  assert(charMapper != NULL);
 	  RenderingEnvironment env(*charMapper, areaFactory, *shaperManager);
 	  env.SetFontSize(size);

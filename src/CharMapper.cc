@@ -42,14 +42,15 @@
 #include "gmetadom.hh"
 #endif
 
-#include "stringAux.hh"
-#include "Globals.hh"
-#include "CharMapper.hh"
-#include "FontManager.hh"
-#include "StringUnicode.hh"
-#include "EntitiesTable.hh"
 #include "AttributeParser.hh"
+#include "CharMapper.hh"
+#include "EntitiesTable.hh"
+#include "FontManager.hh"
+#include "Globals.hh"
 #include "MathMLParseFile.hh"
+#include "StringUnicode.hh"
+#include "ValueConversion.hh"
+#include "stringAux.hh"
 
 #ifdef ENABLE_PROFILE
 unsigned CharMapper::alnumChars = 0;
@@ -490,11 +491,8 @@ CharMapper::ParseFont(const DOM::Element& node)
     } else if (name == "size") {
       StringC sName(value.c_str());
       StringTokenizer st(sName);
-      const Value* v = numberUnitParser(st);
-      if (v != NULL) {
-	desc->attributes.size = v->ToNumberUnit();
-	delete v;
-      }
+      if (SmartPtr<Value> v = numberUnitParser(st))
+	desc->attributes.size = ToNumberUnit(v);
     } else
       desc->extraAttributes.AddProperty(name, value);
   }

@@ -23,17 +23,18 @@
 #include <config.h>
 #include <assert.h>
 
-#include "Globals.hh"
 #include "ChildList.hh"
-#include "scaledConv.hh"
-#include "operatorAux.hh"
-#include "traverseAux.hh"
+#include "FormattingContext.hh"
+#include "Globals.hh"
 #include "MathMLCharNode.hh"
 #include "MathMLDummyElement.hh"
-#include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
-#include "FormattingContext.hh"
+#include "RenderingEnvironment.hh"
+#include "ValueConversion.hh"
+#include "operatorAux.hh"
+#include "scaledConv.hh"
+#include "traverseAux.hh"
 
 MathMLUnderOverElement::MathMLUnderOverElement()
 {
@@ -208,20 +209,17 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 	{
 	  if (!scriptize)
 	    {
-	      const Value* value = GetAttributeValue(ATTR_ACCENTUNDER, env, false);
-	      if (value != NULL) accentUnder = value->ToBoolean();
-	      else
+	      if (SmartPtr<Value> value = GetAttributeValue(ATTR_ACCENTUNDER, env, false))
+		accentUnder = ToBoolean(value);
+	      else if (SmartPtr<MathMLOperatorElement> op = underScript->GetCoreOperator())
 		{
-		  SmartPtr<MathMLOperatorElement> op = underScript->GetCoreOperator();
-		  if (op)
-		    {
-		      underScript->Setup(env);
-		      accentUnder = op->IsAccent();
-		    }
+		  underScript->Setup(env);
+		  accentUnder = op->IsAccent();
 		}
 	    }
 
-	  if (accentUnder) underSpacing = smallSpacing;
+	  if (accentUnder)
+	    underSpacing = smallSpacing;
 	  else
 	    {
 	      env.AddScriptLevel(1);
@@ -240,16 +238,12 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 	{
 	  if (!scriptize)
 	    {
-	      const Value* value = GetAttributeValue(ATTR_ACCENT, env, false);
-	      if (value != NULL) accent = value->ToBoolean();
-	      else
+	      if (SmartPtr<Value> value = GetAttributeValue(ATTR_ACCENT, env, false))
+		accent = ToBoolean(value);
+	      else if (SmartPtr<MathMLOperatorElement> op = overScript->GetCoreOperator())
 		{
-		  SmartPtr<MathMLOperatorElement> op = overScript->GetCoreOperator();
-		  if (op)
-		    {
-		      overScript->Setup(env);
-		      accent = op->IsAccent();
-		    }
+		  overScript->Setup(env);
+		  accent = op->IsAccent();
 		}
 	    }
 

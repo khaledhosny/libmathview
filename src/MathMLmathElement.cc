@@ -24,9 +24,10 @@
 #include <assert.h>
 
 #include "Globals.hh"
-#include "StringUnicode.hh"
 #include "MathMLmathElement.hh"
 #include "RenderingEnvironment.hh"
+#include "StringUnicode.hh"
+#include "ValueConversion.hh"
 
 MathMLmathElement::MathMLmathElement()
 {
@@ -66,24 +67,21 @@ MathMLmathElement::Setup(RenderingEnvironment& env)
       background = env.GetBackgroundColor();
       env.Push();
 
-      const Value* value = NULL;
-
       env.SetFontMode(FONT_MODE_MATH);
 
-      if (!IsSet(ATTR_MODE) || IsSet(ATTR_DISPLAY)) {
-	value = GetAttributeValue(ATTR_DISPLAY, env, true);
-	assert(value != NULL);
-	if (value->IsKeyword(KW_BLOCK)) env.SetDisplayStyle(true);
-	else env.SetDisplayStyle(false);
-      } else {
-	Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
-	value = GetAttributeValue(ATTR_MODE, env, true);
-	assert(value != NULL);
-	if (value->IsKeyword(KW_DISPLAY)) env.SetDisplayStyle(true);
-	else env.SetDisplayStyle(false);
-      }
-
-      delete value;
+      if (!IsSet(ATTR_MODE))
+	{
+	  SmartPtr<Value> value = GetAttributeValue(ATTR_DISPLAY, env, true);
+	  assert(value);
+	  env.SetDisplayStyle(ToKeywordId(value) == KW_BLOCK);
+	} 
+      else
+	{
+	  SmartPtr<Value> value = GetAttributeValue(ATTR_MODE, env, true);
+	  assert(value);
+	  Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
+	  env.SetDisplayStyle(ToKeywordId(value) == KW_DISPLAY);
+	}
 
       if (IsSet(ATTR_MODE) && IsSet(ATTR_DISPLAY))
 	Globals::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");

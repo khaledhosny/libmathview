@@ -88,9 +88,9 @@ public:
 
 private:
   OperatorFormId InferOperatorForm(void);
-  const Value* GetOperatorAttributeValue(AttributeId,
-					 const class RenderingEnvironment&) const;
-  void ParseLimitValue(const Value*, const class RenderingEnvironment&, float&, scaled&);
+  SmartPtr<Value> GetOperatorAttributeValue(AttributeId,
+					    const class RenderingEnvironment&) const;
+  void ParseLimitValue(const SmartPtr<Value>&, const class RenderingEnvironment&, float&, scaled&);
 
   //SmartPtr<class MathMLEmbellishedOperatorElement> eOp; // ptr to the root of the embellished operator
 

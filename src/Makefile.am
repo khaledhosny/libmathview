@@ -138,9 +138,7 @@ libgtkmathview_la_SOURCES = \
   StringTokenizer.cc \
   StringUnicode.cc \
   UnitValue.cc \
-  Value.cc \
   ValueConversion.cc \
-  ValueSequence.cc \
   allocTextNode.cc \
   frameAux.cc \
   gmetadom.cc \
@@ -251,9 +249,7 @@ noinst_HEADERS = \
   StringU.icc \
   StringUnicode.hh \
   UnitValue.hh \
-  Value.hh \
   ValueConversion.hh \
-  ValueSequence.hh \
   allocTextNode.hh \
   frameAux.hh \
   gmetadom.hh \

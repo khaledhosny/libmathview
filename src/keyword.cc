@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-#include "Value.hh"
+#include "Variant.hh"
 #include "keyword.hh"
 
 #include "keyword.def"
@@ -35,7 +35,7 @@ void
 InitKeywordValues()
 {
   for (unsigned i = 1; sKeywordToken[i].name != NULL; i++)
-    sKeywordToken[i].value = new Value(sKeywordToken[i].id);
+    sKeywordToken[i].value = Variant<KeywordId>::create(sKeywordToken[i].id);
 }
 
 KeywordId

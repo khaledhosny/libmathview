@@ -140,16 +140,14 @@ MathMLTableRowElement::SetupAux(RenderingEnvironment& env, bool labeledRow)
       SmartPtr<MathMLTableElement> mtable = smart_cast<MathMLTableElement>(GetParent());
       assert(mtable);
 
-      const Value* value;
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_COLUMNALIGN, false))
+	mtable->SetupColumnAlignAux(value, rowIndex, 1, labeledRow);
 
-      value = GetAttributeValue(ATTR_COLUMNALIGN, false);
-      if (value != 0) mtable->SetupColumnAlignAux(value, rowIndex, 1, labeledRow);
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_ROWALIGN, false))
+	mtable->SetupRowAlignAux(value, rowIndex, labeledRow);
 
-      value = GetAttributeValue(ATTR_ROWALIGN, false);
-      if (value != 0) mtable->SetupRowAlignAux(value, rowIndex, labeledRow);
-
-      value = GetAttributeValue(ATTR_GROUPALIGN, false);
-      if (value != 0) mtable->SetupGroupAlignAux(value, rowIndex, 1);
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_GROUPALIGN, false))
+	mtable->SetupGroupAlignAux(value, rowIndex, 1);
 
       MathMLLinearContainerElement::Setup(env);
       ResetDirtyAttribute();

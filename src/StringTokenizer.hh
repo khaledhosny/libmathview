@@ -23,7 +23,7 @@
 #ifndef StringTokenizer_hh
 #define StringTokenizer_hh
 
-#include "MathMLAttribute.hh"
+#include "String.hh"
 #include "UnitValue.hh"
 #include "RGBValue.hh"
 

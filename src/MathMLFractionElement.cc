@@ -139,7 +139,7 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
       color = env.GetColor();
       background = env.GetBackgroundColor();
 
-      const Value* value = NULL;
+      SmartPtr<Value> value;
 
 #ifdef TEXISH_MATHML
       defaultRuleThickness = env.GetRuleThickness();
@@ -148,69 +148,61 @@ MathMLFractionElement::Setup(RenderingEnvironment& env)
 #endif // TEXISH_MATHML
 
       value = GetAttributeValue(ATTR_LINETHICKNESS, env, true);
-      if (value != NULL) {
-	if (value->IsKeyword()) {
-	  switch (value->ToKeyword()) {
-	  case KW_THIN:
-	    lineThickness = defaultRuleThickness / 2;
-	    break;
-	  case KW_MEDIUM:
-	    lineThickness = defaultRuleThickness;
-	    break;
-	  case KW_THICK:
-	    lineThickness = defaultRuleThickness * 2;
-	    break;
-	  default:
-	    assert(IMPOSSIBLE);
-	    break;
+      if (value) {
+	if (IsKeyword(value))
+	  {
+	    switch (ToKeywordId(value))
+	      {
+	      case KW_THIN:
+		lineThickness = defaultRuleThickness / 2;
+		break;
+	      case KW_MEDIUM:
+		lineThickness = defaultRuleThickness;
+		break;
+	      case KW_THICK:
+		lineThickness = defaultRuleThickness * 2;
+		break;
+	      default:
+		assert(IMPOSSIBLE);
+		break;
+	      }
 	  }
-	} else {
-	  assert(value->IsSequence());
-	  const Value* number = value->Get(0);
-	  const Value* unit   = value->Get(1);
+	else
+	  {
+	    assert(IsSequence(value));
+	    SmartPtr<Value> number = GetComponent(value, 0);
+	    SmartPtr<Value> unit = GetComponent(value, 1);
 
-	  assert(number != NULL);
-	  assert(unit != NULL);
+	    assert(number);
+	    assert(unit);
 
-	  if (unit->IsEmpty())
-	    lineThickness = defaultRuleThickness * number->ToNumber();
-	  else
-	    {
-	      assert(unit->IsKeyword());
-	      UnitId unitId = ToUnitId(unit);
-	      if (unitId == UNIT_PERCENTAGE)
-		lineThickness = defaultRuleThickness * number->ToNumber() / 100;
-	      else
-		{
-		  UnitValue unitValue;
-		  unitValue.Set(number->ToNumber(), unitId);
-		  lineThickness = env.ToScaledPoints(unitValue);
-		}
-	    }
-	}
-
+	    if (IsEmpty(unit))
+	      lineThickness = defaultRuleThickness * ToNumber(number);
+	    else
+	      {
+		assert(IsKeyword(unit));
+		UnitId unitId = ToUnitId(unit);
+		if (unitId == UNIT_PERCENTAGE)
+		  lineThickness = defaultRuleThickness * ToNumber(number) / 100;
+		else
+		  {
+		    UnitValue unitValue(ToNumber(number), unitId);
+		    lineThickness = env.ToScaledPoints(unitValue);
+		  }
+	      }
+	  }
+	
 	lineThickness = std::max(scaled(0), lineThickness);
       }
 
-      delete value;
-
-      value = GetAttributeValue(ATTR_NUMALIGN, env, true);
-      if (value != NULL) {
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_NUMALIGN, env, true))
 	numAlign = ToFractionAlignId(value);
-	delete value;
-      }
 
-      value = GetAttributeValue(ATTR_DENOMALIGN, env, true);
-      if (value != NULL) {
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_DENOMALIGN, env, true))
 	denomAlign = ToFractionAlignId(value);
-	delete value;
-      }
 
-      value = GetAttributeValue(ATTR_BEVELLED, env, true);
-      if (value != NULL) {
-	bevelled = value->ToBoolean();
-	delete value;
-      }
+      if (SmartPtr<Value> value = GetAttributeValue(ATTR_BEVELLED, env, true))
+	bevelled = ToBoolean(value);
 
       color = env.GetColor();
 

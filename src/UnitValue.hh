@@ -27,6 +27,8 @@
 #include "keyword.hh"
 
 struct UnitValue {
+  UnitValue(float v = 0.0f, UnitId u = UNIT_NOTVALID) : value(v), unitId(u) { }
+
   float  value;
   UnitId unitId;
 

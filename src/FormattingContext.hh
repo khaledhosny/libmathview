@@ -23,6 +23,9 @@
 #ifndef __FormattingContext_hh__
 #define __FormattingContext_hh__
 
+#include "keyword.hh"
+#include "scaled.hh"
+
 class FormattingContext
 {
 public:
