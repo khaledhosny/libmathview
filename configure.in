@@ -110,7 +110,7 @@ AC_ARG_ENABLE(
 )
 
 dnl Automake configuration
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
 dnl AC_DISABLE_SHARED
 AM_PROG_LIBTOOL
@@ -406,4 +406,5 @@ viewer/Makefile
 randomath/Makefile
 mathml2ps/Makefile
 getopt/Makefile
+debian/Makefile
 ])

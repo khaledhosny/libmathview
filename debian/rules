@@ -6,7 +6,7 @@
 #export DH_VERBOSE=1
 
 # This is the debhelper compatability version to use.
-export DH_COMPAT=3
+export DH_COMPAT=4
 
 # shared library versions, option 1
 version=`ls src/.libs/lib*.so.* | \
@@ -18,7 +18,6 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-#	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 	./configure --with-t1lib --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
 	touch configure-stamp
@@ -38,7 +37,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	-$(MAKE) clean
 
 	dh_clean
 
@@ -49,11 +48,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/gtkmathview.
-	$(MAKE) install prefix=$(CURDIR)/debian/tmp/usr
-
-# Build architecture-independent files here.
-binary-indep: build install
-# We have nothing to do by default.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
 # Build architecture-dependent files here.
 binary-arch: build install
@@ -76,6 +71,6 @@ binary-arch: build install
 	dh_md5sums
 	dh_builddeb
 
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
+binary: binary-arch
+.PHONY: build clean binary-arch binary install configure
 

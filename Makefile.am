@@ -1,5 +1,5 @@
-EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS debian/ getopt/
-SUBDIRS = scripts config auto src doc viewer mathml2ps randomath getopt
+EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS getopt/
+SUBDIRS = scripts config auto src doc viewer mathml2ps randomath getopt debian
 CLEANFILES = core *.log *.eps
 
 SCRIPTDIR = ./scripts

@@ -1,3 +1,18 @@
+gtkmathview (0.3.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Bumped DH_COMPAT to 4 in debian/rules and debhelper build-dep in
+    debian/control
+  * Use DESTDIR to specify installation dir instead of overriding prefix
+  * Removed useless binary-indep target from debian/rules
+  * Use "make clean" in clean debian/rules target instead of
+    "make distclean"
+  * Removed full stop at the end of description synopsis to make lintian
+    happy
+  * Bumped Standards-Version to 3.5.8
+
+ -- Stefano Zacchiroli <zack@debian.org>  Mon,  9 Dec 2002 12:50:46 +0100
+
 gtkmathview (0.3.0-4) unstable; urgency=low
 
   * Fixed some typos that cause errors when compiling on big endian archs.
