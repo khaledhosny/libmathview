@@ -3,3 +3,4 @@
 mathml2ps
 mathml2ps.debug
 Makefile
+Makefile.in

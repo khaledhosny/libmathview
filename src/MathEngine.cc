@@ -89,6 +89,7 @@ MathEngine::InitGlobalData(const char* confPath)
   if (dit.More()) {
     while (dit.More()) {
       assert(dit() != NULL);
+      MathEngine::logger(LOG_DEBUG, "loading dictionary `%s'", dit()->ToStaticC());
       if (!dictionary.Load(dit()->ToStaticC())) {
 	MathEngine::logger(LOG_WARNING, "could not load `%s'", dit()->ToStaticC());
       }

@@ -146,10 +146,8 @@ MathMLOperatorElement::Setup(RenderingEnvironment* env)
   const MathMLAttributeList* infix   = NULL;
   const MathMLAttributeList* postfix = NULL;
   
-  if (operatorName != NULL) {
+  if (operatorName != NULL)
     MathEngine::dictionary.Search(operatorName, &prefix, &infix, &postfix);
-    MathEngine::logger(LOG_DEBUG, "dictionary search for `%s' --> %p %p %p\n", operatorName->ToStaticC(), prefix, infix, postfix);
-  }
 
   if      (form == OP_FORM_PREFIX && prefix != NULL) defaults = prefix;
   else if (form == OP_FORM_INFIX && infix != NULL) defaults = infix;

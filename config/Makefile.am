@@ -32,9 +32,9 @@ pkgdata_DATA = \
 noinst_PROGRAMS = makeDictionary
 makeDictionary_SOURCES = makeDictionary.c
 
-SCRIPTDIR = $(srcdir)/scripts
+SCRIPTDIR = $(srcdir)/../scripts
 
-dictionary.xml: makeDictionary.c dictionary.in
+dictionary.xml: makeDictionary dictionary.in
 	@echo Making operator dictionary...
 	@( \
 	./makeDictionary <dictionary.in | \

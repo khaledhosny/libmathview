@@ -4,8 +4,11 @@ config.h.in
 config.cache
 config.log
 config.status
+configure
+configure.scan
 t1lib.log
 libtool
 stamp-h
 Makefile
+Makefile.in
 *.gz

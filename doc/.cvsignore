@@ -10,3 +10,4 @@
 *.tp
 *.vr
 Makefile
+Makefile.in
