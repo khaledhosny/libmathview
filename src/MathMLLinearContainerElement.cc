@@ -33,7 +33,6 @@
 #include "ChildList.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLLinearContainerElement.hh"
-#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 
 MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathMLView>& view)

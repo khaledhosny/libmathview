@@ -25,9 +25,7 @@
 #include <cassert>
 
 #include "ChildList.hh"
-#include "ConstructionContext.hh"
 #include "Globals.hh"
-#include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "MathMLLabeledTableRowElement.hh"

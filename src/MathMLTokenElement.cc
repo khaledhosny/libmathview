@@ -42,7 +42,6 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLIdentifierElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
-#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 #include "BoundingBoxAux.hh"
 

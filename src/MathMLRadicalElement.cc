@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "ChildList.hh"
-#include "ConstructionContext.hh"
 #include "EntitiesTable.hh"
 #include "FormattingContext.hh"
 #include "Globals.hh"

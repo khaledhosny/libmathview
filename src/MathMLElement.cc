@@ -30,7 +30,6 @@
 #include "Globals.hh"
 #include "MathMLAttributeList.hh"
 #include "MathMLDOMLinker.hh"
-#include "MathMLDocument.hh"
 #include "MathMLElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "MathMLOperatorElement.hh"

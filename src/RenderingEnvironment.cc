@@ -56,8 +56,6 @@ RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af,
   top->background = Globals::configuration.GetBackground();
   top->transparentBackground = true;
 
-  top->doc = 0;
-
   for (unsigned i = 1; i <= 7; i++)
     top->mathSpace[i - 1].Set(i / 18.0, UNIT_EM);
 
@@ -363,28 +361,6 @@ RenderingEnvironment::GetMathSpace(MathSpaceId id) const
   assert(id != MATH_SPACE_LAST);
 
   return top->mathSpace[id];
-}
-
-void
-RenderingEnvironment::SetDocument(const SmartPtr<MathMLDocument>& doc)
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  top->doc = doc;
-}
-
-SmartPtr<MathMLDocument>
-RenderingEnvironment::GetDocument() const
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  return top->doc;
 }
 
 scaled

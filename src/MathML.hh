@@ -28,7 +28,6 @@
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLContainerElement.hh"
-#include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLElement.hh"
 #include "MathMLEncloseElement.hh"

@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "ChildList.hh"
-#include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "MathMLOperatorElement.hh"

@@ -32,7 +32,6 @@
 #include "ChildList.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"
-#include "MathMLDocument.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLBreakableRowElement.hh"
 #include "MathMLSpaceElement.hh"

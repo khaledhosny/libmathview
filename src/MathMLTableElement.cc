@@ -29,7 +29,6 @@
 
 #include "Adaptors.hh"
 #include "ChildList.hh"
-#include "MathMLDocument.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"

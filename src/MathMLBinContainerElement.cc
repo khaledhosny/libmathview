@@ -28,7 +28,6 @@
 #include "ChildList.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLBinContainerElement.hh"
-#include "ConstructionContext.hh"
 #include "FormattingContext.hh"
 
 MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLView>& view)

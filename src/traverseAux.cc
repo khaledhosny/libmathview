@@ -25,7 +25,6 @@
 
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
-#include "MathMLDocument.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"

@@ -30,7 +30,6 @@
 #include "ChildList.hh"
 #include "Globals.hh"
 #include "ValueConversion.hh"
-#include "MathMLDocument.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
