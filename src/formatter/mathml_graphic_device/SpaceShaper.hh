@@ -40,10 +40,10 @@ public:
   virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
 
 protected:
-  static void shapeFixedSpace(const class MathFormattingContext&, ShapingResult&, const GlyphSpec&);
-  static void shapeContextSensitiveSpace(const class MathFormattingContext&, ShapingResult&, const GlyphSpec&);
+  static void shapeFixedSpace(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&);
+  static void shapeContextSensitiveSpace(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&);
 
-  static void pushSpace(const class MathFormattingContext&, ShapingResult&, int, unsigned = 1);
+  static void pushSpace(const class MathFormattingContext&, class ShapingResult&, int, unsigned = 1);
   static int shapeFunctionApplication(const class MathFormattingContext&);
   static int shapeInvisibleTimes(const class MathFormattingContext&);
 };
