@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLAlignGroupElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLAlignGroupElement(GMetaDOM::Element&);
+  MathMLAlignGroupElement(const GMetaDOM::Element&);
 #endif
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual ~MathMLAlignGroupElement();

@@ -20,7 +20,6 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-
 #include <config.h>
 #include <assert.h>
 
@@ -29,8 +28,12 @@
 #include "MathMLmathElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLmathElement::MathMLmathElement(mDOMNodeRef node) :
-  MathMLNormalizingContainerElement(node, TAG_MATH)
+#if defined(HAVE_MINIDOM)
+MathMLmathElement::MathMLmathElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLmathElement::MathMLmathElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MATH)
 {
 }
 

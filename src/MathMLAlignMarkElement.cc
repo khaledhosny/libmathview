@@ -27,7 +27,11 @@
 #include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
 
+#if defined(HAVE_MINIDOM)
 MathMLAlignMarkElement::MathMLAlignMarkElement(mDOMNodeRef node) : 
+#elif defined(HAVE_GMETADOM)
+MathMLAlignMarkElement::MathMLAlignMarkElement(const GMetaDOM::Element& node) : 
+#endif
   MathMLElement(node, TAG_MALIGNMARK)
 {
   edge = MARK_ALIGN_NOTVALID;

@@ -45,7 +45,9 @@
 #include "T1_Gtk_DrawingArea.hh"
 #endif
 
+#if defined(HAVE_MINIDOM)
 EntitiesTable      MathEngine::entitiesTable;
+#endif
 OperatorDictionary MathEngine::dictionary;
 Configuration      MathEngine::configuration;
 Logger             MathEngine::logger;
@@ -86,13 +88,15 @@ MathEngine::InitGlobalData(const char* confPath)
     exit(-1);
   }
 
+#if defined(HAVE_MINIDOM)
   // the entities table and the dictionary are static members of MathEngine,
   // so they have to be configured once only
   
   //res = entitiesTable.Load("/usr/local/share/gtkmathview/entities-table.xml", false);
   //if (!res) res = entitiesTable.Load("config/entities-table.xml", true);
   entitiesTable.LoadInternalTable();
-  
+#endif
+
   Iterator<String*> dit(configuration.GetDictionaries());
   if (dit.More()) {
     while (dit.More()) {
@@ -156,11 +160,15 @@ MathEngine::Load(const char* fileName)
 
   Clock perf;
   perf.Start();
+#if defined(HAVE_MINIDOM)
   mDOMDocRef doc = MathMLParseFile(fileName, true);
+#elif defined(HAVE_GMETADOM)
+  GMetaDOM::Document doc = MathMLParseFile(fileName, true);
+#endif
   perf.Stop();
   logger(LOG_INFO, "parsing time: %dms", perf());
 
-  if (doc == NULL) {
+  if (doc == 0) {
     logger(LOG_WARNING, "error while parsing `%s'", fileName);
     return false;
   }
@@ -169,7 +177,11 @@ MathEngine::Load(const char* fileName)
 }
 
 bool
+#if defined(HAVE_MINIDOM)
 MathEngine::Load(mDOMDocRef doc)
+#elif defined(HAVE_GMETADOM)
+MathEngine::Load(const GMetaDOM::Document& doc)
+#endif
 {
   assert(doc != NULL);
 
@@ -203,6 +215,7 @@ MathEngine::Load(mDOMDocRef doc)
 void
 MathEngine::Unload()
 {
+#if defined(HAVE_MINIDOM)
   if (document != NULL) {
     mDOMDocRef doc = document->GetDOMDocument();
     delete document;
@@ -210,6 +223,10 @@ MathEngine::Unload()
     mdom_unload(doc);
     document = NULL;  
   }
+#elif defined(HAVE_GMETADOM)
+  delete document;
+  document = NULL;
+#endif
 
   root = NULL;
   selected = NULL;

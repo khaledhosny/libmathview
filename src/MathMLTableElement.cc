@@ -21,7 +21,6 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-
 #include <assert.h>
 #include <stddef.h>
 
@@ -30,8 +29,12 @@
 #include "MathMLTableElement.hh"
 #include "MathMLTableCellElement.hh"
 
-MathMLTableElement::MathMLTableElement(mDOMNodeRef node) :
-  MathMLContainerElement(node, TAG_MTABLE)
+#if defined(HAVE_MINIDOM)
+MathMLTableElement::MathMLTableElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLTableElement::MathMLTableElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLContainerElement(node, TAG_MTABLE)
 {
   nRows    = 0;
   nColumns = 0;

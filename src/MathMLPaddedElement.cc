@@ -29,8 +29,12 @@
 #include "MathMLPaddedElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLPaddedElement::MathMLPaddedElement(mDOMNodeRef node) :
-  MathMLNormalizingContainerElement(node, TAG_MPADDED)
+#if defined(HAVE_MINIDOM)
+MathMLPaddedElement::MathMLPaddedElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLPaddedElement::MathMLPaddedElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MPADDED)
 {
   width.valid = lSpace.valid = height.valid = depth.valid = false;
 }

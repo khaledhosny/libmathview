@@ -35,8 +35,12 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLRowElement::MathMLRowElement(mDOMNodeRef node) :
-  MathMLContainerElement(node, TAG_MROW)
+#if defined(HAVE_MINIDOM)
+MathMLRowElement::MathMLRowElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLRowElement::MathMLRowElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLContainerElement(node, TAG_MROW)
 {
   lastElement = NULL;
 }

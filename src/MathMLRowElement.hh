@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLRowElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLRowElement(GMetaDOM::Element&);
+  MathMLRowElement(const GMetaDOM::Element&);
 #endif
   // virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);

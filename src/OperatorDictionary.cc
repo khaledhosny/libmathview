@@ -52,7 +52,7 @@ getAttribute(mDOMNodeRef node, const char* attr, MathMLAttributeList* aList)
 #elif defined(HAVE_GMETADOM)
 
 void
-getAttribute(GMetaDOM::Element& node, const char* attr, MathMLAttributeList* aList)
+getAttribute(const GMetaDOM::Element& node, const char* attr, MathMLAttributeList* aList)
 {
   assert(aList != NULL);
 
@@ -171,7 +171,9 @@ OperatorDictionary::Load(const char* fileName)
 
     for (GMetaDOM::Node op = root.get_firstChild(); op != 0; op = op.get_nextSibling()) {
       if (op.get_nodeType() == GMetaDOM::Node::ELEMENT_NODE && op.get_nodeName() == "operator") {
-	GMetaDOM::DOMString opName = op.getAttribute("name");
+	GMetaDOM::Element elem = op;
+	GMetaDOM::DOMString opName = elem.getAttribute("name");
+
 	if (!opName.isEmpty()) {
 	  const String* opString = allocString(opName);
 	  MathMLAttributeList* def = new MathMLAttributeList;
@@ -206,7 +208,7 @@ OperatorDictionary::Load(const char* fileName)
 	} else {
 	  MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
 	}
-      } else if (!GMetaDOMAux::nodeIsBlank(op)) {
+      } else if (!GMetaDOM::nodeIsBlank(op)) {
 	char* s_name = op.get_nodeName().c_str();
 	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName, s_name);
 	g_free(s_name);

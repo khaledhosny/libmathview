@@ -31,12 +31,13 @@
 
 #include "MathMLContainerElement.hh"
 
-class DocumentElement : public MathMLContainerElement {
+class DocumentElement : public MathMLContainerElement
+{
 public:
 #if defined(HAVE_MINIDOM)
   DocumentElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  DocumentElement(GMetaDOM::Element);
+  DocumentElement(const GMetaDOM::Document&);
 #endif
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLDummyElement(mDOMNodeRef = NULL);
 #elif defined(HAVE_GMETADOM)
-  MathMLDummyElement(GMetaDOM::Element& = 0);
+  MathMLDummyElement(const GMetaDOM::Element& = 0);
 #endif
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

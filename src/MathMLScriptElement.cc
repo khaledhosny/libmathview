@@ -29,8 +29,12 @@
 #include "MathMLScriptElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLScriptElement::MathMLScriptElement(mDOMNodeRef node, TagId id) :
-  MathMLContainerElement(node, id)
+#if defined(HAVE_MINIDOM)
+MathMLScriptElement::MathMLScriptElement(mDOMNodeRef node, TagId id)
+#elif defined(HAVE_GMETADOM)
+MathMLScriptElement::MathMLScriptElement(const GMetaDOM::Element& node, TagId id)
+#endif
+  : MathMLContainerElement(node, id)
 {
   subScript = superScript = NULL;
 }

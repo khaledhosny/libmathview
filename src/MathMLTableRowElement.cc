@@ -32,8 +32,12 @@
 #include "MathMLTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
 
-MathMLTableRowElement::MathMLTableRowElement(mDOMNodeRef node, TagId id) :
-  MathMLContainerElement(node, id)
+#if defined(HAVE_MINIDOM)
+MathMLTableRowElement::MathMLTableRowElement(mDOMNodeRef node, TagId id)
+#elif defined(HAVE_GMETADOM)
+MathMLTableRowElement::MathMLTableRowElement(const GMetaDOM::Element& node, TagId id)
+#endif
+  : MathMLContainerElement(node, id)
 {
   assert(id == TAG_MTR || id == TAG_MLABELEDTR);
   rowIndex = 0;

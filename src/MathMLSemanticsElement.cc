@@ -21,14 +21,17 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-
 #include <assert.h>
 
 #include "MathMLDummyElement.hh"
 #include "MathMLSemanticsElement.hh"
 
-MathMLSemanticsElement::MathMLSemanticsElement(mDOMNodeRef node) :
-  MathMLContainerElement(node, TAG_SEMANTICS)
+#if defined(HAVE_MINIDOM)
+MathMLSemanticsElement::MathMLSemanticsElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLSemanticsElement::MathMLSemanticsElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLContainerElement(node, TAG_SEMANTICS)
 {
 }
 

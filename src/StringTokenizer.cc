@@ -58,12 +58,12 @@ void StringTokenizer::Reset()
 
 void StringTokenizer::SkipSpaces()
 {
-  while (offset < s.GetLength() && iswspace(s.GetChar(offset))) offset++;
+  while (offset < s.GetLength() && isXmlSpace(s.GetChar(offset))) offset++;
 }
 
 void StringTokenizer::SkipToken()
 {
-  while (offset < s.GetLength() && !iswspace(s.GetChar(offset))) offset++;
+  while (offset < s.GetLength() && !isXmlSpace(s.GetChar(offset))) offset++;
 }
 
 bool StringTokenizer::MoreTokens()
@@ -99,7 +99,7 @@ const char* StringTokenizer::ParseToken()
   static char tempS[TEMP_BUFFER_SIZE + 1];
 
   while (offset < s.GetLength() &&
-	 !iswspace(s.GetChar(offset)) &&
+	 !isXmlSpace(s.GetChar(offset)) &&
 	 i < TEMP_BUFFER_SIZE) {
     tempS[i] = s.GetChar(offset);
     i++;
@@ -214,7 +214,7 @@ bool StringTokenizer::ParseString(String* str)
   assert(str != NULL);
 
   unsigned start = offset;
-  while (offset < s.GetLength() && !iswspace(s.GetChar(offset))) offset++;
+  while (offset < s.GetLength() && !isXmlSpace(s.GetChar(offset))) offset++;
 
   unsigned length = offset - start;
   if (length > 0) {

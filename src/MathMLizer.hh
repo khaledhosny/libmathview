@@ -36,7 +36,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLizer(mDOMDocRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLizer(GMetaDOM::Element&);
+  MathMLizer(const GMetaDOM::Document&);
 #endif
   ~MathMLizer();
 
@@ -53,11 +53,11 @@ protected:
 
   mDOMDocRef  doc;
 #elif defined(HAVE_GMETADOM)
-  void MathMLizeNode(GMetaDOM::Element&, class MathMLContainerElement*);
-  void MathMLizeContainerContent(GMetaDOM::Element&, class MathMLContainerElement*);
-  void MathMLizeTokenContent(GMetaDOM::Element&, class MathMLTokenElement*);
-  class MathMLTextNode* SubstituteMGlyphElement(GMetaDOM::Element&);
-  class MathMLTextNode* SubstituteAlignMarkElement(GMetaDOM::Element&);
+  void MathMLizeNode(const GMetaDOM::Element&, class MathMLContainerElement*);
+  void MathMLizeContainerContent(const GMetaDOM::Element&, class MathMLContainerElement*);
+  void MathMLizeTokenContent(const GMetaDOM::Element&, class MathMLTokenElement*);
+  class MathMLTextNode* SubstituteMGlyphElement(const GMetaDOM::Element&);
+  class MathMLTextNode* SubstituteAlignMarkElement(const GMetaDOM::Element&);
 
   GMetaDOM::Document doc;
 #endif

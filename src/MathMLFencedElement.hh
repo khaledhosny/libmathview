@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLFencedElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLFencedElement(GMetaDOM::Element&);
+  MathMLFencedElement(const GMetaDOM::Element&);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);

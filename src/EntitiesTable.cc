@@ -21,13 +21,15 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+#include <stdlib.h>
 
 #if defined(HAVE_MINIDOM)
+
+#include <minidom.h>
 
 #include <assert.h>
 #include <stdio.h>
 
-#include "minidom.h"
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "EntitiesTable.hh"
@@ -38,9 +40,11 @@
 static struct {
   const char* name;
   const char* content;
+  const char* publicID;
+  const char* systemID;
 } internalTable[] = {
 #include "../auto/entitiesTable.inc"
-  { NULL, NULL }
+  { NULL, NULL, NULL, NULL }
 };
 
 EntitiesTable::EntitiesTable()
@@ -127,4 +131,19 @@ EntitiesTable::GetErrorEntityContent() const
   return GetEntityContent(XML_ERROR_ENTITY);
 }
 
-#endif // HAVE_MINIDOM
+#elif defined(HAVE_GMETADOM)
+
+#include <gdome.h>
+
+static const GdomeEntitiesTableEntry mathmlEntities[] = {
+#include "../auto/entitiesTable.inc"
+  { NULL, NULL, NULL, NULL }
+};
+
+const GdomeEntitiesTableEntry*
+getMathMLEntities(void)
+{
+  return mathmlEntities;
+}
+
+#endif // HAVE_GMETADOM

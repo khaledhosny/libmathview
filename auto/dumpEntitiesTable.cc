@@ -22,6 +22,10 @@
 
 #include <config.h>
 
+#include <stdio.h>
+
+#if defined(HAVE_MINIDOM)
+
 #include <minidom.h>
 
 bool
@@ -50,7 +54,7 @@ dump(const char* fileName)
 	  printf("\\x%02x", *s);
 	}
 	
-	printf("\\x00\" },\n");
+	printf("\\x00\", 0, 0 },\n");
       }
 
       mdom_string_free(name);
@@ -64,6 +68,56 @@ dump(const char* fileName)
 
   return true;
 }
+
+#elif defined(HAVE_GMETADOM)
+
+#include "gmetadom.hh"
+
+bool
+dump(const char* fileName)
+{
+  GMetaDOM::DOMImplementation di;
+
+  try {
+    GMetaDOM::Document doc = di.createDocumentFromURI(fileName, 0);
+    if (doc == NULL) return false;
+  
+    GMetaDOM::Element root = doc.get_documentElement();
+    if (root == 0) return false;
+
+    for (GMetaDOM::Node p = root.get_firstChild(); p != 0; p = p.get_nextSibling()) {
+      if (p.get_nodeType() == GMetaDOM::Node::ELEMENT_NODE) {
+	GMetaDOM::Element elem(p);
+
+	GMetaDOM::DOMString name = elem.getAttribute("name");
+	GMetaDOM::DOMString value = elem.getAttribute("value");
+
+	if (!name.isEmpty() && !value.isEmpty()) {
+	  char* s_name = name.c_str();
+	  char* s_value = value.c_str();
+
+	  printf("{ \"%s\", \"", s_name);
+	
+	  // WARNING: the line below is libxml dependent!!!
+	  for (char* s = s_value; s != NULL && *s != '\0'; s++) {
+	    printf("\\x%02x", *s & 0xff);
+	  }
+	
+	  printf("\\x00\", 0, 0 },\n");
+
+	  g_free(s_name);
+	  g_free(s_value);
+	}
+      }
+    }
+
+    return true;
+  } catch (GMetaDOM::DOMException) {
+    return false;
+  }
+}
+
+#endif
 
 int
 main(int argc, char* argv[])

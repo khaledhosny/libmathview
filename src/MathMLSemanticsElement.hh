@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLSemanticsElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLSemanticsElement(GMetaDOM::Element&);
+  MathMLSemanticsElement(const GMetaDOM::Element&);
 #endif
   virtual void Normalize(void);
   virtual ~MathMLSemanticsElement();

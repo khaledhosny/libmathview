@@ -25,7 +25,11 @@
 
 #include "MathMLAlignGroupElement.hh"
 
+#if defined(HAVE_MINIDOM)
 MathMLAlignGroupElement::MathMLAlignGroupElement(mDOMNodeRef node) :
+#elif defined(HAVE_GMETADOM)
+MathMLAlignGroupElement::MathMLAlignGroupElement(const GMetaDOM::Element& node) :
+#endif
   MathMLElement(node, TAG_MALIGNGROUP)
 {
   width = 0;

@@ -26,8 +26,12 @@
 #include "MathMLErrorElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLErrorElement::MathMLErrorElement(mDOMNodeRef node) :
-  MathMLNormalizingContainerElement(node, TAG_MERROR)
+#if defined(HAVE_MINIDOM)
+MathMLErrorElement::MathMLErrorElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLErrorElement::MathMLErrorElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MERROR)
 {
 }
 

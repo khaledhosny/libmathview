@@ -31,7 +31,12 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLContainerElement.hh"
 
-MathMLContainerElement::MathMLContainerElement(mDOMNodeRef node, TagId t) : MathMLElement(node, t)
+#if defined(HAVE_MINIDOM)
+MathMLContainerElement::MathMLContainerElement(mDOMNodeRef node, TagId t)
+#elif defined(HAVE_GMETADOM)
+MathMLContainerElement::MathMLContainerElement(const GMetaDOM::Element& node, TagId t)
+#endif
+  : MathMLElement(node, t)
 {
 }
 

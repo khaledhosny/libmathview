@@ -44,8 +44,10 @@ pkgdata_DATA = \
   font-configuration-mt.xml \
   math-engine-configuration.dtd \
   math-engine-configuration.xml \
-  math-engine-configuration.xml.debug \
   t1.config
+
+noinst_DATA = \
+  math-engine-configuration.xml.debug
 
 noinst_PROGRAMS = makeDictionary
 makeDictionary_SOURCES = makeDictionary.c

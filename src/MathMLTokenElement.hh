@@ -41,7 +41,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLTokenElement(mDOMNodeRef, TagId t = TAG_NOTVALID);
 #elif defined(HAVE_GMETADOM)
-  MathMLTokenElement(GMetaDOM::Element&, TagId t = TAG_NOTVALID);
+  MathMLTokenElement(const GMetaDOM::Element&, TagId t = TAG_NOTVALID);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void 	 Setup(class RenderingEnvironment*);

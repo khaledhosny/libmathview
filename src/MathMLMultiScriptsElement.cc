@@ -29,8 +29,12 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLMultiScriptsElement.hh"
 
-MathMLMultiScriptsElement::MathMLMultiScriptsElement(mDOMNodeRef node) :
-  MathMLContainerElement(node, TAG_MMULTISCRIPTS)
+#if defined(HAVE_MINIDOM)
+MathMLMultiScriptsElement::MathMLMultiScriptsElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLMultiScriptsElement::MathMLMultiScriptsElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLContainerElement(node, TAG_MMULTISCRIPTS)
 {
 }
 

@@ -27,8 +27,12 @@
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLDummyElement::MathMLDummyElement(mDOMNodeRef node) : 
-  MathMLElement(node, TAG_DUMMY)
+#if defined(HAVE_MINIDOM)
+MathMLDummyElement::MathMLDummyElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLDummyElement::MathMLDummyElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLElement(node, TAG_DUMMY)
 {
 }
 

@@ -39,7 +39,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLNormalizingContainerElement(mDOMNodeRef, TagId tag = TAG_NOTVALID);
 #elif defined(HAVE_GMETADOM)
-  MathMLNormalizingContainerElement(GMetaDOM::Element&, TagId tag = TAG_NOTVALID);
+  MathMLNormalizingContainerElement(const GMetaDOM::Element&, TagId tag = TAG_NOTVALID);
 #endif
   virtual void Normalize(void);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

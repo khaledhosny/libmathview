@@ -38,7 +38,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLTableCellElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLTableCellElement(GMetaDOM::Element&);
+  MathMLTableCellElement(const GMetaDOM::Element&);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);

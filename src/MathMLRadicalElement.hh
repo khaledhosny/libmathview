@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLRadicalElement(mDOMNodeRef, TagId);
 #elif defined(HAVE_GMETADOM)
-  MathMLRadicalElement(GMetaDOM::Element&, TagId);
+  MathMLRadicalElement(const GMetaDOM::Element&, TagId);
 #endif
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

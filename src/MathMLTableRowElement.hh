@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLTableRowElement(mDOMNodeRef, TagId = TAG_MTR);
 #elif defined(HAVE_GMETADOM)
-  MathMLTableRowElement(GMetaDOM::Element&, TagId = TAG_MTR);
+  MathMLTableRowElement(const GMetaDOM::Element&, TagId = TAG_MTR);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);

@@ -157,6 +157,42 @@ AC_TRY_COMPILE(
 )
 AC_LANG_RESTORE
 
+AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
+if test $HAVE_ICONV = "yes"; then
+	if iconv -t UTF-8 -f UTF-8 </dev/null >/dev/null 2>&1; then
+		ICONV_UTF8="UTF-8"
+	else
+		AC_MSG_WARN(iconv UTF-8 is not supported, this may result in failed assertions)
+		ICONV_UTF8="UTF-8"
+	fi
+
+	if iconv -t UCS-4BE -f UCS-4BE </dev/null >/dev/null 2>&1; then
+		ICONV_UCS4BE="UCS-4BE"
+	elif iconv -t UCS-4 -f UCS-4 </dev/null >/dev/null 2>&1; then
+		AC_MSG_WARN(assuming that iconv UCS-4 is bigendian)
+		ICONV_UCS4BE="UCS-4"
+	else
+		AC_MSG_WARN(iconv UCS-4 is not supported, this may result in failed assertions)
+		ICONV_UCS4BE="UCS-4"
+	fi
+
+	if iconv -t UCS-4LE -f UCS-4LE </dev/null >/dev/null 2>&1; then
+		ICONV_UCS4LE="UCS-4LE"
+	else
+		ICONV_UCS4LE="no"
+	fi
+else
+	AC_MSG_WARN(iconv not found, assuming that UTF-8, UCS-4 exist, this may result in failed assertions)
+	ICONV_UTF8="UTF-8"
+	ICONV_UCS4BE="UCS-4"
+	ICONV_UCS4LE="no"
+fi
+AC_DEFINE_UNQUOTED(ICONV_UTF8, "$ICONV_UTF8", iconv UTF-8 encoding)
+AC_DEFINE_UNQUOTED(ICONV_UCS4BE, "$ICONV_UCS4BE", iconv UCS-4 encoding big endian)
+if test $ICONV_UCS4LE != "no"; then
+	AC_DEFINE_UNQUOTED(ICONV_UCS4LE, "$ICONV_UCS4LE", iconv UCS-4 encoding little endian)
+fi
+
 dnl Checks for libraries
 AC_CHECK_LIB(iberty, getopt_long,
 	LIBS="$LIBS -liberty",

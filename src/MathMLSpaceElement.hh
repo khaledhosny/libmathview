@@ -38,7 +38,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLSpaceElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLSpaceElement(GMetaDOM::Element&);
+  MathMLSpaceElement(const GMetaDOM::Element&);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void    Setup(class RenderingEnvironment*);

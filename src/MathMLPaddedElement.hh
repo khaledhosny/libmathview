@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLPaddedElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLPaddedElement(GMetaDOM::Element&);
+  MathMLPaddedElement(const GMetaDOM::Element&);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);

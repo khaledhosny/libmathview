@@ -36,8 +36,12 @@
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLTableCellElement.hh"
 
-MathMLTableCellElement::MathMLTableCellElement(mDOMNodeRef node): 
-  MathMLNormalizingContainerElement(node, TAG_MTD)
+#if defined(HAVE_MINIDOM)
+MathMLTableCellElement::MathMLTableCellElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLTableCellElement::MathMLTableCellElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MTD)
 {
   rowIndex = 0;
   columnIndex = 0;

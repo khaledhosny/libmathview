@@ -38,7 +38,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLMultiScriptsElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLMultiScriptsElement(GMetaDOM::Element&);
+  MathMLMultiScriptsElement(const GMetaDOM::Element&);
 #endif
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);

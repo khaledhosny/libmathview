@@ -38,7 +38,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLUnderOverElement(mDOMNodeRef, TagId);
 #elif defined(HAVE_GMETADOM)
-  MathMLUnderOverElement(GMetaDOM::Element&, TagId);
+  MathMLUnderOverElement(const GMetaDOM::Element&, TagId);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);

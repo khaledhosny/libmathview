@@ -135,7 +135,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLTableElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLTableElement(GMetaDOM::Element&);
+  MathMLTableElement(const GMetaDOM::Element&);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);

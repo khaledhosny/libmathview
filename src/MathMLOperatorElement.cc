@@ -40,8 +40,12 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLOperatorElement::MathMLOperatorElement(mDOMNodeRef node) :
-  MathMLTokenElement(node, TAG_MO)
+#if defined(HAVE_MINIDOM)
+MathMLOperatorElement::MathMLOperatorElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLOperatorElement::MathMLOperatorElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLTokenElement(node, TAG_MO)
 {
   eOp = NULL;
   defaults = NULL;

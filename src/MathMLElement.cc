@@ -46,15 +46,14 @@ int MathMLElement::counter = 0;
 #if defined(HAVE_MINIDOM)
 MathMLElement::MathMLElement(mDOMNodeRef n, TagId t)
 #elif defined(HAVE_GMETADOM)
-MathMLElement::MathMLElement(GMetaDOM::Element n, TagId t)
+MathMLElement::MathMLElement(const GMetaDOM::Element& n, TagId t)
 #endif
+  : node(n)
 {
-  node = n;
-
 #if defined(HAVE_MINIDOM)
   if (node != NULL) mdom_node_set_user_data(node, this);
 #elif defined(HAVE_GMETADOM)
-  if (node != 0) node.setUserData(0);
+  if (node != 0) node.set_userData(this);
 #endif
 
   tag  = t;
@@ -76,7 +75,7 @@ MathMLElement::~MathMLElement()
 #if defined(HAVE_MINIDOM)
   if (node != NULL) mdom_node_set_user_data(node, NULL);
 #elif defined(HAVE_GMETADOM)
-  if (node != 0) node.setUserData(0);
+  if (node != 0) node.set_userData(0);
 #endif
 
   delete layout;
@@ -198,7 +197,7 @@ MathMLElement::GetAttributeValue(AttributeId id,
   }
 #elif defined(HAVE_GMETADOM)
   if (node != 0) {
-    mDOMStringRef value = node.getAttribute(NameOfAttributeId(id));
+    GMetaDOM::DOMString value = node.getAttribute(NameOfAttributeId(id));
     if (!value.isEmpty()) sValue = allocString(value);
   }
 #endif // HAVE_GMETADOM
@@ -554,7 +553,10 @@ MathMLElement::HasLink() const
 #elif defined(HAVE_GMETADOM)
   GMetaDOM::Element p = GetDOMNode();
 
-  while (p != 0 && !p.hasAttribute("href")) p = p.get_parentNode();
+  while (p != 0 && !p.hasAttribute("href")) {
+    GMetaDOM::Node parent = p.get_parentNode();
+    p = parent;
+  }
 
   return p != 0;
 #endif // HAVE_GMETADOM

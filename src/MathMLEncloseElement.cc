@@ -28,8 +28,12 @@
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
 
-MathMLEncloseElement::MathMLEncloseElement(mDOMNodeRef node) :
-  MathMLNormalizingContainerElement(node, TAG_MENCLOSE)
+#if defined(HAVE_MINIDOM)
+MathMLEncloseElement::MathMLEncloseElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLEncloseElement::MathMLEncloseElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MENCLOSE)
 {
   normalized = false;
 }

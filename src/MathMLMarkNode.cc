@@ -20,6 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
+#include <config.h>
 #include <assert.h>
 
 #include "StringUnicode.hh"

@@ -26,6 +26,7 @@
 #if defined(HAVE_MINIDOM)
 #include <minidom.h>
 #elif defined(HAVE_GMEATDOM)
+#include "gmetadom.hh"
 #endif
 
 #include "scaled.hh"
@@ -46,7 +47,7 @@ public:
 #if defined(HAVE_MINIDOM)
   bool  Load(mDOMDocRef);
 #elif defined(HAVE_GMETADOM)
-  bool  Load(GMetaDOM::Document&);
+  bool  Load(const GMetaDOM::Document&);
 #endif
   void  Unload(void);
 
@@ -88,7 +89,9 @@ public:
   static bool  DrawMissingCharacter(void) { return drawMissingCharacter; }
   static void  DrawMissingCharacter(bool dmc) { drawMissingCharacter = dmc; }
 
+#if defined(HAVE_MINIDOM)
   static EntitiesTable      entitiesTable;
+#endif
   static OperatorDictionary dictionary;
   static Configuration      configuration;
   static Logger             logger;

@@ -30,7 +30,12 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLFractionElement.hh"
 
-MathMLFractionElement::MathMLFractionElement(mDOMNodeRef node) : MathMLContainerElement(node, TAG_MFRAC)
+#if defined(HAVE_MINIDOM)
+MathMLFractionElement::MathMLFractionElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLFractionElement::MathMLFractionElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLContainerElement(node, TAG_MFRAC)
 {
 }
 

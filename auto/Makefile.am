@@ -46,4 +46,7 @@ attribute.def: keyword.list $(SCRIPTDIR)/makekeywords
 entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 	./dumpEntitiesTable $< >$@
 
-INCLUDES = @DOM_CFLAGS@
+INCLUDES = \
+  @DOM_CFLAGS@ \
+  -I$(top_srcdir)/src
+

@@ -33,8 +33,12 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLUnderOverElement::MathMLUnderOverElement(mDOMNodeRef node, TagId id) :
-  MathMLContainerElement(node, id)
+#if defined(HAVE_MINIDOM)
+MathMLUnderOverElement::MathMLUnderOverElement(mDOMNodeRef node, TagId id)
+#elif defined(HAVE_GMETADOM)
+MathMLUnderOverElement::MathMLUnderOverElement(const GMetaDOM::Element& node, TagId id)
+#endif
+  : MathMLContainerElement(node, id)
 {
   assert(id == TAG_MUNDER || id == TAG_MOVER || id == TAG_MUNDEROVER);
   underScript = overScript = NULL;

@@ -253,19 +253,19 @@ findDOMNode(MathMLElement* elem)
 }
 
 MathMLElement*
-getMathMLElement(GMetaDOM::Element& node)
+getMathMLElement(const GMetaDOM::Element& node)
 {
   // WARNING: the following is a very dangerous operation. It relies
   // of the assumption that the user will NEVER modify the user data field
   // in the DOM tree elements!!!
-  MathMLElement* elem = (MathMLElement*) node.getUserData();
+  MathMLElement* elem = (MathMLElement*) node.get_userData();
   assert(elem != NULL);
   assert(elem->GetDOMNode() == node);
   return elem;
 }
 
 MathMLElement*
-findMathMLElement(GMetaDOM::Element& node)
+findMathMLElement(const GMetaDOM::Element& node)
 {
   MathMLElement* elem = getMathMLElement(node);
   assert(elem != NULL);
@@ -339,7 +339,7 @@ findRightSibling(MathMLElement* elem)
   if (p == 0) return NULL;
 
   for (p = p.get_nextSibling();
-       p != 0 && p.getUserData() == NULL;
+       p != 0 && p.get_userData() == NULL;
        p = p.get_nextSibling()) ;
   
   if (p != 0) return findLeftmostChild(findMathMLElement(p));
@@ -353,7 +353,7 @@ findLeftSibling(MathMLElement* elem)
   if (p == NULL) return NULL;
 
   for (p = p.get_previousSibling();
-       p != 0 && p.getUserData() == NULL;
+       p != 0 && p.get_userData() == NULL;
        p = p.get_previousSibling()) ;
 
   if (p != 0) return findRightmostChild(findMathMLElement(p));

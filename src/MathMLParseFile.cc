@@ -23,10 +23,17 @@
 #include <config.h>
 
 #if defined(HAVE_MINIDOM)
-#include "minidom.h"
+
+#include <minidom.h>
+
 #elif defined(HAVE_GMETADOM)
+
+#include <assert.h>
+
 #include "gmetadom.hh"
-#endif
+#include "EntitiesTable.hh"
+
+#endif // HAVE_GMETADOM
 
 #include "stringAux.hh"
 #include "MathEngine.hh"
@@ -57,8 +64,29 @@ MathMLParseFile(const char* filename, bool subst)
 GMetaDOM::Document
 MathMLParseFile(const char* filename, bool subst)
 {
-  GMetaDOM::DOMImplementation di;
-  return di.parseDocument(filename);
+  if (!subst) {
+    GMetaDOM::DOMImplementation di;
+    return di.createDocumentFromURI(filename);
+  } else {
+    GdomeDOMImplementation* di = gdome_di_mkref();
+    assert(di != NULL);
+    GdomeException exc;
+    GdomeDocument* doc = gdome_di_createDocFromURIWithEntitiesTable(di,
+								    filename,
+								    getMathMLEntities(),
+								    GDOME_LOAD_PARSING,
+								    &exc);
+    if (exc != 0) {
+      gdome_di_unref(di, &exc);
+      gdome_doc_unref(doc, &exc);
+      return 0;
+    }
+
+    gdome_di_unref(di, &exc);
+    GMetaDOM::Document res(doc);
+
+    return res;
+  }
 }
 
 #endif // HAVE_GMETADOM

@@ -21,6 +21,8 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+
+#include <glib.h>
 #include <assert.h>
 #include <iconv.h>
 #ifdef HAVE_WCTYPE_H
@@ -35,14 +37,20 @@
 #include "stringAux.hh"
 #include "StringUnicode.hh"
 
-#define ICONV_UTF8 "UTF-8"
-#ifdef WORDS_BIGENDIAN
-#define ICONV_UCS4 "UCS-4BE"
+#if defined(WORDS_BIGENDIAN)
+#defined ICONV_UCS4 ICONV_UCS4BE
 #else
-#define ICONV_UCS4 "UCS-4LE"
+#if !defined(ICONV_UCS4LE)
+#define ICONV_UCS4 ICONV_UCS4BE
+#define UCS4_BIGENDIAN
+#else
+#define ICONV_UCS4 ICONV_UCS4LE
+#endif
 #endif
 
-String* allocString(mDOMConstStringRef str)
+#if defined(HAVE_MINIDOM)
+String*
+allocString(mDOMConstStringRef str)
 {
   assert(str != NULL);
 
@@ -88,7 +96,12 @@ String* allocString(mDOMConstStringRef str)
       nConv = iconv(cd, &inbuf, &inBytesLeft, &outbuf, &outBytesLeft);
       if (nConv != (size_t) -1) {
 	unsigned n = (outbuf - outbuf0) / sizeof(Char32);
-	if (n > 0) chunk = new StringU<Char32>(buffer, n);
+	if (n > 0) {
+#if !defined(WORDS_BIGENDIAN) && defined(UCS4_BIGENDIAN)
+	  for (unsigned i = 0; i < n; i++) buffer[i] = GUINT32_SWAP_LE_BE(buffer[i]);
+#endif
+	  chunk = new StringU<Char32>(buffer, n);
+	}
       } else {
 	// the error "invalid argument" is probably due to an old version
 	// of libxml (1.x.y)
@@ -126,7 +139,43 @@ String* allocString(mDOMConstStringRef str)
   return res;
 }
 
-String* allocString(const String& str, unsigned offset, unsigned length)
+#elif defined(HAVE_GMETADOM)
+
+String*
+allocString(const GMetaDOM::DOMString& str)
+{
+  if (str.isNull()) return new StringC("?");
+
+  Char big = 0;
+  for (unsigned i = 0; i < str.length(); i++)
+    if (str.at(i) > big) big = str.at(i);
+
+  String* res = NULL;
+
+  if (isPlain(big)) {
+    unsigned length;
+    Char8* buffer = str.toUTF8(length);
+    res = new StringU<Char8>(buffer, length);
+    g_free(buffer);
+  } else if (isUnicode16(big)) {
+    unsigned length;
+    Char16* buffer = str.toUTF16(length);
+    res = new StringU<Char16>(buffer, length);
+    g_free(buffer);
+  } else {
+    unsigned length;
+    Char32* buffer = str.toUnicode(length);
+    res = new StringU<Char32>(buffer, length);
+    g_free(buffer);
+  }
+
+  return res;
+}
+
+#endif
+
+String*
+allocString(const String& str, unsigned offset, unsigned length)
 {
   assert(length >= 1);
 

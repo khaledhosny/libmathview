@@ -37,17 +37,22 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLDocument(mDOMDocRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLDocument(GMetaDOM::Document&);
+  MathMLDocument(const GMetaDOM::Document&);
 #endif
   virtual void Normalize(void);
   virtual bool IsDocument(void) const;
   virtual ~MathMLDocument();
 
   MathMLElement* GetRoot(void) const;
+#if defined(HAVE_MINIDOM)
   mDOMDocRef     GetDOMDocument(void) const { return DOMdoc; }
-
 protected:
   mDOMDocRef DOMdoc;
+#elif defined(HAVE_GMETADOM)
+  const GMetaDOM::Document& GetDOMDocument(void) const { return DOMdoc; }
+protected:
+  GMetaDOM::Document DOMdoc;
+#endif
 };
 
 typedef MathMLDocument* MathMLDocumentPtr;

@@ -36,7 +36,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLErrorElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLErrorElement(GMetaDOM::Element&);
+  MathMLErrorElement(const GMetaDOM::Element&);
 #endif
   virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLErrorElement();

@@ -24,11 +24,22 @@
 #include <assert.h>
 #include <stddef.h>
 
+#if defined(HAVE_MINIDOM)
+#include <minidom.h>
+#elif defined(HAVE_GMETADOM)
+#include "gmetadom.hh"
+#endif
+
 #include "Iterator.hh"
 #include "DocumentElement.hh"
 #include "RenderingEnvironment.hh"
 
-DocumentElement::DocumentElement(mDOMNodeRef node) : MathMLContainerElement(node, TAG_DOCUMENT)
+#if defined(HAVE_MINIDOM)
+DocumentElement::DocumentElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+  DocumentElement::DocumentElement(const GMetaDOM::Document& doc)
+#endif
+  : MathMLContainerElement(0, TAG_DOCUMENT)
 {
 }
 

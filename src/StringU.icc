@@ -24,9 +24,9 @@
 #define StringU_icc
 
 #include <stddef.h>
-#include <wctype.h>
 #include <string.h>
 
+#include "unidefs.h"
 #include "StringU.hh"
 
 template <typename CharX>
@@ -127,7 +127,7 @@ void StringU<CharX>::TrimSpacesLeft()
 {
   unsigned length = GetLength();
   unsigned first_nb = 0;
-  while (first_nb < length && iswspace(GetChar(first_nb))) first_nb++;
+  while (first_nb < length && isXmlSpace(GetChar(first_nb))) first_nb++;
 
   for (unsigned i = 0; i < length - first_nb; i++)
     SetChar(i, GetChar(first_nb + i));
@@ -140,7 +140,7 @@ template <typename CharX>
 void StringU<CharX>::TrimSpacesRight()
 {
   unsigned length = GetLength();
-  while (length > 0 && iswspace(GetChar(length - 1))) length--;
+  while (length > 0 && isXmlSpace(GetChar(length - 1))) length--;
   SetLength(length);
 }
 
@@ -150,14 +150,14 @@ void StringU<CharX>::CollapseSpaces()
   unsigned dest = 0;
   unsigned i = 0;
   while (i < GetLength()) {
-    if (!iswspace(GetChar(i))) {
+    if (!isXmlSpace(GetChar(i))) {
       SetChar(dest, GetChar(i));
       dest++;
       i++;
     } else {
       SetChar(dest, ' ');
       dest++;
-      while (i < GetLength() && iswspace(GetChar(i))) i++;
+      while (i < GetLength() && isXmlSpace(GetChar(i))) i++;
     }
   }
 
@@ -170,7 +170,7 @@ void StringU<CharX>::DeleteSpaces()
   unsigned dest = 0;
   unsigned i = 0;
   while (i < GetLength()) {
-    if (!iswspace(GetChar(i))) {
+    if (!isXmlSpace(GetChar(i))) {
       SetChar(dest, GetChar(i));
       dest++;
     }

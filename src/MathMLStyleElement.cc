@@ -33,8 +33,12 @@
 #include "MathMLAttributeList.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLStyleElement::MathMLStyleElement(mDOMNodeRef node) :
-  MathMLNormalizingContainerElement(node, TAG_MSTYLE)
+#if defined(HAVE_MINIDOM)
+MathMLStyleElement::MathMLStyleElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLStyleElement::MathMLStyleElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MSTYLE)
 {
 }
 
@@ -100,7 +104,7 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
 #elif defined(HAVE_GMETADOM)
   GMetaDOM::NamedNodeMap nnm = GetDOMNode().get_attributes();
 
-  for (unsigned i = 0; i < nnm.length(); i++) {
+  for (unsigned i = 0; i < nnm.get_length(); i++) {
     GMetaDOM::Node attribute = nnm.item(i);
 
     char* s_name = attribute.get_nodeName().c_str();

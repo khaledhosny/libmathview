@@ -44,7 +44,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLEncloseElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLEncloseElement(GMetaDOM::Element&);
+  MathMLEncloseElement(const GMetaDOM::Element&);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);

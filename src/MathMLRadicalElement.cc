@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "unidefs.h"
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "StringUnicode.hh"
@@ -35,8 +36,12 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 
-MathMLRadicalElement::MathMLRadicalElement(mDOMNodeRef node, TagId id) :
-  MathMLNormalizingContainerElement(node, id)
+#if defined(HAVE_MINIDOM)
+MathMLRadicalElement::MathMLRadicalElement(mDOMNodeRef node, TagId id)
+#elif defined(HAVE_GMETADOM)
+MathMLRadicalElement::MathMLRadicalElement(const GMetaDOM::Element& node, TagId id)
+#endif
+  : MathMLNormalizingContainerElement(node, id)
 {
   assert(id == TAG_MSQRT || id == TAG_MROOT);
   radical = NULL;
@@ -68,12 +73,9 @@ MathMLRadicalElement::Normalize()
     MathMLContainerElement::Normalize();
   }
 
-  String* rad = MathEngine::entitiesTable.GetEntityContent(DOM_CONST_STRING("Sqrt"));
-  assert(rad != NULL);
   if (radical != NULL) delete radical;
-  radical = new MathMLCharNode(rad->GetChar(0));
+  radical = new MathMLCharNode(U_SQRT);
   radical->SetParent(this);
-  delete rad;
 }
 
 void

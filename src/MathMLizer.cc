@@ -52,10 +52,9 @@ MathMLizer::MathMLizer(mDOMDocRef d)
   doc = d;
 }
 #elif defined(HAVE_GMETADOM)
-MathMLizer::MathMLizer(GMetaDOM::Document& d)
+MathMLizer::MathMLizer(const GMetaDOM::Document& d) : doc(d)
 {
   assert(d != 0);
-  doc = d;
 }
 #endif // HAVE_GMETADOM
 
@@ -82,7 +81,7 @@ void
 #if defined(HAVE_MINIDOM)
 MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
 #elif defined(HAVE_GMETADOM)
-MathMLizer::MathMLizeNode(GMetaDOM::Node& node, MathMLContainerElement* parent)
+MathMLizer::MathMLizeNode(const GMetaDOM::Element& node, MathMLContainerElement* parent)
 #endif
 {
 #if defined(HAVE_MINIDOM)
@@ -222,7 +221,13 @@ MathMLizer::MathMLizeNode(GMetaDOM::Node& node, MathMLContainerElement* parent)
 	  NameOfTagId(tag),
 	  (parent != NULL) ? NameOfTagId(parent->IsA()) : "(nil)");
     } else {
+#if defined(HAVE_MINIDOM)
       MathEngine::logger(LOG_WARNING, "unrecognized tag `%s' (ignored)", node->name);
+#elif defined(HAVE_GMETADOM)
+      char* s_name = node.get_nodeName().c_str();
+      MathEngine::logger(LOG_WARNING, "unrecognized tag `%s' (ignored)", s_name);
+      g_free(s_name);
+#endif
     }
   }
 
@@ -231,8 +236,8 @@ MathMLizer::MathMLizeNode(GMetaDOM::Node& node, MathMLContainerElement* parent)
   else if (elem->IsToken()) MathMLizeTokenContent(node, TO_TOKEN(elem));
 }
 
-#if defined(HAVE_MINIDOM)
 void
+#if defined(HAVE_MINIDOM)
 MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* parent)
 {
   assert(node != NULL);
@@ -247,6 +252,8 @@ MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* 
       assert(text != NULL);
       mdom_string_free(content);
 #elif defined(HAVE_GMETADOM)
+MathMLizer::MathMLizeContainerContent(const GMetaDOM::Element& node, MathMLContainerElement* parent)
+{
   assert(parent != NULL);
 
   for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
@@ -374,7 +381,7 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
 #elif defined(HAVE_GMETADOM)
 
 void
-MathMLizer::MathMLizeTokenContent(GMetaDOM::Element& node, MathMLTokenElement* parent)
+MathMLizer::MathMLizeTokenContent(const GMetaDOM::Element& node, MathMLTokenElement* parent)
 {
   assert(parent != NULL);
 
@@ -382,24 +389,26 @@ MathMLizer::MathMLizeTokenContent(GMetaDOM::Element& node, MathMLTokenElement* p
   for (GMetaDOM::Node p = node.get_firstChild(); p != 0; p = p.get_nextSibling()) {
     switch (p.get_nodeType()) {
     case GMetaDOM::Node::TEXT_NODE:
-      // ok, we have a chunk of text
-      GMetaDOM::DOMString content = p.get_nodeValue();
-      String* s = allocString(content);
-      assert(s != NULL);
-      
-      // white-spaces are always collapsed...
-      s->CollapseSpaces();
-
-      // ...but spaces at the at the beginning (end) are deleted only if this
-      // is the very first (last) chunk in the token.
-      if (p.get_previousSibling() == 0) s->TrimSpacesLeft();
-      if (p.get_netSibling() == 0) s->TrimSpacesRight();
-
-      if (sContent == NULL)
-	sContent = s;
-      else {
-	sContent->Append(*s);
-	delete s;
+      {
+	// ok, we have a chunk of text
+	GMetaDOM::DOMString content = p.get_nodeValue();
+	String* s = allocString(content);
+	assert(s != NULL);
+	
+	// white-spaces are always collapsed...
+	s->CollapseSpaces();
+	
+	// ...but spaces at the at the beginning (end) are deleted only if this
+	// is the very first (last) chunk in the token.
+	if (p.get_previousSibling() == 0) s->TrimSpacesLeft();
+	if (p.get_nextSibling() == 0) s->TrimSpacesRight();
+	
+	if (sContent == NULL)
+	  sContent = s;
+	else {
+	  sContent->Append(*s);
+	  delete s;
+	}
       }
       break;
 
@@ -415,14 +424,6 @@ MathMLizer::MathMLizeTokenContent(GMetaDOM::Element& node, MathMLTokenElement* p
       g_free(s_name);
 
       switch (tag) {
-      case TAG_MCHAR:
-	{
-	  MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element. It is recognized for backward compatibility only!");
-	  String* content = SubstituteMCharElement(p);
-	  if (content != NULL) parent->Append(content);
-	  delete content;
-	}
-	break;
       case TAG_MGLYPH:
 	{
 	  MathMLTextNode* text = SubstituteMGlyphElement(p);
@@ -436,8 +437,11 @@ MathMLizer::MathMLizeTokenContent(GMetaDOM::Element& node, MathMLTokenElement* p
 	}
 	break;
       default:
-	MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)\n",
-			   mdom_node_get_name(node));
+	{
+	  char* s_name = node.get_nodeName().c_str();
+	  MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)\n", s_name);
+	  g_free(s_name);
+	}
 	break;
       }
       break;
@@ -543,7 +547,7 @@ MathMLizer::SubstituteAlignMarkElement(mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
 
 MathMLTextNode*
-MathMLizer::SubstituteMGlyphElement(GMetaDOM::Element& node)
+MathMLizer::SubstituteMGlyphElement(const GMetaDOM::Element& node)
 {
   GMetaDOM::DOMString alt        = node.getAttribute("alt");
   GMetaDOM::DOMString fontFamily = node.getAttribute("fontfamily");
@@ -574,7 +578,7 @@ MathMLizer::SubstituteMGlyphElement(GMetaDOM::Element& node)
 }
 
 MathMLTextNode*
-MathMLizer::SubstituteAlignMarkElement(GMetaDOM::Element& node)
+MathMLizer::SubstituteAlignMarkElement(const GMetaDOM::Element& node)
 {
   GMetaDOM::DOMString edge = node.getAttribute("edge");
 

@@ -29,8 +29,12 @@
 #include "RenderingEnvironment.hh"
 #include "AttributeParser.hh"
 
-MathMLSpaceElement::MathMLSpaceElement(mDOMNodeRef node) :
-  MathMLElement(node, TAG_MSPACE)
+#if defined(HAVE_MINIDOM)
+MathMLSpaceElement::MathMLSpaceElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLSpaceElement::MathMLSpaceElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLElement(node, TAG_MSPACE)
 {
   breakability = BREAK_AUTO;
 }

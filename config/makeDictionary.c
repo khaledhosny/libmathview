@@ -36,8 +36,11 @@ main(int argc, char* argv[])
     fgets(buffer, 256, stdin);
     
     len = strlen(buffer);
-    if (len > 0 && buffer[len - 1] == '\n') buffer[len - 1] = '\0';
-    printf("  <operator name=%s/>\n", buffer);
+    if (len > 0 && buffer[0] != '#') {
+      if (buffer[len - 1] == '\n') buffer[len - 1] = '\0';
+      printf("  <operator name=%s/>\n", buffer);
+    }
   }
   printf("</dictionary>\n");
 }
+

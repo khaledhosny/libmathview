@@ -29,5 +29,6 @@
 
 #define U_APPLYFUNCTION  0x2061
 #define U_INVISIBLETIMES 0x2062
+#define U_SQRT           0x221a
 
 #endif // unidefs_h

@@ -29,7 +29,8 @@
 
 #include "String.hh"
 
-class EntitiesTable {
+class EntitiesTable
+{
 public:
   EntitiesTable(void);
   ~EntitiesTable();
@@ -45,6 +46,13 @@ private:
   mDOMDocRef repository;
 };
 
-#endif // HAVE_MINIDOM
+#elif defined(HAVE_GMETADOM)
+
+#include <gdome.h>
+
+const GdomeEntitiesTableEntry* getMathMLEntities(void);
+
+#endif // HAVE_GMETADOM
 
 #endif // EntitiesTable_hh
+

@@ -30,8 +30,12 @@
 #include "MathMLStringNode.hh"
 #include "MathMLStringLitElement.hh"
 
-MathMLStringLitElement::MathMLStringLitElement(mDOMNodeRef node) :
-  MathMLTokenElement(node, TAG_MS)
+#if defined(HAVE_MINIDOM)
+MathMLStringLitElement::MathMLStringLitElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLStringLitElement::MathMLStringLitElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLTokenElement(node, TAG_MS)
 {
   lQuote = rQuote = NULL;
   setupDone = false;

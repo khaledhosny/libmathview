@@ -52,7 +52,12 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLTokenElement::MathMLTokenElement(mDOMNodeRef node, TagId t) : MathMLElement(node, t)
+#if defined(HAVE_MINIDOM)
+MathMLTokenElement::MathMLTokenElement(mDOMNodeRef node, TagId t)
+#elif defined(HAVE_GMETADOM)
+MathMLTokenElement::MathMLTokenElement(const GMetaDOM::Element& node, TagId t)
+#endif
+  : MathMLElement(node, t)
 {
   rawContentLength = 0;
 }

@@ -434,6 +434,7 @@ export_to_ps(GtkWidget* widget)
 #endif
 }
 
+#if defined(HAVE_MINIDOM)
 static void
 element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
@@ -448,27 +449,60 @@ element_changed(GtkMathView* math_view, mDOMNodeRef node)
   else
     gdk_window_set_cursor(GTK_WIDGET(math_view)->window, normal_cursor);
 }
+#elif defined(HAVE_GMETADOM)
+static void
+element_changed(GtkMathView* math_view, GdomeElement* node)
+{
+  GdomeException exc;
+  GdomeDOMString* name;
+  GdomeDOMString* ns_uri;
+
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+
+  name = gdome_str_mkref("href");
+  ns_uri = gdome_str_mkref(XLINK_NS_URI);
+
+  while (node != NULL && !gdome_el_hasAttributeNS(node, ns_uri, name, &exc))
+    node = gdome_cast_el(gdome_el_parentNode(node, &exc));
+
+  if (node != NULL && gdome_el_hasAttributeNS(node, ns_uri, name, &exc))
+    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
+  else
+    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, normal_cursor);
+
+  gdome_str_unref(name);
+  gdome_str_unref(ns_uri);
+}
+#endif
 
 static void
+#if defined(HAVE_MINIDOM)
 action_changed(GtkMathView* math_view, mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+action_changed(GtkMathView* math_view, GdomeElement* node)
+#endif
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 }
 
 static void
+#if defined(HAVE_MINIDOM)
 selection_changed(GtkMathView* math_view, mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+selection_changed(GtkMathView* math_view, GdomeElement* node)
+#endif
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
   gtk_math_view_set_selection(math_view, node);
 }
 
+#if defined(HAVE_MINIDOM)
 static void
 clicked(GtkMathView* math_view, gpointer user_data)
 {
-  mDOMNodeRef p1, p2, p3;
-
   mDOMNodeRef p = gtk_math_view_get_element(math_view);
   while (p != NULL && !mdom_node_has_attribute_ns(p, DOM_CONST_STRING("href"), XLINK_NS_URI))
     p = mdom_node_get_parent(p);
@@ -482,6 +516,34 @@ clicked(GtkMathView* math_view, gpointer user_data)
   } else if (gtk_math_view_get_action(math_view) != NULL)
     gtk_math_view_action_toggle(math_view);
 }
+#elif defined(HAVE_GMETADOM)
+static void
+clicked(GtkMathView* math_view, gpointer user_data)
+{
+  GdomeException exc;
+  GdomeDOMString* name;
+  GdomeDOMString* ns_uri;
+  GdomeElement* p;
+
+  g_return_if_fail(math_view != NULL);
+
+  name = gdome_str_mkref("href");
+  ns_uri = gdome_str_mkref(XLINK_NS_URI);
+
+  p = gtk_math_view_get_element(math_view);
+  while (p != NULL && !gdome_el_hasAttributeNS(p, ns_uri, name, &exc))
+    p = gdome_cast_el(gdome_el_parentNode(p, &exc));
+
+  if (p != NULL) {
+    GdomeDOMString* href = gdome_el_getAttributeNS(p, ns_uri, name, &exc);
+    g_assert(href != NULL);
+
+    GUI_load_document(href->str);
+    gdome_str_unref(href);
+  } else if (gtk_math_view_get_action(math_view) != NULL)
+    gtk_math_view_action_toggle(math_view);
+}
+#endif
 
 static void
 create_widget_set()

@@ -38,7 +38,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLContainerElement(mDOMNodeRef, TagId = TAG_NOTVALID);
 #elif defined(HAVE_GMETADOM)
-  MathMLContainerElement(GMetaDOM::Element&, TagId = TAG_NOTVALID);
+  MathMLContainerElement(const GMetaDOM::Element&, TagId = TAG_NOTVALID);
 #endif
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

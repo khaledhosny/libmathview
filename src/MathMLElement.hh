@@ -42,7 +42,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLElement(mDOMNodeRef = NULL, TagId = TAG_NOTVALID);
 #elif defined(HAVE_GMETADOM)
-  MathMLElement(GMetaDOM::Element& = 0, TagId = TAG_NOTVALID);
+  MathMLElement(const GMetaDOM::Element&, TagId = TAG_NOTVALID);
 #endif
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
@@ -93,7 +93,7 @@ public:
 #if defined(HAVE_MINIDOM)
   mDOMNodeRef    GetDOMNode(void) const { return node; }
 #elif defined(HAVE_GMETADOM)
-  GMetaDOM::Element GetDOMNode(void) const { return node; }
+  const GMetaDOM::Element& GetDOMNode(void) const { return node; }
 #endif
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsExpanding(void) const;

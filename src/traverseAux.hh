@@ -42,7 +42,7 @@ mDOMNodeRef                  findDOMNode(class MathMLElement*);
 class MathMLElement*         getMathMLElement(mDOMNodeRef);
 class MathMLElement*         findMathMLElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-GMetaDOM::Element&           findDOMNode(class MathMLElement*);
+GMetaDOM::Element            findDOMNode(class MathMLElement*);
 class MathMLElement*         getMathMLElement(const GMetaDOM::Element&);
 class MathMLElement*         findMathMLElement(const GMetaDOM::Element&);
 #endif

@@ -128,6 +128,7 @@ libgtkmathview_la_SOURCES = \
   ValueSequence.cc \
   allocTextNode.cc \
   frameAux.cc \
+  gmetadom.cc \
   keyword.cc \
   operatorAux.cc \
   stringAux.cc \
@@ -240,6 +241,7 @@ noinst_HEADERS = \
   ValueSequence.hh \
   allocTextNode.hh \
   frameAux.hh \
+  gmetadom.hh \
   keyword.hh \
   operatorAux.hh \
   stringAux.hh \

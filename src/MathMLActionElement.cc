@@ -30,8 +30,12 @@
 #include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
 
-MathMLActionElement::MathMLActionElement(mDOMNodeRef node) :
-  MathMLContainerElement(node, TAG_MACTION)
+#if defined(HAVE_MINIDOM)
+MathMLActionElement::MathMLActionElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+  MathMLActionElement::MathMLActionElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLContainerElement(node, TAG_MACTION)
 {
   selection = 0;
 }

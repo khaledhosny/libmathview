@@ -30,7 +30,7 @@
 #if defined(HAVE_MINIDOM)
 #include <minidom.h>
 #elif defined(HAVE_GMETADOM)
-#include "gmetadom.hh"
+#include <gdome.h>
 #endif
 
 #include <stdio.h>
@@ -63,11 +63,16 @@ extern "C" {
   gboolean     	 gtk_math_view_load(GtkMathView*, const gchar*);
 #if defined(HAVE_MINIDOM)
   gboolean       gtk_math_view_load_tree(GtkMathView*, mDOMDocRef);
+#elif defined(HAVE_GMETADOM)
+  gboolean       gtk_math_view_load_tree(GtkMathView*, GdomeDocument*);
 #endif
   void           gtk_math_view_unload(GtkMathView*);
-  mDOMNodeRef    gtk_math_view_get_selection(GtkMathView*);
 #if defined(HAVE_MINIDOM)
+  mDOMNodeRef    gtk_math_view_get_selection(GtkMathView*);
   void           gtk_math_view_set_selection(GtkMathView*, mDOMNodeRef);
+#elif defined(HAVE_GMETADOM)
+  GdomeElement*  gtk_math_view_get_selection(GtkMathView*);
+  void           gtk_math_view_set_selection(GtkMathView*, GdomeElement*);
 #endif
   gint      	 gtk_math_view_get_width(GtkMathView*);
   gint      	 gtk_math_view_get_height(GtkMathView*);
@@ -96,6 +101,9 @@ extern "C" {
 #if defined(HAVE_MINIDOM)
   mDOMNodeRef    gtk_math_view_get_element(GtkMathView*);
   mDOMNodeRef    gtk_math_view_get_action(GtkMathView*);
+#elif defined(HAVE_GMETADOM)
+  GdomeElement*  gtk_math_view_get_element(GtkMathView*);
+  GdomeElement*  gtk_math_view_get_action(GtkMathView*);
 #endif
   guint          gtk_math_view_action_get_selected(GtkMathView*);
   void           gtk_math_view_action_set_selected(GtkMathView*, guint);
@@ -106,3 +114,4 @@ extern "C" {
 #endif /* __cplusplus */
 
 #endif /* gtkmathview_h */
+

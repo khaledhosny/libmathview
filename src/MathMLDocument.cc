@@ -28,10 +28,15 @@
 #include "MathMLDocument.hh"
 #include "DocumentElement.hh"
 
-MathMLDocument::MathMLDocument(mDOMDocRef doc) : MathMLContainerElement(NULL)
+#if defined(HAVE_MINIDOM)
+MathMLDocument::MathMLDocument(mDOMDocRef doc)
+#elif defined(HAVE_GMETADOM)
+MathMLDocument::MathMLDocument(const GMetaDOM::Document& doc)
+#endif
+  : MathMLContainerElement(0)
+  , DOMdoc(0)
 {
-  assert(doc != NULL);
-  DOMdoc = doc;
+  assert(doc != 0);
 }
 
 MathMLDocument::~MathMLDocument()

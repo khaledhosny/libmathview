@@ -29,8 +29,12 @@
 #include "MathMLDummyElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(mDOMNodeRef node, TagId t) :
-  MathMLContainerElement(node, t)
+#if defined(HAVE_MINIDOM)
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(mDOMNodeRef node, TagId t)
+#elif defined(HAVE_GMETADOM)
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const GMetaDOM::Element& node, TagId t)
+#endif
+  : MathMLContainerElement(node, t)
 {
 }
 

@@ -33,8 +33,12 @@
 #include "MathMLFencedElement.hh"
 #include "MathMLOperatorElement.hh"
 
-MathMLFencedElement::MathMLFencedElement(mDOMNodeRef node) :
-  MathMLNormalizingContainerElement(node, TAG_MFENCED)
+#if defined(HAVE_MINIDOM)
+MathMLFencedElement::MathMLFencedElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLFencedElement::MathMLFencedElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MFENCED)
 {
   normalized = false;
   openFence = closeFence = separators = NULL;

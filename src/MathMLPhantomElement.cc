@@ -26,8 +26,12 @@
 
 #include "MathMLPhantomElement.hh"
 
-MathMLPhantomElement::MathMLPhantomElement(mDOMNodeRef node): 
-  MathMLNormalizingContainerElement(node, TAG_MPHANTOM)
+#if defined(HAVE_MINIDOM)
+MathMLPhantomElement::MathMLPhantomElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLPhantomElement::MathMLPhantomElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLNormalizingContainerElement(node, TAG_MPHANTOM)
 {
 }
 

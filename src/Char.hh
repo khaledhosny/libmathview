@@ -23,18 +23,32 @@
 #ifndef Char_hh
 #define Char_hh
 
-#include <glib.h>
 #include <stddef.h>
 
 #include "keyword.hh"
 
+#if defined(HAVE_MINIDOM)
+
+#include <glib.h>
+
 typedef guint8  Char8;
 typedef guint16 Char16;
 typedef guint32 Char32;
-typedef Char32  Char;
+
+#elif defined(HAVE_GMETADOM)
+
+#include "gmetadom.hh"
+
+typedef GMetaDOM::Char8  Char8;
+typedef GMetaDOM::Char16 Char16;
+typedef GMetaDOM::Char32 Char32;
+
+#endif
+
+typedef Char32 Char;
 
 inline bool isPlain(Char ch) { return ch < 0x80; }
-inline bool isUnicode16(Char ch) { return ch < 0x10000; }
+inline bool isUnicode16(Char ch) { return ch < 0x8000; }
 inline bool isUnicode32(Char) { return true; }
 
 Char        getBiggestChar(const Char*, unsigned);
@@ -43,16 +57,18 @@ bool 	    isPlain(const char*, unsigned);
 bool 	    isPlain(const Char*, unsigned);
 bool 	    isPlain(const class String&, unsigned, unsigned);
 
+inline bool isXmlSpace(Char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
+
 inline bool isVariant(Char ch) { return ch == 0xfe00; }
 inline bool isCombining(Char ch) { return (ch >= 0x0300 && ch <= 0x0362) || (ch >= 0x20d0 && ch <= 0x20e8); }
 bool        isCombiningOverlay(Char ch);
 bool        isCombiningBelow(Char ch);
 inline bool isCombiningAbove(Char ch) { return isCombining(ch) && !isCombiningOverlay(ch) && !isCombiningBelow(ch); }
 
-unsigned    isNonMarkingChar(Char, int* = NULL, BreakId* = NULL);
-unsigned    isNonMarkingChar(Char, Char, int* = NULL, BreakId* = NULL);
-unsigned    isNonMarkingChar(const class String&, int* = NULL, BreakId* = NULL);
-unsigned    isNonMarkingChar(const class String&, unsigned, int* = NULL, BreakId* = NULL);
+unsigned    isNonMarkingChar(Char, int* = 0, BreakId* = 0);
+unsigned    isNonMarkingChar(Char, Char, int* = 0, BreakId* = 0);
+unsigned    isNonMarkingChar(const class String&, int* = 0, BreakId* = 0);
+unsigned    isNonMarkingChar(const class String&, unsigned, int* = 0, BreakId* = 0);
 
 inline bool isUpperCaseGreek(Char ch) { return ch >= 0x0391 && ch <= 0x03a9; }
 inline bool isIntegral(Char ch) { return ch >= 0x222b && ch <= 2233; }

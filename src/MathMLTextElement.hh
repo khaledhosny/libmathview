@@ -37,7 +37,7 @@ public:
 #if defined(HAVE_MINIDOM)
   MathMLTextElement(mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  MathMLTextElement(GMetaDOM::Element&);
+  MathMLTextElement(const GMetaDOM::Element&);
 #endif
 
   virtual ~MathMLTextElement();

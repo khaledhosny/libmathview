@@ -24,8 +24,12 @@
 
 #include "MathMLTextElement.hh"
 
-MathMLTextElement::MathMLTextElement(mDOMNodeRef node) :
-  MathMLTokenElement(node, TAG_MTEXT)
+#if defined(HAVE_MINIDOM)
+MathMLTextElement::MathMLTextElement(mDOMNodeRef node)
+#elif defined(HAVE_GMETADOM)
+MathMLTextElement::MathMLTextElement(const GMetaDOM::Element& node)
+#endif
+  : MathMLTokenElement(node, TAG_MTEXT)
 {
 }
 
