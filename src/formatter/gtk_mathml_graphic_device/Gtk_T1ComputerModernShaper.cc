@@ -28,9 +28,6 @@
 #include "Gtk_T1ComputerModernShaper.hh"
 #include "Gtk_T1GlyphArea.hh"
 
-#include <iostream>
-#include "BoundingBoxAux.hh"
-
 static const char* fontFile[] = {
   NULL, "cmr10.pfb", "cmb10.pfb", "cmbxti10.pfb", "cmti10.pfb", "cmss10.pfb",
   "cmssi10.pfb", "cmssbx10.pfb", "cmtt10.pfb", "cmsy10.pfb", "cmbsy10.pfb",
@@ -78,6 +75,5 @@ Gtk_T1ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
   return factory->horizontalArray(c);
 #endif
   AreaRef res = Gtk_T1GlyphArea::create(font, index);
-  std::cerr << "getGlyphArea [" << ComputerModernShaper::nameOfFont(fontNameId) << "," << index << "] = " << res->box() << std::endl;
   return res;
 }

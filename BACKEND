@@ -14,4 +14,7 @@ T1lib support
 * add support for loading fonts at different sizes for better quality (cmr5, ...)
 * add support for choosing shapers at runtime
 * implement TeX-compliant graphic device
-
+* operator minus should use a specific glyph
+* implement horizontal braces CM
+* implement large horizontal operators CM
+* fix default line thickness for fractions and square root

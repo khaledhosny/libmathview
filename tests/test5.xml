@@ -107,7 +107,7 @@
         <mo>lim</mo>
 	<mrow>
 	  <mi>x</mi>
-	  <mo>&RightArrow;</mo>
+	  <mo>&#x2192;</mo>
 	  <mrow>
 	    <mo>+</mo>
 	    <mn>&infin;</mn>

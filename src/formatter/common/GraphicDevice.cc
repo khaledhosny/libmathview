@@ -99,5 +99,5 @@ scaled
 GraphicDevice::defaultLineThickness(const FormattingContext& context) const
 {
   // at least 1px thick
-  return std::max(context.getSize() / 10, scaled(72.27 / dpi(context)));
+  return std::max(context.getSize() / 10, scaled(72.27f / dpi(context)));
 }

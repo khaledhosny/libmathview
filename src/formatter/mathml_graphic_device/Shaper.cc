@@ -48,6 +48,7 @@ Shaper::composeStretchyCharH(const SmartPtr<class AreaFactory>& factory,
 
   // Then the final number of glyphs
   const int gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
+  if (gsN == 0) return normal;
 
   std::vector<AreaRef> h;
   h.reserve(gsN);
@@ -83,6 +84,7 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
   if (n % 2 == 1 && middle) n++;
   
   const int gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
+  if (gsN == 0) return normal;
 
   std::vector<AreaRef> v;
   v.reserve(gsN);

@@ -549,8 +549,6 @@ enum FontIndex
     NORMAL_FONT_INDEX
   };
 
-#include <iostream>
-
 const char*
 ComputerModernShaper::nameOfFont(FontNameId name)
 {
@@ -593,7 +591,6 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       const Char32 vch = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
       sm->registerChar(ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMMI, cmmMap[i].index));
       if (vch != ch) sm->registerChar(vch, GlyphSpec(shaperId, NORMAL_FONT_INDEX + FN_CMMIB, cmmMap[i].index));
-      fprintf(stderr, "registering %04x and %04x in %02x\n", ch, vch, cmmMap[i].index);
     }
 
   for (unsigned i = 0; cmsMap[i].ch; i++)
@@ -656,8 +653,6 @@ ComputerModernShaper::shape(ShapingContext& context) const
 AreaRef
 ComputerModernShaper::shapeChar(const ShapingContext& context, FontNameId name) const
 {
-  fprintf(stderr, "shaping char %04x in font %s glyph %02x size %d\n",
-	  context.thisChar(), nameOfFont(name), context.getSpec().getGlyphId(), context.getSize().getValue());
   return getGlyphArea(context.getFactory(), name, context.getSpec().getGlyphId(), context.getSize());
 }
 
@@ -669,15 +664,15 @@ ComputerModernShaper::shapeStretchyCharV(const ShapingContext& context) const
   const scaled span = context.getVSpan() - (1 * size) / 10; // use tex formula
   const VStretchyChar& charSpec = vMap[context.getSpec().getGlyphId()];
 
-  fprintf(stderr, "shaping stretchy char %04x span %d\n", context.thisChar(), span.getValue());
-
   AreaRef normal = 0;
   for (unsigned i = 0; i < 5; i++)
-    if ((normal = getGlyphArea(factory, charSpec.normal[i], size)))
-      if (normal->box().verticalExtent() >= span)
-	return normal;
-
-  fprintf(stderr, "no normal found\n");
+    if (AreaRef tryNormal = getGlyphArea(factory, charSpec.normal[i], size))
+      {
+	if (tryNormal->box().verticalExtent() >= span)
+	  return tryNormal;
+	else
+	  normal = tryNormal;
+      }
 
   AreaRef top = getGlyphArea(factory, charSpec.top, size);
   AreaRef glue = getGlyphArea(factory, charSpec.glue, size);
@@ -690,13 +685,25 @@ ComputerModernShaper::shapeStretchyCharV(const ShapingContext& context) const
 AreaRef
 ComputerModernShaper::shapeStretchyCharH(const ShapingContext& context) const
 {
-  return 0;
+  SmartPtr<AreaFactory> factory = context.getFactory();
+  const scaled size = context.getSize();
+  const scaled span = context.getHSpan() - (1 * size) / 10; // use tex formula also for H?
+  const HStretchyChar& charSpec = hMap[context.getSpec().getGlyphId()];
+
+  AreaRef normal = getGlyphArea(factory, charSpec.normal, size);
+  AreaRef left = getGlyphArea(factory, charSpec.left, size);
+  AreaRef glue = getGlyphArea(factory, charSpec.glue, size);
+  AreaRef right = getGlyphArea(factory, charSpec.right, size);
+
+  return composeStretchyCharH(factory, normal, left, glue, right, span);
 }
 
 AreaRef
 ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, 
 				   const GlyphIndex& glyph, const scaled& size) const
 {
-  assert(glyph.valid());
-  return getGlyphArea(factory, FontNameId(glyph.fontName), glyph.index, size);
+  if (glyph.valid())
+    return getGlyphArea(factory, FontNameId(glyph.fontName), glyph.index, size);
+  else
+    return 0;
 }
