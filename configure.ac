@@ -64,13 +64,6 @@ if test "x$enable_extensions" = "xyes"; then
 fi
 
 AC_ARG_WITH(
-	gmetadom,
-	[  --with-gmetadom[=ARG]   compile with gmetadom library [default=auto]],
-	gmetadom=$withval,
-	gmetadom=auto
-)
-
-AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
 	t1lib=$withval,
@@ -87,13 +80,6 @@ AC_ARG_WITH(
         [
                 with_t1lib_prefix=no
         ]
-)
-
-AC_ARG_WITH(
-	glib-config,
-	[  --with-glib-config[=ARG] use glib-config to determine glib configuration],
-	with_glib_config=$withval,
-	with_glib_config=no
 )
 
 AC_ARG_ENABLE(
@@ -244,62 +230,16 @@ AC_CHECK_LIB(iberty, getopt_long,
 AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,,[Define to 1 if you have getopt_long]))
 
 AC_LANG([C])
-dnl if test $with_glib_config = "no"; then
-	dnl AM_PATH_GLIB(1.2.0,,AC_MSG_ERROR(could not find glib))
-dnl else
-	dnl if test $HAVE_GLIB_CONFIG = "yes"; then
-		dnl GLIB_CFLAGS=`glib-config --cflags`
-		dnl GLIB_LIBS=`glib-config --libs`
-	dnl else
-		dnl AC_MSG_ERROR(could not find glib)
-	dnl fi
-dnl fi
 
-dnl AM_PATH_GTK(2.0.0, gtklib="yes", gtklib="no")
-
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0)
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0,, AC_MSG_ERROR(could not find GTK))
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-dnl if test $gtklib = "no"; then
-	dnl AC_MSG_WARN(GTK is needed in order to use the widget)
-dnl fi
-
-AC_CHECK_PROG(HAVE_GMETADOM_CONFIG, gmetadom-config, yes, no)
-if test $HAVE_GMETADOM_CONFIG = "no"; then
-	gmetadom="no"
-fi
-
-if test $gmetadom = "auto"; then
-	GMETADOM_MIN_VERSION=0.1.5
-	AC_MSG_CHECKING(for gmetadom >= $GMETADOM_MIN_VERSION)
-	vers=`gmetadom-config --module=gdome_cpp_smart --version | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
-	minvers=`echo $GMETADOM_MIN_VERSION | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
-
-	if test "$vers" -lt "$minvers"; then
-		gmetadom="no"
-	else
-		gmetadom="yes"
-	fi
-
-	if test $gmetadom = "yes"; then
-		AC_MSG_RESULT(found)
-	else
-		AC_MSG_RESULT(not found)
-	fi
-fi
-
-if test $gmetadom = "no"; then
-	AC_MSG_ERROR(no DOM library was found, this is a fatal error)
-fi
-
-DOM_CFLAGS=`gmetadom-config --module=gdome_cpp_smart --cflags`
-DOM_LIBS=`gmetadom-config --module=gdome_cpp_smart --libs`
-DOM_IMPLEMENTATION="GMETADOM"
-AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 to compile with GMetaDOM (recommended)])
+PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
+  AC_DEFINE(HAVE_GMETADOM,,[Define to 1 if using gmetadom as DOM implementation]),
+  AC_MSG_ERROR(could not find GMetaDOM))
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
-AC_SUBST(DOM_IMPLEMENTATION)
 
 if test $t1lib = "auto"; then
 	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no", -lm)
@@ -311,11 +251,11 @@ if test $t1lib = "yes"; then
 
         if test $with_t1lib_prefix = "yes"; then
                 T1_CFLAGS="-I$T1LIB_PREFIX/include"
+		T1_LIBS="-L$T1LIB_PREFIX/lib -lt1x -lt1"
 	else
 		T1_CFLAGS=""
+		T1_LIBS="-lt1x -lt1"
         fi
-
-	T1_LIBS="-lt1x -lt1"
 else
 	T1_CFLAGS=""
 	T1_LIBS=""
