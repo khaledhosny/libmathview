@@ -43,8 +43,10 @@ mathview_HEADERS = \
   Rectangle.hh \
   SmartPtr.hh \
   ScopedHashMap.hh \
+  FastScopedHashMap.hh \
   SparseMap.hh \
   String.hh \
+  StringAux.hh \
   Value.hh \
   ValueConversion.hh \
   Variant.hh \

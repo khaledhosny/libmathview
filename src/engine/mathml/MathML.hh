@@ -49,7 +49,6 @@
 #include "MathMLRowElement.hh"
 #include "MathMLScriptElement.hh"
 #include "MathMLSpaceElement.hh"
-#include "MathMLSpaceNode.hh"
 #include "MathMLStringLitElement.hh"
 #include "MathMLStringNode.hh"
 #include "MathMLStyleElement.hh"

@@ -34,7 +34,6 @@
 #include "MathMLMarkNode.hh"
 #include "MathMLNumberElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLSpaceNode.hh"
 #include "MathMLStringNode.hh"
 #include "MathMLTextElement.hh"
 #include "MathMLTokenElement.hh"
