@@ -186,40 +186,79 @@ MathMLTableFormatter::formatCells(const FormattingContext& ctxt,
 
 AreaRef
 MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
+				  unsigned nRows,
+				  unsigned nColumns,
+				  const SmartPtr<Value>& frameV,
 				  const SmartPtr<Value>& rowLinesV,
 				  const SmartPtr<Value>& columnLinesV) const
 {
-#if 0
+  const TokenId frame = ToTokenId(frameV);
   const unsigned nGridRows = rows.size();
   const unsigned nGridColumns = columns.size();
-  
-  for (unsigned ii = 0; ii < nGridRows - 1; ii++)
-    if (rows[i].isContentRow())
-      for (unsigned jj = 0; jj < nGridColumns - 1; jj++)
-	if (const SmartPtr<MathMLTableCellElement> el = getCell(ii, jj).getContent())
+
+  std::vector<BoxedLayoutArea::XYArea> content;
+  for (unsigned ii = 0; ii < nGridRows; ii++)
+    if (rows[ii].isContentRow())
+      for (unsigned jj = 0; jj < nGridColumns; jj++)
+	if (const Cell& cell = getCell(ii, jj))
 	  {
+	    const SmartPtr<MathMLTableCellElement> el = cell.getContent();
+	    assert(el);
 	    const unsigned i = el->getRowIndex();
 	    const unsigned j = el->getColumnIndex();
-	    if (i + el->getRowSpan() < nRows && j + el->getColumnSpan() < nColumns)
+	    std::cerr << "LINES: FOUND ELEMENT at " << i << "," << j << std::endl;
+	    if (i + el->getRowSpan() < nRows && ToTokenId(GetComponent(rowLinesV, i)) != T_NONE)
 	      {
-		if (ToTokenId(GetComponent(rowLinesV)) != T_NONE)
-		  {
-		    getHLineExtents(ii + cell.getRowSpan(), jj, jj + cell.getColumnSpan(), dx0, dx1, dy);
-		    const scaled dx0 = getCellXDisplacement(jj);
-		    const scaled dx1 = getCellXDisplacement(jj + cell.getColumnSpan());
-		    const scaled dy = getCellYDisplacement(ii + cell.getRowSpan());
-		    
-		    getCellDisplacement(jj, ii + cell.getRowSpan());
-		    
-		  }
+		const scaled dx0 =
+		  (j == 0) ?
+		  ((frame != T_NONE) ? columns[jj - 1].getLeftDisplacement()
+		   : columns[jj].getLeftDisplacement())
+		  : columns[jj - 1].getCenterDisplacement();
+		const scaled dx1 =
+		  (j + el->getColumnSpan() == nColumns) ?
+		  ((frame != T_NONE) ? columns[jj + cell.getColumnSpan()].getRightDisplacement()
+		   : columns[jj + cell.getColumnSpan() - 1].getRightDisplacement())
+		  : columns[jj + cell.getColumnSpan()].getCenterDisplacement();
+		const scaled dy =
+		  rows[ii + cell.getRowSpan()].getCenterDisplacement();
+		BoxedLayoutArea::XYArea area(dx0, dy,
+					     ctxt.MGD()->getFactory()->fixedHorizontalLine(ctxt.MGD()->defaultLineThickness(ctxt),
+											   dx1 - dx0,
+											   RGBColor::BLACK()));
+		std::cerr << "draw x line " << dx0 << "," << dy << " to " << dx1 << std::endl;
+		content.push_back(area);
+	      }
 
-		if (ToTokenId(GetComponent(columnLinesV)) != T_NONE)
-		  {
-		  }
+	    if (j + el->getColumnSpan() < nColumns && ToTokenId(GetComponent(columnLinesV, j)) != T_NONE)
+	      {
+		const scaled dy0 =
+		  (i == 0) ?
+		  ((frame != T_NONE) ? rows[ii - 1].getTopDisplacement()
+		   : rows[ii].getTopDisplacement())
+		  : rows[ii - 1].getCenterDisplacement();
+		const scaled dy1 =
+		  (i + el->getRowSpan() == nRows) ?
+		  ((frame != T_NONE) ? rows[ii + cell.getRowSpan()].getBottomDisplacement()
+		   : rows[ii + cell.getRowSpan() - 1].getBottomDisplacement())
+		  : rows[ii + cell.getRowSpan()].getCenterDisplacement();
+		const scaled dx =
+		  columns[jj + cell.getColumnSpan()].getCenterDisplacement();
+		BoxedLayoutArea::XYArea area(dx, dy0,
+					     ctxt.MGD()->getFactory()->fixedVerticalLine(ctxt.MGD()->defaultLineThickness(ctxt),
+											 scaled::zero(),
+											 dy0 - dy1,
+											 RGBColor::BLACK()));
+		std::cerr << "draw y line " << dx << "," << dy0 << " to " << dy1 << std::endl;
+		content.push_back(area);
 	      }
 	  }
-#endif
-  return 0;
+
+  if (frame != T_NONE)
+    {
+      std::cerr << "HAS FRAME" << std::endl;
+    }
+
+  return content.empty() ? 0 : ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
 }
 
 AreaRef
@@ -256,6 +295,8 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
       alignTable(tableHeightDepth, axis, align, gridRow);
     }
   std::cerr << "TABLE BBOX = " << BoundingBox(getWidth(), getHeight(), getDepth()) << std::endl;
+  std::cerr << "SETTING ROW AND COLUMN DISPLACEMENTS" << std::endl;
+  setDisplacements();
   std::cerr << "CELL POSITION" << std::endl;
   setCellPositions(axis);
 
@@ -271,7 +312,8 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
 	p->getDisplacement(dx, dy);
 	content.push_back(BoxedLayoutArea::XYArea(dx, dy, p->getArea()));
       }
-  return ctxt.MGD()->getFactory()->boxedLayout(BoundingBox(width, height, depth), content);
+
+  return ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
 }
 
 scaled
@@ -608,6 +650,8 @@ MathMLTableFormatter::alignTable(const scaled& tableHeightDepth, const scaled& a
     default:
       assert(false);
     }
+
+  setDepth(tableHeightDepth - getHeight());
 }
 
 void
@@ -637,9 +681,9 @@ MathMLTableFormatter::alignTable(const scaled& tableHeightDepth, const scaled& a
     default:
       assert(false);
     }
-  
   setHeight(temp);
-  setDepth(tableHeightDepth - temp);
+
+  setDepth(tableHeightDepth - getDepth());
 }
 
 BoundingBox
@@ -657,73 +701,83 @@ MathMLTableFormatter::getCellBoundingBox(unsigned i, unsigned j, unsigned rowSpa
 }
 
 void
-MathMLTableFormatter::setCellPositions(const scaled& axis)
+MathMLTableFormatter::setDisplacements()
 {
-  scaled rowY = getHeight();
-
+  scaled v = getHeight();
   for (unsigned i = 0; i < rows.size(); i++)
     {
-      rowY -= rows[i].getHeight();
-      //rows[i].setDisplacement(rowY);
-      scaled columnX = scaled::zero();
-      for (unsigned j = 0; j < columns.size(); j++)
-	{
-	  if (columns[j].isContentColumn())
-	    {
-	      if (const Cell& cell = getCell(i, j))
-		{
-		  scaled dx = scaled::zero();
-		  scaled dy = scaled::zero();
-
-		  const BoundingBox box = cell.getBoundingBox();
-		  const BoundingBox cellBox = getCellBoundingBox(i, j, cell.getRowSpan(), cell.getColumnSpan());
-
-		  std::cerr << "CELL BOX = " << cellBox << std::endl << " CONTENT BOX = " << box << std::endl;
-
-		  switch (cell.getColumnAlign())
-		    {
-		    case T_LEFT:
-		      dx = scaled::zero();
-		      break;
-		    case T_RIGHT:
-		      dx = cellBox.width - box.width;
-		      break;
-		    case T_CENTER:
-		      dx = (cellBox.width - box.width) / 2;
-		      break;
-		    default:
-		      assert(false);
-		    }
-
-		  switch (cell.getRowAlign())
-		    {
-		    case T_BASELINE:
-		      dy = scaled::zero();
-		      break;
-		    case T_TOP:
-		      dy = cellBox.height - box.height;
-		      break;
-		    case T_BOTTOM:
-		      dy = box.depth - cellBox.depth;
-		      break;
-		    case T_CENTER:
-		      dy = (cellBox.height - cellBox.depth - box.height + box.depth) / 2;
-		      break;
-		    case T_AXIS:
-		      dy = (cellBox.height - cellBox.depth - box.height + box.depth) / 2 + axis;
-		      break;
-		    default:
-		      assert(false);
-		    }
-
-		  std::cerr << "setting displacement for (" << i << "," << j << ") = " << dx << "," << dy << std::endl;
-		  cell.setDisplacement(columnX + dx, rowY + dy);
-		}
-	    }
-	  columnX += columns[j].getWidth();
-	}
-      rowY -= rows[i].getDepth();
+      rows[i].setDisplacement(v - rows[i].getHeight());
+      v -= rows[i].getVerticalExtent();
+      std::cerr << "ROW[" << i << "].displacement = " << rows[i].getDisplacement() << std::endl;
     }
+
+  scaled h = scaled::zero();
+  for (unsigned j = 0; j < columns.size(); j++)
+    {
+      columns[j].setDisplacement(h);
+      h += columns[j].getWidth();
+      std::cerr << "COL[" << j << "].displacement = " << columns[j].getDisplacement() << std::endl;
+    }
+}
+
+void
+MathMLTableFormatter::setCellPositions(const scaled& axis)
+{
+  for (unsigned i = 0; i < rows.size(); i++)
+    if (rows[i].isContentRow())
+      for (unsigned j = 0; j < columns.size(); j++)
+	if (columns[j].isContentColumn())
+	  {
+	    if (const Cell& cell = getCell(i, j))
+	      {
+		scaled dx = scaled::zero();
+		scaled dy = scaled::zero();
+
+		const BoundingBox box = cell.getBoundingBox();
+		const BoundingBox cellBox = getCellBoundingBox(i, j, cell.getRowSpan(), cell.getColumnSpan());
+
+		std::cerr << "CELL BOX = " << cellBox << std::endl << " CONTENT BOX = " << box << std::endl;
+
+		switch (cell.getColumnAlign())
+		  {
+		  case T_LEFT:
+		    dx = scaled::zero();
+		    break;
+		  case T_RIGHT:
+		    dx = cellBox.width - box.width;
+		    break;
+		  case T_CENTER:
+		    dx = (cellBox.width - box.width) / 2;
+		    break;
+		  default:
+		    assert(false);
+		  }
+
+		switch (cell.getRowAlign())
+		  {
+		  case T_BASELINE:
+		    dy = scaled::zero();
+		    break;
+		  case T_TOP:
+		    dy = cellBox.height - box.height;
+		    break;
+		  case T_BOTTOM:
+		    dy = box.depth - cellBox.depth;
+		    break;
+		  case T_CENTER:
+		    dy = (cellBox.height - cellBox.depth - box.height + box.depth) / 2;
+		    break;
+		  case T_AXIS:
+		    dy = (cellBox.height - cellBox.depth - box.height + box.depth) / 2 + axis;
+		    break;
+		  default:
+		    assert(false);
+		  }
+
+		std::cerr << "setting displacement for (" << i << "," << j << ") = " << dx << "," << dy << std::endl;
+		cell.setDisplacement(columns[j].getDisplacement() + dx, rows[i].getDisplacement() + dy);
+	      }
+	  }
 }
 
 const MathMLTableFormatter::Cell&

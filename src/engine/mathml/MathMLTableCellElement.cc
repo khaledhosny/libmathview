@@ -52,7 +52,10 @@ MathMLTableCellElement::setSpan(unsigned rSpan, unsigned cSpan)
 
 void
 MathMLTableCellElement::setPosition(unsigned i, unsigned j)
-{ }
+{
+  rowIndex = i;
+  columnIndex = j;
+}
 
 void
 MathMLTableCellElement::setAlignment(TokenId ra, TokenId ca)

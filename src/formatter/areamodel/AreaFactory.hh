@@ -90,7 +90,9 @@ public:
   // macro areas
   virtual AreaRef background(const AreaRef& area, const RGBColor& color) const;
   virtual AreaRef horizontalLine(const scaled& thickness, const RGBColor& color) const;
+  virtual AreaRef fixedHorizontalLine(const scaled& thickness, const scaled& length, const RGBColor& color) const;
   virtual AreaRef verticalLine(const scaled& thickness, const RGBColor& color) const;
+  virtual AreaRef fixedVerticalLine(const scaled& thickness, const scaled& height, const scaled& depth, const RGBColor& color) const;
   virtual AreaRef center(const AreaRef& area) const;
   virtual AreaRef left(const AreaRef& area) const;
   virtual AreaRef right(const AreaRef& area) const;

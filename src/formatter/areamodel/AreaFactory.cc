@@ -37,11 +37,22 @@ AreaFactory::background(const AreaRef& base, const RGBColor& c) const
 AreaRef
 AreaFactory::horizontalLine(const scaled& thickness, const RGBColor& c) const
 {
-  scaled halfThickness = thickness / 2;
+  const scaled halfThickness = thickness / 2;
   std::vector<AreaRef> h;
   h.reserve(2);
   h.push_back(verticalSpace(halfThickness, thickness - halfThickness));
   h.push_back(horizontalFiller());
+  return color(ink(horizontalArray(h)), c);
+}
+
+AreaRef
+AreaFactory::fixedHorizontalLine(const scaled& thickness, const scaled& length, const RGBColor& c) const
+{
+  const scaled halfThickness = thickness / 2;
+  std::vector<AreaRef> h;
+  h.reserve(2);
+  h.push_back(verticalSpace(halfThickness, thickness - halfThickness));
+  h.push_back(horizontalSpace(length));
   return color(ink(horizontalArray(h)), c);
 }
 
@@ -53,6 +64,16 @@ AreaFactory::verticalLine(const scaled& thickness, const RGBColor& c) const
   v.push_back(verticalFiller());
   v.push_back(horizontalSpace(thickness));
   v.push_back(verticalFiller());
+  return color(ink(verticalArray(v, 1)), c);
+}
+
+AreaRef
+AreaFactory::fixedVerticalLine(const scaled& thickness, const scaled& height, const scaled& depth, const RGBColor& c) const
+{
+  std::vector<AreaRef> v;
+  v.reserve(2);
+  v.push_back(horizontalSpace(thickness));
+  v.push_back(verticalSpace(height, depth));
   return color(ink(verticalArray(v, 1)), c);
 }
 

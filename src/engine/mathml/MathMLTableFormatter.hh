@@ -53,6 +53,8 @@ public:
 	    const SmartPtr<Value>&,
 	    const SmartPtr<Value>&);
   AreaRef formatLines(const class FormattingContext&,
+		      unsigned, unsigned,
+		      const SmartPtr<Value>&,
 		      const SmartPtr<Value>&,
 		      const SmartPtr<Value>&) const;
   void formatCells(const class FormattingContext&,
@@ -113,6 +115,9 @@ private:
     void setTempHeight(const scaled& h) { tempHeight = h; }
     void setDisplacement(const scaled& d) { displacement = d; }
     scaled getDisplacement(void) const { return displacement; }
+    scaled getTopDisplacement(void) const { return getDisplacement() + height; }
+    scaled getBottomDisplacement(void) const { return getDisplacement() - depth; }
+    scaled getCenterDisplacement(void) const { return getDisplacement() + (height - depth) / 2; }
 
   private:
     bool contentRow;
@@ -152,6 +157,9 @@ private:
     void setWidthSpec(float s) { spec = SCALE; scaleWidth = s; }
     void setDisplacement(const scaled& d) { displacement = d; }
     scaled getDisplacement(void) const { return displacement; }
+    scaled getLeftDisplacement(void) const { return getDisplacement(); }
+    scaled getRightDisplacement(void) const { return getDisplacement() + getWidth(); }
+    scaled getCenterDisplacement(void) const { return getDisplacement() + getWidth() / 2; }
 
   private:
     bool contentColumn;
@@ -166,6 +174,7 @@ private:
 
 protected:
   const Cell& getCell(unsigned, unsigned) const;
+  BoundingBox getBoundingBox(void) const { return BoundingBox(getWidth(), getHeight(), getDepth()); }
   BoundingBox getCellBoundingBox(unsigned, unsigned, unsigned, unsigned) const;
   scaled calcTableHeightDepthF(void);
   scaled calcTableHeightDepthT(int&, float&, scaled&, scaled&);
@@ -183,6 +192,7 @@ protected:
   void initTempWidths(void);
   void initWidthsF(void);
   void initWidthsT(void);
+  void setDisplacements(void);
   void setCellPositions(const scaled&);
   void setWidth(const scaled& w) { width = w; }
   void setHeight(const scaled& h) { height = h; }

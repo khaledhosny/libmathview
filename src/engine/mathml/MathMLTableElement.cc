@@ -131,14 +131,22 @@ MathMLTableElement::format(FormattingContext& ctxt)
 #endif
       std::cerr << "formatting table 2 bis" << std::endl;
 
-      SmartPtr<Value> v1 = GET_ATTRIBUTE_VALUE(MathML, Table, align);
-      SmartPtr<Value> v2 = GET_ATTRIBUTE_VALUE(MathML, Table, equalrows);
-      SmartPtr<Value> v3 = GET_ATTRIBUTE_VALUE(MathML, Table, equalcolumns);
       AreaRef res = tableFormatter->format(ctxt,
 					   numRows,
-					   v1,
-					   v2,
-					   v3);
+					   GET_ATTRIBUTE_VALUE(MathML, Table, align),
+					   GET_ATTRIBUTE_VALUE(MathML, Table, equalrows),
+					   GET_ATTRIBUTE_VALUE(MathML, Table, equalcolumns));
+      if (AreaRef lines = tableFormatter->formatLines(ctxt, numRows, numColumns,
+						      GET_ATTRIBUTE_VALUE(MathML, Table, frame),
+						      GET_ATTRIBUTE_VALUE(MathML, Table, rowlines),
+						      GET_ATTRIBUTE_VALUE(MathML, Table, columnlines)))
+	{
+	  std::vector<AreaRef> content;
+	  content.reserve(2);
+	  content.push_back(res);
+	  content.push_back(lines);
+	  res = ctxt.MGD()->getFactory()->overlapArray(content);
+	}
       std::cerr << "formatting table 3" << std::endl;
       res = ctxt.MGD()->wrapper(ctxt, res);
       setArea(res);
