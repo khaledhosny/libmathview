@@ -39,6 +39,7 @@ public:
 
   DOM::Element findDOMElement(const SmartPtr<class Element>&) const;
   SmartPtr<class Element> findElement(const DOM::Element&) const;
+  SmartPtr<class Element> findSelfOrAncestorElement(const DOM::Element&) const;
 
   virtual SmartPtr<class Element> getRootElement(void) const;
 

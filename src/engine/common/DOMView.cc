@@ -40,6 +40,19 @@ DOMView::findElement(const DOM::Element& el) const
   return linker->get(el);
 }
 
+SmartPtr<Element>
+DOMView::findSelfOrAncestorElement(const DOM::Element& el) const
+{
+  DOM::Element p = el;
+  while (p)
+    {
+      if (SmartPtr<Element> elem = findElement(p))
+	return elem;
+      p = DOM::Element(p.get_parentNode());
+    }
+  return 0;
+}
+
 DOM::Element
 DOMView::findDOMElement(const SmartPtr<Element>& elem) const
 {
@@ -56,7 +69,7 @@ DOMView::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
   DOM::MutationEvent me(ev);
   assert(me);
   std::cerr << "RECEIVING SUBTREE MODIFIED" << std::endl;
-  if (SmartPtr<Element> elem = view->findElement(DOM::Element(me.get_target())))
+  if (SmartPtr<Element> elem = view->findSelfOrAncestorElement(DOM::Element(me.get_target())))
     {
       std::cerr << "FOUND LINKED ELEMENT" << std::endl;
       elem->setDirtyStructure();
@@ -70,7 +83,7 @@ DOMView::DOMAttrModifiedListener::handleEvent(const DOM::Event& ev)
   DOM::MutationEvent me(ev);
   assert(me);
 
-  if (SmartPtr<Element> elem = view->findElement(DOM::Element(me.get_target())))
+  if (SmartPtr<Element> elem = view->findSelfOrAncestorElement(DOM::Element(me.get_target())))
     elem->setDirtyAttribute();
 }
 

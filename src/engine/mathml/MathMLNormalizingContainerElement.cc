@@ -49,6 +49,7 @@ MathMLNormalizingContainerElement::construct()
 #if defined(HAVE_GMETADOM)
       ChildList children(getDOMElement(), MATHML_NS_URI, "*");
       unsigned n = children.get_length();
+      std::cerr << "================== FOUND " << n << " children " << std::endl;
       if (n == 1)
 	{
 	  DOM::Node node = children.item(0);
@@ -76,6 +77,8 @@ MathMLNormalizingContainerElement::construct()
 	      assert(elem);
 	      newContent.push_back(elem);
 	    }
+
+	  std::cerr << "normalizing container construct with " << n << " children " << std::endl;
 
 	  row->swapContent(newContent);
 	}
