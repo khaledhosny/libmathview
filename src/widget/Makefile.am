@@ -67,6 +67,7 @@ gtk_HEADERS = \
 INCLUDES = \
   $(GTK_CFLAGS) \
   $(DOM_CFLAGS) \
+  $(XML_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
