@@ -4,6 +4,7 @@
 - = LONG TERM
 
 BUGS
+
 * par without width attribute -> assert false
 * View::getCharAt always returns index = 0
 + step in a boxml paragraph is wrong
@@ -13,14 +14,12 @@ BUGS
   but the text that follows the box is not. HARD! perhaps we should
   change/remove things like exit entry point?
 - units like cm are wrong (can be the dpi?)
-- applying the variant map before shaping is problematic when
-  using the PangoShaper because Pango doesn't know about variant
-  chars. This can be seen as a bug of pango or as a bug of our architecture
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
 
 ARCH IMPROVEMENTS
 
++ GetOperatorForm in mrow is linear in the length of the row
 + make the dummy elements have some content (or an attribute)
   and parameterize their rendering with that content
 + change the clone method for areas so that it checks if the
@@ -44,7 +43,6 @@ ARCH IMPROVEMENTS
   is right or down depending on the container)
 - the default font size now need to be set on two different 
   namespacecontexts, ugly. (see gtkmathview.cc)
-- make debugging methods in Areas optional (or remove them)
 - fix Configuration/Globals files 
 - move mathvariant files into src/common
 - not sure the Origin information should go in the view
@@ -60,7 +58,6 @@ MISSING
   collecting things and handle groups inside paragraphs. What
   about groups inside paragraphs? What about colors inside paragraphs?
 + implement cursor
-+ enable actions in boxml
 + add getId() method to reader interface
 - implement overstrike and underline for box text ?
 - implement available width propagation for boxes?
@@ -78,5 +75,4 @@ MISSING
 - add documentation for boxml
 - mmultiscripts
 - mpadded
-- token
 
