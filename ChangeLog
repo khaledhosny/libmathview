@@ -1,5 +1,8 @@
 2004-07-22  Hubert Figuiere  <hfiguiere@teaser.fr>
 
+	* autogen.sh: Enforce automake 1.7 use in autogen.sh until
+	further changes to work with older release.
+
 	* src/frontend/common/TemplateBuilder.hh: missing include
 
 	* src/frontend/libxml2_reader/Makefile.am (INCLUDES): Made sure we can build in a different dir than 
