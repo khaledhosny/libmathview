@@ -31,6 +31,8 @@
 #include "AttributeList.hh"
 #include "NamespaceContext.hh"
 
+#include <iostream>
+
 Element::Element(const SmartPtr<NamespaceContext>& c) : context(c)
 {
   assert(context);
@@ -50,13 +52,22 @@ Element::setParent(const SmartPtr<Element>& p)
   parent = static_cast<Element*>(p);
   if (p)
     {
-      // the setFlagUp is smart so it does not propagate the flag
+      std::cerr << "Element::setParent " << this << " " << static_cast<Element*>(p) << " dirtyAttribute=" << dirtyAttribute() << std::endl;
+      // WARNING: the setFlagUp is smart so it does not propagate the flag
       // if the flag is already set.
       // the setFlagDown however doesn't check for the status of the flag
       // so it is more delicate
       if (dirtyStructure()) setFlagUp(FDirtyStructure);
       if (dirtyAttribute()) setFlagUp(FDirtyAttributeP);
-      if (p->dirtyAttributeD() && !dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
+      // WARNING: since the builder creates the formatting tree in a top-down fashion
+      // and it resets dirty flags bottom-up, having a setFlagDown in the setParent
+      // would cause sometimes the creation of inconsistent formatting tree
+      // having subtrees with the DirtyAttributeD flag set, but no DirtyAttributeP
+      // set above the subtree.
+      // not propagating the DirtyAttributeD flag however may result into
+      // wrong formatting in some cases. It is not clear what should be done
+      // to fix this.
+      //if (p->dirtyAttributeD() && !dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
       if (dirtyLayout()) setFlagUp(FDirtyLayout);
       // if (p->dirtyLayout()) setFlagDown(FDirtyLayout); // NOOOOOOOOOOOOOOOOOOOO
     }
@@ -125,6 +136,7 @@ Element::setDirtyStructure()
 void
 Element::setDirtyAttribute()
 {
+  std::cerr << "Element::setDirtyAttribute " << this << " " << dirtyAttribute() << std::endl;
   if (!dirtyAttribute())
     {
       setFlag(FDirtyAttribute);
@@ -135,6 +147,7 @@ Element::setDirtyAttribute()
 void
 Element::setDirtyAttributeD()
 {
+  std::cerr << "Element::setDirtyAttributeD " << this << " " << dirtyAttribute() << std::endl;
   if (!dirtyAttributeD())
     {
       setFlagDown(FDirtyAttributeD);
@@ -155,6 +168,9 @@ Element::setDirtyLayout()
 void
 Element::setFlag(Flags f)
 {
+  if (f == FDirtyAttributeP) std::cerr << "Element::setFlag (FDirtyAttributeP) " << this << std::endl;
+  if (f == FDirtyAttribute) std::cerr << "Element::setFlag (FDirtyAttribute) " << this << std::endl;
+  if (f == FDirtyAttributeD) std::cerr << "Element::setFlag (FDirtyAttributeD) " << this << std::endl;
   flags.set(f);
 }
 

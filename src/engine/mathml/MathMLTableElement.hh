@@ -26,7 +26,6 @@
 #include "token.hh"
 #include "RGBColor.hh"
 #include "MathMLTableCellElement.hh"
-#include "MathMLTableRowElement.hh"
 #include "MathMLLinearContainerElement.hh"
 #include "MathMLAlignGroupElement.hh"
 
@@ -160,7 +159,7 @@ struct TableRow {
     height = depth = spacing = 0;
   }
 
-  SmartPtr<MathMLTableRowElement> mtr;   // Table Row element
+  // SmartPtr<MathMLTableRowElement> mtr;   // Table Row element
 
   SpacingId spacingType;      // type of spacing (absolute or %)
   scaled    fixedSpacing;     // spacing between rows (spacingType == FIXED)

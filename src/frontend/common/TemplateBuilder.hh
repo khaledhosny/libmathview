@@ -62,7 +62,7 @@ protected:
   updateElement(const typename Model::Element& el) const
   {
     SmartPtr<typename ElementBuilder::type> elem = getElement<ElementBuilder>(el);
-#if 0
+#if 1
     std::cerr << "BEFORE"
 	      << " updateElement " << static_cast<typename ElementBuilder::type*>(elem)
 	      << " dirtyAttribute=" << elem->dirtyAttribute() 
@@ -81,7 +81,7 @@ protected:
 	elem->resetDirtyAttribute();
 	ElementBuilder::end(*this, el, elem);
       }
-#if 0
+#if 1
     std::cerr << "AFTER"
 	      << " updateElement " << static_cast<typename ElementBuilder::type*>(elem)
 	      << " dirtyAttribute=" << elem->dirtyAttribute() 
