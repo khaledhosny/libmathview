@@ -982,6 +982,13 @@ gtk_math_view_load_root(GtkMathView* math_view, GdomeElement* elem)
   return TRUE;
 }
 
+extern "C" void
+gtk_math_view_unload(GtkMathView* math_view)
+{
+  g_return_if_fail(math_view != NULL);
+  gtk_math_view_load_root(math_view, NULL);
+}
+
 extern "C" GdkPixmap*
 gtk_math_view_get_buffer(GtkMathView* math_view)
 {
