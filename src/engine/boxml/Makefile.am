@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libboxml.la
+noinst_LTLIBRARIES = libboxml.la
 
 libboxml_la_SOURCES = \
   BoxedParagraph.cc \

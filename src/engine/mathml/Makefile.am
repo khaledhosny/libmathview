@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libmathml.la
+noinst_LTLIBRARIES = libmathml.la
 
 libmathml_la_SOURCES = \
   Configuration.cc \

@@ -30,7 +30,7 @@ libareamodel_la_SOURCES = \
   LinearContainerArea.cc \
   SimpleArea.cc
 
-pkginclude_HEADERS = \
+noinst_HEADERS = \
   Area.hh \
   AreaFactory.hh \
   BoxedLayoutArea.hh \

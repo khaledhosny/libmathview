@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libgtk_areamodel.la
+noinst_LTLIBRARIES = libgtk_areamodel.la
 
 #libgtk_areamodel_la_LIBADD = \
   #-lstdc++ \

@@ -935,7 +935,6 @@ gtk_math_view_load_root(GtkMathView* math_view, GdomeElement* elem)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
-  g_return_val_if_fail(elem != NULL, FALSE);
 
   math_view->view->setRootDOMElement(DOM::Element(elem));
 

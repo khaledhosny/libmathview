@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libengine_common.la
+noinst_LTLIBRARIES = libengine_common.la
 
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 

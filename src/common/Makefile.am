@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libcommon.la
+noinst_LTLIBRARIES = libcommon.la
 
 libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
@@ -18,8 +18,9 @@ libcommon_la_SOURCES = \
   String.cc \
   ValueConversion.cc
 
+pkginclude_HEADERS = defs.h
+
 noinst_HEADERS = \
-  defs.h \
   Clock.hh \
   Logger.hh \
   ChildList.hh \

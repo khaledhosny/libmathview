@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES = libreader.la
+noinst_LTLIBRARIES = libreader.la
 
 libreader_la_SOURCES = \
   DOMXmlReader.cc
