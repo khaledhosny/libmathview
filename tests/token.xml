@@ -1,12 +1,12 @@
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-	<mi color="Black" fontweight="bold">andrea</mi>
-	<mstyle background="#e0e0e0" fontsize="15pt">
-		<mi color="Blue" fontstyle="italic">claudio</mi>
-		<mstyle background="Black">
-			<mi color="Yellow" fontsize="150%">irene</mi>
+	<mi mathcolor="Black" mathvariant="bold">andrea</mi>
+	<mstyle background="#e0e0e0" mathsize="15pt">
+		<mi mathcolor="blue" mathvariant="italic">claudio</mi>
+		<mstyle background="black">
+			<mi mathcolor="yellow" mathsize="150%">irene</mi>
 		</mstyle>
-		<mi color="Navy" fontfamily="sans-serif">luca</mi>
-		<mi color="Red">questa e' una prova</mi>
+		<mi mathcolor="navy" mathvariant="sans-serif">luca</mi>
+		<mi mathcolor="red">questa e' una prova</mi>
 	</mstyle>
 	<mspace width="1cm"/>
 	<mi>i</mi>

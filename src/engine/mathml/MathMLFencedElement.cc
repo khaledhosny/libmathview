@@ -43,6 +43,51 @@ MathMLFencedElement::~MathMLFencedElement()
 {
 }
 
+#if 0
+void
+MathMLFencedElement::construct(AbstractConstructionContext& ctxt)
+{
+  if (dirtyStructure())
+    {
+      refine(ctxt.getRefinementContext());
+
+      String openFence = 
+      String closeFence = 
+      String separators = ToString(GET_ATTRIBUTE_VALUE(MathML, Fenced, separators));
+
+      ctxt.firstChild();
+      std::vector< SmartPtr<MathMLElement> > content;
+      while (ctxt.more()) content.push_back(ctxt.getNode());
+      ctxt.parentNode();
+
+      SmartPtr<MathMLOperatorElement> open = smart_cast<MathMLOperatorElement>(getFactory()->createOperatorElement());
+      open->setSize(0);
+      open->append(ToString(GET_ATTRIBUTE_VALUE(MathML, Fenced, open)));
+      open->SetFence();
+
+      SmartPtr<MathMLRowElement> outerRow = smart_cast<MathMLRowElement>(getFactory()->createRowElement());
+
+      SmartPtr<MathMLOperatorElement> close = smart_cast<MathMLOperatorElement>(getFactory()->createOperatorElement());
+      close->setSize(0);
+      close->append(ToString(GET_ATTRIBUTE_VALUE(MathML, Fenced, close)));
+      close->SetFence();
+      
+      std::vector< SmartPtr<MathMLElement> > outerRowContent;
+      outerRowContent.reserve(3);
+      outerRowContent.push_back(open);
+      if (content.size() == 1)
+	outerRowContent.push_back(content[0]);
+      else
+	{
+	  
+	}
+      outerRowContent.push_back(close);
+      
+      resetDirtyStructure();
+    }
+}
+#endif
+
 void
 MathMLFencedElement::construct()
 {
