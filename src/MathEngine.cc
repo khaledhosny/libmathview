@@ -337,7 +337,11 @@ MathEngine::GetDocumentRectangle(Rectangle& rect) const
   if (root != NULL) {
     BoundingBox box;
     GetDocumentBoundingBox(box);
-    box.ToRectangle(root->GetX(), root->GetY(), rect);
+
+    rect.x = root->GetX();
+    rect.y = root->GetY() - box.tAscent;
+    rect.width = scaledMax(box.width, box.rBearing);
+    rect.height = box.GetTotalHeight();
   } else
     rect.Zero();
 }

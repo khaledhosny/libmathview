@@ -82,117 +82,120 @@ PS_T1_FontManager::ResetUsedChars() const
 }
 
 void
-PS_T1_FontManager::DumpFontDictionary(FILE* output, bool subset) const
+PS_T1_FontManager::DumpFontDictionary(FILE* output, bool embed, bool subset) const
 {
   assert(output != NULL);
 
-  Container<T1_FontDesc*> fontDesc;
+  if (embed)
+    {
+      Container<T1_FontDesc*> fontDesc;
 
-  for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
-    assert(i() != NULL);
-    if (i()->used) {
-      const AFont* font = i()->font;
-      assert(font != NULL);
-      const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
-      assert(ps_font != NULL);
+      for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
+	assert(i() != NULL);
+	if (i()->used) {
+	  const AFont* font = i()->font;
+	  assert(font != NULL);
+	  const PS_T1_Font* ps_font = TO_PS_T1_FONT(font);
+	  assert(ps_font != NULL);
 
-      if (subset)
-	SetUsedChars(fontDesc, ps_font->GetNativeFontId(), ps_font->GetUsedChars());
-      else
-	SetUsedChars(fontDesc, ps_font->GetNativeFontId());
+	  if (subset)
+	    SetUsedChars(fontDesc, ps_font->GetNativeFontId(), ps_font->GetUsedChars());
+	  else
+	    SetUsedChars(fontDesc, ps_font->GetNativeFontId());
 
 #if 0      
-      unsigned id = t1_font->GetNativeFontId();
-      if (!fontId.Contains(id)) fontId.Append(id);
+	  unsigned id = t1_font->GetNativeFontId();
+	  if (!fontId.Contains(id)) fontId.Append(id);
 #endif
-    }
-  }
-
-  for (Iterator<T1_FontDesc*> i(fontDesc); i.More(); i.Next()) {
-    assert(i() != NULL);
-
-    if (i.IsFirst()) {
-      fprintf(output, "%%%%DocumentSuppliedResources: font ");
-    } else {
-      fprintf(output, "%%%%+ font ");
-    }
-
-    fprintf(output, "%s\n", T1_GetFontName(i()->id));
-
-    if (i.IsLast()) fprintf(output, "\n\n");
-  }
-
-  fprintf(output, "%%%%BeginSetup\n");
-
-  while (!fontDesc.IsEmpty()) {
-    T1_FontDesc* desc = fontDesc.RemoveFirst();
-    assert(desc != NULL);
-
-    MathEngine::logger(LOG_DEBUG, "subset font `%d'", desc->id);
-
-    unsigned count = 0;
-    for (unsigned i = 0; i < 256; i++)
-      if (desc->used[i]) count++;
-    MathEngine::logger(LOG_DEBUG, "subsetting %d chars", count);
-
-    unsigned long bufSize;
-    char* dump = T1_SubsetFont(desc->id, desc->used,
-			       T1_SUBSET_DEFAULT | T1_SUBSET_SKIP_REENCODE,
-			       64, 16384, &bufSize);
-    assert(dump != NULL);
-    fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(desc->id));
-    fwrite(dump, 1, bufSize, output);
-    fprintf(output, "%%%%EndResource\n\n");
-    MathEngine::logger(LOG_DEBUG, "done!");
-    free(dump);
-
-    delete desc;
-  }
-
-#if 0
-  for (Iterator<unsigned> id(fontId); id.More(); id.Next()) {
-    const char* fileName = getFontFilePath(id());
-
-    if (fileName != NULL) {
-      char* path = new char[strlen(fileName) + 4];
-      strcpy(path, fileName);
-      unsigned len = strlen(path);
-
-      if (len < 4 || path[len - 4] != '.'){
-	strcat(path, ".pfb");
-	len += 4;
-      }
-
-      strcpy(path + len - 4, ".pfa");
-      FILE* f = fopen(path, "rt");
-
-      if (f == NULL) {
-	strcpy(path + len - 4, ".pfb");
-	f = fopen(path, "rb");
-
-	if (f != NULL) {
-	  fclose(f);
-	  convertToPFA(path, "/tmp/tmpfont.pfa");
-	  f = fopen("/tmp/tmpfont.pfa", "rt");
 	}
       }
 
-      if (f != NULL) {
-	fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(id()));
-	dumpFontFile(f, output);
-	fprintf(output, "%%%%EndResource\n\n");
-	fclose(f);	
-      } else
-	MathEngine::logger(LOG_WARNING, "could not include font file `%s'", path);
+      for (Iterator<T1_FontDesc*> i(fontDesc); i.More(); i.Next()) {
+	assert(i() != NULL);
 
-      delete [] path;
-    } else {
-      MathEngine::logger(LOG_WARNING, "could not find file for font `%s'", T1_GetFontName(id()));
-    }
-  }
+	if (i.IsFirst()) {
+	  fprintf(output, "%%%%DocumentSuppliedResources: font ");
+	} else {
+	  fprintf(output, "%%%%+ font ");
+	}
+
+	fprintf(output, "%s\n", T1_GetFontName(i()->id));
+
+	if (i.IsLast()) fprintf(output, "\n\n");
+      }
+
+      fprintf(output, "%%%%BeginSetup\n");
+
+      while (!fontDesc.IsEmpty()) {
+	T1_FontDesc* desc = fontDesc.RemoveFirst();
+	assert(desc != NULL);
+
+	MathEngine::logger(LOG_DEBUG, "subset font `%d'", desc->id);
+
+	unsigned count = 0;
+	for (unsigned i = 0; i < 256; i++)
+	  if (desc->used[i]) count++;
+	MathEngine::logger(LOG_DEBUG, "subsetting %d chars", count);
+
+	unsigned long bufSize;
+	char* dump = T1_SubsetFont(desc->id, desc->used,
+				   T1_SUBSET_DEFAULT | T1_SUBSET_SKIP_REENCODE,
+				   64, 16384, &bufSize);
+	assert(dump != NULL);
+	fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(desc->id));
+	fwrite(dump, 1, bufSize, output);
+	fprintf(output, "%%%%EndResource\n\n");
+	MathEngine::logger(LOG_DEBUG, "done!");
+	free(dump);
+
+	delete desc;
+      }
+
+#if 0
+      for (Iterator<unsigned> id(fontId); id.More(); id.Next()) {
+	const char* fileName = getFontFilePath(id());
+
+	if (fileName != NULL) {
+	  char* path = new char[strlen(fileName) + 4];
+	  strcpy(path, fileName);
+	  unsigned len = strlen(path);
+
+	  if (len < 4 || path[len - 4] != '.'){
+	    strcat(path, ".pfb");
+	    len += 4;
+	  }
+
+	  strcpy(path + len - 4, ".pfa");
+	  FILE* f = fopen(path, "rt");
+
+	  if (f == NULL) {
+	    strcpy(path + len - 4, ".pfb");
+	    f = fopen(path, "rb");
+
+	    if (f != NULL) {
+	      fclose(f);
+	      convertToPFA(path, "/tmp/tmpfont.pfa");
+	      f = fopen("/tmp/tmpfont.pfa", "rt");
+	    }
+	  }
+
+	  if (f != NULL) {
+	    fprintf(output, "%%%%BeginResource: font %s\n", T1_GetFontName(id()));
+	    dumpFontFile(f, output);
+	    fprintf(output, "%%%%EndResource\n\n");
+	    fclose(f);	
+	  } else
+	    MathEngine::logger(LOG_WARNING, "could not include font file `%s'", path);
+
+	  delete [] path;
+	} else {
+	  MathEngine::logger(LOG_WARNING, "could not find file for font `%s'", T1_GetFontName(id()));
+	}
+      }
 #endif
 
-  fprintf(output, "%%%%EndSetup\n\n");
+      fprintf(output, "%%%%EndSetup\n\n");
+    }
 
   for (Iterator<Bucket*> i(content); i.More(); i.Next()) {
     assert(i() != NULL);

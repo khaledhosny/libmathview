@@ -55,7 +55,8 @@ enum CommandLineOptionId {
   OPTION_MARGINS,
   OPTION_FONT_SIZE,
   OPTION_COLORS,
-  OPTION_SUBSET,
+  OPTION_EMBED_FONTS,
+  OPTION_SUBSET_FONTS,
   OPTION_CROP,
   OPTION_SHOW_MISSING,
   OPTION_LINE_BREAKING,
@@ -74,7 +75,8 @@ static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = 10;
 static bool   colors = false;
-static bool   subsetting = true;
+static bool   embedFonts = false;
+static bool   subsetFonts = true;
 static bool   cropping = true;
 static bool   showMissing = true;
 static bool   cutFileName = true;
@@ -109,7 +111,8 @@ Usage: mathml2ps [options] file ...\n\n\
   -f, --font-size=<float>         Default font size (in pt, default=10)\n\
   -k, --kerning[=yes|no]          Enable/disable kerning (default='no')\n\
   -c, --colors[=yes|no]           Enable/disable colors (default='no')\n\
-  -s, --subset[=yes|no]           Enable/disable font subsetting (default='yes')\n\
+  -E, --embed-fonts[=yes|no]      Enable/disable font embedding (default='no')\n\
+  -s, --subset-fonts[=yes|no]     Enable/disable font subsetting (default='yes')\n\
   -r, --crop[=yes|no]             Enable/disable cropping to bounding box (default='yes')\n\
   -i, --show-missing[=yes|no]     Show missing characters (default='yes')\n\
   -b, --line-breaking[=yes|no]    Enable/disable line-breaking (default='no')\n\
@@ -269,7 +272,8 @@ main(int argc, char *argv[])
       { "margins",         required_argument, NULL, OPTION_MARGINS },
       { "font-size",       required_argument, NULL, OPTION_FONT_SIZE },
       { "colors",          optional_argument, NULL, OPTION_COLORS },
-      { "subset",          optional_argument, NULL, OPTION_SUBSET },
+      { "embed-fonts",     optional_argument, NULL, OPTION_EMBED_FONTS },
+      { "subset-fonts",    optional_argument, NULL, OPTION_SUBSET_FONTS },
       { "crop",            optional_argument, NULL, OPTION_CROP },
       { "show-missing",    optional_argument, NULL, OPTION_SHOW_MISSING },
       { "line-breaking",   optional_argument, NULL, OPTION_LINE_BREAKING },
@@ -281,7 +285,7 @@ main(int argc, char *argv[])
       { NULL,              no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vhg:u:m:f:e::i::r::b::k::c::s::", long_options, &option_index);
+    int c = getopt_long(argc, argv, "vhg:u:m:f:E::e::i::r::b::k::c::s::", long_options, &option_index);
 
     if (c == -1) break;
 
@@ -331,10 +335,16 @@ main(int argc, char *argv[])
       else if (!parseBoolean(optarg, colors)) parseError("colors");
       break;
 
-    case OPTION_SUBSET:
+    case OPTION_EMBED_FONTS:
+    case 'E':
+      if (optarg == NULL) embedFonts = true;
+      else if (!parseBoolean(optarg, embedFonts)) parseError("embed-fonts");
+      break;
+
+    case OPTION_SUBSET_FONTS:
     case 's':
-      if (optarg == NULL) subsetting = true;
-      else if (!parseBoolean(optarg, subsetting)) parseError("subset");
+      if (optarg == NULL) subsetFonts = true;
+      else if (!parseBoolean(optarg, subsetFonts)) parseError("subset-fonts");
       break;
 
     case OPTION_CROP:
@@ -466,14 +476,18 @@ main(int argc, char *argv[])
       sheet.width = w;
       sheet.height = h;
 
-      // the following invocations are needed just to mark the chars actually used :(
-      fm.ResetUsedChars();
-      area.SetOutputFile(NULL);
-      engine.Render(&sheet);
-      area.SetOutputFile(outFile);
+      if (embedFonts)
+	{
+	  // the following invocations are needed just to mark the chars actually used :(
+	  fm.ResetUsedChars();
+	  area.SetOutputFile(NULL);
+	  engine.Render(&sheet);
+	}
 
+      area.SetOutputFile(outFile);
       area.DumpHeader(appName, argv[optind], cropping ? rect : sheet);
-      fm.DumpFontDictionary(outFile, subsetting);
+
+      fm.DumpFontDictionary(outFile, embedFonts, subsetFonts);
 
       area.DumpPreamble();
       //area.DumpGrid();

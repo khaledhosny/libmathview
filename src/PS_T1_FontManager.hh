@@ -27,12 +27,13 @@
 
 #include "T1_FontManager.hh"
 
-class PS_T1_FontManager : public T1_FontManager {
+class PS_T1_FontManager : public T1_FontManager
+{
 public:
   PS_T1_FontManager(void);
   virtual ~PS_T1_FontManager();
 
-  void DumpFontDictionary(FILE*, bool = true) const;
+  void DumpFontDictionary(FILE*, bool = true, bool = true) const;
   void ResetUsedChars(void) const;
 
 protected:
@@ -57,3 +58,4 @@ private:
 #endif // HAVE_LIBT1
 
 #endif // PS_T1_FontManager
+
