@@ -86,8 +86,7 @@ BoxedLayoutArea::getChild(unsigned i) const
 AreaRef
 BoxedLayoutArea::replace(const ReplacementContext& context) const
 {
-  AreaRef newArea;
-  if (context.get(newArea))
+  if (AreaRef newArea = context.get())
     return newArea;
   else
     {
@@ -159,4 +158,31 @@ BoxedLayoutArea::dump(const DOM::Document& doc) const
     el.appendChild(p->area->dump(doc));
 
   return el;
+}
+
+scaled
+BoxedLayoutArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty) const
+{
+  if (id == empty)
+    return 0;
+  else
+    throw InvalidId();
+}
+
+scaled
+BoxedLayoutArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
+{
+  throw NotAllowed();
+}
+
+scaled
+BoxedLayoutArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator empty) const
+{
+  throw NotAllowed();
+}
+
+AreaRef
+BoxedLayoutArea::node(AreaId::const_iterator id, AreaId::const_iterator empty) const
+{
+  throw InvalidId();
 }

@@ -55,17 +55,14 @@ ReplacementContext::add(const AreaId& id, const AreaRef& area)
   subst.push_back(std::make_pair(id, area));
 }
 
-bool
-ReplacementContext::get(AreaRef& area) const
+AreaRef
+ReplacementContext::get() const
 {
   for (std::list< std::pair<AreaId,AreaRef> >::const_iterator p = subst.begin();
        p != subst.end();
        p++)
-    if ((*p).first.empty())
-      {
-	area = (*p).second;
-	return true;
-      }
-  return false;
+    if ((*p).first.empty()) return (*p).second;
+
+  return 0;
 }
 

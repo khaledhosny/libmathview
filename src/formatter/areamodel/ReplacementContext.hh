@@ -38,7 +38,7 @@ public:
   ~ReplacementContext();
 
   void add(const AreaId&, const AreaRef&);
-  bool get(AreaRef&) const;
+  AreaRef get(void) const;
 
   class DuplicateSubstitution { };
 

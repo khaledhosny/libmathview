@@ -39,6 +39,7 @@ public:
   virtual AreaRef flatten(void) const;
 
   virtual BoundingBox box(void) const;
+  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual DOM::Element dump(const DOM::Document&) const;

@@ -82,12 +82,43 @@ VerticalArrayArea::box() const
        p != content.end();
        p++)
     {
-      if (p - content.begin() < refArea)
+      const int i = p - content.begin();
+      if (i < refArea)
 	bbox.over((*p)->box());
-      else if (p - content.begin() > refArea)
+      else if (i > refArea)
 	bbox.under((*p)->box());
     }
   return bbox;
+}
+
+void
+VerticalArrayArea::render(class RenderingContext& context, const scaled& x, const scaled& y0) const
+{
+  std::vector<BoundingBox> box;
+  box.reserve(content.size());
+  scaled depth = 0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      const int i = p - content.begin();
+      box.push_back((*p)->box());
+      if (i < refArea)
+	depth += box.back().verticalExtent();
+      else if (i == refArea)
+	depth += box.back().depth;
+    }
+
+  scaled y = y0 - depth;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      const int i = p - content.begin();
+      y += box[i].depth;
+      (*p)->render(context, x, y);
+      y += box[i].height;
+    }  
 }
 
 void

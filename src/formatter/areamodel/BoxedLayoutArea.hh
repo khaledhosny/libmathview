@@ -46,7 +46,7 @@ protected:
   virtual ~BoxedLayoutArea() { }
 
 public:
-  SmartPtr<BoxedLayoutArea> create(const BoundingBox& b, const std::vector<XYArea>& c)
+  static SmartPtr<BoxedLayoutArea> create(const BoundingBox& b, const std::vector<XYArea>& c)
   { return new BoxedLayoutArea(b, c); }
   virtual SmartPtr<Area> clone(void) const;
   virtual SmartPtr<Area> clone(const BoundingBox&, const std::vector<XYArea>&) const;

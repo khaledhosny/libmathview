@@ -71,8 +71,7 @@ LinearContainerArea::node(AreaId::const_iterator id, AreaId::const_iterator empt
 AreaRef
 LinearContainerArea::replace(const ReplacementContext& context) const
 {
-  AreaRef newArea;
-  if (context.get(newArea))
+  if (AreaRef newArea = context.get())
     return newArea;
   else
     {
@@ -82,8 +81,8 @@ LinearContainerArea::replace(const ReplacementContext& context) const
 	   p != content.end();
 	   p++)
 	{
-	  ReplacementContext newContext(context, (p - content.begin()) + 1);
-	  newContent.push_back(content[(p - content.begin()) + 1]->replace(newContext));
+	  ReplacementContext newContext(context, p - content.begin());
+	  newContent.push_back(content[p - content.begin()]->replace(newContext));
 	}
       if (content == newContent)
 	return this;

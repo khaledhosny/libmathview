@@ -35,7 +35,8 @@ AreaRef
 AreaFactory::horizontalLine(const scaled& thickness, const RGBColor& c) const
 {
   scaled halfThickness = thickness / 2;
-  std::vector<AreaRef> h(2);
+  std::vector<AreaRef> h;
+  h.reserve(2);
   h.push_back(verticalSpace(halfThickness, thickness - halfThickness));
   h.push_back(horizontalFiller());
   return color(ink(horizontalArray(h)), c);
@@ -44,7 +45,8 @@ AreaFactory::horizontalLine(const scaled& thickness, const RGBColor& c) const
 AreaRef
 AreaFactory::verticalLine(const scaled& thickness, const RGBColor& c) const
 {
-  std::vector<AreaRef> v(2);
+  std::vector<AreaRef> v;
+  v.reserve(2);
   v.push_back(horizontalSpace(thickness));
   v.push_back(verticalFiller());
   return color(ink(verticalArray(v, 1)), c);
@@ -53,7 +55,8 @@ AreaFactory::verticalLine(const scaled& thickness, const RGBColor& c) const
 AreaRef
 AreaFactory::center(const AreaRef& area) const
 {
-  std::vector<AreaRef> h(3);
+  std::vector<AreaRef> h;
+  h.reserve(3);
   h.push_back(horizontalFiller());
   h.push_back(area);
   h.push_back(horizontalFiller());
@@ -63,7 +66,8 @@ AreaFactory::center(const AreaRef& area) const
 AreaRef
 AreaFactory::left(const AreaRef& area) const
 {
-  std::vector<AreaRef> h(2);
+  std::vector<AreaRef> h;
+  h.reserve(2);
   h.push_back(area);
   h.push_back(horizontalFiller());
   return horizontalArray(h);
@@ -72,7 +76,8 @@ AreaFactory::left(const AreaRef& area) const
 AreaRef
 AreaFactory::right(const AreaRef& area) const
 {
-  std::vector<AreaRef> h(2);
+  std::vector<AreaRef> h;
+  h.reserve(2);
   h.push_back(horizontalFiller());
   h.push_back(area);
   return horizontalArray(h);
@@ -81,7 +86,8 @@ AreaFactory::right(const AreaRef& area) const
 AreaRef
 AreaFactory::middle(const AreaRef& area) const
 {
-  std::vector<AreaRef> v(3);
+  std::vector<AreaRef> v;
+  v.reserve(3);
   v.push_back(verticalFiller());
   v.push_back(area);
   v.push_back(verticalFiller());
@@ -91,7 +97,8 @@ AreaFactory::middle(const AreaRef& area) const
 AreaRef
 AreaFactory::top(const AreaRef& area) const
 {
-  std::vector<AreaRef> v(2);
+  std::vector<AreaRef> v;
+  v.reserve(2);
   v.push_back(verticalFiller());
   v.push_back(area);
   return verticalArray(v, 0);
@@ -100,7 +107,8 @@ AreaFactory::top(const AreaRef& area) const
 AreaRef
 AreaFactory::bottom(const AreaRef& area) const
 {
-  std::vector<AreaRef> v(2);
+  std::vector<AreaRef> v;
+  v.reserve(2);
   v.push_back(area);
   v.push_back(verticalFiller());
   return verticalArray(v, 1);

@@ -64,8 +64,7 @@ BinContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty
 AreaRef
 BinContainerArea::replace(const ReplacementContext& context) const
 {
-  AreaRef newArea;
-  if (context.get(newArea))
+  if (AreaRef newArea = context.get())
     return newArea;
   else
     {

@@ -49,8 +49,7 @@ SimpleArea::fit(const scaled&, const scaled&, const scaled&) const
 AreaRef
 SimpleArea::replace(const ReplacementContext& context) const
 {
-  AreaRef newArea;
-  if (context.get(newArea))
+  if (AreaRef newArea = context.get())
     return newArea;
   else
     return this;
