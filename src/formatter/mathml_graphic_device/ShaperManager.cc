@@ -33,6 +33,44 @@ ShaperManager::ShaperManager() : nextShaperId(0)
     shaper[i] = 0;
 }
 
+AreaRef
+ShaperManager::shapeAux(ShapingResult& result) const
+{
+  while (!result.done())
+    {
+      if (unsigned n = getShaper(result.getShaperId()).shape(result))
+	result.advance(n);
+      else
+	return 0;
+    }
+
+  return result.area();
+}
+
+AreaRef
+ShaperManager::shape(const SmartPtr<AreaFactory>& factory,
+		     const DOM::UCS4String& source,
+		     const scaled& fontSize) const
+{
+  std::vector<GlyphSpec> spec(source.length());
+  for (unsigned i = 0; i < source.length(); i++)
+    spec.push_back(map(source[i]));
+  return shapeAux(ShapingResult(factory, source, spec, fontSize));
+}
+
+AreaRef
+ShaperManager::shapeStretchy(const SmartPtr<AreaFactory>& factory,
+			     const DOM::UCS4String& source,
+			     const scaled& fontSize,
+			     const scaled& vSpan,
+			     const scaled& hSpan) const
+{
+  std::vector<GlyphSpec> spec(source.length());
+  for (unsigned i = 0; i < source.length(); i++)
+    spec.push_back(mapStretchy(source[i]));
+  return shapeAux(ShapingResult(factory, source, spec, fontSize, vSpan, hSpan));
+}
+
 unsigned
 ShaperManager::registerShaper(const Shaper& s)
 {
@@ -53,10 +91,27 @@ ShaperManager::registerChar(DOM::Char32 ch, const GlyphSpec& spec)
 }
 
 GlyphSpec
+ShaperManager::registerStretchyChar(DOM::Char32 ch, const GlyphSpec& spec)
+{
+  assert(ch <= BIGGEST_CHAR);
+  GlyphSpec oldSpec = glyphSpec[ch];
+  glyphSpec.set(ch | STRETCHY_FLAG, spec);
+  return oldSpec;
+}
+
+GlyphSpec
 ShaperManager::map(DOM::Char32 ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch];
+}
+
+Glyphspec
+ShaperManager::mapStretchy(DOM::Char32 ch) const
+{
+  assert(ch <= BIGGEST_CHAR);
+  GlyphSpec spec = glyphSpec[ch | STRETCHY_FLAG];
+  return spec.getShaperId() ? spec : map(ch);
 }
 
 const class Shaper&

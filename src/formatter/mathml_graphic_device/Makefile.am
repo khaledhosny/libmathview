@@ -6,14 +6,16 @@ libmathml_graphic_device_la_LIBADD =
 libmathml_graphic_device_la_SOURCES = \
   MathFormattingContext.cc \
   MathGraphicDevice.cc \
-  ShaperManager.cc
+  ShaperManager.cc \
+  ShapingResult.cc
 
 noinst_HEADERS = \
   MathFormattingContext.hh \
   MathGraphicDevice.hh \
   GlyphSpec.hh \
   Shaper.hh \
-  ShaperManager.hh
+  ShaperManager.hh \
+  ShapingResult.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \

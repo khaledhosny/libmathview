@@ -23,18 +23,13 @@
 #ifndef __Shaper_hh__
 #define __Shaper_hh__
 
-#include "scaled.hh"
-#include "Area.hh"
-#include "DOM.hh"
+#include "ShapingResult.hh"
 
 class Shaper
 {
 public:
-  virtual void registerChars(class ShaperManager&, unsigned shaperId) const = 0;
-  virtual AreaRef shapeChar(DOM::Char32 ch, const class GlyphSpec& spec, unsigned size) const = 0;
-  virtual AreaRef combineWith(const AreaRef& base, DOM::Char32 ch) const = 0;
-  virtual AreaRef stretchH(const AreaRef& base, const scaled& hSpan) const = 0;
-  virtual AreaRef stretchV(const AreaRef& base, const scaled& vSpan) const = 0;
+  virtual void registerChars(class ShaperManager&, unsigned) const = 0;
+  virtual unsigned shape(ShapingResult&) const = 0;
 };
 
 #endif // __Shaper_hh__
