@@ -30,7 +30,7 @@ unsigned
 ShapingResult::chunkSize() const
 {
   assert(!done());
-  unsigned n = 0;
+  unsigned n = 1;
   unsigned si = getShaperId();
   while (index + n < spec.size() && spec[index + n].getShaperId() == si) n++;
   return n;
@@ -60,17 +60,28 @@ ShapingResult::data() const
 AreaRef
 ShapingResult::area(const SmartPtr<AreaFactory>& factory) const
 {
-  if (res.size() == 1)
-    return res[0];
+#if 0
+  if (res.size() == source.length())
+#endif
+    if (res.size() == 1) 
+      return res[0];
+    else
+      return factory->horizontalArray(res);
+#if 0
   else
-    return factory->horizontalArray(res);
-}
-
-void
-ShapingResult::advance(int n)
-{
-  assert(index + n >= 0 && index + n <= source.length());
-  index += n;
+    {
+      std::vector<AreaRef> content;
+      content.reserve(source.length());
+      AreaRef empty = factory->horizontalSpace(scaled::zero());
+      for (unsigned i = 0; i < res.size(); i++)
+	{
+	  for (unsigned j = 0; j < res_n[i] - 1; j++)
+	    content.push_back(empty);
+	  content.push_back(res[i]);
+	}
+      return factory->horizontalArray(content);
+    }
+#endif
 }
 
 DOM::Char32
@@ -105,8 +116,23 @@ ShapingResult::nextString(int l) const
   return source.substr(index, l);
 }
 
-void
-ShapingResult::pushArea(const AreaRef& area)
+AreaRef
+ShapingResult::popArea(unsigned& n)
 {
+  assert(!empty());
+  n = res_n.back();
+  res_n.pop_back();
+  AreaRef area = res.back();
+  res.pop_back();
+  return area;
+}
+
+void
+ShapingResult::pushArea(unsigned n, const AreaRef& area)
+{
+  assert(area);
+  assert(index + n >= 0 && index + n <= source.length());
+  index += n;
+  res_n.push_back(n);
   res.push_back(area);
 }

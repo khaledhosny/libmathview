@@ -45,7 +45,7 @@ public:
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
-  virtual unsigned shape(const class MathFormattingContext&, class ShapingResult&) const;
+  virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
 
 protected:
   static const char* getXLFD(unsigned, const scaled&);

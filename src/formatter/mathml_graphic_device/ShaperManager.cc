@@ -46,7 +46,9 @@ ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result
 {
   while (!result.done())
     {
-      if (getShaper(result.getShaperId())->shape(ctxt, result) == 0)
+      const unsigned index = result.getIndex();
+      getShaper(result.getShaperId())->shape(ctxt, result);
+      if (index == result.getIndex())
 	{
 	  // this is very severe, a Shaper has declared it is able to handle
 	  // a character but it turned out that it has eaten no characters from

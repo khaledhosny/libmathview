@@ -45,12 +45,13 @@ public:
   unsigned chunkSize(void) const;
   unsigned getShaperId(void) const;
 
-  AreaRef popArea(void);
-  void pushArea(const AreaRef&);
+  AreaRef popArea(unsigned&);
+  void pushArea(unsigned, const AreaRef&);
   AreaRef getArea(int = -1) const;
   AreaRef area(const SmartPtr<AreaFactory>&) const;
 
-  void advance(int = 1);
+  unsigned getIndex(void) const { return index; }
+
   const DOM::Char32* data(void) const;
   GlyphSpec getSpec(int = 0) const;
   DOM::Char32 prevChar(void) const;
@@ -65,6 +66,7 @@ private:
   scaled vSpan;
   scaled hSpan;
   unsigned index;
+  std::vector<unsigned> res_n;
   std::vector<AreaRef> res;
 };
 

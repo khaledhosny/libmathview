@@ -37,15 +37,15 @@ public:
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
-  virtual unsigned shape(const class MathFormattingContext&, class ShapingResult&) const;
+  virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
 
 protected:
-  static unsigned shapeFixedSpace(const class MathFormattingContext&, ShapingResult&, const GlyphSpec&);
-  static unsigned shapeContextSensitiveSpace(const class MathFormattingContext&, ShapingResult&, const GlyphSpec&);
+  static void shapeFixedSpace(const class MathFormattingContext&, ShapingResult&, const GlyphSpec&);
+  static void shapeContextSensitiveSpace(const class MathFormattingContext&, ShapingResult&, const GlyphSpec&);
 
-  static void pushSpace(const class MathFormattingContext&, ShapingResult&, int);
-  static void shapeFunctionApplication(const class MathFormattingContext&, class ShapingResult&);
-  static void shapeInvisibleTimes(const class MathFormattingContext&, class ShapingResult&);
+  static void pushSpace(const class MathFormattingContext&, ShapingResult&, int, unsigned = 1);
+  static int shapeFunctionApplication(const class MathFormattingContext&);
+  static int shapeInvisibleTimes(const class MathFormattingContext&);
 };
 
 #endif // __SpaceShaper_hh__

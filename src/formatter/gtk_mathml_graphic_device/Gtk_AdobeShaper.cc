@@ -343,12 +343,10 @@ Gtk_AdobeShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
   // nothing to do???
 }
 
-unsigned
+void
 Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
-  unsigned n0 = result.chunkSize();
-  unsigned n = n0;
-  while (n > 0)
+  for (unsigned n = result.chunkSize(); n > 0; n--)
     {
       AreaRef res;
       GlyphSpec spec = result.getSpec();
@@ -364,11 +362,8 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
       if (!res) res = shapeChar(ctxt, spec);
       if (!res) break;
 
-      result.pushArea(res);
-      result.advance();
-      n--;
+      result.pushArea(1, res);
     }
-  return n0 - n;
 }
 
 const char*

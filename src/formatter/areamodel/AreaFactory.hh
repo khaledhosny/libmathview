@@ -82,7 +82,6 @@ public:
   { return BoxedLayoutArea::create(box, content); }
 
   // macro areas
-
   virtual AreaRef background(const AreaRef& area, const RGBColor& color) const;
   virtual AreaRef horizontalLine(const scaled& thickness, const RGBColor& color) const;
   virtual AreaRef verticalLine(const scaled& thickness, const RGBColor& color) const;

@@ -49,7 +49,7 @@ Gtk_PangoShaper::unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned
   // nothing to do
 }
 
-unsigned
+void
 Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   assert(context);
@@ -79,12 +79,8 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-  result.pushArea(factory->pangoLayout(layout));
+  result.pushArea(n, factory->pangoLayout(layout));
 
   //g_free(buffer);
   // g_free(sizeAttr); // ????
-
-  result.advance(n);
-
-  return length;
 }

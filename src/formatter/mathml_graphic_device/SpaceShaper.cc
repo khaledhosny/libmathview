@@ -90,36 +90,33 @@ SpaceShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
   // nothing to do???
 }
 
-unsigned
+void
 SpaceShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   assert(!result.done());
 
-  unsigned n = 0;
   GlyphSpec spec = result.getSpec();
   switch (spec.getFontId())
     {
     case FIXED_SPACE_MAP_INDEX:
-      n = shapeFixedSpace(ctxt, result, spec);
+      shapeFixedSpace(ctxt, result, spec);
       break;
     case CS_SPACE_MAP_INDEX:
-      n = shapeContextSensitiveSpace(ctxt, result, spec);
+      shapeContextSensitiveSpace(ctxt, result, spec);
       break;
     default:
       assert(false);
     }
-  result.advance(n);
-
-  return n;
 }
 
 void
-SpaceShaper::pushSpace(const MathFormattingContext& ctxt, ShapingResult& result, int space)
+SpaceShaper::pushSpace(const MathFormattingContext& ctxt, ShapingResult& result, int space, unsigned n)
 {
-  result.pushArea(ctxt.getDevice()->getFactory()->horizontalSpace(ctxt.getSize() * space / 18));
+  assert(n > 0);
+  result.pushArea(n, ctxt.getDevice()->getFactory()->horizontalSpace(ctxt.getSize() * space / 18));
 }
 
-unsigned
+void
 SpaceShaper::shapeFixedSpace(const MathFormattingContext& ctxt,
 			     ShapingResult& result, const GlyphSpec& spec)
 {
@@ -130,61 +127,64 @@ SpaceShaper::shapeFixedSpace(const MathFormattingContext& ctxt,
       space = -space;
       n++;
     }
-  pushSpace(ctxt, result, space);
-  return n;
-}
-
-unsigned
-SpaceShaper::shapeContextSensitiveSpace(const MathFormattingContext& ctxt,
-					ShapingResult& result, const GlyphSpec& spec)
-{
-  switch (result.thisChar())
-    {
-    case 0x2061: // FUNCTION APPLICATION
-      shapeFunctionApplication(ctxt, result);
-      return 1;
-    case 0x2062: // INVISIBLE TIMES
-      shapeInvisibleTimes(ctxt, result);
-      return 1;
-    case 0x2063: // INVISIBLE SEPARATOR
-      // nothing to do (for now)
-      return 1;
-    default:
-      assert(false);
-      return 0;
-    }
+  pushSpace(ctxt, result, space, n);
 }
 
 void
-SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt, ShapingResult& result)
+SpaceShaper::shapeContextSensitiveSpace(const MathFormattingContext& ctxt,
+					ShapingResult& result, const GlyphSpec& spec)
+{
+  int space = 0;
+  switch (result.thisChar())
+    {
+    case 0x2061: // FUNCTION APPLICATION
+      space = shapeFunctionApplication(ctxt);
+      break;
+    case 0x2062: // INVISIBLE TIMES
+      space = shapeInvisibleTimes(ctxt);
+      break;
+    case 0x2063: // INVISIBLE SEPARATOR
+      space = 0;
+      break;
+    default:
+      assert(false);
+      break;
+    }
+  pushSpace(ctxt, result, space);
+}
+
+int
+SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt)
 {
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getElement()))
     {
       SmartPtr<MathMLElement> next = findRightSibling(op);
-      if (!next) return;
+      if (!next) return 0;
 
-      if (is_a<MathMLFencedElement>(next)) return;
+      if (is_a<MathMLFencedElement>(next)) return 0;
       
       if (SmartPtr<MathMLOperatorElement> coreOp = next->getCoreOperatorTop())
-	if (coreOp->IsFence()) return;
+	if (coreOp->IsFence()) return 0;
 
       if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(next))
 	if (SmartPtr<MathMLOperatorElement> coreOp = smart_cast<MathMLOperatorElement>(row->getChild(0)))
-	  if (coreOp->IsFence()) return;
+	  if (coreOp->IsFence()) return 0;
 
-      pushSpace(ctxt, result, 5);
+      return 5;
     }
+
+  return 0;
 }
 
-void
-SpaceShaper::shapeInvisibleTimes(const MathFormattingContext& ctxt, ShapingResult& result)
+int
+SpaceShaper::shapeInvisibleTimes(const MathFormattingContext& ctxt)
 {
   // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getElement()))
     {
       SmartPtr<MathMLElement> prev = findLeftSibling(op);
       SmartPtr<MathMLElement> next = findRightSibling(op);
-      if (!prev || !next) return;
+      if (!prev || !next) return 0;
 
       if (is_a<MathMLIdentifierElement>(prev) && is_a<MathMLIdentifierElement>(next))
 	{
@@ -193,15 +193,17 @@ SpaceShaper::shapeInvisibleTimes(const MathFormattingContext& ctxt, ShapingResul
 	  assert(prevToken && nextToken);
     
 	  if (prevToken->GetLogicalContentLength() <= 1 &&
-	      nextToken->GetLogicalContentLength() <= 1) return;
+	      nextToken->GetLogicalContentLength() <= 1) return 0;
 
-	  pushSpace(ctxt, result, 4);
+	  return 4;
 	} 
       else if (is_a<MathMLIdentifierElement>(prev))
-	pushSpace(ctxt, result, 5);
+	return 5;
       else if (is_a<MathMLFractionElement>(prev) && is_a<MathMLFractionElement>(next))
-	pushSpace(ctxt, result, 5);
+	return 5;
       else if (is_a<MathMLFractionElement>(prev) || is_a<MathMLFractionElement>(next))
-	pushSpace(ctxt, result, 4);
+	return 4;
     }
+
+  return 0;
 }

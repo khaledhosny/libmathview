@@ -35,7 +35,7 @@ protected:
 public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
-  virtual unsigned shape(const class MathFormattingContext&, ShapingResult&) const = 0;
+  virtual void shape(const class MathFormattingContext&, ShapingResult&) const = 0;
 };
 
 #endif // __Shaper_hh__

@@ -50,7 +50,6 @@ public:
 
 private:
   String content;
-  AreaRef area;
 };
 
 #endif // MathMLStringNode_hh
