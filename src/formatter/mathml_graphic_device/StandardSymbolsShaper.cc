@@ -330,14 +330,14 @@ StandardSymbolsShaper::shape(const MathFormattingContext& ctxt, ShapingResult& r
 
 AreaRef
 StandardSymbolsShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
-				    Char8 gi, const scaled& size) const
+				    Char8 glyphIndex, const scaled& size) const
 {
-  CachedAreaKey key(gi, size);
+  CachedAreaKey key(glyphIndex, size);
   AreaCache::iterator p = areaCache.find(key);
   if (p != areaCache.end())
     return p->second;
 
-  AreaRef res = createGlyphArea(factory, gi, size);
+  AreaRef res = createGlyphArea(factory, glyphIndex, size);
   assert(res);
   areaCache[key] = res;
 
