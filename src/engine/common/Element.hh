@@ -32,14 +32,14 @@
 class Element : public Node
 {
 protected:
-  Element(void);
+  Element(const SmartPtr<class NamespaceContext>&);
   virtual ~Element();
 
 public:
   static bool hasParentLink(void) { return true; }
   static void setParent(Element* self, const SmartPtr<Element>& el) { self->setParent(el); }
 
-  virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const = 0;
+  SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
 
   void setParent(const SmartPtr<Element>&);
   SmartPtr<Element> getParent(void) const { return static_cast<Element*>(parent); }
@@ -88,6 +88,7 @@ public:
   bool getFlag(Flags f) const { return flags.test(f); }
 
 private:
+  WeakPtr<class NamespaceContext> context;
   WeakPtr<Element> parent;
   std::bitset<FUnusedFlag> flags;
   SmartPtr<class AttributeList> attributes;

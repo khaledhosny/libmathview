@@ -22,20 +22,26 @@
 
 #include <config.h>
 
+#include "View.hh"
+#include "Builder.hh"
 #include "Element.hh"
 #include "ElementFactory.hh"
 #include "AttributeSignature.hh"
 #include "AttributeList.hh"
+#include "NamespaceContext.hh"
 
-Element::Element()
+Element::Element(const SmartPtr<NamespaceContext>& c) : context(c)
 {
+  assert(context);
   setDirtyStructure();
   setDirtyAttribute();
   setDirtyLayout();
 }
 
 Element::~Element()
-{ }
+{
+  context->getView()->getBuilder()->forgetElement(this);
+}
 
 void
 Element::setParent(const SmartPtr<Element>& p)
@@ -176,4 +182,8 @@ Element::resetFlagDown(Flags f)
 {
   resetFlag(f);
 }
+
+SmartPtr<NamespaceContext>
+Element::getNamespaceContext() const
+{ return static_cast<NamespaceContext*>(context); }
 
