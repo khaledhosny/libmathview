@@ -21,7 +21,7 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-
+#include <stdlib.h> // for exit(...)
 #include <stdio.h>
 
 #if defined(HAVE_MINIDOM)

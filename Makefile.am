@@ -1,4 +1,4 @@
-EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT
+EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS
 SUBDIRS = scripts config auto src doc viewer mathml2ps randomath
 CLEANFILES = core *.log *.eps
 
