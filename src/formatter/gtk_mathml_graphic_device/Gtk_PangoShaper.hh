@@ -46,7 +46,7 @@ public:
   GObjectPtr<PangoContext> getPangoContext(void) const { return context; }
 
 protected:
-  AreaRef shapeString(const class MathFormattingContext&, const gunichar*, glong) const;
+  AreaRef shapeString(const class MathFormattingContext&, const gunichar*, glong, unsigned = 0) const;
   AreaRef shapeStretchyCharH(const class MathFormattingContext&, const GlyphSpec&, const scaled&) const;
   AreaRef shapeStretchyCharV(const class MathFormattingContext&, const GlyphSpec&, const scaled&) const;
 

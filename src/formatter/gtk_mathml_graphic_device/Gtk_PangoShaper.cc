@@ -29,6 +29,7 @@
 #include "Gtk_RenderingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
+#include "MathVariantMap.hh"
 
 struct HStretchyChar
 {
@@ -72,6 +73,29 @@ static VStretchyChar vMap[] =
 #define NORMAL_INDEX 0
 #define H_STRETCHY_INDEX 1
 #define V_STRETCHY_INDEX 2
+#define MAPPED_BASE_INDEX 3
+
+struct PangoTextAttributes
+{
+  MathVariant variant;
+  const char* family;
+  PangoStyle style;
+  PangoWeight weight;
+};
+
+static PangoTextAttributes variantDesc[] =
+  {
+    { NORMAL_VARIANT, 0, PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
+    { NORMAL_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
+    { BOLD_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+    { ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
+    { BOLD_ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_BOLD }, 
+    { SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
+    { BOLD_SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+    { SANS_SERIF_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
+    { SANS_SERIF_BOLD_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
+    { MONOSPACE_VARIANT, "Monospace", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL }
+  };
 
 Gtk_PangoShaper::Gtk_PangoShaper()
 { }
@@ -85,6 +109,16 @@ Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>& sm, unsigne
   // normal characters are not registered because the Pango shaper is supposed to
   // be the default shaper. It will be called anyway as soon as there's a
   // Unicode char that cannot be shaped otherwise
+
+  for (unsigned i = 1; i < sizeof(variantDesc) / sizeof(PangoTextAttributes); i++)
+    {
+      for (DOM::Char16 ch = 0x20; ch < 0x100; ch++)
+	{
+	  DOM::Char32 vch = mapMathVariant(variantDesc[i].variant, ch);
+	  if (variantDesc[i].variant == NORMAL_VARIANT || vch != ch)
+	    sm->registerChar(vch, GlyphSpec(shaperId, MAPPED_BASE_INDEX + i, ch));
+	}
+    }
 
   for (unsigned i = 0; hMap[i].ch != 0; i++)
     sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, H_STRETCHY_INDEX, i));
@@ -121,15 +155,22 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
       result.pushArea(1, shapeStretchyCharV(ctxt, spec, result.getVSpan()));
       break;
     default:
-      assert(false);
+      {
+	unsigned fi = spec.getFontId() - MAPPED_BASE_INDEX;
+	assert(fi > 0 && fi < sizeof(variantDesc) / sizeof(PangoTextAttributes));
+	gunichar ch = spec.getGlyphId();
+	result.pushArea(1, shapeString(ctxt, &ch, 1, fi));
+      }
       break;
     }
 }
 
 AreaRef
-Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* uni_buffer, glong n) const
+Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* uni_buffer, glong n,
+			     unsigned fi) const
 {
   assert(context);
+  assert(fi < sizeof(variantDesc) / sizeof(PangoTextAttributes));
 
   glong length;
   gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
@@ -146,43 +187,48 @@ Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* 
   //GObjectPtr<PangoAttrList> attrList = pango_attr_list_new();
   PangoAttrList* attrList = pango_attr_list_new();
 
+#if 1
+  PangoFontDescription* fontDesc = pango_font_description_new();
+  if (variantDesc[fi].family) pango_font_description_set_family_static(fontDesc, variantDesc[fi].family);
+  if (variantDesc[fi].weight != PANGO_WEIGHT_NORMAL) pango_font_description_set_weight(fontDesc, variantDesc[fi].weight);
+  if (variantDesc[fi].style != PANGO_STYLE_NORMAL) pango_font_description_set_style(fontDesc, variantDesc[fi].style);
+  pango_font_description_set_size(fontDesc, Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
+  PangoAttribute* fontDescAttr = pango_attr_font_desc_new(fontDesc);
+  fontDescAttr->start_index = 0;
+  fontDescAttr->end_index = length;
+  pango_attr_list_insert(attrList, fontDescAttr);
+  //pango_font_description_free(fontDesc);  
+#else
   // PangoAttribute is not a GObject?
   PangoAttribute* sizeAttr = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(ctxt.getSize()));
   sizeAttr->start_index = 0;
   sizeAttr->end_index = length;
   pango_attr_list_insert(attrList, sizeAttr);
-#if 0
-  switch (variant)
+#if 1
+  if (variantDesc[fi].family)
     {
-    case BOLD_VARIANT:
-    case BOLD_ITALIC_VARIANT:
-    case BOLD_FRAKTUR_VARIANT:
-    case BOLD_SCRIPT_VARIANT:
-    case BOLD_SANS_SERIF_VARIANT:
-      {
-	PangoAttribute* weightAttr = pango_attr_weight_new(PANGO_WEIGHT_BOLD);
-	weightAttr->start_index = 0;
-	weightAttr->end_index = length;
-	pango_attr_list_insert(attrList, weightAttr);
-      }
-      break;
-    default: break;
+      PangoAttribute* familyAttr = pango_attr_family_new(variantDesc[fi].family);
+      familyAttr->start_index = 0;
+      familyAttr->start_index = length;
+      pango_attr_list_insert(attrList, familyAttr);
     }
 
-  switch (variant)
+  if (variantDesc[fi].weight != PANGO_WEIGHT_NORMAL)
     {
-    case ITALIC_VARIANT:
-    case BOLD_ITALIC_VARIANT:
-    case SANS_SERIF_ITALIC_VARIANT:
-      {
-	PangoAttribute* styleAttr = pango_attr_style_new(PANGO_STYLE_ITALIC);
-	styleAttr->start_index = 0;
-	styleAttr->end_index = length;
-	pango_attr_list_insert(attrList, styleAttr);
-      }
-      break;
-    default: break;
+      PangoAttribute* weightAttr = pango_attr_weight_new(variantDesc[fi].weight);
+      weightAttr->start_index = 0;
+      weightAttr->end_index = length;
+      pango_attr_list_insert(attrList, weightAttr);
     }
+
+  if (variantDesc[fi].style != PANGO_STYLE_NORMAL)
+    {
+      PangoAttribute* styleAttr = pango_attr_style_new(variantDesc[fi].style);
+      styleAttr->start_index = 0;
+      styleAttr->end_index = length;
+      pango_attr_list_insert(attrList, styleAttr);
+    }
+#endif
 #endif
   pango_layout_set_attributes(layout, attrList);
 
