@@ -30,11 +30,12 @@ class GlyphArea : public SimpleArea
 {
 protected:
   GlyphArea(void) { }
-  virtual ~GlyphArea() { }
+  virtual ~GlyphArea();
 
 public:
-  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const;
-  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const;
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual bool searchByIndex(AreaId&, CharIndex) const;
 };
 
 #endif // __GlyphArea_hh__

@@ -51,7 +51,7 @@ ShiftArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
 }
 
 void
-ShiftArea::origin(unsigned i, scaled&, scaled& y) const
+ShiftArea::origin(AreaIndex i, scaled&, scaled& y) const
 {
   assert(i == 0);
   y += shift;

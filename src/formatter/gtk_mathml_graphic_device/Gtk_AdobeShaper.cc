@@ -27,6 +27,7 @@
 #include <gdk/gdkx.h>
 #include <pango/pangox.h>
 
+#include "ShapingResult.hh"
 #include "Gtk_AdobeShaper.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_RenderingContext.hh"

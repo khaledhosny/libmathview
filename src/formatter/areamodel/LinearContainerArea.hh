@@ -39,17 +39,15 @@ public:
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
-  virtual unsigned size(void) const { return content.size(); }
-  virtual AreaRef node(unsigned) const;
-  virtual int lengthTo(unsigned) const;
+  virtual AreaIndex size(void) const { return content.size(); }
+  virtual AreaRef node(AreaIndex) const;
+  virtual CharIndex lengthTo(AreaIndex) const;
   //virtual AreaRef replace(const class ReplacementContext&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
-  virtual bool searchByIndex(class AreaId&, int) const;
+  virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
   const std::vector<AreaRef> getChildren(void) const { return content; }
-
-  class InvalidIndex { };
 
 protected:
   std::vector<AreaRef> content;

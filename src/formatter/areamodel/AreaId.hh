@@ -32,40 +32,51 @@ class AreaId
 public:
   AreaId(const AreaRef& r) : root(r) { };
 
-  void append(int);
-  void append(int, const AreaRef&);
-  void append(int, const AreaRef&, const scaled&, const scaled&);
+  void append(AreaIndex);
+  void append(AreaIndex, const AreaRef&);
+  void append(AreaIndex, const AreaRef&, const scaled&, const scaled&);
   void pop_back(void);
 
-  bool empty(void) const { return path.empty(); }
-  int length(void) const { return path.size(); }
-  AreaRef getRoot(void) const { return root; }
+  bool empty(void) const { return pathV.empty(); }
+  int size(void) const { return pathV.size(); }
 
   AreaRef getArea(int = -1) const;
-  void getOrigin(scaled&, scaled&, int = -1) const;
+  void getOrigin(scaled&, scaled&) const;
+  void getOrigin(int, scaled&, scaled&) const;
+  void getOrigin(int, int, scaled&, scaled&) const;
+  void accumulateOrigin(scaled&, scaled&) const;
+  void accumulateOrigin(int, scaled&, scaled&) const;
+  void accumulateOrigin(int, int, scaled&, scaled&) const;
+  CharIndex getLength(int = 0, int = -1) const;
 
-  typedef std::vector<int> PathVector;
+  typedef std::vector<AreaIndex> PathVector;
   typedef std::vector<AreaRef> AreaVector;
   typedef std::vector< std::pair<scaled,scaled> > OriginVector;
+  typedef std::vector<CharIndex> LengthVector;
 
-  const PathVector& getPath(void) const { return path; }
-  const AreaVector& getAreas(void) const { validateAreas(); return area; }
-  const OriginVector& getOrigins(void) const { validateOrigins(); return origin; }
+  const PathVector& getPath(void) const { return pathV; }
+  const AreaVector& getAreas(void) const { validateAreas(); return areaV; }
+  const OriginVector& getOrigins(void) const { validateOrigins(); return originV; }
+  const LengthVector& getLengths(void) const { validateLengths(); return lengthV; }
 
 protected:
-  AreaId(const AreaRef& r, PathVector::const_iterator begin, PathVector::const_iterator end)
-    : root(r), path(begin, end) { }
+  AreaId(const AreaRef& r, const PathVector::const_iterator& begin, const PathVector::const_iterator& end)
+    : root(r), pathV(begin, end) { }
 
-  void getOriginAux(int, scaled&, scaled&) const;
+  void accumulateOriginAux(const OriginVector::const_iterator&, const OriginVector::const_iterator&,
+			   scaled&, scaled&) const;
+  void accumulateLengthAux(const LengthVector::const_iterator&, const LengthVector::const_iterator&, CharIndex&) const;
 
 private:
   void validateAreas(void) const;
   void validateOrigins(void) const;
+  void validateLengths(void) const;
 
   const AreaRef root;
-  PathVector path;
-  mutable AreaVector area;
-  mutable OriginVector origin;
+  PathVector pathV;
+  mutable AreaVector areaV;
+  mutable OriginVector originV;
+  mutable LengthVector lengthV;
 };
 
 #endif // __AreaId_hh__

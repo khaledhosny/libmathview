@@ -51,26 +51,26 @@ SimpleArea::searchByCoords(AreaId&, const scaled& x, const scaled& y) const
 { return Rectangle(scaled::zero(), scaled::zero(), box()).isInside(x, y); }
 
 bool
-SimpleArea::searchByIndex(AreaId&, int index) const
-{ return index < length(); }
+SimpleArea::searchByIndex(AreaId&, CharIndex index) const
+{ return false; }
 
 AreaRef
-SimpleArea::node(unsigned) const
+SimpleArea::node(AreaIndex) const
 {
   // A leaf area cannot have children
   assert(false);
 }
 
 void
-SimpleArea::origin(unsigned, scaled&, scaled&) const
+SimpleArea::origin(AreaIndex, scaled&, scaled&) const
 {
   // A leaf area cannot have children
   assert(false);
 }
 
-int
-SimpleArea::lengthTo(unsigned) const
+CharIndex
+SimpleArea::lengthTo(AreaIndex) const
 {
-  // A leaf area cannot haev children
+  // A leaf area cannot have children
   assert(false);
 }

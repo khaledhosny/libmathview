@@ -25,12 +25,25 @@
 #include "GlyphArea.hh"
 #include "Rectangle.hh"
 
+#include <iostream>
+
+GlyphArea::~GlyphArea()
+{ }
+
 bool
-GlyphArea::indexOfPosition(const scaled& x, const scaled& y, int& index) const
+GlyphArea::searchByIndex(AreaId&, CharIndex index) const
 {
-  if (Rectangle(scaled::zero(), scaled::zero(), box()).isInside(x, y))
+  std::cerr << "GlyphArea::searchByIndex " << index << " length = " << length() << std::endl;
+  return (index >= 0 && index <= length());
+}
+
+bool
+GlyphArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
+{
+  const BoundingBox bbox = box();
+  if (Rectangle(scaled::zero(), scaled::zero(), bbox).isInside(x, y))
     {
-      index = 0;
+      index = (x < bbox.width / 2) ? 0 : length();
       return true;
     }
   else
@@ -38,15 +51,13 @@ GlyphArea::indexOfPosition(const scaled& x, const scaled& y, int& index) const
 }
 
 bool
-GlyphArea::positionOfIndex(int index, scaled& x, scaled& y, BoundingBox& bbox) const
+GlyphArea::positionOfIndex(CharIndex index, scaled& x, scaled& y) const
 {
   if (index >= 0 && index < length())
     {
       x = y = 0;
-      bbox = box();
       return true;
     }
   else
     return false;
 }
-

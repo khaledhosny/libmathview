@@ -37,13 +37,13 @@ public:
 
   virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual void      strength(int&, int&, int&) const;
-  virtual AreaRef   node(unsigned) const;
-  virtual void origin(unsigned, scaled&, scaled&) const;
-  virtual int lengthTo(unsigned) const;
+  virtual AreaRef   node(AreaIndex) const;
+  virtual void origin(AreaIndex, scaled&, scaled&) const;
+  virtual CharIndex lengthTo(AreaIndex) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
-  virtual bool searchByIndex(class AreaId&, int) const;
+  virtual bool searchByIndex(class AreaId&, CharIndex) const;
 };
 
 #endif // __SimpleArea_hh__

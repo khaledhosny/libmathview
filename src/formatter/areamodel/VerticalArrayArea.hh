@@ -28,11 +28,11 @@
 class VerticalArrayArea : public LinearContainerArea
 {
 protected:
-  VerticalArrayArea(const std::vector<AreaRef>&, unsigned);
+  VerticalArrayArea(const std::vector<AreaRef>&, AreaIndex);
   virtual ~VerticalArrayArea() { }
 
 public:
-  static SmartPtr<VerticalArrayArea> create(const std::vector<AreaRef>& children, unsigned r = 1)
+  static SmartPtr<VerticalArrayArea> create(const std::vector<AreaRef>& children, AreaIndex r = 0)
   { return new VerticalArrayArea(children, r); }
   virtual AreaRef clone(const std::vector<AreaRef>& children) const { return create(children, getRefArea()); }
 
@@ -42,13 +42,13 @@ public:
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  virtual void origin(unsigned, scaled&, scaled&) const;
-  virtual int lengthTo(unsigned) const;
+  virtual void origin(AreaIndex, scaled&, scaled&) const;
+  virtual CharIndex lengthTo(AreaIndex) const;
 
-  unsigned getRefArea(void) const { return refArea; }
+  AreaIndex getRefArea(void) const { return refArea; }
 
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
-  virtual bool searchByIndex(class AreaId&, int) const;
+  virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
 protected:
   scaled prepareChildBoxes(std::vector<BoundingBox>&) const;
@@ -56,7 +56,7 @@ protected:
 private:
   //static void flattenAux(std::vector<AreaRef>&, const std::vector<AreaRef>&, unsigned);
 
-  unsigned refArea;
+  AreaIndex refArea;
 };
 
 #endif // __VerticalArrayArea_hh__

@@ -66,16 +66,16 @@ BinContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
 bool
 BinContainerArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
 {
-  id.append(0, this, scaled::zero(), scaled::zero());
+  id.append(0, child, scaled::zero(), scaled::zero());
   if (child->searchByCoords(id, x, y)) return true;
   id.pop_back();
   return false;
 }
 
 bool
-BinContainerArea::searchByIndex(AreaId& id, int index) const
+BinContainerArea::searchByIndex(AreaId& id, CharIndex index) const
 {
-  id.append(0, this);
+  id.append(0, child);
   if (child->searchByIndex(id, index)) return true;
   id.pop_back();
   return false;
@@ -96,40 +96,40 @@ BinContainerArea::strength(int& w, int& h, int& d) const
 }
 
 AreaRef
-BinContainerArea::node(unsigned i) const
+BinContainerArea::node(AreaIndex i) const
 {
   assert(i == 0);
   return getChild();
 }
 
 void
-BinContainerArea::origin(unsigned i, scaled&, scaled&) const
+BinContainerArea::origin(AreaIndex i, scaled&, scaled&) const
 {
   assert(i == 0);
 }
 
-int
-BinContainerArea::lengthTo(unsigned i) const
+CharIndex
+BinContainerArea::lengthTo(AreaIndex i) const
 {
   assert(i == 0);
   return 0;
 }
 
 AreaRef
-BinContainerArea::replace(unsigned i, const AreaRef& newChild) const
+BinContainerArea::replace(AreaIndex i, const AreaRef& newChild) const
 {
   assert(i == 0);
   return (child == newChild) ? this : clone(newChild);
 }
 
 bool
-BinContainerArea::indexOfPosition(const scaled& x, const scaled& y, int& index) const
+BinContainerArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
 { return child->indexOfPosition(x, y, index); }
 
 bool
-BinContainerArea::positionOfIndex(int index, scaled& x, scaled& y, BoundingBox& bbox) const
-{ return child->positionOfIndex(index, x, y, bbox); }
+BinContainerArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
+{ return child->positionOfIndex(index, dx, dy); }
 
-int
+CharIndex
 BinContainerArea::length() const
 { return child->length(); }

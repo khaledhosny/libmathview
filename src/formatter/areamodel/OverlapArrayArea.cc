@@ -116,7 +116,7 @@ OverlapArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) c
 }
 
 void
-OverlapArrayArea::origin(unsigned i, scaled&, scaled&) const
+OverlapArrayArea::origin(AreaIndex i, scaled&, scaled&) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
 }

@@ -73,7 +73,7 @@ BoxedLayoutArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) co
 }
 
 bool
-BoxedLayoutArea::searchByIndex(AreaId& id, int index) const
+BoxedLayoutArea::searchByIndex(AreaId& id, CharIndex index) const
 {
   for (std::vector<XYArea>::const_iterator p = content.begin();
        p != content.end();
@@ -126,25 +126,25 @@ BoxedLayoutArea::fit(const scaled& width, const scaled& height, const scaled& de
 }
 
 AreaRef
-BoxedLayoutArea::node(unsigned i) const
+BoxedLayoutArea::node(AreaIndex i) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
   return content[i].area;
 }
 
 void
-BoxedLayoutArea::origin(unsigned i, scaled& x, scaled& y) const
+BoxedLayoutArea::origin(AreaIndex i, scaled& x, scaled& y) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
   x += content[i].dx;
   y += content[i].dy;
 }
 
-int
-BoxedLayoutArea::lengthTo(unsigned i) const
+CharIndex
+BoxedLayoutArea::lengthTo(AreaIndex i) const
 {
-  assert(i < content.size());
-  int length = 0;
+  assert(i >= 0 && i < content.size());
+  CharIndex length = 0;
   for (std::vector<XYArea>::const_iterator p = content.begin(); p != content.begin() + i; p++)
     length += p->area->length();
   return length;

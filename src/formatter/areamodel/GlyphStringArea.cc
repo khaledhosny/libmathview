@@ -25,26 +25,38 @@
 #include "GlyphStringArea.hh"
 #include "Rectangle.hh"
 
-int
+CharIndex
 GlyphStringArea::length() const
 {
-  int l = 0;
+  CharIndex l = 0;
   // FIXME: this can be rewritten with an accumulator
-  for (std::vector<int>::const_iterator p = counters.begin(); p != counters.end(); p++)
+  for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.end(); p++)
     l += *p;
   return l;
 }
 
-bool
-GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, int& index) const
+CharIndex
+GlyphStringArea::lengthTo(AreaIndex index) const
 {
-  if (Rectangle(scaled::zero(), scaled::zero(), box()).isInside(x0, y))
+  assert(index >= 0 && index < content.size());
+  CharIndex acc = 0;
+  for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.begin() + index; p++)
+    acc += *p;
+  return acc;
+}
+
+bool
+GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, CharIndex& index) const
+{
+  const BoundingBox bbox = box();
+  index = 0;
+  scaled x = x0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
     {
-      index = 0;
-      scaled x = x0;
-      for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+      const BoundingBox pbox((*p)->box().width, bbox.height, bbox.depth);
+      if (Rectangle(scaled::zero(), scaled::zero(), pbox).isInside(x, y))
 	{
-	  int i;
+	  CharIndex i;
 	  if ((*p)->indexOfPosition(x, y, i))
 	    {
 	      index += i;
@@ -52,34 +64,41 @@ GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, int& index) 
 	    }
 	  else
 	    {
-	      index += counters[p - content.begin()];
-	      x -= (*p)->box().width;
+	      if (x >= pbox.width / 2) index += counters[p - content.begin()];
+	      return true;
 	    }
 	}
-      
-      index = 0;
-      return true;
-    }
-  else
-    return false;
+      else
+	{
+	  index += counters[p - content.begin()];
+	  x -= (*p)->box().width;
+	}
+    }      
+
+  return false;
 }
 
 bool
-GlyphStringArea::positionOfIndex(int index, scaled& x, scaled& y, BoundingBox& bbox) const
+GlyphStringArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
 {
-  scaled offset = scaled::zero();
-  for (std::vector<int>::const_iterator p = counters.begin(); p != counters.end(); p++)
-    if (index < *p)
+  for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.end(); p++)
+    if (index <= *p)
       {
-	const bool res = content[p - counters.begin()]->positionOfIndex(index, x, y, bbox);
-	assert(res);
-	x += offset;
-	return true;
+	if (content[p - counters.begin()]->positionOfIndex(index, dx, dy))
+	  return true;
+	else if (index == *p)
+	  {
+	    dx += content[p - counters.begin()]->box().width;
+	    return true;
+	  }
+	else
+	  return true;
       }
     else
       {
 	index -= *p;
-	offset += content[p - counters.begin()]->box().width;
+	dx += content[p - counters.begin()]->box().width;
       }
+
   return false;
 }

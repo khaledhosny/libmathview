@@ -24,6 +24,7 @@
 
 #include <cassert>
 
+#include "ShapingResult.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_RenderingContext.hh"

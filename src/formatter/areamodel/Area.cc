@@ -22,10 +22,13 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "Area.hh"
+#include "Rectangle.hh"
 
 scaled
-Area::originX(unsigned i) const
+Area::originX(AreaIndex i) const
 {
   scaled x;
   scaled y;
@@ -34,10 +37,35 @@ Area::originX(unsigned i) const
 }
 
 scaled
-Area::originY(unsigned i) const
+Area::originY(AreaIndex i) const
 {
   scaled x;
   scaled y;
   origin(i, x, y);
   return y;
+}
+
+bool
+Area::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
+{
+  const BoundingBox bbox = box();
+  if (Rectangle(scaled::zero(), scaled::zero(), bbox).isInside(x, y))
+    {
+      index = (x < bbox.width / 2) ? 0 : length();
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+Area::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
+{
+  if (index >= 0 && index <= length())
+    {
+      if (index == length()) dx += box().width;
+      return true;
+    }
+  else
+    return false;
 }

@@ -129,11 +129,11 @@ HorizontalArrayArea::rightEdge() const
 }
 
 scaled
-HorizontalArrayArea::leftSide(unsigned i) const
+HorizontalArrayArea::leftSide(AreaIndex i) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
 
-  unsigned l = i;
+  AreaIndex l = i;
   scaled redge = scaled::min();
   while (redge == scaled::min() && l > 0)
     redge = content[l--]->rightEdge();
@@ -142,11 +142,11 @@ HorizontalArrayArea::leftSide(unsigned i) const
 }
 
 scaled
-HorizontalArrayArea::rightSide(unsigned i) const
+HorizontalArrayArea::rightSide(AreaIndex i) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
 
-  unsigned r = i;
+  AreaIndex r = i;
   scaled ledge = scaled::max();
   while (ledge == scaled::max() && r + 1 < content.size())
     ledge = content[r++]->leftEdge();
@@ -205,9 +205,9 @@ HorizontalArrayArea::fit(const scaled& width, const scaled& height, const scaled
 }
 
 void
-HorizontalArrayArea::origin(unsigned i, scaled& x, scaled&) const
+HorizontalArrayArea::origin(AreaIndex i, scaled& x, scaled&) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
     x += (*p)->box().horizontalExtent();
 }

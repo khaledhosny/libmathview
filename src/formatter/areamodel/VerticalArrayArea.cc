@@ -27,11 +27,11 @@
 #include "AreaId.hh"
 #include "VerticalArrayArea.hh"
 
-VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, unsigned r)
+VerticalArrayArea::VerticalArrayArea(const std::vector<AreaRef>& children, AreaIndex r)
   : LinearContainerArea(children), refArea(r)
 {
   assert(content.size() > 0);
-  assert(refArea < content.size());
+  assert(refArea >= 0 && refArea < content.size());
 }
 
 // unsigned
@@ -69,7 +69,7 @@ VerticalArrayArea::box() const
        p != content.end();
        p++)
     {
-      const int i = p - content.begin();
+      const AreaIndex i = p - content.begin();
       if (i < refArea)
 	bbox.over((*p)->box());
       else if (i > refArea)
@@ -87,7 +87,7 @@ VerticalArrayArea::prepareChildBoxes(std::vector<BoundingBox>& box) const
        p != content.end();
        p++)
     {
-      const int i = p - content.begin();
+      const AreaIndex i = p - content.begin();
       box.push_back((*p)->box());
       if (BoundingBox backBox = box.back())
 	if (i < refArea)
@@ -110,7 +110,7 @@ VerticalArrayArea::render(class RenderingContext& context, const scaled& x, cons
        p != content.end();
        p++)
     {
-      const int i = p - content.begin();
+      const AreaIndex i = p - content.begin();
       if (box[i]) y += box[i].depth;
       (*p)->render(context, x, y);
       if (box[i]) y += box[i].height;
@@ -201,7 +201,7 @@ VerticalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) 
        p != content.end();
        p++)
     {
-      const int i = p - content.begin();
+      const AreaIndex i = p - content.begin();
       offset += box[i].depth;
       id.append(i, *p, scaled::zero(), offset);
       if ((*p)->searchByCoords(id, x, y - offset)) return true;
@@ -213,7 +213,7 @@ VerticalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) 
 }
 
 bool
-VerticalArrayArea::searchByIndex(AreaId& id, int index) const
+VerticalArrayArea::searchByIndex(AreaId& id, CharIndex index) const
 {
   for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin(); p != content.rend(); p++)
     {
@@ -226,9 +226,9 @@ VerticalArrayArea::searchByIndex(AreaId& id, int index) const
 }
 
 void
-VerticalArrayArea::origin(unsigned i, scaled&, scaled& y) const
+VerticalArrayArea::origin(AreaIndex i, scaled&, scaled& y) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
   if (i < refArea)
     {
       if (BoundingBox idBox = content[i]->box())
@@ -255,11 +255,11 @@ VerticalArrayArea::origin(unsigned i, scaled&, scaled& y) const
     }
 }
 
-int
-VerticalArrayArea::lengthTo(unsigned i) const
+CharIndex
+VerticalArrayArea::lengthTo(AreaIndex i) const
 {
-  assert(i < content.size());
-  int length = 0;
+  assert(i >= 0 && i < content.size());
+  CharIndex length = 0;
   for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin();
        p != content.rbegin() + i;
        p++)

@@ -50,7 +50,7 @@ LinearContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
 }
 
 bool
-LinearContainerArea::searchByIndex(AreaId& id, int index) const
+LinearContainerArea::searchByIndex(AreaId& id, CharIndex index) const
 {
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
     {
@@ -116,17 +116,17 @@ LinearContainerArea::rightEdge(void) const
 }
 
 AreaRef
-LinearContainerArea::node(unsigned i) const
+LinearContainerArea::node(AreaIndex i) const
 {
-  assert(i < content.size());
+  assert(i >= 0 && i < content.size());
   return content[i];
 }
 
-int
-LinearContainerArea::lengthTo(unsigned i) const
+CharIndex
+LinearContainerArea::lengthTo(AreaIndex i) const
 {
-  assert(i < content.size());
-  int length = 0;
+  assert(i >= 0 && i < content.size());
+  CharIndex length = 0;
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
     length += (*p)->length();
   return length;

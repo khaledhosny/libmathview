@@ -37,7 +37,7 @@ public:
 
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual BoundingBox box(void) const;
-  virtual void origin(unsigned, scaled&, scaled&) const;
+  virtual void origin(AreaIndex, scaled&, scaled&) const;
 
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
 

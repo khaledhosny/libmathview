@@ -42,12 +42,12 @@ public:
   virtual scaled rightEdge(void) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
-  virtual void origin(unsigned, scaled&, scaled&) const;
+  virtual void origin(AreaIndex, scaled&, scaled&) const;
 
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
 
-  scaled leftSide(unsigned) const;
-  scaled rightSide(unsigned) const;
+  scaled leftSide(AreaIndex) const;
+  scaled rightSide(AreaIndex) const;
 
 private:
   static void flattenAux(std::vector<AreaRef>&, const std::vector<AreaRef>&);

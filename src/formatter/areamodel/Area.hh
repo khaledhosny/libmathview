@@ -29,6 +29,9 @@
 
 typedef SmartPtr<const class Area> AreaRef;
 
+typedef int CharIndex;
+typedef int AreaIndex;
+
 class Area : public Object
 {
 protected:
@@ -42,21 +45,21 @@ public:
   virtual scaled leftEdge(void) const = 0;
   virtual scaled rightEdge(void) const = 0;
   virtual void strength(int&, int&, int&) const = 0;
-  virtual unsigned size(void) const { return 0; }
-  virtual AreaRef node(unsigned) const = 0;
-  virtual void origin(unsigned, scaled&, scaled&) const = 0;
-  virtual int lengthTo(unsigned) const = 0;
-  virtual int length(void) const { return 0; }
-  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const { return false; }
-  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const { return false; }
+  virtual AreaIndex size(void) const { return 0; }
+  virtual AreaRef node(AreaIndex) const = 0;
+  virtual void origin(AreaIndex, scaled&, scaled&) const = 0;
+  virtual CharIndex length(void) const { return 0; }
+  virtual CharIndex lengthTo(AreaIndex) const = 0;
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const = 0;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const = 0;
-  virtual bool searchByIndex(class AreaId&, int) const = 0;
+  virtual bool searchByIndex(class AreaId&, CharIndex) const = 0;
   virtual AreaRef flatten(void) const { return this; }
 
-  scaled originX(unsigned) const;
-  scaled originY(unsigned) const;
+  scaled originX(AreaIndex) const;
+  scaled originY(AreaIndex) const;
 };
 
 #endif // __Area_hh__

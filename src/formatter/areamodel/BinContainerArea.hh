@@ -40,18 +40,18 @@ public:
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual void strength(int&, int&, int&) const;
-  virtual unsigned size(void) const { return 1; }
-  virtual AreaRef node(unsigned) const;
-  virtual void origin(unsigned, scaled&, scaled&) const;
-  virtual int lengthTo(unsigned) const;
-  virtual AreaRef replace(unsigned, const AreaRef&) const;
-  virtual int length(void) const;
-  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const;
-  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const;
+  virtual AreaIndex size(void) const { return 1; }
+  virtual AreaRef node(AreaIndex) const;
+  virtual void origin(AreaIndex, scaled&, scaled&) const;
+  virtual AreaRef replace(AreaIndex, const AreaRef&) const;
+  virtual CharIndex length(void) const;
+  virtual CharIndex lengthTo(AreaIndex) const;
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
-  virtual bool searchByIndex(class AreaId&, int) const;
+  virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
   AreaRef getChild(void) const { return child; }
 

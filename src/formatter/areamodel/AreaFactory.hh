@@ -24,12 +24,14 @@
 #define __AreaFactory_hh__
 
 #include "BoxArea.hh"
+#include "BoxedLayoutArea.hh"
 #include "ColorArea.hh"
+#include "GlyphStringArea.hh"
+#include "GlyphWrapperArea.hh"
 #include "HideArea.hh"
 #include "HorizontalArrayArea.hh"
 #include "HorizontalFillerArea.hh"
 #include "HorizontalSpaceArea.hh"
-#include "GlyphStringArea.hh"
 #include "IdArea.hh"
 #include "IgnoreArea.hh"
 #include "InkArea.hh"
@@ -39,7 +41,6 @@
 #include "VerticalArrayArea.hh"
 #include "VerticalFillerArea.hh"
 #include "VerticalSpaceArea.hh"
-#include "BoxedLayoutArea.hh"
 
 class AreaFactory : public Object
 {
@@ -51,6 +52,8 @@ public:
   static SmartPtr<AreaFactory> create(void)
   { return new AreaFactory(); }
 
+  virtual SmartPtr<GlyphWrapperArea> glyphWrapper(const AreaRef& area, CharIndex length) const
+  { return GlyphWrapperArea::create(area, length); }
   virtual SmartPtr<BoxArea> box(const AreaRef& area, const BoundingBox& box) const
   { return BoxArea::create(area, box); }
   virtual SmartPtr<ColorArea> color(const AreaRef& area, const RGBColor& color) const
@@ -59,9 +62,9 @@ public:
   { return HideArea::create(area); }
   virtual SmartPtr<HorizontalArrayArea> horizontalArray(const std::vector<AreaRef>& content) const
   { return HorizontalArrayArea::create(content); }
-  virtual SmartPtr<HorizontalArrayArea> glyphString(const std::vector<AreaRef>& content, const std::vector<int>& counters) const
+  virtual SmartPtr<HorizontalArrayArea> glyphString(const std::vector<AreaRef>& content, const std::vector<CharIndex>& counters) const
   { return GlyphStringArea::create(content, counters); }
-  virtual SmartPtr<VerticalArrayArea> verticalArray(const std::vector<AreaRef>& content, unsigned ref) const
+  virtual SmartPtr<VerticalArrayArea> verticalArray(const std::vector<AreaRef>& content, AreaIndex ref) const
   { return VerticalArrayArea::create(content, ref); }
   virtual SmartPtr<OverlapArrayArea> overlapArray(const std::vector<AreaRef>& content) const
   { return OverlapArrayArea::create(content); }

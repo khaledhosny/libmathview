@@ -23,6 +23,8 @@
 #ifndef __BoxedLayoutArea_hh__
 #define __BoxedLayoutArea_hh__
 
+#include <vector>
+
 #include "ContainerArea.hh"
 
 class BoxedLayoutArea : public ContainerArea
@@ -56,15 +58,15 @@ public:
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
-  virtual unsigned size(void) const { return content.size(); }
-  virtual AreaRef node(unsigned) const;
-  virtual void origin(unsigned, scaled&, scaled&) const;
-  virtual int lengthTo(unsigned) const;
+  virtual AreaIndex size(void) const { return content.size(); }
+  virtual AreaRef node(AreaIndex) const;
+  virtual void origin(AreaIndex, scaled&, scaled&) const;
+  virtual CharIndex lengthTo(AreaIndex) const;
   //virtual AreaRef replace(unsigned, const AreaRef&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
-  virtual bool searchByIndex(class AreaId&, int) const;
+  virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
 protected:
   BoundingBox bbox;

@@ -28,22 +28,23 @@
 class GlyphStringArea : public HorizontalArrayArea
 {
 protected:
-  GlyphStringArea(const std::vector<AreaRef>& children, const std::vector<int>& c)
+  GlyphStringArea(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c)
     : HorizontalArrayArea(children), counters(c)
   { assert(children.size() == counters.size()); }
   virtual ~GlyphStringArea() { }
 
 public:
-  static SmartPtr<GlyphStringArea> create(const std::vector<AreaRef>& children, const std::vector<int>& c)
+  static SmartPtr<GlyphStringArea> create(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c)
   { return new GlyphStringArea(children, c); }
   virtual AreaRef clone(const std::vector<AreaRef>& c) const { return create(c, counters); }
 
-  virtual int length(void) const;
-  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const;
-  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const;
+  virtual CharIndex length(void) const;
+  virtual CharIndex lengthTo(AreaIndex) const;
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
 
 private:
-  std::vector<int> counters;
+  std::vector<CharIndex> counters;
 };
 
 #endif // __GlyphStringArea_hh__

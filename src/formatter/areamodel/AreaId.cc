@@ -27,74 +27,139 @@
 #include "AreaId.hh"
 
 void
-AreaId::append(int step)
+AreaId::append(AreaIndex step)
 {
-  path.push_back(step);
+  pathV.push_back(step);
 }
 
 void
-AreaId::append(int step, const AreaRef& a)
+AreaId::append(AreaIndex step, const AreaRef& a)
 {
-  path.push_back(step);
-  area.push_back(a);
+  assert(pathV.size() == areaV.size());
+  pathV.push_back(step);
+  areaV.push_back(a);
 }
 
 void
-AreaId::append(int step, const AreaRef& a, const scaled& x, const scaled& y)
+AreaId::append(AreaIndex step, const AreaRef& a, const scaled& x, const scaled& y)
 {
+  assert(pathV.size() == originV.size());
   append(step, a);
-  origin.push_back(std::make_pair(x, y));
+  originV.push_back(std::make_pair(x, y));
 }
 
 void
 AreaId::pop_back()
 {
-  assert(!path.empty());
-  path.pop_back();
-  while (area.size() > path.size()) area.pop_back();
-  while (origin.size() > path.size()) origin.pop_back();
+  assert(!pathV.empty());
+  pathV.pop_back();
+  while (areaV.size() > pathV.size()) areaV.pop_back();
+  while (originV.size() > pathV.size()) originV.pop_back();
+  while (lengthV.size() > pathV.size()) lengthV.pop_back();
 }
 
 AreaRef
 AreaId::getArea(int index) const
 {
-  if (index == 0) return root;
+  validateAreas();
+
+  if (index == 0)
+    return root;
   else if (index > 0)
     {
-      assert(index <= area.size());
-      return area[index - 1];
+      assert(index <= areaV.size());
+      return areaV[index - 1];
     }
   else
     {
-      assert(-index <= area.size());
-      return area[area.size() + index];
+      assert(-index <= areaV.size());
+      return areaV[areaV.size() + index];
     }
 }
 
 void
-AreaId::getOrigin(scaled& x, scaled& y, int index) const
+AreaId::accumulateOrigin(scaled& x, scaled& y) const
 {
   validateOrigins();
-  if (index >= 0)
-    getOriginAux(index, x, y);
-  else if (!origin.empty())
-    getOriginAux(origin.size() + index, x, y);
-  else
-    {
-      assert(index == -1);
-      x = y = scaled::zero();
-    }
+  accumulateOriginAux(originV.begin(), originV.end(), x, y);
 }
 
 void
-AreaId::getOriginAux(int index, scaled& x, scaled& y) const
+AreaId::getOrigin(scaled& x, scaled& y) const
 {
-  assert(index >= 0 && index < origin.size());
   x = y = scaled::zero();
-  for (OriginVector::const_iterator p = origin.begin(); p != origin.begin() + index + 1; p++)
+  accumulateOrigin(x, y);
+}
+
+void
+AreaId::accumulateOrigin(int end, scaled& x, scaled& y) const
+{
+  validateOrigins();
+
+  const int endA = (end >= 0) ? end : originV.size() + end + 1;
+  assert(endA >= 0 && endA <= originV.size());
+
+  accumulateOriginAux(originV.begin(), originV.begin() + endA, x, y);
+}
+
+void
+AreaId::getOrigin(int end, scaled& x, scaled& y) const
+{
+  x = y = scaled::zero();
+  accumulateOrigin(end, x, y);
+}
+
+void
+AreaId::accumulateOrigin(int begin, int end, scaled& x, scaled& y) const
+{
+  validateOrigins();
+
+  const int beginA = (begin >= 0) ? begin : originV.size() + begin + 1;
+  const int endA = (end >= 0) ? end : originV.size() + end + 1;
+  assert(beginA >= 0 && beginA <= originV.size());
+  assert(endA >= 0 && endA <= originV.size());
+
+  accumulateOriginAux(originV.begin() + beginA, originV.begin() + endA, x, y);
+}
+
+void
+AreaId::getOrigin(int begin, int end, scaled& x, scaled& y) const
+{
+  x = y = scaled::zero();
+  accumulateOrigin(begin, end, x, y);
+}
+
+CharIndex
+AreaId::getLength(int begin, int end) const
+{
+  validateLengths();
+
+  const int beginA = (begin >= 0) ? begin : lengthV.size() + begin + 1;
+  const int endA = (end >= 0) ? end : lengthV.size() + end + 1;
+  assert(beginA >= 0 && beginA <= lengthV.size());
+  assert(endA >= 0 && endA <= lengthV.size());
+
+  CharIndex acc = 0;
+  accumulateLengthAux(lengthV.begin() + beginA, lengthV.begin() + endA, acc);
+  return acc;
+}
+
+void
+AreaId::accumulateLengthAux(const LengthVector::const_iterator& begin, const LengthVector::const_iterator& end,
+			    CharIndex& index) const
+{
+  for (LengthVector::const_iterator p = begin; p != end; p++)
+    index += *p;
+}
+
+void
+AreaId::accumulateOriginAux(const OriginVector::const_iterator& begin, const OriginVector::const_iterator& end,
+			    scaled& dx, scaled& dy) const
+{
+  for (OriginVector::const_iterator p = begin; p != end; p++)
     {
-      x += (*p).first;
-      y += (*p).second;
+      dx += (*p).first;
+      dy += (*p).second;
     }
 }
 
@@ -102,10 +167,10 @@ void
 AreaId::validateAreas() const
 {
   AreaRef prev = root;
-  while (area.size() < path.size())
+  while (areaV.size() < pathV.size())
     {
-      area.push_back(prev->node(path[area.size()]));
-      prev = area[area.size() - 1];
+      areaV.push_back(prev->node(pathV[areaV.size()]));
+      prev = areaV[areaV.size() - 1];
     }
 }
 
@@ -115,12 +180,24 @@ AreaId::validateOrigins() const
   validateAreas();
 
   AreaRef prev = root;
-  while (origin.size() < area.size())
+  while (originV.size() < areaV.size())
     {
       std::pair<scaled,scaled> o;
-      prev->origin(path[origin.size()], o.first, o.second);
-      origin.push_back(o);
-      prev = area[origin.size() - 1];
+      prev->origin(pathV[originV.size()], o.first, o.second);
+      originV.push_back(o);
+      prev = areaV[originV.size() - 1];
     }
 }
 
+void
+AreaId::validateLengths() const
+{
+  validateAreas();
+
+  AreaRef prev = root;
+  while (lengthV.size() < areaV.size())
+    {
+      lengthV.push_back(prev->lengthTo(pathV[lengthV.size()]));
+      prev = areaV[lengthV.size() - 1];
+    }
+}

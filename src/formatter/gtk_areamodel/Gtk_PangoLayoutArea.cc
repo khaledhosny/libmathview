@@ -85,31 +85,45 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 }
 
 bool
-Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, int& index) const
+Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
 {
-  int trailing;
-  return (pango_layout_xy_to_index(layout,
-				   Gtk_RenderingContext::toGtkX(x),
-				   Gtk_RenderingContext::toGtkY(y + bbox.height),
-				   &index,
-				   &trailing));
+  gint utf8_index;
+  gint trailing;
+  if (pango_layout_xy_to_index(layout,
+			       Gtk_RenderingContext::toPangoPixels(x),
+			       Gtk_RenderingContext::toPangoPixels(y + bbox.height),
+			       &utf8_index,
+			       &trailing))
+    {
+      const gchar* buffer = pango_layout_get_text(layout);
+      index = g_utf8_pointer_to_offset(buffer, buffer + utf8_index) + trailing;
+      std::cout << "pango_layout_xy_to_index " << utf8_index << " " << index << std::endl;
+      return true;
+    }
+  else
+    return false;
 }
 
 bool
-Gtk_PangoLayoutArea::positionOfIndex(int index, scaled& x, scaled& y, BoundingBox& bbox) const
+Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
 {
-  PangoRectangle rect;
-  pango_layout_index_to_pos(layout, index, &rect);
-  
-  x = Gtk_RenderingContext::fromPangoPixels(rect.x);
-  y = Gtk_RenderingContext::fromPangoPixels(rect.y);
-  bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
-  return true;
+  const gchar* buffer = pango_layout_get_text(layout);
+
+  if (index >= 0 && index <= g_utf8_strlen(buffer, -1))
+    {
+      const gchar* ptr = g_utf8_offset_to_pointer(buffer, index);
+      PangoRectangle rect;
+      pango_layout_index_to_pos(layout, ptr - buffer, &rect);
+      
+      dx += Gtk_RenderingContext::fromPangoPixels(rect.x);
+      dy += Gtk_RenderingContext::fromPangoPixels(rect.y);
+      return true;
+    }
+  else
+    return false;
 }
 
-unsigned
+CharIndex
 Gtk_PangoLayoutArea::length() const
 {
   return g_utf8_strlen(pango_layout_get_text(layout), -1);

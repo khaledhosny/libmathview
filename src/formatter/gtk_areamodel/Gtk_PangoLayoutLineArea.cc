@@ -55,3 +55,43 @@ Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scal
 		       line);
 }
 
+bool
+Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
+{
+  gint utf8_index;
+  gint trailing;
+  if (pango_layout_line_x_to_index(pango_layout_get_line(layout, 0),
+				   Gtk_RenderingContext::toPangoPixels(x),
+				   &utf8_index,
+				   &trailing))
+    {
+      const gchar* buffer = pango_layout_get_text(layout);
+      index = g_utf8_pointer_to_offset(buffer, buffer + utf8_index) + trailing;
+      //std::cout << "pango_layout_line_x_to_index " << utf8_index << " " << index << std::endl;
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, scaled& dx, scaled& dy) const
+{
+  const gchar* buffer = pango_layout_get_text(layout);
+
+  if (index >= 0 && index <= g_utf8_strlen(buffer, -1))
+    {
+      const gchar* ptr = g_utf8_offset_to_pointer(buffer, index);
+      
+      gint xpos;
+      pango_layout_line_index_to_x(pango_layout_get_line(layout, 0), ptr - buffer, 0, &xpos);
+      
+      dx += Gtk_RenderingContext::fromPangoPixels(xpos);
+      dy += scaled::zero();
+
+      return true;
+    }
+  else
+    return false;
+}
+

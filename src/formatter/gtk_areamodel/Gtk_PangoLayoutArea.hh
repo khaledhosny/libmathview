@@ -26,9 +26,9 @@
 #include <pango/pango.h>
 
 #include "GObjectPtr.hh"
-#include "SimpleArea.hh"
+#include "GlyphArea.hh"
 
-class Gtk_PangoLayoutArea : public SimpleArea 
+class Gtk_PangoLayoutArea : public GlyphArea 
 {
 protected:
   Gtk_PangoLayoutArea(PangoLayout*);
@@ -42,9 +42,9 @@ public:
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual bool indexOfPosition(const scaled&, const scaled&, int&) const;
-  virtual bool positionOfIndex(int, scaled&, scaled&, BoundingBox&) const;
-  virtual int length(void) const;
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, scaled&, scaled&) const;
+  virtual CharIndex length(void) const;
 
 protected:
   GObjectPtr<PangoLayout> layout;
