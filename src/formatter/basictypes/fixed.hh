@@ -29,17 +29,17 @@ template<typename T = int, int precision = std::numeric_limits<T>::digits / 2>
 class fixed
 {
 public:
-  fixed(void) { value = 0; }
-  fixed(T v) { value = v; }
-  fixed(float v) { value = static_cast<T>(v * (static_cast<T>(1) << precision)); }
-  fixed(double v) { value = static_cast<T>(v * (static_cast<T>(1) << precision)); }
+  fixed(void) : value(0) { }
+  fixed(T v, bool) : value(v) { }
+  fixed(T v) : value(static_cast<T>(v) << precision) { }
+  fixed(float v) : value(static_cast<T>(v * (static_cast<T>(1) << precision))) { }
+  fixed(double v) : value(static_cast<T>(v * (static_cast<T>(1) << precision))) { }
 
-  static fixed ofInt(int v) { return fixed(static_cast<T>(v) << precision); }
-  static fixed zero(void) { return fixed(T(0)); }
-  static fixed half(void) { return fixed(static_cast<T>(1) << (precision - 1)); }
-  static fixed one(void) { return fixed(static_cast<T>(1) << precision); }
-  static fixed min(void) { return fixed(std::numeric_limits<T>::min()); }
-  static fixed max(void) { return fixed(std::numeric_limits<T>::max()); }
+  static fixed zero(void) { return fixed(0, true); }
+  static fixed half(void) { return fixed(static_cast<T>(1) << (precision - 1), true); }
+  static fixed one(void) { return fixed(static_cast<T>(1) << precision, true); }
+  static fixed min(void) { return fixed(std::numeric_limits<T>::min(), true); }
+  static fixed max(void) { return fixed(std::numeric_limits<T>::max(), true); }
   
   template<typename S, int p> friend fixed<S,p> abs(const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> trunc(const fixed<S,p>&);
