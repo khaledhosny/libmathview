@@ -1,0 +1,14 @@
+# This is a comment
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datadir=@datadir@
+
+Name: GtkMathView
+Description: A GTK+ Widget for Rendering MathML Documents
+Version: @VERSION@
+Requires: gdome2-cpp-smart
+Libs: @DOM_LIBS@ -L${libdir} -lgtkmathview
+Cflags: @DOM_CFLAGS@ -I${includedir}/@PACKAGE@
+

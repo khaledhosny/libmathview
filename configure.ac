@@ -56,10 +56,10 @@ AC_ARG_ENABLE(
 	extensions,
 	[  --enable-extensions[=ARG] enable MathML extensions [default=yes]],
 	enable_extensions=$enableval,
-	enable_extensions=no
+	enable_extensions=yes
 )
 
-if test "x$enable_extension" = "xyes"; then
+if test "x$enable_extensions" = "xyes"; then
    AC_DEFINE(ENABLE_EXTENSIONS,,[Define to 1 to allow some extensions to MathML (new attributes)])
 fi
 
@@ -70,13 +70,6 @@ AC_ARG_WITH(
 	gmetadom=auto
 )
 
-AC_ARG_WITH(
-	minidom,
-	[  --with-minidom[=ARG]    compile with minidom library [default=auto]],
-	minidom=$withval,
-	minidom=auto
-)
-	
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
@@ -268,22 +261,6 @@ if test $gtklib = "no"; then
 	AC_MSG_WARN(GTK is needed in order to use the widget)
 fi
 
-if test $gmetadom = "no" -a $minidom = "no"; then
-	AC_MSG_ERROR(you must specify at least one DOM library to be used)
-fi
-
-if test $gmetadom = "yes" -a $minidom = "yes"; then
-	AC_MSG_ERROR(you must specify at most one DOM library to be used)
-fi
-
-if test $minidom = "yes"; then
-	gmetadom="no"
-fi
-
-if test $gmetadom = "yes"; then
-	minidom="no"
-fi
-
 AC_CHECK_PROG(HAVE_GMETADOM_CONFIG, gmetadom-config, yes, no)
 if test $HAVE_GMETADOM_CONFIG = "no"; then
 	gmetadom="no"
@@ -308,50 +285,14 @@ if test $gmetadom = "auto"; then
 	fi
 fi
 
-AC_CHECK_PROG(HAVE_MINIDOM_CONFIG, minidom-config, yes, no)
-if test $HAVE_MINIDOM_CONFIG = "no"; then
-	minidom="no"
-fi
-
-if test $minidom = "auto"; then
-	MINIDOM_MIN_VERSION=0.1.3
-	AC_MSG_CHECKING(for minidom >= $MINIDOM_MIN_VERSION)
-	vers=`minidom-config --version | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
-	minvers=`echo $MINIDOM_MIN_VERSION | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
-
-	if test "$vers" -lt "$minvers"; then
-		minidom="no"
-	else
-		minidom="yes"
-	fi
-
-	if test $minidom = "yes"; then
-		AC_MSG_RESULT(found)
-	else
-		AC_MSG_RESULT(not found)
-	fi
-fi
-
-if test $gmetadom = "no" -a $minidom = "no"; then
+if test $gmetadom = "no"; then
 	AC_MSG_ERROR(no DOM library was found, this is a fatal error)
 fi
 
-if test $gmetadom = "yes" -a $minidom = "yes"; then
-	AC_MSG_WARN(both gmetadom and minidom were found, using gmetadom)
-	minidom="no"
-fi
-
-if test $gmetadom = "yes"; then
-	DOM_CFLAGS=`gmetadom-config --module=gdome_cpp_smart --cflags`
-	DOM_LIBS=`gmetadom-config --module=gdome_cpp_smart --libs`
-	DOM_IMPLEMENTATION="GMETADOM"
-	AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 to compile with GMetaDOM (recommended)])
-else
-	DOM_CFLAGS="$GLIB_CFLAGS `minidom-config --cflags`"
-	DOM_LIBS="$GLIB_LIBS `minidom-config --libs`"
-	DOM_IMPLEMENTATION="MINIDOM"
-	AC_DEFINE(HAVE_MINIDOM,1,[Define to 1 to compile with minidom (deprecated)])
-fi
+DOM_CFLAGS=`gmetadom-config --module=gdome_cpp_smart --cflags`
+DOM_LIBS=`gmetadom-config --module=gdome_cpp_smart --libs`
+DOM_IMPLEMENTATION="GMETADOM"
+AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 to compile with GMetaDOM (recommended)])
 AC_SUBST(DOM_CFLAGS)
 AC_SUBST(DOM_LIBS)
 AC_SUBST(DOM_IMPLEMENTATION)
@@ -397,19 +338,20 @@ if test $profile = yes; then
 fi
 
 AC_CONFIG_FILES([
-Makefile
-gtkmathview.spec
-config/Makefile
-config/math-engine-configuration.xml
-scripts/Makefile
-src/Makefile
-src/scaled.hh
-auto/Makefile
-auto/config.dirs
-doc/Makefile
-viewer/Makefile
-randomath/Makefile
-mathml2ps/Makefile
+ Makefile
+ gtkmathview.spec
+ config/Makefile
+ config/math-engine-configuration.xml
+ scripts/Makefile
+ src/Makefile
+ src/scaled.hh
+ auto/Makefile
+ auto/config.dirs
+ doc/Makefile
+ viewer/Makefile
+ randomath/Makefile
+ mathml2ps/Makefile
+ gtkmathview.pc
 ])
 AC_OUTPUT
 
