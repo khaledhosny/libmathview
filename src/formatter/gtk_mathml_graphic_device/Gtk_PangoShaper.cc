@@ -29,6 +29,45 @@
 #include "Gtk_RenderingContext.hh"
 #include "MathGraphicDevice.hh"
 
+struct HStretchyChar
+{
+  DOM::Char16 ch;
+  DOM::Char16 left;
+  DOM::Char16 glue;
+  DOM::Char16 right;
+};
+
+struct VStretchyChar
+{
+  DOM::Char16 ch;
+  DOM::Char16 top;
+  DOM::Char16 glue;
+  DOM::Char16 middle;
+  DOM::Char16 bottom;
+};
+
+static HStretchyChar hMap[] =
+  {
+    { 0x2190, 0x2190, 0x23af, 0x0000 },
+    { 0x2192, 0x0000, 0x23af, 0x2192 },
+    { 0x2194, 0x2190, 0x23af, 0x2192 },
+    { 0,      0,      0,      0      }
+  };
+
+static VStretchyChar vMap[] = 
+  {
+    { 0x0028, 0x239b, 0x239c, 0x0000, 0x239d }, // LEFT PAREN
+    { 0x0029, 0x239e, 0x239f, 0x0000, 0x23a0 }, // RIGHT PAREN
+    { 0x005b, 0x23a1, 0x23a2, 0x0000, 0x23a3 }, // LEFT SQUARE BRACKET
+    { 0x005d, 0x23a4, 0x23a5, 0x0000, 0x23a6 }, // RIGHT SQUARE BRACKET
+    { 0x007b, 0x23a7, 0x23aa, 0x23a8, 0x23a9 }, // LEFT CURLY BRACKET
+    { 0x007d, 0x23ab, 0x23aa, 0x23ac, 0x23ad }, // RIGHT CURLY BRACKET
+    { 0x2191, 0x2191, 0x23d0, 0x0000, 0x0000 }, // UP ARROW
+    { 0x2193, 0x0000, 0x23d0, 0x0000, 0x2193 }, // BOTTOM ARROW
+    { 0x222b, 0x2320, 0x23ae, 0x0000, 0x2321 },
+    { 0,      0,      0,      0,      0 }
+  };
+
 Gtk_PangoShaper::Gtk_PangoShaper()
 { }
 

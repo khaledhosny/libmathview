@@ -504,36 +504,12 @@ Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const Gly
 
   const HStretchyChar* charSpec = &hMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
 
-  if (charSpec->normal)
-    {
-      AreaRef res = getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size);
-      if (res->box().width >= span)
-	return res;
-    }
-
+  AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size) : 0;
   AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->left, size) : 0;
-  AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->right, size) : 0;
   AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
+  AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->right, size) : 0;
 
-  scaled leftSize = left ? left->box().width : 0;
-  scaled rightSize = right ? right->box().width : 0;
-  scaled glueSize = glue ? glue->box().width : 0;
-
-  // Compute first the number of glue segments we have to use
-  assert(glueSize > scaled::zero());
-  int n = std::max(0, (span - leftSize - rightSize).getValue() / glueSize.getValue());
-
-  // Then the final number of glyphs
-  int gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
-
-  std::vector<AreaRef> h;
-  h.reserve(gsN);
-
-  if (left) h.push_back(left);
-  for (int i = 0; i < n; i++) h.push_back(glue);
-  if (right) h.push_back(right);
-
-  return factory->horizontalArray(h);
+  return composeStretchyCharH(factory, normal, left, glue, right, span);
 }
 
 #include "scaledAux.hh"
@@ -552,45 +528,12 @@ Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const Gly
 
   const VStretchyChar* charSpec = &vMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
 
-  if (charSpec->normal)
-    {
-      AreaRef res = getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size);
-      if (res->box().verticalExtent() >= span)
-	return res;
-    }
-
+  AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size) : 0;
   AreaRef top = (charSpec->top != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->top, size) : 0;
-  AreaRef middle = (charSpec->middle != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->middle, size) : 0;
   AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
+  AreaRef middle = (charSpec->middle != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->middle, size) : 0;
   AreaRef bottom = (charSpec->bottom != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->bottom, size) : 0;
 
-  scaled topSize = top ? top->box().verticalExtent() : 0;
-  scaled middleSize = middle ? middle->box().verticalExtent() : 0;
-  scaled glueSize = glue ? glue->box().verticalExtent() : 0;
-  scaled bottomSize = bottom ? bottom->box().verticalExtent() : 0;			
-
-  assert(glueSize > scaled::zero());
-  int n = std::max(0, (span - topSize - bottomSize - middleSize).getValue() / glueSize.getValue());
-
-  std::cerr << "STRETCHYING: " << span << " N = " << n << std::endl;
-
-  if (n % 2 == 1 && middle) n++;
-  
-  int gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
-
-  std::vector<AreaRef> v;
-  v.reserve(gsN);
-
-  if (bottom) v.push_back(bottom);
-  if (middle)
-    {
-      for (int i = 0; i < n / 2; i++) v.push_back(glue);
-      v.push_back(middle);
-      for (int i = 0; i < n / 2; i++) v.push_back(glue);
-    }
-  else
-    for (unsigned i = 0; i < n; i++) v.push_back(glue);
-  if (top) v.push_back(top);
-
-  return factory->verticalArray(v, 0);
+  return composeStretchyCharV(factory, normal, top, glue, middle, bottom, span);
 }
+

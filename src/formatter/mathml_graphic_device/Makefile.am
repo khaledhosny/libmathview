@@ -6,6 +6,7 @@ libmathml_graphic_device_la_LIBADD =
 libmathml_graphic_device_la_SOURCES = \
   MathFormattingContext.cc \
   MathGraphicDevice.cc \
+  Shaper.cc \
   ShaperManager.cc \
   ShapingResult.cc \
   SpaceShaper.cc

@@ -36,6 +36,14 @@ public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
   virtual void shape(const class MathFormattingContext&, ShapingResult&) const = 0;
+
+protected:
+  virtual AreaRef composeStretchyCharV(const SmartPtr<class AreaFactory>&,
+				       const AreaRef&, const AreaRef&, const AreaRef&, const AreaRef&, const AreaRef&,
+				       const scaled&) const;
+  virtual AreaRef composeStretchyCharH(const SmartPtr<class AreaFactory>&,
+				       const AreaRef&, const AreaRef&, const AreaRef&, const AreaRef&,
+				       const scaled&) const;
 };
 
 #endif // __Shaper_hh__
