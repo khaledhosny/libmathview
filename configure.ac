@@ -276,7 +276,6 @@ AC_CONFIG_FILES([
  scripts/Makefile
  src/Makefile
  src/common/Makefile
- src/reader/Makefile
  src/engine/Makefile
  src/engine/common/Makefile
  src/engine/boxml/Makefile
