@@ -23,6 +23,8 @@
 #ifndef Ptr_hh
 #define Ptr_hh
 
+#include <cassert>
+
 template <class P>
 class Ptr
 {

@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "MathMLEmbellishment.hh"
 #include "MathMLOperatorElement.hh"
 

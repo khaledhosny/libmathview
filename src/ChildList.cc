@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "ChildList.hh"
 
 #if defined(HAVE_GMETADOM)
