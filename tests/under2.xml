@@ -1,0 +1,29 @@
+<math>
+  <mrow>
+    <mrow>
+      <munder>
+        <mo>lim</mo>
+        <mrow>
+          <mi>x</mi>
+  	  <mo><mchar name="RightArrow"/></mo>
+	  <msub>
+ 	    <mi>x</mi>
+	    <mn>0</mn>
+	  </msub>
+        </mrow>
+      </munder>
+      <mrow>
+        <mo stretchy="false">(</mo>
+        <mrow>
+          <msup>
+            <mi>x</mi>
+	    <mn>2</mn>
+	  </msup>
+	  <mo>+</mo>
+	  <mn>1</mn>
+        </mrow>
+        <mo stretchy="false">)</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
