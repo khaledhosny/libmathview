@@ -31,15 +31,15 @@
 #include "MathMLOperatorElement.hh"
 #include "AbstractRefinementContext.hh"
 #include "MathMLAttributeSignatures.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLStyleElement::MathMLStyleElement(const SmartPtr<class MathMLNamespaceContext>& context)
   : MathMLNormalizingContainerElement(context)
-{
-}
+{ }
 
 MathMLStyleElement::~MathMLStyleElement()
-{
-}
+{ }
 
 void
 MathMLStyleElement::refine(AbstractRefinementContext& context)
@@ -50,6 +50,9 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, MathML, Style, displaystyle);
       REFINE_ATTRIBUTE(context, MathML, Style, scriptsizemultiplier);
       REFINE_ATTRIBUTE(context, MathML, Style, scriptminsize);
+      REFINE_ATTRIBUTE(context, MathML, Style, mathcolor);
+      REFINE_ATTRIBUTE(context, MathML, Style, mathbackground);
+      REFINE_ATTRIBUTE(context, MathML, Style, color);
       REFINE_ATTRIBUTE(context, MathML, Style, background);
       REFINE_ATTRIBUTE(context, MathML, Style, negativeveryverythickmathspace);
       REFINE_ATTRIBUTE(context, MathML, Style, negativeverythickmathspace);
@@ -72,25 +75,23 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#if 0
-void
-MathMLStyleElement::Setup(RenderingEnvironment& env)
+AreaRef
+MathMLStyleElement::format(MathFormattingContext& ctxt)
 {
-  // can be optimized here
-  if (dirtyAttribute() || dirtyAttributeP())
+  if (dirtyLayout())
     {
-      env.Push();
+      ctxt.push(this);
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, displaystyle))
-	env.SetDisplayStyle(ToBoolean(value));
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, displaystyle))
+	ctxt.setDisplayStyle(ToBoolean(value));
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, scriptsizemultiplier))
-	env.SetScriptSizeMultiplier(ToNumber(value));
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, scriptsizemultiplier))
+	ctxt.setSizeMultiplier(ToNumber(value));
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, scriptminsize))
-	env.SetScriptMinSize(ToLength(value));
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, scriptminsize))
+	ctxt.setMinSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getMinSize()));
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, scriptlevel))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, scriptlevel))
 	{
 	  SmartPtr<Value> p = GetComponent(value, 0);
 	  if (IsEmpty(p))
@@ -100,7 +101,7 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
       
 	      int scriptLevel = ToInteger(p);
 	      if (scriptLevel < 0) scriptLevel = 0;
-	      env.SetScriptLevel(scriptLevel);
+	      ctxt.setScriptLevel(scriptLevel);
 	    }
 	  else
 	    {
@@ -110,145 +111,80 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
       
 	      int scriptLevel = ToInteger(p);
 	      if (scriptLevel < 0) scriptLevel = 0;
-	      env.AddScriptLevel(sign * scriptLevel);
+	      ctxt.addScriptLevel(sign * scriptLevel);
 	    }
 	}
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathcolor))
-	{
-	  if (IsSet(T_COLOR))
-	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
-	  env.SetColor(ToRGBColor(value));
-	} 
-      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, color))
-	{
-	  //Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
-	  env.SetColor(ToRGBColor(value));
-	}
+      const RGBColor oldColor = ctxt.getColor();
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, mathcolor))
+	ctxt.setColor(ToRGB(value));
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, color))
+	ctxt.setColor(ToRGB(value));
+      const RGBColor color = ctxt.getColor();
 
-      RGBColor oldBackground = env.GetBackgroundColor();
-#if 0
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathbackground))
+      const RGBColor oldBackground = ctxt.getBackground();
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, mathbackground))
 	{
-	  if (IsSet(T_BACKGROUND))
-	    Globals::logger(LOG_WARNING, "attribute `mathbackground' overrides deprecated attribute `background'");
 	  if (!IsTokenId(value) || ToTokenId(value) != T_TRANSPARENT)
-	    env.SetBackgroundColor(ToRGBColor(value));
+	    ctxt.setBackground(ToRGB(value));
 	}
-      else
-#endif
-	if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, background))
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, background))
 	{
-	  //Globals::logger(LOG_WARNING, "attribute `background' is deprecated in MathML 2");
 	  if (!IsTokenId(value) || ToTokenId(value) != T_TRANSPARENT)
-	    env.SetBackgroundColor(ToRGBColor(value));
+	    ctxt.setBackground(ToRGB(value));
 	}
-      background = env.GetBackgroundColor();
-      differentBackground = background != oldBackground;
+      const RGBColor background = ctxt.getBackground();
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, veryverythinmathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYVERYTHIN, ToLength(value));
+      static const AttributeId spaceId[] = {
+	ATTRIBUTE_ID(MathML, Style, negativeveryverythickmathspace),
+	ATTRIBUTE_ID(MathML, Style, negativeverythickmathspace),
+	ATTRIBUTE_ID(MathML, Style, negativethickmathspace),
+	ATTRIBUTE_ID(MathML, Style, negativemediummathspace),
+	ATTRIBUTE_ID(MathML, Style, negativethinmathspace),
+	ATTRIBUTE_ID(MathML, Style, negativeverythinmathspace),
+	ATTRIBUTE_ID(MathML, Style, negativeveryverythinmathspace),
+	0,
+	ATTRIBUTE_ID(MathML, Style, veryverythinmathspace),
+	ATTRIBUTE_ID(MathML, Style, verythinmathspace),
+	ATTRIBUTE_ID(MathML, Style, thinmathspace),
+	ATTRIBUTE_ID(MathML, Style, mediummathspace),
+	ATTRIBUTE_ID(MathML, Style, thickmathspace),
+	ATTRIBUTE_ID(MathML, Style, verythickmathspace),
+	ATTRIBUTE_ID(MathML, Style, veryverythickmathspace)
+      };
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, verythinmathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYTHIN, ToLength(value));
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, thinmathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_THIN, ToLength(value));
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mediummathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_MEDIUM, ToLength(value));
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, thickmathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_THICK, ToLength(value));
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, verythinmathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYTHICK, ToLength(value));
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, veryverythickmathspace))
-	env.SetMathSpace(RenderingEnvironment::MATH_SPACE_VERYVERYTHICK, ToLength(value));
+      for (unsigned i = 0; i < (sizeof(spaceId) / sizeof(AttributeId)); i++)
+	if (spaceId[i])
+	  if (SmartPtr<Value> value = getAttributeValue(*spaceId[i]))
+	    ctxt.setMathSpace(MathFormattingContext::NEGATIVE_VERYVERYTHICK_SPACE + i, ToLength(value));
 
       // the following attributes, thought not directly supported by <mstyle>
       // must be parsed here since they are always inherited by other elements
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathsize))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Style, mathsize))
 	{
-	  if (IsSet(T_FONTSIZE))
-	    Globals::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
-    
 	  if (IsTokenId(value))
 	    switch (ToTokenId(value))
 	      {
-	      case T_SMALL: env.AddScriptLevel(1); break;
-	      case T_BIG: env.AddScriptLevel(-1); break;
+	      case T_SMALL: ctxt.addScriptLevel(1); break;
+	      case T_BIG: ctxt.addScriptLevel(-1); break;
 	      case T_NORMAL: break; // noop
-	      default: assert(IMPOSSIBLE); break;
+	      default: assert(false); break;
 	      }
 	  else
-	    env.SetFontSize(ToLength(value));
-	}
-      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontsize))
-	{
-	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
-	  env.SetFontSize(ToLength(value));
+	    ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
 	}
 
-      MathMLNormalizingContainerElement::Setup(env);
-      env.Drop();
-      resetDirtyAttribute();
+      AreaRef res = getChild()->format(ctxt);
+      if (color != oldColor) res = ctxt.getDevice()->getFactory()->color(res, color);
+      if (background != oldBackground) res = ctxt.getDevice()->getFactory()->background(res, background);
+      setArea(res);
+      ctxt.pop();
+      resetDirtyLayout();
     }
+
+  return getArea();
 }
-
-void
-MathMLStyleElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      MathMLNormalizingContainerElement::DoLayout(ctxt);
-      DoEmbellishmentLayout(this, box);
-      resetDirtyLayout(ctxt);
-    }
-}
-
-void
-MathMLStyleElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-  SetEmbellishmentPosition(this, x, y);
-  if (GetChild()) GetChild()->SetPosition(x, y);
-}
-
-void
-MathMLStyleElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-#if 0 
-      if (IsDirty()) {
-	if (differentBackground && !IsSelected()) {
-	  if (bGC[0] == NULL) {
-	    GraphicsContextValues values;
-	    values.foreground = values.background = background;
-	    bGC[0] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
-	  }
-
-	  area.Clear(bGC[0], GetRectangle());
-	}
-      }
-#endif
-
-      RenderBackground(area);
-
-      assert(child);
-      child->Render(area);
-
-      ResetDirty();
-    }
-}
-#endif
 
 bool
 MathMLStyleElement::IsSpaceLike() const

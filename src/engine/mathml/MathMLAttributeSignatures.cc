@@ -66,8 +66,10 @@ DEFINE_ATTRIBUTE(MathML, Space, "linebreak", linebreak, true, true, false, false
 DEFINE_ATTRIBUTE(MathML, Space, "width", width, true, true, false, false, "0em");
 DEFINE_ATTRIBUTE(MathML, StringLit, "lquote", lquote, true, true, false, false, "\"");
 DEFINE_ATTRIBUTE(MathML, StringLit, "rquote", rquote, true, true, false, false, "\"");
-DEFINE_ATTRIBUTE(MathML, Style, "background", background, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(MathML, Style, "color", color, true, false, true, false, 0);
+DEFINE_ATTRIBUTE(MathML, Style, "background", background, true, false, true, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "mathcolor", mathcolor, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(MathML, Style, "mathbackground", mathbackground, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "displaystyle", displaystyle, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "mathsize", mathsize, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "mediummathspace", mediummathspace, true, false, false, false, 0);

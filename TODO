@@ -46,7 +46,6 @@ ARCH IMPROVEMENTS
 - make debugging methods in Areas optional (or remove them)
 - fix Configuration/Globals files 
 - move mathvariant files into src/common
-- operations visiting areas might be factored in a better way
 - not sure the Origin information should go in the view
 
 MISSING
@@ -78,6 +77,5 @@ MISSING
 - add documentation for boxml
 - mmultiscripts
 - mpadded
-- mstyle ?
 - token
 

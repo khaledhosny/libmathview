@@ -38,15 +38,11 @@ public:
   { return new MathMLStyleElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
 
   virtual bool IsSpaceLike(void) const;
   virtual void setDirtyAttribute(void);
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
-
-  bool HasDifferentBackground(void) const { return differentBackground; }
-  
-private:
-  bool differentBackground; // true if the background color is different from parent's one
 };
 
 #endif // __MathMLStyleElement_hh__
