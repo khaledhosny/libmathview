@@ -143,8 +143,8 @@ Configuration::ParseColor(const DOM::Element& node, RGBColor& f, RGBColor& b, bo
     return false;
   }
 
-  SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(MathML, Style, mathcolor).parseValue(fs);
-  SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(MathML, Style, background).parseValue(bs);
+  SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(MathML, Token, mathcolor).parseValue(fs);
+  SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(MathML, Token, mathbackground).parseValue(bs);
 
   if (!fv || !bv)
     {
