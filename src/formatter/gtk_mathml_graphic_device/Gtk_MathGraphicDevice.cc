@@ -85,7 +85,7 @@ Gtk_MathGraphicDevice::bevelledFraction(const MathFormattingContext& context,
 
   std::vector<AreaRef> h(3);
   h.push_back(numerator);
-  h.push_back(stretchStringV(context, "/", max(n.height, d.height), max(n.depth, d.depth)));
+  h.push_back(stretchStringV(context, "/", std::max(n.height, d.height), std::max(n.depth, d.depth)));
   h.push_back(denominator);
   
   return horizontalArray(context, h);
@@ -114,24 +114,24 @@ Gtk_MathGraphicDevice::calculateScriptShift(const MathFormattingContext& context
   scaled AXIS = axis(context);
   scaled RULE = defaultLineThickness(context);
 
-  u = max(EX, baseBox.height - AXIS);
-  v = max(AXIS, baseBox.depth - AXIS);
+  u = std::max(EX, baseBox.height - AXIS);
+  v = std::max(AXIS, baseBox.depth - AXIS);
 
   if (!superScriptBox.defined())
     {
       u = 0;
-      v = max(v, max(subScriptMinShift, subScriptBox.height - (EX * 4) / 5));
+      v = std::max(v, std::max(subScriptMinShift, subScriptBox.height - (EX * 4) / 5));
     }
   else
     {
-      u = max(u, max(superScriptMinShift, superScriptBox.depth + EX / 4));
+      u = std::max(u, std::max(superScriptMinShift, superScriptBox.depth + EX / 4));
       if (!subScriptBox.defined())
 	{
 	  v = 0;
 	}
       else
 	{
-	  v = max(v, subScriptMinShift);
+	  v = std::max(v, subScriptMinShift);
           if ((u - superScriptBox.depth) - (subScriptBox.height - v) < 4 * RULE)
             {
               v = 4 * RULE - u + superScriptBox.depth + subScriptBox.height;

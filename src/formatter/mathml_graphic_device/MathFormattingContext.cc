@@ -31,6 +31,6 @@ MathFormattingContext::addScriptLevel(int dl)
 {
   scaled aSize = getActualSize() * pow(getSizeMultiplier(), dl);
   setActualSize(aSize);
-  setSize(max(getMinSize(), aSize));
+  setSize(std::max(getMinSize(), aSize));
   set<int>(SCRIPT_LEVEL, getScriptLevel() + dl);
 }

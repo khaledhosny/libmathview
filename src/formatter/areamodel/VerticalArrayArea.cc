@@ -120,8 +120,8 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
   strength(sw, sh, sd);
   BoundingBox box0 = box();
 
-  scaled aheight = max(scaled::zero(), height - box0.height);
-  scaled adepth = max(scaled::zero(), depth - box0.depth);
+  scaled aheight = std::max(scaled::zero(), height - box0.height);
+  scaled adepth = std::max(scaled::zero(), depth - box0.depth);
 
   std::vector<AreaRef> newContent;
   newContent.reserve(content.size());

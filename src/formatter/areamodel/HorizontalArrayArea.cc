@@ -89,7 +89,7 @@ HorizontalArrayArea::leftEdge() const
        p++)
     {
       scaled pedge = (*p)->leftEdge();
-      if (pedge < scaled::max()) edge = min(edge, d + pedge);
+      if (pedge < scaled::max()) edge = std::min(edge, d + pedge);
       d += (*p)->box().width;
     }
   return edge;
@@ -105,7 +105,7 @@ HorizontalArrayArea::rightEdge() const
        p++)
     {
       scaled pedge = (*p)->rightEdge();
-      if (pedge > scaled::min()) edge = max(edge, d + pedge);
+      if (pedge > scaled::min()) edge = std::max(edge, d + pedge);
       d += (*p)->box().width;
     }
   return edge;
@@ -212,7 +212,7 @@ HorizontalArrayArea::fit(const scaled& width, const scaled& height, const scaled
 	newContent.push_back((*p)->fit(pbox.width, height, depth));
       else
 	{
-	  scaled pwidth = (max(pbox.width, width - box0.width) * pw) / sw;
+	  scaled pwidth = (std::max(pbox.width, width - box0.width) * pw) / sw;
 	  newContent.push_back((*p)->fit(pwidth, height, depth));
 	}
     }

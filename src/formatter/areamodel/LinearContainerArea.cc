@@ -116,7 +116,7 @@ LinearContainerArea::leftEdge(void) const
   for (std::vector< AreaRef >::const_iterator p = content.begin();
        p != content.end();
        p++)
-    edge = min(edge, (*p)->leftEdge());
+    edge = std::min(edge, (*p)->leftEdge());
   return edge;
 }
 
@@ -127,7 +127,7 @@ LinearContainerArea::rightEdge(void) const
   for (std::vector< AreaRef >::const_iterator p = content.begin();
        p != content.end();
        p++)
-    edge = max(edge, (*p)->rightEdge());
+    edge = std::max(edge, (*p)->rightEdge());
   return edge;
 }
 

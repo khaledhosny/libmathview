@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <sstream>
+#include <algorithm>
 
 #include "BoundingBox.hh"
 
@@ -30,8 +31,8 @@ void
 BoundingBox::append(const BoundingBox& box)
 {
   width += box.width;
-  height = max(height, box.height);
-  depth = max(depth, box.depth);
+  height = std::max(height, box.height);
+  depth = std::max(depth, box.depth);
 }
 
 void
@@ -41,9 +42,9 @@ BoundingBox::overlap(const BoundingBox& box)
     return;
   else if (defined())
     {
-      width = max(width, box.width);
-      height = max(height, box.height);
-      depth = max(depth, box.depth);
+      width = std::max(width, box.width);
+      height = std::max(height, box.height);
+      depth = std::max(depth, box.depth);
     }
   else
     *this = box;
@@ -56,7 +57,7 @@ BoundingBox::under(const BoundingBox& box)
     return;
   else if (defined())
     {
-      width = max(width, box.width);
+      width = std::max(width, box.width);
       height += box.height + box.depth;
     }
   else
@@ -70,7 +71,7 @@ BoundingBox::over(const BoundingBox& box)
     return ;
   else if (defined())
     {
-      width = max(width, box.width);
+      width = std::max(width, box.width);
       depth += box.height + box.depth;
     }
   else

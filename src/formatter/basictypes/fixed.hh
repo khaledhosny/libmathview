@@ -46,8 +46,6 @@ public:
   template<typename S, int p> friend fixed<S,p> round(const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> ceil(const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> floor(const fixed<S,p>&);
-  template<typename S, int p> friend fixed<S,p> min(const fixed<S,p>&, const fixed<S,p>&);
-  template<typename S, int p> friend fixed<S,p> max(const fixed<S,p>&, const fixed<S,p>&);
 
   template<typename S, int p> friend fixed<S,p> operator+(const fixed<S,p>&, const fixed<S,p>&);
   template<typename S, int p> friend fixed<S,p> operator-(const fixed<S,p>&, const fixed<S,p>&);
@@ -123,20 +121,6 @@ floor(const fixed<T,p>& f)
 {
   if (f.value > 0) return fixed<T,p>::trunc(f);
   else return fixed<T,p>::round(f - fixed<T,p>::half());
-}
-
-template <typename T, int p>
-inline fixed<T,p>
-min(const fixed<T,p>& f1, const fixed<T,p>& f2)
-{
-  return fixed<T,p>(std::min(f1.value, f2.value));
-}
-
-template <typename T, int p>
-inline fixed<T,p>
-max(const fixed<T,p>& f1, const fixed<T,p>& f2)
-{
-  return fixed<T,p>(std::max(f1.value, f2.value));
 }
 
 template <typename T, int p> 
