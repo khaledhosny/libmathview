@@ -20,42 +20,34 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#include <config.h>
+#ifndef __gmetadom_RefinementContext_hh__
+#define __gmetadom_RefinementContext_hh__
 
-#include <cassert>
+#include <list>
 
-#include "RefinementContext.hh"
+#include "gmetadom.hh"
+#include "Attribute.hh"
+#include "AttributeList.hh"
 
-SmartPtr<Attribute>
-RefinementContext::get(const AttributeSignature& sig) const
+class gmetadom_RefinementContext
 {
-  for (std::list<Context>::const_iterator p = context.begin(); p != context.end(); p++)
-    {
-      const Context& c = *p;
+public:
+  gmetadom_RefinementContext(void) { }
 
-      if (SmartPtr<Attribute> attr = c.attributes->get(ATTRIBUTE_ID_OF_SIGNATURE(sig)))
-	return attr;
-      else if (c.elem.hasAttribute(sig.name))
-	{
-	  SmartPtr<Attribute> attr = Attribute::create(sig, c.elem.getAttribute(sig.name));
-	  c.attributes->set(attr);
-	  return attr;
-	}
-    }
+  SmartPtr<Attribute> get(const class AttributeSignature&) const;
+  void push(const DOM::Element&);
+  void pop(void);
 
-  return 0;
-}
+private:
+  struct Context
+  {
+    Context(const DOM::Element& el, const SmartPtr<AttributeList> al) : elem(el), attributes(al) { }
 
-void
-RefinementContext::push(const DOM::Element& elem)
-{
-  assert(elem);
-  context.push_front(Context(elem, AttributeList::create()));
-}
+    DOM::Element elem;
+    SmartPtr<AttributeList> attributes;
+  };
 
-void
-RefinementContext::pop()
-{
-  assert(!context.empty());
-  context.pop_front();
-}
+  std::list<Context> context;
+};
+
+#endif // __gmetadom_RefinementContext_hh__

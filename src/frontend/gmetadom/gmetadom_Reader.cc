@@ -48,12 +48,6 @@ gmetadom_Reader::getAttributes() const
   return aMap;
 }
 
-bool
-gmetadom_Reader::valid() const
-{
-  return fresh && node;
-}
-
 unsigned
 gmetadom_Reader::nodeType() const
 {
@@ -130,12 +124,6 @@ gmetadom_Reader::getAttributeNo(unsigned index) const
 {
   assert(valid());
   return getAttributes().item(index).get_nodeValue();
-}
-
-bool
-gmetadom_Reader::more() const
-{
-  return valid();
 }
 
 void

@@ -23,36 +23,35 @@
 #ifndef __gmetadom_Reader_hh__
 #define __gmetadom_Reader_hh__
 
-#include "DOM.hh"
-#include "Reader.hh"
+#include "gmetadom.hh"
 
-class gmetadom_Reader : public Reader
+class gmetadom_Reader
 {
 public:
   gmetadom_Reader(void);
-  virtual ~gmetadom_Reader();
+  ~gmetadom_Reader();
 
   void reset(const DOM::Node& n) { setStatus(DOM::Node(), n, true); }
-  bool valid(void) const;
+  bool valid(void) const { return fresh && node; }
   DOM::Node getNode(void) const { return node; }
 
-  virtual unsigned nodeType(void) const;
-  virtual String name(void) const;
-  virtual String namespaceURI(void) const;
-  virtual String prefix(void) const;
-  virtual String value(void) const;
+  unsigned nodeType(void) const;
+  String name(void) const;
+  String namespaceURI(void) const;
+  String prefix(void) const;
+  String value(void) const;
 
-  virtual bool hasAttribute(const String&) const;
-  virtual bool hasAttributeNS(const String&, const String&) const;
-  virtual unsigned attributeCount(void) const;
-  virtual String getAttribute(const String&) const;
-  virtual String getAttributeNS(const String&, const String&) const;
-  virtual String getAttributeNo(unsigned) const;
+  bool hasAttribute(const String&) const;
+  bool hasAttributeNS(const String&, const String&) const;
+  unsigned attributeCount(void) const;
+  String getAttribute(const String&) const;
+  String getAttributeNS(const String&, const String&) const;
+  String getAttributeNo(unsigned) const;
 
-  virtual bool more(void) const;
-  virtual void firstChild(void);
-  virtual void parentNode(void);
-  virtual void nextSibling(void);
+  bool more(void) const { return valid(); }
+  void firstChild(void);
+  void parentNode(void);
+  void nextSibling(void);
 
 protected:
   DOM::NamedNodeMap getAttributes(void) const;

@@ -28,7 +28,7 @@
 #include <cassert>
 
 #include "gmetadom_Setup.hh"
-#include "gmetadomIterators.hh"
+#include "gmetadom_Iterator.hh"
 #include "Globals.hh"
 #include "Configuration.hh"
 #include "ValueConversion.hh"
@@ -88,7 +88,7 @@ parseColor(const DOM::Element& node, RGBColor& f, RGBColor& b)
   String bs = DOMX::fromDOMString(node.getAttribute("background"));
 
   if (fs.empty() || bs.empty()) {
-    std::string s_name = node.get_nodeName();
+    String s_name = node.get_nodeName();
     Globals::logger(LOG_WARNING, "malformed `%s' element in configuration file", s_name.c_str());
     return false;
   }
@@ -98,7 +98,7 @@ parseColor(const DOM::Element& node, RGBColor& f, RGBColor& b)
 
   if (!fv || !bv)
     {
-      std::string s_name = node.get_nodeName();
+      String s_name = node.get_nodeName();
       Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
       return false;
     }
@@ -113,25 +113,26 @@ parseColor(const DOM::Element& node, RGBColor& f, RGBColor& b)
 static void
 parseConfiguration(Configuration& conf, const DOM::Element& node)
 {
-  DOMX::ChildElementsIterator iter(node);
-  while (DOM::Element elem = iter.element())
+  for (DOMX::ElementIterator iter(node); iter.more(); iter.next())
     {
+      DOM::Element elem = iter.element();
+      assert(elem);
       std::string name = elem.get_nodeName();
     
       if (name == "dictionary-path")
 	{
 	  std::string path = DOMX::elementValue(elem);
-	  if (!path.empty()) {
-	    Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
-	    conf.addDictionary(path);
-	  }
+	  if (!path.empty())
+	    {
+	      Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
+	      conf.addDictionary(path);
+	    }
 	} 
       else if (name == "font-size")
 	{
 	  std::string attr = elem.getAttribute("size");
-	  if (attr.empty()) {
+	  if (attr.empty())
 	    Globals::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
-	  }
 	  else
 	    {
 	      conf.setFontSize(atoi(attr.c_str()));
@@ -169,9 +170,7 @@ parseConfiguration(Configuration& conf, const DOM::Element& node)
 	    }
 	}
       else
-	{
-	  Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
-	}
+	Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
     } 
 }
 
@@ -184,8 +183,7 @@ loadConfiguration(Configuration& conf, const char* confPath)
 
   try
     {
-      if (DOM::Element root = DOMX::ChildElementsIterator(parseXMLFile(confPath), 
-							  "*", "math-engine-configuration").element())
+      if (DOM::Element root = DOMX::ElementIterator(parseXMLFile(confPath), "*", "math-engine-configuration").element())
 	{
 	  parseConfiguration(conf, root);
 	  return true;
@@ -196,8 +194,10 @@ loadConfiguration(Configuration& conf, const char* confPath)
 	  return false;
 	}
     }
-  catch (DOM::DOMException)
+  catch (DOM::DOMException e)
     {
+      String msg = e.msg;
+      Globals::logger(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
       return false;
     }
 }
@@ -219,13 +219,11 @@ loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const char* fileNam
 {
   try
     {
-      DOM::Document doc = parseXMLFile(fileName, true);
-
-      if (DOM::Element root = DOMX::ChildElementsIterator(parseXMLFile(fileName, true), "*", "dictionary").element())
+      if (DOM::Element root = DOMX::ElementIterator(parseXMLFile(fileName, true), "*", "dictionary").element())
 	{
-	  DOMX::ChildElementsIterator iter(root, "*", "operator");
-	  while (DOM::Element elem = iter.element())
+	  for (DOMX::ElementIterator iter(root, "*", "operator"); iter.more(); iter.next())
 	    {
+	      DOM::Element elem = iter.element();
 	      String opName = DOMX::fromDOMString(elem.getAttribute("name"));
 
 	      if (!opName.empty())

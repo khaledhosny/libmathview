@@ -23,22 +23,57 @@
 #ifndef __gmetadom_Builder_hh__
 #define __gmetadom_Builder_hh__
 
-#include "Builder.hh"
 #include "gmetadom.hh"
+#include "gmetadom_Linker.hh"
+#include "Builder.hh"
 
 class gmetadom_Builder : public Builder
 {
 protected:
-  gmetadom_Builder(void);
+  gmetadom_Builder(void) { }
   virtual ~gmetadom_Builder();
 
 public:
   static SmartPtr<gmetadom_Builder> create(void);
 
-  void setRootDOMElement(const DOM::Element& el) { root = el; }
-  DOM::Element getRootDOMElement(void) const { return root; }
+  void setRootModelElement(const DOM::Element&);
+  DOM::Element getRootModelElement(void) const { return root; }
+
+  SmartPtr<Element> findElement(const DOM::Element& p) const { return linker.assoc(p); }
+
+protected:
+  gmetadom_Linker& getLinker(void) const { return linker; }
+  DOM::Node findSelfOrAncestorModelNode(const SmartPtr<Element>&) const;
+  SmartPtr<Element> findSelfOrAncestorElement(const DOM::Node&) const;
+  void notifySubtreeModified(const DOM::Node&) const;
+  void notifyAttributeChanged(const DOM::Node&, const String&) const;
+
+  class DOMSubtreeModifiedListener : public DOM::EventListener
+  {
+  public:
+    DOMSubtreeModifiedListener(const SmartPtr<gmetadom_Builder>& b) : builder(b) { };
+    virtual ~DOMSubtreeModifiedListener() { };
+    virtual void handleEvent(const DOM::Event&);
+
+  private:
+    SmartPtr<gmetadom_Builder> builder;
+  };
+
+  class DOMAttrModifiedListener : public DOM::EventListener
+  {
+  public:
+    DOMAttrModifiedListener(const SmartPtr<gmetadom_Builder>& b) : builder(b) { };
+    virtual ~DOMAttrModifiedListener() { };
+    virtual void handleEvent(const DOM::Event&);
+
+  private:
+    SmartPtr<gmetadom_Builder> builder;
+  };
 
 private:
+  DOMSubtreeModifiedListener* subtreeModifiedListener;
+  DOMAttrModifiedListener* attrModifiedListener;
+  mutable gmetadom_Linker linker;
   DOM::Element root;
 };
 

@@ -20,42 +20,21 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __gmetadomIterators_hh__
-#define __gmetadomIterators_hh__
+#ifndef __gmetadom_Model_hh__
+#define __gmetadom_Model_hh__
 
 #include "gmetadom.hh"
-#include "String.hh"
+#include "gmetadom_Iterator.hh"
 
-namespace GdomeSmartDOMExt
+struct gmetadom_Model
 {
+  typedef DOM::Node Node;
+  typedef DOM::Element Element;
+  typedef DOMX::NodeIterator NodeIterator;
+  typedef DOMX::ElementIterator ElementIterator;
+  typedef class gmetadom_Linker Linker;
+  typedef class gmetadom_Builder Builder;
+  typedef class gmetadom_RefinementContext RefinementContext;
+};
 
-  class ChildNodesIterator
-  {
-  public:
-    ChildNodesIterator(const DOM::Node& n) : p(n.get_firstChild()) { }
-  
-    DOM::Node node(void);
-
-  private:
-    DOM::Node p;
-  };
-
-  class ChildElementsIterator
-  {
-  public:
-    ChildElementsIterator(const DOM::Node& n, const DOM::GdomeString& = "*", const DOM::GdomeString& = "*");
-
-    DOM::Element element(void);
-
-  protected:
-    void next(void);
-
-  private:
-    DOM::Node p;
-    DOM::GdomeString ns;
-    DOM::GdomeString tag;
-  };
-
-}
-
-#endif // __gmetadomIterators_hh__
+#endif // __gmetadom_Model_hh__

@@ -300,10 +300,11 @@ initGlobalData(const char* confPath)
   if (confPath != NULL) res = loadConfiguration(Globals::configuration, confPath);
   if (!res) res = loadConfiguration(Globals::configuration, PKGDATADIR"/math-engine-configuration.xml");
   if (!res) res = loadConfiguration(Globals::configuration, "config/math-engine-configuration.xml");
-  if (!res) {
-    Globals::logger(LOG_ERROR, "could not find configuration file");
-    exit(-1);
-  }
+  if (!res)
+    {
+      Globals::logger(LOG_ERROR, "could not load configuration file");
+      exit(-1);
+    }
 
   if (!Globals::configuration.getDictionaries().empty())
     for (std::vector<std::string>::const_iterator dit = Globals::configuration.getDictionaries().begin();
@@ -993,7 +994,7 @@ gtk_math_view_load_root(GtkMathView* math_view, GdomeElement* elem)
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
-    builder->setRootDOMElement(DOM::Element(elem));
+    builder->setRootModelElement(DOM::Element(elem));
 
   reset_adjustments(math_view);
   paint_widget(math_view);

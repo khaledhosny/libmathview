@@ -23,14 +23,95 @@
 #include <config.h>
 
 #include "gmetadom_Builder.hh"
+#include "gmetadom_RefinementContext.hh"
+#include "gmetadom_Model.hh"
 #include "TemplateBuilder.hh"
 
-gmetadom_Builder::gmetadom_Builder()
-{ }
-
 gmetadom_Builder::~gmetadom_Builder()
-{ }
+{
+  setRootModelElement(DOM::Element());
+}
 
 SmartPtr<gmetadom_Builder>
 gmetadom_Builder::create()
-{ return TemplateBuilder::create(); }
+{ return TemplateBuilder<gmetadom_Model>::create(); }
+
+SmartPtr<Element>
+gmetadom_Builder::findSelfOrAncestorElement(const DOM::Node& el) const
+{
+  for (DOM::Node p = el; p; p = p.get_parentNode())
+    if (SmartPtr<Element> elem = getLinker().assoc(p))
+      return elem;
+  return 0;
+}
+
+DOM::Node
+gmetadom_Builder::findSelfOrAncestorModelNode(const SmartPtr<Element>& elem) const
+{
+  for (SmartPtr<Element> p(elem); p; p = p->getParent())
+    if (DOM::Node el = getLinker().assoc(p))
+      return el;
+  return DOM::Node(0);
+}
+
+void
+gmetadom_Builder::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
+{
+  DOM::MutationEvent me(ev);
+  assert(me);
+  //std::cerr << "RECEIVING SUBTREE MODIFIED" << std::endl;
+  if (SmartPtr<Element> elem = builder->findSelfOrAncestorElement(me.get_target()))
+    {
+      //std::cerr << "FOUND LINKED ELEMENT" << std::endl;
+      elem->setDirtyStructure();
+      elem->setDirtyAttributeD();
+    }
+}
+
+void
+gmetadom_Builder::DOMAttrModifiedListener::handleEvent(const DOM::Event& ev)
+{
+  DOM::MutationEvent me(ev);
+  assert(me);
+
+  if (SmartPtr<Element> elem = builder->findSelfOrAncestorElement(me.get_target()))
+    elem->setDirtyAttribute();
+}
+
+void
+gmetadom_Builder::setRootModelElement(const DOM::Element& el)
+{
+  if (root == el) return;
+
+  if (root)
+    {
+      DOM::EventTarget et(root);
+      assert(et);
+
+      et.removeEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
+      et.removeEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
+      et.removeEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
+      et.removeEventListener("DOMAttrModified", *attrModifiedListener, false);
+
+      delete subtreeModifiedListener;
+      delete attrModifiedListener;
+      subtreeModifiedListener = 0;
+      attrModifiedListener = 0;
+    }
+
+  root = el;
+
+  if (root)
+    {
+      DOM::EventTarget et(root);
+      assert(et);
+
+      subtreeModifiedListener = new DOMSubtreeModifiedListener(this);
+      attrModifiedListener = new DOMAttrModifiedListener(this);
+
+      et.addEventListener("DOMNodeInserted", *subtreeModifiedListener, false);
+      et.addEventListener("DOMNodeRemoved", *subtreeModifiedListener, false);
+      et.addEventListener("DOMCharacterDataModified", *subtreeModifiedListener, false);
+      et.addEventListener("DOMAttrModified", *attrModifiedListener, false);
+    }
+}

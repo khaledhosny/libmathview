@@ -25,14 +25,8 @@
 
 #include <vector>
 
-#include "gmetadom.hh"
-#include "gmetadom_Linker.hh"
-#include "gmetadom_Builder.hh"
-#include "gmetadomIterators.hh"
-
 #include "defs.h"
 #include "Clock.hh"
-#include "Builder.hh"
 #include "MathML.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
@@ -40,34 +34,35 @@
 #include "BoxMLNamespaceContext.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "BoxMLMathMLAdapter.hh"
-#include "RefinementContext.hh"
 #include "ValueConversion.hh"
 #include "Globals.hh"
 
-class TemplateBuilder : public gmetadom_Builder
+template <class Model>
+class TemplateBuilder : public Model::Builder
 {
 protected:
   template <typename ElementBuilder>
   SmartPtr<typename ElementBuilder::type>
-  getElement(const DOM::Element& el) const
+  getElement(const typename Model::Element& el) const
   {
-    if (SmartPtr<typename ElementBuilder::type> elem = smart_cast<typename ElementBuilder::type>(linker.assoc(el)))
+    if (SmartPtr<typename ElementBuilder::type> elem = smart_cast<typename ElementBuilder::type>(getLinker().assoc(el)))
       return elem;
     else
       {
 	SmartPtr<typename ElementBuilder::type> elem = ElementBuilder::type::create(ElementBuilder::getContext(*this));
-	linker.add(el, elem);
+	getLinker().add(el, elem);
 	return elem;
       }
   }
 
   template <typename ElementBuilder>
   SmartPtr<typename ElementBuilder::target_type>
-  updateElement(const DOM::Element& el) const
+  updateElement(const typename Model::Element& el) const
   {
     SmartPtr<typename ElementBuilder::type> elem = getElement<ElementBuilder>(el);
     if (elem->dirtyAttribute() || elem->dirtyAttributeP() || elem->dirtyStructure())
       {
+	ElementBuilder::begin(*this, el, elem);
 	if (elem->dirtyAttribute() || elem->dirtyAttributeP())
 	  {
 	    ElementBuilder::refine(*this, el, elem);
@@ -75,6 +70,7 @@ protected:
 	  }
 	ElementBuilder::construct(*this, el, elem);
 	elem->resetDirtyStructure();
+	ElementBuilder::end(*this, el, elem);
       }
     return elem;
   }
@@ -150,30 +146,32 @@ protected:
   ////////////////////////////////////
 
   SmartPtr<MathMLElement>
-  update_MathML_mfenced_Element(const DOM::Element& el) const
+  update_MathML_mfenced_Element(const typename Model::Element& el) const
   {
+    String open = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, open)));
+    String close = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, close)));
+    String separators = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, separators)));
+
     std::vector<SmartPtr<MathMLElement> > content;
     getChildMathMLElements(el, content);
 
-    SmartPtr<MathMLOperatorElement> open = MathMLOperatorElement::create(getMathMLNamespaceContext());
-    open->setSize(0);
-    open->append(ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, open))));
-    open->SetFence();
+    SmartPtr<MathMLOperatorElement> openElem = MathMLOperatorElement::create(getMathMLNamespaceContext());
+    openElem->setSize(0);
+    openElem->append(open);
+    openElem->SetFence();
 
-    SmartPtr<MathMLOperatorElement> close = MathMLOperatorElement::create(getMathMLNamespaceContext());
-    close->setSize(0);
-    close->append(ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, close))));
-    close->SetFence();
+    SmartPtr<MathMLOperatorElement> closeElem = MathMLOperatorElement::create(getMathMLNamespaceContext());
+    closeElem->setSize(0);
+    closeElem->append(close);
+    closeElem->SetFence();
       
     std::vector< SmartPtr<MathMLElement> > outerRowContent;
     outerRowContent.reserve(3);
-    outerRowContent.push_back(open);
+    outerRowContent.push_back(openElem);
     if (content.size() == 1)
       outerRowContent.push_back(content[0]);
     else
       {
-	String separators = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, separators)));
-
 	std::vector< SmartPtr<MathMLElement> > innerRowContent;
 	if (content.size() > 0)
 	  innerRowContent.reserve(separators.empty() ? content.size() : (2 * content.size() - 1));
@@ -193,7 +191,7 @@ protected:
 	SmartPtr<MathMLRowElement> innerRow = MathMLRowElement::create(getMathMLNamespaceContext());
 	innerRow->swapContent(innerRowContent);
       }
-    outerRowContent.push_back(close);
+    outerRowContent.push_back(closeElem);
 
     // this can probably remain attached to the model
     SmartPtr<MathMLRowElement> outerRow = MathMLRowElement::create(getMathMLNamespaceContext());
@@ -203,63 +201,60 @@ protected:
   }
 
   SmartPtr<MathMLElement>
-  update_MathML_semantics_Element(const DOM::Element& el) const
+  update_MathML_semantics_Element(const typename Model::Element& el) const
   {
-    DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+    typename Model::ElementIterator iter(el, MATHML_NS_URI);
     if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
       return elem;
 
-    while (DOM::Element e = iter.element())
-      if (e.get_localName() == "annotation-xml")
-	{
-	  DOM::GdomeString encoding = e.getAttribute("encoding");
-	  if (encoding == "MathML-Presentation")
-	    {
-	      DOMX::ChildElementsIterator innerIter(e, MATHML_NS_URI);
-	      return getMathMLElement(innerIter.element());
-	    }
+    iter.next();
+    while (typename Model::Element e = iter.element())
+      {
+	if (e.get_localName() == "annotation-xml")
+	  {
+	    String encoding = e.getAttribute("encoding");
+	    if (encoding == "MathML-Presentation")
+	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
 #if 0
-	  else if (encoding == "BoxML")
-	    {
-	      // this element can probably be associated with the model element
-	      SmartPtr<MathMLBoxMLAdapter> adapter = getMathMLElement<MathMLBoxMLAdapter>(el);
-	      DOMX::ChildElementsIterator innerIter(e, BOXML_NS_URI);
-	      adapter->setChild(getBoxMLElement(innerIter.element()));
-	      return adapter;
-	    }
+	    else if (encoding == "BoxML")
+	      {
+		// this element can probably be associated with the model element
+		SmartPtr<MathMLBoxMLAdapter> adapter = getMathMLElement<MathMLBoxMLAdapter>(el);
+		adapter->setChild(getBoxMLElement(typename Model::ElementIterator(e, BOXML_NS_URI).element()));
+		return adapter;
+	      }
 #endif
-	}
+	  }
+	iter.next();
+      }
 
     return createMathMLDummyElement();
   }
 
   SmartPtr<MathMLTextNode>
-  update_MathML_mglyph_Node(const DOM::Element& el) const
+  update_MathML_mglyph_Node(const typename Model::Element& el) const
   {
     assert(el);
     
-    DOM::GdomeString alt        = el.getAttribute("alt");
-    DOM::GdomeString fontFamily = el.getAttribute("fontfamily");
-    DOM::GdomeString index      = el.getAttribute("index");
+    String alt        = el.getAttribute("alt");
+    String fontFamily = el.getAttribute("fontfamily");
+    String index      = el.getAttribute("index");
     
-    if (alt.empty() || fontFamily.empty() || index.empty()) {
-      Globals::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
-      return MathMLStringNode::create("?");
-    }
+    if (alt.empty() || fontFamily.empty() || index.empty())
+      {
+	Globals::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
+	return MathMLStringNode::create("?");
+      }
     
-    SmartPtr<MathMLGlyphNode> glyph = MathMLGlyphNode::create(DOMX::fromDOMString(fontFamily),
-							      DOMX::fromDOMString(index),
-							      DOMX::fromDOMString(alt));
-    
-    return glyph;
+    return MathMLGlyphNode::create(fontFamily, index, alt);
   }
 
   SmartPtr<MathMLTextNode>
-  update_MathML_malignmark_Node(const DOM::Element& el) const
+  update_MathML_malignmark_Node(const typename Model::Element& el) const
   {
     assert(el);
     
-    DOM::GdomeString edge = el.getAttribute("edge");
+    String edge = el.getAttribute("edge");
     
     TokenId align = T__NOTVALID;
     
@@ -284,20 +279,16 @@ protected:
   ///////////////////////////////////
 
   SmartPtr<BoxMLElement>
-  update_BoxML_obj_Element(const DOM::Element& el) const
+  update_BoxML_obj_Element(const typename Model::Element& el) const
   {
     String encoding = el.getAttribute("encoding");
     if (encoding == "BoxML")
-      {
-	DOMX::ChildElementsIterator iter(el, BOXML_NS_URI);
-	return getBoxMLElement(iter.element());
-      }
+      return getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element());
     else if (encoding == "MathML-Presentation")
       {
 	// this element can be associated to the corresponding model element
 	SmartPtr<BoxMLMathMLAdapter> adapter = getElement<BoxMLMathMLAdapterBuilder>(el);
-	DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
-	adapter->setChild(getMathMLElement(iter.element()));
+	adapter->setChild(getMathMLElement(typename Model::ElementIterator(el, MATHML_NS_URI).element()));
 	return adapter;
       }
     else
@@ -317,33 +308,33 @@ protected:
     { return builder.getMathMLNamespaceContext(); }
 
     static void
-    begin(TemplateBuilder&, const DOM::Element&)
+    begin(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<MathMLElement>&)
     { }
 
     static void
-    end(TemplateBuilder&, const DOM::Element&)
+    end(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<MathMLElement>&)
     { }
 
     static void
-    refine(const TemplateBuilder&, const DOM::Element&, const SmartPtr<MathMLElement>& elem)
+    refine(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<MathMLElement>&)
     { }
 
     static void
-    construct(const TemplateBuilder&, const DOM::Element&, const SmartPtr<MathMLElement>& elem)
+    construct(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<MathMLElement>&)
     { }
   };
 
   struct MathMLBinContainerElementBuilder : public MathMLElementBuilder
   {
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLBinContainerElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLBinContainerElement>& elem)
     { elem->setChild(builder.getMathMLElement(el)); }
   };
 
   struct MathMLNormalizingContainerElementBuilder : public MathMLBinContainerElementBuilder
   {
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLNormalizingContainerElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLNormalizingContainerElement>& elem)
     {
       std::vector<SmartPtr<MathMLElement> > content;
       builder.getChildMathMLElements(el, content);
@@ -361,7 +352,7 @@ protected:
 
   struct MathMLLinearContainerElementBuilder : public MathMLElementBuilder
   {
-    static void construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLLinearContainerElement>& elem)
+    static void construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLLinearContainerElement>& elem)
     {
       std::vector<SmartPtr<MathMLElement> > content;
       builder.getChildMathMLElements(el, content);
@@ -372,7 +363,7 @@ protected:
   struct MathMLTokenElementBuilder : public MathMLElementBuilder
   {
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLTokenElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLTokenElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Token, mathvariant));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Token, mathsize));
@@ -381,7 +372,7 @@ protected:
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLTokenElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLTokenElement>& elem)
     {
       std::vector<SmartPtr<MathMLTextNode> > content;
       builder.getChildMathMLTextNodes(el, content);
@@ -400,7 +391,7 @@ protected:
     typedef MathMLOperatorElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLOperatorElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLOperatorElement>& elem)
     {
       MathMLTokenElementBuilder::refine(builder, el, elem);
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Operator, form));
@@ -426,7 +417,7 @@ protected:
     typedef MathMLStringLitElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLStringLitElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLStringLitElement>& elem)
     {
       MathMLTokenElementBuilder::refine(builder, el, elem);
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, StringLit, lquote));
@@ -439,7 +430,7 @@ protected:
     typedef MathMLSpaceElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLSpaceElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLSpaceElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Space, width));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Space, height));
@@ -456,7 +447,15 @@ protected:
     typedef MathMLStyleElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLStyleElement>& elem)
+    begin(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLStyleElement>&)
+    { builder.refinementContext.push(el); }
+
+    static void
+    end(const TemplateBuilder& builder, const typename Model::Node&, const SmartPtr<MathMLStyleElement>&)
+    { builder.refinementContext.pop(); }
+
+    static void
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLStyleElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Style, scriptlevel));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Style, displaystyle));
@@ -493,7 +492,7 @@ protected:
     typedef MathMLPaddedElement type;
     
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLPaddedElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLPaddedElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Padded, width));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Padded, lspace));
@@ -510,7 +509,7 @@ protected:
     typedef MathMLAlignGroupElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLAlignGroupElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLAlignGroupElement>& elem)
     {
       // NO ATTRIBUTES TO REFINE???
     }
@@ -521,7 +520,7 @@ protected:
     typedef MathMLAlignMarkElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLAlignMarkElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLAlignMarkElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, AlignMark, edge)); }
   };
 
@@ -530,7 +529,7 @@ protected:
     typedef MathMLActionElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLActionElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLActionElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Action, actiontype));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Action, selection));
@@ -542,7 +541,7 @@ protected:
     typedef MathMLEncloseElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLEncloseElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLEncloseElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Enclose, notation)); }
   };
 
@@ -551,7 +550,7 @@ protected:
     typedef MathMLmathElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLmathElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLmathElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, math, mode));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, math, display));
@@ -563,7 +562,7 @@ protected:
     typedef MathMLFractionElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLFractionElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLFractionElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Fraction, numalign));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Fraction, denomalign));
@@ -571,10 +570,11 @@ protected:
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLFractionElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLFractionElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setNumerator(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setDenominator(builder.getMathMLElement(iter.element()));
     }
   };
@@ -584,10 +584,11 @@ protected:
     typedef MathMLRadicalElement type;
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLRadicalElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLRadicalElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setIndex(builder.getMathMLElement(iter.element()));
     }
   };
@@ -597,7 +598,7 @@ protected:
     typedef MathMLRadicalElement type;
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLRadicalElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLRadicalElement>& elem)
     {
       std::vector<SmartPtr<MathMLElement> > content;
       builder.getChildMathMLElements(el, content);
@@ -618,14 +619,15 @@ protected:
     typedef MathMLScriptElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLScriptElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLScriptElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Script, subscriptshift)); }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLScriptElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLScriptElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
       elem->setSuperScript(0);
     }
@@ -636,14 +638,15 @@ protected:
     typedef MathMLScriptElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLScriptElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLScriptElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Script, superscriptshift)); }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLScriptElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLScriptElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setSubScript(0);
       elem->setSuperScript(builder.getMathMLElement(iter.element()));
     }
@@ -654,18 +657,20 @@ protected:
     typedef MathMLScriptElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLScriptElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLScriptElement>& elem)
     {
       MathML_msub_ElementBuilder::refine(builder, el, elem);
       MathML_msup_ElementBuilder::refine(builder, el, elem);
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLScriptElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLScriptElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setSuperScript(builder.getMathMLElement(iter.element()));
     }
   };
@@ -675,14 +680,15 @@ protected:
     typedef MathMLUnderOverElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLUnderOverElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, UnderOver, accent)); }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
       elem->setOverScript(0);
     }
@@ -693,14 +699,15 @@ protected:
     typedef MathMLUnderOverElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLUnderOverElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, UnderOver, accent)); }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setUnderScript(0);
       elem->setOverScript(builder.getMathMLElement(iter.element()));
     }
@@ -711,18 +718,20 @@ protected:
     typedef MathMLUnderOverElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
       MathML_munder_ElementBuilder::refine(builder, el, elem);
       MathML_mover_ElementBuilder::refine(builder, el, elem);
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLUnderOverElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLUnderOverElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
+      iter.next();
       elem->setOverScript(builder.getMathMLElement(iter.element()));
     }
   };
@@ -732,7 +741,7 @@ protected:
     typedef MathMLTableElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLTableElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLTableElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Table, align));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, Table, rowalign));
@@ -755,7 +764,7 @@ protected:
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLTableElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLTableElement>& elem)
     {
       assert(false); // to be implemented
     }
@@ -766,24 +775,27 @@ protected:
     typedef MathMLMultiScriptsElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLMultiScriptsElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLMultiScriptsElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, MultiScripts, subscriptshift));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(MathML, MultiScripts, superscriptshift));
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<MathMLMultiScriptsElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLMultiScriptsElement>& elem)
     {
-      DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
+      typename Model::ElementIterator iter(el, MATHML_NS_URI);
       unsigned i = 0;
       unsigned nScripts = 0;
       unsigned nPreScripts = 0;
       bool preScripts = false;
 
       elem->setBase(builder.getMathMLElement(iter.element()));
-      while (DOM::Element node = iter.element())
+      iter.next();
+      while (iter.more())
 	{
+	  typename Model::Element node = iter.element();
+	  assert(node);
 	  String nodeName = node.get_localName();
 	  if (nodeName == "mprescripts")
 	    {
@@ -841,11 +853,19 @@ protected:
     { return builder.getBoxMLNamespaceContext(); }
 
     static void
-    refine(const TemplateBuilder&, const DOM::Element&, const SmartPtr<BoxMLElement>& elem)
+    begin(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<BoxMLElement>&)
     { }
 
     static void
-    construct(const TemplateBuilder&, const DOM::Element&, const SmartPtr<BoxMLElement>& elem)
+    end(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<BoxMLElement>&)
+    { }
+
+    static void
+    refine(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<BoxMLElement>& elem)
+    { }
+
+    static void
+    construct(const TemplateBuilder&, const typename Model::Node&, const SmartPtr<BoxMLElement>& elem)
     { }
   };
 
@@ -855,17 +875,14 @@ protected:
   struct BoxMLBinContainerElementBuilder : public BoxMLElementBuilder
   {
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLBinContainerElement>& elem)
-    {
-      DOMX::ChildElementsIterator iter(el, BOXML_NS_URI);
-      elem->setChild(builder.getBoxMLElement(iter.element()));
-    }
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLBinContainerElement>& elem)
+    { elem->setChild(builder.getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element())); }
   };
 
   struct BoxMLLinearContainerElementBuilder : public BoxMLElementBuilder
   {
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLLinearContainerElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLLinearContainerElement>& elem)
     {
       std::vector<SmartPtr<BoxMLElement> > content;
       builder.getChildBoxMLElements(el, content);
@@ -881,7 +898,7 @@ protected:
     typedef BoxMLActionElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLActionElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLActionElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Action, selection));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Action, actiontype));
@@ -893,7 +910,7 @@ protected:
     typedef BoxMLAtElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLAtElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLAtElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, At, x));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, At, y));
@@ -905,7 +922,7 @@ protected:
     typedef BoxMLGroupElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLGroupElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLGroupElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, size));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, color));
@@ -918,7 +935,7 @@ protected:
     typedef BoxMLHElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLHElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLHElement>& elem)
     { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, H, align)); }
   };
   
@@ -927,7 +944,7 @@ protected:
     typedef BoxMLInkElement type;
     
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLInkElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLInkElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Ink, color));
       BoxML_space_ElementBuilder::refine(builder, el, elem);
@@ -939,7 +956,7 @@ protected:
     typedef BoxMLLayoutElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLLayoutElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLLayoutElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Layout, width));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Layout, height));
@@ -952,7 +969,7 @@ protected:
     typedef BoxMLParagraphElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLParagraphElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLParagraphElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, align));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, minlinespacing));
@@ -960,19 +977,22 @@ protected:
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLParagraphElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLParagraphElement>& elem)
     {
-      DOMX::ChildNodesIterator iter(el);
       std::vector<SmartPtr<BoxMLElement> > content;
-      while (DOM::Node p = iter.node())
-	if (p.get_nodeType() == DOM::Node::TEXT_NODE)
-	  {
-	    SmartPtr<BoxMLTextElement> text = builder.getElement<BoxML_text_ElementBuilder>(el);
-	    text->setContent(p.get_nodeValue());
-	    content.push_back(text);
-	  }
-	else if (p.get_nodeType() == DOM::Node::ELEMENT_NODE && p.get_namespaceURI() == BOXML_NS_URI)
-	  content.push_back(builder.getBoxMLElement(p));
+      for (typename Model::NodeIterator iter(el); iter.more(); iter.next())
+	{
+	  typename Model::Node p = iter.node();
+	  assert(p);
+	  if (p.get_nodeType() == Model::Node::TEXT_NODE)
+	    {
+	      SmartPtr<BoxMLTextElement> text = builder.getElement<BoxML_text_ElementBuilder>(el);
+	      text->setContent(p.get_nodeValue());
+	      content.push_back(text);
+	    }
+	  else if (p.get_nodeType() == Model::Node::ELEMENT_NODE && p.get_namespaceURI() == BOXML_NS_URI)
+	    content.push_back(builder.getBoxMLElement(p));
+	}
       elem->swapContent(content);
     }
   };
@@ -982,7 +1002,7 @@ protected:
     typedef BoxMLSpaceElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLSpaceElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLSpaceElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Space, width));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Space, height));
@@ -995,7 +1015,7 @@ protected:
     typedef BoxMLTextElement type;
     
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLTextElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLTextElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, size));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, color));
@@ -1004,13 +1024,17 @@ protected:
     }
 
     static void
-    construct(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLTextElement>& elem)
+    construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLTextElement>& elem)
     {
-      DOMX::ChildNodesIterator iter(el);
+      typename Model::NodeIterator iter(el);
       String content;
-      while (DOM::Node p = iter.node())
-	if (p.get_nodeType() == DOM::Node::TEXT_NODE)
-	  content += DOMX::fromDOMString(p.get_nodeValue());
+      for (typename Model::NodeIterator iter(el); iter.more(); iter.next())
+	{
+	  typename Model::Node p = iter.node();
+	  assert(p);
+	  if (p.get_nodeType() == Model::Node::TEXT_NODE)
+	    content += p.get_nodeValue();
+	}
       content = trimSpacesLeft(trimSpacesRight(collapseSpaces(content)));
       elem->setContent(content);
     }
@@ -1021,7 +1045,7 @@ protected:
     typedef BoxMLVElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const DOM::Element& el, const SmartPtr<BoxMLVElement>& elem)
+    refine(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<BoxMLVElement>& elem)
     {
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, align));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, enter));
@@ -1035,7 +1059,7 @@ protected:
   ////////////////////////////
 
   SmartPtr<Attribute>
-  getAttribute(const DOM::Element& el, const AttributeSignature& signature) const
+  getAttribute(const typename Model::Element& el, const AttributeSignature& signature) const
   {
     SmartPtr<Attribute> attr;
   
@@ -1050,7 +1074,7 @@ protected:
   }
 
   SmartPtr<Value>
-  getAttributeValue(const DOM::Element& el, const AttributeSignature& signature) const
+  getAttributeValue(const typename Model::Element& el, const AttributeSignature& signature) const
   {
     if (SmartPtr<Attribute> attr = getAttribute(el, signature))
       return attr->getValue();
@@ -1060,7 +1084,7 @@ protected:
 
   void
   refineAttribute(const SmartPtr<Element>& elem,
-		  const DOM::Element& el, const AttributeSignature& signature) const
+		  const typename Model::Node& el, const AttributeSignature& signature) const
   {
     if (SmartPtr<Attribute> attr = getAttribute(el, signature)) elem->setAttribute(attr);
     else elem->removeAttribute(signature);
@@ -1071,10 +1095,10 @@ protected:
   ///////////////////////////////////////
 
   SmartPtr<MathMLElement>
-  getMathMLElementNoCreate(const DOM::Element& el) const
+  getMathMLElementNoCreate(const typename Model::Node& el) const
   {
     //std::cout << "createMathMLElement " << el.get_localName() << std::endl;
-    MathMLBuilderMap::const_iterator m = mathmlMap.find(el.get_localName());
+    typename MathMLBuilderMap::const_iterator m = mathmlMap.find(el.get_localName());
     if (m != mathmlMap.end()) 
       return (this->*(m->second))(el);
     else
@@ -1082,7 +1106,7 @@ protected:
   }
 
   SmartPtr<MathMLElement>
-  getMathMLElement(const DOM::Element& el) const
+  getMathMLElement(const typename Model::Node& el) const
   {
     if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(el))
       return elem;
@@ -1091,14 +1115,14 @@ protected:
   }
 
   SmartPtr<MathMLTextNode>
-  getMathMLTextNode(const DOM::Node& node) const
+  getMathMLTextNode(const typename Model::Node& node) const
   {
     switch (node.get_nodeType())
       {
-      case DOM::Node::TEXT_NODE:
+      case Model::Node::TEXT_NODE:
 	{
 	  // ok, we have a chunk of text
-	  String s = collapseSpaces(DOMX::fromDOMString(node.get_nodeValue()));
+	  String s = collapseSpaces(node.get_nodeValue());
 	  
 	  // ...but spaces at the at the beginning (end) are deleted only if this
 	  // is the very first (last) chunk in the token.
@@ -1109,7 +1133,7 @@ protected:
 	}
       break;
       
-      case DOM::Node::ELEMENT_NODE:
+      case Model::Node::ELEMENT_NODE:
 	{	    
 	  if (node.get_namespaceURI() == MATHML_NS_URI)
 	    {
@@ -1129,27 +1153,29 @@ protected:
   }
 
   void
-  getChildMathMLElements(const DOM::Element& el, std::vector<SmartPtr<MathMLElement> >& content) const
+  getChildMathMLElements(const typename Model::Node& el, std::vector<SmartPtr<MathMLElement> >& content) const
   {
     content.clear();
-    DOMX::ChildElementsIterator iter(el, MATHML_NS_URI);
-    while (DOM::Element e = iter.element())
-      content.push_back(getMathMLElement(e));
+    for (typename Model::ElementIterator iter(el, MATHML_NS_URI); iter.more(); iter.next())
+      content.push_back(getMathMLElement(iter.element()));
   }
 
   void
-  getChildMathMLTextNodes(const DOM::Element& el, std::vector<SmartPtr<MathMLTextNode> >& content) const
+  getChildMathMLTextNodes(const typename Model::Node& el, std::vector<SmartPtr<MathMLTextNode> >& content) const
   {
     content.clear();
-    DOMX::ChildNodesIterator iter(el);
-    while (DOM::Node n = iter.node())
-      if (SmartPtr<MathMLTextNode> text = getMathMLTextNode(n))
-	content.push_back(text);
-      else
-	{
-	  std::string name = n.get_nodeName();
-	  Globals::logger(LOG_WARNING, "unknown or invalid text node with name %s\n", name.c_str());
-	}
+    for (typename Model::NodeIterator iter(el); iter.more(); iter.next())
+      {
+	typename Model::Node n = iter.node();
+	assert(n);
+	if (SmartPtr<MathMLTextNode> text = getMathMLTextNode(n))
+	  content.push_back(text);
+	else
+	  {
+	    std::string name = n.get_nodeName();
+	    Globals::logger(LOG_WARNING, "unknown or invalid text node with name %s\n", name.c_str());
+	  }
+      }
   }
 
   SmartPtr<MathMLElement>
@@ -1163,10 +1189,10 @@ protected:
   //////////////////////////////////////
 
   SmartPtr<BoxMLElement>
-  getBoxMLElement(const DOM::Element& el) const
+  getBoxMLElement(const typename Model::Node& el) const
   {
     //std::cerr << "createBoxMLElement " << el.get_localName() << std::endl;
-    BoxMLBuilderMap::const_iterator m = boxmlMap.find(el.get_localName());
+    typename BoxMLBuilderMap::const_iterator m = boxmlMap.find(el.get_localName());
     if (m != boxmlMap.end())
       return (this->*(m->second))(el);
     else
@@ -1174,12 +1200,11 @@ protected:
   }
 
   void
-  getChildBoxMLElements(const DOM::Element& el, std::vector<SmartPtr<BoxMLElement> >& content) const
+  getChildBoxMLElements(const typename Model::Node& el, std::vector<SmartPtr<BoxMLElement> >& content) const
   {
     content.clear();
-    DOMX::ChildElementsIterator iter(el, BOXML_NS_URI);
-    while (DOM::Element e = iter.element())
-      content.push_back(getBoxMLElement(e));
+    for (typename Model::ElementIterator iter(el, BOXML_NS_URI); iter.more(); iter.next())
+      content.push_back(getBoxMLElement(iter.element()));
   }
 
   SmartPtr<BoxMLElement>
@@ -1189,12 +1214,12 @@ protected:
   }
 
 public:
-  static SmartPtr<TemplateBuilder> create(void) { return new TemplateBuilder(); }
+  static SmartPtr<typename Model::Builder> create(void) { return new TemplateBuilder(); }
 
   virtual SmartPtr<Element>
   getRootElement() const
   {
-    if (DOM::Element root = getRootDOMElement())
+    if (typename Model::Element root = getRootModelElement())
       {
 	Clock perf;
 	
@@ -1212,18 +1237,16 @@ public:
   }
 
 private:
-  typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLCreationMethod)(const DOM::Element&) const;
-  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLCreationMethod)(const DOM::Element&) const;
+  typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLCreationMethod)(const typename Model::Element&) const;
+  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLCreationMethod)(const typename Model::Element&) const;
 
   typedef HASH_MAP_NS::hash_map<String, MathMLCreationMethod, StringHash, StringEq> MathMLBuilderMap;
   typedef HASH_MAP_NS::hash_map<String, BoxMLCreationMethod, StringHash, StringEq> BoxMLBuilderMap;
 
-  mutable gmetadom_Linker linker;
   MathMLBuilderMap mathmlMap;
   BoxMLBuilderMap boxmlMap;
 
-  DOM::Element root;
-  mutable RefinementContext refinementContext;
+  mutable typename Model::RefinementContext refinementContext;
 };
 
 #endif // __TemplateBuilder_hh__
