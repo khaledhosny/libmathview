@@ -166,6 +166,35 @@ toUnitId(const SmartPtr<Value>& value)
   return toUnitId(ToTokenId(value));
 }
 
+MathVariant
+toMathVariant(TokenId id)
+{
+  switch (id)
+    {
+    case T_NORMAL: return NORMAL_VARIANT;
+    case T_BOLD: return BOLD_VARIANT;
+    case T_ITALIC: return ITALIC_VARIANT;
+    case T_BOLD_ITALIC: return BOLD_ITALIC_VARIANT;
+    case T_DOUBLE_STRUCK: return DOUBLE_STRUCK_VARIANT;
+    case T_BOLD_FRAKTUR: return BOLD_FRAKTUR_VARIANT;
+    case T_SCRIPT: return SCRIPT_VARIANT;
+    case T_BOLD_SCRIPT: return BOLD_SCRIPT_VARIANT;
+    case T_FRAKTUR: return FRAKTUR_VARIANT;
+    case T_SANS_SERIF: return SANS_SERIF_VARIANT;
+    case T_BOLD_SANS_SERIF: return BOLD_SANS_SERIF_VARIANT;
+    case T_SANS_SERIF_ITALIC: return SANS_SERIF_ITALIC_VARIANT;
+    case T_SANS_SERIF_BOLD_ITALIC: return SANS_SERIF_BOLD_ITALIC_VARIANT;
+    case T_MONOSPACE: return MONOSPACE_VARIANT;
+    default: assert(false);
+    }
+}
+
+MathVariant
+toMathVariant(const SmartPtr<Value>& value)
+{
+  return toMathVariant(ToTokenId(value));
+}
+
 RGBColor
 ToRGB(const SmartPtr<Value>& value)
 {

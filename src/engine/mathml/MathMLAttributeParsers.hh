@@ -39,6 +39,8 @@ typedef ParseTokenSet<TokenSet_MathVariant> ParseMathVariant;
 typedef ParseTokenSet<TokenSet_NamedSpace> ParseNamedSpace;
 typedef ParseChoice<ParseLength,ParseNamedSpace> ParseLengthOrNamedSpace;
 typedef ParseTokenSet<TokenSet_HorizontalAlign> ParseHorizontalAlign;
+typedef ParseTokenSet< Set<T__PLUS,T__MINUS> > ParseSign;
+typedef ParseZeroOrOne<ParseSign> ParseOptionalSign;
 
 // Element
 typedef ParseString Parse_MathML_Element_class;
@@ -50,13 +52,6 @@ typedef ParseMathVariant Parse_MathML_Token_mathvariant;
 typedef ParseChoice<ParseLength,ParseTokenSet< Set<T_SMALL,T_NORMAL,T_BIG> > > Parse_MathML_Token_mathsize;
 typedef ParseColor Parse_MathML_Token_mathcolor;
 typedef ParseColor Parse_MathML_Token_mathbackground;
-typedef ParseLength Parse_MathML_Token_fontsize;
-typedef ParseTokenSet< Set<T_NORMAL,T_BOLD> > Parse_MathML_Token_fontweight;
-typedef ParseTokenSet< Set<T_NORMAL,T_ITALIC> > Parse_MathML_Token_fontstyle;
-typedef ParseString Parse_MathML_Token_fontfamily;
-typedef ParseColor Parse_MathML_Token_color;
-typedef ParseTokenSet< Set<T__PLUS,T__MINUS> > ParseSign;
-typedef ParseZeroOrOne<ParseSign> ParseOptionalSign;
 
 // Operator
 typedef ParseTokenSet< Set<T_PREFIX,T_INFIX,T_POSTFIX> > Parse_MathML_Operator_form;
@@ -102,7 +97,6 @@ typedef ParseSeq<ParseOptionalSign,ParseUnsignedInteger> Parse_MathML_Style_scri
 typedef ParseBoolean Parse_MathML_Style_displaystyle;
 typedef ParseNumber Parse_MathML_Style_scriptsizemultiplier;
 typedef ParseLength Parse_MathML_Style_scriptminsize;
-typedef ParseColor Parse_MathML_Style_color;
 typedef ParseColor Parse_MathML_Style_mathcolor;
 typedef ParseChoice<ParseColor,ParseToken<T_TRANSPARENT> > Parse_MathML_Style_background;
 typedef ParseLength Parse_MathML_Style_negativeveryverythickmathspace;
@@ -119,7 +113,6 @@ typedef ParseLength Parse_MathML_Style_mediummathspace;
 typedef ParseLength Parse_MathML_Style_thinmathspace;
 typedef ParseLength Parse_MathML_Style_verythinmathspace;
 typedef ParseLength Parse_MathML_Style_veryverythinmathspace;
-typedef Parse_MathML_Token_fontsize Parse_MathML_Style_fontsize;
 typedef Parse_MathML_Token_mathsize Parse_MathML_Style_mathsize;
 
 // Padded

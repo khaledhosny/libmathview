@@ -65,10 +65,8 @@ DEFINE_ATTRIBUTE(MathML, Space, "width", width, true, true, false, false, "0em")
 DEFINE_ATTRIBUTE(MathML, StringLit, "lquote", lquote, true, true, false, false, "\"");
 DEFINE_ATTRIBUTE(MathML, StringLit, "rquote", rquote, true, true, false, false, "\"");
 DEFINE_ATTRIBUTE(MathML, Style, "background", background, true, false, false, false, 0);
-DEFINE_ATTRIBUTE(MathML, Style, "color", color, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "mathcolor", mathcolor, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "displaystyle", displaystyle, true, false, false, false, 0);
-DEFINE_ATTRIBUTE(MathML, Style, "fontsize", fontsize, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "mathsize", mathsize, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "mediummathspace", mediummathspace, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Style, "negativemediummathspace", negativemediummathspace, true, false, false, false, 0);
@@ -113,11 +111,6 @@ DEFINE_ATTRIBUTE(MathML, TableCell, "rowspan", rowspan, true, true, false, false
 DEFINE_ATTRIBUTE(MathML, TableRow, "columnalign", columnalign, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, TableRow, "groupalign", groupalign, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, TableRow, "rowalign", rowalign, true, false, false, false, 0);
-DEFINE_ATTRIBUTE(MathML, Token, "color", color, true, true, false, false, 0);
-DEFINE_ATTRIBUTE(MathML, Token, "fontfamily", fontfamily, true, true, true, false, 0);
-DEFINE_ATTRIBUTE(MathML, Token, "fontsize", fontsize, true, true, true, false, 0);
-DEFINE_ATTRIBUTE(MathML, Token, "fontstyle", fontstyle, true, true, true, false, 0);
-DEFINE_ATTRIBUTE(MathML, Token, "fontweight", fontweight, true, true, true, false, 0);
 DEFINE_ATTRIBUTE(MathML, Token, "mathbackground", mathbackground, true, true, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Token, "mathcolor", mathcolor, true, true, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Token, "mathsize", mathsize, true, true, false, false, 0);

@@ -50,7 +50,6 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, MathML, Style, displaystyle);
       REFINE_ATTRIBUTE(context, MathML, Style, scriptsizemultiplier);
       REFINE_ATTRIBUTE(context, MathML, Style, scriptminsize);
-      REFINE_ATTRIBUTE(context, MathML, Style, color);
       REFINE_ATTRIBUTE(context, MathML, Style, background);
       REFINE_ATTRIBUTE(context, MathML, Style, negativeveryverythickmathspace);
       REFINE_ATTRIBUTE(context, MathML, Style, negativeverythickmathspace);
@@ -66,7 +65,6 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, MathML, Style, thickmathspace);
       REFINE_ATTRIBUTE(context, MathML, Style, verythickmathspace);
       REFINE_ATTRIBUTE(context, MathML, Style, veryverythickmathspace);
-      REFINE_ATTRIBUTE(context, MathML, Style, fontsize);
       REFINE_ATTRIBUTE(context, MathML, Style, mathsize);
       context.push(getDOMElement());
       MathMLNormalizingContainerElement::refine(context);

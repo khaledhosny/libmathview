@@ -91,7 +91,6 @@ private:
   unsigned defaultFontSize;
   SmartPtr<MathMLElement> root;
   SmartPtr<MathMLViewContext> context;
-  mutable AreaRef rootArea;
   scaled x0;
   scaled y0;
 };

@@ -280,5 +280,5 @@ Gtk_MathGraphicDevice::wrapper(const MathFormattingContext& context,
 			       const AreaRef& base) const
 {
   BoundingBox box = base->box();
-  return factory->wrapper(base, box, context.getElement());
+  return factory->wrapper(base->fit(box.width, box.height, box.depth), box, context.getElement());
 }
