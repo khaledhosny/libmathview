@@ -192,6 +192,8 @@ MathMLFractionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
     box.Set(scaledMax(numBox.width, denomBox.width),
 	    numShift + numBox.ascent,
 	    denomShift + denomBox.descent);
+    box.tAscent = numShift + numBox.tAscent;
+    box.tDescent = denomShift + denomBox.tDescent;
   }
 
   ConfirmLayout(id);

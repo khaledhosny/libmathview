@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 #endif
     else {
 
-      if (dumpEntities) MathEngine::entitiesTable.Dump();
+      if (dumpEntities) assert(NOT_IMPLEMENTED); //MathEngine::entitiesTable.Dump();
 
       GUI_run();
       GUI_uninit();

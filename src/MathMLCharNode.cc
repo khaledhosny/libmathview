@@ -101,6 +101,10 @@ MathMLCharNode::DoLayout()
 
     box.ascent = fontAscent - delta;
     box.descent = fontDescent - delta;
+
+    delta = (fontHeight - charBox.GetTotalHeight()) / 2;
+    box.tAscent = fontAscent - delta;
+    box.tDescent = fontDescent - delta;
   }
 }
 

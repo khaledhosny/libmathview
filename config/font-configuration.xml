@@ -46,7 +46,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	/>
 
   <font type="x" map="plain8"
-	family="typewriter"
+	family="monospace"
 	x-foundry="adobe" x-family="courier" x-registry="iso8859" x-encoding="1"
 	/>
 
@@ -117,17 +117,17 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	/>
 
   <font type="ps" mode="text" map="tex-cmti"
-	family="typewriter" style="normal" weight="normal"
+	family="monospace" style="normal" weight="normal"
 	ps-file="cmtt10.pfb"
 	/>
 
   <font type="ps" mode="text" map="tex-cmti"
-	family="typewriter" style="italic" weight="normal"
+	family="monospace" style="italic" weight="normal"
 	ps-file="cmitt10.pfb"
 	/>
   
   <font type="ps" mode="math" map="tex-cmtex"
-	family="typewriter" style="normal" weight="normal"
+	family="monospace" style="normal" weight="normal"
 	ps-file="cmtex10.pfb"
 	/>
 

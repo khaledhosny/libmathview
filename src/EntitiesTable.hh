@@ -33,9 +33,8 @@ public:
   EntitiesTable(void);
   ~EntitiesTable();
 
-  void          Load(const char*);
+  bool          Load(const char*, bool);
   void          LoadInternalTable(void);
-  void          Dump(void) const;
   mDOMEntityRef GetEntity(mDOMConstStringRef) const;
   mDOMEntityRef GetErrorEntity(void) const;
   String*       GetEntityContent(mDOMConstStringRef) const;

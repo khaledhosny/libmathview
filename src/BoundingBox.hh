@@ -34,11 +34,14 @@ struct BoundingBox {
   scaled descent;
   scaled lBearing;
   scaled rBearing;
+  scaled tAscent;
+  scaled tDescent;
 
   void Null(void);
   bool IsNull(void) const { return null; }
 
   scaled GetHeight(void) const { return ascent + descent; }
+  scaled GetTotalHeight(void) const { return tAscent + tDescent; }
 
   void Set(scaled w, scaled a, scaled d) { Set(w, a, d, 0, w); }
   void Set(scaled, scaled, scaled, scaled, scaled);

@@ -23,9 +23,7 @@
 #ifndef AttributeParser_hh
 #define AttributeParser_hh
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "StringTokenizer.hh"
 #include "MathMLObject.hh"
@@ -96,5 +94,7 @@ PARSER(displayParser);
 PARSER(lineBreakParser);
 PARSER(alignMarkEdgeParser);
 PARSER(notationParser);
+PARSER(mathVariantParser);
+PARSER(mathSizeParser);
 
-#endif
+#endif // AttributeParser_hh

@@ -23,10 +23,7 @@
 #ifndef Char_hh
 #define Char_hh
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <glib.h>
 #include <stddef.h>
 
@@ -47,11 +44,12 @@ bool 	    isPlain(const char*, unsigned);
 bool 	    isPlain(const Char*, unsigned);
 bool 	    isPlain(const class String&, unsigned, unsigned);
 
-inline bool isModifier(Char ch) { return ch == 0x2063; }
+inline bool isVariant(Char ch) { return ch == 0xfe00; }
+inline bool isCancellation(Char ch) { return ch == 0x0338 || ch == 0x20d2 || ch == 0x20e5; }
 
 unsigned    isNonMarkingChar(Char, int* = NULL, BreakId* = NULL);
 unsigned    isNonMarkingChar(Char, Char, int* = NULL, BreakId* = NULL);
 unsigned    isNonMarkingChar(const class String&, int* = NULL, BreakId* = NULL);
 unsigned    isNonMarkingChar(const class String&, unsigned, int* = NULL, BreakId* = NULL);
 
-#endif
+#endif // Char_hh

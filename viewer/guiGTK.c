@@ -271,7 +271,6 @@ selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  g_return_if_fail(node != NULL);
   gtk_math_view_set_selection(math_view, node);
 }
 

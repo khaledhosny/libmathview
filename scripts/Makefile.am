@@ -7,7 +7,8 @@ noinst_SCRIPTS = \
   mklicence.pl \
   stretchy \
   makekeywords \
-  applylicence
+  applylicence \
+  makeEntitiesTable
 
 EXTRA_DIST = gtkmathview-config.in $(noinst_SCRIPTS)
 
@@ -22,5 +23,5 @@ gtkmathview-config:
 	@echo includedir=\"$(includedir)\" >>gtkmathview-config
 	@echo pkgincludedir=\"$(pkgincludedir)\" >>gtkmathview-config
 	@echo >>gtkmathview-config
-	@cat gtkmathview-config.in >>gtkmathview-config
+	@cat $(srcdir)/gtkmathview-config.in >>gtkmathview-config
 	@chmod a+x gtkmathview-config

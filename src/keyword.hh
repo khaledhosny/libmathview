@@ -23,9 +23,7 @@
 #ifndef keyword_hh
 #define keyword_hh
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "keyword.dec"
 #include "tag.dec"
@@ -197,4 +195,4 @@ const char* NameOfUnitId(UnitId);
 
 const class Value* ValueOfKeywordId(KeywordId);
 
-#endif
+#endif // keyword_hh

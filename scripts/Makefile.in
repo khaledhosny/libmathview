@@ -76,7 +76,7 @@ VERSION = @VERSION@
 
 bin_SCRIPTS = gtkmathview-config
 
-noinst_SCRIPTS =    applylicence.pl   cutlicence.pl   mklicence.pl   stretchy   makekeywords   applylicence
+noinst_SCRIPTS =    applylicence.pl   cutlicence.pl   mklicence.pl   stretchy   makekeywords   applylicence   makeEntitiesTable
 
 
 EXTRA_DIST = gtkmathview-config.in $(noinst_SCRIPTS)
@@ -219,7 +219,7 @@ gtkmathview-config:
 	@echo includedir=\"$(includedir)\" >>gtkmathview-config
 	@echo pkgincludedir=\"$(pkgincludedir)\" >>gtkmathview-config
 	@echo >>gtkmathview-config
-	@cat gtkmathview-config.in >>gtkmathview-config
+	@cat $(srcdir)/gtkmathview-config.in >>gtkmathview-config
 	@chmod a+x gtkmathview-config
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

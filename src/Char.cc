@@ -20,12 +20,9 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
-#include <stddef.h>
 #include <assert.h>
+#include <stddef.h>
 
 #include "Char.hh"
 #include "String.hh"
@@ -33,7 +30,7 @@
 
 static struct NonMarkingCharData {
   Char    ch;
-  bool    modifier;
+  Char    modifier;
   int     spacing; // 1/18em
   BreakId breakability;
 } nmChar[] = {
@@ -45,10 +42,10 @@ static struct NonMarkingCharData {
   { 0x200a, 0x0000, 1,     BREAK_NO },   // VeryThinSpace
   { 0x2009, 0x0000, 3,     BREAK_NO },   // ThinSpace
   { 0x2005, 0x0000, 4,     BREAK_NO },   // MediumSpace
-  { 0x200a, 0x2063, -1,    BREAK_NO },   // NegativeVeryThinSpace
-  { 0x2009, 0x2063, -3,    BREAK_NO },   // NegativeThinSPace
-  { 0x205f, 0x2063, -4,    BREAK_NO },   // NegativeMediumSpace
-  { 0x2005, 0x2063, -5,    BREAK_NO },   // NegativeThickSpace
+  { 0x200a, 0xfe00, -1,    BREAK_NO },   // NegativeVeryThinSpace
+  { 0x2009, 0xfe00, -3,    BREAK_NO },   // NegativeThinSPace
+  { 0x205f, 0xfe00, -4,    BREAK_NO },   // NegativeMediumSpace
+  { 0x2005, 0xfe00, -5,    BREAK_NO },   // NegativeThickSpace
   { 0x2062, 0x0000, 1,     BREAK_NO },   // InvisibleTimes
   { 0x2061, 0x0000, 2,     BREAK_NO },   // ApplyFunction
 
@@ -122,7 +119,7 @@ unsigned isNonMarkingChar(const String& s, unsigned offset, int* spacing, BreakI
 {
   assert(offset < s.GetLength());
   Char ch = s.GetChar(offset);
-  Char modifier = (offset + 1 < s.GetLength() && s.GetChar(offset + 1) == 0x2063) ? 0x2063 : 0;
+  Char modifier = (offset + 1 < s.GetLength() && isVariant(s.GetChar(offset + 1))) ? s.GetChar(offset + 1) : 0;
   return isNonMarkingChar(ch, modifier, spacing, breakability);
 }
 

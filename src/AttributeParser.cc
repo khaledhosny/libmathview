@@ -604,7 +604,6 @@ const Value* lineThicknessParser(StringTokenizer& st)
   KeywordId id[] = { KW_THIN, KW_MEDIUM, KW_THICK };
 
   const Value* value = alternativeParser(id, 3, st);
-
   if (value != NULL) return value;
 
   return numberUnitOptionParser(st);
@@ -709,4 +708,24 @@ const Value* notationParser(StringTokenizer& st)
   KeywordId id[] = { KW_LONGDIV, KW_ACTUARIAL, KW_RADICAL };
 
   return alternativeParser(id, 3, st);
+}
+
+const Value* mathVariantParser(StringTokenizer& st)
+{
+  KeywordId id[] = {
+    KW_NORMAL, KW_BOLD, KW_ITALIC, KW_BOLD_ITALIC, KW_DOUBLE_STRUCK, KW_BOLD_FRAKTUR,
+    KW_SCRIPT, KW_BOLD_SCRIPT, KW_FRAKTUR, KW_SANS_SERIF, KW_BOLD_SANS_SERIF,
+    KW_SANS_SERIF_ITALIC, KW_SANS_SERIF_BOLD_ITALIC, KW_MONOSPACE };
+
+  return alternativeParser(id, 13, st);
+}
+
+const Value* mathSizeParser(StringTokenizer& st)
+{
+  KeywordId id[] = { KW_SMALL, KW_NORMAL, KW_BIG };
+
+  const Value* value = alternativeParser(id, 3, st);
+  if (value != NULL) return value;
+
+  return numberUnitParser(st);
 }

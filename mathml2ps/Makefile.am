@@ -9,4 +9,4 @@ mathml2ps_LDFLAGS =  -L../src/.libs
 mathml2ps_debug_SOURCES = main.cc
 mathml2ps_debug_LDADD = ../src/.libs/libgtkmathview.a
 
-INCLUDES = -I../src/ -I../auto/
+INCLUDES = -I$(srcdir)/../src/ -I$(srcdir)/../auto/

@@ -117,6 +117,9 @@ T1_Font::StringBox(const char* s, unsigned len, BoundingBox& box) const
        	  pt2sp(scale * (-stringBox.lly) / 1000.0),
 	  pt2sp(scale * stringBox.llx / 1000.0),
 	  pt2sp(scale * stringBox.urx / 1000.0));
+
+  box.tAscent = GetAscent();
+  box.tDescent = GetDescent();
 }
 
 scaled

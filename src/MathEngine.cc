@@ -39,11 +39,19 @@ bool               MathEngine::kerning = false;
 void
 MathEngine::InitGlobalData()
 {
-  //entitiesTable.Load("entities/entities.xml");
+  static volatile bool firstTime = true;
+  assert(firstTime);
+
+  bool res;
+
+  //res = entitiesTable.Load("/usr/local/share/gtkmathview/entities-table.xml", false);
+  //if (!res) res = entitiesTable.Load("config/entities-table.xml", true);
   entitiesTable.LoadInternalTable();
 
-  dictionary.Load("/usr/local/share/gtkmathview/dictionary.xml");
+  res = dictionary.Load("/usr/local/share/gtkmathview/dictionary.xml");
   dictionary.Load("config/dictionary.xml");
+
+  firstTime = false;
 }
 
 MathEngine::MathEngine(DrawingArea& a, FontManager& fm, MathMLDocument* d) :

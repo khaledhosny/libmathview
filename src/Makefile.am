@@ -116,7 +116,6 @@ libgtkmathview_la_SOURCES = \
   allocTextNode.cc \
   frameAux.cc \
   keyword.cc \
-  minidom.c \
   operatorAux.cc \
   stringAux.cc \
   tableLayout.cc \
@@ -128,8 +127,7 @@ libgtkmathview_la_SOURCES = \
 
 pkginclude_HEADERS = \
   defs.h \
-  gtkmathview.h \
-  minidom.h
+  gtkmathview.h
 
 noinst_HEADERS = \
   AFont.hh \
@@ -231,4 +229,4 @@ noinst_HEADERS = \
   $(T1HEADERS) \
   $(PSHEADERS)
 
-INCLUDES = -I../auto/
+INCLUDES = -I$(srcdir)/../auto/

@@ -132,7 +132,7 @@ MathMLRowElement::DoLayout(LayoutId id, Layout& layout)
     }
 
     lastBreakability = elem->GetBreakability();
-    //layout.SetLastBreakability(bid);
+    layout.SetLastBreakability(bid);
 
     if (elem->IsBreakable()) elem->DoLayout(id, layout);
     else layout.Append(elem, 0);

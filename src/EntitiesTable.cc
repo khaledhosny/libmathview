@@ -26,6 +26,7 @@
 
 #include "minidom.h"
 #include "stringAux.hh"
+#include "MathEngine.hh"
 #include "EntitiesTable.hh"
 #include "MathMLParseFile.hh"
 
@@ -44,23 +45,9 @@ EntitiesTable::EntitiesTable()
   repository = mdom_doc_new(DOM_CONST_STRING("1.0"));
   assert(repository != NULL);
 
-#if 0
-  entityRepository->extSubset = 
-    xmlNewDtd(entityRepository, XMLSTRING("Entities Repository"), NULL, NULL);
-#endif
-
   // this is a default entity used to avoid parser errors while
   // parsing unknown entities (see command line options)
   mdom_doc_add_entity(repository, XML_ERROR_ENTITY, DOM_CONST_STRING("?"));
-
-#if 0
-  xmlAddDtdEntity(entityRepository,
-		  XML_ERROR_ENTITY,
-		  XML_INTERNAL_GENERAL_ENTITY,
-		  NULL,
-		  NULL,
-		  XMLSTRING("?"));
-#endif
 }
 
 EntitiesTable::~EntitiesTable()
@@ -69,51 +56,51 @@ EntitiesTable::~EntitiesTable()
   repository = NULL;
 }
 
-void
-EntitiesTable::Load(const char* name)
+bool
+EntitiesTable::Load(const char* fileName, bool dump)
 {
-  assert(NOT_IMPLEMENTED);
-#if 0
-  printf("Loading entities from `%s'...", name);
-  fflush(stdout);
-
-  xmlDocPtr doc = MathMLParseFile(name, false);
-  if (doc == NULL) {
-    printf("error!\n");
-    return;
-  }
+  mDOMDocRef doc = mdom_load(fileName, FALSE, NULL);
+  if (doc == NULL) return false;
   
-  xmlDtdPtr dtd = doc->intSubset;
-  xmlEntitiesTablePtr et = static_cast<xmlEntitiesTablePtr>(dtd->entities);
-
-  for (int i = 0; i < et->nb_entities; i++) {
-#ifdef HAVE_LIBXML2
-    xmlEntityPtr ep0 = et->table[i];
-#else
-    xmlEntityPtr ep0 = &et->table[i];
-#endif
-#ifdef HAVE_LIBXML2
-    xmlEntityPtr ep =
-#endif
-      xmlAddDtdEntity(entityRepository,
-		      ep0->name,
-#ifdef HAVE_LIBXML2
-		      ep0->etype,
-#else
-		      ep0->type,
-#endif
-		      ep0->ExternalID,
-		      ep0->SystemID,
-		      ep0->content);
-#ifdef HAVE_LIBXML2
-    assert(ep != NULL);
-#endif
+  mDOMNodeRef root = mdom_doc_get_root_node(doc);
+  if (root == NULL) {
+    mdom_unload(doc);
+    return false;
   }
 
-  printf("done! (%d)\n", et->nb_entities);
+  unsigned n = 0;
+  mDOMNodeRef p = mdom_node_get_first_child(root);
+  while (p != NULL) {
+    if (!mdom_node_is_blank(p)) {
+      mDOMStringRef name = mdom_node_get_attribute(p, DOM_CONST_STRING("name"));
+      mDOMStringRef value = mdom_node_get_attribute(p, DOM_CONST_STRING("value"));
 
-  xmlFreeDoc(doc);
-#endif
+      if (name != NULL && value != NULL) {
+	mdom_doc_add_entity(repository, name, value);
+	n++;
+
+	if (dump) {
+	  printf("{ \"%s\", \"", C_CONST_STRING(name));
+
+	  // WARNING: the line below is libxml dependent!!!
+	  for (xmlChar* s = value; s != NULL && *s != '\0'; s++) {
+	    printf("\\x%02x", *s);
+	  }
+	  
+	  printf("\\x00\" },\n");
+	}
+      }
+
+      mdom_string_free(name);
+      mdom_string_free(value);
+    }
+
+    p = mdom_node_get_next_sibling(p);
+  }
+
+  mdom_unload(doc);
+
+  return true;
 }
 
 void
@@ -124,35 +111,6 @@ EntitiesTable::LoadInternalTable()
 			DOM_CONST_STRING(internalTable[i].name),
 			DOM_CONST_STRING(internalTable[i].content));
   }
-}
-
-void
-EntitiesTable::Dump() const
-{
-  assert(NOT_IMPLEMENTED);
-#if 0
-  xmlDtdPtr dtd = entityRepository->extSubset;
-  assert(dtd != NULL);
-  xmlEntitiesTablePtr et = static_cast<xmlEntitiesTablePtr>(dtd->entities);
-  assert(et != NULL);
-
-  for (int i = 0; i < et->nb_entities; i++) {
-#ifdef HAVE_LIBXML2
-    xmlEntityPtr ep0 = et->table[i];
-#else
-    xmlEntityPtr ep0 = &et->table[i];
-#endif
-    assert(ep0 != NULL);
-
-    printf("{ \"%s\", \"", ep0->name);
-
-    for (xmlChar* s = ep0->content; s != NULL && *s != '\0'; s++) {
-      printf("\\x%02x", *s);
-    }
-
-    printf("\\x00\" },\n");
-  }
-#endif
 }
 
 mDOMEntityRef

@@ -20,10 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <assert.h>
 #include <stddef.h>
 
@@ -673,16 +670,16 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 	  !cell[i][j].spanned &&
 	  cell[i][j].rowAlign == ROW_ALIGN_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
-	ascent = scaledMax(ascent, box.ascent);
-	if (cell[i][j].rowSpan == 1) descent = scaledMax(descent, box.descent);
+	ascent = scaledMax(ascent, box.tAscent);
+	if (cell[i][j].rowSpan == 1) descent = scaledMax(descent, box.tDescent);
       }
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement != NULL &&
 	  rowLabel[i].rowAlign == ROW_ALIGN_BASELINE) {
 	const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-	ascent = scaledMax(ascent, labelBox.ascent);
-	descent = scaledMax(descent, labelBox.descent);
+	ascent = scaledMax(ascent, labelBox.tAscent);
+	descent = scaledMax(descent, labelBox.tDescent);
       }
     }
 
@@ -691,14 +688,14 @@ MathMLTableElement::DoVerticalLayout(LayoutId id)
 	  !cell[i][j].spanned && cell[i][j].rowSpan == 1 &&
 	  cell[i][j].rowAlign != ROW_ALIGN_BASELINE) {
 	const BoundingBox& box = cell[i][j].mtd->GetBoundingBox();
-	if (box.GetHeight() > ascent + descent) descent = box.GetHeight() - ascent;
+	if (box.GetHeight() > ascent + descent) descent = box.GetTotalHeight() - ascent;
       }
 
     if (HasLabels()) {
       if (rowLabel[i].labelElement != NULL &&
 	  rowLabel[i].rowAlign != ROW_ALIGN_BASELINE) {
 	const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-	if (labelBox.GetHeight() > ascent + descent) descent = labelBox.GetHeight() - ascent;
+	if (labelBox.GetHeight() > ascent + descent) descent = labelBox.GetTotalHeight() - ascent;
       }
     }
 
@@ -809,11 +806,11 @@ MathMLTableElement::SpanRowHeight(LayoutId id)
 	scaled height  = GetRowHeight(i, n);
 	const BoundingBox& cellBox = cell[i][j].mtd->GetBoundingBox();
 
-	if (height < cellBox.GetHeight()) {
+	if (height < cellBox.GetTotalHeight()) {
 	  // the total height of spanned rows is still smaller than the
 	  // height of the single spanning cell. We have to distribute
 	  // additional space among the spanned rows
-	  scaled rest = cellBox.GetHeight() - height;
+	  scaled rest = cellBox.GetTotalHeight() - height;
 	  while (i < n) {
 	    if (i == n - 1) {
 	      // it is the last column, we assign all the remaining space
@@ -979,6 +976,9 @@ MathMLTableElement::AlignTable(scaled height, BoundingBox& box)
   }
 
   box.descent = height - box.ascent;
+
+  box.tAscent = box.ascent;
+  box.tDescent = box.descent;
 }
 
 // PrepareLabelsLayout: this method is for deciding whether the labels

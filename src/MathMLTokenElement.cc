@@ -64,12 +64,17 @@ const AttributeSignature*
 MathMLTokenElement::GetAttributeSignature(AttributeId id) const
 {
   static AttributeSignature sig[] = {
-    { ATTR_FONTSIZE,   numberUnitParser, NULL },
-    { ATTR_FONTWEIGHT, fontWeightParser, NULL },
-    { ATTR_FONTSTYLE,  fontStyleParser,  new StringC("normal") },
-    { ATTR_FONTFAMILY, stringParser,     NULL },
-    { ATTR_COLOR,      colorParser,      NULL },
-    { ATTR_NOTVALID,   NULL,             NULL }
+    { ATTR_FONTSIZE,       numberUnitParser,  NULL },
+    { ATTR_FONTWEIGHT,     fontWeightParser,  NULL },
+    { ATTR_FONTSTYLE,      fontStyleParser,   NULL },
+    { ATTR_FONTFAMILY,     stringParser,      NULL },
+    { ATTR_COLOR,          colorParser,       NULL },
+    { ATTR_MATHVARIANT,    mathVariantParser, NULL },
+    { ATTR_MATHSIZE,       mathSizeParser,    NULL },
+    { ATTR_MATHCOLOR,      colorParser,       NULL },
+    { ATTR_MATHBACKGROUND, colorParser,       NULL },
+    
+    { ATTR_NOTVALID,       NULL,              NULL }
   };
 
   const AttributeSignature* signature = GetAttributeSignatureAux(id, sig);
@@ -96,6 +101,7 @@ MathMLTokenElement::Append(const String* s)
   }
 
   unsigned i = 0;
+  bool lastBreak = true;
   while (i < s->GetLength()) {
     MathMLTextNode* node = NULL;
 
@@ -108,16 +114,25 @@ MathMLTokenElement::Append(const String* s)
 	last->AddBreakability(bid);
       } else node = new MathMLSpaceNode(spacing, bid);
       i += len;
-    } else if (isPlain(s->GetChar(i))) {
+
+      lastBreak = true;
+    } else if (iswalnum(s->GetChar(i))) {
       unsigned start = i;
-      while (i < s->GetLength() && isPlain(s->GetChar(i)) && !iswspace(s->GetChar(i))) i++;
+      while (i < s->GetLength() && iswalnum(s->GetChar(i)) && !iswspace(s->GetChar(i))) i++;
       assert(start < i);
       
       const String* sText = allocString(*s, start, i - start);
       node = allocTextNode(&sText);
-    } else if (!isModifier(s->GetChar(i))) {
+
+      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
+      lastBreak = false;
+    } else if (!isVariant(s->GetChar(i)) && !isCancellation(s->GetChar(i))) {
+      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
       node = allocCharNode(s->GetChar(i));
       i++;
+
+      if (last != NULL && !lastBreak) last->SetBreakability(BREAK_NO);
+      lastBreak = false;
     } else {
       MathEngine::logger(LOG_WARNING, "ignoring modifier char U+%04x", s->GetChar(i));
       i++;
@@ -141,6 +156,8 @@ MathMLTokenElement::Append(MathMLTextNode* node)
 void
 MathMLTokenElement::Setup(RenderingEnvironment* env)
 {
+  assert(env != NULL);
+
   env->Push();
 
   if (IsA() == TAG_MTEXT || IsA() == TAG_MN) {
@@ -149,28 +166,101 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
 
   const Value* value = NULL;
 
-  value = GetAttributeValue(ATTR_FONTSIZE, NULL, false);
-  if (value != NULL) env->SetFontSize(value->ToNumberUnit());
+  value = GetAttributeValue(ATTR_MATHSIZE, NULL, false);
+  if (value != NULL) {
+    if (IsSet(ATTR_FONTSIZE))
+      MathEngine::logger(LOG_WARNING, "attribute `mathsize' overrides deprecated attribute `fontsize'");
+    
+    if (value->IsKeyword(KW_SMALL)) env->AddScriptLevel(1);
+    else if (value->IsKeyword(KW_BIG)) env->AddScriptLevel(-1);
+    else if (value->IsKeyword(KW_NORMAL)) ; // noop
+    else env->SetFontSize(value->ToNumberUnit());
+  } else {
+    value = GetAttributeValue(ATTR_FONTSIZE, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
+      env->SetFontSize(value->ToNumberUnit());
+    }
+  }
+  
+  value = GetAttributeValue(ATTR_MATHVARIANT, NULL, false);
+  if (value != NULL) {
+    assert(value->IsKeyword());
 
-  value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
-  if (value != NULL) env->SetFontFamily(value->ToString());
+    static struct {
+      KeywordId    kw;
+      const char*  family;
+      FontWeightId weight;
+      FontStyleId  style;
+    } vattr[] = {
+      { KW_NORMAL,            "serif",         FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
+      { KW_BOLD,              "serif",         FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
+      { KW_ITALIC,            "serif",         FONT_WEIGHT_NORMAL,   FONT_STYLE_ITALIC },
+      { KW_BOLD_ITALIC,       "serif",         FONT_WEIGHT_BOLD,     FONT_STYLE_ITALIC },
+      { KW_DOUBLE_STRUCK,     "double-struck", FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
+      { KW_BOLD_FRAKTUR,      "fraktur",       FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
+      { KW_SCRIPT,            "script",        FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
+      { KW_BOLD_SCRIPT,       "script",        FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
+      { KW_FRAKTUR,           "fraktur",       FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
+      { KW_SANS_SERIF,        "sans-serif",    FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
+      { KW_BOLD_SANS_SERIF,   "sans-serif",    FONT_WEIGHT_BOLD,     FONT_STYLE_NORMAL },
+      { KW_SANS_SERIF_ITALIC, "sans-serif",    FONT_WEIGHT_NORMAL,   FONT_STYLE_ITALIC },
+      { KW_MONOSPACE,         "monospace",     FONT_WEIGHT_NORMAL,   FONT_STYLE_NORMAL },
 
-  value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
-  if (value != NULL) env->SetFontWeight(ToFontWeightId(value));
+      { KW_NOTVALID,          NULL,            FONT_WEIGHT_NOTVALID, FONT_STYLE_NOTVALID }
+    };
 
-  value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
-  if (value != NULL) env->SetFontStyle(ToFontStyleId(value));
-  else if (IsA() == TAG_MI) {
-    if (rawContentLength == 1) env->SetFontStyle(FONT_STYLE_ITALIC);
-    else {
-      env->SetFontStyle(FONT_STYLE_NORMAL);
-      env->SetFontMode(FONT_MODE_TEXT);
+    unsigned i = 0;
+    while (vattr[i].kw != KW_NOTVALID && vattr[i].kw != value->ToKeyword()) i++;
+
+    assert(vattr[i].kw != KW_NOTVALID);
+    env->SetFontFamily(vattr[i].family);
+    env->SetFontWeight(vattr[i].weight);
+    env->SetFontStyle(vattr[i].style);
+
+    if (IsSet(ATTR_FONTFAMILY) || IsSet(ATTR_FONTWEIGHT) || IsSet(ATTR_FONTSTYLE))
+      MathEngine::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
+  } else {
+    value = GetAttributeValue(ATTR_FONTFAMILY, NULL, false);
+    if (value != NULL) {
+      env->SetFontFamily(value->ToString());
+    } else
+      env->SetFontFamily("serif");
+
+    value = GetAttributeValue(ATTR_FONTWEIGHT, NULL, false);
+    if (value != NULL) {
+      env->SetFontWeight(ToFontWeightId(value));
+    } else
+      env->SetFontWeight(FONT_WEIGHT_NORMAL);
+
+    value = GetAttributeValue(ATTR_FONTSTYLE, NULL, false);
+    if (value != NULL) {
+      env->SetFontStyle(ToFontStyleId(value));
+    } else if (IsA() == TAG_MI) {
+      if (rawContentLength == 1) env->SetFontStyle(FONT_STYLE_ITALIC);
+      else {
+	env->SetFontStyle(FONT_STYLE_NORMAL);
+	env->SetFontMode(FONT_MODE_TEXT);
+      }
     }
   }
 
-  value = GetAttributeValue(ATTR_COLOR, NULL, false);
-  if (value != NULL) env->SetColor(ToRGB(value));
-  else if (HasLink()) env->SetColor(LINK_COLOR);
+  value = GetAttributeValue(ATTR_MATHCOLOR, NULL, false);
+  if (value != NULL) {
+    if (IsSet(ATTR_COLOR))
+      MathEngine::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
+    env->SetColor(ToRGB(value));
+  } else {
+    value = GetAttributeValue(ATTR_COLOR, NULL, false);
+    if (value != NULL) {
+      MathEngine::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
+      env->SetColor(ToRGB(value));
+    } else
+      if (HasLink()) env->SetColor(LINK_COLOR);
+  }
+
+  value = GetAttributeValue(ATTR_MATHBACKGROUND, NULL, false);
+  if (value != NULL) env->SetBackgroundColor(ToRGB(value));
 
   color      = env->GetColor();
   background = env->GetBackgroundColor();
@@ -187,11 +277,6 @@ MathMLTokenElement::Setup(RenderingEnvironment* env)
 void
 MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
 {
-  scaled oldAscent;
-  scaled oldDescent;
-  layout.GetLineStrut(oldAscent, oldDescent);
-  //layout.SetMinimumLineStrut(font->GetAscent(), font->GetDescent());
-
   Iterator<MathMLTextNode*> i(content);
   while (i.More()) {
     assert(i() != NULL);
@@ -221,8 +306,6 @@ MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
 
     i.Next();
   }
-  
-  layout.SetLineStrut(oldAscent, oldDescent);
 }
 
 void

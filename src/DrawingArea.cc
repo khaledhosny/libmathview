@@ -127,13 +127,15 @@ DrawingArea::DrawBoundingBox(const GraphicsContext* gc,
 			     bool drawExtra) const
 {
   scaled width = box.width;
-  scaled height = box.GetHeight();
-  scaled ascent = box.ascent;
+  scaled height = box.GetTotalHeight();
+  scaled ascent = box.tAscent;
   DrawRectangle(gc, x, y - ascent, width, height);
   if (drawExtra) {
     DrawLine(gc, x, y, x + box.width, y);
     DrawLine(gc, x + box.lBearing, y - ascent, x + box.lBearing, y + box.descent);
     DrawLine(gc, x + box.rBearing, y - ascent, x + box.rBearing, y + box.descent);
+    DrawLine(gc, x, y - box.ascent, x + box.width, y - box.ascent);
+    DrawLine(gc, x, y + box.descent, x + box.width, y + box.descent);
   }
 }
 

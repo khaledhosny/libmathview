@@ -73,9 +73,6 @@
 #define NDEBUG
 #endif
 
-/* Define to compile with libxml 2.x (recommended) */
-#undef HAVE_LIBXML2
-
 /* Define to compile with t1lib for Type 1 fonts */
 #undef HAVE_LIBT1
 

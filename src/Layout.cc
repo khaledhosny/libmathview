@@ -20,10 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <assert.h>
 
 #include "Layout.hh"
@@ -40,7 +37,6 @@ Layout::Layout(scaled width, BreakId id)
   bestPenalty = penalty = 0;
   best = NULL;
   SetLineSpacing(0);
-  SetLineStrut(0, 0);
 }
 
 Layout::~Layout()
@@ -104,8 +100,6 @@ Layout::AppendAtom(MathMLFrame* frame, scaled spacing, BreakId id)
 
   Atom* atom = new Atom;
   atom->frame      = frame;
-  atom->minAscent  = minAscent;
-  atom->minDescent = minDescent;
   atom->spacing    = spacing;
   atom->penalty    = GetPenalty(id);
 
@@ -122,6 +116,7 @@ Layout::AppendAtom(MathMLFrame* frame, scaled spacing, BreakId id)
 
     availableWidth = totalWidth - content.GetLast()->BreakUpTo(best, newRow);
 
+    row->minLineSpacing = minLineSpacing;
     row->RemoveDiscardableSpacesRight();
     availableWidth += newRow->RemoveDiscardableSpacesLeft();
 
@@ -189,27 +184,6 @@ Layout::SetLineSpacing(scaled ls)
 }
 
 void
-Layout::SetLineStrut(scaled ascent, scaled descent)
-{
-  minAscent = ascent;
-  minDescent = descent;
-}
-
-void
-Layout::SetMinimumLineStrut(scaled ascent, scaled descent)
-{
-  minAscent = scaledMax(minAscent, ascent);
-  minDescent = scaledMax(minDescent, descent);
-}
-
-void
-Layout::GetLineStrut(scaled& ascent, scaled& descent) const
-{
-  ascent = minAscent;
-  descent = minDescent;
-}
-
-void
 Layout::DoLayout(LayoutId id) const
 {
   for (Iterator<Row*> row(content); row.More(); row.Next())
@@ -223,23 +197,17 @@ Layout::GetBoundingBox(BoundingBox& box, LayoutId id) const
   for (Iterator<Row*> row(content); row.More(); row.Next()) {
     assert(row() != NULL);
 
-    scaled minAscent = 0;
-    scaled minDescent = 0;
     BoundingBox rowBox;
+    row()->GetBoundingBox(rowBox, id);
 
-    row()->GetBoundingBox(rowBox, id, minAscent, minDescent);
-    if (!row.IsFirst()) rowBox.ascent = scaledMax(rowBox.ascent, minAscent);
-    if (!row.IsLast()) {
-      if (rowBox.descent > minDescent)
-	rowBox.descent += row()->minLineSpacing;
-      else
-	rowBox.descent = scaledMax(rowBox.descent, minDescent);
-    }
-    
+    if (!row.IsFirst()) rowBox.ascent = rowBox.tAscent;
+    if (!row.IsLast()) rowBox.descent = rowBox.tDescent;
+
     if (box.IsNull()) 
       box = rowBox;
     else {
       box.descent += rowBox.GetHeight();
+      box.tDescent += rowBox.GetTotalHeight();
       box.width = scaledMax(box.width, rowBox.width);
       box.lBearing = scaledMin(box.lBearing, rowBox.lBearing);
       box.rBearing = scaledMax(box.rBearing, rowBox.rBearing);
@@ -285,18 +253,11 @@ Layout::SetPosition(scaled x, scaled y, ColumnAlignId align)
   for (Iterator<Row*> row(content); row.More(); row.Next()) {
     assert(row() != NULL);
 
-    scaled minAscent = 0;
-    scaled minDescent = 0;
     BoundingBox rowBox;
+    row()->GetBoundingBox(rowBox, LAYOUT_AUTO);
 
-    row()->GetBoundingBox(rowBox, LAYOUT_AUTO, minAscent, minDescent);
-    if (!row.IsFirst()) rowBox.ascent = scaledMax(rowBox.ascent, minAscent);
-    if (!row.IsLast()) {
-      if (rowBox.descent > minDescent)
-	rowBox.descent += row()->minLineSpacing;
-      else
-	rowBox.descent = minDescent;
-    }
+    if (!row.IsFirst()) rowBox.ascent = rowBox.tAscent;
+    if (!row.IsLast()) rowBox.descent = rowBox.tDescent;
 
     scaled offset = 0;
 
@@ -329,10 +290,8 @@ Layout::Row::Row()
 scaled
 Layout::Row::GetWidth(LayoutId id) const
 {
-  scaled minAscent = 0;
-  scaled minDescent = 0;
   BoundingBox box;
-  GetBoundingBox(box, id, minAscent, minDescent);
+  GetBoundingBox(box, id);
   return box.width;
 }
 
@@ -343,18 +302,14 @@ Layout::Row::GetMinimumSpacing() const
 }
 
 void
-Layout::Row::GetBoundingBox(BoundingBox& box, LayoutId id, scaled& minAscent, scaled& minDescent) const
+Layout::Row::GetBoundingBox(BoundingBox& box, LayoutId id) const
 {
-  minAscent = minDescent = 0;
-
   box.Null();
   for (Iterator<Atom*> atom(content); atom.More(); atom.Next()) {
     assert(atom() != NULL);
     BoundingBox atomBox;
     atom()->GetBoundingBox(atomBox, id);
     box.Append(atomBox);
-    minAscent = scaledMax(minAscent, atom()->minAscent);
-    minDescent = scaledMax(minDescent, atom()->minDescent);
   }
 }
 

@@ -1,357 +1,354 @@
-<?xml version="1.0"?>
-<!DOCTYPE dictionary SYSTEM "dictionary.dtd">
-
 <dictionary>
-  <operator name="(" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name=")" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="[" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="]" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="{" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="}" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&CloseCurlyDoubleQuote;" form="postfix" fence="true" lspace="0em" rspace="0em"/>
-  <operator name="&CloseCurlyQuote;" form="postfix" fence="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftAngleBracket;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftBracketingBar;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftCeiling;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftDoubleBracket;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftDoubleBracketingBar;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftFloor;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&OpenCurlyDoubleQuote;" form="prefix" fence="true" lspace="0em" rspace="0em"/>
-  <operator name="&OpenCurlyQuote;" form="prefix" fence="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightAngleBracket;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightBracketingBar;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightCeiling;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightDoubleBracket;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightDoubleBracketingBar;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightFloor;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&LeftSkeleton;" form="prefix" fence="true" lspace="0em" rspace="0em"/>
-  <operator name="&RightSkeleton;" form="postfix" fence="true" lspace="0em" rspace="0em"/>
-  <operator name="&InvisibleComma;" form="infix" separator="true" lspace="0em" rspace="0em"/>
-  <operator name="," form="infix" separator="true" lspace="0em" rspace="verythickmathspace"/>
-  <operator name="&HorizontalLine;" form="infix" stretchy="true" minsize="0" lspace="0em" rspace="0em"/>
-  <operator name="&VerticalLine;" form="infix" stretchy="true" minsize="0" lspace="0em" rspace="0em"/>
-  <operator name=";" form="infix" separator="true" lspace="0em" rspace="thickmathspace"/>
-  <operator name=";" form="postfix" separator="true" lspace="0em" rspace="0em"/>
-  <operator name=":=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Assign;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Because;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Therefore;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&VerticalSeparator;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="//" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Colon;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&amp;" form="prefix" lspace="0em" rspace="thickmathspace"/>
-  <operator name="&amp;" form="postfix" lspace="thickmathspace" rspace="0em"/>
-  <operator name="*=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="-=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="+=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="/=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="-&gt;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name=":" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name=".." form="postfix" lspace="mediummathspace" rspace="0em"/>
-  <operator name="..." form="postfix" lspace="mediummathspace" rspace="0em"/>
-  <operator name="&SuchThat;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DoubleLeftTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DoubleRightTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Implies;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RoundImplies;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="|" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="||" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&Or;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&amp;&amp;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&amp;And;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&amp;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="!" form="prefix" lspace="0em" rspace="thickmathspace"/>
-  <operator name="&Not;" form="prefix" lspace="0em" rspace="thickmathspace"/>
-  <operator name="&Exists;" form="prefix" lspace="0em" rspace="thickmathspace"/>
-  <operator name="&ForAll;" form="prefix" lspace="0em" rspace="thickmathspace"/>
-  <operator name="&NotExists;" form="prefix" lspace="0em" rspace="thickmathspace"/>
-  <operator name="&Element;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotElement;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotReverseElement;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSquareSubset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSquareSubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSquareSuperset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSquareSupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSubset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSuperset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&ReverseElement;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SquareSubset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SquareSubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SquareSuperset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SquareSupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Subset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Superset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DoubleLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DoubleLeftRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DoubleRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownLeftRightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownLeftTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownLeftVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownLeftVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownRightTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownRightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DownRightVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftArrowBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftArrowRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftRightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftTeeArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LowerLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LowerRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightArrowBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightArrowLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightTeeArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&ShortLeftArrow;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&ShortRightArrow;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&UpperLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&UpperRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&lt;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&gt;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="!=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="==" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&lt;=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&gt;=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Congruent;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&CupCap;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DotEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&DoubleVerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Equal;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&EqualTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Equilibrium;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterEqualLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&GreaterTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&HumpDownHump;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&HumpEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LeftTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&le;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LessEqualGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LessFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LessGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LessSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&LessTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NestedGreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NestedLessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotCongruent;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotCupCap;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotDoubleVerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotEqualTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreaterEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreaterFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreaterLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreaterSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotGreaterTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotHumpDownHump;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotHumpEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLeftTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLeftTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLeftTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLessEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLessFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLessGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLessSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotLessTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotNestedGreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotNestedLessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotPrecedes;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotPrecedesEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotPrecedesSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotPrecedesTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotRightTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotRightTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotRightTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSucceeds;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSucceedsEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSucceedsSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotSucceedsTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotTildeEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotTildeFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotTildeTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&NotVerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Precedes;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&PrecedesEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&PrecedesSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&PrecedesTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Proportion;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Proportional;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&ReverseEquilibrium;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&RightTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Succeeds;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SucceedsEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SucceedsSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SucceedsTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&Tilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&TildeEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&TildeFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&TildeTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&UpTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&VerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
-  <operator name="&SquareUnion;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&Union;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&UnionPlus;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="-" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="+" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&Intersection;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&MinusPlus;" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&PlusMinus;" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&SquareIntersection;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
-  <operator name="&Vee;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&CircleMinus;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&CirclePlus;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&Sum;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&Union;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&UnionPlus;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="lim" form="prefix" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="max" form="prefix" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="min" form="prefix" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&CircleMinus;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&CirclePlus;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&ClockwiseContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&ContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&CounterClockwiseContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DoubleContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&Integral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&Cup;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Cap;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&VerticalTilde;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Wedge;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&CircleTimes;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&Coproduct;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&Product;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&Intersection;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="&Coproduct;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Star;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&CircleDot;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
-  <operator name="*" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&InvisibleTimes;" form="infix" lspace="0em" rspace="0em"/>
-  <operator name="&CenterDot;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&CircleTimes;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Vee;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Wedge;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Diamond;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="&Backslash;" form="infix" stretchy="true" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="/" form="infix" stretchy="true" lspace="thinmathspace" rspace="thinmathspace"/>
-  <operator name="-" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
-  <operator name="+" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
-  <operator name="&MinusPlus;" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
-  <operator name="&PlusMinus;" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
-  <operator name="." form="infix" lspace="0em" rspace="0em"/>
-  <operator name="&Cross;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="**" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&CircleDot;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&SmallCircle;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&Square;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&Del;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&PartialD;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&CapitalDifferentialD;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&DifferentialD;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&Sqrt;" form="prefix" stretchy="true" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&DoubleDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DoubleLongLeftArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DoubleLongLeftRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DoubleLongRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DoubleUpArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DoubleUpDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DownArrowBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DownArrowUpArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&DownTeeArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftDownTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftDownVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftUpDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftUpTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftUpVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LeftUpVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LongLeftArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LongLeftRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&LongRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&ReverseUpEquilibrium;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightDownTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightDownVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightUpDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightUpTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightUpVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&RightUpVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&ShortDownArrow;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&ShortUpArrow;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&UpArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&UpArrowBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&UpArrowDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&UpDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&UpEquilibrium;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&UpTeeArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="^" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&lt;&gt;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="'" form="postfix" lspace="verythinmathspace" rspace="0em"/>
-  <operator name="!" form="postfix" lspace="verythinmathspace" rspace="0em"/>
-  <operator name="!!" form="postfix" lspace="verythinmathspace" rspace="0em"/>
-  <operator name="~" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="@" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="--" form="postfix" lspace="verythinmathspace" rspace="0em"/>
-  <operator name="--" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="++" form="postfix" lspace="verythinmathspace" rspace="0em"/>
-  <operator name="++" form="prefix" lspace="0em" rspace="verythinmathspace"/>
-  <operator name="&ApplyFunction;" form="infix" lspace="0em" rspace="0em"/>
-  <operator name="?" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="_" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
-  <operator name="&Breve;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&Cedilla;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalGrave;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalDot;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalDoubleAcute;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalLeftArrow;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalLeftRightArrow;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalLeftRightVector;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalLeftVector;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalAcute;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalRightArrow;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalRightVector;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DiacriticalTilde;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&DoubleDot;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&DownBreve;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&Hacek;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&Hat;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&OverBar;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&OverBrace;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&OverBracket;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&OverParenthesis;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&TripleDot;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
-  <operator name="&UnderBar;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&UnderBrace;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&UnderBracket;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&UnderParenthesis;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
-  <operator name="&UnderParenthesis;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="(" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name=")" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="[" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="]" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="{" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="}" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&CloseCurlyDoubleQuote;" form="postfix" fence="true" lspace="0em" rspace="0em"/>
+ <operator name="&CloseCurlyQuote;" form="postfix" fence="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftAngleBracket;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftBracketingBar;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftCeiling;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftDoubleBracket;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftDoubleBracketingBar;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftFloor;" form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&OpenCurlyDoubleQuote;" form="prefix" fence="true" lspace="0em" rspace="0em"/>
+ <operator name="&OpenCurlyQuote;" form="prefix" fence="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightAngleBracket;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightBracketingBar;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightCeiling;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightDoubleBracket;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightDoubleBracketingBar;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightFloor;" form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&LeftSkeleton;" form="prefix" fence="true" lspace="0em" rspace="0em"/>
+ <operator name="&RightSkeleton;" form="postfix" fence="true" lspace="0em" rspace="0em"/>
+ <operator name="&InvisibleComma;" form="infix" separator="true" lspace="0em" rspace="0em"/>
+ <operator name="," form="infix" separator="true" lspace="0em" rspace="verythickmathspace"/>
+ <operator name="&HorizontalLine;" form="infix" stretchy="true" minsize="0" lspace="0em" rspace="0em"/>
+ <operator name="&VerticalLine;" form="infix" stretchy="true" minsize="0" lspace="0em" rspace="0em"/>
+ <operator name=";" form="infix" separator="true" lspace="0em" rspace="thickmathspace"/>
+ <operator name=";" form="postfix" separator="true" lspace="0em" rspace="0em"/>
+ <operator name=":=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Assign;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Because;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Therefore;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&VerticalSeparator;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="//" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Colon;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&amp;" form="prefix" lspace="0em" rspace="thickmathspace"/>
+ <operator name="&amp;" form="postfix" lspace="thickmathspace" rspace="0em"/>
+ <operator name="*=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="-=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="+=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="/=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="-&gt;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name=":" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name=".." form="postfix" lspace="mediummathspace" rspace="0em"/>
+ <operator name="..." form="postfix" lspace="mediummathspace" rspace="0em"/>
+ <operator name="&SuchThat;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DoubleLeftTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DoubleRightTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Implies;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RoundImplies;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="|" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="||" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&Or;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&amp;&amp;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&And;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&amp;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="!" form="prefix" lspace="0em" rspace="thickmathspace"/>
+ <operator name="&Not;" form="prefix" lspace="0em" rspace="thickmathspace"/>
+ <operator name="&Exists;" form="prefix" lspace="0em" rspace="thickmathspace"/>
+ <operator name="&ForAll;" form="prefix" lspace="0em" rspace="thickmathspace"/>
+ <operator name="&NotExists;" form="prefix" lspace="0em" rspace="thickmathspace"/>
+ <operator name="&Element;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotElement;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotReverseElement;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSquareSubset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSquareSubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSquareSuperset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSquareSupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSubset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSuperset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&ReverseElement;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SquareSubset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SquareSubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SquareSuperset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SquareSupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Subset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SubsetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Superset;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SupersetEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DoubleLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DoubleLeftRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DoubleRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownLeftRightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownLeftTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownLeftVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownLeftVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownRightTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownRightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DownRightVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftArrowBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftArrowRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftRightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftTeeArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LowerLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LowerRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightArrowBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightArrowLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightTeeArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightTeeVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightVector;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightVectorBar;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&ShortLeftArrow;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&ShortRightArrow;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&UpperLeftArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&UpperRightArrow;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&lt;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&gt;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="!=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="==" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&lt;=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&gt;=" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Congruent;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&CupCap;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DotEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&DoubleVerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Equal;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&EqualTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Equilibrium;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterEqualLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&GreaterTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&HumpDownHump;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&HumpEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LeftTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&le;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LessEqualGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LessFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LessGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LessSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&LessTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NestedGreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NestedLessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotCongruent;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotCupCap;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotDoubleVerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotEqualTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreaterEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreaterFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreaterLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreaterSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotGreaterTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotHumpDownHump;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotHumpEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLeftTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLeftTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLeftTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLessEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLessFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLessGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLessSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotLessTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotNestedGreaterGreater;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotNestedLessLess;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotPrecedes;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotPrecedesEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotPrecedesSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotPrecedesTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotRightTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotRightTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotRightTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSucceeds;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSucceedsEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSucceedsSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotSucceedsTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotTildeEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotTildeFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotTildeTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&NotVerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Precedes;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&PrecedesEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&PrecedesSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&PrecedesTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Proportion;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Proportional;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&ReverseEquilibrium;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightTriangle;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightTriangleBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&RightTriangleEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Succeeds;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SucceedsEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SucceedsSlantEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SucceedsTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&Tilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&TildeEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&TildeFullEqual;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&TildeTilde;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&UpTee;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&VerticalBar;" form="infix" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&SquareUnion;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&Union;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&UnionPlus;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="-" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="+" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&Intersection;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&MinusPlus;" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&PlusMinus;" form="infix" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&SquareIntersection;" form="infix" stretchy="true" lspace="mediummathspace" rspace="mediummathspace"/>
+ <operator name="&Vee;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&CircleMinus;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&CirclePlus;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&Sum;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&Union;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&UnionPlus;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="lim" form="prefix" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="max" form="prefix" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="min" form="prefix" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&CircleMinus;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&CirclePlus;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&ClockwiseContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&ContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&CounterClockwiseContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DoubleContourIntegral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&Integral;" form="prefix" largeop="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&Cup;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Cap;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&VerticalTilde;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Wedge;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&CircleTimes;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&Coproduct;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&Product;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&Intersection;" form="prefix" largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="&Coproduct;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Star;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&CircleDot;" form="prefix" largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"/>
+ <operator name="*" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&InvisibleTimes;" form="infix" lspace="0em" rspace="0em"/>
+ <operator name="&CenterDot;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&CircleTimes;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Vee;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Wedge;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Diamond;" form="infix" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="&Backslash;" form="infix" stretchy="true" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="/" form="infix" stretchy="true" lspace="thinmathspace" rspace="thinmathspace"/>
+ <operator name="-" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
+ <operator name="+" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
+ <operator name="&MinusPlus;" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
+ <operator name="&PlusMinus;" form="prefix" lspace="0em" rspace="veryverythinmathspace"/>
+ <operator name="." form="infix" lspace="0em" rspace="0em"/>
+ <operator name="&Cross;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="**" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&CircleDot;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&SmallCircle;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&Square;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&Del;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&PartialD;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&CapitalDifferentialD;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&DifferentialD;" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&Sqrt;" form="prefix" stretchy="true" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&DoubleDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DoubleLongLeftArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DoubleLongLeftRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DoubleLongRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DoubleUpArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DoubleUpDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DownArrowBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DownArrowUpArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&DownTeeArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftDownTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftDownVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftUpDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftUpTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftUpVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LeftUpVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LongLeftArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LongLeftRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&LongRightArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&ReverseUpEquilibrium;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightDownTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightDownVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightUpDownVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightUpTeeVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightUpVector;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&RightUpVectorBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&ShortDownArrow;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&ShortUpArrow;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&UpArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&UpArrowBar;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&UpArrowDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&UpDownArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&UpEquilibrium;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&UpTeeArrow;" form="infix" stretchy="true" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="^" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&lt;&gt;" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="'" form="postfix" lspace="verythinmathspace" rspace="0em"/>
+ <operator name="!" form="postfix" lspace="verythinmathspace" rspace="0em"/>
+ <operator name="!!" form="postfix" lspace="verythinmathspace" rspace="0em"/>
+ <operator name="~" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="@" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="--" form="postfix" lspace="verythinmathspace" rspace="0em"/>
+ <operator name="--" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="++" form="postfix" lspace="verythinmathspace" rspace="0em"/>
+ <operator name="++" form="prefix" lspace="0em" rspace="verythinmathspace"/>
+ <operator name="&ApplyFunction;" form="infix" lspace="0em" rspace="0em"/>
+ <operator name="?" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="_" form="infix" lspace="verythinmathspace" rspace="verythinmathspace"/>
+ <operator name="&Breve;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&Cedilla;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalGrave;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalDot;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalDoubleAcute;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalLeftArrow;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalLeftRightArrow;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalLeftRightVector;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalLeftVector;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalAcute;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalRightArrow;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalRightVector;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DiacriticalTilde;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&DoubleDot;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&DownBreve;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&Hacek;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&Hat;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&OverBar;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&OverBrace;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&OverBracket;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&OverParenthesis;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&TripleDot;" form="postfix" accent="true" lspace="0em" rspace="0em"/>
+ <operator name="&UnderBar;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&UnderBrace;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&UnderBracket;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&UnderParenthesis;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&UnderParenthesis;" form="postfix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
 </dictionary>

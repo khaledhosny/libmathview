@@ -99,16 +99,16 @@ PSHEADERS =    PS_DrawingArea.hh   PS_T1_FontManager.hh
 GUISOURCES =    AFont.cc   CharMap.cc   CharMapper.cc   DrawingArea.cc   FontAttributes.cc   FontManager.cc   GraphicsContext.cc   gtkmathview.cc
 
 
-libgtkmathview_la_SOURCES =    AttributeParser.cc   AttributeSignature.cc   BoundingBox.cc   Char.cc   Clock.cc   DocumentElement.cc   EntitiesTable.cc   FontifiedString.cc   Layout.cc   Logger.cc   MathEngine.cc   MathMLActionElement.cc   MathMLAlignGroupElement.cc   MathMLAlignMarkElement.cc   MathMLAttribute.cc   MathMLAttributeList.cc   MathMLCharNode.cc   MathMLContainerElement.cc   MathMLDocument.cc   MathMLDummyElement.cc   MathMLElement.cc   MathMLEmbellishedOperatorElement.cc   MathMLEncloseElement.cc   MathMLErrorElement.cc   MathMLFencedElement.cc   MathMLFractionElement.cc   MathMLFrame.cc   MathMLGlyphNode.cc   MathMLMarkNode.cc   MathMLMultiScriptsElement.cc   MathMLNode.cc   MathMLNormalizingContainerElement.cc   MathMLObject.cc   MathMLOperatorElement.cc   MathMLPaddedElement.cc   MathMLParseFile.cc   MathMLPhantomElement.cc   MathMLRadicalElement.cc   MathMLRowElement.cc   MathMLScriptCommonElement.cc   MathMLScriptElement.cc   MathMLSemanticsElement.cc   MathMLSpaceElement.cc   MathMLSpaceNode.cc   MathMLStringLitElement.cc   MathMLStringNode.cc   MathMLStyleElement.cc   MathMLTableCellElement.cc   MathMLTableElement.cc   MathMLTableRowElement.cc   MathMLTextElement.cc   MathMLTextNode.cc   MathMLTokenElement.cc   MathMLUnderOverElement.cc   MathMLmathElement.cc   OperatorDictionary.cc   Parser.cc   Rectangle.cc   RenderingEnvironment.cc   Shape.cc   ShapeFactory.cc   String.cc   StringFactory.cc   StringTokenizer.cc   StringUnicode.cc   UnitValue.cc   Value.cc   ValueConversion.cc   ValueSequence.cc   allocTextNode.cc   frameAux.cc   keyword.cc   minidom.c   operatorAux.cc   stringAux.cc   tableLayout.cc   tableSetup.cc   $(GUISOURCES)   $(GTKSOURCES)   $(T1SOURCES)   $(PSSOURCES)
+libgtkmathview_la_SOURCES =    AttributeParser.cc   AttributeSignature.cc   BoundingBox.cc   Char.cc   Clock.cc   DocumentElement.cc   EntitiesTable.cc   FontifiedString.cc   Layout.cc   Logger.cc   MathEngine.cc   MathMLActionElement.cc   MathMLAlignGroupElement.cc   MathMLAlignMarkElement.cc   MathMLAttribute.cc   MathMLAttributeList.cc   MathMLCharNode.cc   MathMLContainerElement.cc   MathMLDocument.cc   MathMLDummyElement.cc   MathMLElement.cc   MathMLEmbellishedOperatorElement.cc   MathMLEncloseElement.cc   MathMLErrorElement.cc   MathMLFencedElement.cc   MathMLFractionElement.cc   MathMLFrame.cc   MathMLGlyphNode.cc   MathMLMarkNode.cc   MathMLMultiScriptsElement.cc   MathMLNode.cc   MathMLNormalizingContainerElement.cc   MathMLObject.cc   MathMLOperatorElement.cc   MathMLPaddedElement.cc   MathMLParseFile.cc   MathMLPhantomElement.cc   MathMLRadicalElement.cc   MathMLRowElement.cc   MathMLScriptCommonElement.cc   MathMLScriptElement.cc   MathMLSemanticsElement.cc   MathMLSpaceElement.cc   MathMLSpaceNode.cc   MathMLStringLitElement.cc   MathMLStringNode.cc   MathMLStyleElement.cc   MathMLTableCellElement.cc   MathMLTableElement.cc   MathMLTableRowElement.cc   MathMLTextElement.cc   MathMLTextNode.cc   MathMLTokenElement.cc   MathMLUnderOverElement.cc   MathMLmathElement.cc   OperatorDictionary.cc   Parser.cc   Rectangle.cc   RenderingEnvironment.cc   Shape.cc   ShapeFactory.cc   String.cc   StringFactory.cc   StringTokenizer.cc   StringUnicode.cc   UnitValue.cc   Value.cc   ValueConversion.cc   ValueSequence.cc   allocTextNode.cc   frameAux.cc   keyword.cc   operatorAux.cc   stringAux.cc   tableLayout.cc   tableSetup.cc   $(GUISOURCES)   $(GTKSOURCES)   $(T1SOURCES)   $(PSSOURCES)
 
 
-pkginclude_HEADERS =    defs.h   gtkmathview.h   minidom.h
+pkginclude_HEADERS =    defs.h   gtkmathview.h
 
 
 noinst_HEADERS =    AFont.hh   Array.hh   Array.icc   AttributeParser.hh   AttributeSignature.hh   BoundingBox.hh   Char.hh   CharMap.hh   CharMapper.hh   Clock.hh   Container.hh   Container.icc   Coords.hh   DocumentElement.hh   DrawingArea.hh   EntitiesTable.hh   FontifiedString.hh   FontAttributes.hh   FontManager.hh   FontMapper.hh   GraphicsContext.hh   Iterator.hh   Layout.hh   Logger.hh   MathML.hh   MathEngine.hh   MathMLActionElement.hh   MathMLAlignGroupElement.hh   MathMLAlignMarkElement.hh   MathMLAttribute.hh   MathMLAttributeList.hh   MathMLCharNode.hh   MathMLContainerElement.hh   MathMLDocument.hh   MathMLDummyElement.hh   MathMLElement.hh   MathMLEmbellishedOperatorElement.hh   MathMLEncloseElement.hh   MathMLErrorElement.hh   MathMLFencedElement.hh   MathMLFractionElement.hh   MathMLFrame.hh   MathMLGlyphNode.hh   MathMLMarkNode.hh   MathMLMultiScriptsElement.hh   MathMLNode.hh   MathMLNormalizingContainerElement.hh   MathMLObject.hh   MathMLOperatorElement.hh   MathMLPaddedElement.hh   MathMLParseFile.hh   MathMLPhantomElement.hh   MathMLRadicalElement.hh   MathMLRowElement.hh   MathMLScriptCommonElement.hh   MathMLScriptElement.hh   MathMLSemanticsElement.hh   MathMLSpaceElement.hh   MathMLSpaceNode.hh   MathMLStringLitElement.hh   MathMLStringNode.hh   MathMLStyleElement.hh   MathMLTableCellElement.hh   MathMLTableElement.hh   MathMLTableRowElement.hh   MathMLTextElement.hh   MathMLTextNode.hh   MathMLTokenElement.hh   MathMLUnderOverElement.hh   MathMLmathElement.hh   MultiString.hh   OperatorDictionary.hh   Parser.hh   RGBValue.hh   Rectangle.hh   RenderingEnvironment.hh   Shape.hh   ShapeFactory.hh   Stack.hh   String.hh   StringFactory.hh   StringTokenizer.hh   StringU.hh   StringU.icc   StringUnicode.hh   UnitValue.hh   Value.hh   ValueConversion.hh   ValueSequence.hh   allocTextNode.hh   frameAux.hh   keyword.hh   operatorAux.hh   stringAux.hh   scaled.hh   $(GTKHEADERS)   $(T1HEADERS)   $(PSHEADERS)
 
 
-INCLUDES = -I../auto/
+INCLUDES = -I$(srcdir)/../auto/
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -143,23 +143,17 @@ MathMLTokenElement.lo MathMLUnderOverElement.lo MathMLmathElement.lo \
 OperatorDictionary.lo Parser.lo Rectangle.lo RenderingEnvironment.lo \
 Shape.lo ShapeFactory.lo String.lo StringFactory.lo StringTokenizer.lo \
 StringUnicode.lo UnitValue.lo Value.lo ValueConversion.lo \
-ValueSequence.lo allocTextNode.lo frameAux.lo keyword.lo minidom.lo \
-operatorAux.lo stringAux.lo tableLayout.lo tableSetup.lo AFont.lo \
-CharMap.lo CharMapper.lo DrawingArea.lo FontAttributes.lo \
-FontManager.lo GraphicsContext.lo gtkmathview.lo Gtk_DrawingArea.lo \
-Gtk_Font.lo Gtk_FontManager.lo Gtk_GraphicsContext.lo T1_Font.lo \
-T1_FontManager.lo T1_Gtk_DrawingArea.lo PS_DrawingArea.lo \
-PS_T1_FontManager.lo
+ValueSequence.lo allocTextNode.lo frameAux.lo keyword.lo operatorAux.lo \
+stringAux.lo tableLayout.lo tableSetup.lo AFont.lo CharMap.lo \
+CharMapper.lo DrawingArea.lo FontAttributes.lo FontManager.lo \
+GraphicsContext.lo gtkmathview.lo Gtk_DrawingArea.lo Gtk_Font.lo \
+Gtk_FontManager.lo Gtk_GraphicsContext.lo T1_Font.lo T1_FontManager.lo \
+T1_Gtk_DrawingArea.lo PS_DrawingArea.lo PS_T1_FontManager.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-CFLAGS = @CFLAGS@
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(noinst_HEADERS) $(pkginclude_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -205,7 +199,7 @@ DEP_FILES =  .deps/AFont.P .deps/AttributeParser.P \
 .deps/StringUnicode.P .deps/T1_Font.P .deps/T1_FontManager.P \
 .deps/T1_Gtk_DrawingArea.P .deps/UnitValue.P .deps/Value.P \
 .deps/ValueConversion.P .deps/ValueSequence.P .deps/allocTextNode.P \
-.deps/frameAux.P .deps/gtkmathview.P .deps/keyword.P .deps/minidom.P \
+.deps/frameAux.P .deps/gtkmathview.P .deps/keyword.P \
 .deps/operatorAux.P .deps/stringAux.P .deps/tableLayout.P \
 .deps/tableSetup.P
 SOURCES = $(libgtkmathview_la_SOURCES)

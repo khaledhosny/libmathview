@@ -5,7 +5,6 @@ MathML Implementation
 * axis in rowalign
 * table layout is not precise sometimes (e.g. when there is a fit
   table inside a auto column)
-* spacing among different lines of a Layout
 * handling of multichars (e.g. followed by modifiers 0x2063)
 ? enabling toggle in maction, maction computes the biggest bounding box
 
@@ -28,10 +27,6 @@ Minor improvements
 * making the PostScript document conformant, what about fonts?
 * matching the nearest font (w.r.t. size, see LaTeX fonts)
 
-Architecture
-
-* having Horiz/Vert Layouts and then Layout as a combination of the two
-
 Configuration
 
 * configurable parameters
@@ -41,7 +36,6 @@ Configuration
 
 Bugs
 
-* problem with gtk references in gtkmathview.c. If you disable the delete_event
-  then the widget does not uninitialize properly...
 * Some chars (mustache) are compound only, they do not have a "simple" form
 * problem with color and PostScript generated files
+* in font-configuration.xml, the font map for monospace is not complete

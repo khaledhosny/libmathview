@@ -49,10 +49,6 @@ public:
   void   SetMinimumLineSpacing(scaled);
   scaled GetLineSpacing(void) const { return minLineSpacing; }
 
-  void   SetLineStrut(scaled, scaled);
-  void   SetMinimumLineStrut(scaled, scaled);
-  void   GetLineStrut(scaled&, scaled&) const;
-
   void   SetPosition(scaled, scaled, ColumnAlignId = COLUMN_ALIGN_LEFT);
   void   GetBoundingBox(class BoundingBox&, LayoutId = LAYOUT_AUTO) const;
 
@@ -60,8 +56,6 @@ private:
   struct Atom {
     class MathMLFrame* frame;
     scaled spacing; // spacing after the frame (or just spacing if frame == NULL)
-    scaled minAscent;
-    scaled minDescent;
     int    penalty; // penalty if breaking after this atom
 
     scaled GetWidth(LayoutId) const;
@@ -79,7 +73,7 @@ private:
     scaled minLineSpacing;
 
     scaled GetWidth(LayoutId) const;
-    void   GetBoundingBox(class BoundingBox&, LayoutId, scaled&, scaled&) const;
+    void   GetBoundingBox(class BoundingBox&, LayoutId) const;
     scaled GetMinimumSpacing(void) const;
     scaled RemoveDiscardableSpacesRight(void);
     scaled RemoveDiscardableSpacesLeft(void);

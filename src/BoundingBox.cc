@@ -30,7 +30,8 @@ void
 BoundingBox::Null()
 {
   null     = true;
-  width = ascent = descent = lBearing = rBearing = 0;
+  width = ascent = descent = 0;
+  lBearing = rBearing = tAscent = tDescent = 0;
 }
 
 void
@@ -38,8 +39,8 @@ BoundingBox::Set(scaled w, scaled a, scaled d, scaled l, scaled r)
 {
   null     = false;
   width    = w;
-  ascent   = a;
-  descent  = d;
+  ascent   = tAscent = a;
+  descent  = tDescent = d;
   lBearing = l;
   rBearing = r;
 }
@@ -51,11 +52,15 @@ BoundingBox::Append(const BoundingBox& box)
 
   if (null) {
     Set(box.width, box.ascent, box.descent, box.lBearing, box.rBearing);
+    tAscent = box.tAscent;
+    tDescent = box.tDescent;
   } else {
     ascent   = scaledMax(ascent, box.ascent);
     descent  = scaledMax(descent, box.descent);
     rBearing = width + box.rBearing;
     width += box.width;
+    tAscent  = scaledMax(tAscent, box.tAscent);
+    tDescent = scaledMax(tDescent, box.tDescent);
   }
 }
 
@@ -78,7 +83,8 @@ void
 BoundingBox::Dump() const
 {
   if (IsNull()) printf("[null box]");
-  else printf("[%d,+%d,-%d,l:%d,r:%d]",
-	      sp2ipx(width), sp2ipx(ascent), sp2ipx(descent), sp2ipx(lBearing), sp2ipx(rBearing));
+  else printf("[%d,+%d,-%d,l:%d,r:%d,a:%d,d:%d]",
+	      sp2ipx(width), sp2ipx(ascent), sp2ipx(descent),
+	      sp2ipx(lBearing), sp2ipx(rBearing), sp2ipx(tAscent), sp2ipx(tDescent));
 }
 
