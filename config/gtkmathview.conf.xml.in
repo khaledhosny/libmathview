@@ -32,5 +32,5 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <font-size     size="12pt"/>
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>
-  <select-color  foreground="black" background="#87cefa"/>
+  <select-color  foreground="black" background="#ff6a6a"/>
 </math-engine-configuration>
