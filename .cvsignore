@@ -13,4 +13,4 @@ Makefile
 Makefile.in
 *.gz
 aclocal.m4
-gtkmathview.spec.in
+gtkmathview.spec
