@@ -53,11 +53,11 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/formatter/areamodel \
-  -I$(top_srcdir)/src/formatter/gtk_areamodel \
   -I$(top_srcdir)/src/formatter/boxml_graphic_device \
-  -I$(top_srcdir)/src/formatter/gtk_boxml_graphic_device \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants
 
 
+# formatter/mathml_graphic_device is for BoxMLObject (context translation)
+# formatter/basictypes/mathvariants is needed by the MathFormattingContext.hh
 # engine/mathml is for Globals.hh
