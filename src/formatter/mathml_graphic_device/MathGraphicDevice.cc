@@ -471,6 +471,7 @@ MathGraphicDevice::enclose(const MathFormattingContext& context,
       c.push_back(res);
       if (notation == "verticalstrike") c.push_back(factory->center(vobj));
       else if (notation == "horizontalstrike") c.push_back(factory->middle(hobj));
+      else if (notation == "baselinestrike") c.push_back(hobj);
       if (c.size() > 1) res = factory->overlapArray(c);
 
       return res;
