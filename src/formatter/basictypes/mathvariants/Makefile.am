@@ -18,6 +18,8 @@ AUTO_CC = \
   sans-serif.cc \
   script.cc
 
+EXTRA_DIST = variant.top variant.bot extract.xsl
+
 BUILT_SOURCES = $(AUTO_CC)
 
 CLEANFILES = $(AUTO_CC)
