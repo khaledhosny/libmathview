@@ -247,13 +247,13 @@ protected:
   // table layout
   void         DoHorizontalLayout(const class FormattingContext&);
   void         DoHorizontalMinimumLayout(void);
-  void         DoVerticalLayout(FormattingContext::LayoutId);
+  // void         DoVerticalLayout(FormattingContext::LayoutId);
   void         ConfirmHorizontalFixedSpacing(void);
   void         ConfirmHorizontalScaleSpacing(const scaled&);
   void         ConfirmVerticalFixedSpacing(void);
   void         ConfirmVerticalScaleSpacing(const scaled&);
   void         AdjustTableWidth(const scaled&);
-  void         SpanRowHeight(FormattingContext::LayoutId);
+  // void         SpanRowHeight(FormattingContext::LayoutId);
   void         ColumnLayout(unsigned, const class FormattingContext&);
   void         ScaleColumnsLayout(const class FormattingContext&);
   void         SpannedCellsLayout(const class FormattingContext&);
@@ -338,7 +338,9 @@ private:
 
   RGBColor     color; // color for frame and lines (if present)
   scaled       lineThickness;
+#if 0
   const GraphicsContext* dGC[2]; // GC for dashed lines
+#endif
 
   scaled        environmentAxis; // for axis alignment
 

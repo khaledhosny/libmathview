@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "MathMLDummyElement.hh"
-#include "FormattingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 

@@ -47,7 +47,9 @@ MathMLTableElement::MathMLTableElement(const SmartPtr<class MathMLView>& view)
   rowLabel = 0;
   width    = 0;
 
+#if 0
   dGC[0] = dGC[1] = 0;
+#endif
 }
 
 MathMLTableElement::~MathMLTableElement()

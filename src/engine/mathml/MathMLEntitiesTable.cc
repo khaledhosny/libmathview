@@ -20,36 +20,22 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLFrame_hh
-#define MathMLFrame_hh
+#include <config.h>
+#include <stdlib.h>
 
-#include "Coords.hh"
-#include "BoundingBox.hh"
-#include "MathMLNode.hh"
+#if defined(HAVE_GMETADOM)
 
-class MathMLFrame : public MathMLNode
-{
-protected:
-  MathMLFrame(void);
-  virtual ~MathMLFrame();
+#include <gdome.h>
 
-public:
-#if 0
-  virtual void   SetPosition(const scaled&, const scaled&);
-  virtual void   Render(const DrawingArea&) = 0;
-
-  scaled         GetX(void) const { return position.x; }
-  scaled         GetY(void) const { return position.y; }
-  const BoundingBox& GetBoundingBox(void) const { return box; }
-  Rectangle      GetRectangle(void) const;
-  virtual scaled GetLeftEdge(void) const = 0;
-  virtual scaled GetRightEdge(void) const = 0;
-  virtual bool 	 IsInside(const scaled&, const scaled&) const = 0;
-
-protected:
-  Coords      position;
-  BoundingBox box;
-#endif
+static const GdomeEntitiesTableEntry mathmlEntities[] = {
+#include "../auto/entitiesTable.inc"
+  { NULL, NULL, NULL, NULL }
 };
 
-#endif // MathMLFrame_hh
+const GdomeEntitiesTableEntry*
+getMathMLEntities(void)
+{
+  return mathmlEntities;
+}
+
+#endif // HAVE_GMETADOM

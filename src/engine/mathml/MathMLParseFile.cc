@@ -26,7 +26,7 @@
 
 #if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
-#include "EntitiesTable.hh"
+#include "MathMLEntitiesTable.hh"
 #endif // HAVE_GMETADOM
 
 #include "Globals.hh"

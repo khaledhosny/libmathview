@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "ChildList.hh"
-#include "FormattingContext.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
@@ -33,7 +32,6 @@
 #include "MathMLUnderOverElement.hh"
 #include "MathMLView.hh"
 #include "ValueConversion.hh"
-#include "operatorAux.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathGraphicDevice.hh"

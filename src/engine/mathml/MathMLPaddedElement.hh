@@ -57,7 +57,9 @@ private:
     scaled unit;         // standard unit (valid if pseudo == false)
   };
 
+#if 0
   void ParseLengthDimension(RenderingEnvironment&, const SmartPtr<Value>&, LengthDimension&, TokenId);
+#endif
   scaled EvalLengthDimension(const scaled&, const LengthDimension&, const BoundingBox&) const;
 
   LengthDimension width;

@@ -29,7 +29,6 @@
 #include "ValueConversion.hh"
 #include "MathMLPaddedElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "FormattingContext.hh"
 #include "Variant.hh"
 #include "MathMLAttributeSignatures.hh"
 

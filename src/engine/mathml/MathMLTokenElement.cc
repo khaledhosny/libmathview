@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "BoundingBoxAux.hh"
-#include "FormattingContext.hh"
 #include "Globals.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
@@ -41,7 +40,6 @@
 #include "MathMLTextNode.hh"
 #include "MathMLTokenElement.hh"
 #include "ValueConversion.hh"
-#include "frameAux.hh"
 #include "mathVariantAux.hh"
 #include "traverseAux.hh"
 #include "MathMLAttributeSignatures.hh"

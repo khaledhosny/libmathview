@@ -28,7 +28,6 @@
 #include "MathMLAttributeSignatures.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "FormattingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"

@@ -26,7 +26,6 @@
 
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
-#include "FormattingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"

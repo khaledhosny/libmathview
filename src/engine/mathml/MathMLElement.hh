@@ -27,8 +27,6 @@
 
 #include "Area.hh"
 #include "BoundingBox.hh"
-#include "DrawingArea.hh"
-#include "FormattingContext.hh"
 #include "MathMLFrame.hh"
 #include "SmartPtr.hh"
 #include "token.hh"
@@ -112,9 +110,11 @@ public:
   }
 #endif
 
+#if 0
   bool dirtyLayout(const class FormattingContext&) const { return dirtyLayout(); }
   void resetDirtyLayout(const FormattingContext& ctxt)
   { if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO) resetDirtyLayout(); }
+#endif
 
   AreaRef getArea(void) const { return area; }
 

@@ -2,6 +2,14 @@
 lib_LTLIBRARIES = libmathml.la
 
 libmathml_la_SOURCES = \
+  Configuration.cc \
+  Globals.cc \
+  MathMLDOMLinker.cc \
+  traverseAux.cc \
+  ValueConversion.cc \
+  mathVariantAux.cc \
+  MathMLOperatorDictionary.cc \
+  MathMLEntitiesTable.cc \
   MathMLAttributeSignatures.cc \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \
@@ -55,6 +63,14 @@ libmathml_la_SOURCES = \
   tableLayout.cc
 
 noinst_HEADERS = \
+  Configuration.hh \
+  Globals.hh \
+  MathMLDOMLinker.hh \
+  traverseAux.hh \
+  ValueConversion.hh \
+  mathVariantAux.hh \
+  MathMLOperatorDictionary.hh \
+  MathMLEntitiesTable.hh \
   MathMLAttributeParsers.hh \
   MathMLAttributeSignatures.hh \
   MathMLActionElement.hh \
@@ -112,11 +128,11 @@ INCLUDES = \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src \
-  -I$(top_srcdir)/src/formatter/basictypes \
+  -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants/ \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/formatter/gtk_areamodel \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/gtk_mathml_graphic_device \
-  -I$(top_srcdir)/src/engine
+  -I$(top_srcdir)/src/engine/common
 

@@ -20,36 +20,14 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLFrame_hh
-#define MathMLFrame_hh
+#ifndef frameAux_hh
+#define frameAux_hh
 
-#include "Coords.hh"
-#include "BoundingBox.hh"
-#include "MathMLNode.hh"
+#include "MathMLFrame.hh"
 
-class MathMLFrame : public MathMLNode
-{
-protected:
-  MathMLFrame(void);
-  virtual ~MathMLFrame();
+const BoundingBox& getFrameBoundingBox(const SmartPtr<MathMLFrame>&,
+				       FormattingContext::LayoutId = FormattingContext::LAYOUT_AUTO);
+SmartPtr<MathMLFrame>   getLeftSibling(const SmartPtr<MathMLFrame>&);
+SmartPtr<MathMLFrame>   getRightSibling(const SmartPtr<MathMLFrame>&);
 
-public:
-#if 0
-  virtual void   SetPosition(const scaled&, const scaled&);
-  virtual void   Render(const DrawingArea&) = 0;
-
-  scaled         GetX(void) const { return position.x; }
-  scaled         GetY(void) const { return position.y; }
-  const BoundingBox& GetBoundingBox(void) const { return box; }
-  Rectangle      GetRectangle(void) const;
-  virtual scaled GetLeftEdge(void) const = 0;
-  virtual scaled GetRightEdge(void) const = 0;
-  virtual bool 	 IsInside(const scaled&, const scaled&) const = 0;
-
-protected:
-  Coords      position;
-  BoundingBox box;
-#endif
-};
-
-#endif // MathMLFrame_hh
+#endif // frameAux_hh

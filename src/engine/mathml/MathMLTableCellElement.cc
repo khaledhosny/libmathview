@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "FormattingContext.hh"
 #include "Globals.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignMarkElement.hh"
@@ -33,8 +32,6 @@
 #include "MathMLTableElement.hh"
 #include "MathMLTokenElement.hh"
 #include "ValueConversion.hh"
-#include "frameAux.hh"
-#include "operatorAux.hh"
 #include "MathMLAttributeSignatures.hh"
 
 MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLView>& view)
@@ -454,8 +451,11 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 bool
 MathMLTableCellElement::IsStretchyOperator() const
 {
+#if 0
   if (GetChild()) return isStretchyOperator(GetChild());
   else return false;
+#endif
+  return false;
 }
 
 void

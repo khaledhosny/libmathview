@@ -24,60 +24,56 @@
 
 #include <cassert>
 
-#include "MathMLAttributeSignatures.hh"
-#include "MathMLAlignMarkElement.hh"
-#include "ValueConversion.hh"
+#include "MathMLDOMLinker.hh"
+#include "MathMLElement.hh"
 
-MathMLAlignMarkElement::MathMLAlignMarkElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
-{
-  edge = T__NOTVALID;
-}
- 
-MathMLAlignMarkElement::~MathMLAlignMarkElement()
+MathMLDOMLinker::MathMLDOMLinker()
 {
 }
 
-void
-MathMLAlignMarkElement::refine(AbstractRefinementContext& context)
+MathMLDOMLinker::~MathMLDOMLinker()
 {
-  if (dirtyAttribute())
-    {
-      REFINE_ATTRIBUTE(context, MathML, AlignMark, edge);
-      MathMLElement::refine(context);
-    }
+}
+
+SmartPtr<MathMLElement>
+MathMLDOMLinker::get(const DOM::Element& elem) const
+{
+  assert(elem);
+
+  DOMNodeMap::iterator p = nodeMap.find(elem);
+  if (p != nodeMap.end()) return static_cast<MathMLElement*>((*p).second);
+  else return 0;
 }
 
 #if 0
-void
-MathMLAlignMarkElement::Setup(RenderingEnvironment&)
+SmartPtr<MathMLElement>
+MathMLDOMLinker::findFormattingNode(const DOM::Node& node) const
 {
-  if (dirtyAttribute())
-    {
-      edge = ToTokenId(GET_ATTRIBUTE_VALUE(AlignMark, edge));
-      assert(edge != T__NOTVALID);
-      box.unset();
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLAlignMarkElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt)) resetDirtyLayout(ctxt);
+  for (DOM::Node p = node; p; p = p.get_parentNode())
+    if (SmartPtr<MathMLElement> fNode = getFormattingNode(p))
+      return fNode;
+  
+  return 0;
 }
 #endif
+
+void
+MathMLDOMLinker::add(const DOM::Element& elem, const SmartPtr<MathMLElement>& fElem)
+{
+  assert(elem);
+  nodeMap[elem] = static_cast<MathMLElement*>(fElem);
+}
 
 bool
-MathMLAlignMarkElement::IsSpaceLike() const
+MathMLDOMLinker::remove(const DOM::Element& elem)
 {
-  return true;
+  assert(elem);
+  DOMNodeMap::iterator p = nodeMap.find(elem);
+  if (p != nodeMap.end())
+    {
+      nodeMap.erase(p);
+      return true;
+    }
+  else
+    return false;
 }
-
-#if 0
-void
-MathMLAlignMarkElement::SetDirty(const Rectangle*)
-{
-  // do nothing, this element is space-like and always 0-width, useless for it to be dirty
-}
-#endif

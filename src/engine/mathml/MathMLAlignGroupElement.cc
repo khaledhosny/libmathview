@@ -28,7 +28,6 @@
 #include "MathMLTokenElement.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLAlignGroupElement.hh"
-#include "FormattingContext.hh"
 
 MathMLAlignGroupElement::MathMLAlignGroupElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)

@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "ChildList.hh"
-#include "FormattingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "Globals.hh"

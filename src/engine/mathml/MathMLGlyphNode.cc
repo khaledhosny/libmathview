@@ -38,6 +38,7 @@ MathMLGlyphNode::~MathMLGlyphNode()
 {
 }
 
+#if 0
 void
 MathMLGlyphNode::Setup(RenderingEnvironment& env)
 {
@@ -55,6 +56,7 @@ MathMLGlyphNode::DoLayout(const FormattingContext&)
   else box.unset();
 #endif
 }
+#endif
 
 AreaRef
 MathMLGlyphNode::format(MathFormattingContext&)
@@ -63,6 +65,7 @@ MathMLGlyphNode::format(MathFormattingContext&)
   return 0;
 }
 
+#if 0
 void
 MathMLGlyphNode::Render(const DrawingArea& area)
 {
@@ -80,6 +83,7 @@ MathMLGlyphNode::Render(const DrawingArea& area)
     }
 #endif
 }
+#endif
 
 unsigned
 MathMLGlyphNode::GetLogicalContentLength() const

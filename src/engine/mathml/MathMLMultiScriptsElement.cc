@@ -29,7 +29,6 @@
 
 #include "Adaptors.hh"
 #include "ChildList.hh"
-#include "FormattingContext.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"

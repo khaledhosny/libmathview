@@ -30,12 +30,10 @@
 
 #include "Adaptors.hh"
 #include "ChildList.hh"
-#include "operatorAux.hh"
 #include "traverseAux.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLSpaceElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "FormattingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 

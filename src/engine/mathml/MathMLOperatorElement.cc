@@ -24,12 +24,10 @@
 
 #include <cassert>
 
-#include "FormattingContext.hh"
 #include "Globals.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
 #include "ValueConversion.hh"
-#include "operatorAux.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathFormattingContext.hh"

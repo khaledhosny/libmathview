@@ -25,8 +25,6 @@
 #include <cassert>
 
 #include "AbstractRefinementContext.hh"
-#include "DrawingArea.hh"
-#include "FormattingContext.hh"
 #include "Globals.hh"
 #include "AttributeList.hh"
 #include "MathMLDOMLinker.hh"

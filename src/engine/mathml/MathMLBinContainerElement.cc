@@ -27,7 +27,6 @@
 #include "Globals.hh"
 #include "ChildList.hh"
 #include "MathMLBinContainerElement.hh"
-#include "FormattingContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 

@@ -24,13 +24,12 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "RGBColor.hh"
 #include "scaledConv.hh"
-#include "operatorAux.hh"
 #include "traverseAux.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLTableCellElement.hh"
-#include "FormattingContext.hh"
 
 #include "BoundingBoxAux.hh"
 

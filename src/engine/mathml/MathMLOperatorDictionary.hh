@@ -20,36 +20,39 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLFrame_hh
-#define MathMLFrame_hh
+#ifndef __MathMLOperatorDictionary_hh__
+#define __MathMLOperatorDictionary_hh__
 
-#include "Coords.hh"
-#include "BoundingBox.hh"
-#include "MathMLNode.hh"
+#include <vector>
 
-class MathMLFrame : public MathMLNode
+#include "SmartPtr.hh"
+#include "String.hh"
+#include "HashMap.hh"
+
+class MathMLOperatorDictionary
 {
-protected:
-  MathMLFrame(void);
-  virtual ~MathMLFrame();
-
 public:
-#if 0
-  virtual void   SetPosition(const scaled&, const scaled&);
-  virtual void   Render(const DrawingArea&) = 0;
+  MathMLOperatorDictionary(void);
+  ~MathMLOperatorDictionary();
 
-  scaled         GetX(void) const { return position.x; }
-  scaled         GetY(void) const { return position.y; }
-  const BoundingBox& GetBoundingBox(void) const { return box; }
-  Rectangle      GetRectangle(void) const;
-  virtual scaled GetLeftEdge(void) const = 0;
-  virtual scaled GetRightEdge(void) const = 0;
-  virtual bool 	 IsInside(const scaled&, const scaled&) const = 0;
+  bool Load(const char*);
+  void Unload(void);
+  void Search(const String&,
+	      SmartPtr<class AttributeList>&,
+	      SmartPtr<class AttributeList>&,
+	      SmartPtr<class AttributeList>&) const;
 
-protected:
-  Coords      position;
-  BoundingBox box;
-#endif
+private:
+  struct FormDefaults
+  {
+    SmartPtr<class AttributeList> prefix;
+    SmartPtr<class AttributeList> infix;
+    SmartPtr<class AttributeList> postfix;
+  };
+
+  typedef HASH_MAP_NS::hash_map<String,FormDefaults,StringHash,StringEq> Dictionary;
+  Dictionary items;
 };
 
-#endif // MathMLFrame_hh
+#endif // __MathMLOperatorDictionary_hh__
+

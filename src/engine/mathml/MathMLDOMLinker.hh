@@ -20,36 +20,41 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLGlyphNode_hh
-#define MathMLGlyphNode_hh
+#ifndef __MathMLDOMLinker_hh__
+#define __MathMLDOMLinker_hh__
 
-#include "MathMLTextNode.hh"
+#include "DOM.hh"
+#include "Object.hh"
+#include "HashMap.hh"
+#include "SmartPtr.hh"
+#include "WeakPtr.hh"
 
-class MathMLGlyphNode : public MathMLTextNode
+class MathMLDOMLinker : public Object
 {
 protected:
-  MathMLGlyphNode(const String&, const String&, const String&);
-  virtual ~MathMLGlyphNode();
+  MathMLDOMLinker(void);
+  virtual ~MathMLDOMLinker();
 
 public:
-  static SmartPtr<MathMLGlyphNode> create(const String& family, const String& index, const String& alt)
-  { return new MathMLGlyphNode(family, index, alt); }
+  static SmartPtr<MathMLDOMLinker> create(void)
+  { return new MathMLDOMLinker(); }
 
-#if 0
-  virtual void 	   Setup(class RenderingEnvironment&);
-  virtual void 	   DoLayout(const class FormattingContext&);
-#endif
-  virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void 	   Render(const DrawingArea&);
-#endif
-
-  virtual unsigned GetLogicalContentLength(void) const;
-
+  SmartPtr<class MathMLElement> get(const DOM::Element&) const;
+  void add(const DOM::Element&, const SmartPtr<class MathMLElement>&);
+  bool remove(const DOM::Element&);
+  
 protected:
-  String family;
-  String index;
-  String alt;
+  struct DOM_hash : public std::unary_function<DOM::Node,size_t>
+  {
+    size_t operator()(const DOM::Node& node) const
+    {
+      assert(node);
+      return reinterpret_cast<size_t>(static_cast<GdomeNode*>(node));
+    }
+  };
+
+  typedef HASH_MAP_NS::hash_map<DOM::Node,WeakPtr<class MathMLElement>,DOM_hash> DOMNodeMap;
+  mutable DOMNodeMap nodeMap;
 };
 
-#endif // MathMLGlyphNode_hh
+#endif // __MathMLDOMLinker_hh__

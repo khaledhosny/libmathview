@@ -25,8 +25,7 @@
 #include <cassert>
 
 #include "ChildList.hh"
-#include "EntitiesTable.hh"
-#include "FormattingContext.hh"
+#include "MathMLEntitiesTable.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
@@ -34,7 +33,6 @@
 #include "MathMLRadicalElement.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLView.hh"
-#include "unidefs.h"
 
 MathMLRadicalElement::MathMLRadicalElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)

@@ -26,7 +26,6 @@
 
 #include "MathMLStringNode.hh"
 #include "MathMLTokenElement.hh"
-#include "Gtk_DrawingArea.hh"
 #include "ShaperManager.hh"
 #include "Gtk_RenderingContext.hh"
 #include "MathFormattingContext.hh"
