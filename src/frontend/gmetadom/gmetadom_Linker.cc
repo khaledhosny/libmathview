@@ -25,50 +25,83 @@
 #include <cassert>
 
 #include "gmetadom.hh"
-#include "Linker.hh"
+#include "gmetadom_Linker.hh"
 #include "Element.hh"
 #include "ElementFactory.hh"
 
-Linker::Linker()
+gmetadom_Linker::gmetadom_Linker()
 { }
 
-Linker::~Linker()
+gmetadom_Linker::~gmetadom_Linker()
 { }
 
-SmartPtr<Element>
-Linker::get(const DOM::Element& elem) const
+void
+gmetadom_Linker::add(const DOM::Node& node, Element* elem)
+{
+  assert(node);
+  assert(elem);
+
+  //elem->ref(); // this should not be necessary
+
+  forwardMap[node] = elem;
+  backwardMap[elem] = node;
+}
+
+bool
+gmetadom_Linker::remove(const DOM::Node& node)
+{
+  assert(node);
+  ForwardMap::iterator p = forwardMap.find(node);
+  if (p != forwardMap.end())
+    {
+      backwardMap.erase((*p).second);
+      forwardMap.erase(p);
+      return true;
+    }
+  else
+    return false;
+}
+
+bool
+gmetadom_Linker::remove(Element* elem)
 {
   assert(elem);
-  DOMNodeMap::const_iterator p = nodeMap.find(elem);
-  if (p != nodeMap.end())
-    return static_cast<Element*>((*p).second);
+  BackwardMap::iterator p = backwardMap.find(elem);
+  if (p != backwardMap.end())
+    {
+      forwardMap.erase((*p).second);
+      backwardMap.erase(p);
+      return true;
+    }
+  else
+    return false;
+}
+
+Element*
+gmetadom_Linker::assoc(const DOM::Node& node) const
+{
+  assert(node);
+  ForwardMap::const_iterator p = forwardMap.find(node);
+  if (p != forwardMap.end())
+    return (*p).second;
   else
     return 0;
 }
 
-SmartPtr<Element>
-Linker::get(const DOM::Element& elem, const SmartPtr<ElementFactory>& factory)
+DOM::Node
+gmetadom_Linker::assoc(Element* elem) const
 {
   assert(elem);
-
-  if (SmartPtr<Element> res = get(elem))
-    return res;
-  else if (factory)
-    {
-      SmartPtr<Element> res = factory->createElement(DOMX::nodeLocalName(elem));
-      assert(res);
-      res->setLinker(this);
-      res->setDOMElement(elem);
-      add(elem, res);
-      return res;
-    }
+  BackwardMap::const_iterator p = backwardMap.find(elem);
+  if (p != backwardMap.end())
+    return (*p).second;
   else
-    return 0;
+    return DOM::Node();
 }
 
 #if 0
 SmartPtr<MathMLElement>
-Linker::findFormattingNode(const DOM::Node& node) const
+gmetadom_Linker::findFormattingNode(const DOM::Node& node) const
 {
   for (DOM::Node p = node; p; p = p.get_parentNode())
     if (SmartPtr<MathMLElement> fNode = getFormattingNode(p))
@@ -77,24 +110,3 @@ Linker::findFormattingNode(const DOM::Node& node) const
   return 0;
 }
 #endif
-
-void
-Linker::add(const DOM::Element& elem, const SmartPtr<Element>& fElem)
-{
-  assert(elem);
-  nodeMap[elem] = static_cast<Element*>(fElem);
-}
-
-bool
-Linker::remove(const DOM::Element& elem)
-{
-  assert(elem);
-  DOMNodeMap::iterator p = nodeMap.find(elem);
-  if (p != nodeMap.end())
-    {
-      nodeMap.erase(p);
-      return true;
-    }
-  else
-    return false;
-}

@@ -184,24 +184,17 @@ loadConfiguration(Configuration& conf, const char* confPath)
 
   try
     {
-      DOM::Document doc = parseXMLFile(confPath);
-
-      DOM::Element root = doc.get_documentElement();
-      if (!root)
+      if (DOM::Element root = DOMX::ChildElementsIterator(parseXMLFile(confPath), 
+							  "*", "math-engine-configuration").element())
 	{
-	  Globals::logger(LOG_WARNING, "configuration file `%s' has no root node", confPath);
-	  return false;
+	  parseConfiguration(conf, root);
+	  return true;
 	}
-
-      if (root.get_nodeName() != "math-engine-configuration")
+      else
 	{
 	  Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", confPath);
 	  return false;
 	}
-
-      parseConfiguration(conf, root);
-
-      return true;
     }
   catch (DOM::DOMException)
     {
@@ -228,47 +221,42 @@ loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const char* fileNam
     {
       DOM::Document doc = parseXMLFile(fileName, true);
 
-      DOM::Element root = doc.get_documentElement();
-      if (!root)
+      if (DOM::Element root = DOMX::ChildElementsIterator(parseXMLFile(fileName, true), "*", "dictionary").element())
 	{
-	  Globals::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
-	  return false;
-	}
+	  DOMX::ChildElementsIterator iter(root, "*", "operator");
+	  while (DOM::Element elem = iter.element())
+	    {
+	      String opName = DOMX::fromDOMString(elem.getAttribute("name"));
 
-      if (root.get_nodeName() != "dictionary")
+	      if (!opName.empty())
+		{
+		  SmartPtr<AttributeList> defaults = AttributeList::create();
+
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
+		  getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
+
+		  dictionary.add(opName, elem.getAttribute("form"), defaults);
+		} 
+	      else
+		Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
+	    }
+	  return true;
+	}
+      else
 	{
 	  Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
 	  return false;
 	}
-
-      DOMX::ChildElementsIterator iter(root, "*", "operator");
-      while (DOM::Element elem = iter.element())
-	{
-	  String opName = DOMX::fromDOMString(elem.getAttribute("name"));
-
-	  if (!opName.empty())
-	    {
-	      SmartPtr<AttributeList> defaults = AttributeList::create();
-
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
-	      getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
-
-	      dictionary.add(opName, elem.getAttribute("form"), defaults);
-	    } 
-	  else
-	    Globals::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
-	}
-      return true;
     } 
   catch (DOM::DOMException)
     {

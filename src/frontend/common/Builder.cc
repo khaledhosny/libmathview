@@ -39,3 +39,11 @@ Builder::setNamespaceContexts(const SmartPtr<MathMLNamespaceContext>& mmlContext
   mathmlContext = mmlContext;
   boxmlContext = bmlContext;
 }
+
+SmartPtr<MathMLNamespaceContext>
+Builder::getMathMLNamespaceContext() const
+{ return mathmlContext; }
+
+SmartPtr<BoxMLNamespaceContext>
+Builder::getBoxMLNamespaceContext() const
+{ return boxmlContext; }

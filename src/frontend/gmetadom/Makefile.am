@@ -7,16 +7,19 @@ libfrontend_gmetadom_la_SOURCES = \
   MathMLEntitiesTable.cc \
   gmetadomIterators.cc \
   gmetadom_Setup.cc \
-  gmetadom_Builder.cc
+  gmetadom_Builder.cc \
+  gmetadom_Linker.cc
 
 noinst_HEADERS = \
+  TemplateBuilder.hh \
   gmetadom.hh \
   AbstractRefinementContext.hh \
   RefinementContext.hh \
   MathMLEntitiesTable.hh \
   gmetadomIterators.hh \
   gmetadom_Setup.hh \
-  gmetadom_Builder.hh
+  gmetadom_Builder.hh \
+  gmetadom_Linker.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \
@@ -28,3 +31,4 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/adapters \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/formatter/areamodel 
+

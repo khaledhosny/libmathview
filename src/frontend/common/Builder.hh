@@ -38,6 +38,9 @@ public:
   void setNamespaceContexts(const SmartPtr<class MathMLNamespaceContext>&,
 			    const SmartPtr<class BoxMLNamespaceContext>&);
 
+  SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
+  SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
+
 protected:
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;
