@@ -97,7 +97,7 @@ main(int argc, char *argv[])
 {
   bool debugMode = false;
 
-  sprintf(appName, "mathmlviewer v%s", "x.y.z");
+  sprintf(appName, "mathmlviewer v%s", VERSION);
 
   while (TRUE) {
     int option_index = 0;

@@ -214,7 +214,7 @@ GUI_unload_document()
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  gtk_math_view_load_root(math_view, 0);
+  gtk_math_view_unload(math_view);
 
   if (doc_name != NULL) g_free(doc_name);
   doc_name = NULL;
