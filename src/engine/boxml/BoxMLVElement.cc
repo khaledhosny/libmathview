@@ -99,8 +99,7 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
 		break;
 	      }
 
-	    BoundingBox areaBox = area->box();
-	    if (areaBox.defined())
+	    if (BoundingBox areaBox = area->box())
 	      {
 		if (prevArea)
 		  {

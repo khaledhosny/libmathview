@@ -168,11 +168,13 @@ BoxedLayoutArea::dump(const DOM::Document& doc) const
   return el;
 }
 
-scaled
-BoxedLayoutArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty) const
+std::pair<scaled,scaled>
+BoxedLayoutArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
+			const scaled& x, const scaled& y) const
 {
+  assert(false); // IS THIS MEANT TO BE IMPLEMENTED SERIOUSLY?
   if (id == empty)
-    return 0;
+    return std::make_pair(x, y);
   else
     throw InvalidId();
 }

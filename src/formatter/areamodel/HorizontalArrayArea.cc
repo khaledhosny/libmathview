@@ -110,22 +110,6 @@ HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, con
 }
 
 scaled
-HorizontalArrayArea::leftEdge() const
-{
-  scaled edge = scaled::max();
-  scaled d = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    {
-      scaled pedge = (*p)->leftEdge();
-      if (pedge < scaled::max()) edge = std::min(edge, d + pedge);
-      d += (*p)->box().width;
-    }
-  return edge;
-}
-
-scaled
 HorizontalArrayArea::rightEdge() const
 {
   scaled edge = scaled::min();
@@ -136,26 +120,27 @@ HorizontalArrayArea::rightEdge() const
     {
       scaled pedge = (*p)->rightEdge();
       if (pedge > scaled::min()) edge = std::max(edge, d + pedge);
-      d += (*p)->box().width;
+      d += (*p)->box().horizontalExtent();
     }
   return edge;
 }
 
-scaled
-HorizontalArrayArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty) const
+std::pair<scaled,scaled>
+HorizontalArrayArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
+			    const scaled& x0, const scaled& y) const
 {
   if (id == empty)
-    return 0;
+    return std::make_pair(x0, y);
   else if (*id >= content.size())
     throw InvalidId();
   else
     {
-      scaled d = 0;
+      scaled x = x0;
       for (std::vector<AreaRef>::const_iterator p = content.begin();
 	   p != content.begin() + *id;
 	   p++)
-	d += (*p)->box().width;
-      return d + content[*id]->origin(id + 1, empty);
+	x += (*p)->box().horizontalExtent();
+      return content[*id]->origin(id + 1, empty, x, y);
     }
 }
 
@@ -173,9 +158,9 @@ HorizontalArrayArea::leftSide(AreaId::const_iterator id, AreaId::const_iterator 
       while (redge == scaled::min() && l > 0)
 	redge = content[l--]->rightEdge();
       if (redge != scaled::min())
-	return origin(id, empty) + redge;
+	return origin(id, empty, redge, scaled::zero()).first;
       else
-	return 0;
+	return scaled::zero();
     }	
   else
     return content[*id]->leftSide(id + 1, empty);
@@ -195,7 +180,7 @@ HorizontalArrayArea::rightSide(AreaId::const_iterator id, AreaId::const_iterator
       while (ledge == scaled::max() && r + 1 < content.size())
 	ledge = content[r++]->leftEdge();
       if (ledge != scaled::max())
-	return origin(id, empty) + ledge;
+	return origin(id, empty, ledge, scaled::zero()).first;
       else
 	return box().width;
     }	

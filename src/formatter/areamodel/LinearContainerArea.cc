@@ -34,14 +34,14 @@ LinearContainerArea::render(class RenderingContext& context, const scaled& x, co
 }
 
 bool
-LinearContainerArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
+LinearContainerArea::find(SearchingContext& context, const scaled& x, const scaled& y) const
 {
   for (std::vector<AreaRef>::const_iterator p = content.begin();
        p != content.end();
        p++)
     if ((*p)->find(context, x, y))
       return true;
-
+  
   return false;
 }
 
@@ -105,13 +105,13 @@ LinearContainerArea::replace(const ReplacementContext& context) const
     }
 }
 
-scaled
-LinearContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty) const
+std::pair<scaled,scaled>
+LinearContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
 {
   if (id == empty)
-    return 0;
+    return std::make_pair(x, y);
   else if (*id < content.size())
-    return content[*id]->origin(id + 1, empty);
+    return content[*id]->origin(id + 1, empty, x, y);
   else
     throw InvalidId();
 }

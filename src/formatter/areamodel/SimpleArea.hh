@@ -40,7 +40,9 @@ public:
   virtual AreaRef   node(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual bool      find(class SearchingContext&, const scaled&, const scaled&) const;
-  virtual scaled    origin(AreaId::const_iterator, AreaId::const_iterator) const;
+  virtual std::pair<scaled,scaled> origin(AreaId::const_iterator,
+					  AreaId::const_iterator,
+					  const scaled&, const scaled&) const;
   virtual scaled    leftSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual scaled    rightSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual void      strength(int&, int&, int&) const;

@@ -46,7 +46,8 @@ public:
   virtual scaled       leftEdge(void) const = 0;
   virtual scaled       rightEdge(void) const = 0;
           AreaRef      node(const AreaId& id) const { return node(id.path.begin(), id.path.end()); }
-          scaled       origin(const AreaId& id) const { return origin(id.path.begin(), id.path.end()); }
+  std::pair<scaled,scaled> origin(const AreaId& id) const
+  { return origin(id.path.begin(), id.path.end(), scaled::zero(), scaled::zero()); }
           scaled       leftSide(const AreaId& id) const { return leftSide(id.path.begin(), id.path.end()); }
           scaled       rightSide(const AreaId& id) const { return rightSide(id.path.begin(), id.path.end()); }
 
@@ -58,10 +59,12 @@ public:
   virtual SmartPtr<Area> clone(void) const = 0;
   virtual AreaRef      flatten(void) const { return this; }
   virtual bool         idOf(const AreaRef&, AreaIdFactory&) const = 0;
-  virtual AreaRef      node(const AreaId::const_iterator, const class AreaId::const_iterator) const = 0;  
-  virtual scaled       origin(const AreaId::const_iterator, const class AreaId::const_iterator) const = 0;
-  virtual scaled       leftSide(const AreaId::const_iterator, const class AreaId::const_iterator) const = 0;
-  virtual scaled       rightSide(const AreaId::const_iterator, const class AreaId::const_iterator) const = 0;
+  virtual AreaRef      node(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;  
+  virtual std::pair<scaled,scaled> origin(const AreaId::const_iterator,
+					  const AreaId::const_iterator,
+					  const scaled&, const scaled&) const = 0;
+  virtual scaled       leftSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
+  virtual scaled       rightSide(const AreaId::const_iterator, const AreaId::const_iterator) const = 0;
   virtual void         strength(int&, int&, int&) const = 0;
   virtual DOM::Element dump(const DOM::Document&) const = 0;
 

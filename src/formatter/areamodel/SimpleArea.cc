@@ -55,11 +55,11 @@ SimpleArea::replace(const ReplacementContext& context) const
     return this;
 }
 
-scaled
-SimpleArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty) const
+std::pair<scaled,scaled>
+SimpleArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
 {
   if (id == empty)
-    return 0;
+    return std::make_pair(x, y);
   else
     throw InvalidId();
 }

@@ -56,13 +56,14 @@ BinContainerArea::rightEdge() const
   return child->rightEdge();
 }
 
-scaled
-BinContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty) const
+std::pair<scaled,scaled>
+BinContainerArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty,
+			 const scaled& x, const scaled& y) const
 {
   if (id == empty)
-    return 0;
+    return std::make_pair(x, y);
   else if (*id == 0)
-    return child->origin(id + 1, empty);
+    return child->origin(id + 1, empty, x, y);
   else
     throw InvalidId();
 }

@@ -34,7 +34,7 @@ ShiftArea::render(class RenderingContext& context, const scaled& x, const scaled
 bool
 ShiftArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
 {
-  return getChild()->find(context, x, y + shift);
+  return BinContainerArea::find(context, x, y + shift);
 }
 
 BoundingBox
@@ -45,6 +45,12 @@ ShiftArea::box() const
     childBox.defined()
     ? BoundingBox(childBox.width, childBox.height + shift, childBox.depth - shift)
     : childBox;
+}
+
+std::pair<scaled,scaled>
+ShiftArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, const scaled& x, const scaled& y) const
+{
+  return BinContainerArea::origin(id, empty, x, y + shift);
 }
 
 DOM::Element

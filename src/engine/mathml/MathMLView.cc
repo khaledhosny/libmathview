@@ -163,17 +163,20 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
   return 0;
 }
 
+#if 0
 bool
 MathMLView::getElementExtents(const DOM::Element& el, scaled& x, scaled& y, BoundingBox& box) const
 {
   assert(el);
   if (SmartPtr<MathMLElement> elem = findMathMLElement(this, el))
-    {
-      assert(false);
-    }
-  else
-    return false;
+    if (AreaRef elemArea = elem->getArea())
+      {
+	AreaId elemAreaId = 
+      }
+
+  return false;
 }
+#endif
 
 AreaRef
 MathMLView::getRootArea() const

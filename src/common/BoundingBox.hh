@@ -42,6 +42,8 @@ struct BoundingBox
   void under(const BoundingBox&);
   void over(const BoundingBox&);
 
+  operator bool(void) const { return defined(); }
+
   scaled width;
   scaled height;
   scaled depth;
