@@ -31,8 +31,6 @@ Gtk_InkArea::clone() const
   return new Gtk_InkArea(getChild());
 }
 
-#include "scaledAux.hh"
-
 void
 Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {

@@ -55,7 +55,7 @@
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250
-#define MARGIN            1
+#define MARGIN            5
 
 enum SelectState 
   {
@@ -185,7 +185,7 @@ paint_widget(GtkMathView* math_view)
   gint height = widget->allocation.height;
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
-  Rectangle rect(px2sp(math_view->top_x), px2sp(math_view->top_y), px2sp(width), px2sp(height));
+  Rectangle rect(px2sp(math_view->top_x - MARGIN), px2sp(math_view->top_y - MARGIN), px2sp(width), px2sp(height));
   math_view->renderingContext->setRegion(rect);
 
   math_view->view->render(*math_view->renderingContext);
@@ -530,8 +530,8 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
   BoundingBox box = math_view->view->getBoundingBox();
 
   // the 10 is for the border, the frame thickness is missing. How can I get it?
-  requisition->width = sp2ipx(box.horizontalExtent()) + 10;
-  requisition->height = sp2ipx(box.verticalExtent()) + 10;
+  requisition->width = sp2ipx(box.horizontalExtent()) + 2 * MARGIN;
+  requisition->height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
 }
 
 static gint
@@ -568,7 +568,6 @@ gtk_math_view_button_release_event(GtkWidget* widget,
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view, FALSE);
-  // g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
   if (event->button == 1)
     {
