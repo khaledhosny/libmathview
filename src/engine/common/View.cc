@@ -286,7 +286,7 @@ View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
       Clock perf;
       perf.Start();
 
-      // FIXME: think of the rational of why the coordinates must be
+      // FIXME: think of the rationale of why the coordinates must be
       // inverted.
       rootArea->render(ctxt, -x, -y);
 

@@ -56,8 +56,6 @@ public:
   void getForegroundColor(GdkColor& c) { getColor<GdkColor, FOREGROUND_INDEX>(c); }
   void getBackgroundColor(GdkColor& c) { getColor<GdkColor, BACKGROUND_INDEX>(c); }
 
-  void setWidget(const GObjectPtr<GtkWidget>&);
-  GObjectPtr<GtkWidget> getWidget(void) const { return gtk_widget; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
   GObjectPtr<GdkGC> getGC(void) const { return data[getStyle()].gdk_gc; }
@@ -66,9 +64,6 @@ public:
 
   const XftColor* getXftForegroundColor(void) const { return getXftColor<FOREGROUND_INDEX>(); }
   const XftColor* getXftBackgroundColor(void) const { return getXftColor<BACKGROUND_INDEX>(); }
-
-  void update(void) const;
-  void update(const Rectangle&) const;
 
   void setStyle(ColorStyle s) { style = s; }
   ColorStyle getStyle(void) const { return style; }
@@ -182,9 +177,6 @@ protected:
 
   ColorStyle style;
   ContextData data[MAX_STYLE];
-
-  // GTK-specific fields
-  GObjectPtr<GtkWidget> gtk_widget;
 
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;

@@ -72,6 +72,7 @@ MISSING
 - runtime selection of backend
 - mmultiscripts
 - mpadded
+? implement an embedding mechanism for GTK+ widgets
 
 // BoxML
 
@@ -86,4 +87,5 @@ MISSING
 
 - implement overstrike and underline for box text ?
 - add documentation for boxml
+? implement an embedding mechanism for GTK+ widgets
 

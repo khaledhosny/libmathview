@@ -53,28 +53,6 @@ Gtk_RenderingContext::releaseResources()
 }
 
 void
-Gtk_RenderingContext::setWidget(const GObjectPtr<GtkWidget>& widget)
-{
-  gtk_widget = widget;
-  if (gtk_widget)
-    gdk_colormap = gtk_widget_get_colormap(gtk_widget);
-  else
-    gdk_colormap = 0;
-}
-
-void
-Gtk_RenderingContext::update() const
-{
-  if (gtk_widget) gtk_widget_draw(gtk_widget, NULL);
-}
-
-void
-Gtk_RenderingContext::update(const Rectangle& rect) const
-{
-  assert(false);
-}
-
-void
 Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 {
   releaseResources();
