@@ -24,8 +24,11 @@
 #define __ShaperManager_hh__
 
 #include "String.hh"
+#include "scaled.hh"
 #include "GlyphSpec.hh"
 #include "SparseMap.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
 
 class ShaperManager : public Object
 {
@@ -37,9 +40,9 @@ public:
   static SmartPtr<ShaperManager> create(void)
   { return new ShaperManager(); }
 
-  AreaRef shape(const class MathFormattingContext&, const UCS4String&) const;
-  AreaRef shapeStretchy(const class MathFormattingContext&, const UCS4String&,
-			const scaled& = 0, const scaled& = 0) const;
+  SmartPtr<const class Area> shape(const class MathFormattingContext&, const UCS4String&) const;
+  SmartPtr<const class Area> shapeStretchy(const class MathFormattingContext&, const UCS4String&,
+					   const scaled& = 0, const scaled& = 0) const;
   
   unsigned registerShaper(const SmartPtr<class Shaper>&);
   void unregisterShapers(void);
@@ -49,7 +52,7 @@ public:
 private:
   GlyphSpec map(Char32 ch) const;
   GlyphSpec mapStretchy(Char32 ch) const;
-  AreaRef shapeAux(const class MathFormattingContext&, class ShapingResult&) const;
+  SmartPtr<const class Area> shapeAux(const class MathFormattingContext&, class ShapingResult&) const;
   SmartPtr<class Shaper> getShaper(unsigned) const;
 
   static const unsigned MAX_SHAPERS = 16;

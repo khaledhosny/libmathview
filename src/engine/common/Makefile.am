@@ -17,6 +17,7 @@ libengine_common_la_SOURCES = \
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
+  NamespaceContext.hh \
   Element.hh \
   Node.hh \
   View.hh \
@@ -33,7 +34,6 @@ noinst_HEADERS = \
   ElementFactory.hh \
   Globals.hh \
   LinearContainerTemplate.hh \
-  NamespaceContext.hh \
   TemplateStringParsers.hh \
   TemplateStringScanners.hh \
   $(NULL)

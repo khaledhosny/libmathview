@@ -18,12 +18,16 @@ libboxml_la_SOURCES = \
   BoxMLSpaceElement.cc \
   BoxMLInkElement.cc
 
-noinst_HEADERS = \
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
   BoxMLNamespaceContext.hh \
+  BoxMLElement.hh \
+  $(NULL)
+      
+noinst_HEADERS = \
   BoxML.hh \
   BoxMLAttributeSignatures.hh \
   BoxMLAttributeParsers.hh \
-  BoxMLElement.hh \
   BoxMLActionElement.hh \
   BoxMLBinContainerElement.hh \
   BoxMLLinearContainerElement.hh \
