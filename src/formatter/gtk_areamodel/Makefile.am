@@ -1,15 +1,15 @@
 
 lib_LTLIBRARIES = libgtk_areamodel.la
 
-libgtk_areamodel_la_LIBADD = \
-  -lstdc++ \
-  $(XFT_LIBS) \
-  $(PANGOX_LIBS) \
-  $(GTK_LIBS) \
-  $(DOM_LIBS) \
-  $(top_builddir)/src/formatter/areamodel/libareamodel.la
+#libgtk_areamodel_la_LIBADD = \
+  #-lstdc++ \
+  #$(XFT_LIBS) \
+  #$(PANGOX_LIBS) \
+  #$(GTK_LIBS) \
+  #$(DOM_LIBS) \
+  #$(top_builddir)/src/formatter/areamodel/libareamodel.la
 
-libgtk_areamodel_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
+#libgtk_areamodel_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
 
 libgtk_areamodel_la_SOURCES = \
   Gtk_RenderingContext.cc \

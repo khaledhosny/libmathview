@@ -6,9 +6,15 @@
 BUGS
 * selection of math inside boxes crashes
 * again problems with colors
+* par without width attribute -> assert false
 + step in a boxml paragraph is wrong
 + make it possible for the content of a bin/linear container to
   have null elements. For example mfenced may generate these cases.
++ a box having a step within a paragraph is aligned correctly,
+  but the text that follows the box is not. HARD! perhaps we should
+  change/remove things like exit entry point?
+- paragraph and other boxes are slightly misaligned
+- units like cm are wrong (can be the dpi?)
 - applying the variant map before shaping is problematic when
   using the PangoShaper because Pango doesn't know about variant
   chars. This can be seen as a bug of pango or as a bug of our architecture

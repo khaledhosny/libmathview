@@ -1,14 +1,14 @@
 
 noinst_LTLIBRARIES = libgtk_boxml_graphic_device.la
 
-libgtk_boxml_graphic_device_la_LIBADD = \
-  $(PANGOX_LIBS) \
-  $(GTK_LIBS) \
-  $(top_builddir)/src/formatter/areamodel/libareamodel.la \
-  $(top_builddir)/src/formatter/gtk_areamodel/libgtk_areamodel.la \
-  $(top_builddir)/src/formatter/boxml_graphic_device/libboxml_graphic_device.la
+#libgtk_boxml_graphic_device_la_LIBADD = \
+  #$(PANGOX_LIBS) \
+  #$(GTK_LIBS) \
+  #$(top_builddir)/src/formatter/areamodel/libareamodel.la \
+  #$(top_builddir)/src/formatter/gtk_areamodel/libgtk_areamodel.la \
+  #$(top_builddir)/src/formatter/boxml_graphic_device/libboxml_graphic_device.la
 
-libgtk_boxml_graphic_device_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
+#libgtk_boxml_graphic_device_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
 
 libgtk_boxml_graphic_device_la_SOURCES = Gtk_BoxGraphicDevice.cc
 

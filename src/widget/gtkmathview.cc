@@ -52,6 +52,7 @@
 #include "BoxMLNamespaceContext.hh"
 #include "DOMView.hh"
 #include "Linker.hh"
+#include "MathMLParseFile.hh"
 
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_BoxGraphicDevice.hh"
@@ -894,50 +895,54 @@ setup_adjustments(GtkMathView* math_view)
   }
 }
 
-#if 0
 extern "C" gboolean
 gtk_math_view_load_uri(GtkMathView* math_view, const gchar* name)
 {
-  g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
-  g_return_val_if_fail(math_view->view, FALSE);
 
-  bool res = math_view->interface->Load(name);
-  if (!res) return FALSE;
-
-  reset_adjustments(math_view);
-  paint_widget(math_view);
-
-  return TRUE;
+  if (DOM::Document doc = MathMLParseFile(name, true))
+    {
+      GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
+      g_assert(d != NULL);
+      bool res = gtk_math_view_load_doc(math_view, d);
+      GdomeException exc = 0;
+      gdome_doc_unref(d, &exc);
+      g_assert(exc == 0);
+      return res;
+    }
+  else
+    return FALSE;
 }
 
 extern "C" gboolean
 gtk_math_view_load_doc(GtkMathView* math_view, GdomeDocument* doc)
 {
-  g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(doc != NULL, FALSE);
-  g_return_val_if_fail(math_view->interface != NULL, FALSE);
 
-  bool res = math_view->interface->Load(DOM::Document(doc));
-  if (!res) return FALSE;
+  GdomeException exc = 0;
+  GdomeElement* root = gdome_doc_documentElement(doc, &exc);
+  if (exc != 0) return FALSE;
+  gtk_math_view_load_root(math_view, root);
 
-  reset_adjustments(math_view);
-  paint_widget(math_view);
+  gdome_el_unref(root, &exc);
+  if (exc != 0) return FALSE;
 
   return TRUE;
 }
-#endif
 
-extern "C" void
-gtk_math_view_set_root(GtkMathView* math_view, GdomeElement* elem)
+extern "C" gboolean
+gtk_math_view_load_root(GtkMathView* math_view, GdomeElement* elem)
 {
-  g_return_if_fail(math_view);
-  g_return_if_fail(math_view->view);
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
 
   math_view->view->setRootDOMElement(DOM::Element(elem));
 
   reset_adjustments(math_view);
   paint_widget(math_view);
+
+  return TRUE;
 }
 
 extern "C" GdkPixmap*

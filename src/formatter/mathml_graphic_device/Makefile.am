@@ -1,7 +1,7 @@
 
 noinst_LTLIBRARIES = libmathml_graphic_device.la
 
-libmathml_graphic_device_la_LIBADD =
+#libmathml_graphic_device_la_LIBADD =
 
 libmathml_graphic_device_la_SOURCES = \
   MathFormattingContext.cc \

@@ -61,6 +61,7 @@ noinst_HEADERS = \
   Configuration.hh \
   Globals.hh \
   traverseAux.hh \
+  MathML.hh \
   MathMLValueConversion.hh \
   mathVariantAux.hh \
   MathMLAdapters.hh \

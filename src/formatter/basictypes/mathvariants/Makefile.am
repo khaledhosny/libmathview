@@ -28,8 +28,9 @@ libmathvariants_la_SOURCES = \
   $(AUTO_CC) \
   MathVariantMap.cc
 
-libmathvariants_la_LIBADD = \
-  $(DOM_LIBS)
+noinst_HEADERS = \
+  MathVariantMap.hh \
+  MathVariant.hh
 
 INCLUDES = \
   $(DOM_CFLAGS) \

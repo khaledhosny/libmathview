@@ -1,7 +1,7 @@
 
 noinst_LTLIBRARIES = libareamodel.la
 
-libareamodel_la_LIBADD = -lstdc++
+#libareamodel_la_LIBADD = -lstdc++
 
 libareamodel_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
 

@@ -1,9 +1,6 @@
 
 lib_LTLIBRARIES = libcommon.la
 
-libcommon_la_LIBADD = \
-  -lstdc++
-
 libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libcommon_la_SOURCES = \
@@ -22,12 +19,14 @@ libcommon_la_SOURCES = \
   ValueConversion.cc
 
 noinst_HEADERS = \
+  defs.h \
   Clock.hh \
   Logger.hh \
   ChildList.hh \
   Rectangle.hh \
   gmetadom.hh \
   token.hh \
+  TokenSet.hh \
   scaledConv.hh \
   for_each_if.h \
   fixed.hh \
@@ -44,9 +43,11 @@ noinst_HEADERS = \
   ValueConversion.hh \
   Variant.hh \
   HashMap.hh \
+  Rope.hh \
   ScopedHashMap.hh \
   SparseMap.hh \
   SmartPtr.hh \
+  WeakPtr.hh \
   String.hh \
   GObjectPtr.hh \
   Object.hh \

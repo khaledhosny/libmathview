@@ -37,8 +37,6 @@ public:
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class BoxFormattingContext&);
 
-  virtual scaled getStep(void) const;
-
   void formatContent(class BoxFormattingContext&, std::vector<AreaRef>&);
 };
 

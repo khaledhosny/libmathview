@@ -1,10 +1,6 @@
 
 lib_LTLIBRARIES = libengine_common.la
 
-libengine_common_la_LIBADD = \
-  -lstdc++ \
-  $(DOM_LIBS)
-
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libengine_common_la_SOURCES = \
@@ -21,9 +17,13 @@ libengine_common_la_SOURCES = \
   Linker.cc
 
 noinst_HEADERS = \
+  Adapters.hh \
   Attribute.hh \
   AttributeList.hh \
   AttributeSignature.hh \
+  CommonStringParsers.hh \
+  TemplateStringParsers.hh \
+  TemplateStringScanners.hh \
   AbstractRefinementContext.hh \
   RefinementContext.hh \
   BinContainerTemplate.hh \

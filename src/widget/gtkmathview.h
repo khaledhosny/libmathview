@@ -56,7 +56,7 @@ extern "C" {
 #if defined(HAVE_GMETADOM)
   gboolean       gtk_math_view_load_uri(GtkMathView*, const gchar*);
   gboolean       gtk_math_view_load_doc(GtkMathView*, GdomeDocument*);
-  gboolean       gtk_math_view_load_tree(GtkMathView*, GdomeElement*);
+  gboolean       gtk_math_view_load_root(GtkMathView*, GdomeElement*);
 #endif
   void           gtk_math_view_unload(GtkMathView*);
 #if defined(HAVE_GMETADOM)

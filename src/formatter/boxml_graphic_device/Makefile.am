@@ -1,7 +1,7 @@
 
 noinst_LTLIBRARIES = libboxml_graphic_device.la
 
-libboxml_graphic_device_la_LIBADD =
+#libboxml_graphic_device_la_LIBADD =
 
 libboxml_graphic_device_la_SOURCES = \
   BoxFormattingContext.cc \

@@ -188,7 +188,7 @@ GUI_load_document(const char* name)
     return -1;
   }
 
-  gtk_math_view_set_root(math_view, root);
+  gtk_math_view_load_root(math_view, root);
   gdome_el_unref(root, &exc);
   g_assert(exc == 0);
 
@@ -214,7 +214,7 @@ GUI_unload_document()
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  gtk_math_view_set_root(math_view, 0);
+  gtk_math_view_load_root(math_view, 0);
 
   if (doc_name != NULL) g_free(doc_name);
   doc_name = NULL;

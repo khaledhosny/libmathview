@@ -30,19 +30,19 @@ Shaper::composeStretchyCharH(const SmartPtr<class AreaFactory>& factory,
 			     const AreaRef& left, const AreaRef& glue, const AreaRef& right,
 			     const scaled& span) const
 {
-  scaled normalSize = normal ? normal->box().width : 0;
-  scaled leftSize = left ? left->box().width : 0;
-  scaled rightSize = right ? right->box().width : 0;
-  scaled glueSize = glue ? glue->box().width : 0;
+  const scaled normalSize = normal ? normal->box().width : 0;
+  const scaled leftSize = left ? left->box().width : 0;
+  const scaled rightSize = right ? right->box().width : 0;
+  const scaled glueSize = glue ? glue->box().width : 0;
 
   if (normalSize >= span) return normal;
 
   // Compute first the number of glue segments we have to use
   assert(glueSize > scaled::zero());
-  int n = std::max(0, (span - leftSize - rightSize).getValue() / glueSize.getValue());
+  const int n = std::max(0, (span - leftSize - rightSize).getValue() / glueSize.getValue());
 
   // Then the final number of glyphs
-  int gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
+  const int gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
 
   std::vector<AreaRef> h;
   h.reserve(gsN);
@@ -60,11 +60,11 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
 			     const AreaRef& top, const AreaRef& glue, const AreaRef& middle, const AreaRef& bottom,
 			     const scaled& span) const
 {
-  scaled normalSize = normal ? normal->box().verticalExtent() : 0;
-  scaled topSize = top ? top->box().verticalExtent() : 0;
-  scaled middleSize = middle ? middle->box().verticalExtent() : 0;
-  scaled glueSize = glue ? glue->box().verticalExtent() : 0;
-  scaled bottomSize = bottom ? bottom->box().verticalExtent() : 0;			
+  const scaled normalSize = normal ? normal->box().verticalExtent() : 0;
+  const scaled topSize = top ? top->box().verticalExtent() : 0;
+  const scaled glueSize = glue ? glue->box().verticalExtent() : 0;
+  const scaled middleSize = middle ? middle->box().verticalExtent() : 0;
+  const scaled bottomSize = bottom ? bottom->box().verticalExtent() : 0;			
 
   if (normalSize >= span) return normal;
 
@@ -75,7 +75,7 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
 
   if (n % 2 == 1 && middle) n++;
   
-  int gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
+  const int gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
 
   std::vector<AreaRef> v;
   v.reserve(gsN);
