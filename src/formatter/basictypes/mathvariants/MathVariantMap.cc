@@ -28,9 +28,11 @@
 #include "MathVariantMap.hh"
 
 #define MAP_NAME(n) map_variant_##n
-#define DECLARE_MAP(n) DOM::Char32 MAP_NAME(n)(DOM::Char16);
+#define DECLARE_MAP(n) DOM::Char32 MAP_NAME(n)(DOM::Char32);
 
 namespace DOM = GdomeSmartDOM;
+
+typedef DOM::Char32 (*mapType)(DOM::Char32);
 
 DECLARE_MAP(bold)
 DECLARE_MAP(italic)
@@ -46,31 +48,41 @@ DECLARE_MAP(sans_serif_italic)
 DECLARE_MAP(sans_serif_bold_italic)
 DECLARE_MAP(monospace)
 
-static DOM::Char32 map_variant_normal(DOM::Char16 ch)
+static DOM::Char32 map_variant_normal(DOM::Char32 ch)
 { return ch; }
 
-DOM::Char32
-mapMathVariant(MathVariant variant, DOM::Char16 ch)
+static mapType map[] =
 {
+  MAP_NAME(normal),
+  MAP_NAME(bold),
+  MAP_NAME(italic),
+  MAP_NAME(bold_italic),
+  MAP_NAME(double_struck),
+  MAP_NAME(bold_fraktur),
+  MAP_NAME(script),
+  MAP_NAME(bold_script),
+  MAP_NAME(fraktur),
+  MAP_NAME(sans_serif),
+  MAP_NAME(bold_sans_serif),
+  MAP_NAME(sans_serif_italic),
+  MAP_NAME(sans_serif_bold_italic),
+  MAP_NAME(monospace)
+};
 
-  static DOM::Char32 (*map[])(DOM::Char16) = 
-    {
-      MAP_NAME(normal),
-      MAP_NAME(bold),
-      MAP_NAME(italic),
-      MAP_NAME(bold_italic),
-      MAP_NAME(double_struck),
-      MAP_NAME(bold_fraktur),
-      MAP_NAME(script),
-      MAP_NAME(bold_script),
-      MAP_NAME(fraktur),
-      MAP_NAME(sans_serif),
-      MAP_NAME(bold_sans_serif),
-      MAP_NAME(sans_serif_italic),
-      MAP_NAME(sans_serif_bold_italic),
-      MAP_NAME(monospace)
-    };
-
+DOM::Char32
+mapMathVariant(MathVariant variant, DOM::Char32 ch)
+{
   assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
   return map[variant - NORMAL_VARIANT](ch);
+}
+
+void
+mapMathVariant(MathVariant variant, DOM::UCS4String& str)
+{
+  assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
+  mapType m = map[variant - NORMAL_VARIANT];
+
+  for (DOM::UCS4String::iterator p = str.begin();
+       p != str.end(); p++)
+    *p = m(*p);
 }

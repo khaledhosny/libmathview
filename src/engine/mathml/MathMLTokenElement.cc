@@ -248,7 +248,9 @@ MathMLTokenElement::format(MathFormattingContext& ctxt)
   
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathvariant))
 	ctxt.setVariant(toMathVariant(value));
-      
+      else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLTokenElement>(this)) && GetLogicalContentLength() == 1)
+	ctxt.setVariant(ITALIC_VARIANT);
+
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathcolor))
 	ctxt.setColor(ToRGB(value));
       else

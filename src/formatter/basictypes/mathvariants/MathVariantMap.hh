@@ -27,6 +27,7 @@
 
 #include "MathVariant.hh"
 
-DOM::Char32 mapMathVariant(MathVariant, DOM::Char16);
+DOM::Char32 mapMathVariant(MathVariant, DOM::Char32);
+void mapMathVariant(MathVariant, DOM::UCS4String&);
 
 #endif // __MathVariantMap_hh__

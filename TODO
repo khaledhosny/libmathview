@@ -1,18 +1,26 @@
 
-* re-enable selection (need to adjust the wrapper method in MGD)
 * re-enable actions
 * implement reader interface over DOM and XmlReader
 * add getId() method to reader interface
 * factor the Element class
 * factor ther View class
 * implement table formatting
-* implement line factory
+* implement AreaCanvas
 * implement PS area model
 * implement MGD for TeX fonts
-* make debugging methods in Areas optional
+* implement shaper for Mathematica fonts
+* make debugging methods in Areas optional (or remove them)
 * runtime selection of backend
 * runtime selection of reader
+* should be possible to exclude boxml classes at configuration time
 * implement cursor
-* implement the Area::find method more efficiently so that it
-  doesn't visit parts of the area tree where the point cannot be
-
+* improve/cleanup selection handling in Wrapper/RenderingContext
+* add documentation for boxml
+* re-implement methods for rectangle/bounding box in gtkmathview
+* implement support for stretchy operators
+* fix Configuration/Globals files 
+* implement square root
+* add space in munderover between base and script
+* implement embedding mechanism from MathML (semantics?)
+* generalize embedding mechanism from BoxML (now MathML only)
+* move mathvariant files into src/common

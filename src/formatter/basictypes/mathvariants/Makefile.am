@@ -45,7 +45,7 @@ INCLUDES = \
 	$(CC) $(DOM_CFLAGS) $(DOM_LIBS) $<
 	echo "DOM::Char32 " >>$@
 	echo -n "map_variant_$@" | cut -d '.' -f1 | tr "-" "_" >>$@
-	echo "(DOM::Char16 ch)" >>$@
+	echo "(DOM::Char32 ch)" >>$@
 	echo "{" >>$@
 	./a.out >>$@
 	echo "  return ch;" >>$@

@@ -28,6 +28,7 @@
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
+#include "MathVariantMap.hh"
 
 Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
 {
@@ -53,12 +54,15 @@ AreaRef
 Gtk_MathGraphicDevice::string(const MathFormattingContext& context,
 			      const String& str) const
 {
+  DOM::UCS4String source = toUCS4String(str);
+  mapMathVariant(context.getVariant(), source);
+
   if (context.getElement() == context.getStretchOperator())
-    return getShaperManager()->shapeStretchy(context, toUCS4String(str),
+    return getShaperManager()->shapeStretchy(context, source,
 					     context.getStretchV(),
 					     context.getStretchH());
   else
-    return getShaperManager()->shape(context, toUCS4String(str));
+    return getShaperManager()->shape(context, source);
 }
 
 AreaRef
