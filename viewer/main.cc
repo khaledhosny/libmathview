@@ -53,9 +53,9 @@ extern void *parseMathMLFile(char *);
 
 static void printVersion()
 {
-  printf("%s - written by Luca Padovani (C) 2000.\n", appName);
+  printf("%s - written by Luca Padovani (C) 2000-2001.\n", appName);
 #ifdef DEBUG
-  printf("Compiled %s %s\n", __DATE__, __TIME__);
+  //printf("Compiled %s %s\n", __DATE__, __TIME__);
 #endif // DEBUG
   exit(0);
 }
@@ -68,8 +68,6 @@ Usage: mathmlviewer [options] file ...\n\n\
   -v, --version                 Output version information\n\
   -d, --debug                   Debug mode\n\
   -h, --help                    This small usage guide\n\
-      --load-entities           Load entities from an external resource\n\
-      --dump-entities           Dump loaded entities as a C table of strings\n\
   --verbose[=0-3]               Display messages\n\
 ";
 
@@ -102,7 +100,7 @@ main(int argc, char *argv[])
 {
   bool debugMode = false;
 
-  sprintf(appName, "MathML Viewer v%s", VERSION);
+  sprintf(appName, "mathmlviewer v%s", VERSION);
 
   while (TRUE) {
     int option_index = 0;

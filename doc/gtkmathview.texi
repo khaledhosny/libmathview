@@ -1000,7 +1000,7 @@ in the following two sections.
 
 @menu
 * mathmlviewer::     A simple viewer application.
-* mathml2ps::        A MathML ==> PostScript conversion utility.
+* mathml2ps::        A MathML => PostScript conversion utility.
 @end menu
 
 
