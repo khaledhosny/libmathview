@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT
-AC_CONFIG_SRCDIR([src/MathML.hh])
+AC_CONFIG_SRCDIR([src/common/Clock.hh])
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=5
@@ -310,6 +310,7 @@ AC_CONFIG_FILES([
  config/math-engine-configuration.xml
  scripts/Makefile
  src/Makefile
+ src/common/Makefile
  src/formatter/Makefile
  src/formatter/basictypes/Makefile
  src/formatter/basictypes/mathvariants/Makefile
@@ -319,8 +320,10 @@ AC_CONFIG_FILES([
  src/formatter/mathml_graphic_device/Makefile
  src/formatter/gtk_mathml_graphic_device/Makefile
  src/engine/Makefile
+ src/engine/common/Makefile
  src/engine/boxml/Makefile
  src/engine/mathml/Makefile
+ src/widget/Makefile
  auto/Makefile
  auto/config.dirs
  doc/Makefile
