@@ -187,7 +187,6 @@ static void gtk_math_view_element_over(GtkMathView*, const GtkMathViewModelEvent
 
 static void setup_adjustment(GtkAdjustment*, gfloat, gfloat);
 static void setup_adjustments(GtkMathView*);
-static void reset_adjustments(GtkMathView*);
 
 /* Local data */
 
@@ -1124,20 +1123,6 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
 }
 
 static void
-reset_adjustments(GtkMathView* math_view)
-{
-  g_return_if_fail(math_view != NULL);
-
-  math_view->old_top_x = math_view->old_top_y = math_view->top_x = math_view->top_y = 0;
-
-  if (math_view->hadjustment != NULL)
-    gtk_adjustment_set_value(math_view->hadjustment, 0.0);
-
-  if (math_view->vadjustment != NULL)
-    gtk_adjustment_set_value(math_view->vadjustment, 0.0);
-}
-
-static void
 setup_adjustments(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
@@ -1146,8 +1131,8 @@ setup_adjustments(GtkMathView* math_view)
   const BoundingBox box = math_view->view->getBoundingBox();
 
   if (math_view->hadjustment != NULL) {
-    const gint width = box.defined() ? Gtk_RenderingContext::toGtkPixels(box.width) : 0;
     const gint page_width = GTK_WIDGET(math_view)->allocation.width;
+    const gint width = box.defined() ? Gtk_RenderingContext::toGtkPixels(box.width) : page_width;
     
     if (math_view->top_x > width - page_width)
       math_view->top_x = std::max(0, width - page_width);
@@ -1156,8 +1141,8 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    const gint height = box.defined() ? Gtk_RenderingContext::toGtkPixels(box.verticalExtent()) : 0;
     const gint page_height = GTK_WIDGET(math_view)->allocation.height;
+    const gint height = box.defined() ? Gtk_RenderingContext::toGtkPixels(box.verticalExtent()) : page_height;
 
     if (math_view->top_y > height - page_height)
       math_view->old_top_y = math_view->top_y = std::max(0, height - page_height);
@@ -1298,7 +1283,6 @@ GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view,
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadReader(reader, user_data);
-  reset_adjustments(math_view);
   gtk_math_view_paint(math_view);
   return res;
 }
@@ -1314,7 +1298,6 @@ GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, xmlTextReaderPtr re
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadReader(reader);
-  reset_adjustments(math_view);
   gtk_math_view_paint(math_view);
   return res;
 }
