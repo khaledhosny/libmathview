@@ -29,9 +29,10 @@
 #include "defs.h"
 #include "config.dirs"
 
-#define USE_GMETADOM       0
+#define USE_GMETADOM       1
 #define USE_LIBXML2        0
-#define USE_LIBXML2_READER 1
+#define USE_LIBXML2_READER 0
+#define USE_CUSTOM_READER  0
 
 // don't know why this is needed!!!
 #define PANGO_ENABLE_BACKEND
@@ -191,7 +192,7 @@ static SmartPtr<Element>
 elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewElementId el)
 {
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(b))
-    if (SmartPtr<Element> elem = builder->findElement(DOM::Element(el)))
+    if (SmartPtr<Element> elem = builder->findElement(DOM::Element(((GdomeElement*) el))))
       return elem;
   return 0;
 }
@@ -580,7 +581,7 @@ gtk_math_view_destroy(GtkObject* object)
     {
 #if USE_GMETADOM
       GdomeException exc = 0;
-      gdome_el_unref(math_view->current_elem, &exc);
+      gdome_el_unref((GdomeElement*) math_view->current_elem, &exc);
       g_assert(exc == 0);
 #endif
       math_view->current_elem = NULL;
@@ -590,7 +591,7 @@ gtk_math_view_destroy(GtkObject* object)
     {
 #if USE_GMETADOM
       GdomeException exc = 0;
-      gdome_el_unref(math_view->cursor_elem, &exc);
+      gdome_el_unref((GdomeElement*) math_view->cursor_elem, &exc);
       g_assert(exc == 0);
 #endif
       math_view->cursor_elem = NULL;
@@ -747,7 +748,7 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 #if USE_GMETADOM
       if (elem != NULL)
 	{
-	  gdome_el_unref(elem, &exc);
+	  gdome_el_unref((GdomeElement*) elem, &exc);
 	  g_assert(exc == 0);
 	}
 #endif // USE_GMETADOM
@@ -820,13 +821,13 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if USE_GMETADOM
       if (math_view->current_elem != NULL)
 	{
-	  gdome_el_unref(math_view->current_elem, &exc);
+	  gdome_el_unref((GdomeElement*) math_view->current_elem, &exc);
 	  g_assert(exc == 0);
 	}
 
       if (elem != NULL)
 	{
-	  gdome_el_ref(elem, &exc);
+	  gdome_el_ref((GdomeElement*) elem, &exc);
 	  g_assert(exc == 0);
 	}
 #endif // USE_GMETADOM
@@ -841,7 +842,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if USE_GMETADOM
   if (elem != NULL)
     {
-      gdome_el_unref(elem, &exc);
+      gdome_el_unref((GdomeElement*) elem, &exc);
       g_assert(exc == 0);
     }
 #endif // USE_GMETADOM
@@ -1047,7 +1048,7 @@ gtk_math_view_load_root(GtkMathView* math_view, GtkMathViewElementId elem)
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
-    builder->setRootModelElement(DOM::Element(elem));
+    builder->setRootModelElement(DOM::Element((GdomeElement*) elem));
   else
     return FALSE;
 

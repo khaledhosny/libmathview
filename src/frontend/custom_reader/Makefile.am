@@ -1,5 +1,10 @@
 
-noinst_LTLIBRARIES = libmathview_frontend_custom_reader.la
+lib_LTLIBRARIES = libmathview_frontend_custom_reader.la
+
+libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
+libmathview_frontend_custom_reader_la_LIBADD = \
+  $(top_builddir)/src/frontend/common/libfrontend_common.la
 
 libmathview_frontend_custom_reader_la_SOURCES = \
   customXmlReader.cc \

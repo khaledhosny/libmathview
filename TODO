@@ -19,6 +19,13 @@ BUGS
 - units like cm are wrong (can be the dpi?)
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
+- install header files in subdirectories:
+  backenddir = $(includedir)/$(PACKAGE)/backend
+  backend_HEADERS = ...
+  endinedir = $(includedir)/$(PACKAGE)/engine
+  engine_HEADERS = ...
+  gtkdir = $(includedir)/$(PACKAGE)/gtk
+  gtk_HEADERS = ...
 
 ARCH IMPROVEMENTS
 
@@ -51,6 +58,7 @@ ARCH IMPROVEMENTS
 
 MISSING
 
+* provide different libraries for different frontends
 + justification of paragraphs
 + make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the

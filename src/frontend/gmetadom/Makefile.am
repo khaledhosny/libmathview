@@ -1,5 +1,12 @@
 
-noinst_LTLIBRARIES = libmathview_frontend_gmetadom.la
+lib_LTLIBRARIES = libmathview_frontend_gmetadom.la
+
+libmathview_frontend_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
+libmathview_frontend_gmetadom_la_LIBADD = \
+  $(DOM_LIBS) \
+  $(top_builddir)/src/frontend/common/libfrontend_common.la \
+  $(top_builddir)/src/libmathview.la
 
 libmathview_frontend_gmetadom_la_SOURCES = \
   MathMLEntitiesTable.cc \
