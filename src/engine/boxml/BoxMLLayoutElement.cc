@@ -42,20 +42,6 @@ SmartPtr<BoxMLLayoutElement>
 BoxMLLayoutElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLLayoutElement(context); }
 
-#if 0
-void
-BoxMLLayoutElement::refine(class AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, Layout, width);
-      REFINE_ATTRIBUTE(context, BoxML, Layout, height);
-      REFINE_ATTRIBUTE(context, BoxML, Layout, depth);
-      BoxMLLinearContainerElement::refine(context);
-    }
-}
-#endif
-
 AreaRef
 BoxMLLayoutElement::format(BoxFormattingContext& ctxt)
 {

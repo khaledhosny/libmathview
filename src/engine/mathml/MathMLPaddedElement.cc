@@ -41,21 +41,6 @@ MathMLPaddedElement::~MathMLPaddedElement()
 
 #if 0
 void
-MathMLPaddedElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Padded, width);
-      REFINE_ATTRIBUTE(context, MathML, Padded, lspace);
-      REFINE_ATTRIBUTE(context, MathML, Padded, height);
-      REFINE_ATTRIBUTE(context, MathML, Padded, depth);
-      MathMLNormalizingContainerElement::refine(context);
-    }
-}
-#endif
-
-#if 0
-void
 MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
 					  const SmartPtr<Value>& value,
 					  LengthDimension& dim,

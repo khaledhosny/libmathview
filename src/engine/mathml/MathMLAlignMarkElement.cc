@@ -35,20 +35,7 @@ MathMLAlignMarkElement::MathMLAlignMarkElement(const SmartPtr<class MathMLNamesp
 }
  
 MathMLAlignMarkElement::~MathMLAlignMarkElement()
-{
-}
-
-#if 0
-void
-MathMLAlignMarkElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute())
-    {
-      REFINE_ATTRIBUTE(context, MathML, AlignMark, edge);
-      MathMLElement::refine(context);
-    }
-}
-#endif
+{ }
 
 #if 0
 void
@@ -76,10 +63,3 @@ MathMLAlignMarkElement::IsSpaceLike() const
   return true;
 }
 
-#if 0
-void
-MathMLAlignMarkElement::SetDirty(const Rectangle*)
-{
-  // do nothing, this element is space-like and always 0-width, useless for it to be dirty
-}
-#endif

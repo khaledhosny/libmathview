@@ -39,7 +39,6 @@ public:
   void setLabel(const SmartPtr<MathMLElement>& child) { label.setChild(this, child); }
   virtual SmartPtr<MathMLElement> getLabel(void) const { return label.getChild(); }
 
-  //virtual void construct(void);
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
 

@@ -30,32 +30,10 @@
 
 MathMLDummyElement::MathMLDummyElement(const SmartPtr<class MathMLNamespaceContext>& context)
   : MathMLElement(context)
-{
-}
+{ }
 
 MathMLDummyElement::~MathMLDummyElement()
-{
-}
-
-#if 0
-void
-MathMLDummyElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute())
-    {
-      background = env.GetBackgroundColor();
-      scaled size = env.ToScaledPoints(env.GetFontSize());
-      box.set(size, size, 0);
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLDummyElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt)) resetDirtyLayout(ctxt);
-}
-#endif
+{ }
 
 AreaRef
 MathMLDummyElement::format(MathFormattingContext& ctxt)
@@ -70,24 +48,3 @@ MathMLDummyElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
-#if 0
-void
-MathMLDummyElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      RenderBackground(area);
-      if (fGC[Selected()] == NULL)
-	{
-	  GraphicsContextValues values;
-	  values.foreground = Selected() ? area.GetSelectionForeground() : RGBColor::RED();
-	  values.lineStyle = LINE_STYLE_SOLID;
-	  fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
-	}
-
-      area.DrawRectangle(fGC[Selected()], GetX(), GetY(), GetBoundingBox());
-
-      ResetDirty();
-    }
-}
-#endif

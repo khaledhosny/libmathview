@@ -28,7 +28,6 @@
 #include "BoxFormattingContext.hh"
 #include "BoxMLNamespaceContext.hh"
 #include "BoxGraphicDevice.hh"
-#include "BoxMLElementFactory.hh"
 #include "BoxMLElement.hh"
 
 BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,

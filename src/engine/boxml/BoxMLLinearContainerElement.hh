@@ -41,11 +41,6 @@ public:
   void appendChild(const SmartPtr<BoxMLElement>& child) { content.appendChild(this, child); }
   void swapContent(std::vector<SmartPtr<BoxMLElement> >& newContent) { content.swapContent(this, newContent); }
 
-#if 0
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
-#endif
-
   virtual void setFlagDown(Flags f)
   {
     BoxMLElement::setFlagDown(f);

@@ -41,19 +41,6 @@ MathMLActionElement::MathMLActionElement(const SmartPtr<class MathMLNamespaceCon
 MathMLActionElement::~MathMLActionElement()
 { }
 
-#if 0
-void
-MathMLActionElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-   {
-     REFINE_ATTRIBUTE(context, MathML, Action, actiontype);
-     REFINE_ATTRIBUTE(context, MathML, Action, selection);
-     MathMLLinearContainerElement::refine(context);
-   }
-}
-#endif
-
 AreaRef
 MathMLActionElement::format(MathFormattingContext& ctxt)
 {

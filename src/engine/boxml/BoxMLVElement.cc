@@ -40,21 +40,6 @@ SmartPtr<BoxMLVElement>
 BoxMLVElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLVElement(context); }
 
-#if 0
-void
-BoxMLVElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, V, align);
-      REFINE_ATTRIBUTE(context, BoxML, V, enter);
-      REFINE_ATTRIBUTE(context, BoxML, V, exit);
-      REFINE_ATTRIBUTE(context, BoxML, V, minlinespacing);
-      BoxMLLinearContainerElement::refine(context);
-    }
-}
-#endif
-
 #include "scaledAux.hh"
 #include "BoundingBoxAux.hh"
 

@@ -37,10 +37,6 @@ public:
   { return new MathMLTableRowElement(view); }
 
 #if 0
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
-#endif
-#if 0
   virtual void Setup(RenderingEnvironment&);
   
   virtual bool IsInside(const scaled&, const scaled&) const;

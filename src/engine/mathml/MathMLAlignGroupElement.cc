@@ -31,24 +31,10 @@
 
 MathMLAlignGroupElement::MathMLAlignGroupElement(const SmartPtr<class MathMLNamespaceContext>& context)
   : MathMLElement(context)
-{
-}
+{ }
 
 MathMLAlignGroupElement::~MathMLAlignGroupElement()
-{
-}
-
-#if 0
-void
-MathMLAlignGroupElement::DoLayout(const FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      box.set(width, 0, 0);
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
+{ }
 
 void
 MathMLAlignGroupElement::SetDecimalPoint(const SmartPtr<class MathMLTokenElement>& token)
@@ -76,12 +62,9 @@ MathMLAlignGroupElement::SetAlignmentMark(const SmartPtr<class MathMLAlignMarkEl
 
 bool
 MathMLAlignGroupElement::IsSpaceLike() const
-{
-  return true;
-}
+{ return true; }
 
 void
 MathMLAlignGroupElement::SetWidth(const scaled& w)
-{
-  width = w;
-}
+{ width = w; }
+

@@ -42,61 +42,6 @@ SmartPtr<BoxMLTextElement>
 BoxMLTextElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLTextElement(context); }
 
-#if 0
-void
-BoxMLTextElement::construct()
-{
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  String newContent = "";
-
-	  for (DOM::Node p = getDOMElement().get_firstChild(); 
-	       p;
-	       p = p.get_nextSibling()) 
-	    {
-	      if (p.get_nodeType() == DOM::Node::TEXT_NODE)
-		{
-		  // ok, we have a chunk of text
-		  String s = collapseSpaces(fromDOMString(p.get_nodeValue()));
-	      
-		  // ...but spaces at the at the beginning (end) are deleted only if this
-		  // is the very first (last) chunk in the token.
-		  if (!p.get_previousSibling()) content = trimSpacesLeft(s);
-		  if (!p.get_nextSibling()) content = trimSpacesRight(s);
-	      
-		  newContent += s;
-		}
-	      else
-		{
-		  std::string s_name = p.get_nodeName();
-		  Globals::logger(LOG_WARNING, "node `%s' inside text (ignored)\n", s_name.c_str());
-		}
-	    }
-
-	  setContent(newContent);
-	}
-#endif // HAVE_GMETADOM
-      resetDirtyStructure();
-    }
-}
-
-void
-BoxMLTextElement::refine(class AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, Text, size);
-      REFINE_ATTRIBUTE(context, BoxML, Text, color);
-      REFINE_ATTRIBUTE(context, BoxML, Text, background);
-      REFINE_ATTRIBUTE(context, BoxML, Text, width);
-      BoxMLElement::refine(context);
-    }
-}
-#endif
-
 AreaRef
 BoxMLTextElement::format(BoxFormattingContext& ctxt)
 {

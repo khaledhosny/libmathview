@@ -47,11 +47,6 @@ public:
   // memory-management issues
   const std::vector< SmartPtr<MathMLElement> >& getContent(void) const { return content.getContent(); }
 
-#if 0
-  virtual void construct(void);
-  virtual void refine(class AbstractRefinementContext&);
-#endif
-
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
 

@@ -39,19 +39,6 @@ SmartPtr<BoxMLAtElement>
 BoxMLAtElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLAtElement(context); }
 
-#if 0
-void
-BoxMLAtElement::refine(class AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, At, x);
-      REFINE_ATTRIBUTE(context, BoxML, At, y);
-      BoxMLBinContainerElement::refine(context);
-    }
-}
-#endif
-
 AreaRef
 BoxMLAtElement::format(BoxFormattingContext& ctxt)
 {

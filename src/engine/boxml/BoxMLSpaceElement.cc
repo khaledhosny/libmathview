@@ -41,20 +41,6 @@ SmartPtr<BoxMLSpaceElement>
 BoxMLSpaceElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLSpaceElement(context); }
 
-#if 0
-void
-BoxMLSpaceElement::refine(class AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, Space, width);
-      REFINE_ATTRIBUTE(context, BoxML, Space, height);
-      REFINE_ATTRIBUTE(context, BoxML, Space, depth);
-      BoxMLElement::refine(context);
-    }
-}
-#endif
-
 AreaRef
 BoxMLSpaceElement::makeSpaceArea(BoxFormattingContext& ctxt)
 {

@@ -41,7 +41,6 @@ ARCH IMPROVEMENTS
   vertical area is the bottommost is a bit weird. Think of the cursor:
   intuitively at increasing indices the cursor should go forward (that
   is right or down depending on the container)
-+ decouple strings from DOM::strings
 + cleanup Globals.cc (move into Configuration?)
 - the default font size now need to be set on two different 
   namespacecontexts, ugly. (see gtkmathview.cc)

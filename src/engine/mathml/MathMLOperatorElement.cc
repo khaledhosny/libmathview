@@ -47,32 +47,6 @@ MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceConte
 MathMLOperatorElement::~MathMLOperatorElement()
 { }
 
-#if 0
-void
-MathMLOperatorElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Operator, form);
-      REFINE_ATTRIBUTE(context, MathML, Operator, fence);
-      REFINE_ATTRIBUTE(context, MathML, Operator, separator);
-      REFINE_ATTRIBUTE(context, MathML, Operator, lspace);
-      REFINE_ATTRIBUTE(context, MathML, Operator, rspace);
-      REFINE_ATTRIBUTE(context, MathML, Operator, stretchy);
-      REFINE_ATTRIBUTE(context, MathML, Operator, symmetric);
-      REFINE_ATTRIBUTE(context, MathML, Operator, maxsize);
-      REFINE_ATTRIBUTE(context, MathML, Operator, minsize);
-      REFINE_ATTRIBUTE(context, MathML, Operator, largeop);
-      REFINE_ATTRIBUTE(context, MathML, Operator, movablelimits);
-      REFINE_ATTRIBUTE(context, MathML, Operator, accent);
-      MathMLTokenElement::refine(context);
-    }
-}
-#endif
-
-//#include "scaledAux.hh"
-//#include "BoundingBoxAux.hh"
-
 AreaRef
 MathMLOperatorElement::format(MathFormattingContext& ctxt)
 {

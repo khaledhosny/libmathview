@@ -37,20 +37,6 @@ SmartPtr<BoxMLGroupElement>
 BoxMLGroupElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLGroupElement(context); }
 
-#if 0
-void
-BoxMLGroupElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, Text, size);
-      REFINE_ATTRIBUTE(context, BoxML, Text, color);
-      REFINE_ATTRIBUTE(context, BoxML, Text, background);
-      BoxMLLinearContainerElement::refine(context);
-    }
-}
-#endif
-
 AreaRef
 BoxMLGroupElement::format(BoxFormattingContext& ctxt)
 {

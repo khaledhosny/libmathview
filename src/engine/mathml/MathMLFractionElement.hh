@@ -38,10 +38,6 @@ public:
   static SmartPtr<MathMLFractionElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLFractionElement(view); }
 
-#if 0
-  virtual void   construct(void);
-  virtual void   refine(class AbstractRefinementContext&);
-#endif
   virtual AreaRef format(class MathFormattingContext&);
 
   virtual void   setFlagDown(Flags);

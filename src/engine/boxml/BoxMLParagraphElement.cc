@@ -34,7 +34,6 @@
 #include "AreaFactory.hh"
 #include "BoxMLTextElement.hh"
 #include "BoxMLNamespaceContext.hh"
-#include "BoxMLElementFactory.hh"
 #include "BoxedParagraph.hh"
 
 BoxMLParagraphElement::BoxMLParagraphElement(const SmartPtr<BoxMLNamespaceContext>& c)
@@ -47,20 +46,6 @@ BoxMLParagraphElement::~BoxMLParagraphElement()
 SmartPtr<BoxMLParagraphElement>
 BoxMLParagraphElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLParagraphElement(context); }
-
-#if 0
-void
-BoxMLParagraphElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, BoxML, V, align);
-      REFINE_ATTRIBUTE(context, BoxML, V, minlinespacing);
-      REFINE_ATTRIBUTE(context, BoxML, Text, width);
-      BoxMLLinearContainerElement::refine(context);
-    }
-}
-#endif
 
 AreaRef
 BoxMLParagraphElement::format(BoxFormattingContext& ctxt)

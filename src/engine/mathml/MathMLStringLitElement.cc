@@ -40,19 +40,6 @@ MathMLStringLitElement::~MathMLStringLitElement()
 
 #if 0
 void
-MathMLStringLitElement::refine(AbstractRefinementContext& context)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, StringLit, lquote);
-      REFINE_ATTRIBUTE(context, MathML, StringLit, rquote);
-      MathMLTokenElement::refine(context);
-    }
-}
-#endif
-
-#if 0
-void
 MathMLStringLitElement::Setup(RenderingEnvironment& env)
 {
   if (dirtyAttribute())
