@@ -634,7 +634,7 @@ click(GtkMathView* math_view, GdomeElement* elem, gint state)
 	  gdome_str_unref(href);
 	}
 
-      action = find_self_or_ancestor(elem, MATHML_NS_URI, "maction");
+      action = find_action_element(elem);
       printf("action? %p\n", action);
       if (action != NULL)
 	{

@@ -200,11 +200,21 @@ find_self_or_ancestor(GdomeElement* elem, const char* uri, const char* name)
   return gdome_cast_el(el.gdome_object());
 }
 
+extern "C" GdomeElement*
+find_action_element(GdomeElement* elem)
+{
+  for (DOM::Element el(elem); el; el = el.get_parentNode())
+    if ((el.get_namespaceURI() == MATHML_NS_URI && el.get_localName() == "maction") ||
+	(el.get_namespaceURI() == BOXML_NS_URI && el.get_localName() == "action"))
+      return gdome_cast_el(el.gdome_object());
+
+  return NULL;
+}
+
 extern "C" void
 action_toggle(GdomeElement* elem)
 {
   DOM::Element el(elem);
-  if (el.get_namespaceURI() != MATHML_NS_URI || el.get_localName() != "maction") return;
 
   guint idx;
   if (el.hasAttribute("selection"))
