@@ -14,8 +14,6 @@ BUGS
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially
   for mo elements
-* restore handling of mo attributes with getAttributeValueNoDefault
-- units like cm are wrong (can be the dpi?)
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
 - install header files in subdirectories:
@@ -56,8 +54,6 @@ PERFORMANCE IMPROVEMENTS
 
 MISSING
 
-+ custom_reader not implemented in widget
-+ libxml2_reader read from buffer API (add/cleanup in widget)
 ? make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups

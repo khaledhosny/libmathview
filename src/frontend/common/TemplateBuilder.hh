@@ -1104,15 +1104,6 @@ protected:
       return signature.getDefaultValue();
   }
 
-  SmartPtr<Value>
-  getAttributeValueNoDefault(const typename Model::Element& el, const AttributeSignature& signature) const
-  {
-    if (SmartPtr<Attribute> attr = getAttribute(el, signature))
-      return attr->getValue();
-    else
-      return 0;
-  }
-
   void
   refineAttribute(const SmartPtr<Element>& elem,
 		  const typename Model::Element& el, const AttributeSignature& signature) const
