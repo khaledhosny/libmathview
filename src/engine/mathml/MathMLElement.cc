@@ -259,8 +259,8 @@ MathMLElement::setDirtyStructure()
 {
   if (!dirtyStructure())
     {
-      SetFlag(FDirtyStructure);
-      SetFlagUp(FDirtyStructure);
+      setFlag(FDirtyStructure);
+      setFlagUp(FDirtyStructure);
     }
 }
 
@@ -269,8 +269,8 @@ MathMLElement::setDirtyAttribute()
 {
   if (!dirtyAttribute())
     {
-      SetFlag(FDirtyAttribute);
-      SetFlagUp(FDirtyAttributeP);
+      setFlag(FDirtyAttribute);
+      setFlagUp(FDirtyAttributeP);
     }
 }
 
@@ -280,7 +280,7 @@ MathMLElement::setDirtyAttributeD()
   if (!dirtyAttributeD())
     {
       setFlagDown(FDirtyAttributeD);
-      SetFlagUp(FDirtyAttributeP);
+      setFlagUp(FDirtyAttributeP);
     }
 }
 
@@ -290,40 +290,40 @@ MathMLElement::setDirtyLayout()
   if (!dirtyLayout())
     {
       setFlagDown(FDirtyLayout);
-      SetFlagUp(FDirtyLayout);
+      setFlagUp(FDirtyLayout);
     }
 }
 
 void
-MathMLElement::SetFlag(Flags f)
+MathMLElement::setFlag(Flags f)
 {
   flags.set(f);
 }
 
 void
-MathMLElement::SetFlagUp(Flags f)
+MathMLElement::setFlagUp(Flags f)
 {
-  for (SmartPtr<MathMLElement> p = getParent(); p && !p->GetFlag(f); p = p->getParent())
-    p->SetFlag(f);
+  for (SmartPtr<MathMLElement> p = getParent(); p && !p->getFlag(f); p = p->getParent())
+    p->setFlag(f);
 }
 
 void
-MathMLElement::ResetFlagUp(Flags f)
+MathMLElement::resetFlagUp(Flags f)
 {
-  for (SmartPtr<MathMLElement> p = getParent(); p && p->GetFlag(f); p = p->getParent())
-    p->ResetFlag(f);
+  for (SmartPtr<MathMLElement> p = getParent(); p && p->getFlag(f); p = p->getParent())
+    p->resetFlag(f);
 }
 
 void
 MathMLElement::setFlagDown(Flags f)
 {
-  SetFlag(f);
+  setFlag(f);
 }
 
 void
 MathMLElement::resetFlagDown(Flags f)
 {
-  ResetFlag(f);
+  resetFlag(f);
 }
 
 // FIXME: when we'll have a real Node class we could move
@@ -334,10 +334,10 @@ MathMLElement::setParent(const SmartPtr<MathMLElement>& p)
   MathMLNode::setParent(p);
   if (p)
     {
-      if (dirtyStructure()) SetFlagUp(FDirtyStructure);
-      if (dirtyAttribute()) SetFlagUp(FDirtyAttributeP);
+      if (dirtyStructure()) setFlagUp(FDirtyStructure);
+      if (dirtyAttribute()) setFlagUp(FDirtyAttributeP);
       if (p->dirtyAttributeD()) setFlagDown(FDirtyAttributeD);
-      if (dirtyLayout()) SetFlagUp(FDirtyLayout);
+      if (dirtyLayout()) setFlagUp(FDirtyLayout);
       if (p->dirtyLayout()) setFlagDown(FDirtyLayout);
     }
 }

@@ -79,18 +79,18 @@ public:
   AreaRef getArea(void) const { return area; }
 
   virtual void setDirtyStructure(void);
-  void resetDirtyStructure(void) { ResetFlag(FDirtyStructure); }
-  bool dirtyStructure(void) const { return GetFlag(FDirtyStructure); }
+  void resetDirtyStructure(void) { resetFlag(FDirtyStructure); }
+  bool dirtyStructure(void) const { return getFlag(FDirtyStructure); }
   virtual void setDirtyAttribute(void);
   virtual void setDirtyAttributeD(void);
   void resetDirtyAttribute(void)
-  { ResetFlag(FDirtyAttribute); ResetFlag(FDirtyAttributeP); ResetFlag(FDirtyAttributeD); }
-  bool dirtyAttribute(void) const { return GetFlag(FDirtyAttribute) || GetFlag(FDirtyAttributeD); }
-  bool dirtyAttributeP(void) const { return GetFlag(FDirtyAttributeP); }
-  bool dirtyAttributeD(void) const { return GetFlag(FDirtyAttributeD); }
+  { resetFlag(FDirtyAttribute); resetFlag(FDirtyAttributeP); resetFlag(FDirtyAttributeD); }
+  bool dirtyAttribute(void) const { return getFlag(FDirtyAttribute) || getFlag(FDirtyAttributeD); }
+  bool dirtyAttributeP(void) const { return getFlag(FDirtyAttributeP); }
+  bool dirtyAttributeD(void) const { return getFlag(FDirtyAttributeD); }
   virtual void setDirtyLayout(void);
-  void resetDirtyLayout(void) { ResetFlag(FDirtyLayout); }
-  bool dirtyLayout(void) const { return GetFlag(FDirtyLayout); }
+  void resetDirtyLayout(void) { resetFlag(FDirtyLayout); }
+  bool dirtyLayout(void) const { return getFlag(FDirtyLayout); }
 
 public:
   enum Flags {
@@ -103,13 +103,13 @@ public:
     FUnusedFlag       // Just to know how many flags we use without having to count them
   };
 
-  void SetFlag(Flags f);// { flags.set(f); }
-  void ResetFlag(Flags f) { flags.reset(f); }
-  void SetFlagUp(Flags);
-  void ResetFlagUp(Flags);
+  void setFlag(Flags f);// { flags.set(f); }
+  void resetFlag(Flags f) { flags.reset(f); }
+  void setFlagUp(Flags);
+  void resetFlagUp(Flags);
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
-  bool GetFlag(Flags f) const { return flags.test(f); }
+  bool getFlag(Flags f) const { return flags.test(f); }
 
 private:
   std::bitset<FUnusedFlag> flags;
