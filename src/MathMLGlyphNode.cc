@@ -78,7 +78,7 @@ MathMLGlyphNode::Render(const DrawingArea& area)
     {
       assert(GetParent());
       assert(is_a<MathMLTokenElement>(GetParent()));
-      Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
+      SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
       assert(token);
 
       const GraphicsContext* gc = token->GetForegroundGC();

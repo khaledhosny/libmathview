@@ -45,7 +45,7 @@ MathMLSemanticsElement::~MathMLSemanticsElement()
 }
 
 void
-MathMLSemanticsElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLSemanticsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -55,7 +55,7 @@ MathMLSemanticsElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  assert(IsA() == TAG_SEMANTICS);
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 
-	  if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	  if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
 	    SetChild(e);
 	  else
 	    {
@@ -67,7 +67,7 @@ MathMLSemanticsElement::Normalize(const Ptr<MathMLDocument>& doc)
 		  if (elem.getAttribute("encoding") == "MathML-Presentation")
 		    {
 		      ChildList children(elem, MATHML_NS_URI, "*");
-		      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+		      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
 			SetChild(e);
 		      else if (!is_a<MathMLDummyElement>(GetChild()))
 			SetChild(MathMLDummyElement::create());
@@ -119,7 +119,7 @@ MathMLSemanticsElement::IsExpanding() const
 }
 #endif
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLSemanticsElement::GetCoreOperator()
 {
   if (GetChild()) return GetChild()->GetCoreOperator();

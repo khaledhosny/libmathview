@@ -33,15 +33,15 @@ VerticalLayout::SetSpacing(const scaled& rs, const scaled& rms)
 }
 
 void
-VerticalLayout::Add(const Ptr<MathMLElement>& el)
+VerticalLayout::Add(const SmartPtr<MathMLElement>& el)
 {
   if (content.empty())
     content.push_back(HorizontalLayout::create());
 
-  Ptr<HorizontalLayout> row = content.back();
+  SmartPtr<HorizontalLayout> row = content.back();
   row->Add(el);
 
-  if (Ptr<MathMLSpaceElement> space = smart_cast<MathMLSpaceElement>(el))
+  if (SmartPtr<MathMLSpaceElement> space = smart_cast<MathMLSpaceElement>(el))
     {
       if (space->GetBreakability() == BREAK_YES ||
 	  space->GetBreakability() == BREAK_INDENT)
@@ -56,8 +56,8 @@ VerticalLayout::RemoveAll()
 }
 
 scaled
-VerticalLayout::GetRowSpacing(const std::vector< Ptr<HorizontalLayout> >::const_iterator& p0,
-			      const std::vector< Ptr<HorizontalLayout> >::const_iterator& p1) const
+VerticalLayout::GetRowSpacing(const std::vector< SmartPtr<HorizontalLayout> >::const_iterator& p0,
+			      const std::vector< SmartPtr<HorizontalLayout> >::const_iterator& p1) const
 {
   if (p0 + 1 == content.begin() || p1 == content.end())
     return 0;
@@ -74,7 +74,7 @@ void
 VerticalLayout::SetPosition(const scaled& x0, const scaled& y0)
 {
   scaled y = y0;
-  for (std::vector< Ptr<HorizontalLayout> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<HorizontalLayout> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
@@ -87,7 +87,7 @@ BoundingBox
 VerticalLayout::GetBoundingBox() const
 {
   BoundingBox box;
-  for (std::vector< Ptr<HorizontalLayout> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<HorizontalLayout> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
@@ -104,7 +104,7 @@ BoundingBox
 VerticalLayout::GetLinearBoundingBox() const
 {
   BoundingBox box;
-  for (std::vector< Ptr<HorizontalLayout> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<HorizontalLayout> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     box.append((*p)->GetLinearBoundingBox());
@@ -115,7 +115,7 @@ scaled
 VerticalLayout::GetExitBaseline() const
 {
   scaled bl = 0;
-  for (std::vector< Ptr<HorizontalLayout> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<HorizontalLayout> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     bl += GetRowSpacing(p, p + 1);

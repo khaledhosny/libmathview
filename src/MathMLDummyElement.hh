@@ -39,14 +39,14 @@ protected:
   virtual ~MathMLDummyElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLDummyElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLDummyElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLDummyElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLDummyElement(el)); }
 #endif
 
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void Render(const DrawingArea&);

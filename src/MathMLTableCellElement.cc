@@ -82,7 +82,7 @@ MathMLTableCellElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
+MathMLTableCellElement::SetupGroups(const SmartPtr<MathMLElement>& elem,
 				    bool allowedGroup,
 				    bool countGroups,
 				    TableCell& status)
@@ -96,7 +96,7 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 
   if (elem->IsToken())
     {
-      Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(elem);
+      SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(elem);
       assert(token);
 
       // remember that the first mn element, if present, always contains
@@ -105,11 +105,11 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 	  status.group->GetDecimalPoint() == NULL)
 	status.group->SetDecimalPoint(token);
 
-      for (Iterator< Ptr<MathMLTextNode> > p(token->GetContent()); p.More(); p.Next())
+      for (Iterator< SmartPtr<MathMLTextNode> > p(token->GetContent()); p.More(); p.Next())
 	{
 	  if (p()->IsMark() && status.group != NULL)
 	    {
-	      Ptr<MathMLMarkNode> mark = smart_cast<MathMLMarkNode>(p());
+	      SmartPtr<MathMLMarkNode> mark = smart_cast<MathMLMarkNode>(p());
 	      assert(mark);
 	      status.group->SetAlignmentMark(mark);
 	      // only the first alignment mark (if present) in a token is ever taken into account
@@ -119,10 +119,10 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
     }
   else if (elem->IsContainer())
     {
-      Ptr<MathMLContainerElement> container = smart_cast<MathMLContainerElement>(elem);
+      SmartPtr<MathMLContainerElement> container = smart_cast<MathMLContainerElement>(elem);
       assert(container);
 
-      Iterator< Ptr<MathMLElement> > p(container->GetContent());
+      Iterator< SmartPtr<MathMLElement> > p(container->GetContent());
 
       switch (container->IsA())
 	{
@@ -150,7 +150,7 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 	  break;
 	case TAG_MACTION:
 	  {
-	    Ptr<MathMLActionElement> action = smart_cast<MathMLActionElement>(container);
+	    SmartPtr<MathMLActionElement> action = smart_cast<MathMLActionElement>(container);
 	    assert(action);
 	    if (action->GetSelectedElement())
 	      SetupGroups(action->GetSelectedElement(), allowedGroup, countGroups, status);
@@ -158,7 +158,7 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 	  break;
 	case TAG_MTD:
 	  {
-	    Ptr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(container);
+	    SmartPtr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(container);
 	    assert(mtd);
 
 	    if (status.group != NULL && !mtd->GetAlignmentScope())
@@ -190,7 +190,7 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 		} 
 	      else
 		{
-		  Ptr<MathMLAlignGroupElement> group = smart_cast<MathMLAlignGroupElement>(elem);
+		  SmartPtr<MathMLAlignGroupElement> group = smart_cast<MathMLAlignGroupElement>(elem);
 		  assert(group);
 
 		  status.aGroup[status.iGroup].group = group;
@@ -202,7 +202,7 @@ MathMLTableCellElement::SetupGroups(const Ptr<MathMLElement>& elem,
 	case TAG_MALIGNMARK:
 	  if (status.group != NULL)
 	    {
-	      Ptr<MathMLAlignMarkElement> align = smart_cast<MathMLAlignMarkElement>(elem);
+	      SmartPtr<MathMLAlignMarkElement> align = smart_cast<MathMLAlignMarkElement>(elem);
 	      assert(align);
 	      status.group->SetAlignmentMark(align);
 	    }
@@ -316,11 +316,11 @@ MathMLTableCellElement::CalcGroupsExtent()
   unsigned k;
   for (k = 0; k < cell->nAlignGroup; k++)
     {
-      Ptr<MathMLAlignGroupElement> group = cell->aGroup[k].group;
+      SmartPtr<MathMLAlignGroupElement> group = cell->aGroup[k].group;
       assert(group);
 
-      Ptr<MathMLFrame> leftSibling = getLeftSibling(group);
-      Ptr<MathMLFrame> rightSibling = getRightSibling(group);
+      SmartPtr<MathMLFrame> leftSibling = getLeftSibling(group);
+      SmartPtr<MathMLFrame> rightSibling = getRightSibling(group);
 
       if (k == 0) cell->aGroup[k].leftEdge = GetLeftEdge();
       else if (rightSibling) cell->aGroup[k].leftEdge = rightSibling->GetLeftEdge();
@@ -341,7 +341,7 @@ MathMLTableCellElement::CalcGroupsExtent()
 
   for (k = 0; k < cell->nAlignGroup; k++) 
     {
-      Ptr<MathMLAlignGroupElement> group = cell->aGroup[k].group;
+      SmartPtr<MathMLAlignGroupElement> group = cell->aGroup[k].group;
       assert(group);
 
       scaled alignPoint = 0;
@@ -349,7 +349,7 @@ MathMLTableCellElement::CalcGroupsExtent()
       if (group->GetAlignmentMarkElement() ||
 	  group->GetAlignmentMarkNode())
 	{
-	  Ptr<MathMLFrame> mark = 0;
+	  SmartPtr<MathMLFrame> mark = 0;
 	  MarkAlignType alignType = MARK_ALIGN_NOTVALID;
 
 	  if (group->GetAlignmentMarkElement())
@@ -367,20 +367,20 @@ MathMLTableCellElement::CalcGroupsExtent()
       
 	  if (alignType == MARK_ALIGN_LEFT)
 	    {
-	      Ptr<MathMLFrame> frame = getRightSibling(mark);
+	      SmartPtr<MathMLFrame> frame = getRightSibling(mark);
 	      if (frame) alignPoint = frame->GetLeftEdge();
 	      else alignPoint = alignPoint = mark->GetX();
 	    } 
 	  else
 	    {
-	      Ptr<MathMLFrame> frame = getLeftSibling(mark);
+	      SmartPtr<MathMLFrame> frame = getLeftSibling(mark);
 	      if (frame) alignPoint = frame->GetRightEdge();
 	      else alignPoint = mark->GetX();
 	    }
 	} 
       else if (cell->aGroup[k].alignment == GROUP_ALIGN_DECIMALPOINT)
 	{
-	  Ptr<MathMLTokenElement> token = group->GetDecimalPoint();
+	  SmartPtr<MathMLTokenElement> token = group->GetDecimalPoint();
 	  if (token) alignPoint = token->GetDecimalPointEdge();
 	  else alignPoint = cell->aGroup[k].rightEdge;
 	} 
@@ -497,7 +497,7 @@ MathMLTableCellElement::SetDirtyStructure()
 {
   assert(GetParent());
   assert(is_a<MathMLTableRowElement>(GetParent()));
-  Ptr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
   assert(row);
   row->SetDirtyStructure();
   MathMLNormalizingContainerElement::SetDirtyStructure();
@@ -508,7 +508,7 @@ MathMLTableCellElement::SetDirtyAttribute()
 {
   assert(GetParent());
   assert(is_a<MathMLTableRowElement>(GetParent()));
-  Ptr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
   assert(row);
   row->SetDirtyAttribute();
   MathMLNormalizingContainerElement::SetDirtyAttribute();
@@ -519,7 +519,7 @@ MathMLTableCellElement::SetDirtyLayout()
 {
   assert(GetParent());
   assert(is_a<MathMLTableRowElement>(GetParent()));
-  Ptr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
+  SmartPtr<MathMLTableRowElement> row = smart_cast<MathMLTableRowElement>(GetParent());
   assert(row);
   row->SetDirtyLayout();
   MathMLNormalizingContainerElement::SetDirtyLayout();

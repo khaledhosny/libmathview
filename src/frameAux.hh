@@ -25,8 +25,8 @@
 
 #include "MathMLFrame.hh"
 
-const BoundingBox& getFrameBoundingBox(const Ptr<MathMLFrame>&, LayoutId = LAYOUT_AUTO);
-Ptr<MathMLFrame>   getLeftSibling(const Ptr<MathMLFrame>&);
-Ptr<MathMLFrame>   getRightSibling(const Ptr<MathMLFrame>&);
+const BoundingBox& getFrameBoundingBox(const SmartPtr<MathMLFrame>&, LayoutId = LAYOUT_AUTO);
+SmartPtr<MathMLFrame>   getLeftSibling(const SmartPtr<MathMLFrame>&);
+SmartPtr<MathMLFrame>   getRightSibling(const SmartPtr<MathMLFrame>&);
 
 #endif // frameAux_hh

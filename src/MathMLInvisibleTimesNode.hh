@@ -32,8 +32,8 @@ protected:
   virtual ~MathMLInvisibleTimesNode();
 
 public:
-  static Ptr<MathMLInvisibleTimesNode> create(void)
-  { return Ptr<MathMLInvisibleTimesNode>(new MathMLInvisibleTimesNode()); }
+  static SmartPtr<MathMLInvisibleTimesNode> create(void)
+  { return SmartPtr<MathMLInvisibleTimesNode>(new MathMLInvisibleTimesNode()); }
 
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);

@@ -95,14 +95,14 @@ MathMLOperatorElement::GetAttributeSignature(AttributeId id) const
 
 #if 0
 void
-MathMLOperatorElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLOperatorElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
 #if 0
       if (!eOp)
 	{
-	  Ptr<MathMLElement> op = MathMLEmbellishedOperatorElement::create(this);
+	  SmartPtr<MathMLElement> op = MathMLEmbellishedOperatorElement::create(this);
 	  assert(op);
 	  eOp = smart_cast<MathMLEmbellishedOperatorElement>(op);
 	}
@@ -111,7 +111,7 @@ MathMLOperatorElement::Normalize(const Ptr<MathMLDocument>& doc)
       // now we have to substitute the root of the embellished operator
       // with the embellished operator object just created
       assert(is_a<MathMLContainerElement>(GetParent()));
-      Ptr<MathMLContainerElement> pContainer = smart_cast<MathMLContainerElement>(GetParent());
+      SmartPtr<MathMLContainerElement> pContainer = smart_cast<MathMLContainerElement>(GetParent());
       assert(pContainer);
       pContainer->Replace(this, eOp);
       eOp->SetChild(this);
@@ -249,8 +249,8 @@ MathMLOperatorElement::Setup(RenderingEnvironment& env)
 	  // WARNING: the fact that I'm using a local variable is probably due
 	  // to a GCC bug. If the method is called directly the compiler
 	  // reports an ambiguous overloading
-          Ptr<MathMLTextNode> child = GetChild(0);
-	  if (Ptr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(child))
+          SmartPtr<MathMLTextNode> child = GetChild(0);
+	  if (SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(child))
 	    if (sNode->IsStretchyChar()) sNode->SetDefaultLargeGlyph(true);
 	}
 
@@ -315,7 +315,7 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
   adjustedSize = std::max(scaled(0), adjustedSize);
 
   assert(GetSize() == 1);
-  if (Ptr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
+  if (SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
     {
       if (!cNode->IsStretchyChar())
 	{
@@ -324,7 +324,7 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
 	}
     }
 
-  Ptr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(GetChild(0));
+  SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(GetChild(0));
   assert(sNode);
 
   scaled adjustedHeight = 0;
@@ -379,7 +379,7 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
   adjustedSize = std::max(scaled(0), adjustedSize);
 
   assert(GetSize() == 1);
-  if (Ptr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
+  if (SmartPtr<MathMLCharNode> cNode = smart_cast<MathMLCharNode>(GetChild(0)))
     {
       if (!cNode->IsStretchyChar())
 	{
@@ -388,7 +388,7 @@ MathMLOperatorElement::HorizontalStretchTo(const scaled& width, bool strict)
 	}
     }
 
-  Ptr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(GetChild(0));
+  SmartPtr<MathMLCharNode> sNode = smart_cast<MathMLCharNode>(GetChild(0));
   assert(sNode);
 
   // now we do the stretchy layout. fontAttributes will be used to find the
@@ -500,16 +500,16 @@ MathMLOperatorElement::GetOperatorAttributeValue(AttributeId id,
 OperatorFormId
 MathMLOperatorElement::InferOperatorForm()
 {
-  Ptr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
+  SmartPtr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
   assert(eOp);
-  Ptr<MathMLElement> elem = eOp->GetParent();
+  SmartPtr<MathMLElement> elem = eOp->GetParent();
   assert(elem);
 
   OperatorFormId res = OP_FORM_INFIX;
 
   if (elem->IsA() == TAG_MROW)
     {
-      Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem);
+      SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem);
       assert(row);
       res = row->GetOperatorForm(eOp);
     }
@@ -524,7 +524,7 @@ MathMLOperatorElement::GetStretch() const
 
   //assert(GetSize() == 1);
   if (!is_a<MathMLCharNode>(GetChild(0))) return STRETCH_NO;
-  Ptr<MathMLCharNode> sChar = smart_cast<MathMLCharNode>(GetChild(0));
+  SmartPtr<MathMLCharNode> sChar = smart_cast<MathMLCharNode>(GetChild(0));
   assert(sChar);
 
   if (!sChar->IsStretchyChar()) return STRETCH_NO;
@@ -532,7 +532,7 @@ MathMLOperatorElement::GetStretch() const
   return sChar->GetStretch();
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLOperatorElement::GetCoreOperator()
 {
   return this;

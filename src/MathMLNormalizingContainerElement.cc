@@ -47,7 +47,7 @@ MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
 }
 
 void
-MathMLNormalizingContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLNormalizingContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -58,13 +58,13 @@ MathMLNormalizingContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
 	{
 	  DOM::Node node = children.item(0);
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+	  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
 	  assert(elem);
 	  SetChild(elem);
 	}
       else 
 	{
-	  Ptr<MathMLRowElement> row;
+	  SmartPtr<MathMLRowElement> row;
 	  if (GetChild() && is_a<MathMLRowElement>(GetChild()) && !GetChild()->GetDOMElement())
 	    // this must be an inferred mrow
 	    row = smart_cast<MathMLRowElement>(GetChild());
@@ -73,11 +73,11 @@ MathMLNormalizingContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  assert(row && !row->GetDOMElement());
 	  SetChild(row);
 
-	  std::vector< Ptr<MathMLElement> > newContent;
+	  std::vector< SmartPtr<MathMLElement> > newContent;
 	  newContent.reserve(n);
 	  for (unsigned i = 0; i < n; i++)
 	    {
-	      Ptr<MathMLElement> elem = doc->getFormattingNode(children.item(i));
+	      SmartPtr<MathMLElement> elem = doc->getFormattingNode(children.item(i));
 	      assert(elem);
 	      newContent.push_back(elem);
 	    }

@@ -39,19 +39,19 @@ protected:
   virtual ~MathMLStringLitElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLStringLitElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLStringLitElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLStringLitElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLStringLitElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment&);
 
 protected:
-  Ptr<class MathMLTextNode> lQuote;
-  Ptr<class MathMLTextNode> rQuote;
+  SmartPtr<class MathMLTextNode> lQuote;
+  SmartPtr<class MathMLTextNode> rQuote;
 
 private:
   bool setupDone;

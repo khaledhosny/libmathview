@@ -146,7 +146,7 @@ MathMLRenderingEngine::Load(const DOM::Element& elem)
 
   Unload();
 
-  Ptr<MathMLDocument> document = MathMLDocument::create(elem);
+  SmartPtr<MathMLDocument> document = MathMLDocument::create(elem);
   assert(document);
 
   root = document->GetRoot();
@@ -267,7 +267,7 @@ MathMLRenderingEngine::GetDocumentRectangle(Rectangle& rect) const
     rect.Zero();
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLRenderingEngine::GetElementAt(const scaled& x, const scaled& y) const
 {
   if (document) return document->Inside(x, y);

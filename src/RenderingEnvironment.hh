@@ -51,8 +51,8 @@ public:
   void     Drop(void);
 
   // document
-  void     SetDocument(const Ptr<class MathMLDocument>&);
-  Ptr<class MathMLDocument> GetDocument(void) const;
+  void     SetDocument(const SmartPtr<class MathMLDocument>&);
+  SmartPtr<class MathMLDocument> GetDocument(void) const;
 
   // attributes retrieving
   const MathMLAttribute* GetAttribute(AttributeId) const;
@@ -110,7 +110,7 @@ private:
     RGBValue  color;
     RGBValue  background;
     bool      transparentBackground;
-    Ptr<class MathMLDocument> doc;
+    SmartPtr<class MathMLDocument> doc;
     const MathMLAttributeList* defaults;
   };
 

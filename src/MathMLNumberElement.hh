@@ -39,11 +39,11 @@ protected:
   virtual ~MathMLNumberElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLNumberElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLNumberElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLNumberElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLNumberElement(el)); }
 #endif
 };
 

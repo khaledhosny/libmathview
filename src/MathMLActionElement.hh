@@ -41,11 +41,11 @@ protected:
   virtual ~MathMLActionElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLActionElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLActionElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLActionElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLActionElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
@@ -67,13 +67,13 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
-  Ptr<MathMLElement> GetSelectedElement(void) const;
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
+  SmartPtr<MathMLElement> GetSelectedElement(void) const;
 
   unsigned GetSelectedIndex(void) const;
   void     SetSelectedIndex(unsigned);
 
-  virtual Ptr<MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<MathMLOperatorElement> GetCoreOperator(void);
 
 private:
   unsigned selection;

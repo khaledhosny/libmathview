@@ -68,7 +68,7 @@ MathMLFractionElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLFractionElement::SetNumerator(const Ptr<MathMLElement>& elem)
+MathMLFractionElement::SetNumerator(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != numerator)
     {
@@ -80,7 +80,7 @@ MathMLFractionElement::SetNumerator(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLFractionElement::SetDenominator(const Ptr<MathMLElement>& elem)
+MathMLFractionElement::SetDenominator(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != denominator)
     {
@@ -92,7 +92,7 @@ MathMLFractionElement::SetDenominator(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLFractionElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
+MathMLFractionElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem);
   if (oldElem == numerator) SetNumerator(newElem);
@@ -101,7 +101,7 @@ MathMLFractionElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<Math
 }
 
 void
-MathMLFractionElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLFractionElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -483,19 +483,19 @@ MathMLFractionElement::ReleaseGCs()
   if (denominator) denominator->ReleaseGCs();
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLFractionElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 
-  Ptr<MathMLElement> inside = 0;
+  SmartPtr<MathMLElement> inside = 0;
   if (numerator && (inside = numerator->Inside(x, y))) return inside;
   if (denominator && (inside = denominator->Inside(x, y))) return inside;
 
   return this;
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLFractionElement::GetCoreOperator()
 {
   if (numerator) return numerator->GetCoreOperator();

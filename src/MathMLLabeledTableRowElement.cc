@@ -51,7 +51,7 @@ MathMLLabeledTableRowElement::~MathMLLabeledTableRowElement()
 }
 
 void
-MathMLLabeledTableRowElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLLabeledTableRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -63,7 +63,7 @@ MathMLLabeledTableRowElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 	  if (children.item(0) && nodeLocalName(children.item(0)) != "mtr")
 	    {
-	      Ptr<MathMLElement> elem = doc->getFormattingNode(children.item(0));
+	      SmartPtr<MathMLElement> elem = doc->getFormattingNode(children.item(0));
 	      assert(elem);
 	      SetLabel(elem);
 	    }
@@ -85,10 +85,10 @@ MathMLLabeledTableRowElement::Setup(RenderingEnvironment& env)
   SetupAux(env, true);
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLLabeledTableRowElement::Inside(const scaled& x, const scaled& y)
 {
-  Ptr<MathMLElement> inside;
+  SmartPtr<MathMLElement> inside;
   if (inside = MathMLTableRowElement::Inside(x, y)) return inside;
   if (label && (inside = label->Inside(x, y))) return inside;
   return 0;
@@ -117,14 +117,14 @@ MathMLLabeledTableRowElement::ResetFlagDown(Flags f)
   if (label) label->ResetFlagDown(f);  
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLLabeledTableRowElement::GetLabel(void) const
 {
   return label;
 }
 
 void
-MathMLLabeledTableRowElement::SetLabel(const Ptr<MathMLElement>& elem)
+MathMLLabeledTableRowElement::SetLabel(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != label)
     {

@@ -47,7 +47,7 @@ MathMLBinContainerElement::~MathMLBinContainerElement()
 }
 
 void
-MathMLBinContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLBinContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -57,7 +57,7 @@ MathMLBinContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
 	{
 	  DOM::Node node = children.item(0);
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+	  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
 	  // it might be that we get a NULL. In that case it would probably make
 	  // sense to create a dummy element, because we filtered MathML
 	  // elements only
@@ -117,13 +117,13 @@ MathMLBinContainerElement::Render(const DrawingArea& area)
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLBinContainerElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y))
     {
       if (child)
-	if (Ptr<MathMLElement> inside = child->Inside(x, y)) return inside;
+	if (SmartPtr<MathMLElement> inside = child->Inside(x, y)) return inside;
       return this;
     }
   else
@@ -200,21 +200,21 @@ MathMLBinContainerElement::ReleaseGCs()
 }
 
 void
-MathMLBinContainerElement::Remove(const Ptr<MathMLElement>&)
+MathMLBinContainerElement::Remove(const SmartPtr<MathMLElement>&)
 {
   assert(0);
 }
 
 void
-MathMLBinContainerElement::Replace(const Ptr<MathMLElement>& oldElem,
-				   const Ptr<MathMLElement>& newElem)
+MathMLBinContainerElement::Replace(const SmartPtr<MathMLElement>& oldElem,
+				   const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem == child);
   SetChild(newElem);
 }
 
 void
-MathMLBinContainerElement::SetChild(const Ptr<MathMLElement>& elem)
+MathMLBinContainerElement::SetChild(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != child)
     {

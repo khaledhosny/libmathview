@@ -33,11 +33,11 @@ protected:
   virtual ~VerticalLayout() { }
 
 public:
-  static Ptr<VerticalLayout> create(void)
+  static SmartPtr<VerticalLayout> create(void)
   { return new VerticalLayout(); }
 
   void SetSpacing(const scaled&, const scaled&);
-  void Add(const Ptr<MathMLElement>&);
+  void Add(const SmartPtr<MathMLElement>&);
   void RemoveAll(void);
   void SetPosition(const scaled&, const scaled&);
 
@@ -47,10 +47,10 @@ public:
 
 protected:
   scaled
-  VerticalLayout::GetRowSpacing(const std::vector< Ptr<HorizontalLayout> >::const_iterator&,
-				const std::vector< Ptr<HorizontalLayout> >::const_iterator&) const;
+  VerticalLayout::GetRowSpacing(const std::vector< SmartPtr<HorizontalLayout> >::const_iterator&,
+				const std::vector< SmartPtr<HorizontalLayout> >::const_iterator&) const;
 
-  std::vector< Ptr<HorizontalLayout> > content;
+  std::vector< SmartPtr<HorizontalLayout> > content;
   scaled rowSpacing;
   scaled rowMinSpacing;
 };

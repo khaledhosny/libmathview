@@ -41,15 +41,15 @@ protected:
   virtual ~MathMLFractionElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLFractionElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLFractionElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLFractionElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLFractionElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void   Normalize(const Ptr<class MathMLDocument>&);
+  virtual void   Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void   Setup(RenderingEnvironment&);
   virtual void   DoLayout(const class FormattingContext&);
   virtual void   SetPosition(const scaled&, const scaled&);
@@ -64,22 +64,22 @@ public:
 
   virtual void   Render(const DrawingArea&);
 
-  virtual void   Replace(const Ptr<class MathMLElement>&, const Ptr<class MathMLElement>&);
+  virtual void   Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&);
 
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
   virtual void   ReleaseGCs(void);
-  virtual Ptr<class MathMLElement> Inside(const scaled&, const scaled&);
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
-  Ptr<MathMLElement> GetNumerator(void) const { return numerator; }
-  Ptr<MathMLElement> GetDenominator(void) const { return denominator; }
-  void SetNumerator(const Ptr<MathMLElement>&);
-  void SetDenominator(const Ptr<MathMLElement>&);
+  SmartPtr<MathMLElement> GetNumerator(void) const { return numerator; }
+  SmartPtr<MathMLElement> GetDenominator(void) const { return denominator; }
+  void SetNumerator(const SmartPtr<MathMLElement>&);
+  void SetDenominator(const SmartPtr<MathMLElement>&);
 
 private:
-  Ptr<MathMLElement> numerator;
-  Ptr<MathMLElement> denominator;
+  SmartPtr<MathMLElement> numerator;
+  SmartPtr<MathMLElement> denominator;
 
   scaled          axis;
   scaled          numShift;

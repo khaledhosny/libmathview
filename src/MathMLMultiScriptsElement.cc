@@ -54,7 +54,7 @@ MathMLMultiScriptsElement::~MathMLMultiScriptsElement()
 }
 
 void
-MathMLMultiScriptsElement::SetBase(const Ptr<MathMLElement>& elem)
+MathMLMultiScriptsElement::SetBase(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != base)
     {
@@ -101,14 +101,14 @@ MathMLMultiScriptsElement::SetPreScriptsSize(unsigned size)
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLMultiScriptsElement::GetSubScript(unsigned i) const
 {
   assert(i < subScript.size());
   return subScript[i];
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLMultiScriptsElement::GetSuperScript(unsigned i) const
 {
   assert(i < superScript.size());
@@ -116,7 +116,7 @@ MathMLMultiScriptsElement::GetSuperScript(unsigned i) const
 }
 
 void
-MathMLMultiScriptsElement::SetSubScript(unsigned i, const Ptr<MathMLElement>& elem)
+MathMLMultiScriptsElement::SetSubScript(unsigned i, const SmartPtr<MathMLElement>& elem)
 {
   assert(i <= subScript.size());
   if (i == subScript.size())
@@ -135,7 +135,7 @@ MathMLMultiScriptsElement::SetSubScript(unsigned i, const Ptr<MathMLElement>& el
 }
 
 void
-MathMLMultiScriptsElement::SetSuperScript(unsigned i, const Ptr<MathMLElement>& elem)
+MathMLMultiScriptsElement::SetSuperScript(unsigned i, const SmartPtr<MathMLElement>& elem)
 {
   assert(i <= superScript.size());
   if (i == superScript.size())
@@ -153,14 +153,14 @@ MathMLMultiScriptsElement::SetSuperScript(unsigned i, const Ptr<MathMLElement>& 
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLMultiScriptsElement::GetPreSubScript(unsigned i) const
 {
   assert(i < preSubScript.size());
   return preSubScript[i];
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLMultiScriptsElement::GetPreSuperScript(unsigned i) const
 {
   assert(i < preSuperScript.size());
@@ -168,7 +168,7 @@ MathMLMultiScriptsElement::GetPreSuperScript(unsigned i) const
 }
 
 void
-MathMLMultiScriptsElement::SetPreSubScript(unsigned i, const Ptr<MathMLElement>& elem)
+MathMLMultiScriptsElement::SetPreSubScript(unsigned i, const SmartPtr<MathMLElement>& elem)
 {
   assert(i <= preSubScript.size());
   if (i == preSubScript.size())
@@ -187,7 +187,7 @@ MathMLMultiScriptsElement::SetPreSubScript(unsigned i, const Ptr<MathMLElement>&
 }
 
 void
-MathMLMultiScriptsElement::SetPreSuperScript(unsigned i, const Ptr<MathMLElement>& elem)
+MathMLMultiScriptsElement::SetPreSuperScript(unsigned i, const SmartPtr<MathMLElement>& elem)
 {
   assert(i <= preSuperScript.size());
   if (i == preSuperScript.size())
@@ -206,11 +206,11 @@ MathMLMultiScriptsElement::SetPreSuperScript(unsigned i, const Ptr<MathMLElement
 }
 
 void
-MathMLMultiScriptsElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
+MathMLMultiScriptsElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem);
   if (oldElem == base) SetBase(newElem);
-  std::vector< Ptr<MathMLElement> >::iterator p;
+  std::vector< SmartPtr<MathMLElement> >::iterator p;
 
   if ((p = std::find(subScript.begin(), subScript.end(), oldElem)) != subScript.end())
     SetSubScript(p - subScript.begin(), newElem);
@@ -223,7 +223,7 @@ MathMLMultiScriptsElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<
 }
 
 void
-MathMLMultiScriptsElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLMultiScriptsElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -241,7 +241,7 @@ MathMLMultiScriptsElement::Normalize(const Ptr<MathMLDocument>& doc)
 
 	  if (i == 0)
 	    {
-	      Ptr<MathMLElement> elem;
+	      SmartPtr<MathMLElement> elem;
 	      if (nodeLocalName(node) != "none" && nodeLocalName(node) != "mprescripts")
 		{
 		  elem = doc->getFormattingNode(node);
@@ -260,8 +260,8 @@ MathMLMultiScriptsElement::Normalize(const Ptr<MathMLDocument>& doc)
 	    }
 	  else if (!preScripts)
 	    {
-	      Ptr<MathMLElement> sub;
-	      Ptr<MathMLElement> sup;
+	      SmartPtr<MathMLElement> sub;
+	      SmartPtr<MathMLElement> sup;
 
 	      if (nodeLocalName(node) != "none")
 		sub = doc->getFormattingNode(node);
@@ -284,8 +284,8 @@ MathMLMultiScriptsElement::Normalize(const Ptr<MathMLDocument>& doc)
 	    }
 	  else
 	    {
-	      Ptr<MathMLElement> sub;
-	      Ptr<MathMLElement> sup;
+	      SmartPtr<MathMLElement> sub;
+	      SmartPtr<MathMLElement> sup;
 
 	      if (nodeLocalName(node) != "none")
 		sub = doc->getFormattingNode(node);
@@ -366,8 +366,8 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
       scaled scriptsWidth = 0;
       scaled preScriptsWidth = 0;
 
-      std::vector< Ptr<MathMLElement> >::const_iterator pSub;
-      std::vector< Ptr<MathMLElement> >::const_iterator pSup;
+      std::vector< SmartPtr<MathMLElement> >::const_iterator pSub;
+      std::vector< SmartPtr<MathMLElement> >::const_iterator pSup;
 
       for (pSub = subScript.begin(), pSup = superScript.begin();
 	   pSub != subScript.end();
@@ -452,8 +452,8 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
 
   SetEmbellishmentPosition(this, x, y);
 
-  std::vector< Ptr<MathMLElement> >::reverse_iterator preSub;
-  std::vector< Ptr<MathMLElement> >::reverse_iterator preSup;
+  std::vector< SmartPtr<MathMLElement> >::reverse_iterator preSub;
+  std::vector< SmartPtr<MathMLElement> >::reverse_iterator preSup;
 
   for (preSub = preSubScript.rbegin(), preSup = preSuperScript.rbegin();
        preSub != preSubScript.rend();
@@ -478,8 +478,8 @@ MathMLMultiScriptsElement::SetPosition(const scaled& x0, const scaled& y0)
   assert(base);
   base->SetPosition(x, y);
 
-  std::vector< Ptr<MathMLElement> >::iterator pSub;
-  std::vector< Ptr<MathMLElement> >::iterator pSup;
+  std::vector< SmartPtr<MathMLElement> >::iterator pSub;
+  std::vector< SmartPtr<MathMLElement> >::iterator pSup;
 
   for (pSub = subScript.begin(), pSup = superScript.begin();
        pSub != subScript.end();
@@ -530,43 +530,43 @@ MathMLMultiScriptsElement::ReleaseGCs()
   for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate(), ReleaseGCsAdaptor());
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLMultiScriptsElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y))
     {
       assert(base);
-      if (Ptr<MathMLElement> inside = base->Inside(x, y)) return inside;
+      if (SmartPtr<MathMLElement> inside = base->Inside(x, y)) return inside;
 
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = preSubScript.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = preSubScript.begin();
 	   elem != preSubScript.end(); elem++)
 	if (*elem)
 	  {
-	    Ptr<MathMLElement> inside = (*elem)->Inside(x, y);
+	    SmartPtr<MathMLElement> inside = (*elem)->Inside(x, y);
 	    if (inside) return inside;
 	  }
 
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = preSuperScript.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = preSuperScript.begin();
 	   elem != preSuperScript.end(); elem++)
 	if (*elem)
 	  {
-	    Ptr<MathMLElement> inside = (*elem)->Inside(x, y);
+	    SmartPtr<MathMLElement> inside = (*elem)->Inside(x, y);
 	    if (inside) return inside;
 	  }
 
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = subScript.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = subScript.begin();
 	   elem != subScript.end(); elem++)
 	if (*elem)
 	  {
-	    Ptr<MathMLElement> inside = (*elem)->Inside(x, y);
+	    SmartPtr<MathMLElement> inside = (*elem)->Inside(x, y);
 	    if (inside) return inside;
 	  }
 
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = superScript.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = superScript.begin();
 	   elem != superScript.end(); elem++)
 	if (*elem)
 	  {
-	    Ptr<MathMLElement> inside = (*elem)->Inside(x, y);
+	    SmartPtr<MathMLElement> inside = (*elem)->Inside(x, y);
 	    if (inside) return inside;
 	  }
 
@@ -582,8 +582,8 @@ MathMLMultiScriptsElement::GetLeftEdge() const
   if (preSubScript.size() > 0)
     {
       assert(preSuperScript.size() == preSubScript.size());
-      Ptr<MathMLElement> sub = GetPreSubScript(preSubScript.size() - 1);
-      Ptr<MathMLElement> sup = GetPreSuperScript(preSuperScript.size() - 1);
+      SmartPtr<MathMLElement> sub = GetPreSubScript(preSubScript.size() - 1);
+      SmartPtr<MathMLElement> sup = GetPreSuperScript(preSuperScript.size() - 1);
       if (sub && sup)
 	return std::min(sub->GetLeftEdge(), sup->GetLeftEdge());
       else if (sub)
@@ -606,8 +606,8 @@ MathMLMultiScriptsElement::GetRightEdge() const
   if (subScript.size() > 0)
     {
       assert(subScript.size() == superScript.size());
-      Ptr<MathMLElement> sub = GetSubScript(subScript.size() - 1);
-      Ptr<MathMLElement> sup = GetSuperScript(superScript.size() - 1);
+      SmartPtr<MathMLElement> sub = GetSubScript(subScript.size() - 1);
+      SmartPtr<MathMLElement> sup = GetSuperScript(superScript.size() - 1);
       if (sub && sup)
 	return std::min(sub->GetLeftEdge(), sup->GetLeftEdge());
       else if (sub)
@@ -624,7 +624,7 @@ MathMLMultiScriptsElement::GetRightEdge() const
     }
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLMultiScriptsElement::GetCoreOperator()
 {
   if (base) return base->GetCoreOperator();

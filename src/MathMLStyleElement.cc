@@ -87,14 +87,14 @@ MathMLStyleElement::GetAttributeSignature(AttributeId id) const
 
 #if 0
 void
-MathMLStyleElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLStyleElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
       MathMLNormalizingContainerElement::Normalize(doc);
-      if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+      if (SmartPtr<MathMLOperatorElement> coreOp = GetCoreOperator())
 	{
-	  Ptr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
+	  SmartPtr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
 	  assert(eOp && eOp->GetParent() == this);
 	  eOp->Lift(doc);
 	}
@@ -373,7 +373,7 @@ MathMLStyleElement::SetDirtyAttribute()
   SetDirtyAttributeD();
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLStyleElement::GetCoreOperator()
 {
   if (GetChild()) return GetChild()->GetCoreOperator();

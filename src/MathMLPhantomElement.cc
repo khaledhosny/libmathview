@@ -52,14 +52,14 @@ MathMLPhantomElement::IsSpaceLike() const
 
 #if 0
 void
-MathMLPhantomElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLPhantomElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
       MathMLNormalizingContainerElement::Normalize(doc);
-      if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+      if (SmartPtr<MathMLOperatorElement> coreOp = GetCoreOperator())
 	{
-	  Ptr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
+	  SmartPtr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
 	  assert(eOp && eOp->GetParent() == this);
 	  eOp->Lift(doc);
 	}
@@ -97,7 +97,7 @@ MathMLPhantomElement::Render(const DrawingArea&)
   if (Dirty()) ResetDirty();
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLPhantomElement::GetCoreOperator()
 {
   if (GetChild()) return GetChild()->GetCoreOperator();

@@ -55,7 +55,7 @@ MathMLRowElement::~MathMLRowElement()
 {
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLRowElement::create()
 {
 #if defined(ENABLE_BREAKS)
@@ -65,7 +65,7 @@ MathMLRowElement::create()
 #endif
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLRowElement::create(const DOM::Element& el)
 {
 #if defined(ENABLE_BREAKS)
@@ -80,7 +80,7 @@ MathMLRowElement::create(const DOM::Element& el)
 // when a Row is inferred, it has no DOm node attached, hence
 // the LinearContainer::Normalize would stop normalizing
 void
-MathMLRowElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -103,7 +103,7 @@ MathMLRowElement::Normalize(const Ptr<MathMLDocument>& doc)
       //std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
       std::for_each(content.begin(), content.end(), std::bind2nd(NormalizeAdaptor(), doc));
 #if 0
-      for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	{
@@ -131,7 +131,7 @@ MathMLRowElement::DoLayout(const class FormattingContext& ctxt)
   if (DirtyLayout(ctxt))
     {
       box.unset();
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
 	{
@@ -156,10 +156,10 @@ MathMLRowElement::DoStretchyLayout()
   rowBox.unset();
   opBox.unset();
 
-  for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
        elem++)
-    if (Ptr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
+    if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
       {
 	opBox.append(op->GetMinBoundingBox());
 	nStretchy++;      
@@ -180,10 +180,10 @@ MathMLRowElement::DoStretchyLayout()
 	     NameOfTagId(IsA()), this, nStretchy, nOther, sp2ipx(toAscent), sp2ipx(toDescent));
 #endif
 
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
-	if (Ptr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
+	if (SmartPtr<MathMLOperatorElement> op = findStretchyOperator(*elem, STRETCH_VERTICAL))
 	  {
 	    op->VerticalStretchTo(toAscent, toDescent);
 	    (*elem)->DoLayout(FormattingContext(LAYOUT_AUTO, 0));
@@ -200,7 +200,7 @@ MathMLRowElement::SetPosition(const scaled& x0, const scaled& y0)
   position.x = x;
   position.y = y;
   SetEmbellishmentPosition(this, x, y);
-  for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
        elem++)
     {
@@ -217,7 +217,7 @@ MathMLRowElement::IsSpaceLike() const
 }
 
 OperatorFormId
-MathMLRowElement::GetOperatorForm(const Ptr<MathMLElement>& eOp) const
+MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
 {
   assert(eOp);
 
@@ -225,11 +225,11 @@ MathMLRowElement::GetOperatorForm(const Ptr<MathMLElement>& eOp) const
 
   unsigned rowLength = 0;
   unsigned position  = 0;
-  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
     {
-      Ptr<const MathMLElement> p = *elem;
+      SmartPtr<const MathMLElement> p = *elem;
 
       if (!p->IsSpaceLike())
 	{
@@ -248,12 +248,12 @@ MathMLRowElement::GetOperatorForm(const Ptr<MathMLElement>& eOp) const
 }
 
 #if 0
-Ptr<class MathMLOperatorElement>
+SmartPtr<class MathMLOperatorElement>
 MathMLRowElement::GetCoreOperator()
 {
-  Ptr<MathMLElement> core = 0;
+  SmartPtr<MathMLElement> core = 0;
 
-  for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
        elem != content.end();
        elem++)
     {
@@ -264,16 +264,16 @@ MathMLRowElement::GetCoreOperator()
 	}
     }
 
-  return core ? core->GetCoreOperator() : Ptr<class MathMLOperatorElement>(0);
+  return core ? core->GetCoreOperator() : SmartPtr<class MathMLOperatorElement>(0);
 }
 #endif
 
-Ptr<class MathMLOperatorElement>
+SmartPtr<class MathMLOperatorElement>
 MathMLRowElement::GetCoreOperator()
 {
-  Ptr<MathMLElement> candidate = 0;
+  SmartPtr<MathMLElement> candidate = 0;
 
-  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
     if (!(*elem)->IsSpaceLike())

@@ -74,7 +74,7 @@ MathMLTableRowElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLTableRowElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLTableRowElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -84,12 +84,12 @@ MathMLTableRowElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "mtd");
 	  unsigned n = children.get_length();
 
-	  std::vector< Ptr<MathMLElement> > newContent;
+	  std::vector< SmartPtr<MathMLElement> > newContent;
 	  newContent.reserve(n);
 	  for (unsigned i = 0; i < n; i++)
 	    {
 	      DOM::Node node = children.item(i);
-	      Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+	      SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
 	      assert(elem);
 	      newContent.push_back(elem);
 	    }
@@ -112,12 +112,12 @@ MathMLTableRowElement::SetupRowIndex(unsigned i)
 void
 MathMLTableRowElement::SetupCellSpanning(RenderingEnvironment& env)
 {
-  for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
        p != content.end();
        p++)
     {
       assert(is_a<MathMLTableCellElement>(*p));
-      Ptr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(*p);
+      SmartPtr<MathMLTableCellElement> mtd = smart_cast<MathMLTableCellElement>(*p);
       assert(mtd);
       mtd->SetupCellSpanning(env);
     }
@@ -137,7 +137,7 @@ MathMLTableRowElement::SetupAux(RenderingEnvironment& env, bool labeledRow)
     {
 #endif
       assert(GetParent());
-      Ptr<MathMLTableElement> mtable = smart_cast<MathMLTableElement>(GetParent());
+      SmartPtr<MathMLTableElement> mtable = smart_cast<MathMLTableElement>(GetParent());
       assert(mtable);
 
       const Value* value;
@@ -173,7 +173,7 @@ bool
 MathMLTableRowElement::IsInside(const scaled& x, const scaled& y) const
 {
   // same arguments as for the SetDirty method above
-  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
     {
@@ -184,7 +184,7 @@ MathMLTableRowElement::IsInside(const scaled& x, const scaled& y) const
   return false;
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLTableRowElement::GetLabel(void) const
 {
   return 0;
@@ -195,7 +195,7 @@ MathMLTableRowElement::SetDirtyStructure()
 {
   assert(GetParent());
   assert(is_a<MathMLTableElement>(GetParent()));
-  Ptr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
+  SmartPtr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
   assert(table);
   table->SetDirtyStructure();
   MathMLLinearContainerElement::SetDirtyStructure();
@@ -206,7 +206,7 @@ MathMLTableRowElement::SetDirtyAttribute()
 {
   assert(GetParent());
   assert(is_a<MathMLTableElement>(GetParent()));
-  Ptr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
+  SmartPtr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
   assert(table);
   table->SetDirtyAttribute();
   MathMLLinearContainerElement::SetDirtyAttribute();
@@ -217,7 +217,7 @@ MathMLTableRowElement::SetDirtyLayout()
 {
   assert(GetParent());
   assert(is_a<MathMLTableElement>(GetParent()));
-  Ptr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
+  SmartPtr<MathMLTableElement> table = smart_cast<MathMLTableElement>(GetParent());
   assert(table);
   table->SetDirtyLayout();
   MathMLLinearContainerElement::SetDirtyLayout();

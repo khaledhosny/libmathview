@@ -32,8 +32,8 @@ protected:
   ~MathMLEmbellishment() { };
 
 public:
-  void DoEmbellishmentLayout(const Ptr<MathMLElement>&, BoundingBox&);
-  void SetEmbellishmentPosition(const Ptr<MathMLElement>&, scaled&, scaled&);
+  void DoEmbellishmentLayout(const SmartPtr<MathMLElement>&, BoundingBox&);
+  void SetEmbellishmentPosition(const SmartPtr<MathMLElement>&, scaled&, scaled&);
 };
 
 #endif // __MathMLEmbellishment_hh__

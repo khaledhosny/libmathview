@@ -45,25 +45,25 @@ protected:
   virtual ~MathMLTokenElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLTokenElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLTokenElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLTokenElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLTokenElement(el)); }
 #endif
 
   unsigned       GetSize(void) const { return content.size(); }
   void           SetSize(unsigned);
-  Ptr<class MathMLTextNode> GetChild(unsigned) const;
-  void           SetChild(unsigned, const Ptr<MathMLTextNode>&);
+  SmartPtr<class MathMLTextNode> GetChild(unsigned) const;
+  void           SetChild(unsigned, const SmartPtr<MathMLTextNode>&);
   void           RemoveChild(unsigned);
-  void           InsertChild(unsigned, const Ptr<MathMLTextNode>&);
-  void           AppendChild(const Ptr<class MathMLTextNode>&);
+  void           InsertChild(unsigned, const SmartPtr<MathMLTextNode>&);
+  void           AppendChild(const SmartPtr<class MathMLTextNode>&);
   void           Append(const String*);
-  void           SwapChildren(std::vector< Ptr<MathMLTextNode> >&);
+  void           SwapChildren(std::vector< SmartPtr<MathMLTextNode> >&);
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void   Normalize(const Ptr<class MathMLDocument>&);
+  virtual void   Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void 	 Setup(class RenderingEnvironment&);
   virtual void 	 DoLayout(const class FormattingContext&);
   virtual void   SetPosition(const scaled&, const scaled&);
@@ -77,19 +77,19 @@ public:
 
   RGBValue       GetColor(void) const { return color; }
 
-  virtual Ptr<class MathMLCharNode> GetCharNode(void) const;
-  const std::vector< Ptr<class MathMLTextNode> >& GetContent(void) const { return content; }
+  virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
+  const std::vector< SmartPtr<class MathMLTextNode> >& GetContent(void) const { return content; }
   String*        GetRawContent(void) const;
   unsigned       GetLogicalContentLength(void) const;
 
 private:
-  std::vector< Ptr<class MathMLTextNode> > content;
+  std::vector< SmartPtr<class MathMLTextNode> > content;
 
 protected:
   void SetContentPosition(const scaled&, const scaled&);
 
-  static Ptr<class MathMLTextNode> SubstituteMGlyphElement(const DOM::Element&);
-  static Ptr<class MathMLTextNode> SubstituteAlignMarkElement(const DOM::Element&);
+  static SmartPtr<class MathMLTextNode> SubstituteMGlyphElement(const DOM::Element&);
+  static SmartPtr<class MathMLTextNode> SubstituteAlignMarkElement(const DOM::Element&);
   
   void AddItalicCorrection(void);
 

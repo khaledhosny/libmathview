@@ -61,14 +61,14 @@ MathMLEncloseElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLEncloseElement::NormalizeRadicalElement(const Ptr<MathMLDocument>& doc)
+MathMLEncloseElement::NormalizeRadicalElement(const SmartPtr<MathMLDocument>& doc)
 {
   assert(GetChild());
 
-  Ptr<MathMLRadicalElement> sqrt = smart_cast<MathMLRadicalElement>(MathMLRadicalElement::create());
+  SmartPtr<MathMLRadicalElement> sqrt = smart_cast<MathMLRadicalElement>(MathMLRadicalElement::create());
   assert(sqrt);
 
-  Ptr<MathMLElement> oldChild = GetChild();
+  SmartPtr<MathMLElement> oldChild = GetChild();
   SetChild(0);
   sqrt->SetRadicand(oldChild);
   SetChild(sqrt);
@@ -76,7 +76,7 @@ MathMLEncloseElement::NormalizeRadicalElement(const Ptr<MathMLDocument>& doc)
 }
 
 void
-MathMLEncloseElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLEncloseElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -85,7 +85,7 @@ MathMLEncloseElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  GetChild() && is_a<MathMLRadicalElement>(GetChild()) && !GetChild()->GetParent())
 	{
 	  // this must be an inferred msqrt element
-	  Ptr<MathMLRadicalElement> inferredSqrt = smart_cast<MathMLRadicalElement>(GetChild());
+	  SmartPtr<MathMLRadicalElement> inferredSqrt = smart_cast<MathMLRadicalElement>(GetChild());
 	  assert(inferredSqrt);
 	  SetChild(inferredSqrt->GetRadicand());
 	}

@@ -42,23 +42,23 @@ protected:
   virtual ~MathMLScriptElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLScriptElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLScriptElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLScriptElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLScriptElement(el)); }
 #endif
 
-  void SetBase(const Ptr<MathMLElement>&);
-  void SetSubScript(const Ptr<MathMLElement>&);
-  void SetSuperScript(const Ptr<MathMLElement>&);
-  Ptr<MathMLElement> GetBase(void) const { return base; }
-  Ptr<MathMLElement> GetSubScript(void) const { return subScript; }
-  Ptr<MathMLElement> GetSuperScript(void) const { return superScript; }
-  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
+  void SetBase(const SmartPtr<MathMLElement>&);
+  void SetSubScript(const SmartPtr<MathMLElement>&);
+  void SetSuperScript(const SmartPtr<MathMLElement>&);
+  SmartPtr<MathMLElement> GetBase(void) const { return base; }
+  SmartPtr<MathMLElement> GetSubScript(void) const { return subScript; }
+  SmartPtr<MathMLElement> GetSuperScript(void) const { return superScript; }
+  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
@@ -73,12 +73,12 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
   virtual void   ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
 private:
-  Ptr<MathMLElement> subScript;
-  Ptr<MathMLElement> superScript;
+  SmartPtr<MathMLElement> subScript;
+  SmartPtr<MathMLElement> superScript;
 
   scaled subShiftX;
   scaled subShiftY;

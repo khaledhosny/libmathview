@@ -41,20 +41,20 @@ protected:
   virtual ~MathMLRowElement();
 
 public:
-  static Ptr<MathMLElement> create(void);
+  static SmartPtr<MathMLElement> create(void);
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element&);
+  static SmartPtr<MathMLElement> create(const DOM::Element&);
 #endif
 
-  //virtual void Normalize(const Ptr<class MathMLDocument>&);
+  //virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
 
   virtual bool IsSpaceLike(void) const;
 
-  OperatorFormId GetOperatorForm(const Ptr<MathMLElement>&) const;
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator();
+  OperatorFormId GetOperatorForm(const SmartPtr<MathMLElement>&) const;
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator();
 
 protected:
   void DoStretchyLayout(void);

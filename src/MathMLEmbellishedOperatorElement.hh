@@ -29,26 +29,26 @@
 class MathMLEmbellishedOperatorElement : public MathMLBinContainerElement
 {
 protected:
-  MathMLEmbellishedOperatorElement(const Ptr<MathMLOperatorElement>&);
+  MathMLEmbellishedOperatorElement(const SmartPtr<MathMLOperatorElement>&);
   virtual ~MathMLEmbellishedOperatorElement();
 
 public:
-  static Ptr<MathMLEmbellishedOperatorElement> create(const Ptr<MathMLOperatorElement>& elem)
-  { return Ptr<MathMLEmbellishedOperatorElement>(new MathMLEmbellishedOperatorElement(elem)); }
+  static SmartPtr<MathMLEmbellishedOperatorElement> create(const SmartPtr<MathMLOperatorElement>& elem)
+  { return SmartPtr<MathMLEmbellishedOperatorElement>(new MathMLEmbellishedOperatorElement(elem)); }
 
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
 
   virtual bool IsEmbellishedOperator(void) const;
-  virtual Ptr<MathMLOperatorElement> GetCoreOperator(void) { return coreOp; }
-  virtual Ptr<class MathMLCharNode> GetCharNode(void) const;
+  virtual SmartPtr<MathMLOperatorElement> GetCoreOperator(void) { return coreOp; }
+  virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
 
   void Lift(void);
 
 private:
-  Ptr<MathMLOperatorElement> coreOp;
+  SmartPtr<MathMLOperatorElement> coreOp;
   bool  script;
 };
 

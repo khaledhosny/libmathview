@@ -32,8 +32,8 @@ protected:
   virtual ~MathMLApplyFunctionNode();
 
 public:
-  static Ptr<MathMLApplyFunctionNode> create(void)
-  { return Ptr<MathMLApplyFunctionNode>(new MathMLApplyFunctionNode()); }
+  static SmartPtr<MathMLApplyFunctionNode> create(void)
+  { return SmartPtr<MathMLApplyFunctionNode>(new MathMLApplyFunctionNode()); }
 
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);

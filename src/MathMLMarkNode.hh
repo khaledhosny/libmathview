@@ -33,8 +33,8 @@ protected:
   virtual ~MathMLMarkNode();
 
 public:
-  static Ptr<MathMLMarkNode> create(MarkAlignType t)
-  { return Ptr<MathMLMarkNode>(new MathMLMarkNode(t)); }
+  static SmartPtr<MathMLMarkNode> create(MarkAlignType t)
+  { return SmartPtr<MathMLMarkNode>(new MathMLMarkNode(t)); }
   
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);

@@ -36,13 +36,13 @@ MathMLNode::~MathMLNode()
 {
 }
 
-Ptr<MathMLCharNode>
+SmartPtr<MathMLCharNode>
 MathMLNode::GetCharNode() const
 {
   return 0;
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLNode::GetParent() const
 {
   return parent;
@@ -55,7 +55,7 @@ MathMLNode::Unlink()
 }
 
 void
-MathMLNode::SetParent(const Ptr<MathMLElement>& p)
+MathMLNode::SetParent(const SmartPtr<MathMLElement>& p)
 {
   parent = p;
 }

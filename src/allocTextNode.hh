@@ -26,8 +26,8 @@
 #include "Ptr.hh"
 #include "String.hh"
 
-Ptr<class MathMLTextNode> allocCharNode(Char);
-Ptr<class MathMLTextNode> allocCombinedCharNode(Char, Char);
-Ptr<class MathMLTextNode> allocTextNode(const String**);
+SmartPtr<class MathMLTextNode> allocCharNode(Char);
+SmartPtr<class MathMLTextNode> allocCombinedCharNode(Char, Char);
+SmartPtr<class MathMLTextNode> allocTextNode(const String**);
 
 #endif

@@ -75,7 +75,7 @@ MathMLUnderOverElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLUnderOverElement::SetBase(const Ptr<MathMLElement>& elem)
+MathMLUnderOverElement::SetBase(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != base)
     {
@@ -87,7 +87,7 @@ MathMLUnderOverElement::SetBase(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLUnderOverElement::SetUnderScript(const Ptr<MathMLElement>& elem)
+MathMLUnderOverElement::SetUnderScript(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != underScript)
     {
@@ -99,7 +99,7 @@ MathMLUnderOverElement::SetUnderScript(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLUnderOverElement::SetOverScript(const Ptr<MathMLElement>& elem)
+MathMLUnderOverElement::SetOverScript(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != overScript)
     {
@@ -111,7 +111,7 @@ MathMLUnderOverElement::SetOverScript(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLUnderOverElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
+MathMLUnderOverElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem);
   if (oldElem == base) SetBase(newElem);
@@ -121,7 +121,7 @@ MathMLUnderOverElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<Mat
 }
 
 void
-MathMLUnderOverElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLUnderOverElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -131,7 +131,7 @@ MathMLUnderOverElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  assert(IsA() == TAG_MUNDER || IsA() == TAG_MOVER || IsA() == TAG_MUNDEROVER);
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 	  
-	  if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	  if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
 	    SetBase(e);
 	  else if (!is_a<MathMLDummyElement>(GetBase()))
 	    SetBase(MathMLDummyElement::create());
@@ -139,7 +139,7 @@ MathMLUnderOverElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  switch (IsA())
 	    {
 	    case TAG_MUNDER:
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
 		SetUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetUnderScript()))
 		SetUnderScript(MathMLDummyElement::create());
@@ -147,17 +147,17 @@ MathMLUnderOverElement::Normalize(const Ptr<MathMLDocument>& doc)
 	      break;
 	    case TAG_MOVER:
 	      SetUnderScript(0);
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
 		SetOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetOverScript()))
 		SetOverScript(MathMLDummyElement::create());
 	      break;
 	    case TAG_MUNDEROVER:
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
 		SetUnderScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetUnderScript()))
 		SetUnderScript(MathMLDummyElement::create());
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
 		SetOverScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetOverScript()))
 		SetOverScript(MathMLDummyElement::create());
@@ -191,7 +191,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
       scaled bigSpacing   = 3 * ruleThickness;
 
       if (base) base->Setup(env);
-      Ptr<MathMLOperatorElement> op = base ? base->GetCoreOperator() : Ptr<MathMLOperatorElement>(0);
+      SmartPtr<MathMLOperatorElement> op = base ? base->GetCoreOperator() : SmartPtr<MathMLOperatorElement>(0);
 
       if (op)
 	scriptize = !displayStyle && op->HasMovableLimits();
@@ -211,7 +211,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 	      if (value != NULL) accentUnder = value->ToBoolean();
 	      else
 		{
-		  Ptr<MathMLOperatorElement> op = underScript->GetCoreOperator();
+		  SmartPtr<MathMLOperatorElement> op = underScript->GetCoreOperator();
 		  if (op)
 		    {
 		      underScript->Setup(env);
@@ -243,7 +243,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 	      if (value != NULL) accent = value->ToBoolean();
 	      else
 		{
-		  Ptr<MathMLOperatorElement> op = overScript->GetCoreOperator();
+		  SmartPtr<MathMLOperatorElement> op = overScript->GetCoreOperator();
 		  if (op)
 		    {
 		      overScript->Setup(env);
@@ -317,9 +317,9 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	      scaled wOp      = 0;
 	      scaled wOther   = 0;
 
-	      Ptr<MathMLOperatorElement> baseOp  = findStretchyOperator(base, STRETCH_HORIZONTAL);
-	      Ptr<MathMLOperatorElement> underOp = findStretchyOperator(underScript, STRETCH_HORIZONTAL);
-	      Ptr<MathMLOperatorElement> overOp  = findStretchyOperator(overScript, STRETCH_HORIZONTAL);
+	      SmartPtr<MathMLOperatorElement> baseOp  = findStretchyOperator(base, STRETCH_HORIZONTAL);
+	      SmartPtr<MathMLOperatorElement> underOp = findStretchyOperator(underScript, STRETCH_HORIZONTAL);
+	      SmartPtr<MathMLOperatorElement> overOp  = findStretchyOperator(overScript, STRETCH_HORIZONTAL);
 
 	      Globals::logger(LOG_DEBUG, "stretchy: %p %p %p",
 			      static_cast<MathMLElement*>(baseOp),
@@ -383,11 +383,11 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 	    }
 
 	  const BoundingBox& baseBox = base->GetBoundingBox();
-	  Ptr<const MathMLCharNode> bChar = base->GetCharNode();
+	  SmartPtr<const MathMLCharNode> bChar = base->GetCharNode();
 
 	  if (underScript)
 	    {
-	      Ptr<MathMLCharNode> cChar = underScript->GetCharNode();
+	      SmartPtr<MathMLCharNode> cChar = underScript->GetCharNode();
 
 	      if (accentUnder &&
 		  bChar && cChar &&
@@ -400,7 +400,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		  underShiftY = -underShiftY;
 
 #if defined(ENABLE_EXTENSIONS)
-		  if (Ptr<MathMLOperatorElement> coreOp = underScript->GetCoreOperatorTop())
+		  if (SmartPtr<MathMLOperatorElement> coreOp = underScript->GetCoreOperatorTop())
 		    underShiftY += coreOp->GetTopPadding();
 #endif
 		} 
@@ -416,7 +416,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 
 	  if (overScript)
 	    {
-	      Ptr<MathMLCharNode> cChar = overScript->GetCharNode();
+	      SmartPtr<MathMLCharNode> cChar = overScript->GetCharNode();
 
 	      if (accent &&
 		  bChar && cChar &&
@@ -427,7 +427,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 				  cChar->GetChar(), bChar->GetChar());
 
 #if defined(ENABLE_EXTENSIONS)
-		  if (Ptr<MathMLOperatorElement> coreOp = overScript->GetCoreOperatorTop())
+		  if (SmartPtr<MathMLOperatorElement> coreOp = overScript->GetCoreOperatorTop())
 		    {
 		      Globals::logger(LOG_DEBUG, "the accent will get en extra spacing of %d", sp2ipx(coreOp->GetBottomPadding()));
 		      overShiftY += coreOp->GetBottomPadding();
@@ -513,12 +513,12 @@ MathMLUnderOverElement::Render(const DrawingArea& area)
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLUnderOverElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 
-  Ptr<MathMLElement> inside;
+  SmartPtr<MathMLElement> inside;
   if (base && (inside = base->Inside(x, y))) return inside;
   if (underScript && (inside = underScript->Inside(x, y))) return inside;
   if (overScript && (inside = overScript->Inside(x, y))) return inside;
@@ -555,7 +555,7 @@ MathMLUnderOverElement::GetRightEdge() const
   return m;
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLUnderOverElement::GetCoreOperator()
 {
   if (base) return base->GetCoreOperator();

@@ -41,15 +41,15 @@ public:
   virtual ~MathMLStyleElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLStyleElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLStyleElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLStyleElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLStyleElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  //virtual void Normalize(const Ptr<MathMLDocument>&);
+  //virtual void Normalize(const SmartPtr<MathMLDocument>&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Setup(class RenderingEnvironment&);
@@ -57,7 +57,7 @@ public:
 
   virtual bool IsSpaceLike(void) const;
   virtual void SetDirtyAttribute(void);
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 
   bool HasDifferentBackground(void) const { return differentBackground; }
   

@@ -348,7 +348,7 @@ MathMLElement::IsInside(const scaled& x, const scaled& y) const
   return GetRectangle().IsInside(x, y);
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLElement::Inside(const scaled& x, const scaled& y)
 {
   return IsInside(x, y) ? this : 0;
@@ -358,7 +358,7 @@ unsigned
 MathMLElement::GetDepth() const
 {
   unsigned depth = 0;
-  Ptr<const MathMLElement> p = this;
+  SmartPtr<const MathMLElement> p = this;
   
   while (p)
     {
@@ -410,16 +410,16 @@ MathMLElement::HasLink() const
 #endif // HAVE_GMETADOM
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLElement::GetCoreOperator()
 {
   return 0;
 }
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLElement::GetCoreOperatorTop()
 {
-  if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+  if (SmartPtr<MathMLOperatorElement> coreOp = GetCoreOperator())
     if (!GetParent() || GetParent()->GetCoreOperator() != coreOp)
       return coreOp;
   return 0;
@@ -442,7 +442,7 @@ MathMLElement::SetDirtyStructure()
 {
   dirtyStructure = 1;
   
-  Ptr<MathMLElement> parent = GetParent();
+  SmartPtr<MathMLElement> parent = GetParent();
   while (parent)
     {
       parent->childWithDirtyStructure = 1;
@@ -455,7 +455,7 @@ MathMLElement::SetDirtyAttribute()
 {
   dirtyAttribute = 1;
 
-  Ptr<MathMLElement> parent = GetParent();
+  SmartPtr<MathMLElement> parent = GetParent();
   while (parent)
     {
       parent->childWithDirtyAttribute = 1;
@@ -468,7 +468,7 @@ MathMLElement::SetDirtyChildren()
 {
   if (HasDirtyChildren()) return;
   dirtyChildren = 1;
-  for (Ptr<MathMLElement> elem = GetParent(); 
+  for (SmartPtr<MathMLElement> elem = GetParent(); 
        elem && !elem->HasDirtyChildren(); 
        elem = elem->GetParent())
     elem->dirtyChildren = 1;
@@ -479,7 +479,7 @@ MathMLElement::SetDirtyLayout(bool)
 {
   if (HasDirtyLayout()) return;
   dirtyLayout = 1;
-  for (Ptr<MathMLElement> elem = GetParent(); 
+  for (SmartPtr<MathMLElement> elem = GetParent(); 
        elem && !elem->dirtyLayout; 
        elem = elem->GetParent())
     elem->dirtyLayout = 1;
@@ -584,14 +584,14 @@ MathMLElement::ResetSelected()
 void
 MathMLElement::SetFlagUp(Flags f)
 {
-  for (Ptr<MathMLElement> p = GetParent(); p && !p->GetFlag(f); p = p->GetParent())
+  for (SmartPtr<MathMLElement> p = GetParent(); p && !p->GetFlag(f); p = p->GetParent())
     p->SetFlag(f);
 }
 
 void
 MathMLElement::ResetFlagUp(Flags f)
 {
-  for (Ptr<MathMLElement> p = GetParent(); p && p->GetFlag(f); p = p->GetParent())
+  for (SmartPtr<MathMLElement> p = GetParent(); p && p->GetFlag(f); p = p->GetParent())
     p->ResetFlag(f);
 }
 
@@ -612,11 +612,11 @@ MathMLElement::Unlink()
 { Link(0); }
 
 void
-MathMLElement::Link(const Ptr<MathMLElement>& p)
+MathMLElement::Link(const SmartPtr<MathMLElement>& p)
 {
   // if the element is connected to another element, we remove it
   // from there first. This is to ensure that no node of the tree is shared
-  if (Ptr<MathMLContainerElement> oldP = smart_cast<MathMLContainerElement>(GetParent()))
+  if (SmartPtr<MathMLContainerElement> oldP = smart_cast<MathMLContainerElement>(GetParent()))
     {
       MathMLNode::SetParent(0); // this is to break the recursion!
       oldP->Remove(this);
@@ -625,7 +625,7 @@ MathMLElement::Link(const Ptr<MathMLElement>& p)
 }
 
 void
-MathMLElement::SetParent(const Ptr<MathMLElement>& p)
+MathMLElement::SetParent(const SmartPtr<MathMLElement>& p)
 {
   MathMLNode::SetParent(p);
   if (p)

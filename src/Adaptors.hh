@@ -29,52 +29,52 @@
 #include "MathMLElement.hh"
 
 struct NormalizeAdaptor
-  : public std::binary_function< Ptr<MathMLElement>,Ptr<class MathMLDocument>,void>
+  : public std::binary_function< SmartPtr<MathMLElement>,SmartPtr<class MathMLDocument>,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, const Ptr<MathMLDocument>& doc) const
+  void operator()(const SmartPtr<MathMLElement>& elem, const SmartPtr<MathMLDocument>& doc) const
   { elem->Normalize(doc); }
 };
 
 struct SetupAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,class RenderingEnvironment*,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,class RenderingEnvironment*,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, class RenderingEnvironment* env) const
+  void operator()(const SmartPtr<MathMLElement>& elem, class RenderingEnvironment* env) const
   { elem->Setup(*env); }
 };
 
 struct DoLayoutAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,const class FormattingContext*,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,const class FormattingContext*,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, const class FormattingContext* ctxt) const
+  void operator()(const SmartPtr<MathMLElement>& elem, const class FormattingContext* ctxt) const
   { elem->DoLayout(*ctxt); }
 };
 
 struct SetFlagDownAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,MathMLElement::Flags,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,MathMLElement::Flags,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, MathMLElement::Flags f) const
+  void operator()(const SmartPtr<MathMLElement>& elem, MathMLElement::Flags f) const
   { elem->SetFlagDown(f); }
 };
 
 struct ResetFlagDownAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,MathMLElement::Flags,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,MathMLElement::Flags,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, MathMLElement::Flags f) const
+  void operator()(const SmartPtr<MathMLElement>& elem, MathMLElement::Flags f) const
   { elem->ResetFlagDown(f); }
 };
 
 #if 0
 struct SetDirtyAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,const class Rectangle*,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,const class Rectangle*,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, const class Rectangle* rect) const
+  void operator()(const SmartPtr<MathMLElement>& elem, const class Rectangle* rect) const
   { elem->SetDirty(rect); }
 };
 
 struct SetDirtyLayoutAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,bool,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,bool,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, bool children) const
+  void operator()(const SmartPtr<MathMLElement>& elem, bool children) const
   { elem->SetDirtyLayout(children); }
 };
 #endif
@@ -84,46 +84,46 @@ struct SetDirtyLayoutAdaptor
 // make a reference to reference, which is forbidden.
 // Is it possible that the STL developers did not foresee this?
 struct RenderAdaptor
-  : public std::binary_function<Ptr<MathMLElement>,const class DrawingArea*,void>
+  : public std::binary_function<SmartPtr<MathMLElement>,const class DrawingArea*,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem, const class DrawingArea* area) const
+  void operator()(const SmartPtr<MathMLElement>& elem, const class DrawingArea* area) const
   { elem->Render(*area); }
 };
 
 #if 0
 struct SetSelectedAdaptor
-  : public std::unary_function<Ptr<MathMLElement>,void>
+  : public std::unary_function<SmartPtr<MathMLElement>,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem) const
+  void operator()(const SmartPtr<MathMLElement>& elem) const
   { elem->SetSelected(); }
 };
 
 struct ResetSelectedAdaptor
-  : public std::unary_function<Ptr<MathMLElement>,void>
+  : public std::unary_function<SmartPtr<MathMLElement>,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem) const
+  void operator()(const SmartPtr<MathMLElement>& elem) const
   { elem->ResetSelected(); }
 };
 #endif
 
 struct ReleaseGCsAdaptor
-  : public std::unary_function<Ptr<MathMLElement>,void>
+  : public std::unary_function<SmartPtr<MathMLElement>,void>
 {
-  void operator()(const Ptr<MathMLElement>& elem) const
+  void operator()(const SmartPtr<MathMLElement>& elem) const
   { elem->ReleaseGCs(); }
 };
 
 struct IsSpaceLikePredicate
-  : public std::unary_function<Ptr<MathMLElement>,bool>
+  : public std::unary_function<SmartPtr<MathMLElement>,bool>
 {
-  bool operator()(const Ptr<MathMLElement>& elem) const
+  bool operator()(const SmartPtr<MathMLElement>& elem) const
   { return elem->IsSpaceLike(); }
 };
 
 struct NotNullPredicate
-  : public std::unary_function<Ptr<MathMLElement>,bool>
+  : public std::unary_function<SmartPtr<MathMLElement>,bool>
 {
-  bool operator()(const Ptr<MathMLElement>& elem) const
+  bool operator()(const SmartPtr<MathMLElement>& elem) const
   { return elem; }
 };
 

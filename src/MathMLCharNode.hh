@@ -33,8 +33,8 @@ protected:
   virtual ~MathMLCharNode();
 
 public:
-  static Ptr<MathMLCharNode> create(Char c)
-  { return Ptr<MathMLCharNode>(new MathMLCharNode(c)); }
+  static SmartPtr<MathMLCharNode> create(Char c)
+  { return SmartPtr<MathMLCharNode>(new MathMLCharNode(c)); }
 
   virtual void 	   Setup(class RenderingEnvironment&);
   virtual void 	   DoLayout(const class FormattingContext&);
@@ -57,7 +57,7 @@ public:
   virtual StretchId GetStretch(void) const;
   const AFont*     GetFont(void) const { return fChar.font; }
 
-  bool             CombineWith(const Ptr<MathMLCharNode>&, scaled&, scaled&) const;
+  bool             CombineWith(const SmartPtr<MathMLCharNode>&, scaled&, scaled&) const;
 
 protected:
   void DoVerticalStretchyLayoutAux(const scaled&, bool);

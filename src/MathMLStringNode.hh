@@ -33,8 +33,8 @@ protected:
   virtual ~MathMLStringNode();
 
 public:
-  static Ptr<MathMLStringNode> create(const String* s)
-  { return Ptr<MathMLStringNode>(new MathMLStringNode(s)); }
+  static SmartPtr<MathMLStringNode> create(const String* s)
+  { return SmartPtr<MathMLStringNode>(new MathMLStringNode(s)); }
 
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);

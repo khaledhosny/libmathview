@@ -70,7 +70,7 @@ MathMLStringNode::Render(const DrawingArea& area)
   assert(is_a<MathMLTokenElement>(GetParent()));
   assert(fContent != NULL);
 
-  Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
+  SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(GetParent());
   assert(token);
 
   const GraphicsContext* gc = token->GetForegroundGC();
@@ -95,7 +95,7 @@ MathMLStringNode::GetDecimalPointEdge() const
   assert(GetParent());
   assert(is_a<MathMLTokenElement>(GetParent()));
 
-  Ptr<MathMLTokenElement> parent = smart_cast<MathMLTokenElement>(GetParent());
+  SmartPtr<MathMLTokenElement> parent = smart_cast<MathMLTokenElement>(GetParent());
   assert(parent);
 
   // let's find the position of the decimal point

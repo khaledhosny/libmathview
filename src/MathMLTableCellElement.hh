@@ -42,11 +42,11 @@ private:
   void Init(void);
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLTableCellElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLTableCellElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLTableCellElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLTableCellElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
@@ -75,7 +75,7 @@ protected:
   // the following method is declared static for efficiency reasons. In fact,
   // it does not access any non-static method of the class but it is recursive
   // (and relevant to the table cell)
-  static void SetupGroups(const Ptr<MathMLElement>&, bool, bool, class TableCell&);
+  static void SetupGroups(const SmartPtr<MathMLElement>&, bool, bool, class TableCell&);
   void CalcGroupsExtent(void);
 
   void SetupCellPosition(unsigned, unsigned, unsigned);

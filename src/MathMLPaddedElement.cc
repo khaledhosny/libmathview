@@ -66,14 +66,14 @@ MathMLPaddedElement::GetAttributeSignature(AttributeId id) const
 
 #if 0
 void
-MathMLPaddedElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLPaddedElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
       MathMLNormalizingContainerElement::Normalize(doc);
-      if (Ptr<MathMLOperatorElement> coreOp = GetCoreOperator())
+      if (SmartPtr<MathMLOperatorElement> coreOp = GetCoreOperator())
 	{
-	  Ptr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
+	  SmartPtr<MathMLEmbellishedOperatorElement> eOp = coreOp->GetEmbellishment();
 	  assert(eOp && eOp->GetParent() == this);
 	  eOp->Lift(doc);
 	}
@@ -252,7 +252,7 @@ MathMLPaddedElement::SetDirty(const Rectangle* rect)
 }
 #endif
 
-Ptr<MathMLOperatorElement>
+SmartPtr<MathMLOperatorElement>
 MathMLPaddedElement::GetCoreOperator()
 {
   if (GetChild()) return GetChild()->GetCoreOperator();

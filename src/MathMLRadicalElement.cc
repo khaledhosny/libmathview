@@ -67,7 +67,7 @@ MathMLRadicalElement::Init()
 }
 
 void
-MathMLRadicalElement::SetRadicand(const Ptr<MathMLElement>& elem)
+MathMLRadicalElement::SetRadicand(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != radicand)
     {
@@ -80,7 +80,7 @@ MathMLRadicalElement::SetRadicand(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLRadicalElement::SetIndex(const Ptr<MathMLElement>& elem)
+MathMLRadicalElement::SetIndex(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != index)
     {
@@ -93,7 +93,7 @@ MathMLRadicalElement::SetIndex(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLRadicalElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLRadicalElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -348,7 +348,7 @@ MathMLRadicalElement::GetRightEdge() const
 }
 
 void
-MathMLRadicalElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
+MathMLRadicalElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem);
   if (oldElem == radicand) SetRadicand(newElem);
@@ -364,12 +364,12 @@ MathMLRadicalElement::ReleaseGCs()
   if (index) index->ReleaseGCs();
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLRadicalElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 
-  Ptr<MathMLElement> inside = 0;
+  SmartPtr<MathMLElement> inside = 0;
   if (radicand && (inside = radicand->Inside(x, y))) return inside;
   if (index && (inside = index->Inside(x, y))) return inside;
 

@@ -32,10 +32,10 @@ protected:
   virtual ~HorizontalLayout() { }
 
 public:
-  static Ptr<HorizontalLayout> create()
+  static SmartPtr<HorizontalLayout> create()
   { return new HorizontalLayout(); }
 
-  void Add(const Ptr<MathMLElement>&);
+  void Add(const SmartPtr<MathMLElement>&);
   void RemoveAll(void);
   void SetPosition(const scaled&, const scaled&);
 
@@ -44,7 +44,7 @@ public:
   scaled GetExitBaseline(void) const;
 
 protected:
-  std::vector< Ptr<MathMLElement> > content;
+  std::vector< SmartPtr<MathMLElement> > content;
 };
 
 #endif // __HorizontalLayout_hh__

@@ -46,22 +46,22 @@ protected:
   virtual ~MathMLEncloseElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLEncloseElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLEncloseElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLEncloseElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLEncloseElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(const Ptr<MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
 
 protected:
-  void NormalizeRadicalElement(const Ptr<class MathMLDocument>&);
+  void NormalizeRadicalElement(const SmartPtr<class MathMLDocument>&);
 
   bool         normalized;
 

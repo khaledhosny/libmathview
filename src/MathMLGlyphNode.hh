@@ -32,8 +32,8 @@ protected:
   virtual ~MathMLGlyphNode();
 
 public:
-  static Ptr<MathMLGlyphNode> create(const char* alt, const char* family, char ch)
-  { return Ptr<MathMLGlyphNode>(new MathMLGlyphNode(alt, family, ch)); }
+  static SmartPtr<MathMLGlyphNode> create(const char* alt, const char* family, char ch)
+  { return SmartPtr<MathMLGlyphNode>(new MathMLGlyphNode(alt, family, ch)); }
 
   virtual void 	   Setup(class RenderingEnvironment&);
   virtual void 	   DoLayout(const class FormattingContext&);

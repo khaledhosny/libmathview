@@ -43,18 +43,18 @@ protected:
 public:
   unsigned     GetSize(void) const { return content.size(); }
   void         SetSize(unsigned);
-  Ptr<MathMLElement> GetChild(unsigned) const;
-  void         SetChild(unsigned, const Ptr<MathMLElement>&);
-  virtual void Append(const Ptr<MathMLElement>&);
-  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
-  void         SwapChildren(std::vector< Ptr<MathMLElement> >&);
+  SmartPtr<MathMLElement> GetChild(unsigned) const;
+  void         SetChild(unsigned, const SmartPtr<MathMLElement>&);
+  virtual void Append(const SmartPtr<MathMLElement>&);
+  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
+  void         SwapChildren(std::vector< SmartPtr<MathMLElement> >&);
 
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
@@ -62,12 +62,12 @@ public:
   // the content can be accessed directly, but only in a read-only
   // way, because other operation involves SetParent and other
   // memory-management issues
-  const std::vector< Ptr<MathMLElement> >& GetContent(void) const { return content; }
+  const std::vector< SmartPtr<MathMLElement> >& GetContent(void) const { return content; }
 
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
 
-  std::vector< Ptr<MathMLElement> > content;
+  std::vector< SmartPtr<MathMLElement> > content;
 };
 
 #endif // MathMLLinearContainerElement_hh

@@ -29,13 +29,13 @@
 #include "MathMLOperatorElement.hh"
 
 bool
-isStretchyOperator(const Ptr<MathMLElement>& elem)
+isStretchyOperator(const SmartPtr<MathMLElement>& elem)
 {
   return findStretchyOperator(elem);
 }
 
 bool
-isStretchyOperator(const Ptr<MathMLElement>& elem, StretchId id)
+isStretchyOperator(const SmartPtr<MathMLElement>& elem, StretchId id)
 {
   return findStretchyOperator(elem, id);
 }

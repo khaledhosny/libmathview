@@ -49,18 +49,18 @@ private:
   void Init(void);
 
 public:
-  virtual void SetParent(const Ptr<MathMLElement>&);
-  void Link(const Ptr<MathMLElement>&);
+  virtual void SetParent(const SmartPtr<MathMLElement>&);
+  void Link(const SmartPtr<MathMLElement>&);
   void Unlink(void);
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(const Ptr<class MathMLDocument>&) = 0;
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&) = 0;
   virtual void Setup(class RenderingEnvironment&); // setup attributes
   virtual void DoLayout(const class FormattingContext&);
   virtual void RenderBackground(const DrawingArea&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 
   const class GraphicsContext* GetForegroundGC(void) const { return fGC[Selected()]; }
   const class GraphicsContext* GetBackgroundGC(void) const { return bGC[Selected()]; }
@@ -80,7 +80,7 @@ public:
   TagId        	 IsA(void) const;
 #if defined(HAVE_GMETADOM)
   const DOM::Element& GetDOMElement(void) const { return node; }
-  static Ptr<MathMLElement> getRenderingInterface(const DOM::Element&);
+  static SmartPtr<MathMLElement> getRenderingInterface(const DOM::Element&);
 #endif
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsInside(const scaled&, const scaled&) const;
@@ -89,8 +89,8 @@ public:
   unsigned     	 GetDepth(void) const;
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
-  Ptr<class MathMLOperatorElement> GetCoreOperatorTop(void);
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  SmartPtr<class MathMLOperatorElement> GetCoreOperatorTop(void);
 
   bool DirtyBackground(void) const
   {

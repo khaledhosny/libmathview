@@ -528,7 +528,7 @@ MathMLCharNode::GetStretch() const
 }
 
 bool
-MathMLCharNode::CombineWith(const Ptr<MathMLCharNode>& cChar, scaled& shiftX, scaled& shiftY) const
+MathMLCharNode::CombineWith(const SmartPtr<MathMLCharNode>& cChar, scaled& shiftX, scaled& shiftY) const
 {
   assert(cChar);
   if (!IsFontified() || is_a<MathMLCombinedCharNode>(cChar) || !cChar->IsFontified()) return false;

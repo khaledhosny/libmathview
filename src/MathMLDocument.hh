@@ -53,25 +53,25 @@ protected:
   virtual ~MathMLDocument();
 
 public:
-  static Ptr<MathMLDocument> create(void)
-  { return Ptr<MathMLDocument>(new MathMLDocument()); }
+  static SmartPtr<MathMLDocument> create(void)
+  { return SmartPtr<MathMLDocument>(new MathMLDocument()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLDocument> create(const DOM::Document& doc)
-  { return Ptr<MathMLDocument>(new MathMLDocument(doc)); }
-  static Ptr<MathMLDocument> create(const DOM::Element& root)
-  { return Ptr<MathMLDocument>(new MathMLDocument(root)); }
+  static SmartPtr<MathMLDocument> create(const DOM::Document& doc)
+  { return SmartPtr<MathMLDocument>(new MathMLDocument(doc)); }
+  static SmartPtr<MathMLDocument> create(const DOM::Element& root)
+  { return SmartPtr<MathMLDocument>(new MathMLDocument(root)); }
 #endif
 
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment&);
   virtual void SetDirtyAttribute(void);
 
-  Ptr<MathMLElement> GetRoot(void) const { return GetChild(); }
+  SmartPtr<MathMLElement> GetRoot(void) const { return GetChild(); }
 
-  Ptr<MathMLElement> findFormattingNode(const DOM::Node&) const;
-  Ptr<MathMLElement> getFormattingNodeNoCreate(const DOM::Node&) const;
-  Ptr<MathMLElement> getFormattingNode(const DOM::Node&) const;
-  void               setFormattingNode(const DOM::Node&, const Ptr<MathMLElement>&) const;
+  SmartPtr<MathMLElement> findFormattingNode(const DOM::Node&) const;
+  SmartPtr<MathMLElement> getFormattingNodeNoCreate(const DOM::Node&) const;
+  SmartPtr<MathMLElement> getFormattingNode(const DOM::Node&) const;
+  void               setFormattingNode(const DOM::Node&, const SmartPtr<MathMLElement>&) const;
 
   void               notifySubtreeModified(const DOM::Node&) const;
   void               notifyAttributeModified(const DOM::Node&) const;
@@ -85,23 +85,23 @@ protected:
   class DOMSubtreeModifiedListener : public DOM::EventListener
   {
   public:
-    DOMSubtreeModifiedListener(const Ptr<MathMLDocument>& d) : doc(d) { };
+    DOMSubtreeModifiedListener(const SmartPtr<MathMLDocument>& d) : doc(d) { };
     virtual ~DOMSubtreeModifiedListener() { };
     virtual void handleEvent(const DOM::Event&);
 
   private:
-    Ptr<MathMLDocument> doc;
+    SmartPtr<MathMLDocument> doc;
   };
 
   class DOMAttrModifiedListener : public DOM::EventListener
   {
   public:
-    DOMAttrModifiedListener(const Ptr<MathMLDocument>& d) : doc(d) { };
+    DOMAttrModifiedListener(const SmartPtr<MathMLDocument>& d) : doc(d) { };
     virtual ~DOMAttrModifiedListener() { };
     virtual void handleEvent(const DOM::Event&);
 
   private:
-    Ptr<MathMLDocument> doc;
+    SmartPtr<MathMLDocument> doc;
   };
 
   DOMSubtreeModifiedListener* subtreeModifiedListener;
@@ -120,7 +120,7 @@ protected:
     }
   };
 
-  typedef HASH_MAP_NS::hash_map< DOM::Node, Ptr<MathMLElement>, DOM_hash > DOMNodeMap;
+  typedef HASH_MAP_NS::hash_map< DOM::Node, SmartPtr<MathMLElement>, DOM_hash > DOMNodeMap;
   mutable DOMNodeMap nodeMap;
 #endif // HAVE_GMETADOM
 };

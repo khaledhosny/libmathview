@@ -32,8 +32,8 @@ protected:
   virtual ~MathMLCombinedCharNode();
 
 public:
-  static Ptr<MathMLCombinedCharNode> create(Char c, Char cc)
-  { return Ptr<MathMLCombinedCharNode>(new MathMLCombinedCharNode(c, cc)); }
+  static SmartPtr<MathMLCombinedCharNode> create(Char c, Char cc)
+  { return SmartPtr<MathMLCombinedCharNode>(new MathMLCombinedCharNode(c, cc)); }
 
   virtual void    Setup(class RenderingEnvironment&);
   virtual void    DoLayout(const class FormattingContext&);
@@ -45,7 +45,7 @@ public:
   virtual bool    IsCombinedChar(void) const;
 
 private:
-  Ptr<MathMLCharNode> cChar;
+  SmartPtr<MathMLCharNode> cChar;
 
   scaled shiftX; // due to kerning information or other heuristics
   scaled shiftY;

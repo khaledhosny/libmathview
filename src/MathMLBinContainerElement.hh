@@ -40,13 +40,13 @@ protected:
   virtual ~MathMLBinContainerElement();
 
 public:
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 
 #if 0
   virtual void SetDirtyLayout(bool = false);
@@ -58,17 +58,17 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
-  virtual void Remove(const Ptr<MathMLElement>&);
-  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
+  virtual void Remove(const SmartPtr<MathMLElement>&);
+  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
 
-  Ptr<MathMLElement> GetChild(void) const { return child; }
-  void         SetChild(const Ptr<MathMLElement>&);
+  SmartPtr<MathMLElement> GetChild(void) const { return child; }
+  void         SetChild(const SmartPtr<MathMLElement>&);
 
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
 
 protected:
-  Ptr<MathMLElement> child;
+  SmartPtr<MathMLElement> child;
 };
 
 #endif // MathMLContainerElement_hh

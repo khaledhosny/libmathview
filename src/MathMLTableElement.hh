@@ -79,7 +79,7 @@ struct TableCell {
   }
 
   // phase 1: MathMLTableElement::SetupTable
-  Ptr<MathMLTableCellElement> mtd;  // ptr to <mtd> element
+  SmartPtr<MathMLTableCellElement> mtd;  // ptr to <mtd> element
   bool     spanned;             // true if mtd is a pointer to the spanning cell
   unsigned rowSpan;             // spanning rows
   unsigned colSpan;             // spanning columns
@@ -93,7 +93,7 @@ struct TableCell {
 
   // following fields are only temporarily used while arranging groups
   unsigned iGroup;                // group index
-  Ptr<MathMLAlignGroupElement> group; // last group found
+  SmartPtr<MathMLAlignGroupElement> group; // last group found
 
   // some facilities
   bool ColumnSpanning(void) { return mtd && !spanned && colSpan > 1; }
@@ -150,7 +150,7 @@ struct TableRow {
     height = depth = spacing = 0;
   }
 
-  Ptr<MathMLTableRowElement> mtr;   // Table Row element
+  SmartPtr<MathMLTableRowElement> mtr;   // Table Row element
 
   SpacingId   spacingType;      // type of spacing (absolute or %)
   scaled    fixedSpacing;     // spacing between rows (spacingType == FIXED)
@@ -173,7 +173,7 @@ struct RowLabel {
     columnAlign = COLUMN_ALIGN_NOTVALID;
   }
 
-  Ptr<MathMLElement> labelElement;
+  SmartPtr<MathMLElement> labelElement;
   RowAlignId     rowAlign;
   ColumnAlignId  columnAlign;
 };
@@ -192,22 +192,22 @@ private:
   void Init(void);
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLTableElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLTableElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLTableElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLTableElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const class DrawingArea&);
   virtual void ReleaseGCs(void);
 
-  virtual Ptr<MathMLElement> Inside(const scaled& x, const scaled& y);
+  virtual SmartPtr<MathMLElement> Inside(const scaled& x, const scaled& y);
 
   void 	       SetupColumnAlignAux(const Value*, unsigned, unsigned, bool = false);
   void 	       SetupRowAlignAux(const Value*, unsigned, bool = false);

@@ -74,7 +74,7 @@ MathMLFencedElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLFencedElement::Normalize(const Ptr<MathMLDocument>&)
+MathMLFencedElement::Normalize(const SmartPtr<MathMLDocument>&)
 {
   if (DirtyStructure())
     {
@@ -121,7 +121,7 @@ MathMLFencedElement::Setup(RenderingEnvironment& env)
 }
 
 void
-MathMLFencedElement::DelayedNormalize(const Ptr<MathMLDocument>& doc)
+MathMLFencedElement::DelayedNormalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (!normalized)
     {
@@ -133,7 +133,7 @@ MathMLFencedElement::DelayedNormalize(const Ptr<MathMLDocument>& doc)
 	{
 	  DOM::Node node = children.item(i);
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+	  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
 	  assert(elem);
 	  // we detach the element from its parent, which can be an
 	  // element created by mfenced when it expanded
@@ -141,11 +141,11 @@ MathMLFencedElement::DelayedNormalize(const Ptr<MathMLDocument>& doc)
 	}
 #endif // HAVE_GMETADOM
 
-      Ptr<MathMLRowElement> mainRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
+      SmartPtr<MathMLRowElement> mainRow = smart_cast<MathMLRowElement>(MathMLRowElement::create());
       assert(mainRow);
 
-      Ptr<MathMLRowElement> mrow = 0;
-      Ptr<MathMLOperatorElement> fence = 0;
+      SmartPtr<MathMLRowElement> mrow = 0;
+      SmartPtr<MathMLOperatorElement> fence = 0;
 
       if (openFence && openFence->GetLength() > 0)
 	{
@@ -167,7 +167,7 @@ MathMLFencedElement::DelayedNormalize(const Ptr<MathMLDocument>& doc)
 	{
 	  DOM::Node node = children.item(i);
 	  assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
-	  Ptr<MathMLElement> arg = doc->getFormattingNode(node);
+	  SmartPtr<MathMLElement> arg = doc->getFormattingNode(node);
 	  assert(arg);
 
 	  mrow->Append(arg);
@@ -178,7 +178,7 @@ MathMLFencedElement::DelayedNormalize(const Ptr<MathMLDocument>& doc)
 	      const String* sep = allocString(*separators, offset, 1);
 	      assert(sep != NULL);
 
-	      Ptr<MathMLOperatorElement> separator = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
+	      SmartPtr<MathMLOperatorElement> separator = smart_cast<MathMLOperatorElement>(MathMLOperatorElement::create());
 	      assert(separator);
 
 	      separator->SetSeparator();

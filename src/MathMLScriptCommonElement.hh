@@ -31,8 +31,8 @@ public:
   MathMLScriptCommonElement(void);
   void ScriptSetup(class RenderingEnvironment&);
 
-  Ptr<class MathMLElement> GetBase(void) const { return base; }
-  void SetBase(const Ptr<class MathMLElement>&);
+  SmartPtr<class MathMLElement> GetBase(void) const { return base; }
+  void SetBase(const SmartPtr<class MathMLElement>&);
 
 protected:
   void DoScriptLayout(const BoundingBox&,
@@ -40,7 +40,7 @@ protected:
 		      scaled&, scaled&,
 		      scaled&, scaled&);
 
-  Ptr<class MathMLElement> base;
+  SmartPtr<class MathMLElement> base;
 
   scaled sppex;
   scaled ruleThickness;

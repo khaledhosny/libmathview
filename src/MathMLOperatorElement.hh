@@ -45,15 +45,15 @@ private:
   void Init(void);
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLOperatorElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLOperatorElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLOperatorElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLOperatorElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  //virtual void Normalize(const Ptr<class MathMLDocument>&);
+  //virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
@@ -83,8 +83,8 @@ public:
   void         HorizontalStretchTo(const scaled&, bool = false);
   void         VerticalStretchTo(const scaled&, const scaled&, bool = false);
 
-  virtual Ptr<MathMLOperatorElement> GetCoreOperator(void);
-  //Ptr<class MathMLEmbellishedOperatorElement> GetEmbellishment(void) const;
+  virtual SmartPtr<MathMLOperatorElement> GetCoreOperator(void);
+  //SmartPtr<class MathMLEmbellishedOperatorElement> GetEmbellishment(void) const;
 
 private:
   OperatorFormId InferOperatorForm(void);
@@ -92,7 +92,7 @@ private:
 					 const class RenderingEnvironment&) const;
   void ParseLimitValue(const Value*, const class RenderingEnvironment&, float&, scaled&);
 
-  //Ptr<class MathMLEmbellishedOperatorElement> eOp; // ptr to the root of the embellished operator
+  //SmartPtr<class MathMLEmbellishedOperatorElement> eOp; // ptr to the root of the embellished operator
 
   OperatorFormId form;
   const class MathMLAttributeList* defaults;

@@ -44,7 +44,7 @@ MathMLDummyElement::~MathMLDummyElement()
 }
 
 void
-MathMLDummyElement::Normalize(const Ptr<class MathMLDocument>&)
+MathMLDummyElement::Normalize(const SmartPtr<class MathMLDocument>&)
 {
   if (DirtyStructure()) ResetDirtyStructure();
 }

@@ -31,7 +31,7 @@
 #include "FormattingContext.hh"
 
 MathMLEmbellishedOperatorElement::
-MathMLEmbellishedOperatorElement(const Ptr<MathMLOperatorElement>& op)
+MathMLEmbellishedOperatorElement(const SmartPtr<MathMLOperatorElement>& op)
   : coreOp(op)
 {
   assert(coreOp);
@@ -43,7 +43,7 @@ MathMLEmbellishedOperatorElement::~MathMLEmbellishedOperatorElement()
 }
 
 void
-MathMLEmbellishedOperatorElement::Normalize(const Ptr<class MathMLDocument>& doc)
+MathMLEmbellishedOperatorElement::Normalize(const SmartPtr<class MathMLDocument>& doc)
 {
 #if 0
   if (DirtyStructure())
@@ -53,14 +53,14 @@ MathMLEmbellishedOperatorElement::Normalize(const Ptr<class MathMLDocument>& doc
       assert(coreOp);
       coreOp->SetDirtyStructure();
 
-      Ptr<MathMLElement> p = GetParent();
+      SmartPtr<MathMLElement> p = GetParent();
       assert(p);
 
-      Ptr<MathMLContainerElement> pContainer = smart_cast<MathMLContainerElement>(p);
+      SmartPtr<MathMLContainerElement> pContainer = smart_cast<MathMLContainerElement>(p);
       assert(pContainer);
       cout << "removing embellishment " << endl; 
 
-      Ptr<MathMLElement> oldChild = GetChild();
+      SmartPtr<MathMLElement> oldChild = GetChild();
       SetChild(0);
       pContainer->Replace(this, oldChild);
       oldChild->SetDirtyStructure();
@@ -107,7 +107,7 @@ MathMLEmbellishedOperatorElement::DoLayout(const class FormattingContext& ctxt)
       box = child->GetBoundingBox();
 
       // WARNING: maybe in this case we should ask for the LAST char node...
-      Ptr<const MathMLCharNode> node = coreOp->GetCharNode();
+      SmartPtr<const MathMLCharNode> node = coreOp->GetCharNode();
       if (node && isIntegral(node->GetChar())) {
 	// WARNING
 	// the following patch is needed in order to have integral sign working
@@ -140,7 +140,7 @@ MathMLEmbellishedOperatorElement::SetPosition(const scaled& x, const scaled& y)
 #endif // ENABLE_EXTENSIONS
 }
 
-Ptr<MathMLCharNode>
+SmartPtr<MathMLCharNode>
 MathMLEmbellishedOperatorElement::GetCharNode() const
 {
   if (!coreOp || child != coreOp)
@@ -150,14 +150,14 @@ MathMLEmbellishedOperatorElement::GetCharNode() const
 }
 
 void
-MathMLEmbellishedOperatorElement::Lift(const Ptr<MathMLDocument>& doc)
+MathMLEmbellishedOperatorElement::Lift(const SmartPtr<MathMLDocument>& doc)
 {
   assert(GetChild());
 
-  Ptr<MathMLContainerElement> parent = smart_cast<MathMLContainerElement>(GetParent());
+  SmartPtr<MathMLContainerElement> parent = smart_cast<MathMLContainerElement>(GetParent());
   assert(parent);
 
-  Ptr<MathMLContainerElement> grandParent = smart_cast<MathMLContainerElement>(parent->GetParent());
+  SmartPtr<MathMLContainerElement> grandParent = smart_cast<MathMLContainerElement>(parent->GetParent());
   assert(grandParent);
 
   cout << "lifting " << this << " from " << static_cast<MathMLContainerElement*>(parent) << " to " 

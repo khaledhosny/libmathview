@@ -63,7 +63,7 @@ MathMLAlignGroupElement::DoLayout(const FormattingContext& ctxt)
 }
 
 void
-MathMLAlignGroupElement::SetDecimalPoint(const Ptr<class MathMLTokenElement>& token)
+MathMLAlignGroupElement::SetDecimalPoint(const SmartPtr<class MathMLTokenElement>& token)
 {
   assert(token);
   assert(!decimalPoint);
@@ -71,7 +71,7 @@ MathMLAlignGroupElement::SetDecimalPoint(const Ptr<class MathMLTokenElement>& to
 }
 
 void
-MathMLAlignGroupElement::SetAlignmentMark(const Ptr<class MathMLMarkNode>& mark)
+MathMLAlignGroupElement::SetAlignmentMark(const SmartPtr<class MathMLMarkNode>& mark)
 {
   assert(mark);
   assert(!alignMarkNode);
@@ -79,7 +79,7 @@ MathMLAlignGroupElement::SetAlignmentMark(const Ptr<class MathMLMarkNode>& mark)
 }
 
 void
-MathMLAlignGroupElement::SetAlignmentMark(const Ptr<class MathMLAlignMarkElement>& mark)
+MathMLAlignGroupElement::SetAlignmentMark(const SmartPtr<class MathMLAlignMarkElement>& mark)
 {
   assert(mark);
   assert(!alignMarkElement);
@@ -87,7 +87,7 @@ MathMLAlignGroupElement::SetAlignmentMark(const Ptr<class MathMLAlignMarkElement
 }
 
 void
-MathMLAlignGroupElement::Normalize(const Ptr<class MathMLDocument>&)
+MathMLAlignGroupElement::Normalize(const SmartPtr<class MathMLDocument>&)
 {
   if (DirtyStructure()) ResetDirtyStructure();
 }

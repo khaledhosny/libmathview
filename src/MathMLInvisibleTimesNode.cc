@@ -65,14 +65,14 @@ MathMLInvisibleTimesNode::DoLayout(const FormattingContext&)
   // maybe we should seek for the top embellishment
   if (!is_a<MathMLOperatorElement>(GetParent())) return;
 
-  Ptr<MathMLElement> prev = findLeftSibling(GetParent());
-  Ptr<MathMLElement> next = findRightSibling(GetParent());
+  SmartPtr<MathMLElement> prev = findLeftSibling(GetParent());
+  SmartPtr<MathMLElement> next = findRightSibling(GetParent());
   if (!prev || !next) return;
 
   if (is_a<MathMLIdentifierElement>(prev) && is_a<MathMLIdentifierElement>(next))
     {
-      Ptr<MathMLTokenElement> prevToken = smart_cast<MathMLTokenElement>(prev);
-      Ptr<MathMLTokenElement> nextToken = smart_cast<MathMLTokenElement>(next);
+      SmartPtr<MathMLTokenElement> prevToken = smart_cast<MathMLTokenElement>(prev);
+      SmartPtr<MathMLTokenElement> nextToken = smart_cast<MathMLTokenElement>(next);
       assert(prevToken && nextToken);
     
       if (prevToken->GetLogicalContentLength() <= 1 &&

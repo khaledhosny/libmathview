@@ -51,7 +51,7 @@ MathMLLinearContainerElement::~MathMLLinearContainerElement()
 }
 
 void
-MathMLLinearContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLLinearContainerElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -62,14 +62,14 @@ MathMLLinearContainerElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 	  unsigned n = children.get_length();
 
-	  std::vector< Ptr<MathMLElement> > newContent;
+	  std::vector< SmartPtr<MathMLElement> > newContent;
 	  newContent.reserve(n);
 	  for (unsigned i = 0; i < n; i++)
 	    {
 	      DOM::Node node = children.item(i);
 	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 
-	      if (Ptr<MathMLElement> elem = doc->getFormattingNode(node))
+	      if (SmartPtr<MathMLElement> elem = doc->getFormattingNode(node))
 		newContent.push_back(elem);
 	      else
 		{
@@ -122,15 +122,15 @@ MathMLLinearContainerElement::Render(const DrawingArea& area)
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLLinearContainerElement::Inside(const scaled& x, const scaled& y)
 {
   if (IsInside(x, y)) 
     {
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end(); elem++)
 	{
-	  Ptr<MathMLElement> inside = (*elem)->Inside(x, y);
+	  SmartPtr<MathMLElement> inside = (*elem)->Inside(x, y);
 	  if (inside) return inside;
 	}
       
@@ -159,7 +159,7 @@ MathMLLinearContainerElement::SetSize(unsigned size)
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLLinearContainerElement::GetChild(unsigned i) const
 {
   assert(i < GetSize());
@@ -167,7 +167,7 @@ MathMLLinearContainerElement::GetChild(unsigned i) const
 }
 
 void
-MathMLLinearContainerElement::SetChild(unsigned i, const Ptr<MathMLElement>& elem)
+MathMLLinearContainerElement::SetChild(unsigned i, const SmartPtr<MathMLElement>& elem)
 {
   assert(i <= GetSize());
 
@@ -183,7 +183,7 @@ MathMLLinearContainerElement::SetChild(unsigned i, const Ptr<MathMLElement>& ele
 }
 
 void
-MathMLLinearContainerElement::Append(const Ptr<MathMLElement>& elem)
+MathMLLinearContainerElement::Append(const SmartPtr<MathMLElement>& elem)
 {
   assert(!elem->GetParent());
   elem->Link(this);
@@ -192,28 +192,28 @@ MathMLLinearContainerElement::Append(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLLinearContainerElement::Replace(const Ptr<MathMLElement>& oldElem,
-				      const Ptr<MathMLElement>& newElem)
+MathMLLinearContainerElement::Replace(const SmartPtr<MathMLElement>& oldElem,
+				      const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem);
-  std::vector< Ptr<MathMLElement> >::iterator old = find(content.begin(), content.end(), oldElem);
+  std::vector< SmartPtr<MathMLElement> >::iterator old = find(content.begin(), content.end(), oldElem);
   assert(old != content.end());
   SetChild(old - content.begin(), newElem);
 }
 
 void
-MathMLLinearContainerElement::SwapChildren(std::vector< Ptr<MathMLElement> >& newContent)
+MathMLLinearContainerElement::SwapChildren(std::vector< SmartPtr<MathMLElement> >& newContent)
 {
   if (newContent != content)
     {
       // reset parent should be done first because the same elements
       // may be present in the following loop as well
-      for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	(*p)->Unlink();
 
-      for (std::vector< Ptr<MathMLElement> >::iterator p = newContent.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator p = newContent.begin();
 	   p != newContent.end();
 	   p++)
 	{
@@ -231,7 +231,7 @@ MathMLLinearContainerElement::GetLeftEdge() const
 {
   scaled edge = 0;
   
-  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
     {
@@ -247,7 +247,7 @@ MathMLLinearContainerElement::GetRightEdge() const
 {
   scaled edge = 0;
 
-  for (std::vector< Ptr<MathMLElement> >::const_iterator elem = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
        elem != content.end();
        elem++)
     {

@@ -55,8 +55,8 @@ public:
   void SetDirty(const struct Rectangle* = 0) const;
   void Render(const struct Rectangle* = 0) const;
 
-  Ptr<MathMLDocument> GetDocument(void) const { return document; }
-  Ptr<MathMLElement> GetElementAt(const scaled&, const scaled&) const;
+  SmartPtr<MathMLDocument> GetDocument(void) const { return document; }
+  SmartPtr<MathMLElement> GetElementAt(const scaled&, const scaled&) const;
 
   // BoundingBox, and Rectangle are structs, not classes, 
   void GetDocumentBoundingBox(struct BoundingBox&) const;
@@ -75,7 +75,7 @@ public:
 private:
   unsigned defaultFontSize;
 
-  Ptr<class MathMLDocument> document;
+  SmartPtr<class MathMLDocument> document;
 
   class DrawingArea* area;
   class FontManager* fontManager;

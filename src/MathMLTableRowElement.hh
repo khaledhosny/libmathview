@@ -40,21 +40,21 @@ protected:
   virtual ~MathMLTableRowElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLTableRowElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLTableRowElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLTableRowElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLTableRowElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   
   //virtual void SetDirty(const Rectangle*);
   virtual bool IsInside(const scaled&, const scaled&) const;
 
-  virtual Ptr<MathMLElement> GetLabel(void) const;
+  virtual SmartPtr<MathMLElement> GetLabel(void) const;
 
   friend class MathMLTableElement;
 

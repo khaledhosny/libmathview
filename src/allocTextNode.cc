@@ -37,7 +37,7 @@
 #include "MathMLStringNode.hh"
 #endif
 
-Ptr<MathMLTextNode>
+SmartPtr<MathMLTextNode>
 allocCharNode(Char ch)
 {
   switch (ch) {
@@ -57,14 +57,14 @@ allocCharNode(Char ch)
   }
 }
 
-Ptr<MathMLTextNode>
+SmartPtr<MathMLTextNode>
 allocCombinedCharNode(Char ch, Char cch)
 {
   return MathMLCombinedCharNode::create(ch, cch);
 }
 
 #if 0
-Ptr<MathMLTextNode>
+SmartPtr<MathMLTextNode>
 allocTextNode(const String** str)
 {
   assert(str != NULL);
@@ -74,7 +74,7 @@ allocTextNode(const String** str)
 
   unsigned len = s->GetLength();
 
-  Ptr<MathMLTextNode> node = 0;
+  SmartPtr<MathMLTextNode> node = 0;
 
   if (len == 1) {
     node = allocCharNode(s->GetChar(0));

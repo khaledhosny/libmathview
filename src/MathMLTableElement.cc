@@ -99,7 +99,7 @@ MathMLTableElement::~MathMLTableElement()
 }
 
 void
-MathMLTableElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLTableElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -109,7 +109,7 @@ MathMLTableElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 	  unsigned n = children.get_length();
 
-	  std::vector< Ptr<MathMLElement> > newContent;
+	  std::vector< SmartPtr<MathMLElement> > newContent;
 	  newContent.reserve(n);
 	  for (unsigned i = 0; i < n; i++)
 	    {
@@ -117,7 +117,7 @@ MathMLTableElement::Normalize(const Ptr<MathMLDocument>& doc)
 	      assert(node);
 	      if (nodeLocalName(node) == "mtr" || nodeLocalName(node) == "mlabeledtr")
 		{
-		  Ptr<MathMLElement> elem = doc->getFormattingNode(node);
+		  SmartPtr<MathMLElement> elem = doc->getFormattingNode(node);
 		  assert(elem);
 		  newContent.push_back(elem);
 		}
@@ -370,7 +370,7 @@ MathMLTableElement::Render(const DrawingArea& area)
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLTableElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
@@ -378,7 +378,7 @@ MathMLTableElement::Inside(const scaled& x, const scaled& y)
   for (unsigned i = 0; i < nRows; i++)
     for (unsigned j = 0; j < nColumns; j++)
       if (cell[i][j].mtd && !cell[i][j].spanned) {
-	Ptr<MathMLElement> inside = cell[i][j].mtd->Inside(x, y);
+	SmartPtr<MathMLElement> inside = cell[i][j].mtd->Inside(x, y);
 	if (inside) return inside;
       }
 

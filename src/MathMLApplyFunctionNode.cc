@@ -63,12 +63,12 @@ MathMLApplyFunctionNode::DoLayout(const FormattingContext&)
 
   if (!is_a<MathMLOperatorElement>(GetParent())) return;
 
-  Ptr<MathMLElement> next = findRightSibling(GetParent());
+  SmartPtr<MathMLElement> next = findRightSibling(GetParent());
   if (!next) return;
 
   if (is_a<MathMLFencedElement>(next)) return;
   
-  if (Ptr<MathMLOperatorElement> coreOp = next->GetCoreOperatorTop())
+  if (SmartPtr<MathMLOperatorElement> coreOp = next->GetCoreOperatorTop())
     if (coreOp->IsFence()) return;
 
   // FIXME: the following constant should be defined somewhere

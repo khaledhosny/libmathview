@@ -63,7 +63,7 @@ DocumentElement::DoBoxedLayout(LayoutId id, BreakId bid, const scaled& maxWidth)
 
   box.Null();
 
-  for (Iterator< Ptr<MathMLElement> > elem(content); elem.More(); elem.Next())
+  for (Iterator< SmartPtr<MathMLElement> > elem(content); elem.More(); elem.Next())
     {
       assert(elem() != 0);
 
@@ -89,7 +89,7 @@ DocumentElement::SetPosition(const scaled& x, const scaled& y)
 
   scaled offset = y;
 
-  for (Iterator< Ptr<MathMLElement> > elem(content); elem.More(); elem.Next())
+  for (Iterator< SmartPtr<MathMLElement> > elem(content); elem.More(); elem.Next())
     {
       assert(elem() != 0);
 

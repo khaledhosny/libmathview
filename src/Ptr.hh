@@ -23,33 +23,6 @@
 #ifndef Ptr_hh
 #define Ptr_hh
 
-#include <cassert>
-
-template <class P>
-class Ptr
-{
-public:
-  Ptr(P* p = 0) : ptr(p) { if (ptr) ptr->ref(); }
-  Ptr(const Ptr& p) : ptr(p.ptr) { if (ptr) ptr->ref(); }
-  ~Ptr() { if (ptr) ptr->unref(); }
-
-  P* operator->() const { assert(ptr); return ptr; }
-  Ptr& operator=(const Ptr& p)
-  { 
-    if (ptr == p.ptr) return *this;
-    if (p.ptr) p.ptr->ref();
-    if (ptr) ptr->unref();
-    ptr = p.ptr;
-    return *this;
-  }
-
-  operator P*() const { return ptr; }
-  template <class Q> friend Ptr<Q> smart_cast(const Ptr& p) { return Ptr<Q>(dynamic_cast<Q*>(p.ptr)); }  
-  template <class Q> friend bool is_a(const Ptr& p) { return dynamic_cast<Q*>(p.ptr) != 0; }
-  template <class Q> operator Ptr<Q>() const { return Ptr<Q>(ptr); }
-
-private:
-  P* ptr;
-};
+#include "formatter/basictypes/SmartPtr.hh"
 
 #endif // Ptr_hh

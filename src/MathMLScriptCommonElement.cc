@@ -33,7 +33,7 @@ MathMLScriptCommonElement::MathMLScriptCommonElement()
 }
 
 void
-MathMLScriptCommonElement::SetBase(const Ptr<MathMLElement>& elem)
+MathMLScriptCommonElement::SetBase(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != base)
     {
@@ -67,10 +67,10 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
   scaled u;
   scaled v;
 
-  Ptr<MathMLElement> rel = findRightmostChild(base);
+  SmartPtr<MathMLElement> rel = findRightmostChild(base);
   assert(rel);
 
-  Ptr<MathMLOperatorElement> coreOp = rel->GetCoreOperator();
+  SmartPtr<MathMLOperatorElement> coreOp = rel->GetCoreOperator();
 
   if ((is_a<MathMLTokenElement>(rel) && !coreOp) ||
       (coreOp && !coreOp->IsStretchy() && coreOp->IsFence()))

@@ -41,20 +41,20 @@ public:
   virtual ~MathMLPhantomElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLPhantomElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLPhantomElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLPhantomElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLPhantomElement(el)); }
 #endif
 
-  //virtual void Normalize(const Ptr<MathMLDocument>&);
+  //virtual void Normalize(const SmartPtr<MathMLDocument>&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
 
   virtual bool IsSpaceLike(void) const;
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
 };
 
 #endif // MathMLPhantomElement_hh

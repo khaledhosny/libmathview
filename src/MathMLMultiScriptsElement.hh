@@ -48,25 +48,25 @@ public:
   void     SetScriptsSize(unsigned);
   unsigned GetPreScriptsSize(void) const { return preSubScript.size(); }
   void     SetPreScriptsSize(unsigned);
-  void     SetBase(const Ptr<MathMLElement>&);
-  void     SetSubScript(unsigned, const Ptr<MathMLElement>&);
-  void     SetSuperScript(unsigned, const Ptr<MathMLElement>&);
-  void     SetPreSubScript(unsigned, const Ptr<MathMLElement>&);
-  void     SetPreSuperScript(unsigned, const Ptr<MathMLElement>&);
-  Ptr<MathMLElement> GetBase(void) const { return base; }
-  Ptr<MathMLElement> GetSubScript(unsigned) const;
-  Ptr<MathMLElement> GetSuperScript(unsigned) const;
-  Ptr<MathMLElement> GetPreSubScript(unsigned) const;
-  Ptr<MathMLElement> GetPreSuperScript(unsigned) const;
+  void     SetBase(const SmartPtr<MathMLElement>&);
+  void     SetSubScript(unsigned, const SmartPtr<MathMLElement>&);
+  void     SetSuperScript(unsigned, const SmartPtr<MathMLElement>&);
+  void     SetPreSubScript(unsigned, const SmartPtr<MathMLElement>&);
+  void     SetPreSuperScript(unsigned, const SmartPtr<MathMLElement>&);
+  SmartPtr<MathMLElement> GetBase(void) const { return base; }
+  SmartPtr<MathMLElement> GetSubScript(unsigned) const;
+  SmartPtr<MathMLElement> GetSuperScript(unsigned) const;
+  SmartPtr<MathMLElement> GetPreSubScript(unsigned) const;
+  SmartPtr<MathMLElement> GetPreSuperScript(unsigned) const;
 
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLMultiScriptsElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLMultiScriptsElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLMultiScriptsElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLMultiScriptsElement(el)); }
 #endif
 
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
@@ -81,15 +81,15 @@ public:
   virtual void ResetFlagDown(Flags);
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
-  virtual Ptr<class MathMLOperatorElement> GetCoreOperator(void);
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
-  virtual void Replace(const Ptr<MathMLElement>&, const Ptr<MathMLElement>&);
+  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
+  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
 
 private:
-  std::vector< Ptr<MathMLElement> > subScript;
-  std::vector< Ptr<MathMLElement> > superScript;
-  std::vector< Ptr<MathMLElement> > preSubScript;
-  std::vector< Ptr<MathMLElement> > preSuperScript;
+  std::vector< SmartPtr<MathMLElement> > subScript;
+  std::vector< SmartPtr<MathMLElement> > superScript;
+  std::vector< SmartPtr<MathMLElement> > preSubScript;
+  std::vector< SmartPtr<MathMLElement> > preSuperScript;
 
   scaled subShiftX;
   scaled subShiftY;

@@ -45,7 +45,7 @@ MathMLBreakableRowElement::DoLayout(const FormattingContext& ctxt)
       assert(layout);
       layout->RemoveAll();
 
-      for (std::vector< Ptr<MathMLElement> >::iterator elem = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)
 	{

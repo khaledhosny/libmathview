@@ -39,27 +39,27 @@ protected:
   virtual ~MathMLLabeledTableRowElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLLabeledTableRowElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLLabeledTableRowElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLLabeledTableRowElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLLabeledTableRowElement(el)); }
 #endif
 
-  void SetLabel(const Ptr<MathMLElement>&);
-  virtual Ptr<MathMLElement> GetLabel(void) const;
+  void SetLabel(const SmartPtr<MathMLElement>&);
+  virtual SmartPtr<MathMLElement> GetLabel(void) const;
 
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(class RenderingEnvironment&);
   //virtual void SetDirty(const Rectangle*);
   virtual void SetFlagDown(Flags);
   virtual void ResetFlagDown(Flags);
-  virtual Ptr<MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 
   friend class MathMLTableElement;
 
 private:
-  Ptr<MathMLElement> label;
+  SmartPtr<MathMLElement> label;
 };
 
 #endif // MathMLLabeledTableRowElement_hh

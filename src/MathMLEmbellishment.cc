@@ -28,10 +28,10 @@
 #include "MathMLOperatorElement.hh"
 
 void
-MathMLEmbellishment::DoEmbellishmentLayout(const Ptr<MathMLElement>& elem, BoundingBox& box)
+MathMLEmbellishment::DoEmbellishmentLayout(const SmartPtr<MathMLElement>& elem, BoundingBox& box)
 {
   assert(elem);
-  if (Ptr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
+  if (SmartPtr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
     {
       assert(!top->DirtyAttribute());
       box.width += top->GetLeftPadding() + top->GetRightPadding();
@@ -39,10 +39,10 @@ MathMLEmbellishment::DoEmbellishmentLayout(const Ptr<MathMLElement>& elem, Bound
 }
 
 void
-MathMLEmbellishment::SetEmbellishmentPosition(const Ptr<MathMLElement>& elem, scaled& x, scaled&)
+MathMLEmbellishment::SetEmbellishmentPosition(const SmartPtr<MathMLElement>& elem, scaled& x, scaled&)
 {
   assert(elem);
-  if (Ptr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
+  if (SmartPtr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
     {
       assert(!top->DirtyAttribute());
       x += top->GetLeftPadding();

@@ -34,22 +34,22 @@
 #include "MathMLContainerElement.hh"
 
 const BoundingBox&
-getFrameBoundingBox(const Ptr<MathMLFrame>& frame)
+getFrameBoundingBox(const SmartPtr<MathMLFrame>& frame)
 {
-  assert(frame != Ptr<MathMLFrame>(0));
+  assert(frame != SmartPtr<MathMLFrame>(0));
   return frame->GetBoundingBox();
 }
 
-static Ptr<MathMLTextNode>
-getLeftSibling(const Ptr<MathMLTextNode>& node)
+static SmartPtr<MathMLTextNode>
+getLeftSibling(const SmartPtr<MathMLTextNode>& node)
 {
   assert(node);
   assert(node->GetParent());
   assert(is_a<MathMLTokenElement>(node->GetParent()));
 
-  Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(node->GetParent());
+  SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(node->GetParent());
   assert(token);
-  std::vector< Ptr<MathMLTextNode> >::const_iterator p = std::find(token->GetContent().begin(),
+  std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = std::find(token->GetContent().begin(),
 								   token->GetContent().end(),
 								   node);
   assert(p != token->GetContent().end());
@@ -57,15 +57,15 @@ getLeftSibling(const Ptr<MathMLTextNode>& node)
   else return 0;
 }
 
-static Ptr<MathMLElement>
-getLeftSibling(const Ptr<MathMLElement>& elem)
+static SmartPtr<MathMLElement>
+getLeftSibling(const SmartPtr<MathMLElement>& elem)
 {
   assert(elem);
   assert(elem->GetParent());
   assert(is_a<MathMLRowElement>(elem->GetParent()));
-  Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent());
+  SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent());
   assert(row);
-  std::vector< Ptr<MathMLElement> >::const_iterator p = std::find(row->GetContent().begin(),
+  std::vector< SmartPtr<MathMLElement> >::const_iterator p = std::find(row->GetContent().begin(),
 								  row->GetContent().end(),
 								  elem);
   assert(p != row->GetContent().end());
@@ -73,8 +73,8 @@ getLeftSibling(const Ptr<MathMLElement>& elem)
   else return 0;
 }
 
-Ptr<MathMLFrame>
-getLeftSibling(const Ptr<MathMLFrame>& frame)
+SmartPtr<MathMLFrame>
+getLeftSibling(const SmartPtr<MathMLFrame>& frame)
 {
   assert(frame);
   if (is_a<MathMLTextNode>(frame)) return getLeftSibling(smart_cast<MathMLTextNode>(frame));
@@ -86,16 +86,16 @@ getLeftSibling(const Ptr<MathMLFrame>& frame)
     }
 }
 
-static Ptr<MathMLTextNode>
-getRightSibling(const Ptr<MathMLTextNode>& node)
+static SmartPtr<MathMLTextNode>
+getRightSibling(const SmartPtr<MathMLTextNode>& node)
 {
   assert(node);
   assert(node->GetParent());
   assert(is_a<MathMLTokenElement>(node->GetParent()));
 
-  Ptr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(node->GetParent());
+  SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(node->GetParent());
   assert(token);
-  std::vector< Ptr<MathMLTextNode> >::const_iterator p = std::find(token->GetContent().begin(),
+  std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = std::find(token->GetContent().begin(),
 								   token->GetContent().end(),
 								   node);
   assert(p != token->GetContent().end());
@@ -103,15 +103,15 @@ getRightSibling(const Ptr<MathMLTextNode>& node)
   else return 0;
 }
 
-static Ptr<MathMLElement>
-getRightSibling(const Ptr<MathMLElement>& elem)
+static SmartPtr<MathMLElement>
+getRightSibling(const SmartPtr<MathMLElement>& elem)
 {
   assert(elem);
   assert(elem->GetParent());
   assert(is_a<MathMLRowElement>(elem->GetParent()));
-  Ptr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent());
+  SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem->GetParent());
   assert(row);
-  std::vector< Ptr<MathMLElement> >::const_iterator p = std::find(row->GetContent().begin(),
+  std::vector< SmartPtr<MathMLElement> >::const_iterator p = std::find(row->GetContent().begin(),
 								  row->GetContent().end(),
 								  elem);
   assert(p != row->GetContent().end());
@@ -119,8 +119,8 @@ getRightSibling(const Ptr<MathMLElement>& elem)
   else return 0;
 }
 
-Ptr<MathMLFrame>
-getRightSibling(const Ptr<MathMLFrame>& frame)
+SmartPtr<MathMLFrame>
+getRightSibling(const SmartPtr<MathMLFrame>& frame)
 {
   assert(frame);
   if (is_a<MathMLTextNode>(frame)) return getRightSibling(smart_cast<MathMLTextNode>(frame));

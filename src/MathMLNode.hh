@@ -34,16 +34,16 @@ protected:
 
 public:
   virtual void Unlink(void);
-  virtual void SetParent(const Ptr<class MathMLElement>&);
+  virtual void SetParent(const SmartPtr<class MathMLElement>&);
   // unfortunately GetParent cannot be inline here because that would require
   // that you can do ->ref() on the parent, which you don't unless you
   // include MathMLElement => circular include
-  Ptr<class MathMLElement> GetParent(void) const;
+  SmartPtr<class MathMLElement> GetParent(void) const;
 
-  virtual Ptr<class MathMLCharNode> GetCharNode(void) const;
+  virtual SmartPtr<class MathMLCharNode> GetCharNode(void) const;
 
 private:
-  Ptr<MathMLElement> parent;
+  SmartPtr<MathMLElement> parent;
 };
 
 #endif // MathMLNode_hh

@@ -363,7 +363,7 @@ RenderingEnvironment::GetMathSpace(MathSpaceId id) const
 }
 
 void
-RenderingEnvironment::SetDocument(const Ptr<MathMLDocument>& doc)
+RenderingEnvironment::SetDocument(const SmartPtr<MathMLDocument>& doc)
 {
   assert(!level.empty());
 
@@ -373,7 +373,7 @@ RenderingEnvironment::SetDocument(const Ptr<MathMLDocument>& doc)
   top->doc = doc;
 }
 
-Ptr<MathMLDocument>
+SmartPtr<MathMLDocument>
 RenderingEnvironment::GetDocument() const
 {
   assert(!level.empty());

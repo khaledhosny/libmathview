@@ -39,14 +39,14 @@ protected:
   virtual ~MathMLRadicalElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLRadicalElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLRadicalElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLRadicalElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLRadicalElement(el)); }
 #endif
 
-  virtual void Normalize(const Ptr<class MathMLDocument>&);
+  virtual void Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
@@ -60,32 +60,32 @@ public:
   virtual void ResetFlagDown(Flags);
   virtual void Render(const DrawingArea&);
 
-  virtual void Replace(const Ptr<class MathMLElement>&, const Ptr<class MathMLElement>&);
+  virtual void Replace(const SmartPtr<class MathMLElement>&, const SmartPtr<class MathMLElement>&);
 
   virtual scaled GetRightEdge(void) const;
   virtual scaled GetLeftEdge(void) const;
   virtual void ReleaseGCs(void);
-  virtual Ptr<class MathMLElement> Inside(const scaled&, const scaled&);
+  virtual SmartPtr<class MathMLElement> Inside(const scaled&, const scaled&);
 
-  Ptr<class MathMLElement> GetRadicand(void) const { return radicand; }
-  Ptr<class MathMLElement> GetIndex(void) const { return index; }
-  void SetRadicand(const Ptr<class MathMLElement>&);
-  void SetIndex(const Ptr<class MathMLElement>&);
+  SmartPtr<class MathMLElement> GetRadicand(void) const { return radicand; }
+  SmartPtr<class MathMLElement> GetIndex(void) const { return index; }
+  void SetRadicand(const SmartPtr<class MathMLElement>&);
+  void SetIndex(const SmartPtr<class MathMLElement>&);
 
 protected:
   void Init(void);
 
 private:
-  Ptr<class MathMLElement> GetNucleus(void) const;
-  Ptr<class MathMLCharNode> GetRadicalSign(void) const;
+  SmartPtr<class MathMLElement> GetNucleus(void) const;
+  SmartPtr<class MathMLCharNode> GetRadicalSign(void) const;
   void DoBaseLayoutAux(BoundingBox&, const BoundingBox&);
 
   scaled spacing;
   scaled lineThickness;
 
-  Ptr<class MathMLCharNode> radical;
-  Ptr<class MathMLElement> radicand;
-  Ptr<class MathMLElement> index;
+  SmartPtr<class MathMLCharNode> radical;
+  SmartPtr<class MathMLElement> radicand;
+  SmartPtr<class MathMLElement> index;
 
   RGBValue color;
 };

@@ -108,7 +108,7 @@ MathMLDocument::Normalize()
       DOM::NodeList nodeList = GetDOMDocument().getElementsByTagNameNS(MATHML_NS_URI, "math");
       if (DOM::Node mathRoot = nodeList.item(0))
 	{
-	  Ptr<MathMLElement> elem = getFormattingNode(mathRoot);
+	  SmartPtr<MathMLElement> elem = getFormattingNode(mathRoot);
 	  assert(elem);
 	  SetChild(elem);
 	}	  
@@ -165,7 +165,7 @@ MathMLDocument::notifySubtreeModified(const DOM::Node& node) const
 {
   assert(node);
   //cout << "have to notify " << static_cast<GdomeNode*>(node) << "(" << node.get_nodeName() << ")" << " formatting node? " << static_cast<MathMLElement*>(findFormattingNode(node)) << endl;
-  if (Ptr<MathMLElement> elem = findFormattingNode(node))
+  if (SmartPtr<MathMLElement> elem = findFormattingNode(node))
     {
       //cout << "notifying subtree modified event" << endl;
       elem->SetDirtyStructure();
@@ -186,14 +186,14 @@ void
 MathMLDocument::notifyAttributeModified(const DOM::Node& node) const
 {
   assert(node);
-  if (Ptr<MathMLElement> elem = findFormattingNode(node))
+  if (SmartPtr<MathMLElement> elem = findFormattingNode(node))
     {
       //cout << "notifying attribute modified event" << endl;
       elem->SetDirtyAttribute();
     }
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLDocument::getFormattingNodeNoCreate(const DOM::Node& node) const
 {
   assert(node);
@@ -203,17 +203,17 @@ MathMLDocument::getFormattingNodeNoCreate(const DOM::Node& node) const
   else return 0;
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLDocument::findFormattingNode(const DOM::Node& node) const
 {
   for (DOM::Node p = node; p; p = p.get_parentNode())
-    if (Ptr<MathMLElement> fNode = getFormattingNodeNoCreate(p))
+    if (SmartPtr<MathMLElement> fNode = getFormattingNodeNoCreate(p))
       return fNode;
   
   return 0;
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLDocument::getFormattingNode(const DOM::Node& node) const
 {
   if (!node) return 0;
@@ -227,7 +227,7 @@ MathMLDocument::getFormattingNode(const DOM::Node& node) const
   static struct
   {
     TagId tag;
-    Ptr<MathMLElement> (*create)(const DOM::Element&);
+    SmartPtr<MathMLElement> (*create)(const DOM::Element&);
   } tab[] = {
     { TAG_MATH,          &MathMLmathElement::create },
     { TAG_MI,            &MathMLIdentifierElement::create },
@@ -277,7 +277,7 @@ MathMLDocument::getFormattingNode(const DOM::Node& node) const
   for (i = 0; tab[i].tag != TAG_NOTVALID && tab[i].tag != tag; i++) ;
   assert(tab[i].create != 0);
 
-  if (Ptr<MathMLElement> res = tab[i].create(el))
+  if (SmartPtr<MathMLElement> res = tab[i].create(el))
     {
       setFormattingNode(el, res);
       return res;
@@ -287,7 +287,7 @@ MathMLDocument::getFormattingNode(const DOM::Node& node) const
 }
 
 void
-MathMLDocument::setFormattingNode(const DOM::Node& node, const Ptr<MathMLElement>& elem) const
+MathMLDocument::setFormattingNode(const DOM::Node& node, const SmartPtr<MathMLElement>& elem) const
 {
   assert(node);
   nodeMap[node] = elem;

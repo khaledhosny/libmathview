@@ -65,7 +65,7 @@ MathMLSpaceElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLSpaceElement::Normalize(const Ptr<class MathMLDocument>&)
+MathMLSpaceElement::Normalize(const SmartPtr<class MathMLDocument>&)
 {
   if (DirtyStructure()) ResetDirtyStructure();
 }

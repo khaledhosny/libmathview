@@ -74,7 +74,7 @@ MathMLScriptElement::GetAttributeSignature(AttributeId id) const
 }
 
 void
-MathMLScriptElement::SetBase(const Ptr<MathMLElement>& elem)
+MathMLScriptElement::SetBase(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != base)
     {
@@ -86,7 +86,7 @@ MathMLScriptElement::SetBase(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLScriptElement::SetSubScript(const Ptr<MathMLElement>& elem)
+MathMLScriptElement::SetSubScript(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != subScript)
     {
@@ -98,7 +98,7 @@ MathMLScriptElement::SetSubScript(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLScriptElement::SetSuperScript(const Ptr<MathMLElement>& elem)
+MathMLScriptElement::SetSuperScript(const SmartPtr<MathMLElement>& elem)
 {
   if (elem != superScript)
     {
@@ -110,7 +110,7 @@ MathMLScriptElement::SetSuperScript(const Ptr<MathMLElement>& elem)
 }
 
 void
-MathMLScriptElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathMLElement>& newElem)
+MathMLScriptElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
 {
   assert(oldElem);
   if (oldElem == base) SetBase(newElem);
@@ -119,12 +119,12 @@ MathMLScriptElement::Replace(const Ptr<MathMLElement>& oldElem, const Ptr<MathML
   else assert(false);
 }
 
-Ptr<MathMLElement>
+SmartPtr<MathMLElement>
 MathMLScriptElement::Inside(const scaled& x, const scaled& y)
 {
   if (!IsInside(x, y)) return 0;
 
-  Ptr<MathMLElement> inside;
+  SmartPtr<MathMLElement> inside;
   assert(base);
   if (inside = base->Inside(x, y)) return inside;
   if (subScript && (inside = subScript->Inside(x, y))) return inside;
@@ -134,7 +134,7 @@ MathMLScriptElement::Inside(const scaled& x, const scaled& y)
 }
 
 void
-MathMLScriptElement::Normalize(const Ptr<MathMLDocument>& doc)
+MathMLScriptElement::Normalize(const SmartPtr<MathMLDocument>& doc)
 {
   if (DirtyStructure())
     {
@@ -144,7 +144,7 @@ MathMLScriptElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  assert(IsA() == TAG_MSUB || IsA() == TAG_MSUP || IsA() == TAG_MSUBSUP);
 	  ChildList children(GetDOMElement(), MATHML_NS_URI, "*");
 	  
-	  if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
+	  if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(0)))
 	    SetBase(e);
 	  else if (!is_a<MathMLDummyElement>(GetBase()))
 	    SetBase(MathMLDummyElement::create());
@@ -152,7 +152,7 @@ MathMLScriptElement::Normalize(const Ptr<MathMLDocument>& doc)
 	  switch (IsA())
 	    {
 	    case TAG_MSUB:
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
 		SetSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
 		SetSubScript(MathMLDummyElement::create());
@@ -160,17 +160,17 @@ MathMLScriptElement::Normalize(const Ptr<MathMLDocument>& doc)
 	      break;
 	    case TAG_MSUP:
 	      SetSubScript(0);
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
 		SetSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
 		SetSuperScript(MathMLDummyElement::create());
 	      break;
 	    case TAG_MSUBSUP:
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(1)))
 		SetSubScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSubScript()))
 		SetSubScript(MathMLDummyElement::create());
-	      if (Ptr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
+	      if (SmartPtr<MathMLElement> e = doc->getFormattingNode(children.item(2)))
 		SetSuperScript(e);
 	      else if (!is_a<MathMLDummyElement>(GetSuperScript()))
 		SetSuperScript(MathMLDummyElement::create());
@@ -257,7 +257,7 @@ MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
       if (subScript) subScript->DoLayout(ctxt);
       if (superScript) superScript->DoLayout(ctxt);
 
-      Ptr<MathMLElement> rel = findRightmostChild(base);
+      SmartPtr<MathMLElement> rel = findRightmostChild(base);
       assert(rel);
 
       const BoundingBox& baseBox = base->GetBoundingBox();
@@ -363,7 +363,7 @@ MathMLScriptElement::GetRightEdge() const
   return m;
 }
 
-Ptr<class MathMLOperatorElement>
+SmartPtr<class MathMLOperatorElement>
 MathMLScriptElement::GetCoreOperator()
 {
   if (base) return base->GetCoreOperator();

@@ -33,8 +33,8 @@ protected:
   virtual ~MathMLHorizBarNode();
 
 public:
-  static Ptr<MathMLHorizBarNode> create(Char c)
-  { return Ptr<MathMLHorizBarNode>(new MathMLHorizBarNode(c)); }
+  static SmartPtr<MathMLHorizBarNode> create(Char c)
+  { return SmartPtr<MathMLHorizBarNode>(new MathMLHorizBarNode(c)); }
 
   virtual void 	 Setup(class RenderingEnvironment&);
   virtual void 	 DoLayout(const class FormattingContext&);

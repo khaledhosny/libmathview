@@ -26,8 +26,8 @@
 #include "Ptr.hh"
 #include "CharMap.hh"
 
-bool isStretchyOperator(const Ptr<class MathMLElement>&);
-bool isStretchyOperator(const Ptr<class MathMLElement>&, StretchId);
+bool isStretchyOperator(const SmartPtr<class MathMLElement>&);
+bool isStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
 
 #endif // operatorAux_hh
 

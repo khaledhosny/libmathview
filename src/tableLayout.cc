@@ -74,7 +74,7 @@ MathMLTableElement::DoLayout(const FormattingContext& ctxt)
       // cells, we have to clean the dirty-layout flag on the rows here
       // otherwise this will stop the propagation mechanism of the dirty
       // layout flag when one of the rows changes
-      for (std::vector< Ptr<MathMLElement> >::iterator p = content.begin();
+      for (std::vector< SmartPtr<MathMLElement> >::iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	(*p)->ResetDirtyLayout(ctxt);
@@ -668,9 +668,9 @@ MathMLTableElement::StretchyCellsLayout()
 	{
 	  if (cell[i][j].mtd && !cell[i][j].spanned)
 	    {
-	      Ptr<MathMLElement> cellElem = cell[i][j].mtd->GetChild();
+	      SmartPtr<MathMLElement> cellElem = cell[i][j].mtd->GetChild();
 	      assert(cellElem);
-	      Ptr<MathMLOperatorElement> op = findStretchyOperator(cellElem);
+	      SmartPtr<MathMLOperatorElement> op = findStretchyOperator(cellElem);
 	      if (op)
 		{
 		  scaled width = GetColumnWidth(j, cell[i][j].colSpan);

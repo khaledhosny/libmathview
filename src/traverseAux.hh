@@ -30,20 +30,20 @@
 #include "Ptr.hh"
 #include "CharMap.hh"
 
-Ptr<class MathMLElement>         findEmbellishedOperatorRoot(const Ptr<class MathMLElement>&);
-Ptr<class MathMLOperatorElement> findStretchyOperator(const Ptr<class MathMLElement>&);
-Ptr<class MathMLOperatorElement> findStretchyOperator(const Ptr<class MathMLElement>&, StretchId);
-Ptr<class MathMLElement>         findCommonAncestor(const Ptr<class MathMLElement>&,
-						    const Ptr<class MathMLElement>&);
-Ptr<class MathMLActionElement>   findActionElement(const Ptr<class MathMLElement>&);
+SmartPtr<class MathMLElement>         findEmbellishedOperatorRoot(const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLOperatorElement> findStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
+SmartPtr<class MathMLElement>         findCommonAncestor(const SmartPtr<class MathMLElement>&,
+						    const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLActionElement>   findActionElement(const SmartPtr<class MathMLElement>&);
 #if defined(HAVE_GMETADOM)
-DOM::Element                findDOMNode(const Ptr<class MathMLElement>&);
-Ptr<class MathMLElement>         findMathMLElement(const Ptr<class MathMLDocument>&,
+DOM::Element                findDOMNode(const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLElement>         findMathMLElement(const SmartPtr<class MathMLDocument>&,
 						   const DOM::Element&);
 #endif
-Ptr<class MathMLElement>         findRightmostChild(const Ptr<class MathMLElement>&);
-Ptr<class MathMLElement>         findLeftmostChild(const Ptr<class MathMLElement>&);
-Ptr<class MathMLElement>         findRightSibling(const Ptr<class MathMLElement>&);
-Ptr<class MathMLElement>         findLeftSibling(const Ptr<class MathMLElement>&);
+SmartPtr<class MathMLElement>         findRightmostChild(const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLElement>         findLeftmostChild(const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLElement>         findRightSibling(const SmartPtr<class MathMLElement>&);
+SmartPtr<class MathMLElement>         findLeftSibling(const SmartPtr<class MathMLElement>&);
 
 #endif // traverseAux_hh

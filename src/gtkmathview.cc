@@ -1081,7 +1081,7 @@ gtk_math_view_select(GtkMathView* math_view, GdomeElement* elem)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(elem != NULL);
 
-  if (Ptr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(), DOM::Element(elem)))
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(), DOM::Element(elem)))
     {
       el->SetSelected();
       paint_widget(math_view);
@@ -1095,7 +1095,7 @@ gtk_math_view_unselect(GtkMathView* math_view, GdomeElement* elem)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(elem != NULL);
 
-  if (Ptr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(), DOM::Element(elem)))
+  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(), DOM::Element(elem)))
     {
       el->ResetSelected();
       paint_widget(math_view);
@@ -1109,7 +1109,7 @@ gtk_math_view_is_selected(GtkMathView* math_view, GdomeElement* elem)
   g_return_val_if_fail(math_view->interface != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  Ptr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
+  SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
 					    DOM::Element(elem));
   if (!el) return FALSE;
 
@@ -1181,7 +1181,7 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
   gint x0 = (math_view->vadjustment != NULL) ? static_cast<int>(math_view->hadjustment->value) : 0;
   gint y0 = (math_view->hadjustment != NULL) ? static_cast<int>(math_view->vadjustment->value) : 0;
 
-  Ptr<MathMLElement> at = math_view->interface->GetElementAt(px2sp(x0 + x), px2sp(y0 + y));
+  SmartPtr<MathMLElement> at = math_view->interface->GetElementAt(px2sp(x0 + x), px2sp(y0 + y));
   return gdome_cast_el(findDOMNode(at).gdome_object());
 }
 
@@ -1192,7 +1192,7 @@ gtk_math_view_get_element_coords(GtkMathView* math_view, GdomeElement* elem, gin
   g_return_val_if_fail(math_view->interface != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  Ptr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
+  SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
 					    DOM::Element(elem));
   if (!el) return FALSE;
 
@@ -1210,7 +1210,7 @@ gtk_math_view_get_element_rectangle(GtkMathView* math_view, GdomeElement* elem, 
   g_return_val_if_fail(elem != NULL, FALSE);
   g_return_val_if_fail(rect != NULL, FALSE);
 
-  Ptr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
+  SmartPtr<MathMLElement> el = findMathMLElement(math_view->interface->GetDocument(),
 					    DOM::Element(elem));
   if (!el) return FALSE;
 
@@ -1266,7 +1266,7 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
 
   if (id == math_view->font_manager_id) return;
 
-  Ptr<MathMLDocument> document = math_view->interface->GetDocument();
+  SmartPtr<MathMLDocument> document = math_view->interface->GetDocument();
   if (document) document->ReleaseGCs();
 
   delete math_view->font_manager;
@@ -1346,7 +1346,7 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
   area.SetSize(px2sp(w), px2sp(h));
   if (disable_colors) area.DisableColors();
 
-  if (Ptr<MathMLDocument> document = math_view->interface->GetDocument())
+  if (SmartPtr<MathMLDocument> document = math_view->interface->GetDocument())
     {
       // the following invocations are needed just to mark the chars actually used :(
       fm->ResetUsedChars();
@@ -1380,13 +1380,13 @@ gtk_math_view_action_get_selected(GtkMathView* math_view, GdomeElement* elem)
   DOM::Element el(elem);
   if (el.get_namespaceURI() != MATHML_NS_URI || el.get_localName() != "maction") return 0;
 
-  Ptr<MathMLDocument> doc = math_view->interface->GetDocument();
+  SmartPtr<MathMLDocument> doc = math_view->interface->GetDocument();
   assert(doc);
 
-  Ptr<MathMLElement> e = doc->getFormattingNodeNoCreate(DOM::Element(elem));
+  SmartPtr<MathMLElement> e = doc->getFormattingNodeNoCreate(DOM::Element(elem));
   if (!e) return 0;
 
-  Ptr<MathMLActionElement> action = smart_cast<MathMLActionElement>(e);
+  SmartPtr<MathMLActionElement> action = smart_cast<MathMLActionElement>(e);
   assert(action);
 
   return action->GetSelectedIndex();
@@ -1402,13 +1402,13 @@ gtk_math_view_action_set_selected(GtkMathView* math_view, GdomeElement* elem, gu
   DOM::Element el(elem);
   if (el.get_namespaceURI() != MATHML_NS_URI || el.get_localName() != "maction") return;
 
-  Ptr<MathMLDocument> doc = math_view->interface->GetDocument();
+  SmartPtr<MathMLDocument> doc = math_view->interface->GetDocument();
   assert(doc);
 
-  Ptr<MathMLElement> e = doc->getFormattingNodeNoCreate(DOM::Element(elem));
+  SmartPtr<MathMLElement> e = doc->getFormattingNodeNoCreate(DOM::Element(elem));
   if (!e) return;
 
-  Ptr<MathMLActionElement> action = smart_cast<MathMLActionElement>(e);
+  SmartPtr<MathMLActionElement> action = smart_cast<MathMLActionElement>(e);
   assert(action);
 
   return action->SetSelectedIndex(idx);

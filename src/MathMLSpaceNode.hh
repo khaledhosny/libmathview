@@ -32,8 +32,8 @@ protected:
   virtual ~MathMLSpaceNode();
 
 public:
-  static Ptr<MathMLSpaceNode> create(int s = 0)
-  { return Ptr<MathMLSpaceNode>(new MathMLSpaceNode(s)); }
+  static SmartPtr<MathMLSpaceNode> create(int s = 0)
+  { return SmartPtr<MathMLSpaceNode>(new MathMLSpaceNode(s)); }
 
   virtual void     Setup(class RenderingEnvironment&);
   virtual void     DoLayout(const class FormattingContext&);

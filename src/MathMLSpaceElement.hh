@@ -39,15 +39,15 @@ protected:
   virtual ~MathMLSpaceElement();
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLSpaceElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLSpaceElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLSpaceElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLSpaceElement(el)); }
 #endif
 
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
-  virtual void    Normalize(const Ptr<class MathMLDocument>&);
+  virtual void    Normalize(const SmartPtr<class MathMLDocument>&);
   virtual void    Setup(class RenderingEnvironment&);
   virtual void    DoLayout(const class FormattingContext&);
 

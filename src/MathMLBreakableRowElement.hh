@@ -36,11 +36,11 @@ protected:
   virtual ~MathMLBreakableRowElement() { }
 
 public:
-  static Ptr<MathMLElement> create(void)
-  { return Ptr<MathMLElement>(new MathMLBreakableRowElement()); }
+  static SmartPtr<MathMLElement> create(void)
+  { return SmartPtr<MathMLElement>(new MathMLBreakableRowElement()); }
 #if defined(HAVE_GMETADOM)
-  static Ptr<MathMLElement> create(const DOM::Element& el)
-  { return Ptr<MathMLElement>(new MathMLBreakableRowElement(el)); }
+  static SmartPtr<MathMLElement> create(const DOM::Element& el)
+  { return SmartPtr<MathMLElement>(new MathMLBreakableRowElement(el)); }
 #endif
 
   virtual void Setup(RenderingEnvironment&);
@@ -50,7 +50,7 @@ public:
   scaled GetExitBaseline(void) const;
 
 protected:
-  Ptr<VerticalLayout> layout;
+  SmartPtr<VerticalLayout> layout;
 };
 
 #endif // __MathMLBreakableRowElement_hh__

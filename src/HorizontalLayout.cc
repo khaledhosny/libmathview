@@ -26,7 +26,7 @@
 #include "MathMLBreakableRowElement.hh"
 
 void
-HorizontalLayout::Add(const Ptr<MathMLElement>& el)
+HorizontalLayout::Add(const SmartPtr<MathMLElement>& el)
 {
   content.push_back(el);
 }
@@ -42,13 +42,13 @@ HorizontalLayout::SetPosition(const scaled& x0, const scaled& y0)
 {
   scaled x = x0;
   scaled y = y0;
-  for (std::vector< Ptr<MathMLElement> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
       (*p)->SetPosition(x, y);
       x += (*p)->GetBoundingBox().width;
-      if (Ptr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
+      if (SmartPtr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
 	y += brow->GetExitBaseline();
     }
 }
@@ -57,10 +57,10 @@ scaled
 HorizontalLayout::GetExitBaseline() const
 {
   scaled bl = 0;
-  for (std::vector< Ptr<MathMLElement> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator p = content.begin();
        p != content.end();
        p++)
-    if (Ptr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
+    if (SmartPtr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
       bl += brow->GetExitBaseline();
   return bl;
 }
@@ -76,7 +76,7 @@ HorizontalLayout::GetLinearBoundingBox() const
 {
   scaled bl = 0;
   BoundingBox box;
-  for (std::vector< Ptr<MathMLElement> >::const_iterator p = content.begin();
+  for (std::vector< SmartPtr<MathMLElement> >::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
@@ -84,7 +84,7 @@ HorizontalLayout::GetLinearBoundingBox() const
       pBox.height -= bl;
       pBox.depth += bl;
       box.append(pBox);
-      if (Ptr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
+      if (SmartPtr<MathMLBreakableRowElement> brow = smart_cast<MathMLBreakableRowElement>(*p))
 	bl += brow->GetExitBaseline();
     }
   return box;
