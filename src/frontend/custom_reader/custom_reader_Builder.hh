@@ -38,6 +38,10 @@ protected:
 public:
   static SmartPtr<custom_reader_Builder> create(void);
 
+  SmartPtr<Element> findElement(void* p) const { return linker.assoc(p); }
+  void* findSelfOrAncestorModelElement(const SmartPtr<Element>&) const;
+  SmartPtr<Element> findSelfOrAncestorElement(void* p) const { return findElement(p); }
+
   bool notifyStructureChanged(void*);
   bool notifyAttributeChanged(void*, const char*);
 

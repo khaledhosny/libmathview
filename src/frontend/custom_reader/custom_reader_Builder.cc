@@ -30,6 +30,15 @@ SmartPtr<custom_reader_Builder>
 custom_reader_Builder::create()
 { return TemplateBuilder<custom_reader_Model>::create(); }
 
+void*
+custom_reader_Builder::findSelfOrAncestorModelElement(const SmartPtr<Element>& elem) const
+{
+  for (SmartPtr<Element> p(elem); p; p = p->getParent())
+    if (void* id = linker.assoc(p))
+      return id;
+  return 0;
+}
+
 bool
 custom_reader_Builder::notifyStructureChanged(void* id)
 {
