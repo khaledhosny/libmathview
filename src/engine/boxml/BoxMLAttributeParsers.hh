@@ -36,6 +36,7 @@ typedef ParseTokenSet< Set<T_BASELINE,T_TOP,T_CENTER,T_BOTTOM> > Parse_BoxML_H_a
 typedef ParseInteger Parse_BoxML_V_enter;
 typedef ParseInteger Parse_BoxML_V_exit;
 typedef ParseTokenSet< Set<T_LEFT,T_CENTER,T_RIGHT> > Parse_BoxML_V_align;
+typedef ParseLength Parse_BoxML_V_minlinespacing;
 typedef ParseLength Parse_BoxML_G_width;
 typedef ParseLength Parse_BoxML_G_height;
 typedef ParseLength Parse_BoxML_G_depth;

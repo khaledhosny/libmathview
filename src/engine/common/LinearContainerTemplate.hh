@@ -91,29 +91,25 @@ public:
 
   template <typename UnaryFunction>
   UnaryFunction for_each(UnaryFunction f) const
-  {
-    return for_each_if(content.begin(), content.end(), NotNullPredicate(), f);
-  }
+  { return for_each_if(content.begin(), content.end(), NotNullPredicate(), f); }
 
   typename std::vector<T>::const_iterator begin(void) const
-  {
-    return content.begin();
-  }
+  { return content.begin(); }
 
   typename std::vector<T>::const_iterator end(void) const
-  {
-    return content.end();
-  }
+  { return content.end(); }
+
+  typename std::vector<T>::const_reverse_iterator rbegin(void) const
+  { return content.rbegin(); }
+
+  typename std::vector<T>::const_reverse_iterator rend(void) const
+  { return content.rend(); }
 
   void setFlagDown(Element::Flags f)
-  {
-    for_each(std::bind2nd(SetFlagDownAdaptor(), f));
-  }
+  { for_each(std::bind2nd(SetFlagDownAdaptor(), f)); }
 
   void resetFlagDown(Element::Flags f)
-  {
-    for_each(std::bind2nd(ResetFlagDownAdaptor(), f));
-  }
+  { for_each(std::bind2nd(ResetFlagDownAdaptor(), f)); }
 
 private:
   std::vector<T> content;

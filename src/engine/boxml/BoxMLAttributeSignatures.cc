@@ -36,6 +36,7 @@ DEFINE_ATTRIBUTE(BoxML, H, "align", align, true, false, false, false, "baseline"
 DEFINE_ATTRIBUTE(BoxML, V, "enter", enter, true, false, false, false, "1");
 DEFINE_ATTRIBUTE(BoxML, V, "exit", exit, true, false, false, false, "-1");
 DEFINE_ATTRIBUTE(BoxML, V, "align", align, true, false, false, false, "left");
+DEFINE_ATTRIBUTE(BoxML, V, "minlinespacing", minlinespacing, true, false, false, false, "1em");
 DEFINE_ATTRIBUTE(BoxML, G, "width", width, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, G, "height", height, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, G, "depth", depth, true, false, false, false, 0);

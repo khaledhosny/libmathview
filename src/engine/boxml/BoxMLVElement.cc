@@ -53,9 +53,12 @@ BoxMLVElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, BoxML, V, align);
       REFINE_ATTRIBUTE(context, BoxML, V, enter);
       REFINE_ATTRIBUTE(context, BoxML, V, exit);
+      REFINE_ATTRIBUTE(context, BoxML, V, minlinespacing);
       BoxMLLinearContainerElement::refine(context);
     }
 }
+
+#include "scaledAux.hh"
 
 AreaRef
 BoxMLVElement::format(MathFormattingContext& ctxt)
@@ -67,6 +70,7 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
       TokenId align = ToTokenId(GET_ATTRIBUTE_VALUE(BoxML, V, align));
       int enter = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, enter));
       int exit = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, exit));
+      scaled minLineSpacing = ctxt.getDevice()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
 
       if (enter < 0) enter = content.getSize() + enter + 1;
       if (exit < 0) exit = content.getSize() + exit + 1;
@@ -74,11 +78,14 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
       enter = content.getSize() - std::min(std::max(enter, 1), (int) content.getSize());
       exit = content.getSize() - std::min(std::max(exit, 1), (int) content.getSize());
 
-      step = 0;
+      int enter_index = 0;
+      int exit_index = 0;
+      AreaRef prevArea = 0;
+      scaled prevHeight;
       std::vector<AreaRef> c;
       c.reserve(content.getSize());
-      for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
-	   p != content.end();
+      for (std::vector< SmartPtr<BoxMLElement> >::const_reverse_iterator p = content.rbegin();
+	   p != content.rend();
 	   p++)
 	if (*p)
 	  {
@@ -92,14 +99,25 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
 		assert(false);
 		break;
 	      }
-	    //c.push_back(area);
-	    c.insert(c.begin(), area); // FIXME: INEFFICIENT!
+
+	    BoundingBox areaBox = area->box();
+	    if (prevArea)
+	      {
+		if (prevHeight + areaBox.depth < minLineSpacing)
+		  c.push_back(ctxt.getDevice()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
+	      }
+	    prevHeight = areaBox.height;
+	    prevArea = area;
+
+	    if (enter-- == 0) enter_index = c.size();
+	    if (exit-- == 0) exit_index = c.size();
+	    c.push_back(area);
 	  }
 
-      AreaRef res = ctxt.getDevice()->getFactory()->verticalArray(c, enter);
+      AreaRef res = ctxt.getDevice()->getFactory()->verticalArray(c, enter_index);
       if (enter != exit)
 	{
-	  AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit);
+	  AreaRef res1 = ctxt.getDevice()->getFactory()->verticalArray(c, exit_index);
 	  step = res->box().height - res1->box().height;
 	}
       else

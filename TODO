@@ -1,5 +1,4 @@
 
-* re-enable scrolling
 * re-enable selection (need to adjust the wrapper method in MGD)
 * re-enable actions
 * implement reader interface over DOM and XmlReader
@@ -14,4 +13,4 @@
 * runtime selection of backend
 * runtime selection of reader
 * implement cursor
-
+* implement strut for text in boxes

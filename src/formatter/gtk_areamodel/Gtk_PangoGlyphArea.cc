@@ -40,7 +40,6 @@ Gtk_PangoGlyphArea::box() const
 {
   PangoRectangle ink_rect;
   PangoRectangle logical_rect;
-  //pango_glyph_string_extents(glyphs, font, &ink_rect, NULL);
   pango_font_get_glyph_extents(font, glyphs->glyphs[0].glyph, &ink_rect, &logical_rect);
   return BoundingBox(Gtk_RenderingContext::fromPangoPixels(logical_rect.width),
 		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
