@@ -26,6 +26,8 @@
 
 #include "Shaper.hh"
 #include "ShaperManager.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 ShaperManager::ShaperManager() : nextShaperId(0)
 {
@@ -40,42 +42,47 @@ ShaperManager::~ShaperManager()
 }
 
 AreaRef
-ShaperManager::shapeAux(ShapingResult& result) const
+ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   while (!result.done())
     {
-      if (getShaper(result.getShaperId())->shape(result) == 0)
-	return 0;
+      if (getShaper(result.getShaperId())->shape(ctxt, result) == 0)
+	{
+	  // this is very severe, a Shaper has declared it is able to handle
+	  // a character but it turned out that it has eaten no characters from
+	  // the result! This may make sense for example if there is a sort of
+	  // fallback mechanism and a given shaper can "refuse" to process a
+	  // character in some context
+	  assert(false);
+	  return 0;
+	}
     }
 
-  return result.area();
+  return result.area(ctxt.getDevice().getFactory());
 }
 
 AreaRef
-ShaperManager::shape(const SmartPtr<AreaFactory>& factory,
-		     const DOM::UCS4String& source,
-		     const scaled& fontSize) const
+ShaperManager::shape(const MathFormattingContext& ctxt, const DOM::UCS4String& source) const
 {
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(map(source[i]));
-  ShapingResult result(factory, source, spec, fontSize);
-  return shapeAux(result);
+  ShapingResult result(source, spec);
+  return shapeAux(ctxt, result);
 }
 
 AreaRef
-ShaperManager::shapeStretchy(const SmartPtr<AreaFactory>& factory,
+ShaperManager::shapeStretchy(const MathFormattingContext& ctxt,
 			     const DOM::UCS4String& source,
-			     const scaled& fontSize,
 			     const scaled& vSpan,
 			     const scaled& hSpan) const
 {
   std::vector<GlyphSpec> spec(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(mapStretchy(source[i]));
-  ShapingResult result(factory, source, spec, fontSize, vSpan, hSpan);
-  return shapeAux(result);
+  ShapingResult result(source, spec, vSpan, hSpan);
+  return shapeAux(ctxt, result);
 }
 
 unsigned

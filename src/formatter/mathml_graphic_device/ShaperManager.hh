@@ -38,10 +38,8 @@ public:
   static SmartPtr<ShaperManager> create(void)
   { return new ShaperManager(); }
 
-  AreaRef shape(const SmartPtr<AreaFactory>&,
-		const DOM::UCS4String&, const scaled&) const;
-  AreaRef shapeStretchy(const SmartPtr<AreaFactory>&,
-			const DOM::UCS4String&, const scaled&,
+  AreaRef shape(const class MathFormattingContext&, const DOM::UCS4String&) const;
+  AreaRef shapeStretchy(const class MathFormattingContext&, const DOM::UCS4String&,
 			const scaled& = 0, const scaled& = 0) const;
   
   unsigned registerShaper(const SmartPtr<class Shaper>&);
@@ -51,7 +49,7 @@ public:
 private:
   GlyphSpec map(DOM::Char32 ch) const;
   GlyphSpec mapStretchy(DOM::Char32 ch) const;
-  AreaRef shapeAux(ShapingResult&) const;
+  AreaRef shapeAux(const class MathFormattingContext&, ShapingResult&) const;
   SmartPtr<class Shaper> getShaper(unsigned) const;
 
   static const unsigned MAX_SHAPERS = 16;

@@ -58,12 +58,12 @@ ShapingResult::data() const
 }
 
 AreaRef
-ShapingResult::area() const
+ShapingResult::area(const SmartPtr<AreaFactory>& factory) const
 {
   if (res.size() == 1)
     return res[0];
   else
-    return factory->createHorizontalArrayArea(res);
+    return factory->horizontalArray(res);
 }
 
 void
@@ -76,15 +76,19 @@ ShapingResult::advance(int n)
 DOM::Char32
 ShapingResult::prevChar() const
 {
-  assert(index > 0);
-  return source[index - 1];
+  return (index > 0) ? source[index - 1] : 0;
+}
+
+DOM::Char32
+ShapingResult::thisChar() const
+{
+  return (index < source.length()) ? source[index] : 0;
 }
 
 DOM::Char32
 ShapingResult::nextChar() const
 {
-  assert(index < source.length());
-  return source[index];
+  return (index + 1 < source.length()) ? source[index + 1] : 0;
 }
 
 DOM::UCS4String
@@ -103,4 +107,6 @@ ShapingResult::nextString(int l) const
 
 void
 ShapingResult::pushArea(const AreaRef& area)
-{ res.push_back(area); }
+{
+  res.push_back(area);
+}
