@@ -158,6 +158,7 @@ Element::setDirtyLayout()
   if (!dirtyLayout())
     {
       setFlagDown(FDirtyLayout);
+      setFlag(FDirtyLayout);
       setFlagUp(FDirtyLayout);
     }
 }

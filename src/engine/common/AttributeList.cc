@@ -50,7 +50,27 @@ bool
 AttributeList::set(const SmartPtr<Attribute>& attr)
 {
   assert(attr);
-  Map::iterator::iterator p = content.find(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()));
+#if 1
+  // this version should be slightly more efficient
+  // see Scott Meyers' book on effective STL
+  Map::iterator lb = content.lower_bound(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()));
+  if (lb != content.end() && !(content.key_comp()(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()), lb->first)))
+    {
+      if (!attr->equal(lb->second))
+	{
+	  lb->second = attr;
+	  return true;
+	}
+      else
+	return false;
+    }
+  else
+    {
+      content.insert(lb, Map::value_type(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()), attr));
+      return true;
+    }
+#else
+  Map::iterator p = content.find(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()));
   if (p != content.end())
     {
       bool eq = attr->equal(p->second);
@@ -62,6 +82,7 @@ AttributeList::set(const SmartPtr<Attribute>& attr)
       content[ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature())] = attr;
       return true;
     }
+#endif
 }
 
 SmartPtr<Attribute>
