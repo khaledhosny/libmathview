@@ -128,6 +128,23 @@ public:
   }
 };
 
+class ParseKeyword : public ParseBin
+{
+public:
+  static SmartPtr<Value>
+  parse(const UCS4String::const_iterator& begin,
+	const UCS4String::const_iterator& end,
+	UCS4String::const_iterator& next)
+  {
+    UCS4String::const_iterator p;
+    ScanSpaces::scan(begin, end, p);
+    if (ScanKeywordToken::scan(p, end, next))
+      return Variant<String>::create(Scan::toString(p, next));
+    else
+      return 0;
+  }
+};
+
 template <typename TokenSet>
 class ParseTokenSet : public ParseBin
 {
