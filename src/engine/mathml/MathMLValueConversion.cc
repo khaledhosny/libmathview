@@ -24,7 +24,10 @@
 
 #include "MathMLValueConversion.hh"
 #include "FormattingContext.hh"
-#include "MathMLElement.hh"
+
+bool
+isTokenId(const SmartPtr<Value>& value, TokenId id)
+{ return IsTokenId(value) && ToTokenId(value) == id; }
 
 MathVariant
 toMathVariant(TokenId id)
@@ -89,16 +92,6 @@ toLength(const SmartPtr<Value>& value, const FormattingContext& ctxt)
     return ToLength(value);
 }
 
-SmartPtr<Value>
-Resolve(const SmartPtr<Value>& value, const FormattingContext& ctxt, int i, int j)
-{
-  assert(value);
-
-  SmartPtr<Value> realValue = GetComponent(value, i, j);
-  assert(realValue);
-
-  if (IsTokenId(value))
-    return Variant<Length>::create(ctxt.getMathSpace(toMathSpaceId(ToTokenId(value))));
-  else
-    return realValue;
-}
+Length
+resolveLength(const FormattingContext& ctxt, const SmartPtr<Value>& value, int i, int j)
+{ return toLength(GetComponent(value, i, j), ctxt); }

@@ -42,6 +42,7 @@ libmathml_la_SOURCES = \
   MathMLTableCellElement.cc \
   MathMLTableContentFactory.cc \
   MathMLTableElement.cc \
+  MathMLTableFormatter.cc \
   MathMLTextElement.cc \
   MathMLTextNode.cc \
   MathMLTokenElement.cc \
@@ -99,6 +100,7 @@ noinst_HEADERS = \
   MathMLTableCellElement.hh \
   MathMLTableContentFactory.hh \
   MathMLTableElement.hh \
+  MathMLTableFormatter.hh \
   MathMLTextElement.hh \
   MathMLTextNode.hh \
   MathMLTokenElement.hh \

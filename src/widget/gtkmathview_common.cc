@@ -218,6 +218,17 @@ findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
   return 0;
 }
 
+#if 0
+static GtkMathViewModelId
+findAction(GtkMathView* math_view, GtkMathViewModelId node)
+{
+  SmartPtr<Element> elem = math_view->view->elementOfModelElement(node);
+  while (elem && !is_a<MathMLActionElement>(elem) && !is_a<BoxMLActionElement>(elem))
+    elem = elem->getParent();
+  return elem ? math_view->view->modelElementOfElement(elem) : GtkMathViewModelId();
+}
+#endif
+
 /* auxiliary C functions */
 
 static void

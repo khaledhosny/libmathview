@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,366 +17,170 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
 #include <cassert>
 
-#include <algorithm>
-#include <functional>
-
 #include "RGBColor.hh"
-#include "Adapters.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLNamespaceContext.hh"
-#include "defs.h"
+#include "FormattingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
+#include "MathMLTableContentFactory.hh"
+#include "defs.h"
 
 MathMLTableElement::MathMLTableElement(const SmartPtr<class MathMLNamespaceContext>& context)
-  : MathMLLinearContainerElement(context)
-{
-  nRows    = 0;
-  nColumns = 0;
-  cell     = 0;
-  column   = 0;
-  row      = 0;
-  rowLabel = 0;
-  width    = 0;
-
-#if 0
-  dGC[0] = dGC[1] = 0;
-#endif
-}
+  : MathMLContainerElement(context)
+{ }
 
 MathMLTableElement::~MathMLTableElement()
-{
-#if 0
-  ReleaseAuxStructures();
-#endif
-}
+{ }
 
-#if 0
 void
-MathMLTableElement::construct()
+MathMLTableElement::setSize(unsigned nr, unsigned nc)
 {
-  if (dirtyStructure())
-    {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
-	  unsigned n = children.get_length();
-
-	  std::vector< SmartPtr<MathMLElement> > newContent;
-	  newContent.reserve(n);
-	  for (unsigned i = 0; i < n; i++)
-	    {
-	      DOM::Element node = children.item(i);
-	      assert(node);
-	      if (nodeLocalName(node) == "mtr" || nodeLocalName(node) == "mlabeledtr")
-		{
-		  SmartPtr<MathMLElement> elem = getFormattingNode(node);
-		  assert(elem);
-		  newContent.push_back(elem);
-		}
-	      else
-		{
-		  // ISSUE WARNING
-		}
-	    }
-	  swapContent(newContent);
-	}
-#endif // HAVE_GMETADOM
-
-      if (getSize() == 0)
-	appendChild(smart_cast<MathMLTableRowElement>(getFactory()->createTableRowElement()));
-
-      std::for_each(content.begin(), content.end(), ConstructAdapter<MathMLElement>());
-
-      resetDirtyStructure();
-    }
+  numRows = nr;
+  numColumns = nc;
+  label.setSize(this, numRows);
+  cell.setSize(this, numRows * numColumns);
 }
 
 void
-MathMLTableElement::refine(AbstractRefinementContext& context)
+MathMLTableElement::getSize(unsigned& nr, unsigned& nc) const
 {
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      REFINE_ATTRIBUTE(context, MathML, Table, align);
-      REFINE_ATTRIBUTE(context, MathML, Table, rowalign);
-      REFINE_ATTRIBUTE(context, MathML, Table, columnalign);
-      REFINE_ATTRIBUTE(context, MathML, Table, groupalign);
-      REFINE_ATTRIBUTE(context, MathML, Table, alignmentscope);
-      REFINE_ATTRIBUTE(context, MathML, Table, columnwidth);
-      REFINE_ATTRIBUTE(context, MathML, Table, rowspacing);
-      REFINE_ATTRIBUTE(context, MathML, Table, columnspacing);
-      REFINE_ATTRIBUTE(context, MathML, Table, rowlines);
-      REFINE_ATTRIBUTE(context, MathML, Table, columnlines);
-      REFINE_ATTRIBUTE(context, MathML, Table, frame);
-      REFINE_ATTRIBUTE(context, MathML, Table, framespacing);
-      REFINE_ATTRIBUTE(context, MathML, Table, equalrows);
-      REFINE_ATTRIBUTE(context, MathML, Table, equalcolumns);
-      REFINE_ATTRIBUTE(context, MathML, Table, displaystyle);
-      REFINE_ATTRIBUTE(context, MathML, Table, side);
-      REFINE_ATTRIBUTE(context, MathML, Table, minlabelspacing);
-      REFINE_ATTRIBUTE(context, MathML, Table, width);
-      MathMLLinearContainerElement::refine(context);
-    }
-}
-#endif
-
-#if 0
-void
-MathMLTableElement::SetPosition(const scaled& x, const scaled& y)
-{
-  position.x = x;
-  position.y = y;
-
-  scaled yOffset = frameVerticalSpacing - box.height;
-
-  for (unsigned i = 0; i < nRows; i++) {
-    scaled xOffset = frameHorizontalSpacing;
-
-    if (HasLabels()) {
-      if (rowLabel[i].labelElement &&
-	  (side == T_LEFT || side == T_LEFTOVERLAP))
-	  SetLabelPosition(i, x, y + yOffset + row[i].height);
-      
-      xOffset += leftPadding;
-    }
-
-    //printf("row set position %d %d height = %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + row[i].height), sp2ipx(row[i].verticalExtent() + row[i].spacing));
-
-    if (row[i].mtr)
-      row[i].mtr->SetPosition(x + xOffset, y + yOffset + row[i].height);
-
-    for (unsigned j = 0; j < nColumns; j++) {
-      TableCell* cell = GetCell(i, j);
-
-      if (cell->mtd && !cell->spanned) {
-	const BoundingBox& cellBox = cell->mtd->GetBoundingBox();
-	//printf("cell set position %d %d\n", sp2ipx(x + xOffset), sp2ipx(y + yOffset + cellBox.height));
-	cell->mtd->SetPosition(x + xOffset, y + yOffset + cellBox.height);
-      }
-      
-      xOffset += column[j].width;
-      if (j < nColumns - 1) xOffset += column[j].spacing;
-    }
-
-    if (HasLabels()) {
-      xOffset += frameHorizontalSpacing;
-
-      if (rowLabel[i].labelElement &&
-	  (side == T_RIGHT || side == T_RIGHTOVERLAP))
-	SetLabelPosition(i, x + xOffset, y + yOffset + row[i].height);
-    }
-
-    yOffset += row[i].verticalExtent() + row[i].spacing;
-  }
-}
-
-// SetLabelPosition:
-// if side == LEFT? then x is the left edge of the whole table
-// if side == RIGHT? then x is the right edge of the whole table (and thus
-// must be adjust to accomodate the label)
-void
-MathMLTableElement::SetLabelPosition(unsigned i, const scaled& x0, const scaled& y0)
-{
-  assert(i < nRows);
-  assert(rowLabel);
-  assert(rowLabel[i].labelElement);
-
-  scaled x = x0;
-  scaled y = y0;
-  const BoundingBox& labelBox = rowLabel[i].labelElement->GetBoundingBox();
-
-  switch (rowLabel[i].rowAlign) {
-  case T_BOTTOM:
-    y += row[i].depth - labelBox.depth;
-    break;
-  case T_CENTER:
-    y += (row[i].verticalExtent() - labelBox.verticalExtent()) / 2 +
-      labelBox.height - row[i].height;
-    break;
-  case T_BASELINE:
-    break;
-  case T_AXIS:
-    assert(IMPOSSIBLE);
-    break;
-  case T_TOP:
-    y += labelBox.height - row[i].height;
-    break;
-  default:
-    break;
-  }
-
-  scaled columnWidth;
-  if (side == T_LEFT || side == T_LEFTOVERLAP) columnWidth = leftPadding;
-  else columnWidth = box.width - leftPadding - tableWidth;
-
-  switch (rowLabel[i].columnAlign) {
-  case T_RIGHT:
-    x += columnWidth - labelBox.width;
-    break;
-  case T_CENTER:
-    x += (columnWidth - labelBox.width) / 2;
-    break;
-  case T_LEFT:
-  default:
-    break;
-  }
-
-  rowLabel[i].labelElement->SetPosition(x, y);
+  nr = numRows;
+  nc = numColumns;
 }
 
 void
-MathMLTableElement::RenderTableBackground(const DrawingArea& area)
+MathMLTableElement::updateContent(const MathMLTableContentFactory& factory)
 {
-  if (bGC[Selected()] == NULL) {
-    GraphicsContextValues values;
-    values.foreground = values.background = Selected() ? area.GetSelectionBackground() : background;
-    bGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_BACKGROUND);
-  }
+  unsigned nRows;
+  unsigned nColumns;
+  factory.getSize(nRows, nColumns);
 
-  if (DirtyBackground())
-    area.Clear(bGC[Selected()], GetX(), GetY(), box);
+  std::vector<SmartPtr<MathMLTableCellElement> > cellContent;
+  std::vector<SmartPtr<MathMLTableCellElement> > labelContent;
 
-#if 0   
-  for (unsigned i = 0; i < nRows; i++) {
-    assert(row[i].mtr);
-    if (row[i].mtr->Selected()) {
-      row[i].mtr->RenderBackground(area);
-      return;
-    }
-  }
-#endif
-}
-
-void
-MathMLTableElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      MathMLLinearContainerElement::Render(area);
-
-      if (fGC[Selected()] == NULL) {
-	GraphicsContextValues values;
-	values.foreground = Selected() ? area.GetSelectionForeground() : color;
-	values.lineStyle = LINE_STYLE_SOLID;
-	values.lineWidth = lineThickness;
-	fGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
-
-	values.lineStyle = LINE_STYLE_DASHED;
-	dGC[Selected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
-      }
-
-      //area.DrawRectangle(gc, GetX(), GetY(), box);
-
-      if (frame != T_NONE) {
-	Rectangle rect;
-
-	if (HasLabels()) {
-	  rect.x = GetX() + leftPadding;
-	  rect.y = GetY() - box.height;    
-	  rect.width = tableWidth;
-	  rect.height = box.verticalExtent();
-	} else
-	  rect = Rectangle(GetX(), GetY(), box);
-
-	area.DrawRectangle((frame == T_DASHED) ? dGC[Selected()] : fGC[Selected()], rect);
-      }
-
-      scaled yOffset = frameVerticalSpacing - box.height;
-      for (unsigned i = 0; i < nRows; i++) {
-	scaled xOffset = frameHorizontalSpacing;
-	if (HasLabels()) xOffset += leftPadding;
-
-	for (unsigned j = 0; j < nColumns; j++) {
-	  TableCell* cell = GetCell(i, j);
-
-	  if (i != nRows - 1 && row[i].lineType != T_NONE) {
-	    // horizontal lines
-	    if (cell->rowSpan <= 1) {
-	      scaled lineX = position.x + xOffset;
-	      scaled lineY = position.y + yOffset + row[i].verticalExtent() + row[i].spacing / 2;
-	      scaled len = column[j].width;
-
-	      if (j == 0) {
-		lineX -= frameHorizontalSpacing;
-		len   += frameHorizontalSpacing;
-	      } else {
-		lineX -= column[j - 1].spacing / 2;
-		len   += column[j - 1].spacing / 2;
-	      }
-
-	      if (j == nColumns - 1) {
-		len   += frameHorizontalSpacing;
-	      } else {
-		len   += column[j].spacing / 2;
-	      }
-
-	      area.DrawLine((row[i].lineType == T_DASHED) ? dGC[Selected()] : fGC[Selected()],
-			    lineX, lineY, lineX + len, lineY);
-	    }
-	  }
-
-	  if (j != nColumns - 1 && column[j].lineType != T_NONE) {
-	    // vertical lines
-	    if (cell->colSpan <= 1) {
-	      scaled lineX = position.x + xOffset + column[j].width + column[j].spacing / 2;
-	      scaled lineY = position.y + yOffset;
-	      scaled len = row[i].verticalExtent();
-
-	      if (i == 0) {
-		lineY -= frameVerticalSpacing;
-		len   += frameVerticalSpacing;
-	      } else {
-		lineY -= row[i - 1].spacing / 2;
-		len   += row[i - 1].spacing / 2;
-	      }
-	      if (i == nRows - 1) {
-		len   += frameVerticalSpacing;
-	      } else {
-		len   += row[i].spacing / 2;
-	      }
-
-	      area.DrawLine((column[j].lineType == T_DASHED) ? dGC[Selected()] : fGC[Selected()],
-			    lineX, lineY, lineX, lineY + len);
-	    }
-	  }
-
-	  xOffset += column[j].width + column[j].spacing;
-	}
-
-	yOffset += row[i].verticalExtent() + row[i].spacing;
-      }
-
-      ResetDirty();
-    }
-}
-
-SmartPtr<MathMLElement>
-MathMLTableElement::Inside(const scaled& x, const scaled& y)
-{
-  if (!IsInside(x, y)) return 0;
-  
+  cellContent.reserve(nRows * nColumns);
+  labelContent.reserve(nRows);
   for (unsigned i = 0; i < nRows; i++)
-    for (unsigned j = 0; j < nColumns; j++)
-      if (cell[i][j].mtd && !cell[i][j].spanned) {
-	SmartPtr<MathMLElement> inside = cell[i][j].mtd->Inside(x, y);
-	if (inside) return inside;
-      }
-
-  return MathMLLinearContainerElement::Inside(x, y);
+    {
+      labelContent.push_back(factory.getLabelChild(i));
+      for (unsigned j = 0; j < nColumns; j++)
+	cellContent.push_back(factory.getChild(i, j));
+    }
+     
+  swapContent(cellContent, labelContent);
 }
 
 void
-MathMLTableElement::ReleaseGCs()
+MathMLTableElement::swapContent(std::vector<SmartPtr<MathMLTableCellElement> >& cellContent,
+				std::vector<SmartPtr<MathMLTableCellElement> >& labelContent)
 {
-  MathMLLinearContainerElement::ReleaseGCs();
-  dGC[0] = dGC[1] = NULL;
+  assert(cellContent.size() % labelContent.size() == 0);
+  numRows = labelContent.size();
+  numColumns = cellContent.size() / numRows;
+  cell.swapContent(this, cellContent);
+  label.swapContent(this, labelContent);
 }
+
+#include <iostream>
+#include "MathMLAttributeParsers.hh"
+
+AreaRef
+MathMLTableElement::format(FormattingContext& ctxt)
+{
+  if (dirtyLayout())
+    {
+      ctxt.push(this);
+      std::cerr << "formatting table 1" << std::endl;
+      if (!tableFormatter)
+	{
+	  tableFormatter = MathMLTableFormatter::create();
+
+	  tableFormatter->init(ctxt,
+			       numRows,
+			       numColumns,
+			       cell.getContent(),
+			       label.getContent(),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, columnwidth),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, rowspacing),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, columnspacing),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, frame),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, framespacing),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, equalcolumns),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, side),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, minlabelspacing));
+	}
+
+      std::cerr << "formatting table 2" << std::endl;
+      for_each_if(cell.begin(), cell.end(),
+		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt),
+		  NotNullPredicate<MathMLTableCellElement>());
+#if 0
+      // questo for_each fallisce ma non si capisce perche' :(
+      for_each_if(label.begin(), label.end(),
+		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt),
+		  NotNullPredicate<MathMLTableCellElement>());
 #endif
+      std::cerr << "formatting table 2 bis" << std::endl;
+
+      SmartPtr<Value> v1 = GET_ATTRIBUTE_VALUE(MathML, Table, align);
+      SmartPtr<Value> v2 = GET_ATTRIBUTE_VALUE(MathML, Table, equalrows);
+      SmartPtr<Value> v3 = GET_ATTRIBUTE_VALUE(MathML, Table, equalcolumns);
+      AreaRef res = tableFormatter->format(ctxt,
+					   numRows,
+					   v1,
+					   v2,
+					   v3);
+      std::cerr << "formatting table 3" << std::endl;
+      res = ctxt.MGD()->wrapper(ctxt, res);
+      setArea(res);
+      
+      ctxt.pop();
+
+      resetDirtyLayout();
+    }
+
+  return getArea();
+}
+
+void
+MathMLTableElement::setFlagDown(Flags f)
+{
+  MathMLContainerElement::setFlagDown(f);
+  cell.setFlagDown(f);
+  label.setFlagDown(f);
+}
+
+void
+MathMLTableElement::resetFlagDown(Flags f)
+{
+  MathMLContainerElement::resetFlagDown(f);
+  cell.resetFlagDown(f);
+  label.resetFlagDown(f);
+}
+
+void
+MathMLTableElement::setDirtyAttribute()
+{
+  MathMLContainerElement::setDirtyAttribute();
+  invalidateFormatter();
+}
+
+void
+MathMLTableElement::setDirtyAttributeD()
+{
+  MathMLContainerElement::setDirtyAttributeD();
+  invalidateFormatter();
+}
+
+void
+MathMLTableElement::invalidateFormatter()
+{ tableFormatter = 0; }

@@ -20,9 +20,10 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLTableCellElement_hh
-#define MathMLTableCellElement_hh
+#ifndef __MathMLTableCellElement_hh__
+#define __MathMLTableCellElement_hh__
 
+#include "token.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLTableCellElement : public MathMLNormalizingContainerElement
@@ -35,48 +36,37 @@ public:
   static SmartPtr<MathMLTableCellElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTableCellElement(view); }
 
-  void SetAlignmentScope(bool b) { alignmentScope = b; }
+  //bool     IsStretchyOperator(void) const;
 
-  scaled   GetMinWidth(void) const { return minWidth; }
-  bool     GetAlignmentScope(void) const { return alignmentScope; }
-  bool     IsStretchyOperator(void) const;
-
-  friend class MathMLTableElement;
-  friend class MathMLTableRowElement;
+  //friend class MathMLTableElement;
+  //friend class MathMLTableRowElement;
 
   virtual void setDirtyAttribute(void);
   virtual void setDirtyStructure(void);
   virtual void setDirtyLayout(void);
 
+  unsigned getRowIndex(void) const { return rowIndex; }
+  unsigned getColumnIndex(void) const { return columnIndex; }
   unsigned getRowSpan(void) const { return rowSpan; }
   unsigned getColumnSpan(void) const { return columnSpan; }
   void setSpan(unsigned, unsigned);
   void setPosition(unsigned, unsigned);
-  void setAlignment(const SmartPtr<Value>&, const SmartPtr<Value>&, const SmartPtr<Value>&);
-
-protected:
-  // the following method is declared static for efficiency reasons. In fact,
-  // it does not access any non-static method of the class but it is recursive
-  // (and relevant to the table cell)
-  static void SetupGroups(const SmartPtr<MathMLElement>&, bool, bool, class TableCell&);
-  void CalcGroupsExtent(void);
-
-#if 0
-  void SetupCellPosition(unsigned, unsigned, unsigned);
-  void SetupCellSpanning(RenderingEnvironment&);
-  void SetupCell(class TableCell*);
-#endif
+  void setDisplacement(const scaled&, const scaled&);
+  void getDisplacement(scaled&, scaled&) const;
+  void setAlignment(TokenId, TokenId);
+  TokenId getRowAlign(void) const;
+  TokenId getColumnAlign(void) const;
+  //void setGroupAlignment(const std::vector<TokenId>&);
 
 private:
-  unsigned rowSpan;
-  unsigned columnSpan;
-
-  scaled   minWidth;
+  scaled dispX;
+  scaled dispY;
   unsigned rowIndex;
   unsigned columnIndex;
-  class TableCell* cell;
-
-  bool     alignmentScope;      // TRUE if this cell is within an alignment scope
+  unsigned rowSpan;
+  unsigned columnSpan;
+  TokenId rowAlign;
+  TokenId columnAlign;
 };
 
-#endif // MathMLTableCellElement_hh
+#endif // __MathMLTableCellElement_hh__

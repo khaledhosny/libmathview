@@ -32,20 +32,35 @@ class MathMLTableContentFactory
 public:
   MathMLTableContentFactory(void) { }
 
-  std::pair<unsigned, unsigned> size(void) const;
-  unsigned addCell(unsigned, unsigned, const SmartPtr<MathMLTableCellElement>&);
-  SmartPtr<MathMLTableCellElement> getCell(unsigned, unsigned) const;
+  unsigned setChild(unsigned, unsigned, unsigned, unsigned, const SmartPtr<MathMLTableCellElement>&);
+  SmartPtr<MathMLTableCellElement> getChild(unsigned, unsigned) const;
+  void setLabelChild(unsigned, const SmartPtr<MathMLTableCellElement>&);
+  SmartPtr<MathMLTableCellElement> getLabelChild(unsigned) const;
+  void getSize(unsigned&, unsigned&) const;
+  void getContent(std::vector<SmartPtr<MathMLTableCellElement> >&,
+		  std::vector<SmartPtr<MathMLTableCellElement> >&,
+		  unsigned&, unsigned&) const;
+  bool hasLabels(void) const;
+
+protected:
+  unsigned findCell(unsigned, unsigned, unsigned, unsigned) const;
+  void initCell(unsigned, unsigned, unsigned, unsigned);
 
 private:    
-  struct Cell
+  struct Slot
   {
-    Cell(const SmartPtr<MathMLTableCellElement>& el = 0, bool s = false) : cell(el), spanned(s) { }
-    
-    bool free(void) const { return !cell; }
-    SmartPtr<MathMLTableCellElement> getCell(void) const { return cell; }
+    Slot(const SmartPtr<MathMLTableCellElement>& el = 0, bool s = false)
+      : child(el), spanned(s) { }
+
+    void init(const SmartPtr<MathMLTableCellElement>& el = 0, bool s = false)
+    { child = el; spanned = s; }
+
+    bool free(void) const { return !child; }
+    SmartPtr<MathMLTableCellElement> getChild(void) const
+    { return !spanned ? child : 0; }
 
   private:
-    SmartPtr<MathMLTableCellElement> cell;
+    SmartPtr<MathMLTableCellElement> child;
     bool spanned;
   };
     
@@ -53,14 +68,18 @@ private:
   {
     Row(void) { }
       
-    unsigned size(void) const { return cells.size(); }
-    unsigned addCell(unsigned, const SmartPtr<MathMLTableCellElement>&);
-    unsigned findSlot(unsigned, unsigned);
-    void setSpanningCell(unsigned, const SmartPtr<MathMLTableCellElement>&);
-    SmartPtr<MathMLTableCellElement> getCell(unsigned) const;
+    unsigned findCell(unsigned, unsigned) const;
+    void initCell(unsigned, unsigned);
+    void setChild(unsigned, unsigned, const SmartPtr<MathMLTableCellElement>&);
+    void setSpanningChild(unsigned, unsigned, const SmartPtr<MathMLTableCellElement>&);
+    SmartPtr<MathMLTableCellElement> getChild(unsigned) const;
+    void setLabelChild(const SmartPtr<MathMLTableCellElement>&);
+    SmartPtr<MathMLTableCellElement> getLabelChild(void) const;
+    unsigned getSize(void) const { return content.size(); }
 
   private:
-    std::vector<Cell> cells;
+    SmartPtr<MathMLTableCellElement> labelChild;
+    std::vector<Slot> content;
   };
 
   std::vector<Row> rows;

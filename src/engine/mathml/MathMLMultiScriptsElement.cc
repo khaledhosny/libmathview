@@ -46,11 +46,16 @@ MathMLMultiScriptsElement::formatScripts(FormattingContext& ctxt,
 					 std::vector<AreaRef>& area)
 {
   area.reserve(end - begin);
+#if 0
   for (std::vector<SmartPtr<MathMLElement> >::const_iterator p = begin;
        p != end;
        p++)
     if (*p) area.push_back((*p)->format(ctxt));
     else area.push_back(0);
+#else
+  std::transform(begin, end, std::back_inserter(area),
+		 std::bind2nd(FormatAdapter<FormattingContext,MathMLElement,AreaRef>(), &ctxt));
+#endif
 }
 
 AreaRef

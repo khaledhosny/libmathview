@@ -121,6 +121,7 @@ protected:
       { "munderover",    &TemplateBuilder::template updateElement<MathML_munderover_ElementBuilder> },
       { "mmultiscripts", &TemplateBuilder::template updateElement<MathML_mmultiscripts_ElementBuilder> },
       { "mtable",        &TemplateBuilder::template updateElement<MathML_mtable_ElementBuilder> },
+      { "mtd",           &TemplateBuilder::template updateElement<MathML_mtd_ElementBuilder> },
       { "maligngroup",   &TemplateBuilder::template updateElement<MathML_maligngroup_ElementBuilder> },
       { "malignmark",    &TemplateBuilder::template updateElement<MathML_malignmark_ElementBuilder> },
       { "maction",       &TemplateBuilder::template updateElement<MathML_maction_ElementBuilder> },
@@ -776,6 +777,9 @@ protected:
     }
   };
 
+  struct MathML_mtd_ElementBuilder : public MathMLNormalizingContainerElementBuilder
+  { typedef MathMLTableCellElement type; };
+
   struct MathML_mtable_ElementBuilder : public MathMLElementBuilder
   {
     typedef MathMLTableElement type;
@@ -809,6 +813,7 @@ protected:
 			 const SmartPtr<Value>& tableAlign,
 			 unsigned columnIndex)
     {
+#if 1
       if (cellAlign)
 	return cellAlign;
       else if (rowAlign)
@@ -817,7 +822,7 @@ protected:
 	return GetComponent(tableAlign, columnIndex);
       else
 	return 0;
-#if 0
+#else
       // Because of a bug in GCC-3.4 the following code, which is
       // syntactically and semantically correct, does not compile
       // and the compiler issues a misleading error message
@@ -831,11 +836,10 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLTableElement>& elem)
     {
-      return;
-
       MathMLTableContentFactory tableContentFactory;
 
       unsigned rowIndex = 0;
+
       const SmartPtr<Value> tableRowAlign = builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, rowalign));
       const SmartPtr<Value> tableColumnAlign = builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, columnalign));
       const SmartPtr<Value> tableGroupAlign = builder.getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Table, groupalign));
@@ -848,10 +852,10 @@ protected:
 	  const SmartPtr<Value> rowGroupAlign = builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, groupalign));
 
 	  const String name = Model::getNodeName(Model::asNode(row));
-	  if (name == "mtr")
+	  if (name == "mtr" || name == "mlabeledtr")
 	    {
 	      unsigned columnIndex = 0;
-	      for (typename Model::ElementIterator iter(el, MATHML_NS_URI, "mtd"); iter.more(); iter.next())
+	      for (typename Model::ElementIterator iter(row, MATHML_NS_URI); iter.more(); iter.next())
 		{
 		  typename Model::Element cell = iter.element();
 
@@ -862,9 +866,23 @@ protected:
 		  const int cellColumnSpan = ToInteger(builder.getAttributeValue(cell, ATTRIBUTE_SIGNATURE(MathML, TableCell, columnspan)));
 		  SmartPtr<MathMLElement> elem = builder.getMathMLElement(cell);
 		  SmartPtr<MathMLTableCellElement> cellElem = smart_cast<MathMLTableCellElement>(elem);
-		  cellElem->setSpan(cellRowSpan, cellColumnSpan);
+		  if (!cellElem)
+		    {
+		      cellElem = MathMLTableCellElement::create(builder.getMathMLNamespaceContext());
+		      cellElem->setChild(elem);
+		      // WARNING: should we clear the dirty flags?
+		    }
+		  if (name == "mtr" || columnIndex > 0)
+		    {
+		      cellElem->setSpan(cellRowSpan, cellColumnSpan);
+		      columnIndex = tableContentFactory.setChild(rowIndex, columnIndex, cellRowSpan, cellColumnSpan, cellElem);
+		    }
+		  else
+		    {
+		      cellElem->setSpan(1, 1);
+		      tableContentFactory.setLabelChild(rowIndex, cellElem);
+		    }
 
-		  columnIndex = tableContentFactory.addCell(rowIndex, columnIndex, cellElem);
 		  // now rowIndex and columnIndex are final values
 		  cellElem->setPosition(rowIndex, columnIndex);
 
@@ -872,22 +890,19 @@ protected:
 		  const SmartPtr<Value> columnAlign = refineAlignAttribute(cellColumnAlign, rowColumnAlign, tableColumnAlign, columnIndex);
 		  const SmartPtr<Value> groupAlign = refineAlignAttribute(cellGroupAlign, rowGroupAlign, tableGroupAlign, columnIndex);
 
-		  cellElem->setAlignment(rowAlign, columnAlign, groupAlign);
+		  cellElem->setAlignment(ToTokenId(rowAlign), ToTokenId(columnAlign));
+		  //cellElem->setGroupAlignment(groupAlign);
 		}
 
 	      rowIndex++;
 	    }
-	  else if (name == "mlabeledtr")
-	    {
-	      typename Model::ElementIterator iter(el, MATHML_NS_URI);
-	      // if the first element is not a cell that is the label
-	      //
-	    }
 	  else
 	    {
-	      // issue a warning message
+	      // issue a warning message or promote to mtr with single mtd inside
 	    }
 	}
+
+      elem->updateContent(tableContentFactory);
     }
   };
 

@@ -207,19 +207,3 @@ GetComponent(const SmartPtr<Value>& value, int i, int j)
     }
 }
 
-#if 0
-SmartPtr<Value>
-Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env, int i, int j)
-{
-  assert(value);
-
-  SmartPtr<Value> realValue = GetComponent(value, i, j);
-  assert(realValue);
-
-  if (IsTokenId(value))
-    return Variant<Length>::create(env.GetMathSpace(RenderingEnvironment::mathSpaceIdOfTokenId(ToTokenId(value))));
-  else
-    return realValue;
-}
-#endif
-

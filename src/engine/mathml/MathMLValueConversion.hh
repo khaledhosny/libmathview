@@ -26,9 +26,10 @@
 #include "ValueConversion.hh"
 #include "MathVariant.hh"
 
+bool isTokenId(const SmartPtr<Value>&, TokenId);
 MathVariant toMathVariant(TokenId);
 MathVariant toMathVariant(const SmartPtr<Value>&);
 Length toLength(const SmartPtr<Value>&, const class FormattingContext&);
-SmartPtr<Value> Resolve(const SmartPtr<Value>&, const class FormattingContext&, int i = -1, int j = -1);
+Length resolveLength(const class FormattingContext&, const SmartPtr<Value>&, int = -1, int = -1);
 
 #endif // __MathMLValueConversion_hh__

@@ -36,10 +36,8 @@
 MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLNamespaceContext>& context)
   : MathMLNormalizingContainerElement(context)
 {
-  minWidth = 0;
   rowIndex = 0;
   columnIndex = 0;
-  cell = NULL;
 }
 
 MathMLTableCellElement::~MathMLTableCellElement()
@@ -48,18 +46,41 @@ MathMLTableCellElement::~MathMLTableCellElement()
 void
 MathMLTableCellElement::setSpan(unsigned rSpan, unsigned cSpan)
 {
+  rowSpan = rSpan;
+  columnSpan = cSpan;
 }
 
 void
 MathMLTableCellElement::setPosition(unsigned i, unsigned j)
+{ }
+
+void
+MathMLTableCellElement::setAlignment(TokenId ra, TokenId ca)
 {
+  rowAlign = ra;
+  columnAlign = ca;
+}
+
+TokenId
+MathMLTableCellElement::getRowAlign() const
+{ return rowAlign; }
+
+TokenId
+MathMLTableCellElement::getColumnAlign() const
+{ return columnAlign; }
+
+void
+MathMLTableCellElement::setDisplacement(const scaled& dx, const scaled& dy)
+{
+  dispX = dx;
+  dispY = dy;
 }
 
 void
-MathMLTableCellElement::setAlignment(const SmartPtr<Value>& rowAlign,
-				     const SmartPtr<Value>& columnAlign,
-				     const SmartPtr<Value>& groupAlign)
+MathMLTableCellElement::getDisplacement(scaled& dx, scaled& dy) const
 {
+  dx = dispX;
+  dy = dispY;
 }
 
 #if 0
@@ -465,6 +486,7 @@ MathMLTableCellElement::SetPosition(const scaled& x, const scaled& y)
 }
 #endif
 
+#if 0
 bool
 MathMLTableCellElement::IsStretchyOperator() const
 {
@@ -474,6 +496,7 @@ MathMLTableCellElement::IsStretchyOperator() const
 #endif
   return false;
 }
+#endif
 
 void
 MathMLTableCellElement::setDirtyStructure()

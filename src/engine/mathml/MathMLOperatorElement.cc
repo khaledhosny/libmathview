@@ -89,9 +89,8 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, lspace, defaults))
 	{
-	  SmartPtr<Value> resValue = Resolve(value, ctxt);
 	  if (ctxt.getScriptLevel() <= 0)
-	    lSpace = ctxt.MGD()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+	    lSpace = ctxt.MGD()->evaluate(ctxt, resolveLength(ctxt, value), scaled::zero());
 	  else
 	    lSpace = scaled::zero();
 	}
@@ -100,9 +99,8 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, rspace, defaults))
 	{
-	  SmartPtr<Value> resValue = Resolve(value, ctxt);
 	  if (ctxt.getScriptLevel() <= 0)
-	    rSpace = ctxt.MGD()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+	    rSpace = ctxt.MGD()->evaluate(ctxt, resolveLength(ctxt, value), scaled::zero());
 	  else
 	    rSpace = scaled::zero();
 	}
@@ -251,9 +249,8 @@ MathMLOperatorElement::parseLimitValue(const SmartPtr<Value>& value,
 
   if (IsTokenId(value))
     { // it must be a named math space
-      SmartPtr<Value> resValue = Resolve(value, ctxt);
       multiplier = -1;
-      size = ctxt.MGD()->evaluate(ctxt, ToLength(resValue), scaled::zero());
+      size = ctxt.MGD()->evaluate(ctxt, resolveLength(ctxt, value), scaled::zero());
     }
   else if (IsNumber(value))
     multiplier = std::max(EPSILON, ToNumber(value));
