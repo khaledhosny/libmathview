@@ -27,8 +27,11 @@
 AreaRef
 AreaFactory::background(const AreaRef& base, const RGBColor& c) const
 {
-  assert(false);
-  return 0;
+  std::vector<AreaRef> o;
+  o.reserve(2);
+  o.push_back(color(ink(base), c));
+  o.push_back(base);
+  return overlapArray(o);
 }
 
 AreaRef
