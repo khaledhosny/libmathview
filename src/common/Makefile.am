@@ -1,4 +1,6 @@
 
+SUBDIRS = mathvariants
+
 noinst_LTLIBRARIES = libcommon.la
 
 EXTRA_DIST = \
@@ -9,6 +11,8 @@ EXTRA_DIST = \
 # distcheck fail.
 
 libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
+libcommon_la_LIBADD = $(top_builddir)/src/common/mathvariants/libmathvariants.la
 
 libcommon_la_SOURCES = \
   Clock.cc \

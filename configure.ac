@@ -413,6 +413,8 @@ AC_CONFIG_FILES([
  src/Makefile
  src/common/Makefile
  src/common/Char.hh
+ src/common/mathvariants/Makefile
+ src/common/mathvariants/xml/Makefile
  src/frontend/Makefile
  src/frontend/common/Makefile
  src/frontend/custom_reader/Makefile
@@ -425,10 +427,7 @@ AC_CONFIG_FILES([
  src/engine/mathml/Makefile
  src/engine/adapters/Makefile
  src/formatter/Makefile
- src/formatter/basictypes/Makefile
  src/formatter/common/Makefile
- src/formatter/basictypes/mathvariants/Makefile
- src/formatter/basictypes/mathvariants/xml/Makefile
  src/formatter/areamodel/Makefile
  src/formatter/gtk_areamodel/Makefile
  src/formatter/mathml_graphic_device/Makefile

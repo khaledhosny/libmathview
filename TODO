@@ -5,7 +5,6 @@
 
 BUGS
 
-* mathvariant conversion still made using gmetadom
 * when is it that the libxml2 tree gets freed in the libxml2
   frontends?
 * restore handling of mo attributes with getAttributeValueNoDefault
@@ -52,7 +51,6 @@ ARCH IMPROVEMENTS
   over areas by implementing a visitor
 - fix Configuration/Globals files 
   create a class for them and refer them from the View
-- move mathvariant files into src/common
 - not sure the Origin information should go in the view
 
 MISSING

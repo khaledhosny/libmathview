@@ -35,8 +35,7 @@ noinst_HEADERS = \
   MathVariant.hh
 
 INCLUDES = \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/formatter/basictypes
+  -I$(top_srcdir)/src/common
 
 %_gen.cc : $(srcdir)/xml/%.xml extract.xsl
 	$(XSLTPROC) --novalid extract.xsl $< >$@
