@@ -37,6 +37,8 @@
 #include "operatorAux.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
+#include "MathGraphicDevice.hh"
+#include "MathFormattingContext.hh"
 
 MathMLUnderOverElement::MathMLUnderOverElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)
@@ -459,6 +461,65 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLUnderOverElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      bool scriptize = false;
+      bool accent = false;
+      bool accentUnder = false;
+
+      SmartPtr<MathMLOperatorElement> baseOp = base ? base->GetCoreOperator() : 0;
+      SmartPtr<MathMLOperatorElement> underOp = underScript ? underScript->GetCoreOperator() : 0;
+      SmartPtr<MathMLOperatorElement> overOp = overScript ? overScript->GetCoreOperator() : 0;
+
+      if (!scriptize)
+	{
+	  if (underScript)
+	    {
+	      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(UnderOver, accentunder))
+		accentUnder = ToBoolean(value);
+	      else if (underOp)
+		accentUnder = underOp->IsAccent();
+	    }
+
+	  if (overScript)
+	    {
+	      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(UnderOver, accent))
+		accent = ToBoolean(value);
+	      else if (overOp)
+		accent = overOp->IsAccent();
+	    }
+	}
+
+      ctxt.push(this);
+      ctxt.setDisplayStyle(false);
+      if (!accentUnder) ctxt.addScriptLevel(1);
+      AreaRef underArea = underScript ? underScript->format(ctxt) : 0;
+      ctxt.pop();
+
+      ctxt.push(this);
+      ctxt.setDisplayStyle(false);
+      if (!accent) ctxt.addScriptLevel(1);
+      AreaRef overArea = overScript ? overScript->format(ctxt) : 0;
+      ctxt.pop();
+
+      ctxt.push(this);
+      AreaRef baseArea = base ? base->format(ctxt) : 0;
+      ctxt.pop();
+
+      AreaRef res = ctxt.getDevice().underOver(ctxt, baseArea,
+					       underArea, accentUnder,
+					       overArea, accent);
+      setArea(ctxt.getDevice().wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, res)));
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

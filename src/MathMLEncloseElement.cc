@@ -28,6 +28,8 @@
 #include "MathMLEncloseElement.hh"
 #include "MathMLRadicalElement.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
 MathMLEncloseElement::MathMLEncloseElement(const SmartPtr<MathMLView>& view)
@@ -131,6 +133,26 @@ MathMLEncloseElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLEncloseElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      String notation = ToString(GET_ATTRIBUTE_VALUE(Enclose, notation));
+      AreaRef res;
+      if (child)
+	res = ctxt.getDevice().enclose(ctxt, child->format(ctxt), notation);
+      else
+	res = 0;
+      setArea(res ? ctxt.getDevice().wrapper(ctxt, res) : 0);
+      ctxt.pop();
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

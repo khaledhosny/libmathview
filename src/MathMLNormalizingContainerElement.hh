@@ -36,6 +36,7 @@ protected:
 public:
   virtual void construct(void);
   virtual void DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void Render(const DrawingArea&);
 
   virtual void SetDirtyStructure(void);

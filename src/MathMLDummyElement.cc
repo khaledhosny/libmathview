@@ -27,6 +27,8 @@
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLDummyElement::MathMLDummyElement(const SmartPtr<class MathMLView>& view)
   : MathMLElement(view)
@@ -53,6 +55,19 @@ void
 MathMLDummyElement::DoLayout(const FormattingContext& ctxt)
 {
   if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
+}
+
+AreaRef
+MathMLDummyElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      setArea(ctxt.getDevice().dummy(ctxt));
+      ctxt.pop();
+    }
+
+  return getArea();
 }
 
 void

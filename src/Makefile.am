@@ -207,6 +207,7 @@ INCLUDES = \
   -I$(top_builddir) \
   -I$(top_srcdir)/auto/ \
   -I$(srcdir)/formatter/basictypes \
+  -I$(srcdir)/formatter/basictypes/mathvariants/ \
   -I$(srcdir)/formatter/areamodel \
   -I$(srcdir)/formatter/gtk_areamodel \
   -I$(srcdir)/formatter/mathml_graphic_device \

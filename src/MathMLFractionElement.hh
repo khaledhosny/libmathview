@@ -41,6 +41,7 @@ public:
   virtual void   Setup(RenderingEnvironment&);
   virtual void   refine(class AbstractRefinementContext&);
   virtual void   DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void   SetPosition(const scaled&, const scaled&);
   virtual void   SetFlagDown(Flags);
   virtual void   ResetFlagDown(Flags);

@@ -28,6 +28,8 @@
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
 MathMLActionElement::MathMLActionElement(const SmartPtr<class MathMLView>& view)
@@ -92,6 +94,50 @@ MathMLActionElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLActionElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      AreaRef res;
+
+      ctxt.push(this);
+      if (SmartPtr<Value> vAction = GET_ATTRIBUTE_VALUE(Action, actiontype))
+	{
+	  String action = ToString(vAction);
+	  
+	  if (action == "toggle")
+	    {
+	      int selection = ToInteger(GET_ATTRIBUTE_VALUE(Action, selection));
+	      if (selection > 0 && selection < GetSize())
+		{
+		  SmartPtr<MathMLElement> elem = GetChild(selection - 1);
+		  assert(elem);
+		  res = elem->format(ctxt);
+		}
+	    }
+	  else
+	    {
+	      Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
+	      if (GetSize() > 0)
+		{
+		  SmartPtr<MathMLElement> elem = GetChild(0);
+		  assert(elem);
+		  res = elem->format(ctxt);
+		}
+	    }
+	}
+      else
+	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
+      setArea(res ? ctxt.getDevice().wrapper(ctxt, res) : 0);
+      ctxt.pop();
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

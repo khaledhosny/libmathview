@@ -30,6 +30,8 @@
 #include "Gtk_DrawingArea.hh"
 #include "ShaperManager.hh"
 #include "Gtk_RenderingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 unsigned MathMLStringNode::visited = 0;
 
@@ -51,18 +53,28 @@ MathMLStringNode::IsString() const
 void
 MathMLStringNode::Setup(RenderingEnvironment& env)
 {
-  area = env.shaperManager->shape(env.areaFactory, toUCS4String(content), env.ToScaledPoints(env.GetFontSize()));
 }
 
 void
-MathMLStringNode::DoLayout(const FormattingContext&)
+MathMLStringNode::DoLayout(const FormattingContext& ctxt)
 {
+#if 0
+  if (!area) area = env.shaperManager->shape(ctxt, toUCS4String(content));
+  assert(area);
   box = area->box();
+#endif
+}
+
+AreaRef
+MathMLStringNode::format(MathFormattingContext& ctxt)
+{
+  return ctxt.getDevice().string(ctxt, content);
 }
 
 void
 MathMLStringNode::Render(const DrawingArea& a)
 {
+#if 0
   assert(GetParent());
   assert(is_a<MathMLTokenElement>(GetParent()));
 
@@ -79,6 +91,7 @@ MathMLStringNode::Render(const DrawingArea& a)
   area->render(rc, GetX() - a.GetTopX(), GetY() - a.GetTopY());
 
   visited++;
+#endif
 }
 
 bool

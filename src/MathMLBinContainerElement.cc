@@ -29,6 +29,8 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLBinContainerElement.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLView>& view)
   : MathMLContainerElement(view)
@@ -97,6 +99,22 @@ MathMLBinContainerElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLBinContainerElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      AreaRef res = child ? child->format(ctxt) : 0;
+      setArea(res ? ctxt.getDevice().wrapper(ctxt, res) : 0);
+      ctxt.pop();
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

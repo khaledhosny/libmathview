@@ -28,6 +28,8 @@
 #include "MathMLmathElement.hh"
 #include "RenderingEnvironment.hh"
 #include "ValueConversion.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLmathElement::MathMLmathElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
@@ -57,8 +59,6 @@ MathMLmathElement::Setup(RenderingEnvironment& env)
       background = env.GetBackgroundColor();
       env.Push();
 
-      //env.SetFontMode(FONT_MODE_MATH);
-
       if (!IsSet(T_MODE))
 	{
 	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, display);
@@ -82,3 +82,41 @@ MathMLmathElement::Setup(RenderingEnvironment& env)
     }
 }
 
+AreaRef
+MathMLmathElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+
+      if (IsSet(T_MODE))
+	{
+	  Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
+	  if (IsSet(T_DISPLAY))
+	    Globals::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
+	}
+
+      if (IsSet(T_DISPLAY))
+	{
+	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, display);
+	  assert(value);
+	  ctxt.setDisplayStyle(ToTokenId(value) == T_BLOCK);
+	}
+      else
+	{
+	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, mode);
+	  assert(value);
+	  ctxt.setDisplayStyle(ToTokenId(value) == T_DISPLAY);
+	} 
+
+      AreaRef res = GetChild() ? GetChild()->format(ctxt) : 0;
+      if (res) res = ctxt.getDevice().wrapper(ctxt, res);
+      setArea(res);
+
+      ctxt.pop();
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
+}

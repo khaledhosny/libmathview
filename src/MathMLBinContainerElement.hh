@@ -37,6 +37,7 @@ public:
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(RenderingEnvironment&);
   virtual void DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);

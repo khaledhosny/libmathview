@@ -26,6 +26,35 @@
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLOperatorElement.hh"
+#include "MathGraphicDevice.hh"
+#include "MathFormattingContext.hh"
+
+AreaRef
+MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
+					 const MathFormattingContext& context,
+					 const AreaRef& area)
+{
+  assert(elem);
+  if (SmartPtr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
+    {
+      assert(!top->DirtyAttribute());
+      scaled leftPadding = top->GetLeftPadding();
+      scaled rightPadding = top->GetRightPadding();
+      if (leftPadding != scaled::zero() || rightPadding != scaled::zero())
+	{
+	  std::vector<AreaRef> row;
+	  row.reserve(3);
+	  row.push_back(context.getDevice().getFactory()->horizontalSpace(leftPadding));
+	  row.push_back(area);
+	  row.push_back(context.getDevice().getFactory()->horizontalSpace(rightPadding));
+	  return context.getDevice().getFactory()->horizontalArray(row);
+	}
+      else
+	return area;
+    }
+  else
+    return area;
+}
 
 void
 MathMLEmbellishment::DoEmbellishmentLayout(const SmartPtr<MathMLElement>& elem, BoundingBox& box)

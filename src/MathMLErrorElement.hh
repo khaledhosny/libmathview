@@ -36,6 +36,7 @@ public:
   { return new MathMLErrorElement(view); }
 
   virtual void Setup(RenderingEnvironment&);
+  virtual AreaRef format(class MathFormattingContext&);
 };
 
 #endif // MathMLErrorElement_hh

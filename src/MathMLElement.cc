@@ -204,6 +204,18 @@ MathMLElement::DoLayout(const FormattingContext& ctxt)
   if (DirtyLayout(ctxt)) ResetDirtyLayout(ctxt);
 }
 
+AreaRef
+MathMLElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      area = 0;
+      ResetDirtyLayout();
+    }
+
+  return getArea();
+}
+
 void
 MathMLElement::RenderBackground(const DrawingArea& area)
 {

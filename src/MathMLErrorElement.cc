@@ -26,6 +26,8 @@
 
 #include "MathMLErrorElement.hh"
 #include "RenderingEnvironment.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLErrorElement::MathMLErrorElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
@@ -36,7 +38,8 @@ MathMLErrorElement::~MathMLErrorElement()
 {
 }
 
-void MathMLErrorElement::Setup(RenderingEnvironment& env)
+void
+MathMLErrorElement::Setup(RenderingEnvironment& env)
 {
   if (DirtyAttribute() || DirtyAttributeP())
     {
@@ -51,3 +54,21 @@ void MathMLErrorElement::Setup(RenderingEnvironment& env)
       ResetDirtyAttribute();
     }
 }
+
+AreaRef
+MathMLErrorElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      if (ctxt.getColor() == RGBColor::RED()) ctxt.setColor(RGBColor::BLUE());
+      else ctxt.setColor(RGBColor::RED());
+      AreaRef res = child ? child->format(ctxt) : 0;
+      setArea(res ? ctxt.getDevice().wrapper(ctxt, res) : 0);
+      ctxt.pop();
+      ResetDirtyLayout();
+    }
+
+  return getArea();
+}
+

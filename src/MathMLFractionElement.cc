@@ -26,6 +26,8 @@
 
 #include "ChildList.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
@@ -274,6 +276,83 @@ MathMLFractionElement::DoLayout(const class FormattingContext& ctxt)
 
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLFractionElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      Length thickness;
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Fraction, linethickness))
+	{
+	  if (IsTokenId(value))
+	    {
+	      switch (ToTokenId(value))
+		{
+		case T_THIN:
+		  thickness.set(0.5, Length::PURE_UNIT);
+		  break;
+		case T_MEDIUM:
+		  thickness.set(1, Length::PURE_UNIT);
+		  break;
+		case T_THICK:
+		  thickness.set(2, Length::PURE_UNIT);
+		  break;
+		default:
+		  assert(false);
+		  break;
+		}
+	    }
+	  else if (IsNumber(value))
+	    thickness.set(ToNumber(value), Length::PURE_UNIT);
+	  else
+	    thickness = ToLength(value);
+	}
+      else
+	assert(false);
+
+      TokenId numAlign = ToTokenId(GET_ATTRIBUTE_VALUE(Fraction, numalign));
+      TokenId denomAlign = ToTokenId(GET_ATTRIBUTE_VALUE(Fraction, denomalign));
+      bool bevelled = ToBoolean(GET_ATTRIBUTE_VALUE(Fraction, bevelled));
+
+      AreaRef res;
+
+      ctxt.push(this);
+      if (ctxt.getDisplayStyle()) ctxt.setDisplayStyle(false);
+      else ctxt.addScriptLevel(1);
+      AreaRef num = GetNumerator()->format(ctxt);
+      AreaRef denom = GetDenominator()->format(ctxt);
+
+      if (bevelled)
+	res = ctxt.getDevice().bevelledFraction(ctxt, num, denom, thickness);
+      else
+	{
+	  switch (numAlign)
+	    {
+	    case T_LEFT: break; // nothing to do
+	    case T_CENTER: num = ctxt.getDevice().getFactory()->center(num); break;
+	    case T_RIGHT: num = ctxt.getDevice().getFactory()->right(num); break;
+	    default: assert(false);
+	    }
+
+	  switch (denomAlign)
+	    {
+	    case T_LEFT: break; // nothing to do
+	    case T_CENTER: denom = ctxt.getDevice().getFactory()->center(denom); break;
+	    case T_RIGHT: denom = ctxt.getDevice().getFactory()->right(denom); break;
+	    default: assert(false);
+	    }
+	
+	  res = ctxt.getDevice().fraction(ctxt, num, denom, thickness);
+	}
+      setArea(ctxt.getDevice().wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, res)));
+      ctxt.pop();
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

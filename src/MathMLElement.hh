@@ -25,13 +25,14 @@
 
 #include <bitset>
 
-#include "token.hh"
-#include "SmartPtr.hh"
-#include "MathMLFrame.hh"
+#include "Area.hh"
 #include "BoundingBox.hh"
 #include "DrawingArea.hh"
-#include "MathMLAttributeList.hh"
 #include "FormattingContext.hh"
+#include "MathMLAttributeList.hh"
+#include "MathMLFrame.hh"
+#include "SmartPtr.hh"
+#include "token.hh"
 
 // MathMLElement: base class for every MathML Element
 class MathMLElement : public MathMLFrame
@@ -56,6 +57,7 @@ public:
   virtual void refine(class AbstractRefinementContext&);
   virtual void Setup(class RenderingEnvironment&); // setup attributes
   virtual void DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void RenderBackground(const DrawingArea&);
   virtual void Render(const DrawingArea&);
   virtual void ReleaseGCs(void);
@@ -71,6 +73,8 @@ protected:
   SmartPtr<Value> getAttributeValue(const class MathMLAttributeSignature&) const;
   SmartPtr<Value> getAttributeValueNoDefault(const class MathMLAttributeSignature&) const;
   void refineAttribute(const class AbstractRefinementContext&, const class MathMLAttributeSignature&);
+
+  void setArea(const AreaRef& a) { area = a; }
 
 public:
   bool IsSet(TokenId) const;
@@ -102,7 +106,8 @@ public:
   void ResetDirtyLayout(const FormattingContext& ctxt)
   { if (ctxt.GetLayoutType() == FormattingContext::LAYOUT_AUTO) ResetDirtyLayout(); }
 
-public:
+  AreaRef getArea(void) const { return area; }
+
   virtual void SetDirtyStructure(void);
   void ResetDirtyStructure(void) { ResetFlag(FDirtyStructure); }
   bool DirtyStructure(void) const { return GetFlag(FDirtyStructure); }
@@ -156,6 +161,7 @@ protected:
   RGBColor background; // background color
 
   WeakPtr<class MathMLView> view;
+  AreaRef area;
 
 #if defined(HAVE_GMETADOM)
   DOM::Element element;

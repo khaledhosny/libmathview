@@ -38,6 +38,7 @@ public:
   { return new MathMLPhantomElement(view); }
 
   virtual void DoLayout(const class FormattingContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
   virtual void Render(const DrawingArea&);
 

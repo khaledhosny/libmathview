@@ -26,6 +26,8 @@
 
 #include "ChildList.hh"
 #include "FormattingContext.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFormattingEngineFactory.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -105,6 +107,22 @@ MathMLNormalizingContainerElement::DoLayout(const class FormattingContext& ctxt)
 	box.unset();
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLNormalizingContainerElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      AreaRef res = child ? child->format(ctxt) : 0;
+      if (res) res = ctxt.getDevice().wrapper(ctxt, res);
+      setArea(res);
+      ctxt.pop();
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void

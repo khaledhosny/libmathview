@@ -36,6 +36,7 @@ public:
   { return new MathMLmathElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
+  virtual AreaRef format(class MathFormattingContext&);
   virtual void Setup(class RenderingEnvironment&);
 };
 

@@ -26,6 +26,8 @@
 
 #include "MathMLPhantomElement.hh"
 #include "MathMLOperatorElement.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLPhantomElement::MathMLPhantomElement(const SmartPtr<class MathMLView>& view)
   : MathMLNormalizingContainerElement(view)
@@ -52,6 +54,27 @@ MathMLPhantomElement::DoLayout(const FormattingContext& ctxt)
       DoEmbellishmentLayout(this, box);
       ResetDirtyLayout(ctxt);
     }
+}
+
+AreaRef
+MathMLPhantomElement::format(MathFormattingContext& ctxt)
+{
+  if (DirtyLayout())
+    {
+      ctxt.push(this);
+      AreaRef res = child ? child->format(ctxt) : 0;
+      
+      if (res)
+	res = ctxt.getDevice().wrapper(ctxt, MathMLEmbellishment::formatEmbellishment(this, ctxt, ctxt.getDevice().getFactory()->hide(res)));
+      else
+	res = 0;
+      setArea(res);
+      ctxt.pop();
+
+      ResetDirtyLayout();
+    }
+
+  return getArea();
 }
 
 void
