@@ -511,8 +511,14 @@ gtk_math_view_button_press_event(GtkWidget* widget,
   scaled y0 = math_view->drawing_area->GetTopY();
 
   if (event->button == 1) {
+    if (math_view->interface->GetSelectionRoot() != NULL) {
+      math_view->interface->ResetSelectionRoot();
+      gtk_signal_emit(GTK_OBJECT(math_view), selection_changed_signal, NULL);
+    }
+
     math_view->interface->SetSelectionFirst(float2sp(event->x * SCALED_POINTS_PER_PX) + x0,
 					    float2sp(event->y * SCALED_POINTS_PER_PX) + y0);
+
     math_view->button_press = TRUE;
     math_view->select = FALSE;
   }
@@ -548,11 +554,6 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 	  if (elem->HasLink())
 	    gtk_signal_emit(GTK_OBJECT(math_view), jump_signal, node);
 	}
-      }
-
-      if (math_view->interface->GetSelectionRoot() != NULL) {
-	math_view->interface->ResetSelectionRoot();
-	gtk_signal_emit(GTK_OBJECT(math_view), selection_changed_signal, NULL);
       }
     }
 
@@ -830,7 +831,7 @@ static void
 gtk_math_view_selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
-  //  gtk_math_view_set_selection(math_view, node);
+  // _math_view_set_selection(math_view, node);
 }
 
 extern "C" GtkAdjustment*
