@@ -267,7 +267,7 @@ gtk_math_view_get_property (GObject* object,
 /* widget implementation */
 
 static void
-update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
+gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
 
@@ -330,14 +330,14 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 }
 
 static void
-update_widget(GtkMathView* math_view)
+gtk_math_view_update(GtkMathView* math_view)
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
-  update_widget(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
+  gtk_math_view_update(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 static void
-paint_widget(GtkMathView* math_view)
+gtk_math_view_paint(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->configuration != 0);
@@ -376,7 +376,7 @@ paint_widget(GtkMathView* math_view)
 			  Gtk_RenderingContext::fromGtkX(x),
 			  Gtk_RenderingContext::fromGtkY(y));
 
-  update_widget(math_view, 0, 0, width, height);
+  gtk_math_view_update(math_view, 0, 0, width, height);
 }
 
 static void
@@ -392,7 +392,7 @@ hadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   math_view->top_x = static_cast<int>(adj->value);
 
   if (math_view->old_top_x != math_view->top_x)
-    paint_widget(math_view);
+    gtk_math_view_paint(math_view);
 }
 
 static void
@@ -408,7 +408,7 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   math_view->top_y = static_cast<int>(adj->value);
 
   if (math_view->old_top_y != math_view->top_y)
-    paint_widget(math_view);
+    gtk_math_view_paint(math_view);
 }
 
 extern "C" GType
@@ -714,10 +714,11 @@ gtk_math_view_init(GtkMathView* math_view)
 }
 
 extern "C" GtkWidget*
-GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*)
+GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment* hadj, GtkAdjustment* vadj)
 {
   GtkMathView* math_view = (GtkMathView*) gtk_type_new(GTKMATHVIEW_METHOD_NAME(get_type)());
   g_return_val_if_fail(math_view != NULL, NULL);
+  GTKMATHVIEW_METHOD_NAME(set_adjustments)(math_view, hadj, vadj);
   return GTK_WIDGET(math_view);
 }
 
@@ -790,7 +791,7 @@ GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView* math_view)
   g_return_val_if_fail(math_view->freeze_counter > 0, FALSE);
   if (--math_view->freeze_counter == 0)
     {
-      paint_widget(math_view);
+      gtk_math_view_paint(math_view);
       return TRUE;
     }
   else
@@ -875,7 +876,7 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
 			     allocation->x, allocation->y,
 			     allocation->width, allocation->height);
 
-      paint_widget(math_view);
+      gtk_math_view_paint(math_view);
     }
 }
 
@@ -1050,7 +1051,13 @@ gtk_math_view_expose_event(GtkWidget* widget,
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
 
-  update_widget(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
+  // It may be that the first expose event the double-buffer has not
+  // been allocated yet. In this case the paint method should be used
+  if (math_view->pixmap == NULL)
+    gtk_math_view_paint(math_view);
+  else
+    gtk_math_view_update(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
+
   return FALSE;
 }
 
@@ -1169,7 +1176,7 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadURI(name);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1181,7 +1188,7 @@ GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadBuffer(buffer);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1193,7 +1200,7 @@ GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, GdomeDocument* do
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadDocument(DOM::Document(doc));
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1205,7 +1212,7 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadRootElement(DOM::Element(elem));
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1228,7 +1235,7 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadURI(name);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1241,7 +1248,7 @@ GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadBuffer(buffer);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1254,7 +1261,7 @@ GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, xmlDoc* doc)
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadDocument(doc);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1266,7 +1273,7 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
 
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadRootElement(elem);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1292,7 +1299,7 @@ GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view,
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadReader(reader, user_data);
   reset_adjustments(math_view);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1308,7 +1315,7 @@ GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, xmlTextReaderPtr re
   gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadReader(reader);
   reset_adjustments(math_view);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
   return res;
 }
 
@@ -1321,7 +1328,7 @@ GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView* math_view)
   g_return_if_fail(math_view->view != NULL);
   math_view->view->resetRootElement();
   gtk_math_view_release_document_resources(math_view);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
 }
 
 extern "C" GdkPixmap*
@@ -1334,8 +1341,8 @@ GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView* math_view)
 
 extern "C" void
 GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
-			      GtkAdjustment* hadj,
-			      GtkAdjustment* vadj)
+					 GtkAdjustment* hadj,
+					 GtkAdjustment* vadj)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
@@ -1417,7 +1424,7 @@ GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView* math_view, guint size)
   g_return_if_fail(math_view->view != NULL);
   g_return_if_fail(size > 0);
   math_view->view->setDefaultFontSize(size);
-  paint_widget(math_view);
+  gtk_math_view_paint(math_view);
 }
 
 extern "C" guint
@@ -1433,7 +1440,7 @@ GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewMo
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-  if (math_view->view->notifyStructureChanged(elem)) paint_widget(math_view);
+  if (math_view->view->notifyStructureChanged(elem)) gtk_math_view_paint(math_view);
 }
 
 extern "C" void
@@ -1441,7 +1448,7 @@ GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewMo
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-  if (math_view->view->notifyAttributeChanged(elem, name)) paint_widget(math_view);
+  if (math_view->view->notifyAttributeChanged(elem, name)) gtk_math_view_paint(math_view);
 }
 
 extern "C" void
@@ -1454,7 +1461,7 @@ GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewModelId elem)
   if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(1);
-      paint_widget(math_view);
+      gtk_math_view_paint(math_view);
     }
 }
 
@@ -1468,7 +1475,7 @@ GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewModelId ele
   if (SmartPtr<const Gtk_WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(0);
-      paint_widget(math_view);
+      gtk_math_view_paint(math_view);
     }
 }
 
@@ -1710,7 +1717,7 @@ GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView* math_view, GtkMathViewModelId e
 	  g_assert(exc == 0);
 	}
 #endif // GTKMATHVIEW_USES_GMETADOM
-      if (math_view->cursor_visible) update_widget(math_view);
+      if (math_view->cursor_visible) gtk_math_view_update(math_view);
     }
 }
 
@@ -1721,7 +1728,7 @@ GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView* math_view, GtkMathViewC
   if (math_view->cursor_visible != visible)
     {
       math_view->cursor_visible = visible;
-      if (math_view->cursor_visible) update_widget(math_view);
+      if (math_view->cursor_visible) gtk_math_view_update(math_view);
     }
 }
 

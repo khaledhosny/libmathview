@@ -665,6 +665,7 @@ create_widget_set()
 {
   GtkWidget* main_vbox;
   GtkWidget* menu_bar;
+  GtkWidget* frame;
 
   main_vbox = gtk_vbox_new(FALSE, 1);
   gtk_container_border_width(GTK_CONTAINER(main_vbox), 1);
@@ -675,8 +676,17 @@ create_widget_set()
   gtk_box_pack_start(GTK_BOX(main_vbox), menu_bar, FALSE, TRUE, 0);
   gtk_widget_show(menu_bar);
 
+  scrolled_area = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
+				 GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
+  gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_area),
+				      GTK_SHADOW_IN);
+  gtk_widget_show(scrolled_area);
+  gtk_box_pack_start(GTK_BOX(main_vbox), scrolled_area, TRUE, TRUE, 0);
+
   main_area = gtk_math_view_new(NULL, NULL);
   gtk_widget_show(main_area);
+  gtk_container_add(GTK_CONTAINER(scrolled_area), main_area);
 
   g_signal_connect(GTK_OBJECT (main_area),
 		   "select_begin", 
@@ -707,15 +717,6 @@ create_widget_set()
 		   "click", 
 		   G_CALLBACK(click),
 		   (gpointer) main_area);
-
-  scrolled_area = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
-				 GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-  gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_area),
-		  			GTK_SHADOW_IN);
-  gtk_widget_show(scrolled_area);
-  gtk_container_add(GTK_CONTAINER(scrolled_area), main_area);
-  gtk_box_pack_start(GTK_BOX(main_vbox), scrolled_area, TRUE, TRUE, 0);
 
   status_bar = gtk_statusbar_new();
   gtk_widget_show(status_bar);
