@@ -1,4 +1,6 @@
 
+NULL =
+
 SUBDIRS = xml
 
 XSLTPROC = xsltproc
@@ -32,10 +34,9 @@ libmathvariants_la_SOURCES = \
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
-  MathVariant.hh
-
-noinst_HEADERS = \
-  MathVariantMap.hh
+  MathVariant.hh \
+  MathVariantMap.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_srcdir)/src/common
