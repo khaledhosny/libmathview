@@ -449,6 +449,19 @@ element_over(GtkMathView* math_view, GdomeElement* elem, gint state)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 
+#if 1
+  if (elem != NULL)
+    {
+      GdomeException exc;
+      GdomeDOMString* name = gdome_el_nodeName(elem, &exc);
+
+      printf("over %s\n", name->str);
+
+      if (name != NULL)
+	gdome_str_unref(name);
+    }
+#endif
+
   link = find_hyperlink(elem, XLINK_NS_URI, "href");
   if (link != NULL)
     gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
@@ -604,9 +617,12 @@ click(GtkMathView* math_view, GdomeElement* elem, gint state)
 
   g_return_if_fail(math_view != NULL);
 
-  name = gdome_el_nodeName(elem, &exc);
-  g_assert(exc == 0);
-  printf("node name: %s\n", name->str);
+  if (elem != NULL)
+    {
+      name = gdome_el_nodeName(elem, &exc);
+      g_assert(exc == 0);
+      printf("node name: %s\n", name->str);
+    }
 
   if (elem != NULL)
     {

@@ -51,39 +51,6 @@ MathMLmathElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#if 0
-void
-MathMLmathElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      background = env.GetBackgroundColor();
-      env.Push();
-
-      if (!IsSet(T_MODE))
-	{
-	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, display);
-	  assert(value);
-	  env.SetDisplayStyle(ToTokenId(value) == T_BLOCK);
-	} 
-      else
-	{
-	  SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(math, mode);
-	  assert(value);
-	  Globals::logger(LOG_WARNING, "attribute `mode' is deprecated in MathML 2");
-	  env.SetDisplayStyle(ToTokenId(value) == T_DISPLAY);
-	}
-
-      if (IsSet(T_MODE) && IsSet(T_DISPLAY))
-	Globals::logger(LOG_WARNING, "both `mode' and `display' attributes set in `math' element");
-
-      MathMLNormalizingContainerElement::Setup(env);
-      env.Drop();
-      resetDirtyAttribute();
-    }
-}
-#endif
-
 AreaRef
 MathMLmathElement::format(MathFormattingContext& ctxt)
 {

@@ -134,6 +134,8 @@ MathMLView::setRoot(const DOM::Element& elem)
     }
 }
 
+#include "Gtk_RenderingContext.hh"
+
 SmartPtr<MathMLElement>
 MathMLView::getElementAt(const scaled& x, const scaled& y) const
 {
@@ -141,10 +143,21 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
     {
       BoundingBox box = rootArea->box();
       SearchingContext context(x, y);
+#if 0
+      std::cerr << "searching at " << Gtk_RenderingContext::toGtkX(x) << "," << Gtk_RenderingContext::toGtkY(y) << std::endl;
+#endif
       if (rootArea->find(context, -x0, -box.height - y0))
-	if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(context.getResult()))
-	  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(area->getElement()))
-	    return elem;
+	{
+	  SearchingContext::Result result = context.getResult();
+#if 0
+	  std::cerr << "found area at " << result.x << "," << result.y 
+		    << " is wrapper? " << is_a<const Gtk_WrapperArea>(result.area)
+		    << " has element? " << (smart_cast<const Gtk_WrapperArea>(result.area)->getElement() != 0) << std::endl;
+#endif
+	  if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(result.area))
+	    if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(area->getElement()))
+	      return elem;
+	}
     }
   
   return 0;

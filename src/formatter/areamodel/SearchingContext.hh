@@ -43,14 +43,25 @@ public:
   scaled getX(void) const { return x0; }
   scaled getY(void) const { return y0; }
 
-  void setResult(AreaRef area) { result = area; }
-  AreaRef getResult(void) const { return result; }
+  struct Result {
+    scaled x;
+    scaled y;
+    AreaRef area;
+  };
+
+  void setResult(AreaRef area, const scaled& x, const scaled& y)
+  {
+    result.area = area;
+    result.x = x;
+    result.y = y;
+  }
+  Result getResult(void) const { return result; }
 
 protected:
   scaled x0;
   scaled y0;
 
-  AreaRef result;
+  Result result;
 };
 
 #endif // __SearchingContext_hh__
