@@ -101,11 +101,14 @@ CharMapper::GetFont(const FontAttributes& fa) const
       if (i()->fontMap != NULL) {
 	unsigned eval = i()->attributes.Compare(myfa);
 
-	printf("comparing with (%d)\n ", eval);
-	i()->attributes.Dump();
-
 	if (eval > bestEval) {
 	  const AFont* font = fontManager.GetFont(myfa, &i()->extraAttributes);
+#if 0
+	  myfa.Dump();
+	  printf("comparing with (%d)\n ", eval);
+	  i()->attributes.Dump();
+	  MathEngine::logger(LOG_DEBUG, "best was %d now %d %p\n", bestEval, eval, font);
+#endif
 	  if (font != NULL) {
 	    bestEval = eval;
 	    bestFont = font;

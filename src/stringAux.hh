@@ -23,8 +23,6 @@
 #ifndef stringAux_hh
 #define stringAux_hh
 
-#include <config.h>
-
 #include "minidom.h"
 #include "String.hh"
 

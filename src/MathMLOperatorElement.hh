@@ -23,8 +23,6 @@
 #ifndef MathMLOperatorElement_hh
 #define MathMLOperatorElement_hh
 
-#include <config.h>
-
 #include "CharMap.hh"
 #include "MathMLTokenElement.hh"
 

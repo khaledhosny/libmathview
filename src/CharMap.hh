@@ -23,10 +23,6 @@
 #ifndef CharMap_hh
 #define CharMap_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "Char.hh"
 #include "AFont.hh"
 #include "Container.hh"

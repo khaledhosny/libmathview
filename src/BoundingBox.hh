@@ -23,8 +23,6 @@
 #ifndef BoundingBox_hh
 #define BoundingBox_hh
 
-#include <config.h>
-
 #include "scaled.hh"
 
 struct BoundingBox {

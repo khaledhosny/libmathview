@@ -23,10 +23,6 @@
 #ifndef allocTextNode_hh
 #define allocTextNode_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "String.hh"
 
 class MathMLTextNode* allocCharNode(Char);

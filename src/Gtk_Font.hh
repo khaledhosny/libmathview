@@ -23,8 +23,6 @@
 #ifndef Gtk_Font_hh
 #define Gtk_Font_hh
 
-#include <config.h>
-
 #include <gdk/gdk.h>
 
 #include "AFont.hh"

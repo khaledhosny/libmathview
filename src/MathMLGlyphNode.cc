@@ -62,7 +62,7 @@ MathMLGlyphNode::Setup(RenderingEnvironment* env)
 
   FontAttributes glyphAttributes = env->GetFontAttributes();
   glyphAttributes.family = fontFamily;
-
+  glyphAttributes.mode = FONT_MODE_ANY;
   font = env->charMapper.GetFont(glyphAttributes);
 }
 

@@ -23,8 +23,6 @@
 #ifndef MathMLCharNode_hh
 #define MathMLCharNode_hh
 
-#include <config.h>
-
 #include "CharMap.hh"
 #include "MathMLTextNode.hh"
 

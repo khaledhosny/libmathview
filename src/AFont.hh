@@ -23,8 +23,6 @@
 #ifndef AFont_hh
 #define AFont_hh
 
-#include <config.h>
-
 #include "String.hh"
 #include "BoundingBox.hh"
 

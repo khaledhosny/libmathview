@@ -23,7 +23,6 @@
 #ifndef Gtk_DrawingArea_hh
 #define Gtk_DrawingArea_hh
 
-#include <config.h>
 #include <gtk/gtk.h>
 
 #include "AFont.hh"

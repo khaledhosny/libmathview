@@ -23,8 +23,6 @@
 #ifndef DrawingArea_hh
 #define DrawingArea_hh
 
-#include <config.h>
-
 #include "AFont.hh"
 #include "Shape.hh"
 #include "String.hh"

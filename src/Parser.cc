@@ -177,7 +177,7 @@ MathMLParser::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
     elem = new MathMLSemanticsElement(node);
     break;
   case TAG_MCHAR:
-    MathEngine::logger(LOG_WARNING, "`mchar' is valid inside token elements only (ignored)");
+    MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element (ignored)");
     break;
   case TAG_NOTVALID:
   default:
@@ -294,6 +294,7 @@ MathMLParser::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent
       switch (tag) {
       case TAG_MCHAR:
 	{
+	  MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element. It is recognized for backward compatibility only!");
 	  String* content = SubstituteMCharElement(p);
 	  if (content != NULL) parent->Append(content);
 	  delete content;

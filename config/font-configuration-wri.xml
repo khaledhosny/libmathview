@@ -46,76 +46,71 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 	/>
   
   <font type="x" mode="math" map="wolfram-math1"
-	family="math1" weight="normal"
+	family="math1" weight="normal" style="normal"
 	x-foundry="wri" x-family="math1" x-weight="medium" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math1"
-	family="math1" weight="bold"
+	family="math1" weight="bold" style="normal"
 	x-foundry="wri" x-family="math1" x-weight="bold" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math2"
-	family="math2" weight="normal"
+	family="math2" weight="normal" style="normal"
 	x-foundry="wri" x-family="math2" x-weight="medium" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math2"
-	family="math2" weight="bold"
+	family="math2" weight="bold" style="normal"
 	x-foundry="wri" x-family="math2" x-weight="bold" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math3"
-	family="math3" weight="normal"
+	family="math3" weight="normal" style="normal"
 	x-foundry="wri" x-family="math3" x-weight="medium" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math3"
-	family="math3" weight="bold"
+	family="math3" weight="bold" style="normal"
 	x-foundry="wri" x-family="math3" x-weight="bold" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math4"
-	family="math4" weight="normal"
+	family="math4" weight="normal" style="normal"
 	x-foundry="wri" x-family="math4" x-weight="medium" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math4"
-	family="math4" weight="bold"
+	family="math4" weight="bold" style="normal"
 	x-foundry="wri" x-family="math4" x-weight="bold" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math5"
-	family="math5" weight="normal"
+	family="math5" weight="normal" style="normal"
 	x-foundry="wri" x-family="math5" x-weight="medium" x-encoding="fontspecific"
 	/>
 
   <font type="x" mode="math" map="wolfram-math5"
-	family="math5" weight="bold"
+	family="math5" weight="bold" style="normal"
 	x-foundry="wri" x-family="math5" x-weight="bold" x-encoding="fontspecific"
 	/>
 
-
-
-
-
-  
   <font type="ps" map="plain8"
 	family="sans-serif" weight="normal" style="normal"
 	ps-file="Swiss721BT-Roman.pfa"
 	/>
 
-  <font type="x" map="plain8"
+  <font type="ps" map="plain8"
 	family="sans-serif" weight="normal" style="italic"
 	ps-file="Swiss721BT-Italic.pfa"
 	/>
 
-  <font type="x" map="plain8"
+  <font type="ps" map="plain8"
 	family="sans-serif" weight="bold" style="normal"
 	ps-file="Swiss721BT-Bold.pfa"
 	/>
 
-  <font type="x" map="plain8"
+  <font type="ps" map="plain8"
 	family="sans-serif" weight="bold" style="italic"
 	ps-file="Swiss721BT-BoldItalic.pfa"
 	/>

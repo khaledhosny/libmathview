@@ -5,7 +5,7 @@ MathML Implementation
 * axis in rowalign
 * table layout is not precise sometimes (e.g. when there is a fit
   table inside a auto column)
-* handling of multichars (e.g. followed by modifiers 0xfe00)
+* handling of variant char (modifier 0xfe00)
 ? enabling toggle in maction, maction computes the biggest bounding box
 
 Optimizations
@@ -55,3 +55,7 @@ Bugs
 * if using libxml 1.x.y inline unicode chars greater that 0x7f doesn't work
 * what if there is a horizontal stretchy operator with minsize specified in a mrow?
 * getStretchyOperator does not always work properly, please check
+* MediumSpace is now U+205f, but the specification is not consistent. The table
+  reports U+205f, but the chapter reports U+2005
+* operators strechying within tables buggy. Sometimes the table remains "larger"
+  than needed just because there were a strecthy operator

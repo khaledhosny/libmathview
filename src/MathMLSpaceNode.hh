@@ -23,8 +23,6 @@
 #ifndef MathMLSpaceNode_hh
 #define MathMLSpaceNode_hh
 
-#include <config.h>
-
 #include "MathMLTextNode.hh"
 
 class MathMLSpaceNode: public MathMLTextNode {
