@@ -82,7 +82,6 @@ extern "C" {
   GtkAdjustment* gtk_math_view_get_hadjustment(GtkMathView*);
   GtkAdjustment* gtk_math_view_get_vadjustment(GtkMathView*);
   GdkPixmap*     gtk_math_view_get_buffer(GtkMathView*);
-  GtkFrame*      gtk_math_view_get_frame(GtkMathView*);
   GtkDrawingArea* gtk_math_view_get_drawing_area(GtkMathView*);
   void           gtk_math_view_set_font_size(GtkMathView*, guint);
   guint          gtk_math_view_get_font_size(GtkMathView*);

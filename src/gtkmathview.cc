@@ -28,6 +28,7 @@
 
 #include "defs.h"
 
+#include <math.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
@@ -61,7 +62,6 @@ enum SelectState
 struct _GtkMathView {
   GtkEventBox    parent;
 
-  GtkWidget* 	 frame;
   GtkWidget* 	 area;
   GdkPixmap*     pixmap;
 
@@ -435,14 +435,9 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->hadjustment = NULL;
   math_view->vadjustment = NULL;
 
-  math_view->frame = gtk_frame_new(NULL);
-  gtk_frame_set_shadow_type(GTK_FRAME(math_view->frame), GTK_SHADOW_IN);
-  gtk_container_add(GTK_CONTAINER(math_view), math_view->frame);
-  gtk_widget_show(math_view->frame);
-
   math_view->area = gtk_drawing_area_new();
   GTK_WIDGET_SET_FLAGS(GTK_WIDGET(math_view->area), GTK_CAN_FOCUS);
-  gtk_container_add(GTK_CONTAINER(math_view->frame), math_view->area);
+  gtk_container_add(GTK_CONTAINER(math_view), math_view->area);
   gtk_widget_show(math_view->area);
 
   g_signal_connect(GTK_OBJECT(math_view->area),
@@ -1049,13 +1044,6 @@ gtk_math_view_get_vadjustment(GtkMathView* math_view)
   return math_view->vadjustment;
 }
 
-extern "C" GtkFrame*
-gtk_math_view_get_frame(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, NULL);
-  return math_view->frame != NULL ? GTK_FRAME(math_view->frame) : NULL;
-}
-
 extern "C" GtkDrawingArea*
 gtk_math_view_get_drawing_area(GtkMathView* math_view)
 {
@@ -1189,11 +1177,11 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->interface != NULL, NULL);
-  g_return_val_if_fail(math_view->vadjustment != NULL, NULL);
-  g_return_val_if_fail(math_view->hadjustment != NULL, NULL);
 
-  Ptr<MathMLElement> at = math_view->interface->GetElementAt(math_view->hadjustment->value + px2sp(x),
-							     math_view->vadjustment->value + px2sp(y));
+  scaled x0 = (math_view->vadjustment != NULL) ? math_view->vadjustment->value : 0;
+  scaled y0 = (math_view->hadjustment != NULL) ? math_view->vadjustment->value : 0;
+
+  Ptr<MathMLElement> at = math_view->interface->GetElementAt(x0 + px2sp(x), y0 + px2sp(y));
   return gdome_cast_el(findDOMNode(at).gdome_object());
 }
 
