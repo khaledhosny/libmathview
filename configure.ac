@@ -415,10 +415,9 @@ AC_CONFIG_FILES([
  config/gtkmathview.conf.xml
  scripts/Makefile
  auto/Makefile
- auto/config.dirs
+ auto/Char.hh
  src/Makefile
  src/common/Makefile
- src/common/Char.hh
  src/common/mathvariants/Makefile
  src/common/mathvariants/xml/Makefile
  src/frontend/Makefile

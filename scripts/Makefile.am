@@ -8,5 +8,7 @@ noinst_SCRIPTS = \
   applylicence \
   makeEntitiesTable
 
-EXTRA_DIST = $(noinst_SCRIPTS)
+EXTRA_DIST = \
+  $(noinst_SCRIPTS) \
+  copy.xsl
 

@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "Attribute.hh"
 #include "TemplateBuilder.hh"
 #include "libxml2_reader_Model.hh"
 #include "libxml2_reader_Builder.hh"

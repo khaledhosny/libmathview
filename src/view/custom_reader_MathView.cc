@@ -24,7 +24,6 @@
 
 #include "custom_reader_MathView.hh"
 #include "custom_reader_Builder.hh"
-#include "custom_reader_Setup.hh"
 
 custom_reader_MathView::custom_reader_MathView()
   : data(0)

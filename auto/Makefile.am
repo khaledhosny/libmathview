@@ -14,17 +14,21 @@ AUTOFILES = \
 EXTRA_DIST = \
   list-to-dec.xsl \
   list-to-def.xsl \
-  config.dirs.in \
-  config.dirs \
   token-list.xml \
   stretchy.list \
   entitiesTable.inc \
+  Char.hh.in \
+  Char.hh \
   $(AUTOFILES)
 
-# config.dirs should not be distributed but omitting it makes
+# Char.hh should not be distributed but omitting it makes
 # distcheck fail.
 
 DISTCLEANFILES = $(AUTOFILES)
+
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  Char.hh
 
 noinst_HEADERS = \
   token.dec \
@@ -46,6 +50,12 @@ endif
 
 update-entities: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 	./dumpEntitiesTable $< >$@
+
+config.dirs:
+	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@
+	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@
+
+all: config.dirs
 
 INCLUDES = \
   $(DOM_CFLAGS) \

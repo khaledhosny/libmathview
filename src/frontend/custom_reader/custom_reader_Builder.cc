@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "Attribute.hh"
 #include "TemplateBuilder.hh"
 #include "custom_reader_Model.hh"
 #include "custom_reader_Builder.hh"

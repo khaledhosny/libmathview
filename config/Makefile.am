@@ -14,13 +14,17 @@ EXTRA_DIST = \
   dictionary-local.xml \
   dictionary-combining.xml \
   entities-table.in \
-  entities-table.dtd.in \
+  entities-table.dtd \
   entities-table.xml \
   gtkmathview.conf.xml.in \
   gtkmathview.conf.dtd \
   gtkmathview.conf.xml \
   gtkmathview.conf.xml.debug \
   $(NULL)
+
+pkgsysconfdir = $(sysconfdir)/@PACKAGE@
+pkgsysconf_DATA = \
+  gtkmathview.conf.xml
 
 pkgdata_DATA = \
   mathml-entities.dtd \
@@ -31,7 +35,6 @@ pkgdata_DATA = \
   entities-table.dtd \
   entities-table.xml \
   gtkmathview.conf.dtd \
-  gtkmathview.conf.xml \
   $(NULL)
 
 noinst_DATA = \
@@ -48,7 +51,7 @@ XSLTPROC = xsltproc
 dictionary.xml: makeDictionary $(srcdir)/dictionary.in
 	@echo Making operator dictionary...
 	@( \
-	./makeDictionary < $(srcdir)/dictionary.in | \
+	./makeDictionary "$(srcdir)/mathml-entities.dtd" < $(srcdir)/dictionary.in | \
 	tr -s '\t' ' ' | tr -s ' ' ' ' | \
 	$(XSLTPROC) $(SCRIPTDIR)/copy.xsl - >$@ \
 	)

@@ -12,7 +12,7 @@ noinst_HEADERS = \
   BoxGraphicDevice.hh
 
 INCLUDES = \
-  -I$(top_srcdir)/auto \
+  -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/boxml \

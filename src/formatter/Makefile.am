@@ -3,6 +3,8 @@ if COND_BOXML
 MAYBE_BOXML_SUBDIRS = \
   boxml_graphic_device \
   gtk_boxml_graphic_device
+else
+MAYBE_BOXML_SUBDIRS =
 endif
 
 SUBDIRS = \
@@ -19,6 +21,8 @@ if COND_BOXML
 MAYBE_BOXML_LIBADD = \
   $(top_builddir)/src/formatter/gtk_boxml_graphic_device/libgtk_boxml_graphic_device.la \
   $(top_builddir)/src/formatter/boxml_graphic_device/libboxml_graphic_device.la
+else
+MAYBE_BOXML_LIBADD =
 endif
 
 libformatter_la_LIBADD = \

@@ -141,7 +141,7 @@ gmetadom_MathView::elementOfModelElement(GdomeElement* el) const
 
 bool
 gmetadom_MathView::loadConfiguration(const SmartPtr<AbstractLogger>& logger,
-				     const SmartPtr<MathMLConfiguration>& configuration, const String& path)
+				     const SmartPtr<Configuration>& configuration, const String& path)
 { return gmetadom_Setup::loadConfiguration(*logger, *configuration, path); }
 
 bool

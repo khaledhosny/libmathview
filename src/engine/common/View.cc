@@ -64,7 +64,7 @@ View::thaw()
 
 String
 View::getDefaultConfigurationPath()
-{ return PKGDATADIR"/gtkmathview.conf.xml"; }
+{ return PKGSYSCONFDIR"/gtkmathview.conf.xml"; }
 
 String
 View::getDefaultOperatorDictionaryPath()

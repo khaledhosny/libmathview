@@ -25,8 +25,6 @@
 #ifndef __gtkmathview_common_h__
 #define __gtkmathview_common_h__
 
-#include "defs.h"
-
 #include <gtk/gtkframe.h>
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtkdrawingarea.h>

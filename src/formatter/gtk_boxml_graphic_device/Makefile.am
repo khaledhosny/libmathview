@@ -17,6 +17,7 @@ noinst_HEADERS = Gtk_BoxGraphicDevice.hh
 INCLUDES = \
   $(PANGOX_CFLAGS) \
   $(GTK_CFLAGS) \
+  -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/boxml \

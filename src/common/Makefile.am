@@ -5,13 +5,6 @@ SUBDIRS = mathvariants
 
 noinst_LTLIBRARIES = libcommon.la
 
-EXTRA_DIST = \
-  Char.hh.in \
-  Char.hh
-
-# Char.hh should not be distributed but omitting it makes
-# distcheck fail.
-
 libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libcommon_la_LIBADD = $(top_builddir)/src/common/mathvariants/libmathvariants.la
@@ -36,7 +29,6 @@ mathview_HEADERS = \
   AbstractLogger.hh \
   BoundingBox.hh \
   BoundingBoxAux.hh \
-  Char.hh \
   HashMap.hh \
   Length.hh \
   LengthAux.hh \
@@ -73,7 +65,5 @@ noinst_HEADERS = \
 
 INCLUDES = \
   $(GLIB_CFLAGS) \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/common
-
+  -I$(top_builddir)/auto
 
