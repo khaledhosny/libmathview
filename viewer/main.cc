@@ -25,8 +25,6 @@
 #include <getopt.h>
 #include <stdlib.h>
 
-#include <iostream>
-
 #include "defs.h"
 #include "guiGTK.h"
 #include "Parser.hh"
@@ -71,6 +69,8 @@ Usage: mathmlviewer [options] file ...\n\n\
   -v, --version                 Output version information\n\
   -d, --debug                   Debug mode\n\
   -h, --help                    This small usage guide\n\
+      --load-entities           Load entities from an external resource\n\
+      --dump-entities           Dump loaded entities as a C table of strings\n\
   --verbose[=0-3]               Display messages\n\
 ";
 
@@ -161,7 +161,7 @@ main(int argc, char *argv[])
 #endif // ENABLE_PROFILE
 
   if (optind < argc) {
-    GUI_init(&argc, &argv, appName, 500, 500);
+    GUI_init(&argc, &argv, appName, 500, 600);
 
     while (optind < argc) {
 

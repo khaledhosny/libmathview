@@ -51,7 +51,8 @@ enum CommandLineOptionId {
   OPTION_UNIT,
   OPTION_MARGINS,
   OPTION_FONT_SIZE,
-  OPTION_DISABLE_COLORS,
+  OPTION_COLORS,
+  //OPTION_KERNING,
   OPTION_CONFIG
 };
 
@@ -63,7 +64,8 @@ static UnitId unitId = UNIT_CM;
 static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = 10;
-static bool   colors = true;
+static bool   colors = false;
+//static bool   kerning = false;
 static const char* configPath = NULL;
 
 extern void* parseMathMLFile(char*);
@@ -83,15 +85,23 @@ printHelp()
 {
   static char* helpMsg = "\
 Usage: mathml2ps [options] file ...\n\n\
-  -v, --version                  Output version information\n\
-  -h, --help                     This small usage guide\n\
-  -u, --unit=[in,mm,cm,pt,pc,px] Unit for dimensions (default='px')\n\
-  -g, --size=<width>x<height>    Page size\n\
-  -m, --margins=<left>x<top>     Left x Top margins\n\
-  -f, --font-size=<n>            Default font size (in points, default=10)\n\
-  --disable-colors               Disable colors\n\
-  --config=<path>                Configuration file path\n\
-  --verbose[=0-3]                Display messages\n\
+  -v, --version                   Output version information\n\
+  -h, --help                      This small usage guide\n\
+  -u, --unit=<unit>               Unit for dimensions (default='cm')\n\
+  -g, --size=<float>x<float>      Page size (width x height) (default = 21 x 29.7)\n\
+  -m, --margins=<float>x<float>   Margins (top x left) (default = 2 x 2)\n\
+  -f, --font-size=<float>         Default font size (in pt, default=10)\n\
+  -k, --kerning[=yes|no]          Enable/disable kerning (default='no')\n\
+  -c, --colors[=yes|no]           Enable/disable colors (default='no')\n\
+  --config=<path>                 Configuration file path\n\
+  --verbose[=0-3]                 Display messages\n\n\
+Valid units are:\n\n\
+  cm    centimeter\n\
+  mm    millimeter\n\
+  in    inch (1 in = 2.54 cm)\n\
+  pt    point (1 in = 72.27 pt)\n\
+  pc    pica (1 pc = 12 pt)\n\
+  px    pixel (1 in = 72 px)\n\
 ";
 
   printf("%s\n", helpMsg);
@@ -100,6 +110,14 @@ Usage: mathml2ps [options] file ...\n\n\
 in order to use this tool!\n\n");
 #endif // HAVE_LIBT1
   exit(0);
+}
+
+static void
+parseError(const char* option)
+{
+  assert(option != NULL);
+  fprintf(stderr, "error while parsing option `%s'\n\n", option);
+  printHelp();
 }
 
 static bool
@@ -121,6 +139,21 @@ parseSize(const char* s)
   height = h;
 
   return true;
+}
+
+static bool
+parseBoolean(const char* s, bool& res)
+{
+  assert(s != NULL);
+  if (!strcmp(s, "yes")) {
+    res = true;
+    return true;
+  } else if (!strcmp(s, "no")) {
+    res = false;
+    return true;
+  }
+
+  return false;
 }
 
 static bool
@@ -213,13 +246,14 @@ main(int argc, char *argv[])
       { "unit",          required_argument, NULL, OPTION_UNIT },
       { "margins",       required_argument, NULL, OPTION_MARGINS },
       { "font-size",     required_argument, NULL, OPTION_FONT_SIZE },
-      { "disable-colors",no_argument,       NULL, OPTION_DISABLE_COLORS },
+      { "colors",        optional_argument, NULL, OPTION_COLORS },
+      //{ "kerning",       optional_argument, NULL, OPTION_KERNING },
       { "config",        required_argument, NULL, OPTION_CONFIG },
 
       { NULL,            no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vhg:u:m:f:", long_options, &option_index);
+    int c = getopt_long(argc, argv, "vhg:u:m:f:k::c::", long_options, &option_index);
 
     if (c == -1) break;
 
@@ -237,19 +271,19 @@ main(int argc, char *argv[])
     case OPTION_SIZE:
     case 'g':
       if (optarg == NULL) printHelp();
-      if (!parseSize(optarg)) fprintf(stderr, "error while parsing size\n");
+      if (!parseSize(optarg)) parseError("size");
       break;
 
     case OPTION_UNIT:
     case 'u':
       if (optarg == NULL) printHelp();
-      if (!parseUnit(optarg)) fprintf(stderr, "error while parsing unit\n");
+      if (!parseUnit(optarg)) parseError("unit");
       break;
 
     case OPTION_MARGINS:
     case 'm':
       if (optarg == NULL) printHelp();
-      if (!parseMargins(optarg)) fprintf(stderr, "error while parsing margins\n");
+      if (!parseMargins(optarg)) parseError("margins");
       break;
 
     case OPTION_VERBOSE:
@@ -263,9 +297,19 @@ main(int argc, char *argv[])
       fontSize = atof(optarg);
       break;
 
-    case OPTION_DISABLE_COLORS:
-      colors = false;
+    case OPTION_COLORS:
+    case 'c':
+      if (optarg == NULL) colors = true;
+      else if (!parseBoolean(optarg, colors)) parseError("colors");
       break;
+
+#if 0
+    case OPTION_KERNING:
+    case 'k':
+      if (optarg == NULL) kerning = true;
+      else if (!parseBoolean(optarg, kerning)) parseError("kerning");
+      break;
+#endif
 
     case OPTION_CONFIG:
       configPath = optarg;
@@ -335,26 +379,34 @@ main(int argc, char *argv[])
     engine.Init(&area, &fm);
 
     engine.SetDefaultFontSize(fontSize);
-    engine.Load(argv[optind]);
-    engine.Layout();
+#if 0
+    engine.SetKerning(kerning);
+#endif
+    if (engine.Load(argv[optind])) {
+      engine.Layout();
 
-    Rectangle rect;
-    engine.GetDocumentRectangle(rect);
-    area.DumpHeader(appName, argv[optind], rect);
-    fm.DumpFontDictionary(outFile);
+      Rectangle rect;
+      engine.GetDocumentRectangle(rect);
+      area.DumpHeader(appName, argv[optind], rect);
+      fm.DumpFontDictionary(outFile);
 
-    Rectangle sheet;
-    sheet.x = 0;
-    sheet.y = 0;
-    sheet.width = w;
-    sheet.height = h;
+      Rectangle sheet;
+      sheet.x = 0;
+      sheet.y = 0;
+      sheet.width = w;
+      sheet.height = h;
 
-    area.DumpPreamble();
-    //area.DumpGrid();
-    engine.Render(&sheet);
-    area.DumpEpilogue();
+      area.DumpPreamble();
+      //area.DumpGrid();
+      engine.Render(&sheet);
+      area.DumpEpilogue();
+      fclose(outFile);
+    } else {
+      fclose(outFile);
+      remove(outName);
+      fprintf(stderr, "cannot open input document `%s' (skipped)\n", argv[optind]);
+    }
 
-    fclose(outFile);
     delete [] outName;
 
     optind++;

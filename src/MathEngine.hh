@@ -72,11 +72,14 @@ public:
   void  SetVerbosity(int);
   int   GetVerbosity(void) const;
 
-  void  SetAntiAliasing(bool);
-  bool  GetAntiAliasing(void) const { return antiAliasing; }
-
-  void        SetKerning(bool);
-  static bool GetKerning(void) { return kerning; }
+  // T1 specific methods (they produce a warning when used with a
+  // GTK drawing area)
+  void SetAntiAliasing(bool);
+  bool GetAntiAliasing(void) const;
+  void SetKerning(bool);
+  bool GetKerning(void) const;
+  void SetTransparency(bool);
+  bool GetTransparency(void) const;
 
   static void InitGlobalData(const char*);
 
@@ -89,9 +92,6 @@ private:
   static class MathMLElement* SelectMinimumTree(class MathMLElement*, class MathMLElement*);
 
   unsigned    defaultFontSize;
-  bool        antiAliasing;
-  static bool kerning;
-
 
   class MathMLDocument* document;
   class MathMLElement*  root;

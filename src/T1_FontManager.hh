@@ -23,8 +23,6 @@
 #ifndef T1_FontManager_hh
 #define T1_FontManager_hh
 
-#include <config.h>
-
 #ifdef HAVE_LIBT1
 
 #include "Container.hh"

@@ -120,6 +120,8 @@ extern "C" {
   gboolean       gtk_math_view_get_anti_aliasing(GtkMathView*);
   void           gtk_math_view_set_kerning(GtkMathView*, gboolean);
   gboolean       gtk_math_view_get_kerning(GtkMathView*);
+  void           gtk_math_view_set_transparency(GtkMathView*, gboolean);
+  gboolean       gtk_math_view_get_transparency(GtkMathView*);
   void           gtk_math_view_set_log_verbosity(GtkMathView*, gint);
   gint           gtk_math_view_get_log_verbosity(GtkMathView*);
   void           gtk_math_view_export_to_postscript(GtkMathView*, gint, gint, gint, gint, gboolean, FILE*);

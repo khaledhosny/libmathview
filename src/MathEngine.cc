@@ -41,7 +41,6 @@ EntitiesTable      MathEngine::entitiesTable;
 OperatorDictionary MathEngine::dictionary;
 Configuration      MathEngine::configuration;
 Logger             MathEngine::logger;
-bool               MathEngine::kerning = false;
 
 MathEngine::MathEngine()
 {
@@ -50,8 +49,6 @@ MathEngine::MathEngine()
   charMapper = NULL;
 
   defaultFontSize = configuration.GetFontSize();
-  antiAliasing = false;
-  kerning = false;
 
   document = NULL;
   root = NULL;
@@ -395,23 +392,78 @@ MathEngine::SetAntiAliasing(bool aa)
 {
   assert(area != NULL);
 
-  antiAliasing = aa;
+#ifdef HAVE_LIBT1
+  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
+  if (t1_area != NULL)
+    t1_area->SetAntiAliasing(aa);
+  else
+#endif
+    logger(LOG_WARNING, "anti-aliasing is available with the T1 font manager only");
+}
+
+bool
+MathEngine::GetAntiAliasing() const
+{
+  assert(area != NULL);
 
 #ifdef HAVE_LIBT1
   T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
-  if (t1_area != NULL) {
-    t1_area->SetAntiAliasing(aa);
-    return;
-  }
+  if (t1_area != NULL) return t1_area->GetAntiAliasing();
 #endif
   logger(LOG_WARNING, "anti-aliasing is available with the T1 font manager only");
+  return false;
 }
 
 void
-MathEngine::SetKerning(bool k)
+MathEngine::SetKerning(bool b)
 {
-  kerning = k;
-#ifndef HAVE_LIBT1
-  logger(LOG_WARNING, "kerning is available with the T1 font manager only");
+  assert(area != NULL);
+
+#ifdef HAVE_LIBT1
+  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
+  if (t1_area != NULL)
+    t1_area->SetKerning(b);
+  else
 #endif
+    logger(LOG_WARNING, "kerning is available with the T1 font manager only");
+}
+
+bool
+MathEngine::GetKerning() const
+{
+  assert(area != NULL);
+
+#ifdef HAVE_LIBT1
+  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
+  if (t1_area != NULL) return t1_area->GetKerning();
+#endif
+  logger(LOG_WARNING, "kerning is available with the T1 font manager only");
+  return false;
+}
+
+void
+MathEngine::SetTransparency(bool b)
+{
+  assert(area != NULL);
+
+#ifdef HAVE_LIBT1
+  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
+  if (t1_area != NULL)
+    t1_area->SetTransparency(b);
+  else
+#endif
+    logger(LOG_WARNING, "transparency is available with the T1 font manager only");
+}
+
+bool
+MathEngine::GetTransparency() const
+{
+  assert(area != NULL);
+
+#ifdef HAVE_LIBT1
+  T1_Gtk_DrawingArea* t1_area = TO_T1_GTK_DRAWING_AREA(area);
+  if (t1_area != NULL) return t1_area->GetTransparency();
+#endif
+  logger(LOG_WARNING, "kerning is available with the T1 font manager only");
+  return false;
 }

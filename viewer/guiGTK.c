@@ -38,6 +38,7 @@ static GtkWidget* scrolled_area;
 static GtkWidget* status_bar;
 static GtkMenuItem* kerning_item;
 static GtkMenuItem* anti_aliasing_item;
+static GtkMenuItem* transparency_item;
 static GtkMenuItem* font_size_item;
 
 static gchar* doc_name = NULL;
@@ -50,10 +51,11 @@ static void file_open(GtkWidget*, gpointer);
 static void file_re_open(GtkWidget*, gpointer);
 static void file_close(GtkWidget*, gpointer);
 static void options_font_size(GtkWidget*, guint);
-static void options_font_manager(GtkWidget*, guint);
+static void options_font_manager(GtkWidget*, FontManagerId);
 static void options_verbosity(GtkWidget*, guint);
 static void options_kerning(GtkWidget*, gpointer);
 static void options_anti_aliasing(GtkWidget*, gpointer);
+static void options_transparency(GtkWidget*, gpointer);
 static void help_about(GtkWidget*, gpointer);
 static void export_to_ps(GtkWidget*);
 
@@ -74,9 +76,11 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Default Font Size/14pt", NULL, options_font_size,     14, "/Options/Default Font Size/8pt" },
   { "/Options/Default Font Size/18pt", NULL, options_font_size,     18, "/Options/Default Font Size/8pt" },
   { "/Options/Default Font Size/24pt", NULL, options_font_size,     24, "/Options/Default Font Size/8pt" },
+  { "/Options/Default Font Size/48pt", NULL, options_font_size,     48, "/Options/Default Font Size/8pt" },
+  { "/Options/Default Font Size/72pt", NULL, options_font_size,     72, "/Options/Default Font Size/8pt" },
   { "/Options/Font Manager",           NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Font Manager/_GTK",      NULL, options_font_manager,  0,  "<RadioItem>" },
-  { "/Options/Font Manager/_Type 1",   NULL, options_font_manager,  1,  "/Options/Font Manager/GTK" },
+  { "/Options/Font Manager/_GTK",      NULL, options_font_manager,  FONT_MANAGER_GTK, "<RadioItem>" },
+  { "/Options/Font Manager/_Type 1",   NULL, options_font_manager,  FONT_MANAGER_T1, "/Options/Font Manager/GTK" },
   { "/Options/Verbosity",              NULL, NULL,                  0,  "<Branch>" },
   { "/Options/Verbosity/_Errors",      NULL, options_verbosity,     0,  "<RadioItem>" },
   { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors" },
@@ -85,6 +89,7 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>" },
   { "/Options/_Kerning",               NULL, options_kerning,       0,  "<ToggleItem>" },
   { "/Options/_Anti Aliasing",         NULL, options_anti_aliasing, 0,  "<ToggleItem>" },
+  { "/Options/_Transparency",          NULL, options_transparency,  0,  "<ToggleItem>" },
 
   { "/_Help" ,        NULL,         NULL,          0, "<LastBranch>" },
   { "/Help/About...", NULL,         help_about,    0, NULL }
@@ -138,6 +143,8 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
   create_widget_set();
 
   gtk_widget_show(window);
+
+  GUI_set_font_manager(FONT_MANAGER_GTK);
 }
 
 void
@@ -196,6 +203,34 @@ void
 GUI_run()
 {
   gtk_main();
+}
+
+void
+GUI_set_font_manager(FontManagerId id)
+{
+  gboolean t1;
+  GtkMathView* math_view;
+
+  g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
+  g_return_if_fail(main_area != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(main_area));
+
+  t1 = id == FONT_MANAGER_T1;
+
+  math_view = GTK_MATH_VIEW(main_area);
+
+  if (id != gtk_math_view_get_font_manager_type(math_view))
+    gtk_math_view_set_font_manager_type(math_view, id);
+
+  gtk_widget_set_sensitive(kerning_item, t1);
+  gtk_widget_set_sensitive(anti_aliasing_item, t1);
+  gtk_widget_set_sensitive(transparency_item, t1);
+
+  if (t1) {
+    gtk_math_view_set_kerning(math_view, GTK_CHECK_MENU_ITEM(kerning_item)->active);
+    gtk_math_view_set_anti_aliasing(math_view, GTK_CHECK_MENU_ITEM(anti_aliasing_item)->active);
+    gtk_math_view_set_transparency(math_view, GTK_CHECK_MENU_ITEM(transparency_item)->active);
+  }
 }
 
 static void
@@ -257,16 +292,10 @@ options_font_size(GtkWidget* widget, guint size)
 }
 
 static void
-options_font_manager(GtkWidget* widget, guint id)
+options_font_manager(GtkWidget* widget, FontManagerId id)
 {
-  GtkMathView* math_view;
-
-  g_return_if_fail(main_area != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(main_area));
-  
-  math_view = GTK_MATH_VIEW(main_area);
-
-  gtk_math_view_set_font_manager_type(math_view, id);
+  g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
+  GUI_set_font_manager(id);
 }
 
 static void
@@ -284,6 +313,13 @@ options_kerning(GtkWidget* widget, gpointer data)
 }
 
 static void
+options_transparency(GtkWidget* widget, gpointer data)
+{
+  gboolean t = gtk_math_view_get_transparency(GTK_MATH_VIEW(main_area));
+  gtk_math_view_set_transparency(GTK_MATH_VIEW(main_area), !t);
+}
+
+static void
 options_verbosity(GtkWidget* widget, guint level)
 {
   gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), level);
@@ -297,7 +333,7 @@ help_about(GtkWidget* widget, gpointer data)
   GtkWidget* ok;
 
   dialog = gtk_dialog_new();
-  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000 Luca Padovani    \n");
+  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2001 Luca Padovani    \n");
   ok = gtk_button_new_with_label("Close");
 
   gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
@@ -471,7 +507,6 @@ create_widget_set()
   if (gtk_math_view_get_kerning(GTK_MATH_VIEW(main_area)))
     gtk_menu_item_activate(kerning_item);
 
-  gtk_math_view_set_font_size(GTK_MATH_VIEW(main_area), DEFAULT_FONT_SIZE);
   gtk_menu_item_activate(font_size_item);
 }
 
@@ -498,8 +533,11 @@ get_main_menu()
   menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Anti Aliasing");
   anti_aliasing_item = GTK_MENU_ITEM(menu_item);
 
+  menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Transparency");
+  transparency_item = GTK_MENU_ITEM(menu_item);
+
   /* !!!BEWARE!!! the default font size must be kept aligned with the definition
-   * in defs.h
+   * in math-engine-configuration.xml
    */
   menu_item = gtk_item_factory_get_widget(item_factory, "/Options/Default Font Size/12pt");
   font_size_item = GTK_MENU_ITEM(menu_item);

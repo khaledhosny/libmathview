@@ -967,7 +967,27 @@ gtk_math_view_get_kerning(GtkMathView* math_view)
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->interface != NULL, FALSE);
 
-  return MathEngine::GetKerning() ? TRUE : FALSE;
+  return math_view->interface->GetKerning() ? TRUE : FALSE;
+}
+
+extern "C" void
+gtk_math_view_set_transparency(GtkMathView* math_view, gboolean transparency)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->interface != NULL);
+  
+  math_view->interface->SetTransparency(transparency != FALSE);
+
+  if (GTK_WIDGET_MAPPED(GTK_WIDGET(math_view))) paint_widget(math_view);
+}
+
+extern "C" gboolean
+gtk_math_view_get_transparency(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+
+  return math_view->interface->GetTransparency() ? TRUE : FALSE;
 }
 
 extern "C" void
@@ -1017,17 +1037,11 @@ gtk_math_view_get_log_verbosity(GtkMathView* math_view)
 extern "C" void
 gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
 {
-  gboolean aa;
-  gboolean k;
-
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
 
   if (id == math_view->font_manager_id) return;
-
-  aa = gtk_math_view_get_anti_aliasing(math_view);
-  k  = gtk_math_view_get_kerning(math_view);
 
   MathMLElement* root = math_view->interface->GetRoot();
   if (root != NULL) root->ReleaseGCs();
@@ -1047,8 +1061,8 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
   values.lineWidth  = px2sp(1);
 
   switch (id) {
-#ifdef HAVE_LIBT1
   case FONT_MANAGER_T1:
+#ifdef HAVE_LIBT1
     math_view->font_manager = new PS_T1_FontManager;
     math_view->drawing_area = new T1_Gtk_DrawingArea(values, px2sp(5), px2sp(5),
 						     GTK_WIDGET(math_view->area),
@@ -1057,7 +1071,6 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
     math_view->drawing_area->SetPixmap(math_view->pixmap);
     break;
 #else
-  case FONT_MANAGER_T1:
     MathEngine::logger(LOG_WARNING, "the widget was compiled without support for T1 fonts, falling back to GTK fonts");
 #endif
   case FONT_MANAGER_GTK:
@@ -1076,8 +1089,6 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
   math_view->interface->Init(math_view->drawing_area, math_view->font_manager);
   if (GTK_WIDGET_REALIZED(GTK_WIDGET(math_view))) math_view->drawing_area->Realize();
 
-  math_view->interface->SetAntiAliasing(aa);
-  math_view->interface->SetKerning(k);
   math_view->interface->Setup();
   math_view->interface->Layout();
   setup_adjustments(math_view);

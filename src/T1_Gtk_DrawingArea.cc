@@ -38,13 +38,14 @@
 #include "Gtk_GraphicsContext.hh"
 
 bool T1_Gtk_DrawingArea::firstTime = true;
+int  T1_Gtk_DrawingArea::kerning = 0;
 
 T1_Gtk_DrawingArea::T1_Gtk_DrawingArea(const GraphicsContextValues& values, scaled xm, scaled ym,
 				       GtkWidget* widget, RGBValue f, RGBValue b) :
   Gtk_DrawingArea(values, xm, ym, widget, f, b)
 {
   antiAliasing = false;
-  mode = T1_TRANSPARENT;
+  mode = T1_OPAQUE;
 }
 
 T1_Gtk_DrawingArea::~T1_Gtk_DrawingArea()
@@ -139,11 +140,24 @@ T1_Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
   if (antiAliasing)
     T1_AASetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		    t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
-		    MathEngine::GetKerning() ? T1_KERNING : 0, t1_font->GetScale(), NULL);
+		    kerning, t1_font->GetScale(), NULL);
   else
     T1_SetStringX(ppixmap->xwindow, pgc->xgc, mode, sp2ipx(x - x0), sp2ipx(y - y0),
 		  t1_font->GetNativeFontId(), const_cast<char*>(text), len, 0,
-		  MathEngine::GetKerning() ? T1_KERNING : 0, t1_font->GetScale(), NULL);
+		  kerning, t1_font->GetScale(), NULL);
+}
+
+void
+T1_Gtk_DrawingArea::SetKerning(bool k)
+{
+  if (k) kerning = T1_KERNING;
+  else kerning = 0;
+}
+
+bool
+T1_Gtk_DrawingArea::GetKerning()
+{
+  return kerning == T1_KERNING;
 }
 
 void

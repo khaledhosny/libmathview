@@ -32,8 +32,8 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-bh.xml</font-configuration-path>
   <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-wri.xml</font-configuration-path>
   <font-configuration-path>@prefix@/share/gtkmathview/font-configuration-tex.xml</font-configuration-path>
-  <t1-config-file>@prefix@/share/gtkmathview/t1.config</t1-config-file>
-  <font-size     size="14pt"/>
+  <t1-config-path>@prefix@/share/gtkmathview/t1.config</t1-config-path>
+  <font-size     size="12pt"/>
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>
   <select-color  foreground="black" background="#87cefa"/>

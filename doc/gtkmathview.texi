@@ -488,6 +488,23 @@ supported), @code{FALSE} otherwise.
 @end quotation
 
 @noindent
+Method: @code{gboolean gtk_math_view_set_transparency(GtkMathView* widget, gboolean b)}
+@quotation
+enable/disable transparency. This is available for Type1 fonts only. Transparency
+can be enabled for documents containing combining or otherwise overlapping
+characters. When transparency is enabled, only coloured pixels are drawn, leaving
+the background untouched. This prevents for glyphs overwriting one each other
+when they overlap. Since transparent mode is heavier than opaque mode, it is
+disabled by default.
+@end quotation
+
+@noindent
+Method: @code{gboolean gtk_math_view_get_transparency(GtkMathView* widget, gboolean b)}
+@quotation
+retrieve the current state of transparency.
+@end quotation
+
+@noindent
 Method: @code{void gtk_math_view_log_set_verbosity(GtkMathView* widget, gint level)}
 @quotation
 set the level of verbosity for displayed messages. @code{level}

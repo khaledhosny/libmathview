@@ -1,15 +1,9 @@
 
 <math>
   <mstyle mathsize="72pt" mathcolor="red">
-   <!--
-   <mi>a&#x0303;</mi>
-   <mi>e&#x0302;</mi>
-   <mi>o&#x0301;</mi>
-   <mi>&empty;</mi>
-   <mi>&lt;&#x0338;</mi>
-   -->
    <mi>&lt;</mi>
-   <mi>&#x0338;</mi>
+   <mi>&#x0338;&NewLine;</mi>
+   <mi>&gt;&#x0338;</mi>
   </mstyle>
 </math>
 

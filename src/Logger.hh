@@ -23,8 +23,6 @@
 #ifndef Logger_hh
 #define Logger_hh
 
-#include <config.h>
-
 #include <stdio.h>
 
 enum LogLevelId { LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG };
