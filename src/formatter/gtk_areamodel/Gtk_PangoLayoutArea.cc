@@ -27,26 +27,21 @@
 #include "Gtk_PangoLayoutArea.hh"
 #include "Gtk_RenderingContext.hh"
 
+#include "scaledAux.hh"
+
 Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout)
   : layout(_layout)
 {
-  PangoRectangle first_line_rect;
   PangoRectangle rect;
-  PangoLayoutLine* line = pango_layout_get_line(layout, 0);
-  pango_layout_line_get_extents(line, &first_line_rect, 0);
-  pango_layout_get_extents(layout, &rect, 0);
 
-#if 0
-  printf("%s Ink Ascent = %6d Ink Descent = %6d Ink y = %6d Ink height = %6d\n",
-	 pango_layout_get_text(layout),
-	 PANGO_ASCENT(ink_rect), PANGO_DESCENT(ink_rect),
-	 ink_rect.y, ink_rect.height);
-#endif
+  pango_layout_get_extents(layout, 0, &rect);
 
-  const scaled height = Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(first_line_rect));
+  PangoLayoutIter* iter = pango_layout_get_iter(layout);
+  const scaled height = Gtk_RenderingContext::fromPangoPixels(pango_layout_iter_get_baseline(iter));
+  pango_layout_iter_free(iter);
+
   bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-		     height,
-		     Gtk_RenderingContext::fromPangoPixels(rect.height) - height);
+		     height, Gtk_RenderingContext::fromPangoPixels(rect.height) - height);
 }
 
 Gtk_PangoLayoutArea::~Gtk_PangoLayoutArea()
@@ -82,7 +77,6 @@ Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& 
 // 	 Gtk_RenderingContext::toGtkPixels(x - context.getXOrigin()),
 // 	 Gtk_RenderingContext::toGtkPixels(y - context.getYOrigin()));
 
-  PangoLayoutLine* line = pango_layout_get_line(layout, 0);
   gdk_draw_layout(context.getDrawable(),
 		  context.getGC(),
 		  Gtk_RenderingContext::toGtkX(x),

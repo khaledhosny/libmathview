@@ -188,7 +188,7 @@ Gtk_PangoShaper::shapeString(const MathFormattingContext& ctxt, const gunichar* 
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-  return factory->pangoLayout(layout);
+  return factory->pangoLayoutLine(layout);
 
   //g_free(buffer);
   // g_free(sizeAttr); // ????

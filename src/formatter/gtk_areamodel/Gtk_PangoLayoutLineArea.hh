@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,36 +17,27 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_PangoLayoutArea_hh__
-#define __Gtk_PangoLayoutArea_hh__
+#ifndef __Gtk_PangoLayoutLineArea_hh__
+#define __Gtk_PangoLayoutLineArea_hh__
 
 #include <pango/pango.h>
 
-#include "GObjectPtr.hh"
-#include "SimpleArea.hh"
+#include "Gtk_PangoLayoutArea.hh"
 
-class Gtk_PangoLayoutArea : public SimpleArea 
+class Gtk_PangoLayoutLineArea : public Gtk_PangoLayoutArea 
 {
 protected:
-  Gtk_PangoLayoutArea(PangoLayout*);
-  virtual ~Gtk_PangoLayoutArea();
+  Gtk_PangoLayoutLineArea(PangoLayout*);
+  virtual ~Gtk_PangoLayoutLineArea();
 
 public:
-  static SmartPtr<Gtk_PangoLayoutArea> create(PangoLayout* layout)
-  { return new Gtk_PangoLayoutArea(layout); }
+  static SmartPtr<Gtk_PangoLayoutLineArea> create(PangoLayout* layout)
+  { return new Gtk_PangoLayoutLineArea(layout); }
 
-  virtual BoundingBox box(void) const;
-  virtual scaled leftEdge(void) const;
-  virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual DOM::Element dump(const DOM::Document&) const;
-
-protected:
-  GObjectPtr<PangoLayout> layout;
-  BoundingBox bbox;
 };
 
-#endif // __Gtk_PangoLayoutArea_hh__
+#endif // __Gtk_PangoLayoutLineArea_hh__

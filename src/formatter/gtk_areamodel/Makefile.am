@@ -15,6 +15,7 @@ libgtk_areamodel_la_SOURCES = \
   Gtk_RenderingContext.cc \
   Gtk_XftGlyphArea.cc \
   Gtk_PangoLayoutArea.cc \
+  Gtk_PangoLayoutLineArea.cc \
   Gtk_PangoGlyphArea.cc \
   Gtk_ColorArea.cc \
   Gtk_InkArea.cc \
@@ -25,6 +26,7 @@ pkginclude_HEADERS = \
   Gtk_RenderingContext.hh \
   Gtk_XftGlyphArea.hh \
   Gtk_PangoLayoutArea.hh \
+  Gtk_PangoLayoutLineArea.hh \
   Gtk_PangoGlyphArea.hh \
   Gtk_ColorArea.hh \
   Gtk_InkArea.hh \

@@ -31,6 +31,7 @@
 #include "Gtk_InkArea.hh"
 #include "Gtk_PangoGlyphArea.hh"
 #include "Gtk_PangoLayoutArea.hh"
+#include "Gtk_PangoLayoutLineArea.hh"
 #include "Gtk_XftGlyphArea.hh"
 #include "Gtk_WrapperArea.hh"
 
@@ -57,6 +58,8 @@ public:
   { return Gtk_PangoGlyphArea::create(f, gs); }
   virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayout(PangoLayout* layout) const
   { return Gtk_PangoLayoutArea::create(layout); }
+  virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayoutLine(PangoLayout* layout) const
+  { return Gtk_PangoLayoutLineArea::create(layout); }
   virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FT_UInt glyph) const
   { return Gtk_XftGlyphArea::create(font, glyph); }
   virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<Object>& el) const
