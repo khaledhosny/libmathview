@@ -43,7 +43,7 @@ public:
   virtual void DoLayout(const class FormattingContext&);
   virtual void SetPosition(const scaled&, const scaled&);
 #endif
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
   struct LengthDimension

@@ -540,7 +540,7 @@ MathMLOperatorElement::GetStretch() const
 #endif
 
 SmartPtr<MathMLOperatorElement>
-MathMLOperatorElement::GetCoreOperator()
+MathMLOperatorElement::getCoreOperator()
 {
   return this;
 }

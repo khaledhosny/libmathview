@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLStyleElement_hh
-#define MathMLStyleElement_hh
+#ifndef __MathMLStyleElement_hh__
+#define __MathMLStyleElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -38,16 +38,10 @@ public:
   { return new MathMLStyleElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const DrawingArea&);
-#endif
 
   virtual bool IsSpaceLike(void) const;
   virtual void setDirtyAttribute(void);
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
   bool HasDifferentBackground(void) const { return differentBackground; }
   
@@ -55,4 +49,4 @@ private:
   bool differentBackground; // true if the background color is different from parent's one
 };
 
-#endif // MathMLStyleElement_hh
+#endif // __MathMLStyleElement_hh__

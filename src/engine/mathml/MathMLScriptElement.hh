@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLScriptElement_hh
-#define MathMLScriptElement_hh
+#ifndef __MathMLScriptElement_hh__
+#define __MathMLScriptElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLContainerElement.hh"
@@ -44,39 +44,18 @@ public:
   SmartPtr<MathMLElement> GetBase(void) const { return base; }
   SmartPtr<MathMLElement> GetSubScript(void) const { return subScript; }
   SmartPtr<MathMLElement> GetSuperScript(void) const { return superScript; }
-#if 0
-  virtual void Replace(const SmartPtr<MathMLElement>&, const SmartPtr<MathMLElement>&);
-#endif
 
   virtual void construct(void);
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const class DrawingArea&);
-#endif
 
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
-#if 0
-  virtual scaled GetLeftEdge(void) const;
-  virtual scaled GetRightEdge(void) const;
-  virtual void   ReleaseGCs(void);
-  virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
-#endif
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
   SmartPtr<MathMLElement> subScript;
   SmartPtr<MathMLElement> superScript;
-
-  scaled subShiftX;
-  scaled subShiftY;
-
-  scaled superShiftX;
-  scaled superShiftY;
 };
 
-#endif // MathMLScriptElement_hh
+#endif // __MathMLScriptElement_hh__

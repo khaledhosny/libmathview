@@ -67,7 +67,7 @@ public:
   virtual scaled GetRightEdge(void) const;
   virtual SmartPtr<MathMLElement> Inside(const scaled&, const scaled&);
 #endif
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 protected:
   bool   scriptize;

@@ -80,34 +80,6 @@ MathMLScriptElement::SetSuperScript(const SmartPtr<MathMLElement>& elem)
     }
 }
 
-#if 0
-void
-MathMLScriptElement::Replace(const SmartPtr<MathMLElement>& oldElem, const SmartPtr<MathMLElement>& newElem)
-{
-  assert(oldElem);
-  if (oldElem == base) SetBase(newElem);
-  else if (oldElem == subScript) SetSubScript(newElem);
-  else if (oldElem == superScript) SetSuperScript(newElem);
-  else assert(false);
-}
-#endif
-
-#if 0
-SmartPtr<MathMLElement>
-MathMLScriptElement::Inside(const scaled& x, const scaled& y)
-{
-  if (!IsInside(x, y)) return 0;
-
-  SmartPtr<MathMLElement> inside;
-  assert(base);
-  if (inside = base->Inside(x, y)) return inside;
-  if (subScript && (inside = subScript->Inside(x, y))) return inside;
-  if (superScript && (inside = superScript->Inside(x, y))) return inside;
-
-  return this;
-}
-#endif
-
 void
 MathMLScriptElement::construct()
 {
@@ -178,106 +150,6 @@ MathMLScriptElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#if 0
-void
-MathMLScriptElement::Setup(RenderingEnvironment& env)
-{
-  if (dirtyAttribute() || dirtyAttributeP())
-    {
-      MathMLElement::Setup(env);
-      ScriptSetup(env);
-
-      if (base) base->Setup(env);
-
-      env.Push();
-      env.AddScriptLevel(1);
-      env.SetDisplayStyle(false);
-
-      if (subScript)
-	{
-	  subScript->Setup(env);
-
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, subscriptshift))
-	    {
-	      assert(IsLength(value));
-	      Length unitValue = ToLength(value);
-	      assert(!unitValue.type == Length::PERCENTAGE_UNIT);
-	      subMinShift = env.ToScaledPoints(unitValue);
-	    }
-	}
-
-      if (superScript)
-	{
-	  superScript->Setup(env);
-
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Script, superscriptshift))
-	    {
-	      assert(IsLength(value));
-	      Length unitValue = ToLength(value);
-	      assert(!unitValue.type == Length::PERCENTAGE_UNIT);
-	      superMinShift = env.ToScaledPoints(unitValue);
-	    }
-	}
-
-      env.Drop();
-
-      resetDirtyAttribute();
-    }
-}
-
-void
-MathMLScriptElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      assert(base);
-      if (base) base->DoLayout(ctxt);
-      if (subScript) subScript->DoLayout(ctxt);
-      if (superScript) superScript->DoLayout(ctxt);
-
-      SmartPtr<MathMLElement> rel = findRightmostChild(base);
-      assert(rel);
-
-      const BoundingBox& baseBox = base->GetBoundingBox();
-      BoundingBox relBox = rel->GetBoundingBox();
-      relBox.width = baseBox.width;
-
-      BoundingBox subScriptBox;
-      BoundingBox superScriptBox;
-
-      subScriptBox.unset();
-      if (subScript) subScriptBox = subScript->GetBoundingBox();
-
-      superScriptBox.unset();
-      if (superScript) superScriptBox = superScript->GetBoundingBox();
-
-      DoScriptLayout(relBox, subScriptBox, superScriptBox, subShiftX, subShiftY, superShiftX, superShiftY);
-
-      box = baseBox;
-
-      box.width = std::max(box.width,
-			    std::max(superShiftX + superScriptBox.width,
-				      subShiftX + subScriptBox.width));
-
-      if (subScript)
-	{
-	  box.height = std::max(box.height, subScriptBox.height - subShiftY);
-	  box.depth  = std::max(box.depth, subScriptBox.depth + subShiftY);
-	}
-
-      if (superScript)
-	{
-	  box.height = std::max(box.height, superScriptBox.height + superShiftY);
-	  box.depth  = std::max(box.depth, superScriptBox.depth - superShiftY);
-	}
-
-      DoEmbellishmentLayout(this, box);
-
-      resetDirtyLayout(ctxt);
-    }
-}
-#endif
-
 AreaRef
 MathMLScriptElement::format(MathFormattingContext& ctxt)
 {
@@ -330,77 +202,10 @@ MathMLScriptElement::format(MathFormattingContext& ctxt)
   return getArea();
 }
 
-#if 0
-void
-MathMLScriptElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-
-  SetEmbellishmentPosition(this, x, y);
-
-  if (base) base->SetPosition(x, y);
-
-  if (subScript)
-    subScript->SetPosition(x + subShiftX, y + subShiftY);
-
-  if (superScript)
-    superScript->SetPosition(x + superShiftX, y - superShiftY);
-}
-
-void
-MathMLScriptElement::Render(const DrawingArea& area)
-{
-  if (Exposed(area))
-    {
-      RenderBackground(area);
-      assert(base);
-      base->Render(area);
-      if (subScript) subScript->Render(area);
-      if (superScript) superScript->Render(area);
-      ResetDirty();
-    }
-}
-
-void
-MathMLScriptElement::ReleaseGCs()
-{
-  MathMLElement::ReleaseGCs();
-  assert(base);
-  base->ReleaseGCs();
-  if (subScript) subScript->ReleaseGCs();
-  if (superScript) superScript->ReleaseGCs();
-}
-
-scaled
-MathMLScriptElement::GetLeftEdge() const
-{
-  assert(base);
-  scaled m = base->GetLeftEdge();
-  if (subScript) m = std::min(m, subScript->GetLeftEdge());
-  if (superScript) m = std::min(m, superScript->GetLeftEdge());
-  return m;
-}
-
-scaled
-MathMLScriptElement::GetRightEdge() const
-{
-  assert(base);
-  scaled m = base->GetRightEdge();
-  if (subScript) m = std::max(m, subScript->GetRightEdge());
-  if (superScript) m = std::max(m, superScript->GetRightEdge());
-  return m;
-}
-#endif
-
 SmartPtr<class MathMLOperatorElement>
-MathMLScriptElement::GetCoreOperator()
+MathMLScriptElement::getCoreOperator()
 {
-  if (base) return base->GetCoreOperator();
-  else return 0;
+  return base ? base->getCoreOperator() : 0;
 }
 
 void

@@ -613,10 +613,9 @@ MathMLMultiScriptsElement::GetRightEdge() const
 #endif
 
 SmartPtr<MathMLOperatorElement>
-MathMLMultiScriptsElement::GetCoreOperator()
+MathMLMultiScriptsElement::getCoreOperator()
 {
-  if (base) return base->GetCoreOperator();
-  else return 0;
+  return base ? base->getCoreOperator() : 0;
 }
 
 void

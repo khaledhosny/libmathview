@@ -59,7 +59,7 @@ public:
 
   virtual void setFlagDown(Flags);
   virtual void resetFlagDown(Flags);
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
   std::vector< SmartPtr<MathMLElement> > subScript;

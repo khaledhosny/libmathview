@@ -229,10 +229,10 @@ MathMLActionElement::Inside(const scaled& x, const scaled& y)
 #endif
 
 SmartPtr<MathMLOperatorElement>
-MathMLActionElement::GetCoreOperator()
+MathMLActionElement::getCoreOperator()
 {
   if (SmartPtr<MathMLElement> elem = GetSelectedElement())
-    return elem->GetCoreOperator();
+    return elem->getCoreOperator();
   else
     return 0;
 }

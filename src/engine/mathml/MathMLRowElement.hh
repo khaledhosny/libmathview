@@ -46,7 +46,7 @@ public:
   virtual bool IsSpaceLike(void) const;
 
   TokenId GetOperatorForm(const SmartPtr<MathMLElement>&) const;
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 protected:
   void DoStretchyLayout(void);

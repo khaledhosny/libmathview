@@ -199,7 +199,7 @@ MathMLFractionElement::resetFlagDown(Flags f)
 }
 
 SmartPtr<MathMLOperatorElement>
-MathMLFractionElement::GetCoreOperator()
+MathMLFractionElement::getCoreOperator()
 {
-  return getNumerator() ? getNumerator()->GetCoreOperator() : 0;
+  return getNumerator() ? getNumerator()->getCoreOperator() : 0;
 }

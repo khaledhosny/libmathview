@@ -105,7 +105,7 @@ MathMLSemanticsElement::construct()
 		setChild(getFactory()->createDummyElement(getView()));
 	    }
 	}
-#endif
+#endif // HAVE_GMETADOM
 
       if (getChild()) getChild()->construct();
 
@@ -114,7 +114,7 @@ MathMLSemanticsElement::construct()
 }
 
 SmartPtr<MathMLOperatorElement>
-MathMLSemanticsElement::GetCoreOperator()
+MathMLSemanticsElement::getCoreOperator()
 {
-  return getChild() ? getChild()->GetCoreOperator() : 0;
+  return getChild() ? getChild()->getCoreOperator() : 0;
 }

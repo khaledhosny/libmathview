@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef MathMLSemanticsElement_hh
-#define MathMLSemanticsElement_hh
+#ifndef __MathMLSemanticsElement_hh__
+#define __MathMLSemanticsElement_hh__
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLBinContainerElement.hh"
@@ -38,11 +38,7 @@ public:
   { return new MathMLSemanticsElement(view); }
 
   virtual void construct(void);
-#if 0
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-#endif
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 };
 
-#endif // MathMLSemanticsElement_hh
+#endif // __MathMLSemanticsElement_hh__

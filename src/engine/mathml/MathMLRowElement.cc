@@ -71,7 +71,7 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 	   elem++)
 	{
 	  row.push_back((*elem)->format(ctxt));
-	  SmartPtr<MathMLOperatorElement> coreOp = (*elem)->GetCoreOperatorTop();
+	  SmartPtr<MathMLOperatorElement> coreOp = (*elem)->getCoreOperatorTop();
 	  // WARNING: we can check for IsStretchy only *after* format because it is
 	  // at that time that the flags in the operator get set (see MathMLOperatorElement)
 	  if (coreOp && !coreOp->IsStretchy()) coreOp = 0;
@@ -187,7 +187,7 @@ MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
 }
 
 SmartPtr<class MathMLOperatorElement>
-MathMLRowElement::GetCoreOperator()
+MathMLRowElement::getCoreOperator()
 {
   SmartPtr<MathMLElement> candidate = 0;
 
@@ -200,6 +200,5 @@ MathMLRowElement::GetCoreOperator()
 	else return 0;
       }
 
-  if (candidate) return candidate->GetCoreOperator();
-  else return 0;
+  return candidate ? candidate->getCoreOperator() : 0;
 }

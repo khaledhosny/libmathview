@@ -47,7 +47,7 @@ findEmbellishedOperatorRoot(const SmartPtr<MathMLElement>& op)
 
   while (root && root->GetParent())
     {
-      SmartPtr<MathMLElement> newRoot = op->GetParent()->GetCoreOperator();
+      SmartPtr<MathMLElement> newRoot = op->GetParent()->getCoreOperator();
       if (newRoot != root) break;
       else root = op->GetParent();
     }
@@ -107,7 +107,7 @@ SmartPtr<MathMLOperatorElement>
 findStretchyOperator(const SmartPtr<MathMLElement>& elem)
 {
   if (elem)
-    if (SmartPtr<MathMLOperatorElement> coreOp = elem->GetCoreOperator())
+    if (SmartPtr<MathMLOperatorElement> coreOp = elem->getCoreOperator())
       if (coreOp->IsStretchy()) return coreOp;
   return 0;
 }

@@ -70,7 +70,7 @@ public:
   void         HorizontalStretchTo(const scaled&, bool = false);
   void         VerticalStretchTo(const scaled&, const scaled&, bool = false);
 
-  virtual SmartPtr<MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<MathMLOperatorElement> getCoreOperator(void);
 
 private:
   TokenId InferOperatorForm(void);

@@ -264,7 +264,7 @@ MathMLStyleElement::setDirtyAttribute()
 }
 
 SmartPtr<MathMLOperatorElement>
-MathMLStyleElement::GetCoreOperator()
+MathMLStyleElement::getCoreOperator()
 {
-  return getChild() ? getChild()->GetCoreOperator() : 0;
+  return getChild() ? getChild()->getCoreOperator() : 0;
 }

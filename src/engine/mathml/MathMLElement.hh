@@ -77,8 +77,8 @@ public:
   bool           hasLink(void) const;
 
   unsigned     	 GetDepth(void) const;
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
-  SmartPtr<class MathMLOperatorElement> GetCoreOperatorTop(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
+  SmartPtr<class MathMLOperatorElement> getCoreOperatorTop(void);
 
   AreaRef getArea(void) const { return area; }
 

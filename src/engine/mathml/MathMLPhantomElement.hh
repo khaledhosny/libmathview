@@ -38,14 +38,9 @@ public:
   { return new MathMLPhantomElement(view); }
 
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void DoLayout(const class FormattingContext&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void Render(const DrawingArea&);
-#endif
 
   virtual bool IsSpaceLike(void) const;
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 };
 
 #endif // MathMLPhantomElement_hh

@@ -36,11 +36,6 @@ public:
   { return new MathMLTableCellElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
-#if 0
-  virtual void Setup(RenderingEnvironment&);
-  virtual void SetPosition(const scaled&, const scaled&);
-  virtual void DoLayout(const class FormattingContext&);
-#endif
 
   void SetAlignmentScope(bool b) { alignmentScope = b; }
 

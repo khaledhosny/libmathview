@@ -37,9 +37,6 @@ public:
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
-#if 0
-  virtual void Setup(class RenderingEnvironment&);
-#endif
 };
 
 #endif // MathMLmathElement_hh

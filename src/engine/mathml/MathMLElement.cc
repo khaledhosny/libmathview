@@ -322,16 +322,16 @@ MathMLElement::hasLink() const
 }
 
 SmartPtr<MathMLOperatorElement>
-MathMLElement::GetCoreOperator()
+MathMLElement::getCoreOperator()
 {
   return 0;
 }
 
 SmartPtr<MathMLOperatorElement>
-MathMLElement::GetCoreOperatorTop()
+MathMLElement::getCoreOperatorTop()
 {
-  if (SmartPtr<MathMLOperatorElement> coreOp = GetCoreOperator())
-    if (!GetParent() || GetParent()->GetCoreOperator() != coreOp)
+  if (SmartPtr<MathMLOperatorElement> coreOp = getCoreOperator())
+    if (!GetParent() || GetParent()->getCoreOperator() != coreOp)
       return coreOp;
   return 0;
 }

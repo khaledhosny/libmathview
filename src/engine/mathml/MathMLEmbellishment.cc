@@ -35,7 +35,7 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
 					 const AreaRef& area)
 {
   assert(elem);
-  if (SmartPtr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
+  if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
     {
       assert(!top->dirtyAttribute());
       scaled leftPadding = top->GetLeftPadding();
@@ -60,7 +60,7 @@ void
 MathMLEmbellishment::DoEmbellishmentLayout(const SmartPtr<MathMLElement>& elem, BoundingBox& box)
 {
   assert(elem);
-  if (SmartPtr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
+  if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
     {
       assert(!top->dirtyAttribute());
       box.width += top->GetLeftPadding() + top->GetRightPadding();
@@ -71,7 +71,7 @@ void
 MathMLEmbellishment::SetEmbellishmentPosition(const SmartPtr<MathMLElement>& elem, scaled& x, scaled&)
 {
   assert(elem);
-  if (SmartPtr<MathMLOperatorElement> top = elem->GetCoreOperatorTop())
+  if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
     {
       assert(!top->dirtyAttribute());
       x += top->GetLeftPadding();

@@ -72,7 +72,7 @@ MathMLScriptCommonElement::DoScriptLayout(const BoundingBox& baseBox,
   SmartPtr<MathMLElement> rel = findRightmostChild(base);
   assert(rel);
 
-  SmartPtr<MathMLOperatorElement> coreOp = rel->GetCoreOperator();
+  SmartPtr<MathMLOperatorElement> coreOp = rel->getCoreOperator();
 
   if ((is_a<MathMLTokenElement>(rel) && !coreOp) ||
       (coreOp && !coreOp->IsStretchy() && coreOp->IsFence()))

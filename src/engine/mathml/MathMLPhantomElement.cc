@@ -65,7 +65,7 @@ MathMLPhantomElement::format(MathFormattingContext& ctxt)
 }
 
 SmartPtr<MathMLOperatorElement>
-MathMLPhantomElement::GetCoreOperator()
+MathMLPhantomElement::getCoreOperator()
 {
-  return getChild() ? getChild()->GetCoreOperator() : 0;
+  return getChild() ? getChild()->getCoreOperator() : 0;
 }

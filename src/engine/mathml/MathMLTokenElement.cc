@@ -419,7 +419,7 @@ MathMLTokenElement::AddItalicCorrection()
   SmartPtr<MathMLElement> next = findRightSibling(this);
   if (!next) return;
 
-  SmartPtr<MathMLOperatorElement> coreOp = next->GetCoreOperatorTop();
+  SmartPtr<MathMLOperatorElement> coreOp = next->getCoreOperatorTop();
   if (!coreOp) return;
   bool isFence = coreOp->IsFence();
   if (!isFence) return;

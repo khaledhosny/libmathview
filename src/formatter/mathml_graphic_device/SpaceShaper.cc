@@ -165,7 +165,7 @@ SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt, Shaping
 
       if (is_a<MathMLFencedElement>(next)) return;
       
-      if (SmartPtr<MathMLOperatorElement> coreOp = next->GetCoreOperatorTop())
+      if (SmartPtr<MathMLOperatorElement> coreOp = next->getCoreOperatorTop())
 	if (coreOp->IsFence()) return;
 
       if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(next))

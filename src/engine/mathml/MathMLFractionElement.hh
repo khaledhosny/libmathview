@@ -45,7 +45,7 @@ public:
   virtual void   setFlagDown(Flags);
   virtual void   resetFlagDown(Flags);
 
-  virtual SmartPtr<class MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
   SmartPtr<MathMLElement> getNumerator(void) const { return numerator.getChild(); }
   SmartPtr<MathMLElement> getDenominator(void) const { return denominator.getChild(); }

@@ -45,7 +45,7 @@ public:
   unsigned GetSelectedIndex(void) const;
   void     SetSelectedIndex(unsigned);
 
-  virtual SmartPtr<MathMLOperatorElement> GetCoreOperator(void);
+  virtual SmartPtr<MathMLOperatorElement> getCoreOperator(void);
 
 private:
   unsigned selection;

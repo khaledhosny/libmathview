@@ -179,7 +179,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
       scaled bigSpacing   = 3 * ruleThickness;
 
       if (base) base->Setup(env);
-      SmartPtr<MathMLOperatorElement> op = base ? base->GetCoreOperator() : SmartPtr<MathMLOperatorElement>(0);
+      SmartPtr<MathMLOperatorElement> op = base ? base->getCoreOperator() : SmartPtr<MathMLOperatorElement>(0);
 
       if (op)
 	scriptize = !displayStyle && op->HasMovableLimits();
@@ -197,7 +197,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 	    {
 	      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(UnderOver, accentunder))
 		accentUnder = ToBoolean(value);
-	      else if (SmartPtr<MathMLOperatorElement> op = underScript->GetCoreOperator())
+	      else if (SmartPtr<MathMLOperatorElement> op = underScript->getCoreOperator())
 		{
 		  underScript->Setup(env);
 		  accentUnder = op->IsAccent();
@@ -226,7 +226,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment& env)
 	    {
 	      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(UnderOver, accent))
 		accent = ToBoolean(value);
-	      else if (SmartPtr<MathMLOperatorElement> op = overScript->GetCoreOperator())
+	      else if (SmartPtr<MathMLOperatorElement> op = overScript->getCoreOperator())
 		{
 		  overScript->Setup(env);
 		  accent = op->IsAccent();
@@ -382,7 +382,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 		  underShiftY = -underShiftY;
 
 #if defined(ENABLE_EXTENSIONS)
-		  if (SmartPtr<MathMLOperatorElement> coreOp = underScript->GetCoreOperatorTop())
+		  if (SmartPtr<MathMLOperatorElement> coreOp = underScript->getCoreOperatorTop())
 		    underShiftY += coreOp->GetTopPadding();
 #endif
 		} 
@@ -411,7 +411,7 @@ MathMLUnderOverElement::DoLayout(const class FormattingContext& ctxt)
 				  cChar->GetChar(), bChar->GetChar());
 
 #if defined(ENABLE_EXTENSIONS)
-		  if (SmartPtr<MathMLOperatorElement> coreOp = overScript->GetCoreOperatorTop())
+		  if (SmartPtr<MathMLOperatorElement> coreOp = overScript->getCoreOperatorTop())
 		    {
 		      Globals::logger(LOG_DEBUG, "the accent will get en extra spacing of %d", sp2ipx(coreOp->GetBottomPadding()));
 		      overShiftY += coreOp->GetBottomPadding();
@@ -474,9 +474,9 @@ MathMLUnderOverElement::format(MathFormattingContext& ctxt)
       bool accent = false;
       bool accentUnder = false;
 
-      SmartPtr<MathMLOperatorElement> baseOp = base ? base->GetCoreOperator() : 0;
-      SmartPtr<MathMLOperatorElement> underOp = underScript ? underScript->GetCoreOperator() : 0;
-      SmartPtr<MathMLOperatorElement> overOp = overScript ? overScript->GetCoreOperator() : 0;
+      SmartPtr<MathMLOperatorElement> baseOp = base ? base->getCoreOperator() : 0;
+      SmartPtr<MathMLOperatorElement> underOp = underScript ? underScript->getCoreOperator() : 0;
+      SmartPtr<MathMLOperatorElement> overOp = overScript ? overScript->getCoreOperator() : 0;
 
       if (!scriptize)
 	{
@@ -603,10 +603,9 @@ MathMLUnderOverElement::GetRightEdge() const
 #endif
 
 SmartPtr<MathMLOperatorElement>
-MathMLUnderOverElement::GetCoreOperator()
+MathMLUnderOverElement::getCoreOperator()
 {
-  if (base) return base->GetCoreOperator();
-  else return 0;
+  return base ? base->getCoreOperator() : 0;
 }
 
 void
