@@ -1,8 +1,7 @@
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mo><mchar name="int"/></mo>
-      <mo>&ApplyFunction;</mo>
+      <mo minsize="2">&#x222b;</mo>
       <mrow>
         <mi fontweight="bold" fontstyle="normal">B</mi>
 	<mo>&InvisibleTimes;</mo>
@@ -15,11 +14,11 @@
     <mo>=</mo>
     <mrow>
       <msub>
-        <mi><mchar name="mu"/></mi>
+        <mi>&mu;</mi>
 	<mn>0</mn>
       </msub>
       <msub>
-        <mi><mchar name="epsi"/></mi>
+        <mi>&epsi;</mi>
 	<mn>0</mn>
       </msub>
       <mfrac>

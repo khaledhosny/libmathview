@@ -40,6 +40,7 @@ static GtkMenuItem* anti_aliasing_item;
 static GtkMenuItem* transparency_item;
 static GdkCursor* normal_cursor;
 static GdkCursor* link_cursor;  
+static gboolean   semantic_selection = FALSE;
 
 static gchar* doc_name = NULL;
 static GdomeElement* first_selected = NULL;
@@ -56,6 +57,7 @@ static void options_font_manager(GtkWidget*, FontManagerId);
 static void options_set_font_size(GtkWidget*, gpointer);
 static void options_change_font_size(GtkWidget*, gboolean);
 static void options_verbosity(GtkWidget*, guint);
+static void options_selection(GtkWidget*, gboolean);
 static void options_anti_aliasing(GtkWidget*, gpointer);
 static void options_transparency(GtkWidget*, gpointer);
 static void selection_delete(GtkWidget*, gpointer);
@@ -91,6 +93,9 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Verbosity/_Info",        NULL, options_verbosity,     2,  "/Options/Verbosity/Errors" },
   { "/Options/Verbosity/_Debug",       NULL, options_verbosity,     3,  "/Options/Verbosity/Errors" },
   { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>" },
+  { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>" },
+  { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure" },
+  { "/Options/sep2",                   NULL, NULL,                  0,  "<Separator>" },
   { "/Options/_Anti Aliasing",         NULL, options_anti_aliasing, 0,  "<ToggleItem>" },
   { "/Options/_Transparency",          NULL, options_transparency,  0,  "<ToggleItem>" },
 
@@ -313,6 +318,13 @@ options_verbosity(GtkWidget* widget, guint level)
 }
 
 static void
+options_selection(GtkWidget* widget, gboolean semantic)
+{
+  semantic_selection = semantic;
+  selection_reset(widget, NULL);
+}
+
+static void
 selection_delete(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
@@ -468,10 +480,6 @@ select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
     {
       GdomeException exc = 0;
 
-      g_assert(first_selected == NULL);
-      gdome_el_ref(elem, &exc);
-      g_assert(exc == 0);
-
       gtk_math_view_freeze(math_view);
 
       if (root_selected != NULL)
@@ -482,14 +490,27 @@ select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
 	  root_selected = NULL;
 	}
 
-      first_selected = root_selected = elem;
+      if (semantic_selection)
+	{
+	  GdomeElement* new_elem = find_xref_element(elem);
+	  if (new_elem != NULL)
+            {
+	      gdome_el_ref(new_elem, &exc);
+	      g_assert(exc == 0);
+	    }
+          first_selected = root_selected = new_elem;
+	}
+      else
+	{
+	  gdome_el_ref(elem, &exc);
+	  g_assert(exc == 0);
+	  gdome_el_ref(elem, &exc);
+	  g_assert(exc == 0);
+          first_selected = root_selected = elem;
+	}
 
       if (root_selected != NULL)
-	{
-	  gtk_math_view_select(math_view, root_selected);
-	  gdome_el_ref(root_selected, &exc);
-	  g_assert(exc == 0);
-	}
+	gtk_math_view_select(math_view, root_selected);
 
       gtk_math_view_thaw(math_view);
     }
@@ -517,10 +538,23 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 	  root_selected = NULL;
 	}
 
-      root_selected = find_common_ancestor(first_selected, elem);
-/*       printf("selecting root %p\n", first, last, root_selected); */
-      gtk_math_view_select(math_view, root_selected);
-      g_assert(exc == 0);
+      if (semantic_selection)
+	{
+	  GdomeElement* new_root = find_common_ancestor(first_selected, elem);
+	  if (new_root != NULL)
+	    {
+	      root_selected = find_xref_element(new_root);
+	      gdome_el_unref(new_root, &exc);
+	      g_assert(exc == 0);
+	    }
+	  else
+	    root_selected = NULL;
+	}
+      else
+        root_selected = find_common_ancestor(first_selected, elem);
+
+      if (root_selected != NULL)
+        gtk_math_view_select(math_view, root_selected);
 
       gtk_math_view_thaw(math_view);
     }

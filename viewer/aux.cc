@@ -49,8 +49,7 @@ getDepth(const DOM::Element& elem)
 static DOM::Element
 findCommonAncestor(const DOM::Element& first, const DOM::Element& last)
 {
-  assert(first);
-  assert(last);
+  if (!first || !last) return DOM::Element(0);
 
   DOM::Element p(first);
   DOM::Element q(last);
@@ -88,9 +87,6 @@ static void
 findCommonSiblings(const DOM::Element& first, const DOM::Element& last,
 		   DOM::Element& firstS, DOM::Element& lastS)
 {
-  assert(first);
-  assert(last);
-
   DOM::Element p(first);
   DOM::Element q(last);
 
@@ -235,11 +231,33 @@ find_common_siblings(GdomeElement* first, GdomeElement* last,
   if (lastS != NULL) *lastS = gdome_cast_el(ls.gdome_object());
 }
 
-extern "C" GdomeDOMString*
-find_hyperlink(GdomeElement* elem, const char* ns_uri, const char* name)
+static DOM::Element
+findElementWithAttribute(const DOM::Element& elem, const std::string& name)
+{
+  DOM::Element el(elem);
+  while (el && !el.hasAttribute(name)) el = el.get_parentNode();
+  return el;
+}
+
+static DOM::Element
+findElementWithAttributeNS(const DOM::Element& elem, const std::string& ns_uri, const std::string& name)
 {
   DOM::Element el(elem);
   while (el && !el.hasAttributeNS(ns_uri, name)) el = el.get_parentNode();
+  return el;
+}
+
+extern "C" GdomeElement*
+find_xref_element(GdomeElement* elem)
+{
+  DOM::Element el = findElementWithAttribute(DOM::Element(elem), "xref");
+  return gdome_cast_el(el.gdome_object());
+}
+
+extern "C" GdomeDOMString*
+find_hyperlink(GdomeElement* elem, const char* ns_uri, const char* name)
+{
+  DOM::Element el = findElementWithAttributeNS(DOM::Element(elem), ns_uri, name);
   if (el) return el.getAttributeNS(ns_uri, name).gdome_str();
   else return NULL;
 }
