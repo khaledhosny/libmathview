@@ -144,6 +144,7 @@ GUI_load_document(const char* name)
 {
   GtkMathView* math_view;
 
+  g_return_val_if_fail(name != NULL, -1);
   g_return_val_if_fail(main_area != NULL, -1);
   g_return_val_if_fail(GTK_IS_MATH_VIEW(main_area), -1);
 
@@ -155,6 +156,7 @@ GUI_load_document(const char* name)
   }
 
   gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
+  if (strlen(name) > 40) name += strlen(name) - 40;
   gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, name);
     
   return 0;
