@@ -105,8 +105,8 @@ MathMLTokenElement::SetSize(unsigned i)
 Ptr<MathMLTextNode>
 MathMLTokenElement::GetChild(unsigned i) const
 {
-  assert(i < content.size());
-  return content[i];
+  if (i < content.size()) return content[i];
+  else return 0;
 }
 
 void

@@ -519,7 +519,7 @@ MathMLOperatorElement::GetStretch() const
 {
   if (!IsStretchy()) return STRETCH_NO;
 
-  assert(GetSize() == 1);
+  //assert(GetSize() == 1);
   if (!is_a<MathMLCharNode>(GetChild(0))) return STRETCH_NO;
   Ptr<MathMLCharNode> sChar = smart_cast<MathMLCharNode>(GetChild(0));
   assert(sChar);
