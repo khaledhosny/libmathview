@@ -104,7 +104,7 @@ AC_ARG_ENABLE(
 )
 
 dnl Automake configuration
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
 dnl AC_DISABLE_SHARED
 AM_PROG_LIBTOOL
@@ -244,22 +244,26 @@ AC_CHECK_LIB(iberty, getopt_long,
 AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,,[Define to 1 if you have getopt_long]))
 
 AC_LANG([C])
-if test $with_glib_config = "no"; then
-	AM_PATH_GLIB(1.2.0,,AC_MSG_ERROR(could not find glib))
-else
-	if test $HAVE_GLIB_CONFIG = "yes"; then
-		GLIB_CFLAGS=`glib-config --cflags`
-		GLIB_LIBS=`glib-config --libs`
-	else
-		AC_MSG_ERROR(could not find glib)
-	fi
-fi
+dnl if test $with_glib_config = "no"; then
+	dnl AM_PATH_GLIB(1.2.0,,AC_MSG_ERROR(could not find glib))
+dnl else
+	dnl if test $HAVE_GLIB_CONFIG = "yes"; then
+		dnl GLIB_CFLAGS=`glib-config --cflags`
+		dnl GLIB_LIBS=`glib-config --libs`
+	dnl else
+		dnl AC_MSG_ERROR(could not find glib)
+	dnl fi
+dnl fi
 
-AM_PATH_GTK(1.2.0, gtklib="yes", gtklib="no")
+dnl AM_PATH_GTK(2.0.0, gtklib="yes", gtklib="no")
 
-if test $gtklib = "no"; then
-	AC_MSG_WARN(GTK is needed in order to use the widget)
-fi
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.2.0)
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
+
+dnl if test $gtklib = "no"; then
+	dnl AC_MSG_WARN(GTK is needed in order to use the widget)
+dnl fi
 
 AC_CHECK_PROG(HAVE_GMETADOM_CONFIG, gmetadom-config, yes, no)
 if test $HAVE_GMETADOM_CONFIG = "no"; then

@@ -120,10 +120,18 @@ quick_message(const char* msg)
 
   /* Ensure that the dialog box is destroyed when the user clicks ok. */
      
-  gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), dialog);
+  /* g_signal_connect_object(GTK_OBJECT (okay_button), 
+		  "clicked",
+		  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+		  dialog,0);
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
 		     okay_button);
+		     */
+  
+  g_signal_connect_swapped(GTK_OBJECT(okay_button),
+		  "clicked",
+		  G_CALLBACK(gtk_widget_destroy),
+		  dialog);
   
   /* Add the label, and show everything we've added to the dialog. */
   
@@ -147,7 +155,11 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(window), title);
   gtk_window_set_default_size(GTK_WINDOW(window), width, height);
-  gtk_signal_connect(GTK_OBJECT(window), "delete_event", (GtkSignalFunc) gtk_main_quit, NULL);
+  
+  g_signal_connect(GTK_OBJECT(window), 
+		  "delete_event", 
+		  (GtkSignalFunc) gtk_main_quit, NULL);
+  
   create_widget_set();
 
   gtk_widget_show(window);
@@ -272,18 +284,26 @@ file_open(GtkWidget* widget, gpointer data)
 {
   GtkWidget* fs = gtk_file_selection_new("Open File");
 
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
-		      "clicked", GTK_SIGNAL_FUNC (store_filename), (gpointer) fs);
+  g_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
+		      "clicked", 
+		      GTK_SIGNAL_FUNC(store_filename), (gpointer) fs);
                              
   /* Ensure that the dialog box is destroyed when the user clicks a button. */
      
-  gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
-			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
+  g_signal_connect_swapped(GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
+			     "clicked", 
+			     G_CALLBACK(gtk_widget_destroy),
 			     (gpointer) fs);
 
-  gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION(fs)->cancel_button),
+  /* gtk_signal_connect_object(GTK_OBJECT (GTK_FILE_SELECTION(fs)->cancel_button),
 			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
 			     (gpointer) fs);
+			     */
+
+  g_signal_connect_swapped(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button),
+		  "clicked",
+		  G_CALLBACK(gtk_widget_destroy),
+		  (gpointer) fs);
      
   /* Display that dialog */
      
@@ -379,8 +399,14 @@ help_about(GtkWidget* widget, gpointer data)
   label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2003 Luca Padovani    \n");
   ok = gtk_button_new_with_label("Close");
 
-  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+  /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog); */
+
+  g_signal_connect_swapped(GTK_OBJECT(ok),
+		  "clicked",
+		  G_CALLBACK(gtk_widget_destroy),
+		  (gpointer) dialog);
+  
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
 		     ok);
 
@@ -425,17 +451,34 @@ options_set_font_size(GtkWidget* widget, gpointer data)
   spin = gtk_spin_button_new (GTK_ADJUSTMENT(adj), 1, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spin), TRUE);
 
-  gtk_signal_connect (GTK_OBJECT (ok), "clicked",
-		      GTK_SIGNAL_FUNC (change_default_font_size), (gpointer) spin);
+  /* gtk_signal_connect (GTK_OBJECT (ok), "clicked",
+		      GTK_SIGNAL_FUNC (change_default_font_size), (gpointer) spin); */
 
-  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+  g_signal_connect(GTK_OBJECT(ok),
+		  "clicked",
+		  G_CALLBACK(change_default_font_size),
+		  (gpointer) spin);
 
-  gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+  /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog); */
 
-  gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);
+  g_signal_connect_swapped(GTK_OBJECT (ok), 
+		  "clicked",
+		  G_CALLBACK(gtk_widget_destroy), 
+		  (gpointer) dialog);
+
+
+  /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);*/
+
+  /* gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog); */
+  
+  g_signal_connect_swapped(GTK_OBJECT (cancel),
+		  "clicked",
+		  G_CALLBACK(gtk_widget_destroy), 
+		  (gpointer) dialog);
+
 
   gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 5);
 
@@ -670,29 +713,64 @@ create_widget_set()
   main_area = gtk_math_view_new(NULL, NULL);
   gtk_widget_show(main_area);
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area),
+  /* gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "select_begin", GTK_SIGNAL_FUNC (select_begin),
-			     (gpointer) main_area);
+			     (gpointer) main_area); */
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area),
+  g_signal_connect_swapped(GTK_OBJECT (main_area),
+		  "select_begin", 
+		  G_CALLBACK(select_begin),
+		  (gpointer) main_area);
+
+
+
+  /* gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "select_over", GTK_SIGNAL_FUNC (select_over),
-			     (gpointer) main_area);
+			     (gpointer) main_area); */
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area),
+  g_signal_connect_swapped(GTK_OBJECT (main_area),
+		  "select_over", 
+		  G_CALLBACK(select_over),
+		  (gpointer) main_area);
+
+  /*gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "select_end", GTK_SIGNAL_FUNC (select_end),
-			     (gpointer) main_area);
+			     (gpointer) main_area); */
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area),
+ g_signal_connect_swapped(GTK_OBJECT (main_area),
+		 "select_end", 
+		 G_CALLBACK(select_end),
+		 (gpointer) main_area);
+
+
+  /*gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "select_abort", GTK_SIGNAL_FUNC (select_abort),
-			     (gpointer) main_area);
+			     (gpointer) main_area);*/
+ 
+ g_signal_connect_swapped(GTK_OBJECT (main_area),
+		 "select_abort", 
+		 G_CALLBACK(select_abort),
+		 (gpointer) main_area);
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area),
+
+  /*gtk_signal_connect_object (GTK_OBJECT (main_area),
 			     "element_over", GTK_SIGNAL_FUNC (element_over),
-			     (gpointer) main_area);
+			     (gpointer) main_area);*/
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area), 
+ g_signal_connect_swapped(GTK_OBJECT (main_area),
+		 "element_over", 
+		 G_CALLBACK(element_over),
+		 (gpointer) main_area);
+
+
+  /*gtk_signal_connect_object (GTK_OBJECT (main_area), 
 			     "click", GTK_SIGNAL_FUNC(click),
-			     (gpointer) main_area);
+			     (gpointer) main_area);*/
+
+  g_signal_connect_swapped(GTK_OBJECT (main_area),
+		  "click", 
+		  G_CALLBACK(click),
+		  (gpointer) main_area);
 
   gtk_widget_add_events(GTK_WIDGET(main_area),
 			GDK_BUTTON_PRESS_MASK

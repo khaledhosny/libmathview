@@ -305,111 +305,117 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   }
 }
 
-extern "C" GtkType
-gtk_math_view_get_type()
+extern "C" GType
+gtk_math_view_get_type(void)
 {
-  static guint math_view_type = 0;
+  static GType math_view_type = 0;
 
-  if (math_view_type == 0) {
-    GtkTypeInfo math_view_info = {
-      "GtkMathView",
-      sizeof(GtkMathView),
+  if (!math_view_type) {
+    static const GTypeInfo math_view_info = {
       sizeof(GtkMathViewClass),
-      (GtkClassInitFunc) gtk_math_view_class_init,
-      (GtkObjectInitFunc) gtk_math_view_init,
       NULL,
       NULL,
-      NULL
+      (GClassInitFunc) gtk_math_view_class_init,
+      NULL,
+      NULL,
+      sizeof(GtkMathView),
+      0,
+      (GInstanceInitFunc) gtk_math_view_init,
     };
-
-    math_view_type = gtk_type_unique(gtk_event_box_get_type(), &math_view_info);
+    math_view_type = g_type_register_static(GTK_TYPE_EVENT_BOX, "GtkMathView",
+		    &math_view_info, (GTypeFlags) 0);
   }
 
   return math_view_type;
 }
 
-static void
-gtk_math_view_class_init(GtkMathViewClass* klass)
+static void gtk_math_view_class_init(GtkMathViewClass* klass)
 {
-  GtkObjectClass* object_class = (GtkObjectClass*) klass;
-  GtkWidgetClass* widget_class = (GtkWidgetClass*) klass;
 
-  klass->click = gtk_math_view_click;
-  klass->select_begin = gtk_math_view_select_begin;
-  klass->select_over = gtk_math_view_select_over;
-  klass->select_end = gtk_math_view_select_end;
-  klass->select_abort = gtk_math_view_select_abort;
-  klass->element_over = gtk_math_view_element_over;
-  klass->set_scroll_adjustments = gtk_math_view_set_adjustments;
+	GtkObjectClass* object_class;
+	GtkWidgetClass* widget_class;
+	
+	object_class = (GtkObjectClass*) klass;
+	widget_class = (GtkWidgetClass*) klass;
+	
+	klass->click = gtk_math_view_click;
+  	klass->select_begin = gtk_math_view_select_begin;
+  	klass->select_over = gtk_math_view_select_over;
+  	klass->select_end = gtk_math_view_select_end;
+  	klass->select_abort = gtk_math_view_select_abort;
+  	klass->element_over = gtk_math_view_element_over;
+  	klass->set_scroll_adjustments = gtk_math_view_set_adjustments;
 
-  parent_class = (GtkEventBoxClass*) gtk_type_class(gtk_event_box_get_type());
+  	parent_class = (GtkEventBoxClass*) gtk_type_class(gtk_event_box_get_type());
 
-  object_class->destroy = gtk_math_view_destroy;
+  	object_class->destroy = gtk_math_view_destroy;
 
-  widget_class->size_request = gtk_math_view_size_request;
-  widget_class->set_scroll_adjustments_signal =
-    gtk_signal_new("set_scroll_adjustments",
-		   GTK_RUN_LAST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET (GtkMathViewClass, set_scroll_adjustments),
-		   gtk_marshal_NONE__POINTER_POINTER,
-		   GTK_TYPE_NONE, 2, GTK_TYPE_ADJUSTMENT, GTK_TYPE_ADJUSTMENT);
+  	widget_class->size_request = gtk_math_view_size_request;
+  	
+	widget_class->set_scroll_adjustments_signal = 
+		g_signal_new("set_scroll_adjustments",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET(GtkMathViewClass,set_scroll_adjustments),
+				NULL, NULL,
+				gtk_marshal_NONE__POINTER_POINTER,
+				G_TYPE_NONE , 2 , GTK_TYPE_ADJUSTMENT,GTK_TYPE_ADJUSTMENT); 
+	
+	click_signal = 
+		g_signal_new("click",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET(GtkMathViewClass, click),
+				NULL, NULL,
+				gtk_marshal_NONE__POINTER_INT,
+				G_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
 
-  click_signal = 
-    gtk_signal_new("click",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET(GtkMathViewClass, click),
-		   gtk_marshal_NONE__POINTER_INT,
-		   GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
-  gtk_object_class_add_signals(object_class, &click_signal, 1);
-
-  select_begin_signal = 
-    gtk_signal_new("select_begin",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET(GtkMathViewClass, select_begin),
-		   gtk_marshal_NONE__POINTER_INT,
-		   GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
-  gtk_object_class_add_signals(object_class, &select_begin_signal, 1);
-
-  select_over_signal = 
-    gtk_signal_new("select_over",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET(GtkMathViewClass, select_over),
-		   gtk_marshal_NONE__POINTER_INT,
-		   GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
-  gtk_object_class_add_signals(object_class, &select_over_signal, 1);
-
-  select_end_signal = 
-    gtk_signal_new("select_end",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET(GtkMathViewClass, select_end),
-		   gtk_marshal_NONE__POINTER_INT,
-		   GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
-  gtk_object_class_add_signals(object_class, &select_end_signal, 1);
-
-  select_abort_signal = 
-    gtk_signal_new("select_abort",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET(GtkMathViewClass, select_abort),
-		   gtk_marshal_NONE__NONE,
-		   GTK_TYPE_NONE, 0);
-  gtk_object_class_add_signals(object_class, &select_abort_signal, 1);
-
-  element_over_signal = 
-    gtk_signal_new("element_over",
-		   GTK_RUN_FIRST,
-		   object_class->type,
-		   GTK_SIGNAL_OFFSET(GtkMathViewClass, element_over),
-		   gtk_marshal_NONE__POINTER_INT,
-		   GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_INT);
-  gtk_object_class_add_signals(object_class, &element_over_signal, 1);
-
-  Globals::InitGlobalData(getenv("MATHENGINECONF"));
+	select_begin_signal=
+		g_signal_new("select_begin",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET(GtkMathViewClass,select_begin),
+				NULL,NULL,
+				gtk_marshal_NONE__POINTER_INT,
+				G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
+	
+	select_over_signal = 
+		g_signal_new("select_over",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET(GtkMathViewClass,select_over),
+				NULL,NULL,
+				gtk_marshal_NONE__POINTER_INT,
+				G_TYPE_NONE, 2 ,GTK_TYPE_POINTER,GTK_TYPE_INT);
+	
+	select_end_signal = 
+		g_signal_new("select_end",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET(GtkMathViewClass,select_end),
+				NULL,NULL,
+				gtk_marshal_NONE__POINTER_INT,
+				G_TYPE_NONE, 2 ,GTK_TYPE_POINTER, GTK_TYPE_INT);
+	
+	select_abort_signal = 
+		g_signal_new("select_abort",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET(GtkMathViewClass,select_abort),
+				NULL,NULL,
+				gtk_marshal_NONE__NONE,
+				G_TYPE_NONE,0);
+	
+	element_over_signal = 
+		g_signal_new("element_over",
+				G_OBJECT_CLASS_TYPE(object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET(GtkMathViewClass,element_over),
+				NULL,NULL,
+				gtk_marshal_NONE__POINTER_INT,
+				G_TYPE_NONE, 2 , GTK_TYPE_POINTER,GTK_TYPE_INT);
+	
+	Globals::InitGlobalData(getenv("MATHENGINECONF"));
 }
 
 static void
@@ -439,23 +445,35 @@ gtk_math_view_init(GtkMathView* math_view)
   gtk_container_add(GTK_CONTAINER(math_view->frame), math_view->area);
   gtk_widget_show(math_view->area);
 
-  gtk_signal_connect(GTK_OBJECT(math_view->area), "configure_event",
-		     GTK_SIGNAL_FUNC(gtk_math_view_configure_event), math_view);
+  g_signal_connect(GTK_OBJECT(math_view->area),
+		  "configure_event",
+		  G_CALLBACK(gtk_math_view_configure_event), 
+		  math_view);
 
-  gtk_signal_connect(GTK_OBJECT(math_view->area), "expose_event",
-		     GTK_SIGNAL_FUNC(gtk_math_view_expose_event), math_view);
+  g_signal_connect(GTK_OBJECT(math_view->area), 
+		  "expose_event",
+		  G_CALLBACK(gtk_math_view_expose_event), 
+		  math_view);
 
-  gtk_signal_connect(GTK_OBJECT(math_view->area), "realize",
-		     GTK_SIGNAL_FUNC(gtk_math_view_realize), math_view);
+  g_signal_connect(GTK_OBJECT(math_view->area), 
+		  "realize",
+		  G_CALLBACK(gtk_math_view_realize), 
+		  math_view);
 
-  gtk_signal_connect(GTK_OBJECT(math_view->area), "button_press_event",
-		     GTK_SIGNAL_FUNC(gtk_math_view_button_press_event), math_view);
+  g_signal_connect(GTK_OBJECT(math_view->area), 
+		  "button_press_event",
+		  G_CALLBACK(gtk_math_view_button_press_event), 
+		  math_view);
 
-  gtk_signal_connect(GTK_OBJECT(math_view->area), "button_release_event",
-		     GTK_SIGNAL_FUNC(gtk_math_view_button_release_event), math_view);
+  g_signal_connect(GTK_OBJECT(math_view->area), 
+		  "button_release_event",
+		  G_CALLBACK(gtk_math_view_button_release_event), 
+		  math_view);
 
-  gtk_signal_connect(GTK_OBJECT(math_view->area), "motion_notify_event",
-		     GTK_SIGNAL_FUNC(gtk_math_view_motion_notify_event), math_view);
+  g_signal_connect(GTK_OBJECT(math_view->area), 
+		  "motion_notify_event",
+		  G_CALLBACK(gtk_math_view_motion_notify_event), 
+		  math_view);
 
   gtk_widget_add_events(GTK_WIDGET(math_view->area),
 			GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
@@ -487,7 +505,6 @@ gtk_math_view_destroy(GtkObject* object)
 
   math_view = GTK_MATH_VIEW(object);
   g_assert(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
 
   Globals::logger(LOG_DEBUG, "destroying the widget");
 
@@ -498,6 +515,24 @@ gtk_math_view_destroy(GtkObject* object)
   delete math_view->drawing_area;
   math_view->drawing_area = 0;
 
+  if (math_view->hadjustment != NULL)
+    {
+      gtk_object_unref(GTK_OBJECT(math_view->hadjustment));
+      math_view->hadjustment = NULL;
+    }
+
+  if (math_view->vadjustment != NULL)
+    {
+      gtk_object_unref(GTK_OBJECT(math_view->vadjustment));
+      math_view->vadjustment = NULL;
+    }
+
+  if (math_view->pixmap != NULL)
+    {
+      g_object_unref(G_OBJECT(math_view->pixmap));
+      math_view->pixmap = NULL;
+    }
+
   if (math_view->current_elem != NULL)
     {
       GdomeException exc = 0;
@@ -506,22 +541,15 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->current_elem = NULL;
     }
 
-  /* FIXME: sometimes the frame has been destroyed already
-   * if you disable the delete_event and close the window you'll see
-   * some messages
-   */
-
   /* ATTEMPT: since this class is derived from a container
    * then contained object will be destroyed by the parent class'
    * method
    */
 
-  gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->hadjustment), math_view);
-  gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->vadjustment), math_view);
-
   if (GTK_OBJECT_CLASS(parent_class)->destroy != NULL)
     (*GTK_OBJECT_CLASS(parent_class)->destroy)(object);
 }
+
 
 extern "C" gboolean
 gtk_math_view_freeze(GtkMathView* math_view)
@@ -594,7 +622,7 @@ gtk_math_view_button_press_event(GtkWidget* widget,
   else if (math_view->select_state == SELECT_STATE_YES)
     {
       math_view->select_state = SELECT_STATE_ABORT;
-      gtk_signal_emit(GTK_OBJECT(math_view), select_abort_signal);
+      g_signal_emit(GTK_OBJECT(math_view), select_abort_signal,0);
     }
   
   return FALSE;
@@ -623,11 +651,19 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 	{
 	  // the mouse should have not moved more than one pixel in each direction
 	  // and the time elapsed from the press event should be no more than 250ms
-	  gtk_signal_emit(GTK_OBJECT(math_view), click_signal, elem, event->state);
+	  g_signal_emit(GTK_OBJECT(math_view),
+			  click_signal,
+			  0,
+			  elem,
+			  event->state);
 	}
 
-      if (math_view->select_state == SELECT_STATE_YES)
-	gtk_signal_emit(GTK_OBJECT(math_view), select_end_signal, elem, event->state);
+      if (math_view->select_state == SELECT_STATE_YES)      
+	      g_signal_emit(GTK_OBJECT(math_view),
+			      select_end_signal,
+			      0,
+			      elem,
+			      event->state);
 
       if (elem != NULL)
 	{
@@ -679,11 +715,20 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
     {
       if (math_view->select_state == SELECT_STATE_NO)
 	{
-	  gtk_signal_emit(GTK_OBJECT(math_view), select_begin_signal, elem, event->state);
+		g_signal_emit(GTK_OBJECT(math_view),
+				select_begin_signal,
+				0,
+				elem,
+				event->state);
+	  
 	  math_view->select_state = SELECT_STATE_YES;
 	}
       else if (math_view->select_state == SELECT_STATE_YES && math_view->current_elem != elem)
-	gtk_signal_emit(GTK_OBJECT(math_view), select_over_signal, elem, event->state);
+	      g_signal_emit(GTK_OBJECT(math_view),
+			      select_over_signal,
+			      0,
+			      elem,
+			      event->state);
     }
 
   if (math_view->current_elem != elem)
@@ -701,7 +746,10 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 	}
 
       math_view->current_elem = elem;
-      gtk_signal_emit(GTK_OBJECT(math_view), element_over_signal, elem, event->state);
+      g_signal_emit(GTK_OBJECT(math_view), 
+		      element_over_signal, 
+		      0, elem,
+		      event->state);
     }
 
   if (elem != NULL)
@@ -724,7 +772,7 @@ gtk_math_view_configure_event(GtkWidget* widget,
   g_return_val_if_fail(math_view->interface != NULL, FALSE);
   g_return_val_if_fail(math_view->drawing_area != NULL, FALSE);
 
-  if (math_view->pixmap != NULL) gdk_pixmap_unref(math_view->pixmap);
+  if (math_view->pixmap != NULL) g_object_unref(math_view->pixmap);
   math_view->pixmap = gdk_pixmap_new(widget->window, event->width, event->height, -1);
   math_view->drawing_area->SetSize(px2sp(event->width), px2sp(event->height));
   math_view->drawing_area->SetPixmap(math_view->pixmap);
@@ -962,20 +1010,24 @@ gtk_math_view_set_adjustments(GtkMathView* math_view,
     math_view->hadjustment = hadj;
     gtk_object_ref(GTK_OBJECT(math_view->hadjustment));
     gtk_object_sink(GTK_OBJECT(math_view->hadjustment));
-
-    math_view->hsignal = gtk_signal_connect(GTK_OBJECT(hadj), "value_changed",
-					    GTK_SIGNAL_FUNC(hadjustment_value_changed),
-					    math_view);
+    
+    math_view->hsignal = 
+	    g_signal_connect(GTK_OBJECT(hadj), 
+			    "value_changed",
+			    G_CALLBACK(hadjustment_value_changed),
+			    math_view);
   }
 
   if (math_view->vadjustment != vadj) {
     math_view->vadjustment = vadj;
     gtk_object_ref(GTK_OBJECT(math_view->vadjustment));
     gtk_object_sink(GTK_OBJECT(math_view->vadjustment));
-
-    math_view->vsignal = gtk_signal_connect(GTK_OBJECT(vadj), "value_changed",
-					    GTK_SIGNAL_FUNC(vadjustment_value_changed),
-					    math_view);
+    
+    math_view->vsignal =
+	    g_signal_connect(GTK_OBJECT(vadj), 
+			    "value_changed",
+			    G_CALLBACK(vadjustment_value_changed),
+			    math_view);
   }
 
   setup_adjustments(math_view);

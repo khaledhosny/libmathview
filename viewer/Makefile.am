@@ -22,8 +22,8 @@ mathmlviewer_debug_LDADD = \
   $(top_builddir)/src/libgtkmathview.la
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   $(GTK_CFLAGS) \
+  $(DOM_CFLAGS) \
   -I$(top_builddir) \
   -I$(top_srcdir)/src/ \
   -I$(top_srcdir)/auto/

@@ -182,7 +182,6 @@ main(int argc, char *argv[])
     }
 
     GUI_uninit();
-    GUI_unload_document();
   } else printHelp();
 
   Value::Flush();
