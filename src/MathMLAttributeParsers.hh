@@ -114,6 +114,7 @@ typedef ParseBoolean Parse_Style_displaystyle;
 typedef ParseNumber Parse_Style_scriptsizemultiplier;
 typedef ParseLength Parse_Style_scriptminsize;
 typedef ParseColor Parse_Style_color;
+typedef ParseColor Parse_Style_mathcolor;
 typedef ParseChoice<ParseColor,ParseToken<T_TRANSPARENT> > Parse_Style_background;
 typedef ParseLength Parse_Style_negativeveryverythickmathspace;
 typedef ParseLength Parse_Style_negativeverythickmathspace;

@@ -386,21 +386,6 @@ MathMLTableCellElement::CalcGroupsExtent()
       if (k == cell->nAlignGroup - 1) cell->aGroup[k].extent.right = cellWidth - alignPoint;
       prevAlignPoint = alignPoint;
     }
-
-#if 0
-  cout << "group " << k;
-  cout << " right: " << sp2ipx(rightEdge);
-  cout << " left: " << sp2ipx(leftEdge);
-  cout << " align: " << sp2ipx(alignPoint);
-  cout << endl;
-#endif
-
-#if 0
-  for (unsigned k = 0; k < cell->nAlignGroup; k++) {
-    cout << " [" << sp2ipx(cell->aGroup[k].extent.left) << ',' << sp2ipx(cell->aGroup[k].extent.right) << ']';
-  }
-  cout << endl;
-#endif
 }
 
 void

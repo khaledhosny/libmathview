@@ -63,7 +63,6 @@ FontAttributes::Null()
   style  = T__NOTVALID;
   weight = T__NOTVALID;
   size.unset();
-  mode = FONT_MODE_ANY;
 }
 
 bool
@@ -71,11 +70,7 @@ FontAttributes::DownGrade()
 {
   bool res = true;
 
-#if 0
-  if (HasMode()) mode = FONT_MODE_ANY;
-  else
-#endif
-    if (HasWeight()) weight = T__NOTVALID;
+  if (HasWeight()) weight = T__NOTVALID;
   else if (HasStyle()) style = T__NOTVALID;
   else if (HasFamily()) family = "";
   else if (HasSize()) size.unset();
@@ -87,7 +82,6 @@ FontAttributes::DownGrade()
 bool
 FontAttributes::Equals(const FontAttributes& fa) const
 {
-  //if (mode != fa.mode) return false;
   if (style != fa.style) return false;
   if (weight != fa.weight) return false;
   if ((family == "" && fa.family != "") ||
@@ -103,9 +97,6 @@ unsigned
 FontAttributes::Compare(const FontAttributes& fa) const
 {
   unsigned eval = 0;
-
-  //if (mode != FONT_MODE_ANY && fa.mode != FONT_MODE_ANY && mode != fa.mode)
-  //  return UINT_MAX;
 
   if (HasStyle()) {
     if (fa.HasStyle()) {
@@ -148,34 +139,6 @@ FontAttributes::Compare(const FontAttributes& fa) const
     if (fa.HasSize()) eval++;
   }
 
-#if 0
-  if (!HasStyle() && !fa.HasStyle()) eval += 2;
-  else if (HasStyle() && fa.HasStyle()) {
-    if (style == fa.style) eval += 2;
-    else return 0;
-  } else eval++;
-
-  if (!HasWeight() && !fa.HasWeight()) eval += 2;
-  else if (HasWeight() && fa.HasWeight()) {
-    if (weight == fa.weight) eval += 2;
-    else return 0;
-  } else eval++;
-
-  if (!HasFamily() && !fa.HasFamily()) eval += 2;
-  else if (HasFamily() && fa.HasFamily()) {
-    if (strcmp(family, fa.family)) return 0;
-    else eval += 2;
-  } else eval++;
-
-  if (!HasSize() && !fa.HasSize()) eval += 18;
-  else if (HasSize() && fa.HasSize()) {
-    scaled s1 = size.ToScaledPoints();
-    scaled s2 = fa.size.ToScaledPoints();
-    scaled d = abs(s1 - s2);
-    if (d < pt2sp(24)) eval += 24 - truncFloat(sp2pt(d));    
-  } else eval += 10;
-#endif
-
   return eval;
 }
 
@@ -186,9 +149,9 @@ FontAttributes::Dump() const
   const char* s[] = { "_", "normal", "italic" };
   const char* m[] = { "*", "text", "math" };
 
-  Globals::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s,%s)",
+  Globals::logger(LOG_DEBUG, "font(%dpt,%s,%s,%s)",
 		  HasSize() ? static_cast<int>(sp2pt(ToScaledPoints(size))) : -1,
-		  HasFamily() ? family.c_str() : "_", w[weight + 1], s[style + 1], m[mode]);
+		  HasFamily() ? family.c_str() : "_", w[weight + 1], s[style + 1]);
 }
 
 // ExtraFontAttributes

@@ -21,9 +21,8 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
 
-#include <stdio.h>
+#include <cassert>
 
 #include "MathMLTextNode.hh"
 #include "MathMLElement.hh"
@@ -51,7 +50,6 @@ MathMLTextNode::IsText() const
 void
 MathMLTextNode::SetPosition(const scaled& x, const scaled& y)
 {
-  //printf("set position x %d y %d\n", sp2ipx(x), sp2ipx(y));
   position.x = x;
   position.y = y;
 }

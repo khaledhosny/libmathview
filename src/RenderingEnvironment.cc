@@ -61,8 +61,6 @@ RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af,
       top->mathSpace[MATH_SPACE_VERYVERYTHIN + i].set((i + 1) / 18.0, Length::EM_UNIT);
     }
 
-  top->defaults = NULL;
-
   level.push_front(top);
 }
 
@@ -72,7 +70,7 @@ RenderingEnvironment::~RenderingEnvironment()
 }
 
 void
-RenderingEnvironment::Push(const SmartPtr<MathMLAttributeList>& aList)
+RenderingEnvironment::Push()
 {
   assert(!level.empty());
 
@@ -82,7 +80,6 @@ RenderingEnvironment::Push(const SmartPtr<MathMLAttributeList>& aList)
   AttributeLevel* newLevel = new AttributeLevel;
 
   *newLevel = *top; // inherit previous environment
-  newLevel->defaults = aList;
 
   level.push_front(newLevel);
 }
@@ -96,26 +93,6 @@ RenderingEnvironment::Drop()
   delete top;
   level.pop_front();
 }
-
-#if 0
-SmartPtr<MathMLAttribute>
-RenderingEnvironment::GetAttribute(AttributeId id) const
-{
-  for (std::list<AttributeLevel*>::const_iterator i = level.begin();
-       i != level.end();
-       i++)
-    {
-      AttributeLevel* thisLevel = *i;
-      assert(thisLevel != 0);
-
-      if (thisLevel->defaults)
-	if (SmartPtr<MathMLAttribute> attribute = thisLevel->defaults->get(id))
-	  return attribute;
-    }
-
-  return 0;
-}
-#endif
 
 void
 RenderingEnvironment::SetDisplayStyle(bool b)

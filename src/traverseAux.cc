@@ -112,16 +112,6 @@ findStretchyOperator(const SmartPtr<MathMLElement>& elem)
   return 0;
 }
 
-#if 0
-SmartPtr<MathMLOperatorElement>
-findStretchyOperator(const SmartPtr<MathMLElement>& elem, StretchId id)
-{
-  if (SmartPtr<MathMLOperatorElement> coreOp = findStretchyOperator(elem))
-    if (coreOp->GetStretch() == id) return coreOp;
-  return 0;
-}
-#endif
-
 SmartPtr<MathMLElement>
 findCommonAncestor(const SmartPtr<MathMLElement>& first, const SmartPtr<MathMLElement>& last)
 {

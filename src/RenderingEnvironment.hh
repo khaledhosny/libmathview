@@ -45,7 +45,7 @@ public:
   virtual ~RenderingEnvironment();
 
   // levels
-  void     Push(const SmartPtr<MathMLAttributeList>& = 0);
+  void     Push(void);
   void     Drop(void);
 
   // attributes facilities
@@ -120,7 +120,6 @@ private:
     RGBColor  color;
     RGBColor  background;
     bool      transparentBackground;
-    SmartPtr<MathMLAttributeList> defaults;
   };
 
   std::list<AttributeLevel*> level;

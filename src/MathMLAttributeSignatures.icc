@@ -61,6 +61,7 @@ DEFINE_ATTRIBUTE(StringLit, "lquote", lquote, true, true, false, false, "\"");
 DEFINE_ATTRIBUTE(StringLit, "rquote", rquote, true, true, false, false, "\"");
 DEFINE_ATTRIBUTE(Style, "background", background, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(Style, "color", color, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(Style, "mathcolor", mathcolor, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(Style, "displaystyle", displaystyle, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(Style, "fontsize", fontsize, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(Style, "mathsize", mathsize, true, false, false, false, 0);

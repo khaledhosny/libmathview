@@ -66,9 +66,6 @@ MathMLOperatorElement::refine(AbstractRefinementContext& context)
     }
 }
 
-#include "scaledAux.hh"
-#include "LengthAux.hh"
-
 void
 MathMLOperatorElement::Setup(RenderingEnvironment& env)
 {

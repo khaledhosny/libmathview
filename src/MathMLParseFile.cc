@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#include <assert.h>
+#include <cassert>
 
 #if defined(HAVE_GMETADOM)
 #include "gmetadom.hh"
@@ -32,27 +32,7 @@
 #include "Globals.hh"
 #include "MathMLParseFile.hh"
 
-#if defined(HAVE_MINIDOM)
-static mDOMEntityRef
-myVeryPrivateGetEntity(void* user_data, mDOMConstStringRef name)
-{
-  mDOMEntityRef entity = mdom_get_predefined_entity(name);
-  if (entity == NULL) entity = Globals::entitiesTable.GetEntity(name);
-  if (entity == NULL) {
-    Globals::logger(LOG_WARNING, "cannot resolve entity reference `%s', a `?' will be used instead", name);
-    entity = Globals::entitiesTable.GetErrorEntity();
-  }
-
-  return entity;
-}
-
-mDOMDocRef
-MathMLParseFile(const char* filename, bool subst)
-{
-  return mdom_load(filename, subst, myVeryPrivateGetEntity);
-}
-
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 
 DOM::Document
 MathMLParseFile(const char* filename, bool subst)

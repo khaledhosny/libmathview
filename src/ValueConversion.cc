@@ -142,24 +142,6 @@ ToSequence(const SmartPtr<Value>& value)
   return smart_cast<ValueSequence>(value);
 }
 
-#if 0
-RenderingEnvironment::MathSpaceId
-ToNamedSpaceId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case T_VERYVERYTHINMATHSPACE: return MATH_SPACE_VERYVERYTHIN;
-    case T_VERYTHINMATHSPACE: return MATH_SPACE_VERYTHIN;
-    case T_THINMATHSPACE: return MATH_SPACE_THIN;
-    case T_MEDIUMMATHSPACE: return MATH_SPACE_MEDIUM;
-    case T_THICKMATHSPACE: return MATH_SPACE_THICK;
-    case T_VERYTHICKMATHSPACE: return MATH_SPACE_VERYTHICK;
-    case T_VERYVERYTHICKMATHSPACE: return MATH_SPACE_VERYVERYTHICK;
-    default: return MATH_SPACE_NOTVALID;
-    }
-}
-#endif
-
 Length::Unit
 toUnitId(TokenId id)
 {
@@ -213,60 +195,6 @@ ToRGB(const SmartPtr<Value>& value)
       return RGBColor::BLACK();
     }
 }
-
-#if 0
-OperatorFormId
-ToFormId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case T_PREFIX: return OP_FORM_PREFIX;
-    case T_INFIX: return OP_FORM_INFIX;
-    case T_POSTFIX: return OP_FORM_POSTFIX;
-    default: return OP_FORM_NOTVALID;
-    }
-}
-
-FractionAlignId
-ToFractionAlignId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case T_LEFT: return FRAC_ALIGN_LEFT;
-    case T_RIGHT: return FRAC_ALIGN_RIGHT;
-    case T_CENTER: return FRAC_ALIGN_CENTER;
-    default: return FRAC_ALIGN_NOTVALID;
-    }
-}
-
-MarkAlignType
-ToMarkAlignId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case T_LEFT: return MARK_ALIGN_LEFT;
-    case T_RIGHT: return MARK_ALIGN_RIGHT;
-    default: return MARK_ALIGN_NOTVALID;
-    }
-}
-
-BreakId
-ToBreakId(const SmartPtr<Value>& value)
-{
-  switch (ToKeywordId(value))
-    {
-    case T_AUTO: return BREAK_AUTO;
-    case T_NEWLINE: return BREAK_YES;
-    case T_INDENTINGNEWLINE: return BREAK_INDENT;
-    case T_NOBREAK: return BREAK_NO;
-    case T_BADBREAK: return BREAK_BAD;
-    case T_GOODBREAK:return BREAK_GOOD;
-    default: 
-      assert(IMPOSSIBLE);
-      return BREAK_AUTO;
-    }
-}
-#endif
 
 SmartPtr<Value>
 GetComponent(const SmartPtr<Value>& value, int i, int j)

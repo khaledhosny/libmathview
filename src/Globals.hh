@@ -30,9 +30,6 @@
 
 namespace Globals {
 
-#if defined(HAVE_MINIDOM)
-  extern EntitiesTable      entitiesTable;
-#endif
   extern OperatorDictionary dictionary;
   extern Configuration      configuration;
   extern Logger             logger;

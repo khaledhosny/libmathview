@@ -238,12 +238,6 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
     {
       env.Push();
 
-#if 0
-      if (!is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)) &&
-	  !is_a<MathMLOperatorElement>(SmartPtr<MathMLElement>(this)))
-	env.SetFontMode(FONT_MODE_TEXT);
-#endif
-
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, mathsize))
 	{
 	  if (IsSet(T_FONTSIZE))
@@ -374,7 +368,6 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 void
 MathMLTokenElement::SetPosition(const scaled& x, const scaled& y)
 {
-  //printf("token %s set position %d %d\n", NameOfTagId(IsA()), sp2ipx(x), sp2ipx(y));
   MathMLElement::SetPosition(x, y);
   SetContentPosition(x, y);
 }
@@ -418,8 +411,6 @@ MathMLTokenElement::Render(const DrawingArea& area)
 	  assert(*text);
 	  (*text)->Render(area);
 	}
-
-      //area.DrawRectangle(fGC[0], *shape);
 
       ResetDirty();
     }
@@ -486,23 +477,6 @@ MathMLTokenElement::IsNonMarking() const
 
   return true;
 }
-
-#if 0
-SmartPtr<MathMLCharNode>
-MathMLTokenElement::GetCharNode() const
-{
-#if 0
-  if (GetSize() != 1) return 0;
-
-  SmartPtr<MathMLTextNode> node = GetChild(0);
-  assert(node);
-  if (!is_a<MathMLCharNode>(node) || is_a<MathMLCombinedCharNode>(node)) return 0;
-
-  return smart_cast<MathMLCharNode>(node);
-#endif
-  return 0; // ??????????????????????????????
-}
-#endif
 
 void
 MathMLTokenElement::AddItalicCorrection()

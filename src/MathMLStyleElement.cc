@@ -69,17 +69,7 @@ MathMLStyleElement::refine(AbstractRefinementContext& context)
       REFINE_ATTRIBUTE(context, Style, verythickmathspace);
       REFINE_ATTRIBUTE(context, Style, veryverythickmathspace);
       REFINE_ATTRIBUTE(context, Style, fontsize);
-#if 0
-      REFINE_ATTRIBUTE(context, Style, fontweight);
-      REFINE_ATTRIBUTE(context, Style, fontstyle);
-      REFINE_ATTRIBUTE(context, Style, fontfamily);
-      REFINE_ATTRIBUTE(context, Style, mathvariant);
-#endif
       REFINE_ATTRIBUTE(context, Style, mathsize);
-#if 0
-      REFINE_ATTRIBUTE(context, Style, mathcolor);
-      REFINE_ATTRIBUTE(context, Style, mathbackground);
-#endif
       context.push(getDOMElement());
       MathMLNormalizingContainerElement::refine(context);
       context.pop();
@@ -127,16 +117,13 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	    }
 	}
 
-#if 0
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathcolor))
 	{
 	  if (IsSet(T_COLOR))
 	    Globals::logger(LOG_WARNING, "attribute `mathcolor' overrides deprecated attribute `color'");
 	  env.SetColor(ToRGBColor(value));
 	} 
-      else
-#endif
-	if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, color))
+      else if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, color))
 	{
 	  //Globals::logger(LOG_WARNING, "attribute `color' is deprecated in MathML 2");
 	  env.SetColor(ToRGBColor(value));
@@ -207,42 +194,6 @@ MathMLStyleElement::Setup(RenderingEnvironment& env)
 	  Globals::logger(LOG_WARNING, "the attribute `fontsize' is deprecated in MathML 2");
 	  env.SetFontSize(ToLength(value));
 	}
-
-#if 0
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, mathvariant))
-	{
-	  assert(IsTokenId(value));
-
-	  const MathVariantAttributes& attr = attributesOfVariant(ToTokenId(value));
-	  assert(attr.kw != T__NOTVALID);
-	  env.SetFontFamily(attr.family);
-	  env.SetFontWeight(attr.weight);
-	  env.SetFontStyle(attr.style);
-
-	  if (IsSet(T_FONTFAMILY) || IsSet(T_FONTWEIGHT) || IsSet(T_FONTSTYLE))
-	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
-	} 
-      else
-	{
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontfamily))
-	    {
-	      Globals::logger(LOG_WARNING, "the attribute `fontfamily` is deprecated in MathML 2");
-	      env.SetFontFamily(ToString(value));
-	    }
-
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontweight))
-	    {
-	      Globals::logger(LOG_WARNING, "the attribute `fontweight` is deprecated in MathML 2");
-	      env.SetFontWeight(ToTokenId(value));
-	    }
-
-	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Style, fontstyle))
-	    {
-	      Globals::logger(LOG_WARNING, "the attribute `fontstyle` is deprecated in MathML 2");
-	      env.SetFontStyle(ToTokenId(value));
-	    }
-	}
-#endif
 
       MathMLNormalizingContainerElement::Setup(env);
       env.Drop();

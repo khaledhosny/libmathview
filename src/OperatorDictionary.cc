@@ -90,7 +90,6 @@ OperatorDictionary::Load(const char* fileName)
 	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, lspace), defaults);
 	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, rspace), defaults);
 	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, stretchy), defaults);
-	  //getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, direction), defaults);
 	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, symmetric), defaults);
 	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, maxsize), defaults);
 	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, minsize), defaults);

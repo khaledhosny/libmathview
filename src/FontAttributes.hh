@@ -29,13 +29,10 @@
 #include "token.hh"
 #include "Length.hh"
 
-enum FontModeId { FONT_MODE_ANY, FONT_MODE_TEXT, FONT_MODE_MATH };
-
 struct FontAttributes {
   FontAttributes(void);
   FontAttributes(const FontAttributes&, const FontAttributes&);
 
-  bool HasMode(void) const { return (mode != FONT_MODE_ANY); }
   bool HasFamily(void) const { return (family != ""); }
   bool HasStyle(void) const { return (style != T__NOTVALID); }
   bool HasWeight(void) const { return (weight != T__NOTVALID); }
@@ -51,7 +48,6 @@ struct FontAttributes {
   Length size; // cannot be < 0
   TokenId weight;
   TokenId style;
-  FontModeId mode;
 };
 
 class ExtraFontAttributes {

@@ -116,11 +116,6 @@ MathMLRowElement::DoStretchyLayout()
       scaled toAscent  = (nOther == 0) ? opBox.height : rowBox.height;
       scaled toDescent = (nOther == 0) ? opBox.depth : rowBox.depth;
 
-#if 0
-      printf("%s(%p): found %d stretchy (%d other), now stretch to %d %d\n",
-	     NameOfTagId(IsA()), this, nStretchy, nOther, sp2ipx(toAscent), sp2ipx(toDescent));
-#endif
-
       for (std::vector< SmartPtr<MathMLElement> >::iterator elem = content.begin();
 	   elem != content.end();
 	   elem++)

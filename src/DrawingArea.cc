@@ -25,8 +25,7 @@
 #include <functional>
 #include <algorithm>
 
-#include <assert.h>
-#include <stddef.h>
+#include <cassert>
 
 #include "DrawingArea.hh"
 
@@ -183,13 +182,8 @@ DrawingArea::SetSize(const scaled& w, const scaled& h)
   height = h;
 }
 
-#include "scaledAux.hh"
-
 bool
 DrawingArea::Exposed(const scaled& x, const scaled& y, const scaled& w, const scaled& h) const
 {
-  //std::cout << "AREA " << x0 << "," << y0 << "," << width << "," << height << std::endl;
-  //std::cout << "RECT " << x << "," << y << "," << w << "," << h << std::endl;
-  //return (x >= x0 || x + w <= x0 + width) && (y >= y0 || y + h <= y0 + height);
   return (x + w >= x0 && x0 + width >= x && y + h >= y0 && y0 + height >= y);
 }

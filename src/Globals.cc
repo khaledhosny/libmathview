@@ -22,8 +22,7 @@
 
 #include <config.h>
 
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
 #include <string.h>
 
 #include "Globals.hh"
@@ -33,9 +32,6 @@
 
 namespace Globals {
 
-#if defined(HAVE_MINIDOM)
-  EntitiesTable      entitiesTable;
-#endif
   OperatorDictionary dictionary;
   Configuration      configuration;
   Logger             logger;
@@ -58,15 +54,6 @@ namespace Globals {
       logger(LOG_ERROR, "could not find configuration file");
       exit(-1);
     }
-
-#if defined(HAVE_MINIDOM)
-    // the entities table and the dictionary are global,
-    // so they have to be configured once only
-  
-    //res = entitiesTable.Load("/usr/local/share/gtkmathview/entities-table.xml", false);
-    //if (!res) res = entitiesTable.Load("config/entities-table.xml", true);
-    entitiesTable.LoadInternalTable();
-#endif
 
     if (!configuration.GetDictionaries().empty())
       for (std::vector<std::string>::const_iterator dit = configuration.GetDictionaries().begin();

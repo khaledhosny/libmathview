@@ -26,7 +26,6 @@
 #include "SmartPtr.hh"
 
 bool isStretchyOperator(const SmartPtr<class MathMLElement>&);
-//bool isStretchyOperator(const SmartPtr<class MathMLElement>&, StretchId);
 
 #endif // operatorAux_hh
 

@@ -25,7 +25,6 @@
 
 #include "Area.hh"
 #include "MathMLTextNode.hh"
-#include "FontifiedString.hh"
 
 class MathMLStringNode: public MathMLTextNode
 {

@@ -170,8 +170,6 @@ Gtk_DrawingArea::Clear(const GraphicsContext* gc,
 		     sp2ipx(x - x0), sp2ipx(y - y0), sp2ipx(width) + 1, sp2ipx(height) + 1);
 }
 
-#include <stdio.h>
-
 void
 Gtk_DrawingArea::Update(const scaled& x, const scaled& y, const scaled& width, const scaled& height) const
 {
@@ -183,8 +181,6 @@ Gtk_DrawingArea::Update(const scaled& x, const scaled& y, const scaled& width, c
   updateRect.width = sp2ipx(width);
   updateRect.height = sp2ipx(height);
 
-  //printf("about to update rect %f %f %f %f\n", (double) updateRect.x, (double) updateRect.y, (double) updateRect.width, (double) updateRect.height);
-
   gtk_widget_draw(gtk_widget, &updateRect);
 }
 
@@ -192,7 +188,6 @@ void
 Gtk_DrawingArea::Update() const
 {
 #if 0
-  //  Update(x0, y0, width, height);
   assert(gtk_widget != NULL);
 
   GdkRectangle updateRect;

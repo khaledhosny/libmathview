@@ -622,36 +622,6 @@ MathMLMultiScriptsElement::GetCoreOperator()
   else return 0;
 }
 
-#if 0
-void
-MathMLMultiScriptsElement::SetDirty(const Rectangle* rect)
-{
-  if (!IsDirty() && !HasDirtyChildren())
-    {
-      MathMLElement::SetDirty(rect);
-      if (base) base->SetDirty(rect);
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
-      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
-      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
-      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyAdaptor(), rect));
-    }
-}
-
-void
-MathMLMultiScriptsElement::SetDirtyLayout(bool children)
-{
-  MathMLElement::SetDirtyLayout(children);
-  if (children)
-    {
-      if (base) base->SetDirtyLayout(children);
-      for_each_if(subScript.begin(), subScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyLayoutAdaptor(), true));
-      for_each_if(superScript.begin(), superScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyLayoutAdaptor(), true));
-      for_each_if(preSubScript.begin(), preSubScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyLayoutAdaptor(), true));
-      for_each_if(preSuperScript.begin(), preSuperScript.end(), NotNullPredicate(), std::bind2nd(SetDirtyLayoutAdaptor(), true));
-    }
-}
-#endif
-
 void
 MathMLMultiScriptsElement::SetFlagDown(Flags f)
 {
