@@ -25,7 +25,6 @@
 #include <cassert>
 
 #include "AreaId.hh"
-#include "ReplacementContext.hh"
 #include "SimpleArea.hh"
 #include "Rectangle.hh"
 
@@ -34,17 +33,6 @@ SimpleArea::fit(const scaled&, const scaled&, const scaled&) const
 {
   return this;
 }
-
-#if 0
-AreaRef
-SimpleArea::replace(const ReplacementContext& context) const
-{
-  if (AreaRef newArea = context.get())
-    return newArea;
-  else
-    return this;
-}
-#endif
 
 void
 SimpleArea::strength(int& w, int& h, int& d) const

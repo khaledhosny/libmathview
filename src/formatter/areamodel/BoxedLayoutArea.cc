@@ -26,7 +26,6 @@
 
 #include "AreaId.hh"
 #include "BoxedLayoutArea.hh"
-#include "ReplacementContext.hh"
 
 void
 BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
@@ -88,41 +87,6 @@ BoxedLayoutArea::searchByIndex(AreaId& id, int index) const
     }
   return false;
 }
-
-#if 0
-AreaRef
-BoxedLayoutArea::replace(const ReplacementContext& context) const
-{
-  if (AreaRef newArea = context.get())
-    return newArea;
-  else
-    {
-      std::vector<XYArea> newContent;
-      newContent.reserve(content.size());
-      for (std::vector<XYArea>::const_iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	{
-	  ReplacementContext newContext(context, p - content.begin());
-	  newContent.push_back(XYArea(p->dx, p->dy, content[p - content.begin()].area->replace(newContext)));
-	}
-
-      if (content == newContent)
-	return this;
-      else
-	return clone(bbox, newContent);
-    }
-}
-
-AreaRef
-BoxedLayoutArea::replace(const Substitution& subst) const
-{
-  assert(i < content.size());
-  if (content[i].area == newChild)
-    return this;
-  
-}
-#endif
 
 scaled
 BoxedLayoutArea::leftEdge() const
