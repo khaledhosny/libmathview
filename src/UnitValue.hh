@@ -23,9 +23,7 @@
 #ifndef UnitValue_hh
 #define UnitValue_hh
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "scaled.hh"
 #include "keyword.hh"

@@ -267,6 +267,15 @@ export_to_ps(GtkWidget* widget, gpointer data)
 }
 
 static void
+selection_changed(GtkMathView* math_view, mDOMNodeRef node)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(node != NULL);
+  gtk_math_view_set_selection(math_view, node);
+}
+
+static void
 create_widget_set(gboolean t1_font_manager)
 {
   GtkWidget* main_vbox;
@@ -283,6 +292,10 @@ create_widget_set(gboolean t1_font_manager)
 
   main_area = gtk_math_view_new(NULL, NULL, t1_font_manager);
   gtk_widget_show(main_area);
+
+  gtk_signal_connect_object (GTK_OBJECT (main_area),
+			     "selection_changed", GTK_SIGNAL_FUNC (selection_changed),
+			     (gpointer) main_area);
 
   scrolled_area = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),

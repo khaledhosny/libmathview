@@ -20,10 +20,7 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
 #include <assert.h>
 #include <stddef.h>
 #include <ctype.h>
@@ -43,10 +40,17 @@ PS_DrawingArea::PS_DrawingArea(const GraphicsContextValues& values,
   lastFont = NULL;
 
   output = f;
+  colors = true;
 }
 
 PS_DrawingArea::~PS_DrawingArea()
 {
+}
+
+void
+PS_DrawingArea::DisableColors()
+{
+  colors = false;
 }
 
 void
@@ -177,7 +181,7 @@ PS_DrawingArea::SetGraphicsContext(const GraphicsContext* gc) const
   assert(gc != NULL);
 
   if (gc != lastGC) {
-    if (lastGC == NULL || gc->GetForeground() != lastGC->GetForeground()) {
+    if (colors && (lastGC == NULL || gc->GetForeground() != lastGC->GetForeground())) {
       RGBValue color = gc->GetForeground();
       fprintf(output, "%.2f %.2f %.2f setrgbcolor\n",
 	      GETRED(color) / 255.0, GETGREEN(color) / 255.0, GETBLUE(color) / 255.0);

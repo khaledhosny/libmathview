@@ -45,6 +45,8 @@ public:
   virtual void Clear(const GraphicsContext*, scaled, scaled, scaled, scaled) const;
   virtual void Update(scaled, scaled, scaled, scaled) const;
 
+  void DisableColors();
+
   void DumpGrid(void) const;
   void DumpPreamble(void) const;
   void DumpEpilogue(void) const;
@@ -58,6 +60,8 @@ protected:
   mutable const class T1_Font* lastFont;
 
   FILE* output;
+
+  bool colors;
 };
 
 #define TO_PS_DRAWINGAREA(area) (dynamic_cast<PS_DrawingArea*>(area))

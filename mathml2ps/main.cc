@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#define MATHML2PS_VERSION "0.0.0"
+#define MATHML2PS_VERSION "0.0.2"
 
 #include <assert.h>
 #include <getopt.h>
@@ -49,7 +49,8 @@ enum CommandLineOptionId {
   OPTION_SIZE,
   OPTION_UNIT,
   OPTION_MARGINS,
-  OPTION_FONT_SIZE
+  OPTION_FONT_SIZE,
+  OPTION_DISABLE_COLORS
 };
 
 static char appName[64];
@@ -59,11 +60,13 @@ static double height = 29.7;
 static UnitId unitId = UNIT_CM;
 static double xMargin = 2;
 static double yMargin = 2;
-static unsigned fontSize = 10;
+static double fontSize = 10;
+static bool   colors = true;
 
 extern void *parseMathMLFile(char *);
 
-static void printVersion()
+static void
+printVersion()
 {
   printf("%s - written by Luca Padovani (C) 2000.\n", appName);
 #ifdef DEBUG
@@ -72,16 +75,18 @@ static void printVersion()
   exit(0);
 }
 
-static void printHelp()
+static void
+printHelp()
 {
   static char* helpMsg = "\
 Usage: mathml2ps [options] file ...\n\n\
   -v, --version                  Output version information\n\
   -h, --help                     This small usage guide\n\
-  -g, --size=<width>x<height>    Page size\n\
   -u, --unit=[in,mm,cm,pt,pc,px] Unit for dimensions (default='px')\n\
+  -g, --size=<width>x<height>    Page size\n\
   -m, --margins=<left>x<top>     Left x Top margins\n\
   -f, --font-size=<n>            Default font size (in points, default=10)\n\
+  --disable-colors               Disable colors\n\
   --verbose[=0-3]                Display messages\n\
 ";
 
@@ -93,7 +98,8 @@ in order to use this tool!\n\n");
   exit(0);
 }
 
-bool parseSize(const char* s)
+bool
+parseSize(const char* s)
 {
   assert(s != NULL);
 
@@ -113,7 +119,8 @@ bool parseSize(const char* s)
   return true;
 }
 
-bool parseUnit(const char* s)
+bool
+parseUnit(const char* s)
 {
   assert(s != NULL);
 
@@ -134,13 +141,15 @@ bool parseUnit(const char* s)
   for (i = 0; unit[i].name != NULL && strcmp(unit[i].name, s); i++) ;
 
   if (unit[i].name == NULL) return false;
-  
+
+  MathEngine::logger(LOG_INFO, "Setting units to `%s'\n", unit[i].name);
   unitId = unit[i].id;
 
   return true;
 }
 
-bool parseMargins(const char* s)
+bool
+parseMargins(const char* s)
 {
   assert(s != NULL);
 
@@ -160,7 +169,8 @@ bool parseMargins(const char* s)
   return true;
 }
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
   sprintf(appName, "MathML to PostScript v%s", MATHML2PS_VERSION);
 
@@ -175,11 +185,12 @@ int main(int argc, char *argv[])
       { "unit",          required_argument, NULL, OPTION_UNIT },
       { "margins",       required_argument, NULL, OPTION_MARGINS },
       { "font-size",     required_argument, NULL, OPTION_FONT_SIZE },
+      { "disable-colors",no_argument,       NULL, OPTION_DISABLE_COLORS },
 
       { NULL,            no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vhgumf", long_options, &option_index);
+    int c = getopt_long(argc, argv, "vhg:u:m:f:", long_options, &option_index);
 
     if (c == -1) break;
 
@@ -220,7 +231,11 @@ int main(int argc, char *argv[])
     case OPTION_FONT_SIZE:
     case 'f':
       if (optarg == NULL) printHelp();
-      fontSize = atoi(optarg);
+      fontSize = atof(optarg);
+      break;
+
+    case OPTION_DISABLE_COLORS:
+      colors = false;
       break;
 
     case '?':
@@ -231,6 +246,10 @@ int main(int argc, char *argv[])
       break;
     }
   }
+
+  MathEngine::logger(LOG_INFO, "Font size : %f", fontSize);
+  MathEngine::logger(LOG_INFO, "Paper size: %fx%f", width, height);
+  MathEngine::logger(LOG_INFO, "Margins   : %fx%f", xMargin, yMargin);
 
 #ifdef HAVE_LIBT1
   if (optind < argc) {
@@ -287,6 +306,7 @@ int main(int argc, char *argv[])
 
       PS_DrawingArea area(values, x0, y0, stdout);
       area.SetSize(w, h);
+      if (!colors) area.DisableColors();
       fm.DumpFontDictionary(stdout);
 
       area.DumpPreamble();
