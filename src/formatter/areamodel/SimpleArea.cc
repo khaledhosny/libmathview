@@ -98,6 +98,9 @@ SimpleArea::strength(int& w, int& h, int& d) const
 }
 
 void
-SimpleArea::render(RenderingContext&, const scaled&, const scaled&) const
+SimpleArea::render(class RenderingContext&, const scaled&, const scaled&) const
 { }
 
+AreaRef
+SimpleArea::find(class SearchingContext&, const scaled&, const scaled&) const
+{ return 0; }

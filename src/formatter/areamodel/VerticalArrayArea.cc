@@ -91,10 +91,9 @@ VerticalArrayArea::box() const
   return bbox;
 }
 
-void
-VerticalArrayArea::render(class RenderingContext& context, const scaled& x, const scaled& y0) const
+scaled
+VerticalArrayArea::prepareChildBoxes(std::vector<BoundingBox>& box) const
 {
-  std::vector<BoundingBox> box;
   box.reserve(content.size());
   scaled depth = 0;
   for (std::vector<AreaRef>::const_iterator p = content.begin();
@@ -109,6 +108,15 @@ VerticalArrayArea::render(class RenderingContext& context, const scaled& x, cons
 	depth += box.back().depth;
     }
 
+  return depth;
+}
+
+void
+VerticalArrayArea::render(class RenderingContext& context, const scaled& x, const scaled& y0) const
+{
+  std::vector<BoundingBox> box;
+  scaled depth = prepareChildBoxes(box);
+
   scaled y = y0 - depth;
   for (std::vector<AreaRef>::const_iterator p = content.begin();
        p != content.end();
@@ -119,6 +127,27 @@ VerticalArrayArea::render(class RenderingContext& context, const scaled& x, cons
       (*p)->render(context, x, y);
       y += box[i].height;
     }  
+}
+
+AreaRef
+VerticalArrayArea::find(class SearchingContext& context, const scaled& x, const scaled& y0) const
+{
+  std::vector<BoundingBox> box;
+  scaled depth = prepareChildBoxes(box);
+
+  scaled y = y0 - depth;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      const int i = p - content.begin();
+      y += box[i].depth;
+      if (AreaRef area = (*p)->find(context, x, y))
+	return area;
+      y += box[i].height;
+    }  
+
+  return 0;
 }
 
 void

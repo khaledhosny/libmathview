@@ -51,6 +51,7 @@ pkginclude_HEADERS = \
   BinContainerArea.hh \
   IgnoreArea.hh	\
   RenderingContext.hh \
+  SearchingContext.hh \
   HideArea.hh \
   LinearContainerArea.hh \
   ReplacementContext.hh \

@@ -34,12 +34,11 @@ protected:
 public:
   virtual BoundingBox box(void) const;
   virtual void        render(class RenderingContext& context, const scaled& x, const scaled& y) const;
-
-  virtual scaled leftEdge(void) const;
-  virtual scaled rightEdge(void) const;
-
-  virtual AreaRef replace(const ReplacementContext&) const;
-  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
+  virtual AreaRef     find(class SearchingContext&, const scaled&, const scaled&) const;
+  virtual AreaRef     fit(const scaled&, const scaled&, const scaled&) const;
+  virtual AreaRef     replace(const ReplacementContext&) const;
+  virtual scaled      leftEdge(void) const;
+  virtual scaled      rightEdge(void) const;
 
   AreaRef getChild(void) const { return child; }
 

@@ -38,7 +38,8 @@ public:
 
   virtual bool      idOf(const AreaRef& area, AreaIdFactory& factory) const;
   virtual AreaRef   node(AreaId::const_iterator, AreaId::const_iterator) const;
-  virtual void      render(RenderingContext&, const scaled&, const scaled&) const;
+  virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
+  virtual AreaRef   find(class SearchingContext&, const scaled&, const scaled&) const;
   virtual scaled    origin(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual scaled    leftSide(AreaId::const_iterator, AreaId::const_iterator) const;
   virtual scaled    rightSide(AreaId::const_iterator, AreaId::const_iterator) const;

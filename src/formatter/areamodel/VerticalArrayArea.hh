@@ -40,11 +40,15 @@ public:
 
   virtual BoundingBox box(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+  virtual AreaRef find(class SearchingContext&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual DOM::Element dump(const DOM::Document&) const;
 
   unsigned getRefArea(void) const { return refArea; }
+
+protected:
+  scaled prepareChildBoxes(std::vector<BoundingBox>&) const;
 
 private:
   //static void flattenAux(std::vector<AreaRef>&, const std::vector<AreaRef>&, unsigned);

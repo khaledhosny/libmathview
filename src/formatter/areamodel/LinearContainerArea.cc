@@ -33,6 +33,18 @@ LinearContainerArea::render(class RenderingContext& context, const scaled& x, co
     (*p)->render(context, x, y);
 }
 
+AreaRef
+LinearContainerArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
+{
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    if (AreaRef area = (*p)->find(context, x, y))
+      return area;
+
+  return 0;
+}
+
 bool
 LinearContainerArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
 {

@@ -92,6 +92,23 @@ HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, c
     }
 }
 
+AreaRef
+HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, const scaled& y) const
+{
+  scaled x = x0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      if (AreaRef area = (*p)->find(context, x, y))
+	return area;
+
+      x += (*p)->box().horizontalExtent();
+    }
+
+  return 0;
+}
+
 scaled
 HorizontalArrayArea::leftEdge() const
 {

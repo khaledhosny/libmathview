@@ -51,6 +51,18 @@ BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const 
     p->area->render(context, x + p->dx, p->dy);
 }
 
+AreaRef
+BoxedLayoutArea::find(class SearchingContext& context, const scaled& x, const scaled& y) const
+{
+  for (std::vector<XYArea>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    if (AreaRef area = p->area->find(context, x + p->dx, p->dy))
+      return area;
+
+  return 0;
+}
+
 bool
 BoxedLayoutArea::idOf(const AreaRef& area, AreaIdFactory& factory) const
 {

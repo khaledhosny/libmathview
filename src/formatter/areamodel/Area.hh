@@ -40,6 +40,7 @@ protected:
 public:
   virtual BoundingBox  box(void) const = 0;
   virtual void         render(class RenderingContext&, const scaled& x, const scaled& y) const = 0;
+  virtual AreaRef      find(class SearchingContext&, const scaled&, const scaled&) const = 0;
   virtual AreaRef      fit(const scaled&, const scaled&, const scaled&) const = 0;
   virtual AreaRef      replace(const class ReplacementContext&) const = 0;
   virtual scaled       leftEdge(void) const = 0;
