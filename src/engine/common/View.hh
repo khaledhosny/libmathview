@@ -34,9 +34,9 @@ protected:
   virtual ~View();
 
 public:
-  static SmartPtr<View> create(const SmartPtr<class Builder>&,
-			       const SmartPtr<class MathGraphicDevice>&,
-			       const SmartPtr<class BoxGraphicDevice>&);
+  static SmartPtr<View> create(const SmartPtr<class Builder>&);
+  void initialize(const SmartPtr<class MathGraphicDevice>&,
+		  const SmartPtr<class BoxGraphicDevice>&);
 
   bool frozen(void) const { return freezeCounter > 0; }
   bool freeze(void);

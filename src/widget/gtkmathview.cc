@@ -176,11 +176,10 @@ static guint element_over_signal = 0;
 static SmartPtr<const Gtk_WrapperArea>
 findGtkWrapperArea(const SmartPtr<View>& view, const DOM::Element& node)
 {
-#if 0
-  if (SmartPtr<Element> elem = view->findElement(node))
-    if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
-      return area;
-#endif
+  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(view->getBuilder()))
+    if (SmartPtr<Element> elem = builder->findElement(node))
+      if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(elem->getArea()))
+	return area;
   return 0;
 }
 
@@ -439,17 +438,9 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
-#if 0
-  if (new_counter++ == 0)
-    viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
-					    MathMLFormattingEngineFactory::create(),
-					    Gtk_MathGraphicDevice::create(math_view->area));
-  assert(viewContext);
-#endif
-
-  SmartPtr<View> view = View::create(gmetadom_Builder::create(),
-				     Gtk_MathGraphicDevice::create(math_view->area),
-				     Gtk_BoxGraphicDevice::create(math_view->area));
+  SmartPtr<View> view = View::create(gmetadom_Builder::create());
+  view->initialize(Gtk_MathGraphicDevice::create(math_view->area),
+		   Gtk_BoxGraphicDevice::create(math_view->area));
   view->ref();
   math_view->view = view;
 
@@ -1179,22 +1170,22 @@ gtk_math_view_get_height(GtkMathView* math_view)
 }
 
 extern "C" gboolean
-gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GdomeElement** elem)
+gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y, GdomeElement** result)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
-#if 0
-  DOM::Element el;
-  if (math_view->view->getDOMElementAt(Gtk_RenderingContext::fromGtkX(x),
-				       Gtk_RenderingContext::fromGtkY(y), el))
-    {
-      if (elem) *elem = gdome_cast_el(el.gdome_object());
-      return TRUE;
-    }
-  else
-#endif
-    return FALSE;
+  SmartPtr<Element> elem;
+  if (math_view->view->getElementAt(Gtk_RenderingContext::fromGtkX(x),
+				    Gtk_RenderingContext::fromGtkY(y), elem))
+    if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
+      if (DOM::Element el = builder->findSelfOrAncestorModelNode(elem))
+	{
+	  if (result) *result = gdome_cast_el(el.gdome_object());
+	  return TRUE;
+	}
+
+  return FALSE;
 }
 
 extern "C" gboolean
@@ -1205,50 +1196,50 @@ gtk_math_view_get_element_location(GtkMathView* math_view, GdomeElement* elem,
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  scaled sx;
-  scaled sy;
-  BoundingBox box;
-#if 0
-  if (math_view->view->getDOMElementExtents(DOM::Element(elem), sx, sy, box))
-    {
-      if (x) *x = Gtk_RenderingContext::toGtkX(sx);
-      if (y) *y = Gtk_RenderingContext::toGtkY(sy);
-      if (rect)
-	{
-	  Rectangle srect(sx, sy, box);
-	  rect->x = Gtk_RenderingContext::toGtkX(srect.x);
-	  rect->y = Gtk_RenderingContext::toGtkY(srect.y);
-	  rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
-	  rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
-	}
-      return TRUE;
-    }
-  else
-#endif
-    return FALSE;
+  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
+    if (SmartPtr<Element> e = builder->findElement(DOM::Element(elem)))
+      {
+	scaled sx;
+	scaled sy;
+	BoundingBox box;
+	if (math_view->view->getElementExtents(e, sx, sy, box))
+	  {
+	    if (x) *x = Gtk_RenderingContext::toGtkX(sx);
+	    if (y) *y = Gtk_RenderingContext::toGtkY(sy);
+	    if (rect)
+	      {
+		Rectangle srect(sx, sy, box);
+		rect->x = Gtk_RenderingContext::toGtkX(srect.x);
+		rect->y = Gtk_RenderingContext::toGtkY(srect.y);
+		rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
+		rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
+	      }
+	    return TRUE;
+	  }
+      }
+  return FALSE;
 }
 
 extern "C" gboolean
 gtk_math_view_get_char_at(GtkMathView* math_view, gint x, gint y,
-			  GdomeElement** elem, gint* index)
+			  GdomeElement** result, gint* index)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
-  
-  DOM::Element el;
+
+  SmartPtr<Element> elem;
   int idx;
-#if 0
   if (math_view->view->getCharAt(Gtk_RenderingContext::fromGtkX(x),
 				 Gtk_RenderingContext::fromGtkY(y),
-				 el, idx))
-    {
-      if (elem) *elem = gdome_cast_el(el.gdome_object());
-      if (index) *index = idx;
-      return TRUE;
-    }
-  else
-#endif
-    return FALSE;
+				 elem, idx))
+    if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
+      if (DOM::Element el = builder->findSelfOrAncestorModelNode(elem))
+	{
+	  if (result) *result = gdome_cast_el(el.gdome_object());
+	  if (index) *index = idx;
+	  return TRUE;
+	}
+  return FALSE;
 }
 
 extern "C" gboolean
@@ -1260,27 +1251,28 @@ gtk_math_view_get_char_location(GtkMathView* math_view, GdomeElement* elem,
   g_return_val_if_fail(elem != NULL, FALSE);
   g_return_val_if_fail(index >= 0, FALSE);
 
-  scaled sx;
-  scaled sy;
-  BoundingBox box;
-#if 0
-  if (math_view->view->getCharExtents(DOM::Element(elem), index, sx, sy, box))
-    {
-      if (x) *x = Gtk_RenderingContext::toGtkX(sx);
-      if (y) *y = Gtk_RenderingContext::toGtkY(sy);
-      if (rect)
-	{
-	  Rectangle srect(sx, sy, box);
-	  rect->x = Gtk_RenderingContext::toGtkX(srect.x);
-	  rect->y = Gtk_RenderingContext::toGtkY(srect.y);
-	  rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
-	  rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
-	}
-      return TRUE;
-    }
-  else
-#endif
-    return FALSE;
+  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
+    if (SmartPtr<Element> e = builder->findElement(DOM::Element(elem)))
+      {
+	scaled sx;
+	scaled sy;
+	BoundingBox box;
+	if (math_view->view->getCharExtents(e, index, sx, sy, box))
+	  {
+	    if (x) *x = Gtk_RenderingContext::toGtkX(sx);
+	    if (y) *y = Gtk_RenderingContext::toGtkY(sy);
+	    if (rect)
+	      {
+		Rectangle srect(sx, sy, box);
+		rect->x = Gtk_RenderingContext::toGtkX(srect.x);
+		rect->y = Gtk_RenderingContext::toGtkY(srect.y);
+		rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
+		rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
+	      }
+	    return TRUE;
+	  }
+      }
+  return FALSE;
 }
 
 extern "C" void

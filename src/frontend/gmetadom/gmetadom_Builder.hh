@@ -41,11 +41,11 @@ public:
   DOM::Element getRootModelElement(void) const { return root; }
 
   SmartPtr<Element> findElement(const DOM::Element& p) const { return linker.assoc(p); }
+  DOM::Node findSelfOrAncestorModelNode(const SmartPtr<Element>&) const;
+  SmartPtr<Element> findSelfOrAncestorElement(const DOM::Node&) const;
 
 protected:
   gmetadom_Model::Linker& getLinker(void) const { return linker; }
-  DOM::Node findSelfOrAncestorModelNode(const SmartPtr<Element>&) const;
-  SmartPtr<Element> findSelfOrAncestorElement(const DOM::Node&) const;
   void notifySubtreeModified(const DOM::Node&) const;
   void notifyAttributeChanged(const DOM::Node&, const String&) const;
 

@@ -28,14 +28,10 @@ ARCH IMPROVEMENTS
 + implement auxiliary methods for searching into the area model
 + The BoxML/MathML embedding mechanism is still ad-hoc and works
   only for MathML inside BoxML
-+ remove the linker from Element. What is the most sensible
-  place to put the linker? Perhaps the linker and the reader should
-  be merged?
 + View.cc depends on Gtk_WrapperArea, make a WrapperArea which is
   independent of the platform and make Gtk_WrapperArea depend
   on it. Then it may be feasible to generalize searching functions
   over areas by implementing a visitor
-+ implement reader interface over DOM, libxml2 tree, XmlReader
 + implement caching mechanism for pango shaper
 + it seems like the choice of having that the first child of a
   vertical area is the bottommost is a bit weird. Think of the cursor:
@@ -60,13 +56,12 @@ MISSING
   collecting things and handle groups inside paragraphs. What
   about groups inside paragraphs? What about colors inside paragraphs?
 + implement cursor
-+ add getId() method to reader interface
 - implement overstrike and underline for box text ?
 - implement available width propagation for boxes?
 - implement AreaCanvas for drawing lines
 - implement table formatting
-- implement PS area model
-- implement T1lib area model
+- implement PS area model (using pslib?)
+- implement T1lib area model (using pslib instead?)
 - implement MGD for TeX fonts
 - implement shaper for TeX fonts (this should be usable with
   both the T1lib and PS area models)

@@ -43,18 +43,22 @@ View::~View()
 { }
 
 SmartPtr<View>
-View::create(const SmartPtr<Builder>& builder,
-	     const SmartPtr<MathGraphicDevice>& mgd,
-	     const SmartPtr<BoxGraphicDevice>& bgd)
+View::create(const SmartPtr<Builder>& builder)
 {
   SmartPtr<View> view = new View(builder);
+  return view;
+}
+
+void
+View::initialize(const SmartPtr<MathGraphicDevice>& mgd,
+		 const SmartPtr<BoxGraphicDevice>& bgd)
+{
   // the following fields cannot be initialized within the constructor
   // because there the reference counter is still 0, so it is
-  // harmful to pass this as pointer
-  view->mathmlContext = MathMLNamespaceContext::create(view, mgd);
-  view->boxmlContext = BoxMLNamespaceContext::create(view, bgd);
-  view->getBuilder()->setNamespaceContexts(view->mathmlContext, view->boxmlContext);
-  return view;
+  // harmful to pass `this' as pointer
+  mathmlContext = MathMLNamespaceContext::create(this, mgd);
+  boxmlContext = BoxMLNamespaceContext::create(this, bgd);
+  getBuilder()->setNamespaceContexts(mathmlContext, boxmlContext);
 }
 
 bool
