@@ -6,7 +6,7 @@ config.log
 config.status
 configure
 configure.scan
-t1lib.log
+*.log
 libtool
 stamp-h
 stamp-h.in

@@ -3,6 +3,7 @@
 *.dvi
 *.fn
 *.info
+*.html
 *.ky
 *.log
 *.pg
