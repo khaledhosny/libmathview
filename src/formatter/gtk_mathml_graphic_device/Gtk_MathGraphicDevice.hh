@@ -30,12 +30,14 @@
 class Gtk_MathGraphicDevice : public MathGraphicDevice
 {
 protected:
-  Gtk_MathGraphicDevice(const SmartPtr<class Gtk_AreaFactory>&, GtkWidget*);
+  Gtk_MathGraphicDevice(GtkWidget*);
   virtual ~Gtk_MathGraphicDevice();
 
 public:
-  SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<Gtk_AreaFactory>& factory, GtkWidget* widget)
-  { return new Gtk_MathGraphicDevice(factory, widget); }
+  static SmartPtr<Gtk_MathGraphicDevice> create(GtkWidget* widget)
+  { return new Gtk_MathGraphicDevice(widget); }
+
+  virtual SmartPtr<class AreaFactory> getFactory(void) const;
 
   virtual AreaRef string(const MathFormattingContext& context, const String& str) const;
   virtual AreaRef glyph(const MathFormattingContext& context,
@@ -88,7 +90,7 @@ protected:
 				    scaled& v, scaled& u) const;
 
 private:
-  GdkDrawable* drawable;
+  SmartPtr<class Gtk_AreaFactory> factory;
 };
 
 #endif // __Gtk_MathGraphicDevice_hh__

@@ -24,7 +24,6 @@
 #define __MathGraphicDevice_hh__
 
 #include "Area.hh"
-#include "AreaFactory.hh"
 #include "Length.hh"
 #include "MathFormattingContext.hh"
 #include "Object.hh"
@@ -35,11 +34,11 @@
 class MathGraphicDevice : public Object
 {
 protected:
-  MathGraphicDevice(const SmartPtr<AreaFactory>&);
+  MathGraphicDevice(void);
   virtual ~MathGraphicDevice();
 
 public:
-  SmartPtr<AreaFactory> getFactory(void) const { return factory; }
+  virtual SmartPtr<class AreaFactory> getFactory(void) const = 0;
   SmartPtr<ShaperManager> getShaperManager(void) const { return shaperManager; }
 
   // Length evaluation, fundamental properties
@@ -89,13 +88,12 @@ public:
 			  const AreaRef& base,
 			  const String& notation) const = 0;
 
-  // factory methods
+  // extra methods
 
   virtual AreaRef wrapper(const MathFormattingContext& context, const AreaRef& area) const;
   virtual AreaRef dummy(const MathFormattingContext& context) const;
 
-protected:
-  SmartPtr<AreaFactory> factory;
+private:
   SmartPtr<ShaperManager> shaperManager;
 };
 

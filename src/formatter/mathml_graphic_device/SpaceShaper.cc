@@ -116,7 +116,7 @@ SpaceShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) con
 void
 SpaceShaper::pushSpace(const MathFormattingContext& ctxt, ShapingResult& result, int space)
 {
-  result.pushArea(ctxt.getDevice().getFactory()->horizontalSpace(ctxt.getSize() * space / 18));
+  result.pushArea(ctxt.getDevice()->getFactory()->horizontalSpace(ctxt.getSize() * space / 18));
 }
 
 unsigned

@@ -27,8 +27,8 @@
 #include "MathGraphicDevice.hh"
 #include "SpaceShaper.hh"
 
-MathGraphicDevice::MathGraphicDevice(const SmartPtr<AreaFactory>& f)
-  : factory(f), shaperManager(ShaperManager::create())
+MathGraphicDevice::MathGraphicDevice()
+  : shaperManager(ShaperManager::create())
 {
   shaperManager->registerShaper(SpaceShaper::create());
 }
@@ -87,7 +87,7 @@ MathGraphicDevice::evaluate(const MathFormattingContext& context,
 	}
       else
 	{
-	  assert(0);
+	  assert(false);
 	  return defaultValue;
 	}
     }

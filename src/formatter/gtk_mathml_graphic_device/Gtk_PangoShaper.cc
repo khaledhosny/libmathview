@@ -75,9 +75,9 @@ Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
   pango_attr_list_insert(attrList, sizeAttr);
   pango_layout_set_attributes(layout, attrList);
 
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice().getFactory());
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
-  result.pushArea(factory->createPangoLayoutArea(layout));
+  result.pushArea(factory->pangoLayout(layout));
 
   //g_free(buffer);
   // g_free(sizeAttr); // ????

@@ -29,17 +29,24 @@
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
 
-Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<Gtk_AreaFactory>& f, GtkWidget* widget)
-  : MathGraphicDevice(f)
+Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
 {
+  factory = Gtk_AreaFactory::create();
+
   SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
   pangoShaper->setPangoContext(gtk_widget_create_pango_context(widget));
-  shaperManager->registerShaper(pangoShaper);
-  shaperManager->registerShaper(Gtk_AdobeShaper::create());
+  getShaperManager()->registerShaper(pangoShaper);
+  getShaperManager()->registerShaper(Gtk_AdobeShaper::create());
 }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
 {
+}
+
+SmartPtr<AreaFactory>
+Gtk_MathGraphicDevice::getFactory() const
+{
+  return factory;
 }
 
 AreaRef
@@ -53,7 +60,7 @@ Gtk_MathGraphicDevice::string(const MathFormattingContext& context,
       // to match height and depth
     }
   else
-    return shaperManager->shape(context, toUCS4String(str));
+    return getShaperManager()->shape(context, toUCS4String(str));
 }
 
 AreaRef

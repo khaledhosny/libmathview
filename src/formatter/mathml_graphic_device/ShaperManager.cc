@@ -58,7 +58,7 @@ ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result
 	}
     }
 
-  return result.area(ctxt.getDevice().getFactory());
+  return result.area(ctxt.getDevice()->getFactory());
 }
 
 AreaRef

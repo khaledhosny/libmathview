@@ -35,7 +35,7 @@
 class MathFormattingContext
 {
 public:
-  MathFormattingContext(const class MathGraphicDevice& d) : device(d) { };
+  MathFormattingContext(const SmartPtr<class MathGraphicDevice>& d);
 
   enum PropertyId {
     SIZE,
@@ -73,7 +73,7 @@ public:
     LAST_NAMED_PROPERTY_ENTRY
   };
   
-  const MathGraphicDevice& getDevice(void) const { return device; }
+  SmartPtr<class MathGraphicDevice> getDevice(void) const;
 
   scaled getSize(void) const { return get<scaled>(SIZE); }
   void setSize(const scaled& s) { set<scaled>(SIZE, s); }
@@ -152,7 +152,7 @@ public:
   }
 
 private:
-  const class MathGraphicDevice& device;
+  SmartPtr<class MathGraphicDevice> device;
   ScopedHashMap<int, SmartPtr<Value> > fmap;
   ScopedHashMap<const char*, SmartPtr<Value> > map;
 };
