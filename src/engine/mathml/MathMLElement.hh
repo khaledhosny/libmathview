@@ -42,12 +42,7 @@ public:
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
   SmartPtr<class MathMLOperatorElement> getCoreOperatorTop(void);
 
-  virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
-  SmartPtr<class MathMLElementFactory> getFactory(void) const;
-
-private:
-  WeakPtr<class MathMLNamespaceContext> context;
 };
 
 #endif // __MathMLElement_hh__

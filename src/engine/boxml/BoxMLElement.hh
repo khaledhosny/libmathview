@@ -33,15 +33,8 @@ protected:
 
 public:
   virtual scaled getStep(void) const;
-  virtual SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
 
   virtual AreaRef format(class BoxFormattingContext&) = 0;
-
-protected:
-  SmartPtr<class BoxMLElementFactory> getFactory(void) const;
-
-private:
-  WeakPtr<class BoxMLNamespaceContext> context;
 };
 
 #endif // __BoxMLElement_hh__

@@ -26,8 +26,7 @@
 #include "BoxMLElement.hh"
 #include "BoxMLNamespaceContext.hh"
 
-BoxMLElement::BoxMLElement(const SmartPtr<BoxMLNamespaceContext>& c)
-  : context(c)
+BoxMLElement::BoxMLElement(const SmartPtr<BoxMLNamespaceContext>& context) : Element(context)
 { }
 
 BoxMLElement::~BoxMLElement()
@@ -36,8 +35,4 @@ BoxMLElement::~BoxMLElement()
 scaled
 BoxMLElement::getStep() const
 { return scaled::zero(); }
-
-SmartPtr<NamespaceContext>
-BoxMLElement::getNamespaceContext() const
-{ return static_cast<NamespaceContext*>(context); }
 

@@ -31,10 +31,8 @@
 #include "ValueConversion.hh"
 #include "Variant.hh"
 
-MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& c) : context(c)
-{
-  assert(context);
-}
+MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& context) : Element(context)
+{ }
 
 MathMLElement::~MathMLElement()
 { }
@@ -75,11 +73,7 @@ MathMLElement::getCoreOperatorTop()
   return 0;
 }
 
-SmartPtr<NamespaceContext>
-MathMLElement::getNamespaceContext() const
-{ return static_cast<MathMLNamespaceContext*>(context); }
-
 SmartPtr<MathMLNamespaceContext>
 MathMLElement::getMathMLNamespaceContext() const
-{ return static_cast<MathMLNamespaceContext*>(context); }
+{ return smart_cast<MathMLNamespaceContext>(getNamespaceContext()); }
 
