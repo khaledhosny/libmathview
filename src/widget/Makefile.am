@@ -1,17 +1,18 @@
 
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_LIBS = @GTK_LIBS@
+lib_LTLIBRARIES =
+if COND_CUSTOM_READER
+if COND_LIBXML2_READER
+lib_LTLIBRARIES += libgtkmathview_custom_reader.la
+endif
+endif
 
-DOM_CFLAGS = @DOM_CFLAGS@
-DOM_LIBS = @DOM_LIBS@
+if COND_LIBXML2
+lib_LTLIBRARIES += libgtkmathview_libxml2.la
+endif
 
-T1_CFLAGS = @T1_CFLAGS@
-T1_LIBS = @T1_LIBS@
-
-lib_LTLIBRARIES = \
-  libgtkmathview_custom_reader.la \
-  libgtkmathview_libxml2.la \
-  libgtkmathview_gmetadom.la
+if COND_GMETADOM
+lib_LTLIBRARIES += libgtkmathview_gmetadom.la
+endif
 
 libgtkmathview_custom_reader_la_LIBADD = \
   -lstdc++ \

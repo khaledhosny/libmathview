@@ -44,21 +44,25 @@
 #include "libxml2_reader_Setup.hh"
 #include "custom_reader_Model.hh"
 #include "custom_reader_Builder.hh"
+typedef custom_reader_Builder GtkMathView_Builder;
 typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2_READER
 #include "libxml2_reader_Setup.hh"
 #include "libxml2_reader_Model.hh"
 #include "libxml2_reader_Builder.hh"
+typedef libxml2_reader_Builder GtkMathView_Builder;
 typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2
 #include "libxml2_Setup.hh"
 #include "libxml2_Model.hh"
 #include "libxml2_Builder.hh"
+typedef libxml2_Builder GtkMathView_Builder;
 typedef libxml2_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_GMETADOM
 #include "gmetadom_Setup.hh"
 #include "gmetadom_Model.hh"
 #include "gmetadom_Builder.hh"
+typedef gmetadom_Builder GtkMathView_Builder;
 typedef gmetadom_Setup GtkMathView_Setup;
 #endif
 
@@ -117,7 +121,10 @@ struct _GtkMathView {
   guint32        button_press_time;
 
   GtkMathViewElementId current_elem;
+
   GtkMathViewElementId cursor_elem;
+  gint           cursor_index;
+  gboolean       cursor_visible;
 
   View*          view;
   Gtk_RenderingContext* renderingContext;
@@ -220,21 +227,53 @@ findGtkWrapperArea(const SmartPtr<View>& view, GtkMathViewElementId node)
 /* widget implementation */
 
 static void
+update_widget(GtkMathView* math_view)
+{
+  GtkWidget* widget = GTK_WIDGET(math_view->area);
+  const gint width = widget->allocation.width;
+  const gint height = widget->allocation.height;
+
+  gdk_draw_pixmap(widget->window,
+		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+		  math_view->pixmap,
+		  0, 0, 0, 0, width, height);
+
+#if 1
+  if (math_view->cursor_elem)
+    {
+      gint x;
+      gint y;
+      GdkRectangle rect;
+      if (GTKMATHVIEW_METHOD_NAME(get_element_location)(math_view, math_view->cursor_elem,
+							&x, &y, &rect))
+	{
+	  gtk_paint_focus(widget->style,
+			  widget->window,
+			  GTK_STATE_NORMAL,
+			  NULL,
+			  widget,
+			  "?",
+			  x + MARGIN, y + MARGIN, rect.width, rect.height);
+	}
+    }
+#endif
+
+}
+
+static void
 paint_widget(GtkMathView* math_view)
 {
-  GtkWidget* widget;
-
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->area != NULL);
 
   if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
-  widget = math_view->area;
+  GtkWidget* widget = GTK_WIDGET(math_view->area);
 
   setup_adjustments(math_view);
 
-  gint width = widget->allocation.width;
-  gint height = widget->allocation.height;
+  const gint width = widget->allocation.width;
+  const gint height = widget->allocation.height;
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
   //Rectangle rect(px2sp(math_view->top_x - MARGIN), px2sp(math_view->top_y - MARGIN), px2sp(width), px2sp(height));
@@ -243,27 +282,7 @@ paint_widget(GtkMathView* math_view)
 
   math_view->view->render(*math_view->renderingContext);
 
-#if 0
-  if (math_view->cursor_elem)
-    {
-      gint x;
-      gint y;
-      GdkRectangle rect;
-      gboolean res = GTKMATHVIEW_METHOD_NAME(get_element_location)(math_view, math_view->cursor_elem,
-							&x, &y, &rect);
-      if (res)
-	{
-	  printf("stampo il cursore che si trova a %d %d %d %d %d %d\n", x, y, rect.x, rect.y, rect.width, rect.y);
-	  gdk_draw_rectangle(math_view->pixmap, widget->style->black_gc, FALSE, x + MARGIN, y + MARGIN, rect.width, rect.height);
-	}
-    }
-#endif
-
-  gdk_draw_pixmap(widget->window,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		  math_view->pixmap,
-		  0, 0, 0, 0, width, height);
-
+  update_widget(math_view);
 }
 
 static void
@@ -461,7 +480,9 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->select_state    = SELECT_STATE_NO;
   math_view->button_pressed  = FALSE;
   math_view->current_elem    = NULL;
-  math_view->cursor_elem    = NULL;
+  math_view->cursor_elem     = NULL;
+  math_view->cursor_index    = 0;
+  math_view->cursor_visible  = FALSE;
   math_view->hadjustment = NULL;
   math_view->vadjustment = NULL;
 
@@ -537,8 +558,6 @@ GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*)
   return GTK_WIDGET(math_view);
 }
 
-#include <iostream>
-
 static void
 gtk_math_view_destroy(GtkObject* object)
 {
@@ -550,7 +569,6 @@ gtk_math_view_destroy(GtkObject* object)
   math_view = GTK_MATH_VIEW(object);
   g_assert(math_view != NULL);
 
-  std::cerr << " DENTRO widget_destroy, view? " << math_view->view << std::endl;
   if (math_view->view)
     {
       math_view->view->resetRootElement();
@@ -831,19 +849,22 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 	  gdome_el_unref(math_view->current_elem, &exc);
 	  g_assert(exc == 0);
 	}
+#endif // GTKMATHVIEW_USES_GMETADOM
 
-      if (elem != NULL)
+      math_view->current_elem = elem;
+
+#if GTKMATHVIEW_USES_GMETADOM
+      if (math_view->current_elem != NULL)
 	{
-	  gdome_el_ref(elem, &exc);
+	  gdome_el_ref(math_view->current_elem, &exc);
 	  g_assert(exc == 0);
 	}
 #endif // GTKMATHVIEW_USES_GMETADOM
 
-      math_view->current_elem = elem;
       g_signal_emit(GTK_OBJECT(math_view), 
-		      element_over_signal, 
-		      0, elem,
-		      event->state);
+		    element_over_signal, 
+		    0, math_view->current_elem,
+		    event->state);
     }
 
 #if GTKMATHVIEW_USES_GMETADOM
@@ -1230,7 +1251,7 @@ extern "C" void
 GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView* math_view, guint size)
 {
   g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->view);
+  g_return_if_fail(math_view->view != NULL);
   g_return_if_fail(size > 0);
   math_view->view->setDefaultFontSize(size);
   paint_widget(math_view);
@@ -1239,9 +1260,35 @@ GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView* math_view, guint size)
 extern "C" guint
 GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView* math_view)
 {
-  g_return_val_if_fail(math_view, 0);
-  g_return_val_if_fail(math_view->view, 0);
+  g_return_val_if_fail(math_view != NULL, 0);
+  g_return_val_if_fail(math_view->view != NULL, 0);
   return math_view->view->getDefaultFontSize();
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewElementId elem)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->view != NULL);
+  if (SmartPtr<GtkMathView_Builder> builder = smart_cast<GtkMathView_Builder>(math_view->view->getBuilder()))
+#if GTKMATHVIEW_USES_GMETADOM
+    if (builder->notifyStructureChanged(DOM::Element(elem))) paint_widget(math_view);
+#else
+    if (builder->notifyStructureChanged(elem)) paint_widget(math_view);
+#endif
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewElementId elem, GtkMathViewModelString name)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->view != NULL);
+  if (SmartPtr<GtkMathView_Builder> builder = smart_cast<GtkMathView_Builder>(math_view->view->getBuilder()))
+#if GTKMATHVIEW_USES_GMETADOM
+    if (builder->notifyAttributeChanged(DOM::Element(elem), DOM::GdomeString(name))) paint_widget(math_view);
+#else
+    if (builder->notifyAttributeChanged(elem, name)) paint_widget(math_view);
+#endif
 }
 
 extern "C" void
@@ -1304,6 +1351,23 @@ GTKMATHVIEW_METHOD_NAME(get_height)(GtkMathView* math_view)
 }
 
 extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, gint* width, gint* height, gint* depth)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  if (AreaRef rootArea = math_view->view->getRootArea())
+    {
+      BoundingBox box = rootArea->box();
+      if (width) *width = Gtk_RenderingContext::toGtkX(box.width);
+      if (height) *height = Gtk_RenderingContext::toGtkY(box.height);
+      if (depth) *depth = Gtk_RenderingContext::toGtkY(box.depth);
+      return TRUE;
+    }
+  else
+    return FALSE;
+}
+
+extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, GtkMathViewElementId* result)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
@@ -1314,14 +1378,14 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, 
 				    Gtk_RenderingContext::fromGtkY(y), elem))
 #if GTKMATHVIEW_USES_GMETADOM
     if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
-      if (DOM::Element el = builder->findSelfOrAncestorModelNode(elem))
+      if (DOM::Element el = builder->findSelfOrAncestorModelElement(elem))
 	{
 	  if (result) *result = gdome_cast_el(el.gdome_object());
 	  return TRUE;
 	}
 #elif GTKMATHVIEW_USES_LIBXML2
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(math_view->view->getBuilder()))
-    if (xmlElement* el = (xmlElement*) builder->findSelfOrAncestorModelNode(elem))
+    if (xmlElement* el = (xmlElement*) builder->findSelfOrAncestorModelElement(elem))
       {
 	if (result) *result = el;
 	return TRUE;
@@ -1376,7 +1440,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 				 elem, idx))
 #if GTKMATHVIEW_USES_GMETADOM
     if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
-      if (DOM::Element el = builder->findSelfOrAncestorModelNode(elem))
+      if (DOM::Element el = builder->findSelfOrAncestorModelElement(elem))
 	{
 	  if (result) *result = gdome_cast_el(el.gdome_object());
 	  if (index) *index = idx;
@@ -1384,7 +1448,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 	}
 #elif GTKMATHVIEW_USES_LIBXML2
     if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(math_view->view->getBuilder()))
-      if (xmlElement* el = (xmlElement*) builder->findSelfOrAncestorModelNode(elem))
+      if (xmlElement* el = (xmlElement*) builder->findSelfOrAncestorModelElement(elem))
 	{
 	  if (result) *result = el;
 	  if (index) *index = idx;
@@ -1424,6 +1488,71 @@ GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewEl
 	}
     }
   return FALSE;
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView* math_view, GtkMathViewElementId* elem, gint* index)
+{
+  g_return_if_fail(math_view != NULL);
+  if (elem != NULL)
+    {
+      *elem = math_view->cursor_elem;
+#if GTKMATHVIEW_USES_GMETADOM
+      if (*elem)
+	{
+	  GdomeException exc = 0;
+	  gdome_el_ref(*elem, &exc);
+	  g_assert(exc == 0);
+	}
+#endif // GTKMATHVIEW_USES_GMETADOM
+    }
+
+  if (index != NULL) *index = math_view->cursor_index;
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView* math_view, GtkMathViewElementId elem, gint index)
+{
+  g_return_if_fail(math_view != NULL);
+  if (math_view->cursor_elem != elem || math_view->cursor_index != index)
+    {
+#if GTKMATHVIEW_USES_GMETADOM
+      if (math_view->cursor_elem != NULL)
+	{
+	  GdomeException exc = 0;
+	  gdome_el_unref(math_view->cursor_elem, &exc);
+	  g_assert(exc == 0);
+	}
+#endif // GTKMATHVIEW_USES_GMETADOM
+      math_view->cursor_elem = elem;
+#if GTKMATHVIEW_USES_GMETADOM
+      if (math_view->cursor_elem != NULL)
+	{
+	  GdomeException exc = 0;
+	  gdome_el_ref(math_view->cursor_elem, &exc);
+	  g_assert(exc == 0);
+	}
+#endif // GTKMATHVIEW_USES_GMETADOM
+      if (math_view->cursor_visible) update_widget(math_view);
+    }
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView* math_view, gboolean visible)
+{
+  g_return_if_fail(math_view != NULL);
+  if (math_view->cursor_visible != visible)
+    {
+      math_view->cursor_visible = visible;
+      if (math_view->cursor_visible) update_widget(math_view);
+    }
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  return math_view->cursor_visible;
 }
 
 extern "C" void

@@ -27,14 +27,13 @@
 #define gtk_math_view_new                  GTKMATHVIEW_METHOD_NAME(new)
 #define gtk_math_view_freeze               GTKMATHVIEW_METHOD_NAME(freeze)
 #define gtk_math_view_thaw                 GTKMATHVIEW_METHOD_NAME(thaw)
-#if GTKMATHVIEW_USES_CUSTOM_READER
 #define gtk_math_view_load_reader          GTKMATHVIEW_METHOD_NAME(load_reader)
-#else
 #define gtk_math_view_load_uri             GTKMATHVIEW_METHOD_NAME(load_uri)
 #define gtk_math_view_load_root            GTKMATHVIEW_METHOD_NAME(load_root)
-#endif
 #define gtk_math_view_unload               GTKMATHVIEW_METHOD_NAME(unload)
 #define gtk_math_view_get_bounding_box     GTKMATHVIEW_METHOD_NAME(get_bounding_box)
+#define gtk_math_view_structure_changed    GTKMATHVIEW_METHOD_NAME(structure_changed)
+#define gtk_math_view_attribute_changed    GTKMATHVIEW_METHOD_NAME(attribute_changed)
 #define gtk_math_view_select               GTKMATHVIEW_METHOD_NAME(select)
 #define gtk_math_view_unselect             GTKMATHVIEW_METHOD_NAME(unselect)
 #define gtk_math_view_is_selected          GTKMATHVIEW_METHOD_NAME(is_selected)
@@ -55,5 +54,9 @@
 #define gtk_math_view_get_font_size        GTKMATHVIEW_METHOD_NAME(get_font_size)
 #define gtk_math_view_set_log_verbosity    GTKMATHVIEW_METHOD_NAME(set_log_verbosity)
 #define gtk_math_view_get_log_verbosity    GTKMATHVIEW_METHOD_NAME(get_log_verbosity)
+#define gtk_math_view_set_cursor           GTKMATHVIEW_METHOD_NAME(set_cursor)
+#define gtk_math_view_get_cursor           GTKMATHVIEW_METHOD_NAME(get_cursor)
+#define gtk_math_view_set_cursor_visible   GTKMATHVIEW_METHOD_NAME(set_cursor_visible)
+#define gtk_math_view_get_cursor_visible   GTKMATHVIEW_METHOD_NAME(get_cursor_visible)
      
 #endif /* __gtkmathview_h__ */
