@@ -26,7 +26,7 @@
 
 #include "AbstractLogger.hh"
 
-AbstractLogger::AbstractLogger() : logLevel(LOG_INFO)
+AbstractLogger::AbstractLogger() : logLevel(LOG_WARNING)
 { }
 
 AbstractLogger::~AbstractLogger()

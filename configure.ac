@@ -406,7 +406,7 @@ AC_CONFIG_FILES([
  Makefile
  gtkmathview.spec
  config/Makefile
- config/math-engine-configuration.xml
+ config/gtkmathview.conf.xml
  scripts/Makefile
  auto/Makefile
  auto/config.dirs

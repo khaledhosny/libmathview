@@ -1,8 +1,10 @@
 
+NULL =
+
 DISTCLEANFILES = \
   dictionary.xml \
   entities-table.xml \
-  math-engine-configuration.xml
+  gtkmathview.conf.xml
 
 EXTRA_DIST = \
   dictionary.in \
@@ -13,11 +15,11 @@ EXTRA_DIST = \
   entities-table.in \
   entities-table.dtd \
   entities-table.xml \
-  math-engine-configuration.xml.in \
-  math-engine-configuration.dtd \
-  math-engine-configuration.xml \
-  math-engine-configuration.xml.debug \
-  t1.config
+  gtkmathview.conf.xml.in \
+  gtkmathview.conf.dtd \
+  gtkmathview.conf.xml \
+  gtkmathview.conf.xml.debug \
+  $(NULL)
 
 pkgdata_DATA = \
   dictionary.dtd \
@@ -26,12 +28,12 @@ pkgdata_DATA = \
   dictionary-combining.xml \
   entities-table.dtd \
   entities-table.xml \
-  math-engine-configuration.dtd \
-  math-engine-configuration.xml \
-  t1.config
+  gtkmathview.conf.dtd \
+  gtkmathview.conf.xml \
+  $(NULL)
 
 noinst_DATA = \
-  math-engine-configuration.xml.debug
+  gtkmathview.conf.xml.debug
 
 noinst_PROGRAMS = makeDictionary
 makeDictionary_SOURCES = makeDictionary.c

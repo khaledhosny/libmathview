@@ -447,8 +447,8 @@ initConfiguration(const AbstractLogger& logger, const char* confPath)
 
   bool res = false;
   if (confPath != NULL) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, confPath);
-  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, PKGDATADIR"/math-engine-configuration.xml");
-  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, "config/math-engine-configuration.xml");
+  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, PKGDATADIR"/gtkmathview.conf.xml");
+  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, "config/gtkmathview.conf.xml");
   if (!res)
     {
       logger.out(LOG_ERROR, "could not load configuration file");
@@ -691,7 +691,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->old_top_x = math_view->old_top_y = 0;
 
   SmartPtr<AbstractLogger> logger = Logger::create();
-  SmartPtr<Configuration> configuration = initConfiguration(*logger, getenv("MATHENGINECONF"));
+  SmartPtr<Configuration> configuration = initConfiguration(*logger, getenv("GTKMATHVIEWCONF"));
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(*logger, configuration);
 
   configuration->ref();
