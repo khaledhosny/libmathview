@@ -56,6 +56,8 @@ DEFINE_ATTRIBUTE(MathML, Padded, "depth", depth, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Padded, "height", height, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Padded, "lspace", lspace, true, false, false, false, "0em");
 DEFINE_ATTRIBUTE(MathML, Padded, "width", width, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(MathML, MultiScripts, "subscriptshift", subscriptshift, true, true, false, false, 0);
+DEFINE_ATTRIBUTE(MathML, MultiScripts, "superscriptshift", superscriptshift, true, true, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Script, "subscriptshift", subscriptshift, true, true, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Script, "superscriptshift", superscriptshift, true, true, false, false, 0);
 DEFINE_ATTRIBUTE(MathML, Space, "depth", depth, true, true, false, false, "0ex");

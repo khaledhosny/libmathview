@@ -41,7 +41,6 @@ libmathml_la_SOURCES = \
   MathMLPhantomElement.cc \
   MathMLRadicalElement.cc \
   MathMLRowElement.cc \
-  MathMLScriptCommonElement.cc \
   MathMLScriptElement.cc \
   MathMLSemanticsElement.cc \
   MathMLSpaceElement.cc \
@@ -104,7 +103,6 @@ noinst_HEADERS = \
   MathMLPhantomElement.hh \
   MathMLRadicalElement.hh \
   MathMLRowElement.hh \
-  MathMLScriptCommonElement.hh \
   MathMLScriptElement.hh \
   MathMLSemanticsElement.hh \
   MathMLSpaceElement.hh \

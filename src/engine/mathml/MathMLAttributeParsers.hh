@@ -147,6 +147,10 @@ typedef ParseLength Parse_MathML_Script_superscriptshift;
 typedef ParseBoolean Parse_MathML_UnderOver_accentunder;
 typedef ParseBoolean Parse_MathML_UnderOver_accent;
 
+// MultiScripts
+typedef ParseLength Parse_MathML_MultiScripts_subscriptshift;
+typedef ParseLength Parse_MathML_MultiScripts_superscriptshift;
+
 // Table
 typedef ParseTokenSet< Set<T_LEFT,T_CENTER,T_RIGHT,T_DECIMALPOINT> > ParseGroupAlignment;
 typedef ParseOneOrMore<ParseGroupAlignment> ParseGroupAlignmentList;

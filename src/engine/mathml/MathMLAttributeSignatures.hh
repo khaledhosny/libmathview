@@ -40,6 +40,8 @@ DECLARE_ATTRIBUTE(MathML, Fraction, linethickness);
 DECLARE_ATTRIBUTE(MathML, Fraction, numalign);
 DECLARE_ATTRIBUTE(MathML, Fraction, denomalign);
 DECLARE_ATTRIBUTE(MathML, Fraction, bevelled);
+DECLARE_ATTRIBUTE(MathML, MultiScripts, subscriptshift);
+DECLARE_ATTRIBUTE(MathML, MultiScripts, superscriptshift);
 DECLARE_ATTRIBUTE(MathML, Script, subscriptshift);
 DECLARE_ATTRIBUTE(MathML, Script, superscriptshift);
 DECLARE_ATTRIBUTE(MathML, Operator, form);
