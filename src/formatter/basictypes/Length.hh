@@ -29,6 +29,7 @@ struct Length
     UNDEFINED_UNIT,
     PURE_UNIT,
     INFINITY_UNIT,
+    LT_UNIT,
     EM_UNIT,
     EX_UNIT,
     PX_UNIT,

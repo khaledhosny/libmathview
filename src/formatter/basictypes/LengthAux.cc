@@ -33,6 +33,7 @@ static const char* unitName[] = {
   "??",
   "",
   "infinity",
+  "lt",
   "em",
   "ex",
   "px",
