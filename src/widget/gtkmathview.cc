@@ -398,6 +398,47 @@ gtk_math_view_init(GtkMathView* math_view)
   gtk_container_add(GTK_CONTAINER(math_view), math_view->area);
   gtk_widget_show(math_view->area);
 
+  // BOHHHHHHHHHHHHHHH
+  math_view->top_x = math_view->top_y = 0;
+  math_view->old_top_x = math_view->old_top_y = 0;
+
+#if 0
+  if (new_counter++ == 0)
+    viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
+					    MathMLFormattingEngineFactory::create(),
+					    Gtk_MathGraphicDevice::create(math_view->area));
+  assert(viewContext);
+#endif
+
+  SmartPtr<DOMView> view = DOMView::create();
+  view->ref();
+  math_view->view = view;
+
+  SmartPtr<MathMLElementFactory> mmlFactory = MathMLElementFactory::create();
+  SmartPtr<MathMLNamespaceContext> mmlContext =
+    MathMLNamespaceContext::create(view,
+				   view->getLinker(),
+				   mmlFactory,
+				   Gtk_MathGraphicDevice::create(math_view->area));
+  mmlFactory->setContext(mmlContext);
+  SmartPtr<BoxMLElementFactory> bmlFactory = BoxMLElementFactory::create();
+  SmartPtr<BoxMLNamespaceContext> bmlContext =
+    BoxMLNamespaceContext::create(view,
+				  view->getLinker(),
+				  bmlFactory,
+				  Gtk_BoxGraphicDevice::create(math_view->area));
+  bmlFactory->setContext(bmlContext);
+  view->getRegistry()->add(mmlContext);
+  view->getRegistry()->add(bmlContext);
+
+  math_view->renderingContext = new Gtk_RenderingContext;
+
+  math_view->renderingContext->setWidget(math_view->area);
+  //math_view->renderingContext->setDrawable(math_view->pixmap);
+  //math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
+  //math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);
+  // BOHHHHHHHHHHHHHHH
+
   g_signal_connect(GTK_OBJECT(math_view->area),
 		  "configure_event",
 		  G_CALLBACK(gtk_math_view_configure_event), 
@@ -439,44 +480,6 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
   
   g_return_val_if_fail(math_view != NULL, NULL);
 
-  math_view->top_x = math_view->top_y = 0;
-  math_view->old_top_x = math_view->old_top_y = 0;
-
-#if 0
-  if (new_counter++ == 0)
-    viewContext = MathMLViewContext::create(MathMLDOMLinker::create(),
-					    MathMLFormattingEngineFactory::create(),
-					    Gtk_MathGraphicDevice::create(math_view->area));
-  assert(viewContext);
-#endif
-
-  SmartPtr<DOMView> view = DOMView::create();
-  view->ref();
-  math_view->view = view;
-
-  SmartPtr<MathMLElementFactory> mmlFactory = MathMLElementFactory::create();
-  SmartPtr<MathMLNamespaceContext> mmlContext =
-    MathMLNamespaceContext::create(view,
-				   view->getLinker(),
-				   mmlFactory,
-				   Gtk_MathGraphicDevice::create(math_view->area));
-  mmlFactory->setContext(mmlContext);
-  SmartPtr<BoxMLElementFactory> bmlFactory = BoxMLElementFactory::create();
-  SmartPtr<BoxMLNamespaceContext> bmlContext =
-    BoxMLNamespaceContext::create(view,
-				  view->getLinker(),
-				  bmlFactory,
-				  Gtk_BoxGraphicDevice::create(math_view->area));
-  bmlFactory->setContext(bmlContext);
-  view->getRegistry()->add(mmlContext);
-  view->getRegistry()->add(bmlContext);
-
-  math_view->renderingContext = new Gtk_RenderingContext;
-
-  math_view->renderingContext->setWidget(math_view->area);
-  //math_view->renderingContext->setDrawable(math_view->pixmap);
-  //math_view->renderingContext->setForegroundColor(DEFAULT_SELECT_FOREGROUND, 1);
-  //math_view->renderingContext->setBackgroundColor(DEFAULT_SELECT_BACKGROUND, 1);
 
   return GTK_WIDGET(math_view);
 }

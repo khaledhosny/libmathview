@@ -11,7 +11,7 @@ libgtk_areamodel_la_SOURCES = \
   Gtk_InkArea.cc \
   Gtk_WrapperArea.cc
 
-pkginclude_HEADERS = \
+noinst_HEADERS = \
   Gtk_AreaFactory.hh \
   Gtk_RenderingContext.hh \
   Gtk_XftGlyphArea.hh \
