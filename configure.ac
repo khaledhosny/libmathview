@@ -19,6 +19,13 @@ AREAMODEL_VERSION_INFO=$MATHVIEW_VERSION_INFO
 AC_SUBST(AREAMODEL_VERSION_INFO)
 
 AC_ARG_ENABLE(
+	builder-cache,
+	[  --enable-builder-cache[=ARG] enable the cache for MathML text nodes [default=no]],
+	enable_builder_cache=$enableval,
+	enable_builder_cache=no
+)
+
+AC_ARG_ENABLE(
 	pipe,
 	[  --enable-pipe[=ARG]     enable the -pipe option in the GCC compiler [default=no]],
 	enable_pipe=$enableval,
@@ -412,8 +419,8 @@ if test $enable_debug = yes; then
 fi
 
 if test $enable_profile = yes; then
-	CFLAFS="$CFLAGS -O0 -pg"
-	CXXFLAGS="$CXXFLAGS -O0 -pg"
+	CFLAFS="$CFLAGS -pg"
+	CXXFLAGS="$CXXFLAGS -pg"
 	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
 fi
 AM_CONDITIONAL([COND_PROFILE], [test "$enable_profile" = "yes"])
@@ -421,6 +428,10 @@ AM_CONDITIONAL([COND_PROFILE], [test "$enable_profile" = "yes"])
 if test $enable_pipe = yes; then
 	CFLAGS="$CFLAGS -pipe"
 	CXXFLAGS="$CXXFLAGS -pipe"
+fi
+
+if test $enable_builder_cache = yes; then
+    AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
 AC_CONFIG_FILES([
