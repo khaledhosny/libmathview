@@ -45,15 +45,10 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
 {
   SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(el);
   assert(elem);
-#if 0
-  std::cerr << "element to be formatted? " << static_cast<MathMLElement*>(elem)
-	    << " element has dirty flag? " << elem->dirtyLayout() << std::endl;
-#endif
   if (elem->dirtyLayout())
     {
       MathFormattingContext ctxt(device);
       scaled l = device->evaluate(ctxt, Length(getView()->getDefaultFontSize(), Length::PT_UNIT), scaled::zero());
-      //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
       ctxt.setSize(l);
       ctxt.setActualSize(ctxt.getSize());
       Clock perf;
@@ -62,10 +57,6 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
       perf.Stop();
       getView()->getLogger()->out(LOG_INFO, "formatting time: %dms", perf());
     }
-#if 0
-  std::cerr << "element  formatted to area? " << static_cast<const Area*>(elem->getArea())
-	    << " element has dirty flag? " << elem->dirtyLayout() << std::endl;
-#endif
   return elem->getArea();
 }
 

@@ -29,3 +29,4 @@ libformatter_la_LIBADD = \
   $(MAYBE_BOXML_LIBADD)
 
 libformatter_la_SOURCES =
+

@@ -98,34 +98,34 @@ protected:
       String tag;
       MathMLUpdateMethod update;
     } mathml_tab[] = {
-      { "math",          &TemplateBuilder::updateElement<MathML_math_ElementBuilder> },
-      { "mi",            &TemplateBuilder::updateElement<MathML_mi_ElementBuilder> },
-      { "mn",            &TemplateBuilder::updateElement<MathML_mn_ElementBuilder> },
-      { "mo",            &TemplateBuilder::updateElement<MathML_mo_ElementBuilder> },
-      { "mtext",         &TemplateBuilder::updateElement<MathML_mtext_ElementBuilder> },
-      { "mspace",        &TemplateBuilder::updateElement<MathML_mspace_ElementBuilder> },
-      { "ms",            &TemplateBuilder::updateElement<MathML_ms_ElementBuilder> },
-      { "mrow",          &TemplateBuilder::updateElement<MathML_mrow_ElementBuilder> },
-      { "mfrac",         &TemplateBuilder::updateElement<MathML_mfrac_ElementBuilder> },
-      { "msqrt",         &TemplateBuilder::updateElement<MathML_msqrt_ElementBuilder> },
-      { "mroot",         &TemplateBuilder::updateElement<MathML_mroot_ElementBuilder> },
-      { "mstyle",        &TemplateBuilder::updateElement<MathML_mstyle_ElementBuilder> },
-      { "merror",        &TemplateBuilder::updateElement<MathML_merror_ElementBuilder> },
-      { "mpadded",       &TemplateBuilder::updateElement<MathML_mpadded_ElementBuilder> },
-      { "mphantom",      &TemplateBuilder::updateElement<MathML_mphantom_ElementBuilder> },
+      { "math",          &TemplateBuilder::template updateElement<MathML_math_ElementBuilder> },
+      { "mi",            &TemplateBuilder::template updateElement<MathML_mi_ElementBuilder> },
+      { "mn",            &TemplateBuilder::template updateElement<MathML_mn_ElementBuilder> },
+      { "mo",            &TemplateBuilder::template updateElement<MathML_mo_ElementBuilder> },
+      { "mtext",         &TemplateBuilder::template updateElement<MathML_mtext_ElementBuilder> },
+      { "mspace",        &TemplateBuilder::template updateElement<MathML_mspace_ElementBuilder> },
+      { "ms",            &TemplateBuilder::template updateElement<MathML_ms_ElementBuilder> },
+      { "mrow",          &TemplateBuilder::template updateElement<MathML_mrow_ElementBuilder> },
+      { "mfrac",         &TemplateBuilder::template updateElement<MathML_mfrac_ElementBuilder> },
+      { "msqrt",         &TemplateBuilder::template updateElement<MathML_msqrt_ElementBuilder> },
+      { "mroot",         &TemplateBuilder::template updateElement<MathML_mroot_ElementBuilder> },
+      { "mstyle",        &TemplateBuilder::template updateElement<MathML_mstyle_ElementBuilder> },
+      { "merror",        &TemplateBuilder::template updateElement<MathML_merror_ElementBuilder> },
+      { "mpadded",       &TemplateBuilder::template updateElement<MathML_mpadded_ElementBuilder> },
+      { "mphantom",      &TemplateBuilder::template updateElement<MathML_mphantom_ElementBuilder> },
       { "mfenced",       &TemplateBuilder::update_MathML_mfenced_Element },
-      { "msub",          &TemplateBuilder::updateElement<MathML_msub_ElementBuilder> },
-      { "msup",          &TemplateBuilder::updateElement<MathML_msup_ElementBuilder> },
-      { "msubsup",       &TemplateBuilder::updateElement<MathML_msubsup_ElementBuilder> },
-      { "munder",        &TemplateBuilder::updateElement<MathML_munder_ElementBuilder> },
-      { "mover",         &TemplateBuilder::updateElement<MathML_mover_ElementBuilder> },
-      { "munderover",    &TemplateBuilder::updateElement<MathML_munderover_ElementBuilder> },
-      { "mmultiscripts", &TemplateBuilder::updateElement<MathML_mmultiscripts_ElementBuilder> },
-      { "mtable",        &TemplateBuilder::updateElement<MathML_mtable_ElementBuilder> },
-      { "maligngroup",   &TemplateBuilder::updateElement<MathML_maligngroup_ElementBuilder> },
-      { "malignmark",    &TemplateBuilder::updateElement<MathML_malignmark_ElementBuilder> },
-      { "maction",       &TemplateBuilder::updateElement<MathML_maction_ElementBuilder> },
-      { "menclose",      &TemplateBuilder::updateElement<MathML_menclose_ElementBuilder> },
+      { "msub",          &TemplateBuilder::template updateElement<MathML_msub_ElementBuilder> },
+      { "msup",          &TemplateBuilder::template updateElement<MathML_msup_ElementBuilder> },
+      { "msubsup",       &TemplateBuilder::template updateElement<MathML_msubsup_ElementBuilder> },
+      { "munder",        &TemplateBuilder::template updateElement<MathML_munder_ElementBuilder> },
+      { "mover",         &TemplateBuilder::template updateElement<MathML_mover_ElementBuilder> },
+      { "munderover",    &TemplateBuilder::template updateElement<MathML_munderover_ElementBuilder> },
+      { "mmultiscripts", &TemplateBuilder::template updateElement<MathML_mmultiscripts_ElementBuilder> },
+      { "mtable",        &TemplateBuilder::template updateElement<MathML_mtable_ElementBuilder> },
+      { "maligngroup",   &TemplateBuilder::template updateElement<MathML_maligngroup_ElementBuilder> },
+      { "malignmark",    &TemplateBuilder::template updateElement<MathML_malignmark_ElementBuilder> },
+      { "maction",       &TemplateBuilder::template updateElement<MathML_maction_ElementBuilder> },
+      { "menclose",      &TemplateBuilder::template updateElement<MathML_menclose_ElementBuilder> },
       { "semantics",     &TemplateBuilder::update_MathML_semantics_Element },
 
       { "",              0 }
@@ -140,15 +140,15 @@ protected:
       String tag;
       BoxMLUpdateMethod update;
     } boxml_tab[] = {
-      { "at",            &TemplateBuilder::updateElement<BoxML_at_ElementBuilder> },
-      { "layout",        &TemplateBuilder::updateElement<BoxML_layout_ElementBuilder> },
-      { "h",             &TemplateBuilder::updateElement<BoxML_h_ElementBuilder> },
-      { "ink",           &TemplateBuilder::updateElement<BoxML_ink_ElementBuilder> },
-      { "space",         &TemplateBuilder::updateElement<BoxML_space_ElementBuilder> },
-      { "text",          &TemplateBuilder::updateElement<BoxML_text_ElementBuilder> },
-      { "v",             &TemplateBuilder::updateElement<BoxML_v_ElementBuilder> },
-      { "box",           &TemplateBuilder::updateElement<BoxML_box_ElementBuilder> },
-      { "action",        &TemplateBuilder::updateElement<BoxML_action_ElementBuilder> },
+      { "at",            &TemplateBuilder::template updateElement<BoxML_at_ElementBuilder> },
+      { "layout",        &TemplateBuilder::template updateElement<BoxML_layout_ElementBuilder> },
+      { "h",             &TemplateBuilder::template updateElement<BoxML_h_ElementBuilder> },
+      { "ink",           &TemplateBuilder::template updateElement<BoxML_ink_ElementBuilder> },
+      { "space",         &TemplateBuilder::template updateElement<BoxML_space_ElementBuilder> },
+      { "text",          &TemplateBuilder::template updateElement<BoxML_text_ElementBuilder> },
+      { "v",             &TemplateBuilder::template updateElement<BoxML_v_ElementBuilder> },
+      { "box",           &TemplateBuilder::template updateElement<BoxML_box_ElementBuilder> },
+      { "action",        &TemplateBuilder::template updateElement<BoxML_action_ElementBuilder> },
       { "obj",           &TemplateBuilder::update_BoxML_obj_Element },
       { "",              0 }
     };
@@ -172,12 +172,12 @@ protected:
     std::vector<SmartPtr<MathMLElement> > content;
     getChildMathMLElements(el, content);
 
-    SmartPtr<MathMLOperatorElement> openElem = MathMLOperatorElement::create(getMathMLNamespaceContext());
+    SmartPtr<MathMLOperatorElement> openElem = MathMLOperatorElement::create(this->getMathMLNamespaceContext());
     openElem->setSize(0);
     openElem->append(open);
     openElem->SetFence();
 
-    SmartPtr<MathMLOperatorElement> closeElem = MathMLOperatorElement::create(getMathMLNamespaceContext());
+    SmartPtr<MathMLOperatorElement> closeElem = MathMLOperatorElement::create(this->getMathMLNamespaceContext());
     closeElem->setSize(0);
     closeElem->append(close);
     closeElem->SetFence();
@@ -197,7 +197,7 @@ protected:
 	    innerRowContent.push_back(content[i]);
 	    if (!separators.empty() && i + 1 < content.size())
 	      {
-		SmartPtr<MathMLOperatorElement> sep = MathMLOperatorElement::create(mathmlContext);
+		SmartPtr<MathMLOperatorElement> sep = MathMLOperatorElement::create(this->mathmlContext);
 		unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
 		sep->setSize(0);
 		sep->append(separators.substr(offset, 1));
@@ -205,14 +205,14 @@ protected:
 		innerRowContent.push_back(sep);
 	      }
 	  }
-	SmartPtr<MathMLRowElement> innerRow = MathMLRowElement::create(getMathMLNamespaceContext());
+	SmartPtr<MathMLRowElement> innerRow = MathMLRowElement::create(this->getMathMLNamespaceContext());
 	innerRow->swapContent(innerRowContent);
 	outerRowContent.push_back(innerRow);
       }
     outerRowContent.push_back(closeElem);
 
     // this can probably remain attached to the model
-    SmartPtr<MathMLRowElement> outerRow = MathMLRowElement::create(getMathMLNamespaceContext());
+    SmartPtr<MathMLRowElement> outerRow = MathMLRowElement::create(this->getMathMLNamespaceContext());
     outerRow->swapContent(outerRowContent);
 
     return outerRow;
@@ -260,7 +260,7 @@ protected:
     
     if (alt.empty() || fontFamily.empty() || index.empty())
       {
-	getLogger()->out(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
+	this->getLogger()->out(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
 	return MathMLStringNode::create("?");
       }
     
@@ -281,9 +281,9 @@ protected:
 	if      (edge == "left") align = T_LEFT;
 	else if (edge == "right") align = T_RIGHT;
 	else
-	  getLogger()->out(LOG_WARNING,
-			   "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
-			   std::string(edge).c_str());
+	  this->getLogger()->out(LOG_WARNING,
+				 "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
+				 std::string(edge).c_str());
       }
     
     return MathMLMarkNode::create(align);
@@ -1198,7 +1198,7 @@ protected:
   SmartPtr<MathMLElement>
   createMathMLDummyElement(void) const
   {
-    return MathMLDummyElement::create(getMathMLNamespaceContext());
+    return MathMLDummyElement::create(this->getMathMLNamespaceContext());
   }
 
 #if ENABLE_BOXML
@@ -1239,12 +1239,12 @@ public:
 
   virtual void
   forgetElement(Element* elem) const
-  { linkerRemove(elem); }
+  { this->linkerRemove(elem); }
 
   virtual SmartPtr<Element>
   getRootElement() const
   {
-    if (typename Model::Element root = getRootModelElement())
+    if (typename Model::Element root = this->getRootModelElement())
       {
 	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
 	if (ns == MATHML_NS_URI) return getMathMLElement(root);

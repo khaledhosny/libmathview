@@ -1,6 +1,8 @@
 
 if COND_BOXML
-MAYBE_BOXML_SUBDIRS = boxml adapters
+  MAYBE_BOXML_SUBDIRS = boxml adapters
+else
+  MAYBE_BOXML_SUBDIRS =
 endif
 
 SUBDIRS = common mathml $(MAYBE_BOXML_SUBDIRS)
@@ -11,6 +13,8 @@ if COND_BOXML
 MAYBE_BOXML_LIBADD = \
   $(top_builddir)/src/engine/boxml/libboxml.la \
   $(top_builddir)/src/engine/adapters/libadapters.la
+else
+MAYBE_BOXML_LIBADD =
 endif
 
 libengine_la_LIBADD = \
@@ -19,3 +23,4 @@ libengine_la_LIBADD = \
   $(top_builddir)/src/engine/common/libengine_common.la
 
 libengine_la_SOURCES = 
+
