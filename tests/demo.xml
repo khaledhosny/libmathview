@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+
+<math>
+  <mstyle mathvariant="sans-serif">
+    <mtable columnalign="left" equalrows="false">
+      <mtr> <mtd columnalign="center"><mtext mathvariant="sans-serif" mathsize="24pt">GtkMathView</mtext></mtd> </mtr>
+      <mtr> <mtd>
+        <mtext>
+	  This is a demo for the GtkMathView widget in order to present most of its features. In particular,
+	  we present some examples of rendering for each MathML presentation element, along with some more
+	  complete (and complex) examples of such elements inside mathematical furmulae. Feel free to send comments
+	  and/or contributions to the author at the following
+	  address:<mchar name="NonBreakingSpace"/>
+	</mtext>
+	<mtext mathvariant="monospace">luca.padovani@cs.unibo.it</mtext>
+      </mtd></mtr>
+
+      <mtr><mtd><mtext mathvariant="monospace" mathsize="200%">mi</mtext></mtd></mtr>
+
+      <mtr><mtd><mtext>
+        This element represents a symbolic name or arbitrary text which sould be rendered as an
+	identifier.
+      </mtext></mtd></mtr>
+
+      <mtr><mtd>
+	<mspace width="1em"/>
+        <mi>i</mi>
+	<mspace width="1em"/>
+	<mi>j</mi>
+	<mspace width="1em"/>
+	<mi>range</mi>
+      </mtd></mtr>
+
+      <mtr><mtd>
+	<mtext>are examples of identifiers. Note that the style of the identifier
+	  depends on its length. In particular, the first two identifiers have length 1, so they are
+	  displated in italic, while the last one has a length greater the 1, so it is displayed in
+	  roman.
+	</mtext>
+      </mtd></mtr>
+
+      <mtr><mtd><mtext mathvariant="monospace" mathsize="200%">mn</mtext></mtd></mtr>
+
+      <mtr><mtd><mtext>
+        This element represents a `numeric literal' or other data which should be rendered as
+	a numeric literal.
+      </mtext></mtd></mtr>
+
+      <mtr><mtd>
+	<mspace width="1em"/>
+        <mn mathcolor="green">2</mn>
+	<mspace width="1em"/>
+        <mn mathcolor="green">0.123</mn>
+	<mspace width="1em"/>
+        <mn mathcolor="green">0xFFEF</mn>
+	<mspace width="1em"/>
+        <mn mathcolor="green">twenty-six</mn>
+      </mtd></mtr>
+
+      <mtr><mtd><mtext>
+        are examples of numeric literals.
+      </mtext></mtd></mtr>
+
+      <mtr><mtd><mtext mathvariant="monospace" mathsize="200%">mo</mtext></mtd></mtr>
+
+      <mtr><mtd><mtext>
+        This element represents an operator or anything which should be rendered as
+	an operator. There are several attributes for this element which are used
+	to specify at a high level of detail the particular usage of a given operator.
+	In particular, some operators are `stretchy', that is their extent (vertical
+	or horizontal) change depending on the surrounding environment.
+      </mtext></mtd></mtr>
+
+      <mtr><mtd>
+	<mspace width="1em"/>
+        <mo mathcolor="blue">+</mo>
+	<mspace width="1em"/>
+        <mo mathcolor="blue">&lt;</mo>
+	<mspace width="1em"/>
+        <mo mathcolor="blue"><mchar name="sum"/></mo>
+	<mspace width="2em"/>
+        <mo mathcolor="blue">.NOT.</mo>
+      </mtd></mtr>
+
+      <mtr><mtd><mtext>
+        are examples of simple (non-stretchy) operators. It is important to note that
+	special symbols such as fences are to be treated as operators. In this way they can
+	be automatically stretched by the rendering engine.
+	We can now try to render our first complex formula:
+      </mtext></mtd></mtr>
+
+      <mtr><mtd>
+        <mrow>
+	  <mspace width="1em"/>
+	  <msup>
+	    <mrow>
+	      <mo mathcolor="gray">(</mo>
+	      <mrow>
+	        <mi>x</mi>
+		<mo mathcolor="blue">+</mo>
+		<mn mathcolor="green">1</mn>
+	      </mrow>
+	      <mo mathcolor="gray">)</mo>
+	    </mrow>
+	    <mn mathcolor="green">2</mn>
+	  </msup>
+	  <mo mathcolor="blue">=</mo>
+	  <mrow>
+	    <msup>
+	      <mi>x</mi>
+	      <mn mathcolor="green">2</mn>
+	    </msup>
+	    <mo mathcolor="blue">+</mo>
+	    <mrow>
+	      <mn mathcolor="green">2</mn>
+	      <mo><mchar name="InvisibleTimes"/></mo>
+	      <mi>x</mi>
+	    </mrow>
+	    <mo mathcolor="blue">+</mo>
+	    <mn mathcolor="green">1</mn>
+	  </mrow>
+	</mrow>
+      </mtd></mtr>
+
+      <mtr><mtd><mtext>
+        By means of the attributes minsize and maxsize one can constraint the length of a stretchy operator:
+      </mtext></mtd></mtr>
+
+      <mtr><mtd>
+        <mspace width="1em"/>
+	<mtable>
+	  <mtr>
+	    <mtd>
+	<mo mathcolor="gray">(</mo>
+	<mtable>
+	  <mtr>
+	    <mtd><mi>i</mi></mtd>
+	    <mtd><mn mathcolor="green">0</mn></mtd>
+	  </mtr>
+	  <mtr>
+	    <mtd><mn mathcolor="green">1</mn></mtd>
+	    <mtd><mi>j</mi></mtd>
+	  </mtr>
+	</mtable>
+	<mo mathcolor="gray">)</mo>
+	    </mtd>
+	    <mtd>
+	<mo mathcolor="gray" minsize="4">(</mo>
+	<mtable>
+	  <mtr>
+	    <mtd><mi>i</mi></mtd>
+	    <mtd><mn mathcolor="green">0</mn></mtd>
+	  </mtr>
+	  <mtr>
+	    <mtd><mn mathcolor="green">1</mn></mtd>
+	    <mtd><mi>j</mi></mtd>
+	  </mtr>
+	</mtable>
+	<mo mathcolor="gray" minsize="4">)</mo>
+	    </mtd>
+	    <mtd>
+	<mo mathcolor="gray" minsize="6">(</mo>
+	<mtable>
+	  <mtr>
+	    <mtd><mi>i</mi></mtd>
+	    <mtd><mn mathcolor="green">0</mn></mtd>
+	  </mtr>
+	  <mtr>
+	    <mtd><mn mathcolor="green">1</mn></mtd>
+	    <mtd><mi>j</mi></mtd>
+	  </mtr>
+	</mtable>
+	<mo mathcolor="gray" minsize="6">)</mo>
+	    </mtd>
+	  </mtr>
+	</mtable>
+      </mtd></mtr>
+      
+      <mtr><mtd>
+        <mtext>
+	  There are also some "invisible operators", that is operators which have no associated
+	  glyph. They are used to render small non-null spaces between elements to improve
+	  readability. For example, the operator<mchar name="NonBreakingSpace"/></mtext>
+	  <mtext mathvariant="monospace">InvisibleTimes</mtext>
+	  <mtext><mchar name="NonBreakingSpace"/>is used when two terms are multiplied by placing them side by side. Note the
+	  difference in the following example, where the first two terms are just placed one after the
+	  other, while the second two terms have an invisible operator:
+	</mtext>
+      </mtd></mtr>
+
+      <mtr><mtd>
+        <mspace width="1em"/>
+	<mrow>
+	  <mn mathcolor="green">2</mn>
+	  <mi>x</mi>
+	</mrow>
+	<mspace width="1em"/>
+	<mrow>
+	  <mn mathcolor="green">2</mn>
+	  <mo><mchar name="InvisibleTimes"/></mo>
+	  <mi>x</mi>
+	</mrow>
+      </mtd></mtr>
+
+      <mtr><mtd>
+        <mtext>
+	  Operators can be embellished, that is they can be composed with other elements (such as indexes or other
+	  operators) still behaving like operators. The arrow below is embellished with a label:
+	</mtext>
+      </mtd></mtr>
+
+      <mtr><mtd>
+        <mspace width="1em"/>
+	<mi>x</mi>
+	<munder>
+	  <mo mathcolor="blue"><mchar name="RightArrow"/></mo>
+	  <mtext>maps to</mtext>
+	</munder>
+	<mi>y</mi>
+      </mtd></mtr>
+    </mtable>
+  </mstyle>
+</math>
