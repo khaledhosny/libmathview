@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include "Globals.hh"
+#include "AreaFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLValueConversion.hh"

@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include "AreaFactory.hh"
 #include "MathMLAdapters.hh"
 #include "traverseAux.hh"
 #include "MathMLRowElement.hh"
@@ -86,7 +87,9 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 	      }
 	  }
 
-      AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(row);
+      AreaRef res;
+      if (row.size() == 1) res = row[0];
+      else res = ctxt.getDevice()->getFactory()->horizontalArray(row);
       BoundingBox rowBox = res->box();
 
       if (stretchy)
@@ -105,7 +108,8 @@ MathMLRowElement::format(MathFormattingContext& ctxt)
 	      }
 	  ctxt.setStretchOperator(0);
 
-	  res = ctxt.getDevice()->getFactory()->horizontalArray(row);
+	  if (row.size() == 1) res = row[0];
+	  else res = ctxt.getDevice()->getFactory()->horizontalArray(row);
 	}
 
       res = formatEmbellishment(this, ctxt, res);

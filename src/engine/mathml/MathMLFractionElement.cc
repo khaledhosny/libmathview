@@ -24,6 +24,7 @@
 
 #include <cassert>
 
+#include "AreaFactory.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "Globals.hh"

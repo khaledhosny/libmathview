@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include "defs.h"
+#include "AreaFactory.hh"
 #include "MathMLSpaceElement.hh"
 #include "MathMLValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"

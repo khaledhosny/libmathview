@@ -51,6 +51,7 @@ public:
 
   String         GetRawContent(void) const;
   unsigned       GetLogicalContentLength(void) const;
+  unsigned getContentLength(void) const;
 
 private:
   LinearContainerTemplate<MathMLTokenElement,class MathMLTextNode> content;

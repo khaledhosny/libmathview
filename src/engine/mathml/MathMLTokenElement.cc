@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include "MathML.hh"
+#include "AreaFactory.hh"
 #include "BoundingBoxAux.hh"
 #include "Globals.hh"
 #include "MathFormattingContext.hh"
@@ -105,7 +106,9 @@ MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
        p++)
     c.push_back((*p)->format(ctxt));
 
-  AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+  AreaRef res;
+  if (c.size() == 1) res = c[0];
+  else res = ctxt.getDevice()->getFactory()->horizontalArray(c);
 
   if (oldColor != newColor)
     res = ctxt.getDevice()->getFactory()->color(res, newColor);
@@ -197,3 +200,7 @@ MathMLTokenElement::GetLogicalContentLength() const
 
   return len;
 }
+
+unsigned
+MathMLTokenElement::getContentLength() const
+{ return GetLogicalContentLength(); }

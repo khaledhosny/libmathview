@@ -24,6 +24,7 @@
 
 #include <cassert>
 
+#include "AreaFactory.hh"
 #include "MathMLPhantomElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathFormattingContext.hh"
