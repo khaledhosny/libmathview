@@ -40,6 +40,13 @@ extern "C" {
 #define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
 #define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
+  struct _GtkMathViewBox {
+    gint width;
+    gint height;
+    gint depth;
+  };
+  typedef struct _GtkMathViewBox    GtkMathViewBox;
+
   typedef struct _GtkMathView       GtkMathView;
   typedef struct _GtkMathViewClass  GtkMathViewClass;
   typedef struct _c_customXmlReader GtkMathViewReader;
@@ -80,9 +87,9 @@ extern "C" {
   gboolean       GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView*, GtkMathViewElementId);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView*, gint*, gint*, gint*);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView*, gint, gint, GtkMathViewElementId*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView*, GtkMathViewElementId, gint*, gint*, GdkRectangle*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView*, GtkMathViewElementId, gint*, gint*, GtkMathViewBox*);
   gboolean       GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewElementId*, gint*);
-  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView*, GtkMathViewElementId, gint, gint*, gint*, GdkRectangle*);
+  gboolean       GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView*, GtkMathViewElementId, gint, gint*, gint*, GtkMathViewBox*);
   void           GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewElementId, gint);
   void           GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewElementId*, gint*);
   void           GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, gboolean);

@@ -168,6 +168,7 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
 void
 GUI_uninit()
 {
+  /*gtk_widget_unref(GTK_WIDGET(window));*/
 }
 
 int
@@ -442,17 +443,9 @@ element_over(GtkMathView* math_view, GdomeElement* elem, gint state)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 
-#if 0
-  if (elem != NULL)
-    {
-      GdomeException exc;
-      GdomeDOMString* name = gdome_el_nodeName(elem, &exc);
-
-      printf("over %s\n", name->str);
-
-      if (name != NULL)
-	gdome_str_unref(name);
-    }
+#if 1
+  gtk_math_view_set_cursor(math_view, elem, 0);
+  gtk_math_view_set_cursor_visible(math_view, TRUE);
 #endif
 
   link = find_hyperlink(elem, XLINK_NS_URI, "href");
@@ -549,10 +542,10 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
       if (root_selected != NULL)
 	{
 	  gint x, y;
-	  GdkRectangle rect;
+	  GtkMathViewBox gbox;
 	  gtk_math_view_select(math_view, root_selected);
-	  gtk_math_view_get_element_location(math_view, root_selected, &x, &y, &rect);
-	  printf("selected element at %d %d rectangle %d %d %d %d\n", x, y, rect.x, rect.y, rect.width, rect.height);
+	  gtk_math_view_get_element_location(math_view, root_selected, &x, &y, &gbox);
+	  printf("selected element at %d %d rectangle %d %d %d\n", x, y, gbox.width, gbox.height, gbox.depth);
 	}
 
       gtk_math_view_thaw(math_view);

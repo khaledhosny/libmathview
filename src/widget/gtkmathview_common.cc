@@ -241,19 +241,24 @@ update_widget(GtkMathView* math_view)
 #if 1
   if (math_view->cursor_elem)
     {
+      gint y0 = 0;
+      if (AreaRef rootArea = math_view->view->getRootArea())
+	y0 = Gtk_RenderingContext::toGtkY(rootArea->box().height);
+
       gint x;
       gint y;
-      GdkRectangle rect;
+      GtkMathViewBox gbox;
       if (GTKMATHVIEW_METHOD_NAME(get_element_location)(math_view, math_view->cursor_elem,
-							&x, &y, &rect))
+							&x, &y, &gbox))
 	{
+	  printf("DRAWING CURSOR AT (y offset = %d) (%d,%d) [%d,%d,%d]\n", y0, x, y, gbox.width, gbox.height, gbox.depth);
 	  gtk_paint_focus(widget->style,
 			  widget->window,
 			  GTK_STATE_NORMAL,
 			  NULL,
 			  widget,
 			  "?",
-			  x + MARGIN, y + MARGIN, rect.width, rect.height);
+			  x + MARGIN, MARGIN - y0 + y - gbox.height, gbox.width, gbox.height + gbox.depth);
 	}
     }
 #endif
@@ -1397,7 +1402,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, 
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-				   gint* x, gint* y, GdkRectangle* rect)
+					      gint* x, gint* y, GtkMathViewBox* gbox)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1412,13 +1417,11 @@ GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathVie
 	{
 	  if (x) *x = Gtk_RenderingContext::toGtkX(sx);
 	  if (y) *y = Gtk_RenderingContext::toGtkY(sy);
-	  if (rect)
+	  if (gbox)
 	    {
-	      Rectangle srect(sx, sy, box);
-	      rect->x = Gtk_RenderingContext::toGtkX(srect.x);
-	      rect->y = Gtk_RenderingContext::toGtkY(srect.y);
-	      rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
-	      rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
+	      gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
+	      gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
+	      gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
 	    }
 	  return TRUE;
 	}
@@ -1428,7 +1431,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathVie
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
-			  GtkMathViewElementId* result, gint* index)
+				     GtkMathViewElementId* result, gint* index)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1460,7 +1463,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-				gint index, gint* x, gint* y, GdkRectangle* rect)
+					   gint index, gint* x, gint* y, GtkMathViewBox* gbox)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
@@ -1476,13 +1479,11 @@ GTKMATHVIEW_METHOD_NAME(get_char_location)(GtkMathView* math_view, GtkMathViewEl
 	{
 	  if (x) *x = Gtk_RenderingContext::toGtkX(sx);
 	  if (y) *y = Gtk_RenderingContext::toGtkY(sy);
-	  if (rect)
+	  if (gbox)
 	    {
-	      Rectangle srect(sx, sy, box);
-	      rect->x = Gtk_RenderingContext::toGtkX(srect.x);
-	      rect->y = Gtk_RenderingContext::toGtkY(srect.y);
-	      rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
-	      rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
+	      gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
+	      gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
+	      gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
 	    }
 	  return TRUE;
 	}
