@@ -30,11 +30,11 @@ class MathMLStyleElement
   : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 public:
-  MathMLStyleElement(const SmartPtr<class MathMLView>&);
+  MathMLStyleElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLStyleElement();
 
 public:
-  static SmartPtr<MathMLStyleElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLStyleElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLStyleElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);

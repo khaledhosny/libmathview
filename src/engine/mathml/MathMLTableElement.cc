@@ -32,12 +32,12 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "defs.h"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLTableElement::MathMLTableElement(const SmartPtr<class MathMLView>& view)
-  : MathMLLinearContainerElement(view)
+MathMLTableElement::MathMLTableElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLLinearContainerElement(context)
 {
   nRows    = 0;
   nColumns = 0;

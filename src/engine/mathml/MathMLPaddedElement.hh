@@ -30,11 +30,11 @@ class MathMLPaddedElement
   : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLPaddedElement(const SmartPtr<class MathMLView>&);
+  MathMLPaddedElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLPaddedElement();
 
 public:
-  static SmartPtr<MathMLPaddedElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLPaddedElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLPaddedElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);

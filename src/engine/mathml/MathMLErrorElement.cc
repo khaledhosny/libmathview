@@ -28,8 +28,8 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLErrorElement::MathMLErrorElement(const SmartPtr<class MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLErrorElement::MathMLErrorElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 { }
 
 MathMLErrorElement::~MathMLErrorElement()

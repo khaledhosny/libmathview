@@ -178,6 +178,7 @@ findDOMNode(const SmartPtr<MathMLElement>& elem)
   else return DOM::Element(0);
 }
 
+#if 0
 SmartPtr<MathMLElement>
 findMathMLElement(const SmartPtr<const MathMLView>& view, const DOM::Element& node)
 {
@@ -193,6 +194,7 @@ findMathMLElement(const SmartPtr<const MathMLView>& view, const DOM::Element& no
   else
     return 0;
 }
+#endif
 
 #endif // HAVE_GMETADOM
 

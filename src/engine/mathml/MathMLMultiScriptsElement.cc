@@ -34,12 +34,12 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLMultiScriptsElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "for_each_if.h"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLMultiScriptsElement::MathMLMultiScriptsElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLMultiScriptsElement::~MathMLMultiScriptsElement()

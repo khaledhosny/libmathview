@@ -32,7 +32,7 @@
 class MathMLTokenElement : public MathMLElement
 {
 protected:
-  MathMLTokenElement(const SmartPtr<class MathMLView>&);
+  MathMLTokenElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLTokenElement();
 
 public:

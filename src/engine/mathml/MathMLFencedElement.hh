@@ -28,11 +28,11 @@
 class MathMLFencedElement : public MathMLBinContainerElement
 {
 protected:
-  MathMLFencedElement(const SmartPtr<class MathMLView>&);
+  MathMLFencedElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLFencedElement();
 
 public:
-  static SmartPtr<MathMLFencedElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLFencedElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLFencedElement(view); }
 
   virtual void construct(void);

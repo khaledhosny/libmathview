@@ -31,11 +31,11 @@ class MathMLOperatorElement
   : public MathMLTokenElement, public MathMLEmbellishment
 {
 protected:
-  MathMLOperatorElement(const SmartPtr<class MathMLView>&);
+  MathMLOperatorElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLOperatorElement();
 
 public:
-  static SmartPtr<MathMLOperatorElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLOperatorElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLOperatorElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);

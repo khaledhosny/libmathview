@@ -29,8 +29,8 @@
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLAlignGroupElement.hh"
 
-MathMLAlignGroupElement::MathMLAlignGroupElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
+MathMLAlignGroupElement::MathMLAlignGroupElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 {
 }
 

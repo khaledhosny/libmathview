@@ -28,11 +28,11 @@
 class MathMLTextElement : public MathMLTokenElement
 {
 protected:
-  MathMLTextElement(const SmartPtr<class MathMLView>&);
+  MathMLTextElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLTextElement();
 
 public:
-  static SmartPtr<MathMLTextElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLTextElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTextElement(view); }
 
   virtual bool IsSpaceLike(void) const;

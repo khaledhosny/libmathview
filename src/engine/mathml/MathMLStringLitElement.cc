@@ -29,8 +29,8 @@
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLStringLitElement::MathMLStringLitElement(const SmartPtr<class MathMLView>& view)
-  : MathMLTokenElement(view)
+MathMLStringLitElement::MathMLStringLitElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLTokenElement(context)
 {
   setupDone = false;
 }

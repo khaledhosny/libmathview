@@ -33,8 +33,8 @@
 #include "ChildList.hh"
 #include "MathMLLinearContainerElement.hh"
 
-MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLLinearContainerElement::MathMLLinearContainerElement(const SmartPtr<MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLLinearContainerElement::~MathMLLinearContainerElement()

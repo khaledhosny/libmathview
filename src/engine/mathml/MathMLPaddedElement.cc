@@ -32,8 +32,8 @@
 #include "Variant.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 { }
 
 MathMLPaddedElement::~MathMLPaddedElement()

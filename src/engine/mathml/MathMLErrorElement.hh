@@ -28,11 +28,11 @@
 class MathMLErrorElement : public MathMLNormalizingContainerElement
 {
 protected:
-  MathMLErrorElement(const SmartPtr<class MathMLView>&);
+  MathMLErrorElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLErrorElement();
 
 public:
-  static SmartPtr<MathMLErrorElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLErrorElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLErrorElement(view); }
 
   virtual AreaRef format(class MathFormattingContext&);

@@ -22,12 +22,12 @@
 
 #include <config.h>
 
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "Linker.hh"
 #include "MathMLElementFactory.hh"
 
-MathMLElementFactory::MathMLElementFactory(const SmartPtr<MathMLView>& v)
-  : view(v)
+MathMLElementFactory::MathMLElementFactory(const SmartPtr<MathMLNamespaceContext>& c)
+  : context(c)
 {
   static struct
   {

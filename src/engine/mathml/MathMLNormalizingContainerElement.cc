@@ -31,11 +31,11 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLNormalizingContainerElement.hh"
 #include "MathMLRowElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "defs.h"
 
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const SmartPtr<class MathMLView>& view)
-  : MathMLBinContainerElement(view)
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLBinContainerElement(context)
 { }
 
 MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()

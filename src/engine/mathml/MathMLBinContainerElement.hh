@@ -30,7 +30,7 @@
 class MathMLBinContainerElement : public MathMLContainerElement
 {
 protected:
-  MathMLBinContainerElement(const SmartPtr<class MathMLView>& view);
+  MathMLBinContainerElement(const SmartPtr<class MathMLNamespaceContext>& view);
   virtual ~MathMLBinContainerElement();
 
 public:

@@ -31,7 +31,7 @@
 class MathMLLinearContainerElement : public MathMLContainerElement
 {
 protected:
-  MathMLLinearContainerElement(const SmartPtr<class MathMLView>&);
+  MathMLLinearContainerElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLLinearContainerElement();
 
 public:

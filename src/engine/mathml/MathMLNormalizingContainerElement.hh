@@ -30,7 +30,7 @@
 class MathMLNormalizingContainerElement : public MathMLBinContainerElement
 {
 protected:
-  MathMLNormalizingContainerElement(const SmartPtr<class MathMLView>&);
+  MathMLNormalizingContainerElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLNormalizingContainerElement();
 
 public:

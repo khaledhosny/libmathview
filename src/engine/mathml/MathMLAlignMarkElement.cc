@@ -28,8 +28,8 @@
 #include "MathMLAlignMarkElement.hh"
 #include "ValueConversion.hh"
 
-MathMLAlignMarkElement::MathMLAlignMarkElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
+MathMLAlignMarkElement::MathMLAlignMarkElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 {
   edge = T__NOTVALID;
 }

@@ -8,6 +8,7 @@ libmathml_la_SOURCES = \
   ValueConversion.cc \
   mathVariantAux.cc \
   MathMLElementFactory.cc \
+  MathMLNamespaceContext.cc \
   MathMLOperatorDictionary.cc \
   MathMLEntitiesTable.cc \
   MathMLAttributeSignatures.cc \
@@ -53,7 +54,6 @@ libmathml_la_SOURCES = \
   MathMLTextNode.cc \
   MathMLTokenElement.cc \
   MathMLUnderOverElement.cc \
-  MathMLView.cc \
   MathMLmathElement.cc \
   tableSetup.cc \
   tableLayout.cc
@@ -65,6 +65,7 @@ noinst_HEADERS = \
   ValueConversion.hh \
   mathVariantAux.hh \
   MathMLElementFactory.hh \
+  MathMLNamespaceContext.hh \
   MathMLOperatorDictionary.hh \
   MathMLEntitiesTable.hh \
   MathMLAttributeParsers.hh \
@@ -112,7 +113,6 @@ noinst_HEADERS = \
   MathMLTextNode.hh \
   MathMLTokenElement.hh \
   MathMLUnderOverElement.hh \
-  MathMLView.hh \
   MathMLmathElement.hh
 
 INCLUDES = \

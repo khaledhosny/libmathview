@@ -29,8 +29,8 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLPhantomElement::MathMLPhantomElement(const SmartPtr<class MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLPhantomElement::MathMLPhantomElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 { }
 
 MathMLPhantomElement::~MathMLPhantomElement()

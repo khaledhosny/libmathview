@@ -31,11 +31,11 @@ class MathMLUnderOverElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLUnderOverElement(const SmartPtr<class MathMLView>&);
+  MathMLUnderOverElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLUnderOverElement();
 
 public:
-  static SmartPtr<MathMLUnderOverElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLUnderOverElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLUnderOverElement(view); }
 
   void setBase(const SmartPtr<MathMLElement>& child) { base.setChild(this, child); }

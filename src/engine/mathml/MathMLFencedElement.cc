@@ -31,12 +31,11 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
-#include "MathMLView.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLFencedElement::MathMLFencedElement(const SmartPtr<class MathMLView>& view)
-  : MathMLBinContainerElement(view)
+MathMLFencedElement::MathMLFencedElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLBinContainerElement(context)
 { }
 
 MathMLFencedElement::~MathMLFencedElement()

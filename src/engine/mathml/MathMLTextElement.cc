@@ -24,8 +24,8 @@
 
 #include "MathMLTextElement.hh"
 
-MathMLTextElement::MathMLTextElement(const SmartPtr<class MathMLView>& view)
-  : MathMLTokenElement(view)
+MathMLTextElement::MathMLTextElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLTokenElement(context)
 { }
 
 MathMLTextElement::~MathMLTextElement()

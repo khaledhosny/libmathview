@@ -32,8 +32,8 @@
 #include "AbstractRefinementContext.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLStyleElement::MathMLStyleElement(const SmartPtr<class MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLStyleElement::MathMLStyleElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 {
 }
 

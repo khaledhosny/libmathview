@@ -30,11 +30,11 @@ class MathMLPhantomElement
   : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 public:
-  MathMLPhantomElement(const SmartPtr<class MathMLView>&);
+  MathMLPhantomElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLPhantomElement();
 
 public:
-  static SmartPtr<MathMLPhantomElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLPhantomElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLPhantomElement(view); }
 
   virtual AreaRef format(class MathFormattingContext&);

@@ -24,8 +24,8 @@
 
 #include "MathMLIdentifierElement.hh"
 
-MathMLIdentifierElement::MathMLIdentifierElement(const SmartPtr<class MathMLView>& view)
-  : MathMLTokenElement(view)
+MathMLIdentifierElement::MathMLIdentifierElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLTokenElement(context)
 { }
 
 MathMLIdentifierElement::~MathMLIdentifierElement()

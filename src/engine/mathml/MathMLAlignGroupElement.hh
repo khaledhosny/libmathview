@@ -28,12 +28,12 @@
 class MathMLAlignGroupElement : public MathMLElement
 {
 protected:
-  MathMLAlignGroupElement(const SmartPtr<class MathMLView>& view);
+  MathMLAlignGroupElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLAlignGroupElement();
 
 public:
-  static SmartPtr<MathMLAlignGroupElement> create(const SmartPtr<class MathMLView>& view)
-  { return new MathMLAlignGroupElement(view); }
+  static SmartPtr<MathMLAlignGroupElement> create(const SmartPtr<class MathMLNamespaceContext>& context)
+  { return new MathMLAlignGroupElement(context); }
 
   void SetWidth(const scaled&);
   void SetDecimalPoint(const SmartPtr<class MathMLTokenElement>&);

@@ -28,11 +28,11 @@
 class MathMLIdentifierElement : public MathMLTokenElement
 {
 protected:
-  MathMLIdentifierElement(const SmartPtr<class MathMLView>&);
+  MathMLIdentifierElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLIdentifierElement();
 
 public:
-  static SmartPtr<MathMLIdentifierElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLIdentifierElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLIdentifierElement(view); }
 };
 

@@ -30,8 +30,8 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLBinContainerElement::~MathMLBinContainerElement()

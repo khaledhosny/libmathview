@@ -28,11 +28,11 @@
 class MathMLDummyElement : public MathMLElement
 {
 protected:
-  MathMLDummyElement(const SmartPtr<class MathMLView>&);
+  MathMLDummyElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLDummyElement();
 
 public:
-  static SmartPtr<MathMLDummyElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLDummyElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLDummyElement(view); }
 
   virtual AreaRef format(class MathFormattingContext&);

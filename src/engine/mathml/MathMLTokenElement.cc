@@ -44,8 +44,8 @@
 #include "traverseAux.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLTokenElement::MathMLTokenElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
+MathMLTokenElement::MathMLTokenElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 { }
 
 MathMLTokenElement::~MathMLTokenElement()

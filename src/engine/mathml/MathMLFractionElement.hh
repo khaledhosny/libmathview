@@ -31,11 +31,11 @@ class MathMLFractionElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLFractionElement(const SmartPtr<class MathMLView>&);
+  MathMLFractionElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLFractionElement();
 
 public:
-  static SmartPtr<MathMLFractionElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLFractionElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLFractionElement(view); }
 
   virtual void   construct(void);

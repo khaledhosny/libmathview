@@ -30,7 +30,7 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
 #include "scaledConv.hh"
 #include "traverseAux.hh"
@@ -38,8 +38,8 @@
 #include "MathFormattingContext.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLUnderOverElement::MathMLUnderOverElement(const SmartPtr<class MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLUnderOverElement::MathMLUnderOverElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLUnderOverElement::~MathMLUnderOverElement()

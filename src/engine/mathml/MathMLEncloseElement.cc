@@ -31,8 +31,8 @@
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLEncloseElement::MathMLEncloseElement(const SmartPtr<MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLEncloseElement::MathMLEncloseElement(const SmartPtr<MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 { }
 
 MathMLEncloseElement::~MathMLEncloseElement()

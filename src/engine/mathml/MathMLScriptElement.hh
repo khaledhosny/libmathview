@@ -31,11 +31,11 @@ class MathMLScriptElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLScriptElement(const SmartPtr<class MathMLView>&);
+  MathMLScriptElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLScriptElement();
 
 public:
-  static SmartPtr<MathMLScriptElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLScriptElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLScriptElement(view); }
 
   void setBase(const SmartPtr<MathMLElement>& child) { base.setChild(this, child); }

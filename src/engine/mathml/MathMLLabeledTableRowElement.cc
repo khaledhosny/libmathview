@@ -32,11 +32,11 @@
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
 
-MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const SmartPtr<MathMLView>& view)
-  : MathMLTableRowElement(view)
+MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const SmartPtr<MathMLNamespaceContext>& context)
+  : MathMLTableRowElement(context)
 { }
 
 MathMLLabeledTableRowElement::~MathMLLabeledTableRowElement()

@@ -28,11 +28,11 @@
 class MathMLNumberElement : public MathMLTokenElement
 {
 protected:
-  MathMLNumberElement(const SmartPtr<class MathMLView>&);
+  MathMLNumberElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLNumberElement();
 
 public:
-  static SmartPtr<MathMLNumberElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLNumberElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLNumberElement(view); }
 };
 

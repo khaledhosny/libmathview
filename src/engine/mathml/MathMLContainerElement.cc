@@ -26,7 +26,7 @@
 
 #include "MathMLContainerElement.hh"
 
-MathMLContainerElement::MathMLContainerElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
+MathMLContainerElement::MathMLContainerElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 { }
 

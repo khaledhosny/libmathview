@@ -29,7 +29,7 @@
 class MathMLContainerElement : public MathMLElement
 {
 protected:
-  MathMLContainerElement(const SmartPtr<class MathMLView>&);
+  MathMLContainerElement(const SmartPtr<class MathMLNamespaceContext>&);
 };
 
 #endif // __MathMLContainerElement_hh__

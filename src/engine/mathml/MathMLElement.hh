@@ -31,7 +31,7 @@
 class MathMLElement : public Element
 {
 protected:
-  MathMLElement(const SmartPtr<class MathMLView>&);
+  MathMLElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLElement();
 
 public:
@@ -52,11 +52,11 @@ public:
 #endif // HAVE_GMETADOM
 
 protected:
-  SmartPtr<class MathMLView> getView(void) const;
+  SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
   SmartPtr<class MathMLElementFactory> getFactory(void) const;
 
 private:
-  WeakPtr<class MathMLView> view;
+  WeakPtr<class MathMLNamespaceContext> context;
 };
 
 #endif // __MathMLElement_hh__

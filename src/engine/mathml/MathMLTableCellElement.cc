@@ -34,8 +34,8 @@
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLTableCellElement::MathMLTableCellElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 {
   minWidth = 0;
   rowIndex = 0;

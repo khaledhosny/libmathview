@@ -30,49 +30,49 @@
 class MathMLElementFactory : public ElementFactory
 {
 protected:
-  MathMLElementFactory(const SmartPtr<class MathMLView>&);
+  MathMLElementFactory(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLElementFactory();
 
 public:
-  static SmartPtr<MathMLElementFactory> create(const SmartPtr<class MathMLView>& view)
-  { return new MathMLElementFactory(view); }
+  static SmartPtr<MathMLElementFactory> create(const SmartPtr<class MathMLNamespaceContext>& context)
+  { return new MathMLElementFactory(context); }
 
   virtual SmartPtr<Element> createElement(const String& name) const;
 
-  SmartPtr<MathMLElement> createMathElement(void) const { return MathMLmathElement::create(view); }
-  SmartPtr<MathMLElement> createIdentifierElement(void) const { return MathMLIdentifierElement::create(view); }
-  SmartPtr<MathMLElement> createNumberElement(void) const { return MathMLNumberElement::create(view); }
-  SmartPtr<MathMLElement> createOperatorElement(void) const { return MathMLOperatorElement::create(view); }
-  SmartPtr<MathMLElement> createTextElement(void) const { return MathMLTextElement::create(view); }
-  SmartPtr<MathMLElement> createSpaceElement(void) const { return MathMLSpaceElement::create(view); }
-  SmartPtr<MathMLElement> createStringLitElement(void) const { return MathMLStringLitElement::create(view); }
-  SmartPtr<MathMLElement> createRowElement(void) const { return MathMLRowElement::create(view); }
-  SmartPtr<MathMLElement> createFractionElement(void) const { return MathMLFractionElement::create(view); }
-  SmartPtr<MathMLElement> createRadicalElement(void) const { return MathMLRadicalElement::create(view); }
-  SmartPtr<MathMLElement> createStyleElement(void) const { return MathMLStyleElement::create(view); }
-  SmartPtr<MathMLElement> createErrorElement(void) const { return MathMLErrorElement::create(view); }
-  SmartPtr<MathMLElement> createPaddedElement(void) const { return MathMLPaddedElement::create(view); }
-  SmartPtr<MathMLElement> createPhantomElement(void) const { return MathMLPhantomElement::create(view); }
-  SmartPtr<MathMLElement> createFencedElement(void) const { return MathMLFencedElement::create(view); }
-  SmartPtr<MathMLElement> createScriptElement(void) const { return MathMLScriptElement::create(view); }
-  SmartPtr<MathMLElement> createUnderOverElement(void) const { return MathMLUnderOverElement::create(view); }
-  SmartPtr<MathMLElement> createMultiScriptsElement(void) const { return MathMLMultiScriptsElement::create(view); }
-  SmartPtr<MathMLElement> createTableElement(void) const { return MathMLTableElement::create(view); }
-  SmartPtr<MathMLElement> createTableRowElement(void) const { return MathMLTableRowElement::create(view); }
-  SmartPtr<MathMLElement> createLabeledTableRowElement(void) const { return MathMLLabeledTableRowElement::create(view); }
-  SmartPtr<MathMLElement> createTableCellElement(void) const { return MathMLTableCellElement::create(view); }
-  SmartPtr<MathMLElement> createAlignGroupElement(void) const { return MathMLAlignGroupElement::create(view); }
-  SmartPtr<MathMLElement> createAlignMarkElement(void) const { return MathMLAlignMarkElement::create(view); }
-  SmartPtr<MathMLElement> createActionElement(void) const { return MathMLActionElement::create(view); }
-  SmartPtr<MathMLElement> createEncloseElement(void) const { return MathMLEncloseElement::create(view); }
-  SmartPtr<MathMLElement> createSemanticsElement(void) const { return MathMLSemanticsElement::create(view); }
-  SmartPtr<MathMLElement> createDummyElement(void) const { return MathMLDummyElement::create(view); }
+  SmartPtr<MathMLElement> createMathElement(void) const { return MathMLmathElement::create(context); }
+  SmartPtr<MathMLElement> createIdentifierElement(void) const { return MathMLIdentifierElement::create(context); }
+  SmartPtr<MathMLElement> createNumberElement(void) const { return MathMLNumberElement::create(context); }
+  SmartPtr<MathMLElement> createOperatorElement(void) const { return MathMLOperatorElement::create(context); }
+  SmartPtr<MathMLElement> createTextElement(void) const { return MathMLTextElement::create(context); }
+  SmartPtr<MathMLElement> createSpaceElement(void) const { return MathMLSpaceElement::create(context); }
+  SmartPtr<MathMLElement> createStringLitElement(void) const { return MathMLStringLitElement::create(context); }
+  SmartPtr<MathMLElement> createRowElement(void) const { return MathMLRowElement::create(context); }
+  SmartPtr<MathMLElement> createFractionElement(void) const { return MathMLFractionElement::create(context); }
+  SmartPtr<MathMLElement> createRadicalElement(void) const { return MathMLRadicalElement::create(context); }
+  SmartPtr<MathMLElement> createStyleElement(void) const { return MathMLStyleElement::create(context); }
+  SmartPtr<MathMLElement> createErrorElement(void) const { return MathMLErrorElement::create(context); }
+  SmartPtr<MathMLElement> createPaddedElement(void) const { return MathMLPaddedElement::create(context); }
+  SmartPtr<MathMLElement> createPhantomElement(void) const { return MathMLPhantomElement::create(context); }
+  SmartPtr<MathMLElement> createFencedElement(void) const { return MathMLFencedElement::create(context); }
+  SmartPtr<MathMLElement> createScriptElement(void) const { return MathMLScriptElement::create(context); }
+  SmartPtr<MathMLElement> createUnderOverElement(void) const { return MathMLUnderOverElement::create(context); }
+  SmartPtr<MathMLElement> createMultiScriptsElement(void) const { return MathMLMultiScriptsElement::create(context); }
+  SmartPtr<MathMLElement> createTableElement(void) const { return MathMLTableElement::create(context); }
+  SmartPtr<MathMLElement> createTableRowElement(void) const { return MathMLTableRowElement::create(context); }
+  SmartPtr<MathMLElement> createLabeledTableRowElement(void) const { return MathMLLabeledTableRowElement::create(context); }
+  SmartPtr<MathMLElement> createTableCellElement(void) const { return MathMLTableCellElement::create(context); }
+  SmartPtr<MathMLElement> createAlignGroupElement(void) const { return MathMLAlignGroupElement::create(context); }
+  SmartPtr<MathMLElement> createAlignMarkElement(void) const { return MathMLAlignMarkElement::create(context); }
+  SmartPtr<MathMLElement> createActionElement(void) const { return MathMLActionElement::create(context); }
+  SmartPtr<MathMLElement> createEncloseElement(void) const { return MathMLEncloseElement::create(context); }
+  SmartPtr<MathMLElement> createSemanticsElement(void) const { return MathMLSemanticsElement::create(context); }
+  SmartPtr<MathMLElement> createDummyElement(void) const { return MathMLDummyElement::create(context); }
 
 private:
   typedef SmartPtr<MathMLElement> (MathMLElementFactory::* FactoryMethod)(void) const;
   typedef HASH_MAP_NS::hash_map<String,FactoryMethod,StringHash,StringEq> FactoryMethodMap;
   FactoryMethodMap factoryMethodMap;  
-  SmartPtr<MathMLView> view;
+  SmartPtr<MathMLNamespaceContext> context;
 };
 
 #endif // __MathMLElementFactory_hh__

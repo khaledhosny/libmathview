@@ -32,11 +32,11 @@ class MathMLMultiScriptsElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLMultiScriptsElement(const SmartPtr<class MathMLView>&);
+  MathMLMultiScriptsElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLMultiScriptsElement();
 
 public:
-  static SmartPtr<MathMLMultiScriptsElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLMultiScriptsElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLMultiScriptsElement(view); }
 
   unsigned getScriptsSize(void) const { return subScript.getSize(); }

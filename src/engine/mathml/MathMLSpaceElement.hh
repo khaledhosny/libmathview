@@ -28,11 +28,11 @@
 class MathMLSpaceElement : public MathMLElement
 {
 protected:
-  MathMLSpaceElement(const SmartPtr<class MathMLView>&);
+  MathMLSpaceElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLSpaceElement();
 
 public:
-  static SmartPtr<MathMLSpaceElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLSpaceElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLSpaceElement(view); }
 
   virtual void    refine(class AbstractRefinementContext&);

@@ -34,11 +34,11 @@
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLTableRowElement::MathMLTableRowElement(const SmartPtr<class MathMLView>& view)
-  : MathMLLinearContainerElement(view)
+MathMLTableRowElement::MathMLTableRowElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLLinearContainerElement(context)
 {
   rowIndex = 0;
 }

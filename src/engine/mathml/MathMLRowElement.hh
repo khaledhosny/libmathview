@@ -30,11 +30,11 @@ class MathMLRowElement
   : public MathMLLinearContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLRowElement(const SmartPtr<class MathMLView>&);
+  MathMLRowElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLRowElement();
 
 public:
-  static SmartPtr<MathMLRowElement> create(const SmartPtr<class MathMLView>& view);
+  static SmartPtr<MathMLRowElement> create(const SmartPtr<class MathMLNamespaceContext>& view);
 
   virtual AreaRef format(class MathFormattingContext&);
 

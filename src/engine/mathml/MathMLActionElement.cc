@@ -32,8 +32,8 @@
 #include "MathGraphicDevice.hh"
 #include "ValueConversion.hh"
 
-MathMLActionElement::MathMLActionElement(const SmartPtr<class MathMLView>& view)
-  : MathMLLinearContainerElement(view)
+MathMLActionElement::MathMLActionElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLLinearContainerElement(context)
 {
   selection = 0;
 }

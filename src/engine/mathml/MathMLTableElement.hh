@@ -190,11 +190,11 @@ class MathMLTableElement
   : public MathMLLinearContainerElement
 {
 protected:
-  MathMLTableElement(const SmartPtr<class MathMLView>&);
+  MathMLTableElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLTableElement();
 
 public:
-  static SmartPtr<MathMLTableElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLTableElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTableElement(view); }
 
   virtual void construct(void);

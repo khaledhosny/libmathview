@@ -31,8 +31,8 @@
 #include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLmathElement::MathMLmathElement(const SmartPtr<class MathMLView>& view)
-  : MathMLNormalizingContainerElement(view)
+MathMLmathElement::MathMLmathElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLNormalizingContainerElement(context)
 { }
 
 MathMLmathElement::~MathMLmathElement()

@@ -32,12 +32,11 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"
-#include "MathMLView.hh"
 #include "ValueConversion.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLFractionElement::MathMLFractionElement(const SmartPtr<class MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLFractionElement::MathMLFractionElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLFractionElement::~MathMLFractionElement()

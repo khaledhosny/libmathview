@@ -29,7 +29,7 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLScriptElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
 #include "defs.h"
 //#include "traverseAux.hh"
@@ -37,8 +37,8 @@
 #include "MathGraphicDevice.hh"
 #include "MathMLAttributeSignatures.hh"
 
-MathMLScriptElement::MathMLScriptElement(const SmartPtr<class MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLScriptElement::MathMLScriptElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLScriptElement::~MathMLScriptElement()

@@ -30,11 +30,11 @@ class MathMLSemanticsElement
   : public MathMLBinContainerElement, public MathMLEmbellishment
 {
 protected:
-  MathMLSemanticsElement(const SmartPtr<class MathMLView>&);
+  MathMLSemanticsElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLSemanticsElement();
 
 public:
-  static SmartPtr<MathMLSemanticsElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLSemanticsElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLSemanticsElement(view); }
 
   virtual void construct(void);

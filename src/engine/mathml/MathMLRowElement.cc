@@ -37,20 +37,20 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLRowElement::MathMLRowElement(const SmartPtr<class MathMLView>& view)
-  : MathMLLinearContainerElement(view)
+MathMLRowElement::MathMLRowElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLLinearContainerElement(context)
 { }
 
 MathMLRowElement::~MathMLRowElement()
 { }
 
 SmartPtr<MathMLRowElement>
-MathMLRowElement::create(const SmartPtr<class MathMLView>& view)
+MathMLRowElement::create(const SmartPtr<class MathMLNamespaceContext>& context)
 {
 #if defined(ENABLE_BREAKS)
-  return new MathMLRowElement(view);
+  return new MathMLRowElement(context);
 #else
-  return new MathMLRowElement(view);
+  return new MathMLRowElement(context);
 #endif
 }
 

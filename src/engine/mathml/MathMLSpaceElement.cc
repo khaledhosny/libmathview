@@ -31,8 +31,8 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
+MathMLSpaceElement::MathMLSpaceElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 {
   breakability = T_AUTO;
 }

@@ -29,11 +29,11 @@
 #include "MathMLElementFactory.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLSemanticsElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "defs.h"
 
-MathMLSemanticsElement::MathMLSemanticsElement(const SmartPtr<class MathMLView>& view)
-  : MathMLBinContainerElement(view)
+MathMLSemanticsElement::MathMLSemanticsElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLBinContainerElement(context)
 { }
 
 MathMLSemanticsElement::~MathMLSemanticsElement()

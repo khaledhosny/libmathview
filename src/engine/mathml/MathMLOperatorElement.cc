@@ -37,8 +37,8 @@
 
 #define GET_OPERATOR_ATTRIBUTE_VALUE(ns,el,name,def) getOperatorAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name),def)
 
-MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLView>& view)
-  : MathMLTokenElement(view)
+MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceContext>& context)
+  : MathMLTokenElement(context)
 {
   fence = separator = stretchy = symmetric = infiniteMaxSize = accent = movableLimits = 0;
   forcedFence = forcedSeparator = forcedSymmetric = 0;

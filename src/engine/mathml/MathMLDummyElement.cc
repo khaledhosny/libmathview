@@ -28,8 +28,8 @@
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLDummyElement::MathMLDummyElement(const SmartPtr<class MathMLView>& view)
-  : MathMLElement(view)
+MathMLDummyElement::MathMLDummyElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLElement(context)
 {
 }
 

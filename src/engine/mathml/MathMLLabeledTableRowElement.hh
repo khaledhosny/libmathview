@@ -29,11 +29,11 @@
 class MathMLLabeledTableRowElement : public MathMLTableRowElement
 {
 protected:
-  MathMLLabeledTableRowElement(const SmartPtr<class MathMLView>&);
+  MathMLLabeledTableRowElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLLabeledTableRowElement();
 
 public:
-  static SmartPtr<MathMLLabeledTableRowElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLLabeledTableRowElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLLabeledTableRowElement(view); }
 
   void setLabel(const SmartPtr<MathMLElement>& child) { label.setChild(this, child); }

@@ -29,11 +29,11 @@ class MathMLTableRowElement
   : public MathMLLinearContainerElement
 {
 protected:
-  MathMLTableRowElement(const SmartPtr<class MathMLView>&);
+  MathMLTableRowElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLTableRowElement();
 
 public:
-  static SmartPtr<MathMLTableRowElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLTableRowElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTableRowElement(view); }
 
   virtual void construct(void);

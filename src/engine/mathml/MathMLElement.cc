@@ -30,14 +30,14 @@
 #include "MathMLElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLStyleElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
 #include "Variant.hh"
 #include "traverseAux.hh"
 
-MathMLElement::MathMLElement(const SmartPtr<MathMLView>& v) : view(v)
+MathMLElement::MathMLElement(const SmartPtr<MathMLNamespaceContext>& c) : context(c)
 {
-  assert(view);
+  assert(context);
 }
 
 MathMLElement::~MathMLElement()
@@ -136,9 +136,9 @@ MathMLElement::IsSet(TokenId id) const
 }
 #endif // HAVE_GMETADOM
 
-SmartPtr<MathMLView>
-MathMLElement::getView() const
+SmartPtr<NamespaceContext>
+MathMLElement::getNamespaceContext() const
 {
-  return static_cast<MathMLView*>(view);
+  return static_cast<MathMLNamespaceContext*>(context);
 }
 

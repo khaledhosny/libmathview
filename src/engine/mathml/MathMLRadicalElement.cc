@@ -29,12 +29,12 @@
 #include "MathMLDummyElement.hh"
 #include "MathMLElementFactory.hh"
 #include "MathMLRadicalElement.hh"
-#include "MathMLView.hh"
+#include "MathMLNamespaceContext.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLRadicalElement::MathMLRadicalElement(const SmartPtr<class MathMLView>& view)
-  : MathMLContainerElement(view)
+MathMLRadicalElement::MathMLRadicalElement(const SmartPtr<class MathMLNamespaceContext>& context)
+  : MathMLContainerElement(context)
 { }
 
 MathMLRadicalElement::~MathMLRadicalElement()

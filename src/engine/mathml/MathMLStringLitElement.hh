@@ -28,11 +28,11 @@
 class MathMLStringLitElement : public MathMLTokenElement
 {
 protected:
-  MathMLStringLitElement(const SmartPtr<class MathMLView>&);
+  MathMLStringLitElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLStringLitElement();
 
 public:
-  static SmartPtr<MathMLStringLitElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLStringLitElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLStringLitElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);

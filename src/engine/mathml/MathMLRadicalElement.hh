@@ -29,11 +29,11 @@
 class MathMLRadicalElement : public MathMLContainerElement
 {
 protected:
-  MathMLRadicalElement(const SmartPtr<class MathMLView>&);
+  MathMLRadicalElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLRadicalElement();
 
 public:
-  static SmartPtr<MathMLRadicalElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLRadicalElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLRadicalElement(view); }
 
   virtual void construct(void);

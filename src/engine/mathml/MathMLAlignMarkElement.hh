@@ -29,11 +29,11 @@
 class MathMLAlignMarkElement : public MathMLElement
 {
 protected:
-  MathMLAlignMarkElement(const SmartPtr<class MathMLView>& view);
+  MathMLAlignMarkElement(const SmartPtr<class MathMLNamespaceContext>& view);
   virtual ~MathMLAlignMarkElement();
 
 public:
-  static SmartPtr<MathMLAlignMarkElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLAlignMarkElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLAlignMarkElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);

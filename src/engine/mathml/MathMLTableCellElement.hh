@@ -28,11 +28,11 @@
 class MathMLTableCellElement : public MathMLNormalizingContainerElement
 {
 protected:
-  MathMLTableCellElement(const SmartPtr<class MathMLView>&);
+  MathMLTableCellElement(const SmartPtr<class MathMLNamespaceContext>&);
   virtual ~MathMLTableCellElement();
 
 public:
-  static SmartPtr<MathMLTableCellElement> create(const SmartPtr<class MathMLView>& view)
+  static SmartPtr<MathMLTableCellElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLTableCellElement(view); }
 
   virtual void refine(class AbstractRefinementContext&);
