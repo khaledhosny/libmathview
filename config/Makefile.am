@@ -1,5 +1,5 @@
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
   dictionary.xml \
   entities-table.xml \
   math-engine-configuration.xml
