@@ -42,6 +42,24 @@ MathMLSemanticsElement::~MathMLSemanticsElement()
 }
 
 void
+MathMLSemanticsElement::construct(AbstractConstructionContext& ctxt)
+{
+  if (dirtyStructure())
+    {
+      ctxt.enter();
+      if (SmartPtr<MathMLElement> e = ctxt.getElement(getChild(), false))
+	setChild(e);
+      else
+	{
+	  while (
+	}
+
+      ctxt.exit();
+      resetDirtyStructure();
+    }
+}
+
+void
 MathMLSemanticsElement::construct()
 {
   if (dirtyStructure())

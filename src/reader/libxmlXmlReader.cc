@@ -22,58 +22,49 @@
 
 #include <config.h>
 
-#include <cassert>
+#include "libxmlXmlReader.hh"
 
-#include "MathMLDOMLinker.hh"
-#include "MathMLElement.hh"
-
-MathMLDOMLinker::MathMLDOMLinker()
+libxmlXmlReader::libxmlXmlReader(xmlTextReaderPtr r)
+  : reader(r), fresh(true)
 {
+  assert(reader);
+  error = xmlTextReaderRead(reader);
+  depth = xmlTextReaderDepth(reader);
 }
 
-MathMLDOMLinker::~MathMLDOMLinker()
+libxmlXmlReader::~libxmlXmlReader()
 {
-}
-
-SmartPtr<MathMLElement>
-MathMLDOMLinker::get(const DOM::Element& elem) const
-{
-  assert(elem);
-
-  DOMNodeMap::iterator p = nodeMap.find(elem);
-  if (p != nodeMap.end()) return static_cast<MathMLElement*>((*p).second);
-  else return 0;
-}
-
-#if 0
-SmartPtr<MathMLElement>
-MathMLDOMLinker::findFormattingNode(const DOM::Node& node) const
-{
-  for (DOM::Node p = node; p; p = p.get_parentNode())
-    if (SmartPtr<MathMLElement> fNode = getFormattingNode(p))
-      return fNode;
-  
-  return 0;
-}
-#endif
-
-void
-MathMLDOMLinker::add(const DOM::Element& elem, const SmartPtr<MathMLElement>& fElem)
-{
-  assert(elem);
-  nodeMap[elem] = static_cast<MathMLElement*>(fElem);
 }
 
 bool
-MathMLDOMLinker::remove(const DOM::Element& elem)
+libxmlXmlReader::valid() const
 {
-  assert(elem);
-  DOMNodeMap::iterator p = nodeMap.find(elem);
-  if (p != nodeMap.end())
-    {
-      nodeMap.erase(p);
-      return true;
-    }
-  else
-    return false;
+  return error == 1 && fresh;
+}
+
+void
+libxmlXmlReader::firstChild()
+{
+  assert(valid());
+  if (!xmlTextReaderIsEmptyElement(reader))
+    error = xmlTextReaderRead(reader);
+  depth++;
+}
+
+void
+libxmlXmlReader::parentNode()
+{
+  depth--;
+  while (xmlTextReaderDepth(reader) > depth && error == 1)
+    xmlTextReaderRead(reader);
+  fresh = false;
+}
+
+void
+libxmlXmlReader::nextSibling()
+{
+  assert(depth == xmlTextReaderDepth(reader));
+  do
+    error = xmlTextReaderRead(reader);
+  while (error == 1 && xmlTextReaderDepth(reader) > depth);
 }

@@ -43,6 +43,19 @@ MathMLLinearContainerElement::~MathMLLinearContainerElement()
 }
 
 void
+MathMLLinearContainerElement::construct(AbstractConstructionContext& ctxt)
+{
+  if (dirtyStructure())
+    {
+      unsigned i = 0;
+      while (SmartPtr<Element> elem = ctxt.getElement(getChild(i), false))
+	setChild(i++, elem);
+      setSize(i);
+      resetDirtyStructure();
+    }
+}
+
+void
 MathMLLinearContainerElement::construct()
 {
   if (dirtyStructure())
@@ -166,8 +179,7 @@ MathMLLinearContainerElement::SetSize(unsigned size)
 SmartPtr<MathMLElement>
 MathMLLinearContainerElement::GetChild(unsigned i) const
 {
-  assert(i < GetSize());
-  return content[i];
+  return (i < GetSize()) ? content[i] : 0;
 }
 
 void

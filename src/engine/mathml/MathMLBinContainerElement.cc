@@ -40,6 +40,16 @@ MathMLBinContainerElement::~MathMLBinContainerElement()
 }
 
 void
+MathMLBinContainerElement::construct(AbstractConstructionContext& ctxt)
+{
+  if (dirtyStructure())
+    {
+      setChild(ctxt.getElement(getChild()));
+      resetDirtyStructure();
+    }
+}
+
+void
 MathMLBinContainerElement::construct()
 {
   if (dirtyStructure())

@@ -20,41 +20,36 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __MathMLDOMLinker_hh__
-#define __MathMLDOMLinker_hh__
+#ifndef __DOMXmlReader_hh__
+#define __DOMXmlReader_hh__
 
 #include "DOM.hh"
-#include "Object.hh"
-#include "HashMap.hh"
-#include "SmartPtr.hh"
-#include "WeakPtr.hh"
+#include "AbstractXmlReader.hh"
 
-class MathMLDOMLinker : public Object
+class DOMXmlReader : public AbstractXmlReader
 {
-protected:
-  MathMLDOMLinker(void);
-  virtual ~MathMLDOMLinker();
-
 public:
-  static SmartPtr<MathMLDOMLinker> create(void)
-  { return new MathMLDOMLinker(); }
+  DOMXmlReader(DOM::Document& doc);
+  virtual ~DOMXmlReader();
 
-  SmartPtr<class MathMLElement> get(const DOM::Element&) const;
-  void add(const DOM::Element&, const SmartPtr<class MathMLElement>&);
-  bool remove(const DOM::Element&);
-  
-protected:
-  struct DOM_hash : public std::unary_function<DOM::Node,size_t>
-  {
-    size_t operator()(const DOM::Node& node) const
-    {
-      assert(node);
-      return reinterpret_cast<size_t>(static_cast<GdomeNode*>(node));
-    }
-  };
+  virtual String name(void) const;
+  virtual String localName(void) const;
+  virtual String namespaceURI(void) const;
+  virtual String prefix(void) const;
+  virtual String value(void) const;
 
-  typedef HASH_MAP_NS::hash_map<DOM::Node,WeakPtr<class MathMLElement>,DOM_hash> DOMNodeMap;
-  mutable DOMNodeMap nodeMap;
+  virtual unsigned attributeCount(void) const;
+  virtual String getAttribute(const String&) const;
+  virtual String getAttributeNS(const String&, const String&) const;
+  virtual String getAttributeNo(unsigned) const;
+
+  virtual unsigned nodeType(void) const;
+
+  virtual next(void);
+  virtual nextSibling(void);
+
+private:
+  DOM::Node node;
 };
 
-#endif // __MathMLDOMLinker_hh__
+#endif // __DOMXmlReader_hh__
