@@ -71,8 +71,8 @@ extern "C" {
   mDOMNodeRef    gtk_math_view_get_selection(GtkMathView*);
   void           gtk_math_view_set_selection(GtkMathView*, mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  GdomeElement*  gtk_math_view_get_selection(GtkMathView*);
-  void           gtk_math_view_set_selection(GtkMathView*, GdomeElement*);
+  GdomeNode*     gtk_math_view_get_selection(GtkMathView*);
+  void           gtk_math_view_set_selection(GtkMathView*, GdomeNode*);
 #endif
   gint      	 gtk_math_view_get_width(GtkMathView*);
   gint      	 gtk_math_view_get_height(GtkMathView*);
@@ -102,8 +102,8 @@ extern "C" {
   mDOMNodeRef    gtk_math_view_get_element(GtkMathView*);
   mDOMNodeRef    gtk_math_view_get_action(GtkMathView*);
 #elif defined(HAVE_GMETADOM)
-  GdomeElement*  gtk_math_view_get_element(GtkMathView*);
-  GdomeElement*  gtk_math_view_get_action(GtkMathView*);
+  GdomeNode*     gtk_math_view_get_element(GtkMathView*);
+  GdomeNode*     gtk_math_view_get_action(GtkMathView*);
 #endif
   guint          gtk_math_view_action_get_selected(GtkMathView*);
   void           gtk_math_view_action_set_selected(GtkMathView*, guint);

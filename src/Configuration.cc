@@ -249,57 +249,57 @@ Configuration::ParseConfiguration(const GMetaDOM::Element& node)
       if (name == "dictionary-path") {
 	GMetaDOM::DOMString path = elementValue(elem);
 	if (!path.isEmpty()) {
-	  char* s_path = path.c_str();
+	  char* s_path = path.toC();
 	  MathEngine::logger(LOG_DEBUG, "found dictionary path `%s'", s_path);
 	  String* s = new StringC(s_path);
 	  s->TrimSpacesLeft();
 	  s->TrimSpacesRight();
 	  dictionaries.Append(s);
-	  g_free(s_path);
+	  delete [] s_path;
 	}
       } else if (name == "font-configuration-path") {
 	GMetaDOM::DOMString path = elementValue(elem);
 	if (!path.isEmpty()) {
-	  char* s_path = path.c_str();
+	  char* s_path = path.toC();
 	  MathEngine::logger(LOG_DEBUG, "found font configuration path `%s'", s_path);
 	  String* s = new StringC(s_path);
 	  s->TrimSpacesLeft();
 	  s->TrimSpacesRight();
 	  fonts.Append(s);
-	  g_free(s_path);
+	  delete [] s_path;
 	}
       } else if (name == "entities-table-path") {
 	GMetaDOM::DOMString path = elementValue(elem);
 	if (!path.isEmpty()) {
-	  char* s_path = path.c_str();
+	  char* s_path = path.toC();
 	  MathEngine::logger(LOG_DEBUG, "found entities table path `%s'", s_path);
 	  String* s = new StringC(s_path);
 	  s->TrimSpacesLeft();
 	  s->TrimSpacesRight();
 	  entities.Append(s);
-	  g_free(s_path);
+	  delete [] s_path;
 	}
       } else if (name == "t1-config-path") {
 	GMetaDOM::DOMString path = elementValue(elem);
 	if (!path.isEmpty() && t1Configs.GetSize() == 0) {
-	  char* s_path = path.c_str();
+	  char* s_path = path.toC();
 	  MathEngine::logger(LOG_DEBUG, "found t1lib config path `%s'", s_path);
 	  String* s = new StringC(s_path);
 	  s->TrimSpacesLeft();
 	  s->TrimSpacesRight();
 	  t1Configs.Append(s);
-	  g_free(s_path);
+	  delete [] s_path;
 	}
       } else if (name == "font-size") {
 	GMetaDOM::DOMString attr = elem.getAttribute("size");
 	if (attr.isEmpty()) {
 	  MathEngine::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
 	} else {
-	  char* s_attr = attr.c_str();
+	  char* s_attr = attr.toC();
 	  fontSize = atoi(s_attr);
 	  MathEngine::logger(LOG_DEBUG, "default font size set to %d points", fontSize);
 	  fontSizeSet = true;
-	  g_free(s_attr);
+	  delete [] s_attr;
 	}
       } else if (name == "color") {
 	colorSet = ParseColor(elem, foreground, background);
@@ -314,9 +314,9 @@ Configuration::ParseConfiguration(const GMetaDOM::Element& node)
 	if (selectColorSet) MathEngine::logger(LOG_DEBUG, "default selection color set to %06x %06x", selectForeground, selectBackground);
 	else MathEngine::logger(LOG_WARNING, "color parsing error in configuration file");
       } else {
-	char* s_name = name.c_str();
+	char* s_name = name.toC();
 	MathEngine::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", s_name);
-	g_free(s_name);			 
+	delete [] s_name;
       }
     } else if (!GMetaDOM::nodeIsBlank(p)) {
       MathEngine::logger(LOG_WARNING, "unrecognized node type `%d' in configuration file (ignored)", p.get_nodeType());
@@ -331,18 +331,18 @@ Configuration::ParseColor(const GMetaDOM::Element& node, RGBValue& f, RGBValue& 
   GMetaDOM::DOMString bs = node.getAttribute("background");
 
   if (fs.isEmpty() || bs.isEmpty()) {
-    char* s_name = node.get_nodeName().c_str();
+    char* s_name = node.get_nodeName().toC();
     MathEngine::logger(LOG_WARNING, "malformed `%s' element in configuration file", s_name);
-    g_free(s_name);
+    delete [] s_name;
     return false;
   }
 
-  char* s_fs = fs.c_str();
-  char* s_bs = bs.c_str();
+  char* s_fs = fs.toC();
+  char* s_bs = bs.toC();
   StringC fss(s_fs);
   StringC bss(s_bs);
-  g_free(s_fs);
-  g_free(s_bs);
+  delete [] s_fs;
+  delete [] s_bs;
 
   StringTokenizer fst(fss);
   StringTokenizer bst(bss);
@@ -354,9 +354,9 @@ Configuration::ParseColor(const GMetaDOM::Element& node, RGBValue& f, RGBValue& 
     delete fv;
     delete bv;
 
-    char* s_name = node.get_nodeName().c_str();
+    char* s_name = node.get_nodeName().toC();
     MathEngine::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name);
-    g_free(s_name);
+    delete [] s_name;
 
     return false;
   }

@@ -443,7 +443,7 @@ CharMapper::ParseFont(const GMetaDOM::Element& node)
     GMetaDOM::DOMString value = attr.get_nodeValue();
 
     if (name == "family") {
-      desc->attributes.family = value.c_str();
+      desc->attributes.family = value.toC();
     } else if (name == "style") {
       if (value == "normal") 
 	desc->attributes.style = FONT_STYLE_NORMAL;
@@ -455,14 +455,14 @@ CharMapper::ParseFont(const GMetaDOM::Element& node)
       else if (value == "bold")
 	desc->attributes.weight = FONT_WEIGHT_BOLD;
     } else if (name == "map") {
-      desc->fontMapId = value.c_str();
+      desc->fontMapId = value.toC();
     } else if (name == "mode") {
       if (value == "text")
 	desc->attributes.mode = FONT_MODE_TEXT;
       else if (value == "math")
 	desc->attributes.mode = FONT_MODE_MATH;
     } else if (name == "size") {
-      char* s_value = value.c_str();
+      char* s_value = value.toC();
       StringC sName(s_value);
       StringTokenizer st(sName);
       const Value* v = numberUnitParser(st);
@@ -470,9 +470,9 @@ CharMapper::ParseFont(const GMetaDOM::Element& node)
 	desc->attributes.size = v->ToNumberUnit();
 	delete v;
       }
-      g_free(s_value);
+      delete [] s_value;
     } else
-      desc->extraAttributes.AddProperty(name.c_str(), value.c_str());
+      desc->extraAttributes.AddProperty(name.toC(), value.toC());
   }
   
   if (desc->fontMapId == NULL && desc->attributes.HasFamily())
@@ -526,7 +526,7 @@ CharMapper::ParseMap(const GMetaDOM::Element& node)
   if (!node.hasAttribute("id")) return;
 
   FontMap* fontMap = new FontMap;
-  fontMap->id = node.getAttribute("id").c_str();
+  fontMap->id = node.getAttribute("id").toC();
 
   if (SearchMapping(fontMap->id) != NULL) {
     MathEngine::logger(LOG_WARNING, "there is already a font map with id `%s' (ignored)", fontMap->id);
@@ -605,27 +605,27 @@ CharMapper::ParseRange(const GMetaDOM::Element& node, FontMap* fontMap)
     delete charMap;
     return;
   }
-  char* s_value = value.c_str();
+  char* s_value = value.toC();
   charMap->range.first = strtol(s_value, NULL, 0);
-  g_free(s_value);
+  delete [] s_value;
 
   value = node.getAttribute("last");
   if (value.isEmpty()) {
     delete charMap;
     return;
   }
-  s_value = value.c_str();
+  s_value = value.toC();
   charMap->range.last = strtol(s_value, NULL, 0);
-  g_free(s_value);
+  delete [] s_value;
 
   value = node.getAttribute("offset");
   if (value.isEmpty()) {
     delete charMap;
     return;
   }
-  s_value = value.c_str();
+  s_value = value.toC();
   charMap->range.offset = strtol(s_value, NULL, 0);
-  g_free(s_value);
+  delete [] s_value;
 
   if (charMap->range.last < charMap->range.first) {
     delete charMap;
@@ -702,18 +702,18 @@ CharMapper::ParseMulti(const GMetaDOM::Element& node, FontMap* fontMap)
     delete charMap;
     return;
   }
-  char* s_value = value.c_str();
+  char* s_value = value.toC();
   charMap->multi.first = strtol(s_value, NULL, 0);
-  g_free(s_value);
+  delete [] s_value;
 
   value = node.getAttribute("last");
   if (value.isEmpty()) {
     delete charMap;
     return;
   }
-  s_value = value.c_str();
+  s_value = value.toC();
   charMap->multi.last = strtol(s_value, NULL, 0);
-  g_free(s_value);
+  delete [] s_value;
 
   if (charMap->multi.last < charMap->multi.first) {
     delete charMap;
@@ -727,14 +727,14 @@ CharMapper::ParseMulti(const GMetaDOM::Element& node, FontMap* fontMap)
   }
   charMap->multi.index = new char[charMap->multi.last - charMap->multi.first + 1];
 
-  s_value = value.c_str();
+  s_value = value.toC();
   const char* ptr = s_value;
   for (Char ch = charMap->multi.first; ch < charMap->multi.last; ch++) {
     char* newPtr;
     charMap->multi.index[ch - charMap->multi.first] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
-  g_free(s_value);
+  delete [] s_value;
 
   fontMap->multi.Append(charMap);
 }
@@ -790,9 +790,9 @@ CharMapper::ParseSingle(const GMetaDOM::Element& node, FontMap* fontMap)
     delete charMap;
     return;
   }
-  char* s_value = value.c_str();
+  char* s_value = value.toC();
   charMap->single.index = strtol(s_value, NULL, 0);
-  g_free(s_value);
+  delete [] s_value;
 
   fontMap->single[CHAR_HASH(charMap->single.code)].Append(charMap);
 }
@@ -938,7 +938,7 @@ CharMapper::ParseStretchySimple(const GMetaDOM::Element& node, CharMap* charMap)
   GMetaDOM::DOMString value = node.getAttribute("index");
   if (value.isEmpty()) return;
 
-  char* s_value = value.c_str();
+  char* s_value = value.toC();
   const char* ptr = s_value;
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
@@ -946,7 +946,7 @@ CharMapper::ParseStretchySimple(const GMetaDOM::Element& node, CharMap* charMap)
     ptr = newPtr;
   }
 
-  g_free(s_value);
+  delete [] s_value;
 }
 
 void
@@ -957,7 +957,7 @@ CharMapper::ParseStretchyCompound(const GMetaDOM::Element& node, CharMap* charMa
   GMetaDOM::DOMString value = node.getAttribute("index");
   if (value.isEmpty()) return;
 
-  char* s_value = value.c_str();
+  char* s_value = value.toC();
   const char* ptr = s_value;
   for (unsigned i = 0; i < SC_REPEAT + 1 && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
@@ -965,7 +965,7 @@ CharMapper::ParseStretchyCompound(const GMetaDOM::Element& node, CharMap* charMa
     ptr = newPtr;
   }
 
-  g_free(s_value);
+  delete [] s_value;
 }
 
 #endif // HAVE_GMETADOM
@@ -1050,7 +1050,7 @@ parseCode(const GMetaDOM::Element& node)
 {
   GMetaDOM::DOMString value = node.getAttribute("code");
   if (!value.isEmpty()) {
-    char* s_value = value.c_str();
+    char* s_value = value.toC();
     assert(s_value != NULL);
 
     Char ch = 0;
@@ -1059,7 +1059,7 @@ parseCode(const GMetaDOM::Element& node)
     else if (*s_value == '0' && tolower(*(s_value + 1)) == 'x') ch = strtol(s_value, NULL, 0);
     else if (isPlain(*s_value) && *(s_value + 1) == '\0') ch = *s_value;
     else MathEngine::logger(LOG_WARNING, "UTF8 character(s) inside font configuration file (ignored)");
-    g_free(s_value);
+    delete [] s_value;
 
     return ch;
   }

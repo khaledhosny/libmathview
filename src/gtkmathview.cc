@@ -76,9 +76,9 @@ struct _GtkMathView {
   mDOMNodeRef    node;           /* element the pointer is on */
   mDOMNodeRef    action_node;    /* action element the pointer is on */
 #elif defined(HAVE_GMETADOM)
-  GdomeElement*  selected_root;
-  GdomeElement*  node;
-  GdomeElement*  action_node;
+  GdomeNode*     selected_root;
+  GdomeNode*     node;
+  GdomeNode*     action_node;
 #endif
 
   FontManagerId  font_manager_id;
@@ -101,10 +101,10 @@ struct _GtkMathViewClass {
   void (*element_changed)   (GtkMathView*, mDOMNodeRef);
   void (*action_changed)    (GtkMathView*, mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-  void (*clicked)           (GtkMathView*, GdomeElement*);
-  void (*selection_changed) (GtkMathView*, GdomeElement*);
-  void (*element_changed)   (GtkMathView*, GdomeElement*);
-  void (*action_changed)    (GtkMathView*, GdomeElement*);
+  void (*clicked)           (GtkMathView*, GdomeNode*);
+  void (*selection_changed) (GtkMathView*, GdomeNode*);
+  void (*element_changed)   (GtkMathView*, GdomeNode*);
+  void (*action_changed)    (GtkMathView*, GdomeNode*);
 #endif
 };
 
@@ -134,9 +134,9 @@ static void gtk_math_view_clicked(GtkMathView*, mDOMNodeRef);
 static void gtk_math_view_selection_changed(GtkMathView*, mDOMNodeRef);
 static void gtk_math_view_element_changed(GtkMathView*, mDOMNodeRef);
 #elif defined(HAVE_GMETADOM)
-static void gtk_math_view_clicked(GtkMathView*, GdomeElement*);
-static void gtk_math_view_selection_changed(GtkMathView*, GdomeElement*);
-static void gtk_math_view_element_changed(GtkMathView*, GdomeElement*);
+static void gtk_math_view_clicked(GtkMathView*, GdomeNode*);
+static void gtk_math_view_selection_changed(GtkMathView*, GdomeNode*);
+static void gtk_math_view_element_changed(GtkMathView*, GdomeNode*);
 #endif
 
 /* auxiliary functions */
@@ -611,7 +611,7 @@ gtk_math_view_button_release_event(GtkWidget* widget,
 	mDOMNodeRef node = (elem != NULL) ? findDOMNode(elem) : NULL;
 #elif defined(HAVE_GMETADOM)
         GMetaDOM::Element e = (elem != NULL) ? findDOMNode(elem) : 0;
-	GdomeElement* node = e.gdome_object();
+	GdomeNode* node = e.gdome_object();
 #endif
 
 	if (node != NULL)
@@ -662,7 +662,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if defined(HAVE_MINIDOM)
     mDOMNodeRef oldRoot = math_view->selected_root;
 #elif defined(HAVE_GMETADOM)
-    GdomeElement* oldRoot = math_view->selected_root;
+    GdomeNode* oldRoot = math_view->selected_root;
 #endif
     math_view->selected_root = findDOMNode(findCommonAncestor(math_view->selected_first, elem)).gdome_object();
 
@@ -672,7 +672,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if defined(HAVE_MINIDOM)
     mDOMNodeRef node = findDOMNode(elem);
 #elif defined(HAVE_GMETADOM)
-    GdomeElement* node = findDOMNode(elem).gdome_object();
+    GdomeNode* node = findDOMNode(elem).gdome_object();
 #endif
     /* BEWARE: should this branch be tested anyway, even if a selection
      * is being made?
@@ -685,7 +685,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 #if defined(HAVE_MINIDOM)
     mDOMNodeRef action = findDOMNode(findActionElement(elem));
 #elif defined(HAVE_GMETADOM)
-    GdomeElement* action = findDOMNode(findActionElement(elem)).gdome_object();
+    GdomeNode* action = findDOMNode(findActionElement(elem)).gdome_object();
 #endif
     if (action != math_view->action_node) {
       math_view->action_node = action;
@@ -929,7 +929,7 @@ static void
 #if defined(HAVE_MINIDOM)
 gtk_math_view_clicked(GtkMathView* math_view, mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
-gtk_math_view_clicked(GtkMathView* math_view, GdomeElement* node)
+gtk_math_view_clicked(GtkMathView* math_view, GdomeNode* node)
 #endif
 {
   g_return_if_fail(math_view != NULL);
@@ -940,7 +940,7 @@ static void
 #if defined(HAVE_MINIDOM)
 gtk_math_view_selection_changed(GtkMathView* math_view, mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
-gtk_math_view_selection_changed(GtkMathView* math_view, GdomeElement* node)
+gtk_math_view_selection_changed(GtkMathView* math_view, GdomeNode* node)
 #endif
 {
   g_return_if_fail(math_view != NULL);
@@ -951,7 +951,7 @@ static void
 #if defined(HAVE_MINIDOM)
 gtk_math_view_element_changed(GtkMathView* math_view, mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
-gtk_math_view_element_changed(GtkMathView* math_view, GdomeElement* node)
+gtk_math_view_element_changed(GtkMathView* math_view, GdomeNode* node)
 #endif
 {
   g_return_if_fail(math_view != NULL);
@@ -1012,7 +1012,7 @@ gtk_math_view_get_font_size(GtkMathView* math_view)
 #if defined(HAVE_MINIDOM)
 extern "C" mDOMNodeRef
 #elif defined(HAVE_GMETADOM)
-extern "C" GdomeElement*
+extern "C" GdomeNode*
 #endif
 gtk_math_view_get_selection(GtkMathView* math_view)
 {
@@ -1031,13 +1031,13 @@ extern "C" void
 #if defined(HAVE_MINIDOM)
 gtk_math_view_set_selection(GtkMathView* math_view, mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
-gtk_math_view_set_selection(GtkMathView* math_view, GdomeElement* node)
+gtk_math_view_set_selection(GtkMathView* math_view, GdomeNode* node)
 #endif
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->interface != NULL);
 
-  MathMLElement* elem = (node != NULL) ? getMathMLElement(node) : NULL;
+  MathMLElement* elem = (node != NULL) ? getMathMLElement(gdome_cast_el(node)) : NULL;
   math_view->interface->SetSelected(elem);
 }
 
@@ -1288,7 +1288,7 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
 #if defined(HAVE_MINIDOM)
 extern "C" mDOMNodeRef
 #elif defined(HAVE_GMETADOM)
-extern "C" GdomeElement*
+extern "C" GdomeNode*
 #endif
 gtk_math_view_get_element(GtkMathView* math_view)
 {
@@ -1299,7 +1299,7 @@ gtk_math_view_get_element(GtkMathView* math_view)
 #if defined(HAVE_MINIDOM)
 extern "C" mDOMNodeRef
 #elif defined(HAVE_GMETADOM)
-extern "C" GdomeElement*
+extern "C" GdomeNode*
 #endif
 gtk_math_view_get_action(GtkMathView* math_view)
 {
@@ -1314,7 +1314,7 @@ gtk_math_view_action_get_selected(GtkMathView* math_view)
 
   if (math_view->action_node == NULL) return 0;
 
-  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(math_view->action_node));
+  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(gdome_cast_el(math_view->action_node)));
   assert(action_element != NULL);
   return action_element->GetSelectedIndex();
 }
@@ -1326,7 +1326,7 @@ gtk_math_view_action_set_selected(GtkMathView* math_view, guint idx)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(math_view->action_node != NULL);
 
-  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(math_view->action_node));
+  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(gdome_cast_el(math_view->action_node)));
   assert(action_element != NULL);
   action_element->SetSelectedIndex(idx);
 
@@ -1344,7 +1344,7 @@ gtk_math_view_action_toggle(GtkMathView* math_view)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(math_view->action_node != NULL);
 
-  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(math_view->action_node));
+  MathMLActionElement* action_element = TO_ACTION(findMathMLElement(gdome_cast_el(math_view->action_node)));
   assert(action_element != NULL);
   guint idx = action_element->GetSelectedIndex();
   if (idx < action_element->content.GetSize())

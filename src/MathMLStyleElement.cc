@@ -107,9 +107,9 @@ MathMLStyleElement::Setup(RenderingEnvironment* env)
   for (unsigned i = 0; i < nnm.get_length(); i++) {
     GMetaDOM::Node attribute = nnm.item(i);
 
-    char* s_name = attribute.get_nodeName().c_str();
+    char* s_name = attribute.get_nodeName().toC();
     AttributeId id = AttributeIdOfName(s_name);
-    g_free(s_name);
+    delete [] s_name;
 
     if (id != ATTR_NOTVALID) {
       GMetaDOM::DOMString value = attribute.get_nodeValue();

@@ -156,17 +156,17 @@ allocString(const GMetaDOM::DOMString& str)
     unsigned length;
     Char8* buffer = str.toUTF8(length);
     res = new StringU<Char8>(buffer, length);
-    g_free(buffer);
+    delete [] buffer;
   } else if (isUnicode16(big)) {
     unsigned length;
     Char16* buffer = str.toUTF16(length);
     res = new StringU<Char16>(buffer, length);
-    g_free(buffer);
+    delete [] buffer;
   } else {
     unsigned length;
     Char32* buffer = str.toUnicode(length);
     res = new StringU<Char32>(buffer, length);
-    g_free(buffer);
+    delete [] buffer;
   }
 
   return res;

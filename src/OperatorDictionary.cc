@@ -209,9 +209,9 @@ OperatorDictionary::Load(const char* fileName)
 	  MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
 	}
       } else if (!GMetaDOM::nodeIsBlank(op)) {
-	char* s_name = op.get_nodeName().c_str();
+	char* s_name = op.get_nodeName().toC();
 	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName, s_name);
-	g_free(s_name);
+	delete [] s_name;
       }
     }
 

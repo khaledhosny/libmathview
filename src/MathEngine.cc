@@ -183,14 +183,14 @@ MathEngine::Load(mDOMDocRef doc)
 MathEngine::Load(const GMetaDOM::Document& doc)
 #endif
 {
-  assert(doc != NULL);
+  assert(doc != 0);
 
   Unload();
 
   Clock perf;
   perf.Start();
   MathMLizer izer(doc);
-  document = izer();
+  document = izer.ize();
   perf.Stop();
   logger(LOG_INFO, "MathMLization time: %dms", perf());
 

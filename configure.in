@@ -344,8 +344,8 @@ if test $HAVE_COLORGCC = "yes"; then
 	CXX=colorgcc
 fi
 
-CFLAGS="$CFLAGS -W -Wall"
-CXXFLAGS="$CXXFLAGS -W -Wall"
+CFLAGS="$CFLAGS -W -Wall -O0"
+CXXFLAGS="$CXXFLAGS -W -Wall -O0"
 
 if test $profile = yes; then
 	CFLAFS="$CFLAGS -p"

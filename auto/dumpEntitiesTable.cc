@@ -93,20 +93,16 @@ dump(const char* fileName)
 	GMetaDOM::DOMString value = elem.getAttribute("value");
 
 	if (!name.isEmpty() && !value.isEmpty()) {
-	  char* s_name = name.c_str();
-	  char* s_value = value.c_str();
+	  char* s_name = name.toC();
+	  unsigned length;
+	  GMetaDOM::Char8* s_value = value.toUTF8(length);
 
 	  printf("{ \"%s\", \"", s_name);
-	
-	  // WARNING: the line below is libxml dependent!!!
-	  for (char* s = s_value; s != NULL && *s != '\0'; s++) {
-	    printf("\\x%02x", *s & 0xff);
-	  }
-	
+	  for (unsigned i = 0; i < length; i++) printf("\\x%02x", s_value[i] & 0xff);
 	  printf("\\x00\", 0, 0 },\n");
 
-	  g_free(s_name);
-	  g_free(s_value);
+	  delete [] s_name;
+	  delete [] s_value;
 	}
       }
     }

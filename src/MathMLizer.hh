@@ -40,7 +40,7 @@ public:
 #endif
   ~MathMLizer();
 
-  class MathMLDocument* operator()(void);
+  class MathMLDocument* ize(void);
 
 protected:
 #if defined(HAVE_MINIDOM)
@@ -61,7 +61,6 @@ protected:
 
   GMetaDOM::Document doc;
 #endif
-  const char* fileName;
 };
 
 #endif // MathMLizer_hh

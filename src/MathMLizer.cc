@@ -63,7 +63,7 @@ MathMLizer::~MathMLizer()
 }
 
 MathMLDocument*
-MathMLizer::operator() ()
+MathMLizer::ize()
 {
   MathMLDocument* document = new MathMLDocument(doc);
 #if defined(HAVE_MINIDOM)
@@ -109,9 +109,9 @@ MathMLizer::MathMLizeNode(const GMetaDOM::Element& node, MathMLContainerElement*
     return;
   }
 
-  char* s_tag = node.get_nodeName().c_str();
+  char* s_tag = node.get_nodeName().toC();
   TagId tag = TagIdOfName(s_tag);
-  g_free(s_tag);
+  delete [] s_tag;
   MathMLElement* elem = NULL;
 #endif // HAVE_GMETADOM
 
@@ -224,9 +224,9 @@ MathMLizer::MathMLizeNode(const GMetaDOM::Element& node, MathMLContainerElement*
 #if defined(HAVE_MINIDOM)
       MathEngine::logger(LOG_WARNING, "unrecognized tag `%s' (ignored)", node->name);
 #elif defined(HAVE_GMETADOM)
-      char* s_name = node.get_nodeName().c_str();
+      char* s_name = node.get_nodeName().toC();
       MathEngine::logger(LOG_WARNING, "unrecognized tag `%s' (ignored)", s_name);
-      g_free(s_name);
+      delete [] s_name;
 #endif
     }
   }
@@ -419,9 +419,9 @@ MathMLizer::MathMLizeTokenContent(const GMetaDOM::Element& node, MathMLTokenElem
 	sContent = NULL;
       }
 
-      char* s_name = p.get_nodeName().c_str();
+      char* s_name = p.get_nodeName().toC();
       TagId tag = TagIdOfName(s_name);
-      g_free(s_name);
+      delete [] s_name;
 
       switch (tag) {
       case TAG_MGLYPH:
@@ -438,9 +438,9 @@ MathMLizer::MathMLizeTokenContent(const GMetaDOM::Element& node, MathMLTokenElem
 	break;
       default:
 	{
-	  char* s_name = node.get_nodeName().c_str();
+	  char* s_name = node.get_nodeName().toC();
 	  MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)\n", s_name);
-	  g_free(s_name);
+	  delete [] s_name;
 	}
 	break;
       }
@@ -558,21 +558,21 @@ MathMLizer::SubstituteMGlyphElement(const GMetaDOM::Element& node)
     return new MathMLCharNode('?');
   }
 
-  char* s_index = index.c_str();
+  char* s_index = index.toC();
   char* endPtr;
   unsigned nch = strtoul(s_index, &endPtr, 10);
-  g_free(s_index);
+  delete [] s_index;
 
   if (endPtr == NULL || *endPtr != '\0') {
     MathEngine::logger(LOG_WARNING, "malformed `mglyph' element (parsing error in `index' attribute)\n");
     nch = '?';
   }
 
-  char* s_alt = alt.c_str();
-  char* s_fontFamily = fontFamily.c_str();
+  char* s_alt = alt.toC();
+  char* s_fontFamily = fontFamily.toC();
   MathMLGlyphNode* glyph = new MathMLGlyphNode(s_alt, s_fontFamily, nch);
-  g_free(s_alt);
-  g_free(s_fontFamily);
+  delete [] s_alt;
+  delete [] s_fontFamily;
 
   return glyph;
 }
@@ -588,11 +588,11 @@ MathMLizer::SubstituteAlignMarkElement(const GMetaDOM::Element& node)
     if      (edge == "left") align = MARK_ALIGN_LEFT;
     else if (edge == "right") align = MARK_ALIGN_RIGHT;
     else {
-      char* s_edge = edge.c_str();
+      char* s_edge = edge.toC();
       MathEngine::logger(LOG_WARNING,
 			 "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
 			 s_edge);
-      g_free(s_edge);
+      delete [] s_edge;
     }
   }
 

@@ -72,19 +72,22 @@ MathMLParseFile(const char* filename, bool subst)
     assert(di != NULL);
     GdomeException exc;
     GdomeDocument* doc = gdome_di_createDocFromURIWithEntitiesTable(di,
-								    filename,
-								    getMathMLEntities(),
-								    GDOME_LOAD_PARSING,
-								    &exc);
+						    filename,
+						    getMathMLEntities(),
+						    GDOME_LOAD_PARSING | GDOME_LOAD_SUBSTITUTE_ENTITIES,
+						    &exc);
     if (exc != 0) {
       gdome_di_unref(di, &exc);
       gdome_doc_unref(doc, &exc);
       return 0;
     }
 
-    gdome_di_unref(di, &exc);
     GMetaDOM::Document res(doc);
-
+    gdome_di_unref(di, &exc);
+    assert(exc == 0);
+    gdome_doc_unref(doc, &exc);
+    assert(exc == 0);
+    
     return res;
   }
 }
