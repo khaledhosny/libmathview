@@ -65,6 +65,9 @@ MathMLMultiScriptsElement::Normalize()
       preScripts = true;
       break;
     }
+
+    if (elem()->IsA() != TAG_MPRESCRIPTS && elem()->IsA() != TAG_NONE)
+      elem()->Normalize();
   }
 
   if (preScripts) {
