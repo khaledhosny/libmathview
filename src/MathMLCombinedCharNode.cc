@@ -80,7 +80,10 @@ MathMLCombinedCharNode::DoLayout()
     box.descent = scaledMax(charBox.descent, cBox.descent - shiftY);
     box.tAscent = scaledMax(charBox.tAscent, cBox.tAscent + shiftY);
     box.tDescent = scaledMax(charBox.tDescent, cBox.tDescent - shiftY);
-    box.width = scaledMax(charBox.width, cBox.width + scaledAbs(shiftX));
+    if (cChar->GetChar() != 0x20dd)
+      box.width = scaledMax(charBox.width, cBox.width + shiftX);
+    else
+      box.width = scaledMax(charBox.width, cBox.width);
     box.lBearing = scaledMin(charBox.lBearing, cBox.lBearing + shiftX);
     box.rBearing = scaledMax(charBox.rBearing, cBox.rBearing + shiftX);
     charBox = box; // WARNING: watch this
@@ -90,10 +93,21 @@ MathMLCombinedCharNode::DoLayout()
 void
 MathMLCombinedCharNode::SetPosition(scaled x, scaled y)
 {
-  printf("set position: x %d y %d dx %d dy %d\n", sp2ipx(x), sp2ipx(y), sp2ipx(shiftX), sp2ipx(shiftY));
-  MathMLCharNode::SetPosition(x, y);
-  assert(cChar != NULL);
-  cChar->SetPosition(x + shiftX, y - shiftY);
+  //printf("set position: x %d y %d dx %d dy %d\n", sp2ipx(x), sp2ipx(y), sp2ipx(shiftX), sp2ipx(shiftY));
+  if (cChar->GetChar() != 0x20dd)
+    {
+      MathMLCharNode::SetPosition(x, y);
+      assert(cChar != NULL);
+      cChar->SetPosition(x + shiftX, y - shiftY);
+    }
+  else
+    {
+      const BoundingBox& cBox = cChar->GetBoundingBox();
+      
+      MathMLCharNode::SetPosition(x - cBox.lBearing - shiftX, y);
+      assert(cChar != NULL);
+      cChar->SetPosition(x - cBox.lBearing, y - shiftY);
+    }
 }
 
 void

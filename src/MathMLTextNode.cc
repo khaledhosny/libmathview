@@ -52,7 +52,7 @@ MathMLTextNode::IsText() const
 void
 MathMLTextNode::SetPosition(scaled x, scaled y)
 {
-  printf("set position x %d y %d\n", sp2ipx(x), sp2ipx(y));
+  //printf("set position x %d y %d\n", sp2ipx(x), sp2ipx(y));
   position.x = x;
   position.y = y;
 }
