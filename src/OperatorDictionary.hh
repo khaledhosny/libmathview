@@ -38,16 +38,16 @@ public:
   bool Load(const char*);
   void Unload(void);
   void Search(const String&,
-	      SmartPtr<class MathMLAttributeList>&,
-	      SmartPtr<class MathMLAttributeList>&,
-	      SmartPtr<class MathMLAttributeList>&) const;
+	      SmartPtr<class AttributeList>&,
+	      SmartPtr<class AttributeList>&,
+	      SmartPtr<class AttributeList>&) const;
 
 private:
   struct FormDefaults
   {
-    SmartPtr<class MathMLAttributeList> prefix;
-    SmartPtr<class MathMLAttributeList> infix;
-    SmartPtr<class MathMLAttributeList> postfix;
+    SmartPtr<class AttributeList> prefix;
+    SmartPtr<class AttributeList> infix;
+    SmartPtr<class AttributeList> postfix;
   };
 
   typedef HASH_MAP_NS::hash_map<String,FormDefaults,StringHash,StringEq> Dictionary;

@@ -26,7 +26,6 @@
 #include "MathMLActionElement.hh"
 #include "MathMLAlignGroupElement.hh"
 #include "MathMLAlignMarkElement.hh"
-#include "MathMLAttribute.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLElement.hh"

@@ -20,33 +20,10 @@
 // http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef EntitiesTable_hh
-#define EntitiesTable_hh
+#ifndef __EntitiesTable_hh__
+#define __EntitiesTable_hh__
 
-#if defined(HAVE_MINIDOM)
-
-#include <minidom.h>
-
-#include "String.hh"
-
-class EntitiesTable
-{
-public:
-  EntitiesTable(void);
-  ~EntitiesTable();
-
-  bool          Load(const char*);
-  void          LoadInternalTable(void);
-  mDOMEntityRef GetEntity(mDOMConstStringRef) const;
-  mDOMEntityRef GetErrorEntity(void) const;
-  String*       GetEntityContent(mDOMConstStringRef) const;
-  String*       GetErrorEntityContent(void) const;
-
-private:
-  mDOMDocRef repository;
-};
-
-#elif defined(HAVE_GMETADOM)
+#if defined(HAVE_GMETADOM)
 
 #include <gdome.h>
 
@@ -54,5 +31,5 @@ const GdomeEntitiesTableEntry* getMathMLEntities(void);
 
 #endif // HAVE_GMETADOM
 
-#endif // EntitiesTable_hh
+#endif // __EntitiesTable_hh__
 

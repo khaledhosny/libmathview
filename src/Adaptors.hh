@@ -62,14 +62,14 @@ struct SetFlagDownAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,MathMLElement::Flags,void>
 {
   void operator()(const SmartPtr<MathMLElement>& elem, MathMLElement::Flags f) const
-  { elem->SetFlagDown(f); }
+  { elem->setFlagDown(f); }
 };
 
 struct ResetFlagDownAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,MathMLElement::Flags,void>
 {
   void operator()(const SmartPtr<MathMLElement>& elem, MathMLElement::Flags f) const
-  { elem->ResetFlagDown(f); }
+  { elem->resetFlagDown(f); }
 };
 
 #if 0
@@ -80,11 +80,11 @@ struct SetDirtyAdaptor
   { elem->SetDirty(rect); }
 };
 
-struct SetDirtyLayoutAdaptor
+struct setDirtyLayoutAdaptor
   : public std::binary_function<SmartPtr<MathMLElement>,bool,void>
 {
   void operator()(const SmartPtr<MathMLElement>& elem, bool children) const
-  { elem->SetDirtyLayout(children); }
+  { elem->setDirtyLayout(children); }
 };
 
 // WARNING: we have to use const DrawingArea* instead of

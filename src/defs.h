@@ -24,6 +24,7 @@
 #define defs_h
 
 #define MATHML_NS_URI "http://www.w3.org/1998/Math/MathML"
+#define BOXML_NS_URI "http://helm.cs.unibo.it/2003/BoxML"
 
 #define IMPOSSIBLE      0
 #define NOT_IMPLEMENTED 0

@@ -41,4 +41,5 @@ INCLUDES = \
   -I$(top_srcdir)/src/formatter/gtk_areamodel \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/gtk_mathml_graphic_device \
-  -I$(top_srcdir)/src/engine
+  -I$(top_srcdir)/src/engine \
+  -I$(top_srcdir)/src/engine/mathml

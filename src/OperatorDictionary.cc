@@ -24,24 +24,25 @@
 #include <assert.h>
 
 #include "Globals.hh"
-#include "MathMLAttribute.hh"
+#include "Attribute.hh"
 #include "MathMLParseFile.hh"
 #include "OperatorDictionary.hh"
-#include "MathMLAttributeList.hh"
-#include "MathMLAttributeSignature.hh"
+#include "AttributeList.hh"
+#include "AttributeSignature.hh"
+#include "MathMLAttributeSignatures.hh"
 
 #if defined(HAVE_GMETADOM)
 
 void
-getAttribute(const DOM::Element& node, const MathMLAttributeSignature& signature,
-	     const SmartPtr<MathMLAttributeList>& aList)
+getAttribute(const DOM::Element& node, const AttributeSignature& signature,
+	     const SmartPtr<AttributeList>& aList)
 {
   assert(aList);
 
   DOM::GdomeString attrVal = node.getAttribute(toDOMString(signature.name));
   if (attrVal.empty()) return;
 
-  aList->set(MathMLAttribute::create(signature, fromDOMString(attrVal)));
+  aList->set(Attribute::create(signature, fromDOMString(attrVal)));
 }
 
 #endif // HAVE_GMETADOM
@@ -82,20 +83,20 @@ OperatorDictionary::Load(const char* fileName)
 	String opName = fromDOMString(elem.getAttribute("name"));
 
 	if (!opName.empty()) {
-	  SmartPtr<MathMLAttributeList> defaults = MathMLAttributeList::create();
+	  SmartPtr<AttributeList> defaults = AttributeList::create();
 
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, form), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, fence), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, separator), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, lspace), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, rspace), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, stretchy), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, symmetric), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, maxsize), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, minsize), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, largeop), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, movablelimits), defaults);
-	  getAttribute(op, ATTRIBUTE_SIGNATURE(Operator, accent), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
+	  getAttribute(op, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
 
 	  FormDefaults& formDefaults = items[opName];
 	  if (elem.getAttribute("form") == "prefix")
@@ -144,9 +145,9 @@ OperatorDictionary::Unload()
 
 void
 OperatorDictionary::Search(const String& opName,
-			   SmartPtr<MathMLAttributeList>& prefix,
-			   SmartPtr<MathMLAttributeList>& infix,
-			   SmartPtr<MathMLAttributeList>& postfix) const
+			   SmartPtr<AttributeList>& prefix,
+			   SmartPtr<AttributeList>& infix,
+			   SmartPtr<AttributeList>& postfix) const
 {
   prefix = infix = postfix = 0;
 

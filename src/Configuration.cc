@@ -31,7 +31,8 @@
 #include "Configuration.hh"
 #include "MathMLParseFile.hh"
 #include "ValueConversion.hh"
-#include "MathMLAttributeSignature.hh"
+#include "AttributeSignature.hh"
+#include "MathMLAttributeSignatures.hh"
 
 Configuration::Configuration(void)
 {
@@ -148,8 +149,8 @@ Configuration::ParseColor(const DOM::Element& node, RGBColor& f, RGBColor& b, bo
     return false;
   }
 
-  SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(Style,color).parseValue(fs);
-  SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(Style,background).parseValue(bs);
+  SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(MathML,Style,color).parseValue(fs);
+  SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(MathML,Style,background).parseValue(bs);
 
   if (!fv || !bv)
     {

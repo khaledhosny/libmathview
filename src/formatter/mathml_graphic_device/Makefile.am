@@ -25,5 +25,6 @@ INCLUDES = \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/formatter/basictypes \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants \
-  -I$(top_srcdir)/src/formatter/areamodel
+  -I$(top_srcdir)/src/formatter/areamodel \
+  -I$(top_srcdir)/src/engine/mathml
 

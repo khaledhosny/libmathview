@@ -27,7 +27,6 @@
 #include "defs.h"
 #include "String.hh"
 #include "ValueConversion.hh"
-#include "RenderingEnvironment.hh"
 
 bool
 IsEmpty(const SmartPtr<Value>& value)
@@ -210,6 +209,7 @@ GetComponent(const SmartPtr<Value>& value, int i, int j)
     }
 }
 
+#if 0
 SmartPtr<Value>
 Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env, int i, int j)
 {
@@ -223,6 +223,7 @@ Resolve(const SmartPtr<Value>& value, const RenderingEnvironment& env, int i, in
   else
     return realValue;
 }
+#endif
 
 MathFormattingContext::PropertyId
 toMathSpaceId(TokenId id)

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2001, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,18 +17,31 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://www.cs.unibo.it/helm/mml-widget, or send a mail to
+// http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __unidefs_h__
-#define __unidefs_h__
+#ifndef MathMLNode_hh
+#define MathMLNode_hh
 
-#define U_OVERLINE       0x0305
-#define U_UNDERLINE      0x0332
-#define U_HORIZBAR       0x2015
+#include "Object.hh"
+#include "WeakPtr.hh"
+#include "SmartPtr.hh"
 
-#define U_APPLYFUNCTION  0x2061
-#define U_INVISIBLETIMES 0x2062
-#define U_SQRT           0x221a
+class MathMLNode : public Object
+{
+protected:
+  MathMLNode(void);
+  virtual ~MathMLNode();
 
-#endif // __unidefs_h__
+public:
+#if 0
+  virtual void Unlink(void);
+#endif
+  virtual void setParent(const SmartPtr<class MathMLElement>& p);
+  SmartPtr<class MathMLElement> GetParent(void) const;
+
+private:
+  WeakPtr<class MathMLElement> parent;
+};
+
+#endif // MathMLNode_hh
