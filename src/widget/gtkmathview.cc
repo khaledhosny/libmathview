@@ -491,8 +491,6 @@ gtk_math_view_destroy(GtkObject* object)
   math_view = GTK_MATH_VIEW(object);
   g_assert(math_view != NULL);
 
-  Globals::logger(LOG_DEBUG, "destroying the widget");
-
   if (math_view->view)
     {
       math_view->view->unref();
@@ -504,10 +502,6 @@ gtk_math_view_destroy(GtkObject* object)
       delete math_view->renderingContext;
       math_view->renderingContext = 0;
     }
-
-#if 0
-  if (--new_counter == 0) viewContext = 0;
-#endif
 
   if (math_view->hadjustment != NULL)
     {
@@ -794,11 +788,11 @@ gtk_math_view_configure_event(GtkWidget* widget,
 
   Gtk_RenderingContext* rc = math_view->renderingContext;
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
-  rc->setForegroundColor(DEFAULT_SELECT_FOREGROUND);
-  rc->setBackgroundColor(DEFAULT_SELECT_BACKGROUND);
+  rc->setForegroundColor(Globals::configuration.GetSelectForeground());
+  rc->setBackgroundColor(Globals::configuration.GetSelectBackground());
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(DEFAULT_FOREGROUND);
-  rc->setBackgroundColor(DEFAULT_BACKGROUND);
+  rc->setForegroundColor(Globals::configuration.GetForeground());
+  rc->setBackgroundColor(Globals::configuration.GetBackground());
   paint_widget(math_view);
 
   return TRUE;
