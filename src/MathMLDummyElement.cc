@@ -43,7 +43,7 @@ MathMLDummyElement::Setup(RenderingEnvironment& env)
   if (DirtyAttribute())
     {
       background = env.GetBackgroundColor();
-      scaled size = env.ToScaledPoints(env.GetFontAttributes().size);
+      scaled size = env.ToScaledPoints(env.GetFontSize());
       box.set(size, size, 0);
       ResetDirtyAttribute();
     }

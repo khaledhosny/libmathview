@@ -46,10 +46,7 @@ RenderingEnvironment::RenderingEnvironment(const SmartPtr<AreaFactory>& af,
   top->scriptMinSize.set(6.0, Length::PT_UNIT);
   top->scriptSizeMultiplier = 0.71;
 
-  top->fontAttributes.family = "serif";
-  top->fontAttributes.size.set(Globals::configuration.GetFontSize(), Length::PT_UNIT);
-  top->fontAttributes.weight = T_NORMAL;
-  top->fontAttributes.style  = T_NORMAL;
+  top->size.set(Globals::configuration.GetFontSize(), Length::PT_UNIT);
 
   top->color = Globals::configuration.GetForeground();
   top->background = Globals::configuration.GetBackground();
@@ -167,8 +164,7 @@ RenderingEnvironment::AddScriptLevel(int delta)
   float multiplier = pow(top->scriptSizeMultiplier, static_cast<float>(delta));
   top->scriptLevel += delta;
 
-  Length newFontSize(top->fontAttributes.size.value * multiplier,
-		     top->fontAttributes.size.type);
+  Length newFontSize(top->size.value * multiplier, top->size.type);
 
   // WARNING: if scriptMinSize cannot be em or ex, than the
   // following test can be implemented much more efficiently, because
@@ -191,24 +187,6 @@ RenderingEnvironment::GetScriptLevel() const
 }
 
 void
-RenderingEnvironment::SetFontFamily(const char* family)
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  assert(family != NULL);
-  top->fontAttributes.family = family;
-}
-
-void
-RenderingEnvironment::SetFontFamily(const String& family)
-{
-  SetFontFamily(family.c_str());
-}
-
-void
 RenderingEnvironment::SetFontSize(const Length& size)
 {
   assert(!level.empty());
@@ -221,51 +199,27 @@ RenderingEnvironment::SetFontSize(const Length& size)
   switch (size.type)
     {
     case Length::EM_UNIT:
-      top->fontAttributes.size.set((GetScaledPointsPerEm() * size.value).toFloat(), Length::PT_UNIT);
+      top->size.set((GetScaledPointsPerEm() * size.value).toFloat(), Length::PT_UNIT);
       break;
     case Length::EX_UNIT:
-      top->fontAttributes.size.set((GetScaledPointsPerEx() * size.value).toFloat(), Length::PT_UNIT);
+      top->size.set((GetScaledPointsPerEx() * size.value).toFloat(), Length::PT_UNIT);
       break;
     case Length::PERCENTAGE_UNIT:
-      top->fontAttributes.size.set(top->fontAttributes.size.value * size.value,
-				   top->fontAttributes.size.type);
+      top->size.set(top->size.value * size.value, top->size.type);
       break;
     default:
-      top->fontAttributes.size = size;
+      top->size = size;
       break;
     }
 }
 
-void
-RenderingEnvironment::SetFontWeight(TokenId weight)
+const Length&
+RenderingEnvironment::GetFontSize() const
 {
   assert(!level.empty());
-
   AttributeLevel* top = level.front();
-  assert(top != NULL);
-  top->fontAttributes.weight = weight;
-}
-
-void
-RenderingEnvironment::SetFontStyle(TokenId style)
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  top->fontAttributes.style = style;
-}
-
-const FontAttributes&
-RenderingEnvironment::GetFontAttributes() const
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  return top->fontAttributes;
+  assert(top);
+  return top->size;
 }
 
 void
@@ -381,9 +335,7 @@ RenderingEnvironment::GetScaledPointsPerEm() const
   }
 #endif
 
-  assert(top->fontAttributes.HasSize());
-  assert(top->fontAttributes.size.absolute());
-  return ToScaledPoints(top->fontAttributes.size);
+  return ToScaledPoints(GetFontSize());
 }
 
 scaled
@@ -402,9 +354,7 @@ RenderingEnvironment::GetScaledPointsPerEx() const
   }
 #endif
 
-  assert(top->fontAttributes.HasSize());
-  assert(top->fontAttributes.size.absolute());
-  return ToScaledPoints(top->fontAttributes.size) * (2.0 / 3.0);
+  return ToScaledPoints(GetFontSize()) * (2.0 / 3.0);
 }
 
 scaled
@@ -454,31 +404,8 @@ RenderingEnvironment::GetRuleThickness() const
   scaled s = ToScaledPoints(top->fontAttributes.size) * 0.04;
   return s;
 #else
-  scaled s = std::min(px2sp(1), ToScaledPoints(top->fontAttributes.size) * 0.1);
+  scaled s = std::min(px2sp(1), ToScaledPoints(top->size) * 0.1);
   return s;
 #endif
 }
 
-#if 0
-void
-RenderingEnvironment::SetFontMode(FontModeId mode)
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  top->fontAttributes.mode = mode;
-}
-
-FontModeId
-RenderingEnvironment::GetFontMode() const
-{
-  assert(!level.empty());
-
-  AttributeLevel* top = level.front();
-  assert(top != NULL);
-
-  return top->fontAttributes.mode;
-}
-#endif

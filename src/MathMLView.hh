@@ -36,7 +36,7 @@ public:
   static SmartPtr<MathMLView> create(const SmartPtr<MathMLViewContext>& context)
   { return new MathMLView(context); }
 
-  void Init(class DrawingArea*, class FontManager*);
+  void Init(class DrawingArea*);
 
   bool frozen(void) const { return freezeCounter > 0; }
   virtual bool freeze(void);
@@ -90,7 +90,6 @@ private:
   SmartPtr<MathMLViewContext> context;
 
   class DrawingArea* area;
-  class FontManager* fontManager;
 };
 
 #endif // __MathMLView_hh__

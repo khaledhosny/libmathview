@@ -25,13 +25,13 @@
 
 #include <list>
 
-#include "AFont.hh"
-#include "String.hh"
-#include "RGBColor.hh"
 #include "Length.hh"
-#include "FontAttributes.hh"
 #include "MathMLAttribute.hh"
 #include "MathMLAttributeList.hh"
+#include "RGBColor.hh"
+#include "String.hh"
+#include "scaled.hh"
+#include "token.hh"
 
 #define MAX_FONT_FAMILY 64
 
@@ -58,12 +58,8 @@ public:
   int      GetScriptLevel(void) const;
 
   // font specific attributes
-  void     SetFontFamily(const char*);
-  void     SetFontFamily(const String&);
   void     SetFontSize(const Length&);
-  void     SetFontWeight(TokenId);
-  void     SetFontStyle(TokenId);
-  const FontAttributes& GetFontAttributes(void) const;
+  const Length& GetFontSize(void) const;
 
   // math spaces
   enum MathSpaceId {
@@ -113,7 +109,7 @@ private:
     Length scriptMinSize;
     float     scriptSizeMultiplier;
 
-    FontAttributes fontAttributes;
+    Length size;
     
     Length mathSpace[14];
     

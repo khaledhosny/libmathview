@@ -26,7 +26,6 @@
 #include <vector>
 
 #include "RGBColor.hh"
-#include "FontAttributes.hh"
 #include "MathMLContainerElement.hh"
 
 // base class for token element. Token elemens can contain character data

@@ -25,7 +25,6 @@
 
 #include "RGBColor.hh"
 #include "Rectangle.hh"
-#include "FontAttributes.hh"
 
 enum LineStyle {
   LINE_STYLE_NOTVALID = -1,

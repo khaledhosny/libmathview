@@ -25,7 +25,6 @@
 #include <stddef.h>
 #include <gtk/gtk.h>
 
-#include "Gtk_Font.hh"
 #include "Gtk_DrawingArea.hh"
 #include "Gtk_GraphicsContext.hh"
 #include "scaledConv.hh"
@@ -120,40 +119,6 @@ Gtk_DrawingArea::DrawRectangle(const GraphicsContext* gc,
 		     gtk_gc->GetNativeGraphicsContext(),
 		     FALSE,
 		     sp2ipx(x - x0), sp2ipx(y - y0), sp2ipx(width), sp2ipx(height));
-}
-
-void
-Gtk_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
-			  const scaled& x, const scaled& y, char ch) const
-{
-  const Gtk_GraphicsContext* gtk_gc = TO_GTK_GRAPHICS_CONTEXT(gc);
-  const Gtk_Font* gtk_font = TO_GTK_FONT(font);
-  assert(gtk_gc != NULL);
-  assert(gtk_font != NULL);
-
-  GdkWChar wc = ch;
-  gdk_draw_text_wc(gdk_pixmap,
-		   gtk_font->GetNativeFont(),
-		   gtk_gc->GetNativeGraphicsContext(),
-		   sp2ipx(x - x0), sp2ipx(y - y0),
-		   &wc, 1);  
-}
-
-void
-Gtk_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			    const scaled& x, const scaled& y,
-			    const char* text,
-			    unsigned len) const
-{
-  const Gtk_GraphicsContext* gtk_gc = TO_GTK_GRAPHICS_CONTEXT(gc);
-  const Gtk_Font* gtk_font = TO_GTK_FONT(font);
-  assert(gtk_gc != NULL);
-  assert(gtk_font != NULL);
-  gdk_draw_text(gdk_pixmap,
-		gtk_font->GetNativeFont(),
-		gtk_gc->GetNativeGraphicsContext(),
-		sp2ipx(x - x0), sp2ipx(y - y0),
-		text, len);
 }
 
 void

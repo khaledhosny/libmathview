@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "AFont.hh"
 #include "BoundingBoxAux.hh"
 #include "FormattingContext.hh"
 #include "Globals.hh"
@@ -266,9 +265,6 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 
 	  const MathVariantAttributes& attr = attributesOfVariant(ToTokenId(value));
 	  assert(attr.kw != T__NOTVALID);
-	  env.SetFontFamily(attr.family);
-	  env.SetFontWeight(attr.weight);
-	  env.SetFontStyle(attr.style);
 
 	  if (IsSet(T_FONTFAMILY) || IsSet(T_FONTWEIGHT) || IsSet(T_FONTSTYLE))
 	    Globals::logger(LOG_WARNING, "attribute `mathvariant' overrides deprecated font-related attributes");
@@ -278,26 +274,19 @@ MathMLTokenElement::Setup(RenderingEnvironment& env)
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontfamily))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontfamily' is deprecated in MathML 2");
-	      env.SetFontFamily(ToString(value));
 	    }
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontweight))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontweight' is deprecated in MathML 2");
-	      env.SetFontWeight(ToTokenId(value));
 	    }
 
 	  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(Token, fontstyle))
 	    {
 	      Globals::logger(LOG_WARNING, "the attribute `fontstyle' is deprecated in MathML 2");
-	      env.SetFontStyle(ToTokenId(value));
 	    } 
 	  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLElement>(this)))
 	    {
-	      if (GetLogicalContentLength() == 1)
-		env.SetFontStyle(T_ITALIC);
-	      else
-		env.SetFontStyle(T_NORMAL);
 	    }
 	}
       

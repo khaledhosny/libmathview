@@ -45,7 +45,6 @@
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
 #include "Gtk_DrawingArea.hh"
-#include "Gtk_FontManager.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLDOMLinker.hh"
 #include "MathMLFormattingEngineFactory.hh"
@@ -108,7 +107,6 @@ struct _GtkMathView {
 //   Gtk_AdobeShaper* shaper_adobe;
 
   Gtk_DrawingArea* drawing_area;
-  FontManager* font_manager;
 
   MathMLView* view;
 };
@@ -444,7 +442,6 @@ gtk_math_view_init(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
 
   math_view->pixmap          = NULL;
-  math_view->font_manager    = NULL;
   math_view->drawing_area    = NULL;
   math_view->view            = 0;
   math_view->freeze_counter  = 0;
@@ -532,8 +529,7 @@ gtk_math_view_new(GtkAdjustment*, GtkAdjustment*)
 						Globals::configuration.GetSelectBackground());
   math_view->drawing_area->SetPixmap(math_view->pixmap);
 
-  math_view->font_manager = new Gtk_FontManager();
-  view->Init(math_view->drawing_area, math_view->font_manager);
+  view->Init(math_view->drawing_area);
 
   return GTK_WIDGET(math_view);
 }
@@ -557,9 +553,7 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->view = 0;
     }
 
-  delete math_view->font_manager;
   if (--new_counter == 0) viewContext = 0;
-  math_view->font_manager = 0;
   delete math_view->drawing_area;
   math_view->drawing_area = 0;
 
@@ -1289,173 +1283,3 @@ gtk_math_view_get_log_verbosity(GtkMathView*)
   return Globals::GetVerbosity();
 }
 
-#if 0
-extern "C" void
-gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->view != NULL);
-  g_return_if_fail(id != FONT_MANAGER_UNKNOWN);
-
-  if (id == math_view->font_manager_id) return;
-
-  SmartPtr<MathMLDocument> document = math_view->interface->GetDocument();
-  if (document) document->ReleaseGCs();
-
-  delete math_view->font_manager;
-  delete math_view->drawing_area;
-  delete math_view->area_factory;
-  delete math_view->shaper_manager;
-  delete math_view->shaper_pango;
-  delete math_view->shaper_adobe;
-
-  math_view->font_manager = NULL;
-  math_view->drawing_area = NULL;
-
-  math_view->font_manager_id = id;
-
-  GraphicsContextValues values;
-  values.foreground = Globals::configuration.GetForeground();
-  values.background = Globals::configuration.GetBackground();
-  values.lineStyle  = LINE_STYLE_SOLID;
-  values.lineWidth  = px2sp(1);
-
-  switch (id) {
-  case FONT_MANAGER_T1:
-#ifdef HAVE_LIBT1
-    math_view->shaper_manager = 0;
-    math_view->shaper_pango = 0;
-    math_view->shaper_adobe = 0;
-    math_view->font_manager = new PS_T1_FontManager;
-    math_view->drawing_area = new T1_Gtk_DrawingArea(values, px2sp(MARGIN), px2sp(MARGIN),
-						     GTK_WIDGET(math_view->area),
-						     Globals::configuration.GetSelectForeground(),
-						     Globals::configuration.GetSelectBackground());
-    math_view->drawing_area->SetPixmap(math_view->pixmap);
-    break;
-#else
-    Globals::logger(LOG_WARNING, "the widget was compiled without support for T1 fonts, falling back to GTK fonts");
-#endif // HAVE_LIBT1
-  case FONT_MANAGER_GTK:
-    break;
-  default:
-    Globals::logger(LOG_ERROR, "could not switch to font manager type %d", id);
-    break;
-  }
-
-  math_view->interface->Init(math_view->drawing_area, math_view->font_manager,
-			     math_view->area_factory, math_view->shaper_manager);
-  if (GTK_WIDGET_REALIZED(GTK_WIDGET(math_view))) math_view->drawing_area->Realize();
-  paint_widget(math_view);
-}
-
-extern "C" FontManagerId
-gtk_math_view_get_font_manager_type(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, FONT_MANAGER_UNKNOWN);
-  return math_view->font_manager_id;
-}
-
-extern "C" void
-gtk_math_view_export_to_postscript(GtkMathView* math_view,
-				   gint w, gint h,
-				   gint x0, gint y0,
-				   gboolean disable_colors,
-				   FILE* f)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
-  g_return_if_fail(math_view->drawing_area != NULL);
-
-  if (math_view->font_manager_id != FONT_MANAGER_T1) {
-    Globals::logger(LOG_ERROR, "cannot export to PostScript if the Type1 Font Manager is not available");
-    return;
-  }
-
-#ifdef HAVE_LIBT1
-  PS_T1_FontManager* fm = TO_PS_T1_FONT_MANAGER(math_view->font_manager);
-  g_assert(fm != NULL);
-
-  PS_DrawingArea area(math_view->drawing_area->GetDefaultGraphicsContextValues(),
-		      px2sp(x0), px2sp(y0), f);
-  area.SetSize(px2sp(w), px2sp(h));
-  if (disable_colors) area.DisableColors();
-
-  if (SmartPtr<MathMLDocument> document = math_view->interface->GetDocument())
-    {
-      // the following invocations are needed just to mark the chars actually used :(
-      fm->ResetUsedChars();
-      area.SetOutputFile(NULL);
-      document->SetDirty();
-      document->Render(area);
-      area.SetOutputFile(f);
-
-      Rectangle rect;
-      math_view->interface->GetDocumentRectangle(rect);
-      area.DumpHeader(PACKAGE, "(no title)", rect);
-      fm->DumpFontDictionary(f);
-      area.DumpPreamble();
-      document->SetDirty();
-      document->Render(area);
-      area.DumpEpilogue();
-    }
-#else
-  g_assert_not_reached();
-#endif // HAVE_LIBT1
-}
-#endif
-
-#if 0
-extern "C" guint
-gtk_math_view_action_get_selected(GtkMathView* math_view, GdomeElement* elem)
-{
-  g_return_val_if_fail(math_view != NULL, 0);
-  g_return_val_if_fail(math_view->interface != NULL, 0);
-  g_return_val_if_fail(elem != NULL, 0);
-
-  DOM::Element el(elem);
-  if (el.get_namespaceURI() != MATHML_NS_URI || el.get_localName() != "maction") return 0;
-
-  SmartPtr<MathMLDocument> doc = math_view->interface->GetDocument();
-  assert(doc);
-
-  SmartPtr<MathMLElement> e = doc->getFormattingNodeNoCreate(DOM::Element(elem));
-  if (!e) return 0;
-
-  SmartPtr<MathMLActionElement> action = smart_cast<MathMLActionElement>(e);
-  assert(action);
-
-  return action->GetSelectedIndex();
-}
-
-extern "C" void
-gtk_math_view_action_set_selected(GtkMathView* math_view, GdomeElement* elem, guint idx)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
-  g_return_if_fail(elem != NULL);
-
-  DOM::Element el(elem);
-  if (el.get_namespaceURI() != MATHML_NS_URI || el.get_localName() != "maction") return;
-
-  SmartPtr<MathMLDocument> doc = math_view->interface->GetDocument();
-  assert(doc);
-
-  SmartPtr<MathMLElement> e = doc->getFormattingNodeNoCreate(DOM::Element(elem));
-  if (!e) return;
-
-  SmartPtr<MathMLActionElement> action = smart_cast<MathMLActionElement>(e);
-  assert(action);
-
-  return action->SetSelectedIndex(idx);
-}
-
-extern "C" void
-gtk_math_view_action_toggle(GtkMathView* math_view, GdomeElement* elem)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->interface != NULL);
-  g_return_if_fail(elem != NULL);
-  gtk_math_view_action_set_selected(math_view, elem, gtk_math_view_action_get_selected(math_view, elem) + 1);
-}
-#endif

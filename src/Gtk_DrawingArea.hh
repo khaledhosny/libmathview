@@ -25,7 +25,6 @@
 
 #include <gtk-2.0/gtk/gtk.h>
 
-#include "AFont.hh"
 #include "DrawingArea.hh"
 #include "GraphicsContext.hh"
 
@@ -39,8 +38,6 @@ public:
 
   virtual void DrawLine(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
   virtual void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
-  virtual void DrawChar(const GraphicsContext*, const AFont*, const scaled&, const scaled&, char) const;
-  virtual void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const char*, unsigned) const;
   virtual void Clear(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const;
   virtual void Update(const scaled&, const scaled&, const scaled&, const scaled&) const;
   virtual void Update(void) const;

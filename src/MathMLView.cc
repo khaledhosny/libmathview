@@ -38,7 +38,6 @@ MathMLView::MathMLView(const SmartPtr<MathMLViewContext>& c)
   freezeCounter = 0;
   defaultFontSize = Globals::configuration.GetFontSize();
   area = 0;
-  fontManager = 0;
 }
 
 MathMLView::~MathMLView()
@@ -46,10 +45,9 @@ MathMLView::~MathMLView()
 }
 
 void
-MathMLView::Init(class DrawingArea* a, class FontManager* fm)
+MathMLView::Init(class DrawingArea* a)
 {
   assert(a != NULL);
-  assert(fm != NULL);
 
   if (root)
     {
@@ -60,7 +58,6 @@ MathMLView::Init(class DrawingArea* a, class FontManager* fm)
     }
 
   area = a;
-  fontManager = fm;
 }
 
 bool

@@ -25,7 +25,6 @@
 
 #include <vector>
 
-#include "AFont.hh"
 #include "String.hh"
 #include "BoundingBox.hh"
 #include "GraphicsContext.hh"
@@ -43,8 +42,6 @@ public:
 
   virtual void DrawLine(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
   virtual void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
-  virtual void DrawChar(const GraphicsContext*, const AFont*, const scaled&, const scaled&, char) const = 0;
-  virtual void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const char*, unsigned) const = 0;
   virtual void Clear(const GraphicsContext*, const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
   virtual void Update(const scaled&, const scaled&, const scaled&, const scaled&) const = 0;
   virtual void Update(void) const;
@@ -55,7 +52,6 @@ public:
   void DrawRectangle(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&) const;
   void DrawRectangle(const GraphicsContext*, const Rectangle&) const;
   void DrawBoundingBox(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&, bool = true) const;
-  void DrawString(const GraphicsContext*, const AFont*, const scaled&, const scaled&, const String&) const;
   void Clear(const GraphicsContext*, const scaled&, const scaled&, const BoundingBox&) const;
   void Clear(const GraphicsContext*, const Rectangle&) const;
 

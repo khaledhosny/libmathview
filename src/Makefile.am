@@ -22,41 +22,14 @@ libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 GTKSOURCES = \
   Gtk_DrawingArea.cc \
-  Gtk_Font.cc \
-  Gtk_FontManager.cc \
   Gtk_GraphicsContext.cc
 
 GTKHEADERS = \
   Gtk_DrawingArea.hh \
-  Gtk_Font.hh \
-  Gtk_FontManager.hh \
   Gtk_GraphicsContext.hh
 
-T1SOURCES = \
-  T1_Font.cc \
-  T1_FontManager.cc \
-  T1_Gtk_DrawingArea.cc
-
-T1HEADERS = \
-  T1_Font.hh \
-  T1_FontManager.hh \
-  T1_Gtk_DrawingArea.hh
-
-PSSOURCES = \
-  PS_T1_Font.cc \
-  PS_DrawingArea.cc \
-  PS_T1_FontManager.cc
-
-PSHEADERS = \
-  PS_T1_Font.hh \
-  PS_DrawingArea.hh \
-  PS_T1_FontManager.hh
-
 GUISOURCES = \
-  AFont.cc \
   DrawingArea.cc \
-  FontAttributes.cc \
-  FontManager.cc \
   GraphicsContext.cc \
   gtkmathview.cc
 
@@ -144,15 +117,12 @@ pkginclude_HEADERS = \
   gtkmathview.h
 
 noinst_HEADERS = \
-  AFont.hh \
   Adaptors.hh \
   Clock.hh \
   Configuration.hh \
   Coords.hh \
   DrawingArea.hh \
   EntitiesTable.hh \
-  FontAttributes.hh \
-  FontManager.hh \
   GraphicsContext.hh \
   Logger.hh \
   Globals.hh \

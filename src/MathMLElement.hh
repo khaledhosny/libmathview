@@ -25,6 +25,7 @@
 
 #include <bitset>
 
+#include "token.hh"
 #include "SmartPtr.hh"
 #include "MathMLFrame.hh"
 #include "BoundingBox.hh"

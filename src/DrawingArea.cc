@@ -141,13 +141,6 @@ DrawingArea::DrawBoundingBox(const GraphicsContext* gc,
 }
 
 void
-DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
-			const scaled& x, const scaled& y, const String& text) const
-{
-  DrawString(gc, font, x, y, text.c_str(), text.length());
-}
-
-void
 DrawingArea::Clear(const GraphicsContext* gc,
 		   const scaled& x, const scaled& y, const BoundingBox& box) const
 {
