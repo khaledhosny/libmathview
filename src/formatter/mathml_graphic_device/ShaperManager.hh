@@ -20,59 +20,34 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __SparseMap_hh__
-#define __SparseMap_hh__
+#ifndef __ShaperManager_hh__
+#define __ShaperManager_hh__
 
-template <class T, int M, int N>
-class SparseMap
+#include "DOM.hh"
+#include "GlyphSpec.hh"
+#include "SparseMap.hh"
+
+class ShaperManager
 {
 public:
-  SparseMap(void)
-  {
-    for (unsigned i = 0; i < (1 << N); i++)
-      defData[i] = T();
-    for (unsigned i = 0; i < (1 << M); i++)
-      data[i] = defData;
-  }
+  ShaperManager(void);
+  ~ShaperManager() { }
 
-  ~SparseMap()
-  {
-    for (unsigned i = 0; i < (1 << M); i++)
-      {
-	if (data[i] != defData) delete [] data[i];
-	data[i] = 0;
-      }
-  }
-
-protected:
-  unsigned I(unsigned index) const
-  { return index >> N; }
-
-  unsigned J(unsigned index) const
-  { return index & ((1 << N) - 1); }
-
-public:
-  void set(size_t index, const T& v)
-  {
-    unsigned i = I(index);
-    assert(i < (1 << M));
-    if (data[i] == defData)
-      {
-	data[i] = new T[1 << N];
-	for (unsigned j = 0; j < (1 << N); j++)
-	  data[i][j] = T();
-	data[i][J(index)] = v;
-      }
-  }
-
-  T& operator[](size_t index) const
-  { return data[I(index)][J(index)]; }
+  unsigned registerShaper(const class Shaper&);
+  GlyphSpec registerChar(DOM::Char32 ch, const GlyphSpec& spec);
+  GlyphSpec map(DOM::Char32 ch) const;
+  const class Shaper& getShaper(const GlyphSpec&) const;
 
 private:
-  typedef T* TBlock;
+  static const unsigned MAX_SHAPERS = 16;
+  static const unsigned HIGH_BITS = 12;
+  static const unsigned LOW_BITS = 8;
+  static const DOM::Char32 BIGGEST_CHAR = 1 << (HIGH_BITS + LOW_BITS) - 1;
 
-  TBlock data[1 << M];
-  T defData[1 << N];
+  SparseMap<GlyphSpec, HIGH_BITS, LOW_BITS> glyphSpec;
+
+  unsigned nextShaperId;
+  const class Shaper* shaper[MAX_SHAPERS];
 };
 
-#endif // __SparseMap_hh__
+#endif // __ShaperManager_hh__

@@ -20,59 +20,49 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __SparseMap_hh__
-#define __SparseMap_hh__
+#include <config.h>
 
-template <class T, int M, int N>
-class SparseMap
+#include <cassert>
+
+#include "Shaper.hh"
+#include "ShaperManager.hh"
+
+ShaperManager::ShaperManager() : nextShaperId(0)
 {
-public:
-  SparseMap(void)
-  {
-    for (unsigned i = 0; i < (1 << N); i++)
-      defData[i] = T();
-    for (unsigned i = 0; i < (1 << M); i++)
-      data[i] = defData;
-  }
+  for (unsigned i = 0; i < MAX_SHAPERS; i++)
+    shaper[i] = 0;
+}
 
-  ~SparseMap()
-  {
-    for (unsigned i = 0; i < (1 << M); i++)
-      {
-	if (data[i] != defData) delete [] data[i];
-	data[i] = 0;
-      }
-  }
+unsigned
+ShaperManager::registerShaper(const Shaper& s)
+{
+  assert(nextShaperId < MAX_SHAPERS);
+  unsigned shaperId = nextShaperId++;
+  shaper[shaperId] = &s;
+  s.registerChars(*this, shaperId);
+  return shaperId;
+}
 
-protected:
-  unsigned I(unsigned index) const
-  { return index >> N; }
+GlyphSpec
+ShaperManager::registerChar(DOM::Char32 ch, const GlyphSpec& spec)
+{
+  assert(ch <= BIGGEST_CHAR);
+  GlyphSpec oldSpec = glyphSpec[ch];
+  glyphSpec.set(ch, spec);
+  return oldSpec;
+}
 
-  unsigned J(unsigned index) const
-  { return index & ((1 << N) - 1); }
+GlyphSpec
+ShaperManager::map(DOM::Char32 ch) const
+{
+  assert(ch <= BIGGEST_CHAR);
+  return glyphSpec[ch];
+}
 
-public:
-  void set(size_t index, const T& v)
-  {
-    unsigned i = I(index);
-    assert(i < (1 << M));
-    if (data[i] == defData)
-      {
-	data[i] = new T[1 << N];
-	for (unsigned j = 0; j < (1 << N); j++)
-	  data[i][j] = T();
-	data[i][J(index)] = v;
-      }
-  }
-
-  T& operator[](size_t index) const
-  { return data[I(index)][J(index)]; }
-
-private:
-  typedef T* TBlock;
-
-  TBlock data[1 << M];
-  T defData[1 << N];
-};
-
-#endif // __SparseMap_hh__
+const class Shaper&
+ShaperManager::getShaper(const GlyphSpec& spec) const
+{
+  assert(spec.getShaper() < MAX_SHAPERS);
+  assert(shaper[spec.getShaper()]);
+  return *shaper[spec.getShaper()];
+}

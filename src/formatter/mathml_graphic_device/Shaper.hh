@@ -20,59 +20,22 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __SparseMap_hh__
-#define __SparseMap_hh__
+#ifndef __Shaper_hh__
+#define __Shaper_hh__
 
-template <class T, int M, int N>
-class SparseMap
+#include "scaled.hh"
+#include "Area.hh"
+#include "DOM.hh"
+
+class Shaper
 {
 public:
-  SparseMap(void)
-  {
-    for (unsigned i = 0; i < (1 << N); i++)
-      defData[i] = T();
-    for (unsigned i = 0; i < (1 << M); i++)
-      data[i] = defData;
-  }
-
-  ~SparseMap()
-  {
-    for (unsigned i = 0; i < (1 << M); i++)
-      {
-	if (data[i] != defData) delete [] data[i];
-	data[i] = 0;
-      }
-  }
-
-protected:
-  unsigned I(unsigned index) const
-  { return index >> N; }
-
-  unsigned J(unsigned index) const
-  { return index & ((1 << N) - 1); }
-
-public:
-  void set(size_t index, const T& v)
-  {
-    unsigned i = I(index);
-    assert(i < (1 << M));
-    if (data[i] == defData)
-      {
-	data[i] = new T[1 << N];
-	for (unsigned j = 0; j < (1 << N); j++)
-	  data[i][j] = T();
-	data[i][J(index)] = v;
-      }
-  }
-
-  T& operator[](size_t index) const
-  { return data[I(index)][J(index)]; }
-
-private:
-  typedef T* TBlock;
-
-  TBlock data[1 << M];
-  T defData[1 << N];
+  virtual void registerChars(class ShaperManager&, unsigned shaperId) const = 0;
+  virtual AreaRef shapeChar(DOM::Char32 ch, const class GlyphSpec& spec, unsigned size) const = 0;
+  virtual AreaRef combineWith(const AreaRef& base, DOM::Char32 ch) const = 0;
+  virtual AreaRef stretchH(const AreaRef& base, const scaled& hSpan) const = 0;
+  virtual AreaRef stretchV(const AreaRef& base, const scaled& vSpan) const = 0;
 };
 
-#endif // __SparseMap_hh__
+#endif // __Shaper_hh__
+

@@ -20,59 +20,23 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __SparseMap_hh__
-#define __SparseMap_hh__
+#ifndef __GlyphSpec_hh__
+#define __GlyphSpec_hh__
 
-template <class T, int M, int N>
-class SparseMap
+class GlyphSpec
 {
 public:
-  SparseMap(void)
-  {
-    for (unsigned i = 0; i < (1 << N); i++)
-      defData[i] = T();
-    for (unsigned i = 0; i < (1 << M); i++)
-      data[i] = defData;
-  }
+  GlyphSpec(void) : shaperId(0), fontId(0), glyphId(0) { }
+  GlyphSpec(unsigned si, unsigned fi, unsigned gi) : shaperId(si), fontId(fi), glyphId(gi) { }
 
-  ~SparseMap()
-  {
-    for (unsigned i = 0; i < (1 << M); i++)
-      {
-	if (data[i] != defData) delete [] data[i];
-	data[i] = 0;
-      }
-  }
-
-protected:
-  unsigned I(unsigned index) const
-  { return index >> N; }
-
-  unsigned J(unsigned index) const
-  { return index & ((1 << N) - 1); }
-
-public:
-  void set(size_t index, const T& v)
-  {
-    unsigned i = I(index);
-    assert(i < (1 << M));
-    if (data[i] == defData)
-      {
-	data[i] = new T[1 << N];
-	for (unsigned j = 0; j < (1 << N); j++)
-	  data[i][j] = T();
-	data[i][J(index)] = v;
-      }
-  }
-
-  T& operator[](size_t index) const
-  { return data[I(index)][J(index)]; }
+  unsigned getGlyph(void) const { return glyphId; }
+  unsigned getShaper(void) const { return shaperId; }
+  unsigned getFont(void) const { return fontId; }
 
 private:
-  typedef T* TBlock;
-
-  TBlock data[1 << M];
-  T defData[1 << N];
+  unsigned shaperId : 8; // this can be lowered to match ShaperManager::MAX_SHAPERS
+  unsigned fontId : 8;
+  unsigned glyphId : 16;
 };
 
-#endif // __SparseMap_hh__
+#endif // __GlyphSpec_hh__
