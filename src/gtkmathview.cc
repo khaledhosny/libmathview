@@ -884,21 +884,21 @@ setup_adjustments(GtkMathView* math_view)
   math_view->interface->GetDocumentBoundingBox(box);
 
   if (math_view->hadjustment != NULL) {
-    gfloat width = sp2px(box.width) + 2 * MARGIN;
-    gfloat page_width = sp2px(math_view->drawing_area->GetWidth());
+    gint width = sp2ipx(box.width) + 2 * MARGIN;
+    gint page_width = sp2ipx(math_view->drawing_area->GetWidth());
     
     if (math_view->top_x > width - page_width)
-      math_view->top_x = std::max(0.0f, width - page_width);
+      math_view->top_x = std::max(0, width - page_width);
 
     setup_adjustment(math_view->hadjustment, width, page_width);
   }
 
   if (math_view->vadjustment != NULL) {
-    gfloat height = sp2px(box.GetHeight()) + 2 * MARGIN;
-    gfloat page_height = sp2px(math_view->drawing_area->GetHeight());
+    gint height = sp2ipx(box.GetHeight()) + 2 * MARGIN;
+    gint page_height = sp2ipx(math_view->drawing_area->GetHeight());
 
     if (math_view->top_y > height - page_height)
-      math_view->old_top_y = math_view->top_y = std::max(0.0f, height - page_height);
+      math_view->old_top_y = math_view->top_y = std::max(0, height - page_height);
 
     setup_adjustment(math_view->vadjustment, height, page_height);
   }
@@ -1178,10 +1178,10 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->interface != NULL, NULL);
 
-  scaled x0 = (math_view->vadjustment != NULL) ? math_view->vadjustment->value : 0;
-  scaled y0 = (math_view->hadjustment != NULL) ? math_view->vadjustment->value : 0;
+  gint x0 = (math_view->vadjustment != NULL) ? static_cast<int>(math_view->hadjustment->value) : 0;
+  gint y0 = (math_view->hadjustment != NULL) ? static_cast<int>(math_view->vadjustment->value) : 0;
 
-  Ptr<MathMLElement> at = math_view->interface->GetElementAt(x0 + px2sp(x), y0 + px2sp(y));
+  Ptr<MathMLElement> at = math_view->interface->GetElementAt(px2sp(x0 + x), px2sp(y0 + y));
   return gdome_cast_el(findDOMNode(at).gdome_object());
 }
 
