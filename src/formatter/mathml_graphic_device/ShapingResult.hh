@@ -25,19 +25,19 @@
 
 #include <vector>
 
+#include "String.hh"
 #include "AreaFactory.hh"
-#include "DOM.hh"
 #include "GlyphSpec.hh"
 
 class ShapingResult
 {
 public:
-  ShapingResult(const DOM::UCS4String& src,
+  ShapingResult(const UCS4String& src,
 		const std::vector<GlyphSpec>& s,
 		const scaled& v = 0, const scaled& h = 0)
     : source(src), spec(s), vSpan(v), hSpan(h), index(0) { }
 
-  DOM::UCS4String getSource(void) const { return source; }
+  UCS4String getSource(void) const { return source; }
   bool done(void) const { return index == source.length(); }
   bool empty(void) const { return res.empty(); }
   scaled getVSpan(void) const { return vSpan; }
@@ -52,16 +52,16 @@ public:
 
   unsigned getIndex(void) const { return index; }
 
-  const DOM::Char32* data(void) const;
+  const Char32* data(void) const;
   GlyphSpec getSpec(int = 0) const;
-  DOM::Char32 prevChar(void) const;
-  DOM::Char32 thisChar(void) const;
-  DOM::Char32 nextChar(void) const;
-  DOM::UCS4String prevString(int = -1) const;
-  DOM::UCS4String nextString(int = -1) const;
+  Char32 prevChar(void) const;
+  Char32 thisChar(void) const;
+  Char32 nextChar(void) const;
+  UCS4String prevString(int = -1) const;
+  UCS4String nextString(int = -1) const;
 
 private:
-  DOM::UCS4String source;
+  UCS4String source;
   std::vector<GlyphSpec> spec;
   scaled vSpan;
   scaled hSpan;

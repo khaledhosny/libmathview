@@ -64,7 +64,7 @@ AreaRef
 Gtk_MathGraphicDevice::string(const MathFormattingContext& context,
 			      const String& str) const
 {
-  DOM::UCS4String source = toUCS4String(str);
+  UCS4String source = UCS4StringOfString(str);
   mapMathVariant(context.getVariant(), source);
 
   if (context.getElement() == context.getStretchOperator())
@@ -81,7 +81,7 @@ Gtk_MathGraphicDevice::stretchStringV(const MathFormattingContext& context,
 				      const scaled& height,
 				      const scaled& depth) const
 {
-  return getShaperManager()->shapeStretchy(context, toUCS4String(str), height, depth);
+  return getShaperManager()->shapeStretchy(context, UCS4StringOfString(str), height, depth);
 }
 
 AreaRef
@@ -139,9 +139,9 @@ Gtk_MathGraphicDevice::radical(const MathFormattingContext& context,
 			       const AreaRef& index) const
 {
   const scaled RULE = defaultLineThickness(context);
-  DOM::UCS4String root(1, 0x221a);
+  UCS4String root(1, 0x221a);
   BoundingBox baseBox = base->box();
-  AreaRef rootArea = stretchStringV(context, fromUCS4String(root), baseBox.depth, baseBox.height + RULE);
+  AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.depth, baseBox.height + RULE);
   
   std::vector<AreaRef> v;
   v.reserve(3);

@@ -50,7 +50,7 @@ AreaRef
 Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
 			     const String& str, const scaled& width) const
 {
-  const DOM::UTF8String utf8_string = str;
+  const UTF8String utf8_string = str;
 
   PangoLayout* layout = pango_layout_new(pango_context);
   pango_layout_set_text(layout, utf8_string.data(), utf8_string.length());
@@ -80,7 +80,7 @@ Gtk_BoxGraphicDevice::paragraph(const BoxFormattingContext& context,
 				const BoxedParagraph& p,
 				const scaled& width) const
 {
-  const DOM::UTF8String utf8_string = p.getContent();
+  const UTF8String utf8_string = p.getContent();
 
   PangoLayout* layout = pango_layout_new(pango_context);
   pango_layout_set_text(layout, utf8_string.data(), utf8_string.length());

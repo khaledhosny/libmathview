@@ -25,7 +25,6 @@
 
 #include <pango/pango.h>
 
-#include "DOM.hh"
 #include "AreaFactory.hh"
 #include "Gtk_ColorArea.hh"
 #include "Gtk_BackgroundArea.hh"

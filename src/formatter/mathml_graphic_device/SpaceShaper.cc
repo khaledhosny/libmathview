@@ -25,7 +25,6 @@
 #include "AreaFactory.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
-#include "MathMLFencedElement.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLIdentifierElement.hh"
 #include "MathMLOperatorElement.hh"
@@ -36,7 +35,7 @@
 
 struct FixedSpaceData
 {
-  DOM::Char16 ch;
+  Char16 ch;
   int space;
 } fixedSpaceMap[] = {
   { 0x0009, 9 * 8 }, // Tab
@@ -57,7 +56,7 @@ struct FixedSpaceData
   { 0x0000,  0 }
 };
 
-DOM::Char16 csSpaceMap[] = {
+Char16 csSpaceMap[] = {
   0x2061, // FUNCTION APPLICATION
   0x2062, // INVISIBLE TIMES
   0x2063, // INVISIBLE SEPARATOR
@@ -157,8 +156,6 @@ SpaceShaper::shapeFunctionApplication(const MathFormattingContext& ctxt)
       SmartPtr<MathMLElement> next = findRightSibling(op);
       if (!next) return 0;
 
-      if (is_a<MathMLFencedElement>(next)) return 0;
-      
       if (SmartPtr<MathMLOperatorElement> coreOp = next->getCoreOperatorTop())
 	if (coreOp->IsFence()) return 0;
 

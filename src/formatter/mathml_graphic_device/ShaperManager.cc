@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <cassert>
+#include <iostream>
 
 #include "Shaper.hh"
 #include "ShaperManager.hh"
@@ -37,10 +38,7 @@ ShaperManager::ShaperManager() : nextShaperId(0)
 }
 
 ShaperManager::~ShaperManager()
-{
-  for (unsigned i = 0; i < nextShaperId; i++)
-    shaper[i]->unregisterShaper(this, i);
-}
+{ }
 
 AreaRef
 ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result) const
@@ -66,7 +64,7 @@ ShaperManager::shapeAux(const MathFormattingContext& ctxt, ShapingResult& result
 }
 
 AreaRef
-ShaperManager::shape(const MathFormattingContext& ctxt, const DOM::UCS4String& source) const
+ShaperManager::shape(const MathFormattingContext& ctxt, const UCS4String& source) const
 {
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
@@ -78,7 +76,7 @@ ShaperManager::shape(const MathFormattingContext& ctxt, const DOM::UCS4String& s
 
 AreaRef
 ShaperManager::shapeStretchy(const MathFormattingContext& ctxt,
-			     const DOM::UCS4String& source,
+			     const UCS4String& source,
 			     const scaled& vSpan,
 			     const scaled& hSpan) const
 {
@@ -101,8 +99,20 @@ ShaperManager::registerShaper(const SmartPtr<Shaper>& s)
   return shaperId;
 }
 
+void
+ShaperManager::unregisterShapers()
+{
+  // WARNING: this code was in the destructor, but this results in a loop.
+  // if we are in the destructor the ref counter of the shaper manager is 0
+  // Now, if we call unregisterShaper then the ref counter gets incremented
+  // and then decremented (the parameter is a smart pointer) resulting in
+  // another call to the destructor
+  for (unsigned i = 0; i < nextShaperId; i++)
+    shaper[i]->unregisterShaper(this, i);
+}
+
 GlyphSpec
-ShaperManager::registerChar(DOM::Char32 ch, const GlyphSpec& spec)
+ShaperManager::registerChar(Char32 ch, const GlyphSpec& spec)
 {
   assert(ch <= BIGGEST_CHAR);
   GlyphSpec oldSpec = glyphSpec[ch];
@@ -112,7 +122,7 @@ ShaperManager::registerChar(DOM::Char32 ch, const GlyphSpec& spec)
 }
 
 GlyphSpec
-ShaperManager::registerStretchyChar(DOM::Char32 ch, const GlyphSpec& spec)
+ShaperManager::registerStretchyChar(Char32 ch, const GlyphSpec& spec)
 {
   assert(ch <= BIGGEST_CHAR);
   GlyphSpec oldSpec = glyphSpec[ch];
@@ -121,14 +131,14 @@ ShaperManager::registerStretchyChar(DOM::Char32 ch, const GlyphSpec& spec)
 }
 
 GlyphSpec
-ShaperManager::map(DOM::Char32 ch) const
+ShaperManager::map(Char32 ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch];
 }
 
 GlyphSpec
-ShaperManager::mapStretchy(DOM::Char32 ch) const
+ShaperManager::mapStretchy(Char32 ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch | STRETCHY_FLAG];

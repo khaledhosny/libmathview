@@ -28,7 +28,6 @@ INCLUDES = \
   $(PANGOX_CFLAGS) \
   $(XFT_CFLAGS) \
   $(GTK_CFLAGS) \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/formatter/areamodel
 

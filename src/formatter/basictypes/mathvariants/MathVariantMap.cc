@@ -28,11 +28,9 @@
 #include "MathVariantMap.hh"
 
 #define MAP_NAME(n) map_variant_##n
-#define DECLARE_MAP(n) DOM::Char32 MAP_NAME(n)(DOM::Char32);
+#define DECLARE_MAP(n) Char32 MAP_NAME(n)(Char32);
 
-namespace DOM = GdomeSmartDOM;
-
-typedef DOM::Char32 (*mapType)(DOM::Char32);
+typedef Char32 (*mapType)(Char32);
 
 DECLARE_MAP(bold)
 DECLARE_MAP(italic)
@@ -48,7 +46,7 @@ DECLARE_MAP(sans_serif_italic)
 DECLARE_MAP(sans_serif_bold_italic)
 DECLARE_MAP(monospace)
 
-static DOM::Char32 map_variant_normal(DOM::Char32 ch)
+static Char32 map_variant_normal(Char32 ch)
 { return ch; }
 
 static mapType map[] =
@@ -69,20 +67,19 @@ static mapType map[] =
   MAP_NAME(monospace)
 };
 
-DOM::Char32
-mapMathVariant(MathVariant variant, DOM::Char32 ch)
+Char32
+mapMathVariant(MathVariant variant, Char32 ch)
 {
   assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
   return map[variant - NORMAL_VARIANT](ch);
 }
 
 void
-mapMathVariant(MathVariant variant, DOM::UCS4String& str)
+mapMathVariant(MathVariant variant, UCS4String& str)
 {
   assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
   mapType m = map[variant - NORMAL_VARIANT];
 
-  for (DOM::UCS4String::iterator p = str.begin();
-       p != str.end(); p++)
+  for (UCS4String::iterator p = str.begin(); p != str.end(); p++)
     *p = m(*p);
 }

@@ -12,7 +12,6 @@ noinst_HEADERS = \
   BoxGraphicDevice.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \

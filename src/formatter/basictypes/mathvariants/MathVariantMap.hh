@@ -23,11 +23,10 @@
 #ifndef __MathVariantMap_hh__
 #define __MathVariantMap_hh__
 
-#include <DOM.hh>
-
+#include "String.hh"
 #include "MathVariant.hh"
 
-DOM::Char32 mapMathVariant(MathVariant, DOM::Char32);
-void mapMathVariant(MathVariant, DOM::UCS4String&);
+Char32 mapMathVariant(MathVariant, Char32);
+void mapMathVariant(MathVariant, UCS4String&);
 
 #endif // __MathVariantMap_hh__

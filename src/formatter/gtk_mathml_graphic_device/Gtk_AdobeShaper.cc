@@ -38,7 +38,7 @@
 
 static struct {
   guint8 index;
-  DOM::Char16 ch;
+  Char16 ch;
 } symbolMap[] = {
   { 0x20, 0x0020 },  // SPACE // space
   { 0x21, 0x0021 },  // EXCLAMATION MARK  // exclam
@@ -240,7 +240,7 @@ static struct {
 
 struct HStretchyChar
 {
-  DOM::Char16 ch;
+  Char16 ch;
   guint8 normal;
   guint8 left;
   guint8 glue;
@@ -249,7 +249,7 @@ struct HStretchyChar
 
 struct VStretchyChar
 {
-  DOM::Char16 ch;
+  Char16 ch;
   guint8 normal;
   guint8 top;
   guint8 glue;
@@ -320,9 +320,9 @@ Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shap
 
   for (unsigned i = LATIN_BASE_INDEX; i < N_FONTS; i++)
     {
-      for (DOM::Char16 ch = 0x20; ch < 0x100; ch++)
+      for (Char16 ch = 0x20; ch < 0x100; ch++)
 	{
-	  DOM::Char32 vch = mapMathVariant(variantDesc[i].variant, ch);
+	  Char32 vch = mapMathVariant(variantDesc[i].variant, ch);
 	  if (variantDesc[i].variant == NORMAL_VARIANT || vch != ch)
 	    sm->registerChar(vch, GlyphSpec(shaperId, i, ch));
 	}

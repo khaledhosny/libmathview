@@ -23,7 +23,7 @@
 #ifndef __ShaperManager_hh__
 #define __ShaperManager_hh__
 
-#include "DOM.hh"
+#include "String.hh"
 #include "Shaper.hh"
 #include "GlyphSpec.hh"
 #include "SparseMap.hh"
@@ -38,17 +38,18 @@ public:
   static SmartPtr<ShaperManager> create(void)
   { return new ShaperManager(); }
 
-  AreaRef shape(const class MathFormattingContext&, const DOM::UCS4String&) const;
-  AreaRef shapeStretchy(const class MathFormattingContext&, const DOM::UCS4String&,
+  AreaRef shape(const class MathFormattingContext&, const UCS4String&) const;
+  AreaRef shapeStretchy(const class MathFormattingContext&, const UCS4String&,
 			const scaled& = 0, const scaled& = 0) const;
   
   unsigned registerShaper(const SmartPtr<class Shaper>&);
-  GlyphSpec registerChar(DOM::Char32 ch, const GlyphSpec& spec);
-  GlyphSpec registerStretchyChar(DOM::Char32 ch, const GlyphSpec& spec);
+  void unregisterShapers(void);
+  GlyphSpec registerChar(Char32 ch, const GlyphSpec& spec);
+  GlyphSpec registerStretchyChar(Char32 ch, const GlyphSpec& spec);
 
 private:
-  GlyphSpec map(DOM::Char32 ch) const;
-  GlyphSpec mapStretchy(DOM::Char32 ch) const;
+  GlyphSpec map(Char32 ch) const;
+  GlyphSpec mapStretchy(Char32 ch) const;
   AreaRef shapeAux(const class MathFormattingContext&, ShapingResult&) const;
   SmartPtr<class Shaper> getShaper(unsigned) const;
 
@@ -57,7 +58,7 @@ private:
   static const unsigned LOW_BITS = 8;
   static const unsigned STRETCHY_BIT = LOW_BITS + HIGH_BITS;
   static const unsigned STRETCHY_FLAG = 1 << STRETCHY_BIT;
-  static const DOM::Char32 BIGGEST_CHAR = 1 << (HIGH_BITS + 1 + LOW_BITS) - 1;
+  static const Char32 BIGGEST_CHAR = 1 << (HIGH_BITS + 1 + LOW_BITS) - 1;
 
   SparseMap<GlyphSpec, HIGH_BITS + 1, LOW_BITS> glyphSpec;
 

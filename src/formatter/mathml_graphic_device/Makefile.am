@@ -21,7 +21,6 @@ noinst_HEADERS = \
   SpaceShaper.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \

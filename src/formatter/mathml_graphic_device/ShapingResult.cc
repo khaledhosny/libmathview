@@ -50,7 +50,7 @@ ShapingResult::getSpec(int n) const
   return spec[index + n];
 }
 
-const DOM::Char32*
+const Char32*
 ShapingResult::data() const
 {
   assert(!done());
@@ -84,32 +84,32 @@ ShapingResult::area(const SmartPtr<AreaFactory>& factory) const
 #endif
 }
 
-DOM::Char32
+Char32
 ShapingResult::prevChar() const
 {
   return (index > 0) ? source[index - 1] : 0;
 }
 
-DOM::Char32
+Char32
 ShapingResult::thisChar() const
 {
   return (index < source.length()) ? source[index] : 0;
 }
 
-DOM::Char32
+Char32
 ShapingResult::nextChar() const
 {
   return (index + 1 < source.length()) ? source[index + 1] : 0;
 }
 
-DOM::UCS4String
+UCS4String
 ShapingResult::prevString(int l) const
 {
   if (l < 0 || l > index) l = index;
   return source.substr(index - l, l);
 }
 
-DOM::UCS4String
+UCS4String
 ShapingResult::nextString(int l) const
 {
   if (l < 0 || l > source.length() - index) l = source.length() - index;

@@ -32,7 +32,9 @@ MathGraphicDevice::MathGraphicDevice()
 { }
 
 MathGraphicDevice::~MathGraphicDevice()
-{ }
+{
+  shaperManager->unregisterShapers();
+}
 
 double
 MathGraphicDevice::dpi(const MathFormattingContext&) const
@@ -126,5 +128,5 @@ MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) co
 AreaRef
 MathGraphicDevice::dummy(const MathFormattingContext& context) const
 {
-  return getFactory()->color(string(context, fromUCS4String(DOM::UCS4String(1, 0xfffd))), RGBColor::RED());
+  return getFactory()->color(string(context, StringOfUCS4String(UCS4String(1, 0xfffd))), RGBColor::RED());
 }
