@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE font-configuration SYSTEM "font-configuration.dtd">
+<!--
+Copyright (C) 2000, Luca Padovani (luca.padovani@cs.unibo.it).
+
+This file is part of GtkMathView, a Gtk widget for MathML.
+
+GtkMathView is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+GtkMathView is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GtkMathView; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+For details, see the GtkMathView World-Wide-Web page,
+http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+(luca.padovani@cs.unibo.it)
+-->
+
+<font-configuration>
+  <font type="x" map="plain8"
+	family="monospace" weight="normal" style="normal"
+	x-foundry="b&amp;h" x-family="lucidatypewriter" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="monospace" weight="bold" style="normal"
+	x-foundry="b&amp;h" x-family="lucidatypewriter" x-weight="bold" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="normal" style="normal"
+	x-foundry="b&amp;h" x-family="lucida" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="normal" style="italic"
+	x-foundry="b&amp;h" x-family="lucida" x-weight="medium" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="bold" style="normal"
+	x-foundry="b&amp;h" x-family="lucida" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="bold" style="italic"
+	x-foundry="b&amp;h" x-family="lucida" x-weight="bold" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="normal" style="normal"
+	x-foundry="b&amp;h" x-family="lucidabright" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="normal" style="italic"
+	x-foundry="b&amp;h" x-family="lucidabright" x-weight="medium" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="bold" style="normal"
+	x-foundry="b&amp;h" x-family="lucidabright" x-weight="bold" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="bold" style="italic"
+	x-foundry="b&amp;h" x-family="lucidabright" x-weight="bold" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+</font-configuration>

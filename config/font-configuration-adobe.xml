@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE font-configuration SYSTEM "font-configuration.dtd">
+<!--
+Copyright (C) 2000, Luca Padovani (luca.padovani@cs.unibo.it).
+
+This file is part of GtkMathView, a Gtk widget for MathML.
+
+GtkMathView is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+GtkMathView is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GtkMathView; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+For details, see the GtkMathView World-Wide-Web page,
+http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
+(luca.padovani@cs.unibo.it)
+-->
+
+<font-configuration>
+  <font type="x" map="plain8"
+	family="monospace" weight="normal" style="normal"
+	x-foundry="adobe" x-family="courier" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="monospace" weight="normal" style="italic"
+	x-foundry="adobe" x-family="courier" x-weight="medium" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="monospace" weight="bold" style="normal"
+	x-foundry="adobe" x-family="courier" x-weight="bold" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="monospace" weight="bold" style="italic"
+	x-foundry="adobe" x-family="courier" x-weight="bold" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="normal" style="normal"
+	x-foundry="adobe" x-family="helvetica" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="normal" style="italic"
+	x-foundry="adobe" x-family="helvetica" x-weight="medium" x-slant="o" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="bold" style="normal"
+	x-foundry="adobe" x-family="helvetica" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="sans-serif" weight="bold" style="italic"
+	x-foundry="adobe" x-family="helvetica" x-weight="bold" x-slant="o" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="normal" style="normal"
+	x-foundry="adobe" x-family="times" x-weight="medium" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="normal" style="italic"
+	x-foundry="adobe" x-family="times" x-weight="medium" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="bold" style="normal"
+	x-foundry="adobe" x-family="times" x-weight="bold" x-slant="r" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="plain8"
+	family="serif" weight="bold" style="italic"
+	x-foundry="adobe" x-family="times" x-weight="bold" x-slant="i" x-registry="iso8859" x-encoding="1"
+	/>
+
+  <font type="x" map="adobe-symbol"
+	weight="normal" style="normal"
+	x-foundry="adobe" x-family="symbol" x-weight="medium" x-slant="r" x-registry="adobe" x-encoding="fontspecific"
+	/>
+
+  <map id="adobe-symbol">
+    <multi first="0x0000" last="0x00ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0x20 0x21   -1 0x23   -1 0x25 0x26   -1 0x28 0x29   -1 0x2b 0x2c   -1 0x2e 0x2f 
+	   0x30 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x3a 0x3b 0x3c 0x3d 0x3e 0x3f 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x5b   -1 0x5d   -1 0x5f 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 0x7b 0x7c 0x7d   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1 0xd3   -1   -1 0xd8   -1 0xd2   -1 
+	   0xb0 0xb1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1 0xb4   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1 0xb8   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <multi first="0x0300" last="0x03ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0x41 0x42 0x47 0x44 0x45 0x5a 0x48 0x51 0x49 0x4b 0x4c 0x4d 0x4e 0x58 0x4f 
+	   0x50 0x52   -1 0x53 0x54 0x55 0x46 0x43 0x59 0x57   -1   -1   -1   -1   -1   -1 
+	     -1 0x61 0x62 0x67 0x64 0x65 0x7a 0x68 0x71 0x69 0x6b 0x6c 0x6d 0x6e 0x78 0x6f 
+	   0x70 0x72 0x56 0x73 0x74 0x75 0x66 0x63 0x79 0x77   -1   -1   -1   -1   -1   -1 
+	     -1 0x4a 0xa1   -1   -1 0x6a 0x76   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x0192" index="0xa6"/>
+    <single code="0x2022" index="0xb7"/>
+    <single code="0x2026" index="0xbc"/>
+    <single code="0x2032" index="0xa2"/>
+    <single code="0x2033" index="0xb2"/>
+    <single code="0x2044" index="0xa4"/>
+    <multi first="0x2100" last="0x21ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1 0xc1   -1   -1   -1   -1   -1   -1 0xc3   -1   -1   -1 0xc2   -1   -1   -1 
+	     -1   -1 0xd4   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1 0xc0   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0xac 0xad 0xae 0xaf 0xab   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1 0xbf   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0xdc 0xdd 0xde 0xdf 0xdb   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <multi first="0x2200" last="0x22ff" index="
+	   0x22   -1 0xb6 0x24   -1 0xc6   -1 0xd1 0xce 0xcf   -1   -1   -1 0x27   -1 0xd5 
+	     -1 0xe5 0x2d   -1   -1   -1   -1 0x2a   -1   -1 0xd6   -1   -1 0xb5 0xa5   -1 
+	   0xd0   -1   -1   -1   -1   -1   -1 0xd9 0xda 0xc7 0xc8 0xf2   -1   -1   -1   -1 
+	     -1   -1   -1   -1 0x5c   -1   -1   -1   -1   -1   -1   -1 0x7e   -1   -1   -1 
+	     -1   -1   -1   -1   -1 0x40   -1   -1 0xbb   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   0xb9 0xba   -1   -1 0xa3 0xb3   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1 0xcc 0xc9 0xcb   -1 0xcd 0xca   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1 0xc5   -1 0xc4   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1 0x5e   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1 0xe0 0xd7   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	   "/>
+    <single code="0x2320" index="0xf3"/>
+    <single code="0x2321" index="0xf5"/>
+    <single code="0x2329" index="0xe1"/>
+    <single code="0x232a" index="0xf1"/>
+    <single code="0x2660" index="0xaa"/>
+    <single code="0x2663" index="0xa7"/>
+    <single code="0x2665" index="0xa9"/>
+    <single code="0x2666" index="0xa8"/>
+    <multi first="0xf800" last="0xf8ff" index="
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1   -1 
+	     -1   -1   -1   -1   -1 0x60 0xbd 0xbe 0xe2 0xe3 0xe4 0xe6 0xe7 0xe8 0xe9 0xea 
+	   0xeb 0xec 0xed 0xee 0xef 0xf4 0xf6 0xf7 0xf8 0xf9 0xfa 0xfb 0xfc 0xfd 0xfe 0xf0 
+	   "/>
+    <stretchy code="(" direction="vertical"> 
+      <simple index="0x28 0xe1"/> 
+      <compound index="0xe6   -1 0xe8 0xe7"/> 
+    </stretchy> 
+    <stretchy code=")" direction="vertical"> 
+      <simple index="0x29 0xf1"/> 
+      <compound index="0xf6   -1 0xf8 0xf7"/> 
+    </stretchy> 
+    <stretchy code="[" direction="vertical"> 
+      <simple index="0x5b"/> 
+      <compound index="0xe9   -1 0xeb 0xea"/> 
+    </stretchy> 
+    <stretchy code="]" direction="vertical"> 
+      <simple index="0x5d"/> 
+      <compound index="0xf9   -1 0xfb 0xfa"/> 
+    </stretchy> 
+    <stretchy code="{" direction="vertical"> 
+      <simple index="0x7b"/> 
+      <compound index="0xec 0xed 0xee 0xef"/> 
+    </stretchy> 
+    <stretchy code="}" direction="vertical"> 
+      <simple index="0x7d"/> 
+      <compound index="0xfc 0xfd 0xfe 0xef"/> 
+    </stretchy> 
+    <stretchy name="LeftCeiling" direction="vertical"> 
+      <simple index="0xe9"/> 
+      <compound index="0xe9   -1   -1 0xea"/> 
+    </stretchy> 
+    <stretchy name="LeftFloor" direction="vertical"> 
+      <simple index="0xeb"/> 
+      <compound index="  -1   -1 0xeb 0xea"/> 
+    </stretchy> 
+    <stretchy name="RightCeiling" direction="vertical"> 
+      <simple index="0xf9"/> 
+      <compound index="0xf9   -1   -1 0xfa"/> 
+    </stretchy> 
+    <stretchy name="RightFloor" direction="vertical"> 
+      <simple index="0xfb"/> 
+      <compound index="  -1   -1 0xfb 0xfa"/> 
+    </stretchy> 
+    <stretchy name="HorizontalLine" direction="horizontal"> 
+      <simple index="0xbe"/> 
+      <compound index="  -1   -1   -1 0xbe"/> 
+    </stretchy> 
+    <stretchy name="VerticalLine" direction="vertical"> 
+      <simple index="0xea"/> 
+      <compound index="  -1   -1   -1 0xea"/> 
+    </stretchy> 
+    <stretchy code="|" direction="vertical"> 
+      <simple index="0xea"/> 
+      <compound index="  -1   -1   -1 0xea"/> 
+    </stretchy> 
+    <stretchy name="LeftArrow" direction="horizontal"> 
+      <simple index="0xac"/> 
+      <compound index="0xac   -1   -1 0xbe"/> 
+    </stretchy> 
+    <stretchy name="UpArrow" direction="vertical"> 
+      <simple index="0xad"/> 
+      <compound index="0xad   -1   -1 0xbd"/> 
+    </stretchy> 
+    <stretchy name="RightArrow" direction="horizontal"> 
+      <simple index="0xae"/> 
+      <compound index="  -1   -1 0xae 0xbe"/> 
+    </stretchy> 
+    <stretchy name="DownArrow" direction="vertical"> 
+      <simple index="0xaf"/> 
+      <compound index="  -1   -1 0xaf 0xbd"/> 
+    </stretchy> 
+    <stretchy name="LeftRightArrow" direction="horizontal"> 
+      <simple index="0xab"/> 
+      <compound index="0xac   -1 0xae 0xbe"/> 
+    </stretchy> 
+    <stretchy code="0x222b" direction="vertical"> 
+      <simple index="0xf2"/> 
+      <compound index="0xf3   -1 0xf5 0xf4"/> 
+    </stretchy> 
+    <stretchy name="OverBar" direction="horizontal"> 
+      <simple index="0xbe"/> 
+      <compound index="  -1   -1   -1 0xbe"/> 
+    </stretchy> 
+    <stretchy name="UnderBar" direction="horizontal"> 
+      <simple index="0xbe"/> 
+      <compound index="  -1   -1   -1 0xbe"/> 
+    </stretchy> 
+  </map>
+</font-configuration>
