@@ -4,16 +4,18 @@ noinst_PROGRAMS = dumpEntitiesTable
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
 dumpEntitiesTable_LDADD = @DOM_LIBS@
 
+XSLTPROC = xsltproc
+
 AUTOFILES = \
-  attribute.dec attribute.def \
-  keyword.dec keyword.def \
-  tag.dec tag.def \
+  token.dec token.def \
   entitiesTable.inc
 
 EXTRA_DIST = \
+  list-to-dec.xsl \
+  list-to-def.xsl \
   config.dirs.in \
   config.dirs \
-  keyword.list \
+  token-list.xml \
   stretchy.list \
   entitiesTable.inc \
   $(AUTOFILES)
@@ -25,23 +27,11 @@ noinst_HEADERS = $(AUTOFILES)
 SCRIPTDIR = ../scripts
 CONFIGDIR = ../config
 
-keyword.dec: keyword.list $(SCRIPTDIR)/makekeywords
-	@$(SCRIPTDIR)/makekeywords dec Keyword KW $@
+token.dec: token-list.xml list-to-dec.xsl
+	$(XSLTPROC) list-to-dec.xsl $< >$@
 
-keyword.def: keyword.list $(SCRIPTDIR)/makekeywords
-	@$(SCRIPTDIR)/makekeywords def Keyword KW $@
-
-tag.dec: keyword.list $(SCRIPTDIR)/makekeywords
-	@$(SCRIPTDIR)/makekeywords dec Tag TAG $@
-
-tag.def: keyword.list $(SCRIPTDIR)/makekeywords
-	@$(SCRIPTDIR)/makekeywords def Tag TAG $@
-
-attribute.dec: keyword.list $(SCRIPTDIR)/makekeywords
-	@$(SCRIPTDIR)/makekeywords dec Attribute ATTR $@
-
-attribute.def: keyword.list $(SCRIPTDIR)/makekeywords
-	@$(SCRIPTDIR)/makekeywords def Attribute ATTR $@
+token.def: token-list.xml list-to-def.xsl
+	$(XSLTPROC) list-to-def.xsl $< >$@
 
 entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 	./dumpEntitiesTable $< >$@
