@@ -50,20 +50,17 @@ MathMLSpaceElement::format(MathFormattingContext& ctxt)
 
       scaled width;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, width))
-	if (IsTokenId(value))
-	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(Resolve(value, ctxt)), scaled::zero());
-	else
-	  width = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
+	width = ctxt.getDevice()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
       else
-	assert(IMPOSSIBLE);
+	assert(false);
 
       scaled height;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, height))
-	height = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
+	height = ctxt.getDevice()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
 
       scaled depth;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Space, depth))
-	depth = ctxt.getDevice()->evaluate(ctxt, ToLength(value), scaled::zero());
+	depth = ctxt.getDevice()->evaluate(ctxt, toLength(value, ctxt), scaled::zero());
 
       
 #if 0

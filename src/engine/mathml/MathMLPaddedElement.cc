@@ -26,11 +26,13 @@
 
 #include "defs.h"
 #include "ValueConversion.hh"
-#include "ValueConversion.hh"
+#include "MathMLValueConversion.hh"
 #include "MathMLPaddedElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "Variant.hh"
 #include "MathMLAttributeSignatures.hh"
+#include "MathFormattingContext.hh"
+#include "MathGraphicDevice.hh"
 
 MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLNamespaceContext>& context)
   : MathMLNormalizingContainerElement(context)
@@ -39,33 +41,79 @@ MathMLPaddedElement::MathMLPaddedElement(const SmartPtr<class MathMLNamespaceCon
 MathMLPaddedElement::~MathMLPaddedElement()
 { }
 
-#if 0
+AreaRef
+MathMLPaddedElement::format(MathFormattingContext& ctxt)
+{
+  if (dirtyLayout())
+    {
+      ctxt.push(this);
+
+      if (AreaRef childArea = getChild() ? getChild()->format(ctxt) : 0)
+	{
+	  const BoundingBox childBox = childArea->box();
+	  const scaled lspace = evalLengthDimension(ctxt, GET_ATTRIBUTE_VALUE(MathML, Padded, lspace), T_LSPACE, scaled::zero(), childBox);
+	  const scaled width = evalLengthDimension(ctxt, GET_ATTRIBUTE_VALUE(MathML, Padded, width), T_WIDTH, childBox.width, childBox);
+	  const scaled height = evalLengthDimension(ctxt, GET_ATTRIBUTE_VALUE(MathML, Padded, height), T_HEIGHT, childBox.height, childBox);
+	  const scaled depth = evalLengthDimension(ctxt, GET_ATTRIBUTE_VALUE(MathML, Padded, depth), T_DEPTH, childBox.depth, childBox);
+
+	  AreaRef res;
+	  if (lspace != scaled::zero())
+	    {
+	      std::vector<AreaRef> h;
+	      h.reserve(2);
+	      h.push_back(ctxt.getDevice()->getFactory()->horizontalSpace(lspace));
+	      h.push_back(childArea);
+	      res = ctxt.getDevice()->getFactory()->horizontalArray(h);
+	    }
+	  else
+	    res = childArea;
+
+	  res = ctxt.getDevice()->getFactory()->box(res, BoundingBox(width, height, depth));
+	  res = formatEmbellishment(this, ctxt, res);
+	  res = ctxt.getDevice()->wrapper(ctxt, res);
+
+	  setArea(res);
+	}
+      else
+	setArea(0);
+
+      resetDirtyLayout();
+    }
+
+  return getArea();
+}
+
 void
-MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
+MathMLPaddedElement::parseLengthDimension(const MathFormattingContext& ctxt,
 					  const SmartPtr<Value>& value,
 					  LengthDimension& dim,
 					  TokenId pseudoUnitId)
 {
-  assert(value);
+  dim.valid = false;
+
+  if (!value) return;
 
   SmartPtr<ValueSequence> seq = ToSequence(value);
   assert(seq);
   assert(seq->getSize() == 3);
 
   if (SmartPtr<Value> v = seq->getValue(0))
-    switch (ToTokenId(v))
-      {
-      case T__PLUS:  dim.sign = +1; break;
-      case T__MINUS: dim.sign = -1; break;
-      default: dim.sign = 0; break;
-      }
+    if (IsTokenId(v))
+      switch (ToTokenId(v))
+	{
+	case T__PLUS:  dim.sign = +1; break;
+	case T__MINUS: dim.sign = -1; break;
+	default: assert(false); break;
+	}
+    else
+      dim.sign = 0;
   else
-    assert(IMPOSSIBLE);
+    assert(false);
   
   if (SmartPtr<Value> v = seq->getValue(1))
     dim.number = ToNumber(v);
   else
-    assert(IMPOSSIBLE);
+    assert(false);
   
   if (SmartPtr<Value> v = seq->getValue(2))
     {
@@ -102,78 +150,45 @@ MathMLPaddedElement::ParseLengthDimension(RenderingEnvironment& env,
 
 	      Length::Unit unitId = toUnitId(v);
 	      if (unitId != Length::UNDEFINED_UNIT)
-		dim.unit = env.ToScaledPoints(Length(1.0, unitId));
+		dim.unit = ctxt.getDevice()->evaluate(ctxt, Length(1.0, unitId), scaled::zero());
 	      else
-		{
-		  RenderingEnvironment::MathSpaceId spaceId = RenderingEnvironment::mathSpaceIdOfTokenId(ToTokenId(v));
-		  dim.unit = env.ToScaledPoints(env.GetMathSpace(spaceId));
-		}
+		dim.unit = ctxt.getDevice()->evaluate(ctxt, toLength(v, ctxt), scaled::zero());
 	    }
 	}
     }
   
   dim.valid = true;
 }
-#endif
-
-#if 0
-void
-MathMLPaddedElement::DoLayout(const class FormattingContext& ctxt)
-{
-  if (dirtyLayout(ctxt))
-    {
-      assert(child);
-      child->DoLayout(ctxt);
-      const BoundingBox& elemBox = child->GetBoundingBox();
-
-      lSpaceE = EvalLengthDimension(0, lSpace, elemBox);
-      box.set(lSpaceE + EvalLengthDimension(elemBox.width, width, elemBox),
-	      EvalLengthDimension(elemBox.height, height, elemBox),
-	      EvalLengthDimension(elemBox.depth, depth, elemBox));
-
-      DoEmbellishmentLayout(this, box);
-
-      resetDirtyLayout(ctxt);
-    }
-}
-
-void
-MathMLPaddedElement::SetPosition(const scaled& x0, const scaled& y0)
-{
-  scaled x = x0;
-  scaled y = y0;
-
-  position.x = x;
-  position.y = y;
-  SetEmbellishmentPosition(this, x, y);
-  if (GetChild()) GetChild()->SetPosition(x + lSpaceE, y);
-}
-#endif
 
 scaled
-MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
-					 const LengthDimension& dim,
-					 const BoundingBox& b) const
+MathMLPaddedElement::evalLengthDimension(const MathFormattingContext& ctxt,
+					 const SmartPtr<Value>& value,
+					 TokenId pseudoUnitId,
+					 const scaled& orig,
+					 const BoundingBox& b)
 {
+  LengthDimension dim;
+  parseLengthDimension(ctxt, value, dim, pseudoUnitId);
+
   if (!dim.valid) return orig;
   
   float f = dim.number;
   if (dim.percentage) f *= 0.01f;
 
-  scaled res = 0;
+  scaled res;
 
   if (dim.pseudo)
     {
-    switch (dim.pseudoUnitId)
-      {
-      case T_WIDTH: res = b.width * f; break;
-      case T_LSPACE: break; // LUCA: BoundingBox does not have a lspace length!!!
-      case T_HEIGHT: res = b.height * f; break;
-      case T_DEPTH: res = b.depth * f; break;
-      default:
-	assert(false);
-	break;
-      }
+      switch (dim.pseudoUnitId)
+	{
+	case T_WIDTH: res = b.width * f; break;
+	case T_LSPACE: break; // LUCA: BoundingBox does not have a lspace length!!!
+	case T_HEIGHT: res = b.height * f; break;
+	case T_DEPTH: res = b.depth * f; break;
+	default:
+	  assert(false);
+	  break;
+	}
     } 
   else
     {

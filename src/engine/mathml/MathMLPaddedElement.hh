@@ -37,6 +37,7 @@ public:
   static SmartPtr<MathMLPaddedElement> create(const SmartPtr<class MathMLNamespaceContext>& view)
   { return new MathMLPaddedElement(view); }
 
+  virtual AreaRef format(class MathFormattingContext&);
   virtual SmartPtr<class MathMLOperatorElement> getCoreOperator(void);
 
 private:
@@ -51,10 +52,14 @@ private:
     scaled unit;         // standard unit (valid if pseudo == false)
   };
 
-#if 0
-  void ParseLengthDimension(RenderingEnvironment&, const SmartPtr<Value>&, LengthDimension&, TokenId);
-#endif
-  scaled EvalLengthDimension(const scaled&, const LengthDimension&, const BoundingBox&) const;
+  static void parseLengthDimension(const class MathFormattingContext&,
+				   const SmartPtr<Value>&,
+				   LengthDimension&, 
+				   TokenId);
+  static scaled evalLengthDimension(const class MathFormattingContext&, 
+				    const SmartPtr<Value>&, 
+				    TokenId, const scaled&,
+				    const BoundingBox&);
 
   LengthDimension width;
   LengthDimension lSpace;

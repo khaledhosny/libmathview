@@ -71,8 +71,8 @@ typedef ParseBoolean Parse_MathML_Operator_accent;
 
 // Space
 typedef ParseLengthOrNamedSpace Parse_MathML_Space_width;
-typedef ParseLength Parse_MathML_Space_height;
-typedef ParseLength Parse_MathML_Space_depth;
+typedef ParseLengthOrNamedSpace Parse_MathML_Space_height;
+typedef ParseLengthOrNamedSpace Parse_MathML_Space_depth;
 typedef ParseTokenSet< Set<T_AUTO,T_NEWLINE,T_INDENTINGNEWLINE,T_NOBREAK,T_GOODBREAK,T_BADBREAK> > Parse_MathML_Space_linebreak;
 
 // StringLit

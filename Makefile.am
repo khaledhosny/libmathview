@@ -24,11 +24,11 @@ cleanbak:
 
 lc:
 	@( \
-	CFILES=`find . -name "*.c"`; \
-	HFILES=`find . -name "*.h"`; \
-	CCFILES=`find . -name "*.cc"`; \
-	HHFILES=`find . -name "*.hh"`; \
-	ICCFILES=`find . -name "*.icc"`; \
+	CFILES=`find $(top_srcdir) -name "*.c"`; \
+	HFILES=`find $(top_srcdir) -name "*.h"`; \
+	CCFILES=`find $(top_srcdir) -name "*.cc"`; \
+	HHFILES=`find $(top_srcdir) -name "*.hh"`; \
+	ICCFILES=`find $(top_srcdir) -name "*.icc"`; \
 	wc -l $$CFILES $$HFILES $$CCFILES $$HHFILES $$ICCFILES | tail -n 1 \
 	)
 

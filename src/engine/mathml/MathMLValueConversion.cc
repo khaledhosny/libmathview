@@ -80,6 +80,15 @@ toMathSpaceId(TokenId id)
     }
 }
 
+Length
+toLength(const SmartPtr<Value>& value, const MathFormattingContext& ctxt)
+{
+  if (IsTokenId(value))
+    return ctxt.getMathSpace(toMathSpaceId(ToTokenId(value)));
+  else
+    return ToLength(value);
+}
+
 SmartPtr<Value>
 Resolve(const SmartPtr<Value>& value, const MathFormattingContext& ctxt, int i, int j)
 {
