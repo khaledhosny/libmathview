@@ -81,7 +81,7 @@ PS_DrawingArea::DrawLine(const GraphicsContext* gc,
   SetGraphicsContext(gc);
 
   fprintf(output, "newpath %.2f %.2f moveto %.2f %.2f lineto stroke\n",
-	  sp2ps(mx + x1), sp2ps(height - my - y1), sp2ps(mx + x2), sp2ps(height - my - y2));
+	  sp2ps(x1), sp2ps(height - y1), sp2ps(x2), sp2ps(height - y2));
 
   MoveTo(x2, y2);
 }
@@ -92,7 +92,7 @@ PS_DrawingArea::DrawRectangle(const GraphicsContext* gc,
 {
   SetGraphicsContext(gc);
 
-  fprintf(output, "newpath %.2f %.2f moveto\n", sp2ps(mx + x), sp2ps(height - my - y));
+  fprintf(output, "newpath %.2f %.2f moveto\n", sp2ps(x), sp2ps(height - y));
   fprintf(output, "  %.2f %.2f rlineto %.2f %.2f rlineto %.2f %.2f rlineto closepath stroke\n",
 	  sp2ps(w), 0.0, 0.0, sp2ps(-h), sp2ps(-w), 0.0);
 }
@@ -104,7 +104,7 @@ PS_DrawingArea::DrawChar(const GraphicsContext* gc, const AFont* font,
   SetGraphicsContext(gc);
   SetFont(font);
 
-  fprintf(output, "%.2f %.2f moveto (", sp2ps(mx + x), sp2ps(height - my - y));
+  fprintf(output, "%.2f %.2f moveto (", sp2ps(x), sp2ps(height - y));
   DrawCharAux((unsigned char) ch);
   fprintf(output, ") show\n");
 }
@@ -134,7 +134,7 @@ PS_DrawingArea::DrawString(const GraphicsContext* gc, const AFont* font,
   SetGraphicsContext(gc);
   SetFont(font);
 
-  fprintf(output, "%.2f %.2f moveto (", sp2ps(mx + x), sp2ps(height - my - y));
+  fprintf(output, "%.2f %.2f moveto (", sp2ps(x), sp2ps(height - y));
   for (unsigned i = 0; i < len; i++) DrawCharAux((unsigned char) text[i]);
   fprintf(output, ") show\n");
 }
@@ -145,7 +145,7 @@ PS_DrawingArea::Clear(const GraphicsContext* gc,
 {
   SetGraphicsContext(gc);
 
-  fprintf(output, "newpath %.2f %.2f moveto\n", sp2ps(mx + x), sp2ps(height - my - y));
+  fprintf(output, "newpath %.2f %.2f moveto\n", sp2ps(x), sp2ps(height - y));
   fprintf(output, "  %.2f %.2f rlineto %.2f %.2f rlineto %.2f %.2f rlineto closepath fill\n",
 	  sp2ps(w), 0.0, 0.0, sp2ps(-h), sp2ps(-w), 0.0);
 }

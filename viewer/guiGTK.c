@@ -30,6 +30,8 @@
 #include "gtkmathview.h"
 #include "guiGTK.h"
 
+#define XLINK_NS_URI "http://www.w3.org/1999/xlink"
+
 static GtkWidget* window;
 static GtkWidget* main_area;
 static GtkWidget* scrolled_area;
@@ -82,8 +84,44 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Help/About...", NULL,         help_about,    0, NULL }
 };
 
+static void
+quick_message(const char* msg)
+{
+  GtkWidget* dialog;
+  GtkWidget* label;
+  GtkWidget* okay_button;
+     
+  /* Create the widgets */
+     
+  dialog = gtk_dialog_new();
+  label = gtk_label_new (msg);
+  okay_button = gtk_button_new_with_label("OK");
+
+  gtk_widget_set_usize(dialog, 300, 100);
+
+  /* Ensure that the dialog box is destroyed when the user clicks ok. */
+     
+  gtk_signal_connect_object (GTK_OBJECT (okay_button), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy), dialog);
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
+		     okay_button);
+  
+  /* Add the label, and show everything we've added to the dialog. */
+  
+  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
+  gtk_widget_show_all (dialog);
+}
+
+static void
+load_error_msg(const char* name)
+{
+  char* msg = g_strdup_printf("Could not load\n`%s'", name);
+  quick_message(msg);
+  g_free(msg);
+}
+
 void
-GUI_init(int *argc, char ***argv, char *title, guint width, guint height)
+GUI_init(int* argc, char*** argv, char* title, guint width, guint height)
 {
   gtk_init(argc, argv);
 
@@ -111,7 +149,10 @@ GUI_load_document(const char* name)
 
   math_view = GTK_MATH_VIEW(main_area);
 
-  if (!gtk_math_view_load(math_view, name)) return -1;
+  if (!gtk_math_view_load(math_view, name)) {
+    load_error_msg(name);
+    return -1;
+  }
 
   gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
   gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, name);
@@ -141,17 +182,9 @@ GUI_run()
 static void
 store_filename(GtkFileSelection* selector, GtkWidget* user_data)
 {
-  GtkMathView* math_view;
-  gchar* selected_filename;
-
-  selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
-
-  math_view = GTK_MATH_VIEW(main_area);
-
-  gtk_math_view_load(math_view, selected_filename);
-
-  gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
-  gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, selected_filename);
+  gchar* selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
+  if (selected_filename != NULL)
+    GUI_load_document(selected_filename);
 }
 
 static void
@@ -341,7 +374,7 @@ jump(GtkMathView* math_view, mDOMNodeRef node)
   mDOMStringRef href;
 
   g_return_if_fail(node != NULL);
-  href = mdom_node_get_attribute(node, DOM_CONST_STRING("href"));
+  href = mdom_node_get_attribute_ns(node, DOM_CONST_STRING("href"), XLINK_NS_URI);
 
   if (href != NULL) {
     GUI_load_document(C_CONST_STRING(href));

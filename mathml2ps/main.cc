@@ -146,7 +146,7 @@ parseUnit(const char* s)
 
   if (unit[i].name == NULL) return false;
 
-  MathEngine::logger(LOG_INFO, "Setting units to `%s'\n", unit[i].name);
+  MathEngine::logger(LOG_INFO, "Setting units to `%s'", unit[i].name);
   unitId = unit[i].id;
 
   return true;
@@ -311,7 +311,7 @@ main(int argc, char *argv[])
   sheet.height = h;
 
   area.DumpPreamble();
-  //area.DumpGrid();
+  area.DumpGrid();
   engine.Render(&sheet);
   area.DumpEpilogue();
 #else 
