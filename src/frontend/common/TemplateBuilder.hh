@@ -95,7 +95,7 @@ protected:
     static struct
     {
       String tag;
-      MathMLCreationMethod create;
+      MathMLUpdateMethod update;
     } mathml_tab[] = {
       { "math",          &TemplateBuilder::updateElement<MathML_math_ElementBuilder> },
       { "mi",            &TemplateBuilder::updateElement<MathML_mi_ElementBuilder> },
@@ -130,13 +130,13 @@ protected:
       { "",              0 }
     };
 
-    for (unsigned i = 0; mathml_tab[i].create; i++)
-      mathmlMap[mathml_tab[i].tag] = mathml_tab[i].create;
+    for (unsigned i = 0; mathml_tab[i].update; i++)
+      mathmlMap[mathml_tab[i].tag] = mathml_tab[i].update;
 
     static struct
     {
       String tag;
-      BoxMLCreationMethod create;
+      BoxMLUpdateMethod update;
     } boxml_tab[] = {
       { "at",            &TemplateBuilder::updateElement<BoxML_at_ElementBuilder> },
       { "layout",        &TemplateBuilder::updateElement<BoxML_layout_ElementBuilder> },
@@ -152,8 +152,8 @@ protected:
       { "",              0 }
     };
 
-    for (unsigned i = 0; boxml_tab[i].create; i++)
-      boxmlMap[boxml_tab[i].tag] = boxml_tab[i].create;
+    for (unsigned i = 0; boxml_tab[i].update; i++)
+      boxmlMap[boxml_tab[i].tag] = boxml_tab[i].update;
   }
 
   ////////////////////////////////////
@@ -193,7 +193,7 @@ protected:
 	for (unsigned i = 0; i < content.size(); i++)
 	  {
 	    innerRowContent.push_back(content[i]);
-	    if (i + 1 < content.size())
+	    if (!separators.empty() && i + 1 < content.size())
 	      {
 		SmartPtr<MathMLOperatorElement> sep = MathMLOperatorElement::create(mathmlContext);
 		unsigned offset = (i < separators.length()) ? i : separators.length() - 1;
@@ -205,6 +205,7 @@ protected:
 	  }
 	SmartPtr<MathMLRowElement> innerRow = MathMLRowElement::create(getMathMLNamespaceContext());
 	innerRow->swapContent(innerRowContent);
+	outerRowContent.push_back(innerRow);
       }
     outerRowContent.push_back(closeElem);
 
@@ -299,15 +300,17 @@ protected:
     String encoding = el.getAttribute("encoding");
     if (encoding == "BoxML")
       return getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element());
-    else if (encoding == "MathML-Presentation")
+    else /* if (encoding == "MathML-Presentation") */
       {
 	// this element can be associated to the corresponding model element
 	SmartPtr<BoxMLMathMLAdapter> adapter = getElement<BoxMLMathMLAdapterBuilder>(el);
 	adapter->setChild(getMathMLElement(typename Model::ElementIterator(el, MATHML_NS_URI).element()));
 	return adapter;
       }
+#if 0
     else
       return createBoxMLDummyElement();
+#endif
   }
 
   //////////////////
@@ -781,7 +784,7 @@ protected:
     static void
     construct(const TemplateBuilder& builder, const typename Model::Node& el, const SmartPtr<MathMLTableElement>& elem)
     {
-      assert(false); // to be implemented
+      // assert(false); // to be implemented
     }
   };
 
@@ -1094,6 +1097,15 @@ protected:
     if (SmartPtr<Attribute> attr = getAttribute(el, signature))
       return attr->getValue();
     else
+      return signature.getDefaultValue();
+  }
+
+  SmartPtr<Value>
+  getAttributeValueNoDefault(const typename Model::Element& el, const AttributeSignature& signature) const
+  {
+    if (SmartPtr<Attribute> attr = getAttribute(el, signature))
+      return attr->getValue();
+    else
       return 0;
   }
 
@@ -1208,12 +1220,14 @@ protected:
   SmartPtr<BoxMLElement>
   getBoxMLElement(const typename Model::Node& el) const
   {
-    //std::cerr << "createBoxMLElement " << el.get_localName() << std::endl;
-    typename BoxMLBuilderMap::const_iterator m = boxmlMap.find(el.get_localName());
-    if (m != boxmlMap.end())
-      return (this->*(m->second))(el);
-    else
-      return createBoxMLDummyElement();
+    if (el)
+      {
+	//std::cerr << "createBoxMLElement " << el.get_localName() << std::endl;
+	typename BoxMLBuilderMap::const_iterator m = boxmlMap.find(el.get_localName());
+	if (m != boxmlMap.end())
+	  return (this->*(m->second))(el);
+      }
+    return createBoxMLDummyElement();
   }
 
   void
@@ -1227,6 +1241,7 @@ protected:
   SmartPtr<BoxMLElement>
   createBoxMLDummyElement(void) const
   {
+    assert(false);
     return 0;
   }
 
@@ -1258,11 +1273,11 @@ public:
   }
 
 private:
-  typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLCreationMethod)(const typename Model::Element&) const;
-  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLCreationMethod)(const typename Model::Element&) const;
+  typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
+  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
 
-  typedef HASH_MAP_NS::hash_map<String, MathMLCreationMethod, StringHash, StringEq> MathMLBuilderMap;
-  typedef HASH_MAP_NS::hash_map<String, BoxMLCreationMethod, StringHash, StringEq> BoxMLBuilderMap;
+  typedef HASH_MAP_NS::hash_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
+  typedef HASH_MAP_NS::hash_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
 
   MathMLBuilderMap mathmlMap;
   BoxMLBuilderMap boxmlMap;
