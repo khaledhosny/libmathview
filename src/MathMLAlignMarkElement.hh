@@ -30,7 +30,7 @@
 
 class MathMLAlignMarkElement: public MathMLElement {
 public:
-  MathMLAlignMarkElement(mDOMNodeRef);
+  MathMLAlignMarkElement(GdomeElement*);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

@@ -25,17 +25,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <wctype.h>
+#include <gdome.h>
 
 #include "String.hh"
 #include "MathML.hh"
-#include "minidom.h"
+#include "gdomeAux.h"
 #include "stringAux.hh"
 #include "MathMLizer.hh"
 #include "MathEngine.hh"
 #include "StringUnicode.hh"
 #include "MathMLParseFile.hh"
 
-MathMLizer::MathMLizer(mDOMDocRef d)
+MathMLizer::MathMLizer(GdomeDocument* d)
 {
   assert(d != NULL);
   doc = d;
@@ -48,8 +49,9 @@ MathMLizer::~MathMLizer()
 MathMLDocument*
 MathMLizer::operator() ()
 {
+  GdomeException exc;
   MathMLDocument* document = new MathMLDocument(doc);
-  MathMLizeNode(mdom_doc_get_root_node(doc), document);
+  MathMLizeNode(gdome_doc_documentElement(doc, &exc), document);
   return document;
 }
 
@@ -57,7 +59,7 @@ MathMLizer::operator() ()
 // node -> source node in the DOM tree
 // parent -> parent (parsed) node
 void
-MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
+MathMLizer::MathMLizeNode(GdomeElement* node, MathMLContainerElement* parent)
 {
   assert(node != NULL);
   assert(parent != NULL);
@@ -68,12 +70,16 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
   //  return;
   //}
 
-  if (!mdom_node_is_element(node)) {
-    MathEngine::logger(LOG_WARNING, "skipping unrecognized node (type %d)\n", mdom_node_get_type(node));
+  GdomeException exc;
+  if (gdome_n_nodeType(GDOME_N(node), &exc) != GDOME_ELEMENT_NODE) {
+    MathEngine::logger(LOG_WARNING, "skipping unrecognized node (type %d)\n", gdome_n_nodeType(GDOME_N(node), &exc));
     return;
   }
 
-  TagId tag = TagIdOfName(C_CONST_STRING(mdom_node_get_name(node)));
+  GdomeDOMString* nodeName = gdome_n_nodeName(GDOME_N(node), &exc);
+  assert(nodeName != NULL);
+
+  TagId tag = TagIdOfName(gdome_str_c(nodeName));
   MathMLElement* elem = NULL;
 
   switch (tag) {
@@ -166,9 +172,11 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
   case TAG_SEMANTICS:
     elem = new MathMLSemanticsElement(node);
     break;
+#if 0
   case TAG_MCHAR:
     MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element (ignored)");
     break;
+#endif
   case TAG_NOTVALID:
   default:
     break;
@@ -182,7 +190,13 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
 	  NameOfTagId(tag),
 	  (parent != NULL) ? NameOfTagId(parent->IsA()) : "(nil)");
     } else {
-      MathEngine::logger(LOG_WARNING, "unrecognized tag `%s' (ignored)", node->name);
+      GdomeException exc;
+      GdomeDOMString* nodeName = gdome_n_nodeName(GDOME_N(node), &exc);
+      assert(nodeName != NULL);
+
+      MathEngine::logger(LOG_WARNING, "unrecognized tag `%s' (ignored)", gdome_str_c(nodeName));
+
+      gdome_str_unref(nodeName);
     }
   }
 
@@ -192,57 +206,53 @@ MathMLizer::MathMLizeNode(mDOMNodeRef node, MathMLContainerElement* parent)
 }
 
 void
-MathMLizer::MathMLizeContainerContent(mDOMNodeRef node, MathMLContainerElement* parent)
+MathMLizer::MathMLizeContainerContent(GdomeElement* node, MathMLContainerElement* parent)
 {
   assert(node != NULL);
   assert(parent != NULL);
 
-  mDOMNodeRef p = mdom_node_get_first_child(node);
-  while (p != NULL) {
-    if (mdom_node_is_text(p)) {
-      mDOMStringRef content = mdom_node_get_content(p);
-      String* text = allocString(content);
-      assert(text != NULL);
-      mdom_string_free(content);
-
-      text->CollapseSpaces();
-      text->TrimSpacesLeft();
-      text->TrimSpacesRight();
-
-      if (text->GetLength() > 0) {
-	MathEngine::logger(LOG_WARNING, "text inside container element `%s' (ignored)\n", NameOfTagId(parent->IsA()));
-      }
-
-      delete text;
-    } else
-      MathMLizeNode(p, parent);
-
-    p = mdom_node_get_next_sibling(p);
+  GdomeException exc;
+  for (GdomeNode* p = gdome_el_firstChild(node, &exc);
+       p != NULL;
+       p = gdome_n_nextSibling_unref(p)) {
+    if (gdome_n_nodeType(p, &exc) == GDOME_ELEMENT_NODE)
+      MathMLizeNode(GDOME_EL(p), parent);
+    else if (!gdome_n_isBlank(p)) {
+      GdomeDOMString* name = gdome_n_nodeName(p, &exc);
+      assert(name != NULL);
+      MathEngine::logger(LOG_WARNING, "invalid node `%s' inside container (ignored)", gdome_str_c(name));
+      gdome_str_unref(name);
+    }
   }
 }
 
 void
-MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
+MathMLizer::MathMLizeTokenContent(GdomeElement* node, MathMLTokenElement* parent)
 {
+  assert(node != NULL);
   assert(parent != NULL);
 
+  GdomeException exc;
   String* sContent = NULL;
-  mDOMNodeRef p = mdom_node_get_first_child(node);
-  while (p != NULL) {
-    if (mdom_node_is_text(p)) {
+  for (GdomeNode* p = gdome_el_firstChild(node, &exc);
+       p != NULL;
+       p = gdome_n_nextSibling_unref(p)) {
+    if (gdome_n_nodeType(p, &exc) == GDOME_TEXT_NODE) {
       // ok, we have a chunk of text
-      mDOMStringRef content = mdom_node_get_content(p);
+      GdomeDOMString* content = gdome_n_nodeValue(p, &exc);
+      assert(content != NULL);
+
       String* s = allocString(content);
       assert(s != NULL);
-      mdom_string_free(content);
+      gdome_str_unref(content);
 
       // white-spaces are always collapsed...
       s->CollapseSpaces();
 
       // ...but spaces at the at the beginning (end) are deleted only if this
       // is the very first (last) chunk in the token.
-      if (mdom_node_is_first(p)) s->TrimSpacesLeft();
-      if (mdom_node_is_last(p)) s->TrimSpacesRight();
+      if (gdome_n_isFirst(p)) s->TrimSpacesLeft();
+      if (gdome_n_isLast(p)) s->TrimSpacesRight();
 
       if (sContent == NULL)
 	sContent = s;
@@ -250,7 +260,9 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
 	sContent->Append(*s);
 	delete s;
       }
-    } else if (mdom_node_is_entity_ref(p)) {
+#if 0
+      // entities should be substituted
+    } else if (gdome_n_nodeType(p) == GDOME_) {
       String* s = NULL;
       // first of all we try to perform the substitution, maybe this entity has been
       // defined inside the document itself
@@ -272,44 +284,45 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
 	sContent->Append(*s);
 	delete s;
       }
-    } else if (mdom_node_is_element(p)) {
+#endif
+    } else if (gdome_n_nodeType(p, &exc) == GDOME_ELEMENT_NODE) {
       if (sContent != NULL) {
 	parent->Append(sContent);
 	delete sContent;
 	sContent = NULL;
       }
 
-      TagId tag = TagIdOfName(C_CONST_STRING(mdom_node_get_name(p)));
+      GdomeDOMString* nodeName = gdome_n_nodeName(p, &exc);
+      assert(nodeName != NULL);
+
+      TagId tag = TagIdOfName(gdome_str_c(nodeName));
 
       switch (tag) {
-      case TAG_MCHAR:
-	{
-	  MathEngine::logger(LOG_WARNING, "`mchar' is not a valid MathML element. It is recognized for backward compatibility only!");
-	  String* content = SubstituteMCharElement(p);
-	  if (content != NULL) parent->Append(content);
-	  delete content;
-	}
-	break;
       case TAG_MGLYPH:
 	{
-	  MathMLTextNode* text = SubstituteMGlyphElement(p);
+	  MathMLTextNode* text = SubstituteMGlyphElement(GDOME_EL(p));
 	  if (text != NULL) parent->Append(text);
 	}
 	break;
       case TAG_MALIGNMARK:
 	{
-	  MathMLTextNode* text = SubstituteAlignMarkElement(p);
+	  MathMLTextNode* text = SubstituteAlignMarkElement(GDOME_EL(p));
 	  if (text != NULL) parent->Append(text);
 	}
 	break;
       default:
-	MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)\n",
-			   mdom_node_get_name(node));
+	MathEngine::logger(LOG_WARNING, "unacceptable element `%s' inside token (ignored)",
+			   gdome_str_c(nodeName));
 	break;
       }
-    }
 
-    p = mdom_node_get_next_sibling(p);
+      gdome_str_unref(nodeName);
+    } else if (!gdome_n_isBlank(p)) {
+      GdomeDOMString* name = gdome_n_nodeName(p, &exc);
+      assert(name != NULL);
+      MathEngine::logger(LOG_WARNING, "invalid node `%s' inside container (ignored)", gdome_str_c(name));
+      gdome_str_unref(name);
+    }
   }
   
   if (sContent != NULL) {
@@ -318,87 +331,63 @@ MathMLizer::MathMLizeTokenContent(mDOMNodeRef node, MathMLTokenElement* parent)
   }
 }
 
-String*
-MathMLizer::SubstituteMCharElement(mDOMNodeRef node)
-{
-  mDOMStringRef name = mdom_node_get_attribute(node, DOM_CONST_STRING("name"));
-  String* content = NULL;
-
-  if (name == NULL) {
-    MathEngine::logger(LOG_WARNING, "malformed `mchar' element (`name' attribute required)\n");
-    content = allocString(DOM_CONST_STRING("?"));
-  } else {
-    content = MathEngine::entitiesTable.GetEntityContent(name);
-    if (content == NULL) content = MathEngine::entitiesTable.GetErrorEntityContent();
-  }
-
-  assert(content != NULL);
-
-  if (content->GetLength() == 0) {
-    delete content;
-    content = NULL;
-  }
-
-  mdom_string_free(name);
-
-  return content;
-}
-
 MathMLTextNode*
-MathMLizer::SubstituteMGlyphElement(mDOMNodeRef node)
+MathMLizer::SubstituteMGlyphElement(GdomeElement* node)
 {
   assert(node != NULL);
 
-  mDOMStringRef alt        = mdom_node_get_attribute(node, DOM_CONST_STRING("alt"));
-  mDOMStringRef fontFamily = mdom_node_get_attribute(node, DOM_CONST_STRING("fontfamily"));
-  mDOMStringRef index      = mdom_node_get_attribute(node, DOM_CONST_STRING("index"));
+  GdomeDOMString* alt        = gdome_el_getAttribute_c(node, "alt");
+  GdomeDOMString* fontFamily = gdome_el_getAttribute_c(node, "fontfamily");
+  GdomeDOMString* index      = gdome_el_getAttribute_c(node, "index");
+  assert(alt != NULL && fontFamily != NULL && index != NULL);
 
-  if (alt == NULL || fontFamily == NULL || index == NULL ||
-      *alt == '\0' || *fontFamily == '\0' || *index == '\0') {
+  if (gdome_str_isEmpty(alt) || gdome_str_isEmpty(fontFamily) || gdome_str_isEmpty(index)) {
     MathEngine::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
 
-    mdom_string_free(alt);
-    mdom_string_free(fontFamily);
-    mdom_string_free(index);
+    gdome_str_unref(alt);
+    gdome_str_unref(fontFamily);
+    gdome_str_unref(index);
 
     return new MathMLCharNode('?');
   }
 
   char* endPtr;
-  unsigned nch = strtoul(C_STRING(index), &endPtr, 10);
+  unsigned nch = strtoul(gdome_str_c(index), &endPtr, 10);
 
   if (endPtr == NULL || *endPtr != '\0') {
     MathEngine::logger(LOG_WARNING, "malformed `mglyph' element (parsing error in `index' attribute)\n");
     nch = '?';
   }
 
-  MathMLGlyphNode* glyph = new MathMLGlyphNode(C_STRING(alt), C_STRING(fontFamily), nch);
+  MathMLGlyphNode* glyph = new MathMLGlyphNode(gdome_str_c(alt), gdome_str_c(fontFamily), nch);
 
-  mdom_string_free(alt);
-  mdom_string_free(fontFamily);
-  mdom_string_free(index);
+  gdome_str_unref(alt);
+  gdome_str_unref(fontFamily);
+  gdome_str_unref(index);
 
   return glyph;
 }
 
 MathMLTextNode*
-MathMLizer::SubstituteAlignMarkElement(mDOMNodeRef node)
+MathMLizer::SubstituteAlignMarkElement(GdomeElement* node)
 {
   assert(node != NULL);
 
-  mDOMStringRef edge = mdom_node_get_attribute(node, DOM_CONST_STRING("edge"));
+  GdomeDOMString* edge = gdome_el_getAttribute_c(node, "edge");
+  assert(edge != NULL);
 
   MarkAlignType align = MARK_ALIGN_NOTVALID;
 
   if (edge != NULL) {
-    if      (mdom_string_eq(edge, DOM_CONST_STRING("left"))) align = MARK_ALIGN_LEFT;
-    else if (mdom_string_eq(edge, DOM_CONST_STRING("right"))) align = MARK_ALIGN_RIGHT;
+    if      (gdome_str_equal_c(edge, "left")) align = MARK_ALIGN_LEFT;
+    else if (gdome_str_equal_c(edge, "right")) align = MARK_ALIGN_RIGHT;
     else
       MathEngine::logger(LOG_WARNING,
 			 "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
-			 edge);
+			 gdome_str_c(edge));
   }
-  mdom_string_free(edge);
+
+  gdome_str_unref(edge);
 
   return new MathMLMarkNode(align);
 }

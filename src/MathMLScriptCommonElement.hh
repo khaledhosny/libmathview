@@ -23,13 +23,11 @@
 #ifndef MathMLScriptCommonElement_hh
 #define MathMLScriptCommonElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLScriptCommonElement: public MathMLContainerElement {
 public:
-  MathMLScriptCommonElement(mDOMNodeRef, TagId);
+  MathMLScriptCommonElement(GdomeElement*, TagId);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual ~MathMLScriptCommonElement();

@@ -30,7 +30,7 @@
 #include "MathMLStringNode.hh"
 #include "MathMLStringLitElement.hh"
 
-MathMLStringLitElement::MathMLStringLitElement(mDOMNodeRef node) :
+MathMLStringLitElement::MathMLStringLitElement(GdomeElement* node) :
   MathMLTokenElement(node, TAG_MS)
 {
   lQuote = rQuote = NULL;

@@ -32,7 +32,7 @@
 #include "MathMLTableRowElement.hh"
 #include "MathMLTableCellElement.hh"
 
-MathMLTableRowElement::MathMLTableRowElement(mDOMNodeRef node, TagId id) :
+MathMLTableRowElement::MathMLTableRowElement(GdomeElement* node, TagId id) :
   MathMLContainerElement(node, id)
 {
   assert(id == TAG_MTR || id == TAG_MLABELEDTR);

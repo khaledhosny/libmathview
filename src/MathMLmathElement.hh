@@ -23,13 +23,11 @@
 #ifndef MathMLmathElement_hh
 #define MathMLmathElement_hh
 
-#include <config.h>
-
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLmathElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLmathElement(mDOMNodeRef);
+  MathMLmathElement(GdomeElement*);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(class RenderingEnvironment*);
   virtual ~MathMLmathElement();

@@ -25,7 +25,7 @@
 
 #include "MathMLAlignGroupElement.hh"
 
-MathMLAlignGroupElement::MathMLAlignGroupElement(mDOMNodeRef node) :
+MathMLAlignGroupElement::MathMLAlignGroupElement(GdomeElement* node) :
   MathMLElement(node, TAG_MALIGNGROUP)
 {
   width = 0;

@@ -55,9 +55,9 @@ int rnd(guint m)
 void random_token(guint depth)
 {
   if (choice(2)) {
-    printf("<mn color=\"#104e8b\">%c%d</mn>\n", (choice(5) ? '-' : ' '), random() % 10);
+    printf("<mn mathcolor=\"#104e8b\">%c%d</mn>\n", (choice(5) ? '-' : ' '), random() % 10);
   } else {
-      printf("<mi color=\"#a52a2a\">");
+      printf("<mi mathcolor=\"#a52a2a\">");
     if (choice(2))
       printf("%c", rnd_range('a', 'z'));
     else
@@ -149,7 +149,7 @@ void random_tuple(guint depth)
 
 void random_app(guint depth)
 {
-  printf("<mrow><mi>%c</mi><mo>&af;</mo>\n", rnd_range('a', 'z'));
+  printf("<mrow><mi>%c</mi><mo>&#x2061;</mo>\n", rnd_range('a', 'z'));
   printf("<mrow><mo>(</mo>\n");
   random_tuple(depth + 1);
   printf("<mo>)</mo></mrow>\n");
@@ -159,12 +159,22 @@ void random_app(guint depth)
 void random_op(guint depth)
 {
   const char* op[] = {
-    "plus", "minus", "times", "rarr", "circle", "UnionPlus", "UnionMinus", "gg", "ll",
-    "subset", "subseteq", "sim"
+    "002b", /* plus */
+    "2212", /* minus */
+    "00d7", /* times */
+    "2192", /* rarr */
+    "2295", /* CirclePlus */
+    "228e", /* UnionPlus */
+    "22c3", /* Union */
+    "226b", /* gg */
+    "226a", /* ll */
+    "2282", /* subset */
+    "2286", /* subseteq */
+    "223c"  /* sim */
   };
 
   guint n = rnd(sizeof(op) / sizeof(void*));
-  printf("<mo><mchar name=\"%s\"/></mo>\n", op[n]);
+  printf("<mo>&#x%s;</mo>\n", op[n]);
 }
 
 void random_fenced(guint depth)
@@ -218,7 +228,15 @@ void random_expr(guint depth)
 void random_prop(guint depth)
 {
   const char* relop[] = {
-    "equals", "NotEqualTilde", "approxeq", "bumpeq", "gt", "lt", "le", "ge", "Implies"
+    "003d", /* equals */
+    "2260", /* NotEqual */
+    "224a", /* approxeq */
+    "224f", /* bumpeq */
+    "003e", /* gt */
+    "003c", /* lt */
+    "2264", /* le */
+    "2265", /* ge */
+    "21d2", /* Implied */
   };
 
   guint n = rnd_range(1, 3);
@@ -227,7 +245,7 @@ void random_prop(guint depth)
   printf("<mrow>\n");
   while (n-- > 0) {
     random_expr(depth + 1);
-    if (n > 0) printf("<mo><mchar name=\"%s\"/></mo>\n", relop[op]);
+    if (n > 0) printf("<mo>&#x%s;</mo>\n", relop[op]);
   }
   printf("</mrow>\n");
 }

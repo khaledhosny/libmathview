@@ -30,7 +30,7 @@
 #include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
 
-MathMLActionElement::MathMLActionElement(mDOMNodeRef node) :
+MathMLActionElement::MathMLActionElement(GdomeElement* node) :
   MathMLContainerElement(node, TAG_MACTION)
 {
   selection = 0;

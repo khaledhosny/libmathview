@@ -23,13 +23,11 @@
 #ifndef MathMLTableRowElement_hh
 #define MathMLTableRowElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLTableRowElement: public MathMLContainerElement {
 public:
-  MathMLTableRowElement(mDOMNodeRef, TagId = TAG_MTR);
+  MathMLTableRowElement(GdomeElement*, TagId = TAG_MTR);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

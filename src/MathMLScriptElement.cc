@@ -28,7 +28,7 @@
 #include "MathMLScriptElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLScriptElement::MathMLScriptElement(mDOMNodeRef node, TagId id) :
+MathMLScriptElement::MathMLScriptElement(GdomeElement* node, TagId id) :
   MathMLScriptCommonElement(node, id)
 {
   subScript = superScript = NULL;
@@ -120,7 +120,7 @@ MathMLScriptElement::Setup(RenderingEnvironment* env)
 }
 
 void
-MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
+MathMLScriptElement::DoBoxedLayout(LayoutId id, BreakId, scaled maxWidth)
 {
   if (!HasDirtyLayout(id, maxWidth)) return;
 

@@ -26,7 +26,7 @@
 #include "MathMLErrorElement.hh"
 #include "RenderingEnvironment.hh"
 
-MathMLErrorElement::MathMLErrorElement(mDOMNodeRef node) :
+MathMLErrorElement::MathMLErrorElement(GdomeElement* node) :
   MathMLNormalizingContainerElement(node, TAG_MERROR)
 {
 }

@@ -23,7 +23,8 @@
 #ifndef MathMLElement_hh
 #define MathMLElement_hh
 
-#include "minidom.h"
+#include <gdome.h>
+
 #include "keyword.hh"
 #include "MathMLFrame.hh"
 #include "BoundingBox.hh"
@@ -33,7 +34,7 @@
 // MathMLElement: base class for every MathML Element
 class MathMLElement: public MathMLFrame {
 public:
-  MathMLElement(mDOMNodeRef = NULL, TagId = TAG_NOTVALID);
+  MathMLElement(GdomeElement* = NULL, TagId = TAG_NOTVALID);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*); // setup attributes
@@ -80,7 +81,7 @@ public:
 
   // some queries
   TagId        	 IsA(void) const { return tag; }
-  mDOMNodeRef    GetDOMNode(void) const { return node; }
+  GdomeElement*  GetDOMNode(void) const { return node; }
   virtual bool 	 IsSpaceLike(void) const;
   virtual bool 	 IsExpanding(void) const;
   virtual bool 	 IsInside(scaled, scaled) const;
@@ -122,8 +123,8 @@ protected:
   RGBValue background; // background color
 
 private:
-  mDOMNodeRef node; // reference to the DOM node
-  TagId       tag;
+  GdomeElement* node; // reference to the DOM node
+  TagId         tag;
 
 #ifdef DEBUG
   static int counter;

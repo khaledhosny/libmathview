@@ -26,7 +26,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLScriptCommonElement.hh"
 
-MathMLScriptCommonElement::MathMLScriptCommonElement(mDOMNodeRef node, TagId id) :
+MathMLScriptCommonElement::MathMLScriptCommonElement(GdomeElement* node, TagId id) :
   MathMLContainerElement(node, id)
 {
   assert(id == TAG_MSUP || id == TAG_MSUB || id == TAG_MSUBSUP || id == TAG_MMULTISCRIPTS);

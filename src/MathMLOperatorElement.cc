@@ -40,7 +40,7 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLEmbellishedOperatorElement.hh"
 
-MathMLOperatorElement::MathMLOperatorElement(mDOMNodeRef node) :
+MathMLOperatorElement::MathMLOperatorElement(GdomeElement* node) :
   MathMLTokenElement(node, TAG_MO)
 {
   eOp = NULL;

@@ -35,7 +35,7 @@
 #include "RenderingEnvironment.hh"
 #include "MathMLOperatorElement.hh"
 
-MathMLRadicalElement::MathMLRadicalElement(mDOMNodeRef node, TagId id) :
+MathMLRadicalElement::MathMLRadicalElement(GdomeElement* node, TagId id) :
   MathMLContainerElement(node, id)
 {
   assert(id == TAG_MSQRT || id == TAG_MROOT);
@@ -62,13 +62,10 @@ MathMLRadicalElement::Normalize()
     delete elem;
   }
 
-  String* rad = MathEngine::entitiesTable.GetEntityContent(DOM_CONST_STRING("Sqrt"));
-  assert(rad != NULL);
   if (radical != NULL) delete radical;
-  radical = new MathMLCharNode(rad->GetChar(0));
+  radical = new MathMLCharNode(UNICODE_SQRT);
   radical->SetParent(this);
-  delete rad;
-
+  
   MathMLContainerElement::Normalize();
 }
 

@@ -23,13 +23,11 @@
 #ifndef MathMLPaddedElement_hh
 #define MathMLPaddedElement_hh
 
-#include <config.h>
-
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLPaddedElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLPaddedElement(mDOMNodeRef);
+  MathMLPaddedElement(GdomeElement*);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Setup(RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);

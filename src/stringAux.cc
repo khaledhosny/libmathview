@@ -28,6 +28,7 @@
 #include <malloc.h>
 #include <glib.h>
 
+#include "gdomeAux.h"
 #include "stringAux.hh"
 #include "StringUnicode.hh"
 #include "allocTextNode.hh"
@@ -55,7 +56,7 @@ static Char32 swac(Char32 ch)
 }
 #endif // WORDS_BIGENDIAN
 
-String* allocString(mDOMConstStringRef str)
+String* allocString(GdomeDOMString* str)
 {
   assert(str != NULL);
 
@@ -71,7 +72,8 @@ String* allocString(mDOMConstStringRef str)
   assert(str != NULL);
   String* sValue = NULL;
 
-  const char* s = reinterpret_cast<const char*>(str);
+  const char* s = gdome_str_c(str);
+  assert(s != NULL);
 
   static Char32 buffer[128];
   size_t inBytesLeft = strlen(s);

@@ -36,7 +36,7 @@
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLTableCellElement.hh"
 
-MathMLTableCellElement::MathMLTableCellElement(mDOMNodeRef node): 
+MathMLTableCellElement::MathMLTableCellElement(GdomeElement* node): 
   MathMLNormalizingContainerElement(node, TAG_MTD)
 {
   rowIndex = 0;

@@ -23,13 +23,11 @@
 #ifndef MathMLUnderOverElement_hh
 #define MathMLUnderOverElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLUnderOverElement : public MathMLContainerElement {
 public:
-  MathMLUnderOverElement(mDOMNodeRef, TagId);
+  MathMLUnderOverElement(GdomeElement*, TagId);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);

@@ -29,7 +29,7 @@
 #include "MathMLDummyElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(mDOMNodeRef node, TagId t) :
+MathMLNormalizingContainerElement::MathMLNormalizingContainerElement(GdomeElement* node, TagId t) :
   MathMLContainerElement(node, t)
 {
 }

@@ -23,13 +23,11 @@
 #ifndef MathMLSemanticsElement_hh
 #define MathMLSemanticsElement_hh
 
-#include <config.h>
-
 #include "MathMLContainerElement.hh"
 
 class MathMLSemanticsElement: public MathMLContainerElement {
 public:
-  MathMLSemanticsElement(mDOMNodeRef);
+  MathMLSemanticsElement(GdomeElement*);
   virtual void Normalize(void);
   virtual ~MathMLSemanticsElement();
 

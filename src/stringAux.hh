@@ -23,10 +23,11 @@
 #ifndef stringAux_hh
 #define stringAux_hh
 
-#include "minidom.h"
+#include <gdome.h>
+
 #include "String.hh"
 
-String* allocString(mDOMConstStringRef);
+String* allocString(GdomeDOMString*);
 String* allocString(const String&, unsigned, unsigned);
 
-#endif
+#endif // stringAux_hh

@@ -40,7 +40,9 @@
 #include "MathMLActionElement.hh"
 #include "RenderingEnvironment.hh"
 
+#if 0
 EntitiesTable      MathEngine::entitiesTable;
+#endif
 OperatorDictionary MathEngine::dictionary;
 Configuration      MathEngine::configuration;
 Logger             MathEngine::logger;
@@ -81,11 +83,13 @@ MathEngine::InitGlobalData(const char* confPath)
 
   // the entities table and the dictionary are static members of MathEngine,
   // so they have to be configured once only
-  
+
+#if 0  
   //res = entitiesTable.Load("/usr/local/share/gtkmathview/entities-table.xml", false);
   //if (!res) res = entitiesTable.Load("config/entities-table.xml", true);
   entitiesTable.LoadInternalTable();
-  
+#endif
+
   Iterator<String*> dit(configuration.GetDictionaries());
   if (dit.More()) {
     while (dit.More()) {
@@ -149,7 +153,7 @@ MathEngine::Load(const char* fileName)
 
   Clock perf;
   perf.Start();
-  mDOMDocRef doc = MathMLParseFile(fileName, true);
+  GdomeDocument* doc = MathMLParseFile(fileName, true);
   perf.Stop();
   logger(LOG_INFO, "parsing time: %dms", perf());
 
@@ -162,7 +166,7 @@ MathEngine::Load(const char* fileName)
 }
 
 bool
-MathEngine::Load(mDOMDocRef doc)
+MathEngine::Load(GdomeDocument* doc)
 {
   assert(doc != NULL);
 
@@ -197,10 +201,13 @@ void
 MathEngine::Unload()
 {
   if (document != NULL) {
-    mDOMDocRef doc = document->GetDOMDocument();
+    GdomeDocument* doc = document->GetDOMDocument();
     delete document;
     MathEngine::logger(LOG_DEBUG, "unloading the DOM tree");
-    mdom_unload(doc);
+
+    GdomeException exc;
+    gdome_doc_unref(doc, &exc);
+
     document = NULL;  
   }
 

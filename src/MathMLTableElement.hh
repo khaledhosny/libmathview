@@ -23,8 +23,6 @@
 #ifndef MathMLTableElement_hh
 #define MathMLTableElement_hh
 
-#include <config.h>
-
 #include "MathMLTableRowElement.hh"
 #include "MathMLContainerElement.hh"
 #include "MathMLAlignGroupElement.hh"
@@ -127,7 +125,7 @@ struct RowLabel {
 
 class MathMLTableElement: public MathMLContainerElement {
 public:
-  MathMLTableElement(mDOMNodeRef);
+  MathMLTableElement(GdomeElement*);
   virtual const AttributeSignature* GetAttributeSignature(AttributeId) const;
   virtual void Normalize(void);
   virtual void Setup(class RenderingEnvironment*);

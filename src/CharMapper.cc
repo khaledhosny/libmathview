@@ -25,15 +25,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <gdome.h>
 
-#include "minidom.h"
+#include "gdomeAux.h"
 #include "Iterator.hh"
 #include "stringAux.hh"
 #include "MathEngine.hh"
 #include "CharMapper.hh"
 #include "FontManager.hh"
 #include "StringUnicode.hh"
-#include "EntitiesTable.hh"
 #include "AttributeParser.hh"
 #include "MathMLParseFile.hh"
 
@@ -49,7 +49,7 @@ unsigned CharMapper::chars = 0;
 
 // some auxiliary functions defined below
 
-static Char parseCode(mDOMNodeRef);
+static Char parseCode(GdomeElement*);
 
 // CharMapper, default constructor
 CharMapper::CharMapper(FontManager& fm) : fontManager(fm)
@@ -260,40 +260,47 @@ CharMapper::Load(const char* fileName)
 {
   assert(fileName != NULL);
 
-  mDOMDocRef doc = MathMLParseFile(fileName, false);
+  GdomeException exc;
+  GdomeDocument* doc = MathMLParseFile(fileName, false);
   if (doc == NULL) return false;
 
-  mDOMNodeRef root = mdom_doc_get_root_node(doc);
-  if (root == NULL || mdom_node_get_name(root) == NULL) {
-    mdom_doc_free(doc);
+  GdomeElement* root = gdome_doc_documentElement(doc, &exc);
+  if (root == NULL) {
+    gdome_doc_unref(doc, &exc);
     return false;
   }
 
-  if (mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("font-configuration")))
+  if (gdome_n_name_is(GDOME_N(root), "font-configuration"))
     ParseFontConfiguration(root);
   
-  mdom_doc_free(doc);
+  gdome_doc_unref(doc, &exc);
 
   return true;
 }
 
 void
-CharMapper::ParseFontConfiguration(mDOMNodeRef node)
+CharMapper::ParseFontConfiguration(GdomeElement* node)
 {
   assert(node != NULL);
   // a conf file is made of a single <font-configuration> element
 
-  for (mDOMNodeRef p = mdom_node_get_first_child(node); p != NULL; p = mdom_node_get_next_sibling(p)) {
+  GdomeException exc;
+
+  for (GdomeNode* p = gdome_el_firstChild(node, &exc);
+       p != NULL;
+       p = gdome_n_nextSibling_unref(p)) {
     // every child of <font-configuration> must be a particular font map
-    if      (mdom_string_eq(mdom_node_get_name(p), DOM_CONST_STRING("font"))) ParseFont(p);
-    else if (mdom_string_eq(mdom_node_get_name(p), DOM_CONST_STRING("map"))) ParseMap(p);
+    if (gdome_n_name_is(p, "font")) ParseFont(GDOME_EL(p));
+    else if (gdome_n_name_is(p, "map")) ParseMap(GDOME_EL(p));
   }
 
+  // this is to link fonts to maps, since they can occur in any order within the
+  // font configuration file
   PatchConfiguration();
 }
 
 void
-CharMapper::ParseFont(mDOMNodeRef node)
+CharMapper::ParseFont(GdomeElement* node)
 {
   assert(node != NULL);
 
@@ -301,85 +308,104 @@ CharMapper::ParseFont(mDOMNodeRef node)
   desc->fontMapId = NULL;
   desc->fontMap = NULL;
 
-  for (mDOMAttrRef attr = mdom_node_get_first_attribute(node);
-       attr != NULL;
-       attr = mdom_attr_get_next_sibling(attr)) {
-    mDOMConstStringRef name = mdom_attr_get_name(attr);
-    mDOMStringRef value = mdom_attr_get_value(attr);
+  GdomeException exc;
+  GdomeNamedNodeMap* attributes = gdome_el_attributes(node, &exc);
 
-    if (value != NULL) {
-      if        (mdom_string_eq(name, DOM_CONST_STRING("family"))) {
-	desc->attributes.family = C_CONST_STRING(value);
-	value = NULL;
-      } else if (mdom_string_eq(name, DOM_CONST_STRING("style"))) {
-	if      (mdom_string_eq(value, DOM_CONST_STRING("normal")))
-	  desc->attributes.style = FONT_STYLE_NORMAL;
-	else if (mdom_string_eq(value, DOM_CONST_STRING("italic")))
-	  desc->attributes.style = FONT_STYLE_ITALIC;
-      } else if (mdom_string_eq(name, DOM_CONST_STRING("weight"))) {
-	if (mdom_string_eq(value, DOM_CONST_STRING("normal")))
-	  desc->attributes.weight = FONT_WEIGHT_NORMAL;
-	else if (mdom_string_eq(value, DOM_CONST_STRING("bold")))
-	  desc->attributes.weight = FONT_WEIGHT_BOLD;
-      } else if (mdom_string_eq(name, DOM_CONST_STRING("map"))) {
-	desc->fontMapId = C_CONST_STRING(value);
-	value = NULL;
-      } else if (mdom_string_eq(name, DOM_CONST_STRING("mode"))) {
-	if      (mdom_string_eq(value, DOM_CONST_STRING("text")))
-	  desc->attributes.mode = FONT_MODE_TEXT;
-	else if (mdom_string_eq(value, DOM_CONST_STRING("math")))
-	  desc->attributes.mode = FONT_MODE_MATH;
-      } else if (mdom_string_eq(name, DOM_CONST_STRING("size"))) {
-	StringC sName(C_CONST_STRING(value));
-	StringTokenizer st(sName);
-	const Value* v = numberUnitParser(st);
-	if (v != NULL) {
-	  desc->attributes.size = v->ToNumberUnit();
-	  delete v;
-	}
-      } else {
-	mDOMStringRef cName = mdom_string_dup(name);
-	desc->extraAttributes.AddProperty(C_CONST_STRING(cName), C_CONST_STRING(value));
-	value = NULL;
+  for (unsigned i = 0; i < gdome_nnm_length(attributes, &exc); i++) {
+    GdomeAttr* attr = GDOME_A(gdome_nnm_item(attributes, i, &exc));
+
+    GdomeDOMString* name = gdome_a_name(attr, &exc);
+    GdomeDOMString* value = gdome_a_value(attr, &exc);
+
+    assert(name != NULL);
+    assert(value != NULL);
+
+    if (gdome_str_equal_c(name, "family")) {
+      gdome_str_ref(value);
+      desc->attributes.family = gdome_str_c(value);
+    } else if (gdome_str_equal_c(name, "style")) {
+      if      (gdome_str_equal_c(value, "normal"))
+	desc->attributes.style = FONT_STYLE_NORMAL;
+      else if (gdome_str_equal_c(value, "italic"))
+	desc->attributes.style = FONT_STYLE_ITALIC;
+    } else if (gdome_str_equal_c(name, "weight")) {
+      if (gdome_str_equal_c(value, "normal"))
+	desc->attributes.weight = FONT_WEIGHT_NORMAL;
+      else if (gdome_str_equal_c(value, "bold"))
+	desc->attributes.weight = FONT_WEIGHT_BOLD;
+    } else if (gdome_str_equal_c(name, "map")) {
+      gdome_str_ref(value);
+      desc->fontMapId = gdome_str_c(value);
+    } else if (gdome_str_equal_c(name, "mode")) {
+      if      (gdome_str_equal_c(value, "text"))
+	desc->attributes.mode = FONT_MODE_TEXT;
+      else if (gdome_str_equal_c(value, "math"))
+	desc->attributes.mode = FONT_MODE_MATH;
+    } else if (gdome_str_equal_c(name, "size")) {
+      StringC sName(gdome_str_c(value));
+      StringTokenizer st(sName);
+      const Value* v = numberUnitParser(st);
+      if (v != NULL) {
+	desc->attributes.size = v->ToNumberUnit();
+	delete v;
       }
-
-      if (value != NULL) mdom_string_free(value);
+    } else {
+      gdome_str_ref(name);
+      gdome_str_ref(value);
+      desc->extraAttributes.AddProperty(gdome_str_c(name), gdome_str_c(value));
     }
+
+    gdome_str_unref(name);
+    gdome_str_unref(value);
   }
-  
-  if (desc->fontMapId == NULL && desc->attributes.HasFamily())
-    desc->fontMapId = strdup(desc->attributes.family);
+
+  gdome_nnm_unref(attributes, &exc);
 
   if (desc->fontMapId != NULL) fonts.Append(desc);
   else delete desc;
 }
 
 void
-CharMapper::ParseMap(mDOMNodeRef node)
+CharMapper::ParseMap(GdomeElement* node)
 {
   assert(node != NULL);
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("id"));
-  if (value == NULL) return;
+  if (!gdome_el_hasAttribute_c(node, "id")) {
+    MathEngine::logger(LOG_WARNING, "there is a map without `id' attribute in font configuration file (skipped)");
+    return;
+  }
+
+  GdomeDOMString* value = gdome_el_getAttribute_c(node, "id");
+  assert(value != NULL);
 
   FontMap* fontMap = new FontMap;
-  fontMap->id = C_CONST_STRING(value);
+  fontMap->id = gdome_str_c(value);
 
-  for (mDOMNodeRef p = mdom_node_get_first_child(node);
+  GdomeException exc;
+
+  for (GdomeNode* p = gdome_el_firstChild(node, &exc);
        p != NULL;
-       p = mdom_node_get_next_sibling(p)) {
-    mDOMConstStringRef name = mdom_node_get_name(p);
-    if      (mdom_string_eq(name, DOM_CONST_STRING("range"))) ParseRange(p, fontMap);
-    else if (mdom_string_eq(name, DOM_CONST_STRING("multi"))) ParseMulti(p, fontMap);
-    else if (mdom_string_eq(name, DOM_CONST_STRING("single"))) ParseSingle(p, fontMap);
-    else if (mdom_string_eq(name, DOM_CONST_STRING("stretchy"))) ParseStretchy(p, fontMap);
+       p = gdome_n_nextSibling_unref(p)) {
+    if      (gdome_n_name_is(p, "range")) ParseRange(GDOME_EL(p), fontMap);
+    else if (gdome_n_name_is(p, "multi")) ParseMulti(GDOME_EL(p), fontMap);
+    else if (gdome_n_name_is(p, "single")) ParseSingle(GDOME_EL(p), fontMap);
+    else if (gdome_n_name_is(p, "stretchy")) ParseStretchy(GDOME_EL(p), fontMap);
+    else if (!gdome_n_isBlank(p)) {
+      GdomeDOMString* name = gdome_n_nodeName(p, &exc);
+      assert(name != NULL);
+
+      MathEngine::logger(LOG_WARNING, "unrecognized element `%s' in font configuration (ignored)",
+			 gdome_str_c(name));
+
+      gdome_str_unref(name);
+    }
   }
 
   maps.Append(fontMap);
 }
 
 void
-CharMapper::ParseRange(mDOMNodeRef node, FontMap* fontMap)
+CharMapper::ParseRange(GdomeElement* node, FontMap* fontMap)
 {
   assert(node != NULL);
   assert(fontMap != NULL);
@@ -387,31 +413,38 @@ CharMapper::ParseRange(mDOMNodeRef node, FontMap* fontMap)
   CharMap* charMap = new CharMap;
   charMap->type = CHAR_MAP_RANGE;
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("first"));
-  if (value == NULL) {
+  if (!gdome_el_hasAttribute_c(node, "first")) {
+    MathEngine::logger(LOG_WARNING, "range map has no mandatory `first' attribute");
     delete charMap;
     return;
   }
-  charMap->range.first = strtol(C_CONST_STRING(value), NULL, 0);
-  mdom_string_free(value);
+  
+  GdomeDOMString* value = gdome_el_getAttribute_c(node, "first");
+  charMap->range.first = strtol(gdome_str_c(value), NULL, 0);
+  gdome_str_unref(value);
 
-  value = mdom_node_get_attribute(node, DOM_CONST_STRING("last"));
-  if (value == NULL) {
+  if (!gdome_el_hasAttribute_c(node, "last")) {
+    MathEngine::logger(LOG_WARNING, "range map has no mandatory `last' attribute");
     delete charMap;
     return;
   }
-  charMap->range.last = strtol(C_CONST_STRING(value), NULL, 0);
-  mdom_string_free(value);
 
-  value = mdom_node_get_attribute(node, DOM_CONST_STRING("offset"));
-  if (value == NULL) {
+  value = gdome_el_getAttribute_c(node, "last");
+  charMap->range.last = strtol(gdome_str_c(value), NULL, 0);
+  gdome_str_unref(value);
+
+  if (!gdome_el_hasAttribute_c(node, "offset")) {
+    MathEngine::logger(LOG_WARNING, "range map has no mandatory `offset' attribute");
     delete charMap;
     return;
   }
-  charMap->range.offset = strtol(C_CONST_STRING(value), NULL, 0);
-  mdom_string_free(value);
+
+  value = gdome_el_getAttribute_c(node, "offset");
+  charMap->range.offset = strtol(gdome_str_c(value), NULL, 0);
+  gdome_str_unref(value);
 
   if (charMap->range.last < charMap->range.first) {
+    MathEngine::logger(LOG_WARNING, "range map has inconsistent first-last entries");
     delete charMap;
     return;
   }
@@ -420,7 +453,7 @@ CharMapper::ParseRange(mDOMNodeRef node, FontMap* fontMap)
 }
 
 void
-CharMapper::ParseMulti(mDOMNodeRef node, FontMap* fontMap)
+CharMapper::ParseMulti(GdomeElement* node, FontMap* fontMap)
 {
   assert(node != NULL);
   assert(fontMap != NULL);
@@ -428,47 +461,53 @@ CharMapper::ParseMulti(mDOMNodeRef node, FontMap* fontMap)
   CharMap* charMap = new CharMap;
   charMap->type = CHAR_MAP_MULTI;
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("first"));
-  if (value == NULL) {
+  if (!gdome_el_hasAttribute_c(node, "first")) {
+    MathEngine::logger(LOG_WARNING, "multi map has no mandatory `first' attribute");
     delete charMap;
     return;
   }
-  charMap->multi.first = strtol(C_CONST_STRING(value), NULL, 0);
-  mdom_string_free(value);
 
-  value = mdom_node_get_attribute(node, DOM_CONST_STRING("last"));
-  if (value == NULL) {
+  GdomeDOMString* value = gdome_el_getAttribute_c(node, "first");
+  charMap->multi.first = strtol(gdome_str_c(value), NULL, 0);
+  gdome_str_unref(value);
+
+  if (!gdome_el_hasAttribute_c(node, "last")) {
+    MathEngine::logger(LOG_WARNING, "multi map has no mandatory `last' attribute");
     delete charMap;
     return;
   }
-  charMap->multi.last = strtol(C_CONST_STRING(value), NULL, 0);
-  mdom_string_free(value);
+
+  value = gdome_el_getAttribute_c(node, "last");
+  charMap->multi.last = strtol(gdome_str_c(value), NULL, 0);
+  gdome_str_unref(value);
 
   if (charMap->multi.last < charMap->multi.first) {
+    MathEngine::logger(LOG_WARNING, "multi map has inconsistent first-last entries");
     delete charMap;
     return;
   }
 
-  value = mdom_node_get_attribute(node, DOM_CONST_STRING("index"));
-  if (value == NULL) {
+  if (!gdome_el_hasAttribute_c(node, "index")) {
+    MathEngine::logger(LOG_WARNING, "multi map has no mandatory `index' attribute");
     delete charMap;
     return;
   }
   charMap->multi.index = new char[charMap->multi.last - charMap->multi.first + 1];
 
-  const char* ptr = C_CONST_STRING(value);
+  value = gdome_el_getAttribute_c(node, "index");
+  const char* ptr = gdome_str_c(value);
   for (Char ch = charMap->multi.first; ch < charMap->multi.last; ch++) {
     char* newPtr;
     charMap->multi.index[ch - charMap->multi.first] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
-  mdom_string_free(value);
+  gdome_str_unref(value);
 
   fontMap->multi.Append(charMap);
 }
 
 void
-CharMapper::ParseSingle(mDOMNodeRef node, FontMap* fontMap)
+CharMapper::ParseSingle(GdomeElement* node, FontMap* fontMap)
 {
   assert(node != NULL);
   assert(fontMap != NULL);
@@ -482,19 +521,21 @@ CharMapper::ParseSingle(mDOMNodeRef node, FontMap* fontMap)
     return;
   }
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("index"));
-  if (value == NULL) {
+  if (!gdome_el_hasAttribute_c(node, "index")) {
+    MathEngine::logger(LOG_WARNING, "single map has no mandatory `index' attribute");
     delete charMap;
     return;
   }
-  charMap->single.index = strtol(C_CONST_STRING(value), NULL, 0);
-  mdom_string_free(value);
+
+  GdomeDOMString* value = gdome_el_getAttribute_c(node, "index");
+  charMap->single.index = strtol(gdome_str_c(value), NULL, 0);
+  gdome_str_unref(value);
 
   fontMap->single[CHAR_HASH(charMap->single.code)].Append(charMap);
 }
 
 void
-CharMapper::ParseStretchy(mDOMNodeRef node, FontMap* fontMap)
+CharMapper::ParseStretchy(GdomeElement* node, FontMap* fontMap)
 {
   assert(node != NULL);
   assert(fontMap != NULL);
@@ -511,68 +552,75 @@ CharMapper::ParseStretchy(mDOMNodeRef node, FontMap* fontMap)
     return;
   }
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("direction"));
-  if (value != NULL)
-    if      (mdom_string_eq(value, DOM_CONST_STRING("horizontal")))
+  if (gdome_el_hasAttribute_c(node, "direction")) {
+    GdomeDOMString* value = gdome_el_getAttribute_c(node, "direction");
+    assert(value != NULL);
+
+    if      (gdome_str_equal_c(value, "horizontal"))
       charMap->stretchy.direction = STRETCH_HORIZONTAL;
-    else if (mdom_string_eq(value, DOM_CONST_STRING("vertical")))
+    else if (gdome_str_equal_c(value, "vertical"))
       charMap->stretchy.direction = STRETCH_VERTICAL;
-    else if (mdom_string_eq(value, DOM_CONST_STRING("both")))
+    else if (gdome_str_equal_c(value, "both"))
       charMap->stretchy.direction = STRETCH_BOTH;
     else
       charMap->stretchy.direction = STRETCH_NO;
-  else
+
+    gdome_str_unref(value);
+  } else
     charMap->stretchy.direction = STRETCH_NO;
 
-  mdom_string_free(value);
+  GdomeException exc;
 
-  for (mDOMNodeRef p = mdom_node_get_first_child(node);
+  for (GdomeNode* p = gdome_el_firstChild(node, &exc);
        p != NULL;
-       p = mdom_node_get_next_sibling(p)) {
-    mDOMConstStringRef name = mdom_node_get_name(p);
-    if      (mdom_string_eq(name, DOM_CONST_STRING("simple"))) ParseStretchySimple(p, charMap);
-    else if (mdom_string_eq(name, DOM_CONST_STRING("compound"))) ParseStretchyCompound(p, charMap);
+       p = gdome_n_nextSibling_unref(p)) {
+    if      (gdome_n_name_is(p, "simple")) ParseStretchySimple(GDOME_EL(p), charMap);
+    else if (gdome_n_name_is(p, "compound")) ParseStretchyCompound(GDOME_EL(p), charMap);
   }
 
   fontMap->single[CHAR_HASH(charMap->stretchy.code)].Append(charMap);
 }
 
 void
-CharMapper::ParseStretchySimple(mDOMNodeRef node, CharMap* charMap)
+CharMapper::ParseStretchySimple(GdomeElement* node, CharMap* charMap)
 {
   assert(node != NULL);
   assert(charMap != NULL);
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("index"));
-  if (value == NULL) return;
+  if (!gdome_el_hasAttribute_c(node, "index")) return;
 
-  const char* ptr = C_CONST_STRING(value);
+  GdomeDOMString* value = gdome_el_getAttribute_c(node, "index");
+  assert(value != NULL);
+
+  const char* ptr = gdome_str_c(value);
   for (unsigned i = 0; i < MAX_SIMPLE_CHARS && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
     if (i < 4) charMap->stretchy.simple[i] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
 
-  mdom_string_free(value);
+  gdome_str_unref(value);
 }
 
 void
-CharMapper::ParseStretchyCompound(mDOMNodeRef node, CharMap* charMap)
+CharMapper::ParseStretchyCompound(GdomeElement* node, CharMap* charMap)
 {
   assert(node != NULL);
   assert(charMap != NULL);
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("index"));
-  if (value == NULL) return;
+  if (!gdome_el_hasAttribute_c(node, "index")) return;
 
-  const char* ptr = C_CONST_STRING(value);
+  GdomeDOMString* value = gdome_el_getAttribute_c(node, "index");
+  assert(value != NULL);
+
+  const char* ptr = gdome_str_c(value);
   for (unsigned i = 0; i < SC_REPEAT + 1 && ptr != NULL && *ptr != '\0'; i++) {
     char* newPtr;
     if (i < SC_REPEAT + 1) charMap->stretchy.compound[i] = strtol(ptr, &newPtr, 0);
     ptr = newPtr;
   }
 
-  mdom_string_free(value);
+  gdome_str_unref(value);
 }
 
 void
@@ -606,37 +654,24 @@ CharMapper::SearchMapping(const char* id) const
 /////////////////////////
 
 static Char
-parseCode(mDOMNodeRef node)
+parseCode(GdomeElement* node)
 {
   assert(node != NULL);
 
-  mDOMStringRef value = mdom_node_get_attribute(node, DOM_CONST_STRING("code"));
-  if (value != NULL) {
+  if (gdome_el_hasAttribute_c(node, "code")) {
+    GdomeDOMString* value = gdome_el_getAttribute_c(node, "code");
+    assert(value != NULL);
+
+    const char* c_value = gdome_str_c(value);
+    assert(c_value != NULL);
+
     Char ch = 0;
 
-    if (*value == '\0') ch = 0;
-    else if (*value == '0' && tolower(*(value + 1)) == 'x') ch = strtol(C_CONST_STRING(value), NULL, 0);
-    else if (isPlain(*value) && *(value + 1) == '\0') ch = *value;
+    if (*c_value == '\0') ch = 0;
+    else if (*c_value == '0' && tolower(*(c_value + 1)) == 'x') ch = strtol(c_value, NULL, 0);
+    else if (isPlain(*c_value) && *(c_value + 1) == '\0') ch = *c_value;
     else MathEngine::logger(LOG_WARNING, "UTF8 character(s) inside font configuration file (ignored)");
-    mdom_string_free(value);
-
-    return ch;
-  }
-
-  value = mdom_node_get_attribute(node, DOM_CONST_STRING("name"));
-  if (value != NULL) {
-    String* s = MathEngine::entitiesTable.GetEntityContent(value);
-    
-    Char ch = 0;
-    
-    if (s != NULL && s->GetLength() > 0) {
-      assert(s != NULL);
-      ch = s->GetChar(0);
-      delete s;
-    } else
-      if (s == NULL) MathEngine::logger(LOG_WARNING, "unknown entity `%s' in font configuration file (ignored)", value);
-
-    mdom_string_free(value);
+    gdome_str_unref(value);
 
     return ch;
   }

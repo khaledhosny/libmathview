@@ -24,6 +24,7 @@
 #include <assert.h>
 
 #include "keyword.hh"
+#include "gdomeAux.h"
 #include "Iterator.hh"
 #include "stringAux.hh"
 #include "MathEngine.hh"
@@ -32,19 +33,21 @@
 #include "OperatorDictionary.hh"
 #include "MathMLAttributeList.hh"
 
-void
-getAttribute(mDOMNodeRef node, const char* attr, MathMLAttributeList* aList)
+static void
+getAttribute(GdomeElement* node, const char* attr, MathMLAttributeList* aList)
 {
   assert(aList != NULL);
 
-  mDOMStringRef attrVal = mdom_node_get_attribute(node, DOM_CONST_STRING(attr));
-  if (attrVal == NULL) return;
+  if (!gdome_el_hasAttribute_c(node, attr)) return;
+
+  GdomeDOMString* attrVal = gdome_el_getAttribute_c(node, attr);
+  assert(attrVal != NULL);
 
   MathMLAttribute* attribute =
     new MathMLAttribute(AttributeIdOfName(attr), allocString(attrVal));
 
   aList->Append(attribute);
-  mdom_string_free(attrVal);
+  gdome_str_unref(attrVal);
 }
 
 //
@@ -61,30 +64,35 @@ OperatorDictionary::~OperatorDictionary()
 bool
 OperatorDictionary::Load(const char* fileName)
 {
-  mDOMDocRef doc = MathMLParseFile(fileName, true);
+  GdomeDocument* doc = MathMLParseFile(fileName, true);
   if (doc == NULL) return false;
 
-  mDOMNodeRef root = mdom_doc_get_root_node(doc);
+  GdomeException exc;
+  GdomeElement* root = gdome_doc_documentElement(doc, &exc);
   if (root == NULL) {
-    mdom_doc_free(doc);
+    gdome_doc_unref(doc, &exc);
     MathEngine::logger(LOG_WARNING, "operator dictionary `%s': parse error", fileName);
     return false;
   }
 
-  if (!mdom_string_eq(mdom_node_get_name(root), DOM_CONST_STRING("dictionary"))) {
-    mdom_doc_free(doc);
+  if (!gdome_n_name_is(GDOME_N(root), "dictionary")) {
+    gdome_doc_unref(doc, &exc);
     MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find root element", fileName);
     return false;
   }
 
-  for (mDOMNodeRef op = mdom_node_get_first_child(root);
-       op != NULL;
-       op = mdom_node_get_next_sibling(op)) {
-    if (!mdom_node_is_blank(op)
-	&& mdom_string_eq(mdom_node_get_name(op), DOM_CONST_STRING("operator"))) {
-      mDOMStringRef opName = mdom_node_get_attribute(op, DOM_CONST_STRING("name"));
-      if (opName != NULL) {
+  for (GdomeNode* p = gdome_el_firstChild(root, &exc);
+       p != NULL;
+       p = gdome_n_nextSibling_unref(p)) {
+    if (!gdome_n_isBlank(p) && gdome_n_name_is(p, "operator")) {
+      GdomeElement* op = GDOME_EL(p);
+      assert(op != NULL);
+
+      if (gdome_el_hasAttribute_c(op, "name")) {
+	GdomeDOMString* opName = gdome_el_getAttribute_c(op, "name");
 	const String* opString = allocString(opName);
+	gdome_str_unref(opName);
+
 	MathMLAttributeList* def = new MathMLAttributeList;
 
 	getAttribute(op, "form", def);
@@ -113,13 +121,18 @@ OperatorDictionary::Load(const char* fileName)
       } else {
 	MathEngine::logger(LOG_WARNING, "operator dictionary `%s': could not find operator name", fileName);
       }
-    } else if (!mdom_node_is_blank(op)) {
+    } else if (!gdome_n_isBlank(p)) {
+      GdomeDOMString* nodeName = gdome_n_nodeName(p, &exc);
+      assert(nodeName != NULL);
+
       MathEngine::logger(LOG_WARNING, "operator dictionary `%s': unknown element `%s'", fileName,
-			 C_CONST_STRING(mdom_node_get_name(op)));
+			 gdome_str_c(nodeName));
+
+      gdome_str_unref(nodeName);
     }
   }
 
-  mdom_doc_free(doc);
+  gdome_doc_unref(doc, &exc);
 
   return true;
 }

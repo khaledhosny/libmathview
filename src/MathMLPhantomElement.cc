@@ -26,7 +26,7 @@
 
 #include "MathMLPhantomElement.hh"
 
-MathMLPhantomElement::MathMLPhantomElement(mDOMNodeRef node): 
+MathMLPhantomElement::MathMLPhantomElement(GdomeElement* node): 
   MathMLNormalizingContainerElement(node, TAG_MPHANTOM)
 {
 }

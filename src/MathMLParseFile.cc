@@ -21,12 +21,14 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+#include <assert.h>
 
-#include "minidom.h"
 #include "stringAux.hh"
 #include "MathEngine.hh"
+#include "EntitiesTable.hh"
 #include "MathMLParseFile.hh"
 
+#if 0
 static mDOMEntityRef
 getEntity(void* user_data, mDOMConstStringRef name)
 {
@@ -36,10 +38,27 @@ getEntity(void* user_data, mDOMConstStringRef name)
 
   return entity;
 }
+#endif
 
-mDOMDocRef
-MathMLParseFile(const char* filename, bool subst)
+GdomeDocument*
+MathMLParseFile(const char* fileName, bool subst)
 {
-  return mdom_load(filename, subst, getEntity);
-}
+  assert(fileName != NULL);
 
+  GdomeException exc;
+  static GdomeDOMImplementation* di = NULL;
+
+  if (di == NULL) di = gdome_di_mkref();
+  assert(di != NULL);
+
+  GdomeDocument* res;
+
+  if (subst)
+    res = gdome_di_createDocFromURIWithEntitiesTable(di, fileName, entitiesTable, GDOME_LOAD_PARSING, &exc);
+  else
+    res = gdome_di_createDocFromURI(di, fileName, GDOME_LOAD_PARSING, &exc);
+
+  //gdome_di_unref(di, &exc);
+
+  return res;
+}

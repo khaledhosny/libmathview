@@ -27,7 +27,7 @@
 #include "AttributeParser.hh"
 #include "MathMLAlignMarkElement.hh"
 
-MathMLAlignMarkElement::MathMLAlignMarkElement(mDOMNodeRef node) : 
+MathMLAlignMarkElement::MathMLAlignMarkElement(GdomeElement* node) : 
   MathMLElement(node, TAG_MALIGNMARK)
 {
   edge = MARK_ALIGN_NOTVALID;

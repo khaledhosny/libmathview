@@ -28,7 +28,7 @@
 // base class for every non-empty MathML container element
 class MathMLContainerElement: public MathMLElement {
 public:
-  MathMLContainerElement(mDOMNodeRef, TagId = TAG_NOTVALID);
+  MathMLContainerElement(GdomeElement*, TagId = TAG_NOTVALID);
   virtual void Normalize(void);
   virtual void Setup(RenderingEnvironment*);
   virtual void DoLayout(LayoutId, Layout&);

@@ -23,13 +23,11 @@
 #ifndef MathMLPhantomElement_hh
 #define MathMLPhantomElement_hh
 
-#include <config.h>
-
 #include "MathMLNormalizingContainerElement.hh"
 
 class MathMLPhantomElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLPhantomElement(mDOMNodeRef);
+  MathMLPhantomElement(GdomeElement*);
   virtual void Render(const DrawingArea&);
   virtual ~MathMLPhantomElement();
 

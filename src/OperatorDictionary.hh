@@ -51,4 +51,4 @@ private:
   Container<const class OperatorDictionaryItem*> items;
 };
 
-#endif
+#endif // OperatorDictionary_hh

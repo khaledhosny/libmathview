@@ -23,13 +23,11 @@
 #ifndef MathMLDummyElement_hh
 #define MathMLDummyElement_hh
 
-#include <config.h>
-
 #include "MathMLElement.hh"
 
 class MathMLDummyElement : public MathMLElement {
 public:
-  MathMLDummyElement(mDOMNodeRef = NULL);
+  MathMLDummyElement(GdomeElement* = NULL);
   virtual void Setup(class RenderingEnvironment*);
   virtual void DoBoxedLayout(LayoutId, BreakId, scaled);
   virtual void Render(const DrawingArea&);

@@ -23,12 +23,13 @@
 #include <config.h>
 #include <assert.h>
 #include <stddef.h>
+#include <gdome.h>
 
 #include "Iterator.hh"
 #include "DocumentElement.hh"
 #include "RenderingEnvironment.hh"
 
-DocumentElement::DocumentElement(mDOMNodeRef node) : MathMLContainerElement(node, TAG_DOCUMENT)
+DocumentElement::DocumentElement(GdomeElement* node) : MathMLContainerElement(node, TAG_DOCUMENT)
 {
 }
 

@@ -29,7 +29,7 @@
 
 class MathMLErrorElement: public MathMLNormalizingContainerElement {
 public:
-  MathMLErrorElement(mDOMNodeRef);
+  MathMLErrorElement(GdomeElement*);
   virtual void Setup(RenderingEnvironment*);
   virtual ~MathMLErrorElement();
 };
