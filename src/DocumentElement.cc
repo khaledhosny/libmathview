@@ -37,7 +37,7 @@
 #if defined(HAVE_MINIDOM)
 DocumentElement::DocumentElement(mDOMNodeRef node)
 #elif defined(HAVE_GMETADOM)
-  DocumentElement::DocumentElement(const GMetaDOM::Document& doc)
+  DocumentElement::DocumentElement(const GMetaDOM::Document&)
 #endif
   : MathMLContainerElement(0, TAG_DOCUMENT)
 {

@@ -51,11 +51,11 @@ while test $# -gt 0; do
 done
 
 if test "$echo_cflags" = "yes"; then
-    echo -DHAVE_$domimplementation -I$pkgincludedir
+    echo $extra_cflags -DHAVE_$domimplementation -I$pkgincludedir
 fi
 
 if test "$echo_libs" = "yes"; then
-    echo -L$libdir -lgtkmathview
+    echo $extra_libs -L$libdir -lgtkmathview
 fi      
 
 if test "$echo_prefix" = "yes"; then
@@ -69,3 +69,4 @@ fi
 if test "$echo_config_path" = "yes"; then
     echo $pkgincludedir/math-engine-configuration.xml
 fi
+

@@ -15,16 +15,19 @@ EXTRA_DIST = gtkmathview-config.in $(noinst_SCRIPTS)
 CLEANFILES = gtkmathview-config
 
 gtkmathview-config: gtkmathview-config.in
-	@echo "#!/bin/sh" >gtkmathview-config
-	@echo >>gtkmathview-config
-	@echo VERSION=\"$(VERSION)\" >>gtkmathview-config
-	@echo prefix=\"$(prefix)\" >>gtkmathview-config
-	@echo exec_prefix=\"$(exec_prefix)\" >>gtkmathview-config
-	@echo libdir=\"$(libdir)\" >>gtkmathview-config
-	@echo pkglibdir=\"$(pkglibdir)\" >>gtkmathview-config
-	@echo includedir=\"$(includedir)\" >>gtkmathview-config
-	@echo pkgincludedir=\"$(pkgincludedir)\" >>gtkmathview-config
-	@echo domimplementation=\"$(DOM_IMPLEMENTATION)\" >>gtkmathview-config
-	@echo >>gtkmathview-config
-	@cat $(srcdir)/gtkmathview-config.in >>gtkmathview-config
+	@echo "#!/bin/sh" >$@
+	@echo >>$@
+	@echo VERSION=\"$(VERSION)\" >>$@
+	@echo extra_cflags=\"$(DOM_CFLAGS) $(T1_CFLAGS) $(GTK_CFLAGS)\" >>$@
+	@echo extra_libs=\"$(DOM_LIBS) $(T1_LIBS) $(GTK_LIBS)\" >>$@
+	@echo prefix=\"$(prefix)\" >>$@
+	@echo exec_prefix=\"$(exec_prefix)\" >>$@
+	@echo libdir=\"$(libdir)\" >>$@
+	@echo pkglibdir=\"$(pkglibdir)\" >>$@
+	@echo includedir=\"$(includedir)\" >>$@
+	@echo pkgincludedir=\"$(pkgincludedir)\" >>$@
+	@echo domimplementation=\"$(DOM_IMPLEMENTATION)\" >>$@
+	@echo >>$@
+	@cat $< >>$@
 	@chmod a+x gtkmathview-config
+

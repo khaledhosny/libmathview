@@ -241,7 +241,7 @@ if test $HAVE_GMETADOM_CONFIG = "no"; then
 fi
 
 if test $gmetadom = "auto"; then
-	GMETADOM_MIN_VERSION=0.0.1
+	GMETADOM_MIN_VERSION=0.0.3
 	AC_MSG_CHECKING(for gmetadom >= $GMETADOM_MIN_VERSION)
 	vers=`gmetadom-config --module=gdome_cpp_smart --version | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
 	minvers=`echo $GMETADOM_MIN_VERSION | awk -F. '{ printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
@@ -289,10 +289,7 @@ fi
 
 if test $gmetadom = "yes" -a $minidom = "yes"; then
 	AC_MSG_WARN(both gmetadom and minidom were found, using gmetadom)
-fi
-
-if test $minidom = "yes"; then
-	gmetadom="no"
+	minidom="no"
 fi
 
 if test $gmetadom = "yes"; then

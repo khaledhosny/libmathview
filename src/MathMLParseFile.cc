@@ -70,7 +70,7 @@ MathMLParseFile(const char* filename, bool subst)
   } else {
     GdomeDOMImplementation* di = gdome_di_mkref();
     assert(di != NULL);
-    GdomeException exc;
+    GdomeException exc = 0;
     GdomeDocument* doc = gdome_di_createDocFromURIWithEntitiesTable(di,
 						    filename,
 						    getMathMLEntities(),
@@ -79,6 +79,12 @@ MathMLParseFile(const char* filename, bool subst)
     if (exc != 0) {
       gdome_di_unref(di, &exc);
       gdome_doc_unref(doc, &exc);
+      return 0;
+    }
+
+    if (doc == 0) {
+      // FIXME: this should be signalled as an exception, I think
+      gdome_di_unref(di, &exc);
       return 0;
     }
 
