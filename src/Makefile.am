@@ -10,7 +10,7 @@ GTK_LIBS = @GTK_LIBS@
 
 lib_LTLIBRARIES = libgtkmathview.la
 
-libgtkmathview_la_LIBADD = $(DOM_LIBS) $(T1_LIBS) $(GTK_LIBS)
+libgtkmathview_la_LIBADD = $(DOM_LIBS) $(GTK_LIBS) $(T1_LIBS)
 libgtkmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 GTKSOURCES = \

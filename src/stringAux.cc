@@ -38,7 +38,7 @@
 #include "StringUnicode.hh"
 
 #if defined(WORDS_BIGENDIAN)
-#defined ICONV_UCS4 ICONV_UCS4BE
+#define ICONV_UCS4 ICONV_UCS4BE
 #else
 #if !defined(ICONV_UCS4LE)
 #define ICONV_UCS4 ICONV_UCS4BE
