@@ -47,8 +47,7 @@ public:
   SmartPtr<MathMLElement> getElementAt(const scaled&, const scaled&) const;
   AreaRef getRootArea(void) const;
 
-  void setXOrigin(const scaled& x) { x0 = x; }
-  scaled getXOrigin(void) const { return x0; }
+  void setOrigin(const scaled& x, const scaled& y) { x0 = x; y0 = y; }
   void setYOrigin(const scaled& y) { y0 = y; }
   scaled getYOrigin(void) const { return y0; }
 

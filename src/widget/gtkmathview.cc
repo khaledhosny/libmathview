@@ -186,8 +186,8 @@ paint_widget(GtkMathView* math_view)
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
   //Rectangle rect(px2sp(math_view->top_x - MARGIN), px2sp(math_view->top_y - MARGIN), px2sp(width), px2sp(height));
-  math_view->view->setXOrigin(Gtk_RenderingContext::fromGtkX(math_view->top_x - MARGIN));
-  math_view->view->setYOrigin(Gtk_RenderingContext::fromGtkY(math_view->top_y - MARGIN));
+  math_view->view->setOrigin(Gtk_RenderingContext::fromGtkX(math_view->top_x - MARGIN),
+			     Gtk_RenderingContext::fromGtkY(math_view->top_y - MARGIN));
 
   math_view->view->render(*math_view->renderingContext);
 
