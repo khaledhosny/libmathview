@@ -140,10 +140,12 @@ gmetadom_MathView::elementOfModelElement(GdomeElement* el) const
 { return elementOfModelElement(GdomeSmartDOM::Element(el)); }
 
 bool
-gmetadom_MathView::loadConfiguration(const SmartPtr<MathMLConfiguration>& configuration, const String& path) const
-{ return gmetadom_Setup::loadConfiguration(*getLogger(), *configuration, path); }
+gmetadom_MathView::loadConfiguration(const SmartPtr<AbstractLogger>& logger,
+				     const SmartPtr<MathMLConfiguration>& configuration, const String& path)
+{ return gmetadom_Setup::loadConfiguration(*logger, *configuration, path); }
 
 bool
-gmetadom_MathView::loadOperatorDictionary(const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path) const
-{ return gmetadom_Setup::loadOperatorDictionary(*getLogger(), *dictionary, path); }
+gmetadom_MathView::loadOperatorDictionary(const SmartPtr<AbstractLogger>& logger,
+					  const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path)
+{ return gmetadom_Setup::loadOperatorDictionary(*logger, *dictionary, path); }
 

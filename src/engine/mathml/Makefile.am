@@ -56,6 +56,7 @@ libmathml_la_SOURCES = \
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
   MathMLNamespaceContext.hh \
+  MathMLOperatorDictionary.hh \
   MathMLElement.hh \
   $(NULL)
 
@@ -65,7 +66,6 @@ noinst_HEADERS = \
   MathMLValueConversion.hh \
   mathVariantAux.hh \
   MathMLAdapters.hh \
-  MathMLOperatorDictionary.hh \
   MathMLAttributeParsers.hh \
   MathMLActionElement.hh \
   MathMLAlignGroupElement.hh \

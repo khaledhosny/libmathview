@@ -53,7 +53,7 @@ AbstractLogger::out(LogLevelId id, const char* fmt, ...) const
       String res;
 
       static char buffer[256];
-      snprintf(buffer, 256, "*** %s[%d:%d]: ", msg[id], id, logLevel);
+      snprintf(buffer, 256, "[MathView] *** %s[%d:%d]: ", msg[id], id, logLevel);
       res += buffer;
       vsnprintf(buffer, 256, fmt, args);
       res += buffer;

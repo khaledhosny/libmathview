@@ -79,11 +79,3 @@ bool
 custom_reader_MathView::notifyAttributeChanged(c_customModelElementId, const char*) const
 { return false; }
 
-bool
-custom_reader_MathView::loadConfiguration(const SmartPtr<class Configuration>&, const String&) const
-{ return false; }
-
-bool
-custom_reader_MathView::loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const
-{ return false; }
-

@@ -70,10 +70,12 @@ libxml2_reader_MathView::notifyAttributeChanged(void*, const xmlChar*) const
 { return false; }
 
 bool
-libxml2_reader_MathView::loadConfiguration(const SmartPtr<Configuration>& configuration, const String& path) const
-{ return libxml2_reader_Setup::loadConfiguration(*getLogger(), *configuration, path); }
+libxml2_reader_MathView::loadConfiguration(const SmartPtr<AbstractLogger>& logger,
+					   const SmartPtr<Configuration>& configuration, const String& path)
+{ return libxml2_reader_Setup::loadConfiguration(*logger, *configuration, path); }
 
 bool
-libxml2_reader_MathView::loadOperatorDictionary(const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path) const
-{ return libxml2_reader_Setup::loadOperatorDictionary(*getLogger(), *dictionary, path); }
+libxml2_reader_MathView::loadOperatorDictionary(const SmartPtr<AbstractLogger>& logger,
+						const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path)
+{ return libxml2_reader_Setup::loadOperatorDictionary(*logger, *dictionary, path); }
 

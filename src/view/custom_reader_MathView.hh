@@ -47,8 +47,10 @@ public:
 
   c_customModelUserData getDocument(void) const { return data; }
 
-  virtual bool loadConfiguration(const SmartPtr<class Configuration>&, const String&) const;
-  virtual bool loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const;
+  static bool loadConfiguration(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&, const String&)
+  { return false; }
+  static bool loadOperatorDictionary(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathMLOperatorDictionary>&, const String&)
+  { return false; }
 
 protected:
   c_customModelUserData data;

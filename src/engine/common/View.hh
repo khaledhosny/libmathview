@@ -41,14 +41,13 @@ public:
   bool thaw(void);
 
   // configuration stuff
-  virtual bool loadConfiguration(const SmartPtr<class Configuration>&, const String&) const = 0;
-  bool loadDefaultConfiguration(const SmartPtr<class Configuration>&) const;
+  static String getDefaultConfigurationPath(void);
+  static String getDefaultOperatorDictionaryPath(void);
+
   void setLogger(const SmartPtr<class AbstractLogger>&);
   SmartPtr<class AbstractLogger> getLogger(void) const;
   void setOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&);
   SmartPtr<class MathMLOperatorDictionary> getOperatorDictionary(void) const;
-  virtual bool loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const = 0;
-  bool loadDefaultOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&) const;
   void setBuilder(const SmartPtr<class Builder>&);
   SmartPtr<class Builder> getBuilder(void) const;
   void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);

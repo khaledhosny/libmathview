@@ -62,9 +62,13 @@ View::thaw()
   return --freezeCounter == 0;
 }
 
-bool
-View::loadDefaultConfiguration(const SmartPtr<Configuration>& configuration) const
-{ return loadConfiguration(configuration, PKGDATADIR"/gtkmathview.conf.xml"); }
+String
+View::getDefaultConfigurationPath()
+{ return PKGDATADIR"/gtkmathview.conf.xml"; }
+
+String
+View::getDefaultOperatorDictionaryPath()
+{ return PKGDATADIR"/dictionary.xml"; }
 
 void
 View::setLogger(const SmartPtr<AbstractLogger>& l)
@@ -84,10 +88,6 @@ View::setOperatorDictionary(const SmartPtr<MathMLOperatorDictionary>& d)
 SmartPtr<MathMLOperatorDictionary>
 View::getOperatorDictionary() const
 { return dictionary; }
-
-bool
-View::loadDefaultOperatorDictionary(const SmartPtr<MathMLOperatorDictionary>& dictionary) const
-{ return loadOperatorDictionary(dictionary, PKGDATADIR"/dictionary.xml"); }
 
 void
 View::setBuilder(const SmartPtr<Builder>& b)

@@ -56,8 +56,8 @@ public:
 
   GdomeSmartDOM::Document getDocument(void) const { return currentDoc; }
 
-  virtual bool loadConfiguration(const SmartPtr<class Configuration>&, const String&) const;
-  virtual bool loadOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&, const String&) const;
+  static bool loadConfiguration(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&, const String&);
+  static bool loadOperatorDictionary(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathMLOperatorDictionary>&, const String&);
 
 protected:
   GdomeSmartDOM::Document currentDoc;
