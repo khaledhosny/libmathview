@@ -1081,44 +1081,31 @@ gtk_math_view_get_element_at(GtkMathView* math_view, gint x, gint y)
 }
 
 extern "C" gboolean
-gtk_math_view_get_element_coords(GtkMathView* math_view, GdomeElement* elem, gint* x, gint* y)
+gtk_math_view_get_element_location(GtkMathView* math_view, GdomeElement* elem,
+				   gint* x, gint* y, GdkRectangle* rect)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-#if 0
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
+  scaled sx;
+  scaled sy;
+  BoundingBox box;
+  if (math_view->view->getElementExtents(DOM::Element(elem), sx, sy, box))
     {
-      if (x != NULL) *x = static_cast<gint>(sp2px(el->GetX()));
-      if (y != NULL) *y = static_cast<gint>(sp2px(el->GetY()));
+      if (x) *x = Gtk_RenderingContext::toGtkX(sx);
+      if (y) *y = Gtk_RenderingContext::toGtkY(sy);
+      if (rect)
+	{
+	  Rectangle srect(sx, sy, box);
+	  rect->x = Gtk_RenderingContext::toGtkX(srect.x);
+	  rect->y = Gtk_RenderingContext::toGtkY(srect.y);
+	  rect->width = Gtk_RenderingContext::toGtkPixels(srect.width);
+	  rect->height = Gtk_RenderingContext::toGtkPixels(srect.height);
+	}
       return TRUE;
     }
   else
-#endif
-    return FALSE;
-}
-
-extern "C" gboolean
-gtk_math_view_get_element_rectangle(GtkMathView* math_view, GdomeElement* elem, GdkRectangle* rect)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->view != NULL, FALSE);
-  g_return_val_if_fail(elem != NULL, FALSE);
-  g_return_val_if_fail(rect != NULL, FALSE);
-
-#if 0
-  if (SmartPtr<MathMLElement> el = findMathMLElement(math_view->view, DOM::Element(elem)))
-    {
-      BoundingBox box = el->GetBoundingBox();
-      rect->x = sp2ipx(el->GetX());
-      rect->y = sp2ipx(el->GetY() - box.height);
-      rect->width = sp2ipx(box.horizontalExtent());
-      rect->height = sp2ipx(box.verticalExtent());
-      return TRUE;
-    }
-  else
-#endif
     return FALSE;
 }
 

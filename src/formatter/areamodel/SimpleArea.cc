@@ -61,7 +61,10 @@ SimpleArea::origin(AreaId::const_iterator id, AreaId::const_iterator empty, cons
   if (id == empty)
     return std::make_pair(x, y);
   else
-    throw InvalidId();
+    {
+      std::cerr << "ECCOLO QUA" << std::endl;
+      throw InvalidId();
+    }
 }
 
 scaled

@@ -110,6 +110,22 @@ HorizontalArrayArea::find(class SearchingContext& context, const scaled& x0, con
 }
 
 scaled
+HorizontalArrayArea::leftEdge() const
+{
+  scaled edge = scaled::max();
+  scaled d = 0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      scaled pedge = (*p)->leftEdge();
+      if (pedge < scaled::max()) edge = std::min(edge, d + pedge);
+      d += (*p)->box().horizontalExtent();
+    }
+  return edge;
+}
+
+scaled
 HorizontalArrayArea::rightEdge() const
 {
   scaled edge = scaled::min();

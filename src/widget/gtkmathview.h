@@ -64,8 +64,7 @@ extern "C" {
   void           gtk_math_view_unselect(GtkMathView*, GdomeElement*);
   gboolean       gtk_math_view_is_selected(GtkMathView*, GdomeElement*);
   GdomeElement*  gtk_math_view_get_element_at(GtkMathView*, gint, gint);
-  gboolean       gtk_math_view_get_element_coords(GtkMathView*, GdomeElement*, gint*, gint*);
-  gboolean       gtk_math_view_get_element_rectangle(GtkMathView*, GdomeElement*, GdkRectangle*);
+  gboolean       gtk_math_view_get_element_location(GtkMathView*, GdomeElement*, gint*, gint*, GdkRectangle*);
 #endif
   gint      	 gtk_math_view_get_width(GtkMathView*);
   gint      	 gtk_math_view_get_height(GtkMathView*);

@@ -555,11 +555,11 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 
       if (root_selected != NULL)
 	{
-	  gint x, y, width, height, depth;
+	  gint x, y;
+	  GdkRectangle rect;
 	  gtk_math_view_select(math_view, root_selected);
-	  gtk_math_view_get_element_coords(math_view, root_selected, &x, &y);
-	  /* gtk_math_view_get_element_bounding_box(math_view, root_selected, &width, &height, &depth); */
-	  printf("selected element at %d %d bounding box %d %d %d\n", x, y, width, height, depth);
+	  gtk_math_view_get_element_location(math_view, root_selected, &x, &y, &rect);
+	  printf("selected element at %d %d rectangle %d %d %d %d\n", x, y, rect.x, rect.y, rect.width, rect.height);
 	}
 
       gtk_math_view_thaw(math_view);

@@ -43,8 +43,7 @@ MathMLView::MathMLView(const SmartPtr<MathMLViewContext>& c)
 }
 
 MathMLView::~MathMLView()
-{
-}
+{ }
 
 bool
 MathMLView::freeze()
@@ -163,20 +162,29 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
   return 0;
 }
 
-#if 0
 bool
 MathMLView::getElementExtents(const DOM::Element& el, scaled& x, scaled& y, BoundingBox& box) const
 {
   assert(el);
-  if (SmartPtr<MathMLElement> elem = findMathMLElement(this, el))
-    if (AreaRef elemArea = elem->getArea())
-      {
-	AreaId elemAreaId = 
-      }
+  if (AreaRef rootArea = getRootArea())
+    if (SmartPtr<MathMLElement> elem = findMathMLElement(this, el))
+      if (AreaRef elemArea = elem->getArea())
+	{
+	  AreaId elemId = rootArea->idOf(elemArea);
 
+	  for (AreaId id = elemId; !id.empty(); id = id.tail())
+	    std::cout << id.head() << "/";
+	  std::cout << std::endl;
+
+	  std::pair<scaled,scaled> orig = rootArea->origin(elemId);
+	  x = orig.first;
+	  y = orig.second;
+	  box = elemArea->box();
+	  return true;
+	}
+							    
   return false;
 }
-#endif
 
 AreaRef
 MathMLView::getRootArea() const

@@ -171,7 +171,7 @@ VerticalArrayArea::origin(const AreaId::const_iterator id,
 	  if (BoundingBox refBox = content[refArea]->box())
 	    y -= refBox.depth;
 	  for (std::vector<AreaRef>::const_iterator p = content.begin() + *id + 1;
-	       p < content.end() + refArea - 1;
+	       p != content.begin() + refArea;
 	       p++)
 	    if (BoundingBox b = (*p)->box())
 	      y -= b.verticalExtent();
@@ -183,7 +183,7 @@ VerticalArrayArea::origin(const AreaId::const_iterator id,
 	  if (BoundingBox idBox = content[*id]->box())
 	    y += idBox.depth;
 	  for (std::vector<AreaRef>::const_iterator p = content.begin() + refArea + 1;
-	       p < content.end() + *id - 1;
+	       p != content.begin() + *id;
 	       p++)
 	    if (BoundingBox b = (*p)->box())
 	      y += b.verticalExtent();
