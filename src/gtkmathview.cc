@@ -139,32 +139,28 @@ hadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
 	gdk_draw_pixmap(math_view->pixmap,
 			widget->style->white_gc,
 			math_view->pixmap,
-			change, 0,
-			0, 0,
+			change, 0, 0, 0,
 			widget->allocation.width - change,
 			widget->allocation.height);
 
 	paint_widget_area(math_view,
 			  widget->allocation.width - change, 0,
 			  change, widget->allocation.height);
-
-	gtk_widget_draw(widget, NULL);
       } else {
 	// the window scrolled left
 	gdk_draw_pixmap(math_view->pixmap,
 			widget->style->white_gc,
 			math_view->pixmap,
-			0, 0,
-			change, 0,
+			0, 0, change, 0,
 			widget->allocation.width - change,
 			widget->allocation.height);
 
 	paint_widget_area(math_view,
 			  0, 0,
 			  change, widget->allocation.height);
-
-	gtk_widget_draw(widget, NULL);
       }
+      
+      gtk_widget_draw(math_view->area, NULL);
     } else
 #endif
       paint_widget(math_view);
@@ -194,32 +190,28 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
 	gdk_draw_pixmap(math_view->pixmap,
 			widget->style->white_gc,
 			math_view->pixmap,
-			0, change,
-			0, 0,
+			0, change, 0, 0,
 			widget->allocation.width,
 			widget->allocation.height - change);
 
 	paint_widget_area(math_view,
 			  0, widget->allocation.height - change,
 			  widget->allocation.width, change);
-
-	gtk_widget_draw(widget, NULL);
       } else {
 	// the window scrolled up
 	gdk_draw_pixmap(math_view->pixmap,
 			widget->style->white_gc,
 			math_view->pixmap,
-			0, 0,
-			0, change,
+			0, 0, 0, change,
 			widget->allocation.width,
 			widget->allocation.height - change);
 
 	paint_widget_area(math_view,
 			  0, 0,
 			  widget->allocation.width, change);
-
-	gtk_widget_draw(widget, NULL);
       }
+
+      gtk_widget_draw(math_view->area, NULL);
     } else
 #endif
       paint_widget(math_view);

@@ -209,6 +209,7 @@ Gtk_DrawingArea::Update(scaled x, scaled y, scaled width, scaled height) const
 void
 Gtk_DrawingArea::Update() const
 {
+#if 0
   //  Update(x0, y0, width, height);
   assert(gtk_widget != NULL);
 
@@ -219,4 +220,6 @@ Gtk_DrawingArea::Update() const
   updateRect.height = gtk_widget->allocation.height;
 
   gtk_widget_draw(gtk_widget, &updateRect);
+#endif
+  gtk_widget_draw(gtk_widget, NULL);
 }
