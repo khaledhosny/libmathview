@@ -166,11 +166,11 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
 AreaRef
 MathMLView::getRootArea() const
 {
-  Clock layoutTime;
-  layoutTime.Start();
-
   if (root && !frozen())
     {
+      Clock layoutTime;
+      layoutTime.Start();
+
       if (root->dirtyStructure())
 	{
 	  Clock perf;
@@ -199,18 +199,15 @@ MathMLView::getRootArea() const
 	  ctxt.setActualSize(ctxt.getSize());
 	  root->format(ctxt);
 	  Globals::logger(LOG_INFO, "format time: %dms", perf());
-
-	  if (AreaRef area = root->getArea())
-	    rootArea = area->fit(scaled::zero(), scaled::zero(), scaled::zero());
-	  else
-	    rootArea = 0;
 	}
+
+      layoutTime.Stop();
+      Globals::logger(LOG_INFO, "LAYOUT TIME: %dms", layoutTime());
+
+      return root->getArea();
     }
 
-  layoutTime.Stop();
-  Globals::logger(LOG_INFO, "LAYOUT TIME: %dms", layoutTime());
-
-  return rootArea;
+  return 0;
 }
 
 BoundingBox

@@ -123,8 +123,6 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
       res = ctxt.getDevice()->wrapper(ctxt, res);
       setArea(res);
 
-      std::cerr << "FORMATTING V BOX " << this << std::endl;
-
       ctxt.pop();
       resetDirtyLayout();
     }

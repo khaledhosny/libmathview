@@ -37,6 +37,7 @@ public:
   virtual SmartPtr<Area> clone(void) const
   { return new Gtk_WrapperArea(getChild(), box(), getElement()); }
 
+  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual void render(RenderingContext&, const scaled&, const scaled&) const;
   virtual bool find(class SearchingContext&, const scaled&, const scaled&) const;
 

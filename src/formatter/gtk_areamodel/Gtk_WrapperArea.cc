@@ -30,6 +30,12 @@ Gtk_WrapperArea::Gtk_WrapperArea(const AreaRef& area, const BoundingBox& b, cons
   : BoxArea(area, b), selected(0), element(el)
 { }
 
+AreaRef
+Gtk_WrapperArea::fit(const scaled&, const scaled&, const scaled&) const
+{
+  return this;
+}
+
 void
 Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
@@ -39,7 +45,7 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
   std::cerr << "Wrapper::render at " << Gtk_RenderingContext::toGtkX(x) << "," << Gtk_RenderingContext::toGtkY(y) << std::endl;
 #endif
 
-  std::cerr << "WRAPPER::RENDER " << this << " " << selected << std::endl;
+  //std::cerr << "WRAPPER::RENDER " << this << " " << selected << std::endl;
 
   int oldSelection = context.addSelection(selected);
   if (oldSelection != context.getSelection())
