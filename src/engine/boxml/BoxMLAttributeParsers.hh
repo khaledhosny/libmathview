@@ -45,5 +45,8 @@ typedef ParseLength Parse_BoxML_At_x;
 typedef ParseLength Parse_BoxML_At_y;
 typedef ParseUnsignedInteger Parse_BoxML_Action_selection;
 typedef ParseString Parse_BoxML_Action_actiontype;
+typedef ParseOneOrMore<ParseKeyword> Parse_BoxML_Decor_type;
+typedef ParseChoice<ParseColor,ParseToken<T_TRANSPARENT> > Parse_BoxML_Decor_color;
+typedef ParseLength Parse_BoxML_Decor_thickness;
 
 #endif // __BoxMLAttributeParsers_hh__

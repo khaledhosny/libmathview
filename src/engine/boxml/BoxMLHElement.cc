@@ -77,6 +77,7 @@ BoxMLHElement::format(BoxFormattingContext& ctxt)
 		assert(false);
 		break;
 	      }
+
 	    c.push_back(area);
 	  }
 

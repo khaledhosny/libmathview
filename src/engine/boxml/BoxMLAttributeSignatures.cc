@@ -45,3 +45,6 @@ DEFINE_ATTRIBUTE(BoxML, At, "x", x, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, At, "y", y, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, Action, "selection", selection, true, true, false, false, "1");
 DEFINE_ATTRIBUTE(BoxML, Action, "actiontype", actiontype, true, true, false, false, "toggle");
+DEFINE_ATTRIBUTE(BoxML, Decor, "type", type, true, true, false, false, "box");
+DEFINE_ATTRIBUTE(BoxML, Decor, "color", color, true, false, false, false, 0);
+DEFINE_ATTRIBUTE(BoxML, Decor, "thickness", thickness, true, false, false, false, "1px");

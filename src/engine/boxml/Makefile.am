@@ -9,6 +9,7 @@ libboxml_la_SOURCES = \
   BoxMLElement.cc \
   BoxMLActionElement.cc \
   BoxMLBinContainerElement.cc \
+  BoxMLDecorElement.cc \
   BoxMLLinearContainerElement.cc \
   BoxMLboxElement.cc \
   BoxMLTextElement.cc \
@@ -25,13 +26,14 @@ mathview_HEADERS = \
   BoxMLNamespaceContext.hh \
   BoxMLElement.hh \
   $(NULL)
-      
+
 noinst_HEADERS = \
   BoxML.hh \
   BoxMLAttributeSignatures.hh \
   BoxMLAttributeParsers.hh \
   BoxMLActionElement.hh \
   BoxMLBinContainerElement.hh \
+  BoxMLDecorElement.hh \
   BoxMLLinearContainerElement.hh \
   BoxMLboxElement.hh \
   BoxMLTextElement.hh \

@@ -63,7 +63,7 @@ BoxMLVElement::formatVerticalArray(BoxFormattingContext& ctxt,
       AreaRef area = *p;
       switch (align)
 	{
-	case T_LEFT: area = ctxt.getDevice()->getFactory()->left(area); break;
+	case T_LEFT: break;
 	case T_CENTER: area = ctxt.getDevice()->getFactory()->center(area); break;
 	case T_RIGHT: area = ctxt.getDevice()->getFactory()->right(area); break;
 	default:

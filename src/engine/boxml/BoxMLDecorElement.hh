@@ -20,19 +20,27 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __BoxML_hh__
-#define __BoxML_hh__
+#ifndef __BoxMLDecorElement_hh__
+#define __BoxMLDecorElement_hh__
 
-#include "BoxMLAtElement.hh"
-#include "BoxMLLayoutElement.hh"
-#include "BoxMLHElement.hh"
-#include "BoxMLGroupElement.hh"
-#include "BoxMLInkElement.hh"
-#include "BoxMLSpaceElement.hh"
-#include "BoxMLTextElement.hh"
-#include "BoxMLVElement.hh"
-#include "BoxMLboxElement.hh"
-#include "BoxMLActionElement.hh"
-#include "BoxMLDecorElement.hh"
+#include "String.hh"
+#include "BoxMLBinContainerElement.hh"
 
-#endif // __BoxML_hh__
+class BoxMLDecorElement : public BoxMLBinContainerElement
+{
+protected:
+  BoxMLDecorElement(const SmartPtr<class BoxMLNamespaceContext>&);
+  virtual ~BoxMLDecorElement();
+
+public:
+  static SmartPtr<BoxMLDecorElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
+
+  virtual AreaRef format(class BoxFormattingContext&);
+
+private:
+  static AreaRef decorate(class BoxFormattingContext&,
+			  const AreaRef&, const scaled&,
+			  const class RGBColor&, const String&);
+};
+
+#endif // __BoxMLDecorElement_hh__

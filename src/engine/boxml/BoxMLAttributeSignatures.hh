@@ -45,5 +45,8 @@ DECLARE_ATTRIBUTE(BoxML, At, x);
 DECLARE_ATTRIBUTE(BoxML, At, y);
 DECLARE_ATTRIBUTE(BoxML, Action, selection);
 DECLARE_ATTRIBUTE(BoxML, Action, actiontype);
+DECLARE_ATTRIBUTE(BoxML, Decor, type);
+DECLARE_ATTRIBUTE(BoxML, Decor, color);
+DECLARE_ATTRIBUTE(BoxML, Decor, thickness);
 
 #endif // __BoxMLAttributeSignatures_hh__
