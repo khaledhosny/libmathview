@@ -271,10 +271,16 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
 
-  gdk_draw_pixmap(widget->window,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		  math_view->pixmap,
-		  x0, y0, x0, y0, width, height);
+  if (math_view->pixmap != NULL)
+    gdk_draw_pixmap(widget->window,
+		    widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+		    math_view->pixmap,
+		    x0, y0, x0, y0, width, height);
+  else
+    gdk_draw_rectangle(widget->window,
+		       widget->style->white_gc,
+		       TRUE,
+		       x0, y0, width, height);
 
   if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_OFF && math_view->cursor_elem != NULL)
     {
