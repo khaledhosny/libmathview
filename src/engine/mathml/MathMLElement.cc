@@ -95,7 +95,7 @@ MathMLElement::getCoreOperatorTop()
 {
   if (SmartPtr<MathMLOperatorElement> coreOp = getCoreOperator())
     {
-      SmartPtr<MathMLElement> parent = smart_cast<MathMLElement>(getParent());
+      SmartPtr<MathMLElement> parent = getParent<MathMLElement>();
       if (!parent || parent->getCoreOperator() != coreOp)
 	return coreOp;
     }

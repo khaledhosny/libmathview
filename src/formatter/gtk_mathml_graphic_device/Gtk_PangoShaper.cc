@@ -28,6 +28,7 @@
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_RenderingContext.hh"
 #include "MathGraphicDevice.hh"
+#include "MathMLElement.hh"
 
 struct HStretchyChar
 {
@@ -102,7 +103,6 @@ void
 Gtk_PangoShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   const GlyphSpec spec = result.getSpec();
-  std::cout << "PANGO SHAPER request for " << result.thisChar() << " font id = " << spec.getFontId() << std::endl;
   switch (spec.getFontId())
     {
     case NORMAL_INDEX:
@@ -212,8 +212,6 @@ AreaRef
 Gtk_PangoShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
 {
   const scaled span = strictSpan - (1 * ctxt.getSize()) / 10;
-
-  std::cerr << "PASSO DO QUI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
 
   const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
 

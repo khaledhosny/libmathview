@@ -51,9 +51,9 @@ Linker::get(const DOM::Element& elem, const SmartPtr<ElementFactory>& factory)
 {
   assert(elem);
 
-  if (SmartPtr<Element> e = get(elem))
-    return e;
-  else
+  if (SmartPtr<Element> res = get(elem))
+    return res;
+  else if (factory)
     {
       SmartPtr<Element> res = factory->createElement(nodeLocalName(elem));
       assert(res);
@@ -62,6 +62,8 @@ Linker::get(const DOM::Element& elem, const SmartPtr<ElementFactory>& factory)
       add(elem, res);
       return res;
     }
+  else
+    return 0;
 }
 
 #if 0

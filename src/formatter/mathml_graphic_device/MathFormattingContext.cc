@@ -24,6 +24,7 @@
 
 #include <cmath>
 
+#include "MathMLElement.hh"
 #include "MathGraphicDevice.hh"
 #include "MathFormattingContext.hh"
 

@@ -16,12 +16,21 @@ libgtk_mathml_graphic_device_la_SOURCES = \
   Gtk_PangoShaper.cc \
   Gtk_AdobeShaper.cc
 
+noinst_HEADERS = \
+  Gtk_MathGraphicDevice.hh \
+  Gtk_PangoShaper.hh \
+  Gtk_AdobeShaper.hh
+
 INCLUDES = \
   $(PANGOX_CFLAGS) \
   $(XFT_CFLAGS) \
   $(GTK_CFLAGS) \
   $(DOM_CFLAGS) \
+  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/formatter/gtk_areamodel \

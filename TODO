@@ -21,11 +21,15 @@ ARCH IMPROVEMENTS
 + factor ther View class
 + split formatting engine factories for mathml and boxml and
   make a super-factory keyed by the namespace
++ remove the linker from Element. What is the most sensible
+  place to put the linker? Perhaps the linker and the reader should
+  be merged?
 + View.cc depends on Gtk_WrapperArea, make a WrapperArea which is
   independent of the platform and make Gtk_WrapperArea depend
   on it. Then it may be feasible to generalize searching functions
   over areas by implementing a visitor
 + implement reader interface over DOM, libxml2 tree, XmlReader
++ implement caching mechanism for pango shaper
 - make debugging methods in Areas optional (or remove them)
 - fix Configuration/Globals files 
 - move mathvariant files into src/common

@@ -30,6 +30,7 @@
 #include "Gtk_AdobeShaper.hh"
 #include "MathVariantMap.hh"
 #include "SpaceShaper.hh"
+#include "MathMLElement.hh"
 
 Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(GtkWidget* widget)
 {

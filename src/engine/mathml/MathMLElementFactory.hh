@@ -37,11 +37,11 @@ protected:
   virtual ~MathMLElementFactory();
 
 public:
-  static SmartPtr<MathMLElementFactory> create(void)
-  { return new MathMLElementFactory(); }
+  static SmartPtr<MathMLElementFactory> create(void) { return new MathMLElementFactory(); }
 
-  SmartPtr<MathMLElement> createMathMLElement(const String& name) const;
-  virtual SmartPtr<Element> createElement(const String& name) const;
+  SmartPtr<MathMLElement> createMathMLElement(const String&) const;
+  virtual SmartPtr<Element> createElement(const String&) const;
+  void setContext(const SmartPtr<MathMLNamespaceContext>&);
 
   DEFINE_FACTORY_METHOD(math);
   DEFINE_FACTORY_METHOD(Identifier);
@@ -71,8 +71,6 @@ public:
   DEFINE_FACTORY_METHOD(Enclose);
   DEFINE_FACTORY_METHOD(Semantics);
   DEFINE_FACTORY_METHOD(Dummy);
-
-  void setContext(const SmartPtr<MathMLNamespaceContext>&);
 
 private:
   typedef SmartPtr<MathMLElement> (MathMLElementFactory::* FactoryMethod)(void) const;

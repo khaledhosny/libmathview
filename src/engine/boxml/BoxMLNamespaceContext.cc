@@ -26,43 +26,26 @@
 #include "Globals.hh"
 #include "Clock.hh"
 #include "RefinementContext.hh"
-#include "MathMLNamespaceContext.hh"
-#include "MathGraphicDevice.hh"
-#include "MathMLElementFactory.hh"
+#include "BoxMLNamespaceContext.hh"
+#include "BoxGraphicDevice.hh"
+#include "BoxMLElementFactory.hh"
 #include "Linker.hh"
 
-MathMLNamespaceContext::MathMLNamespaceContext(const SmartPtr<View>& v,
-					       const SmartPtr<Linker>& l,
-					       const SmartPtr<MathMLElementFactory>& f,
-					       const SmartPtr<MathGraphicDevice>& d)
-  : NamespaceContext(MATHML_NS_URI, v, l), factory(f), device(d)
-{
-  defaultFontSize = Globals::configuration.GetFontSize();
-}
-
-MathMLNamespaceContext::~MathMLNamespaceContext()
+BoxMLNamespaceContext::BoxMLNamespaceContext(const SmartPtr<View>& v,
+					     const SmartPtr<Linker>& l,
+					     const SmartPtr<BoxMLElementFactory>& f,
+					     const SmartPtr<BoxGraphicDevice>& d)
+  : NamespaceContext(BOXML_NS_URI, v, l), factory(f), device(d)
 { }
 
-void
-MathMLNamespaceContext::setDefaultFontSize(unsigned size)
-{
-  assert(size > 0);
-  if (defaultFontSize != size)
-    {
-      defaultFontSize = size;
-      if (SmartPtr<Element> elem = getView()->getRootElement())
-	{
-	  elem->setDirtyAttributeD();
-	  elem->setDirtyLayout();	  
-	}
-    }
-}
+BoxMLNamespaceContext::~BoxMLNamespaceContext()
+{ }
 
 SmartPtr<Element>
-MathMLNamespaceContext::construct(const DOM::Element& el) const
+BoxMLNamespaceContext::construct(const DOM::Element& el) const
 {
   assert(el);
-  if (SmartPtr<MathMLElement> elem = getLinker()->get<MathMLElement>(el, getFactory()))
+  if (SmartPtr<BoxMLElement> elem = getLinker()->get<BoxMLElement>(el, getFactory()))
     {
       if (elem->dirtyStructure())
 	{
@@ -90,13 +73,13 @@ MathMLNamespaceContext::construct(const DOM::Element& el) const
 }
 
 AreaRef
-MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
+BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
 {
-  SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(el);
+  SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(el);
   assert(elem);
   if (elem->dirtyLayout())
     {
-      MathFormattingContext ctxt(device);
+      BoxFormattingContext ctxt(device);
       scaled l = device->evaluate(ctxt, Length(defaultFontSize, Length::PT_UNIT), scaled::zero());
       //ctxt.setSize(device->evaluate(ctxt, Length(28, Length::PT_UNIT), scaled::zero()));
       ctxt.setSize(l);
@@ -110,8 +93,8 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
   return elem->getArea();
 }
 
-SmartPtr<MathMLElementFactory>
-MathMLNamespaceContext::getFactory() const
+SmartPtr<BoxMLElementFactory>
+BoxMLNamespaceContext::getFactory() const
 {
   return factory;
 }

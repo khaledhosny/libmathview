@@ -1,3 +1,3 @@
 
-SUBDIRS = common reader formatter engine widget
+SUBDIRS = common reader engine formatter widget
 

@@ -43,6 +43,7 @@ public:
 
   void setParent(const SmartPtr<Element>&);
   SmartPtr<Element> getParent(void) const { return static_cast<Element*>(parent); }
+  template <typename T> SmartPtr<T> getParent(void) const { return smart_cast<T>(getParent()); }
   unsigned getDepth(void) const;
 
   void setAttribute(const SmartPtr<class Attribute>&);

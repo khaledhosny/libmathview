@@ -312,18 +312,21 @@ AC_CONFIG_FILES([
  src/Makefile
  src/common/Makefile
  src/reader/Makefile
+ src/engine/Makefile
+ src/engine/common/Makefile
+ src/engine/boxml/Makefile
+ src/engine/mathml/Makefile
  src/formatter/Makefile
  src/formatter/basictypes/Makefile
+ src/formatter/common/Makefile
  src/formatter/basictypes/mathvariants/Makefile
  src/formatter/basictypes/mathvariants/xml/Makefile
  src/formatter/areamodel/Makefile
  src/formatter/gtk_areamodel/Makefile
  src/formatter/mathml_graphic_device/Makefile
  src/formatter/gtk_mathml_graphic_device/Makefile
- src/engine/Makefile
- src/engine/common/Makefile
- src/engine/boxml/Makefile
- src/engine/mathml/Makefile
+ src/formatter/boxml_graphic_device/Makefile
+ src/formatter/gtk_boxml_graphic_device/Makefile
  src/widget/Makefile
  auto/Makefile
  auto/config.dirs

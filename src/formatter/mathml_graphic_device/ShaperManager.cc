@@ -28,6 +28,7 @@
 #include "ShaperManager.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
+#include "MathMLElement.hh"
 
 ShaperManager::ShaperManager() : nextShaperId(0)
 {

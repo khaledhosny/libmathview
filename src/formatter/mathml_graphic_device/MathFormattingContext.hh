@@ -27,12 +27,11 @@
 
 #include "scaled.hh"
 #include "Length.hh"
-#include "Variant.hh"
 #include "RGBColor.hh"
-#include "ScopedHashMap.hh"
 #include "MathVariant.hh"
+#include "FormattingContext.hh"
 
-class MathFormattingContext
+class MathFormattingContext : public FormattingContext
 {
 public:
   MathFormattingContext(const SmartPtr<class MathGraphicDevice>& d);
@@ -85,22 +84,20 @@ public:
   void setColor(const RGBColor& c) { set<RGBColor>(COLOR, c); }
   RGBColor getBackground(void) const { return get<RGBColor>(BACKGROUND_COLOR); }
   void setBackground(const RGBColor& c) { set<RGBColor>(BACKGROUND_COLOR, c); }
-  
   int getScriptLevel(void) const { return get<int>(SCRIPT_LEVEL); }
   void setScriptLevel(int l) { addScriptLevel(l - getScriptLevel()); }
   void addScriptLevel(int);
-
   scaled getMinSize(void) const { return get<scaled>(MIN_SIZE); }
   void setMinSize(scaled s) { set<scaled>(MIN_SIZE, s); }
   bool getDisplayStyle(void) const { return get<bool>(DISPLAY_STYLE); }
   void setDisplayStyle(bool b) { set<bool>(DISPLAY_STYLE, b); }
   double getSizeMultiplier(void) const { return get<double>(SIZE_MULT); }
   void setSizeMultiplier(double f) { set<double>(SIZE_MULT, f); }
-  SmartPtr<Object> getElement(void) const { return get< SmartPtr<Object> >(ELEMENT); }
+  SmartPtr<class MathMLElement> getElement(void) const { return get< SmartPtr<class MathMLElement> >(ELEMENT); }
   Length getMathSpace(int i) const { return get<Length>(ZERO_SPACE + i); }
   void setMathSpace(int i, const Length& l) { set<Length>(ZERO_SPACE + i, l); }
-  SmartPtr<Object> getStretchOperator(void) const { return get< SmartPtr<Object> >(STRETCH_OP); }
-  void setStretchOperator(const SmartPtr<Object>& op) { set< SmartPtr<Object> >(STRETCH_OP, op); }
+  SmartPtr<class MathMLElement> getStretchOperator(void) const { return get< SmartPtr<class MathMLElement> >(STRETCH_OP); }
+  void setStretchOperator(const SmartPtr<class MathMLElement>& op) { set< SmartPtr<class MathMLElement> >(STRETCH_OP, op); }
   scaled getStretchToWidth(void) const { return get<scaled>(STRETCH_TO_WIDTH); }
   void setStretchToWidth(const scaled& w) { set<scaled>(STRETCH_TO_WIDTH, w); }
   scaled getStretchToHeight(void) const { return get<scaled>(STRETCH_TO_HEIGHT); }
@@ -112,49 +109,14 @@ public:
   scaled getStretchV(void) const { return get<scaled>(STRETCH_VERT); }
   void setStretchV(const scaled& v) { set<scaled>(STRETCH_VERT, v); }
 
-  template <typename T>
-  void set(const char* id, const T& v)
-  { map.set(id, Variant<T>::create(v)); }
-
-  template <typename T>
-  T get(const char* id) const
-  { return as<T>(map.get(id)); }
-
-  bool defined(const char* id) const
-  { return map.defined(id); }
-
-protected:
-  template <typename T>
-  void set(int id, const T& v)
-  { fmap.set(id, Variant<T>::create(v)); }
-
-  template <typename T>
-  T get(int id) const
-  { return as<T>(fmap.get(id)); }
-
-public:
-  void push(void)
+  void push(const SmartPtr<class MathMLElement>& el)
   {
-    fmap.push();
-    map.push();
-  }
-
-  void push(const SmartPtr<Object>& el)
-  {
-    push();
-    fmap.set(ELEMENT, Variant< SmartPtr<Object> >::create(el));
+    FormattingContext::push();
+    set(ELEMENT, Variant< SmartPtr<class MathMLElement> >::create(el));
   }
   
-  void pop()
-  {
-    fmap.pop();
-    map.pop();
-  }
-
 private:
   SmartPtr<class MathGraphicDevice> device;
-  ScopedHashMap<int, SmartPtr<Value> > fmap;
-  ScopedHashMap<const char*, SmartPtr<Value> > map;
 };
 
 #endif // __MathFormattingContext_hh__

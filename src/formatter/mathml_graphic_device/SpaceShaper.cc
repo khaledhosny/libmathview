@@ -22,10 +22,6 @@
 
 #include <config.h>
 
-// FIXME: it is not nice to have this module depend on many
-// files of the formatting engine. Dunno how to rearrange the
-// dependecies :-(
-
 #include "AreaFactory.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"

@@ -40,6 +40,15 @@ public:
 
   SmartPtr<class Element> get(const DOM::Element&) const;
   SmartPtr<class Element> get(const DOM::Element&, const SmartPtr<class ElementFactory>&);
+
+  template <typename T>
+  SmartPtr<T> get(const DOM::Element& el) const
+  { return smart_cast<T>(get(el)); }
+
+  template <typename T>
+  SmartPtr<T> get(const DOM::Element& el, const SmartPtr<class ElementFactory>& factory)
+  { return smart_cast<T>(get(el, factory)); }
+
   bool remove(const DOM::Element&);
   
 protected:

@@ -34,6 +34,7 @@
 #include "MathVariantMap.hh"
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
+#include "MathMLElement.hh"
 
 static struct {
   guint8 index;

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,31 +17,26 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
 #include <cassert>
 
-#include "MathMLElement.hh"
-#include "MathGraphicDevice.hh"
+#include "BoxGraphicDevice.hh"
+#include "BoxFormattingContext.hh"
+#include "BoxMLElement.hh"
+#include "AreaFactory.hh"
 
-MathGraphicDevice::MathGraphicDevice()
-  : shaperManager(ShaperManager::create())
+BoxGraphicDevice::BoxGraphicDevice()
 { }
 
-MathGraphicDevice::~MathGraphicDevice()
+BoxGraphicDevice::~BoxGraphicDevice()
 { }
-
-double
-MathGraphicDevice::dpi(const MathFormattingContext&) const
-{
-  return 72.0;
-}
 
 scaled
-MathGraphicDevice::evaluate(const MathFormattingContext& context,
+BoxGraphicDevice::evaluate(const BoxFormattingContext& context,
 			    const Length& length, const scaled& defaultValue) const
 {
   switch (length.type)
@@ -74,57 +69,44 @@ MathGraphicDevice::evaluate(const MathFormattingContext& context,
     case Length::PERCENTAGE_UNIT:
       return (defaultValue * length.value) / 100.0;
     default:
-      if (length.type >= Length::NEGATIVE_VERYVERYTHICK_SPACE &&
-	  length.type <= Length::VERYVERYTHICK_SPACE)
-	{
-	  Length newLength =
-	    context.getMathSpace(MathFormattingContext::NEGATIVE_VERYVERYTHICK_SPACE +
-				 length.type - Length::NEGATIVE_VERYVERYTHICK_SPACE);
-	  assert(newLength.type < Length::NEGATIVE_VERYVERYTHICK_SPACE ||
-		 newLength.type > Length::VERYVERYTHICK_SPACE);
-	  return evaluate(context, newLength, defaultValue);
-	}
-      else
-	{
-	  assert(false);
-	  return defaultValue;
-	}
+      assert(false);
+      return defaultValue;
     }
 }
 
+double
+BoxGraphicDevice::dpi(const BoxFormattingContext&) const
+{
+  return 72.0;
+}
+
 scaled
-MathGraphicDevice::em(const MathFormattingContext& context) const
+BoxGraphicDevice::em(const BoxFormattingContext& context) const
 {
   return context.getSize();
 }
 
 scaled
-MathGraphicDevice::ex(const MathFormattingContext& context) const
+BoxGraphicDevice::ex(const BoxFormattingContext& context) const
 {
   return string(context, "x")->box().height;
 }
 
 scaled
-MathGraphicDevice::axis(const MathFormattingContext& context) const
-{
-  return ex(context) / 2;
-}
-
-scaled
-MathGraphicDevice::defaultLineThickness(const MathFormattingContext& context) const
+BoxGraphicDevice::defaultLineThickness(const BoxFormattingContext& context) const
 {
   // at least 1px thick
   return std::max(context.getSize() / 10, scaled(72.27 / dpi(context)));
 }
 
 AreaRef
-MathGraphicDevice::wrapper(const MathFormattingContext&, const AreaRef& area) const
+BoxGraphicDevice::wrapper(const BoxFormattingContext&, const AreaRef& area) const
 {
   return area;
 }
 
 AreaRef
-MathGraphicDevice::dummy(const MathFormattingContext&) const
+BoxGraphicDevice::dummy(const BoxFormattingContext&) const
 {
   //assert(false);
   return getFactory()->horizontalSpace(scaled::zero());

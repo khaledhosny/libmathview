@@ -115,6 +115,9 @@ DOMView::getRootElement() const
     {
       if (SmartPtr<NamespaceContext> context = getRegistry()->get(rootDOMElement.get_namespaceURI()))
 	return context->construct(rootDOMElement);
+      else
+	// warning???
+	return 0;
     }
   else
     return 0;

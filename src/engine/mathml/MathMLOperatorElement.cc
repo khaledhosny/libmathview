@@ -327,19 +327,11 @@ MathMLOperatorElement::inferOperatorForm()
 {
   SmartPtr<MathMLElement> eOp = findEmbellishedOperatorRoot(this);
   assert(eOp);
-  SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(eOp->getParent());
-  assert(elem);
-
-  TokenId res = T_INFIX;
-
-  if (elem->IsA() == T_MROW)
-    {
-      SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem);
-      assert(row);
-      res = row->GetOperatorForm(eOp);
-    }
-
-  return res;
+  
+  if (SmartPtr<MathMLRowElement> row = eOp->getParent<MathMLRowElement>())
+    return row->GetOperatorForm(eOp);
+  else
+    return T_INFIX;
 }
 
 SmartPtr<MathMLOperatorElement>
