@@ -32,10 +32,6 @@ AC_ARG_ENABLE(
 	enable_debug=yes
 )
 
-if test "x$enable_debug" = "xyes"; then
-   AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
-fi
-
 AC_ARG_ENABLE(
 	breaks,
 	[  --enable-breaks[=ARG]   enable linebreaking with mspace elements [default=no]],
@@ -401,6 +397,12 @@ fi
 
 CFLAGS="$CFLAGS -W -Wall"
 CXXFLAGS="$CXXFLAGS -W -Wall"
+
+if test $enable_debug = yes; then
+	CFLAFS="$CFLAGS -O0"
+	CXXFLAGS="$CXXFLAGS -O0"
+	AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
+fi
 
 if test $profile = yes; then
 	CFLAFS="$CFLAGS -O0 -pg"

@@ -28,7 +28,7 @@
 void
 Gtk_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(context);
+  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
 
   if (context.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
     {
