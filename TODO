@@ -1,70 +1,13 @@
 
-* change font configuration and implement new mathvariant
-* match characters with variants
-
-MathML Implementation
-
-* leftoverlap, rightoverlap in side attribute of mtable
-* what if minlabelspacing is a % ?
-* axis in rowalign
-* table layout is not precise sometimes (e.g. when there is a fit
-  table inside a auto column)
-
-Optimizations
-
-* optimize scrolling, it seems to work fine now (see gtkmathview.cc) but
-  it has to be tested more heavily
-* FontifiedString is no more necessary (not true, until monospace in LaTeX
-  is not properly configured, se a mIxEd case word)
-
-Major improvements
-
-* definitely use iostream
-* remove String class and use a more efficient implementation, based on the
-  consideration that the only multi-char strings are only made of
-  plain characters (or better, alnum characters), and that all the other
-  characters (and stretchable chars) can be store with no significant waste
-  of space in a 32bit field
-* kerning is NOT available when exporting PS, the whole issue of tokens
-  must be reconsidered and reimplemented
-
-Minor improvements
-
-? making script elements breakable
-* more comments in the source code
-? SetLastBreakability more consistent, what happens if several breakability
-  are specified? Take the weakest one?
-* hash table for keywords
-* memory leaks
-* if there is some trailing garbage in an attribute value then
-  a warning should be displayed
-* using a glyph for the / in bevelled fractions
-
-Configuration
-
-* configurable parameters
-  (spacings for roots, default font attributes)
-* support for STIX fonts in font-configuration.xml
-* configurable dash length for dashed lines in PostScript
-
-Bugs
-
-* Some chars (mustache) are compound only, they do not have a "simple" form
-* problem with color and PostScript generated files
-* in font-configuration.xml, the font map for monospace is not complete
-* what if there is a horizontal stretchy operator with minsize specified in a mrow?
-* findStretchyOperator does not always work properly, please check
-* MediumSpace is now U+205f, but the specification is not consistent. The table
-  reports U+205f, but the chapter reports U+2005
-* operators strechying within tables buggy. Sometimes the table remains "larger"
-  than needed just because there were a strecthy operator
-* it seems that `gtk_math_view_set_font_size' is called twice when a new default
-  font size is selected. Now I've patched this by making a check and preventing
-  re-doing the layout if the font turns out to be equal
-* what if one wants a large operator which is not in a stretchy position or
-  it has strethcy="false"?
-* cannot select phantom elements
-* check examples in problems under solaris, there might be a weird bounding
-  box
-* check length of dashes when rendering to postscript
+* re-enable scrolling
+* re-enable selection (need to adjust the wrapper method in MGD)
+* re-enable actions
+* implement reader interface over DOM and XmlReader
+* add getId() method to reader interface
+* factor the Element class
+* factor ther View class
+* implement table formatting
+* implement line factory
+* implement PS area model
+* implement MGD for TeX fonts
 
