@@ -24,6 +24,8 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include <stdio.h>
+
 #include "Iterator.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"
@@ -815,7 +817,6 @@ MathMLTableElement::ConfirmVerticalScaleSpacing(scaled tableHeight)
 void
 MathMLTableElement::SpanRowHeight(LayoutId id)
 {
-  return;
   for (unsigned j = 0; j < nColumns; j++)
     {
       unsigned i = 0;
@@ -834,6 +835,7 @@ MathMLTableElement::SpanRowHeight(LayoutId id)
 		  // height of the single spanning cell. We have to distribute
 		  // additional space among the spanned rows
 		  scaled rest = cellBox.GetTotalHeight() - height;
+		  //printf("column %d rest is %d\n", j, sp2ipx(rest));
 		  for (unsigned k = 0; k < n; k++)
 		    {
 		      if (k == n - 1)

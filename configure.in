@@ -126,9 +126,21 @@ dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(wctype.h,,AC_MSG_WARN(could not find required header file wctype.h))
 AC_CHECK_HEADERS(wchar.h,,AC_MSG_WARN(could not find required header file wchar.h))
-AC_CHECK_HEADERS(getopt.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file iconv.h))
+AC_CHECK_HEADERS(getopt.h)
+AC_MSG_CHECKING(for hidden getopt.h)
+AC_TRY_COMPILE(
+	[#include <getopt.h>],
+	[],
+	[
+		AC_DEFINE(HAVE_HIDDEN_GETOPT)
+		AC_MSG_RESULT(yes)
+	],
+	[
+		AC_MSG_RESULT(no)
+	]
+)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

@@ -110,7 +110,7 @@ Tools
 @noindent
 GtkMathView is a C++ rendering engine for MathML (see @url{http://www.w3.org/Math})
 documents. This module is meant to be part of the
-Helm project (see @url{http://www.cs.unibo.it/helm/}), but
+HELM project (see @url{http://www.cs.unibo.it/helm/}), but
 the widget is independent from it and easily
 embeddable within GTK+ applications. This library is
 covered by the GNU General Public Licence (@emph{not}
@@ -127,10 +127,10 @@ contact the author at the following email address: @email{luca.padovani@@cs.unib
 @chapter  Download
 @noindent
 The latest version of the source code of the GtkMathView widget, along with this
-documentation, can be obtained directly from the author's page located
+documentation, can be obtained directly from the widget's home page located
 at @url{http://www.cs.unibo.it/helm/mml-widget/}.
 
-In the same page you will find @emph{unofficial} redHat packages and
+In the same page you will find @emph{unofficial} RedHat packages and
 @emph{official} Debian packages for the widget and related tools.
 
 @node     Usage, C++ Interface, Download, Top
@@ -163,10 +163,13 @@ been added backward "compatibility" with version 1.8.x of libxml, however
 this compatibility is not fully effective due to some bugs of libxml. It is
 recommended to upgrade to version 2. See file INSTALL for more details.
 @item
-@code{minidom} (version 0.1.3) @url{http://www.cs.unibo.it/helm/mml-widget},
+@code{gmetadom} (version 0.0.3) @url{http://gmetadom.sourceforge.net},
+this is the official DOM implementation used by GtkMathView.
+@item
+@code{minidom} (version 0.1.4) @url{http://www.cs.unibo.it/helm/mml-widget},
 this is a minimal, partial implementation of the DOM used by the widget as
-an abstract interface to @code{libxml}. It will be eventually replaced by
-GDOME when there will be a package for it.
+an abstract interface to @code{libxml}. Since @code{GMetaDOM} is available
+now, use of @code{minidom} is deprecated.
 @item
 @code{gcc/g++} (version 2.95.3, this is the version I currently use, but the widget
 will probably compile and run without problems even with some previous versions).
@@ -176,7 +179,7 @@ will probably compile and run without problems even with some previous versions)
 @item
 @comment FIXME: update the link for t1lib
 @code{t1lib} (version 1.2 or higher) @url{ftp://sunsite.unc.edu/pub/Linux/libs/graphics/t1lib-x.y.z.tar.gz}
-Actually, this library is not required, however, if you have it, you will
+This library is not required, however, if you have it, you will
 be able to use Type1 fonts independently from the X font server. Furthermore,
 you will be able to render anti-aliased text and exploit kerning information,
 if available. This library is also needed in the case you want to export MathML
@@ -190,8 +193,8 @@ variables. See the section about font installation below.
 @comment  node-name,  next,  previous,  up
 @section  Installing
 @noindent
-Keep in mind that the widget will not compile if @code{minidom} is
-not installed.
+Keep in mind that the widget will not compile if there is no DOM
+implementation available (@code{GMetaDOM} or @code{minidom}).
 See the INSTALL file included in the source distribution for
 detailed compilation and installation instructions. After installation
 you will have the following files:

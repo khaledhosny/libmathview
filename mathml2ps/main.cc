@@ -25,9 +25,9 @@
 #define MATHML2PS_VERSION "0.0.9"
 
 #include <assert.h>
-#ifdef HAVE_GETOPT_H
+#if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
 #include <getopt.h>
-#endif // HAVE_GETOPT_H
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

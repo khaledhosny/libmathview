@@ -143,6 +143,7 @@ MathMLTableElement::CalcTableSize()
 
   i = 0;
   for (Iterator<MathMLElement*> p(content); p.More(); p.Next()) {
+    assert(i < nRows);
     assert(p() != NULL);
     assert(p()->IsA() == TAG_MTR || p()->IsA() == TAG_MLABELEDTR);
 
@@ -164,7 +165,7 @@ MathMLTableElement::CalcTableSize()
 
       unsigned j = r[i].AddCell(mtd->GetColumnSpan());
 
-      for (unsigned k = 1; k < mtd->GetRowSpan(); k++) {
+      for (unsigned k = 1; i + k < nRows && k < mtd->GetRowSpan(); k++) {
 	r[i + k].AddSpanningCell(j, mtd->GetColumnSpan());
       }
 

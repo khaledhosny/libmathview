@@ -72,6 +72,9 @@
 /* Define if you have getopt_long */
 #undef HAVE_GETOPT_LONG
 
+/* Define if #include <getopt.h> works even if HAVE_GETOPT_H is false */
+#undef HAVE_HIDDEN_GETOPT
+
 @BOTTOM@
 
 #endif /* config_h */

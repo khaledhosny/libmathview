@@ -22,9 +22,9 @@
 
 #include <config.h>
 #include <assert.h>
-#ifdef HAVE_GETOPT_H
+#if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
 #include <getopt.h>
-#endif // HAVE_GETOPT_H
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif // HAVE_UNISTD_H

@@ -5,3 +5,4 @@ info_TEXINFOS = gtkmathview.texi
 man_MANS = mathmlviewer.1 mathml2ps.1
 
 CLEANFILES = *.html
+

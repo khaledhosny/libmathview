@@ -252,7 +252,7 @@ MathMLTableElement::Render(const DrawingArea& area)
     dGC[IsSelected()] = area.GetGC(values, GC_MASK_FOREGROUND | GC_MASK_LINE_STYLE);
   }
 
-  //area.DrawRectangle(gc, GetX(), GetY(), box);
+  //area.DrawRectangle(fGC[IsSelected()], GetX(), GetY(), box);
 
   if (frame != TABLE_LINE_NONE) {
     Rectangle rect;
