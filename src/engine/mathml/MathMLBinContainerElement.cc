@@ -37,6 +37,20 @@ MathMLBinContainerElement::MathMLBinContainerElement(const SmartPtr<class MathML
 MathMLBinContainerElement::~MathMLBinContainerElement()
 { }
 
+#if 0
+void
+MathMLBinContainerElement::construct(ConstructionContext& ctxt)
+{
+  if (dirtyStructure())
+    {
+      ctxt.getReader().firstChild();
+      setChild(ctxt.getNode(getChild()));
+      ctxt.getReader().parentNode();
+      resetDirtyStructure();
+    }
+}
+#endif
+
 void
 MathMLBinContainerElement::construct()
 {

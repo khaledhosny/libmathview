@@ -57,8 +57,6 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
-      AreaRef res;
-
       ctxt.push(this);
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Action, selection))
@@ -82,16 +80,14 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
       else
 	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
 
-      if (!res && selection < getSize())
-	{
-	  SmartPtr<MathMLElement> elem = getChild(selection);
-	  assert(elem);
-	  res = elem->format(ctxt);
-	}
+      AreaRef res;
+      if (SmartPtr<MathMLElement> elem = getChild(selection))
+	res = elem->format(ctxt);
       else
 	res = ctxt.getDevice()->dummy(ctxt);
+      assert(res);
 
-      setArea(res ? ctxt.getDevice()->wrapper(ctxt, res) : 0);
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
       ctxt.pop();
 
       resetDirtyLayout();

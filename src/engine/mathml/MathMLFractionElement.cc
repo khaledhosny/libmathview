@@ -48,8 +48,10 @@ MathMLFractionElement::construct(AbstractConstructionContext& ctxt)
 {
   if (dirtyStructure())
     {
-      setNumerator(ctxt.getElement(getNumerator()));
-      setDenominator(ctxt.getElement(getDenominator()));
+      ctxt.getReader().firstChild();
+      setNumerator(ctxt.getNode(getNumerator()));
+      setDenominator(ctxt.getNode(getDenominator()));
+      ctxt.getReader().parentNode();
       resetDirtyStructure();
     }
 }

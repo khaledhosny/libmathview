@@ -46,10 +46,20 @@ MathMLLinearContainerElement::construct(AbstractConstructionContext& ctxt)
 {
   if (dirtyStructure())
     {
+      ctxt.getReader().firstChild();
+
+#if 0
+      std::vector< SmartPtr<MathMLElement> > newContent;
+      while (SmartPtr<MathMLElement> elem = ctxt.getNode(getChild(i), false))
+	newContent.push_back(elem);
+      swapContent(elem);
+#else
       unsigned i = 0;
       while (SmartPtr<Element> elem = ctxt.getElement(getChild(i), false))
 	setChild(i++, elem);
       setSize(i);
+#endif
+      ctxt.getReader().parentNode();
       resetDirtyStructure();
     }
 }

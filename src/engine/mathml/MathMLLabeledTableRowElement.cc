@@ -42,6 +42,25 @@ MathMLLabeledTableRowElement::MathMLLabeledTableRowElement(const SmartPtr<MathML
 MathMLLabeledTableRowElement::~MathMLLabeledTableRowElement()
 { }
 
+#if 0
+void
+MathMLLabeledTableRowElement::construct(AbstractConstructionContext& ctxt)
+{
+  if (dirtyStructure())
+    {
+      ctxt.getReader().firstChild();
+
+      if (ctxt.getReader().more() && ctxt.getReader().name() != "mtr")
+	setLabel(ctxt.getNode(getLabel()));
+
+      constructTableRow();
+
+      ctxt.getReader().parentNode();
+      resetDirtyStructure();
+    }
+}
+#endif
+
 void
 MathMLLabeledTableRowElement::construct()
 {
