@@ -438,6 +438,7 @@ AC_CONFIG_FILES([
  src/widget/Makefile
  viewer/Makefile
  doc/Makefile
+ mathview-libxml2.pc
  gtkmathview-custom.pc
  gtkmathview-libxml2.pc
  gtkmathview-gmetadom.pc

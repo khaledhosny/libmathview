@@ -36,7 +36,6 @@
 #include "WrapperArea.hh"
 
 View::View()
-
   : defaultFontSize(Globals::configuration.getFontSize()), freezeCounter(0)
 { }
 

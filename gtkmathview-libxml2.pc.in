@@ -8,7 +8,7 @@ datadir=@datadir@
 Name: GtkMathView
 Description: A GTK+ Widget for Rendering MathML Documents (libxml2 frontend)
 Version: @VERSION@
-Requires: glib-2.0 gtk+-2.0 libxml-2.0
+Requires: glib-2.0 gtk+-2.0 libxml-2.0 mathview-libxml2
 Libs: @XML_LIBS@ -L${libdir} -lgtkmathview_libxml2
 Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@
 
