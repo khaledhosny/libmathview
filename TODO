@@ -19,8 +19,6 @@ BUGS
   chars. This can be seen as a bug of pango or as a bug of our architecture
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
-- cleanup configure.ac (remove tex stuff, some variables in
-  config.h are unset)
 
 ARCH IMPROVEMENTS
 
