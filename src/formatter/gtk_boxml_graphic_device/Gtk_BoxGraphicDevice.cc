@@ -46,29 +46,40 @@ Gtk_BoxGraphicDevice::getFactory() const
 }
 
 AreaRef
+Gtk_BoxGraphicDevice::dummy(const BoxFormattingContext& context) const
+{
+  return getFactory()->color(string(context, StringOfUCS4String(UCS4String(1, 0xfffd)), 0), RGBColor::RED());
+}
+
+AreaRef
 Gtk_BoxGraphicDevice::string(const BoxFormattingContext& context,
 			     const String& str, const scaled& width) const
 {
-  const UTF8String utf8_string = str;
-
-  PangoLayout* layout = pango_layout_new(pango_context);
-  pango_layout_set_text(layout, utf8_string.data(), utf8_string.length());
-  if (width < scaled::zero())
-    pango_layout_set_width(layout, -1);
+  if (str.length() == 0)
+    return dummy(context);
   else
-    pango_layout_set_width(layout, Gtk_RenderingContext::toPangoPixels(width));
-  pango_layout_set_single_paragraph_mode(layout, TRUE);
+    {
+      const UTF8String utf8_string = str;
 
-  PangoAttrList* attrList = pango_attr_list_new();
-  PangoAttribute* aSize = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(context.getSize()));
-  aSize->start_index = 0;
-  aSize->end_index = utf8_string.length();
-  pango_attr_list_insert(attrList, aSize);
+      PangoLayout* layout = pango_layout_new(pango_context);
+      pango_layout_set_text(layout, utf8_string.data(), utf8_string.length());
+      if (width < scaled::zero())
+	pango_layout_set_width(layout, -1);
+      else
+	pango_layout_set_width(layout, Gtk_RenderingContext::toPangoPixels(width));
+      pango_layout_set_single_paragraph_mode(layout, TRUE);
 
-  pango_layout_set_attributes(layout, attrList);
+      PangoAttrList* attrList = pango_attr_list_new();
+      PangoAttribute* aSize = pango_attr_size_new(Gtk_RenderingContext::toPangoPixels(context.getSize()));
+      aSize->start_index = 0;
+      aSize->end_index = utf8_string.length();
+      pango_attr_list_insert(attrList, aSize);
 
-  // set attributes...
-  return factory->pangoLayout(layout);
+      pango_layout_set_attributes(layout, attrList);
+
+      // set attributes...
+      return factory->pangoLayout(layout);
+    }
 }
 
 #if 0

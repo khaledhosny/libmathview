@@ -143,15 +143,20 @@ AreaRef
 MathGraphicDevice::string(const MathFormattingContext& context,
 			  const String& str) const
 {
-  UCS4String source = UCS4StringOfString(str);
-  mapMathVariant(context.getVariant(), source);
-
-  if (context.getElement() == context.getStretchOperator())
-    return getShaperManager()->shapeStretchy(context, source,
-					     context.getStretchV(),
-					     context.getStretchH());
+  if (str.length() == 0)
+    return dummy(context);
   else
-    return getShaperManager()->shape(context, source);
+    {
+      UCS4String source = UCS4StringOfString(str);
+      mapMathVariant(context.getVariant(), source);
+
+      if (context.getElement() == context.getStretchOperator())
+	return getShaperManager()->shapeStretchy(context, source,
+						 context.getStretchV(),
+						 context.getStretchH());
+      else
+	return getShaperManager()->shape(context, source);
+    }
 }
 
 AreaRef

@@ -98,7 +98,8 @@ MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
     c.push_back((*p)->format(ctxt));
 
   AreaRef res;
-  if (c.size() == 1) res = c[0];
+  if (c.size() == 0) res = ctxt.getDevice()->dummy(ctxt);
+  else if (c.size() == 1) res = c[0];
   else res = ctxt.getDevice()->getFactory()->horizontalArray(c);
 
   if (oldColor != newColor)
