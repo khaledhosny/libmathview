@@ -11,8 +11,7 @@ XSLTPROC = xsltproc
 
 AUTOFILES = \
   token.dec \
-  token.def \
-  entitiesTable.inc
+  token.def
 
 EXTRA_DIST = \
   list-to-dec.xsl \
