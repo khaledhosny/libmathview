@@ -219,27 +219,28 @@ MathMLPaddedElement::EvalLengthDimension(const scaled& orig,
 {
   if (!dim.valid) return orig;
   
-  float res = dim.number;
+  float f = dim.number;
+  if (dim.percentage) f *= 0.01;
 
-  if (dim.percentage) res *= 0.01;
+  scaled res = 0;
 
   if (dim.pseudo) {
     switch (dim.pseudoUnitId) {
-    case KW_WIDTH: res *= sp2float(b.width); break;
-    case KW_LSPACE: res *= 0; break; // LUCA: BoundingBox does not have a lspace length!!!
-    case KW_HEIGHT: res *= sp2float(b.ascent); break;
-    case KW_DEPTH: res *= sp2float(b.descent); break;
+    case KW_WIDTH: res = b.width * f; break;
+    case KW_LSPACE: break; // LUCA: BoundingBox does not have a lspace length!!!
+    case KW_HEIGHT: res = b.ascent * f; break;
+    case KW_DEPTH: res = b.descent * f; break;
     default:
-      assert(IMPOSSIBLE);
+      assert(false);
       break;
     }
   } else {
-    res *= sp2float(dim.unit);
+    res = dim.unit * f;
   }
 
-  if      (dim.sign == -1) return orig - float2sp(res);
-  else if (dim.sign == +1) return orig + float2sp(res);
-  else return float2sp(res);
+  if      (dim.sign == -1) return orig - res;
+  else if (dim.sign == +1) return orig + res;
+  else return res;
 }
 
 #if 0

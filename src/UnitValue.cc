@@ -62,23 +62,19 @@ UnitValue::ToScaledPoints() const
 }
 
 scaled
-UnitValue::ToScaledPoints(float sppm, float sppx) const
+UnitValue::ToScaledPoints(const scaled& sppm, const scaled& sppx) const
 {
-  scaled res = 0;
-
-  switch (unitId) {
-  case UNIT_ZERO: res = 0; break;
-  case UNIT_EM: res = float2sp(value * sppm); break;
-  case UNIT_EX: res = float2sp(value * sppx); break;
-  case UNIT_PX: res = px2sp(value); break;
-  case UNIT_IN: res = in2sp(value); break;
-  case UNIT_CM: res = cm2sp(value); break;
-  case UNIT_MM: res = mm2sp(value); break;
-  case UNIT_PT: res = pt2sp(value); break;
-  case UNIT_PC: res = pc2sp(value); break;
-  case UNIT_SCALED: res = float2sp(value); break;
-  default: assert(IMPOSSIBLE); break;
-  }
-   
-  return res;
+  switch (unitId)
+    {
+    case UNIT_ZERO: return 0;
+    case UNIT_EM: return sppm * value;
+    case UNIT_EX: return sppx * value;
+    case UNIT_PX: return px2sp(value);
+    case UNIT_IN: return in2sp(value);
+    case UNIT_CM: return cm2sp(value);
+    case UNIT_MM: return mm2sp(value);
+    case UNIT_PT: return pt2sp(value);
+    case UNIT_PC: return pc2sp(value);
+    default: assert(false);
+    }
 }

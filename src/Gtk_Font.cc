@@ -105,7 +105,7 @@ Gtk_Font::GetKerning(char ch1, char ch2) const
 scaled
 Gtk_Font::GetLineThickness() const
 {
-  return float2sp(sp2pt(GetAscent() + GetDescent()) * 2500);
+  return scaled(sp2pt(GetAscent() + GetDescent()) * 2500);
 }
 
 void

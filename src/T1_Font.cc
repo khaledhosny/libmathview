@@ -105,7 +105,7 @@ scaled
 T1_Font::GetLineThickness() const
 {
   // don't know exactly where the following heuristic comes from
-  return float2sp(scale * 2500);
+  return scaled(scale * 2500);
 }
 
 void

@@ -41,7 +41,7 @@ struct UnitValue {
 				    unitId != UNIT_EM && unitId != UNIT_EX; }
   bool   IsPercentage(void) const { return unitId == UNIT_PERCENTAGE; }
   scaled ToScaledPoints(void) const;
-  scaled ToScaledPoints(float, float) const;
+  scaled ToScaledPoints(const scaled&, const scaled&) const;
 };
 
 #endif // UnitValue_hh

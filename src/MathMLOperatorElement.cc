@@ -337,8 +337,8 @@ MathMLOperatorElement::VerticalStretchTo(const scaled& ascent, const scaled& des
     }
   else
     {
-      adjustedHeight = scaledProp(height, adjustedSize, desiredSize);
-      adjustedDepth = scaledProp(depth, adjustedSize, desiredSize);
+      adjustedHeight = height * (adjustedSize.toFloat() / desiredSize.toFloat());
+      adjustedDepth = depth * (adjustedSize.toFloat() / desiredSize.toFloat());
     }
 
   Globals::logger(LOG_DEBUG, "adjusted stretchy size %d", sp2ipx(adjustedSize));

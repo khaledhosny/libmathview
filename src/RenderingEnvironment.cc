@@ -419,18 +419,14 @@ RenderingEnvironment::GetScaledPointsPerEx() const
 
   assert(top->fontAttributes.HasSize());
   assert(top->fontAttributes.size.IsAbsolute());
-  return scaledProp(top->fontAttributes.size.ToScaledPoints(), 2, 3);
+  return top->fontAttributes.size.ToScaledPoints() * (2.0 / 3.0);
 }
 
 scaled
 RenderingEnvironment::ToScaledPoints(const UnitValue& value) const
 {
   assert(!value.IsPercentage());
-
-  float sppm = sp2float(GetScaledPointsPerEm());
-  float sppx = sp2float(GetScaledPointsPerEx());
-
-  return value.ToScaledPoints(sppm, sppx);
+  return value.ToScaledPoints(GetScaledPointsPerEm(), GetScaledPointsPerEx());
 }
 
 scaled

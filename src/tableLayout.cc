@@ -202,7 +202,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
       // if there are not % columns, then there is no need to reduce the
       // extra space to auto column so that their total width has a
       // give value. We set them all to the content width.
-      float ratio = (constraint && avail != scaled(0)) ? sp2float(delta) / sp2float(avail) : 0;
+      float ratio = (constraint && avail != scaled(0)) ? delta.toFloat() / avail.toFloat() : 0;
 
       for (j = 0; j < nColumns; j++)
 	if (column[j].widthType == COLUMN_WIDTH_AUTO)
@@ -214,7 +214,7 @@ MathMLTableElement::DoHorizontalLayout(const FormattingContext& ctxt)
 
       for (j = 0; j < nColumns; j++) {
 	if (column[j].widthType == COLUMN_WIDTH_FIT) {
-	  ColumnLayout(j, FormattingContext(ctxt.GetLayoutType(), float2sp(sp2float(avail) / n)));
+	  ColumnLayout(j, FormattingContext(ctxt.GetLayoutType(), avail / static_cast<int>(n)));
 	  avail = std::max(scaled(0), avail - std::max(column[j].contentWidth, column[j].width));
 	  n--;
 	}
@@ -255,7 +255,7 @@ MathMLTableElement::DoHorizontalMinimumLayout()
 	      column[j + k].minimumWidth = std::max(column[j + k].minimumWidth, cellWidth / static_cast<int>(n));
 	    else
 	      column[j + k].minimumWidth =
-		float2sp(sp2float(column[j + k].minimumWidth) * sp2float(cellWidth) / sp2float(minWidth));
+		column[j + k].minimumWidth * (cellWidth.toFloat() / minWidth.toFloat());
 	}
       }
     }
@@ -870,7 +870,7 @@ MathMLTableElement::SpanRowHeight(LayoutId id)
 			  if (height != scaled(0))
 			    // if all the columns have 0 width we assign an equal amount
 			    // of space to each spanned column
-			    thisRowRest = scaledProp(rest, row[i + k].GetHeight(), height);
+			    thisRowRest = rest * (row[i + k].GetHeight().toFloat() / height.toFloat());
 			  else
 			    thisRowRest = rest / static_cast<int>(n);
 			  row[i + k].descent += thisRowRest;
@@ -963,7 +963,7 @@ MathMLTableElement::AdjustTableWidth(const scaled& availWidth)
 
   scaled toKill = std::max(scaled(0), std::min(tableWidth - availWidth, extraSpace));
 
-  float ratio = 1 - sp2float(toKill) / sp2float(extraSpace);
+  float ratio = 1 - toKill.toFloat() / extraSpace.toFloat();
 
   for (j = 0; j < nColumns; j++)
     column[j].width = column[j].contentWidth + (column[j].width - column[j].contentWidth) * ratio;
