@@ -35,35 +35,49 @@
 
 class Gtk_RenderingContext : public RenderingContext
 {
+protected:
+  enum ColorIndex { FOREGROUND, BACKGROUND };
+
 public:
   Gtk_RenderingContext(void);
   virtual ~Gtk_RenderingContext();
 
-  void setForegroundColor(const RGBColor&);
-  void setForegroundColor(GdkColor&);
-  void getForegroundColor(RGBColor& c) { c = foregroundColor; }
-  void getForegroundColor(GdkColor& c) { c = gdk_foregroundColor; }
+  void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND>(c); }
+  void setBackgroundColor(const RGBColor& c) { setColor<BACKGROUND>(c); }
+  void setForegroundColor(GdkColor& c) { setColor<FOREGROUND, gdk_gc_set_foreground>(c); }
+  void setBackgroundColor(GdkColor& c) { setColor<BACKGROUND, gdk_gc_set_background>(c); }
 
-  void setSelectionColors(const RGBColor&, const RGBColor&);
+  // the return value is passed as an argument so that
+  // we can use overloading
+  void getForegroundColor(RGBColor& c) { getColor<FOREGROUND>(c); }
+  void getBackgroundColor(RGBColor& c) { getColor<BACKGROUND>(c); }
+  void getForegroundColor(GdkColor& c) { getColor<FOREGROUND>(c); }
+  void getBackgroundColor(GdkColor& c) { getColor<BACKGROUND>(c); }
 
   void setWidget(const GObjectPtr<GtkWidget>&);
   GObjectPtr<GtkWidget> getWidget(void) const { return gtk_widget; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
-  GObjectPtr<GdkGC> getGC(void) const { return selection ? gdk_selected_gc : gdk_gc; }
+  GObjectPtr<GdkGC> getGC(void) const { return gdk_gc; }
   XftDraw* getXftDraw(void) const { return xft_draw; }
-  const XftColor* getXftColor(void) const { return &xft_foregroundColor; }
+
+  const XftColor* getXftForegroundColor(void) const { return &xft_color[FOREGROUND]; }
+  const XftColor* getXftBackgroundColor(void) const { return &xft_color[BACKGROUND]; }
 
   void update(void) const;
   void update(const Rectangle&) const;
 
-  bool getSelection(void) const { return selection; }
-  bool setSelection(bool b)
+  unsigned getSelection(void) const { return selection; }
+  unsigned setSelection(unsigned s)
   {
-    bool oldSelection = selection;
-    selection = b;
+    unsigned oldSelection = selection;
+    selection = s;
     return oldSelection;
   }
+  unsigned select(void)
+  { return selection++; }
+  unsigned unselect(void)
+  { return (selection > 0) ? selection-- : 0; }
 
   static int toGtkPixels(const scaled& s)
   { return static_cast<int>(s.toFloat() * (72.27 / 72.0)); }
@@ -97,10 +111,56 @@ public:
   { return fromGtkY(y); }
 
 protected:
+  template <ColorIndex index>
+  void setColor(const RGBColor& c)
+  {
+    if (c.red != color[index].red ||
+	c.green != color[index].green ||
+	c.blue != color[index].blue)
+      {
+	color[index] = c;
+
+	gdk_color[index].red = c.red << 8;
+	gdk_color[index].green = c.green << 8;
+	gdk_color[index].blue = c.blue << 8;
+	gdk_color[index].pixel = 0;
+
+	gboolean ret = gdk_colormap_alloc_color(gdk_colormap, &gdk_color[index], FALSE, TRUE);
+	assert(ret == TRUE);
+
+	setForegroundColor(gdk_color[index]);
+      }
+  }
+
+  template <ColorIndex index>
+  void getColor(RGBColor& c)
+  { c = color[index]; }
+
+  // The only reason why the argument is not const is that
+  // the GDK function does not respect const-ness :-(
+  template <ColorIndex index, void (*set)(GdkGC*, GdkColor*)>
+  void setColor(/* const */ GdkColor& c)
+  {
+    // Set the color in the GDK GC
+    set(gdk_gc, &c);
+
+    // Set the color for Xft, note that we reuse the same pixel field
+    // so that we don't need to reallocate the color
+    xft_color[index].color.red = c.red;
+    xft_color[index].color.green = c.green;
+    xft_color[index].color.blue = c.blue;
+    xft_color[index].color.alpha = 0xffff;
+    xft_color[index].pixel = c.pixel;
+  }
+
+  template <ColorIndex index>
+  void getColor(GdkColor& c)
+  { c = gdk_color[index]; }
+
   void releaseResources(void);
 
-  RGBColor foregroundColor;
-  bool selection;
+  unsigned selection;
+  RGBColor color[2];
 
   // GTK-specific fields
   GObjectPtr<GtkWidget> gtk_widget;
@@ -108,12 +168,11 @@ protected:
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;
   GObjectPtr<GdkGC> gdk_gc;
-  GObjectPtr<GdkGC> gdk_selected_gc;
   GObjectPtr<GdkColormap> gdk_colormap;
-  GdkColor gdk_foregroundColor;
+  GdkColor gdk_color[2];
 
   // Xft-specific fields
-  XftColor xft_foregroundColor;
+  XftColor xft_color[2];
   XftDraw* xft_draw;
 };
 

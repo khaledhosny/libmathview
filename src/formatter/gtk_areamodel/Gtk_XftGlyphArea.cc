@@ -83,7 +83,7 @@ Gtk_XftGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) 
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
   XftDrawGlyphs(context.getXftDraw(),
-		context.getXftColor(),
+		context.getXftForegroundColor(),
 		font,
 		Gtk_RenderingContext::toXftX(x),
 		Gtk_RenderingContext::toXftY(y),
