@@ -23,6 +23,7 @@
 #ifndef __View_hh__
 #define __View_hh__
 
+#include "Area.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
 #include "BoundingBox.hh"
@@ -46,10 +47,6 @@ public:
   bool freeze(void);
   bool thaw(void);
 
-  void setOrigin(const scaled& x, const scaled& y) { x0 = x; y0 = y; }
-  scaled getOriginX(void) const { return x0; }
-  scaled getOriginY(void) const { return y0; }
-
   SmartPtr<class Builder> getBuilder(void) const;
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
 #if ENABLE_BOXML
@@ -58,23 +55,31 @@ public:
 
   SmartPtr<class Element> getRootElement(void) const;
   void resetRootElement(void);
-  SmartPtr<const class Area> getRootArea(void) const;
-  SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
-  bool getElementAt(const scaled&, const scaled&, SmartPtr<class Element>&, scaled&, scaled&) const;
-  bool getElementOrigin(const SmartPtr<class Element>&, scaled&, scaled&) const;
-  bool getElementBoundingBox(const SmartPtr<class Element>&, BoundingBox&) const;
-  bool getElementLength(const SmartPtr<class Element>&, int&) const;
-  bool getCharAt(const scaled&, const scaled&, SmartPtr<class Element>&, int&) const;
-  bool getCharOrigin(const SmartPtr<class Element>&, int, scaled&, scaled&) const;
+  BoundingBox getBoundingBox(void) const;
 
-  void render(class RenderingContext&) const;
+  SmartPtr<class Element> getElementAt(const scaled&, const scaled&, Point* = 0, BoundingBox* = 0) const;
+  bool getElementExtents(const SmartPtr<class Element>&, Point* = 0, BoundingBox* = 0) const;
+  bool getElementLength(const SmartPtr<class Element>&, CharIndex&) const;
+  bool getElementOrigin(const SmartPtr<class Element>& elem, Point& p) const
+  { return getElementExtents(elem, &p, 0); }
+  bool getElementBoundingBox(const SmartPtr<class Element>& elem, BoundingBox& b) const
+  { return getElementExtents(elem, 0, &b); }
+
+  SmartPtr<class Element> getCharAt(const scaled&, const scaled&, CharIndex&, Point* = 0, BoundingBox* = 0) const;
+  bool getCharExtents(const SmartPtr<class Element>&, CharIndex, Point* = 0, BoundingBox* = 0) const;
+  bool getCharOrigin(const SmartPtr<class Element>& elem, CharIndex index, Point& p) const
+  { return getCharExtents(elem, index, &p, 0); }
+  bool getCharBoundingBox(const SmartPtr<class Element>& elem, CharIndex index, BoundingBox& b) const
+  { return getCharExtents(elem, index, 0, &b); }
+
+  void render(class RenderingContext&, const scaled&, const scaled&) const;
 
   unsigned getDefaultFontSize(void) const { return defaultFontSize; }
   void setDefaultFontSize(unsigned);
 
 protected:
-  bool getElementOriginAux(const SmartPtr<class Element>&, scaled&, scaled&) const;
-  bool getCharAtAux(const scaled&, const scaled&, SmartPtr<class Element>&, int&) const;
+  SmartPtr<const class Area> getRootArea(void) const;
+  SmartPtr<const class Area> formatElement(const SmartPtr<class Element>&) const;
 
 private:
   mutable SmartPtr<class Element> rootElement;
@@ -85,8 +90,6 @@ private:
 #endif // ENABLE_BOXML
   unsigned defaultFontSize;
   unsigned freezeCounter;
-  scaled x0;
-  scaled y0;
 };
 
 #endif // __View_hh__
