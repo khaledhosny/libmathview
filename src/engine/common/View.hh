@@ -60,16 +60,21 @@ public:
   void resetRootElement(void);
   SmartPtr<const class Area> getRootArea(void) const;
   SmartPtr<const class Area> getElementArea(const SmartPtr<class Element>&) const;
-  bool getElementExtents(const SmartPtr<class Element>&, scaled&, scaled&, BoundingBox&) const;
-  bool getElementAt(const scaled&, const scaled&, SmartPtr<class Element>&) const;
+  bool getElementAt(const scaled&, const scaled&, SmartPtr<class Element>&, scaled&, scaled&) const;
+  bool getElementOrigin(const SmartPtr<class Element>&, scaled&, scaled&) const;
+  bool getElementBoundingBox(const SmartPtr<class Element>&, BoundingBox&) const;
   bool getElementLength(const SmartPtr<class Element>&, int&) const;
-  bool getCharExtents(const SmartPtr<class Element>&, int, scaled&, scaled&, BoundingBox&) const;
   bool getCharAt(const scaled&, const scaled&, SmartPtr<class Element>&, int&) const;
+  bool getCharOrigin(const SmartPtr<class Element>&, int, scaled&, scaled&) const;
 
   void render(class RenderingContext&) const;
 
   unsigned getDefaultFontSize(void) const { return defaultFontSize; }
   void setDefaultFontSize(unsigned);
+
+protected:
+  bool getElementOriginAux(const SmartPtr<class Element>&, scaled&, scaled&) const;
+  bool getCharAtAux(const scaled&, const scaled&, SmartPtr<class Element>&, int&) const;
 
 private:
   mutable SmartPtr<class Element> rootElement;

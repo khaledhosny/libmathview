@@ -129,10 +129,39 @@ AreaRef
 View::getRootArea() const
 { return getElementArea(getRootElement()); }
 
-#include "scaledAux.hh"
+#if 0
+bool
+View::getAreaId(const scaled& x, const scaled& y, AreaId& id) const
+{
+  if (AreaRef rootArea = getRootArea())
+    {
+      id = AreaId(rootArea);
+      return rootArea->searchByCoords(id, x, y);
+    }
+  else
+    return false;
+}
 
 bool
-View::getElementAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem) const
+View::getElementAreaId(AreaId& id) const
+{
+  while (!id.empty() && !is_a<const WrapperArea>(is.getArea()))
+    id.pop_back();
+  return !id.empty();
+}
+
+SmartPtr<Element>
+View::getElement(const AreaId& id) const
+{
+  if (SmartPtr<const WrapperArea> elemArea = smart_cast<const WrapperArea>(id.getArea()))
+    return elemArea->getElement();
+  else
+    return 0;
+}
+#endif
+
+bool
+View::getElementAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem, scaled& ex, scaled& ey) const
 {
   if (AreaRef rootArea = getRootArea())
     {
@@ -141,27 +170,27 @@ View::getElementAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem) co
       if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
 	for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
 	  if (SmartPtr<const WrapperArea> area = smart_cast<const WrapperArea>(*p))
-	    if ((elem = area->getElement()))
+	    {
+	      assert((elem = area->getElement()));
+	      id.getOrigin(p - id.getAreas().rbegin() - 1, ex, ey);
+	      ex -= x0;
+	      ey -= y0 + box.height;
 	      return true;
+	    }
     }
   
   return false;
 }
 
 bool
-View::getElementExtents(const SmartPtr<Element>& elem, scaled& x, scaled& y, BoundingBox& box) const
+View::getElementBoundingBox(const SmartPtr<Element>& elem, BoundingBox& box) const
 {
   assert(elem);
-  if (AreaRef rootArea = getRootArea())
+  if (getRootArea())
     if (AreaRef elemArea = elem->getArea())
       {
-	AreaId elemId(rootArea);
-	if (rootArea->searchByArea(elemId, elemArea))
-	  {
-	    elemId.getOrigin(x, y);
-	    box = elemArea->box();
-	    return true;
-	  }
+	box = elemArea->box();
+	return true;
       }
 							    
   return false;
@@ -177,6 +206,53 @@ View::getElementLength(const SmartPtr<Element>& elem, int& length) const
 	length = elemArea->length();
 	return true;
       }
+  return false;
+#if 0
+  if (SmartPtr<MathMLTokenElement> token = smart_cast<MathMLTokenElement>(elem))
+    {
+      length = token->GetRawContent().length() + 1;
+      return true;
+    }
+  else if (SmartPtr<BoxMLTextElement> text = smart_cast<BoxMLTextElement>(elem))
+    {
+      length = text->getContent().length() + 1;
+      return true;
+    }
+  else
+    {
+      length = 2;
+      return true;
+    }
+#endif
+}
+
+#include <iostream>
+
+bool
+View::getCharAtAux(const scaled& x, const scaled& y, SmartPtr<Element>& elem, int& index) const
+{
+  if (AreaRef rootArea = getRootArea())
+    {
+      AreaId id(rootArea);
+      if (rootArea->searchByCoords(id, x, y))
+	for (int i = id.size(); i >= 0; i--)
+	  if (SmartPtr<const WrapperArea> elemArea = smart_cast<const WrapperArea>(id.getArea(i)))
+	    {
+	      elem = elemArea->getElement();
+	      assert(elem);
+	      AreaRef deepArea = id.getArea();
+	      scaled deepX;
+	      scaled deepY;
+	      id.accumulateOrigin(deepX, deepY);
+	      CharIndex index0 = id.getLength(i, -1);
+	      if (deepArea->indexOfPosition(x - deepX, y - deepY, index))
+		index += index0;
+	      else
+		index = index0;
+	      std::cerr << "element at " << i << " long " << id.getLength(i, -1) << " deep at " << id.size() << " index0 = " << index0 << " index = " << index << std::endl;
+	      return true;
+	    }
+    }
 
   return false;
 }
@@ -184,28 +260,76 @@ View::getElementLength(const SmartPtr<Element>& elem, int& length) const
 bool
 View::getCharAt(const scaled& x, const scaled& y, SmartPtr<Element>& elem, int& index) const
 {
-  if (getElementAt(x, y, elem))
+  if (AreaRef rootArea = getRootArea())
     {
-      scaled ex;
-      scaled ey;
-      BoundingBox ebox;
-      if (getElementExtents(elem, ex, ey, ebox))
-	if (AreaRef elemArea = elem->getArea())
-	  if (elemArea->indexOfPosition(x - ex, y - ey, index))
-	    return true;
+      BoundingBox box = rootArea->box();
+      return getCharAtAux(x + x0, y + box.height + y0, elem, index);
     }
-  
+  else
+    return false;
+}
+
+bool
+View::getElementOriginAux(const SmartPtr<Element>& elem, scaled& ex, scaled& ey) const
+{
+  assert(elem);
+  if (AreaRef rootArea = getRootArea())
+    if (AreaRef elemArea = elem->getArea())
+      {
+	AreaId elemId(rootArea);
+	if (rootArea->searchByArea(elemId, elemArea))
+	  {
+	    elemId.getOrigin(ex, ey);
+	    return true;
+	  }
+      }
+
   return false;
 }
 
 bool
-View::getCharExtents(const SmartPtr<Element>& elem, int index, scaled& x, scaled& y, BoundingBox& box) const
+View::getElementOrigin(const SmartPtr<Element>& elem, scaled& ex, scaled& ey) const
+{
+  if (AreaRef rootArea = getRootArea())
+    if (getElementOriginAux(elem, ex, ey))
+      {
+	//ex -= x0;
+	//ey -= y0 + rootArea->box().height;
+	return true;
+      }
+
+  return false;
+}
+
+#include "scaledAux.hh"
+
+bool
+View::getCharOrigin(const SmartPtr<Element>& elem, int index, scaled& x, scaled& y) const
 {
   assert(elem);
-  if (getRootArea()) // just to be sure the tree has been formatted
+  scaled ex;
+  scaled ey;
+  if (getElementOrigin(elem, ex, ey))
     if (AreaRef elemArea = elem->getArea())
-      if (elemArea->positionOfIndex(index, x, y, box))
-	return true;
+      {
+	AreaId id(elemArea);
+	if (elemArea->searchByIndex(id, index))
+	  {
+	    AreaRef deepArea = id.getArea();
+	    scaled deepX;
+	    scaled deepY;
+	    id.getOrigin(deepX, deepY);
+	    if (deepArea->positionOfIndex(index - id.getLength(), x, y))
+	      {
+		std::cerr << "deep pos of index = " << x << "," << y
+			  << " deep origin = " << deepX << "," << deepY
+			  << " elem origin = " << ex << "," << ey << std::endl;
+		x += deepX + ex;
+		y += deepY + ey;
+		return true;
+	      }
+	  }
+      }
 							    
   return false;
 }
