@@ -41,8 +41,10 @@ Shaper::composeStretchyCharH(const SmartPtr<class AreaFactory>& factory,
   if (normalSize >= span) return normal;
 
   // Compute first the number of glue segments we have to use
-  assert(glueSize > scaled::zero());
-  const int n = std::max(0, (span - leftSize - rightSize).getValue() / glueSize.getValue());
+  const int n =
+    (glueSize > scaled::zero())
+    ? std::max(0, (span - leftSize - rightSize).getValue() / glueSize.getValue())
+    : 0;
 
   // Then the final number of glyphs
   const int gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
@@ -71,8 +73,10 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
 
   if (normalSize >= span) return normal;
 
-  assert(glueSize > scaled::zero());
-  int n = std::max(0, (span - topSize - bottomSize - middleSize).getValue() / glueSize.getValue());
+  int n =
+    (glueSize > scaled::zero())
+    ? std::max(0, (span - topSize - bottomSize - middleSize).getValue() / glueSize.getValue())
+    : 0;
 
   //std::cerr << "STRETCHYING: " << span << " N = " << n << std::endl;
 
