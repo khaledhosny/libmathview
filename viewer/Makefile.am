@@ -12,6 +12,7 @@ noinst_PROGRAMS += mathmlviewer.debug
 endif
 if COND_LIBXML2
 noinst_PROGRAMS += test_embedding
+noinst_PROGRAMS += test_loading
 endif
 
 noinst_HEADERS = guiGTK.h
@@ -39,10 +40,20 @@ test_embedding_LDADD = \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
   $(NULL)
 
+test_loading_SOURCES = test_loading.c
+
+test_loading_LDADD = \
+  -lstdc++ \
+  $(XML_LIBS) \
+  $(GTK_LIBS) \
+  $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(NULL)
+
 INCLUDES = \
   $(GTK_CFLAGS) \
   $(XML_CFLAGS) \
   $(DOM_CFLAGS) \
+  $(XML_CFLAGS) \
   -I$(top_srcdir)/auto/ \
   -I$(top_srcdir)/src/common/ \
   -I$(top_srcdir)/src/frontend/gmetadom/ \
