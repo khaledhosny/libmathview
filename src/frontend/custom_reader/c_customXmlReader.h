@@ -23,10 +23,11 @@
 #ifndef __c_customXmlReader_h__
 #define __c_customXmlReader_h__
 
-enum {
-  C_CUSTOM_TEXT_NODE = 1,
-  C_CUSTOM_ELEMENT_NODE
-};
+enum
+  {
+    C_CUSTOM_TEXT_NODE = 1,
+    C_CUSTOM_ELEMENT_NODE
+  };
 
 typedef void* c_customModelElementId;
 typedef void* c_customModelUserData;

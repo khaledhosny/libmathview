@@ -63,20 +63,20 @@ struct gmetadom_Model
 
   // methods for querying nodes and elements
   // MUST be available for TemplateBuilder and TemplateSetup to work
-  static String getAttribute(const Element& el, const String& name) { return el.getAttribute(name); }
-  static unsigned getNodeType(const Node& n) { return n.get_nodeType(); }
-  static String getNodeName(const Node&);
-  static String getNodeValue(const Node& n) { return n.get_nodeValue(); }
-  static String getElementValue(const Element&);
-  static String getNodeNamespaceURI(const Node& n)
+  static String getAttribute(const DOM::Element& el, const String& name) { return el.getAttribute(name); }
+  static unsigned getNodeType(const DOM::Node& n) { return n.get_nodeType(); }
+  static String getNodeName(const DOM::Node&);
+  static String getNodeValue(const DOM::Node& n) { return n.get_nodeValue(); }
+  static String getElementValue(const DOM::Element&);
+  static String getNodeNamespaceURI(const DOM::Node& n)
   { if (DOM::GdomeString ns = n.get_namespaceURI()) return ns; else return String(); }
   // MUST be implemented if the default RefinementContext is used
-  static bool hasAttribute(const Element& el, const String& name) { return el.hasAttribute(name); }
+  static bool hasAttribute(const DOM::Element& el, const String& name) { return el.hasAttribute(name); }
 
   // methods for navigating the model
   // must be available if the default iterators are used
-  static DOM::Node getNextSibling(const Node& n) { return n.get_nextSibling(); }
-  static DOM::Node getFirstChild(const Node& n) { return n.get_firstChild(); }
+  static DOM::Node getNextSibling(const DOM::Node& n) { return n.get_nextSibling(); }
+  static DOM::Node getFirstChild(const DOM::Node& n) { return n.get_firstChild(); }
 
   // MUST be available if the default linker is used
   struct Hash

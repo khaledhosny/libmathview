@@ -26,7 +26,7 @@
 
 #include "customXmlReader.hh"
 
-customXmlReader::customXmlReader(c_customXmlReader* r, void* data)
+customXmlReader::customXmlReader(const c_customXmlReader* r, c_customModelUserData data)
   : reader(r), user_data(data)
 {
   assert(reader);

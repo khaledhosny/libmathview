@@ -20,34 +20,50 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Builder_hh__
-#define __Builder_hh__
+#include <config.h>
 
-#include "Object.hh"
-#include "SmartPtr.hh"
+#include "libxml/xmlreader.h"
 
-class Builder : public Object
+#include "libxml2_reader_MathView.hh"
+#include "libxml2_reader_Builder.hh"
+
+libxml2_reader_MathView::libxml2_reader_MathView()
 {
-protected:
-  Builder(void);
-  virtual ~Builder();
+  setBuilder(libxml2_reader_Builder::create());
+}
 
-public:
-  virtual SmartPtr<class Element> getRootElement(void) const = 0;
-  virtual void forgetElement(Element*) const = 0;
+libxml2_reader_MathView::~libxml2_reader_MathView()
+{ }
 
-  void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
-  SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
-#if ENABLE_BOXML
-  void setBoxMLNamespaceContext(const SmartPtr<class BoxMLNamespaceContext>&);
-  SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
-#endif // ENABLE_BOXML
+void
+libxml2_reader_MathView::unload()
+{ }
 
-protected:
-  SmartPtr<class MathMLNamespaceContext> mathmlContext;
-#if ENABLE_BOXML
-  SmartPtr<class BoxMLNamespaceContext> boxmlContext;
-#endif // ENABLE_BOXML
-};
+bool
+libxml2_reader_MathView::loadReader(xmlTextReaderPtr reader)
+{
+  if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(getBuilder()))
+    {
+      builder->setReader(libxmlXmlReader::create(reader));
+      return true;
+    }
 
-#endif // __Builder_hh__
+  unload();
+  return false;
+}
+
+SmartPtr<Element>
+libxml2_reader_MathView::elementOfModelElement(void*) const
+{ return 0; }
+
+void*
+libxml2_reader_MathView::modelElementOfElement(const SmartPtr<Element>&) const
+{ return 0; }
+
+bool
+libxml2_reader_MathView::notifyStructureChanged(void*) const
+{ return false; }
+
+bool
+libxml2_reader_MathView::notifyAttributeChanged(void*, const xmlChar*) const
+{ return false; }

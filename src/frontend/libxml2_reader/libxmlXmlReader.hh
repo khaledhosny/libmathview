@@ -41,6 +41,9 @@ public:
     ELEMENT_NODE = XML_ELEMENT_NODE
   };
 
+  static SmartPtr<libxmlXmlReader> create(xmlTextReaderPtr r)
+  { return new libxmlXmlReader(r); }
+
   static SmartPtr<libxmlXmlReader> create(const String& path, bool subst = false)
   { 
     if (xmlTextReaderPtr reader = xmlNewTextReaderFilename(path.c_str()))

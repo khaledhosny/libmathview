@@ -1,24 +1,62 @@
 
 lib_LTLIBRARIES =
 
+if COND_CUSTOM_READER
+lib_LTLIBRARIES += libmathview_custom_reader.la
+endif
+
+if COND_LIBXML2_READER
+lib_LTLIBRARIES += libmathview_libxml2_reader.la
+endif
+
 if COND_LIBXML2
 lib_LTLIBRARIES += libmathview_libxml2.la
 endif
+
+if COND_GMETADOM
+lib_LTLIBRARIES += libmathview_gmetadom.la
+endif
+
+libmathview_custom_reader_la_LIBADD = \
+  -lstdc++ \
+  $(XML_LIBS) \
+  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
+  $(top_builddir)/src/frontend/custom_reader/libmathview_frontend_custom_reader.la
+
+libmathview_libxml2_reader_la_LIBADD = \
+  -lstdc++ \
+  $(XML_LIBS) \
+  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la
 
 libmathview_libxml2_la_LIBADD = \
   -lstdc++ \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/libxml2/libmathview_frontend_libxml2.la
 
-libmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_gmetadom_la_LIBADD = \
+  -lstdc++ \
+  $(DOM_LIBS) \
+  $(top_builddir)/src/frontend/gmetadom/libmathview_frontend_gmetadom.la
 
+libmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
+libmathview_custom_reader_la_SOURCES = custom_reader_MathView.cc
+libmathview_libxml2_reader_la_SOURCES = libxml2_reader_MathView.cc
 libmathview_libxml2_la_SOURCES = libxml2_MathView.cc
+libmathview_gmetadom_la_SOURCES = gmetadom_MathView.cc
 
 pkginclude_HEADERS = \
-  libxml2_MathView.hh
+  custom_reader_MathView.hh \
+  libxml2_reader_MathView.hh \
+  libxml2_MathView.hh \
+  gmetadom_MathView.hh
 
 INCLUDES = \
   $(XML_CFLAGS) \
+  $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \

@@ -34,27 +34,19 @@ Builder::Builder()
 Builder::~Builder()
 { }
 
-#if ENABLE_BOXML
 void
-Builder::setNamespaceContexts(const SmartPtr<MathMLNamespaceContext>& mmlContext,
-			      const SmartPtr<BoxMLNamespaceContext>& bmlContext)
-{
-  mathmlContext = mmlContext;
-  boxmlContext = bmlContext;
-}
-#else
-void
-Builder::setNamespaceContext(const SmartPtr<MathMLNamespaceContext>& mmlContext)
-{
-  mathmlContext = mmlContext;
-}
-#endif // ENABLE_BOXML
+Builder::setMathMLNamespaceContext(const SmartPtr<MathMLNamespaceContext>& ctxt)
+{ mathmlContext = ctxt; }
 
 SmartPtr<MathMLNamespaceContext>
 Builder::getMathMLNamespaceContext() const
 { return mathmlContext; }
 
 #if ENABLE_BOXML
+void
+Builder::setBoxMLNamespaceContext(const SmartPtr<BoxMLNamespaceContext>& ctxt)
+{ boxmlContext = ctxt; }
+
 SmartPtr<BoxMLNamespaceContext>
 Builder::getBoxMLNamespaceContext() const
 { return boxmlContext; }

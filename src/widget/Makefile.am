@@ -22,15 +22,12 @@ endif
 libgtkmathview_custom_reader_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
-  $(XML_LIBS) \
-  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
-  $(top_builddir)/src/frontend/custom_reader/libmathview_frontend_custom_reader.la
+  $(top_builddir)/src/view/libmathview_custom_reader.la
 
 libgtkmathview_libxml2_reader_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
-  $(XML_LIBS) \
-  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la
+  $(top_builddir)/src/view/libmathview_libxml2_reader.la
 
 libgtkmathview_libxml2_la_LIBADD = \
   -lstdc++ \
@@ -40,8 +37,7 @@ libgtkmathview_libxml2_la_LIBADD = \
 libgtkmathview_gmetadom_la_LIBADD = \
   -lstdc++ \
   $(GTK_LIBS) \
-  $(DOM_LIBS) \
-  $(top_builddir)/src/frontend/gmetadom/libmathview_frontend_gmetadom.la
+  $(top_builddir)/src/view/libmathview_gmetadom.la
 
 libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@

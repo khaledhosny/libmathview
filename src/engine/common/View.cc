@@ -66,10 +66,9 @@ View::setBuilder(const SmartPtr<Builder>& b)
 {
   resetRootElement();
   builder = b;
+  if (builder) builder->setMathMLNamespaceContext(mathmlContext);
 #if ENABLE_BOXML
-  if (builder) builder->setNamespaceContexts(mathmlContext, boxmlContext);
-#else
-  if (builder) builder->setNamespaceContext(mathmlContext);
+  if (builder) builder->setBoxMLNamespaceContext(boxmlContext);
 #endif // ENABLE_BOXML
 }
 
@@ -253,7 +252,7 @@ void
 View::setMathMLNamespaceContext(const SmartPtr<MathMLNamespaceContext>& ctxt)
 {
   mathmlContext = ctxt;
-  if (builder) builder->setNamespaceContext(mathmlContext);
+  if (builder) builder->setMathMLNamespaceContext(mathmlContext);
 }
 
 SmartPtr<MathMLNamespaceContext>
@@ -265,7 +264,7 @@ void
 View::setBoxMLNamespaceContext(const SmartPtr<BoxMLNamespaceContext>& ctxt)
 {
   boxmlContext = ctxt;
-  if (builder) builder->setNamespaceContext(boxmlContext);
+  if (builder) builder->setBoxMLNamespaceContext(boxmlContext);
 }
 
 SmartPtr<BoxMLNamespaceContext>

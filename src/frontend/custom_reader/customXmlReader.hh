@@ -32,7 +32,7 @@
 class customXmlReader : public Object
 {
 protected:
-  customXmlReader(c_customXmlReader*, void*);
+  customXmlReader(const c_customXmlReader*, c_customModelUserData);
   virtual ~customXmlReader();
 
 public:
@@ -41,7 +41,7 @@ public:
     ELEMENT_NODE = C_CUSTOM_ELEMENT_NODE
   };
 
-  static SmartPtr<customXmlReader> create(c_customXmlReader* r, void* data)
+  static SmartPtr<customXmlReader> create(const c_customXmlReader* r, c_customModelUserData data)
   { return new customXmlReader(r, data); }
 
   bool more(void) const { return (*reader->more)(user_data); }
@@ -66,8 +66,8 @@ protected:
   String fromReaderString(char*) const;
 
 private:
-  c_customXmlReader* reader;
-  void* user_data;
+  const c_customXmlReader* reader;
+  c_customModelUserData user_data;
 };
 
 #endif // __customXmlReader_hh__

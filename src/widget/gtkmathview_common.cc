@@ -43,16 +43,14 @@
 #if GTKMATHVIEW_USES_CUSTOM_READER
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_Custom_Reader"
 #include "libxml2_reader_Setup.hh"
-#include "custom_reader_Model.hh"
-#include "custom_reader_Builder.hh"
-typedef custom_reader_Builder GtkMathView_Builder;
+#include "custom_reader_MathView.hh"
+typedef custom_reader_MathView MathView;
 typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2_READER
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_libxml2_Reader"
 #include "libxml2_reader_Setup.hh"
-#include "libxml2_reader_Model.hh"
-#include "libxml2_reader_Builder.hh"
-typedef libxml2_reader_Builder GtkMathView_Builder;
+#include "libxml2_reader_MathView.hh"
+typedef libxml2_reader_MathView MathView;
 typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_libxml2"
@@ -63,25 +61,21 @@ typedef libxml2_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_GMETADOM
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_GMetaDOM"
 #include "gmetadom_Setup.hh"
-#include "gmetadom_Model.hh"
-#include "gmetadom_Builder.hh"
-typedef gmetadom_Builder GtkMathView_Builder;
+#include "gmetadom_MathView.hh"
+typedef gmetadom_MathView MathView;
 typedef gmetadom_Setup GtkMathView_Setup;
 #endif
 
 #include "Globals.hh"
 #include "Point.hh"
 #include "Rectangle.hh"
-#include "traverseAux.hh"
 #include "MathMLElement.hh"
-#include "MathMLActionElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "Gtk_MathGraphicDevice.hh"
 #if ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
 #include "Gtk_BoxGraphicDevice.hh"
 #endif // ENABLE_BOXML
-#include "View.hh"
 #include "Gtk_RenderingContext.hh"
 #include "Gtk_WrapperArea.hh"
 
@@ -133,21 +127,13 @@ struct _GtkMathView {
   gfloat         button_press_y;
   guint32        button_press_time;
 
-#if GTKMATHVIEW_USES_GMETADOM
-  GdomeDocument* current_doc;
-#endif 
-
   GtkMathViewModelId current_elem;
 
   GtkMathViewCursor cursor_visible;
   GtkMathViewModelId cursor_elem;
   gint           cursor_index;
 
-#if GTKMATHVIEW_USES_LIBXML2
   MathView*      view;
-#else
-  View*          view;
-#endif
   Gtk_RenderingContext* renderingContext;
 };
 
@@ -218,58 +204,6 @@ static guint select_abort_signal = 0;
 static guint element_over_signal = 0;
 
 /* auxiliary C++ functions */
-
-#if GTKMATHVIEW_USES_GMETADOM
-
-static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
-{
-  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(b))
-    return builder->findElement(DOM::Element((el)));
-  else
-    return 0;
-}
-
-static GtkMathViewModelId
-modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
-{
-  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(b))
-    if (DOM::Element el = builder->findSelfOrAncestorModelElement(elem))
-      return gdome_cast_el(el.gdome_object());
-  return 0;
-}
-
-#elif GTKMATHVIEW_USES_CUSTOM_READER
-
-static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
-{
-  if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(b))
-    return builder->findElement(el);
-  else
-    return 0;
-}
-
-static GtkMathViewModelId
-modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
-{
-  if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(b))
-    return builder->findSelfOrAncestorModelElement(elem);
-  else
-    return 0;
-}
-
-#else
-
-static SmartPtr<Element>
-elementOfModelElement(const SmartPtr<Builder>&, GtkMathViewModelId)
-{ return 0; }
-
-static GtkMathViewModelId
-modelElementOfElement(const SmartPtr<Builder>&, const SmartPtr<Element>&)
-{ return 0; }
-
-#endif
 
 static SmartPtr<const Gtk_WrapperArea>
 findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
@@ -689,20 +623,7 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
   initGlobalData(getenv("MATHENGINECONF"));
 }
 
-#include "MathML.hh"
-
-#if GTKMATHVIEW_USES_LIBXML2
-
-static void
-gtk_math_view_release_document_resources(GtkMathView* math_view)
-{
-  g_return_if_fail(math_view != NULL);
-
-  math_view->current_elem = NULL;
-  math_view->cursor_elem = NULL;
-}
-
-#elif GTKMATHVIEW_USES_GMETADOM
+#if GTKMATHVIEW_USES_GMETADOM
 
 static void
 gtk_math_view_release_document_resources(GtkMathView* math_view)
@@ -723,13 +644,6 @@ gtk_math_view_release_document_resources(GtkMathView* math_view)
       gdome_el_unref(math_view->cursor_elem, &exc);
       g_assert(exc == 0);
       math_view->cursor_elem = NULL;
-    }
-
-  if (math_view->current_doc != NULL)
-    {
-      gdome_doc_unref(math_view->current_doc, &exc);
-      g_assert(exc == 0);
-      math_view->current_doc = 0;
     }
 }
 
@@ -768,14 +682,6 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->old_top_x = math_view->old_top_y = 0;
 
   SmartPtr<MathView> view = MathView::create();
-#if GTKMATHVIEW_USES_CUSTOM_READER
-  view->setBuilder(custom_reader_Builder::create());
-#elif GTKMATHVIEW_USES_LIBXML2_READER
-  view->setBuilder(libxml2_reader_Builder::create());
-#elif GTKMATHVIEW_USES_GMETADOM
-  math_view->current_doc = NULL;
-  view->setBuilder(gmetadom_Builder::create());
-#endif
 
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view,
 								 Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view))));
@@ -1239,19 +1145,10 @@ GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
 
-  if (DOM::Document doc = gmetadom_Model::document(name, true))
-    {
-      GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
-      g_assert(d != NULL);
-      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_document)(math_view, d);
-      GdomeException exc = 0;
-      gdome_doc_unref(d, &exc);
-      g_assert(exc == 0);
-      return res;
-    }
-
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  gtk_math_view_release_document_resources(math_view);
+  const bool res = math_view->view->loadURI(name);
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" gboolean
@@ -1260,19 +1157,10 @@ GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(buffer != NULL, FALSE);
 
-  if (DOM::Document doc = gmetadom_Model::documentFromBuffer(buffer, true))
-    {
-      GdomeDocument* d = gdome_cast_doc(doc.gdome_object());
-      g_assert(d != NULL);
-      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_document)(math_view, d);
-      GdomeException exc = 0;
-      gdome_doc_unref(d, &exc);
-      g_assert(exc == 0);
-      return res;
-    }
-
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  gtk_math_view_release_document_resources(math_view);
+  const bool res = math_view->view->loadBuffer(buffer);
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" gboolean
@@ -1281,26 +1169,10 @@ GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, GdomeDocument* do
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(doc != NULL, FALSE);
 
-  GdomeException exc = 0;
-  GdomeElement* root = gdome_doc_documentElement(doc, &exc);
-  if (exc == 0 && root != NULL)
-    {
-      const gboolean res = GTKMATHVIEW_METHOD_NAME(load_root)(math_view, root);
-      gdome_el_unref(root, &exc);
-      g_assert(exc == 0);
-
-      if (res)
-	{
-	  math_view->current_doc = doc;
-	  gdome_doc_ref(doc, &exc);
-	  g_assert(exc == 0);
-	}
-
-      return res;
-    }
-
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  gtk_math_view_release_document_resources(math_view);
+  const bool res = math_view->view->loadDocument(DOM::Document(doc));
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" gboolean
@@ -1309,32 +1181,18 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
-  if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(math_view->view->getBuilder()))
-    {
-      builder->setRootModelElement(DOM::Element(elem));
-      reset_adjustments(math_view);
-      paint_widget(math_view);
-      return TRUE;
-    }
-
-  GTKMATHVIEW_METHOD_NAME(unload)(math_view);
-  return FALSE;
+  gtk_math_view_release_document_resources(math_view);
+  const bool res = math_view->view->loadRootElement(DOM::Element(elem));
+  paint_widget(math_view);
+  return res;
 }
 
 extern "C" GdomeDocument*
 GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
-
-  if (math_view->current_doc)
-    {
-      GdomeException exc = 0;
-      gdome_doc_ref(math_view->current_doc, &exc);
-      g_assert(exc == 0);
-      return math_view->current_doc;
-    }
-  else
-    return NULL;
+  g_return_val_if_fail(math_view->view != NULL, NULL);
+  return reinterpret_cast<GdomeDocument*>(math_view->view->getDocument().gdome_object());
 }
 
 #elif GTKMATHVIEW_USES_LIBXML2
@@ -1343,10 +1201,11 @@ extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
 
+  gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadURI(name);
-  if (!res) gtk_math_view_release_document_resources(math_view);
   paint_widget(math_view);
   return res;
 }
@@ -1355,10 +1214,11 @@ extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(buffer != NULL, FALSE);
 
+  gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadBuffer(buffer);
-  if (!res) gtk_math_view_release_document_resources(math_view);
   paint_widget(math_view);
   return res;
 }
@@ -1367,10 +1227,11 @@ extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, xmlDoc* doc)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(doc != NULL, FALSE);
 
+  gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadDocument(doc);
-  if (!res) gtk_math_view_release_document_resources(math_view);
   paint_widget(math_view);
   return res;
 }
@@ -1381,8 +1242,8 @@ GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId el
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
 
+  gtk_math_view_release_document_resources(math_view);
   const bool res = math_view->view->loadRootElement(elem);
-  if (!res) gtk_math_view_release_document_resources(math_view);
   paint_widget(math_view);
   return res;
 }
@@ -1391,27 +1252,26 @@ extern "C" xmlDoc*
 GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
+  g_return_val_if_fail(math_view->view != NULL, NULL);
   return math_view->view->getDocument();
 }
 
 #elif GTKMATHVIEW_USES_CUSTOM_READER
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, GtkMathViewReader* reader,
+GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view,
+				     GtkMathViewReader* reader,
 				     GtkMathViewReaderData user_data)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(reader != NULL, FALSE);
 
-  if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(math_view->view->getBuilder()))
-    {
-      builder->setReader(customXmlReader::create(reader, user_data));
-      reset_adjustments(math_view);
-      paint_widget(math_view);
-      return TRUE;
-    }
-
-  return FALSE;
+  gtk_math_view_release_document_resources(math_view);
+  const bool res = math_view->view->loadReader(reader, user_data);
+  reset_adjustments(math_view);
+  paint_widget(math_view);
+  return res;
 }
 
 #elif GTKMATHVIEW_USES_LIBXML2_READER
@@ -1420,17 +1280,14 @@ extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, xmlTextReaderPtr reader)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, NULL);
   g_return_val_if_fail(reader != NULL, FALSE);
 
-  if (SmartPtr<libxml2_reader_Builder> builder = smart_cast<libxml2_reader_Builder>(math_view->view->getBuilder()))
-    {
-      builder->setReader(libxmlXmlReader::create(reader));
-      reset_adjustments(math_view);
-      paint_widget(math_view);
-      return TRUE;
-    }
-
-  return FALSE;
+  gtk_math_view_release_document_resources(math_view);
+  const bool res = math_view->view->loadReader(reader);
+  reset_adjustments(math_view);
+  paint_widget(math_view);
+  return res;
 }
 
 #endif // GTKMATHVIEW_USES_LIBXML2_READER
@@ -1554,12 +1411,7 @@ GTKMATHVIEW_METHOD_NAME(structure_changed)(GtkMathView* math_view, GtkMathViewMo
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-
-#if GTKMATHVIEW_USES_GMETADOM
-  if (math_view->view->notifyStructureChanged(DOM::Element(elem))) paint_widget(math_view);
-#else
   if (math_view->view->notifyStructureChanged(elem)) paint_widget(math_view);
-#endif
 }
 
 extern "C" void
@@ -1567,12 +1419,7 @@ GTKMATHVIEW_METHOD_NAME(attribute_changed)(GtkMathView* math_view, GtkMathViewMo
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(math_view->view != NULL);
-
-#if GTKMATHVIEW_USES_GMETADOM
-  if (math_view->view->notifyAttributeChanged(DOM::Element(elem), DOM::GdomeString(name))) paint_widget(math_view);
-#else
   if (math_view->view->notifyAttributeChanged(elem, name)) paint_widget(math_view);
-#endif
 }
 
 extern "C" void

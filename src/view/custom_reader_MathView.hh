@@ -20,34 +20,35 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Builder_hh__
-#define __Builder_hh__
+#ifndef __custom_reader_MathView_hh__
+#define __custom_reader_MathView_hh__
 
-#include "Object.hh"
-#include "SmartPtr.hh"
+#include "View.hh"
+#include "libxml/tree.h"
 
-class Builder : public Object
+#include "c_customXmlReader.h"
+
+class custom_reader_MathView : public View
 {
 protected:
-  Builder(void);
-  virtual ~Builder();
+  custom_reader_MathView(void);
+  virtual ~custom_reader_MathView();
 
 public:
-  virtual SmartPtr<class Element> getRootElement(void) const = 0;
-  virtual void forgetElement(Element*) const = 0;
+  static SmartPtr<custom_reader_MathView> create(void) { return new custom_reader_MathView(); }
 
-  void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
-  SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
-#if ENABLE_BOXML
-  void setBoxMLNamespaceContext(const SmartPtr<class BoxMLNamespaceContext>&);
-  SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
-#endif // ENABLE_BOXML
+  void unload(void);
+  bool loadReader(const c_customXmlReader*, c_customModelUserData);
+
+  bool notifyStructureChanged(c_customModelElementId) const;
+  bool notifyAttributeChanged(c_customModelElementId, const char*) const;
+  c_customModelElementId modelElementOfElement(const SmartPtr<class Element>&) const;
+  SmartPtr<class Element> elementOfModelElement(c_customModelElementId) const;
+
+  c_customModelUserData getDocument(void) const { return data; }
 
 protected:
-  SmartPtr<class MathMLNamespaceContext> mathmlContext;
-#if ENABLE_BOXML
-  SmartPtr<class BoxMLNamespaceContext> boxmlContext;
-#endif // ENABLE_BOXML
+  c_customModelUserData data;
 };
 
-#endif // __Builder_hh__
+#endif // __custom_reader_MathView_hh__

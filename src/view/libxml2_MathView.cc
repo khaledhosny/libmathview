@@ -151,7 +151,7 @@ libxml2_MathView::notifyStructureChanged(xmlElement* el) const
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(getBuilder()))
     return builder->notifyStructureChanged(el);
   else
-    return 0;
+    return false;
 }
 
 bool
@@ -160,5 +160,5 @@ libxml2_MathView::notifyAttributeChanged(xmlElement* el, const xmlChar* name) co
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(getBuilder()))
     return builder->notifyAttributeChanged(el, name);
   else
-    return 0;
+    return false;
 }
