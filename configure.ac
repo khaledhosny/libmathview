@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT
-AC_CONFIG_SRCDIR([src/MathMLObject.cc])
+AC_CONFIG_SRCDIR([src/MathML.hh])
 
 MATHVIEW_MAJOR_VERSION=0
 MATHVIEW_MINOR_VERSION=5
