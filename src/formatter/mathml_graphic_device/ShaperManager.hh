@@ -50,13 +50,13 @@ private:
   const class Shaper& getShaper(unsigned) const;
 
   static const unsigned MAX_SHAPERS = 16;
-  static const unsigned HIGH_BITS = 12;
+  static const unsigned HIGH_BITS = 16;
   static const unsigned LOW_BITS = 8;
   static const unsigned STRETCHY_BIT = LOW_BITS + HIGH_BITS;
   static const unsigned STRETCHY_FLAG = 1 << STRETCHY_BIT;
-  static const DOM::Char32 BIGGEST_CHAR = 1 << (HIGH_BITS + LOW_BITS) - 1;
+  static const DOM::Char32 BIGGEST_CHAR = 1 << (HIGH_BITS + 1 + LOW_BITS) - 1;
 
-  SparseMap<GlyphSpec, HIGH_BITS, LOW_BITS> glyphSpec;
+  SparseMap<GlyphSpec, HIGH_BITS + 1, LOW_BITS> glyphSpec;
 
   unsigned nextShaperId;
   const class Shaper* shaper[MAX_SHAPERS];

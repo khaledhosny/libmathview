@@ -108,7 +108,7 @@ Gtk_RenderingContext::setForegroundColor(/* const */ GdkColor& color)
 int
 Gtk_RenderingContext::toGtkPixels(const scaled& s)
 {
-  assert(false);
+  return static_cast<int>(s.toFloat() * 72.0);
 }
 
 scaled
@@ -118,14 +118,13 @@ Gtk_RenderingContext::fromGtkPixels(int s)
 int
 Gtk_RenderingContext::toPangoPixels(const scaled& s)
 {
-  assert(false);
+  return static_cast<int>(s.toFloat() * PANGO_SCALE);
 }
 
 scaled
 Gtk_RenderingContext::fromPangoPixels(int s)
 {
-  assert(scaled::getPrecision() >= PANGO_SCALE);
-  return scaled(s << (scaled::getPrecision() - PANGO_SCALE), true);
+  return scaled(static_cast<float>(s) / PANGO_SCALE);
 }
 
 int

@@ -50,7 +50,8 @@ ShaperManager::shape(const SmartPtr<AreaFactory>& factory,
 		     const DOM::UCS4String& source,
 		     const scaled& fontSize) const
 {
-  std::vector<GlyphSpec> spec(source.length());
+  std::vector<GlyphSpec> spec;
+  spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(map(source[i]));
   ShapingResult result(factory, source, spec, fontSize);
