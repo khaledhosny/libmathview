@@ -24,7 +24,6 @@
 #define __ShaperManager_hh__
 
 #include "String.hh"
-#include "Shaper.hh"
 #include "GlyphSpec.hh"
 #include "SparseMap.hh"
 
@@ -50,7 +49,7 @@ public:
 private:
   GlyphSpec map(Char32 ch) const;
   GlyphSpec mapStretchy(Char32 ch) const;
-  AreaRef shapeAux(const class MathFormattingContext&, ShapingResult&) const;
+  AreaRef shapeAux(const class MathFormattingContext&, class ShapingResult&) const;
   SmartPtr<class Shaper> getShaper(unsigned) const;
 
   static const unsigned MAX_SHAPERS = 16;

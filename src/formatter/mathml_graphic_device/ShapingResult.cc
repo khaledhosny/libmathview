@@ -99,7 +99,7 @@ ShapingResult::nextString(int l) const
 }
 
 AreaRef
-ShapingResult::popArea(unsigned& n)
+ShapingResult::popArea(CharIndex& n)
 {
   assert(!empty());
   n = res_n.back();
@@ -110,7 +110,7 @@ ShapingResult::popArea(unsigned& n)
 }
 
 void
-ShapingResult::pushArea(unsigned n, const AreaRef& area)
+ShapingResult::pushArea(CharIndex n, const AreaRef& area)
 {
   assert(area);
   assert(index + n >= 0 && index + n <= source.length());

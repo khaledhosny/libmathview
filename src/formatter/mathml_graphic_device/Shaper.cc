@@ -22,7 +22,10 @@
 
 #include <config.h>
 
+#include <vector>
+
 #include "Shaper.hh"
+#include "AreaFactory.hh"
 
 AreaRef
 Shaper::composeStretchyCharH(const SmartPtr<class AreaFactory>& factory,
@@ -51,7 +54,7 @@ Shaper::composeStretchyCharH(const SmartPtr<class AreaFactory>& factory,
   for (int i = 0; i < n; i++) h.push_back(glue);
   if (right) h.push_back(right);
 
-  return factory->horizontalArray(h);
+  return factory->glyphWrapper(factory->horizontalArray(h), 1);
 }
 
 AreaRef
@@ -91,5 +94,8 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
     for (unsigned i = 0; i < n; i++) v.push_back(glue);
   if (top) v.push_back(top);
 
-  return factory->verticalArray(v, 0);
+  // FIXME the 1 constant should not be hardcoded, the method
+  // should have one more parameter saying how long the stretchy
+  // character was
+  return factory->glyphWrapper(factory->verticalArray(v, 0), 1);
 }

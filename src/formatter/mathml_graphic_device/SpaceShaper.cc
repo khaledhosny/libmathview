@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include "AreaFactory.hh"
+#include "ShapingResult.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLFractionElement.hh"

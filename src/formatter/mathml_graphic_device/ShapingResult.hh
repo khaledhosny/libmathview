@@ -45,8 +45,8 @@ public:
   unsigned chunkSize(void) const;
   unsigned getShaperId(void) const;
 
-  AreaRef popArea(unsigned&);
-  void pushArea(unsigned, const AreaRef&);
+  AreaRef popArea(CharIndex&);
+  void pushArea(CharIndex, const AreaRef&);
   AreaRef getArea(int = -1) const;
   AreaRef area(const SmartPtr<AreaFactory>&) const;
 
@@ -65,8 +65,8 @@ private:
   std::vector<GlyphSpec> spec;
   scaled vSpan;
   scaled hSpan;
-  unsigned index;
-  std::vector<unsigned> res_n;
+  CharIndex index;
+  std::vector<CharIndex> res_n;
   std::vector<AreaRef> res;
 };
 

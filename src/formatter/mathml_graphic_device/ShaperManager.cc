@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "Shaper.hh"
+#include "ShapingResult.hh"
 #include "ShaperManager.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
