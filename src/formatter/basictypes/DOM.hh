@@ -27,6 +27,6 @@
 
 namespace DOM = GdomeSmartDOM;
 
-#define AREAMODEL_NAMESPACE_URI "http://helm.cs.unibo.it/mfd/area-model/"
+#define STD_AREAMODEL_NAMESPACE_URI "http://helm.cs.unibo.it/mfd/area-model/"
 
 #endif // __DOM_hh__
