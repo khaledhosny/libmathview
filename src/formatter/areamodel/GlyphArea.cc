@@ -25,15 +25,12 @@
 #include "GlyphArea.hh"
 #include "Rectangle.hh"
 
-#include <iostream>
-
 GlyphArea::~GlyphArea()
 { }
 
 bool
 GlyphArea::searchByIndex(AreaId&, CharIndex index) const
 {
-  std::cerr << "GlyphArea::searchByIndex " << index << " length = " << length() << std::endl;
   return (index >= 0 && index < length());
 }
 

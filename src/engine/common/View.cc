@@ -197,8 +197,6 @@ View::getElementLength(const SmartPtr<Element>& elem, CharIndex& length) const
   return false;
 }
 
-#include "PointAux.hh"
-
 SmartPtr<Element>
 View::getCharAt(const scaled& x, const scaled& y, CharIndex& index, Point* charOrig, BoundingBox* charBox) const
 {
@@ -251,16 +249,12 @@ View::getCharExtents(const SmartPtr<Element>& elem, CharIndex index, Point* char
 	    Point deepOrig;
 	    deepId.getOrigin(deepOrig);
 
-	    std::cerr << "deepArea->positionOfIndex " << index << " " << deepId.getLength() << std::endl;
-
 	    if (deepArea->positionOfIndex(index - deepId.getLength(), charOrig, charBox))
 	      {
 		if (charOrig)
 		  {
 		    charOrig->x += elemOrig.x + deepOrig.x;
 		    charOrig->y += elemOrig.y + deepOrig.y;
-
-		    std::cerr << "View::getCharExtents " << deepOrig << " " << *charOrig << std::endl;
 		  }
 
 		return true;

@@ -28,8 +28,6 @@
 #include "Gtk_RenderingContext.hh"
 #include "Point.hh"
 
-#include "scaledAux.hh"
-
 Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout)
   : layout(_layout)
 {
@@ -98,21 +96,17 @@ Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex
     {
       const gchar* buffer = pango_layout_get_text(layout);
       index = g_utf8_pointer_to_offset(buffer, buffer + utf8_index) + trailing;
-      std::cout << "pango_layout_xy_to_index " << utf8_index << " " << index << std::endl;
       return true;
     }
   else
     return false;
 }
 
-#include "PointAux.hh"
-
 bool
 Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
 {
   const gchar* buffer = pango_layout_get_text(layout);
 
-  std::cerr << "Gtk_PangoLayoutArea::positionOfIndex " << index << " len = " << g_utf8_strlen(buffer, -1) << std::endl;
   if (index >= 0 && index < g_utf8_strlen(buffer, -1))
     {
       const gchar* ptr = g_utf8_offset_to_pointer(buffer, index);
@@ -129,7 +123,6 @@ Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) 
 			      Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
 			      Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
 
-      std::cerr << "Gtk_PangoLayoutArea::positionOfIndex " << index << " OK-> " << *p << std::endl;
       return true;
     }
   else

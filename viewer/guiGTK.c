@@ -42,8 +42,6 @@ static GtkWidget* window;
 static GtkWidget* main_area;
 static GtkWidget* scrolled_area;
 static GtkWidget* status_bar;
-static GtkMenuItem* anti_aliasing_item;
-static GtkMenuItem* transparency_item;
 static GdkCursor* normal_cursor;
 static GdkCursor* link_cursor;  
 static gboolean   semantic_selection = FALSE;
@@ -602,14 +600,16 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   index = -1;
   if (gtk_math_view_get_char_at(math_view, event->x, event->y, &elem, &index, NULL, NULL))
-    printf("get_char_at: (event->id = %p, elem = %p) %d\n", event->id, elem, index);
+    {
+      /*printf("get_char_at: (event->id = %p, elem = %p) %d\n", event->id, elem, index);*/
+      gtk_math_view_set_cursor(math_view, event->id, index);
+      gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
+    }
   else
-    printf("get_char_at: failed\n");
-
-#if 1
-  gtk_math_view_set_cursor(math_view, event->id, index);
-  gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
-#endif
+    {
+      /*printf("get_char_at: failed\n");*/
+      gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_OFF);
+    }
 
   if (event->id != NULL)
     {
