@@ -88,12 +88,10 @@ T1_Font::GetAxis() const
 {
   return GetEx() / 2;
 }
-#include <stdio.h>
+
 scaled
 T1_Font::GetKerning(char ch1, char ch2) const
 {
-  printf("font family name: %s %s\n", T1_GetFamilyName(nativeFontId), T1_GetFontName(nativeFontId));
-  printf("kerning request %02x %02x %f\n", ch1, ch2, (double) T1_GetKerning(nativeFontId, ch1, ch2));
   return pt2sp(scale * T1_GetKerning(nativeFontId, ch1, ch2) / 1000.0);
 }
 
