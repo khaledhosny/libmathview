@@ -1,4 +1,6 @@
 
+NULL =
+
 lib_LTLIBRARIES = libmathview_frontend_libxml2_reader.la
 
 libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
@@ -6,18 +8,21 @@ libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION
 libmathview_frontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/common/libfrontend_common.la \
-  $(top_builddir)/src/libmathview.la
+  $(top_builddir)/src/libmathview.la \
+  $(NULL)
 
 libmathview_frontend_libxml2_reader_la_SOURCES = \
   libxmlXmlReader.cc \
   libxml2_reader_Builder.cc \
-  libxml2_reader_Setup.cc
+  libxml2_reader_Setup.cc \
+  $(NULL)
 
 noinst_HEADERS = \
   libxmlXmlReader.hh \
   libxml2_reader_Model.hh \
   libxml2_reader_Builder.hh \
-  libxml2_reader_Setup.hh
+  libxml2_reader_Setup.hh \
+  $(NULL)
 
 INCLUDES = \
   $(XML_CFLAGS) \
@@ -29,5 +34,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/engine/adapters \
   -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/formatter/areamodel 
+  -I$(top_srcdir)/src/formatter/areamodel \
+  $(NULL)
 

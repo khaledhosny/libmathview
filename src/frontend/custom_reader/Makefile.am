@@ -7,11 +7,13 @@ libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_
 
 libmathview_frontend_custom_reader_la_LIBADD = \
   $(top_builddir)/src/frontend/common/libfrontend_common.la \
-  $(top_builddir)/src/libmathview.la
+  $(top_builddir)/src/libmathview.la \
+  $(NULL)
 
 libmathview_frontend_custom_reader_la_SOURCES = \
   customXmlReader.cc \
-  custom_reader_Builder.cc
+  custom_reader_Builder.cc \
+  $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
@@ -33,5 +35,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/engine/adapters \
   -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/formatter/areamodel 
+  -I$(top_srcdir)/src/formatter/areamodel \
+  $(NULL)
 
