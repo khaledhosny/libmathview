@@ -439,7 +439,7 @@ GTKMATHVIEW_METHOD_NAME(get_type)(void)
 }
 
 static SmartPtr<Configuration>
-initConfiguration(const SmartPtr<AbstractLogger>& logger, const char* confPath)
+initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
 {
   SmartPtr<Configuration> configuration = Configuration::create();
 

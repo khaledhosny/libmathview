@@ -31,7 +31,7 @@
 #include "AttributeList.hh"
 #include "NamespaceContext.hh"
 
-#include <iostream>
+//#include <iostream>
 
 Element::Element(const SmartPtr<NamespaceContext>& c) : context(c)
 {
@@ -52,7 +52,7 @@ Element::setParent(const SmartPtr<Element>& p)
   parent = static_cast<Element*>(p);
   if (p)
     {
-      std::cerr << "Element::setParent " << this << " " << static_cast<Element*>(p) << " dirtyAttribute=" << dirtyAttribute() << std::endl;
+      //std::cerr << "Element::setParent " << this << " " << static_cast<Element*>(p) << " dirtyAttribute=" << dirtyAttribute() << std::endl;
       // WARNING: the setFlagUp is smart so it does not propagate the flag
       // if the flag is already set.
       // the setFlagDown however doesn't check for the status of the flag
@@ -136,7 +136,7 @@ Element::setDirtyStructure()
 void
 Element::setDirtyAttribute()
 {
-  std::cerr << "Element::setDirtyAttribute " << this << " " << dirtyAttribute() << std::endl;
+  //std::cerr << "Element::setDirtyAttribute " << this << " " << dirtyAttribute() << std::endl;
   if (!dirtyAttribute())
     {
       setFlag(FDirtyAttribute);
@@ -147,7 +147,7 @@ Element::setDirtyAttribute()
 void
 Element::setDirtyAttributeD()
 {
-  std::cerr << "Element::setDirtyAttributeD " << this << " " << dirtyAttribute() << std::endl;
+  //std::cerr << "Element::setDirtyAttributeD " << this << " " << dirtyAttribute() << std::endl;
   if (!dirtyAttributeD())
     {
       setFlagDown(FDirtyAttributeD);
@@ -168,9 +168,9 @@ Element::setDirtyLayout()
 void
 Element::setFlag(Flags f)
 {
-  if (f == FDirtyAttributeP) std::cerr << "Element::setFlag (FDirtyAttributeP) " << this << std::endl;
-  if (f == FDirtyAttribute) std::cerr << "Element::setFlag (FDirtyAttribute) " << this << std::endl;
-  if (f == FDirtyAttributeD) std::cerr << "Element::setFlag (FDirtyAttributeD) " << this << std::endl;
+  //if (f == FDirtyAttributeP) std::cerr << "Element::setFlag (FDirtyAttributeP) " << this << std::endl;
+  //if (f == FDirtyAttribute) std::cerr << "Element::setFlag (FDirtyAttribute) " << this << std::endl;
+  //if (f == FDirtyAttributeD) std::cerr << "Element::setFlag (FDirtyAttributeD) " << this << std::endl;
   flags.set(f);
 }
 

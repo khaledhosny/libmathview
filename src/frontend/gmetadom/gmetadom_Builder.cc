@@ -85,7 +85,7 @@ gmetadom_Builder::DOMSubtreeModifiedListener::handleEvent(const DOM::Event& ev)
 {
   DOM::MutationEvent me(ev);
   assert(me);
-  std::cerr << "gmetadom_Builder::DOMSubtreeModifiedListener::handleEvent" << std::endl;
+  //std::cerr << "gmetadom_Builder::DOMSubtreeModifiedListener::handleEvent" << std::endl;
   builder->notifyStructureChanged(DOM::Node(me.get_target()));
 }
 
@@ -94,7 +94,7 @@ gmetadom_Builder::DOMAttrModifiedListener::handleEvent(const DOM::Event& ev)
 {
   DOM::MutationEvent me(ev);
   assert(me);
-  std::cerr << "gmetadom_Builder::DOMAttrModifiedListener::handleEvent " << DOM::Node(me.get_target()).get_nodeName() << std::endl;
+  //std::cerr << "gmetadom_Builder::DOMAttrModifiedListener::handleEvent " << DOM::Node(me.get_target()).get_nodeName() << std::endl;
   builder->notifyAttributeChanged(DOM::Node(me.get_target()), me.get_newValue());
 }
 

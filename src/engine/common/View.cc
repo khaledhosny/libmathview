@@ -303,12 +303,12 @@ View::getBoxMLNamespaceContext(void) const
 { return boxmlContext; }
 #endif // ENABLE_BOXML
 
-#include <iostream>
+//#include <iostream>
 
 void
 View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
 {
-  std::cerr << "View::render " << &ctxt << std::endl;
+  //std::cerr << "View::render " << &ctxt << std::endl;
   if (AreaRef rootArea = getRootArea())
     {
       Clock perf;

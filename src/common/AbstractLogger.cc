@@ -33,7 +33,7 @@ AbstractLogger::~AbstractLogger()
 { }
 
 void
-AbstractLogger::setLogLevel(LogLevelId level)
+AbstractLogger::setLogLevel(LogLevelId level) const
 {
   if (level < LOG_ERROR) level = LOG_ERROR;
   if (level > LOG_DEBUG) level = LOG_DEBUG;

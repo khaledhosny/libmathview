@@ -35,7 +35,7 @@ protected:
   virtual ~AbstractLogger();
 
 public:
-  void setLogLevel(LogLevelId);
+  void setLogLevel(LogLevelId) const;
   LogLevelId getLogLevel(void) const { return logLevel; }
 
   void out(LogLevelId, const char*, ...) const;
@@ -44,7 +44,7 @@ protected:
   virtual void outString(const String&) const = 0;
 
 private:
-  LogLevelId logLevel;  
+  mutable LogLevelId logLevel;  
 };
 
 #endif // __AbstractLogger_hh__

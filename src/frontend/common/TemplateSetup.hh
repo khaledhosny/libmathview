@@ -74,8 +74,19 @@ struct TemplateSetup
 	typename Model::Element elem = iter.element();
 	assert(elem);
 	const String name = Model::getNodeName(Model::asNode(elem));
-    
-	if (name == "dictionary-path")
+
+	if (name == "logger")
+	  {
+	    const String attr = Model::getAttribute(elem, "verbosity");
+	    if (attr.empty())
+	      logger.out(LOG_WARNING, "malformed `logger' element, cannot find `verbosity' attribute");
+	    else
+	      {
+		logger.setLogLevel(LogLevelId(atoi(attr.c_str())));
+		logger.out(LOG_DEBUG, "logger verbosity set to %d", logger.getLogLevel());
+	      }
+	  }
+	else if (name == "dictionary-path")
 	  {
 	    const String path = Model::getElementValue(elem);
 	    if (!path.empty())

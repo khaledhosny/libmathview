@@ -25,6 +25,7 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <math-engine-configuration>
+  <logger verbosity="3"/>
   <dictionary-path>@prefix@/share/gtkmathview/dictionary.xml</dictionary-path>
   <dictionary-path>@prefix@/share/gtkmathview/dictionary-local.xml</dictionary-path>
   <dictionary-path>@prefix@/share/gtkmathview/dictionary-combining.xml</dictionary-path>
