@@ -114,6 +114,7 @@ private:
     void setHeightSpec(RowHeightSpec s) { spec = s; }
     void setHeightSpec(const scaled& w) { spec = FIX; fixHeight = w; }
     void setHeightSpec(float s) { spec = SCALE; scaleHeight = s; }
+    void setHeightSpec(const class FormattingContext&, const class Length&);
     void setTempDepth(const scaled& d) { tempDepth = d; }
     void setTempHeight(const scaled& h) { tempHeight = h; }
     void setDisplacement(const scaled& d) { displacement = d; }
@@ -158,6 +159,7 @@ private:
     void setWidthSpec(ColumnWidthSpec s) { spec = s; }
     void setWidthSpec(const scaled& w) { spec = FIX; fixWidth = w; }
     void setWidthSpec(float s) { spec = SCALE; scaleWidth = s; }
+    void setWidthSpec(const class FormattingContext&, const class Length&);
     void setDisplacement(const scaled& d) { displacement = d; }
     scaled getDisplacement(void) const { return displacement; }
     scaled getLeftDisplacement(void) const { return getDisplacement(); }

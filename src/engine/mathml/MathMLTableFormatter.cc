@@ -40,6 +40,24 @@ MathMLTableFormatter::~MathMLTableFormatter()
 #include "scaledAux.hh"
 
 void
+MathMLTableFormatter::Column::setWidthSpec(const FormattingContext& ctxt, const Length& spec)
+{
+  if (spec.type == Length::PERCENTAGE_UNIT)
+    setWidthSpec(spec.value / 100.0);
+  else
+    setWidthSpec(ctxt.MGD()->evaluate(ctxt, spec, scaled::zero()));
+}
+
+void
+MathMLTableFormatter::Row::setHeightSpec(const FormattingContext& ctxt, const Length& spec)
+{
+  if (spec.type == Length::PERCENTAGE_UNIT)
+    setHeightSpec(spec.value / 100.0);
+  else
+    setHeightSpec(ctxt.MGD()->evaluate(ctxt, spec, scaled::zero()));
+}
+
+void
 MathMLTableFormatter::init(const FormattingContext& ctxt,
 			   unsigned nRows,
 			   unsigned nColumns,
@@ -64,7 +82,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
   const unsigned contentColumnOffset = (hasFrame ? 1 : 0) + (hasLabels ? 2 : 0);
   const unsigned contentRowOffset = (hasFrame ? 1 : 0);
   const unsigned leftLabelOffset = (hasFrame ? 1 : 0);
-  const unsigned rightLabelOffset = (hasFrame ? 1 : 0) + nColumns * 2 + 1;
+  const unsigned rightLabelOffset = (hasFrame ? 1 : 0) + nColumns * 2 + 2;
   const unsigned labelOffset = (side == T_LEFT || side == T_LEFTOVERLAP) ? leftLabelOffset : rightLabelOffset;
 
   const bool equalColumns = ToBoolean(equalColumnsV);
@@ -83,12 +101,12 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
   std::cerr << "HAS FRAME?" << hasFrame << std::endl;
   if (hasFrame)
     {
-      const scaled hFrameSpacing = ctxt.MGD()->evaluate(ctxt, resolveLength(ctxt, frameSpacingV, 0), scaled::zero());
-      const scaled vFrameSpacing = ctxt.MGD()->evaluate(ctxt, resolveLength(ctxt, frameSpacingV, 1), scaled::zero());
-      rows[0].setHeight(vFrameSpacing);
-      rows[nGridRows - 1].setHeight(vFrameSpacing);
-      columns[0].setWidthSpec(hFrameSpacing);
-      columns[nGridColumns - 1].setWidthSpec(hFrameSpacing);
+      const Length hFrameSpacing = resolveLength(ctxt, frameSpacingV, 0);
+      const Length vFrameSpacing = resolveLength(ctxt, frameSpacingV, 1);
+      rows.front().setHeightSpec(ctxt, vFrameSpacing);
+      rows.back().setHeightSpec(ctxt, vFrameSpacing);
+      columns.front().setWidthSpec(ctxt, hFrameSpacing);
+      columns.back().setWidthSpec(ctxt, hFrameSpacing);
     }
 
   std::cerr << "HAS LABELS?" << hasLabels << std::endl;
@@ -97,21 +115,15 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
       const Length minLabelSpacing = resolveLength(ctxt, minLabelSpacingV);
       columns[leftLabelOffset].setWidthSpec(Column::FIT);
       columns[rightLabelOffset].setWidthSpec(Column::FIT);
-      //columns[leftLabelOffset].setColumnAlign(...);
-      //columns[rightLabelOffset].setColumnAlign(...);
-      if (minLabelSpacing.type == Length::PERCENTAGE_UNIT)
+      if (side == T_LEFT || side == T_LEFTOVERLAP)
 	{
-	  const float leftScaleSpacing = (side == T_LEFT || side == T_LEFTOVERLAP) ? minLabelSpacing.value : 0.0f;
-	  const float rightScaleSpacing = (side == T_RIGHT || side == T_RIGHTOVERLAP) ? minLabelSpacing.value : 0.0f;
-	  columns[leftLabelOffset + 1].setWidthSpec(leftScaleSpacing);
-	  columns[rightLabelOffset - 1].setWidthSpec(rightScaleSpacing);
+	  columns[leftLabelOffset + 1].setWidthSpec(ctxt, minLabelSpacing);
+	  columns[rightLabelOffset - 1].setWidthSpec(scaled::zero());
 	}
       else
 	{
-	  const scaled leftFixSpacing = (side == T_LEFT || side == T_LEFTOVERLAP) ? ctxt.MGD()->evaluate(ctxt, minLabelSpacing, scaled::zero()) : scaled::zero();
-	  const scaled rightFixSpacing = (side == T_RIGHT || side == T_RIGHTOVERLAP) ? ctxt.MGD()->evaluate(ctxt, minLabelSpacing, scaled::zero()) : scaled::zero();
-	  columns[leftLabelOffset + 1].setWidthSpec(leftFixSpacing);
-	  columns[rightLabelOffset - 1].setWidthSpec(rightFixSpacing);
+	  columns[leftLabelOffset + 1].setWidthSpec(scaled::zero());
+	  columns[rightLabelOffset - 1].setWidthSpec(ctxt, minLabelSpacing);
 	}
     }
 
@@ -130,24 +142,12 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 	  else if (isTokenId(specV, T_FIT))
 	    columns[jj].setWidthSpec(Column::FIT);
 	  else
-	    {
-	      const Length spec = resolveLength(ctxt, specV);
-	      if (spec.type == Length::PERCENTAGE_UNIT)
-		columns[jj].setWidthSpec(spec.value / 100.0);
-	      else
-		columns[jj].setWidthSpec(ctxt.MGD()->evaluate(ctxt, spec, scaled::zero()));
-	    }
+	    columns[jj].setWidthSpec(ctxt, resolveLength(ctxt, specV));
 	}
       columns[jj].setContentColumn();
 
       if (j + 1 < nColumns)
-	{
-	  const Length spacingSpec = resolveLength(ctxt, columnSpacingV, j);
-	  if (spacingSpec.type == Length::PERCENTAGE_UNIT)
-	    columns[jj + 1].setWidthSpec(spacingSpec.value);
-	  else
-	    columns[jj + 1].setWidthSpec(ctxt.MGD()->evaluate(ctxt, spacingSpec, scaled::zero()));
-	}
+	columns[jj + 1].setWidthSpec(ctxt, resolveLength(ctxt, columnSpacingV, j));
     }
 
   std::cerr << "SETUP ROWS" << std::endl;
@@ -167,13 +167,7 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
       rows[ii].setContentRow();
 
       if (i + 1 < nRows)
-	{
-	  const Length spacingSpec = resolveLength(ctxt, rowSpacingV, i);
-	  if (spacingSpec.type == Length::PERCENTAGE_UNIT)
-	    rows[ii + 1].setHeightSpec(spacingSpec.value);
-	  else
-	    rows[ii + 1].setHeightSpec(ctxt.MGD()->evaluate(ctxt, spacingSpec, scaled::zero()));
-	}
+	rows[ii + 1].setHeightSpec(ctxt, resolveLength(ctxt, rowSpacingV, i));
     }
 }
 
@@ -195,6 +189,8 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
   const TokenId frame = ToTokenId(frameV);
   const unsigned nGridRows = rows.size();
   const unsigned nGridColumns = columns.size();
+  const scaled defaultLineThickness = ctxt.MGD()->defaultLineThickness(ctxt);
+  const RGBColor color = ctxt.getColor();
 
   std::vector<BoxedLayoutArea::XYArea> content;
   for (unsigned ii = 0; ii < nGridRows; ii++)
@@ -222,9 +218,8 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 		const scaled dy =
 		  rows[ii + cell.getRowSpan()].getCenterDisplacement();
 		BoxedLayoutArea::XYArea area(dx0, dy,
-					     ctxt.MGD()->getFactory()->fixedHorizontalLine(ctxt.MGD()->defaultLineThickness(ctxt),
-											   dx1 - dx0,
-											   RGBColor::BLACK()));
+					     ctxt.MGD()->getFactory()->fixedHorizontalLine(defaultLineThickness,
+											   dx1 - dx0, color));
 		std::cerr << "draw x line " << dx0 << "," << dy << " to " << dx1 << std::endl;
 		content.push_back(area);
 	      }
@@ -244,18 +239,29 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 		const scaled dx =
 		  columns[jj + cell.getColumnSpan()].getCenterDisplacement();
 		BoxedLayoutArea::XYArea area(dx, dy0,
-					     ctxt.MGD()->getFactory()->fixedVerticalLine(ctxt.MGD()->defaultLineThickness(ctxt),
+					     ctxt.MGD()->getFactory()->fixedVerticalLine(defaultLineThickness,
 											 scaled::zero(),
-											 dy0 - dy1,
-											 RGBColor::BLACK()));
+											 dy0 - dy1, color));
 		std::cerr << "draw y line " << dx << "," << dy0 << " to " << dy1 << std::endl;
 		content.push_back(area);
 	      }
 	  }
 
   if (frame != T_NONE)
-    {
+    {			
       std::cerr << "HAS FRAME" << std::endl;
+      const scaled left = columns.front().getLeftDisplacement();
+      const scaled right = columns.back().getRightDisplacement();
+      const scaled top = rows.front().getTopDisplacement();
+      const scaled bottom = rows.back().getBottomDisplacement();
+
+      const AreaRef hline = ctxt.MGD()->getFactory()->fixedHorizontalLine(defaultLineThickness, right - left + defaultLineThickness, color);
+      const AreaRef vline = ctxt.MGD()->getFactory()->fixedVerticalLine(defaultLineThickness, scaled::zero(), top - bottom, color);
+
+      content.push_back(BoxedLayoutArea::XYArea(scaled::zero(), top, hline));
+      content.push_back(BoxedLayoutArea::XYArea(scaled::zero(), bottom, hline));
+      content.push_back(BoxedLayoutArea::XYArea(scaled::zero(), top, vline));
+      content.push_back(BoxedLayoutArea::XYArea(right, top, vline));
     }
 
   return content.empty() ? 0 : ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
