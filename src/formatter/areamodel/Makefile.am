@@ -11,7 +11,6 @@ libareamodel_la_SOURCES = \
   BoxArea.cc \
   BoxedLayoutArea.cc \
   ColorArea.cc \
-  HideArea.cc \
   HorizontalFillerArea.cc \
   IdArea.cc \
   InkArea.cc \
