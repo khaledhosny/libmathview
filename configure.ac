@@ -49,9 +49,9 @@ fi
 
 AC_ARG_ENABLE(
 	boxml,
-	[  --enable-boxml[=ARG]    enable support for BoxML markup [default=no]],
+	[  --enable-boxml[=ARG]    enable support for BoxML markup [default=yes]],
 	enable_boxml=$enableval,
-	enable_boxml=no
+	enable_boxml=yes
 )
 AM_CONDITIONAL([COND_BOXML], [test "$enable_boxml" = "yes"])
 if test "x$enable_boxml" = "xyes"; then
