@@ -41,24 +41,28 @@
 
 #include "gtkmathview_common.h"
 #if GTKMATHVIEW_USES_CUSTOM_READER
+#define GTK_WIDGET_NAME "GtkMathView (Custom Reader)"
 #include "libxml2_reader_Setup.hh"
 #include "custom_reader_Model.hh"
 #include "custom_reader_Builder.hh"
 typedef custom_reader_Builder GtkMathView_Builder;
 typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2_READER
+#define GTK_WIDGET_NAME "GtkMathView (libxml2 Reader)"
 #include "libxml2_reader_Setup.hh"
 #include "libxml2_reader_Model.hh"
 #include "libxml2_reader_Builder.hh"
 typedef libxml2_reader_Builder GtkMathView_Builder;
 typedef libxml2_reader_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_LIBXML2
+#define GTK_WIDGET_NAME "GtkMathView (libxml2)"
 #include "libxml2_Setup.hh"
 #include "libxml2_Model.hh"
 #include "libxml2_Builder.hh"
 typedef libxml2_Builder GtkMathView_Builder;
 typedef libxml2_Setup GtkMathView_Setup;
 #elif GTKMATHVIEW_USES_GMETADOM
+#define GTK_WIDGET_NAME "GtkMathView (GMetaDOM)"
 #include "gmetadom_Setup.hh"
 #include "gmetadom_Model.hh"
 #include "gmetadom_Builder.hh"
@@ -227,16 +231,14 @@ findGtkWrapperArea(const SmartPtr<View>& view, GtkMathViewElementId node)
 /* widget implementation */
 
 static void
-update_widget(GtkMathView* math_view)
+update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 {
   GtkWidget* widget = GTK_WIDGET(math_view->area);
-  const gint width = widget->allocation.width;
-  const gint height = widget->allocation.height;
 
   gdk_draw_pixmap(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  math_view->pixmap,
-		  0, 0, 0, 0, width, height);
+		  x0, y0, x0, y0, width, height);
 
 #if 1
   if (math_view->cursor_elem)
@@ -251,7 +253,7 @@ update_widget(GtkMathView* math_view)
       if (GTKMATHVIEW_METHOD_NAME(get_element_location)(math_view, math_view->cursor_elem,
 							&x, &y, &gbox))
 	{
-	  printf("DRAWING CURSOR AT (y offset = %d) (%d,%d) [%d,%d,%d]\n", y0, x, y, gbox.width, gbox.height, gbox.depth);
+	  printf("DRAWING FOCUS AT (y offset = %d) (%d,%d) [%d,%d,%d]\n", y0, x, y, gbox.width, gbox.height, gbox.depth);
 	  gtk_paint_focus(widget->style,
 			  widget->window,
 			  GTK_STATE_NORMAL,
@@ -259,10 +261,34 @@ update_widget(GtkMathView* math_view)
 			  widget,
 			  "?",
 			  x + MARGIN, MARGIN - y0 + y - gbox.height, gbox.width, gbox.height + gbox.depth);
+
+	  GdkRectangle crect;
+	  if (GTKMATHVIEW_METHOD_NAME(get_char_location)(math_view, math_view->cursor_elem, math_view->cursor_index,
+							 &crect.x, &crect.y, NULL))
+	    {
+	      printf("DRAWING CARET AT (%d, %d)\n", crect.x, crect.y);
+	      crect.y -= y0;
+	      crect.height = gbox.height;
+	      _gtk_draw_insertion_cursor(widget, widget->window, NULL, &crect, GTK_TEXT_DIR_LTR, TRUE);
+	    }
+	  else
+	    {
+	      crect.x = MARGIN + x;
+	      crect.y = MARGIN - y0 + y - gbox.height;
+	      crect.height = gbox.height + gbox.depth;
+	      _gtk_draw_insertion_cursor(widget, widget->window, widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
+					 &crect, GTK_TEXT_DIR_LTR, TRUE);
+	    }
 	}
     }
 #endif
+}
 
+static void
+update_widget(GtkMathView* math_view)
+{
+  GtkWidget* widget = GTK_WIDGET(math_view->area);
+  update_widget(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 static void
@@ -287,7 +313,7 @@ paint_widget(GtkMathView* math_view)
 
   math_view->view->render(*math_view->renderingContext);
 
-  update_widget(math_view);
+  update_widget(math_view, 0, 0, width, height);
 }
 
 static void
@@ -688,7 +714,7 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
 }
 
 static gint
-gtk_math_view_button_press_event(GtkWidget* widget,
+gtk_math_view_button_press_event(GtkWidget*,
 				 GdkEventButton* event,
 				 GtkMathView* math_view)
 {
@@ -714,7 +740,7 @@ gtk_math_view_button_press_event(GtkWidget* widget,
 }
 
 static gint
-gtk_math_view_button_release_event(GtkWidget* widget,
+gtk_math_view_button_release_event(GtkWidget*,
 				   GdkEventButton* event,
 				   GtkMathView* math_view)
 {
@@ -918,15 +944,15 @@ gtk_math_view_expose_event(GtkWidget* widget,
   g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(math_view != NULL, FALSE);
 
-  //printf("widget expose %f %f %f %f\n", (double) event->area.x, (double) event->area.y, (double) event->area.width, (double) event->area.height);
-
+  update_widget(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
+#if 0
   gdk_draw_pixmap(widget->window,
 		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
 		  math_view->pixmap,
 		  event->area.x, event->area.y,
 		  event->area.x, event->area.y,
 		  event->area.width, event->area.height);
-
+#endif
   return FALSE;
 }
 
@@ -1401,35 +1427,6 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y, 
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathViewElementId elem,
-					      gint* x, gint* y, GtkMathViewBox* gbox)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->view != NULL, FALSE);
-  g_return_val_if_fail(elem != NULL, FALSE);
-
-  if (SmartPtr<Element> e = elementOfModelElement(math_view->view->getBuilder(), elem))
-    {
-      scaled sx;
-      scaled sy;
-      BoundingBox box;
-      if (math_view->view->getElementExtents(e, sx, sy, box))
-	{
-	  if (x) *x = Gtk_RenderingContext::toGtkX(sx);
-	  if (y) *y = Gtk_RenderingContext::toGtkY(sy);
-	  if (gbox)
-	    {
-	      gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
-	      gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
-	      gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
-	    }
-	  return TRUE;
-	}
-    }
-  return FALSE;
-}
-
-extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 				     GtkMathViewElementId* result, gint* index)
 {
@@ -1458,6 +1455,35 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 	  return TRUE;
 	}
 #endif // USE_LIBXML2
+  return FALSE;
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_element_location)(GtkMathView* math_view, GtkMathViewElementId elem,
+					      gint* x, gint* y, GtkMathViewBox* gbox)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
+  g_return_val_if_fail(elem != NULL, FALSE);
+
+  if (SmartPtr<Element> e = elementOfModelElement(math_view->view->getBuilder(), elem))
+    {
+      scaled sx;
+      scaled sy;
+      BoundingBox box;
+      if (math_view->view->getElementExtents(e, sx, sy, box))
+	{
+	  if (x) *x = Gtk_RenderingContext::toGtkX(sx);
+	  if (y) *y = Gtk_RenderingContext::toGtkY(sy);
+	  if (gbox)
+	    {
+	      gbox->width = Gtk_RenderingContext::toGtkPixels(box.width);
+	      gbox->height = Gtk_RenderingContext::toGtkPixels(box.height);
+	      gbox->depth = Gtk_RenderingContext::toGtkPixels(box.depth);
+	    }
+	  return TRUE;
+	}
+    }
   return FALSE;
 }
 
