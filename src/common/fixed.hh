@@ -89,7 +89,7 @@ template <typename T, int p>
 inline fixed<T,p>
 abs(const fixed<T,p>& f)
 { 
-  return fixed<T,p>(std::abs(f.value), true);
+  return fixed<T,p>((f.value > 0) ? f.value : -f.value, true);
 }
 
 template <typename T, int p>
