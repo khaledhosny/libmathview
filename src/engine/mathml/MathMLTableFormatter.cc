@@ -357,12 +357,20 @@ MathMLTableFormatter::initTempWidths()
 	      std::cerr << "CELL " << i << "," << j << " " << cell.getColumnSpan() << " " << cell.getBoundingBox() << std::endl;
 	      const scaled cellWidth = cell.getBoundingBox().width;
 	      scaled spannedTempWidth = 0;
+	      int n = 0;
 	      for (unsigned z = j; z <= j + cell.getColumnSpan() - 1; z++)
-		spannedTempWidth += columns[z].getTempWidth();
+		{
+		  spannedTempWidth += columns[z].getTempWidth();
+		  if (columns[z].isContentColumn() && columns[j].getSpec() != Column::FIX)
+		    n++;
+		}
 	      if (cellWidth > spannedTempWidth)
+		{
+		std::cerr << "spannedTempWidth = " << spannedTempWidth << " n = " << n << std::endl;
 		for (unsigned z = j; z <= j + cell.getColumnSpan() - 1; z++)
 		  if (columns[z].isContentColumn() && columns[j].getSpec() != Column::FIX)
-		    columns[z].setTempWidth(columns[z].getTempWidth() + (cellWidth - spannedTempWidth) / static_cast<int>(cell.getColumnSpan()));
+		    columns[z].setTempWidth(columns[z].getTempWidth() + (cellWidth - spannedTempWidth) / n);
+		}
 	    }
 }
 
@@ -379,7 +387,7 @@ MathMLTableFormatter::calcTableWidthT(int& numCol, scaled& sumFix, float& sumSca
       if (columns[j].isContentColumn())
 	{
 	  numCol++;
-	  max = std::max(max, getColumnContentWidth(j));
+	  max = std::max(max, columns[j].getTempWidth());
 	}
       else if (columns[j].getSpec() == Column::FIX)
 	sumFix += columns[j].getFixWidth();
@@ -425,7 +433,7 @@ MathMLTableFormatter::calcTableWidthF(int& numCol, scaled& sumCont, scaled& sumF
 	
   for (unsigned j = 0; j < columns.size(); j++)
     if (columns[j].isContentColumn() && columns[j].getSpec() == Column::SCALE)
-      max = std::max(max, getColumnContentWidth(j) / columns[j].getScaleWidth());
+      max = std::max(max, columns[j].getTempWidth() / columns[j].getScaleWidth());
 
   for (unsigned j = 0; j < columns.size(); j++)
     if (columns[j].isContentColumn()
@@ -464,7 +472,7 @@ MathMLTableFormatter::initWidthsF()
     if ((columns[j].isContentColumn()
 	 && columns[j].getSpec() != Column::FIX
 	 && columns[j].getSpec() != Column::SCALE))
-      columns[j].setWidth(columns[j].getContentWidth() + (extraWidth / numCol));
+      columns[j].setWidth(columns[j].getTempWidth() + (extraWidth / numCol));
     else if (columns[j].getSpec() == Column::FIX)
       columns[j].setWidth(columns[j].getFixWidth());
     else if (columns[j].getSpec() == Column::SCALE)
