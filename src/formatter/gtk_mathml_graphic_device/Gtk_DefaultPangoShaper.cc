@@ -124,7 +124,7 @@ Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, con
   fontDescAttr->start_index = 0;
   fontDescAttr->end_index = length;
   pango_attr_list_insert(attrList, fontDescAttr);
-  //pango_font_description_free(fontDesc);  ???
+  pango_font_description_free(fontDesc);  //???
 #else
   // PangoAttribute is not a GObject?
   PangoAttribute* sizeAttr = pango_attr_size_new(size);
@@ -176,6 +176,7 @@ Gtk_DefaultPangoShaper::shapeString(const MathFormattingContext& ctxt, const gun
   PangoLayout* layout = createPangoLayout(buffer, length,
 					  ctxt.getSize(),
 					  getDefaultTextAttributes());
+  g_free(buffer);
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
