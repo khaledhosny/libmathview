@@ -41,6 +41,19 @@ public:
     backwardMap[elem] = el;
   }
 
+  void
+  update(const ELEMENT& el, class Element* elem)
+  {
+    assert(el);
+    assert(elem);
+    class Element*& oldElem = forwardMap[el];
+    if (oldElem != elem)
+      {
+	oldElem = elem;
+	backwardMap[elem] = el;
+      }
+  }
+
   bool
   remove(const ELEMENT& el)
   {
@@ -59,6 +72,7 @@ public:
   bool
   remove(class Element* elem)
   {
+    return true;
     assert(elem);
     typename BackwardMap::iterator p = backwardMap.find(elem);
     if (p != backwardMap.end())
