@@ -8,6 +8,8 @@
 
 // AbiWord
 
+* move Char.hh.in into auto and cleanup dependencies with the top_builddir?
+
 // MathML
 
 BUGS
