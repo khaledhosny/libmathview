@@ -47,7 +47,7 @@ main()
     if (i0 == i)
       printf("  if (ch == 0x%04X) return 0x%04X;\n", table[i].normal, table[i].variant);
     else
-      printf("  if (ch &gt;= 0x%04X and ch &lt; 0x%04X) return table[ch - 0x%04X].variant;\n", table[i0].normal, table[i].normal, table[i0].normal - (i - i0));
+      printf("  if (ch &gt;= 0x%04X and ch &lt; 0x%04X) return table[ch - 0x%04X].variant;\n", table[i0].normal, table[i].normal, table[i0].normal - i0);
     i++;
   }
 
