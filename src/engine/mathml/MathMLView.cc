@@ -44,14 +44,6 @@ MathMLView::~MathMLView()
 {
 }
 
-#if 0
-void
-MathMLView::setDrawable(const GObjectPtr<GdkDrawable>& d)
-{
-  renderingContext.setDrawable(d);
-}
-#endif
-
 bool
 MathMLView::freeze()
 {
@@ -154,28 +146,6 @@ MathMLView::getElementAt(const scaled& x, const scaled& y) const
   return 0;
 }
 
-BoundingBox
-MathMLView::getBoundingBox() const
-{
-  layout();
-  if (root)
-    return root->getArea()->box();
-  else
-    return BoundingBox();
-}
-
-Rectangle
-MathMLView::getRectangle() const
-{
-  layout();
-#if 0
-  if (root)
-    return Rectangle(root->GetX(), root->GetY(), root->getArea()->box());
-  else
-#endif
-    return Rectangle();
-}
-
 AreaRef
 MathMLView::layout() const
 {
@@ -222,6 +192,24 @@ MathMLView::layout() const
     }
 
   return 0;
+}
+
+BoundingBox
+MathMLView::getBoundingBox() const
+{
+  if (AreaRef rootArea = layout())
+    return rootArea->box();
+  else
+    return BoundingBox();
+}
+
+Rectangle
+MathMLView::getRectangle() const
+{
+  if (AreaRef rootArea = layout())
+    return Rectangle(scaled::zero(), scaled::zero(), root->getArea()->box());
+  else
+    return Rectangle();
 }
 
 void

@@ -528,8 +528,6 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
   g_assert(math_view->view);
 
   BoundingBox box = math_view->view->getBoundingBox();
-
-  // the 10 is for the border, the frame thickness is missing. How can I get it?
   requisition->width = sp2ipx(box.horizontalExtent()) + 2 * MARGIN;
   requisition->height = sp2ipx(box.verticalExtent()) + 2 * MARGIN;
 }
