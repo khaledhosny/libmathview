@@ -33,6 +33,7 @@ noinst_HEADERS = \
   Rectangle.hh \
   Value.hh \
   Variant.hh \
+  HashMap.hh \
   ScopedHashMap.hh \
   SparseMap.hh \
   SmartPtr.hh \
