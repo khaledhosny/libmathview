@@ -9,11 +9,12 @@
 
 BUGS
 
-* crash when deleting fragment that contains the cursor
 * when index == length in a glyph area the caret is drawn
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially
   for mo elements
+? no indentifiers for the custom frontend? In particular, the widget
+  API never handles this (modelElementOfElement and converse method)
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
 - install header files in subdirectories:
