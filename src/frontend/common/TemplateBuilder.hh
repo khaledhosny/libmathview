@@ -222,7 +222,7 @@ protected:
     if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
       return elem;
 
-    iter.next();
+    if (iter.more()) iter.next();
     while (typename Model::Element e = iter.element())
       {
 	if (e.get_localName() == "annotation-xml")
@@ -589,7 +589,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setNumerator(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setDenominator(builder.getMathMLElement(iter.element()));
     }
   };
@@ -603,7 +603,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setIndex(builder.getMathMLElement(iter.element()));
     }
   };
@@ -642,7 +642,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
       elem->setSuperScript(0);
     }
@@ -661,7 +661,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setSubScript(0);
       elem->setSuperScript(builder.getMathMLElement(iter.element()));
     }
@@ -683,9 +683,9 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setSubScript(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setSuperScript(builder.getMathMLElement(iter.element()));
     }
   };
@@ -703,7 +703,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
       elem->setOverScript(0);
     }
@@ -722,7 +722,7 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setUnderScript(0);
       elem->setOverScript(builder.getMathMLElement(iter.element()));
     }
@@ -744,9 +744,9 @@ protected:
     {
       typename Model::ElementIterator iter(el, MATHML_NS_URI);
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setUnderScript(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       elem->setOverScript(builder.getMathMLElement(iter.element()));
     }
   };
@@ -806,7 +806,7 @@ protected:
       bool preScripts = false;
 
       elem->setBase(builder.getMathMLElement(iter.element()));
-      iter.next();
+      if (iter.more()) iter.next();
       while (iter.more())
 	{
 	  typename Model::Element node = iter.element();
@@ -1112,12 +1112,14 @@ protected:
   SmartPtr<MathMLElement>
   getMathMLElementNoCreate(const typename Model::Node& el) const
   {
-    //std::cout << "createMathMLElement " << el.get_localName() << std::endl;
-    typename MathMLBuilderMap::const_iterator m = mathmlMap.find(el.get_localName());
-    if (m != mathmlMap.end()) 
-      return (this->*(m->second))(el);
-    else
-      return 0;
+    if (el)
+      {
+	//std::cout << "createMathMLElement " << el.get_localName() << std::endl;
+	typename MathMLBuilderMap::const_iterator m = mathmlMap.find(el.get_localName());
+	if (m != mathmlMap.end()) 
+	  return (this->*(m->second))(el);
+      }
+    return 0;
   }
 
   SmartPtr<MathMLElement>
@@ -1196,7 +1198,7 @@ protected:
   SmartPtr<MathMLElement>
   createMathMLDummyElement(void) const
   {
-    return 0;
+    return MathMLDummyElement::create(getMathMLNamespaceContext());
   }
 
   //////////////////////////////////////
