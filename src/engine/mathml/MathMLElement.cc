@@ -175,12 +175,14 @@ MathMLElement::IsSet(TokenId id) const
 #endif
 }
 
+#if 0
 void
 MathMLElement::construct(AbstractConstructionContext&)
 {
   // nothing to construct
   resetDirtyStructure();
 }
+#endif
 
 void
 MathMLElement::construct()

@@ -39,6 +39,7 @@ MathMLBinContainerElement::~MathMLBinContainerElement()
 {
 }
 
+#if 0
 void
 MathMLBinContainerElement::construct(AbstractConstructionContext& ctxt)
 {
@@ -48,6 +49,7 @@ MathMLBinContainerElement::construct(AbstractConstructionContext& ctxt)
       resetDirtyStructure();
     }
 }
+#endif
 
 void
 MathMLBinContainerElement::construct()

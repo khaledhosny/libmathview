@@ -1,3 +1,4 @@
+
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
 SUBDIRS = scripts config auto src doc viewer
 CLEANFILES = core *.log *.eps
@@ -28,4 +29,3 @@ lc:
 	wc -l $$CFILES $$HFILES $$CCFILES $$HHFILES $$ICCFILES | tail -n 1 \
 	)
 
-profile:

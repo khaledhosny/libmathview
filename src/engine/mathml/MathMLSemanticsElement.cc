@@ -41,6 +41,7 @@ MathMLSemanticsElement::~MathMLSemanticsElement()
 {
 }
 
+#if 0
 void
 MathMLSemanticsElement::construct(AbstractConstructionContext& ctxt)
 {
@@ -58,6 +59,7 @@ MathMLSemanticsElement::construct(AbstractConstructionContext& ctxt)
       resetDirtyStructure();
     }
 }
+#endif
 
 void
 MathMLSemanticsElement::construct()

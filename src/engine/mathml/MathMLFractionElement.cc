@@ -80,6 +80,7 @@ MathMLFractionElement::Replace(const SmartPtr<MathMLElement>& oldElem, const Sma
 }
 #endif
 
+#if 0
 void
 MathMLFractionElement::construct(AbstractConstructionContext& ctxt)
 {
@@ -90,6 +91,7 @@ MathMLFractionElement::construct(AbstractConstructionContext& ctxt)
       resetDirtyStructure();
     }
 }
+#endif
 
 void
 MathMLFractionElement::construct()

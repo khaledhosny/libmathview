@@ -42,6 +42,7 @@ MathMLLinearContainerElement::~MathMLLinearContainerElement()
 {
 }
 
+#if 0
 void
 MathMLLinearContainerElement::construct(AbstractConstructionContext& ctxt)
 {
@@ -54,6 +55,7 @@ MathMLLinearContainerElement::construct(AbstractConstructionContext& ctxt)
       resetDirtyStructure();
     }
 }
+#endif
 
 void
 MathMLLinearContainerElement::construct()

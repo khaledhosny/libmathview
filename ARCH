@@ -28,3 +28,103 @@ language, with the following characteristics:
 * wrapping areas provide some sort of debugging tool: they link the
   assembly code back into the elements that generated it.
 
+Note that in this case compilation speed is more important than "code"
+speed, because the "code" is "executed" only once. When we edit the document
+we prefer to have incrementality and fast reformatting.
+
+However things normally present in a compiler are missing in this
+context. For instance there is no concept of "function" or
+"subroutine". However one could imagine something like the following:
+
+<math>
+  <declare>
+    <ci>A</ci>
+    <csymbol>
+      <mi>ABRACADABRA</mi>
+    </csymbol>
+  </declare>
+  <mrow>
+    <ci>A</ci>
+    <mo>+</mo>
+    <ci>A</ci>
+  </mrow>
+</math>
+
+In the example A can be considered a sort of macro. There are two possible
+interpretations:
+1) whenever <ci>A</ci> is encountered in presentation markup it is
+  expanded with the content of the csymbol in the definition. In the
+  example, with <mi>ABRACADABRA</mi>. This is consistent with the concept
+  of macro expansion but its only result is possibly a reduction in the size
+  of the MathML.
+2) the expansion <mi>ABRACADABRA</mi> is statically formatted in the context
+  of the definition. Whenever <ci>A</ci> occurs in presentation markup its
+  formatting is that associated with A. The static scoping rules are
+  consistent with what happens in most programming languages but this may
+  cause weird behaviors (think of <msub><ci>A</ci><ci>A</ci></msub>).
+  The effect can be that of reducing formatting time as the symbol is
+  formatted once and for all.
+
+If we consider the possibility of having macros with arguments things get
+more complicated:
+
+<math>
+  <declare>
+    <ci>square</ci>
+    <lambda>
+      <bvar> <ci>x</ci> </bvar>
+      <csymbol>
+        <msup>
+	  <ci>x</ci>
+	  <mn>2</mn>
+	</msup>
+      </csymbol>
+    </lambda>
+  </declare>
+  <mrow>
+    <apply><ci>square</ci><csymbol><mi>x</mi></csymbol></apply>
+    <mo>+</mo>
+    <apply><ci>square</ci><csymbol><mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow></csymbol></apply>
+  </mrow>
+</math>
+
+Note that in this case the only possibility is that of doing real macro
+expansion (case 1 above), because the formatter cannot do anything with
+the definition of square until it knows what the argument is. In this
+respect there is a difference with compilers because the way the body of
+the macro is compiled can be affected by the arguments (transparency in
+the graphic device). One possibility would be to introduce a special node
+in the area tree that represents a frozen formatting, but we'd have to
+remember a closure of the context up to that point. However we can for
+sure format "closed subexpressions" in the body of the definition, with
+the assumption that static scoping of the formatting context is what we
+want.
+
+It seems like static scoping rules make sense for identifiers <ci>x</ci>
+but not for the formatting context.
+
+Perhaps MathML Content can be really used as macro language for MathML
+presentation.
+
+<apply> <sin/> <ci>x</ci> </apply>
+
+<declare>
+  <csymbol> $sin </csymbol>
+  <lambda>
+    <bvar>
+      <ci> x </ci>
+    </bvar>
+    <csymbol>
+      <mrow>
+        <mi> sin </mi>
+	<mfenced>
+	  <ci> x </ci>
+	</mfenced>
+      </mrow>
+    </csymbol>
+  </lambda>
+</declare>
+
+Editing?
+
+
