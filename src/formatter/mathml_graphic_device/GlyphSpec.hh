@@ -29,9 +29,9 @@ public:
   GlyphSpec(void) : shaperId(0), fontId(0), glyphId(0) { }
   GlyphSpec(unsigned si, unsigned fi, unsigned gi) : shaperId(si), fontId(fi), glyphId(gi) { }
 
-  unsigned getGlyph(void) const { return glyphId; }
-  unsigned getShaper(void) const { return shaperId; }
-  unsigned getFont(void) const { return fontId; }
+  unsigned getGlyphId(void) const { return glyphId; }
+  unsigned getShaperId(void) const { return shaperId; }
+  unsigned getFontId(void) const { return fontId; }
 
 private:
   unsigned shaperId : 8; // this can be lowered to match ShaperManager::MAX_SHAPERS

@@ -9,8 +9,9 @@ unsigned
 ShapingResult::chunkSize() const
 {
   assert(!done());
+  unsigned n = 0;
   unsigned si = getShaperId();
-  while (index + n < spec.length() && spec[index + n] = si) n++;
+  while (index + n < spec.size() && spec[index + n].getShaperId() == si) n++;
   return n;
 }
 
@@ -34,7 +35,7 @@ ShapingResult::area() const
   if (res.size() == 1)
     return res[0];
   else
-    return factory.createHorizontalArrayArea(res);
+    return factory->createHorizontalArrayArea(res);
 }
 
 void

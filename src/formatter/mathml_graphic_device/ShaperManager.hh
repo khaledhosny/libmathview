@@ -46,7 +46,8 @@ public:
 private:
   GlyphSpec map(DOM::Char32 ch) const;
   GlyphSpec mapStretchy(DOM::Char32 ch) const;
-  const class Shaper& getShaper(const GlyphSpec&) const;
+  AreaRef shapeAux(ShapingResult&) const;
+  const class Shaper& getShaper(unsigned) const;
 
   static const unsigned MAX_SHAPERS = 16;
   static const unsigned HIGH_BITS = 12;

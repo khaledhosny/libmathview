@@ -2,12 +2,14 @@
 #ifndef __ShapingResult_hh__
 #define __ShapingResult_hh__
 
+#include "DOM.hh"
 #include "AreaFactory.hh"
+#include "GlyphSpec.hh"
 
 class ShapingResult
 {
 public:
-  ShapingResult(const SmartPtr<AreaFactory>&,
+  ShapingResult(const SmartPtr<AreaFactory>& f,
 		const DOM::UCS4String& src,
 		const std::vector<GlyphSpec>& s,
 		const scaled& fs, const scaled& v = 0, const scaled& h = 0)
@@ -16,9 +18,6 @@ public:
   DOM::UCS4String getSource(void) const { return source; }
   bool done(void) const { return index == source.length(); }
   bool empty(void) const { return res.empty(); }
-  bool vSpan(void) const { return vSpan > 0; }
-  bool hSpan(void) const { return hSpan > 0; }
-  bool stretchy(void) const { return vSpan() || hSpan(); }
   SmartPtr<AreaFactory> getFactory(void) const { return factory; }
   scaled getFontSize(void) const { return fontSize; }
   scaled getVSpan(void) const { return vSpan; }
@@ -32,6 +31,7 @@ public:
   AreaRef area(void) const;
 
   void advance(int = 1);
+  const DOM::Char32* data(void) const;
   DOM::Char32 prevChar(void) const;
   DOM::Char32 nextChar(void) const;
   DOM::UCS4String prevString(int = -1) const;
@@ -42,8 +42,8 @@ private:
   DOM::UCS4String source;
   std::vector<GlyphSpec> spec;
   scaled fontSize;
-  scaled hSpan;
   scaled vSpan;
+  scaled hSpan;
   unsigned index;
   std::vector<AreaRef> res;
 };
