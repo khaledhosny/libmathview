@@ -42,7 +42,9 @@ libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
 
 EXTRA_DIST = gtkmathview_common.cc
 
-pkginclude_HEADERS = \
+gtkdir = $(includedir)/$(PACKAGE)/gtk
+gtk_HEADERS = \
+  gtkmathview.h \
   gtkmathview_common.h \
   gtkmathview_custom_reader.h \
   gtkmathview_libxml2.h \
