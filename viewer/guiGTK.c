@@ -436,19 +436,15 @@ options_set_font_size(GtkWidget* widget, gpointer data)
 
 #if defined(HAVE_GMETADOM)
 static void
-element_over(GtkMathView* math_view, GdomeElement* elem, gint state)
+element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
   GdomeDOMString* link = NULL;
 
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(event != NULL);
 
-#if 1
-  gtk_math_view_set_cursor(math_view, elem, 0);
-  gtk_math_view_set_cursor_visible(math_view, TRUE);
-#endif
-
-  link = find_hyperlink(elem, XLINK_NS_URI, "href");
+  link = find_hyperlink(event->id, XLINK_NS_URI, "href");
   if (link != NULL)
     gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
   else
@@ -459,12 +455,13 @@ element_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 }
 
 static void
-select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
+select_begin(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(event != NULL);
 
-  if (elem != NULL)
+  if (event->id != NULL)
     {
       GdomeException exc = 0;
 
@@ -480,7 +477,7 @@ select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
 
       if (semantic_selection)
 	{
-	  GdomeElement* new_elem = find_xref_element(elem);
+	  GdomeElement* new_elem = find_xref_element(event->id);
 	  if (new_elem != NULL)
             {
 	      gdome_el_ref(new_elem, &exc);
@@ -490,11 +487,11 @@ select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
 	}
       else
 	{
-	  gdome_el_ref(elem, &exc);
+	  gdome_el_ref(event->id, &exc);
 	  g_assert(exc == 0);
-	  gdome_el_ref(elem, &exc);
+	  gdome_el_ref(event->id, &exc);
 	  g_assert(exc == 0);
-          first_selected = root_selected = elem;
+          first_selected = root_selected = event->id;
 	}
 
       if (root_selected != NULL)
@@ -505,12 +502,13 @@ select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
 }
 
 static void
-select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
+select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(event != NULL);
 
-  if (first_selected != NULL && elem != NULL)
+  if (first_selected != NULL && event->id != NULL)
     {
       GdomeException exc = 0;
 
@@ -526,7 +524,7 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 
       if (semantic_selection)
 	{
-	  GdomeElement* new_root = find_common_ancestor(first_selected, elem);
+	  GdomeElement* new_root = find_common_ancestor(first_selected, event->id);
 	  if (new_root != NULL)
 	    {
 	      root_selected = find_xref_element(new_root);
@@ -537,26 +535,21 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
 	    root_selected = NULL;
 	}
       else
-        root_selected = find_common_ancestor(first_selected, elem);
+        root_selected = find_common_ancestor(first_selected, event->id);
 
       if (root_selected != NULL)
-	{
-	  gint x, y;
-	  GtkMathViewBoundingBox gbox;
-	  gtk_math_view_select(math_view, root_selected);
-	  gtk_math_view_get_element_location(math_view, root_selected, &x, &y, &gbox);
-	  printf("selected element at %d %d rectangle %d %d %d\n", x, y, gbox.width, gbox.height, gbox.depth);
-	}
+	gtk_math_view_select(math_view, root_selected);
 
       gtk_math_view_thaw(math_view);
     }
 }
 
 static void
-select_end(GtkMathView* math_view, GdomeElement* elem, gint state)
+select_end(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(event != NULL);
 
   if (first_selected != NULL)
     {
@@ -594,33 +587,48 @@ select_abort(GtkMathView* math_view)
 }
 
 static void
-click(GtkMathView* math_view, GdomeElement* elem, gint state)
+click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
+  gboolean res;
+  gint index;
+  GdomeElement* elem;
   GdomeException exc;
   GdomeDOMString* name;
   GdomeDOMString* ns_uri;
   GdomeElement* p;
 
   g_return_if_fail(math_view != NULL);
+  g_return_if_fail(event != NULL);
 
-  if (elem != NULL)
+  index = -1;
+  if (gtk_math_view_get_char_at(math_view, event->x, event->y, &elem, &index, NULL, NULL))
+    printf("get_char_at: (event->id = %p, elem = %p) %d\n", event->id, elem, index);
+  else
+    printf("get_char_at: failed\n");
+
+#if 1
+  gtk_math_view_set_cursor(math_view, event->id, index);
+  gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
+#endif
+
+  if (event->id != NULL)
     {
-      name = gdome_el_nodeName(elem, &exc);
+      name = gdome_el_nodeName(event->id, &exc);
       g_assert(exc == 0);
       printf("node name: %s\n", name->str);
     }
 
-  if (elem != NULL)
+  if (event->id != NULL)
     {
       GdomeElement* action;
-      GdomeDOMString* href = find_hyperlink(elem, XLINK_NS_URI, "href");
+      GdomeDOMString* href = find_hyperlink(event->id, XLINK_NS_URI, "href");
       if (href != NULL)
 	{
  	  printf("hyperlink %s\n", href->str);
 	  gdome_str_unref(href);
 	}
 
-      action = find_action_element(elem);
+      action = find_action_element(event->id);
       printf("action? %p\n", action);
       if (action != NULL)
 	{
