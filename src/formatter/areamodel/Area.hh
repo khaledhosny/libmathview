@@ -67,9 +67,6 @@ public:
   class InvalidId { };
   class NotAllowed { };
   class NotFound { };
-
-public:
-  //virtual DOM::Element serialize(const DOM::Document&) const = 0;
 };
 
 #endif // __Area_hh__
