@@ -25,6 +25,9 @@
 
 #include <vector>
 
+#include "for_each_if.h"
+#include "Adaptors.hh"
+
 template <class E, class T>
 class LinearContainerTemplate
 {

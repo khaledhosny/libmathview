@@ -23,9 +23,9 @@
 #ifndef __BoxMLTextElement_hh__
 #define __BoxMLTextElement_hh__
 
-#include "MathMLElement.hh"
+#include "BoxMLElement.hh"
 
-class BoxMLTextElement : public MathMLElement
+class BoxMLTextElement : public BoxMLElement
 {
 protected:
   BoxMLTextElement(const SmartPtr<class View>&);

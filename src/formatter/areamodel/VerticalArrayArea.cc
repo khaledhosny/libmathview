@@ -160,7 +160,7 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
        p != content.end();
        p++)
     {
-      std::cout << "fit vertical " << (p - content.begin()) << " width = " << width.toInt() << std::endl;
+      //std::cout << "fit vertical " << (p - content.begin()) << " width = " << width.toInt() << std::endl;
 
       int pw, ph, pd;
       (*p)->strength(pw, ph, pd);
@@ -188,7 +188,7 @@ VerticalArrayArea::fit(const scaled& width, const scaled& height, const scaled& 
       newContent.push_back((*p)->fit(width, pheight, pdepth));
     }
 
-  std::cout << "fit vertical done *** same? " << (newContent == content) << std::endl;
+  //std::cout << "fit vertical done *** same? " << (newContent == content) << std::endl;
 
   if (newContent == content)
     return this;

@@ -20,20 +20,16 @@
 // http://helm.cs.unibo.it/mml-widget, or send a mail to
 // <luca.padovani@cs.unibo.it>
 
-#ifndef __BoxMLboxElement_hh__
-#define __BoxMLboxElement_hh__
+#ifndef __BoxML_hh__
+#define __BoxML_hh__
 
-#include "BoxMLBinContainerElement.hh"
+#include "BoxMLAtElement.hh"
+#include "BoxMLGElement.hh"
+#include "BoxMLHElement.hh"
+#include "BoxMLInkElement.hh"
+#include "BoxMLSpaceElement.hh"
+#include "BoxMLTextElement.hh"
+#include "BoxMLVElement.hh"
+#include "BoxMLboxElement.hh"
 
-class BoxMLboxElement : public BoxMLBinContainerElement
-{
-protected:
-  BoxMLboxElement(const SmartPtr<class View>&);
-  virtual ~BoxMLboxElement();
-
-public:
-  static SmartPtr<BoxMLboxElement> create(const SmartPtr<class View>& view)
-  { return new BoxMLboxElement(view); }
-};
-
-#endif // __BoxMLboxElement_hh__
+#endif // __BoxML_hh__

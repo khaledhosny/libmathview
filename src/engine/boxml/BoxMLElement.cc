@@ -33,3 +33,9 @@ BoxMLElement::BoxMLElement(const SmartPtr<View>& view)
 BoxMLElement::~BoxMLElement()
 {
 }
+
+scaled
+BoxMLElement::getStep() const
+{
+  return scaled::zero();
+}

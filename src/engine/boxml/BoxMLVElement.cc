@@ -39,6 +39,12 @@ BoxMLVElement::~BoxMLVElement()
 {
 }
 
+SmartPtr<BoxMLVElement>
+BoxMLVElement::create(const SmartPtr<View>& view)
+{
+  return new BoxMLVElement(view);
+}
+
 void
 BoxMLVElement::refine(AbstractRefinementContext& context)
 {
@@ -65,10 +71,10 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
       if (enter < 0) enter = content.getSize() + enter + 1;
       if (exit < 0) exit = content.getSize() + exit + 1;
 
-      enter = std::min(std::max(enter, 1), (int) content.getSize()) - 1;
-      exit = std::min(std::max(exit, 1), (int) content.getSize()) - 1;
+      enter = content.getSize() - std::min(std::max(enter, 1), (int) content.getSize());
+      exit = content.getSize() - std::min(std::max(exit, 1), (int) content.getSize());
 
-      scaled step = 0;
+      step = 0;
       std::vector<AreaRef> c;
       c.reserve(content.getSize());
       for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
@@ -86,7 +92,8 @@ BoxMLVElement::format(MathFormattingContext& ctxt)
 		assert(false);
 		break;
 	      }
-	    c.push_back(area);
+	    //c.push_back(area);
+	    c.insert(c.begin(), area); // FIXME: INEFFICIENT!
 	  }
 
       AreaRef res = ctxt.getDevice()->getFactory()->verticalArray(c, enter);

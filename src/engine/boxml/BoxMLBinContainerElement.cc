@@ -81,3 +81,12 @@ BoxMLBinContainerElement::format(MathFormattingContext& ctxt)
 
   return getArea();
 }
+
+scaled
+BoxMLBinContainerElement::getStep() const
+{
+  if (SmartPtr<BoxMLElement> child = getChild())
+    return child->getStep();
+  else
+    return scaled::zero();
+}

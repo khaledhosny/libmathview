@@ -30,7 +30,7 @@
 #include "ValueConversion.hh"
 
 BoxMLSpaceElement::BoxMLSpaceElement(const SmartPtr<View>& view)
-  : MathMLElement(view)
+  : BoxMLElement(view)
 {
 }
 

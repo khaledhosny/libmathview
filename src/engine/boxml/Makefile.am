@@ -16,6 +16,7 @@ libboxml_la_SOURCES = \
   BoxMLInkElement.cc
 
 noinst_HEADERS = \
+  BoxML.hh \
   BoxMLAttributeSignatures.hh \
   BoxMLAttributeParsers.hh \
   BoxMLElement.hh \

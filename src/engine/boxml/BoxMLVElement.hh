@@ -37,7 +37,7 @@ public:
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
-  scaled getStep(void) const { return step; }
+  virtual scaled getStep(void) const { return step; }
 
 private:
   scaled step;

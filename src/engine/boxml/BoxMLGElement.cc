@@ -36,7 +36,7 @@ BoxMLGElement::BoxMLGElement(const SmartPtr<View>& view)
 {
 }
 
-BoxMLElement::~BoxMLElement()
+BoxMLGElement::~BoxMLGElement()
 {
 }
 

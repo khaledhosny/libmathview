@@ -23,6 +23,7 @@
 #ifndef __BoxMLElement_hh__
 #define __BoxMLElement_hh__
 
+#include "View.hh"
 #include "Element.hh"
 
 class BoxMLElement : public Element
@@ -30,6 +31,9 @@ class BoxMLElement : public Element
 protected:
   BoxMLElement(const SmartPtr<class View>&);
   virtual ~BoxMLElement();
+
+public:
+  virtual scaled getStep(void) const;
 };
 
 #endif // __BoxMLElement_hh__

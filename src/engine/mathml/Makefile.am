@@ -127,12 +127,12 @@ INCLUDES = \
   $(GTK_CFLAGS) \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/auto \
-  -I$(top_srcdir)/src \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/formatter/basictypes/mathvariants/ \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/formatter/gtk_areamodel \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/gtk_mathml_graphic_device \
+  -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/engine/common
 

@@ -63,7 +63,7 @@ BoxMLInkElement::format(MathFormattingContext& ctxt)
 
       ctxt.push(this);
 
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, color))
+      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Ink, color))
 	ctxt.setColor(ToRGB(value));
 
       RGBColor newColor = ctxt.getColor();

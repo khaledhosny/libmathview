@@ -37,6 +37,8 @@ public:
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
 
+  virtual scaled getStep(void) const;
+
   SmartPtr<BoxMLElement> getChild(void) const { return content.getChild(); }
   void setChild(const SmartPtr<BoxMLElement>& child) { content.setChild(this, child); }
 

@@ -31,7 +31,7 @@
 #include "ValueConversion.hh"
 
 BoxMLTextElement::BoxMLTextElement(const SmartPtr<View>& view)
-  : MathMLElement(view)
+  : BoxMLElement(view)
 {
 }
 

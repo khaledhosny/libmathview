@@ -36,6 +36,11 @@ public:
 
   virtual void refine(class AbstractRefinementContext&);
   virtual AreaRef format(class MathFormattingContext&);
+
+  virtual scaled getStep(void) const { return step; }
+
+private:
+  scaled step;
 };
 
 #endif // __BoxMLHElement_hh__

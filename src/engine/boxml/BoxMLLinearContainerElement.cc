@@ -46,8 +46,10 @@ BoxMLLinearContainerElement::construct()
 #if defined(HAVE_GMETADOM)
       if (getDOMElement())
 	{
-	  ChildList children(getDOMElement(), BOXML_NS_URI, "*");
+	  ChildList children(getDOMElement(), MATHML_NS_URI, "*");
 	  unsigned n = children.get_length();
+
+	  std::cout << "constructing linear box element " << n << std::endl;
 
 	  std::vector< SmartPtr<BoxMLElement> > newContent;
 	  newContent.reserve(n);
@@ -56,10 +58,16 @@ BoxMLLinearContainerElement::construct()
 	      DOM::Node node = children.item(i);
 	      assert(node.get_nodeType() == DOM::Node::ELEMENT_NODE);
 
-	      if (SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(getFormattingNode(node)))
+	      SmartPtr<MathMLElement> el = getFormattingNode(node);
+	      std::cout << "created formatting node " << is_a<MathMLElement>(el) << std::endl;
+	      
+	      if (SmartPtr<BoxMLElement> elem = smart_cast<BoxMLElement>(el))
 		newContent.push_back(elem);
 	    }
+
+	  std::cout << "finished constructing content A: " << newContent.size() << std::endl;
 	  content.swapContent(this, newContent);
+	  std::cout << "finished constructing content B: " << content.getSize() << std::endl;
 	}
 #endif // HAVE_GMETADOM
       

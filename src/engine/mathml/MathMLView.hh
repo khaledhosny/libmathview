@@ -23,6 +23,7 @@
 #ifndef __MathMLView_hh__
 #define __MathMLView_hh__
 
+#include "View.hh"
 #include "MathMLElement.hh"
 #include "MathMLViewContext.hh"
 #include "Gtk_RenderingContext.hh"

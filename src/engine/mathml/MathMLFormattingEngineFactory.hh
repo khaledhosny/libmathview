@@ -24,6 +24,7 @@
 #define __MathMLFormattingEngineFactory_hh__
 
 #include "MathML.hh"
+#include "BoxML.hh" // TEMPORARY
 #include "HashMap.hh"
 
 class MathMLFormattingEngineFactory : public Object
@@ -95,6 +96,24 @@ public:
 
   virtual SmartPtr<MathMLElement> createDummyElement(const SmartPtr<class MathMLView>& view) const
   { return MathMLDummyElement::create(view); }
+
+  // TEMPORARY FACTORY METHODS FOR BOXML
+  virtual SmartPtr<MathMLElement> createAtElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLAtElement::create(view); }
+  virtual SmartPtr<MathMLElement> createGElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLGElement::create(view); }
+  virtual SmartPtr<MathMLElement> createHElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLHElement::create(view); }
+  virtual SmartPtr<MathMLElement> createInkElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLInkElement::create(view); }
+  virtual SmartPtr<MathMLElement> createBoxMLSpaceElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLSpaceElement::create(view); }
+  virtual SmartPtr<MathMLElement> createBoxMLTextElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLTextElement::create(view); }
+  virtual SmartPtr<MathMLElement> createVElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLVElement::create(view); }
+  virtual SmartPtr<MathMLElement> createBoxElement(const SmartPtr<class MathMLView>& view) const
+  { return BoxMLboxElement::create(view); }
 
 private:
   typedef SmartPtr<MathMLElement> (MathMLFormattingEngineFactory::* FactoryMethod)(const SmartPtr<class MathMLView>&) const;

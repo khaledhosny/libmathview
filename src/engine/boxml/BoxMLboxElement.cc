@@ -26,7 +26,7 @@
 #include "BoxMLboxElement.hh"
 
 BoxMLboxElement::BoxMLboxElement(const SmartPtr<class View>& view)
-  : MathMLBinContainerElement(view)
+  : BoxMLBinContainerElement(view)
 {
 }
 

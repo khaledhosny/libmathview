@@ -63,6 +63,17 @@ MathMLFormattingEngineFactory::MathMLFormattingEngineFactory()
     { "maction",       &MathMLFormattingEngineFactory::createActionElement },
     { "menclose",      &MathMLFormattingEngineFactory::createEncloseElement },
     { "semantics",     &MathMLFormattingEngineFactory::createSemanticsElement },
+
+    // TEMPORARY FACTORY METHODS FOR BOXML
+    { "at",            &MathMLFormattingEngineFactory::createAtElement },
+    { "g",             &MathMLFormattingEngineFactory::createGElement },
+    { "h",             &MathMLFormattingEngineFactory::createHElement },
+    { "ink",           &MathMLFormattingEngineFactory::createInkElement },
+    { "space",         &MathMLFormattingEngineFactory::createBoxMLSpaceElement },
+    { "text",          &MathMLFormattingEngineFactory::createBoxMLTextElement },
+    { "v",             &MathMLFormattingEngineFactory::createVElement },
+    { "box",           &MathMLFormattingEngineFactory::createBoxElement },
+
     { "",              0 }
   };
 

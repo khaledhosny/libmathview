@@ -36,7 +36,7 @@ BoxMLHElement::BoxMLHElement(const SmartPtr<View>& view)
 {
 }
 
-BoxMLElement::~BoxMLElement()
+BoxMLHElement::~BoxMLHElement()
 {
 }
 
@@ -65,7 +65,7 @@ BoxMLHElement::format(MathFormattingContext& ctxt)
 
       TokenId align = ToTokenId(GET_ATTRIBUTE_VALUE(BoxML, H, align));
 
-      scaled step = 0;
+      step = 0;
       std::vector<AreaRef> c;
       c.reserve(content.getSize());
       for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
@@ -81,12 +81,10 @@ BoxMLHElement::format(MathFormattingContext& ctxt)
 	      case T_CENTER: area = ctxt.getDevice()->getFactory()->middle(area); break;
 	      case T_BASELINE:
 		{
-		  if (SmartPtr<BoxMLVElement> v = smart_cast<BoxMLVElement>(*p))
-		    {
-		      step += v->getStep();
-		      if (step != scaled::zero())
-			area = ctxt.getDevice()->getFactory()->shift(area, -step);
-		    }
+		  std::cout << "making step of " << step.getValue() << std::endl;
+		  if (step != scaled::zero())
+		    area = ctxt.getDevice()->getFactory()->shift(area, step);
+		  step += (*p)->getStep();
 		}
 		break;
 	      default:
