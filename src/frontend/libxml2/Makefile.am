@@ -4,8 +4,10 @@ lib_LTLIBRARIES = libmathview_frontend_libxml2.la
 libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_frontend_libxml2_la_LIBADD = \
+  -lstdc++ \
   $(XML_LIBS) \
-  $(top_builddir)/src/frontend/common/libfrontend_common.la
+  $(top_builddir)/src/frontend/common/libfrontend_common.la \
+  $(top_builddir)/src/libmathview.la
 
 libmathview_frontend_libxml2_la_SOURCES = \
   libxml2_Model.cc \

@@ -21,12 +21,11 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
-#include <stdio.h>
+
+#include <cassert>
 
 #include <algorithm>
 
-#include "scaledConv.hh"
 #include "Rectangle.hh"
 
 void
@@ -40,8 +39,3 @@ Rectangle::merge(const Rectangle& r)
   height = maxY - y;
 }
 
-void
-Rectangle::dump() const
-{
-  printf("[%d,%d,%d,%d]", sp2ipx(x), sp2ipx(y), sp2ipx(width), sp2ipx(height));
-}

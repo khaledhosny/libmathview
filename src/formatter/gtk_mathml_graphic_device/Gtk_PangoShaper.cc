@@ -132,7 +132,7 @@ Gtk_PangoShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& s
   gchar buffer[6];
   gint length = g_unichar_to_utf8(spec.getGlyphId(), buffer);
 
-  PangoLayout* layout = createPangoLayout(buffer, length, Gtk_RenderingContext::toPangoPixels(ctxt.getSize()),
+  PangoLayout* layout = createPangoLayout(buffer, length, ctxt.getSize(),
 					  getTextAttributes(MathVariant(spec.getFontId() - MAPPED_BASE_INDEX + NORMAL_VARIANT)));
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);

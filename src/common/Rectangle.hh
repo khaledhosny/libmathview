@@ -54,8 +54,6 @@ struct Rectangle
   { return x <= x0 && x0 <= x + width && y <= y0 && y0 <= y + height; }
 
   void merge(const Rectangle&);
-
-  void dump(void) const;
 };
 
 #endif // __Rectangle_hh__

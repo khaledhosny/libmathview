@@ -95,10 +95,16 @@ Gtk_DefaultPangoShaper::getTextAttributes(MathVariant variant)
   return variantDesc[variant - NORMAL_VARIANT];
 }
 
+#include <iostream>
+
 PangoLayout*
-Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, gint size,
+Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, const scaled& sp_size,
 					  const PangoTextAttributes& attributes) const
 {
+  // Apparently when setting font sizes the interpretation of PANGO_SCALE is different
+  // (see Pango documentation) hence we do NOT use toPangoPixels
+  const gint size = Gtk_RenderingContext::toPangoPoints(sp_size);
+
   // FIXME: I bet there are some leaks here, but using GObjectPtr just
   // gives a segfault!!!
   //GObjectPtr<PangoLayout> layout = pango_layout_new(context);
@@ -168,7 +174,7 @@ Gtk_DefaultPangoShaper::shapeString(const MathFormattingContext& ctxt, const gun
   // gives a segfault!!!
   //GObjectPtr<PangoLayout> layout = pango_layout_new(context);
   PangoLayout* layout = createPangoLayout(buffer, length,
-					  Gtk_RenderingContext::toPangoPixels(ctxt.getSize()),
+					  ctxt.getSize(),
 					  getDefaultTextAttributes());
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());

@@ -27,7 +27,6 @@ libcommon_la_SOURCES = \
   Rectangle.cc \
   String.cc \
   ValueConversion.cc \
-  scaledConv.cc \
   token.cc \
   $(NULL)
 
@@ -63,7 +62,6 @@ noinst_HEADERS = \
   for_each_if.h \
   scaled.hh \
   scaledAux.hh \
-  scaledConv.hh \
   token.hh \
   $(NULL)
 

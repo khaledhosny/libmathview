@@ -73,7 +73,6 @@ typedef gmetadom_Setup GtkMathView_Setup;
 #include "Globals.hh"
 #include "Point.hh"
 #include "Rectangle.hh"
-#include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathMLElement.hh"
 #include "MathMLActionElement.hh"
@@ -820,6 +819,8 @@ gtk_math_view_realize(GtkWidget* widget)
   gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
 }
 
+#include <iostream>
+
 static void
 gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
 {
@@ -833,8 +834,8 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
 
   if (BoundingBox box = math_view->view->getBoundingBox())
     {
-      requisition->width = sp2ipx(box.horizontalExtent());
-      requisition->height = sp2ipx(box.verticalExtent());
+      requisition->width = Gtk_RenderingContext::toGtkPixels(box.horizontalExtent());
+      requisition->height = Gtk_RenderingContext::toGtkPixels(box.verticalExtent());
     }
 }
 
@@ -962,22 +963,6 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
   // this way we notify GDK when we are ready to process another event
   if (event->is_hint || (event->window != widget->window))
     gdk_window_get_pointer(widget->window, &x, &y, &mods);
-
-  if (x < 0) {
-    math_view->hadjustment->value -= math_view->hadjustment->step_increment;
-    gtk_adjustment_value_changed(math_view->hadjustment);
-  } else if (x > widget->allocation.width) {
-    math_view->hadjustment->value += math_view->hadjustment->step_increment;
-    gtk_adjustment_value_changed(math_view->hadjustment);
-  }
-
-  if (y < 0) {
-    math_view->vadjustment->value -= math_view->vadjustment->step_increment;
-    gtk_adjustment_value_changed(math_view->vadjustment);
-  } else if (y > widget->allocation.height) {
-    math_view->vadjustment->value += math_view->vadjustment->step_increment;
-    gtk_adjustment_value_changed(math_view->vadjustment);
-  }
 
 #if GTKMATHVIEW_USES_GMETADOM
   GdomeException exc = 0;
@@ -1140,7 +1125,7 @@ setup_adjustments(GtkMathView* math_view)
   BoundingBox box = math_view->view->getBoundingBox();
 
   if (math_view->hadjustment != NULL) {
-    gint width = sp2ipx(box.width);
+    gint width = Gtk_RenderingContext::toGtkPixels(box.width);
     gint page_width = GTK_WIDGET(math_view)->allocation.width;
     
     if (math_view->top_x > width - page_width)
@@ -1150,7 +1135,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    gint height = sp2ipx(box.verticalExtent());
+    gint height = Gtk_RenderingContext::toGtkPixels(box.verticalExtent());
     gint page_height = GTK_WIDGET(math_view)->allocation.height;
 
     if (math_view->top_y > height - page_height)
@@ -1833,8 +1818,8 @@ extern "C" void
 GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView* math_view, gint* x, gint* y)
 {
   g_return_if_fail(math_view != NULL);
-  if (x != NULL) *x = math_view->vadjustment ? sp2ipx(math_view->hadjustment->value) : 0;
-  if (y != NULL) *y = math_view->hadjustment ? sp2ipx(math_view->vadjustment->value) : 0;
+  if (x != NULL) *x = math_view->vadjustment ? Gtk_RenderingContext::toGtkPixels(math_view->hadjustment->value) : 0;
+  if (y != NULL) *y = math_view->hadjustment ? Gtk_RenderingContext::toGtkPixels(math_view->vadjustment->value) : 0;
 }
 
 extern "C" void

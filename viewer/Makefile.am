@@ -2,8 +2,16 @@
 DOM_CFLAGS = @DOM_CFLAGS@
 DOM_LIBS = @DOM_LIBS@
 
-bin_PROGRAMS = mathmlviewer
-noinst_PROGRAMS = mathmlviewer.debug
+bin_PROGRAMS =
+if COND_GMETADOM
+bin_PROGRAMS += mathmlviewer
+endif
+
+noinst_PROGRAMS = 
+if COND_GMETADOM
+noinst_PROGRAMS += mathmlviewer.debug
+endif
+noinst_PROGRAMS += testembedding
 
 noinst_HEADERS = guiGTK.h
 
@@ -20,6 +28,14 @@ mathmlviewer_debug_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la
+
+testembedding_SOURCES = testembedding.c
+
+testembedding_LDADD = \
+  -lstdc++ \
+  $(XML_LIBS) \
+  $(GTK_LIBS) \
+  $(top_builddir)/src/widget/libgtkmathview_libxml2.la
 
 INCLUDES = \
   $(GTK_CFLAGS) \

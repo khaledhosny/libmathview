@@ -5,7 +5,8 @@ libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION
 
 libmathview_frontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
-  $(top_builddir)/src/frontend/common/libfrontend_common.la
+  $(top_builddir)/src/frontend/common/libfrontend_common.la \
+  $(top_builddir)/src/libmathview.la
 
 libmathview_frontend_libxml2_reader_la_SOURCES = \
   libxmlXmlReader.cc \

@@ -33,7 +33,6 @@
 #endif // ENABLE_BOXML
 #include "AreaId.hh"
 #include "scaled.hh"
-#include "scaledConv.hh"
 #include "WrapperArea.hh"
 
 View::View(const SmartPtr<Builder>& b)
@@ -286,9 +285,11 @@ View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
     {
       Clock perf;
       perf.Start();
+
       // FIXME: think of the rational of why the coordinates must be
       // inverted.
       rootArea->render(ctxt, -x, -y);
+
       perf.Stop();
       //Globals::logger(LOG_INFO, "rendering time: %dms", perf());
     }

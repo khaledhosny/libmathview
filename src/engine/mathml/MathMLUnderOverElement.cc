@@ -29,7 +29,6 @@
 #include "MathMLUnderOverElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "ValueConversion.hh"
-#include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathGraphicDevice.hh"
 #include "MathFormattingContext.hh"

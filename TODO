@@ -15,6 +15,7 @@ BUGS
   for mo elements
 ? no indentifiers for the custom frontend? In particular, the widget
   API never handles this (modelElementOfElement and converse method)
+? selecting the root <math> element does not show selection
 - add space in munderover between base and script
 - enable percentage in minsize/maxsize stretchable operators
 - install header files in subdirectories:
@@ -25,6 +26,8 @@ BUGS
 
 ARCH IMPROVEMENTS
 
++ Gtk_PangoLayoutLineArea shares constructor with GtkPangoLayoutArea
+  which computes bounding box as well
 ? make GlyphStringArea a leaf-like area?
 - in TemplateBuilder exploit MathMLInferredRowElement instead of
   creating it each time

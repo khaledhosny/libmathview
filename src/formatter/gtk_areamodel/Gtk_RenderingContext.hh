@@ -74,11 +74,13 @@ public:
   ColorStyle getStyle(void) const { return style; }
 
   static int toGtkPixels(const scaled& s)
-  { return static_cast<int>(s.toFloat() * (72.27 / 72.0)); }
+  { return round(s * (72.27 / 72.0)).toInt(); }
   static int toXftPixels(const scaled& s)
   { return toGtkPixels(s); }
   static int toPangoPixels(const scaled& s)
-  { return static_cast<int>(s.toFloat() * PANGO_SCALE * (72.27 / 72.0)); }
+  { return round(s * PANGO_SCALE * (72.27 / 72.0)).toInt(); }
+  static int toPangoPoints(const scaled& s)
+  { return round(s * PANGO_SCALE).toInt(); }
   static scaled fromGtkPixels(int s)
   { return scaled(s * (72.0 / 72.27)); }
   static scaled fromXftPixels(int s)
@@ -89,7 +91,7 @@ public:
   static int toGtkX(const scaled& x)
   { return toGtkPixels(x); }
   static int toGtkY(const scaled& y)
-  { return -toGtkPixels(y); }
+  { return toGtkPixels(-y); }
   static int toXftX(const scaled& x)
   { return toGtkX(x); }
   static int toXftY(const scaled& y)

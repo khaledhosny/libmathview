@@ -29,7 +29,6 @@
 #include "MathMLOperatorElement.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLValueConversion.hh"
-#include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"

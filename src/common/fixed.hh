@@ -97,31 +97,31 @@ inline fixed<T,p>
 trunc(const fixed<T,p>& f)
 {
   if (f.value > 0) return fixed<T,p>(f.value & ~(fixed<T,p>::one().value - 1), true);
-  else return fixed<T,p>(f.value | (fixed<T,p>::one().value - 1), true);
+  else return fixed<T,p>(-(-f.value & ~(fixed<T,p>::one().value - 1)), true);
 }
 
 template <typename T, int p>
 inline fixed<T,p>
 round(const fixed<T,p>& f)
 {
-  if (f.value > 0) return fixed<T,p>::trunc(f + fixed<T,p>::half());
-  else return fixed<T,p>::trunc(f - fixed<T,p>::half());
+  if (f.value > 0) return trunc(f + fixed<T,p>::half());
+  else return trunc(f - fixed<T,p>::half());
 }
 
 template <typename T, int p>
 inline fixed<T,p>
 ceil(const fixed<T,p>& f)
 {
-  if (f.value > 0) return fixed<T,p>::round(f + fixed<T,p>::half());
-  else return fixed<T,p>::trunc(f);
+  if (f.value > 0) return round(f + fixed<T,p>::half());
+  else return trunc(f);
 }
 
 template <typename T, int p>
 inline fixed<T,p>
 floor(const fixed<T,p>& f)
 {
-  if (f.value > 0) return fixed<T,p>::trunc(f);
-  else return fixed<T,p>::round(f - fixed<T,p>::half());
+  if (f.value > 0) return trunc(f);
+  else return round(f - fixed<T,p>::half());
 }
 
 template <typename T, int p> 

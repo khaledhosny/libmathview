@@ -27,6 +27,8 @@
 #include "Gtk_PangoLayoutLineArea.hh"
 #include "Gtk_RenderingContext.hh"
 
+#include "BoundingBoxAux.hh"
+
 Gtk_PangoLayoutLineArea::Gtk_PangoLayoutLineArea(PangoLayout* _layout)
   : Gtk_PangoLayoutArea(_layout)
 {
@@ -53,6 +55,23 @@ Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scal
 		       Gtk_RenderingContext::toGtkX(x),
 		       Gtk_RenderingContext::toGtkY(y),
 		       line);
+#if 0
+  gdk_draw_line(context.getDrawable(),
+		context.getGC(),
+		Gtk_RenderingContext::toGtkX(x),
+		Gtk_RenderingContext::toGtkY(y),
+		Gtk_RenderingContext::toGtkX(x + bbox.width),
+		Gtk_RenderingContext::toGtkY(y));
+#endif
+#if 0
+  gdk_draw_rectangle(context.getDrawable(),
+		     context.getGC(),
+		     FALSE,
+		     Gtk_RenderingContext::toGtkX(x),
+		     Gtk_RenderingContext::toGtkY(y + bbox.height),
+		     Gtk_RenderingContext::toGtkPixels(bbox.width) - 1,
+		     Gtk_RenderingContext::toGtkPixels(bbox.verticalExtent()) - 1);
+#endif
 }
 
 #if 0

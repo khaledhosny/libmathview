@@ -57,7 +57,7 @@ protected:
 
   static const PangoTextAttributes& getTextAttributes(MathVariant);
   static const PangoTextAttributes& getDefaultTextAttributes(void);
-  PangoLayout* createPangoLayout(const gchar*, glong, gint, const PangoTextAttributes&) const;
+  PangoLayout* createPangoLayout(const gchar*, glong, const scaled&, const PangoTextAttributes&) const;
   AreaRef shapeString(const class MathFormattingContext&, const gunichar*, glong) const;
 
 private:

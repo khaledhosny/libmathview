@@ -25,7 +25,6 @@
 #include <stddef.h>
 
 #include "RGBColor.hh"
-#include "scaledConv.hh"
 #include "traverseAux.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLOperatorElement.hh"

@@ -25,13 +25,11 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <math-engine-configuration>
-  <dictionary-path>./config/dictionary.xml</dictionary-path>
   <dictionary-path>./config/dictionary-local.xml</dictionary-path>
-  <dictionary-path>./config/dictionary-combining.xml</dictionary-path>
   <dictionary-path>./config/dictionary-debug.xml</dictionary-path>
   <entities-table-path>./config/entities-table.xml</entities-table-path>
   <t1-config-path>./config/t1.config.debug</t1-config-path>
-  <font-size     size="48pt"/>
+  <font-size     size="8pt"/>
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>
   <select-color  foreground="black" background="#eedd82"/>

@@ -110,7 +110,12 @@ MathGraphicDevice::ex(const MathFormattingContext& context) const
 scaled
 MathGraphicDevice::axis(const MathFormattingContext& context) const
 {
-  return ex(context) / 2;
+  const BoundingBox pbox = string(context, "+")->box();
+  // the + is a better choice rather than x because its vertical extent
+  // is certainly an odd number of pixels, whereas the x has almost
+  // certainly an even number of pixels. This way it is reduced the
+  // approximation due to the / 2  
+  return (pbox.height - pbox.depth) / 2;
 }
 
 scaled
