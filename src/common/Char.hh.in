@@ -1,0 +1,78 @@
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
+// This file is part of GtkMathView, a Gtk widget for MathML.
+// 
+// GtkMathView is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// GtkMathView is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with GtkMathView; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// 
+// For details, see the GtkMathView World-Wide-Web page,
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
+
+#ifndef __Char_hh__
+#define __Char_hh__
+
+typedef char Char;
+
+#if 1 == @CHAR_UNSIGNED@
+#define GTKMATHVIEW_CHAR_UNSIGNED    1
+#endif
+
+#if 1 == @GTKMATHVIEW_SIZEOF_CHAR@
+  typedef char Char8;
+#define CHAR8 1
+#else
+#error "could not define type Char8"
+#endif
+  
+#if 2 == @GTKMATHVIEW_SIZEOF_CHAR@
+  typedef char Char16;
+#define CHAR16 1
+#elif 2 == @GTKMATHVIEW_SIZEOF_WCHAR_T@
+  typedef wchar_t Char16;
+#elif 1 == @ALL_TRAITS@
+#if 2 == @GTKMATHVIEW_SIZEOF_SHORT@
+  typedef unsigned short Char16;
+#elif 2 == @GTKMATHVIEW_SIZEOF_INT@
+  typedef unsigned int Char16;
+#elif 2 == @GTKMATHVIEW_SIZEOF_LONG@
+  typedef unsigned long Char16;
+#else
+#error "could not define type Char16"
+#endif
+#else
+#error "could not define type Char16"
+#endif
+
+#if 4 == @GTKMATHVIEW_SIZEOF_CHAR@
+  typedef char Char32;
+#define CHAR32 1
+#elif 4 == @GTKMATHVIEW_SIZEOF_WCHAR_T@
+  typedef wchar_t Char32;
+#elif 1 == @ALL_TRAITS@
+#if 4 == @GTKMATHVIEW_SIZEOF_INT@
+  typedef unsigned int Char32;
+#elif 4 == @GTKMATHVIEW_SIZEOF_LONG@
+  typedef unsigned long Char32;
+#elif 4 == @GTKMATHVIEW_SIZEOF_LONG_LONG@
+  typedef unsigned long long Char32;
+#else
+#error "could not define type Char32"
+#endif
+#else
+#error "could not define type Char32"
+#endif
+
+#endif // __Char_hh__
+

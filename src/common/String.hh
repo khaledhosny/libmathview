@@ -24,20 +24,16 @@
 #define __String_hh__
 
 #include <functional>
+#include <string>
 
-#include "DOM.hh"
+#include "Char.hh"
 
-typedef DOM::UTF8String String;
-typedef DOM::UCS4String UCS4String;
-typedef UCS4String::value_type Char;
+typedef std::basic_string<Char> String;
+typedef std::basic_string<Char8> UTF8String;
+typedef std::basic_string<Char16> UTF16String;
+typedef std::basic_string<Char32> UCS4String;
 
-inline bool isXmlSpace(Char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
-
-inline UCS4String toUCS4String(const String& s) { return DOM::GdomeString(s); }
-inline String fromUCS4String(const UCS4String& s) { return DOM::GdomeString(s); }
-
-inline String fromDOMString(const DOM::GdomeString& s) { return s; }
-inline DOM::GdomeString toDOMString(const String& s) { return s; }
+inline bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
 
 String trimSpacesLeft(const String&);
 String trimSpacesRight(const String&);
@@ -45,13 +41,28 @@ String collapseSpaces(const String&);
 String deleteSpaces(const String&);
 String toLowerCase(const String&);
 
+UTF8String UTF8StringOfUCS4String(const UCS4String&);
+UCS4String UCS4StringOfUTF8String(const UTF8String&);
+UTF16String UTF16StringOfUCS4String(const UCS4String&);
+UCS4String UCS4StringOfUTF16String(const UTF16String&);
+
+#if CHAR8 == 1
+inline String StringOfUCS4String(const UCS4String& s) { return UTF8StringOfUCS4String(s); }
+inline UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF8String(s); }
+#elif CHAR16 == 1
+inline String StringOfUCS4String(const UCS4String& s) { return UTF16StringOfUCS4String(s); }
+inline UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF16String(s); }
+#elif CHAR32 == 1
+inline String StringOfUCS4String(const UCS4String& s) { return s; }
+inline UCS4String UCS4StringOfString(const String& s) { return s; }
+#else
+#error "could not define string conversion functions"
+#endif
+
 struct StringHash : public std::unary_function<String, size_t>
 {
   size_t operator()(const String&) const;
 };
-
-//typedef equal_to<String, String, bool> StringEq;
-//struct StringEq : public equal_to<String, String, bool> { };
 
 struct StringEq : public std::binary_function<String, String, bool>
 {

@@ -6,9 +6,7 @@ libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libcommon_la_SOURCES = \
   Clock.cc \
   Logger.cc \
-  ChildList.cc \
   Rectangle.cc \
-  gmetadom.cc \
   scaledConv.cc \
   token.cc \
   RGBColorAux.cc \
@@ -23,9 +21,7 @@ pkginclude_HEADERS = defs.h
 noinst_HEADERS = \
   Clock.hh \
   Logger.hh \
-  ChildList.hh \
   Rectangle.hh \
-  gmetadom.hh \
   token.hh \
   TokenSet.hh \
   scaledConv.hh \
@@ -51,10 +47,9 @@ noinst_HEADERS = \
   WeakPtr.hh \
   String.hh \
   GObjectPtr.hh \
-  Object.hh \
-  DOM.hh
+  Object.hh
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
+  $(GLIB_CFLAGS) \
   -I$(top_srcdir)/auto
 

@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include <glib.h>
 #include <cctype>
 
 #include "String.hh"
@@ -106,4 +107,34 @@ StringHash::operator()(const String& s) const
 
   return h;
 }
+
+template <typename DEST_CHAR, typename SOURCE_CHAR, typename DEST_STRING, typename SOURCE_STRING, 
+	  DEST_CHAR* (*f)(const SOURCE_CHAR*, glong, glong*, glong*, GError**)>
+DEST_STRING
+DESTofSOURCE(const SOURCE_STRING& s)
+{
+  g_assert(sizeof(DEST_CHAR) == sizeof(typename DEST_STRING::value_type));
+  g_assert(sizeof(SOURCE_CHAR) == sizeof(typename SOURCE_STRING::value_type));
+  glong length;
+  DEST_CHAR* destBuffer = f((const SOURCE_CHAR*) s.data(), s.length(), NULL, &length, NULL);
+  DEST_STRING res((const typename DEST_STRING::value_type*) destBuffer, length);
+  g_free(destBuffer);
+  return res;
+}
+
+UTF8String
+UTF8StringOfUCS4String(const UCS4String& s)
+{ return DESTofSOURCE<gchar, gunichar, UTF8String, UCS4String, &g_ucs4_to_utf8>(s); }
+
+UCS4String
+UCS4StringOfUTF8String(const UTF8String& s)
+{ return DESTofSOURCE<gunichar, gchar, UCS4String, UTF8String, &g_utf8_to_ucs4>(s); }
+
+UTF16String
+UTF16StringOfUCS4String(const UCS4String& s)
+{ return DESTofSOURCE<gunichar2, gunichar, UTF16String, UCS4String, &g_ucs4_to_utf16>(s); }
+
+UCS4String
+UCS4StringOfUTF16String(const UTF16String& s)
+{ return DESTofSOURCE<gunichar, gunichar2, UCS4String, UTF16String, &g_utf16_to_ucs4>(s); }
 
