@@ -31,6 +31,7 @@
 #include "StringUnicode.hh"
 #include "MathMLMarkNode.hh"
 #include "ValueConversion.hh"
+#include "MathMLTokenElement.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLTableCellElement.hh"

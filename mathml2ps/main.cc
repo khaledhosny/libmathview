@@ -31,7 +31,6 @@
 #include <string.h>
 
 #include "defs.h"
-#include "Parser.hh"
 #include "String.hh"
 #include "MathEngine.hh"
 #include "CharMapper.hh"

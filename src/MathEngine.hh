@@ -38,10 +38,12 @@ public:
   void  Init(class DrawingArea*, class FontManager*);
 
   bool  Load(const char*);
+  bool  Load(mDOMDocRef);
   void  Unload(void);
 
   void  Setup(void);
 
+  void  MinMaxLayout(void);
   void  Layout(void);
   void  SetDirty(const struct Rectangle* = NULL);
   void  Render(void);
@@ -50,18 +52,11 @@ public:
 
   bool  IsOnLink(scaled, scaled) const;
 
-  void                 SetElement(class MathMLElement*);
-  class MathMLElement* GetElement(void) const { return element; }
-
-  void                 SetSelectionFirst(class MathMLElement*);
-  void                 SetSelectionLast(class MathMLElement*);
-  class MathMLElement* GetSelectionRoot(void) const { return selectionRoot; }
-  void                 ResetSelectionRoot(void);
-  void                 SetSelection(class MathMLElement*);
-  class MathMLElement* GetSelection(void) const { return selection; }
-
   class MathMLElement* GetRoot(void) const { return root; }
   class MathMLElement* GetElementAt(scaled, scaled) const;
+
+  void                 SetSelected(class MathMLElement*);
+  class MathMLElement* GetSelected(void) const { return selected; }
 
   void GetDocumentBoundingBox(class BoundingBox&) const;
   void GetDocumentRectangle(class Rectangle&) const;
@@ -89,18 +84,11 @@ public:
   static Logger             logger;
 
 private:
-  static class MathMLElement* SelectMinimumTree(class MathMLElement*, class MathMLElement*);
-
-  unsigned    defaultFontSize;
+  unsigned defaultFontSize;
 
   class MathMLDocument* document;
   class MathMLElement*  root;
-
-  class MathMLElement*  element; // the element the pointer is on
-
-  class MathMLElement*  selectionFirst;
-  class MathMLElement*  selectionRoot;
-  class MathMLElement*  selection;
+  class MathMLElement*  selected;
 
   class DrawingArea* area;
   class FontManager* fontManager;

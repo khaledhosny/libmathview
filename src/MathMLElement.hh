@@ -94,6 +94,11 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
+  bool HasDirtyLayout(void) const { return MathMLFrame::HasDirtyLayout(); }
+  bool HasDirtyLayout(scaled w) const { return HasDirtyLayout() || !scaledEq(w, lastLayoutWidth); }
+  void ResetDirtyLayout(void) { MathMLFrame::ResetDirtyLayout(); }
+  void ResetDirtyLayout(scaled w);
+
 #ifdef DEBUG
   static int GetCounter(void) { return counter; }
 #endif // DEBUG
@@ -104,6 +109,7 @@ protected:
 						     AttributeSignature[]) const;
   void ConfirmLayout(LayoutId);
 
+  scaled      lastLayoutWidth;
   BoundingBox minBox;
   BoundingBox maxBox;
   class Layout* layout;

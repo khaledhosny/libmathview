@@ -28,6 +28,7 @@
 #include "CharMap.hh"
 #include "Iterator.hh"
 #include "operatorAux.hh"
+#include "traverseAux.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLSpaceElement.hh"
 #include "RenderingEnvironment.hh"
@@ -87,7 +88,7 @@ MathMLRowElement::DoLayout(LayoutId id, Layout& layout)
 	break;
       case STATE_B:
 	if (elem->IsEmbellishedOperator()) {
-	  MathMLOperatorElement* op = getCoreOperator(elem);
+	  MathMLOperatorElement* op = findCoreOperator(elem);
 	  assert(op != NULL);
 	  // we cannot allow the expression to be broken
 	  // before or after the operator if it is non-marking
@@ -106,7 +107,7 @@ MathMLRowElement::DoLayout(LayoutId id, Layout& layout)
 	  bid = BREAK_BAD;
 	  state = STATE_D;
 	} else if (elem->IsEmbellishedOperator()) {
-	  MathMLOperatorElement* op = getCoreOperator(elem);
+	  MathMLOperatorElement* op = findCoreOperator(elem);
 	  assert(op != NULL);
 	  if (op->IsSeparator()) state = STATE_C;
 	  else {
@@ -158,7 +159,7 @@ MathMLRowElement::DoStretchyLayout()
     assert(elem() != NULL);
     BoundingBox elemLinearBox;
 
-    MathMLOperatorElement* op = getStretchyOperator(elem(), STRETCH_VERTICAL);
+    MathMLOperatorElement* op = findStretchyOperator(elem(), STRETCH_VERTICAL);
     if (op != NULL) {
       opBox.Append(op->GetMinBoundingBox());
       nStretchy++;      
@@ -180,7 +181,7 @@ MathMLRowElement::DoStretchyLayout()
 
     for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
       assert(elem() != NULL);
-      MathMLOperatorElement* op = getStretchyOperator(elem(), STRETCH_VERTICAL);
+      MathMLOperatorElement* op = findStretchyOperator(elem(), STRETCH_VERTICAL);
 
       if (op != NULL) {
 	op->VerticalStretchTo(toAscent, toDescent);

@@ -1,6 +1,11 @@
 <math>
-  <maction selection="2">
-    <mn>0</mn>
+  <mrow>
+    <maction>
+      <mtext>ciao</mtext>
+      <mtext>da</mtext>
+      <mtext>Luca</mtext>
+    </maction>
+    <mo>+</mo>
     <mn>1</mn>
-  </maction>
+  </mrow>
 </math>

@@ -29,7 +29,8 @@
 #include "AttributeParser.hh"
 #include "MathMLActionElement.hh"
 
-MathMLActionElement::MathMLActionElement(mDOMNodeRef node) : MathMLContainerElement(node, TAG_MACTION)
+MathMLActionElement::MathMLActionElement(mDOMNodeRef node) :
+  MathMLContainerElement(node, TAG_MACTION)
 {
   selection = 0;
 }
@@ -76,6 +77,9 @@ MathMLActionElement::Setup(RenderingEnvironment* env)
 void
 MathMLActionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
 {
+  printf("LAYOUT %d (dirty? %d)\n", id, HasDirtyLayout(availWidth));
+  if (!HasDirtyLayout(availWidth)) return;
+
   MathMLElement* elem = GetSelectedElement();
 
   if (elem != NULL) {
@@ -85,6 +89,11 @@ MathMLActionElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled availWidth)
     box.Null();
 
   ConfirmLayout(id);
+
+  box.Dump();
+  printf("\n");
+
+  if (id == LAYOUT_AUTO) ResetDirtyLayout(availWidth);
 }
 
 void
@@ -114,8 +123,12 @@ MathMLActionElement::SetPosition(scaled x, scaled y)
 void
 MathMLActionElement::Render(const DrawingArea& area)
 {
+  if (!HasDirtyChildren()) return;
+
   MathMLElement* elem = GetSelectedElement();
   if (elem != NULL) elem->Render(area);
+
+  ResetDirty();
 }
 
 void
@@ -124,7 +137,11 @@ MathMLActionElement::SetDirty(const Rectangle* rect)
   MathMLElement* elem = GetSelectedElement();
   if (elem != NULL) {
     elem->SetDirty(rect);
-    dirty = elem->IsDirty();
+    // dirty-children has to be called explicitly because if the child is already
+    // dirty, then it does not invoke SetDirtyChildren by itself
+    // (see MathMLFrame.hh)
+    SetDirtyChildren();
+    //dirty = elem->IsDirty();
   }
 }
 
@@ -148,6 +165,29 @@ MathMLActionElement::GetSelectedElement() const
   return (selection < content.GetSize()) ? content.Get(selection) : NULL;
 }
 
+void
+MathMLActionElement::SetSelectedIndex(unsigned i)
+{
+  assert(i > 0 && i <= content.GetSize());
+  if (selection == i - 1) return;
+  selection = i - 1;
+
+  MathMLElement* elem = GetSelectedElement();
+  if (elem != NULL) {
+    elem->SetDirtyLayout();
+    // same argument as for SetDirty
+    SetDirtyLayout();
+  }
+
+  printf("the index has changed, now dirty layout is %d\n", HasDirtyLayout());
+}
+
+unsigned
+MathMLActionElement::GetSelectedIndex() const
+{
+  return (content.GetSize() > 0) ? selection + 1 : 0;
+}
+
 BreakId
 MathMLActionElement::GetBreakability() const
 {
@@ -169,3 +209,11 @@ MathMLActionElement::GetRightEdge() const
   return (elem != NULL) ? elem->GetRightEdge() : GetX();
 }
 
+MathMLElement*
+MathMLActionElement::Inside(scaled x, scaled y)
+{
+  if (!IsInside(x, y)) return NULL;
+
+  MathMLElement* elem = GetSelectedElement();
+  return (elem != NULL) ? elem->Inside(x, y) : this;
+}

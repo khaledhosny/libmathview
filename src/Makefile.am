@@ -102,7 +102,7 @@ libgtkmathview_la_SOURCES = \
   MathMLUnderOverElement.cc \
   MathMLmathElement.cc \
   OperatorDictionary.cc \
-  Parser.cc \
+  MathMLizer.cc \
   Rectangle.cc \
   RenderingEnvironment.cc \
   Shape.cc \
@@ -122,6 +122,7 @@ libgtkmathview_la_SOURCES = \
   stringAux.cc \
   tableLayout.cc \
   tableSetup.cc \
+  traverseAux.cc \
   mathVariantAux.cc \
   $(GUISOURCES) \
   $(GTKSOURCES) \
@@ -207,7 +208,7 @@ noinst_HEADERS = \
   MathMLmathElement.hh \
   MultiString.hh \
   OperatorDictionary.hh \
-  Parser.hh \
+  MathMLizer.hh \
   RGBValue.hh \
   Rectangle.hh \
   RenderingEnvironment.hh \
@@ -229,6 +230,7 @@ noinst_HEADERS = \
   keyword.hh \
   operatorAux.hh \
   stringAux.hh \
+  traverseAux.hh \
   mathVariantAux.hh \
   scaled.hh \
   $(GTKHEADERS) \

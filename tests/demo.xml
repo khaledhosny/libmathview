@@ -63,13 +63,15 @@
 
       <mtr><mtd><mtext mathvariant="monospace" mathsize="200%">mo</mtext></mtd></mtr>
 
-      <mtr><mtd><mtext>
+      <mtr><mtd>
+          <mtext>
         This element represents an operator or anything which should be rendered as
 	an operator. There are several attributes for this element which are used
 	to specify at a high level of detail the particular usage of a given operator.
 	In particular, some operators are `stretchy', that is their extent (vertical
 	or horizontal) change depending on the surrounding environment.
-      </mtext></mtd></mtr>
+          </mtext>
+      </mtd></mtr>
 
       <mtr><mtd>
 	<mspace width="1em"/>

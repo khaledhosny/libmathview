@@ -24,6 +24,7 @@
 #include <assert.h>
 
 #include "operatorAux.hh"
+#include "traverseAux.hh"
 #include "MathMLDummyElement.hh"
 #include "RenderingEnvironment.hh"
 #include "MathMLUnderOverElement.hh"
@@ -109,7 +110,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment* env)
 
   base->Setup(env);
 
-  const MathMLOperatorElement* op = getCoreOperator(base);
+  const MathMLOperatorElement* op = findCoreOperator(base);
 
   if (op != NULL) {
     scriptize = (env->GetDisplayStyle() == false) && op->HasMovableLimits();
@@ -126,7 +127,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment* env)
       const Value* value = GetAttributeValue(ATTR_ACCENTUNDER, env, false);
       if (value != NULL) accentUnder = value->ToBoolean();
       else {
-	const MathMLOperatorElement* op = getCoreOperator(underScript);
+	const MathMLOperatorElement* op = findCoreOperator(underScript);
 	if (op != NULL) {
 	  underScript->Setup(env);
 	  accentUnder = op->IsAccent();
@@ -153,7 +154,7 @@ MathMLUnderOverElement::Setup(RenderingEnvironment* env)
       const Value* value = GetAttributeValue(ATTR_ACCENT, env, false);
       if (value != NULL) accent = value->ToBoolean();
       else {
-	const MathMLOperatorElement* op = getCoreOperator(overScript);
+	const MathMLOperatorElement* op = findCoreOperator(overScript);
 	if (op != NULL) {
 	  overScript->Setup(env);
 	  accent = op->IsAccent();
@@ -222,9 +223,9 @@ MathMLUnderOverElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
       scaled wOp      = 0;
       scaled wOther   = 0;
 
-      MathMLOperatorElement* baseOp  = getStretchyOperator(base, STRETCH_HORIZONTAL);
-      MathMLOperatorElement* underOp = getStretchyOperator(underScript, STRETCH_HORIZONTAL);
-      MathMLOperatorElement* overOp  = getStretchyOperator(overScript, STRETCH_HORIZONTAL);
+      MathMLOperatorElement* baseOp  = findStretchyOperator(base, STRETCH_HORIZONTAL);
+      MathMLOperatorElement* underOp = findStretchyOperator(underScript, STRETCH_HORIZONTAL);
+      MathMLOperatorElement* overOp  = findStretchyOperator(overScript, STRETCH_HORIZONTAL);
 
       if (baseOp == NULL) base->DoBoxedLayout(id, BREAK_NO, maxWidth);
       if (underScript != NULL && underOp == NULL) underScript->DoBoxedLayout(id, BREAK_NO, maxWidth);

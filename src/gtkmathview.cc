@@ -37,11 +37,68 @@
 #include "Rectangle.hh"
 #include "gtkmathview.h"
 #include "MathEngine.hh"
+#include "traverseAux.hh"
 #include "MathMLElement.hh"
 #include "PS_DrawingArea.hh"
 #include "Gtk_FontManager.hh"
 #include "PS_T1_FontManager.hh"
 #include "T1_Gtk_DrawingArea.hh"
+#include "MathMLActionElement.hh"
+
+/* structures */
+
+struct _GtkMathView {
+  GtkEventBox    parent;
+
+  GtkWidget* 	 frame;
+  GtkWidget* 	 area;
+  GdkPixmap*     pixmap;
+
+  guint 	 hsignal;
+  guint 	 vsignal;
+
+  GtkAdjustment* hadjustment;
+  GtkAdjustment* vadjustment;
+
+  gfloat     	 top_x;
+  gfloat     	 top_y;
+
+  gfloat 	 old_top_x;
+  gfloat 	 old_top_y;
+  gint           old_width;
+
+  gboolean 	 button_press;
+  gboolean 	 select;
+  MathMLElement* selected_first; /* first element clicked in a selection */
+  MathMLElement* selected_root;  /* root of the minimal subtree selected */
+  MathMLElement* element;        /* element the pointer is on */
+  MathMLActionElement* action_element; /* action element the pointer is on */
+
+  FontManagerId  font_manager_id;
+
+  FontManager*     font_manager;
+  Gtk_DrawingArea* drawing_area;
+  MathEngine*      interface;
+};
+
+struct _GtkMathViewClass {
+  GtkEventBoxClass parent_class;
+
+  GdkCursor* normal_cursor;
+  GdkCursor* link_cursor;
+  
+  void (*set_scroll_adjustments) (GtkMathView *math_view,
+				  GtkAdjustment *hadjustment,
+				  GtkAdjustment *vadjustment);
+  
+  void (*clicked)           (GtkMathView*, mDOMNodeRef);
+  void (*jump)              (GtkMathView*, mDOMNodeRef);
+  void (*selection_changed) (GtkMathView*, mDOMNodeRef);
+  void (*element_changed)   (GtkMathView*, mDOMNodeRef);
+  void (*action_changed)    (GtkMathView*, mDOMNodeRef);
+};
+
+/* helper functions */
 
 static void gtk_math_view_class_init(GtkMathViewClass*);
 static void gtk_math_view_init(GtkMathView*);
@@ -79,6 +136,7 @@ static guint clicked_signal = 0;
 static guint jump_signal = 0;
 static guint selection_changed_signal = 0;
 static guint element_changed_signal = 0;
+static guint action_changed_signal = 0;
 
 /* widget implementation */
 
@@ -311,6 +369,16 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 
   gtk_object_class_add_signals(object_class, &element_changed_signal, 1);
 
+  action_changed_signal =
+    gtk_signal_new("action_changed",
+		   GTK_RUN_FIRST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (GtkMathViewClass, action_changed),
+		   gtk_marshal_NONE__POINTER,
+		   GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+  gtk_object_class_add_signals(object_class, &action_changed_signal, 1);
+
   MathEngine::InitGlobalData(getenv("MATHENGINECONF"));
 }
 
@@ -507,14 +575,12 @@ gtk_math_view_button_press_event(GtkWidget* widget,
   scaled y0 = math_view->drawing_area->GetTopY();
 
   if (event->button == 1) {
-    if (math_view->interface->GetSelectionRoot() != NULL) {
-      math_view->interface->ResetSelectionRoot();
+    if (math_view->selected_root != NULL) {
+      math_view->selected_root = NULL;
       gtk_signal_emit(GTK_OBJECT(math_view), selection_changed_signal, NULL);
     }
 
-    MathMLElement* elem = math_view->interface->GetElementAt(px2sp((gint) event->x) + x0, px2sp((gint) event->y) + y0);
-    math_view->interface->SetSelectionFirst(elem);
-
+    math_view->selected_first = math_view->interface->GetElementAt(px2sp((gint) event->x) + x0, px2sp((gint) event->y) + y0);
     math_view->button_press = TRUE;
     math_view->select = FALSE;
   }
@@ -590,22 +656,26 @@ gtk_math_view_motion_notify_event(GtkWidget* widget,
 
   MathMLElement* elem = math_view->interface->GetElementAt(px2sp((gint) event->x) + x0, px2sp((gint) event->y) + y0);
 
-  if (math_view->select == TRUE) {
-    MathMLElement* oldRoot = math_view->interface->GetSelectionRoot();
-    math_view->interface->SetSelectionLast(elem);
-    MathMLElement* selected = math_view->interface->GetSelectionRoot();
+  if (math_view->select == TRUE && math_view->selected_first != NULL && elem != NULL) {
+    MathMLElement* oldRoot = math_view->selected_root;
+    math_view->selected_root = findCommonAncestor(math_view->selected_first, elem);
 
-    if (selected != NULL && selected != oldRoot) {
-      mDOMNodeRef node = selected->GetDOMNode();
+    if (math_view->selected_root != NULL && math_view->selected_root != oldRoot) {
+      mDOMNodeRef node = math_view->selected_root->GetDOMNode();
       gtk_signal_emit(GTK_OBJECT(math_view), selection_changed_signal, node);
     }
   } else {
-    MathMLElement* oldElem = math_view->interface->GetElement();
-    math_view->interface->SetElement(elem);
-
-    if (elem != oldElem) {
+    if (elem != math_view->element) {
       mDOMNodeRef node = (elem != NULL) ? elem->GetDOMNode() : NULL;
+      math_view->element = elem;
       gtk_signal_emit(GTK_OBJECT(math_view), element_changed_signal, node);
+    }
+
+    MathMLActionElement* action = findActionElement(elem);
+    if (action != math_view->action_element) {
+      mDOMNodeRef node = (action != NULL) ? action->GetDOMNode() : NULL;
+      math_view->action_element = action;
+      gtk_signal_emit(GTK_OBJECT(math_view), action_changed_signal, node);
     }
   }
 
@@ -709,11 +779,28 @@ extern "C" gboolean
 gtk_math_view_load(GtkMathView* math_view, const gchar* name)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->area != NULL, FALSE);
   g_return_val_if_fail(name != NULL, FALSE);
   g_return_val_if_fail(math_view->interface != NULL, FALSE);
 
   bool res = math_view->interface->Load(name);
+  if (!res) return FALSE;
+
+  math_view->interface->Layout();
+
+  setup_adjustments(math_view);
+  paint_widget(math_view);
+
+  return TRUE;
+}
+
+extern "C" gboolean
+gtk_math_view_load_tree(GtkMathView* math_view, mDOMDocRef doc)
+{
+  g_return_val_if_fail(math_view != NULL, FALSE);
+  g_return_val_if_fail(doc != NULL, FALSE);
+  g_return_val_if_fail(math_view->interface != NULL, FALSE);
+
+  bool res = math_view->interface->Load(doc);
   if (!res) return FALSE;
 
   math_view->interface->Layout();
@@ -863,6 +950,8 @@ gtk_math_view_set_font_size(GtkMathView* math_view, guint size)
   g_return_if_fail(math_view->interface != NULL);
   g_return_if_fail(size > 0);
 
+  if (size == math_view->interface->GetDefaultFontSize()) return;
+
   math_view->interface->SetDefaultFontSize(size);
   math_view->interface->Setup();
   math_view->interface->Layout();
@@ -886,14 +975,12 @@ gtk_math_view_get_selection(GtkMathView* math_view)
   g_return_val_if_fail(math_view != NULL, NULL);
   g_return_val_if_fail(math_view->interface != NULL, 0);
 
-  MathMLElement* elem = math_view->interface->GetSelection();
+  MathMLElement* elem = math_view->interface->GetSelected();
 
   while (elem != NULL && elem->GetDOMNode() == NULL) 
     elem = elem->GetParent();
 
-  if (elem == NULL) return NULL;
-
-  return elem->GetDOMNode();
+  return (elem != NULL) ? elem->GetDOMNode() : NULL;
 }
 
 extern "C" void
@@ -906,7 +993,7 @@ gtk_math_view_set_selection(GtkMathView* math_view, mDOMNodeRef node)
   // of the assumption that the user will NEVER modify the user data field
   // in the DOM tree elements!!!
   MathMLElement* elem = (node != NULL) ? (MathMLElement*) (mdom_node_get_user_data(node)) : NULL;
-  math_view->interface->SetSelection(elem);
+  math_view->interface->SetSelected(elem);
 }
 
 extern "C" gint
@@ -1145,3 +1232,69 @@ gtk_math_view_export_to_postscript(GtkMathView* math_view,
 #endif // HAVE_LIBT1
 }
 
+/* experimental APIs */
+
+extern "C" mDOMNodeRef
+gtk_math_view_get_element(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, NULL);
+
+  MathMLElement* elem = math_view->element;
+  while (elem != NULL && elem->GetDOMNode() == NULL)
+    elem = elem->GetParent();
+
+  return (elem != NULL) ? elem->GetDOMNode() : NULL;
+}
+
+extern "C" mDOMNodeRef
+gtk_math_view_get_action(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, NULL);
+
+  MathMLElement* elem = math_view->action_element;
+  while (elem != NULL && elem->GetDOMNode() == NULL)
+    elem = elem->GetParent();
+
+  return (elem != NULL) ? elem->GetDOMNode() : NULL;
+}
+
+extern "C" guint
+gtk_math_view_action_get_selected(GtkMathView* math_view)
+{
+  g_return_val_if_fail(math_view != NULL, 0);
+
+  if (math_view->action_element == NULL) return 0;
+  else return math_view->action_element->GetSelectedIndex();
+}
+
+extern "C" void
+gtk_math_view_action_set_selected(GtkMathView* math_view, guint idx)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view->action_element != NULL);
+  g_return_if_fail(idx > 0 && idx <= math_view->action_element->content.GetSize());
+
+  math_view->action_element->SetSelectedIndex(idx);
+
+  math_view->interface->MinMaxLayout();
+  math_view->interface->Layout();
+
+  paint_widget(math_view);
+}
+
+extern "C" void
+gtk_math_view_action_toggle(GtkMathView* math_view)
+{
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->interface != NULL);
+  g_return_if_fail(math_view->action_element != NULL);
+
+  guint idx = math_view->action_element->GetSelectedIndex();
+  if (idx < math_view->action_element->content.GetSize())
+    idx++;
+  else
+    idx = 1;
+
+  gtk_math_view_action_set_selected(math_view, idx);
+}

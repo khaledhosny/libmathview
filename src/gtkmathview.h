@@ -53,55 +53,10 @@ extern "C" {
   typedef struct _GtkMathView      GtkMathView;
   typedef struct _GtkMathViewClass GtkMathViewClass;
 
-  struct _GtkMathView {
-    GtkEventBox    parent;
-
-    GtkWidget* 	   frame;
-    GtkWidget* 	   area;
-    GdkPixmap*     pixmap;
-
-    guint 	   hsignal;
-    guint 	   vsignal;
-
-    GtkAdjustment* hadjustment;
-    GtkAdjustment* vadjustment;
-
-    gfloat     	   top_x;
-    gfloat     	   top_y;
-
-    gfloat 	   old_top_x;
-    gfloat 	   old_top_y;
-    gint           old_width;
-
-    gboolean 	   button_press;
-    gboolean 	   select;
-
-    FontManagerId  font_manager_id;
-
-    struct FontManager*     font_manager;
-    struct Gtk_DrawingArea* drawing_area;
-    struct MathEngine*      interface;
-  };
-
-  struct _GtkMathViewClass {
-    GtkEventBoxClass parent_class;
-
-    GdkCursor* normal_cursor;
-    GdkCursor* link_cursor;
-
-    void (*set_scroll_adjustments) (GtkMathView *math_view,
-				    GtkAdjustment *hadjustment,
-				    GtkAdjustment *vadjustment);
-
-    void (*clicked)           (GtkMathView*, mDOMNodeRef);
-    void (*jump)              (GtkMathView*, mDOMNodeRef);
-    void (*selection_changed) (GtkMathView*, mDOMNodeRef);
-    void (*element_changed)   (GtkMathView*, mDOMNodeRef);
-  };
-
   GtkType    	 gtk_math_view_get_type(void);
   GtkWidget* 	 gtk_math_view_new(GtkAdjustment*, GtkAdjustment*);
   gboolean     	 gtk_math_view_load(GtkMathView*, const gchar*);
+  gboolean       gtk_math_view_load_tree(GtkMathView*, mDOMDocRef);
   void           gtk_math_view_unload(GtkMathView*);
   mDOMNodeRef    gtk_math_view_get_selection(GtkMathView*);
   void           gtk_math_view_set_selection(GtkMathView*, mDOMNodeRef);
@@ -127,6 +82,13 @@ extern "C" {
   void           gtk_math_view_export_to_postscript(GtkMathView*, gint, gint, gint, gint, gboolean, FILE*);
   void           gtk_math_view_set_font_manager_type(GtkMathView*, FontManagerId);
   FontManagerId  gtk_math_view_get_font_manager_type(GtkMathView*);
+
+  /* the following are *unstable*, *experimental* APIs */
+  mDOMNodeRef    gtk_math_view_get_element(GtkMathView*);
+  mDOMNodeRef    gtk_math_view_get_action(GtkMathView*);
+  guint          gtk_math_view_action_get_selected(GtkMathView*);
+  void           gtk_math_view_action_set_selected(GtkMathView*, guint);
+  void           gtk_math_view_action_toggle(GtkMathView*);
 
 #ifdef __cplusplus
 }

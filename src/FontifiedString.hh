@@ -23,8 +23,6 @@
 #ifndef FontifiedString_hh
 #define FontifiedString_hh
 
-#include <config.h>
-
 #include "scaled.hh"
 #include "Container.hh"
 

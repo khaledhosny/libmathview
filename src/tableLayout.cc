@@ -26,6 +26,7 @@
 
 #include "Iterator.hh"
 #include "operatorAux.hh"
+#include "traverseAux.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLTableCellElement.hh"
@@ -636,7 +637,7 @@ MathMLTableElement::StretchyCellsLayout()
   for (unsigned i = 0; i < nRows; i++) {
     for (unsigned j = 0; j < nColumns; j++) {
       if (cell[i][j].mtd != NULL && !cell[i][j].spanned) {
-	MathMLOperatorElement* op = getStretchyOperator(cell[i][j].mtd->content.GetFirst());
+	MathMLOperatorElement* op = findStretchyOperator(cell[i][j].mtd->content.GetFirst());
 	if (op != NULL) {
 	  scaled width = GetColumnWidth(j, cell[i][j].colSpan);
 

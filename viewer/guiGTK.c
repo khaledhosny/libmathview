@@ -434,7 +434,7 @@ element_changed(GtkMathView* math_view, mDOMNodeRef node)
 {
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
-  /* printf("element changed: %p\n", node); */
+  printf("element changed: %p %s\n", node, (node != NULL) ? mdom_node_get_name(node) : "-");
 }
 
 static void
@@ -456,6 +456,14 @@ jump(GtkMathView* math_view, mDOMNodeRef node)
   if (href != NULL) {
     GUI_load_document(C_CONST_STRING(href));
     mdom_string_free(href);
+  }
+}
+
+static void
+clicked(GtkMathView* math_view, gpointer user_data)
+{
+  if (gtk_math_view_get_action(math_view) != NULL) {
+    gtk_math_view_action_toggle(math_view);
   }
 }
 
@@ -485,8 +493,14 @@ create_widget_set()
 			     "element_changed", GTK_SIGNAL_FUNC (element_changed),
 			     (gpointer) main_area);
 
-  gtk_signal_connect_object (GTK_OBJECT (main_area), "jump", GTK_SIGNAL_FUNC(jump), NULL);
-			     
+  gtk_signal_connect_object (GTK_OBJECT (main_area),
+			     "jump", GTK_SIGNAL_FUNC(jump),
+			     (gpointer) main_area);
+
+  gtk_signal_connect_object (GTK_OBJECT (main_area), 
+			     "clicked", GTK_SIGNAL_FUNC(clicked),
+			     (gpointer) main_area);
+
   scrolled_area = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);

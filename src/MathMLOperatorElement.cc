@@ -28,6 +28,7 @@
 #include "Iterator.hh"
 #include "MathEngine.hh"
 #include "operatorAux.hh"
+#include "traverseAux.hh"
 #include "ValueSequence.hh"
 #include "StringFactory.hh"
 #include "StringUnicode.hh"
@@ -96,7 +97,7 @@ MathMLOperatorElement::Append(const String* s)
 void
 MathMLOperatorElement::Normalize()
 {
-  MathMLElement* root = getEmbellishedOperatorRoot(this);
+  MathMLElement* root = findEmbellishedOperatorRoot(this);
   assert(root != NULL);
 
   MathMLElement* p = root->GetParent();
@@ -293,6 +294,10 @@ MathMLOperatorElement::VerticalStretchTo(scaled ascent, scaled descent, bool str
   }
 
   sNode->DoVerticalStretchyLayout(adjustedHeight, adjustedDepth, axis, strict);
+
+  // since the bounding box may have changed, we force dirtyLayout to true, so that
+  // a DoBoxedLayout done on this operator will have effect
+  SetDirtyLayout();
 }
 
 void
@@ -336,6 +341,10 @@ MathMLOperatorElement::HorizontalStretchTo(scaled width, bool strict)
   // now we do the stretchy layout. fontAttributes will be used to find the
   // proper font
   sNode->DoHorizontalStretchyLayout(adjustedSize, strict);
+
+  // since the bounding box may have changed, we force dirtyLayout to true, so that
+  // a DoBoxedLayout done on this operator will have effect
+  SetDirtyLayout();
 }
 
 void

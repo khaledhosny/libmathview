@@ -63,3 +63,8 @@ Bugs
   reports U+205f, but the chapter reports U+2005
 * operators strechying within tables buggy. Sometimes the table remains "larger"
   than needed just because there were a strecthy operator
+* it seems that `gtk_math_view_set_font_size' is called twice when a new default
+  font size is selected. Now I've patched this by making a check and preventing
+  re-doing the layout if the font turns out to be equal
+* seems harmless now, but mrow->Inside return NULL sometimes, when it should
+  return self

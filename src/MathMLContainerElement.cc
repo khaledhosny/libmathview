@@ -214,6 +214,19 @@ MathMLContainerElement::SetDirty(const Rectangle* rect)
 }
 
 void
+MathMLContainerElement::SetDirtyLayout()
+{
+  if (HasDirtyLayout()) return;
+
+  dirtyLayout = 1;
+  
+  for (Iterator<MathMLElement*> elem(content); elem.More(); elem.Next()) {
+    assert(elem() != NULL);
+    elem()->SetDirtyLayout();
+  }
+}
+
+void
 MathMLContainerElement::SetSelected()
 {
   if (IsSelected()) return;

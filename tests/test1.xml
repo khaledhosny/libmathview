@@ -1,5 +1,6 @@
 <math display="block">
-  <mrow>
+  <maction>
+   <mrow>
     <mo>&int;</mo>
     <mo>&ApplyFunction;</mo>
     <mfrac>
@@ -27,7 +28,9 @@
 	<mi>q</mi>
       </mrow>
     </mfrac>
-  </mrow>
+   </mrow>
+   <mtable frame="solid" framespacing=".5em .5em"><mtr><mtd><mtext>...</mtext></mtd></mtr></mtable>
+  </maction>
   <mo fontstyle="italic">d</mo>
   <mi>x</mi>
   <mo>=</mo>

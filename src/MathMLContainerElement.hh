@@ -42,6 +42,7 @@ public:
   virtual ~MathMLContainerElement();
 
   virtual void SetDirty(const Rectangle* = NULL);
+  virtual void SetDirtyLayout(void);
   virtual void SetSelected(void);
   virtual void ResetSelected(void);
   virtual void ResetLast(void);

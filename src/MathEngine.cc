@@ -28,14 +28,16 @@
 #include "config.dirs"
 
 #include "Clock.hh"
-#include "Parser.hh"
 #include "Iterator.hh"
 #include "MathEngine.hh"
 #include "CharMapper.hh"
+#include "MathMLizer.hh"
 #include "StringUnicode.hh"
 #include "MathMLDocument.hh"
 #include "T1_FontManager.hh"
+#include "MathMLParseFile.hh"
 #include "T1_Gtk_DrawingArea.hh"
+#include "MathMLActionElement.hh"
 #include "RenderingEnvironment.hh"
 
 EntitiesTable      MathEngine::entitiesTable;
@@ -53,7 +55,7 @@ MathEngine::MathEngine()
 
   document = NULL;
   root = NULL;
-  selectionFirst = selectionRoot = selection = NULL;
+  selected = NULL;
 }
 
 MathEngine::~MathEngine()
@@ -147,11 +149,31 @@ MathEngine::Load(const char* fileName)
 
   Clock perf;
   perf.Start();
-  MathMLParser *parser = new MathMLParser(fileName);
-  document = parser->Parse();
+  mDOMDocRef doc = MathMLParseFile(fileName, true);
   perf.Stop();
   logger(LOG_INFO, "parsing time: %dms", perf());
-  delete parser;
+
+  if (doc == NULL) {
+    logger(LOG_WARNING, "error while parsing `%s'", fileName);
+    return false;
+  }
+
+  return Load(doc);
+}
+
+bool
+MathEngine::Load(mDOMDocRef doc)
+{
+  assert(doc != NULL);
+
+  Unload();
+
+  Clock perf;
+  perf.Start();
+  MathMLizer izer(doc);
+  document = izer();
+  perf.Stop();
+  logger(LOG_INFO, "MathMLization time: %dms", perf());
 
   if (document != NULL) {
     perf.Start();
@@ -166,7 +188,7 @@ MathEngine::Load(const char* fileName)
 
     return true;
   } else
-    logger(LOG_WARNING, "error while parsing `%s'", fileName);
+    logger(LOG_WARNING, "error while MathMLizing document");
 
   return false;
 }
@@ -183,7 +205,7 @@ MathEngine::Unload()
   }
 
   root = NULL;
-  selectionFirst = selectionRoot = selection = NULL;
+  selected = NULL;
 }
 
 void
@@ -203,6 +225,16 @@ MathEngine::Setup()
   root->Setup(&env);
   perf.Stop();
   logger(LOG_INFO, "setup time: %dms", perf());
+
+  MinMaxLayout();
+}
+
+void
+MathEngine::MinMaxLayout()
+{
+  if (root == NULL) return;
+
+  Clock perf;
 
   perf.Start();
   root->DoBoxedLayout(LAYOUT_MIN);
@@ -241,11 +273,7 @@ MathEngine::SetDirty(const Rectangle* rect)
 void
 MathEngine::Render(const Rectangle* rect)
 {
-  Clock perf;
-  perf.Start();
   if (root != NULL) root->SetDirty(rect);
-  perf.Stop();
-  logger(LOG_INFO, "set-dirty time: %dms", perf());
   Update(rect);
 }
 
@@ -288,43 +316,11 @@ MathEngine::GetDocumentRectangle(Rectangle& rect) const
     rect.Zero();
 }
 
+#if 0
 void
 MathEngine::SetSelectionFirst(MathMLElement* elem)
 {
   selectionFirst = elem;
-}
-
-MathMLElement*
-MathEngine::SelectMinimumTree(MathMLElement* first, MathMLElement* last)
-{
-  assert(first != NULL);
-  assert(last != NULL);
-
-  if (first != last) {
-    unsigned firstDepth = first->GetDepth();
-    unsigned lastDepth  = last->GetDepth();
-
-    while (firstDepth > lastDepth) {
-      first = first->GetParent();
-      firstDepth--;
-    }
-
-    while (lastDepth > firstDepth) {
-      last = last->GetParent();
-      lastDepth--;
-    }
-
-    assert(firstDepth == lastDepth);
-
-    while (first != NULL && last != NULL && first != last) {
-      first = first->GetParent();
-      last = last->GetParent();
-    }
-  }
-
-  assert(first == last);
-
-  return first;
 }
 
 void
@@ -343,15 +339,16 @@ MathEngine::ResetSelectionRoot()
 {
   selectionFirst = selectionRoot = NULL;
 }
+#endif
 
 void
-MathEngine::SetSelection(MathMLElement* selected)
+MathEngine::SetSelected(MathMLElement* elem)
 {
-  if (selection == selected) return;
+  if (selected == elem) return;
 
-  if (selection != NULL) selection->ResetSelected();
-  selection = selected;
-  if (selection != NULL) selection->SetSelected();
+  if (selected != NULL) selected->ResetSelected();
+  selected = elem;
+  if (selected != NULL) selected->SetSelected();
 
   Update();
 }
@@ -365,12 +362,6 @@ MathEngine::GetElementAt(scaled x, scaled y) const
   // the case of Gtk_DrawingArea) or not (PS_DrawingArea). The caller must
   // properly adjust x and y before calling this method
   return root->Inside(x, y);
-}
-
-void
-MathEngine::SetElement(MathMLElement* elem)
-{
-  element = elem;
 }
 
 void

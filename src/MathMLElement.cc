@@ -268,8 +268,17 @@ MathMLElement::ResetLayout()
 }
 
 void
+MathMLElement::ResetDirtyLayout(scaled w)
+{
+  ResetDirtyLayout();
+  lastLayoutWidth = w;
+}
+
+void
 MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 {
+  if (!HasDirtyLayout(maxWidth)) return;
+
   ResetLayout();
 
   layout = new Layout(maxWidth, IsBreakable() ? bid : BREAK_NO);
@@ -283,6 +292,8 @@ MathMLElement::DoBoxedLayout(LayoutId id, BreakId bid, scaled maxWidth)
 #if 0
   cout << '`' << NameOfTagId(IsA()) << "' (" << this << ") DoBoxedLayout " << box << endl;
 #endif
+
+  if (id == LAYOUT_AUTO) ResetDirtyLayout(maxWidth);
 }
 
 void
@@ -290,8 +301,6 @@ MathMLElement::DoLayout(LayoutId id, Layout& layout)
 {
   // Well, there are some empty elements, such as <none/> or <prescripts/>
   // that do not have a layout, nonetheless they are unbreakable
-
-  //cout << NameOfTagId(IsA()) << " do layout" << endl;
 }
 
 void

@@ -25,6 +25,8 @@
 
 #include <config.h>
 
+#include "MathMLContainerElement.hh"
+
 class MathMLUnderOverElement : public MathMLContainerElement {
 public:
   MathMLUnderOverElement(mDOMNodeRef, TagId);

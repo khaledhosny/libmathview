@@ -27,7 +27,6 @@
 
 #include "defs.h"
 #include "guiGTK.h"
-#include "Parser.hh"
 #include "String.hh"
 #include "MathEngine.hh"
 #include "MathMLTokenElement.hh"

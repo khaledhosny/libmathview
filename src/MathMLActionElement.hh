@@ -46,7 +46,11 @@ public:
   virtual scaled GetLeftEdge(void) const;
   virtual scaled GetRightEdge(void) const;
 
+  virtual MathMLElement* Inside(scaled, scaled);
   MathMLElement* GetSelectedElement(void) const;
+
+  unsigned GetSelectedIndex(void) const;
+  void     SetSelectedIndex(unsigned);
 
 private:
   unsigned selection;

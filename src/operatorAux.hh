@@ -23,17 +23,10 @@
 #ifndef operatorAux_hh
 #define operatorAux_hh
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "CharMap.hh"
 
-#include "MathMLOperatorElement.hh"
+bool isStretchyOperator(class MathMLElement*);
+bool isStretchyOperator(class MathMLElement*, StretchId);
 
-MathMLElement*         getEmbellishedOperatorRoot(MathMLElement*);
-MathMLOperatorElement* getCoreOperator(MathMLElement*);
-MathMLOperatorElement* getStretchyOperator(MathMLElement*);
-MathMLOperatorElement* getStretchyOperator(MathMLElement*, StretchId);
-bool                   isStretchyOperator(MathMLElement*);
-bool                   isStretchyOperator(MathMLElement*, StretchId);
+#endif // operatorAux_hh
 
-#endif
