@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2002, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,21 +17,34 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://www.cs.unibo.it/helm/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __AbstractLogger_hh__
+#define __AbstractLogger_hh__
 
-#include <cassert>
-#include <string.h>
+#include "Object.hh"
+#include "String.hh"
 
-#include "Globals.hh"
+enum LogLevelId { LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG };
 
-namespace Globals {
+class AbstractLogger : public Object
+{
+protected:
+  AbstractLogger(void);
+  virtual ~AbstractLogger();
 
-  SmartPtr<MathMLOperatorDictionary> dictionary;
-  Configuration      configuration;
-  Logger             logger;
+public:
+  void setLogLevel(LogLevelId);
+  LogLevelId getLogLevel(void) const { return logLevel; }
 
-}
+  void out(LogLevelId, const char*, ...) const;
 
+protected:
+  virtual void outString(const String&) const = 0;
+
+private:
+  LogLevelId logLevel;  
+};
+
+#endif // __AbstractLogger_hh__

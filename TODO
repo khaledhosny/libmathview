@@ -7,8 +7,7 @@
 
 // AbiWord
 
-? make conversion functions in RenderingContext non-static and
-  take zooming into account
+- remnove partial zooming support
 
 // MathML
 
@@ -26,6 +25,7 @@ BUGS
 
 ARCH IMPROVEMENTS
 
+- math-engine-configuration.xml -> gtkmathview.conf.xml
 ? move the MathMLOperatorDictionary into MathMLNamespaceContext?
 + Gtk_PangoLayoutLineArea shares constructor with GtkPangoLayoutArea
   which computes bounding box as well

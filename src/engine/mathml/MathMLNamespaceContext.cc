@@ -22,9 +22,10 @@
 
 #include <config.h>
 
+#include "defs.h"
 #include "View.hh"
-#include "Globals.hh"
 #include "Clock.hh"
+#include "AbstractLogger.hh"
 #include "MathMLElement.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathGraphicDevice.hh"
@@ -59,7 +60,7 @@ MathMLNamespaceContext::format(const SmartPtr<Element>& el) const
       perf.Start();
       elem->format(ctxt);
       perf.Stop();
-      Globals::logger(LOG_INFO, "formatting time: %dms", perf());
+      getView()->getLogger()->out(LOG_INFO, "formatting time: %dms", perf());
     }
 #if 0
   std::cerr << "element  formatted to area? " << static_cast<const Area*>(elem->getArea())

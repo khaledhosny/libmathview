@@ -27,7 +27,6 @@
 #include "MathML.hh"
 #include "AreaFactory.hh"
 #include "BoundingBoxAux.hh"
-#include "Globals.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLGlyphNode.hh"
@@ -84,17 +83,9 @@ MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
 
   if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathcolor))
     ctxt.setColor(ToRGB(value));
-#if 0
-  else
-    if (hasLink()) ctxt.setColor(Globals::configuration.GetLinkForeground());
-#endif
 
   if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathbackground))
     ctxt.setBackground(ToRGB(value));
-#if 0
-  else if (hasLink() && !Globals::configuration.HasTransparentLinkBackground())
-    ctxt.setBackground(Globals::configuration.GetLinkBackground());
-#endif
 
   RGBColor newColor = ctxt.getColor();
   RGBColor newBackground = ctxt.getBackground();

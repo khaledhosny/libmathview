@@ -27,7 +27,6 @@
 #include "AreaFactory.hh"
 #include "MathFormattingContext.hh"
 #include "MathGraphicDevice.hh"
-#include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"

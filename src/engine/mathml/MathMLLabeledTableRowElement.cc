@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLLabeledTableRowElement.hh"
 #include "MathMLTableCellElement.hh"

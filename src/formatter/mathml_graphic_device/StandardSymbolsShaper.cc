@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,31 +17,28 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
 #include <cassert>
 
-#include <gdk/gdkx.h>
-#include <pango/pangox.h>
-
 #include "ShapingResult.hh"
-#include "Gtk_AdobeShaper.hh"
-#include "Gtk_AreaFactory.hh"
-#include "Gtk_RenderingContext.hh"
-#include "Gtk_PangoFontManager.hh"
 #include "MathVariant.hh"
 #include "MathVariantMap.hh"
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
+#include "StandardSymbolsShaper.hh"
 
-static struct {
-  guint8 index;
+struct GlyphMap {
+  Char8 index;
   Char16 ch;
-} symbolMap[] = {
+};
+
+GlyphMap
+symbolMap[] = {
   { 0x20, 0x0020 },  // SPACE // space
   { 0x21, 0x0021 },  // EXCLAMATION MARK  // exclam
   { 0x22, 0x2200 },  // FOR ALL // universal
@@ -240,26 +237,7 @@ static struct {
   { 0x00, 0x0000 }
 };
 
-struct HStretchyChar
-{
-  Char16 ch;
-  guint8 normal;
-  guint8 left;
-  guint8 glue;
-  guint8 right;
-};
-
-struct VStretchyChar
-{
-  Char16 ch;
-  guint8 normal;
-  guint8 top;
-  guint8 glue;
-  guint8 middle;
-  guint8 bottom;
-};
-
-static HStretchyChar hMap[] =
+static StandardSymbolsShaper::HStretchyChar hMap[] =
   {
     //        N     L     G     R
     { 0x2190, 0xAC, 0xAC, 0xBE, 0    },
@@ -268,7 +246,7 @@ static HStretchyChar hMap[] =
     { 0,      0,    0,    0,    0    }
   };
 
-static VStretchyChar vMap[] =
+static StandardSymbolsShaper::VStretchyChar vMap[] =
   {
     //        N     T     G     M     B
     { 0x0028, 0x28, 0xE6, 0xE7, 0,    0xE8 },
@@ -285,88 +263,59 @@ static VStretchyChar vMap[] =
     { 0,      0,    0,    0,    0,    0    }
   };
 
-struct XFontDesc
-{
-  MathVariant variant;
-  char* family;
-  char* weight;
-  char* slant;
-  char* charset;
-};
-
-#define SYMBOL_INDEX 0
-#define LATIN_BASE_INDEX 1
-
-#define H_STRETCHY_BIT   0x100
-#define V_STRETCHY_BIT   0x200
-#define GLYPH_INDEX_MASK 0x0ff
-
-static XFontDesc variantDesc[Gtk_AdobeShaper::N_FONTS] =
-  {
-    { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
-    { NORMAL_VARIANT, "times", "medium", "r", "iso8859-1" },
-    { BOLD_VARIANT, "times", "bold", "r", "iso8859-1" },
-    { ITALIC_VARIANT, "times", "medium", "i", "iso8859-1" },
-    { BOLD_ITALIC_VARIANT, "times", "bold", "i", "iso8859-1" },
-    { SANS_SERIF_VARIANT, "helvetica", "medium", "r", "iso8859-1" },
-    { BOLD_SANS_SERIF_VARIANT, "helvetica", "bold", "r", "iso8859-1" },
-    { SANS_SERIF_ITALIC_VARIANT, "helvetica", "medium", "i", "iso8859-1" },
-    { SANS_SERIF_BOLD_ITALIC_VARIANT, "helvetica", "bold", "i", "iso8859-1" },
-    { MONOSPACE_VARIANT, "courier", "medium", "r", "iso8859-1" }
-  };
-
-Gtk_AdobeShaper::Gtk_AdobeShaper()
-{ }
-
-Gtk_AdobeShaper::~Gtk_AdobeShaper()
-{ }
+#define NORMAL_FONT_INDEX     0
+#define H_STRETCHY_FONT_INDEX 1
+#define V_STRETCHY_FONT_INDEX 2
 
 void
-Gtk_AdobeShaper::setFontManager(const SmartPtr<Gtk_PangoFontManager>& fm)
-{ fontManager = fm; }
-
-void
-Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
+StandardSymbolsShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
   assert(sm);
 
-  for (unsigned i = LATIN_BASE_INDEX; i < N_FONTS; i++)
-    {
-      for (Char16 ch = 0x20; ch < 0x100; ch++)
-	{
-	  Char32 vch = mapMathVariant(variantDesc[i].variant, ch);
-	  if (variantDesc[i].variant == NORMAL_VARIANT || vch != ch)
-	    sm->registerChar(vch, GlyphSpec(shaperId, i, ch));
-	}
-    }
-
   for (unsigned i = 0; symbolMap[i].ch; i++)
-    sm->registerChar(symbolMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, symbolMap[i].index));
+    registerChar(sm, shaperId, symbolMap[i].ch, symbolMap[i].index);
 
   for (unsigned i = 0; vMap[i].ch != 0; i++)
-    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | V_STRETCHY_BIT));
+    registerStretchyCharV(sm, shaperId, vMap[i], i);
 
   for (unsigned i = 0; hMap[i].ch != 0; i++)
-    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, SYMBOL_INDEX, i | H_STRETCHY_BIT));
+    registerStretchyCharH(sm, shaperId, hMap[i], i);
 }
 
 void
-Gtk_AdobeShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
+StandardSymbolsShaper::registerChar(const SmartPtr<ShaperManager>& sm, unsigned shaperId, Char16 ch, Char8 glyphId)
+{
+  assert(ch);
+  sm->registerChar(ch, GlyphSpec(shaperId, NORMAL_FONT_INDEX, glyphId));
+}
+
+void
+StandardSymbolsShaper::registerStretchyCharV(const SmartPtr<ShaperManager>& sm, unsigned shaperId,
+					     const VStretchyChar& vMap, Char8 glyphId)
+{ sm->registerStretchyChar(vMap.ch, GlyphSpec(shaperId, V_STRETCHY_FONT_INDEX, glyphId)); }
+
+void
+StandardSymbolsShaper::registerStretchyCharH(const SmartPtr<ShaperManager>& sm, unsigned shaperId,
+					     const HStretchyChar& hMap, Char8 glyphId)
+{ sm->registerStretchyChar(hMap.ch, GlyphSpec(shaperId, H_STRETCHY_FONT_INDEX, glyphId)); }
+
+void
+StandardSymbolsShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
 {
   // nothing to do???
 }
 
 void
-Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
+StandardSymbolsShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result) const
 {
   for (unsigned n = result.chunkSize(); n > 0; n--)
     {
       AreaRef res;
       GlyphSpec spec = result.getSpec();
 
-      if (spec.getGlyphId() & H_STRETCHY_BIT)
+      if (spec.getFontId() == H_STRETCHY_FONT_INDEX)
 	res = shapeStretchyCharH(ctxt, spec, result.getHSpan());
-      else if (spec.getGlyphId() & V_STRETCHY_BIT)
+      else if (spec.getFontId() == V_STRETCHY_FONT_INDEX)
 	res = shapeStretchyCharV(ctxt, spec, result.getVSpan());
 
       // If we get here then either the character was not required
@@ -379,186 +328,56 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
     }
 }
 
-#if 0
-const char*
-Gtk_AdobeShaper::getXLFD(unsigned fi, const scaled& size)
-{
-  assert(fi < N_FONTS);
-
-  static char buffer[128];
-  sprintf(buffer, "-adobe-%s-%s-%s-*--*-%d-75-75-*-*-%s",
-	  variantDesc[fi].family, variantDesc[fi].weight, variantDesc[fi].slant,
-	  static_cast<int>(size.toFloat() * 10 + 0.5f), variantDesc[fi].charset);
- 
-  return buffer;
-}
-
-PangoFont*
-Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
-{
-  assert(fi < N_FONTS);
-  CachedFontKey key(size);
-  PangoFontCache::iterator p = pangoFontCache[fi].find(key);
-  if (p != pangoFontCache[fi].end())
-    {
-      subfont = p->second.subfont;
-      return p->second.font;
-    }
-
-  // Note that we use the default values for the display
-  // that is the value that was specified to the
-  // X server on the command line. This will work on most cases
-  PangoFont* font = pango_x_load_font(gdk_x11_get_default_xdisplay(), getXLFD(fi, size));
-  assert(font);
-
-  // the following operations are needed even if the subfont is
-  // always 1, dunno why :-(((
-  PangoXSubfont* sf;
-  int* subfont_charset;
-  int n_subfonts;
-  n_subfonts = pango_x_list_subfonts(font, &variantDesc[fi].charset, 1, &sf, &subfont_charset);
-  assert(n_subfonts > 0);
-  subfont = sf[0];
-  g_free(sf);
-  g_free(subfont_charset);
-#if 0
-  printf("found %d subfonts\n", n_subfonts);
-  for (unsigned i = 0; i < n_subfonts; i++)
-    printf("subfont: %d\n", subfont[i]);
-#endif
-  
-  pangoFontCache[fi][key] = CachedPangoFontData(font, subfont);
-
-  return font;
-}
-
-#if 0
-XftFont*
-Gtk_AdobeShaper::getXftFont(unsigned fi, const scaled& size) const
-{
-  XftFont* font = XftFontOpenXlfd(gdk_x11_get_default_xdisplay(),
-		                  gdk_x11_get_default_screen(),
-				  getXLFD(fi, size));
-  assert(font);
-
-  return font;
-}
-#endif
-#endif
-
 AreaRef
-Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
-				      unsigned fi, unsigned gi,
-				      const scaled& size) const
+StandardSymbolsShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
+				    Char8 gi, const scaled& size) const
 {
-  PangoXSubfont subfont;
-  assert(fontManager);
-#if 0
-  PangoFont* font = fontManager->getPangoFont(Gtk_PangoFontManager::XLFD("adobe", variantDesc[fi].family,
-									 variantDesc[fi].weight, variantDesc[fi].slant,
-									 static_cast<int>(size.toFloat() * 10 + 0.5f),
-									 variantDesc[fi].charset),
-					      subfont);
-#else
-  PangoFont* font = fontManager->getPangoFont(Gtk_PangoFontManager::PangoFD("symbol", PANGO_STYLE_NORMAL,
-									    PANGO_WEIGHT_NORMAL,
-									    static_cast<int>(size.toFloat() * 10 + 0.5f)),
-					      subfont);
-#endif
-  assert(font);
-
-  PangoGlyphString* gs = pango_glyph_string_new();
-  pango_glyph_string_set_size(gs, 1);
-  gs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(subfont, gi);
-  gs->glyphs[0].geometry.x_offset = 0;
-  gs->glyphs[0].geometry.y_offset = 0;
-  gs->glyphs[0].geometry.width = 0;
-
-  return factory->pangoGlyph(font, gs);
-}
-
-#if 0
-AreaRef
-Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
-				    unsigned fi, unsigned gi,
-				    const scaled& size) const
-{
-  XftFont* font = getXftFont(fi, size);
-  assert(font);
-  return factory->xftGlyph(font, gi);
-}
-#endif
-
-AreaRef
-Gtk_AdobeShaper::createGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
-				 unsigned fi, unsigned gi,
-				 const scaled& size) const
-{
-  return createPangoGlyphArea(factory, fi, gi, size);
-  // return createXftGlyphArea(factory, fi, gi, size);
-}
-
-AreaRef
-Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
-			      unsigned fi, unsigned gi,
-			      const scaled& size) const
-{
-  assert(fi < N_FONTS);
   CachedAreaKey key(gi, size);
-  AreaCache::iterator p = areaCache[fi].find(key);
-  if (p != areaCache[fi].end())
+  AreaCache::iterator p = areaCache.find(key);
+  if (p != areaCache.end())
     return p->second;
 
-  AreaRef res = createGlyphArea(factory, fi, gi, size);
+  AreaRef res = createGlyphArea(factory, gi, size);
   assert(res);
-  areaCache[fi][key] = res;
+  areaCache[key] = res;
 
   return res;
 }
 
 AreaRef
-Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
+StandardSymbolsShaper::shapeChar(const MathFormattingContext& ctxt, const GlyphSpec& spec) const
 {
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
-  assert(factory);
-  return getGlyphArea(factory, spec.getFontId(), spec.getGlyphId() & GLYPH_INDEX_MASK, ctxt.getSize());
+  return getGlyphArea(ctxt.getDevice()->getFactory(), spec.getGlyphId(), ctxt.getSize());
 }
 
 AreaRef
-Gtk_AdobeShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
+StandardSymbolsShaper::shapeStretchyCharH(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& span) const
 {
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
-  assert(factory);
-
+  SmartPtr<AreaFactory> factory = ctxt.getDevice()->getFactory();
   const scaled size = ctxt.getSize();
+  const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
 
-  const HStretchyChar* charSpec = &hMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
-
-  AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size) : 0;
-  AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->left, size) : 0;
-  AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
-  AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->right, size) : 0;
+  AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, charSpec->normal, size) : 0;
+  AreaRef left = (charSpec->left != 0) ? getGlyphArea(factory, charSpec->left, size) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, charSpec->glue, size) : 0;
+  AreaRef right = (charSpec->right != 0) ? getGlyphArea(factory, charSpec->right, size) : 0;
 
   return composeStretchyCharH(factory, normal, left, glue, right, span);
 }
 
 AreaRef
-Gtk_AdobeShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
+StandardSymbolsShaper::shapeStretchyCharV(const MathFormattingContext& ctxt, const GlyphSpec& spec, const scaled& strictSpan) const
 { 
-  const scaled span = strictSpan - (1 * ctxt.getSize()) / 10;
-
-  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
-  assert(factory);
-
+  SmartPtr<AreaFactory> factory = ctxt.getDevice()->getFactory();
   const scaled size = ctxt.getSize();
+  const scaled span = strictSpan - (1 * size) / 10;
+  const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
 
-  const VStretchyChar* charSpec = &vMap[spec.getGlyphId() & GLYPH_INDEX_MASK];
-
-  AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->normal, size) : 0;
-  AreaRef top = (charSpec->top != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->top, size) : 0;
-  AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->glue, size) : 0;
-  AreaRef middle = (charSpec->middle != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->middle, size) : 0;
-  AreaRef bottom = (charSpec->bottom != 0) ? getGlyphArea(factory, SYMBOL_INDEX, charSpec->bottom, size) : 0;
+  AreaRef normal = (charSpec->normal != 0) ? getGlyphArea(factory, charSpec->normal, size) : 0;
+  AreaRef top = (charSpec->top != 0) ? getGlyphArea(factory, charSpec->top, size) : 0;
+  AreaRef glue = (charSpec->glue != 0) ? getGlyphArea(factory, charSpec->glue, size) : 0;
+  AreaRef middle = (charSpec->middle != 0) ? getGlyphArea(factory, charSpec->middle, size) : 0;
+  AreaRef bottom = (charSpec->bottom != 0) ? getGlyphArea(factory, charSpec->bottom, size) : 0;
 
   return composeStretchyCharV(factory, normal, top, glue, middle, bottom, span);
 }

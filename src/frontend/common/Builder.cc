@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include "Builder.hh"
+#include "AbstractLogger.hh"
 #include "MathMLNamespaceContext.hh"
 #if ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
@@ -51,3 +52,11 @@ SmartPtr<BoxMLNamespaceContext>
 Builder::getBoxMLNamespaceContext() const
 { return boxmlContext; }
 #endif // ENABLE_BOXML
+
+void
+Builder::setLogger(const SmartPtr<AbstractLogger>& l)
+{ logger = l; }
+
+SmartPtr<AbstractLogger>
+Builder::getLogger() const
+{ return logger; }

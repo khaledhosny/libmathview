@@ -38,7 +38,7 @@ gmetadom_Setup::loadOperatorDictionary(MathMLOperatorDictionary& dictionary, con
   catch (DOM::DOMException e)
     {
       String msg = e.msg;
-      Globals::logger(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
+      Globals::logger->out(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
       return false;
     }
 }
@@ -55,7 +55,7 @@ gmetadom_Setup::loadConfiguration(Configuration& conf, const String& path)
   catch (DOM::DOMException e)
     {
       String msg = e.msg;
-      Globals::logger(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
+      Globals::logger->out(LOG_DEBUG, "caught exception: %d `%s'", e.code, msg.c_str());
       return false;
     }
 }

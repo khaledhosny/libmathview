@@ -23,8 +23,8 @@
 #include <config.h>
 #include <assert.h>
 
-#include "Globals.hh"
 #include "Attribute.hh"
+#include "AbstractLogger.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "AttributeList.hh"
 
@@ -32,37 +32,36 @@ MathMLOperatorDictionary::MathMLOperatorDictionary()
 { }
 
 MathMLOperatorDictionary::~MathMLOperatorDictionary()
-{
-  unload();
-}
+{ unload(); }
 
 void
-MathMLOperatorDictionary::add(const String& opName, const String& form,
+MathMLOperatorDictionary::add(const AbstractLogger& logger,
+			      const String& opName, const String& form,
 			      const SmartPtr<AttributeList>& defaults)
 {
   FormDefaults& formDefaults = items[opName];
   if (form == "prefix")
     if (formDefaults.prefix)
-      Globals::logger(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
-		      opName.c_str());
+      logger.out(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
+		 opName.c_str());
     else
       formDefaults.prefix = defaults;
   else if (form == "infix")
     if (formDefaults.prefix)
-      Globals::logger(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
-		      opName.c_str());
+      logger.out(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
+		 opName.c_str());
     else
       formDefaults.infix = defaults;
   else if (form == "postfix")
     if (formDefaults.prefix)
-      Globals::logger(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
-		      opName.c_str());
+      logger.out(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
+		 opName.c_str());
     else
       formDefaults.postfix = defaults;
   else
-    Globals::logger(LOG_WARNING, 
-		    "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
-		    opName.c_str());
+    logger.out(LOG_WARNING, 
+	       "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
+	       opName.c_str());
 }
 
 void

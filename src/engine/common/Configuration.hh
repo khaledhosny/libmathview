@@ -29,10 +29,12 @@
 #include "scaled.hh"
 #include "String.hh"
 #include "RGBColor.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
 
-class Configuration
+class Configuration : public Object
 {
-public:
+protected:
   Configuration(void)
     : drawMissingGlyphs(true),
       fontSize(DEFAULT_FONT_SIZE), 
@@ -44,7 +46,11 @@ public:
       selectBackground(DEFAULT_SELECT_BACKGROUND)
   { }
 
-  ~Configuration() { }
+  virtual ~Configuration();
+
+public:
+  static SmartPtr<Configuration> create(void)
+  { return new Configuration(); }
 
   void addDictionary(const String& s) { dictionaries.push_back(s); }
   const std::vector<String>& getDictionaries(void) const { return dictionaries; }

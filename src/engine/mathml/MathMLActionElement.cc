@@ -24,7 +24,7 @@
 
 #include <cassert>
 
-#include "Globals.hh"
+#include "AbstractLogger.hh"
 #include "MathMLAttributeSignatures.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLOperatorElement.hh"
@@ -64,10 +64,10 @@ MathMLActionElement::format(MathFormattingContext& ctxt)
 	      selection %= getSize();
 	    }
 	  else
-	    Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
+	    getLogger()->out(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
 	}
       else
-	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
+	getLogger()->out(LOG_WARNING, "no action specified for `maction' element");
 
       AreaRef res;
       if (SmartPtr<MathMLElement> elem = getChild(selection))

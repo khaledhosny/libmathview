@@ -53,7 +53,7 @@ BoxMLNamespaceContext::format(const SmartPtr<Element>& el) const
       perf.Start();
       elem->format(ctxt);
       perf.Stop();
-      Globals::logger(LOG_INFO, "formatting time: %dms", perf());
+      Globals::logger->out(LOG_INFO, "formatting time: %dms", perf());
     }
   return elem->getArea();
 }

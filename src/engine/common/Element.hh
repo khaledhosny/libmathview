@@ -40,6 +40,7 @@ public:
   static void setParent(Element* self, const SmartPtr<Element>& el) { self->setParent(el); }
 
   SmartPtr<class NamespaceContext> getNamespaceContext(void) const;
+  SmartPtr<class AbstractLogger> getLogger(void) const;
 
   void setParent(const SmartPtr<Element>&);
   SmartPtr<Element> getParent(void) const { return static_cast<Element*>(parent); }

@@ -27,7 +27,6 @@
 #include <algorithm>
 
 #include "Adapters.hh"
-#include "Globals.hh"
 #include "ValueConversion.hh"
 #include "MathMLTableElement.hh"
 #include "MathMLTableRowElement.hh"

@@ -23,6 +23,7 @@
 #ifndef __MathMLSpaceElement_hh__
 #define __MathMLSpaceElement_hh__
 
+#include "token.hh"
 #include "MathMLElement.hh"
 
 class MathMLSpaceElement : public MathMLElement

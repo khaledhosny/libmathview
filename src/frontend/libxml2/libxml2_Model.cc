@@ -23,31 +23,31 @@
 #include <config.h>
 
 #include "Clock.hh"
-#include "Globals.hh"
+#include "AbstractLogger.hh"
 #include "libxml2_Model.hh"
 
 #include <iostream>
 
 xmlDoc*
-libxml2_Model::document(const String& path, bool)
+libxml2_Model::document(const AbstractLogger& logger, const String& path, bool)
 {
   Clock perf;
   perf.Start();
   xmlDoc* doc = xmlParseFile(path.c_str());
   perf.Stop();
-  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+  logger.out(LOG_INFO, "parsing time: %dms", perf());
 
   return doc;
 }
 
 xmlDoc*
-libxml2_Model::documentFromBuffer(const String& buffer, bool)
+libxml2_Model::documentFromBuffer(const AbstractLogger& logger, const String& buffer, bool)
 {
   Clock perf;
   perf.Start();
   xmlDoc* doc = xmlReadDoc(toModelString(buffer.c_str()), NULL, NULL, 0);
   perf.Stop();
-  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+  logger.out(LOG_INFO, "parsing time: %dms", perf());
 
   return doc;  
 }

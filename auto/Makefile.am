@@ -28,11 +28,8 @@ EXTRA_DIST = \
 
 DISTCLEANFILES = $(AUTOFILES)
 
-mathviewdir = $(pkgincludedir)/MathView
-mathview_HEADERS = \
-  token.dec
-
 noinst_HEADERS = \
+  token.dec \
   token.def \
   entitiesTable.inc
 

@@ -24,9 +24,13 @@
 
 #include <cassert>
 
-#include "Globals.hh"
+#include "defs.h" // for EPSILON
 #include "AreaFactory.hh"
+#include "AbstractLogger.hh"
+#include "NamespaceContext.hh"
+#include "View.hh"
 #include "MathMLOperatorElement.hh"
+#include "MathMLOperatorDictionary.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLValueConversion.hh"
 #include "traverseAux.hh"
@@ -65,8 +69,8 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
       SmartPtr<AttributeList> postfix;
 
       String operatorName = GetRawContent();
-      if (Globals::dictionary)
-	Globals::dictionary->search(operatorName, prefix, infix, postfix);
+      if (SmartPtr<MathMLOperatorDictionary> dictionary = getNamespaceContext()->getView()->getOperatorDictionary())
+	dictionary->search(operatorName, prefix, infix, postfix);
 
       SmartPtr<AttributeList> defaults;
       if      (form == T_PREFIX && prefix) defaults = prefix;
@@ -260,7 +264,7 @@ MathMLOperatorElement::parseLimitValue(const SmartPtr<Value>& value,
       
       if (siz.type == Length::PERCENTAGE_UNIT)
 	{
-	  Globals::logger(LOG_WARNING, "percentage value specified in maxsize attribute (mo) (ignored)");
+	  getLogger()->out(LOG_WARNING, "percentage value specified in maxsize attribute (mo) (ignored)");
 	  multiplier = std::max(EPSILON, siz.value);
 	} 
       else

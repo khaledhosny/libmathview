@@ -1,4 +1,6 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libgtk_mathml_graphic_device.la
 
 #libgtk_mathml_graphic_device_la_LIBADD = \
@@ -13,15 +15,19 @@ noinst_LTLIBRARIES = libgtk_mathml_graphic_device.la
 
 libgtk_mathml_graphic_device_la_SOURCES = \
   Gtk_MathGraphicDevice.cc \
+  Gtk_PangoFontManager.cc \
   Gtk_DefaultPangoShaper.cc \
   Gtk_PangoShaper.cc \
-  Gtk_AdobeShaper.cc
+  Gtk_AdobeShaper.cc \
+  $(NULL)
 
 noinst_HEADERS = \
   Gtk_MathGraphicDevice.hh \
+  Gtk_PangoFontManager.hh \
   Gtk_DefaultPangoShaper.hh \
   Gtk_PangoShaper.hh \
-  Gtk_AdobeShaper.hh
+  Gtk_AdobeShaper.hh \
+  $(NULL)
 
 INCLUDES = \
   $(PANGOX_CFLAGS) \

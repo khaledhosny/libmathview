@@ -65,10 +65,10 @@ BoxMLActionElement::format(BoxFormattingContext& ctxt)
 	      selection %= getSize();
 	    }
 	  else
-	    Globals::logger(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
+	    Globals::logger->out(LOG_WARNING, "action `%s' is not supported (ignored)", action.c_str());
 	}
       else
-	Globals::logger(LOG_WARNING, "no action specified for `maction' element");
+	Globals::logger->out(LOG_WARNING, "no action specified for `maction' element");
 
       AreaRef res;
       if (SmartPtr<BoxMLElement> elem = getChild(selection))

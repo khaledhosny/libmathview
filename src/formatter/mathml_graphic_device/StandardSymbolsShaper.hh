@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,40 +17,50 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_AdobeShaper_hh__
-#define __Gtk_AdobeShaper_hh__
+#ifndef __StandardSymbolsShaper_hh__
+#define __StandardSymbolsShaper_hh__
 
 #include <functional>
 
 #include "HashMap.hh"
 #include "Shaper.hh"
 
-class Gtk_AdobeShaper : public Shaper
+class StandardSymbolsShaper : public Shaper
 {
-protected:
-  Gtk_AdobeShaper(void);
-  virtual ~Gtk_AdobeShaper();
-
 public:
-  enum { N_FONTS = 10 };
-
-  static SmartPtr<Gtk_AdobeShaper> create(void)
-  { return new Gtk_AdobeShaper(); }
-
-  void setFontManager(const SmartPtr<class Gtk_PangoFontManager>&);
-
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(const class MathFormattingContext&, class ShapingResult&) const;
 
-protected:
-  virtual AreaRef createGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+  struct HStretchyChar
+  {
+    Char16 ch;
+    Char8 normal;
+    Char8 left;
+    Char8 glue;
+    Char8 right;
+  };
+  
+  struct VStretchyChar
+  {
+    Char16 ch;
+    Char8 normal;
+    Char8 top;
+    Char8 glue;
+    Char8 middle;
+    Char8 bottom;
+  };
 
-  AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
-  AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+protected:
+  virtual void registerChar(const SmartPtr<class ShaperManager>&, unsigned, Char16, Char8);
+  virtual void registerStretchyCharH(const SmartPtr<class ShaperManager>&, unsigned, const HStretchyChar&, Char8);
+  virtual void registerStretchyCharV(const SmartPtr<class ShaperManager>&, unsigned, const VStretchyChar&, Char8);
+
+  virtual AreaRef createGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const = 0;
+  AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, Char8, const scaled&) const;
 
   AreaRef shapeChar(const class MathFormattingContext&, const class GlyphSpec&) const;
   AreaRef shapeStretchyCharV(const class MathFormattingContext&, const class GlyphSpec&, const scaled&) const;
@@ -75,8 +85,7 @@ protected:
 
   typedef HASH_MAP_NS::hash_map<CachedAreaKey,AreaRef,CachedAreaKeyHash> AreaCache;
 
-  mutable AreaCache areaCache[N_FONTS];
-  SmartPtr<class Gtk_PangoFontManager> fontManager;
+  mutable AreaCache areaCache;
 };
 
-#endif // __Gtk_AdobeShaper_hh__
+#endif // __StandardSymbolsShaper_hh__

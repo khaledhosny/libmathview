@@ -31,7 +31,6 @@ enum TokenId
     T__NOTVALID
   };
 
-void initTokens(void);
 TokenId tokenIdOfString(const char*);
 TokenId tokenIdOfString(const String&);
 const char* stringOfTokenId(TokenId);

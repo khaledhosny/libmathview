@@ -51,8 +51,8 @@ struct gmetadom_Model
 
   // method for parsing a model
   // MUST be available
-  static DOM::Document document(const String&, bool = false);
-  static DOM::Document documentFromBuffer(const String&, bool = false);
+  static DOM::Document document(const class AbstractLogger&, const String&, bool = false);
+  static DOM::Document documentFromBuffer(const class AbstractLogger&, const String&, bool = false);
 
   // conversion methods
   static DOM::Element asNode(const DOM::Element& el) { return el; }

@@ -36,7 +36,7 @@
 #include "BoxMLMathMLAdapter.hh"
 #endif // ENABLE_BOXML
 #include "ValueConversion.hh"
-#include "Globals.hh"
+#include "AbstractLogger.hh"
 
 template <class Model>
 class TemplateBuilder : public Model::Builder
@@ -260,7 +260,7 @@ protected:
     
     if (alt.empty() || fontFamily.empty() || index.empty())
       {
-	Globals::logger(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
+	getLogger()->out(LOG_WARNING, "malformed `mglyph' element (some required attribute is missing)\n");
 	return MathMLStringNode::create("?");
       }
     
@@ -281,9 +281,9 @@ protected:
 	if      (edge == "left") align = T_LEFT;
 	else if (edge == "right") align = T_RIGHT;
 	else
-	  Globals::logger(LOG_WARNING,
-			  "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
-			  std::string(edge).c_str());
+	  getLogger()->out(LOG_WARNING,
+			   "malformed `malignmark' element, attribute `edge' has invalid value `%s' (ignored)",
+			   std::string(edge).c_str());
       }
     
     return MathMLMarkNode::create(align);
@@ -819,7 +819,7 @@ protected:
 	  if (nodeName == "mprescripts")
 	    {
 	      if (preScripts)
-		Globals::logger(LOG_WARNING, "multiple <mprescripts> elements in mmultiscript");
+		builder.getLogger()->out(LOG_WARNING, "multiple <mprescripts> elements in mmultiscript");
 	      else
 		{
 		  if (i % 2 == 1) elem->setSuperScript(nScripts, 0);

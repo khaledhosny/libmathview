@@ -23,6 +23,8 @@
 #ifndef MathMLTableElement_hh
 #define MathMLTableElement_hh
 
+#include "token.hh"
+#include "RGBColor.hh"
 #include "MathMLTableCellElement.hh"
 #include "MathMLTableRowElement.hh"
 #include "MathMLLinearContainerElement.hh"

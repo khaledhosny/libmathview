@@ -25,12 +25,12 @@
 #include <cassert>
 
 #include "Clock.hh"
-#include "Globals.hh"
+#include "AbstractLogger.hh"
 #include "gmetadom_Model.hh"
 #include "MathMLEntitiesTable.hh"
 
 DOM::Document
-gmetadom_Model::document(const String& path, bool subst)
+gmetadom_Model::document(const AbstractLogger& logger, const String& path, bool subst)
 {
   DOM::Document res;
 
@@ -69,13 +69,13 @@ gmetadom_Model::document(const String& path, bool subst)
       assert(exc == 0);
     }
   perf.Stop();
-  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+  logger.out(LOG_INFO, "parsing time: %dms", perf());
 
   return res;
 }
 
 DOM::Document
-gmetadom_Model::documentFromBuffer(const String& buffer, bool subst)
+gmetadom_Model::documentFromBuffer(const AbstractLogger& logger, const String& buffer, bool subst)
 {
   DOM::Document res;
 
@@ -115,7 +115,7 @@ gmetadom_Model::documentFromBuffer(const String& buffer, bool subst)
       assert(exc == 0);
     }
   perf.Stop();
-  Globals::logger(LOG_INFO, "parsing time: %dms", perf());
+  logger.out(LOG_INFO, "parsing time: %dms", perf());
 
   return res;
 }

@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "AreaFactory.hh"
 #include "mathVariantAux.hh"
 #include "ValueConversion.hh"

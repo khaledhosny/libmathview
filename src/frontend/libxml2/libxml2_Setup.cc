@@ -22,22 +22,25 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
 #include "libxml2_Setup.hh"
 #include "libxml2_Model.hh"
 #include "TemplateSetup.hh"
 
 bool
-libxml2_Setup::loadOperatorDictionary(MathMLOperatorDictionary& dictionary, const String& path)
+libxml2_Setup::loadOperatorDictionary(const class AbstractLogger& logger,
+				      MathMLOperatorDictionary& dictionary, const String& path)
 {
-  return TemplateSetup<libxml2_Model>::load<MathMLOperatorDictionary, true>(dictionary,
+  return TemplateSetup<libxml2_Model>::load<MathMLOperatorDictionary, true>(logger, dictionary,
 									    "operator dictionary",
 									    "dictionary", path);
 }
 
 bool
-libxml2_Setup::loadConfiguration(Configuration& conf, const String& path)
+libxml2_Setup::loadConfiguration(const class AbstractLogger& logger,
+				 Configuration& conf, const String& path)
 {
-  return TemplateSetup<libxml2_Model>::load<Configuration, false>(conf,
+  return TemplateSetup<libxml2_Model>::load<Configuration, false>(logger, conf,
 								  "configuration",
 								  "math-engine-configuration", path);
 }

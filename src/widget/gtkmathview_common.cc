@@ -67,10 +67,12 @@ typedef gmetadom_MathView MathView;
 typedef gmetadom_Setup GtkMathView_Setup;
 #endif
 
-#include "Globals.hh"
+#include "Logger.hh"
+#include "Configuration.hh"
 #include "Point.hh"
 #include "Rectangle.hh"
 #include "MathMLElement.hh"
+#include "MathMLOperatorDictionary.hh"
 #include "MathMLNamespaceContext.hh"
 #include "Gtk_MathGraphicDevice.hh"
 #if ENABLE_BOXML
@@ -134,6 +136,8 @@ struct _GtkMathView {
   GtkMathViewModelId cursor_elem;
   gint           cursor_index;
 
+  Configuration* configuration; // move to GtkMathViewClass?
+  MathMLOperatorDictionary* dictionary; // move to GtkMathViewClass?
   MathView*      view;
   Gtk_RenderingContext* renderingContext;
 };
@@ -339,6 +343,7 @@ static void
 paint_widget(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->configuration != 0);
 
   if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
@@ -358,11 +363,11 @@ paint_widget(GtkMathView* math_view)
     }
 
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
-  rc->setForegroundColor(Globals::configuration.getSelectForeground());
-  rc->setBackgroundColor(Globals::configuration.getSelectBackground());
+  rc->setForegroundColor(math_view->configuration->getSelectForeground());
+  rc->setBackgroundColor(math_view->configuration->getSelectBackground());
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(Globals::configuration.getForeground());
-  rc->setBackgroundColor(Globals::configuration.getBackground());
+  rc->setForegroundColor(math_view->configuration->getForeground());
+  rc->setBackgroundColor(math_view->configuration->getBackground());
 
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
@@ -435,41 +440,44 @@ GTKMATHVIEW_METHOD_NAME(get_type)(void)
   return math_view_type;
 }
 
-static void
-initGlobalData(const char* confPath)
+static SmartPtr<Configuration>
+initConfiguration(const AbstractLogger& logger, const char* confPath)
 {
-  static bool done = false;
-  assert(!done);
-
-  initTokens();
+  SmartPtr<Configuration> configuration = Configuration::create();
 
   bool res = false;
-  if (confPath != NULL) res = GtkMathView_Setup::loadConfiguration(Globals::configuration, confPath);
-  if (!res) res = GtkMathView_Setup::loadConfiguration(Globals::configuration, PKGDATADIR"/math-engine-configuration.xml");
-  if (!res) res = GtkMathView_Setup::loadConfiguration(Globals::configuration, "config/math-engine-configuration.xml");
+  if (confPath != NULL) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, confPath);
+  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, PKGDATADIR"/math-engine-configuration.xml");
+  if (!res) res = GtkMathView_Setup::loadConfiguration(logger, *configuration, "config/math-engine-configuration.xml");
   if (!res)
     {
-      Globals::logger(LOG_ERROR, "could not load configuration file");
+      logger.out(LOG_ERROR, "could not load configuration file");
       exit(-1);
     }
 
-  Globals::dictionary = MathMLOperatorDictionary::create();
-  if (!Globals::configuration.getDictionaries().empty())
-    for (std::vector<std::string>::const_iterator dit = Globals::configuration.getDictionaries().begin();
-	 dit != Globals::configuration.getDictionaries().end();
+  return configuration;
+}
+
+static SmartPtr<MathMLOperatorDictionary>
+initOperatorDictionary(const AbstractLogger& logger, const SmartPtr<Configuration> configuration)
+{
+  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
+  if (!configuration->getDictionaries().empty())
+    for (std::vector<std::string>::const_iterator dit = configuration->getDictionaries().begin();
+	 dit != configuration->getDictionaries().end();
 	 dit++)
       {
-	Globals::logger(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	if (!GtkMathView_Setup::loadOperatorDictionary(*Globals::dictionary, (*dit).c_str()))
-	  Globals::logger(LOG_WARNING, "could not load `%s'", (*dit).c_str());
+	logger.out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
+	if (!GtkMathView_Setup::loadOperatorDictionary(logger, *dictionary, (*dit).c_str()))
+	  logger.out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
       }
   else
     {
-      const bool res = GtkMathView_Setup::loadOperatorDictionary(*Globals::dictionary, "config/dictionary.xml");
-      if (!res) GtkMathView_Setup::loadOperatorDictionary(*Globals::dictionary, PKGDATADIR"/dictionary.xml");
+      const bool res = GtkMathView_Setup::loadOperatorDictionary(logger, *dictionary, "config/dictionary.xml");
+      if (!res) GtkMathView_Setup::loadOperatorDictionary(logger, *dictionary, PKGDATADIR"/dictionary.xml");
     }
 
-  done = true;
+  return dictionary;
 }
 
 static void
@@ -620,8 +628,6 @@ gtk_math_view_class_init(GtkMathViewClass* klass)
 						   LOG_ERROR,
 						   G_PARAM_READWRITE));
 #endif
-
-  initGlobalData(getenv("MATHENGINECONF"));
 }
 
 #if GTKMATHVIEW_USES_GMETADOM
@@ -667,6 +673,8 @@ gtk_math_view_init(GtkMathView* math_view)
   g_return_if_fail(math_view != NULL);
 
   math_view->pixmap          = NULL;
+  math_view->configuration   = 0;
+  math_view->dictionary      = 0;
   math_view->view            = 0;
   math_view->renderingContext = 0;
   math_view->freeze_counter  = 0;
@@ -682,17 +690,25 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
-  SmartPtr<MathView> view = MathView::create();
+  SmartPtr<AbstractLogger> logger = Logger::create();
+  SmartPtr<Configuration> configuration = initConfiguration(*logger, getenv("MATHENGINECONF"));
+  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(*logger, configuration);
 
+  configuration->ref();
+  math_view->configuration = configuration;
+
+  SmartPtr<MathView> view = MathView::create();
+  view->ref();
+  math_view->view = view;
+
+  view->setLogger(logger);
+  view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view,
 								 Gtk_MathGraphicDevice::create(GTK_WIDGET(math_view))));
 #if ENABLE_BOXML
   view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view,
 							       Gtk_BoxGraphicDevice::create(GTK_WIDGET(math_view))));
 #endif // ENABLE_BOXML
-
-  view->ref();
-  math_view->view = view;
 
   math_view->renderingContext = new Gtk_RenderingContext;
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
@@ -716,6 +732,12 @@ gtk_math_view_destroy(GtkObject* object)
 
   math_view = GTK_MATH_VIEW(object);
   g_assert(math_view != NULL);
+
+  if (math_view->configuration)
+    {
+      math_view->configuration->unref();
+      math_view->configuration = 0;
+    }
 
   if (math_view->view)
     {
@@ -1734,14 +1756,18 @@ GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView* math_view, gint x, gint y)
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint level)
+GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView* math_view, gint level)
 {
-  Globals::logger.SetLogLevel(level);
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->view != 0);
+  math_view->view->getLogger()->setLogLevel(LogLevelId(level));
 }
 
 extern "C" gint
-GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView*)
+GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView* math_view)
 {
-  return Globals::logger.GetLogLevel();
+  g_return_val_if_fail(math_view != NULL, LOG_ERROR);
+  g_return_val_if_fail(math_view->view != 0, LOG_ERROR);
+  return math_view->view->getLogger()->getLogLevel();
 }
 

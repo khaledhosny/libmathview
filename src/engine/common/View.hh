@@ -42,6 +42,10 @@ public:
   bool thaw(void);
 
   // configuration stuff
+  void setLogger(const SmartPtr<class AbstractLogger>&);
+  SmartPtr<class AbstractLogger> getLogger(void) const;
+  void setOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&);
+  SmartPtr<class MathMLOperatorDictionary> getOperatorDictionary(void) const;
   void setBuilder(const SmartPtr<class Builder>&);
   SmartPtr<class Builder> getBuilder(void) const;
   void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
@@ -81,6 +85,8 @@ protected:
 
 private:
   mutable SmartPtr<class Element> rootElement;
+  SmartPtr<class AbstractLogger> logger;
+  SmartPtr<class MathMLOperatorDictionary> dictionary;
   SmartPtr<class Builder> builder;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
 #if ENABLE_BOXML

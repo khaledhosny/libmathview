@@ -20,25 +20,47 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Logger_hh__
-#define __Logger_hh__
+#include <config.h>
 
-#include "SmartPtr.hh"
+#include <stdarg.h>
+
 #include "AbstractLogger.hh"
 
-class Logger : public AbstractLogger
+AbstractLogger::AbstractLogger() : logLevel(LOG_DEBUG)
+{ }
+
+AbstractLogger::~AbstractLogger()
+{ }
+
+void
+AbstractLogger::setLogLevel(LogLevelId level)
 {
-protected:
-  Logger(void) { }
-  virtual ~Logger() { }
+  if (level < LOG_ERROR) level = LOG_ERROR;
+  if (level > LOG_DEBUG) level = LOG_DEBUG;
+  logLevel = LogLevelId(level);
+}
 
-public:
-  static SmartPtr<Logger> create(void)
-  { return new Logger(); }
+void
+AbstractLogger::out(LogLevelId id, const char* fmt, ...) const
+{
+  static const char* msg[] = { "Error", "Warning", "Info", "Debug" };
 
-protected:
-  virtual void outString(const String&) const;
-};
+  va_list args;
+  va_start(args, fmt);
 
-#endif // _-Logger_hh__
+  if (id <= logLevel)
+    {
+      String res;
+
+      static char buffer[256];
+      snprintf(buffer, 256, "*** %s[%d:%d]: ", msg[id], id, logLevel);
+      res += buffer;
+      vsnprintf(buffer, 256, fmt, args);
+      res += buffer;
+      res += "\n";
+      outString(res);
+    }
+
+  va_end(args);
+}
 

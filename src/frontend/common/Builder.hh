@@ -36,6 +36,9 @@ public:
   virtual SmartPtr<class Element> getRootElement(void) const = 0;
   virtual void forgetElement(Element*) const = 0;
 
+  void setLogger(const SmartPtr<class AbstractLogger>&);
+  SmartPtr<class AbstractLogger> getLogger(void) const;
+
   void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
 #if ENABLE_BOXML
@@ -44,6 +47,7 @@ public:
 #endif // ENABLE_BOXML
 
 protected:
+  SmartPtr<class AbstractLogger> logger;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
 #if ENABLE_BOXML
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;

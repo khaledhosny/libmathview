@@ -40,17 +40,7 @@ static Entry token[] =
   };
 
 typedef HASH_MAP_NS::hash_map<String,TokenId,StringHash,StringEq> Map;
-static bool initialized = false;
 static Map map;
-
-void
-initTokens()
-{
-  assert(!initialized);
-  for (unsigned i = 1; token[i].literal; i++)
-    map[String(token[i].literal)] = token[i].id;
-  initialized = true;
-}
 
 TokenId
 tokenIdOfString(const char* s)
@@ -62,6 +52,14 @@ tokenIdOfString(const char* s)
 TokenId
 tokenIdOfString(const String& s)
 {
+  static bool initialized = false;
+  if (!initialized)
+    {
+      for (unsigned i = 1; token[i].literal; i++)
+	map[String(token[i].literal)] = token[i].id;
+      initialized = true;
+    }
+
   Map::iterator p = map.find(s);
   return (p != map.end()) ? (*p).second : T__NOTVALID;
 }

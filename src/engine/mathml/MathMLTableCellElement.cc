@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "MathMLActionElement.hh"
 #include "MathMLAlignMarkElement.hh"
 #include "MathMLMarkNode.hh"
@@ -206,7 +205,7 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
   rowSpan = ToInteger(value);
   if (rowSpan <= 0)
     {
-      Globals::logger(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
+      getLogger()->out(LOG_WARNING, "<mtd> has rowspan <= 0, defaulted to 1");
       rowSpan = 1;
     }
 
@@ -214,7 +213,7 @@ MathMLTableCellElement::SetupCellSpanning(RenderingEnvironment& env)
   columnSpan = ToInteger(value);
   if (columnSpan <= 0)
     {
-      Globals::logger(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
+      getLogger()->out(LOG_WARNING, "<mtd> has columnspan <= 0, defaulted to 1");
       columnSpan = 1;
     }
 }
@@ -257,7 +256,7 @@ MathMLTableCellElement::SetupCellPosition(unsigned i, unsigned j, unsigned nRows
 
   if (i + rowSpan > nRows)
     {
-      Globals::logger(LOG_WARNING, "`mtd' spans over the last row (truncated)");
+      getLogger()->out(LOG_WARNING, "`mtd' spans over the last row (truncated)");
       rowSpan = nRows - i;
     }
 }

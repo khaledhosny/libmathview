@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include "View.hh"
+#include "AbstractLogger.hh"
 #include "Builder.hh"
 #include "Element.hh"
 #include "ElementFactory.hh"
@@ -187,3 +188,6 @@ SmartPtr<NamespaceContext>
 Element::getNamespaceContext() const
 { return static_cast<NamespaceContext*>(context); }
 
+SmartPtr<AbstractLogger>
+Element::getLogger() const
+{ return getNamespaceContext()->getView()->getLogger(); }

@@ -17,6 +17,7 @@ libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libcommon_la_LIBADD = $(top_builddir)/src/common/mathvariants/libmathvariants.la
 
 libcommon_la_SOURCES = \
+  AbstractLogger.cc \
   BoundingBox.cc \
   BoundingBoxAux.cc \
   Clock.cc \
@@ -32,12 +33,14 @@ libcommon_la_SOURCES = \
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
+  AbstractLogger.hh \
   BoundingBox.hh \
   BoundingBoxAux.hh \
   Char.hh \
   HashMap.hh \
   Length.hh \
   LengthAux.hh \
+  Logger.hh \
   Object.hh \
   Point.hh \
   PointAux.hh \
@@ -57,16 +60,15 @@ mathview_HEADERS = \
   fixed.hh \
   scaled.hh \
   scaledAux.hh \
-  token.hh \
   $(NULL)
 
 noinst_HEADERS = \
   Clock.hh \
   GObjectPtr.hh \
-  Logger.hh \
   Rope.hh \
   TokenSet.hh \
   for_each_if.h \
+  token.hh \
   $(NULL)
 
 INCLUDES = \

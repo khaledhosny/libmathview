@@ -50,8 +50,8 @@ struct libxml2_Model
 
   // method for parsing a model
   // MUST be available
-  static xmlDoc* document(const String&, bool = false);
-  static xmlDoc* documentFromBuffer(const String&, bool = false);
+  static xmlDoc* document(const class AbstractLogger&, const String&, bool = false);
+  static xmlDoc* documentFromBuffer(const class AbstractLogger&, const String&, bool = false);
 
   static Element getDocumentElement(const Document&);
 

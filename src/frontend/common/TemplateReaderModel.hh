@@ -26,7 +26,8 @@ struct TemplateReaderModel
   typedef TemplateReaderElementIterator<Reader> ElementIterator;
   typedef TemplateReaderRefinementContext<Reader> RefinementContext;
 
-  static SmartPtr<Reader> document(const String& path, bool subst = false) { return Reader::create(path, subst); }
+  static SmartPtr<Reader> document(const class AbstractLogger&, const String& path, bool subst = false)
+  { return Reader::create(path, subst); }
 
   static SmartPtr<Reader> getDocumentElement(const SmartPtr<Reader>& reader) { return reader; }
 

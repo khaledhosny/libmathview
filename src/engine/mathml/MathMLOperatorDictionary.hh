@@ -39,7 +39,8 @@ protected:
 public:
   static SmartPtr<MathMLOperatorDictionary> create(void) { return new MathMLOperatorDictionary; }
 
-  void add(const String&, const String&, const SmartPtr<class AttributeList>&);
+  void add(const class AbstractLogger&,
+	   const String&, const String&, const SmartPtr<class AttributeList>&);
   void search(const String&,
 	      SmartPtr<class AttributeList>&,
 	      SmartPtr<class AttributeList>&,

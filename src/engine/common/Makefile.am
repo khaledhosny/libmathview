@@ -6,7 +6,7 @@ noinst_LTLIBRARIES = libengine_common.la
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libengine_common_la_SOURCES = \
-  Globals.cc \
+  Configuration.cc \
   Attribute.cc \
   AttributeList.cc \
   AttributeSignature.cc \
@@ -32,7 +32,6 @@ noinst_HEADERS = \
   CommonStringParsers.hh \
   Configuration.hh \
   ElementFactory.hh \
-  Globals.hh \
   LinearContainerTemplate.hh \
   TemplateStringParsers.hh \
   TemplateStringScanners.hh \

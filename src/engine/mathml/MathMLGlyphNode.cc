@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "MathMLElement.hh"
 #include "MathMLGlyphNode.hh"
 #include "MathMLTokenElement.hh"

@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "Configuration.hh"
 #include "ValueConversion.hh"
 #include "Attribute.hh"
@@ -37,7 +36,8 @@ template <typename Model>
 struct TemplateSetup
 {
   static bool
-  parseColor(const typename Model::Element& node, RGBColor& f, RGBColor& b)
+  parseColor(const AbstractLogger& logger,
+	     const typename Model::Element& node, RGBColor& f, RGBColor& b)
   {
     const String fs = Model::getAttribute(node, "foreground");
     const String bs = Model::getAttribute(node, "background");
@@ -45,7 +45,7 @@ struct TemplateSetup
     if (fs.empty() || bs.empty())
       {
 	const String s_name = Model::getNodeName(Model::asNode(node));
-	Globals::logger(LOG_WARNING, "malformed `%s' element in configuration file", s_name.c_str());
+	logger.out(LOG_WARNING, "malformed `%s' element in configuration file", s_name.c_str());
 	return false;
       }
 
@@ -55,7 +55,7 @@ struct TemplateSetup
     if (!fv || !bv)
       {
 	const String s_name = Model::getNodeName(Model::asNode(node));
-	Globals::logger(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
+	logger.out(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
 	return false;
       }
 
@@ -67,7 +67,7 @@ struct TemplateSetup
   }
 
   static void
-  parse(Configuration& conf, const typename Model::Element& node)
+  parse(const AbstractLogger& logger, Configuration& conf, const typename Model::Element& node)
   {
     for (typename Model::ElementIterator iter(node); iter.more(); iter.next())
       {
@@ -80,7 +80,7 @@ struct TemplateSetup
 	    const String path = Model::getElementValue(elem);
 	    if (!path.empty())
 	      {
-		Globals::logger(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
+		logger.out(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
 		conf.addDictionary(path);
 	      }
 	  } 
@@ -88,18 +88,18 @@ struct TemplateSetup
 	  {
 	    const String attr = Model::getAttribute(elem, "size");
 	    if (attr.empty())
-	      Globals::logger(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
+	      logger.out(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
 	    else
 	      {
 		conf.setFontSize(atoi(attr.c_str()));
-		Globals::logger(LOG_DEBUG, "default font size set to %d points", conf.getFontSize());
+		logger.out(LOG_DEBUG, "default font size set to %d points", conf.getFontSize());
 	      }
 	  } 
 	else if (name == "color")
 	  {
 	    RGBColor f;
 	    RGBColor b;
-	    if (parseColor(elem, f, b))
+	    if (parseColor(logger, elem, f, b))
 	      {
 		conf.setForeground(f); 
 		conf.setBackground(b);
@@ -109,7 +109,7 @@ struct TemplateSetup
 	  {
 	    RGBColor f;
 	    RGBColor b;
-	    if (parseColor(elem, f, b))
+	    if (parseColor(logger, elem, f, b))
 	      {
 		conf.setLinkForeground(f);
 		conf.setLinkBackground(b);
@@ -119,14 +119,14 @@ struct TemplateSetup
 	  {
 	    RGBColor f;
 	    RGBColor b;
-	    if (parseColor(elem, f, b))
+	    if (parseColor(logger, elem, f, b))
 	      {
 		conf.setSelectForeground(f);
 		conf.setSelectBackground(b);
 	      }
 	  }
 	else
-	  Globals::logger(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
+	  logger.out(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
       } 
   }
 
@@ -143,7 +143,7 @@ struct TemplateSetup
   }
 
   static void
-  parse(MathMLOperatorDictionary& dictionary, const typename Model::Element& root)
+  parse(const AbstractLogger& logger, MathMLOperatorDictionary& dictionary, const typename Model::Element& root)
   {
     for (typename Model::ElementIterator iter(root, "*", "operator"); iter.more(); iter.next())
       {
@@ -167,27 +167,27 @@ struct TemplateSetup
 	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
 	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
 	  
-	    dictionary.add(opName, Model::getAttribute(elem, "form"), defaults);
+	    dictionary.add(logger, opName, Model::getAttribute(elem, "form"), defaults);
 	  } 
 	else
-	  Globals::logger(LOG_WARNING, "operator dictionary: could not find operator name");
+	  logger.out(LOG_WARNING, "operator dictionary: could not find operator name");
       }
   }
 
   template <class Class, bool subst>
   static bool
-  load(Class& obj, const String& description, const String& rootTag, const String& path)
+  load(const AbstractLogger& logger, Class& obj, const String& description, const String& rootTag, const String& path)
   {
-    Globals::logger(LOG_DEBUG, "loading %s from `%s'...", description.c_str(), path.c_str());
-    if (typename Model::Document doc = Model::document(path, subst))
+    logger.out(LOG_DEBUG, "loading %s from `%s'...", description.c_str(), path.c_str());
+    if (typename Model::Document doc = Model::document(logger, path, subst))
       if (typename Model::Element root = Model::getDocumentElement(doc))
 	if (Model::getNodeName(Model::asNode(root)) == rootTag)
 	  {
-	    parse(obj, root);
+	    parse(logger, obj, root);
 	    return true;
 	  }
 	else 
-	  Globals::logger(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
+	  logger.out(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
     return false;
   }
 };

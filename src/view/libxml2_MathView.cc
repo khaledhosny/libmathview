@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
 #include "libxml2_MathView.hh"
 #include "libxml2_Model.hh"
 #include "libxml2_Builder.hh"
@@ -34,26 +35,25 @@ libxml2_MathView::libxml2_MathView()
 
 libxml2_MathView::~libxml2_MathView()
 {
-  unload();
+  if (docOwner && currentDoc) xmlFreeDoc(currentDoc);
+  currentDoc = 0;
+  docOwner = false;
 }
 
 void
 libxml2_MathView::unload()
 {
   resetRootElement();
-  if (docOwner)
-    {
-      xmlFreeDoc(currentDoc);
-      currentDoc = 0;
-      docOwner = false;
-    }
+  if (docOwner && currentDoc) xmlFreeDoc(currentDoc);
+  currentDoc = 0;
+  docOwner = false;
 }
 
 bool
 libxml2_MathView::loadURI(const char* name)
 {
   assert(name);
-  if (xmlDoc* doc = libxml2_Model::document(name, true))
+  if (xmlDoc* doc = libxml2_Model::document(*getLogger(), name, true))
     {
       if (loadDocument(doc))
 	{
@@ -76,7 +76,7 @@ bool
 libxml2_MathView::loadBuffer(const char* buffer)
 {
   assert(buffer);
-  if (xmlDoc* doc = libxml2_Model::documentFromBuffer(buffer, true))
+  if (xmlDoc* doc = libxml2_Model::documentFromBuffer(*getLogger(), buffer, true))
     {
       if (loadDocument(doc))
 	{

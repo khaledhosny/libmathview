@@ -1,4 +1,6 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libmathml_graphic_device.la
 
 #libmathml_graphic_device_la_LIBADD =
@@ -9,7 +11,9 @@ libmathml_graphic_device_la_SOURCES = \
   Shaper.cc \
   ShaperManager.cc \
   ShapingResult.cc \
-  SpaceShaper.cc
+  SpaceShaper.cc \
+  StandardSymbolsShaper.cc \
+  $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
@@ -19,7 +23,9 @@ mathview_HEADERS = \
   Shaper.hh \
   ShaperManager.hh \
   ShapingResult.hh \
-  SpaceShaper.hh
+  SpaceShaper.hh \
+  StandardSymbolsShaper.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_srcdir)/src \

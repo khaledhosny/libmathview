@@ -25,6 +25,7 @@
 
 #include "MathMLEmbellishment.hh"
 #include "MathMLLinearContainerElement.hh"
+#include "token.hh"
 
 class MathMLRowElement
   : public MathMLLinearContainerElement, public MathMLEmbellishment

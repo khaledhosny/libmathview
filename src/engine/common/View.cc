@@ -22,21 +22,21 @@
 
 #include <config.h>
 
-#include "Globals.hh"
 #include "Clock.hh"
 #include "View.hh"
 #include "Element.hh"
 #include "Builder.hh"
 #include "MathMLNamespaceContext.hh"
+#include "MathMLOperatorDictionary.hh"
 #if ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
 #endif // ENABLE_BOXML
 #include "AreaId.hh"
 #include "scaled.hh"
 #include "WrapperArea.hh"
+#include "AbstractLogger.hh"
 
-View::View()
-  : defaultFontSize(Globals::configuration.getFontSize()), freezeCounter(0)
+View::View() : defaultFontSize(10), freezeCounter(0)
 { }
 
 View::~View()
@@ -59,6 +59,25 @@ View::thaw()
   assert(freezeCounter > 0);
   return --freezeCounter == 0;
 }
+
+void
+View::setLogger(const SmartPtr<AbstractLogger>& l)
+{
+  if (SmartPtr<Builder> builder = getBuilder()) builder->setLogger(l);
+  logger = l;
+}
+
+SmartPtr<AbstractLogger>
+View::getLogger() const
+{ return logger; }
+
+void
+View::setOperatorDictionary(const SmartPtr<MathMLOperatorDictionary>& d)
+{ dictionary = d; }
+
+SmartPtr<MathMLOperatorDictionary>
+View::getOperatorDictionary() const
+{ return dictionary; }
 
 void
 View::setBuilder(const SmartPtr<Builder>& b)
@@ -95,7 +114,7 @@ View::getRootElement() const
       rootElement = builder->getRootElement();
       perf.Stop();
 
-      Globals::logger(LOG_INFO, "build time: %dms", perf());
+      getLogger()->out(LOG_INFO, "build time: %dms", perf());
     }
   
   return rootElement;
@@ -284,7 +303,7 @@ View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
       rootArea->render(ctxt, -x, -y);
 
       perf.Stop();
-      //Globals::logger(LOG_INFO, "rendering time: %dms", perf());
+      //getLogger()->out(LOG_INFO, "rendering time: %dms", perf());
     }
 }
 

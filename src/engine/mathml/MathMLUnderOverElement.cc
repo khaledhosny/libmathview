@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "Globals.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathMLUnderOverElement.hh"
 #include "MathMLNamespaceContext.hh"

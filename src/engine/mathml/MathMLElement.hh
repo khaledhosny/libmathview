@@ -25,7 +25,6 @@
 
 #include "Area.hh"
 #include "Element.hh"
-#include "token.hh"
 
 // MathMLElement: base class for every MathML Element
 class MathMLElement : public Element
