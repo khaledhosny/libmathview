@@ -27,9 +27,9 @@ template <class P>
 class GObjectPtr
 {
 public:
-  GObjectPtr(P* p = 0) : ptr(p) { }
+  GObjectPtr(P* p = 0) : ptr(p) { if (ptr) g_object_ref(ptr); }
   GObjectPtr(const GObjectPtr& p) : ptr(p.ptr) { if (ptr) g_object_ref(ptr); }
-  ~GObjectPtr() { /*if (ptr) g_object_unref(ptr);*/ }
+  ~GObjectPtr() { if (ptr) g_object_unref(ptr); }
 
   GObjectPtr& operator=(const GObjectPtr& p)
   { 

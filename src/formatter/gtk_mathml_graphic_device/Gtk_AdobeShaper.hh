@@ -23,7 +23,7 @@
 #ifndef __Gtk_AdobeShaper_hh__
 #define __Gtk_AdobeShaper_hh__
 
-#include <X11/Xft/Xft.h>
+#include <pango/pangox.h>
 
 #include "Shaper.hh"
 
@@ -37,8 +37,8 @@ public:
   virtual unsigned shape(class ShapingResult&) const;
 
 protected:
-  XftFont* getFont(unsigned, const scaled&) const;
-  void getGlyphExtents(XftFont*, FT_UInt, XGlyphInfo*) const;
+  PangoFont* getFont(unsigned, const scaled&, PangoXSubfont&) const;
+  void getGlyphExtents(PangoFont*, PangoGlyphString*, PangoRectangle*) const;
   bool shapeChar(class ShapingResult&, const class GlyphSpec&) const;
   bool shapeStretchyCharV(class ShapingResult&, const class GlyphSpec&) const;
   bool shapeStretchyCharH(class ShapingResult&, const class GlyphSpec&) const;

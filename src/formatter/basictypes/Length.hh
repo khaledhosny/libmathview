@@ -59,6 +59,7 @@ struct Length
   
   Length(void) : type(UNDEFINED_UNIT), value(0.0) { }
 
+  void unset(void) { type = UNDEFINED_UNIT; value = 0.0f; }
   bool defined(void) const { return type != UNDEFINED_UNIT; }
   bool isSpace(void) const { return type >= NEGATIVE_VERYVERYTHIN_SPACE && type <= VERYVERYTHICK_SPACE; }
 

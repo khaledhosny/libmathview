@@ -366,6 +366,218 @@ MathMLTokenElement::Normalize(const SmartPtr<class MathMLDocument>&)
     }
 }
 
+#if 0
+void
+MathMLTokenElement::SetMathSize(const Length& l)
+{
+  if (mathSize != l)
+    {
+      mathSize = l;
+      SetDirtyLayout();
+    }
+}
+
+void
+MathMLTokenElement::UnsetMathSize()
+{
+  if (mathSize.defined())
+    {
+      mathSize.unset();
+      SetDirtyLayout();
+    }
+}
+
+void
+MathMLTokenElement::SetMathSize(const SmartPtr<Value>& v)
+{
+  if (SmartPtr< Variant<Length> > vLength = smart_cast< Variant<Length> >(v))
+    SetMathSize(vLength->getValue());
+  else
+    UnsetMathSize();
+}
+
+void
+MathMLTokenElement::SetMathVariant(MathVariant v)
+{
+  if (mathVariant != v)
+    {
+      mathVariant = v;
+      SetDirtyLayout();
+    }
+}
+
+void
+MathMLTokenElement::Refine(RefinementContext& ctxt)
+{
+  if (DirtyAttribute())
+    {
+      if (DOM::GdomeString s = GetAttributeValue("mathsize", ctxt))
+	{
+	  if (HasAttribute("fontsize"))
+	    ctxt.logger().warning("attribute `mathsize' overrides deprecated attribute `fontsize'");
+
+	  if (SmartPtr<Value> v = parseTokenMathSize(s))
+	    SetMathSize(v);
+	  else
+	    ctxt.logger().warning("error while parsing attribute `mathsize' (ignored)");
+	}
+      else if (DOM::GdomeString s = GetAttributeValue("fontsize", ctxt))
+	{
+	  ctxt.logger().warning("attribute `fontsize' is deprecated");
+	  if (SmartPtr<Value> v = parseTokenFontSize(s))
+	    SetFontSize(v);
+	  else
+	    ctxt.logger().warning("error while parsing deprecated attribute `fontsize' (ignored)");
+	}
+      else
+	UnsetMathSize();
+
+      if (DOM::GdomeString s = GetAttributeValue("mathvariant", ctxt))
+	{
+	  if (SmartPtr<Value> v = parseTokenMathVariant(s))
+	    SetMathVariant(v);
+	  else
+	    ctxt.logger().warning("error while parsing attribute `mathvariant' (ignored)");
+
+	  if (HasAttribute("fontfamily") || HasAttribute("fontweight") || HasAttribute("fontstyle"))
+	    ctxt.logger().warning("attribute `mathvariant' overrides deprecated attributes `fontfamily', `fontweight', and `fontstyle'");
+	}
+      else
+	{
+	  DOM::GdomeString sFamily = GetAttributeValue("fontfamily", ctxt);
+	  DOM::GdomeString sWeight = GetAttributeValue("fontweight", ctxt);
+	  DOM::GdomeString sStyle = GetAttributeValue("fontstyle", ctxt);
+
+	  SmartPtr<Value> vFamily;
+	  SmartPtr<Value> vWeight;
+	  SmartPtr<Value> vStyle;
+
+	  if (sFamily)
+	    {
+	      ctxt.logger().warning("attribute `fontfamily' is deprecated");
+	      vFamily = parseTokenFontFamily(sFamily);
+	      if (!vFamily)
+		ctxt.logger().warning("error while parsing attribute `fontfamily' (ignored)");
+	    }
+
+	  if (sWeight)
+	    {
+	      ctxt.logger().warning("attribute `fontweight' is deprecated");
+	      vWeight = parseTokenFontWeight(sWeight);
+	      if (!vWeight)
+		ctxt.logger().warning("error while parsing `fontweight' attribute (ignored)");
+	    }
+
+	  if (sStyle)
+	    {
+	      ctxt.logger().warning("attribute `fontstyle' is deprecated");
+	      vStyle = parseTokenFontStyle(sStyle);
+	      if (!vStyle)
+		ctxt.logger().warning("error while parsing attribute `fontstyle' (ignored)");
+	    }
+
+	  if (vFamily || vWeight || vStyle)
+	    {
+	      SetMathVariant(parseTokenFontAttributes(vFamily, vWeight, vStyle));
+	    }
+	  else
+	    UnsetMathVariant();
+	}
+
+      if (DOM::GdomeString s = GetAttributeValue("mathcolor", ctxt))
+	{
+	  if (HasAttribute("color"))
+	    ctxt.logger().warning("attribute `mathcolor' overrides deprecated attribute `color'");
+
+	  if (SmartPtr<Value> v = parseTokenMathColor(s))
+	    SetMathColor(v);
+	  else
+	    ctxt.logger().warning("error while parsing attribute `mathcolor' (ignored)");
+	}
+      else if (DOM::GdomeString s = GetAttributeValue("color", ctxt))
+	{
+	  ctxt.logger().warning("attribute `color' is deprecated");
+	  if (SmartPtr<Value> v = parseTokenFontColor(s))
+	    SetColor(v);
+	  else
+	    ctxt.logger().warning("error while parsing deprecated attribute `color' (ignored)");
+	}
+      else
+	UnsetMathColor();
+
+      if (DOM::GdomeString s = GetAttribute("mathbackground", ctxt))
+	{
+	  if (SmartPtr<Value> v = parseTokenMathBackground(s))
+	    SetMathBackground(v);
+	  else
+	    ctxt.logger().warning("error while parsing attribute `mathbackground' (ignored)");
+	}
+      else
+	UnsetMathBackground();
+
+      for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = GetContent().begin();
+	   p != GetContent().end();
+	   p++)
+	{
+	  assert(*p);
+	  (*p)->Refine(ctxt);
+	}
+
+      ResetDirtyAttribute();
+    }
+}
+
+void
+MathMLTokenElement::RefineAttribute(RefinementContext& ctxt,
+				    const char* name,
+				    bool from_element,
+				    bool from_context,
+				    const char* default,
+				    bool deprecated)
+{
+  assert(name);
+
+  DOM::GdomeString s;
+
+  if (from_element)
+    {
+      DOM::Element el = GetDOMElement();
+      if (el && el.hasAttribute(name)) s = el.getAttribute(name);
+    }
+
+  if (!s && from_context)
+    s = ctxt.getAttribute(name);
+
+  if (!s) s = default;
+
+  if (s && deprecated)
+    ctxt.logger().warning("attribute `" + name + "' is deprecated");
+
+  SetAttribute(name, s);
+}
+
+void
+MathMLTokenElement::Refine(RefinementContext& ctxt)
+{
+  if (DirtyAttribute())
+    {
+      RefineAttribute(ctxt, "fontsize", true, true, 0, true);
+      RefineAttribute(ctxt, "mathsize", true, true, 0);
+      RefineAttribute(ctxt, "fontfamily", true, true, 0, true);
+      RefineAttribute(ctxt, "fontweight", true, true, 0, true);
+      RefineAttribute(ctxt, "fontstyle", true, true, 0, true);
+      RefineAttribute(ctxt, "mathvariant", true, true, "normal");
+      RefineAttribute(ctxt, "color", true, true, 0, true);
+      RefineAttribute(ctxt, "mathcolor", true, true, 0);
+      RefineAttribute(ctxt, "mathbackground", true, true, 0);
+
+      MathMLElement::Refine(ctxt);
+
+      ResetDirtyAttribute();
+    }
+}
+#endif
+
 void
 MathMLTokenElement::Setup(RenderingEnvironment& env)
 {
@@ -520,6 +732,7 @@ MathMLTokenElement::DoLayout(const class FormattingContext& ctxt)
 void
 MathMLTokenElement::SetPosition(const scaled& x, const scaled& y)
 {
+  //printf("token %s set position %d %d\n", NameOfTagId(IsA()), sp2ipx(x), sp2ipx(y));
   MathMLElement::SetPosition(x, y);
   SetContentPosition(x, y);
 }

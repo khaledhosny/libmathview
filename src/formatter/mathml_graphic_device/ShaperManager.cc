@@ -87,6 +87,7 @@ ShaperManager::registerChar(DOM::Char32 ch, const GlyphSpec& spec)
 {
   assert(ch <= BIGGEST_CHAR);
   GlyphSpec oldSpec = glyphSpec[ch];
+  //printf("registering %x (old spec shaper id was %d new is %d)\n", ch, oldSpec.getShaperId(), spec.getShaperId());
   glyphSpec.set(ch, spec);
   return oldSpec;
 }

@@ -46,7 +46,7 @@ Gtk_XftGlyphArea::getXftExtents(XGlyphInfo& gInfo) const
   // and for all, or to pass it at instantiation time.
   // Or, the are could store the rendering context since
   // it may also be used for unit conversion
-  GObjectPtr<GdkDisplay> gdk_display = GDK_DISPLAY();
+  GdkDisplay* gdk_display = gdk_display_get_default();
   Display* display = gdk_x11_display_get_xdisplay(gdk_display);
 
   XftGlyphExtents(display, font, &glyph, 1, &gInfo);

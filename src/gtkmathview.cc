@@ -444,6 +444,8 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->font_manager    = NULL;
   math_view->area_factory    = 0;
   math_view->shaper_manager  = NULL;
+  math_view->shaper_pango    = NULL;
+  math_view->shaper_adobe    = NULL;
   math_view->drawing_area    = NULL;
   math_view->interface       = NULL;
   math_view->freeze_counter  = 0;
@@ -1333,8 +1335,8 @@ gtk_math_view_set_font_manager_type(GtkMathView* math_view, FontManagerId id)
     math_view->shaper_pango = new Gtk_PangoShaper();
     math_view->shaper_pango->setPangoContext(gtk_widget_create_pango_context(math_view->area));
     math_view->shaper_manager->registerShaper(*math_view->shaper_pango);
-    //math_view->shaper_adobe = new Gtk_AdobeShaper();
-    //math_view->shaper_manager->registerShaper(*math_view->shaper_adobe);
+    math_view->shaper_adobe = new Gtk_AdobeShaper();
+    math_view->shaper_manager->registerShaper(*math_view->shaper_adobe);
     break;
   default:
     Globals::logger(LOG_ERROR, "could not switch to font manager type %d", id);

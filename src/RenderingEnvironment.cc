@@ -397,11 +397,13 @@ RenderingEnvironment::GetScaledPointsPerEm() const
   AttributeLevel* top = level.front();
   assert(top != NULL);
 
+#if 0
   FontifiedChar fChar;
   if (charMapper.FontifyChar(fChar, top->fontAttributes, 'M')) {
     assert(fChar.font != NULL);
     return fChar.font->GetEm();
   }
+#endif
 
   assert(top->fontAttributes.HasSize());
   assert(top->fontAttributes.size.IsAbsolute());
@@ -416,11 +418,13 @@ RenderingEnvironment::GetScaledPointsPerEx() const
   AttributeLevel* top = level.front();
   assert(top != NULL);
 
+#if 0
   FontifiedChar fChar;
   if (charMapper.FontifyChar(fChar, top->fontAttributes, 'x')) {
     assert(fChar.font != NULL);
     return fChar.font->GetEx();
   }
+#endif
 
   assert(top->fontAttributes.HasSize());
   assert(top->fontAttributes.size.IsAbsolute());
@@ -442,6 +446,7 @@ RenderingEnvironment::GetAxis() const
   AttributeLevel* top = level.front();
   assert(top != NULL);
 
+#if 0
   FontifiedChar fChar;
   if (charMapper.FontifyChar(fChar, top->fontAttributes, '=')) {
     assert(fChar.font != NULL);
@@ -451,6 +456,7 @@ RenderingEnvironment::GetAxis() const
 
     return eqBox.height - eqBox.verticalExtent() / 2;
   }
+#endif
 
   return GetScaledPointsPerEx() / 2;
 }

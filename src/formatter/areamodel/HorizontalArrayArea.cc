@@ -79,6 +79,19 @@ HorizontalArrayArea::box() const
   return bbox;
 }
 
+void
+HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, const scaled& y) const
+{
+  scaled x = x0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    {
+      (*p)->render(context, x, y);
+      x += (*p)->box().horizontalExtent();
+    }
+}
+
 scaled
 HorizontalArrayArea::leftEdge() const
 {

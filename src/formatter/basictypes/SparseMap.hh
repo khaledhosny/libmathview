@@ -61,8 +61,8 @@ public:
 	data[i] = new T[1 << N];
 	for (unsigned j = 0; j < (1 << N); j++)
 	  data[i][j] = T();
-	data[i][J(index)] = v;
       }
+    data[i][J(index)] = v;
   }
 
   T& operator[](size_t index) const

@@ -48,8 +48,8 @@ public:
 
   // new methods
 
-  virtual SmartPtr<Gtk_PangoGlyphArea> createPangoGlyphArea(DOM::Char32 ch, PangoFont* f, PangoGlyphString* gs)
-  { return Gtk_PangoGlyphArea::create(ch, f, gs); }
+  virtual SmartPtr<Gtk_PangoGlyphArea> createPangoGlyphArea(PangoFont* f, PangoGlyphString* gs)
+  { return Gtk_PangoGlyphArea::create(f, gs); }
   virtual SmartPtr<Gtk_PangoLayoutArea> createPangoLayoutArea(PangoLayout* layout)
   { return Gtk_PangoLayoutArea::create(layout); }
   virtual SmartPtr<Gtk_XftGlyphArea> createXftGlyphArea(XftFont* font, FT_UInt glyph)

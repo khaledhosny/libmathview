@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include <gdk/gdkx.h>
+#include <pango/pangox.h>
 
 #include "Gtk_AdobeShaper.hh"
 #include "Gtk_AreaFactory.hh"
@@ -330,6 +331,7 @@ struct XFontDesc
   char* family;
   char* weight;
   char* slant;
+  char* charset;
 };
 
 #define SYMBOL_INDEX 0
@@ -339,18 +341,18 @@ struct XFontDesc
 
 static XFontDesc variantDesc[] =
   {
-    { NORMAL_VARIANT, "symbol", "medium", "r" },
-    { NORMAL_VARIANT, "symbol", "medium", "r" },
-    { NORMAL_VARIANT, "symbol", "medium", "r" },
-    { NORMAL_VARIANT, "times", "medium", "r" },
-    { BOLD_VARIANT, "times", "bold", "r" },
-    { ITALIC_VARIANT, "times", "medium", "i" },
-    { BOLD_ITALIC_VARIANT, "times", "bold", "i" },
-    { SANS_SERIF_VARIANT, "helvetica", "medium", "r" },
-    { BOLD_SANS_SERIF_VARIANT, "helvetica", "bold", "r" },
-    { SANS_SERIF_ITALIC_VARIANT, "helvetica", "medium", "i" },
-    { SANS_SERIF_BOLD_ITALIC_VARIANT, "helvetica", "bold", "i" },
-    { MONOSPACE_VARIANT, "courier", "medium", "r" }
+    { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
+    { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
+    { NORMAL_VARIANT, "symbol", "medium", "r", "adobe-fontspecific" },
+    { NORMAL_VARIANT, "times", "medium", "r", "iso8859-1" },
+    { BOLD_VARIANT, "times", "bold", "r", "iso8859-1" },
+    { ITALIC_VARIANT, "times", "medium", "i", "iso8859-1" },
+    { BOLD_ITALIC_VARIANT, "times", "bold", "i", "iso8859-1" },
+    { SANS_SERIF_VARIANT, "helvetica", "medium", "r", "iso8859-1" },
+    { BOLD_SANS_SERIF_VARIANT, "helvetica", "bold", "r", "iso8859-1" },
+    { SANS_SERIF_ITALIC_VARIANT, "helvetica", "medium", "i", "iso8859-1" },
+    { SANS_SERIF_BOLD_ITALIC_VARIANT, "helvetica", "bold", "i", "iso8859-1" },
+    { MONOSPACE_VARIANT, "courier", "medium", "r", "iso8859-1" }
   };
 
 #define N_FONTS (sizeof(variantDesc) / sizeof(XFontDesc))
@@ -407,24 +409,39 @@ Gtk_AdobeShaper::shape(ShapingResult& result) const
   return n0 - n;
 }
 
-XftFont*
-Gtk_AdobeShaper::getFont(unsigned fi, const scaled& size) const
+PangoFont*
+Gtk_AdobeShaper::getFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
 {
   assert(fi < N_FONTS);
 
   static char buffer[128];
-  sprintf(buffer, "-adobe-%s-%s-%s-*--%d-*-75-75-*-*-*-*",
+  sprintf(buffer, "-adobe-%s-%s-%s-*--*-%d-75-75-*-*-%s",
 	  variantDesc[fi].family, variantDesc[fi].weight, variantDesc[fi].slant,
-	  Gtk_RenderingContext::toGtkPixels(size));
+	  static_cast<int>(size.toFloat() * 10 + 0.5f), variantDesc[fi].charset);
+  
+  //printf("about to ask for font %s\n", buffer);
 
-  // Note that we use the default values for the display and
-  // the screen, that is the values that were specified to the
+  // Note that we use the default values for the display
+  // that is the value that was specified to the
   // X server on the command line. This will work on most cases
-  XftFont* res = XftFontOpenXlfd(gdk_x11_get_default_xdisplay(),
-				 gdk_x11_get_default_screen (),
-				 buffer);
-  assert(res);
-  return res;
+  PangoFont* font = pango_x_load_font(gdk_x11_get_default_xdisplay(), buffer);
+  assert(font);
+
+  PangoXSubfont* sf;
+  int* subfont_charset;
+  int n_subfonts;
+  n_subfonts = pango_x_list_subfonts(font, &variantDesc[fi].charset, 1, &sf, &subfont_charset);
+  assert(n_subfonts > 0);
+  subfont = sf[0];
+  g_free(sf);
+  g_free(subfont_charset);
+#if 0
+  printf("found %d subfonts\n", n_subfonts);
+  for (unsigned i = 0; i < n_subfonts; i++)
+    printf("subfont: %d\n", subfont[i]);
+#endif
+
+  return font;
 }
 
 bool
@@ -433,21 +450,31 @@ Gtk_AdobeShaper::shapeChar(ShapingResult& result, const GlyphSpec& spec) const
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
   assert(factory);
 
-  XftFont* font = getFont(spec.getFontId(), result.getFontSize());
+  PangoXSubfont subfont;
+  PangoFont* font = getFont(spec.getFontId(), result.getFontSize(), subfont);
   assert(font);
 
-  AreaRef res = factory->createXftGlyphArea(font, spec.getGlyphId());
+  //printf("creating glyph area with glyph id = %d\n", spec.getGlyphId());
+
+  PangoGlyphString* gs = pango_glyph_string_new();
+  pango_glyph_string_set_size(gs, 1);
+  gs->glyphs[0].glyph = PANGO_X_MAKE_GLYPH(subfont, spec.getGlyphId());
+  gs->glyphs[0].geometry.x_offset = 0;
+  gs->glyphs[0].geometry.y_offset = 0;
+  gs->glyphs[0].geometry.width = 0;
+  AreaRef res = factory->createPangoGlyphArea(font, gs);
   result.pushArea(res);
 
   return true;
 }
 
 void
-Gtk_AdobeShaper::getGlyphExtents(XftFont* font, FT_UInt glyph, XGlyphInfo* info) const
+Gtk_AdobeShaper::getGlyphExtents(PangoFont* font, PangoGlyphString* gs, PangoRectangle* rect) const
 {
   assert(font);
-  assert(info);
-  XftGlyphExtents(gdk_x11_get_default_xdisplay(), font, &glyph, 1, info);
+  assert(gs);
+  assert(rect);
+  pango_glyph_string_extents(gs, font, rect, NULL);
 }
 
 bool
@@ -455,8 +482,9 @@ Gtk_AdobeShaper::shapeStretchyCharH(ShapingResult& result, const GlyphSpec& spec
 {
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
   assert(factory);
+#if 0
 
-  XftFont* font = getFont(spec.getFontId(), result.getFontSize());
+  PangoFont* font = getFont(spec.getFontId(), result.getFontSize());
   assert(font);
 
   const HStretchyChar* charSpec = &hMap[spec.getGlyphId()];
@@ -486,8 +514,10 @@ Gtk_AdobeShaper::shapeStretchyCharH(ShapingResult& result, const GlyphSpec& spec
   // Then the final number of glyphs
   unsigned gsN = (left ? 1 : 0) + n + (right ? 1 : 0);
 
-  std::vector<AreaRef> gs(gsN);
+  PangoGlyphString* gs = pango_glyph_string_new();
+  pango_glyph_string_set_size(gs, gsN);
 
+  unsigned i = 0;
   if (left) gs.push_back(left);
   for (unsigned i = 0; i < n; i++) gs.push_back(glue);
   if (right) gs.push_back(right);
@@ -495,6 +525,8 @@ Gtk_AdobeShaper::shapeStretchyCharH(ShapingResult& result, const GlyphSpec& spec
   result.pushArea(factory->createHorizontalArrayArea(gs));
 
   return true;
+#endif
+  return false;
 }
 
 bool
@@ -503,7 +535,8 @@ Gtk_AdobeShaper::shapeStretchyCharV(ShapingResult& result, const GlyphSpec& spec
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(result.getFactory());
   assert(factory);
 
-  XftFont* font = getFont(spec.getFontId(), result.getFontSize());
+#if 0
+  PangoFont* font = getFont(spec.getFontId(), result.getFontSize());
   assert(font);
 
   const VStretchyChar* charSpec = &vMap[spec.getGlyphId()];
@@ -535,7 +568,8 @@ Gtk_AdobeShaper::shapeStretchyCharV(ShapingResult& result, const GlyphSpec& spec
   
   unsigned gsN = (top ? 1 : 0) + (middle ? 1 : 0) + n + (bottom ? 1 : 0);
 
-  std::vector<AreaRef> gs(gsN);
+  std::vector<AreaRef> gs;
+  gs.reserve(gsN);
 
   if (bottom) gs.push_back(bottom);
   if (middle)
@@ -551,4 +585,6 @@ Gtk_AdobeShaper::shapeStretchyCharV(ShapingResult& result, const GlyphSpec& spec
   result.pushArea(factory->createVerticalArrayArea(gs, 1));
 
   return true;
+#endif
+  return false;
 }

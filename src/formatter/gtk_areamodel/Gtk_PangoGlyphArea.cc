@@ -28,8 +28,8 @@
 #include "Gtk_PangoGlyphArea.hh"
 #include "Gtk_RenderingContext.hh"
 
-Gtk_PangoGlyphArea::Gtk_PangoGlyphArea(DOM::Char32 c, PangoFont* f, PangoGlyphString* g)
-  : ch(c), font(f), glyphs(g)
+Gtk_PangoGlyphArea::Gtk_PangoGlyphArea(PangoFont* f, PangoGlyphString* g)
+  : font(f), glyphs(g)
 { }
 
 Gtk_PangoGlyphArea::~Gtk_PangoGlyphArea()
@@ -38,11 +38,13 @@ Gtk_PangoGlyphArea::~Gtk_PangoGlyphArea()
 BoundingBox
 Gtk_PangoGlyphArea::box() const
 {
-  PangoRectangle rect;
-  pango_glyph_string_extents(glyphs, font, &rect, 0);
-  return BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
+  PangoRectangle ink_rect;
+  PangoRectangle logical_rect;
+  //pango_glyph_string_extents(glyphs, font, &ink_rect, NULL);
+  pango_font_get_glyph_extents(font, glyphs->glyphs[0].glyph, &ink_rect, &logical_rect);
+  return BoundingBox(Gtk_RenderingContext::fromPangoPixels(logical_rect.width),
+		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
+		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
 }
 
 scaled

@@ -31,12 +31,12 @@
 class Gtk_PangoGlyphArea : public SimpleArea
 {
 protected:
-  Gtk_PangoGlyphArea(DOM::Char32 ch, PangoFont*, PangoGlyphString*);
+  Gtk_PangoGlyphArea(PangoFont*, PangoGlyphString*);
   virtual ~Gtk_PangoGlyphArea();
 
 public:
-  static SmartPtr<Gtk_PangoGlyphArea> create(DOM::Char32 ch, PangoFont* font, PangoGlyphString* glyphs)
-  { return new Gtk_PangoGlyphArea(ch, font, glyphs); }
+  static SmartPtr<Gtk_PangoGlyphArea> create(PangoFont* font, PangoGlyphString* glyphs)
+  { return new Gtk_PangoGlyphArea(font, glyphs); }
 
   virtual BoundingBox box(void) const;
   virtual scaled leftEdge(void) const;
@@ -45,9 +45,8 @@ public:
   virtual DOM::Element dump(const DOM::Document&) const;
 
 private:
-  DOM::Char32 ch;
-  GObjectPtr<PangoFont> font;
-  GObjectPtr<PangoGlyphString> glyphs;
+  PangoFont* font;
+  PangoGlyphString* glyphs;
 };
 
 #endif // __Gtk_PangoGlyphArea_hh__
