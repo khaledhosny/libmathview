@@ -50,17 +50,16 @@ bool
 AttributeList::set(const SmartPtr<Attribute>& attr)
 {
   assert(attr);
-  std::vector< SmartPtr<Attribute> >::iterator p =
-    std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature())));
+  Map::iterator::iterator p = content.find(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()));
   if (p != content.end())
     {
-      bool eq = attr->equal(*p);
-      *p = attr;
+      bool eq = attr->equal(p->second);
+      p->second = attr;
       return !eq;
     }
   else
     {
-      content.push_back(attr);
+      content[ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature())] = attr;
       return true;
     }
 }
@@ -68,19 +67,17 @@ AttributeList::set(const SmartPtr<Attribute>& attr)
 SmartPtr<Attribute>
 AttributeList::get(const AttributeId& id) const
 {
-  std::vector< SmartPtr<Attribute> >::const_iterator p =
-    std::find_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));
-  return (p != content.end()) ? *p : 0;
+  Map::const_iterator p = content.find(id);
+  return (p != content.end()) ? p->second : 0;
 }
 
 bool
 AttributeList::remove(const AttributeId& id)
 {
-  std::vector< SmartPtr<Attribute> >::iterator p =
-    std::remove_if(content.begin(), content.end(), std::bind2nd(IsPredicate(), id));
+  Map::iterator p = content.find(id);
   if (p != content.end())
     {
-      content.erase(p, content.end());
+      content.erase(p);
       return true;
     }
   else

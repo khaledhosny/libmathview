@@ -23,7 +23,7 @@
 #ifndef __AttributeList_hh__
 #define __AttributeList_hh__
 
-#include <vector>
+#include <map>
 
 #include "Attribute.hh"
 
@@ -42,7 +42,8 @@ public:
   SmartPtr<Attribute> get(const AttributeId&) const;
 
 private:
-  std::vector< SmartPtr<Attribute> > content;
+  typedef std::map<AttributeId, SmartPtr<Attribute> > Map;
+  Map content;
 };
 
 #endif // __AttributeList_hh__
