@@ -60,7 +60,7 @@ public:
     ScanSpaces::scan(begin, end, p);
     if (Scanner::scan(p, end, next))
       {
-	NativeType v = Scanner::parse(p, end);
+	NativeType v = Scanner::parse(p, next);
 	return Variant<NativeType>::create(v);
       }
     return 0;

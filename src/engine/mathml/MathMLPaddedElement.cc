@@ -114,7 +114,7 @@ MathMLPaddedElement::parseLengthDimension(const MathFormattingContext& ctxt,
     dim.number = ToNumber(v);
   else
     assert(false);
-  
+
   if (SmartPtr<Value> v = seq->getValue(2))
     {
       if (SmartPtr<ValueSequence> vSeq = ToSequence(v))

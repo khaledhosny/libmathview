@@ -8,7 +8,7 @@ endif
 
 noinst_PROGRAMS = 
 if COND_GMETADOM
-noinst_PROGRAMS += mathmlviewer.debug
+#noinst_PROGRAMS += mathmlviewer.debug
 endif
 if COND_LIBXML2
 noinst_PROGRAMS += test_embedding
