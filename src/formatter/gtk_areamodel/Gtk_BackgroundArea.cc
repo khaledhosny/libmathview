@@ -26,32 +26,32 @@
 #include "Gtk_RenderingContext.hh"
 
 void
-Gtk_BackgroundArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
+Gtk_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& c = dynamic_cast<Gtk_RenderingContext&>(context);
+  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(context);
 
-  if (c.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
+  if (context.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
     {
       RGBColor old_foregroundColor;
       RGBColor old_backgroundColor;
-      c.getForegroundColor(old_foregroundColor);
-      c.getBackgroundColor(old_backgroundColor);
+      context.getForegroundColor(old_foregroundColor);
+      context.getBackgroundColor(old_backgroundColor);
 
-      c.setForegroundColor(getColor());
-      c.setBackgroundColor(getColor());
+      context.setForegroundColor(getColor());
+      context.setBackgroundColor(getColor());
       BoundingBox bbox = box();
-      gdk_draw_rectangle(c.getDrawable(),
-			 c.getGC(),
+      gdk_draw_rectangle(context.getDrawable(),
+			 context.getGC(),
 			 TRUE,
 			 Gtk_RenderingContext::toGtkX(x),
 			 Gtk_RenderingContext::toGtkY(y + bbox.height),
 			 Gtk_RenderingContext::toGtkPixels(bbox.width) + 1,
 			 Gtk_RenderingContext::toGtkPixels(bbox.height + bbox.depth) + 1);
 
-      c.setForegroundColor(old_foregroundColor);
+      context.setForegroundColor(old_foregroundColor);
       getChild()->render(context, x, y);
 
-      c.setBackgroundColor(old_backgroundColor);
+      context.setBackgroundColor(old_backgroundColor);
     }
   else
     getChild()->render(context, x, y);    
