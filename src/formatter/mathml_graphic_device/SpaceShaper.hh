@@ -41,11 +41,7 @@ public:
 
 protected:
   static void shapeFixedSpace(class ShapingContext&, const class GlyphSpec&);
-  static void shapeContextSensitiveSpace(class ShapingContext&, const class GlyphSpec&);
-
   static void pushSpace(class ShapingContext&, int, unsigned = 1);
-  static int shapeFunctionApplication(const class ShapingContext&);
-  static int shapeInvisibleTimes(const class ShapingContext&);
 };
 
 #endif // __SpaceShaper_hh__

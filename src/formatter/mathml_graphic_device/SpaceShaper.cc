@@ -22,16 +22,12 @@
 
 #include <config.h>
 
+#include "MathMLElement.hh"
 #include "AreaFactory.hh"
 #include "ShapingContext.hh"
 #include "MathGraphicDevice.hh"
-#include "MathMLFractionElement.hh"
-#include "MathMLIdentifierElement.hh"
-#include "MathMLOperatorElement.hh"
-#include "MathMLRowElement.hh"
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
-#include "traverseAux.hh"
 
 struct FixedSpaceData
 {
@@ -56,27 +52,13 @@ struct FixedSpaceData
   { 0x0000,  0 }
 };
 
-Char16 csSpaceMap[] = {
-  0x2061, // FUNCTION APPLICATION
-  0x2062, // INVISIBLE TIMES
-  0x2063, // INVISIBLE SEPARATOR
-
-  0x0000
-};
-
-#define FIXED_SPACE_MAP_INDEX 0
-#define CS_SPACE_MAP_INDEX 1
-
 void
 SpaceShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
   assert(sm);
 
   for (unsigned i = 0; fixedSpaceMap[i].ch; i++)
-    sm->registerChar(fixedSpaceMap[i].ch, GlyphSpec(shaperId, FIXED_SPACE_MAP_INDEX, i));
-
-  for (unsigned i = 0; csSpaceMap[i]; i++)
-    sm->registerChar(csSpaceMap[i], GlyphSpec(shaperId, CS_SPACE_MAP_INDEX, i));
+    sm->registerChar(fixedSpaceMap[i].ch, GlyphSpec(shaperId, 0, i));
 }
 
 void
@@ -89,19 +71,7 @@ void
 SpaceShaper::shape(ShapingContext& context) const
 {
   assert(!context.done());
-
-  GlyphSpec spec = context.getSpec();
-  switch (spec.getFontId())
-    {
-    case FIXED_SPACE_MAP_INDEX:
-      shapeFixedSpace(context, spec);
-      break;
-    case CS_SPACE_MAP_INDEX:
-      shapeContextSensitiveSpace(context, spec);
-      break;
-    default:
-      assert(false);
-    }
+  shapeFixedSpace(context, context.getSpec());
 }
 
 void
@@ -124,77 +94,3 @@ SpaceShaper::shapeFixedSpace(ShapingContext& context, const GlyphSpec& spec)
   pushSpace(context, space, n);
 }
 
-void
-SpaceShaper::shapeContextSensitiveSpace(ShapingContext& context, const GlyphSpec& spec)
-{
-  int space = 0;
-  switch (context.thisChar())
-    {
-    case 0x2061: // FUNCTION APPLICATION
-      space = shapeFunctionApplication(context);
-      break;
-    case 0x2062: // INVISIBLE TIMES
-      space = shapeInvisibleTimes(context);
-      break;
-    case 0x2063: // INVISIBLE SEPARATOR
-      space = 0;
-      break;
-    default:
-      assert(false);
-      break;
-    }
-  pushSpace(context, space);
-}
-
-int
-SpaceShaper::shapeFunctionApplication(const class ShapingContext& context)
-{
-  if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(context.getElement()))
-    {
-      SmartPtr<MathMLElement> next = findRightSibling(op);
-      if (!next) return 0;
-
-      if (SmartPtr<MathMLOperatorElement> coreOp = next->getCoreOperatorTop())
-	if (coreOp->IsFence()) return 0;
-
-      if (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(next))
-	if (SmartPtr<MathMLOperatorElement> coreOp = smart_cast<MathMLOperatorElement>(row->getChild(0)))
-	  if (coreOp->IsFence()) return 0;
-
-      return 5;
-    }
-
-  return 0;
-}
-
-int
-SpaceShaper::shapeInvisibleTimes(const ShapingContext& context)
-{
-  // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
-  if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(context.getElement()))
-    {
-      SmartPtr<MathMLElement> prev = findLeftSibling(op);
-      SmartPtr<MathMLElement> next = findRightSibling(op);
-      if (!prev || !next) return 0;
-
-      if (is_a<MathMLIdentifierElement>(prev) && is_a<MathMLIdentifierElement>(next))
-	{
-	  SmartPtr<MathMLTokenElement> prevToken = smart_cast<MathMLTokenElement>(prev);
-	  SmartPtr<MathMLTokenElement> nextToken = smart_cast<MathMLTokenElement>(next);
-	  assert(prevToken && nextToken);
-    
-	  if (prevToken->GetLogicalContentLength() <= 1 &&
-	      nextToken->GetLogicalContentLength() <= 1) return 0;
-
-	  return 4;
-	} 
-      else if (is_a<MathMLIdentifierElement>(prev))
-	return 5;
-      else if (is_a<MathMLFractionElement>(prev) && is_a<MathMLFractionElement>(next))
-	return 5;
-      else if (is_a<MathMLFractionElement>(prev) || is_a<MathMLFractionElement>(next))
-	return 4;
-    }
-
-  return 0;
-}
