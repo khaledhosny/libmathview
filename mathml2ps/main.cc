@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#define MATHML2PS_VERSION "0.0.8"
+#define MATHML2PS_VERSION "0.0.9"
 
 #include <assert.h>
 #ifdef HAVE_GETOPT_H
@@ -56,6 +56,8 @@ enum CommandLineOptionId {
   OPTION_SUBSET,
   OPTION_CROP,
   OPTION_SHOW_MISSING,
+  OPTION_LINE_BREAKING,
+  OPTION_SHOW_EMPTY_ROWS,
   OPTION_CUT_FILENAME,
   //OPTION_KERNING,
   OPTION_CONFIG
@@ -74,6 +76,8 @@ static bool   subsetting = true;
 static bool   cropping = true;
 static bool   showMissing = true;
 static bool   cutFileName = true;
+static bool   lineBreaking = false;
+static bool   showEmptyRows = false;
 //static bool   kerning = false;
 static const char* configPath = NULL;
 static int logLevel = LOG_ERROR;
@@ -106,6 +110,8 @@ Usage: mathml2ps [options] file ...\n\n\
   -s, --subset[=yes|no]           Enable/disable font subsetting (default='yes')\n\
   -r, --crop[=yes|no]             Enable/disable cropping to bounding box (default='yes')\n\
   -i, --show-missing[=yes|no]     Show missing characters (default='yes')\n\
+  -b, --line-breaking[=yes|no]    Enable/disable line-breaking (default='no')\n\
+  -e, --show-empty-rows[=yes|no]  Show empty boxes for inferred mrows with no content (default='no')\n\
       --cut-filename[=yes|no]     Cut the prefix dir from the output file (default='yes')\n\
   --config=<path>                 Configuration file path\n\
   --verbose[=0-3]                 Display messages\n\n\
@@ -253,25 +259,27 @@ main(int argc, char *argv[])
     int option_index = 0;
     static struct option long_options[] =
     {
-      { "version", 	 no_argument,       NULL, OPTION_VERSION },
-      { "help",    	 no_argument,       NULL, OPTION_HELP },
-      { "verbose",       optional_argument, NULL, OPTION_VERBOSE },
-      { "size",          required_argument, NULL, OPTION_SIZE },
-      { "unit",          required_argument, NULL, OPTION_UNIT },
-      { "margins",       required_argument, NULL, OPTION_MARGINS },
-      { "font-size",     required_argument, NULL, OPTION_FONT_SIZE },
-      { "colors",        optional_argument, NULL, OPTION_COLORS },
-      { "subset",        optional_argument, NULL, OPTION_SUBSET },
-      { "crop",          optional_argument, NULL, OPTION_CROP },
-      { "show-missing",  optional_argument, NULL, OPTION_SHOW_MISSING },
-      { "cut-filename",  optional_argument, NULL, OPTION_CUT_FILENAME },
+      { "version", 	   no_argument,       NULL, OPTION_VERSION },
+      { "help",    	   no_argument,       NULL, OPTION_HELP },
+      { "verbose",         optional_argument, NULL, OPTION_VERBOSE },
+      { "size",            required_argument, NULL, OPTION_SIZE },
+      { "unit",            required_argument, NULL, OPTION_UNIT },
+      { "margins",         required_argument, NULL, OPTION_MARGINS },
+      { "font-size",       required_argument, NULL, OPTION_FONT_SIZE },
+      { "colors",          optional_argument, NULL, OPTION_COLORS },
+      { "subset",          optional_argument, NULL, OPTION_SUBSET },
+      { "crop",            optional_argument, NULL, OPTION_CROP },
+      { "show-missing",    optional_argument, NULL, OPTION_SHOW_MISSING },
+      { "line-breaking",   optional_argument, NULL, OPTION_LINE_BREAKING },
+      { "cut-filename",    optional_argument, NULL, OPTION_CUT_FILENAME },
+      { "show-empty-rows", optional_argument, NULL, OPTION_SHOW_EMPTY_ROWS },
       //{ "kerning",       optional_argument, NULL, OPTION_KERNING },
-      { "config",        required_argument, NULL, OPTION_CONFIG },
+      { "config",          required_argument, NULL, OPTION_CONFIG },
 
-      { NULL,            no_argument, NULL, 0 }
+      { NULL,              no_argument, NULL, 0 }
     };
 
-    int c = getopt_long(argc, argv, "vhg:u:m:f:k::c::s::", long_options, &option_index);
+    int c = getopt_long(argc, argv, "vhg:u:m:f:e::i::r::b::k::c::s::", long_options, &option_index);
 
     if (c == -1) break;
 
@@ -337,6 +345,18 @@ main(int argc, char *argv[])
     case 'i':
       if (optarg == NULL) showMissing = true;
       else if (!parseBoolean(optarg, showMissing)) parseError("show-missing");
+      break;
+
+    case OPTION_LINE_BREAKING:
+    case 'b':
+      if (optarg == NULL) lineBreaking = true;
+      else if (!parseBoolean(optarg, lineBreaking)) parseError("line-breaking");
+      break;
+
+    case OPTION_SHOW_EMPTY_ROWS:
+    case 'e':
+      if (optarg == NULL) showEmptyRows = true;
+      else if (!parseBoolean(optarg, showEmptyRows)) parseError("show-empty-rows");
       break;
 
     case OPTION_CUT_FILENAME:
@@ -425,6 +445,8 @@ main(int argc, char *argv[])
     engine.SetVerbosity(logLevel);
     engine.SetDefaultFontSize(fontSize);
     MathEngine::DrawMissingCharacter(showMissing);
+    MathEngine::LineBreaking(lineBreaking);
+    MathEngine::ShowEmptyElements(showEmptyRows);
 #if 0
     engine.SetKerning(kerning);
 #endif

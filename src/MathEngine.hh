@@ -86,8 +86,12 @@ public:
   bool GetTransparency(void) const;
 
   static void InitGlobalData(const char*);
-  static bool  DrawMissingCharacter(void) { return drawMissingCharacter; }
-  static void  DrawMissingCharacter(bool dmc) { drawMissingCharacter = dmc; }
+  static bool DrawMissingCharacter(void) { return drawMissingCharacter; }
+  static void DrawMissingCharacter(bool dmc) { drawMissingCharacter = dmc; }
+  static bool LineBreaking(void) { return lineBreaking; }
+  static void LineBreaking(bool lb) { lineBreaking = lb; }
+  static bool ShowEmptyElements(void) { return showEmptyElements; }
+  static void ShowEmptyElements(bool ee) { showEmptyElements = ee; }
 
 #if defined(HAVE_MINIDOM)
   static EntitiesTable      entitiesTable;
@@ -97,7 +101,9 @@ public:
   static Logger             logger;
 
 private:
+  static bool showEmptyElements;
   static bool drawMissingCharacter;
+  static bool lineBreaking;
   unsigned defaultFontSize;
 
   class MathMLDocument* document;

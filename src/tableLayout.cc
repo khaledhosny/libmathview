@@ -530,7 +530,7 @@ MathMLTableElement::ColumnLayout(unsigned j, LayoutId id, BreakId bid, scaled wi
       }
 
       const BoundingBox& cellBox =
-	(id == LAYOUT_AUTO && stretchyCell) ?
+	(id == LAYOUT_AUTO && tableCell.mtd->IsStretchyOperator()) ?
 	tableCell.mtd->GetMaxBoundingBox() :
 	tableCell.mtd->GetBoundingBox();
 
@@ -815,46 +815,53 @@ MathMLTableElement::ConfirmVerticalScaleSpacing(scaled tableHeight)
 void
 MathMLTableElement::SpanRowHeight(LayoutId id)
 {
-  for (unsigned j = 0; j < nColumns; j++) {
-    unsigned i = 0;
-    while (i < nRows) {
-      if (cell[i][j].mtd != NULL &&
-	  !cell[i][j].spanned && cell[i][j].rowSpan > 1) {
-	unsigned n = cell[i][j].rowSpan;
-	scaled height  = GetRowHeight(i, n);
-	const BoundingBox& cellBox = cell[i][j].mtd->GetBoundingBox();
+  return;
+  for (unsigned j = 0; j < nColumns; j++)
+    {
+      unsigned i = 0;
+      while (i < nRows)
+	{
+	  if (cell[i][j].mtd != NULL &&
+	      !cell[i][j].spanned && cell[i][j].rowSpan > 1)
+	    {
+	      unsigned n = cell[i][j].rowSpan;
+	      scaled height  = GetRowHeight(i, n);
+	      const BoundingBox& cellBox = cell[i][j].mtd->GetBoundingBox();
 
-	if (height < cellBox.GetTotalHeight()) {
-	  // the total height of spanned rows is still smaller than the
-	  // height of the single spanning cell. We have to distribute
-	  // additional space among the spanned rows
-	  scaled rest = cellBox.GetTotalHeight() - height;
-	  while (i < n) {
-	    if (i == n - 1) {
-	      // it is the last column, we assign all the remaining space
-	      row[i].descent += rest;
-	    } else {
-	      // we assign a space proportional to the column width
-	      scaled thisRowRest;
-	      if (height > SP_EPSILON)
-		// if all the columns have 0 width we assign an equal amount
-		// of space to each spanned column
-		thisRowRest = (rest * (row[i].GetHeight()));
-	      else
-		thisRowRest = rest / n;
-	      row[i].descent += thisRowRest;
-	      rest -= thisRowRest;
+	      if (height < cellBox.GetTotalHeight())
+		{
+		  // the total height of spanned rows is still smaller than the
+		  // height of the single spanning cell. We have to distribute
+		  // additional space among the spanned rows
+		  scaled rest = cellBox.GetTotalHeight() - height;
+		  for (unsigned k = 0; k < n; k++)
+		    {
+		      if (k == n - 1)
+			// it is the last column, we assign all the remaining space
+			row[i + k].descent += rest;
+		      else
+			{
+			  // we assign a space proportional to the column height
+			  scaled thisRowRest;
+			  if (height > SP_EPSILON)
+			    // if all the columns have 0 width we assign an equal amount
+			    // of space to each spanned column
+			    thisRowRest = scaledProp(rest, row[i + k].GetHeight(), height);
+			  else
+			    thisRowRest = rest / n;
+			  row[i + k].descent += thisRowRest;
+			  rest -= thisRowRest;
+			}
+		    }
+		}
+	      i += n;
 	    }
+	  else
 	    i++;
-	  }
-	} else
-	  i += n;
-      } else
-	i++;
+	}
     }
-  }
 }
-
+  
 scaled
 MathMLTableElement::GetRowHeight(unsigned i, unsigned n) const
 {

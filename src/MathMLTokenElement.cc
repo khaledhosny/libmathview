@@ -310,7 +310,7 @@ MathMLTokenElement::DoLayout(LayoutId id, Layout& layout)
     
     // the breakability after the token will be set by the
     // surrounding context
-    if (i.IsLast()) breakability = BREAK_NO;
+    if (!MathEngine::LineBreaking() || i.IsLast()) breakability = BREAK_NO;
     else if (breakability == BREAK_AUTO) breakability = BREAK_GOOD;
     
     // ok, we do the actual layout of the chunk only if we are

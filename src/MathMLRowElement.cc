@@ -26,6 +26,7 @@
 
 #include "Layout.hh"
 #include "CharMap.hh"
+#include "MathEngine.hh"
 #include "Iterator.hh"
 #include "operatorAux.hh"
 #include "traverseAux.hh"
@@ -80,71 +81,92 @@ MathMLRowElement::DoLayout(LayoutId id, Layout& layout)
 
   BreakId lastBreakability = BREAK_AUTO;
 
-  for (Iterator<MathMLElement*> i(content); i.More(); i.Next()) {
-    MathMLElement* elem = i();
-    assert(elem != NULL);
+  for (Iterator<MathMLElement*> i(content); i.More(); i.Next())
+    {
+      MathMLElement* elem = i();
+      assert(elem != NULL);
 
-    BreakId bid = BREAK_NO;
+      if (MathEngine::LineBreaking())
+	{
+	  BreakId bid = BREAK_NO;
 
-    if (elem == lastElement) {
-      // if elem is the last element but it preceeded by a separator,
-      // then we have still to set the right breakability after that
-      // separator, which otherwise would get a BREAK_NO.
-      if (state == STATE_C && !elem->IsEmbellishedOperator() && !elem->IsSpaceLike()) bid = BREAK_BAD;
-      state = STATE_E;
-    } else {
-      switch (state) {
-      case STATE_A:
-	if (!elem->IsEmbellishedOperator() && !elem->IsSpaceLike()) state = STATE_B;
-	break;
-      case STATE_B:
-	if (elem->IsEmbellishedOperator()) {
-	  MathMLOperatorElement* op = findCoreOperator(elem);
-	  assert(op != NULL);
-	  // we cannot allow the expression to be broken
-	  // before or after the operator if it is non-marking
-	  // (i.e. it is only made of non-marking characters)
-	  if (!op->IsNonMarking()) {
-	    if (op->IsSeparator()) state = STATE_C;
-	    else {
-	      bid = BREAK_BAD;
-	      state = STATE_D;
+	  if (elem == lastElement)
+	    {
+	      // if elem is the last element but it preceeded by a separator,
+	      // then we have still to set the right breakability after that
+	      // separator, which otherwise would get a BREAK_NO.
+	      if (state == STATE_C &&
+		  !elem->IsEmbellishedOperator() && 
+		  !elem->IsSpaceLike()) bid = BREAK_BAD;
+	      state = STATE_E;
+	    } 
+	  else
+	    {
+	      switch (state)
+		{
+		case STATE_A:
+		  if (!elem->IsEmbellishedOperator() && !elem->IsSpaceLike()) state = STATE_B;
+		  break;
+		case STATE_B:
+		  if (elem->IsEmbellishedOperator())
+		    {
+		      MathMLOperatorElement* op = findCoreOperator(elem);
+		      assert(op != NULL);
+		      // we cannot allow the expression to be broken
+		      // before or after the operator if it is non-marking
+		      // (i.e. it is only made of non-marking characters)
+		      if (!op->IsNonMarking())
+			{
+			  if (op->IsSeparator()) state = STATE_C;
+			  else
+			    {
+			      bid = BREAK_BAD;
+			      state = STATE_D;
+			    }
+			}
+		    }
+		  break;
+		case STATE_C:
+		  if (elem->IsSpaceLike())
+		    {
+		      bid = BREAK_BAD;
+		      state = STATE_D;
+		    } 
+		  else if (elem->IsEmbellishedOperator())
+		    {
+		      MathMLOperatorElement* op = findCoreOperator(elem);
+		      assert(op != NULL);
+		      if (!op->IsSeparator())
+			{
+			  bid = BREAK_BAD;
+			  state = STATE_D;
+			}
+		    } 
+		  else
+		    {
+		      bid = BREAK_BAD;
+		      state = STATE_B;
+		    }
+		  break;
+		case STATE_D:
+		  if (!elem->IsSpaceLike() && !elem->IsEmbellishedOperator()) state = STATE_B;
+		  break;
+		case STATE_E:
+		  break;
+		}
 	    }
-	  }
+
+	  if (lastBreakability != BREAK_AUTO) bid = lastBreakability;
+
+	  lastBreakability = elem->GetBreakability();
+	  layout.SetLastBreakability(bid);
 	}
-	break;
-      case STATE_C:
-	if (elem->IsSpaceLike()) {
-	  bid = BREAK_BAD;
-	  state = STATE_D;
-	} else if (elem->IsEmbellishedOperator()) {
-	  MathMLOperatorElement* op = findCoreOperator(elem);
-	  assert(op != NULL);
-	  if (!op->IsSeparator()) {
-	    bid = BREAK_BAD;
-	    state = STATE_D;
-	  }
-	} else {
-	  bid = BREAK_BAD;
-	  state = STATE_B;
-	}
-	break;
-      case STATE_D:
-	if (!elem->IsSpaceLike() && !elem->IsEmbellishedOperator()) state = STATE_B;
-	break;
-      case STATE_E:
-	break;
-      }
+      else
+	layout.SetLastBreakability(BREAK_NO);
+
+      if (elem->IsBreakable()) elem->DoLayout(id, layout);
+      else layout.Append(elem, 0);
     }
-
-    if (lastBreakability != BREAK_AUTO) bid = lastBreakability;
-
-    lastBreakability = elem->GetBreakability();
-    layout.SetLastBreakability(bid);
-
-    if (elem->IsBreakable()) elem->DoLayout(id, layout);
-    else layout.Append(elem, 0);
-  }
 
   layout.Out();
 

@@ -25,6 +25,7 @@
 #include <stddef.h>
 
 #include "Layout.hh"
+#include "MathEngine.hh"
 #include "MathMLRowElement.hh"
 #include "MathMLDummyElement.hh"
 #include "MathMLNormalizingContainerElement.hh"
@@ -45,7 +46,11 @@ MathMLNormalizingContainerElement::~MathMLNormalizingContainerElement()
 void
 MathMLNormalizingContainerElement::Normalize()
 {
-  if (content.GetSize() != 1) {
+  if (content.GetSize() == 0 && MathEngine::ShowEmptyElements()) {
+    MathMLElement* dummy = new MathMLDummyElement();
+    dummy->SetParent(this);
+    content.Append(dummy);
+  } else if (content.GetSize() != 1) {
     MathMLContainerElement* mrow = new MathMLRowElement(NULL);
     mrow->SetParent(this);
 
