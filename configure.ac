@@ -439,7 +439,8 @@ AC_CONFIG_FILES([
  viewer/Makefile
  doc/Makefile
  mathview-libxml2.pc
- gtkmathview-custom.pc
+ gtkmathview-custom-reader.pc
+ gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc
  gtkmathview-gmetadom.pc
 ])

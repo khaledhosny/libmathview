@@ -25,8 +25,9 @@ BUGS
 
 ARCH IMPROVEMENTS
 
++ fix X font loading mechanism
++ Gtk_AdobeShaper extract shaper for the symbol font and clean up
 - math-engine-configuration.xml -> gtkmathview.conf.xml
-? move the MathMLOperatorDictionary into MathMLNamespaceContext?
 + Gtk_PangoLayoutLineArea shares constructor with GtkPangoLayoutArea
   which computes bounding box as well
 ? make GlyphStringArea a leaf-like area?
@@ -44,8 +45,6 @@ ARCH IMPROVEMENTS
   is right or down depending on the container)
 - It may be feasible to generalize searching functions
   over areas by implementing a visitor
-- fix Configuration/Globals files 
-  create a class for them and refer them from the View
 - remove cast in gmetadom_Model::documentFromBuffer when gdome API is OK
 
 PERFORMANCE IMPROVEMENTS
@@ -62,7 +61,6 @@ MISSING
 ? make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
-- implement AreaCanvas for drawing lines
 - implement table formatting
 - implement PS area model (using pslib?)
 - implement T1lib area model (using pslib instead?)
@@ -70,6 +68,7 @@ MISSING
 - implement shaper for TeX fonts (this should be usable with
   both the T1lib and PS area models)
 - implement shaper for Mathematica fonts
+- implement shaper for Euclid fonts
 - runtime selection of backend
 - mmultiscripts
 - mpadded

@@ -63,8 +63,8 @@ View::thaw()
 void
 View::setLogger(const SmartPtr<AbstractLogger>& l)
 {
-  if (SmartPtr<Builder> builder = getBuilder()) builder->setLogger(l);
   logger = l;
+  if (SmartPtr<Builder> builder = getBuilder()) builder->setLogger(logger);
 }
 
 SmartPtr<AbstractLogger>
@@ -84,10 +84,14 @@ View::setBuilder(const SmartPtr<Builder>& b)
 {
   resetRootElement();
   builder = b;
-  if (builder) builder->setMathMLNamespaceContext(mathmlContext);
+  if (builder)
+    {
+      builder->setMathMLNamespaceContext(mathmlContext);
 #if ENABLE_BOXML
-  if (builder) builder->setBoxMLNamespaceContext(boxmlContext);
+      builder->setBoxMLNamespaceContext(boxmlContext);
 #endif // ENABLE_BOXML
+      builder->setLogger(logger);
+    }
 }
 
 SmartPtr<Builder>
