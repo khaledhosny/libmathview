@@ -98,14 +98,14 @@ View::getElementAt(const scaled& x, const scaled& y) const
 	}
 #endif
       AreaId id(rootArea);
-      std::cerr << "searching at " << (x) << "," << (y + box.height) << std::endl;
+      //std::cerr << "searching at " << (x) << "," << (y + box.height) << std::endl;
       if (rootArea->searchByCoords(id, x + x0, y + box.height + y0))
 	{
-	  std::cerr << "FOUND!" << std::endl;
+	  //std::cerr << "FOUND!" << std::endl;
 	  for (AreaId::AreaVector::const_reverse_iterator p = id.getAreas().rbegin(); p != id.getAreas().rend(); p++)
 	    if (SmartPtr<const Gtk_WrapperArea> area = smart_cast<const Gtk_WrapperArea>(*p))
 	      {
-		std::cerr << "FOUND WRAPPER, with element? " << (area->getElement() != 0) << std::endl;
+		//std::cerr << "FOUND WRAPPER, with element? " << (area->getElement() != 0) << std::endl;
 		if (SmartPtr<Element> elem = smart_cast<Element>(area->getElement()))
 		  return elem;
 	      }
