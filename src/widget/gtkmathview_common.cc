@@ -210,9 +210,9 @@ static SmartPtr<Element>
 elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
 {
   if (SmartPtr<gmetadom_Builder> builder = smart_cast<gmetadom_Builder>(b))
-    if (SmartPtr<Element> elem = builder->findElement(DOM::Element((el))))
-      return elem;
-  return 0;
+    return builder->findElement(DOM::Element((el)));
+  else
+    return 0;
 }
 
 static GtkMathViewModelId
@@ -230,9 +230,9 @@ static SmartPtr<Element>
 elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
 {
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(b))
-    if (SmartPtr<Element> elem = builder->findElement(el))
-      return elem;
-  return 0;
+    return builder->findElement(el);
+  else
+    return 0;
 }
 
 static GtkMathViewModelId
@@ -240,7 +240,28 @@ modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
 {
   if (SmartPtr<libxml2_Builder> builder = smart_cast<libxml2_Builder>(b))
     return (xmlElement*) builder->findSelfOrAncestorModelElement(elem);
-  return 0;
+  else
+    return 0;
+}
+
+#elif GTKMATHVIEW_USES_CUSTOM_READER
+
+static SmartPtr<Element>
+elementOfModelElement(const SmartPtr<Builder>& b, GtkMathViewModelId el)
+{
+  if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(b))
+    return builder->findElement(el);
+  else
+    return 0;
+}
+
+static GtkMathViewModelId
+modelElementOfElement(const SmartPtr<Builder>& b, const SmartPtr<Element>& elem)
+{
+  if (SmartPtr<custom_reader_Builder> builder = smart_cast<custom_reader_Builder>(b))
+    return builder->findSelfOrAncestorModelElement(elem);
+  else
+    return 0;
 }
 
 #else
@@ -333,12 +354,13 @@ update_widget(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 	    }
 	  crect.y = focus_orig.y - focus_box.height;
 	  crect.height = focus_box.height + focus_box.depth;
-	  _gtk_draw_insertion_cursor(widget,
-				     widget->window,
-				     widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-				     &crect,
-				     GTK_TEXT_DIR_LTR,
-				     FALSE);
+	  gtk_draw_insertion_cursor(widget,
+				    widget->window,
+				    NULL,
+				    &crect,
+				    TRUE,
+				    GTK_TEXT_DIR_LTR,
+				    FALSE);
 	}
     }
 }
