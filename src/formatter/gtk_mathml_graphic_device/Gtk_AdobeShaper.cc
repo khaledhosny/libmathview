@@ -373,8 +373,8 @@ Gtk_AdobeShaper::shape(const MathFormattingContext& ctxt, ShapingResult& result)
   return n0 - n;
 }
 
-PangoFont*
-Gtk_AdobeShaper::getFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
+const char*
+Gtk_AdobeShaper::getXLFD(unsigned fi, const scaled& size)
 {
   assert(fi < N_FONTS);
 
@@ -382,15 +382,21 @@ Gtk_AdobeShaper::getFont(unsigned fi, const scaled& size, PangoXSubfont& subfont
   sprintf(buffer, "-adobe-%s-%s-%s-*--*-%d-75-75-*-*-%s",
 	  variantDesc[fi].family, variantDesc[fi].weight, variantDesc[fi].slant,
 	  static_cast<int>(size.toFloat() * 10 + 0.5f), variantDesc[fi].charset);
-  
-  //printf("about to ask for font %s\n", buffer);
+ 
+  return buffer;
+}
 
+PangoFont*
+Gtk_AdobeShaper::getPangoFont(unsigned fi, const scaled& size, PangoXSubfont& subfont) const
+{
   // Note that we use the default values for the display
   // that is the value that was specified to the
   // X server on the command line. This will work on most cases
-  PangoFont* font = pango_x_load_font(gdk_x11_get_default_xdisplay(), buffer);
+  PangoFont* font = pango_x_load_font(gdk_x11_get_default_xdisplay(), getXLFD(fi, size));
   assert(font);
 
+  // the following operations are needed even if the subfont is
+  // always 1, dunno why :-(((
   PangoXSubfont* sf;
   int* subfont_charset;
   int n_subfonts;
@@ -408,6 +414,17 @@ Gtk_AdobeShaper::getFont(unsigned fi, const scaled& size, PangoXSubfont& subfont
   return font;
 }
 
+XftFont*
+Gtk_AdobeShaper::getXftFont(unsigned fi, const scaled& size) const
+{
+  XftFont* font = XftFontOpenXlfd(gdk_x11_get_default_xdisplay(),
+		                  gdk_x11_get_default_screen(),
+				  getXLFD(fi, size));
+  assert(font);
+
+  return font;
+}
+
 bool
 Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
 			   ShapingResult& result, const GlyphSpec& spec) const
@@ -415,8 +432,9 @@ Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(ctxt.getDevice()->getFactory());
   assert(factory);
 
+#if 0
   PangoXSubfont subfont;
-  PangoFont* font = getFont(spec.getFontId(), ctxt.getSize(), subfont);
+  PangoFont* font = getPangoFont(spec.getFontId(), ctxt.getSize(), subfont);
   assert(font);
 
   //printf("creating glyph area with glyph id = %d\n", spec.getGlyphId());
@@ -428,6 +446,12 @@ Gtk_AdobeShaper::shapeChar(const MathFormattingContext& ctxt,
   gs->glyphs[0].geometry.y_offset = 0;
   gs->glyphs[0].geometry.width = 0;
   AreaRef res = factory->pangoGlyph(font, gs);
+#else
+  XftFont* font = getXftFont(spec.getFontId(), ctxt.getSize());
+  assert(font);
+
+  AreaRef res = factory->xftGlyph(font, spec.getGlyphId());
+#endif
   result.pushArea(res);
 
   return true;

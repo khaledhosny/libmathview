@@ -24,6 +24,7 @@
 #define __Gtk_AdobeShaper_hh__
 
 #include <pango/pangox.h>
+#include <X11/Xft/Xft.h>
 
 #include "Shaper.hh"
 
@@ -42,7 +43,10 @@ public:
   virtual unsigned shape(const class MathFormattingContext&, class ShapingResult&) const;
 
 protected:
-  PangoFont* getFont(unsigned, const scaled&, PangoXSubfont&) const;
+  static const char* getXLFD(unsigned, const scaled&);
+
+  PangoFont* getPangoFont(unsigned, const scaled&, PangoXSubfont&) const;
+  XftFont* getXftFont(unsigned, const scaled&) const;
   void getGlyphExtents(PangoFont*, PangoGlyphString*, PangoRectangle*) const;
   bool shapeChar(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
   bool shapeStretchyCharV(const class MathFormattingContext&, class ShapingResult&, const class GlyphSpec&) const;
