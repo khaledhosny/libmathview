@@ -143,66 +143,69 @@ MathMLTokenElement::refine(AbstractRefinementContext& context)
 }
 
 AreaRef
+MathMLTokenElement::formatAux(MathFormattingContext& ctxt)
+{
+  RGBColor oldColor = ctxt.getColor();
+  RGBColor oldBackground = ctxt.getBackground();
+
+  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathsize))
+    {
+      if (IsTokenId(value))
+	switch (ToTokenId(value))
+	  {
+	  case T_SMALL: ctxt.addScriptLevel(1); break;
+	  case T_BIG: ctxt.addScriptLevel(-1); break;
+	  case T_NORMAL: break; // noop
+	  default: assert(false); break;
+	  }
+      else
+	ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
+    } 
+  
+  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathvariant))
+    ctxt.setVariant(toMathVariant(value));
+  else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLTokenElement>(this)) && GetLogicalContentLength() == 1)
+    ctxt.setVariant(ITALIC_VARIANT);
+
+  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathcolor))
+    ctxt.setColor(ToRGB(value));
+  else
+    if (hasLink()) ctxt.setColor(Globals::configuration.GetLinkForeground());
+
+  if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathbackground))
+    ctxt.setBackground(ToRGB(value));
+  else if (hasLink() && !Globals::configuration.HasTransparentLinkBackground())
+    ctxt.setBackground(Globals::configuration.GetLinkBackground());
+
+  RGBColor newColor = ctxt.getColor();
+  RGBColor newBackground = ctxt.getBackground();
+
+  std::vector<AreaRef> c;
+  c.reserve(getSize());
+  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    c.push_back((*p)->format(ctxt));
+
+  AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(c);
+
+  if (oldColor != newColor)
+    res = ctxt.getDevice()->getFactory()->color(res, newColor);
+
+  if (!newBackground.transparent && newBackground != oldBackground)
+    res = ctxt.getDevice()->getFactory()->background(res, newBackground);
+
+  return res;
+}
+
+AreaRef
 MathMLTokenElement::format(MathFormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
-      RGBColor oldColor = ctxt.getColor();
-      RGBColor oldBackground = ctxt.getBackground();
-
       ctxt.push(this);
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathsize))
-	{
-	  if (IsTokenId(value))
-	    switch (ToTokenId(value))
-	      {
-	      case T_SMALL: ctxt.addScriptLevel(1); break;
-	      case T_BIG: ctxt.addScriptLevel(-1); break;
-	      case T_NORMAL: break; // noop
-	      default: assert(false); break;
-	      }
-	  else
-	    ctxt.setSize(ctxt.getDevice()->evaluate(ctxt, ToLength(value), ctxt.getSize()));
-	} 
-  
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathvariant))
-	ctxt.setVariant(toMathVariant(value));
-      else if (is_a<MathMLIdentifierElement>(SmartPtr<MathMLTokenElement>(this)) && GetLogicalContentLength() == 1)
-	ctxt.setVariant(ITALIC_VARIANT);
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathcolor))
-	ctxt.setColor(ToRGB(value));
-      else
-	if (hasLink()) ctxt.setColor(Globals::configuration.GetLinkForeground());
-
-      if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, Token, mathbackground))
-	ctxt.setBackground(ToRGB(value));
-      else if (hasLink() && !Globals::configuration.HasTransparentLinkBackground())
-	ctxt.setBackground(Globals::configuration.GetLinkBackground());
-
-      RGBColor newColor = ctxt.getColor();
-      RGBColor newBackground = ctxt.getBackground();
-
-      std::vector<AreaRef> c;
-      c.reserve(getSize());
-      for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	c.push_back((*p)->format(ctxt));
-
-      AreaRef res = ctxt.getDevice()->getFactory()->horizontalArray(c);
-
-      if (oldColor != newColor)
-	res = ctxt.getDevice()->getFactory()->color(res, newColor);
-
-      if (!newBackground.transparent && newBackground != oldBackground)
-	res = ctxt.getDevice()->getFactory()->background(res, newBackground);
-
-      setArea(ctxt.getDevice()->wrapper(ctxt, res));
-
+      setArea(ctxt.getDevice()->wrapper(ctxt, formatAux(ctxt)));
       ctxt.pop();
-
       resetDirtyLayout();
     }
 

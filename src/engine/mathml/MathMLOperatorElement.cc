@@ -231,7 +231,7 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	  
 	  std::cerr << "stretch by V = " << v << " H = " << h << std::endl;
 
-	  res = MathMLTokenElement::format(ctxt);
+	  res = formatAux(ctxt);
 	  
 	  BoundingBox opBox = res->box();
 
@@ -246,14 +246,12 @@ MathMLOperatorElement::format(MathFormattingContext& ctxt)
 	    }
 	}
       else
-	res = MathMLTokenElement::format(ctxt);
+	res = formatAux(ctxt);
 
-      // the wrapper?
       res = formatEmbellishment(this, ctxt, res);
+      setArea(ctxt.getDevice()->wrapper(ctxt, res));
 
       ctxt.pop();
-
-      setArea(res);
 
       resetDirtyLayout();
     }

@@ -58,6 +58,7 @@ private:
   LinearContainerTemplate<MathMLTokenElement, SmartPtr<class MathMLTextNode> > content;
 
 protected:
+  AreaRef formatAux(class MathFormattingContext&);
   static SmartPtr<class MathMLTextNode> substituteMGlyphElement(const DOM::Element&);
   static SmartPtr<class MathMLTextNode> substituteAlignMarkElement(const DOM::Element&);
   
