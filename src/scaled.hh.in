@@ -31,7 +31,7 @@ inline int   truncFloat(float d) { return static_cast<int>(d); }
 inline int   roundFloat(float d) { return static_cast<int>((d < 0) ? (d - 0.5) : (d + 0.5)); }
 inline float floatMax(float d1, float d2) { return (d1 > d2) ? d1 : d2; }
 
-#if float == float
+#if @SCALED_TYPE@ == float
 
 typedef float scaled;
 
@@ -43,7 +43,7 @@ inline bool   scaledLeq(scaled a, scaled b) { return a - b < SP_EPSILON; }
 inline bool   scaledGeq(scaled a, scaled b) { return a - b > -SP_EPSILON; }
 inline bool   scaledEq(scaled a, scaled b) { return scaledLeq(a, b) && scaledGeq(a, b); }
 
-#elif float == fixed
+#elif @SCALED_TYPE@ == fixed
 
 typedef int scaled;
 
@@ -57,7 +57,7 @@ inline bool   scaledGeq(scaled a, scaled b) { return a >= b; }
 
 #else
 
-#error "No scaled type defined, or type unknown"
+#error "No scaled type defined, or unknown scaled type"
 
 #endif
 
