@@ -48,7 +48,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
   GObjectPtr<PangoContext> context = gdk_pango_context_get();
   SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
 #if HAVE_LIBT1
-  SmartPtr<T1FontManager> t1FontManager = T1FontManager::create();
+  SmartPtr<T1FontManager> t1FontManager;
 #endif // HAVE_LIBT1
 
   for (std::vector<Configuration::ConfiguredShaper>::const_iterator p = conf->getShapers().begin();
@@ -79,6 +79,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
       else if (name == "computer-modern")
 	{
 #if HAVE_LIBT1
+	  if (!t1FontManager) t1FontManager = T1FontManager::create();
 	  SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
 	  cmShaper->setFontManager(t1FontManager);
 	  getShaperManager()->registerShaper(cmShaper);
