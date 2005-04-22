@@ -40,8 +40,8 @@ SmartPtr<BoxMLVElement>
 BoxMLVElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLVElement(context); }
 
-#include "scaledAux.hh"
-#include "BoundingBoxAux.hh"
+// #include "scaledAux.hh"
+// #include "BoundingBoxAux.hh"
 
 AreaRef
 BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,

@@ -79,7 +79,7 @@ GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, CharIndex& i
   return false;
 }
 
-#include <iostream>
+// #include <iostream>
 
 bool
 GlyphStringArea::positionOfIndex(CharIndex index, Point* point, BoundingBox* b) const
@@ -100,7 +100,7 @@ GlyphStringArea::positionOfIndex(CharIndex index, Point* point, BoundingBox* b) 
       }
     else
       {
-	std::cerr << "GlyphStringArea::positionOfIndex iterating index = " << index << std::endl;
+// 	std::cerr << "GlyphStringArea::positionOfIndex iterating index = " << index << std::endl;
 	index -= *p;
 	point->x += content[p - counters.begin()]->box().width;
       }

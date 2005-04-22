@@ -32,16 +32,13 @@ libgtk_mathml_graphic_device_la_SOURCES = \
   Gtk_DefaultPangoShaper.cc \
   Gtk_PangoShaper.cc \
   Gtk_AdobeShaper.cc \
-  $(MAYBE_T1_S) \
-  $(NULL)
-
-noinst_HEADERS = \
   Gtk_MathGraphicDevice.hh \
   Gtk_PangoFontManager.hh \
   Gtk_XftFontManager.hh \
   Gtk_DefaultPangoShaper.hh \
   Gtk_PangoShaper.hh \
   Gtk_AdobeShaper.hh \
+  $(MAYBE_T1_S) \
   $(MAYBE_T1_H) \
   $(NULL)
 

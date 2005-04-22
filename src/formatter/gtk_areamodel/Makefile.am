@@ -25,10 +25,6 @@ libgtk_areamodel_la_SOURCES = \
   Gtk_BackgroundArea.cc \
   Gtk_InkArea.cc \
   Gtk_WrapperArea.cc \
-  $(MAYBE_T1_S) \
-  $(NULL)
-
-noinst_HEADERS = \
   Gtk_AreaFactory.hh \
   Gtk_RenderingContext.hh \
   Gtk_PangoLayoutArea.hh \
@@ -39,6 +35,7 @@ noinst_HEADERS = \
   Gtk_BackgroundArea.hh \
   Gtk_InkArea.hh \
   Gtk_WrapperArea.hh \
+  $(MAYBE_T1_S) \
   $(MAYBE_T1_H) \
   $(NULL)
 

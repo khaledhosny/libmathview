@@ -28,9 +28,9 @@
 #if HAVE_LIBT1
 #include <t1lib.h>
 #include <t1libx.h>
+#include "T1Font.hh"
 #endif // HAVE_LIBT1
 
-#include "T1Font.hh"
 #include "AbstractLogger.hh"
 #include "Gtk_RenderingContext.hh"
 
@@ -153,10 +153,10 @@ Gtk_RenderingContext::draw(const scaled& x, const scaled& y, XftFont* font, FcCh
 		 &glyph, 1);
 }
 
+#if HAVE_LIBT1
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<T1Font>& font, Char8 glyph) const
 {
-#if HAVE_LIBT1
   if (t1_aa_mode)
     T1_AASetCharX(GDK_DRAWABLE_XID(getDrawable()),
 		  GDK_GC_XGC(getGC()), t1_opaque_mode ? T1_OPAQUE : T1_TRANSPARENT,
@@ -167,7 +167,5 @@ Gtk_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<T1Fo
 		GDK_GC_XGC(getGC()), t1_opaque_mode ? T1_OPAQUE : T1_TRANSPARENT,
 		Gtk_RenderingContext::toGtkX(x), Gtk_RenderingContext::toGtkY(y),
 		font->getFontId(), glyph, font->getScale(), NULL);
-#else
-  assert(false);
-#endif // HAVE_LIBT1
 }
+#endif // HAVE_LIBT1

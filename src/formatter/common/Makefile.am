@@ -23,14 +23,11 @@ mathview_HEADERS = \
 
 noinst_LTLIBRARIES = libcommon.la
 
-noinst_HEADERS = \
-  $(MAYBE_T1_H) \
-  $(NULL)
-
 libcommon_la_SOURCES = \
   FormattingContext.cc \
   GraphicDevice.cc \
   $(MAYBE_T1_S) \
+  $(MAYBE_T1_H) \
   $(NULL)
 
 INCLUDES = \

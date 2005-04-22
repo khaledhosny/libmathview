@@ -161,7 +161,7 @@ Gtk_BoxGraphicDevice::paragraph(const FormattingContext& context,
 		       first_line_ascent,
 		       Gtk_RenderingContext::fromPangoPixels(rect.height) - first_line_ascent);
 
-  std::cerr << "the final box will be " << finalBox << " the first line ascent being " << first_line_ascent << std::endl;
+//   std::cerr << "the final box will be " << finalBox << " the first line ascent being " << first_line_ascent << std::endl;
 
   std::vector<BoxedLayoutArea::XYArea> c;
   c.push_back(BoxedLayoutArea::XYArea(scaled::zero(), scaled::zero(), factory->pangoLayout(layout)));
@@ -188,7 +188,7 @@ Gtk_BoxGraphicDevice::paragraph(const FormattingContext& context,
 	  }
 	pango_layout_iter_free(iter);
 
-	std::cerr << "found object baseline " << baseline << std::endl;
+// 	std::cerr << "found object baseline " << baseline << std::endl;
 
 	c.push_back(BoxedLayoutArea::XYArea(Gtk_RenderingContext::fromPangoPixels(pos.x),
 					    finalBox.height - Gtk_RenderingContext::fromPangoPixels(baseline),

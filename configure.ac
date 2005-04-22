@@ -100,7 +100,7 @@ AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
 	t1lib=$withval,
-	t1lib=auto
+	t1lib=no
 )
 
 AC_ARG_WITH(

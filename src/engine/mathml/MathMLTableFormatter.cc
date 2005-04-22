@@ -403,7 +403,7 @@ MathMLTableFormatter::calcTableWidthT(int& numCol, scaled& sumFix, float& sumSca
 	sumScale += columns[j].getScaleWidth();
     }	
     
-  return ((numCol * max) + sumFix) / (1 - sumScale);
+  return std::max(numCol * max + sumFix, ((numCol * max) + sumFix) / (1 - sumScale));
 }
 
 void
@@ -416,7 +416,7 @@ MathMLTableFormatter::initWidthsT()
   const scaled tableWidth = calcTableWidthT(numCol, sumFix, sumScale);
 
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
-  const scaled availWidth = tableWidth - assignedWidth;
+  const scaled availWidth = std::max(scaled::zero(), tableWidth - assignedWidth);
 	
   for (unsigned j = 0; j < columns.size(); j++)
     if (columns[j].isContentColumn())
@@ -456,7 +456,7 @@ MathMLTableFormatter::calcTableWidthF(int& numCol, scaled& sumCont, scaled& sumF
     else if (columns[j].getSpec() == Column::SCALE)
       sumScale += columns[j].getScaleWidth();
 
-  return std::max(max, (sumCont + sumFix) / (1 - sumScale));
+  return std::max(max, std::max(sumCont + sumFix, (sumCont + sumFix) / (1 - sumScale)));
 }
 
 void
@@ -468,12 +468,12 @@ MathMLTableFormatter::initWidthsF()
   float sumScale;
 
   const scaled tableWidth = calcTableWidthF(numCol, sumCont, sumFix, sumScale);
-
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
-  const scaled extraWidth = tableWidth - assignedWidth - sumCont;
+  const scaled extraWidth = std::max(scaled::zero(), tableWidth - assignedWidth - sumCont);
 
 #if 0			
-  std::cerr << "initWidthsF sumScale = " << sumScale << std::endl
+  std::cerr << "initWidthsF tableWidth = " << tableWidth << std::endl
+	  << "sumScale = " << sumScale << std::endl
 	  << "assignedWidth = " << assignedWidth << std::endl
 	  << "extraWidth = " << extraWidth << std::endl;
 #endif
@@ -604,7 +604,7 @@ MathMLTableFormatter::calcTableHeightDepthT(int& numRig, float& sumScale, scaled
 	sumScale += rows[i].getScaleHeight();
     }
 
-  return ((numRig * max) + sumFixHD) / (1 - sumScale);
+  return std::max(numRig * max + sumFixHD, ((numRig * max) + sumFixHD) / (1 - sumScale));
 }
 
 scaled
@@ -624,7 +624,7 @@ MathMLTableFormatter::calcTableHeightDepthF()
     else if (rows[i].getSpec() == Row::SCALE)
       sumScale += rows[i].getScaleHeight();         
 
-  return (sumContFix / (1 - sumScale));
+  return std::max(sumContFix, sumContFix / (1 - sumScale));
 }
 
 scaled
@@ -637,7 +637,7 @@ MathMLTableFormatter::initHeightsT()
 	
   const scaled tableHeightDepth = calcTableHeightDepthT(numRows, sumScale, sumContHD, sumFixHD);	
   const scaled assignedHeightDepth = sumFixHD + tableHeightDepth * sumScale;
-  const scaled availHeightDepth = tableHeightDepth - assignedHeightDepth;
+  const scaled availHeightDepth = std::max(scaled::zero(), tableHeightDepth - assignedHeightDepth);
 	
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow())

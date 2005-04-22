@@ -29,7 +29,7 @@
 
 bool T1FontManager::firstTime = true;
 
-#include <iostream>
+// #include <iostream>
 
 T1FontManager::T1FontManager()
 {
@@ -60,7 +60,7 @@ T1FontManager::loadFont(const String& name) const
       return true; // font already in the database
   const int fontId = T1_AddFont(const_cast<char*>(name.c_str())); // DANGER, const cast
   if (fontId >= 0) T1_LoadFont(fontId);
-  std::cerr << "loading font " << name << " => " << fontId << std::endl;
+//   std::cerr << "loading font " << name << " => " << fontId << std::endl;
   return fontId;
 }
 
