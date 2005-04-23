@@ -55,6 +55,7 @@ public:
 #if ENABLE_BOXML
     BOXML_ELEMENT,
 #endif
+    AVAILABLE_WIDTH,
     STRETCH_OP,
     STRETCH_TO_WIDTH,
     STRETCH_TO_HEIGHT,
@@ -101,9 +102,10 @@ public:
   void setSizeMultiplier(double f) { set<double>(SIZE_MULT, f); }
   Length getMathSpace(int i) const { return get<Length>(i); }
   void setMathSpace(int i, const Length& l) { set<Length>(i, l); }
+  scaled getAvailableWidth(void) const { return get<scaled>(AVAILABLE_WIDTH); }
+  void setAvailableWidth(const scaled& w) { set<scaled>(AVAILABLE_WIDTH, w); }
   SmartPtr<class MathMLElement> getStretchOperator(void) const;
   void setStretchOperator(const SmartPtr<class MathMLElement>&);
-
   scaled getStretchToWidth(void) const { return get<scaled>(STRETCH_TO_WIDTH); }
   void setStretchToWidth(const scaled& w) { set<scaled>(STRETCH_TO_WIDTH, w); }
   scaled getStretchToHeight(void) const { return get<scaled>(STRETCH_TO_HEIGHT); }

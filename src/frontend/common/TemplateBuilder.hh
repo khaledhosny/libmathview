@@ -152,6 +152,8 @@ protected:
       { "space",         &TemplateBuilder::template updateElement<BoxML_space_ElementBuilder> },
       { "text",          &TemplateBuilder::template updateElement<BoxML_text_ElementBuilder> },
       { "v",             &TemplateBuilder::template updateElement<BoxML_v_ElementBuilder> },
+      { "hv",            &TemplateBuilder::template updateElement<BoxML_hv_ElementBuilder> },
+      { "hov",           &TemplateBuilder::template updateElement<BoxML_hov_ElementBuilder> },
       { "box",           &TemplateBuilder::template updateElement<BoxML_box_ElementBuilder> },
       { "action",        &TemplateBuilder::template updateElement<BoxML_action_ElementBuilder> },
       { "obj",           &TemplateBuilder::update_BoxML_obj_Element },
@@ -1093,7 +1095,7 @@ protected:
 
     static void
     refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLHElement>& elem)
-    { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, H, align)); }
+    { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, H, spacing)); }
   };
   
   struct BoxML_ink_ElementBuilder : public BoxMLElementBuilder
@@ -1205,10 +1207,36 @@ protected:
     static void
     refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLVElement>& elem)
     {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, align));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, enter));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, exit));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, indent));
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, minlinespacing));
+    }
+  };
+
+  struct BoxML_hv_ElementBuilder : public BoxMLLinearContainerElementBuilder
+  {
+    typedef BoxMLHVElement type;
+
+    static void
+    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLHVElement>& elem)
+    {
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HV, spacing));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HV, indent));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HV, minlinespacing));
+    }
+  };
+
+  struct BoxML_hov_ElementBuilder : public BoxMLLinearContainerElementBuilder
+  {
+    typedef BoxMLHOVElement type;
+
+    static void
+    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLHOVElement>& elem)
+    {
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, spacing));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, indent));
+      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, minlinespacing));
     }
   };
 #endif // ENABLE_BOXML

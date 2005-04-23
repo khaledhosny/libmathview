@@ -24,7 +24,6 @@
 #define __BoxMLVElement_hh__
 
 #include "BoxMLLinearContainerElement.hh"
-#include "token.hh"
 
 class BoxMLVElement : public BoxMLLinearContainerElement
 {
@@ -37,9 +36,14 @@ public:
 
   virtual AreaRef format(class FormattingContext&);
 
+  static AreaRef indentArea(const class FormattingContext&,
+			    const SmartPtr<Value>&, const AreaRef&);
+  static scaled getMinimumIndentation(const class FormattingContext&,
+				      const SmartPtr<Value>&);
   static AreaRef formatVerticalArray(class FormattingContext&,
 				     const std::vector<AreaRef>&,
-				     const scaled&, int, int, TokenId,
+				     const scaled&, int, int,
+				     const std::vector<SmartPtr<Value> >&,
 				     scaled&);
 
   virtual scaled getStep(void) const { return step; }

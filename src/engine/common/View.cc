@@ -126,6 +126,7 @@ View::formatElement(const SmartPtr<Element>& elem) const
       scaled l = mathmlContext->getGraphicDevice()->evaluate(ctxt, defaultSize, scaled::zero());
       ctxt.setSize(l);
       ctxt.setActualSize(ctxt.getSize());
+      ctxt.setAvailableWidth(getAvailableWidth());
       Clock perf;
       perf.Start();
       elem->format(ctxt);
@@ -347,17 +348,32 @@ View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
 }
 
 void
+View::setDirtyLayout() const
+{
+  if (SmartPtr<Element> elem = getRootElement())
+    {
+      //elem->setDirtyAttributeD();
+      elem->setDirtyLayoutD();	  
+    }
+}
+
+void
 View::setDefaultFontSize(unsigned size)
 {
   assert(size > 0);
   if (defaultFontSize != size)
     {
       defaultFontSize = size;
-      if (SmartPtr<Element> elem = getRootElement())
-	{
-	  //elem->setDirtyAttributeD();
-	  elem->setDirtyLayoutD();	  
-	}
+      setDirtyLayout();
     }
 }
 
+void
+View::setAvailableWidth(const scaled& width)
+{
+  if (width != availableWidth)
+    {
+      availableWidth = width;
+      setDirtyLayout();
+    }
+}

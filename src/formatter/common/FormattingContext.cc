@@ -54,6 +54,7 @@ FormattingContext::FormattingContext(const SmartPtr<MathGraphicDevice>& md)
   for (int i = -7; i <= 7; i++)
     setMathSpace(ZERO_SPACE + i, Length(i / 18.0, Length::EM_UNIT));
 
+  setAvailableWidth(scaled::zero());
   setStretchOperator(0);
   setStretchToWidth(scaled::zero());
   setStretchToHeight(scaled::zero());

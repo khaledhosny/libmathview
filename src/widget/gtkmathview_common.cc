@@ -390,6 +390,8 @@ gtk_math_view_paint(GtkMathView* math_view)
 
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
+  // WARNING: setAvailableWidth must be invoked BEFORE any coordinate conversion
+  math_view->view->setAvailableWidth(Gtk_RenderingContext::fromGtkX(width));
   gint x = 0;
   gint y = 0;
   to_view_coords(math_view, &x, &y);

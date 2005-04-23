@@ -42,51 +42,62 @@ BoxMLHElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLHElement(context); }
 
 AreaRef
+BoxMLHElement::formatHorizontalArray(FormattingContext& ctxt,
+				     const std::vector<SmartPtr<BoxMLElement> >& content,
+				     const std::vector<scaled>& spacing,
+				     scaled& step)
+{
+  assert(content.size() == spacing.size() + 1);
+
+  step = 0;
+
+  std::vector<AreaRef> c;
+  c.reserve(content.size());
+  for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
+       p != content.end();
+       p++)
+    if (SmartPtr<BoxMLElement> el = *p)
+      {
+	AreaRef area = el->format(ctxt);
+	assert(area);
+	if (step != scaled::zero())
+	  area = ctxt.BGD()->getFactory()->shift(area, step);
+	step += el->getStep();
+	
+	c.push_back(area);
+
+	if (p + 1 != content.end())
+	  {
+	    const scaled thisSpacing = spacing[p - content.begin()];
+	    if (thisSpacing != scaled::zero())
+	      c.push_back(ctxt.BGD()->getFactory()->horizontalSpace(thisSpacing));
+	  }
+      }
+
+  AreaRef res;
+  if (c.size() == 1)
+    res = c[0];
+  else
+    res = ctxt.BGD()->getFactory()->horizontalArray(c);
+
+  return res;
+}
+
+AreaRef
 BoxMLHElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      TokenId align = ToTokenId(GET_ATTRIBUTE_VALUE(BoxML, H, align));
+      const SmartPtr<Value> spacingV = GET_ATTRIBUTE_VALUE(BoxML, H, spacing);
 
-      step = 0;
-      std::vector<AreaRef> c;
-      c.reserve(content.getSize());
-      for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	if (*p)
-	  {
-	    AreaRef area = (*p)->format(ctxt);
-	    assert(area);
-	    switch (align)
-	      {
-	      case T_TOP: area = ctxt.BGD()->getFactory()->top(area); break;
-	      case T_BOTTOM: area = ctxt.BGD()->getFactory()->bottom(area); break;
-	      case T_CENTER: area = ctxt.BGD()->getFactory()->middle(area); break;
-	      case T_BASELINE:
-		{
-		  //std::cout << "making step of " << step.getValue() << std::endl;
-		  if (step != scaled::zero())
-		    area = ctxt.BGD()->getFactory()->shift(area, step);
-		  step += (*p)->getStep();
-		}
-		break;
-	      default:
-		assert(false);
-		break;
-	      }
+      std::vector<scaled> sc;
+      sc.reserve(content.getSize());
+      for (unsigned i = 1; i < content.getSize(); i++)
+	sc.push_back(ctxt.BGD()->evaluate(ctxt, ToLength(GetComponent(spacingV, i - 1)), scaled::zero()));
 
-	    c.push_back(area);
-	  }
-
-      AreaRef res;
-      if (c.size() == 1)
-	res = c[0];
-      else
-	res = ctxt.BGD()->getFactory()->horizontalArray(c);
-
+      AreaRef res = formatHorizontalArray(ctxt, content.getContent(), sc, step);
       res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 

@@ -4,47 +4,48 @@ NULL =
 noinst_LTLIBRARIES = libboxml.la
 
 libboxml_la_SOURCES = \
-  BoxMLNamespaceContext.cc \
-  BoxMLAttributeSignatures.cc \
-  BoxMLElement.cc \
+  BoxML.hh \
   BoxMLActionElement.cc \
-  BoxMLBinContainerElement.cc \
-  BoxMLDecorElement.cc \
-  BoxMLLinearContainerElement.cc \
-  BoxMLboxElement.cc \
-  BoxMLTextElement.cc \
-  BoxMLHElement.cc \
-  BoxMLVElement.cc \
-  BoxMLGroupElement.cc \
-  BoxMLLayoutElement.cc \
+  BoxMLActionElement.hh \
   BoxMLAtElement.cc \
-  BoxMLSpaceElement.cc \
+  BoxMLAtElement.hh \
+  BoxMLAttributeParsers.hh \
+  BoxMLAttributeSignatures.cc \
+  BoxMLAttributeSignatures.hh \
+  BoxMLBinContainerElement.cc \
+  BoxMLBinContainerElement.hh \
+  BoxMLDecorElement.cc \
+  BoxMLDecorElement.hh \
+  BoxMLElement.cc \
+  BoxMLGroupElement.cc \
+  BoxMLGroupElement.hh \
+  BoxMLHElement.cc \
+  BoxMLHElement.hh \
+  BoxMLHOVElement.cc \
+  BoxMLHOVElement.hh \
+  BoxMLHVElement.cc \
+  BoxMLHVElement.hh \
   BoxMLInkElement.cc \
+  BoxMLInkElement.hh \
+  BoxMLLayoutElement.cc \
+  BoxMLLayoutElement.hh \
+  BoxMLLinearContainerElement.cc \
+  BoxMLLinearContainerElement.hh \
+  BoxMLNamespaceContext.cc \
+  BoxMLSpaceElement.cc \
+  BoxMLSpaceElement.hh \
+  BoxMLTextElement.cc \
+  BoxMLTextElement.hh \
+  BoxMLVElement.cc \
+  BoxMLVElement.hh \
+  BoxMLboxElement.cc \
+  BoxMLboxElement.hh \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
   BoxMLNamespaceContext.hh \
   BoxMLElement.hh \
-  $(NULL)
-
-noinst_HEADERS = \
-  BoxML.hh \
-  BoxMLAttributeSignatures.hh \
-  BoxMLAttributeParsers.hh \
-  BoxMLActionElement.hh \
-  BoxMLBinContainerElement.hh \
-  BoxMLDecorElement.hh \
-  BoxMLLinearContainerElement.hh \
-  BoxMLboxElement.hh \
-  BoxMLTextElement.hh \
-  BoxMLHElement.hh \
-  BoxMLVElement.hh \
-  BoxMLGroupElement.hh \
-  BoxMLLayoutElement.hh \
-  BoxMLAtElement.hh \
-  BoxMLSpaceElement.hh \
-  BoxMLInkElement.hh \
   $(NULL)
 
 INCLUDES = \

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,24 +17,28 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __BoxML_hh__
-#define __BoxML_hh__
+#ifndef __BoxMLHVElement_hh__
+#define __BoxMLHVElement_hh__
 
-#include "BoxMLAtElement.hh"
-#include "BoxMLLayoutElement.hh"
-#include "BoxMLHElement.hh"
-#include "BoxMLHVElement.hh"
-#include "BoxMLHOVElement.hh"
-#include "BoxMLGroupElement.hh"
-#include "BoxMLInkElement.hh"
-#include "BoxMLSpaceElement.hh"
-#include "BoxMLTextElement.hh"
-#include "BoxMLVElement.hh"
-#include "BoxMLboxElement.hh"
-#include "BoxMLActionElement.hh"
-#include "BoxMLDecorElement.hh"
+#include "BoxMLLinearContainerElement.hh"
 
-#endif // __BoxML_hh__
+class BoxMLHVElement : public BoxMLLinearContainerElement
+{
+protected:
+  BoxMLHVElement(const SmartPtr<class BoxMLNamespaceContext>&);
+  virtual ~BoxMLHVElement();
+
+public:
+  static SmartPtr<BoxMLHVElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
+
+  virtual AreaRef format(class FormattingContext&);
+  virtual scaled getStep(void) const { return step; }
+
+private:
+  scaled step;
+};
+
+#endif // __BoxMLHVElement_hh__

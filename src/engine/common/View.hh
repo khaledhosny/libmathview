@@ -82,7 +82,11 @@ public:
   unsigned getDefaultFontSize(void) const { return defaultFontSize; }
   void setDefaultFontSize(unsigned);
 
+  scaled getAvailableWidth(void) const { return availableWidth; }
+  void setAvailableWidth(const scaled&);
+
 protected:
+  void setDirtyLayout(void) const;
   SmartPtr<const class Area> getRootArea(void) const;
   SmartPtr<const class Area> formatElement(const SmartPtr<class Element>&) const;
 
@@ -97,6 +101,7 @@ private:
 #endif // ENABLE_BOXML
   unsigned defaultFontSize;
   unsigned freezeCounter;
+  scaled availableWidth;
 };
 
 #endif // __View_hh__
