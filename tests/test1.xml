@@ -1,13 +1,13 @@
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
   <maction actiontype="toggle">
    <mrow>
-    <mo>&int;</mo>
-    <mo>&ApplyFunction;</mo>
+    <mo>&#x222b;</mo>
+    <mo>&#x2061;</mo>
     <mfrac>
       <mrow>
         <mrow>
           <mi>a</mi>
-	  <mo>&InvisibleTimes;</mo>
+	  <mo>&#x2062;</mo>
 	  <mi>x</mi>
 	</mrow>
 	<mo>+</mo>
@@ -21,7 +21,7 @@
 	<mo>+</mo>
 	<mrow>
 	  <mi>p</mi>
-	  <mo>&InvisibleTimes;</mo>
+	  <mo>&#x2062;</mo>
 	  <mi>x</mi>
 	</mrow>
 	<mo>+</mo>
@@ -29,7 +29,7 @@
       </mrow>
     </mfrac>
    </mrow>
-   <mtext>AH AH AH</mtext>
+   <mtext>Hello World</mtext>
   </maction>
   <mo fontstyle="italic">d</mo>
   <mi>x</mi>
@@ -37,10 +37,9 @@
   <mrow>
     <mrow>
       <mfrac><mi>a</mi><mn>2</mn></mfrac>
-      <mo>&InvisibleTimes;</mo>
+      <mo>&#x2062;</mo>
       <mrow>
         <mi>ln</mi>
-	<mo>&ApplyFunction;</mo>
 	<mrow>
 	  <mo>(</mo>
 	  <mrow>
@@ -48,7 +47,7 @@
 	    <mo>+</mo>
 	    <mrow>
 	      <mi>p</mi>
-	      <mo>&InvisibleTimes;</mo>
+	      <mo>&#x2062;</mo>
 	      <mi>x</mi>
 	    </mrow>
 	    <mo>+</mo>
@@ -64,13 +63,13 @@
         <mrow>
 	  <mrow>
 	    <mn>2</mn>
-	    <mo>&InvisibleTimes;</mo>
+	    <mo>&#x2062;</mo>
 	    <mi>b</mi>
 	  </mrow>
 	  <mo>-</mo>
 	  <mrow>
 	    <mi>a</mi>
-	    <mo>&InvisibleTimes;</mo>
+	    <mo>&#x2062;</mo>
 	    <mi>p</mi>
 	  </mrow>
 	</mrow>
@@ -78,7 +77,7 @@
 	  <mrow>
 	    <mrow>
 	      <mn>4</mn>
-	      <mo>&InvisibleTimes;</mo>
+	      <mo>&#x2062;</mo>
 	      <mi>q</mi>
 	    </mrow>
 	    <mo>-</mo>
@@ -89,15 +88,15 @@
 	  </mrow>
 	</msqrt>
       </mfrac>
-      <mo>&InvisibleTimes;</mo>
+      <mo>&#x2062;</mo>
       <mrow>
         <mi>arctg</mi>
-	<mo>&ApplyFunction;</mo>
+	<mo>&#x2061;</mo>
 	<mfrac>
 	  <mrow>
 	    <mrow>
 	      <mn>2</mn>
-	      <mo>&InvisibleTimes;</mo>
+	      <mo>&#x2062;</mo>
 	      <mi>x</mi>
 	    </mrow>
 	    <mo>+</mo>
@@ -107,7 +106,7 @@
 	    <mrow>
 	      <mrow>
 	        <mn>4</mn>
-		<mo>&InvisibleTimes;</mo>
+		<mo>&#x2062;</mo>
 		<mi>q</mi>
 	      </mrow>
 	      <mo>-</mo>

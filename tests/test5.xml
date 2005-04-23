@@ -5,14 +5,13 @@
         <mo>lim</mo>
 	<mrow>
 	  <mi>x</mi>
-	  <mo>&RightArrow;</mo>
+	  <mo>&#x2192;</mo>
 	  <mrow>
 	    <mo>+</mo>
-	    <mn>&infin;</mn>
+	    <mn>&#x221e;</mn>
 	  </mrow>
 	</mrow>
       </munder>
-      <mo>&ApplyFunction;</mo>
       <mfrac>
         <msup>
 	  <mrow>
@@ -35,7 +34,7 @@
 	        <mn>1</mn>
 		<mo>+</mo>
 		<msup>
-		  <mi>&lambda;</mi>
+		  <mi mathvariant="normal">&#x03bb;</mi>
 		  <mn>2</mn>
 		</msup>
 	      </mrow>
@@ -61,14 +60,13 @@
         <mo>lim</mo>
 	<mrow>
 	  <mi>x</mi>
-	  <mo>&RightArrow;</mo>
+	  <mo>&#x2192;</mo>
 	  <mrow>
 	    <mo>+</mo>
-	    <mn>&infin;</mn>
+	    <mn>&#x221e;</mn>
 	  </mrow>
 	</mrow>
       </munder>
-      <mo>&ApplyFunction;</mo>
       <mfrac>
         <msup>
 	  <mi>x</mi>
@@ -93,7 +91,7 @@
 	      <mn>1</mn>
 	      <mo>+</mo>
 	      <msup>
-	        <mi>&lambda;</mi>
+	        <mi mathvariant="normal">&#x03bb;</mi>
 		<mn>2</mn>
 	      </msup>
 	    </mrow>
@@ -110,11 +108,10 @@
 	  <mo>&#x2192;</mo>
 	  <mrow>
 	    <mo>+</mo>
-	    <mn>&infin;</mn>
+	    <mn>&#x221e;</mn>
 	  </mrow>
 	</mrow>
       </munder>
-      <mo>&ApplyFunction;</mo>
       <msup>
         <mrow>
 	  <mo symmetric="false">[</mo>
@@ -123,14 +120,14 @@
 	      <mi>x</mi>
 	      <mrow>
 	        <mi>n</mi>
-		<mo>&InvisibleTimes;</mo>
+		<mo>&#x2062;</mo>
 		<mrow>
 		  <mo stretchy="false" symmetric="false">(</mo>
 		  <mrow>
 		    <mn>1</mn>
 		    <mo>+</mo>
 		    <msup>
-		      <mi>&lambda;</mi>
+		      <mi mathvariant="normal">&#x03bb;</mi>
 		      <mn>2</mn>
 		    </msup>
 		  </mrow>
@@ -155,7 +152,7 @@
 	    <mn>1</mn>
 	    <mo>+</mo>
 	    <msup>
-	      <mi>&lambda;</mi>
+	      <mi mathvariant="normal">&#x03bb;</mi>
 	      <mn>2</mn>
 	    </msup>
 	  </mrow>
