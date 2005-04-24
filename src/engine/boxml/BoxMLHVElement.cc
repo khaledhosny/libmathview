@@ -88,7 +88,7 @@ BoxMLHVElement::format(FormattingContext& ctxt)
 	  step = 0;
 	}
       else if (remainingWidth < scaled::zero())
-	res = BoxMLVElement::formatVerticalArray(ctxt, c, minLineSpacing, 1, c.size(), ic, step);
+	res = BoxMLVElement::formatVerticalArray(ctxt, c, minLineSpacing, 1, -1, ic, step);
       else
 	res = BoxMLHElement::formatHorizontalArray(ctxt, content.getContent(), sc, step);
 

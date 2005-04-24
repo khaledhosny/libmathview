@@ -86,6 +86,11 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 				   const std::vector<SmartPtr<Value> >& indentV,
 				   scaled& step)
 {
+  if (enter < 0) enter = content.size() + enter + 1;
+  if (exit < 0) exit = content.size() + exit + 1;
+  enter = content.size() - std::min(std::max(enter, 1), (int) content.size());
+  exit = content.size() - std::min(std::max(exit, 1), (int) content.size());
+
   int enter_index = 0;
   int exit_index = 0;
   AreaRef prevArea = 0;
@@ -163,12 +168,6 @@ BoxMLVElement::format(FormattingContext& ctxt)
       int enter = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, enter));
       int exit = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, exit));
       const scaled minLineSpacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
-
-      if (enter < 0) enter = content.getSize() + enter + 1;
-      if (exit < 0) exit = content.getSize() + exit + 1;
-
-      enter = content.getSize() - std::min(std::max(enter, 1), (int) content.getSize());
-      exit = content.getSize() - std::min(std::max(exit, 1), (int) content.getSize());
 
       const scaled availableWidth = ctxt.getAvailableWidth();
       std::vector<AreaRef> c;

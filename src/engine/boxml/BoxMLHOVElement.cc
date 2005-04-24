@@ -31,13 +31,6 @@
 #include "ValueConversion.hh"
 #include "AreaFactory.hh"
 
-#if 0
-TODO
-
-1) distribuire ampiezza residua in elemento H
-2) fissare bug di allineamento hov (step?) e forse anche in hv
-#endif
-
 BoxMLHOVElement::BoxMLHOVElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLLinearContainerElement(context)
 { }
@@ -106,7 +99,7 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
 	  vc.push_back(BoxMLHElement::formatHorizontalArray(ctxt, hc, sc, step));
 	}
 
-      AreaRef res = BoxMLVElement::formatVerticalArray(ctxt, vc, minLineSpacing, 1, vc.size(), ic, step);
+      AreaRef res = BoxMLVElement::formatVerticalArray(ctxt, vc, minLineSpacing, 1, -1, ic, step);
       res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 

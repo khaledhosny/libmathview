@@ -63,11 +63,11 @@ BoxMLTextElement::format(FormattingContext& ctxt)
       scaled width;
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(BoxML, Text, width))
 	if (IsTokenId(value))
-	  width = scaled::min();
+	  width = ctxt.getAvailableWidth();
 	else
 	  width = ctxt.BGD()->evaluate(ctxt, ToLength(value), scaled::max());
       else
-	width = scaled::min();
+	width = ctxt.getAvailableWidth();
 
       RGBColor newColor = ctxt.getColor();
       RGBColor newBackground = ctxt.getBackground();

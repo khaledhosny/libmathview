@@ -91,11 +91,21 @@ BoxMLHElement::format(FormattingContext& ctxt)
       ctxt.push(this);
 
       const SmartPtr<Value> spacingV = GET_ATTRIBUTE_VALUE(BoxML, H, spacing);
+      scaled availableWidth = ctxt.getAvailableWidth();
 
       std::vector<scaled> sc;
       sc.reserve(content.getSize());
-      for (unsigned i = 1; i < content.getSize(); i++)
-	sc.push_back(ctxt.BGD()->evaluate(ctxt, ToLength(GetComponent(spacingV, i - 1)), scaled::zero()));
+      for (std::vector<SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
+	   p != content.end();
+	   p++)
+	{
+	  assert(*p);
+	  ctxt.setAvailableWidth(availableWidth);
+	  const AreaRef area = (*p)->format(ctxt);
+	  availableWidth -= area->box().width;
+	  if (p != content.begin())
+	    sc.push_back(ctxt.BGD()->evaluate(ctxt, ToLength(GetComponent(spacingV, (p - 1) - content.begin())), scaled::zero()));
+	}
 
       AreaRef res = formatHorizontalArray(ctxt, content.getContent(), sc, step);
       res = ctxt.BGD()->wrapper(ctxt, res);
