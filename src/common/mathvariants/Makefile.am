@@ -49,15 +49,15 @@ XSLTPROC = xsltproc
 %.cc : %_gen.cc $(srcdir)/variant.top $(srcdir)/variant.bot
 	cat $(srcdir)/variant.top >$@
 	$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
-	$(CXX) -I$(top_builddir)/auto $<
+	$(CXX) -o $(@:%.cc=%) -I$(top_builddir)/auto $<
 	echo "Char32 " >>$@
 	echo -n "map_variant_$@" | cut -d '.' -f1 | tr "-" "_" >>$@
 	echo "(Char32 ch)" >>$@
 	echo "{" >>$@
-	./a.out >>$@
+	./$(@:%.cc=%) >>$@
 	echo "  return ch;" >>$@
 	echo "}" >>$@
-	rm -f a.out
+	rm -f $(@:%.cc=%)
 	cat $(srcdir)/variant.bot >>$@
 endif
 
