@@ -15,6 +15,7 @@ endif
 if COND_LIBXML2
 noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
+noinst_PROGRAMS += test_building
 endif
 if COND_LIBXML2_READER
 noinst_PROGRAMS += test_loading_reader
@@ -52,6 +53,16 @@ test_embedding_LDADD = \
 test_loading_SOURCES = test_loading.c
 test_loading_LDFLASG = -no-install -static
 test_loading_LDADD = \
+  -lstdc++ \
+  $(XML_LIBS) \
+  $(GTK_LIBS) \
+  $(T1_LIBS) \
+  $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(NULL)
+
+test_building_SOURCES = test_building.cc
+test_building_LDFLASG = -no-install -static
+test_building_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
   $(GTK_LIBS) \
