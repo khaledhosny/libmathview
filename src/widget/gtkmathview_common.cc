@@ -290,6 +290,8 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
 
+  if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view))) return;
+
   if (math_view->pixmap != NULL)
     gdk_draw_pixmap(widget->window,
 		    widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
