@@ -6,13 +6,19 @@ SUBDIRS = scripts config auto src doc viewer
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = \
-  mathview-libxml2.pc \
-  gtkmathview-custom-reader.pc \
-  gtkmathview-libxml2-reader.pc \
-  gtkmathview-libxml2.pc \
-  gtkmathview-gmetadom.pc \
-  $(NULL)
+pkgconfig_DATA = $(NULL)
+if COND_LIBXML2
+pkgconfig_DATA += mathview-libxml2.pc gtkmathview-libxml2.pc
+endif
+if COND_LIBXML2_READER
+pkgconfig_DATA += gtkmathview-libxml2-reader.pc
+endif
+if COND_CUSTOM_READER
+pkgconfig_DATA += gtkmathview-custom-reader.pc
+endif
+if COND_GMETADOM
+pkgconfig_DATA += gtkmathview-gmetadom.pc
+endif
 
 SCRIPTDIR = ./scripts
 
