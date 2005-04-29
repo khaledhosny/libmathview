@@ -76,10 +76,10 @@ extern "C" {
 #endif
 
   typedef enum _GtkMathViewCursor {
-    GTKMATHVIEW_CURSOR_OFF,
-    GTKMATHVIEW_CURSOR_CARET_ON,
-    GTKMATHVIEW_CURSOR_FOCUS_ON,
-    GTKMATHVIEW_CURSOR_ON
+    GTKMATHVIEW_CURSOR_OFF = 0,
+    GTKMATHVIEW_CURSOR_CHAR_MODE = 1,
+    GTKMATHVIEW_CURSOR_ELEMENT_MODE = 2,
+    GTKMATHVIEW_CURSOR_FOCUS = 4
   } GtkMathViewCursor;
 
   typedef struct _GtkMathViewModelEvent {
@@ -124,8 +124,8 @@ extern "C" {
 						       GtkMathViewPoint*, GtkMathViewBoundingBox*);
   void       GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
   void       GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
-  void       GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView*, GtkMathViewCursor);
-  GtkMathViewCursor GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(set_cursor_mode)(GtkMathView*, gint);
+  gint       GTKMATHVIEW_METHOD_NAME(get_cursor_mode)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView*, gint*, gint*);
   void       GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView*, gint*, gint*);
   void       GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView*, gint, gint);

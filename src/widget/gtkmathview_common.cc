@@ -147,7 +147,7 @@ struct _GtkMathView
 
   GtkMathViewModelId current_elem;
 
-  GtkMathViewCursor cursor_visible;
+  gint           cursor_mode;
   GtkMathViewModelId cursor_elem;
   gint           cursor_index;
 
@@ -303,14 +303,14 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 		       TRUE,
 		       x0, y0, width, height);
 
-  if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_OFF && math_view->cursor_elem != NULL)
+  if (math_view->cursor_mode != GTKMATHVIEW_CURSOR_OFF && math_view->cursor_elem != NULL)
     {
       GtkMathViewPoint focus_orig;
       GtkMathViewBoundingBox focus_box;
       if (!GTKMATHVIEW_METHOD_NAME(get_element_extents)(math_view, math_view->cursor_elem, &focus_orig, &focus_box))
 	return;
 
-      if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_CARET_ON)
+      if ((math_view->cursor_mode & GTKMATHVIEW_CURSOR_FOCUS) != 0)
 	{
 	  gtk_paint_focus(widget->style,
 			  widget->window,
@@ -324,19 +324,18 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 			  focus_box.height + focus_box.depth);
 	}
  
-      if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_FOCUS_ON)
+      if (math_view->cursor_index >= 0 &&
+	  ((math_view->cursor_mode & GTKMATHVIEW_CURSOR_CHAR_MODE) != 0
+	   || (math_view->cursor_mode & GTKMATHVIEW_CURSOR_ELEMENT_MODE) != 0))
 	{
 	  GdkRectangle crect;
 	  GtkMathViewPoint char_orig;
 	  GtkMathViewBoundingBox char_box;
-	  if (math_view->cursor_index == 0)
-	    crect.x = focus_orig.x;
-	  else if (math_view->cursor_index == -1)
-	    crect.x = focus_orig.x + focus_box.width;
-	  else if (GTKMATHVIEW_METHOD_NAME(get_char_extents)(math_view, math_view->cursor_elem, math_view->cursor_index,
-							     &char_orig, &char_box))
+	  if ((math_view->cursor_mode & GTKMATHVIEW_CURSOR_CHAR_MODE) &&
+	      GTKMATHVIEW_METHOD_NAME(get_char_extents)(math_view, math_view->cursor_elem, math_view->cursor_index,
+							&char_orig, &char_box))
 	    crect.x = char_orig.x;
-	  else
+	  else if (math_view->cursor_mode & GTKMATHVIEW_CURSOR_ELEMENT_MODE)
 	    {
 	      crect.x = focus_orig.x;
 	      if (math_view->cursor_index > 0) crect.x += focus_box.width;
@@ -778,7 +777,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->current_elem    = NULL;
   math_view->cursor_elem     = NULL;
   math_view->cursor_index    = 0;
-  math_view->cursor_visible  = GTKMATHVIEW_CURSOR_OFF;
+  math_view->cursor_mode  = GTKMATHVIEW_CURSOR_OFF;
   math_view->hadjustment = NULL;
   math_view->vadjustment = NULL;
   math_view->top_x = math_view->top_y = 0;
@@ -1814,26 +1813,26 @@ GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView* math_view, GtkMathViewModelId e
 	  g_assert(exc == 0);
 	}
 #endif // GTKMATHVIEW_USES_GMETADOM
-      if (math_view->cursor_visible) gtk_math_view_update(math_view);
+      if (math_view->cursor_mode) gtk_math_view_update(math_view);
     }
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(set_cursor_visible)(GtkMathView* math_view, GtkMathViewCursor visible)
+GTKMATHVIEW_METHOD_NAME(set_cursor_mode)(GtkMathView* math_view, gint mode)
 {
   g_return_if_fail(math_view != NULL);
-  if (math_view->cursor_visible != visible)
+  if (math_view->cursor_mode != mode)
     {
-      math_view->cursor_visible = visible;
-      if (math_view->cursor_visible) gtk_math_view_update(math_view);
+      math_view->cursor_mode = mode;
+      if (math_view->cursor_mode) gtk_math_view_update(math_view);
     }
 }
 
-extern "C" GtkMathViewCursor
-GTKMATHVIEW_METHOD_NAME(get_cursor_visible)(GtkMathView* math_view)
+extern "C" gint
+GTKMATHVIEW_METHOD_NAME(get_cursor_mode)(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view != NULL, GTKMATHVIEW_CURSOR_OFF);
-  return math_view->cursor_visible;
+  return math_view->cursor_mode;
 }
 
 extern "C" void
