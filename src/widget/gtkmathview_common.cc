@@ -324,13 +324,17 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 			  focus_box.height + focus_box.depth);
 	}
  
-      if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_FOCUS_ON && math_view->cursor_index >= 0)
+      if (math_view->cursor_visible != GTKMATHVIEW_CURSOR_FOCUS_ON)
 	{
 	  GdkRectangle crect;
 	  GtkMathViewPoint char_orig;
 	  GtkMathViewBoundingBox char_box;
-	  if (GTKMATHVIEW_METHOD_NAME(get_char_extents)(math_view, math_view->cursor_elem, math_view->cursor_index,
-							&char_orig, &char_box))
+	  if (math_view->cursor_index == 0)
+	    crect.x = focus_orig.x;
+	  else if (math_view->cursor_index == -1)
+	    crect.x = focus_orig.x + focus_box.width;
+	  else if (GTKMATHVIEW_METHOD_NAME(get_char_extents)(math_view, math_view->cursor_elem, math_view->cursor_index,
+							     &char_orig, &char_box))
 	    crect.x = char_orig.x;
 	  else
 	    {
