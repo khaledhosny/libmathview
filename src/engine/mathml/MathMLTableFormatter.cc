@@ -59,8 +59,8 @@ MathMLTableFormatter::Row::setHeightSpec(const FormattingContext& ctxt, const Le
 
 void
 MathMLTableFormatter::init(const FormattingContext& ctxt,
-			   unsigned nRows,
-			   unsigned nColumns,
+			   unsigned nR,
+			   unsigned nC,
 			   const std::vector<SmartPtr<MathMLTableCellElement> >& cell,
 			   const std::vector<SmartPtr<MathMLTableCellElement> >& label,
 			   const SmartPtr<Value>& columnWidthV,
@@ -68,10 +68,23 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
 			   const SmartPtr<Value>& columnSpacingV,
 			   const SmartPtr<Value>& frameV,
 			   const SmartPtr<Value>& frameSpacingV,
+			   const SmartPtr<Value>& equalRowsV,
 			   const SmartPtr<Value>& equalColumnsV,
 			   const SmartPtr<Value>& sideV,
-			   const SmartPtr<Value>& minLabelSpacingV)
+			   const SmartPtr<Value>& minLabelSpacingV,
+			   const SmartPtr<Value>& alignV)
 {
+  axis = ctxt.MGD()->axis(ctxt);
+
+  nRows = nR;
+  nColumns = nC;
+
+  tableAlign = ToTokenId(GetComponent(alignV, 0));
+  if (IsEmpty(GetComponent(alignV, 1)))
+    tableAlignRow = 0;
+  else
+    tableAlignRow = ToInteger(GetComponent(alignV, 1));
+
   const TokenId frame = ToTokenId(frameV);
   const TokenId side = ToTokenId(sideV);
   const bool hasFrame = frame == T_SOLID || frame == T_DASHED;
@@ -85,7 +98,8 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
   const unsigned rightLabelOffset = (hasFrame ? 1 : 0) + nColumns * 2 + 2;
   const unsigned labelOffset = (side == T_LEFT || side == T_LEFTOVERLAP) ? leftLabelOffset : rightLabelOffset;
 
-  const bool equalColumns = ToBoolean(equalColumnsV);
+  equalRows = ToBoolean(equalRowsV);
+  equalColumns = ToBoolean(equalColumnsV);
 
   assert(nGridRows >= 0);
   assert(nGridColumns >= 0);
@@ -182,8 +196,6 @@ MathMLTableFormatter::formatCells(const FormattingContext& ctxt,
 
 AreaRef
 MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
-				  unsigned nRows,
-				  unsigned nColumns,
 				  const SmartPtr<Value>& frameV,
 				  const SmartPtr<Value>& rowLinesV,
 				  const SmartPtr<Value>& columnLinesV) const
@@ -269,49 +281,50 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
   return content.empty() ? 0 : ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
 }
 
-AreaRef
-MathMLTableFormatter::format(const FormattingContext& ctxt,
-			     unsigned nRows,
-			     const SmartPtr<Value>& alignV,
-			     const SmartPtr<Value>& equalRowsV,
-			     const SmartPtr<Value>& equalColumnsV)
+scaled
+MathMLTableFormatter::computeTableWidth(const scaled& minimumTableWidth)
 {
-  //std::cerr << "MathMLTableFormatter::format" << std::endl;
+  // TODO
+  return minimumTableWidth;
+}
 
-  const bool equalRows = ToBoolean(equalRowsV);
-  const bool equalColumns = ToBoolean(equalColumnsV);
-  const scaled& axis = ctxt.MGD()->axis(ctxt);
+BoundingBox
+MathMLTableFormatter::assignTableWidth(const scaled& minimumTableWidth)
+{
+  const scaled tableWidth = computeTableWidth(minimumTableWidth);
+  if (equalColumns)
+    assignTableWidthT(width);
+  else
+    assignTableWidthF(width);
 
-  //std::cerr << "COMPUTING TABLE WIDTH" << std::endl;
-  initTempWidths();
-  if (equalColumns) initWidthsT();
-  else initWidthsF();
+  // TODO: assignment propagation
 
-  //std::cerr << "COMPUTING TABLE HEIGHT" << std::endl;
-  initTempHeights(axis);
-  const scaled tableHeightDepth = equalRows ? initHeightsT() : initHeightsF();
+  setWidth(tableWidth);
 
-  //std::cerr << "TABLE ALIGNMENT" << std::endl;
-  TokenId align = ToTokenId(GetComponent(alignV, 0));
-  if (IsEmpty(GetComponent(alignV, 1)))
-    alignTable(tableHeightDepth, axis, align);
+  initTempHeightDepth();
+  const scaled tableHeightDepth = equalRows ? computeTableHeightDepthT() : computeTableHeightDepthF();
+
+  if (tableAlignRow == 0)
+    alignTable(tableHeightDepth, axis, tableAlign);
   else
     {
       const unsigned contentRowOffset = rows[0].isContentRow() ? 0 : 1;
-      const int row = ToInteger(GetComponent(alignV, 1));
-      const unsigned gridRow = contentRowOffset + 2 * ((row < 0) ? (nRows + row) : (row - 1));
-      alignTable(tableHeightDepth, axis, align, gridRow);
+      const unsigned gridRow = contentRowOffset + 2 * ((tableAlignRow < 0) ? (nRows + tableAlignRow) : (tableAlignRow - 1));
+      alignTable(tableHeightDepth, axis, tableAlign, gridRow);
     }
-#if 0
-  std::cerr << "TABLE BBOX = " << BoundingBox(getWidth(), getHeight(), getDepth()) << std::endl;
-  std::cerr << "SETTING ROW AND COLUMN DISPLACEMENTS" << std::endl;
-#endif
   setDisplacements();
-  //std::cerr << "CELL POSITION" << std::endl;
-  setCellPositions(axis);
+  setCellPosition();
 
-  //std::cerr << "TABLE AREA CREATION" << std::endl;
-  std::vector<BoxedLayoutArea::XYArea> content;
+  return getBoundingBox();
+}
+
+BoundingBox
+MathMLTableFormatter::format(std::vector<BoxedLayoutArea::XYArea>& content)
+{
+  initTempWidths();
+  const BoundingBox tableBox = assignTableWidth(computeMinimumTableWidth());
+
+  content.clear();
   for (std::vector<Cell>::const_iterator p = cells.begin();
        p != cells.end();
        p++)
@@ -323,7 +336,7 @@ MathMLTableFormatter::format(const FormattingContext& ctxt,
 	content.push_back(BoxedLayoutArea::XYArea(dx, dy, p->getArea()));
       }
 
-  return ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
+  return tableBox;
 }
 
 scaled
@@ -383,10 +396,11 @@ MathMLTableFormatter::initTempWidths()
 }
 
 scaled
-MathMLTableFormatter::calcTableWidthT(int& numCol, scaled& sumFix, float& sumScale)
+MathMLTableFormatter::computeMinimumTableWidthT()
 {
   numCol = 0;
   sumFix = 0;
+  sumCont = 0;
   sumScale = 0;
 
   scaled max = 0;                                                                                            
@@ -406,15 +420,17 @@ MathMLTableFormatter::calcTableWidthT(int& numCol, scaled& sumFix, float& sumSca
   return std::max(numCol * max + sumFix, ((numCol * max) + sumFix) / (1 - sumScale));
 }
 
-void
-MathMLTableFormatter::initWidthsT()
+scaled
+MathMLTableFormatter::computeMinimumTableWidth()
 {
-  int numCol;
-  scaled sumFix;
-  float sumScale;
-	
-  const scaled tableWidth = calcTableWidthT(numCol, sumFix, sumScale);
+  const scaled minimumTableWidth = equalColumns ? computeMinimumTableWidthT() : computeMinimumTableWidthF();
+  // TODO: gestire widthSpec
+  return minimumTableWidth;
+}
 
+void
+MathMLTableFormatter::assignTableWidthT(const scaled& tableWidth)
+{
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
   const scaled availWidth = std::max(scaled::zero(), tableWidth - assignedWidth);
 	
@@ -425,17 +441,16 @@ MathMLTableFormatter::initWidthsT()
       columns[j].setWidth(columns[j].getFixWidth());
     else if (columns[j].getSpec() == Column::SCALE)
       columns[j].setWidth(tableWidth * columns[j].getScaleWidth());
-
-  setWidth(tableWidth);
 }
 
 scaled
-MathMLTableFormatter::calcTableWidthF(int& numCol, scaled& sumCont, scaled& sumFix, float& sumScale)
+MathMLTableFormatter::computeMinimumTableWidthF()
 {
   numCol = 0;
   sumCont = 0;
   sumFix = 0;
   sumScale = 0;
+
   scaled max = 0;
   scaled tempWidth = 0;
 	
@@ -460,14 +475,8 @@ MathMLTableFormatter::calcTableWidthF(int& numCol, scaled& sumCont, scaled& sumF
 }
 
 void
-MathMLTableFormatter::initWidthsF()
+MathMLTableFormatter::assignTableWidthF(const scaled& tableWidth)
 {
-  int numCol;
-  scaled sumCont;
-  scaled sumFix;
-  float sumScale;
-
-  const scaled tableWidth = calcTableWidthF(numCol, sumCont, sumFix, sumScale);
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
   const scaled extraWidth = std::max(scaled::zero(), tableWidth - assignedWidth - sumCont);
 
@@ -487,12 +496,10 @@ MathMLTableFormatter::initWidthsF()
       columns[j].setWidth(columns[j].getFixWidth());
     else if (columns[j].getSpec() == Column::SCALE)
       columns[j].setWidth(tableWidth * columns[j].getScaleWidth());
-
-  setWidth(tableWidth);
 }
 
 void
-MathMLTableFormatter::initTempHeights(const scaled& axis)
+MathMLTableFormatter::initTempHeightDepth()
 {
   for (unsigned i = 0; i < rows.size(); i++)
     {
@@ -579,22 +586,19 @@ MathMLTableFormatter::initTempHeights(const scaled& axis)
 }
 
 scaled
-MathMLTableFormatter::calcTableHeightDepthT(int& numRig, float& sumScale, scaled& sumContHD, scaled& sumFixHD)
+MathMLTableFormatter::computeTableHeightDepthT()
 {
-  numRig = 0;
-  sumScale = 0;
+  int numRows = 0;
+  float sumScale = 0.0f;
+  scaled sumFixHD = 0;
+  scaled sumContHD = 0;
   scaled max = 0;
-  sumContHD = 0;
-  sumFixHD = 0;
-
-  //std::cerr << "calcTableHeightDepthT" << std::endl;
 
   for (unsigned i = 0; i < rows.size(); i++)
     {
       if (rows[i].isContentRow())
 	{
-	  numRig++;
-	  //std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
+	  numRows++;
 	  max = std::max(max, rows[i].getTempHeight() + rows[i].getTempDepth());
 	  sumContHD += rows[i].getTempHeight() + rows[i].getTempDepth();
 	}
@@ -604,38 +608,7 @@ MathMLTableFormatter::calcTableHeightDepthT(int& numRig, float& sumScale, scaled
 	sumScale += rows[i].getScaleHeight();
     }
 
-  return std::max(numRig * max + sumFixHD, ((numRig * max) + sumFixHD) / (1 - sumScale));
-}
-
-scaled
-MathMLTableFormatter::calcTableHeightDepthF()
-{
-  scaled sumContFix = 0;
-  float sumScale = 0;
-
-  //std::cerr << "calcTableHeightDepthF" << std::endl;
-
-  for (unsigned i = 0; i < rows.size(); i++)
-    if (rows[i].isContentRow() || rows[i].getSpec() == Row::FIX)
-      {
-	//std::cerr << "for row" << i << " HD = " << rows[i].getTempHeight() + rows[i].getTempDepth() << std::endl;
-	sumContFix += rows[i].getTempHeight() + rows[i].getTempDepth();
-      }
-    else if (rows[i].getSpec() == Row::SCALE)
-      sumScale += rows[i].getScaleHeight();         
-
-  return std::max(sumContFix, sumContFix / (1 - sumScale));
-}
-
-scaled
-MathMLTableFormatter::initHeightsT()
-{
-  int numRows;
-  float sumScale;
-  scaled sumFixHD;
-  scaled sumContHD;
-	
-  const scaled tableHeightDepth = calcTableHeightDepthT(numRows, sumScale, sumContHD, sumFixHD);	
+  const scaled tableHeightDepth = std::max(numRows * max + sumFixHD, ((numRows * max) + sumFixHD) / (1 - sumScale));
   const scaled assignedHeightDepth = sumFixHD + tableHeightDepth * sumScale;
   const scaled availHeightDepth = std::max(scaled::zero(), tableHeightDepth - assignedHeightDepth);
 	
@@ -658,14 +631,24 @@ MathMLTableFormatter::initHeightsT()
       }
 
   return tableHeightDepth;
-}			
-
+}
 
 scaled
-MathMLTableFormatter::initHeightsF()
+MathMLTableFormatter::computeTableHeightDepthF()
 {
-  const scaled tableHeightDepth = calcTableHeightDepthF();
-	
+  scaled sumContFix = 0;
+  float sumScale = 0;
+
+  for (unsigned i = 0; i < rows.size(); i++)
+    if (rows[i].isContentRow() || rows[i].getSpec() == Row::FIX)
+      {
+	sumContFix += rows[i].getTempHeight() + rows[i].getTempDepth();
+      }
+    else if (rows[i].getSpec() == Row::SCALE)
+      sumScale += rows[i].getScaleHeight();         
+
+  const scaled tableHeightDepth = std::max(sumContFix, sumContFix / (1 - sumScale));
+
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow())
       {
@@ -777,7 +760,7 @@ MathMLTableFormatter::setDisplacements()
 }
 
 void
-MathMLTableFormatter::setCellPositions(const scaled& axis)
+MathMLTableFormatter::setCellPosition()
 {
   for (unsigned i = 0; i < rows.size(); i++)
     if (rows[i].isContentRow())

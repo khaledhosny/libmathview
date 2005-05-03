@@ -28,6 +28,7 @@
 #include "token.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
+#include "BoxedLayoutArea.hh"
 #include "MathMLTableCellElement.hh"
 
 class MathMLTableFormatter : public Object
@@ -51,20 +52,17 @@ public:
 	    const SmartPtr<Value>&,
 	    const SmartPtr<Value>&,
 	    const SmartPtr<Value>&,
+	    const SmartPtr<Value>&,
+	    const SmartPtr<Value>&,
 	    const SmartPtr<Value>&);
   AreaRef formatLines(const class FormattingContext&,
-		      unsigned, unsigned,
 		      const SmartPtr<Value>&,
 		      const SmartPtr<Value>&,
 		      const SmartPtr<Value>&) const;
   void formatCells(const class FormattingContext&,
 		   const scaled&,
 		   const SmartPtr<Value>&) const;
-  AreaRef format(const class FormattingContext&,
-		 unsigned,
-		 const SmartPtr<Value>&,
-		 const SmartPtr<Value>&,
-		 const SmartPtr<Value>&);
+  BoundingBox format(std::vector<BoxedLayoutArea::XYArea>&);
 
 private:
   class Cell
@@ -181,27 +179,41 @@ protected:
   const Cell& getCell(unsigned, unsigned) const;
   BoundingBox getBoundingBox(void) const { return BoundingBox(getWidth(), getHeight(), getDepth()); }
   BoundingBox getCellBoundingBox(unsigned, unsigned, unsigned, unsigned) const;
-  scaled calcTableHeightDepthF(void);
-  scaled calcTableHeightDepthT(int&, float&, scaled&, scaled&);
-  scaled calcTableWidthF(int&, scaled&, scaled&, float&);
-  scaled calcTableWidthT(int&, scaled&, float&);
+  scaled computeTableHeightDepthF(void);
+  scaled computeTableHeightDepthT(void);
+  scaled computeMinimumTableWidthF(void);
+  scaled computeMinimumTableWidthT(void);
+  scaled computeMinimumTableWidth(void);
+  scaled computeTableWidth(const scaled&);
+  BoundingBox assignTableWidth(const scaled&);
+  void assignTableWidthT(const scaled&);
+  void assignTableWidthF(const scaled&);
   scaled getColumnContentWidth(unsigned) const;
   scaled getWidth(void) const { return width; }
   scaled getHeight(void) const { return height; }
   scaled getDepth(void) const { return depth; }
-  scaled initHeightsF(void);
-  scaled initHeightsT(void);
   void alignTable(const scaled&, const scaled&, TokenId);
   void alignTable(const scaled&, const scaled&, TokenId, unsigned);
-  void initTempHeights(const scaled&);
+  void initTempHeightDepth();
   void initTempWidths(void);
-  void initWidthsF(void);
-  void initWidthsT(void);
   void setDisplacements(void);
-  void setCellPositions(const scaled&);
+  void setCellPosition(void);
   void setWidth(const scaled& w) { width = w; }
   void setHeight(const scaled& h) { height = h; }
   void setDepth(const scaled& d) { depth = d; }
+
+  scaled axis;
+
+  unsigned nRows;
+  unsigned nColumns;
+  int numCol; // nContentColumns
+  scaled sumFix;
+  scaled sumCont;
+  float sumScale;
+  bool equalRows;
+  bool equalColumns;
+  TokenId tableAlign;
+  int tableAlignRow;
 
   scaled width;
   scaled height;

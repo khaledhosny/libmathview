@@ -114,9 +114,11 @@ MathMLTableElement::format(FormattingContext& ctxt)
 			       GET_ATTRIBUTE_VALUE(MathML, Table, columnspacing),
 			       GET_ATTRIBUTE_VALUE(MathML, Table, frame),
 			       GET_ATTRIBUTE_VALUE(MathML, Table, framespacing),
+			       GET_ATTRIBUTE_VALUE(MathML, Table, equalrows),
 			       GET_ATTRIBUTE_VALUE(MathML, Table, equalcolumns),
 			       GET_ATTRIBUTE_VALUE(MathML, Table, side),
-			       GET_ATTRIBUTE_VALUE(MathML, Table, minlabelspacing));
+			       GET_ATTRIBUTE_VALUE(MathML, Table, minlabelspacing), 
+			       GET_ATTRIBUTE_VALUE(MathML, Table, align));
 	}
 
       //std::cerr << "formatting table 2" << std::endl;
@@ -131,12 +133,11 @@ MathMLTableElement::format(FormattingContext& ctxt)
 		  std::bind2nd(FormatAdapter<FormattingContext,MathMLTableCellElement,AreaRef>(), &ctxt));
       //std::cerr << "formatting table 2 bis" << std::endl;
 
-      AreaRef res = tableFormatter->format(ctxt,
-					   numRows,
-					   GET_ATTRIBUTE_VALUE(MathML, Table, align),
-					   GET_ATTRIBUTE_VALUE(MathML, Table, equalrows),
-					   GET_ATTRIBUTE_VALUE(MathML, Table, equalcolumns));
-      if (AreaRef lines = tableFormatter->formatLines(ctxt, numRows, numColumns,
+      std::vector<BoxedLayoutArea::XYArea> content;
+      const BoundingBox tableBox = tableFormatter->format(content);
+      AreaRef res = ctxt.MGD()->getFactory()->boxedLayout(tableBox, content);
+
+      if (AreaRef lines = tableFormatter->formatLines(ctxt,
 						      GET_ATTRIBUTE_VALUE(MathML, Table, frame),
 						      GET_ATTRIBUTE_VALUE(MathML, Table, rowlines),
 						      GET_ATTRIBUTE_VALUE(MathML, Table, columnlines)))
