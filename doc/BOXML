@@ -75,7 +75,8 @@ of action; currently only toggle is supported. selection is the
 h
 	spacing		{length}+	default=0pt
 			
-renders its children aligned on their baseline
+renders its children aligned on their baseline. The first child is the
+leftmost one, the last child the rightmost one.
 
 v	
 	enter		integer		default=1
@@ -97,9 +98,10 @@ hv
 	minlinespacing	length		default=1em
 
 behaves like h box if the children fit the available width, otherwise
-it behaves like the v box
+it behaves like the v box. In the latter case indent is added to the
+indentation of all children except the first one.
 
-hov	
+hov
 	spacing		{length}+	default=0pt
 	indent		{length | left | center | right}+	default=left
 	minlinespacing	length		default=1em

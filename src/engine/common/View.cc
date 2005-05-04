@@ -200,17 +200,24 @@ View::getElementAt(const scaled& x, const scaled& y, Point* elemOrigin, Bounding
 }
 
 bool
-View::getElementExtents(const SmartPtr<Element>& elem, Point* elemOrigin, BoundingBox* elemBox) const
+View::getElementExtents(const SmartPtr<Element>& refElem, const SmartPtr<Element>& elem,
+			Point* elemOrigin, BoundingBox* elemBox) const
 {
+  assert(refElem);
   assert(elem);
-  if (AreaRef rootArea = getRootArea())
+  if (getRootArea())
     if (AreaRef elemArea = elem->getArea())
       {
 	if (elemOrigin)
 	  {
-	    AreaId elemId(rootArea);
-	    if (rootArea->searchByArea(elemId, elemArea))
-	      elemId.getOrigin(*elemOrigin);
+	    if (AreaRef refArea = refElem->getArea())
+	      {
+		AreaId elemId(refArea);
+		if (refArea->searchByArea(elemId, elemArea))
+		  elemId.getOrigin(*elemOrigin);
+		else
+		  return false;
+	      }
 	    else
 	      return false;
 	  }
@@ -221,6 +228,12 @@ View::getElementExtents(const SmartPtr<Element>& elem, Point* elemOrigin, Boundi
       }
 
   return false;
+}
+
+bool
+View::getElementExtents(const SmartPtr<Element>& elem, Point* elemOrigin, BoundingBox* elemBox) const
+{
+  return getElementExtents(getRootElement(), elem, elemOrigin, elemBox);
 }
 
 bool
@@ -274,12 +287,14 @@ View::getCharAt(const scaled& x, const scaled& y, CharIndex& index, Point* charO
 }
 
 bool
-View::getCharExtents(const SmartPtr<Element>& elem, CharIndex index, Point* charOrig, BoundingBox* charBox) const
+View::getCharExtents(const SmartPtr<Element>& refElem, const SmartPtr<Element>& elem, CharIndex index,
+		     Point* charOrig, BoundingBox* charBox) const
 {
+  assert(refElem);
   assert(elem);
 
   Point elemOrig;
-  if (getElementOrigin(elem, elemOrig))
+  if (getElementOrigin(refElem, elem, elemOrig))
     if (AreaRef elemArea = elem->getArea())
       {
 	AreaId deepId(elemArea);
@@ -303,6 +318,13 @@ View::getCharExtents(const SmartPtr<Element>& elem, CharIndex index, Point* char
       }
   
   return false;
+}
+
+bool
+View::getCharExtents(const SmartPtr<Element>& elem, CharIndex index,
+		     Point* charOrig, BoundingBox* charBox) const
+{
+  return getCharExtents(getRootElement(), elem, index, charOrig, charBox);
 }
 
 void

@@ -118,10 +118,16 @@ extern "C" {
 						     GtkMathViewPoint*, GtkMathViewBoundingBox*);
   gboolean   GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView*, GtkMathViewModelId,
 							  GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_element_extents_ref)(GtkMathView*, GtkMathViewModelId,
+							      GtkMathViewModelId,
+							      GtkMathViewPoint*, GtkMathViewBoundingBox*);
   gboolean   GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView*, gint, gint, GtkMathViewModelId*, gint*,
 						  GtkMathViewPoint*, GtkMathViewBoundingBox*);
   gboolean   GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView*, GtkMathViewModelId, gint,
 						       GtkMathViewPoint*, GtkMathViewBoundingBox*);
+  gboolean   GTKMATHVIEW_METHOD_NAME(get_char_extents_ref)(GtkMathView*,
+							   GtkMathViewModelId, GtkMathViewModelId, gint,
+							   GtkMathViewPoint*, GtkMathViewBoundingBox*);
   void       GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
   void       GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
   void       GTKMATHVIEW_METHOD_NAME(set_cursor_mode)(GtkMathView*, gint);

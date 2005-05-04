@@ -918,8 +918,6 @@ gtk_math_view_realize(GtkWidget* widget)
   gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
 }
 
-#include <iostream>
-
 static void
 gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
 {
@@ -1378,7 +1376,7 @@ extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView* math_view, xmlTextReaderPtr reader)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->view != NULL, NULL);
+  g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(reader != NULL, FALSE);
 
   gtk_math_view_release_document_resources(math_view);
@@ -1657,18 +1655,27 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y,
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView* math_view, GtkMathViewModelId el,
-					     GtkMathViewPoint* result_orig, GtkMathViewBoundingBox* result_box)
+GTKMATHVIEW_METHOD_NAME(get_element_extents_ref)(GtkMathView* math_view, GtkMathViewModelId refEl, GtkMathViewModelId el,
+						 GtkMathViewPoint* result_orig, GtkMathViewBoundingBox* result_box)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(el != NULL, FALSE);
 
+  SmartPtr<Element> refElem;
+  if (refEl)
+    {
+      refElem = math_view->view->elementOfModelElement(refEl);
+      if (!refElem) return FALSE;
+    }
+
   if (SmartPtr<Element> elem = math_view->view->elementOfModelElement(el))
     {
       Point elemOrig;
       BoundingBox elemBox;
-      if (math_view->view->getElementExtents(elem, result_orig ? &elemOrig : 0, result_box ? &elemBox : 0))
+
+      if ((refElem && math_view->view->getElementExtents(refElem, elem, result_orig ? &elemOrig : 0, result_box ? &elemBox : 0))
+	  || math_view->view->getElementExtents(elem, result_orig ? &elemOrig : 0, result_box ? &elemBox : 0))
 	{
 	  if (result_orig)
 	    {
@@ -1688,6 +1695,13 @@ GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView* math_view, GtkMathView
 	}
     }
   return FALSE;
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_element_extents)(GtkMathView* math_view, GtkMathViewModelId el,
+					     GtkMathViewPoint* result_orig, GtkMathViewBoundingBox* result_box)
+{
+  return GTKMATHVIEW_METHOD_NAME(get_element_extents_ref)(math_view, NULL, el, result_orig, result_box);
 }
 
 extern "C" gboolean
@@ -1734,19 +1748,27 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 }
 
 extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView* math_view, GtkMathViewModelId el,
-					  gint index, GtkMathViewPoint* result_orig, GtkMathViewBoundingBox* result_box)
+GTKMATHVIEW_METHOD_NAME(get_char_extents_ref)(GtkMathView* math_view, GtkMathViewModelId refEl, GtkMathViewModelId el,
+					      gint index, GtkMathViewPoint* result_orig, GtkMathViewBoundingBox* result_box)
 {
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(el != NULL, FALSE);
   g_return_val_if_fail(index >= 0, FALSE);
 
+  SmartPtr<Element> refElem;
+  if (refEl)
+    {
+      refElem = math_view->view->elementOfModelElement(refEl);
+      if (!refElem) return FALSE;
+    }
+
   if (SmartPtr<Element> elem = math_view->view->elementOfModelElement(el))
     {
       Point charOrig;
       BoundingBox charBox;
-      if (math_view->view->getCharExtents(elem, index, result_orig ? &charOrig : 0, result_box ? &charBox : 0))
+      if ((refElem && math_view->view->getCharExtents(refElem, elem, index, result_orig ? &charOrig : 0, result_box ? &charBox : 0))
+	  || math_view->view->getCharExtents(elem, index, result_orig ? &charOrig : 0, result_box ? &charBox : 0))
 	{
 	  if (result_orig)
 	    {
@@ -1767,6 +1789,13 @@ GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView* math_view, GtkMathViewMod
     }
 
   return FALSE;
+}
+
+extern "C" gboolean
+GTKMATHVIEW_METHOD_NAME(get_char_extents)(GtkMathView* math_view, GtkMathViewModelId el,
+					  gint index, GtkMathViewPoint* result_orig, GtkMathViewBoundingBox* result_box)
+{
+  return GTKMATHVIEW_METHOD_NAME(get_char_extents_ref)(math_view, NULL, el, index, result_orig, result_box);
 }
 
 extern "C" void

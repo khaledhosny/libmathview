@@ -480,7 +480,9 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   if (action != NULL)
     {
       gtk_math_view_set_cursor(math_view, action, -1);
+#if 0
       gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
+#endif
     }
   else
     gtk_math_view_set_cursor(math_view, NULL, -1);
@@ -653,7 +655,9 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   else
     {
       /*printf("get_char_at: failed\n");*/
+#if 0
       gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_OFF);
+#endif
     }
 #endif
 

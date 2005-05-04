@@ -63,14 +63,19 @@ public:
   BoundingBox getBoundingBox(void) const;
 
   SmartPtr<class Element> getElementAt(const scaled&, const scaled&, Point* = 0, BoundingBox* = 0) const;
+  bool getElementExtents(const SmartPtr<class Element>&, const SmartPtr<class Element>&, Point* = 0, BoundingBox* = 0) const;
   bool getElementExtents(const SmartPtr<class Element>&, Point* = 0, BoundingBox* = 0) const;
   bool getElementLength(const SmartPtr<class Element>&, CharIndex&) const;
   bool getElementOrigin(const SmartPtr<class Element>& elem, Point& p) const
   { return getElementExtents(elem, &p, 0); }
+  bool getElementOrigin(const SmartPtr<class Element>& refElem, const SmartPtr<class Element>& elem, Point& p) const
+  { return getElementExtents(refElem, elem, &p, 0); }
   bool getElementBoundingBox(const SmartPtr<class Element>& elem, BoundingBox& b) const
   { return getElementExtents(elem, 0, &b); }
 
   SmartPtr<class Element> getCharAt(const scaled&, const scaled&, CharIndex&, Point* = 0, BoundingBox* = 0) const;
+  bool getCharExtents(const SmartPtr<class Element>&, const SmartPtr<class Element>&, CharIndex,
+		      Point* = 0, BoundingBox* = 0) const;
   bool getCharExtents(const SmartPtr<class Element>&, CharIndex, Point* = 0, BoundingBox* = 0) const;
   bool getCharOrigin(const SmartPtr<class Element>& elem, CharIndex index, Point& p) const
   { return getCharExtents(elem, index, &p, 0); }
