@@ -49,6 +49,7 @@ static gboolean   semantic_selection = FALSE;
 static gchar* doc_name = NULL;
 static GdomeElement* first_selected = NULL;
 static GdomeElement* root_selected = NULL;
+static GtkMathViewDefaultCursor cursor;
 
 static guint statusbar_context;
 
@@ -227,6 +228,20 @@ void
 GUI_run()
 {
   gtk_main();
+}
+
+static void
+set_cursor(GtkMathView* math_view, GdomeElement* elem, gint index)
+{
+  if (cursor.element != elem || cursor.index != index)
+    {
+      GdomeException exc = 0;
+      if (cursor.element) gdome_el_unref(cursor.element, &exc);
+      cursor.element = elem;
+      if (cursor.element) gdome_el_ref(cursor.element, &exc);
+      cursor.index = index;
+      gtk_math_view_update(math_view);
+    }
 }
 
 static void
@@ -477,15 +492,15 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
     gdome_str_unref(link);
 
   action = find_action_element(event->id);
-  if (action != NULL)
-    {
-      gtk_math_view_set_cursor(math_view, action, -1);
 #if 0
-      gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
-#endif
+  if (action != NULL) 
+    {
+      GdomeException exc = 0;
+      set_cursor(math_view, action, -1);
+      gdome_el_unref(action, &exc);
+      g_assert(exc == 0);
     }
-  else
-    gtk_math_view_set_cursor(math_view, NULL, -1);
+#endif
 }
 
 static void
@@ -644,21 +659,12 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(event != NULL);
 
-#if 0
+#if 1
   index = -1;
   if (gtk_math_view_get_char_at(math_view, event->x, event->y, &elem, &index, NULL, NULL))
-    {
-      /*printf("get_char_at: (event->id = %p, elem = %p) %d\n", event->id, elem, index);*/
-      gtk_math_view_set_cursor(math_view, event->id, index);
-      gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_ON);
-    }
+    set_cursor(math_view, event->id, index);
   else
-    {
-      /*printf("get_char_at: failed\n");*/
-#if 0
-      gtk_math_view_set_cursor_visible(math_view, GTKMATHVIEW_CURSOR_OFF);
-#endif
-    }
+    set_cursor(math_view, NULL, -1);
 #endif
 
   if (event->id != NULL)
@@ -701,6 +707,7 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       root_selected = NULL;
     }
 }
+
 #endif // HAVE_GMETADOM
 
 static void
@@ -760,6 +767,15 @@ create_widget_set()
 		   "click", 
 		   G_CALLBACK(click),
 		   (gpointer) main_area);
+
+  cursor.element = NULL;
+  cursor.draw_focus = TRUE;
+  cursor.index = -1;
+  cursor.char_index = TRUE;
+  g_signal_connect(GTK_OBJECT (main_area),
+		   "update",
+		   G_CALLBACK(gtk_math_view_default_cursor_update),
+		   (gpointer) &cursor);
 
   status_bar = gtk_statusbar_new();
   gtk_widget_show(status_bar);

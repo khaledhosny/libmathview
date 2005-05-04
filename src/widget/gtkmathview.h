@@ -25,6 +25,7 @@
 
 #define gtk_math_view_get_type                 GTKMATHVIEW_METHOD_NAME(get_type)
 #define gtk_math_view_new                      GTKMATHVIEW_METHOD_NAME(new)
+#define gtk_math_view_update                   GTKMATHVIEW_METHOD_NAME(update)
 #define gtk_math_view_freeze                   GTKMATHVIEW_METHOD_NAME(freeze)
 #define gtk_math_view_thaw                     GTKMATHVIEW_METHOD_NAME(thaw)
 #define gtk_math_view_load_reader              GTKMATHVIEW_METHOD_NAME(load_reader)
@@ -57,13 +58,11 @@
 #define gtk_math_view_get_font_size            GTKMATHVIEW_METHOD_NAME(get_font_size)
 #define gtk_math_view_set_log_verbosity        GTKMATHVIEW_METHOD_NAME(set_log_verbosity)
 #define gtk_math_view_get_log_verbosity        GTKMATHVIEW_METHOD_NAME(get_log_verbosity)
-#define gtk_math_view_set_cursor               GTKMATHVIEW_METHOD_NAME(set_cursor)
-#define gtk_math_view_get_cursor               GTKMATHVIEW_METHOD_NAME(get_cursor)
-#define gtk_math_view_set_cursor_mode          GTKMATHVIEW_METHOD_NAME(set_cursor_mode)
-#define gtk_math_view_get_cursor_mode          GTKMATHVIEW_METHOD_NAME(get_cursor_mode)
 #define gtk_math_view_get_t1_opaque_mode       GTKMATHVIEW_METHOD_NAME(get_t1_opaque_mode)
 #define gtk_math_view_set_t1_opaque_mode       GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)
 #define gtk_math_view_get_t1_anti_aliased_mode GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)
 #define gtk_math_view_set_t1_anti_aliased_mode GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)
+
+#define gtk_math_view_default_cursor_update    GTKMATHVIEW_METHOD_NAME(default_cursor_update)
 
 #endif /* __gtkmathview_h__ */

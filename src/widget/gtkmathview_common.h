@@ -75,13 +75,6 @@ extern "C" {
   typedef GdomeDOMString*           GtkMathViewModelString;
 #endif
 
-  typedef enum _GtkMathViewCursor {
-    GTKMATHVIEW_CURSOR_OFF = 0,
-    GTKMATHVIEW_CURSOR_CHAR_MODE = 1,
-    GTKMATHVIEW_CURSOR_ELEMENT_MODE = 2,
-    GTKMATHVIEW_CURSOR_FOCUS = 4
-  } GtkMathViewCursor;
-
   typedef struct _GtkMathViewModelEvent {
     GtkMathViewModelId id;
     gint x;
@@ -89,13 +82,22 @@ extern "C" {
     gint state;
   } GtkMathViewModelEvent;
 
+  typedef struct _GtkMathViewDefaultCursor {
+    GtkMathViewModelId element;
+    gint index;
+    gboolean draw_focus;
+    gboolean char_index;
+  } GtkMathViewDefaultCursor;
+
   typedef void (*GtkMathViewModelSignal)(GtkMathView*, const GtkMathViewModelEvent*);
   typedef void (*GtkMathViewSelectAbortSignal)(GtkMathView*);
+  typedef void (*GtkMathViewUpdateSignal)(GtkMathView*, gpointer);
 
   GtkType    GTKMATHVIEW_METHOD_NAME(get_type)(void);
   GtkWidget* GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
   gboolean   GTKMATHVIEW_METHOD_NAME(freeze)(GtkMathView*);
   gboolean   GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(update)(GtkMathView*);
 #if GTKMATHVIEW_USES_CUSTOM_READER
   gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
 #elif GTKMATHVIEW_USES_LIBXML2_READER
@@ -128,10 +130,6 @@ extern "C" {
   gboolean   GTKMATHVIEW_METHOD_NAME(get_char_extents_ref)(GtkMathView*,
 							   GtkMathViewModelId, GtkMathViewModelId, gint,
 							   GtkMathViewPoint*, GtkMathViewBoundingBox*);
-  void       GTKMATHVIEW_METHOD_NAME(set_cursor)(GtkMathView*, GtkMathViewModelId, gint);
-  void       GTKMATHVIEW_METHOD_NAME(get_cursor)(GtkMathView*, GtkMathViewModelId*, gint*);
-  void       GTKMATHVIEW_METHOD_NAME(set_cursor_mode)(GtkMathView*, gint);
-  gint       GTKMATHVIEW_METHOD_NAME(get_cursor_mode)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView*, gint*, gint*);
   void       GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView*, gint*, gint*);
   void       GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView*, gint, gint);
@@ -146,6 +144,8 @@ extern "C" {
   void       GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)(GtkMathView*, gboolean);
   gboolean   GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)(GtkMathView*, gboolean);
+
+  void       GTKMATHVIEW_METHOD_NAME(default_cursor_update)(GtkMathView*, GtkMathViewDefaultCursor*);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
