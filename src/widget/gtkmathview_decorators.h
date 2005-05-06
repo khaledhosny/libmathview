@@ -22,13 +22,12 @@
  * <lpadovan@cs.unibo.it>
  */
 
-#ifndef __gtkmathview_libxml2_reader_h__
-#define __gtkmathview_libxml2_reader_h__
+#ifndef __gtkmathview_decorators_h__
+#define __gtkmathview_decorators_h__
 
-#define GTKMATHVIEW_USES_LIBXML2_READER 1
-#include "gtkmathview_common.h"
-#include "gtkmathview_decorators_common.h"
-#include "gtkmathview.h"
-#include "gtkmathview_decorators.h"
+#define gtk_math_view_decor_default_cursor_new  GTKMATHVIEW_METHOD_NAME(decor_default_cursor_new)
+#define gtk_math_view_decor_default_cursor_free GTKMATHVIEW_METHOD_NAME(decor_default_cursor_free)
+#define gtk_math_view_decor_default_cursor_set  GTKMATHVIEW_METHOD_NAME(decor_default_cursor_set)
+#define gtk_math_view_decor_default_cursor_get  GTKMATHVIEW_METHOD_NAME(decor_default_cursor_get)
 
-#endif /* __gtkmathview_libxml2_reader_h__ */
+#endif /* __gtkmathview_decorators_h__ */

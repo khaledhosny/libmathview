@@ -49,7 +49,7 @@ static gboolean   semantic_selection = FALSE;
 static gchar* doc_name = NULL;
 static GdomeElement* first_selected = NULL;
 static GdomeElement* root_selected = NULL;
-static GtkMathViewDefaultCursor cursor;
+static GtkMathViewDefaultCursorDecorator* cursor = NULL;
 
 static guint statusbar_context;
 
@@ -228,20 +228,6 @@ void
 GUI_run()
 {
   gtk_main();
-}
-
-static void
-set_cursor(GtkMathView* math_view, GdomeElement* elem, gint index)
-{
-  if (cursor.element != elem || cursor.index != index)
-    {
-      GdomeException exc = 0;
-      if (cursor.element) gdome_el_unref(cursor.element, &exc);
-      cursor.element = elem;
-      if (cursor.element) gdome_el_ref(cursor.element, &exc);
-      cursor.index = index;
-      gtk_math_view_update(math_view);
-    }
 }
 
 static void
@@ -496,7 +482,7 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   if (action != NULL) 
     {
       GdomeException exc = 0;
-      set_cursor(math_view, action, -1);
+      gtk_math_view_decor_default_cursor_set(cursor, TRUE, action, TRUE, -1, FALSE);
       gdome_el_unref(action, &exc);
       g_assert(exc == 0);
     }
@@ -662,9 +648,9 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 #if 1
   index = -1;
   if (gtk_math_view_get_char_at(math_view, event->x, event->y, &elem, &index, NULL, NULL))
-    set_cursor(math_view, event->id, index);
+    gtk_math_view_decor_default_cursor_set(cursor, TRUE, event->id, TRUE, index, TRUE);
   else
-    set_cursor(math_view, NULL, -1);
+    gtk_math_view_decor_default_cursor_set(cursor, FALSE, NULL, FALSE, -1, FALSE);
 #endif
 
   if (event->id != NULL)
@@ -768,14 +754,7 @@ create_widget_set()
 		   G_CALLBACK(click),
 		   (gpointer) main_area);
 
-  cursor.element = NULL;
-  cursor.draw_focus = TRUE;
-  cursor.index = -1;
-  cursor.char_index = TRUE;
-  g_signal_connect(GTK_OBJECT (main_area),
-		   "update",
-		   G_CALLBACK(gtk_math_view_default_cursor_update),
-		   (gpointer) &cursor);
+  cursor = gtk_math_view_decor_default_cursor_new(main_area);
 
   status_bar = gtk_statusbar_new();
   gtk_widget_show(status_bar);

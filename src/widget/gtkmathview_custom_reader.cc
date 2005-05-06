@@ -22,3 +22,4 @@
 
 #include "gtkmathview_custom_reader.h"
 #include "gtkmathview_common.cc"
+#include "gtkmathview_decorators_common.cc"

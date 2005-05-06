@@ -1,4 +1,6 @@
 
+NULL =
+
 lib_LTLIBRARIES =
 
 if COND_CUSTOM_READER
@@ -22,22 +24,26 @@ endif
 libgtkmathview_custom_reader_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_custom_reader.la
+  $(top_builddir)/src/view/libmathview_custom_reader.la \
+  $(NULL)
 
 libgtkmathview_libxml2_reader_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_libxml2_reader.la
+  $(top_builddir)/src/view/libmathview_libxml2_reader.la \
+  $(NULL)
 
 libgtkmathview_libxml2_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_libxml2.la
+  $(top_builddir)/src/view/libmathview_libxml2.la \
+  $(NULL)
 
 libgtkmathview_gmetadom_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_gmetadom.la
+  $(top_builddir)/src/view/libmathview_gmetadom.la \
+  $(NULL)
 
 libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
@@ -49,12 +55,17 @@ libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_libxml2_reader.cc
 libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc
 libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
 
-EXTRA_DIST = gtkmathview_common.cc
+EXTRA_DIST = \
+  gtkmathview_common.cc \
+  gtkmathview_decorators_common.cc \
+  $(NULL)
 
 gtkdir = $(includedir)/$(PACKAGE)/gtk
 gtk_HEADERS = \
   gtkmathview.h \
+  gtkmathview_decorators.h \
   gtkmathview_common.h \
+  gtkmathview_decorators_common.h \
   gtkmathview_custom_reader.h \
   gtkmathview_libxml2_reader.h \
   gtkmathview_libxml2.h \

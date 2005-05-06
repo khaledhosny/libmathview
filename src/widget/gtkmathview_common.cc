@@ -35,7 +35,6 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkdrawingarea.h>
 
 #include "gtkmathview_common.h"
 #if GTKMATHVIEW_USES_CUSTOM_READER
@@ -108,7 +107,8 @@ struct _GtkMathViewClass
   GtkMathViewModelSignal select_end;
   GtkMathViewSelectAbortSignal select_abort;
   GtkMathViewModelSignal element_over;
-  GtkMathViewUpdateSignal update;
+  GtkMathViewDecorateSignal decorate_under;
+  GtkMathViewDecorateSignal decorate_over;
 
   AbstractLogger* logger;
   Configuration* configuration;
@@ -203,7 +203,8 @@ static guint select_over_signal = 0;
 static guint select_end_signal = 0;
 static guint select_abort_signal = 0;
 static guint element_over_signal = 0;
-static guint update_signal = 0;
+static guint decorate_under_signal = 0;
+static guint decorate_over_signal = 0;
 
 /* auxiliary C++ functions */
 
@@ -301,7 +302,7 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 		       TRUE,
 		       x0, y0, width, height);
 
-  g_signal_emit(GTK_OBJECT(math_view), update_signal, 0);
+  g_signal_emit(GTK_OBJECT(math_view), decorate_over_signal, 0, widget->window);
 }
 
 static void
@@ -344,6 +345,7 @@ gtk_math_view_paint(GtkMathView* math_view)
   gint x = 0;
   gint y = 0;
   to_view_coords(math_view, &x, &y);
+  g_signal_emit(GTK_OBJECT(math_view), decorate_under_signal, 0, math_view->pixmap);
   math_view->view->render(*rc,
 			  Gtk_RenderingContext::fromGtkX(x),
 			  Gtk_RenderingContext::fromGtkY(y));
@@ -615,14 +617,23 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 gtk_marshal_NONE__POINTER,
 		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
-  update_signal =
-    g_signal_new("update",
+  decorate_under_signal =
+    g_signal_new("decorate_under",
 		 G_OBJECT_CLASS_TYPE(object_class),
 		 G_SIGNAL_RUN_FIRST,
-		 G_STRUCT_OFFSET(GtkMathViewClass, update),
+		 G_STRUCT_OFFSET(GtkMathViewClass, decorate_under),
+		 NULL, NULL,
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+  decorate_over_signal =
+    g_signal_new("decorate_over",
+		 G_OBJECT_CLASS_TYPE(object_class),
+		 G_SIGNAL_RUN_FIRST,
+		 G_STRUCT_OFFSET(GtkMathViewClass, decorate_over),
 		 NULL, NULL, 
-		 gtk_marshal_NONE__NONE,
-		 G_TYPE_NONE, 0);
+		 gtk_marshal_NONE__POINTER,
+		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 #if 0	
   g_object_class_install_property(gobject_class,
@@ -801,13 +812,6 @@ gtk_math_view_destroy(GtkObject* object)
     (*GTK_OBJECT_CLASS(parent_class)->destroy)(object);
 }
 
-extern "C" void
-GTKMATHVIEW_METHOD_NAME(update)(GtkMathView* math_view)
-{
-  GtkWidget* widget = GTK_WIDGET(math_view);
-  gtk_math_view_update(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
-}
-
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(freeze)(GtkMathView* math_view)
 {
@@ -827,6 +831,13 @@ GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView* math_view)
     }
   else
     return FALSE;
+}
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(update)(GtkMathView* math_view)
+{
+  GtkWidget* widget = GTK_WIDGET(math_view);
+  gtk_math_view_update(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 static void
@@ -953,7 +964,7 @@ gtk_math_view_button_release_event(GtkWidget* widget, GdkEventButton* event)
 #endif
       GtkMathViewModelId elem = NULL;
 
-      gtk_math_view_get_element_at(math_view, (gint) event->x, (gint) event->y, &elem, NULL, NULL);
+      GTKMATHVIEW_METHOD_NAME(get_element_at)(math_view, (gint) event->x, (gint) event->y, &elem, NULL, NULL);
 
       GtkMathViewModelEvent me;
       me.id = elem;
@@ -1085,7 +1096,7 @@ gtk_math_view_expose_event(GtkWidget* widget,
   if (math_view->pixmap == NULL)
     gtk_math_view_paint(math_view);
   else
-    gtk_math_view_update(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
+    GTKMATHVIEW_METHOD_NAME(update)(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
 
   return FALSE;
 }
@@ -1816,56 +1827,4 @@ GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView* math_view)
   g_return_val_if_fail(math_view != NULL, FALSE);
   g_return_val_if_fail(math_view->renderingContext != 0, FALSE);
   return math_view->renderingContext->getT1AntiAliasedMode() ? TRUE : FALSE;
-}
-
-extern "C" void
-GTKMATHVIEW_METHOD_NAME(default_cursor_update)(GtkMathView* math_view, GtkMathViewDefaultCursor* cursor)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(cursor != NULL);
-
-  if (cursor->element != NULL)
-    {
-      GtkMathViewPoint focus_orig;
-      GtkMathViewBoundingBox focus_box;
-      if (!gtk_math_view_get_element_extents(math_view, cursor->element, &focus_orig, &focus_box))
-	return;
-
-      if (cursor->draw_focus)
-	gtk_paint_focus(GTK_WIDGET(math_view)->style,
-			GTK_WIDGET(math_view)->window,
-			GTK_STATE_NORMAL,
-			NULL,
-			GTK_WIDGET(math_view),
-			"?",
-			focus_orig.x,
-			focus_orig.y - focus_box.height,
-			focus_box.width,
-			focus_box.height + focus_box.depth);
- 
-      if (cursor->index >= 0)
-	{
-	  GdkRectangle crect;
-	  GtkMathViewPoint char_orig;
-	  GtkMathViewBoundingBox char_box;
-	  if (cursor->char_index &&
-	      gtk_math_view_get_char_extents(math_view, cursor->element, cursor->index,
-					     &char_orig, &char_box))
-	    crect.x = char_orig.x;
-	  else
-	    {
-	      crect.x = focus_orig.x;
-	      if (cursor->index > 0) crect.x += focus_box.width;
-	    }
-	  crect.y = focus_orig.y - focus_box.height;
-	  crect.height = focus_box.height + focus_box.depth;
-	  gtk_draw_insertion_cursor(GTK_WIDGET(math_view),
-				    GTK_WIDGET(math_view)->window,
-				    NULL,
-				    &crect,
-				    TRUE,
-				    GTK_TEXT_DIR_LTR,
-				    FALSE);
-	}
-    }
 }

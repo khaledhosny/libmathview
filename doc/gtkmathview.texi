@@ -114,7 +114,7 @@ Interactivity Support
 
 * Selection::                   Highlighting sub-expressions
 * Point-and-click Functionalities::  Handling of basic mouse events
-* Editing::                     Changind the source document tree
+* Editing::                     Changing the source document tree
 
 C++ Interface
 
@@ -134,19 +134,36 @@ Tools
 @noindent
 GtkMathView is a C++ rendering engine for MathML (see
 @url{http://www.w3.org/Math}) documents.  Although GtkMathView is, by
-its own definition, related to the GTK+ framework (we eventually had
-to commit to a development platform that was convenient for our
-purposes), its internal architecture is designed so as to isolate as
-much as possible platform dependencies. A large part of GtkMathView,
-the one dealing with proper formula layout, is completely platform
-independent. On top of this internal, hidden library of C++ classes is
-the GTK+ interface. The implementation of a new interface is a
-relatively easy and straightforward task.
+its own definition, related to the GTK+ framework, its internal
+architecture is designed so as to isolate as much as possible platform
+dependencies. A large part of GtkMathView, the one dealing with proper
+formula layout, is completely platform independent. On top of this
+internal library of C++ classes is the GTK+ interface. The
+implementation of a new interface is a relatively easy and
+straightforward task.
+
+More specifically, GtkMathView is structured as follows:
+@itemize
+@item
+the @emph{frontend} is the part of the widget that has to do with the
+source MathML document. Currently GtkMathView provides the following
+frontends: @emph{DOM} (uses @code{Gdome2} for the C interface and
+@code{GMetaDOM} for the C++ interface), @emph{libxml2} tree,
+@emph{libxml2 reader}, @emph{custom reader}. 
+@item
+the @emph{formatting engine} is the part of the widget that implements
+the MathML layout algorithm. This part is completely independent of
+how the source document is represented, and what the target medium is.
+@item
+the @emph{backend} is the part of the widget that determines the
+target medium on which MathML is going to be displayed, along with all
+the parameters that affect it (mainly available fonts).
+@end itemize
 
 @noindent
-For questions, comments, suggestions, bug reports, contributions, please
-contact the author at the following email address:
-@email{luca.padovani@@cs.unibo.it}
+For questions, comments, suggestions, bug reports, contributions,
+please contact the author at the following email address:
+@email{lpadovan@@cs.unibo.it}
 
 @node     Usage, Interactivity Support, Overview, Top
 @comment  node-name,  next,  previous,  up
@@ -170,8 +187,8 @@ with this documentation, can be obtained directly from
 In the same page you will find @emph{unofficial} RedHat packages and
 @emph{official} Debian packages for the widget and related tools.
 
-The source code is also available from the GNOME CVS repository, which can be
-accesses anonymously via CVS at the following address
+The source code is also available from the GNOME CVS repository, which
+can be accesses anonymously via CVS at the following address
 @code{:pserver:anonymous@@anoncvs.gnome.org:/cvs/gnome}
 
 @noindent
@@ -188,35 +205,31 @@ installed on your system:
 
 @itemize @bullet
 @item
-@code{GTK+} (version 1.2) @url{http://www.gtk.org}, of course.
+@code{GTK+} (version 2.x) @url{http://www.gtk.org/}, of course.
 @item
 @code{GMetaDOM} (at least version 0.1.5)
-@url{http://gmetadom.sourceforge.org}. This library provides a C++ DOM
-implementation based on @code{Gdome2} @url{http://gdome2.cs.unibo.it}
-which in turn is based on @code{libxml} @url{http://xmlsoft.org}.
-@end itemize
-
-@itemize @bullet
+@url{http://gmetadom.sourceforge.org/}. This library provides a C++
+DOM implementation based on @code{Gdome2}
+@url{http://gdome2.cs.unibo.it/} which in turn is based on
+@code{libxml2} @url{http://xmlsoft.org/}.  This library is required
+only if you want to use GtkMathView with the @emph{DOM} frontend.
 @item
-@code{t1lib} (version 1.2 or higher)
-@url{ftp://sunsite.unc.edu/pub/Linux/libs/graphics/} This library is
-not required, however, if you have it, you will be able to use Type1
-fonts independently from the X font server. Furthermore, you will be
-able to render anti-aliased text. This library is also needed in the
-case you want to export MathML to PostScript.  Note that the
-configuration script is usually able to autodetect the library, if
-installed, however you will have to configure some files and
-environment variables. See the section about font installation below.
+@code{libxml2} @url{http://xmlsoft.org/}. This library is required
+only if you want to use GtkMathView with the @emph{libxml2} or
+@emph{libxml2 reader} frontends.
+@item
+@code{t1lib} @url{?}. This library is required if you want to be able
+to use GtkMathView with Type 1 fonts independently of the X font
+server.
 @end itemize
 
 @node     Installing, Compile and Link, Requirements, Usage
 @comment  node-name,  next,  previous,  up
 @section  Installing
 @noindent
-Keep in mind that the widget will not compile if @code{GMetaDOM} is
-not installed.  See the INSTALL file included in the source
-distribution for detailed compilation and installation
-instructions. After installation you will have the following files:
+See the INSTALL file included in the source distribution for detailed
+compilation and installation instructions. After installation you will
+have the following files:
 
 @itemize @bullet
 @item

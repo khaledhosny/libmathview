@@ -35,7 +35,6 @@ std::ostream& operator<<(std::ostream&, const Length::Unit&);
 std::istream& operator>>(std::istream&, Length::Unit&);
 
 std::string toString(const Length&);
-bool fromString(const std::string&, Length&);
 
 std::ostream& operator<<(std::ostream&, const Length&);
 std::istream& operator>>(std::istream&, Length&);

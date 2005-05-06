@@ -22,4 +22,5 @@
 
 #include "gtkmathview_libxml2_reader.h"
 #include "gtkmathview_common.cc"
+#include "gtkmathview_decorators_common.cc"
 

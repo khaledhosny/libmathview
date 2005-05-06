@@ -101,16 +101,6 @@ toString(const Length& length)
     }
 }
 
-bool
-fromString(const std::string& s, Length& res)
-{
-  std::istringstream is(s);
-  float f;
-  is >> f;
-
-  assert(false);
-}
-
 std::ostream&
 operator<<(std::ostream& os, const Length& length)
 { return os << toString(length); }

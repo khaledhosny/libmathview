@@ -25,9 +25,7 @@
 #ifndef __gtkmathview_common_h__
 #define __gtkmathview_common_h__
 
-#include <gtk/gtkframe.h>
-#include <gtk/gtkeventbox.h>
-#include <gtk/gtkdrawingarea.h>
+#include <gtk/gtkwidget.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,16 +80,9 @@ extern "C" {
     gint state;
   } GtkMathViewModelEvent;
 
-  typedef struct _GtkMathViewDefaultCursor {
-    GtkMathViewModelId element;
-    gint index;
-    gboolean draw_focus;
-    gboolean char_index;
-  } GtkMathViewDefaultCursor;
-
   typedef void (*GtkMathViewModelSignal)(GtkMathView*, const GtkMathViewModelEvent*);
   typedef void (*GtkMathViewSelectAbortSignal)(GtkMathView*);
-  typedef void (*GtkMathViewUpdateSignal)(GtkMathView*, gpointer);
+  typedef void (*GtkMathViewDecorateSignal)(GtkMathView*, GdkDrawable*, gpointer);
 
   GtkType    GTKMATHVIEW_METHOD_NAME(get_type)(void);
   GtkWidget* GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
@@ -144,8 +135,6 @@ extern "C" {
   void       GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)(GtkMathView*, gboolean);
   gboolean   GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)(GtkMathView*, gboolean);
-
-  void       GTKMATHVIEW_METHOD_NAME(default_cursor_update)(GtkMathView*, GtkMathViewDefaultCursor*);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

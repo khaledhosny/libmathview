@@ -22,3 +22,4 @@
 
 #include "gtkmathview_gmetadom.h"
 #include "gtkmathview_common.cc"
+#include "gtkmathview_decorators_common.cc"

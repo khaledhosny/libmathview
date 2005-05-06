@@ -22,13 +22,28 @@
  * <lpadovan@cs.unibo.it>
  */
 
-#ifndef __gtkmathview_libxml2_reader_h__
-#define __gtkmathview_libxml2_reader_h__
+#ifndef __gtkmathview_decorators_common_h__
+#define __gtkmathview_decorators_common_h__
 
-#define GTKMATHVIEW_USES_LIBXML2_READER 1
 #include "gtkmathview_common.h"
-#include "gtkmathview_decorators_common.h"
-#include "gtkmathview.h"
-#include "gtkmathview_decorators.h"
 
-#endif /* __gtkmathview_libxml2_reader_h__ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+  typedef struct _GtkMathViewDefaultCursorDecorator GtkMathViewDefaultCursorDecorator;
+
+  GtkMathViewDefaultCursorDecorator* GTKMATHVIEW_METHOD_NAME(decor_default_cursor_new)(GtkMathView*);
+  void GTKMATHVIEW_METHOD_NAME(decor_default_cursor_free)(GtkMathViewDefaultCursorDecorator*);
+  void GTKMATHVIEW_METHOD_NAME(decor_default_cursor_set)(GtkMathViewDefaultCursorDecorator*,
+							 gboolean, GtkMathViewModelId, gboolean,
+							 gint, gboolean);
+  void GTKMATHVIEW_METHOD_NAME(decor_default_cursor_get)(GtkMathViewDefaultCursorDecorator*,
+							 gboolean*, GtkMathViewModelId*, gboolean*,
+							 gint*, gboolean*);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __gtkmathview_decorators_common_h__ */
