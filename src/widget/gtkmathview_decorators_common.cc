@@ -40,7 +40,7 @@ default_cursor_handler(GtkMathView* math_view, GdkDrawable* drawable,
   g_return_if_fail(drawable != NULL);
   g_return_if_fail(cursor != NULL);
 
-  if (cursor->element != NULL)
+  if (cursor->enabled && cursor->element != NULL)
     {
       GtkMathViewPoint focus_orig;
       GtkMathViewBoundingBox focus_box;

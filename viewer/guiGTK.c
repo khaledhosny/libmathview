@@ -696,6 +696,22 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
 #endif // HAVE_GMETADOM
 
+static gboolean
+cursor_blink(GtkMathViewDefaultCursorDecorator* cursor)
+{
+  gboolean enabled;
+  GdomeElement* focus;
+  gboolean draw_focus;
+  gint index;
+  gboolean char_index;
+  g_return_val_if_fail(cursor != NULL, FALSE);
+
+  gtk_math_view_decor_default_cursor_get(cursor, &enabled, &focus, &draw_focus, &index, &char_index);
+  gtk_math_view_decor_default_cursor_set(cursor, !enabled, focus, draw_focus, index, char_index);
+
+  return TRUE;
+}
+
 static void
 create_widget_set()
 {
@@ -755,6 +771,7 @@ create_widget_set()
 		   (gpointer) main_area);
 
   cursor = gtk_math_view_decor_default_cursor_new(main_area);
+  g_timeout_add(500, cursor_blink, cursor);
 
   status_bar = gtk_statusbar_new();
   gtk_widget_show(status_bar);
