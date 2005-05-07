@@ -25,6 +25,7 @@
 
 #include "customXmlReader.hh"
 #include "TemplateReaderBuilder.hh"
+#include "TemplateLinker.hh"
 #include "custom_reader_Model.hh"
 #include "String.hh"
 #include "Element.hh"
@@ -62,7 +63,7 @@ protected:
   void linkerRemove(Element* elem) const { linker.remove(elem); }
 
 private:
-  mutable custom_reader_Model::Linker linker;
+  mutable TemplateLinker<custom_reader_Model, void*> linker;
 };
 
 #endif // __custom_reader_Builder_hh__

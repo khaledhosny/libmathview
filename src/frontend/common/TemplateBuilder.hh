@@ -41,8 +41,8 @@
 #include "AbstractLogger.hh"
 #include "HashMap.hh"
 
-template <class Model>
-class TemplateBuilder : public Model::Builder
+template <class Model, class Builder, class RefinementContext>
+class TemplateBuilder : public Builder
 {
 protected:
   template <typename ElementBuilder>
@@ -1449,7 +1449,7 @@ protected:
 #endif // ENABLE_BOXML
 
 public:
-  static SmartPtr<typename Model::Builder> create(void) { return new TemplateBuilder(); }
+  static SmartPtr<Builder> create(void) { return new TemplateBuilder(); }
 
   virtual void
   forgetElement(Element* elem) const
@@ -1485,21 +1485,21 @@ private:
   static bool boxmlMapInitialized;
 #endif // ENABLE_BOXML
 
-  mutable typename Model::RefinementContext refinementContext;
+  mutable RefinementContext refinementContext;
 };
 
-template <class Model>
-typename TemplateBuilder<Model>::MathMLBuilderMap TemplateBuilder<Model>::mathmlMap;
+template <class Model, class Builder, class RefinementContext>
+typename TemplateBuilder<Model,Builder,RefinementContext>::MathMLBuilderMap TemplateBuilder<Model,Builder,RefinementContext>::mathmlMap;
 
-template <class Model>
-bool TemplateBuilder<Model>::mathmlMapInitialized = false;
+template <class Model, class Builder, class RefinementContext>
+bool TemplateBuilder<Model,Builder,RefinementContext>::mathmlMapInitialized = false;
 
 #ifdef ENABLE_BOXML
-template <class Model>
-typename TemplateBuilder<Model>::BoxMLBuilderMap TemplateBuilder<Model>::boxmlMap;
+template <class Model, class Builder, class RefinementContext>
+typename TemplateBuilder<Model,Builder,RefinementContext>::BoxMLBuilderMap TemplateBuilder<Model,Builder,RefinementContext>::boxmlMap;
 
-template <class Model>
-bool TemplateBuilder<Model>::boxmlMapInitialized = false;
+template <class Model, class Builder, class RefinementContext>
+bool TemplateBuilder<Model,Builder,RefinementContext>::boxmlMapInitialized = false;
 #endif // ENABLE_BOXML
 
 #endif // __TemplateBuilder_hh__

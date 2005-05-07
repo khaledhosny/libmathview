@@ -25,13 +25,14 @@
 #include "gmetadom_Builder.hh"
 #include "gmetadom_Model.hh"
 #include "TemplateBuilder.hh"
+#include "TemplateRefinementContext.hh"
 
 gmetadom_Builder::~gmetadom_Builder()
 {
   setRootModelElement(DOM::Element());
 }
 
-typedef TemplateBuilder<gmetadom_Model> BUILDER;
+typedef TemplateBuilder<gmetadom_Model,gmetadom_Builder,TemplateRefinementContext<gmetadom_Model> > BUILDER;
 
 SmartPtr<gmetadom_Builder>
 gmetadom_Builder::create()

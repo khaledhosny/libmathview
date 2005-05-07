@@ -28,8 +28,6 @@
 #include "gmetadom.hh"
 #include "String.hh"
 
-#include "TemplateLinker.hh"
-#include "TemplateRefinementContext.hh"
 #include "TemplateNodeIterator.hh"
 #include "TemplateElementIterator.hh"
 
@@ -43,11 +41,8 @@ struct gmetadom_Model
   typedef DOM::Node Node;
   typedef DOM::Element Element;
   typedef DOM::Document Document;
-  typedef TemplateLinker<gmetadom_Model> Linker;
   typedef TemplateNodeIterator<gmetadom_Model> NodeIterator;
   typedef TemplateElementIterator<gmetadom_Model> ElementIterator;
-  typedef TemplateRefinementContext<gmetadom_Model> RefinementContext;
-  typedef class gmetadom_Builder Builder;
 
   // method for parsing a model
   // MUST be available

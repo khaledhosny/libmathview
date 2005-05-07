@@ -27,6 +27,7 @@
 #include "libxml2_Builder.hh"
 #include "libxml2_Model.hh"
 #include "TemplateBuilder.hh"
+#include "TemplateRefinementContext.hh"
 
 libxml2_Builder::~libxml2_Builder()
 {
@@ -35,7 +36,7 @@ libxml2_Builder::~libxml2_Builder()
 
 SmartPtr<libxml2_Builder>
 libxml2_Builder::create()
-{ return TemplateBuilder<libxml2_Model>::create(); }
+{ return TemplateBuilder<libxml2_Model,libxml2_Builder,TemplateRefinementContext<libxml2_Model> >::create(); }
 
 SmartPtr<Element>
 libxml2_Builder::findSelfOrAncestorElement(xmlElement* el) const

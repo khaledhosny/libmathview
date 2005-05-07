@@ -26,7 +26,12 @@
 #include "TemplateBuilder.hh"
 #include "libxml2_reader_Model.hh"
 #include "libxml2_reader_Builder.hh"
+#include "TemplateReaderRefinementContext.hh"
+
+typedef TemplateBuilder<libxml2_reader_Model,
+			libxml2_reader_Builder,
+			TemplateReaderRefinementContext<libxmlXmlReader> > BUILDER;
 
 SmartPtr<libxml2_reader_Builder>
 libxml2_reader_Builder::create()
-{ return TemplateBuilder<libxml2_reader_Model>::create(); }
+{ return BUILDER::create(); }

@@ -24,6 +24,7 @@
 #define __libxml2_Builder_hh__
 
 #include "libxml2_Model.hh"
+#include "TemplateLinker.hh"
 #include "Builder.hh"
 #include "String.hh"
 #include "Element.hh"
@@ -54,7 +55,7 @@ protected:
   void linkerRemove(Element* elem) const { linker.remove(elem); }
 
 private:
-  mutable libxml2_Model::Linker linker;
+  mutable TemplateLinker<libxml2_Model> linker;
   xmlElement* root;
 };
 

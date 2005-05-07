@@ -28,6 +28,7 @@
 #include "Builder.hh"
 #include "String.hh"
 #include "WeakPtr.hh"
+#include "TemplateLinker.hh"
 
 class gmetadom_Builder : public Builder
 {
@@ -79,7 +80,7 @@ protected:
 private:
   DOMSubtreeModifiedListener* subtreeModifiedListener;
   DOMAttrModifiedListener* attrModifiedListener;
-  mutable gmetadom_Model::Linker linker;
+  mutable TemplateLinker<gmetadom_Model> linker;
   DOM::Element root;
 };
 

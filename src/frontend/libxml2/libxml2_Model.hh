@@ -24,11 +24,10 @@
 #define __libxml2_Model_hh__
 
 #include <libxml/tree.h>
+#include <cassert>
 
 #include "String.hh"
 
-#include "TemplateLinker.hh"
-#include "TemplateRefinementContext.hh"
 #include "TemplateNodeIterator.hh"
 #include "TemplateElementIterator.hh"
 
@@ -42,11 +41,8 @@ struct libxml2_Model
   typedef xmlNode* Node;
   typedef xmlElement* Element;
   typedef xmlDoc* Document;
-  typedef TemplateLinker<libxml2_Model> Linker;
   typedef TemplateNodeIterator<libxml2_Model> NodeIterator;
   typedef TemplateElementIterator<libxml2_Model> ElementIterator;
-  typedef TemplateRefinementContext<libxml2_Model> RefinementContext;
-  typedef class libxml2_Builder Builder;
 
   // method for parsing a model
   // MUST be available

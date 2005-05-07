@@ -28,9 +28,6 @@
 
 struct custom_reader_Model : public TemplateReaderModel<customXmlReader>
 {
-  typedef TemplateLinker<custom_reader_Model, void*> Linker;
-  typedef class custom_reader_Builder Builder;
-
   // MUST be available if the default linker is used
   struct Hash
   {

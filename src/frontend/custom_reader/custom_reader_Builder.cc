@@ -26,10 +26,15 @@
 #include "TemplateBuilder.hh"
 #include "custom_reader_Model.hh"
 #include "custom_reader_Builder.hh"
+#include "TemplateReaderRefinementContext.hh"
+
+typedef TemplateBuilder<custom_reader_Model,
+			custom_reader_Builder,
+			TemplateReaderRefinementContext<customXmlReader> > BUILDER;
 
 SmartPtr<custom_reader_Builder>
 custom_reader_Builder::create()
-{ return TemplateBuilder<custom_reader_Model>::create(); }
+{ return BUILDER::create(); }
 
 void*
 custom_reader_Builder::findSelfOrAncestorModelElement(const SmartPtr<Element>& elem) const
