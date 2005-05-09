@@ -24,6 +24,7 @@ noinst_HEADERS = \
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
   TemplateNodeIterator.hh \
+  TemplateElementValidator.hh \
   TemplateElementIterator.hh \
   $(NULL)
 

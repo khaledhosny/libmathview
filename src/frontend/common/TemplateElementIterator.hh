@@ -23,44 +23,34 @@
 #ifndef __TemplateElementIterator_hh__
 #define __TemplateElementIterator_hh__
 
+#include "TemplateElementValidator.hh"
+
 template <class Model>
-class TemplateElementIterator
+class TemplateElementIterator : public TemplateElementValidator<Model>
 {
 public:
   TemplateElementIterator(const typename Model::Element& root, const String& ns = "*", const String& n = "*")
-    : namespaceURI(ns), name(n), currentElement(typename Model::Element())
-  { 
-    assert(root);
-    if (typename Model::Node p = Model::getFirstChild(Model::asNode(root)))
-      currentElement = findValidNode(p);
-  }
+    : TemplateElementValidator<Model>(ns, n),
+      currentElement(findValidNodeForward(Model::getFirstChild(Model::asNode(root))))
+  { assert(root); }
 
   typename Model::Element element(void) const { return currentElement; }
   bool more(void) const { return currentElement; }
-  bool valid(const typename Model::Node& p) const
-  {
-    assert(p);
-    return (Model::getNodeType(p) == Model::ELEMENT_NODE)
-      && (namespaceURI == "*" || namespaceURI == Model::getNodeNamespaceURI(p))
-      && (name == "*" || name == Model::getNodeName(p));
-  }
   void next(void)
   { 
     assert(currentElement);
-    currentElement = findValidNode(Model::getNextSibling(Model::asNode(currentElement)));
+    currentElement = findValidNodeForward(Model::getNextSibling(Model::asNode(currentElement)));
   }
 
 protected:
   typename Model::Element
-  findValidNode(const typename Model::Node& p0) const
+  findValidNodeForward(const typename Model::Node& p0) const
   {
     for (typename Model::Node p = p0; p; p = Model::getNextSibling(p))
       if (valid(p)) return Model::asElement(p);
     return typename Model::Element();
   }
     
-  String namespaceURI;
-  String name;
   typename Model::Element currentElement;
 };
 
