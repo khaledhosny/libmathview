@@ -1,23 +1,31 @@
 
+NULL =
+
 noinst_LTLIBRARIES = libfrontend_common.la
 
 libfrontend_common_la_SOURCES = \
-  Builder.cc
+  Builder.cc \
+  $(NULL)
 
 noinst_HEADERS = \
   Builder.hh \
   TemplateBuilder.hh \
   TemplateLinker.hh \
   TemplateRefinementContext.hh \
-  TemplateNodeIterator.hh \
-  TemplateElementIterator.hh \
   TemplateReaderModel.hh \
   TemplateReaderBuilder.hh \
   TemplateReaderNodeIterator.hh \
   TemplateReaderElementIterator.hh \
   TemplateReaderRefinementContext.hh \
   TemplateSetup.hh \
-  Reader.hh
+  Reader.hh \
+  $(NULL)
+
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  TemplateNodeIterator.hh \
+  TemplateElementIterator.hh \
+  $(NULL)
 
 INCLUDES = \
   -I$(top_builddir)/auto \

@@ -25,11 +25,13 @@
 
 #include <cassert>
 
-#include "gmetadom.hh"
-#include "String.hh"
+#include <GdomeSmartDOM.hh>
 
+#include "String.hh"
 #include "TemplateNodeIterator.hh"
 #include "TemplateElementIterator.hh"
+
+namespace DOM = GdomeSmartDOM;
 
 struct gmetadom_Model
 {

@@ -13,17 +13,18 @@ libmathview_frontend_gmetadom_la_LIBADD = \
 
 libmathview_frontend_gmetadom_la_SOURCES = \
   MathMLEntitiesTable.cc \
-  gmetadom_Model.cc \
-  gmetadom_Setup.cc \
-  gmetadom_Builder.cc \
-  $(NULL)
-
-noinst_HEADERS = \
   MathMLEntitiesTable.hh \
   gmetadom.hh \
-  gmetadom_Model.hh \
-  gmetadom_Setup.hh \
+  gmetadom_Builder.cc \
   gmetadom_Builder.hh \
+  gmetadom_Model.cc \
+  gmetadom_Setup.cc \
+  gmetadom_Setup.hh \
+  $(NULL)
+
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  gmetadom_Model.hh \
   $(NULL)
 
 INCLUDES = \

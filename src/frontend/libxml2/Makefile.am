@@ -15,12 +15,13 @@ libmathview_frontend_libxml2_la_SOURCES = \
   libxml2_Model.cc \
   libxml2_Setup.cc \
   libxml2_Builder.cc \
-  $(NULL)
-
-noinst_HEADERS = \
-  libxml2_Model.hh \
   libxml2_Setup.hh \
   libxml2_Builder.hh \
+  $(NULL)
+
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  libxml2_Model.hh \
   $(NULL)
 
 INCLUDES = \
