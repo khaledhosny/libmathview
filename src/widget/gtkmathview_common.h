@@ -88,7 +88,7 @@ extern "C" {
   GtkWidget* GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
   gboolean   GTKMATHVIEW_METHOD_NAME(freeze)(GtkMathView*);
   gboolean   GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView*);
-  void       GTKMATHVIEW_METHOD_NAME(update)(GtkMathView*);
+  void       GTKMATHVIEW_METHOD_NAME(update)(GtkMathView*, GdkRectangle*);
 #if GTKMATHVIEW_USES_CUSTOM_READER
   gboolean   GTKMATHVIEW_METHOD_NAME(load_reader)(GtkMathView*, GtkMathViewReader*, GtkMathViewReaderData);
 #elif GTKMATHVIEW_USES_LIBXML2_READER

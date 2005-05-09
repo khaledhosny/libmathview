@@ -184,7 +184,8 @@ GTKMATHVIEW_METHOD_NAME(decor_default_cursor_set)(GtkMathViewDefaultCursorDecora
     }
 
   if (need_update)
-    GTKMATHVIEW_METHOD_NAME(update)(cursor->math_view);
+    // should update only the region where the cursor is drawn
+    GTKMATHVIEW_METHOD_NAME(update)(cursor->math_view, NULL);
 }
 
 extern "C" void

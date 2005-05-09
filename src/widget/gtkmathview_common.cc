@@ -834,10 +834,13 @@ GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView* math_view)
 }
 
 extern "C" void
-GTKMATHVIEW_METHOD_NAME(update)(GtkMathView* math_view)
+GTKMATHVIEW_METHOD_NAME(update)(GtkMathView* math_view, GdkRectangle* rect)
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
-  gtk_math_view_update(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
+  if (rect)
+    gtk_math_view_update(math_view, rect->x, rect->y, rect->width, rect->height);
+  else
+    gtk_math_view_update(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
 }
 
 static void
