@@ -22,11 +22,11 @@
 
 #include <config.h>
 
-#include "T1Font.hh"
+#include "t1lib_T1Font.hh"
 #include "Gtk_AreaFactory.hh"
-#include "T1FontManager.hh"
+#include "t1lib_T1FontManager.hh"
 #include "Gtk_T1ComputerModernShaper.hh"
-#include "Gtk_T1GlyphArea.hh"
+#include "Gtk_t1lib_T1GlyphArea.hh"
 
 static const char* fontFile[] = {
   NULL, "cmr10.pfb", "cmb10.pfb", "cmbxti10.pfb", "cmti10.pfb", "cmss10.pfb",
@@ -41,13 +41,13 @@ Gtk_T1ComputerModernShaper::~Gtk_T1ComputerModernShaper()
 { }
 
 void
-Gtk_T1ComputerModernShaper::setFontManager(const SmartPtr<T1FontManager>& fm)
+Gtk_T1ComputerModernShaper::setFontManager(const SmartPtr<t1lib_T1FontManager>& fm)
 {
   assert(fm);
   t1FontManager = fm;
 }
 
-SmartPtr<T1Font>
+SmartPtr<t1lib_T1Font>
 Gtk_T1ComputerModernShaper::getT1Font(ComputerModernShaper::FontNameId fontNameId,
 				      const scaled& size) const
 {
@@ -63,17 +63,17 @@ Gtk_T1ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
 {
 
   assert(t1FontManager);
-  const SmartPtr<T1Font> font = getT1Font(fontNameId, size);
+  const SmartPtr<t1lib_T1Font> font = getT1Font(fontNameId, size);
   assert(font);
 
 #if 0
   std::vector<AreaRef> c;
   c.reserve(256);
   for (int i = 0; i < 256; i++)
-    c.push_back(Gtk_T1GlyphArea::create(font, i));
+    c.push_back(Gtk_t1lib_T1GlyphArea::create(font, i));
 
   return factory->horizontalArray(c);
 #endif
-  AreaRef res = Gtk_T1GlyphArea::create(font, index);
+  AreaRef res = Gtk_t1lib_T1GlyphArea::create(font, index);
   return res;
 }

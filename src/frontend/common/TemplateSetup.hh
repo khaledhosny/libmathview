@@ -136,6 +136,11 @@ struct TemplateSetup
 		conf.setSelectBackground(b);
 	      }
 	  }
+	else if (name == "tfm")
+	  {
+	    const String attr = Model::getAttribute(elem, "enabled");
+	    conf.setUseTFM(attr == "yes");
+	  }
 	else if (name == "shaper")
 	  {
 	    const String shaperName = Model::getAttribute(elem, "name");

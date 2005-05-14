@@ -24,56 +24,42 @@
 
 #include <cassert>
 
-#include <t1lib.h>
-#include <t1libx.h>
-#include <gdk/gdkx.h>
-
 #include "Char.hh"
-#include "T1Font.hh"
+#include "t1lib_T1Font.hh"
 #include "Gtk_RenderingContext.hh"
-#include "Gtk_T1GlyphArea.hh"
+#include "Gtk_t1lib_T1GlyphArea.hh"
 
-Gtk_T1GlyphArea::Gtk_T1GlyphArea(const SmartPtr<T1Font>& f, Char8 i)
+Gtk_t1lib_T1GlyphArea::Gtk_t1lib_T1GlyphArea(const SmartPtr<t1lib_T1Font>& f, Char8 i)
   : font(f), index(i)
 { }
 
-Gtk_T1GlyphArea::~Gtk_T1GlyphArea()
+Gtk_t1lib_T1GlyphArea::~Gtk_t1lib_T1GlyphArea()
 { }
 
-SmartPtr<Gtk_T1GlyphArea>
-Gtk_T1GlyphArea::create(const SmartPtr<T1Font>& font, Char8 index)
-{ return new Gtk_T1GlyphArea(font, index); }
+SmartPtr<Gtk_t1lib_T1GlyphArea>
+Gtk_t1lib_T1GlyphArea::create(const SmartPtr<t1lib_T1Font>& font, Char8 index)
+{ return new Gtk_t1lib_T1GlyphArea(font, index); }
 
-SmartPtr<T1Font>
-Gtk_T1GlyphArea::getFont() const
+SmartPtr<t1lib_T1Font>
+Gtk_t1lib_T1GlyphArea::getFont() const
 {
   return font;
 }
 
 BoundingBox
-Gtk_T1GlyphArea::box() const
-{
-  const float scale = font->getScale();
-  const BBox charBox = T1_GetCharBBox(font->getFontId(), index);
-  return BoundingBox(scale * T1_GetCharWidth(font->getFontId(), index) / 1000.0f,
-		     scale * charBox.ury / 1000.0f,
-		     scale * (-charBox.lly) / 1000.0f);
-}
+Gtk_t1lib_T1GlyphArea::box() const
+{ return font->getGlyphBoundingBox(index); }
 
 scaled
-Gtk_T1GlyphArea::leftEdge() const
-{
-  return font->getScale() * T1_GetCharBBox(font->getFontId(), index).llx / 1000.0f;
-}
+Gtk_t1lib_T1GlyphArea::leftEdge() const
+{ return font->getGlyphLeftEdge(index); }
 
 scaled
-Gtk_T1GlyphArea::rightEdge() const
-{
-  return font->getScale() * T1_GetCharBBox(font->getFontId(), index).urx / 1000.0f;
-}
+Gtk_t1lib_T1GlyphArea::rightEdge() const
+{ return font->getGlyphRightEdge(index); }
 
 void
-Gtk_T1GlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Gtk_t1lib_T1GlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
   context.draw(x, y, font, index);

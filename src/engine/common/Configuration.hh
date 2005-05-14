@@ -36,7 +36,8 @@ class Configuration : public Object
 {
 protected:
   Configuration(void)
-    : drawMissingGlyphs(true),
+    : useTFM(true),
+      drawMissingGlyphs(true),
       fontSize(DEFAULT_FONT_SIZE), 
       foreground(DEFAULT_FOREGROUND),
       background(DEFAULT_BACKGROUND),
@@ -67,6 +68,9 @@ public:
   void addShaper(const String& name) { shapers.push_back(ConfiguredShaper(name)); }
   const std::vector<ConfiguredShaper>& getShapers(void) const { return shapers; }
 
+  bool getUseTFM(void) const { return useTFM; }
+  void setUseTFM(bool b) { useTFM = b; }
+
   bool getDrawMissingGlyphs(void) const { return drawMissingGlyphs; }
   void setDrawMissingGlyphs(bool b) { drawMissingGlyphs = b; }
 
@@ -92,6 +96,7 @@ private:
   std::vector<std::string> dictionaries;
   std::vector<ConfiguredShaper> shapers;
 
+  bool useTFM;
   bool drawMissingGlyphs;
   int verbosity;
   unsigned fontSize;

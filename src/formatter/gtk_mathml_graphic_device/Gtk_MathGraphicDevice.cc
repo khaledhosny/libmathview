@@ -33,7 +33,10 @@
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
 #if HAVE_LIBT1
-#include "T1FontManager.hh"
+#include "t1lib_T1FontManager.hh"
+#if HAVE_TFM
+#include "t1lib_TFM_T1FontManager.hh"
+#endif // HAVE_TFM
 #include "Gtk_T1ComputerModernShaper.hh"
 #endif // HAVE_LIBT1
 #include "SpaceShaper.hh"
@@ -48,7 +51,7 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
   GObjectPtr<PangoContext> context = gdk_pango_context_get();
   SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
 #if HAVE_LIBT1
-  SmartPtr<T1FontManager> t1FontManager;
+  SmartPtr<t1lib_T1FontManager> t1FontManager;
 #endif // HAVE_LIBT1
 
   for (std::vector<Configuration::ConfiguredShaper>::const_iterator p = conf->getShapers().begin();
@@ -58,28 +61,45 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
       const String name = p->getName();
       if (name == "pango-default")
 	{
+	  getLogger()->out(LOG_INFO, "Activating default Pango shaper");
 	  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
 	  defaultPangoShaper->setPangoContext(context);
 	  getShaperManager()->registerShaper(defaultPangoShaper);
 	}
       else if (name == "space")
-	getShaperManager()->registerShaper(SpaceShaper::create());
+	{
+	  getLogger()->out(LOG_INFO, "Activating Space shaper");
+	  getShaperManager()->registerShaper(SpaceShaper::create());
+	}
       else if (name == "pango")
 	{
+	  getLogger()->out(LOG_INFO, "Activating Pango shaper");
 	  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
 	  pangoShaper->setPangoContext(context);
 	  getShaperManager()->registerShaper(pangoShaper);
 	}
       else if (name == "adobe")
 	{
+	  getLogger()->out(LOG_INFO, "Activating Adobe shaper");	
 	  SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
 	  adobeShaper->setFontManager(xftFontManager);
 	  //getShaperManager()->registerShaper(adobeShaper);
 	}
       else if (name == "computer-modern")
 	{
+	  getLogger()->out(LOG_INFO, "Activating ComputerModern shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
 #if HAVE_LIBT1
-	  if (!t1FontManager) t1FontManager = T1FontManager::create();
+	  if (!t1FontManager)
+	    {
+#if HAVE_TFM
+	      if (conf->getUseTFM())
+		t1FontManager = t1lib_TFM_T1FontManager::create(TFMManager::create());
+	      else
+		t1FontManager = t1lib_T1FontManager::create();
+#else
+	      t1FontManager = t1lib_T1FontManager::create();
+#endif // HAVE_TFM
+	    }
 	  SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
 	  cmShaper->setFontManager(t1FontManager);
 	  getShaperManager()->registerShaper(cmShaper);

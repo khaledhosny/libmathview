@@ -20,31 +20,40 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_T1GlyphArea_hh__
-#define __Gtk_T1GlyphArea_hh__
+#ifndef __TFMManager_hh__
+#define __TFMManager_hh__
 
-#include "GlyphArea.hh"
+#include "HashMap.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
+#include "String.hh"
+#include "TFM.hh"
+#include "scaled.hh"
 
-class Gtk_T1GlyphArea : public GlyphArea
+class TFMManager : public Object
 {
 protected:
-  Gtk_T1GlyphArea(const SmartPtr<class T1Font>&, Char8);
-  virtual ~Gtk_T1GlyphArea();
+  TFMManager(void);
+  virtual ~TFMManager();
 
 public:
-  static SmartPtr<Gtk_T1GlyphArea> create(const SmartPtr<class T1Font>&, Char8);
+  static SmartPtr<TFMManager> create(void)
+  { return new TFMManager(); }
 
-  virtual BoundingBox box(void) const;
-  virtual scaled leftEdge(void) const;
-  virtual scaled rightEdge(void) const;
-  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+  SmartPtr<class TFM> getTFM(const String&) const;
 
-  SmartPtr<class T1Font> getFont(void) const;
-  Char8 getIndex(void) const { return index; }
+protected:
+  typedef void (*TFMTables)(TFM::Font*&, TFM::Dimension*&, TFM::Character*&);
 
 private:
-  SmartPtr<class T1Font> font;
-  Char8 index;
+  typedef HASH_MAP_NS::hash_map<String,SmartPtr<class TFM>,StringHash> TFMCache;
+  mutable TFMCache tfmCache;  
+
+  struct TFMTable
+  {
+    const char* name;
+    TFMTables tables;
+  };
 };
 
-#endif // __Gtk_T1GlyphArea_hh__
+#endif // __TFMManager_hh__

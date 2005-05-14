@@ -75,7 +75,7 @@ public:
   void draw(const scaled&, const scaled&, PangoLayoutLine*) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
   void draw(const scaled&, const scaled&, XftFont*, FcChar8) const;
-  void draw(const scaled&, const scaled&, const SmartPtr<class T1Font>&, Char8) const;
+  void draw(const scaled&, const scaled&, const SmartPtr<class t1lib_T1Font>&, Char8) const;
 
   void setT1OpaqueMode(bool b) { t1_opaque_mode = b; }
   bool getT1OpaqueMode(void) const { return t1_opaque_mode; }

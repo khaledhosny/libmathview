@@ -25,9 +25,10 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
 -->
 
 <math-engine-configuration>
+  <logger verbosity="3"/>
   <dictionary-path>./config/dictionary.xml</dictionary-path>
   <dictionary-path>./config/dictionary-debug.xml</dictionary-path>
-  <font-size     size="8pt"/>
+  <font-size     size="10pt"/>
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>
   <select-color  foreground="black" background="red"/>
@@ -38,4 +39,5 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <shaper name="adobe"/>
 -->
   <shaper name="computer-modern"/>
+  <tfm enabled="yes"/>
 </math-engine-configuration>

@@ -20,31 +20,31 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_T1ComputerModernShaper_hh__
-#define __Gtk_T1ComputerModernShaper_hh__
+#include <config.h>
 
-#include "ComputerModernShaper.hh"
+#include <t1lib.h>
+//#include <t1libx.h>
+//#include <gdk/gdkx.h>
 
-class Gtk_T1ComputerModernShaper : public ComputerModernShaper
+#include "t1lib_T1Font.hh"
+
+t1lib_T1Font::~t1lib_T1Font()
+{ }
+
+scaled
+t1lib_T1Font::getGlyphLeftEdge(Char8 index) const
+{ return getScale() * T1_GetCharBBox(getFontId(), index).llx / 1000.0f; }
+
+scaled
+t1lib_T1Font::getGlyphRightEdge(Char8 index) const
+{ return getScale() * T1_GetCharBBox(getFontId(), index).urx / 1000.0f; }
+
+BoundingBox
+t1lib_T1Font::getGlyphBoundingBox(Char8 index) const
 {
-protected:
-  Gtk_T1ComputerModernShaper(void);
-  virtual ~Gtk_T1ComputerModernShaper();
-
-public:
-  static SmartPtr<Gtk_T1ComputerModernShaper> create(void)
-  { return new Gtk_T1ComputerModernShaper(); }
-
-  void setFontManager(const SmartPtr<class t1lib_T1FontManager>&);
-
-protected:
-  SmartPtr<class t1lib_T1Font> getT1Font(ComputerModernShaper::FontNameId, const scaled&) const;
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&,
-			       ComputerModernShaper::FontNameId,
-			       Char8, const scaled&) const;
-
-private:
-  SmartPtr<class t1lib_T1FontManager> t1FontManager;
-};
-
-#endif // __Gtk_T1ComputerModernShaper_hh__
+  const float scale = getScale();
+  const BBox charBox = T1_GetCharBBox(getFontId(), index);
+  return BoundingBox(scale * T1_GetCharWidth(getFontId(), index) / 1000.0f,
+		     scale * charBox.ury / 1000.0f,
+		     scale * (-charBox.lly) / 1000.0f);
+}

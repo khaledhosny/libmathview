@@ -5,10 +5,10 @@ noinst_LTLIBRARIES = libgtk_areamodel.la
 
 if COND_T1LIB
 MAYBE_T1_S = \
-  Gtk_T1GlyphArea.cc \
+  Gtk_t1lib_T1GlyphArea.cc \
   $(NULL)
 MAYBE_T1_H = \
-  Gtk_T1GlyphArea.hh \
+  Gtk_t1lib_T1GlyphArea.hh \
   $(NULL)
 else
 MAYBE_T1_S = $(NULL)

@@ -20,31 +20,25 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_T1ComputerModernShaper_hh__
-#define __Gtk_T1ComputerModernShaper_hh__
+#ifndef __t1lib_TFM_T1FontManager_hh__
+#define __t1lib_TFM_T1FontManager_hh__
 
-#include "ComputerModernShaper.hh"
+#include "t1lib_T1FontManager.hh"
 
-class Gtk_T1ComputerModernShaper : public ComputerModernShaper
+class t1lib_TFM_T1FontManager : public t1lib_T1FontManager
 {
 protected:
-  Gtk_T1ComputerModernShaper(void);
-  virtual ~Gtk_T1ComputerModernShaper();
+  t1lib_TFM_T1FontManager(const SmartPtr<class TFMManager>&);
+  virtual ~t1lib_TFM_T1FontManager();
 
 public:
-  static SmartPtr<Gtk_T1ComputerModernShaper> create(void)
-  { return new Gtk_T1ComputerModernShaper(); }
-
-  void setFontManager(const SmartPtr<class t1lib_T1FontManager>&);
+  static SmartPtr<t1lib_TFM_T1FontManager> create(const SmartPtr<class TFMManager>&);
 
 protected:
-  SmartPtr<class t1lib_T1Font> getT1Font(ComputerModernShaper::FontNameId, const scaled&) const;
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&,
-			       ComputerModernShaper::FontNameId,
-			       Char8, const scaled&) const;
+  virtual SmartPtr<class t1lib_T1Font> createT1Font(const String&, const scaled&) const;
 
 private:
-  SmartPtr<class t1lib_T1FontManager> t1FontManager;
+  SmartPtr<class TFMManager> tfmManager;
 };
 
-#endif // __Gtk_T1ComputerModernShaper_hh__
+#endif // __t1lib_TFM_T1FontManager_hh__

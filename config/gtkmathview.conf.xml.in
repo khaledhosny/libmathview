@@ -40,4 +40,5 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <shaper name="adobe"/>
   <shaper name="computer-modern"/>
 -->
+  <tfm enabled="no"/>
 </math-engine-configuration>

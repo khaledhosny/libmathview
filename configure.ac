@@ -96,6 +96,13 @@ AC_ARG_ENABLE(
 	enable_custom_reader="yes"
 )
 
+AC_ARG_ENABLE(
+	tfm,
+	[  --enable-tfm[=ARG]  enable support for TeX Font Metrics [default=no]],
+	enable_tfm=$enableval,
+	enable_tfm="no"
+)
+
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
@@ -123,7 +130,7 @@ AM_PROG_LIBTOOL
 
 dnl config.h top and bottom
 AH_TOP([
-/* Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
+/* Copyright (C) 2000-2005, Luca Padovani <lpadovan@cs.unibo.it>.
  *
  * This file is part of GtkMathView, a Gtk widget for MathML.
  * 
@@ -142,8 +149,8 @@ AH_TOP([
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  * 
  * For details, see the GtkMathView World-Wide-Web page,
- * http://helm.cs.unibo.it/mml-widget, or send a mail to
- * <luca.padovani@cs.unibo.it>
+ * http://helm.cs.unibo.it/mml-widget/, or send a mail to
+ * <lpadovan@cs.unibo.it>
  */
 
 #ifndef config_h
@@ -438,6 +445,11 @@ if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
+if test $enable_tfm = yes; then
+	AC_DEFINE(ENABLE_TFM,1,[Define to 1 if you want to enable support for TeX Font Metrics])
+fi
+AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" = "yes"])
+
 AC_CONFIG_FILES([
  Makefile
  gtkmathview.spec
@@ -463,6 +475,7 @@ AC_CONFIG_FILES([
  src/engine/adapters/Makefile
  src/formatter/Makefile
  src/formatter/common/Makefile
+ src/formatter/common/tfm/Makefile
  src/formatter/areamodel/Makefile
  src/formatter/gtk_areamodel/Makefile
  src/formatter/mathml_graphic_device/Makefile
@@ -480,3 +493,37 @@ AC_CONFIG_FILES([
  gtkmathview-gmetadom.pc
 ])
 AC_OUTPUT
+
+cat <<EOF
+
+GtkMathView ${MATHVIEW_VERSION}
+
+Compilation
+
+  GCC pipe            ${enable_pipe}
+  Profiling           ${enable_profile}
+  Debugging           ${enable_debug}
+  xsltproc            ${HAVE_XSLTPROC}
+
+Engine
+
+  MathML              yes
+  BoxML               ${enable_boxml}
+
+Frontend
+
+  GMetaDOM            ${enable_gmetadom}
+  libxml2             ${enable_libxml2}
+  libxml2 reader      ${enable_libxml2_reader}
+  custom reader       ${enable_custom_reader}
+
+Backend
+
+  Type1 fonts (t1lib) ${t1lib}
+  TFM support         ${enable_tfm}
+
+Performance
+
+  Builder cache       ${enable_builder_cache}
+
+EOF

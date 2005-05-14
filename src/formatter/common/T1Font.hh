@@ -23,27 +23,17 @@
 #ifndef __T1Font_hh__
 #define __T1Font_hh__
 
+#include "Char.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
-#include "scaled.hh"
+#include "BoundingBox.hh"
 
 class T1Font : public Object
 {
-protected:
-  T1Font(int fid, const scaled& s) : fontId(fid), size(s) { }
-  virtual ~T1Font();
-
 public:
-  static SmartPtr<T1Font> create(int fid, const scaled& s)
-  { return new T1Font(fid, s); }
-
-  int getFontId(void) const { return fontId; }
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
-
-private:
-  int fontId;
-  scaled size;
+  virtual scaled getGlyphLeftEdge(Char8) const = 0;
+  virtual scaled getGlyphRightEdge(Char8) const = 0;
+  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
 };
 
 #endif // __T1Font_hh__

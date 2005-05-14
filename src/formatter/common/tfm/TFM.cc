@@ -1,0 +1,135 @@
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
+// This file is part of GtkMathView, a Gtk widget for MathML.
+// 
+// GtkMathView is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// GtkMathView is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with GtkMathView; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+// 
+// For details, see the GtkMathView World-Wide-Web page,
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
+
+#include <config.h>
+
+#include <cassert>
+
+#include "TFM.hh"
+
+scaled
+TFM::scaledOfFIX(int v)
+{ return scaled(v >> (UNITY_SHIFT - scaled::getPrecision()), true); }
+
+TFM::TFM(const Font* _font, const Dimension* _dimension, const Character* _character)
+  : font(_font), dimension(_dimension), character(_character)
+{
+  assert(font);
+  assert(dimension);
+  assert(character);
+  assert(UNITY_SHIFT >= scaled::getPrecision());
+  assert(sizeof(int) >= 4);
+}
+
+TFM::~TFM()
+{ }
+
+scaled
+TFM::getDesignSize() const
+{ return scaledOfFIX(font->designSize); }
+
+String
+TFM::getDimensionName(unsigned index) const
+{
+  assert(index >= 1 && index <= font->nDimensions);
+  assert(dimension[index - 1].index == index);
+  return dimension[index - 1].name;
+#if 0
+  for (int i = 0; i < font->nDimensions; i++)
+    if (dimension[i].index == index)
+      return dimension[i].name;
+  return "";
+#endif
+}
+
+scaled
+TFM::getDimension(unsigned index) const
+{
+  assert(index >= 1 && index <= font->nDimensions);
+  assert(dimension[index - 1].index == index);
+  return scaledOfFIX(dimension[index - 1].value);
+#if 0
+  for (unsigned i = 0; i < font->nDimensions; i++)
+    if (dimension[i].index == index)
+      return scaledOfFIX(dimension[i].value);
+  return scaled();
+#endif
+}
+
+scaled
+TFM::getDimension(const String& name) const
+{
+  for (unsigned i = 0; i < font->nDimensions; i++)
+    if (name == dimension[i].name)
+      return scaledOfFIX(dimension[i].value);
+  return scaled();
+}
+
+const TFM::Character&
+TFM::getCharacter(Char8 index) const
+{
+  assert(index < font->nCharacters);
+  assert(character[index].index == index);
+  return character[index];
+}
+
+BoundingBox
+TFM::getGlyphBoundingBox(Char8 index) const
+{
+  const Character& c = getCharacter(index);
+  return BoundingBox(scaledOfFIX(c.width), scaledOfFIX(c.height), scaledOfFIX(c.depth));
+}
+
+scaled
+TFM::getGlyphItalicCorrection(Char8 index) const
+{ return scaledOfFIX(getCharacter(index).italicCorrection); }
+
+bool
+TFM::getGlyphKerning(Char8 index1, Char8 index2, scaled& result) const
+{
+  const Character& c = getCharacter(index1);
+  for (unsigned i = 0; i < c.nKernings; i++)
+    if (c.kerning[i].index == index2)
+      {
+	result = scaledOfFIX(c.kerning[i].value);
+	return true;
+      }
+  return false;
+}
+
+bool
+TFM::getGlyphLigature(Char8 index1, Char8 index2, Char8& result, Char8& mode) const
+{
+  const Character& c = getCharacter(index1);
+  for (unsigned i = 0; i < c.nLigatures; i++)
+    if (c.ligature[i].index == index2)
+      {
+	result = c.ligature[i].result;
+	mode = c.ligature[i].mode;
+	return true;
+      }
+  return false;
+}
+
+float
+TFM::getScale(const scaled& size) const
+{ return size.toFloat() / getDesignSize().toFloat(); }

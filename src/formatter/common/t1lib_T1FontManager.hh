@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1FontManager_hh__
-#define __T1FontManager_hh__
+#ifndef __t1lib_T1FontManager_hh__
+#define __t1lib_T1FontManager_hh__
 
 #include "Object.hh"
 #include "String.hh"
@@ -29,21 +29,22 @@
 #include "SmartPtr.hh"
 #include "scaled.hh"
 
-class T1FontManager : public Object
+class t1lib_T1FontManager : public Object
 {
 protected:
-  T1FontManager(void);
-  virtual ~T1FontManager();
+  t1lib_T1FontManager(void);
+  virtual ~t1lib_T1FontManager();
 
 public:
-  static SmartPtr<T1FontManager> create(void)
-  { return new T1FontManager(); }
+  static SmartPtr<t1lib_T1FontManager> create(void)
+  { return new t1lib_T1FontManager(); }
 
-  SmartPtr<class T1Font> getT1Font(const String&, const scaled&) const;
+  SmartPtr<class t1lib_T1Font> getT1Font(const String&, const scaled&) const;
 
 protected:
   int loadFont(const String&) const;
-  SmartPtr<class T1Font> createT1Font(const String&, const scaled&) const;
+  int getFontId(const String&) const;
+  virtual SmartPtr<class t1lib_T1Font> createT1Font(const String&, const scaled&) const;
 
 private:
   static bool firstTime;
@@ -66,8 +67,8 @@ private:
     { return StringHash()(key.name) ^ key.size.getValue(); }
   };
 
-  typedef HASH_MAP_NS::hash_map<CachedT1FontKey,SmartPtr<class T1Font>,CachedT1FontHash> T1FontCache;
+  typedef HASH_MAP_NS::hash_map<CachedT1FontKey,SmartPtr<class t1lib_T1Font>,CachedT1FontHash> T1FontCache;
   mutable T1FontCache fontCache;
 };
 
-#endif // __T1FontManager_hh__
+#endif // __t1lib_T1FontManager_hh__

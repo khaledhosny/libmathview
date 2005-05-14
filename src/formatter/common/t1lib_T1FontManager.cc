@@ -24,14 +24,14 @@
 
 #include <t1lib.h>
 
-#include "T1Font.hh"
-#include "T1FontManager.hh"
+#include "t1lib_T1Font.hh"
+#include "t1lib_T1FontManager.hh"
 
-bool T1FontManager::firstTime = true;
+bool t1lib_T1FontManager::firstTime = true;
 
 // #include <iostream>
 
-T1FontManager::T1FontManager()
+t1lib_T1FontManager::t1lib_T1FontManager()
 {
   if (firstTime)
     {
@@ -42,7 +42,7 @@ T1FontManager::T1FontManager()
     }
 }
 
-T1FontManager::~T1FontManager()
+t1lib_T1FontManager::~t1lib_T1FontManager()
 {
   const int res = T1_CloseLib();
   assert(res == 0);
@@ -52,7 +52,7 @@ T1FontManager::~T1FontManager()
 }
 
 int
-T1FontManager::loadFont(const String& name) const
+t1lib_T1FontManager::loadFont(const String& name) const
 {
   const int n = T1_GetNoFonts();
   for (int i = 0; i < n; i++)
@@ -64,29 +64,34 @@ T1FontManager::loadFont(const String& name) const
   return fontId;
 }
 
-SmartPtr<T1Font>
-T1FontManager::createT1Font(const String& name, const scaled& size) const
+int
+t1lib_T1FontManager::getFontId(const String& name) const
 {
   const int n = T1_GetNoFonts();
   for (int i = 0; i < n; i++)
     if (name == T1_GetFontFileName(i))
-      return T1Font::create(i, size);
+      return i;
+  return loadFont(name);
+}
 
-  const int fontId = loadFont(name);
+SmartPtr<t1lib_T1Font>
+t1lib_T1FontManager::createT1Font(const String& name, const scaled& size) const
+{
+  const int fontId = getFontId(name);
   if (fontId >= 0)
-    return T1Font::create(fontId, size);
+    return t1lib_T1Font::create(fontId, size);
   else
     return 0;
 }
 
-SmartPtr<T1Font>
-T1FontManager::getT1Font(const String& name, const scaled& size) const
+SmartPtr<t1lib_T1Font>
+t1lib_T1FontManager::getT1Font(const String& name, const scaled& size) const
 {
   const CachedT1FontKey key(name, size);
   T1FontCache::iterator p = fontCache.find(key);
   if (p != fontCache.end())
     return p->second;
-  else if (const SmartPtr<T1Font> font = createT1Font(name, size))
+  else if (const SmartPtr<t1lib_T1Font> font = createT1Font(name, size))
     {
       fontCache[key] = font;
       return font;
