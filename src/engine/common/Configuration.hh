@@ -53,10 +53,12 @@ public:
   class ConfiguredShaper
   {
   public:
-    ConfiguredShaper(const String& n) : name(n) { }
+    ConfiguredShaper(const String& n, const String& b) : name(n), backend(b) { }
     String getName(void) const { return name; }
+    String getBackend(void) const { return backend; }
   private:
     String name;
+    String backend;
   };
 
   static SmartPtr<Configuration> create(void)
@@ -65,7 +67,7 @@ public:
   void addDictionary(const String& s) { dictionaries.push_back(s); }
   const std::vector<String>& getDictionaries(void) const { return dictionaries; }
 
-  void addShaper(const String& name) { shapers.push_back(ConfiguredShaper(name)); }
+  void addShaper(const String& name, const String& backend) { shapers.push_back(ConfiguredShaper(name, backend)); }
   const std::vector<ConfiguredShaper>& getShapers(void) const { return shapers; }
 
   bool getUseTFM(void) const { return useTFM; }

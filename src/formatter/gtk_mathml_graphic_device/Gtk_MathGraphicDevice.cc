@@ -57,59 +57,60 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
   for (std::vector<Configuration::ConfiguredShaper>::const_iterator p = conf->getShapers().begin();
        p != conf->getShapers().end();
        p++)
-    {
-      const String name = p->getName();
-      if (name == "pango-default")
-	{
-	  getLogger()->out(LOG_INFO, "Activating default Pango shaper");
-	  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
-	  defaultPangoShaper->setPangoContext(context);
-	  getShaperManager()->registerShaper(defaultPangoShaper);
-	}
-      else if (name == "space")
-	{
-	  getLogger()->out(LOG_INFO, "Activating Space shaper");
-	  getShaperManager()->registerShaper(SpaceShaper::create());
-	}
-      else if (name == "pango")
-	{
-	  getLogger()->out(LOG_INFO, "Activating Pango shaper");
-	  SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
-	  pangoShaper->setPangoContext(context);
-	  getShaperManager()->registerShaper(pangoShaper);
-	}
-      else if (name == "adobe")
-	{
-	  getLogger()->out(LOG_INFO, "Activating Adobe shaper");	
-	  SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-	  adobeShaper->setFontManager(xftFontManager);
-	  //getShaperManager()->registerShaper(adobeShaper);
-	}
-      else if (name == "computer-modern")
-	{
-	  getLogger()->out(LOG_INFO, "Activating ComputerModern shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
+    if (p->getBackend() == "" || p->getBackend() == "gtk")
+      {
+	const String name = p->getName();
+	if (name == "pango-default")
+	  {
+	    getLogger()->out(LOG_INFO, "Activating default Pango shaper");
+	    SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
+	    defaultPangoShaper->setPangoContext(context);
+	    getShaperManager()->registerShaper(defaultPangoShaper);
+	  }
+	else if (name == "space")
+	  {
+	    getLogger()->out(LOG_INFO, "Activating Space shaper");
+	    getShaperManager()->registerShaper(SpaceShaper::create());
+	  }
+	else if (name == "pango")
+	  {
+	    getLogger()->out(LOG_INFO, "Activating Pango shaper");
+	    SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
+	    pangoShaper->setPangoContext(context);
+	    getShaperManager()->registerShaper(pangoShaper);
+	  }
+	else if (name == "adobe")
+	  {
+	    getLogger()->out(LOG_INFO, "Activating Adobe shaper");	
+	    SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
+	    adobeShaper->setFontManager(xftFontManager);
+	    getShaperManager()->registerShaper(adobeShaper);
+	  }
+	else if (name == "computer-modern")
+	  {
+	    getLogger()->out(LOG_INFO, "Activating ComputerModern shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
 #if HAVE_LIBT1
-	  if (!t1FontManager)
-	    {
+	    if (!t1FontManager)
+	      {
 #if HAVE_TFM
-	      if (conf->getUseTFM())
-		t1FontManager = t1lib_TFM_T1FontManager::create(TFMManager::create());
-	      else
+		if (conf->getUseTFM())
+		  t1FontManager = t1lib_TFM_T1FontManager::create(TFMManager::create());
+		else
+		  t1FontManager = t1lib_T1FontManager::create();
+#else
 		t1FontManager = t1lib_T1FontManager::create();
-#else
-	      t1FontManager = t1lib_T1FontManager::create();
 #endif // HAVE_TFM
-	    }
-	  SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
-	  cmShaper->setFontManager(t1FontManager);
-	  getShaperManager()->registerShaper(cmShaper);
+	      }
+	    SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
+	    cmShaper->setFontManager(t1FontManager);
+	    getShaperManager()->registerShaper(cmShaper);
 #else
-	  getLogger()->out(LOG_WARNING, "t1lib support has not been compiled in, ");
+	    getLogger()->out(LOG_WARNING, "t1lib support has not been compiled in, ");
 #endif // HAVE_LIBT1
-	}
-      else
-	getLogger()->out(LOG_WARNING, "unknown shaper `%s' (ignored)", name.c_str());
-    }
+	  }
+	else
+	  getLogger()->out(LOG_WARNING, "unknown shaper `%s' (ignored)", name.c_str());
+      }
 }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()

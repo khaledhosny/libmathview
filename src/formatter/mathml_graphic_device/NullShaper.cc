@@ -20,30 +20,32 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#include <config.h>
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "AreaFactory.hh"
+#include "ShapingContext.hh"
+#include "ShaperManager.hh"
+#include "NullShaper.hh"
 
-class T1Font : public Object
+void
+NullShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
-protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  assert(sm);
+}
 
-public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+void
+NullShaper::unregisterShaper(const SmartPtr<ShaperManager>&, unsigned)
+{ }
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
+void
+NullShaper::shape(ShapingContext& context) const
+{
+  assert(!context.done());
+  SmartPtr<AreaFactory> factory = context.getFactory();
+  std::vector<AreaRef> c;
+  c.reserve(2);
+  c.push_back(factory->horizontalSpace(context.getSize()));
+  c.push_back(factory->verticalSpace(context.getSize(), 0));
+  context.pushArea(1, factory->background(factory->horizontalArray(c), RGBColor::RED()));
+}
 
-private:
-  scaled size;
-};
-
-#endif // __T1Font_hh__

@@ -20,30 +20,31 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __SVG_T1GlyphArea_hh__
+#define __SVG_T1GlyphArea_hh__
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "GlyphArea.hh"
 
-class T1Font : public Object
+class SVG_T1GlyphArea : public GlyphArea
 {
 protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  SVG_T1GlyphArea(const SmartPtr<class SVG_T1Font>&, Char8);
+  virtual ~SVG_T1GlyphArea();
 
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  static SmartPtr<SVG_T1GlyphArea> create(const SmartPtr<class SVG_T1Font>&, Char8);
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
+  virtual BoundingBox box(void) const;
+  virtual scaled leftEdge(void) const;
+  virtual scaled rightEdge(void) const;
+  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+
+  SmartPtr<class SVG_T1Font> getFont(void) const;
+  Char8 getIndex(void) const { return index; }
 
 private:
-  scaled size;
+  SmartPtr<class SVG_T1Font> font;
+  Char8 index;
 };
 
-#endif // __T1Font_hh__
+#endif // __SVG_T1GlyphArea_hh__

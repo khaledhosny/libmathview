@@ -103,6 +103,13 @@ AC_ARG_ENABLE(
 	enable_tfm="no"
 )
 
+AC_ARG_ENABLE(
+	svg,
+	[  --enable-svg[=ARG]  enable SVG backend [default=no]],
+	enable_svg=$enableval,
+	enable_svg="no"
+)
+
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
@@ -450,6 +457,16 @@ if test $enable_tfm = yes; then
 fi
 AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" = "yes"])
 
+if test $enable_tfm = no -a $enable_svg = yes; then
+	AC_MSG_WARN([SVG support requires TFM support])
+	enable_svg="no"
+fi
+	
+if test $enable_svg = yes; then
+	AC_DEFINE(ENABLE_SVG,1,[Define to 1 if you want to enable the SVG backend])
+fi
+AM_CONDITIONAL([COND_SVG], [test "$enable_svg" = "yes"])
+
 AC_CONFIG_FILES([
  Makefile
  gtkmathview.spec
@@ -478,13 +495,16 @@ AC_CONFIG_FILES([
  src/formatter/common/tfm/Makefile
  src/formatter/areamodel/Makefile
  src/formatter/gtk_areamodel/Makefile
+ src/formatter/svg_areamodel/Makefile
  src/formatter/mathml_graphic_device/Makefile
  src/formatter/gtk_mathml_graphic_device/Makefile
+ src/formatter/svg_mathml_graphic_device/Makefile
  src/formatter/boxml_graphic_device/Makefile
  src/formatter/gtk_boxml_graphic_device/Makefile
  src/view/Makefile
  src/widget/Makefile
  viewer/Makefile
+ mathmlsvg/Makefile
  doc/Makefile
  mathview-libxml2.pc
  gtkmathview-custom-reader.pc
@@ -521,6 +541,7 @@ Backend
 
   Type1 fonts (t1lib) ${t1lib}
   TFM support         ${enable_tfm}
+  SVG support         ${enable_svg}
 
 Performance
 

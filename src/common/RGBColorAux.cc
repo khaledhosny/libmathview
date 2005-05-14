@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <sstream>
+#include <iomanip>
 
 #include "RGBColorAux.hh"
 
@@ -34,9 +35,10 @@ toString(const RGBColor& color)
     os << "transparent";
   else
     {
-      os.width(2);
-      os.fill('0');
-      os << "#" << std::hex << color.red << color.green << color.blue;
+      os << "#"
+	 << std::setw(2) << std::setfill('0') << std::hex << color.red
+	 << std::setw(2) << std::setfill('0') << std::hex << color.green
+	 << std::setw(2) << std::setfill('0') << std::hex << color.blue;
     }
   return os.str();
 }

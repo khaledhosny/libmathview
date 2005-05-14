@@ -20,30 +20,30 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __SVG_StreamRenderingContext_hh__
+#define __SVG_StreamRenderingContext_hh__
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include <iostream>
 
-class T1Font : public Object
+#include "String.hh"
+#include "SVG_RenderingContext.hh"
+
+class SVG_StreamRenderingContext : public SVG_RenderingContext
 {
-protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
-
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  SVG_StreamRenderingContext(const SmartPtr<class AbstractLogger>&, std::ostream&);
+  virtual ~SVG_StreamRenderingContext();
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
+  void prologue(const scaled&, const scaled&) const;
+  void epilogue(void) const;
+  virtual void fill(const scaled&, const scaled&, const BoundingBox&) const;
+  virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFM_T1Font>&, Char8) const;
+
+  static String scaledToSVG(const scaled&);
+  static String RGBColorToSVG(const RGBColor&);
 
 private:
-  scaled size;
+  std::ostream& output;
 };
 
-#endif // __T1Font_hh__
+#endif // __SVG_StreamRenderingContext_hh__

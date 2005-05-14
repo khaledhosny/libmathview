@@ -20,30 +20,23 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __SVG_InkArea_hh__
+#define __SVG_InkArea_hh__
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "InkArea.hh"
 
-class T1Font : public Object
+class SVG_InkArea : public InkArea
 {
 protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  SVG_InkArea(const AreaRef& area) : InkArea(area) { }
+  virtual ~SVG_InkArea() { }
 
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  static SmartPtr<SVG_InkArea> create(const AreaRef& area)
+  { return new SVG_InkArea(area); }
+  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
-
-private:
-  scaled size;
+  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
 };
 
-#endif // __T1Font_hh__
+#endif // __SVG_InkArea_hh__

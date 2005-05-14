@@ -20,30 +20,32 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __SVG_AreaFactory_hh__
+#define __SVG_AreaFactory_hh__
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "AreaFactory.hh"
+#include "SVG_ColorArea.hh"
+#include "SVG_BackgroundArea.hh"
+#include "SVG_InkArea.hh"
 
-class T1Font : public Object
+class SVG_AreaFactory : public AreaFactory
 {
 protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  SVG_AreaFactory(void) { }
+  virtual ~SVG_AreaFactory() { }
 
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  static SmartPtr<SVG_AreaFactory> create(void)
+  { return new SVG_AreaFactory(); }
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
+  // redefined methods
 
-private:
-  scaled size;
+  virtual SmartPtr<ColorArea> color(const AreaRef& area, const RGBColor& color) const
+  { return SVG_ColorArea::create(area, color); }
+  virtual SmartPtr<InkArea> ink(const AreaRef& area) const
+  { return SVG_InkArea::create(area); }
+  virtual AreaRef background(const AreaRef& area, const RGBColor& color) const
+  { return SVG_BackgroundArea::create(area, color); }
 };
 
-#endif // __T1Font_hh__
+#endif // __SVG_AreaFactory_hh__

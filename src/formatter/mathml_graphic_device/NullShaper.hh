@@ -20,30 +20,24 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __NullShaper_hh__
+#define __NullShaper_hh__
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "Shaper.hh"
 
-class T1Font : public Object
+class NullShaper : public Shaper
 {
 protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  NullShaper(void) { }
+  virtual ~NullShaper() { }
 
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  static SmartPtr<NullShaper> create(void)
+  { return new NullShaper(); }
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
-
-private:
-  scaled size;
+  virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
+  virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
+  virtual void shape(class ShapingContext&) const;
 };
 
-#endif // __T1Font_hh__
+#endif // __NullShaper_hh__

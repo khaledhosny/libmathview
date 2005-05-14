@@ -20,30 +20,21 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#include <config.h>
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "SVG_BackgroundArea.hh"
+#include "SVG_RenderingContext.hh"
 
-class T1Font : public Object
+void
+SVG_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
-
-public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
-
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
-
-private:
-  scaled size;
-};
-
-#endif // __T1Font_hh__
+  SVG_RenderingContext& context = dynamic_cast<SVG_RenderingContext&>(c);
+  const RGBColor old_foregroundColor = context.getForegroundColor();
+  const RGBColor old_backgroundColor = context.getBackgroundColor();
+  context.setForegroundColor(getColor());
+  context.setBackgroundColor(getColor());
+  context.fill(x, y, box());
+  context.setForegroundColor(old_foregroundColor);
+  getChild()->render(context, x, y);
+  context.setBackgroundColor(old_backgroundColor);
+}

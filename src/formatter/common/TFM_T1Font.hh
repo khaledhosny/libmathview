@@ -20,30 +20,31 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __TFM_T1Font_hh__
+#define __TFM_T1Font_hh__
 
 #include "Char.hh"
-#include "Object.hh"
+#include "T1Font.hh"
 #include "SmartPtr.hh"
 #include "BoundingBox.hh"
 
-class T1Font : public Object
+class TFM_T1Font : public T1Font
 {
 protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  TFM_T1Font(const scaled&, const SmartPtr<class TFM>&);
+  virtual ~TFM_T1Font();
 
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  static SmartPtr<TFM_T1Font> create(const scaled&, const SmartPtr<class TFM>&);
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
+  SmartPtr<class TFM> getTFM(void) const;
+  
+  virtual scaled getGlyphLeftEdge(Char8) const;
+  virtual scaled getGlyphRightEdge(Char8) const;
+  virtual BoundingBox getGlyphBoundingBox(Char8) const;
 
 private:
-  scaled size;
+  SmartPtr<class TFM> tfm;
 };
 
-#endif // __T1Font_hh__
+#endif // __TFM_T1Font_hh__

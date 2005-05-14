@@ -35,6 +35,28 @@ else
 MAYBE_T1_S = $(NULL)
 endif
 
+if COND_TFM
+MAYBE_TFM_S = \
+  TFM_T1Font.hh \
+  TFM_T1Font.cc \
+  TFM_T1FontManager.hh \
+  TFM_T1FontManager.cc \
+  $(NULL)
+
+if COND_SVG
+MAYBE_SVG_S = \
+  SVG_T1Font.hh \
+  SVG_T1FontManager.hh \
+  $(NULL)
+else
+MAYBE_SVG_S = $(NULL)
+endif
+
+else
+MAYBE_TFM_S = $(NULL)
+MAYBE_SVG_S = $(NULL)
+endif
+
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
   FormattingContext.hh \
@@ -47,7 +69,9 @@ noinst_LTLIBRARIES = libcommon.la
 libcommon_la_SOURCES = \
   FormattingContext.cc \
   GraphicDevice.cc \
+  $(MAYBE_TFM_S) \
   $(MAYBE_T1_S) \
+  $(MAYBE_SVG_S) \
   $(NULL)
 
 libcommon_la_LIBADD = \

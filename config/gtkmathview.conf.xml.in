@@ -33,11 +33,12 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <color         foreground="black" background="white"/>
   <link-color    foreground="#32648b" background="white"/>
   <select-color  foreground="black" background="#ff6a6a"/>
-  <shaper name="pango-default"/>
+  <shaper name="null" backend="svg"/>
+  <shaper name="pango-default" backend="gtk"/>
   <shaper name="space"/>
-  <shaper name="pango"/>
+  <shaper name="pango" backend="gtk"/>
 <!--
-  <shaper name="adobe"/>
+  <shaper name="adobe" backend="gtk"/>
   <shaper name="computer-modern"/>
 -->
   <tfm enabled="no"/>

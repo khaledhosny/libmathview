@@ -20,30 +20,39 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#include <config.h>
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "TFMManager.hh"
+#include "TFM_T1Font.hh"
+#include "TFM_T1FontManager.hh"
 
-class T1Font : public Object
+TFM_T1FontManager::TFM_T1FontManager(const SmartPtr<TFMManager>& tm)
+  : tfmManager(tm)
+{ }
+
+TFM_T1FontManager::~TFM_T1FontManager()
+{ }
+
+SmartPtr<TFM_T1FontManager>
+TFM_T1FontManager::create(const SmartPtr<TFMManager>& tm)
+{ return new TFM_T1FontManager(tm); }
+
+SmartPtr<TFM_T1Font>
+TFM_T1FontManager::createT1Font(const String& name, const scaled& size) const
+{ return TFM_T1Font::create(size, tfmManager->getTFM(name)); }
+
+SmartPtr<TFM_T1Font>
+TFM_T1FontManager::getT1Font(const String& name, const scaled& size) const
 {
-protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
-
-public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
-
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
-
-private:
-  scaled size;
-};
-
-#endif // __T1Font_hh__
+  const CachedT1FontKey key(name, size);
+  T1FontCache::iterator p = fontCache.find(key);
+  if (p != fontCache.end())
+    return p->second;
+  else if (const SmartPtr<TFM_T1Font> font = createT1Font(name, size))
+    {
+      fontCache[key] = font;
+      return font;
+    }
+  else
+    return 0;
+}

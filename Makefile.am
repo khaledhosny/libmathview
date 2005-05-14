@@ -1,8 +1,14 @@
 
 NULL =
 
+if COND_SVG
+MAYBE_SVG = mathmlsvg
+else
+MAYBE_SVG = $(NULL)
+endif
+
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
-SUBDIRS = scripts config auto src doc viewer
+SUBDIRS = scripts config auto src doc viewer $(MAYBE_SVG)
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig

@@ -147,7 +147,7 @@ struct TemplateSetup
 	    if (shaperName.empty() || shaperName.length() == 0)
 	      logger.out(LOG_WARNING, "malformed `shaper' element, unspecified or empty `name' attribute");
 	    else
-	      conf.addShaper(shaperName);
+	      conf.addShaper(shaperName, Model::getAttribute(elem, "backend"));
 	  }
 	else
 	  logger.out(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());

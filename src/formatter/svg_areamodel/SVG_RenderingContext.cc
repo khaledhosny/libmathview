@@ -20,30 +20,19 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#include <config.h>
 
-#include "Char.hh"
-#include "Object.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include <cassert>
 
-class T1Font : public Object
+#include "AbstractLogger.hh"
+#include "SVG_RenderingContext.hh"
+
+SVG_RenderingContext::SVG_RenderingContext(const SmartPtr<AbstractLogger>& l)
+  : logger(l)
 {
-protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
+  assert(logger);
+}
 
-public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+SVG_RenderingContext::~SVG_RenderingContext()
+{ }
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
-
-private:
-  scaled size;
-};
-
-#endif // __T1Font_hh__

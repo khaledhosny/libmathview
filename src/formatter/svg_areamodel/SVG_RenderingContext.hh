@@ -20,30 +20,35 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __T1Font_hh__
-#define __T1Font_hh__
+#ifndef __Gtk_RenderingContext_hh__
+#define __Gtk_RenderingContext_hh__
 
 #include "Char.hh"
-#include "Object.hh"
 #include "SmartPtr.hh"
+#include "RGBColor.hh"
 #include "BoundingBox.hh"
+#include "RenderingContext.hh"
 
-class T1Font : public Object
+class SVG_RenderingContext : public RenderingContext
 {
-protected:
-  T1Font(const scaled& s) : size(s) { }
-  virtual ~T1Font() { }
-
 public:
-  virtual scaled getGlyphLeftEdge(Char8) const = 0;
-  virtual scaled getGlyphRightEdge(Char8) const = 0;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const = 0;
+  SVG_RenderingContext(const SmartPtr<class AbstractLogger>&);
+  virtual ~SVG_RenderingContext();
 
-  scaled getSize(void) const { return size; }
-  float getScale(void) const { return getSize().toFloat(); }
+  void setForegroundColor(const RGBColor& c) { fgColor = c; }
+  void setBackgroundColor(const RGBColor& c) { bgColor = c; }
 
-private:
-  scaled size;
+  RGBColor getForegroundColor(void) const { return fgColor; }
+  RGBColor getBackgroundColor(void) const { return bgColor; }
+
+  virtual void fill(const scaled&, const scaled&, const BoundingBox&) const = 0;
+  virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFM_T1Font>&, Char8) const = 0;
+
+protected:
+  SmartPtr<class AbstractLogger> logger;
+
+  RGBColor fgColor;
+  RGBColor bgColor;
 };
 
-#endif // __T1Font_hh__
+#endif // __SVG_RenderingContext_hh__

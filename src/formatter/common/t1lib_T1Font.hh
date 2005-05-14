@@ -31,16 +31,14 @@
 class t1lib_T1Font : public T1Font
 {
 protected:
-  t1lib_T1Font(int fid, const scaled& s) : fontId(fid), size(s) { }
+  t1lib_T1Font(int fid, const scaled& s) : T1Font(s), fontId(fid) { }
   virtual ~t1lib_T1Font();
 
 public:
   static SmartPtr<t1lib_T1Font> create(int fid, const scaled& s)
   { return new t1lib_T1Font(fid, s); }
 
-  scaled getSize(void) const { return size; }
   int getFontId(void) const { return fontId; }
-  float getScale(void) const { return getSize().toFloat(); }
 
   virtual scaled getGlyphLeftEdge(Char8) const;
   virtual scaled getGlyphRightEdge(Char8) const;
@@ -48,7 +46,6 @@ public:
 
 private:
   int fontId;
-  scaled size;
 };
 
 #endif // __t1lib_T1Font_hh__

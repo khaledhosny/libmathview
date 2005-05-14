@@ -11,6 +11,7 @@ libmathml_graphic_device_la_SOURCES = \
   ShaperManager.cc \
   ShapingContext.cc \
   SpaceShaper.cc \
+  NullShaper.cc \
   StandardSymbolsShaper.cc \
   ComputerModernShaper.cc \
   $(NULL)
@@ -23,6 +24,7 @@ mathview_HEADERS = \
   ShaperManager.hh \
   ShapingContext.hh \
   SpaceShaper.hh \
+  NullShaper.hh \
   StandardSymbolsShaper.hh \
   ComputerModernShaper.hh \
   CachedShapedString.hh \
