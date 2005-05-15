@@ -53,6 +53,28 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
   return configuration;
 }
 
+static SmartPtr<MathMLOperatorDictionary>
+initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
+{
+  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
+  if (!configuration->getDictionaries().empty())
+    for (std::vector<std::string>::const_iterator dit = configuration->getDictionaries().begin();
+	 dit != configuration->getDictionaries().end();
+	 dit++)
+      {
+	logger->out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
+	if (!MathView::loadOperatorDictionary(logger, dictionary, (*dit).c_str()))
+	  logger->out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
+      }
+  else
+    {
+      const bool res = MathView::loadOperatorDictionary(logger, dictionary, "config/dictionary.xml");
+      if (!res) MathView::loadOperatorDictionary(logger, dictionary, MathView::getDefaultOperatorDictionaryPath());
+    }
+
+  return dictionary;
+}
+
 #include <iostream>
 #include "BoundingBoxAux.hh"
 
@@ -63,7 +85,7 @@ main(int argc, char* argv[])
   SmartPtr<Configuration> configuration = initConfiguration(logger, getenv("GTKMATHVIEWCONF"));
   logger->setLogLevel(LOG_DEBUG);
   SmartPtr<SVG_MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(logger, configuration);
-  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
+  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(logger, configuration);
   SmartPtr<MathView> view = MathView::create();
   view->setLogger(logger);
   view->setOperatorDictionary(dictionary);
@@ -73,7 +95,7 @@ main(int argc, char* argv[])
   std::cerr << box << std::endl;
   SVG_StreamRenderingContext rc(logger, std::cout);
   rc.prologue(box.width, box.verticalExtent());
-  view->render(rc, 0, -box.height);
+  view->render(rc, 0, box.height);
   view->resetRootElement();
   rc.epilogue();
 }

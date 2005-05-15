@@ -44,6 +44,11 @@ public:
   virtual void fill(const scaled&, const scaled&, const BoundingBox&) const = 0;
   virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFM_T1Font>&, Char8) const = 0;
 
+  static scaled toSVGX(const scaled& x)
+  { return x; }
+  static scaled toSVGY(const scaled& y)
+  { return -y; }
+
 protected:
   SmartPtr<class AbstractLogger> logger;
 

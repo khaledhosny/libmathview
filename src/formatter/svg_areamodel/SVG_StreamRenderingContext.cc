@@ -77,8 +77,8 @@ void
 SVG_StreamRenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
 {
   output << "<rect"
-	 << " x=\"" << scaledToSVG(x) << "\""
-	 << " y=\"" << scaledToSVG(y + box.height) << "\""
+	 << " x=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
 	 << " width=\"" << scaledToSVG(box.horizontalExtent()) << "\""
 	 << " height=\"" << scaledToSVG(box.verticalExtent()) << "\""
 	 << " fill=\"" << RGBColorToSVG(getForegroundColor()) << "\""
@@ -92,14 +92,35 @@ SVG_StreamRenderingContext::draw(const scaled& x, const scaled& y, const SmartPt
   SmartPtr<TFM> tfm = font->getTFM();
   assert(tfm);
   const int mappedIndex = (index < 32) ? 256 + index : index;
-  
+
+  const BoundingBox box = font->getGlyphBoundingBox(index);
+  std::cerr << x << "," << y << " BBOX " << index << " = " << box << std::endl;
+#if 0
+  output << "<rect"
+	 << " x=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
+	 << " width=\"" << scaledToSVG(box.horizontalExtent()) << "\""
+	 << " height=\"" << scaledToSVG(box.verticalExtent()) << "\""
+	 << " stroke=\"red\""
+	 << " stroke-width=\"1\""
+	 << "/>" << std::endl;
+  output << "<line"
+	 << " x1=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y1=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " x2=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x + box.horizontalExtent())) << "\""
+	 << " y2=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " stroke=\"red\""
+	 << " stroke-width=\"1\""
+	 << "/>" << std::endl;
+#else
   output << "<text"
-	 << " x=\"" << scaledToSVG(x) << "\""
-	 << " y=\"" << scaledToSVG(y) << "\""
+	 << " x=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y)) << "\""
 	 << " font-family=\"" << tfm->getFamily() << tfm->getDesignSize().toInt() << "\""
 	 << " font-size=\"" << scaledToSVG(font->getSize()) << "\""
 	 << ">";
   output << "&#" << mappedIndex << ";";
   output << "</text>" << std::endl;
+#endif
 }
 

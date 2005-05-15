@@ -132,4 +132,4 @@ TFM::getGlyphLigature(Char8 index1, Char8 index2, Char8& result, Char8& mode) co
 
 float
 TFM::getScale(const scaled& size) const
-{ return size.toFloat() / getDesignSize().toFloat(); }
+{ return size.toFloat(); }
