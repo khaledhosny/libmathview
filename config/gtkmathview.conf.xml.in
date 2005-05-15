@@ -39,7 +39,8 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <shaper name="pango" backend="gtk"/>
 <!--
   <shaper name="adobe" backend="gtk"/>
-  <shaper name="computer-modern"/>
+  <shaper name="computer-modern-type1"/>
+  <shaper name="computer-modern-ttf" backend="svg"/>
 -->
   <tfm enabled="no"/>
 </math-engine-configuration>

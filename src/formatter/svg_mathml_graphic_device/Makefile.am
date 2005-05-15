@@ -8,6 +8,8 @@ libsvg_mathml_graphic_device_la_SOURCES = \
   SVG_MathGraphicDevice.hh \
   SVG_T1ComputerModernShaper.cc \
   SVG_T1ComputerModernShaper.hh \
+  SVG_TTFComputerModernShaper.cc \
+  SVG_TTFComputerModernShaper.hh \
   $(NULL)
 
 INCLUDES = \

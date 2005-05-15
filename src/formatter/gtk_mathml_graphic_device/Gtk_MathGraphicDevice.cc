@@ -86,9 +86,9 @@ Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
 	    adobeShaper->setFontManager(xftFontManager);
 	    getShaperManager()->registerShaper(adobeShaper);
 	  }
-	else if (name == "computer-modern")
+	else if (name == "computer-modern-type1")
 	  {
-	    getLogger()->out(LOG_INFO, "Activating ComputerModern shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
+	    getLogger()->out(LOG_INFO, "Activating ComputerModern/Type1 shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
 #if HAVE_LIBT1
 	    if (!t1FontManager)
 	      {

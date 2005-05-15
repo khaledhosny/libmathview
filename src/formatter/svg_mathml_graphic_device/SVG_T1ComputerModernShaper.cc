@@ -29,9 +29,20 @@
 #include "SVG_T1GlyphArea.hh"
 
 static const char* fontId[] = {
-  NULL, "cmr10", "cmb10", "cmbxti10", "cmti10", "cmss10",
-  "cmssi10", "cmssbx10", "cmtt10", "cmsy10", "cmbsy10",
-  "cmmi10", "cmmib10", "cmex10"
+  NULL,
+  "cmr10",
+  "cmb10",
+  "cmbxti10",
+  "cmti10",
+  "cmss10",
+  "cmssi10",
+  "cmssbx10",
+  "cmtt10",
+  "cmsy10",
+  "cmbsy10",
+  "cmmi10",
+  "cmmib10",
+  "cmex10"
 };
 
 SVG_T1ComputerModernShaper::SVG_T1ComputerModernShaper()

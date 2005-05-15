@@ -23,9 +23,9 @@ function show_index_diffs(array1, array2, name)
   for (name in array1)
     {
       if (!(name in array2))
-	printf("{ 0x%02x, ??? }, // %s\n", array1[name], name)
+	printf("/* 0x%02x */ 0x??, // %s\n", array1[name], name)
       else
-	printf("{ 0x%02x, 0x%02x }, // %s\n", array1[name], array2[name], name)
+	printf("/* 0x%02x */ 0x%02x, // %s\n", array1[name], array2[name], name)
     }
 }
 

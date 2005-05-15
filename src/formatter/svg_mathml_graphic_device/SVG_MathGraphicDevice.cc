@@ -29,6 +29,7 @@
 #include "SVG_AreaFactory.hh"
 #include "SVG_MathGraphicDevice.hh"
 #include "SVG_T1ComputerModernShaper.hh"
+#include "SVG_TTFComputerModernShaper.hh"
 #include "SpaceShaper.hh"
 #include "NullShaper.hh"
 #include "TFMManager.hh"
@@ -39,6 +40,9 @@ SVG_MathGraphicDevice::SVG_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
 {
   setFactory(SVG_AreaFactory::create());
 
+  // the fact that the Type1 and TT versions of the computer modern
+  // shapers for the SVG backend share the same font manager is just a
+  // twisted coincidence. Beware
   SmartPtr<TFMManager> tfm = TFMManager::create();
   SmartPtr<TFM_T1FontManager> fm = TFM_T1FontManager::create(tfm);
 
@@ -53,10 +57,17 @@ SVG_MathGraphicDevice::SVG_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
 	    getLogger()->out(LOG_INFO, "Activating Null shaper");
 	    getShaperManager()->registerShaper(NullShaper::create());
 	  }
-	else if (name == "computer-modern")
+	else if (name == "computer-modern-type1")
 	  {
-	    getLogger()->out(LOG_INFO, "Activating ComputerModern shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
+	    getLogger()->out(LOG_INFO, "Activating ComputerModern/Type1 shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
 	    SmartPtr<SVG_T1ComputerModernShaper> cmShaper = SVG_T1ComputerModernShaper::create();
+	    cmShaper->setFontManager(fm);
+	    getShaperManager()->registerShaper(cmShaper);
+	  }
+	else if (name == "computer-modern-ttf")
+	  {
+	    getLogger()->out(LOG_INFO, "Activating ComputerModern/TT shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
+	    SmartPtr<SVG_TTFComputerModernShaper> cmShaper = SVG_TTFComputerModernShaper::create();
 	    cmShaper->setFontManager(fm);
 	    getShaperManager()->registerShaper(cmShaper);
 	  }

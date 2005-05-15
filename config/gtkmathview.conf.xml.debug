@@ -38,6 +38,6 @@ http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
   <shaper name="pango"/>
   <shaper name="adobe"/>
 -->
-  <shaper name="computer-modern"/>
+  <shaper name="computer-modern-ttf" backend="svg"/>
   <tfm enabled="yes"/>
 </math-engine-configuration>
