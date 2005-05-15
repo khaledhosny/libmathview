@@ -26,12 +26,6 @@
 
 #include "SVG_StreamRenderingContext.hh"
 
-#include "TFM.hh"
-#include "TFM_T1Font.hh"
-#include "scaledAux.hh"
-#include "BoundingBoxAux.hh"
-#include "RGBColorAux.hh"
-
 SVG_StreamRenderingContext::SVG_StreamRenderingContext(const SmartPtr<AbstractLogger>& logger,
 						       std::ostream& os)
   : SVG_RenderingContext(logger), output(os)
@@ -40,87 +34,96 @@ SVG_StreamRenderingContext::SVG_StreamRenderingContext(const SmartPtr<AbstractLo
 SVG_StreamRenderingContext::~SVG_StreamRenderingContext()
 { }
 
-String
-SVG_StreamRenderingContext::scaledToSVG(const scaled& s)
-{
-  std::ostringstream buffer;
-  buffer << s.toFloat() << "pt";
-  return buffer.str();
-}
-
-String
-SVG_StreamRenderingContext::RGBColorToSVG(const RGBColor& c)
-{
-  assert(!c.transparent);
-  return toString(c);
-}
-
 void
-SVG_StreamRenderingContext::prologue(const scaled& width, const scaled& height) const
+SVG_StreamRenderingContext::beginDocument(const scaled& width, const scaled& height)
 {
   output << "<?xml version=\"1.0\"?>" << std::endl;
   output << "<svg"
 	 << " version=\"1\""
-	 << " width=\"" << scaledToSVG(width) << "\""
-	 << " height=\"" << scaledToSVG(height) << "\""
+	 << " width=\"" << toSVGLength(width) << "\""
+	 << " height=\"" << toSVGLength(height) << "\""
 	 << " xmlns=\"http://www.w3.org/2000/svg\""
 	 << ">" << std::endl;
 }
 
 void
-SVG_StreamRenderingContext::epilogue() const
+SVG_StreamRenderingContext::endDocument()
 {
   output << "</svg>" << std::endl;
 }
 
 void
-SVG_StreamRenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
+SVG_StreamRenderingContext::beginGroup()
+{
+  output << "<g>" << std::endl;
+}
+
+void
+SVG_StreamRenderingContext::endGroup()
+{
+  output << "</g>" << std::endl;
+}
+
+void
+SVG_StreamRenderingContext::rect(const scaled& x, const scaled& y, const scaled& width, const scaled& height,
+				 const RGBColor& fillColor, const RGBColor& strokeColor, const scaled& strokeWidth)
 {
   output << "<rect"
-	 << " x=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
-	 << " y=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
-	 << " width=\"" << scaledToSVG(box.horizontalExtent()) << "\""
-	 << " height=\"" << scaledToSVG(box.verticalExtent()) << "\""
-	 << " fill=\"" << RGBColorToSVG(getForegroundColor()) << "\""
-	 << " stroke-width=\"0\""
+	 << " x=\"" << toSVGLength(x) << "\""
+	 << " y=\"" << toSVGLength(y) << "\""
+	 << " width=\"" << toSVGLength(width) << "\""
+	 << " height=\"" << toSVGLength(height) << "\""
+	 << " fill=\"" << toSVGColor(fillColor) << "\""
+	 << " fill-opacity=\"" << toSVGOpacity(fillColor) << "\""
+	 << " stroke=\"" << toSVGColor(strokeColor) << "\""
+	 << " stroke-opacity=\"" << toSVGOpacity(strokeColor) << "\""
+	 << " stroke-width=\"" << toSVGLength(strokeWidth) << "\""
 	 << "/>" << std::endl;
 }
 
 void
-SVG_StreamRenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<TFM_T1Font>& font, Char8 index) const
+SVG_StreamRenderingContext::text(const scaled& x, const scaled& y, 
+				 const String& family, const scaled& size,
+				 const RGBColor& fillColor, const RGBColor& strokeColor,
+				 const scaled& strokeWidth, const String& content)
 {
-  SmartPtr<TFM> tfm = font->getTFM();
-  assert(tfm);
-  const int mappedIndex = (index < 32) ? 256 + index : index;
-
-  const BoundingBox box = font->getGlyphBoundingBox(index);
-  std::cerr << x << "," << y << " BBOX " << index << " = " << box << std::endl;
 #if 0
   output << "<rect"
-	 << " x=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
-	 << " y=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
-	 << " width=\"" << scaledToSVG(box.horizontalExtent()) << "\""
-	 << " height=\"" << scaledToSVG(box.verticalExtent()) << "\""
+	 << " x=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
+	 << " width=\"" << toSVGLength(box.horizontalExtent()) << "\""
+	 << " height=\"" << toSVGLength(box.verticalExtent()) << "\""
 	 << " stroke=\"red\""
-	 << " stroke-width=\"1\""
+	 << " stroke-width=\"0.1\""
+	 << " fill-opacity=\"0\""
 	 << "/>" << std::endl;
   output << "<line"
-	 << " x1=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
-	 << " y1=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y)) << "\""
-	 << " x2=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x + box.horizontalExtent())) << "\""
-	 << " y2=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " x1=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y1=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " x2=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x + box.horizontalExtent())) << "\""
+	 << " y2=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
 	 << " stroke=\"red\""
-	 << " stroke-width=\"1\""
+	 << " stroke-width=\"0.1\""
 	 << "/>" << std::endl;
-#else
-  output << "<text"
-	 << " x=\"" << scaledToSVG(SVG_RenderingContext::toSVGX(x)) << "\""
-	 << " y=\"" << scaledToSVG(SVG_RenderingContext::toSVGY(y)) << "\""
-	 << " font-family=\"" << tfm->getFamily() << tfm->getDesignSize().toInt() << "\""
-	 << " font-size=\"" << scaledToSVG(font->getSize()) << "\""
-	 << ">";
-  output << "&#" << mappedIndex << ";";
-  output << "</text>" << std::endl;
 #endif
+  output << "<text"
+	 << " x=\"" << toSVGLength(x) << "\""
+	 << " y=\"" << toSVGLength(y) << "\""
+	 << " font-family=\"" << family << "\""
+	 << " font-size=\"" << toSVGLength(size) << "\""
+	 << " fill=\"" << toSVGColor(fillColor) << "\""
+	 << " fill-opacity=\"" << toSVGOpacity(fillColor) << "\""
+	 << " stroke=\"" << toSVGColor(strokeColor) << "\""
+	 << " stroke-opacity=\"" << toSVGOpacity(strokeColor) << "\""
+	 << " stroke-width=\"" << toSVGLength(strokeWidth) << "\""
+	 << ">"
+	 << content
+	 << "</text>" << std::endl;
 }
 
+void
+SVG_StreamRenderingContext::line(const scaled&, const scaled&, const scaled&, const scaled&,
+				 const RGBColor&, const scaled&)
+{
+  assert(false);
+}

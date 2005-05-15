@@ -26,6 +26,11 @@
 
 #include "AbstractLogger.hh"
 #include "SVG_RenderingContext.hh"
+#include "scaledAux.hh"
+#include "BoundingBoxAux.hh"
+#include "RGBColorAux.hh"
+#include "TFM.hh"
+#include "TFM_T1Font.hh"
 
 SVG_RenderingContext::SVG_RenderingContext(const SmartPtr<AbstractLogger>& l)
   : logger(l)
@@ -36,3 +41,70 @@ SVG_RenderingContext::SVG_RenderingContext(const SmartPtr<AbstractLogger>& l)
 SVG_RenderingContext::~SVG_RenderingContext()
 { }
 
+String
+SVG_RenderingContext::toSVGLength(const scaled& s)
+{
+  std::ostringstream buffer;
+  buffer << s.toFloat() << "pt";
+  return buffer.str();
+}
+
+String
+SVG_RenderingContext::toSVGColor(const RGBColor& c)
+{
+  return toString(RGBColor(c.red, c.green, c.blue));
+}
+
+String
+SVG_RenderingContext::toSVGOpacity(const RGBColor& c)
+{
+  return (c.transparent) ? "0" : "1";
+}
+
+void
+SVG_RenderingContext::documentStart(const BoundingBox& box)
+{
+  beginDocument(box.horizontalExtent(), box.verticalExtent());
+}
+
+void
+SVG_RenderingContext::documentEnd()
+{
+  endDocument();
+}
+
+void
+SVG_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box)
+{
+  rect(toSVGX(x), toSVGY(y + box.height), box.horizontalExtent(), box.verticalExtent(),
+       getForegroundColor(), getForegroundColor(), scaled::zero());
+}
+
+void
+SVG_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<TFM_T1Font>& font, Char8 index)
+{
+  SmartPtr<TFM> tfm = font->getTFM();
+  assert(tfm);
+  const int mappedIndex = (index < 32) ? 256 + index : index;
+
+  std::ostringstream familyS;
+  familyS << tfm->getFamily() << tfm->getDesignSize().toInt();
+  std::ostringstream contentS;
+  contentS << "&#" << mappedIndex << ";";
+  const String family = familyS.str();
+  const String content = contentS.str();
+  text(toSVGX(x), toSVGY(y), family, font->getSize(),
+       getForegroundColor(), getForegroundColor(), scaled::zero(), content);
+}
+
+void
+SVG_RenderingContext::wrapperStart(const scaled&, const scaled&, const BoundingBox&)
+{
+  beginGroup();
+}
+
+void
+SVG_RenderingContext::wrapperEnd()
+{
+  endGroup();
+}

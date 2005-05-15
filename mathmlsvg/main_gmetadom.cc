@@ -94,8 +94,8 @@ main(int argc, char* argv[])
   const BoundingBox box = view->getBoundingBox();
   std::cerr << box << std::endl;
   SVG_StreamRenderingContext rc(logger, std::cout);
-  rc.prologue(box.width, box.verticalExtent());
+  rc.documentStart(box);
   view->render(rc, 0, box.height);
+  rc.documentEnd();
   view->resetRootElement();
-  rc.epilogue();
 }
