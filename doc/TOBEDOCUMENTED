@@ -1,0 +1,10 @@
+
+MathML/BoxML colors now support the alpha channel. It is possible to
+write
+
+	#rgb		completely opaque
+	#rgba
+	#rrggbb		completely opaque
+	#rrggbbaa
+
+Currently the alpha channel is only supported by the SVG backend.
