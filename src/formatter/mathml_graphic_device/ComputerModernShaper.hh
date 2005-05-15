@@ -69,6 +69,7 @@ public:
   };
 
   static const char* nameOfFont(FontNameId);
+  static Char8 toTTFGlyphIndex(FontNameId, Char8);
 
 protected:
   virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, FontNameId, Char8, const scaled&) const = 0;
