@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "MathMLAttributeParsers.hh"
 #include "MathMLAttributeSignatures.hh"
 

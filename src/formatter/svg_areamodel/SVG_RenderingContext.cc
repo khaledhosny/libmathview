@@ -58,7 +58,9 @@ SVG_RenderingContext::toSVGColor(const RGBColor& c)
 String
 SVG_RenderingContext::toSVGOpacity(const RGBColor& c)
 {
-  return (c.transparent) ? "0" : "1";
+  std::ostringstream buffer;
+  buffer << static_cast<float>(c.alpha) / 255;
+  return buffer.str();
 }
 
 void

@@ -31,14 +31,14 @@ std::string
 toString(const RGBColor& color)
 {
   std::ostringstream os;
-  if (color.transparent)
+  if (color.transparent())
     os << "transparent";
   else
     {
       os << "#"
-	 << std::setw(2) << std::setfill('0') << std::hex << color.red
-	 << std::setw(2) << std::setfill('0') << std::hex << color.green
-	 << std::setw(2) << std::setfill('0') << std::hex << color.blue;
+	 << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(color.red)
+	 << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(color.green)
+	 << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(color.blue);
     }
   return os.str();
 }

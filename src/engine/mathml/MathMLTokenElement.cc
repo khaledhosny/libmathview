@@ -109,7 +109,7 @@ MathMLTokenElement::formatAux(FormattingContext& ctxt)
   if (oldColor != newColor)
     res = ctxt.MGD()->getFactory()->color(res, newColor);
 
-  if (!newBackground.transparent && newBackground != oldBackground)
+  if (!newBackground.transparent() && newBackground != oldBackground)
     res = ctxt.MGD()->getFactory()->background(res, newBackground);
 
   return res;

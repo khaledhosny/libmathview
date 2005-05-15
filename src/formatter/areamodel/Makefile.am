@@ -74,6 +74,7 @@ noinst_HEADERS = \
   $(NULL)
 
 INCLUDES = \
+  -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common
 

@@ -23,12 +23,13 @@
 #ifndef __RGBColor_hh__
 #define __RGBColor_hh__
 
-#include <string>
+#include "String.hh"
 
 struct RGBColor
 {
-  RGBColor(unsigned r = 0, unsigned g = 0, unsigned b = 0, bool t = false)
-    : red(r), green(g), blue(b), transparent(t ? 1 : 0) { }
+  RGBColor(Char8 r = 0, Char8 g = 0, Char8 b = 0, Char8 a = 0xff)
+    : red(r), green(g), blue(b), alpha(a)
+  { }
 
   static RGBColor BLACK   (void) { return RGBColor(0x00,0x00,0x00); }
   static RGBColor SILVER  (void) { return RGBColor(0xc0,0xc0,0xc0); }
@@ -47,20 +48,20 @@ struct RGBColor
   static RGBColor TEAL    (void) { return RGBColor(0x00,0x80,0x80); }
   static RGBColor AQUA    (void) { return RGBColor(0x00,0xff,0xff); }
 
-  std::string toString(void) const;
-
-  void set(unsigned r, unsigned g, unsigned b, bool t = false)
-  { red = r; green = g; blue = b; transparent = t ? 1 : 0; }
+  void set(unsigned r, unsigned g, unsigned b, unsigned a)
+  { red = r; green = g; blue = b; alpha = a; }
 
   bool operator==(const RGBColor& c) const
-  { return red == c.red && green == c.green && blue == c.blue && transparent == c.transparent; }
+  { return red == c.red && green == c.green && blue == c.blue && alpha == c.alpha; }
   bool operator!=(const RGBColor& c) const
   { return !(*this == c); }
 
-  unsigned red : 8;
-  unsigned green : 8;
-  unsigned blue : 8;
-  unsigned transparent : 1;
+  bool transparent(void) const { return alpha == 0; }
+
+  Char8 red;
+  Char8 green;
+  Char8 blue;
+  Char8 alpha;
 };
 
 #endif // __RGBColor_hh__

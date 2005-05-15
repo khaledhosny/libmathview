@@ -60,8 +60,10 @@ struct TemplateSetup
       }
 
     f = ToRGB(fv);
-    b.transparent = ToTokenId(bv) == T_TRANSPARENT;
-    if (!b.transparent) b = ToRGB(bv);
+    if (ToTokenId(bv) == T_TRANSPARENT)
+      b.set(0, 0, 0, 0);
+    else
+      b = ToRGB(bv);
 
     return true;
   }

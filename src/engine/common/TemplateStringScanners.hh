@@ -246,8 +246,10 @@ typedef ScanChoice<ScanLetter,ScanMinus> ScanLetterOrMinus;
 typedef ScanSeq<ScanLetter,ScanZeroOrMore<ScanLetterOrMinus> > ScanKeywordToken;
 typedef ScanChoice<ScanDecDigit,ScanChoice<ScanRange<'a','f'>,ScanRange<'A','F'> > > ScanHexDigit;
 typedef ScanRep<3,ScanHexDigit> ScanRGB4Color;
+typedef ScanRep<4,ScanHexDigit> ScanRGB4AColor;
 typedef ScanRep<6,ScanHexDigit> ScanRGB8Color;
-typedef ScanSeq<ScanLiteral<'#'>,ScanChoice<ScanRGB8Color,ScanRGB4Color> > ScanRGBColorValue;
+typedef ScanRep<8,ScanHexDigit> ScanRGB8AColor;
+typedef ScanSeq<ScanLiteral<'#'>,ScanChoice<ScanRGB8AColor,ScanChoice<ScanRGB8Color,ScanChoice<ScanRGB4AColor,ScanRGB4Color> > > > ScanRGBColorValue;
 
 class ScanSign : public ScanZeroOrOne<ScanPlusOrMinus>
 {
@@ -313,14 +315,29 @@ public:
   static RGBColor
   parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
   {
-    if (end - begin == 4)
-      return RGBColor(17 * hexOfChar(*(begin + 1)),
-		      17 * hexOfChar(*(begin + 2)),
-		      17 * hexOfChar(*(begin + 3)));
-    else
-      return RGBColor(16 * hexOfChar(*(begin + 1)) + hexOfChar(*(begin + 2)),
-		      16 * hexOfChar(*(begin + 3)) + hexOfChar(*(begin + 4)),
-		      16 * hexOfChar(*(begin + 5)) + hexOfChar(*(begin + 6)));
+    switch (end - begin)
+      {
+      case 4:
+	return RGBColor(17 * hexOfChar(*(begin + 1)),
+			17 * hexOfChar(*(begin + 2)),
+			17 * hexOfChar(*(begin + 3)));
+      case 5:
+	return RGBColor(17 * hexOfChar(*(begin + 1)),
+			17 * hexOfChar(*(begin + 2)),
+			17 * hexOfChar(*(begin + 3)),
+			17 * hexOfChar(*(begin + 4)));
+      case 7:
+	return RGBColor(16 * hexOfChar(*(begin + 1)) + hexOfChar(*(begin + 2)),
+			16 * hexOfChar(*(begin + 3)) + hexOfChar(*(begin + 4)),
+			16 * hexOfChar(*(begin + 5)) + hexOfChar(*(begin + 6)));
+      case 9:
+	return RGBColor(16 * hexOfChar(*(begin + 1)) + hexOfChar(*(begin + 2)),
+			16 * hexOfChar(*(begin + 3)) + hexOfChar(*(begin + 4)),
+			16 * hexOfChar(*(begin + 5)) + hexOfChar(*(begin + 6)),
+			16 * hexOfChar(*(begin + 7)) + hexOfChar(*(begin + 8)));
+      default:
+	assert(false);
+      }
   }
 };
 
