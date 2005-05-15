@@ -77,7 +77,7 @@ BoxMLTextElement::format(FormattingContext& ctxt)
       if (oldColor != newColor)
 	res = ctxt.BGD()->getFactory()->color(res, newColor);
 
-      if (!newBackground.transparent && newBackground != oldBackground)
+      if (!newBackground.transparent() && newBackground != oldBackground)
 	res = ctxt.BGD()->getFactory()->background(res, newBackground);
 
       res = ctxt.BGD()->wrapper(ctxt, res);

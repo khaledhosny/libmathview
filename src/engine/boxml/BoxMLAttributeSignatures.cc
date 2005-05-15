@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "BoxMLAttributeParsers.hh"
 #include "BoxMLAttributeSignatures.hh"
 

@@ -54,12 +54,12 @@ BoxMLDecorElement::decorate(FormattingContext& ctxt,
   AreaRef res = child;
 
   AreaRef vobj;
-  if (color.transparent) 
+  if (color.transparent()) 
     vobj = factory->horizontalSpace(thickness); 
   else
     vobj = factory->verticalLine(thickness, color);
   AreaRef hobj;
-  if (color.transparent)
+  if (color.transparent())
     hobj = factory->verticalSpace(thickness, 0);
   else 
     hobj = factory->horizontalLine(thickness, color);
@@ -100,7 +100,7 @@ BoxMLDecorElement::format(FormattingContext& ctxt)
 							  ctxt.BGD()->defaultLineThickness(ctxt));
       RGBColor col;
       if (color && IsTokenId(color) && ToTokenId(color) == T_TRANSPARENT)
-	col = RGBColor(0, 0, 0, true);
+	col = RGBColor(0, 0, 0, 0);
       else if (color)
 	col = ToRGB(color);
 
