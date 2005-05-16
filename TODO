@@ -68,3 +68,12 @@ MISSING
 
 - add documentation for boxml
 
+// SVG Backend
+
+MISSING
+
+- rendering of BoxML into SVG
+- cross-embedding of MathML and SVG following the guidelines?
+- cross-embedding of MathML and SVG with coordinates computation?
+- document alpha channel in RGBColor
+

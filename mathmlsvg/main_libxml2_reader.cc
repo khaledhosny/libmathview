@@ -370,10 +370,15 @@ main(int argc, char* argv[])
       std::ofstream os(outName);
       SVG_StreamRenderingContext rc(logger, os);
       if (cropping)
-	rc.documentStart(box.horizontalExtent(), box.verticalExtent());
+	{
+	  rc.documentStart(box.horizontalExtent(), box.verticalExtent());
+	  view->render(rc, 0, box.height);
+	}
       else
-	rc.documentStart(widthS, heightS);
-      view->render(rc, xMarginS, yMarginS + box.height);
+	{
+	  rc.documentStart(widthS, heightS);
+	  view->render(rc, xMarginS, yMarginS + box.height);
+	}
       rc.documentEnd();
       view->resetRootElement();
       os.close();

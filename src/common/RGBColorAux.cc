@@ -36,9 +36,9 @@ toString(const RGBColor& color)
   else
     {
       os << "#"
-	 << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(color.red)
-	 << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(color.green)
-	 << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(color.blue);
+	 << std::setw(2) << std::setfill('0') << std::hex << (static_cast<unsigned>(color.red) & 0xff)
+	 << std::setw(2) << std::setfill('0') << std::hex << (static_cast<unsigned>(color.green) & 0xff)
+	 << std::setw(2) << std::setfill('0') << std::hex << (static_cast<unsigned>(color.blue) & 0xff);
     }
   return os.str();
 }
