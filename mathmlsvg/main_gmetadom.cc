@@ -26,6 +26,7 @@
 
 #include "Logger.hh"
 
+#include "Init.hh"
 #include "Configuration.hh"
 #include "gmetadom_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
@@ -35,46 +36,6 @@
 
 typedef gmetadom_MathView MathView;
 
-static SmartPtr<Configuration>
-initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
-{
-  SmartPtr<Configuration> configuration = Configuration::create();
-
-  bool res = false;
-  if (confPath != NULL) res = MathView::loadConfiguration(logger, configuration, confPath);
-  if (!res) res = MathView::loadConfiguration(logger, configuration, MathView::getDefaultConfigurationPath());
-  if (!res) res = MathView::loadConfiguration(logger, configuration, "config/gtkmathview.conf.xml");
-  if (!res)
-    {
-      logger->out(LOG_ERROR, "could not load configuration file");
-      exit(-1);
-    }
-
-  return configuration;
-}
-
-static SmartPtr<MathMLOperatorDictionary>
-initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
-{
-  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
-  if (!configuration->getDictionaries().empty())
-    for (std::vector<std::string>::const_iterator dit = configuration->getDictionaries().begin();
-	 dit != configuration->getDictionaries().end();
-	 dit++)
-      {
-	logger->out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	if (!MathView::loadOperatorDictionary(logger, dictionary, (*dit).c_str()))
-	  logger->out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
-      }
-  else
-    {
-      const bool res = MathView::loadOperatorDictionary(logger, dictionary, "config/dictionary.xml");
-      if (!res) MathView::loadOperatorDictionary(logger, dictionary, MathView::getDefaultOperatorDictionaryPath());
-    }
-
-  return dictionary;
-}
-
 #include <iostream>
 #include "BoundingBoxAux.hh"
 
@@ -82,10 +43,10 @@ int
 main(int argc, char* argv[])
 {
   SmartPtr<AbstractLogger> logger = Logger::create();
-  SmartPtr<Configuration> configuration = initConfiguration(logger, getenv("GTKMATHVIEWCONF"));
+  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, getenv("GTKMATHVIEWCONF"));
   logger->setLogLevel(LOG_DEBUG);
   SmartPtr<SVG_MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(logger, configuration);
-  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary(logger, configuration);
+  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
   SmartPtr<MathView> view = MathView::create();
   view->setLogger(logger);
   view->setOperatorDictionary(dictionary);

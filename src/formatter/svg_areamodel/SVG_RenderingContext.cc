@@ -64,9 +64,9 @@ SVG_RenderingContext::toSVGOpacity(const RGBColor& c)
 }
 
 void
-SVG_RenderingContext::documentStart(const BoundingBox& box)
+SVG_RenderingContext::documentStart(const scaled& width, const scaled& height)
 {
-  beginDocument(box.horizontalExtent(), box.verticalExtent());
+  beginDocument(width, height);
 }
 
 void

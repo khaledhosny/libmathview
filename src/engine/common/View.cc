@@ -362,7 +362,7 @@ View::render(RenderingContext& ctxt, const scaled& x, const scaled& y) const
 
       // FIXME: think of the rationale of why the coordinates must be
       // inverted.
-      rootArea->render(ctxt, -x, -y);
+      rootArea->render(ctxt, x, -y);
 
       perf.Stop();
       getLogger()->out(LOG_INFO, "rendering time: %dms", perf());

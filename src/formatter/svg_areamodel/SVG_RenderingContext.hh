@@ -42,7 +42,7 @@ public:
   RGBColor getForegroundColor(void) const { return fgColor; }
   RGBColor getBackgroundColor(void) const { return bgColor; }
 
-  virtual void documentStart(const BoundingBox&);
+  virtual void documentStart(const scaled&, const scaled&);
   virtual void documentEnd(void);
   virtual void fill(const scaled&, const scaled&, const BoundingBox&);
   virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFM_T1Font>&, Char8);
