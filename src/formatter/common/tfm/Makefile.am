@@ -33,16 +33,21 @@ BUILT_SOURCES = $(AUTO_CC)
 
 TFMDUMP = ~/Luca-CVS/Projects/xtfm/tfmdump
 
-%.xtfm: /usr/share/texmf/fonts/tfm/public/cm/%.tfm
+XTFMS = $(AUTO_CC:%.cc=$(srcdir)/%.xtfm)
+
+$(srcdir)/%.xtfm: /usr/share/texmf/fonts/tfm/public/cm/%.tfm
 	$(TFMDUMP) $< >$@
 
 if COND_XSLTPROC
 XSLTPROC = xsltproc
 XTFMTOCC = $(top_srcdir)/auto/xtfm-to-cc.xsl
 LICENSE = $(top_srcdir)/LICENSE
-%.cc: %.xtfm $(XTFMTOCC) $(LICENSE)
+%.cc: $(srcdir)/%.xtfm $(XTFMTOCC) $(LICENSE)
 	cat $(LICENSE) >$@
 	$(XSLTPROC) --stringparam name $(@:%.cc=%) $(XTFMTOCC) $< >>$@
+
+xtfms: $(XTFMS)
+
 endif
 
 INCLUDES = \

@@ -1,0 +1,59 @@
+
+<!ELEMENT XTFM (Unity,Font)>
+<!ATTLIST XTFM version NMTOKEN #REQUIRED>
+  
+<!ELEMENT Unity EMPTY>
+<!ATTLIST Unity value NMTOKEN #REQUIRED>
+
+<!ELEMENT Font (Dimensions,Data)>
+<!ATTLIST Font
+  family  CDATA #REQUIRED
+  face    CDATA #IMPLIED
+  coding-scheme CDATA #IMPLIED
+  design-size NMTOKEN #REQUIRED
+  checksum NMTOKEN #IMPLIED
+>
+
+<!ELEMENT Dimensions (Dimension*)>
+
+<!ELEMENT Dimension EMPTY>
+<!ATTLIST Dimension
+  index   NMTOKEN #REQUIRED
+  name    NMTOKEN #IMPLIED
+  value   NMTOKEN #REQUIRED
+>
+
+<!ELEMENT Data (Character*)>
+
+<!ELEMENT Character (Kerning*,Ligature*,Extensible?)>
+<!ATTLIST Character
+  index   NMTOKEN #REQUIRED
+  ascii   NMTOKEN #IMPLIED
+  width   NMTOKEN #REQUIRED
+  height  NMTOKEN #REQUIRED
+  depth   NMTOKEN #REQUIRED
+  italic  NMTOKEN #REQUIRED
+  larger  NMTOKEN #IMPLIED
+>
+
+<!ELEMENT Kerning EMPTY>
+<!ATTLIST Kerning
+  index   NMTOKEN #REQUIRED
+  value   NMTOKEN #REQUIRED
+>
+
+<!ELEMENT Ligature EMPTY>
+<!ATTLIST Ligature
+  mode    NMTOKEN #REQUIRED
+  index   NMTOKEN #REQUIRED
+  result  NMTOKEN #REQUIRED
+>
+
+<!ELEMENT Extensible EMPTY>
+<!ATTLIST Extensible
+  top     NMTOKEN #IMPLIED
+  middle  NMTOKEN #IMPLIED
+  bottom  NMTOKEN #IMPLIED
+  repeat  NMTOKEN #IMPLIED
+>
+
