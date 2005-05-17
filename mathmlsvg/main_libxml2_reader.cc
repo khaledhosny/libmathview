@@ -318,7 +318,7 @@ main(int argc, char* argv[])
       }
     }
 
-  if (configPath == NULL) configPath = getenv("MATHENGINECONF");
+  if (configPath == NULL) configPath = getenv("GTKMATHVIEWCONF");
 
   if (optind >= argc)
     {
