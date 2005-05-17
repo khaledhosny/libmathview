@@ -30,7 +30,7 @@
 #include "BoundingBoxAux.hh"
 #include "RGBColorAux.hh"
 #include "TFM.hh"
-#include "TFM_T1Font.hh"
+#include "TFMFont.hh"
 
 SVG_RenderingContext::SVG_RenderingContext(const SmartPtr<AbstractLogger>& l)
   : logger(l)
@@ -83,7 +83,7 @@ SVG_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& 
 }
 
 void
-SVG_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<TFM_T1Font>& font, Char8 index)
+SVG_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<TFMFont>& font, Char8 index)
 {
   SmartPtr<TFM> tfm = font->getTFM();
   assert(tfm);

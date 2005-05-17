@@ -45,7 +45,7 @@ public:
   virtual void documentStart(const scaled&, const scaled&);
   virtual void documentEnd(void);
   virtual void fill(const scaled&, const scaled&, const BoundingBox&);
-  virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFM_T1Font>&, Char8);
+  virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFMFont>&, Char8);
   virtual void wrapperStart(const scaled&, const scaled&, const BoundingBox&);
   virtual void wrapperEnd(void);
 

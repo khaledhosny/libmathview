@@ -20,33 +20,45 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __t1lib_T1Font_hh__
-#define __t1lib_T1Font_hh__
+#include <config.h>
 
-#include "String.hh"
-#include "T1Font.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include <cassert>
 
-class t1lib_T1Font : public T1Font
+#include "TFM.hh"
+#include "TFMFont.hh"
+
+TFMFont::TFMFont(const SmartPtr<TFM>& _tfm, const scaled& s)
+  : T1Font(s), tfm(_tfm)
 {
-protected:
-  t1lib_T1Font(int fid, const scaled& s) : T1Font(s), fontId(fid) { }
-  virtual ~t1lib_T1Font();
+  assert(tfm);
+}
 
-public:
-  static SmartPtr<t1lib_T1Font> create(int fid, const scaled& s)
-  { return new t1lib_T1Font(fid, s); }
+TFMFont::~TFMFont()
+{ }
 
-  int getFontId(void) const { return fontId; }
-  String getFontFileName(void) const;
+SmartPtr<TFMFont>
+TFMFont::create(const SmartPtr<TFM>& _tfm, const scaled& s)
+{ return new TFMFont(_tfm, s); }
 
-  virtual scaled getGlyphLeftEdge(Char8) const;
-  virtual scaled getGlyphRightEdge(Char8) const;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const;
+SmartPtr<TFM>
+TFMFont::getTFM() const
+{ return tfm; }
 
-private:
-  int fontId;
-};
+scaled
+TFMFont::getGlyphLeftEdge(Char8) const
+{ return 0; }
 
-#endif // __t1lib_T1Font_hh__
+scaled
+TFMFont::getGlyphRightEdge(Char8 index) const
+{ return tfm->getGlyphBoundingBox(index).width * tfm->getScale(getSize()); }
+
+BoundingBox
+TFMFont::getGlyphBoundingBox(Char8 index) const
+{
+  const float scale = tfm->getScale(getSize());
+  BoundingBox box = tfm->getGlyphBoundingBox(index);
+  box.width *= scale;
+  box.height *= scale;
+  box.depth *= scale;
+  return box;
+}

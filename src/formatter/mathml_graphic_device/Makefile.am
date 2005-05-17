@@ -5,6 +5,18 @@ noinst_LTLIBRARIES = libmathml_graphic_device.la
 
 #libmathml_graphic_device_la_LIBADD =
 
+if COND_TFM
+MAYBE_TFM_S = \
+  TFMComputerModernShaper.cc \
+  $(NULL)
+MAYBE_TFM_H = \
+  TFMComputerModernShaper.hh \
+  $(NULL)
+else
+MAYBE_TFM_S = $(NULL)
+MAYBE_TFM_H = $(NULL)
+endif
+
 libmathml_graphic_device_la_SOURCES = \
   MathGraphicDevice.cc \
   Shaper.cc \
@@ -14,6 +26,7 @@ libmathml_graphic_device_la_SOURCES = \
   NullShaper.cc \
   StandardSymbolsShaper.cc \
   ComputerModernShaper.cc \
+  $(MAYBE_TFM_S) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
@@ -28,6 +41,7 @@ mathview_HEADERS = \
   StandardSymbolsShaper.hh \
   ComputerModernShaper.hh \
   CachedShapedString.hh \
+  $(MAYBE_TFM_H) \
   $(NULL)
 
 INCLUDES = \
@@ -36,6 +50,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/formatter/common \
+  -I$(top_srcdir)/src/formatter/common/tfm \
   -I$(top_srcdir)/src/formatter/areamodel \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml

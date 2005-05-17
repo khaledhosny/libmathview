@@ -20,31 +20,31 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __SVG_T1GlyphArea_hh__
-#define __SVG_T1GlyphArea_hh__
+#ifndef __TFMFont_hh__
+#define __TFMFont_hh__
 
-#include "GlyphArea.hh"
+#include "Char.hh"
+#include "T1Font.hh"
+#include "SmartPtr.hh"
+#include "BoundingBox.hh"
 
-class SVG_T1GlyphArea : public GlyphArea
+class TFMFont : public T1Font
 {
 protected:
-  SVG_T1GlyphArea(const SmartPtr<class SVG_T1Font>&, Char8);
-  virtual ~SVG_T1GlyphArea();
+  TFMFont(const SmartPtr<class TFM>&, const scaled&);
+  virtual ~TFMFont();
 
 public:
-  static SmartPtr<SVG_T1GlyphArea> create(const SmartPtr<class SVG_T1Font>&, Char8);
+  static SmartPtr<TFMFont> create(const SmartPtr<class TFM>&, const scaled&);
 
-  virtual BoundingBox box(void) const;
-  virtual scaled leftEdge(void) const;
-  virtual scaled rightEdge(void) const;
-  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-
-  SmartPtr<class SVG_T1Font> getFont(void) const;
-  Char8 getIndex(void) const { return index; }
+  SmartPtr<class TFM> getTFM(void) const;
+  
+  virtual scaled getGlyphLeftEdge(Char8) const;
+  virtual scaled getGlyphRightEdge(Char8) const;
+  virtual BoundingBox getGlyphBoundingBox(Char8) const;
 
 private:
-  SmartPtr<class SVG_T1Font> font;
-  Char8 index;
+  SmartPtr<class TFM> tfm;
 };
 
-#endif // __SVG_T1GlyphArea_hh__
+#endif // __TFMFont_hh__

@@ -20,29 +20,23 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __SVG_TTF_TFMComputerModernShaper_hh__
+#define __SVG_TTF_TFMComputerModernShaper_hh__
 
-#include <cassert>
+#include "SVG_TFMComputerModernShaper.hh"
 
-#include "Char.hh"
-#include "SVG_T1Font.hh"
-#include "SVG_RenderingContext.hh"
-#include "SVG_TTF_T1GlyphArea.hh"
-
-SVG_TTF_T1GlyphArea::SVG_TTF_T1GlyphArea(const SmartPtr<SVG_T1Font>& f, Char8 i, Char8 ttf_i)
-  : SVG_T1GlyphArea(f, i), ttf_index(ttf_i)
-{ }
-
-SVG_TTF_T1GlyphArea::~SVG_TTF_T1GlyphArea()
-{ }
-
-SmartPtr<SVG_TTF_T1GlyphArea>
-SVG_TTF_T1GlyphArea::create(const SmartPtr<SVG_T1Font>& font, Char8 index, Char8 ttf_index)
-{ return new SVG_TTF_T1GlyphArea(font, index, ttf_index); }
-
-void
-SVG_TTF_T1GlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+class SVG_TTF_TFMComputerModernShaper : public SVG_TFMComputerModernShaper
 {
-  SVG_RenderingContext& context = dynamic_cast<SVG_RenderingContext&>(c);
-  context.draw(x, y, getFont(), ttf_index);
-}
+protected:
+  SVG_TTF_TFMComputerModernShaper(void);
+  virtual ~SVG_TTF_TFMComputerModernShaper();
+
+public:
+  static SmartPtr<SVG_TTF_TFMComputerModernShaper> create(void)
+  { return new SVG_TTF_TFMComputerModernShaper(); }
+
+protected:
+  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, FontNameId, Char8, const scaled&) const;
+};
+
+#endif // __SVG_TTF_TFMComputerModernShaper_hh__

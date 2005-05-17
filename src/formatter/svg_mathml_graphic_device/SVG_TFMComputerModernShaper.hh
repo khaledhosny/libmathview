@@ -20,33 +20,24 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __t1lib_T1Font_hh__
-#define __t1lib_T1Font_hh__
+#ifndef __SVG_TFMComputerModernShaper_hh__
+#define __SVG_TFMComputerModernShaper_hh__
 
-#include "String.hh"
-#include "T1Font.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "TFMComputerModernShaper.hh"
 
-class t1lib_T1Font : public T1Font
+class SVG_TFMComputerModernShaper : public TFMComputerModernShaper
 {
 protected:
-  t1lib_T1Font(int fid, const scaled& s) : T1Font(s), fontId(fid) { }
-  virtual ~t1lib_T1Font();
+  SVG_TFMComputerModernShaper(void);
+  virtual ~SVG_TFMComputerModernShaper();
 
 public:
-  static SmartPtr<t1lib_T1Font> create(int fid, const scaled& s)
-  { return new t1lib_T1Font(fid, s); }
+  static SmartPtr<SVG_TFMComputerModernShaper> create(void)
+  { return new SVG_TFMComputerModernShaper(); }
 
-  int getFontId(void) const { return fontId; }
-  String getFontFileName(void) const;
-
-  virtual scaled getGlyphLeftEdge(Char8) const;
-  virtual scaled getGlyphRightEdge(Char8) const;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const;
-
-private:
-  int fontId;
+protected:
+  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, FontNameId, Char8, const scaled&) const;
+  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const;
 };
 
-#endif // __t1lib_T1Font_hh__
+#endif // __SVG_TFMComputerModernShaper_hh__

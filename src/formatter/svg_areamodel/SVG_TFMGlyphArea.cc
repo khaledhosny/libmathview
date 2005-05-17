@@ -20,33 +20,45 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __t1lib_T1Font_hh__
-#define __t1lib_T1Font_hh__
+#include <config.h>
 
-#include "String.hh"
-#include "T1Font.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include <cassert>
 
-class t1lib_T1Font : public T1Font
+#include "Char.hh"
+#include "TFMFont.hh"
+#include "SVG_RenderingContext.hh"
+#include "SVG_TFMGlyphArea.hh"
+
+SVG_TFMGlyphArea::SVG_TFMGlyphArea(const SmartPtr<TFMFont>& f, Char8 i)
+  : font(f), index(i)
+{ }
+
+SVG_TFMGlyphArea::~SVG_TFMGlyphArea()
+{ }
+
+SmartPtr<SVG_TFMGlyphArea>
+SVG_TFMGlyphArea::create(const SmartPtr<TFMFont>& font, Char8 index)
+{ return new SVG_TFMGlyphArea(font, index); }
+
+SmartPtr<TFMFont>
+SVG_TFMGlyphArea::getFont() const
+{ return font; }
+
+BoundingBox
+SVG_TFMGlyphArea::box() const
+{ return font->getGlyphBoundingBox(index); }
+
+scaled
+SVG_TFMGlyphArea::leftEdge() const
+{ return font->getGlyphLeftEdge(index); }
+
+scaled
+SVG_TFMGlyphArea::rightEdge() const
+{ return font->getGlyphRightEdge(index); }
+
+void
+SVG_TFMGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-protected:
-  t1lib_T1Font(int fid, const scaled& s) : T1Font(s), fontId(fid) { }
-  virtual ~t1lib_T1Font();
-
-public:
-  static SmartPtr<t1lib_T1Font> create(int fid, const scaled& s)
-  { return new t1lib_T1Font(fid, s); }
-
-  int getFontId(void) const { return fontId; }
-  String getFontFileName(void) const;
-
-  virtual scaled getGlyphLeftEdge(Char8) const;
-  virtual scaled getGlyphRightEdge(Char8) const;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const;
-
-private:
-  int fontId;
-};
-
-#endif // __t1lib_T1Font_hh__
+  SVG_RenderingContext& context = dynamic_cast<SVG_RenderingContext&>(c);
+  context.draw(x, y, font, index);
+}

@@ -20,31 +20,22 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __SVG_T1ComputerModernShaper_hh__
-#define __SVG_T1ComputerModernShaper_hh__
+#ifndef __TFMGlyphArea_hh__
+#define __TFMGlyphArea_hh__
 
-#include "ComputerModernShaper.hh"
+#include "GlyphArea.hh"
 
-class SVG_T1ComputerModernShaper : public ComputerModernShaper
+class TFMGlyphArea : public GlyphArea
 {
 protected:
-  SVG_T1ComputerModernShaper(void);
-  virtual ~SVG_T1ComputerModernShaper();
+  TFMGlyphArea(const SmartPtr<class TFMFont>&);
+  virtual ~TFMGlyphArea();
 
 public:
-  static SmartPtr<SVG_T1ComputerModernShaper> create(void)
-  { return new SVG_T1ComputerModernShaper(); }
-
-  void setFontManager(const SmartPtr<class TFM_T1FontManager>&);
-
-protected:
-  SmartPtr<class SVG_T1Font> getT1Font(ComputerModernShaper::FontNameId, const scaled&) const;
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&,
-			       ComputerModernShaper::FontNameId,
-			       Char8, const scaled&) const;
+  SmartPtr<class TFMFont> getFont(void) const;
 
 private:
-  SmartPtr<class TFM_T1FontManager> t1FontManager;
+  SmartPtr<class TFMFont> font;
 };
 
-#endif // __SVG_T1ComputerModernShaper_hh__
+#endif // __TFMGlyphArea_hh__

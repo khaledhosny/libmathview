@@ -29,9 +29,20 @@
 #include "Gtk_t1lib_T1GlyphArea.hh"
 
 static const char* fontFile[] = {
-  NULL, "cmr10.pfb", "cmb10.pfb", "cmbxti10.pfb", "cmti10.pfb", "cmss10.pfb",
-  "cmssi10.pfb", "cmssbx10.pfb", "cmtt10.pfb", "cmsy10.pfb", "cmbsy10.pfb",
-  "cmmi10.pfb", "cmmib10.pfb", "cmex10.pfb"
+  NULL,
+  "cmr10.pfb",
+  "cmb10.pfb",
+  "cmbxti10.pfb",
+  "cmti10.pfb",
+  "cmss10.pfb",
+  "cmssi10.pfb",
+  "cmssbx10.pfb",
+  "cmtt10.pfb",
+  "cmsy10.pfb",
+  "cmbsy10.pfb",
+  "cmmi10.pfb",
+  "cmmib10.pfb",
+  "cmex10.pfb"
 };
 
 Gtk_T1ComputerModernShaper::Gtk_T1ComputerModernShaper()

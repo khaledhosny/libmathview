@@ -22,37 +22,27 @@
 
 #include <config.h>
 
-#include "TFMManager.hh"
-#include "TFM_T1Font.hh"
-#include "TFM_T1FontManager.hh"
+#include <cassert>
 
-TFM_T1FontManager::TFM_T1FontManager(const SmartPtr<TFMManager>& tm)
-  : tfmManager(tm)
+#include "Char.hh"
+#include "TFMFont.hh"
+#include "SVG_RenderingContext.hh"
+#include "SVG_TTF_TFMGlyphArea.hh"
+
+SVG_TTF_TFMGlyphArea::SVG_TTF_TFMGlyphArea(const SmartPtr<TFMFont>& f, Char8 i, Char8 ttf_i)
+  : SVG_TFMGlyphArea(f, i), ttf_index(ttf_i)
 { }
 
-TFM_T1FontManager::~TFM_T1FontManager()
+SVG_TTF_TFMGlyphArea::~SVG_TTF_TFMGlyphArea()
 { }
 
-SmartPtr<TFM_T1FontManager>
-TFM_T1FontManager::create(const SmartPtr<TFMManager>& tm)
-{ return new TFM_T1FontManager(tm); }
+SmartPtr<SVG_TTF_TFMGlyphArea>
+SVG_TTF_TFMGlyphArea::create(const SmartPtr<TFMFont>& font, Char8 index, Char8 ttf_index)
+{ return new SVG_TTF_TFMGlyphArea(font, index, ttf_index); }
 
-SmartPtr<TFM_T1Font>
-TFM_T1FontManager::createT1Font(const String& name, const scaled& size) const
-{ return TFM_T1Font::create(size, tfmManager->getTFM(name)); }
-
-SmartPtr<TFM_T1Font>
-TFM_T1FontManager::getT1Font(const String& name, const scaled& size) const
+void
+SVG_TTF_TFMGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  const CachedT1FontKey key(name, size);
-  T1FontCache::iterator p = fontCache.find(key);
-  if (p != fontCache.end())
-    return p->second;
-  else if (const SmartPtr<TFM_T1Font> font = createT1Font(name, size))
-    {
-      fontCache[key] = font;
-      return font;
-    }
-  else
-    return 0;
+  SVG_RenderingContext& context = dynamic_cast<SVG_RenderingContext&>(c);
+  context.draw(x, y, getFont(), ttf_index);
 }

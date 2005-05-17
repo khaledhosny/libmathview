@@ -65,7 +65,7 @@ TFMManager::TFMManager()
       TFM::Dimension* dimension;
       TFM::Character* character;
       (table[i].tables)(font, dimension, character);
-      tfmCache[table[i].name] = TFM::create(font, dimension, character);
+      tfmCache[table[i].name] = TFM::create(table[i].name, font, dimension, character);
     }
 }
 

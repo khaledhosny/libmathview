@@ -135,6 +135,7 @@ ShapingContext::popArea(CharIndex& n)
   assert(!empty());
   n = res_n.back();
   res_n.pop_back();
+  index -= n;
   AreaRef area = res.back();
   res.pop_back();
   return area;
@@ -148,4 +149,19 @@ ShapingContext::pushArea(CharIndex n, const AreaRef& area)
   index += n;
   res_n.push_back(n);
   res.push_back(area);
+}
+
+AreaRef
+ShapingContext::getArea(int i) const
+{
+  if (i >= 0)
+    {
+      assert(i < res.size());
+      return res[i];
+    }
+  else
+    {
+      assert(-i <= res.size());
+      return res[res.size() + i];
+    }
 }

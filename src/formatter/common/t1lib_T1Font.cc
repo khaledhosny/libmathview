@@ -48,3 +48,11 @@ t1lib_T1Font::getGlyphBoundingBox(Char8 index) const
 		     scale * charBox.ury / 1000.0f,
 		     scale * (-charBox.lly) / 1000.0f);
 }
+
+String
+t1lib_T1Font::getFontFileName(void) const
+{
+  assert(fontId >= 0 && fontId < T1_GetNoFonts());
+  return T1_GetFontFileName(fontId);
+}
+

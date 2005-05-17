@@ -20,45 +20,26 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __SVG_TTF_T1GlyphArea_hh__
+#define __SVG_TTF_T1GlyphArea_hh__
 
-#include <cassert>
+#include "SVG_TFMGlyphArea.hh"
 
-#include "TFM.hh"
-#include "TFM_T1Font.hh"
-
-TFM_T1Font::TFM_T1Font(const scaled& s, const SmartPtr<TFM>& _tfm)
-  : T1Font(s), tfm(_tfm)
+class SVG_TTF_TFMGlyphArea : public SVG_TFMGlyphArea
 {
-  assert(tfm);
-}
+protected:
+  SVG_TTF_TFMGlyphArea(const SmartPtr<class TFMFont>&, Char8, Char8);
+  virtual ~SVG_TTF_TFMGlyphArea();
 
-TFM_T1Font::~TFM_T1Font()
-{ }
+public:
+  static SmartPtr<SVG_TTF_TFMGlyphArea> create(const SmartPtr<class TFMFont>&, Char8, Char8);
 
-SmartPtr<TFM_T1Font>
-TFM_T1Font::create(const scaled& s, const SmartPtr<TFM>& _tfm)
-{ return new TFM_T1Font(s, _tfm); }
+  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
 
-SmartPtr<TFM>
-TFM_T1Font::getTFM() const
-{ return tfm; }
+  Char8 getTTFIndex(void) const { return ttf_index; }
 
-scaled
-TFM_T1Font::getGlyphLeftEdge(Char8) const
-{ return 0; }
+private:
+  Char8 ttf_index;
+};
 
-scaled
-TFM_T1Font::getGlyphRightEdge(Char8 index) const
-{ return tfm->getGlyphBoundingBox(index).width * tfm->getScale(getSize()); }
-
-BoundingBox
-TFM_T1Font::getGlyphBoundingBox(Char8 index) const
-{
-  const float scale = tfm->getScale(getSize());
-  BoundingBox box = tfm->getGlyphBoundingBox(index);
-  box.width *= scale;
-  box.height *= scale;
-  box.depth *= scale;
-  return box;
-}
+#endif // __SVG_TTF_TFMGlyphArea_hh__

@@ -20,8 +20,8 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __TFM_T1FontManager_hh__
-#define __TFM_T1FontManager_hh__
+#ifndef __TFMFontManager_hh__
+#define __TFMFontManager_hh__
 
 #include "Object.hh"
 #include "String.hh"
@@ -29,42 +29,43 @@
 #include "SmartPtr.hh"
 #include "scaled.hh"
 
-class TFM_T1FontManager : public Object
+class TFMFontManager : public Object
 {
 protected:
-  TFM_T1FontManager(const SmartPtr<class TFMManager>&);
-  virtual ~TFM_T1FontManager();
+  TFMFontManager(const SmartPtr<class TFMManager>&);
+  virtual ~TFMFontManager();
 
 public:
-  static SmartPtr<TFM_T1FontManager> create(const SmartPtr<class TFMManager>&);
+  static SmartPtr<TFMFontManager> create(const SmartPtr<class TFMManager>&);
 
-  SmartPtr<class TFM_T1Font> getT1Font(const String&, const scaled&) const;
+  SmartPtr<class TFMFont> getFont(const SmartPtr<class TFM>&, const scaled&) const;
+  SmartPtr<class TFMFont> getFont(const String&, const scaled&) const;
 
 protected:
-  virtual SmartPtr<class TFM_T1Font> createT1Font(const String&, const scaled&) const;
+  virtual SmartPtr<class TFMFont> createFont(const SmartPtr<class TFM>&, const scaled&) const;
 
 private:
-  struct CachedT1FontKey
+  struct CachedFontKey
   {
-    CachedT1FontKey(const String& n, const scaled& sz)
+    CachedFontKey(const String& n, const scaled& sz)
       : name(n), size(sz) { }
     
-    bool operator==(const CachedT1FontKey& key) const
+    bool operator==(const CachedFontKey& key) const
     { return name == key.name && size == key.size; }
     
     String name;
     scaled size;
   };
 
-  struct CachedT1FontHash
+  struct CachedFontHash
   {
-    size_t operator()(const CachedT1FontKey& key) const
+    size_t operator()(const CachedFontKey& key) const
     { return StringHash()(key.name) ^ key.size.getValue(); }
   };
 
-  typedef HASH_MAP_NS::hash_map<CachedT1FontKey,SmartPtr<class TFM_T1Font>,CachedT1FontHash> T1FontCache;
-  mutable T1FontCache fontCache;
+  typedef HASH_MAP_NS::hash_map<CachedFontKey,SmartPtr<class TFMFont>,CachedFontHash> FontCache;
+  mutable FontCache fontCache;
   SmartPtr<class TFMManager> tfmManager;
 };
 
-#endif // __TFM_T1FontManager_hh__
+#endif // __TFMFontManager_hh__

@@ -3,13 +3,21 @@ NULL =
 
 noinst_LTLIBRARIES = libsvg_mathml_graphic_device.la
 
+if COND_TFM
+MAYBE_TFM_S = \
+  SVG_TFMComputerModernShaper.cc \
+  SVG_TFMComputerModernShaper.hh \
+  SVG_TTF_TFMComputerModernShaper.cc \
+  SVG_TTF_TFMComputerModernShaper.hh \
+  $(NULL)
+else
+MAYBE_TFM_S = $(NULL)
+endif
+
 libsvg_mathml_graphic_device_la_SOURCES = \
   SVG_MathGraphicDevice.cc \
   SVG_MathGraphicDevice.hh \
-  SVG_T1ComputerModernShaper.cc \
-  SVG_T1ComputerModernShaper.hh \
-  SVG_TTFComputerModernShaper.cc \
-  SVG_TTFComputerModernShaper.hh \
+  $(MAYBE_TFM_S) \
   $(NULL)
 
 INCLUDES = \

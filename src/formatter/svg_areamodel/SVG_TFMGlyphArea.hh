@@ -20,25 +20,31 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __SVG_TTFComputerModernShaper_hh__
-#define __SVG_TTFComputerModernShaper_hh__
+#ifndef __SVG_TFMGlyphArea_hh__
+#define __SVG_TFMGlyphArea_hh__
 
-#include "SVG_T1ComputerModernShaper.hh"
+#include "GlyphArea.hh"
 
-class SVG_TTFComputerModernShaper : public SVG_T1ComputerModernShaper
+class SVG_TFMGlyphArea : public GlyphArea
 {
 protected:
-  SVG_TTFComputerModernShaper(void);
-  virtual ~SVG_TTFComputerModernShaper();
+  SVG_TFMGlyphArea(const SmartPtr<class TFMFont>&, Char8);
+  virtual ~SVG_TFMGlyphArea();
 
 public:
-  static SmartPtr<SVG_TTFComputerModernShaper> create(void)
-  { return new SVG_TTFComputerModernShaper(); }
+  static SmartPtr<SVG_TFMGlyphArea> create(const SmartPtr<class TFMFont>&, Char8);
 
-protected:
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&,
-			       ComputerModernShaper::FontNameId,
-			       Char8, const scaled&) const;
+  virtual BoundingBox box(void) const;
+  virtual scaled leftEdge(void) const;
+  virtual scaled rightEdge(void) const;
+  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+
+  SmartPtr<class TFMFont> getFont(void) const;
+  Char8 getIndex(void) const { return index; }
+
+private:
+  SmartPtr<class TFMFont> font;
+  Char8 index;
 };
 
-#endif // __SVG_TTFComputerModernShaper_hh__
+#endif // __SVG_TFMGlyphArea_hh__

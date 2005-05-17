@@ -7,6 +7,18 @@ noinst_LTLIBRARIES = libareamodel.la
 
 libareamodel_la_LDFLAGS = -version-info @AREAMODEL_VERSION_INFO@
 
+if COND_TFM
+MAYBE_TFM_S = \
+  TFMGlyphArea.cc \
+  $(NULL)
+MAYBE_TFM_H = \
+  TFMGlyphArea.hh \
+  $(NULL)
+else
+MAYBE_TFM_S = $(NULL)
+MAYBE_TFM_H = $(NULL)
+endif
+
 libareamodel_la_SOURCES = \
   Area.cc \
   AreaFactory.cc \
@@ -34,6 +46,7 @@ libareamodel_la_SOURCES = \
   VerticalFillerArea.cc \
   VerticalSpaceArea.cc \
   WrapperArea.cc \
+  $(MAYBE_TFM_S) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
@@ -68,6 +81,7 @@ mathview_HEADERS = \
   VerticalFillerArea.hh \
   VerticalSpaceArea.hh \
   WrapperArea.hh \
+  $(MAYBE_TFM_H) \
   $(NULL)
 
 noinst_HEADERS = \
@@ -76,5 +90,6 @@ noinst_HEADERS = \
 INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/formatter/common \
   -I$(top_srcdir)/src/engine/common
 

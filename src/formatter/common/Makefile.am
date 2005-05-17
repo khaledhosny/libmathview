@@ -37,10 +37,10 @@ endif
 
 if COND_TFM
 MAYBE_TFM_S = \
-  TFM_T1Font.hh \
-  TFM_T1Font.cc \
-  TFM_T1FontManager.hh \
-  TFM_T1FontManager.cc \
+  TFMFont.hh \
+  TFMFont.cc \
+  TFMFontManager.hh \
+  TFMFontManager.cc \
   $(NULL)
 
 if COND_SVG

@@ -20,31 +20,19 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __TFM_T1Font_hh__
-#define __TFM_T1Font_hh__
+#include <config.h>
 
-#include "Char.hh"
-#include "T1Font.hh"
-#include "SmartPtr.hh"
-#include "BoundingBox.hh"
+#include "TFMFont.hh"
+#include "SVG_TTF_TFMComputerModernShaper.hh"
+#include "SVG_TTF_TFMGlyphArea.hh"
 
-class TFM_T1Font : public T1Font
-{
-protected:
-  TFM_T1Font(const scaled&, const SmartPtr<class TFM>&);
-  virtual ~TFM_T1Font();
+SVG_TTF_TFMComputerModernShaper::SVG_TTF_TFMComputerModernShaper()
+{ }
 
-public:
-  static SmartPtr<TFM_T1Font> create(const scaled&, const SmartPtr<class TFM>&);
+SVG_TTF_TFMComputerModernShaper::~SVG_TTF_TFMComputerModernShaper()
+{ }
 
-  SmartPtr<class TFM> getTFM(void) const;
-  
-  virtual scaled getGlyphLeftEdge(Char8) const;
-  virtual scaled getGlyphRightEdge(Char8) const;
-  virtual BoundingBox getGlyphBoundingBox(Char8) const;
-
-private:
-  SmartPtr<class TFM> tfm;
-};
-
-#endif // __TFM_T1Font_hh__
+AreaRef
+SVG_TTF_TFMComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, 
+					      FontNameId fontNameId, Char8 index, const scaled& size) const
+{ return SVG_TTF_TFMGlyphArea::create(getFont(fontNameId, size), index, toTTFGlyphIndex(fontNameId, index)); }

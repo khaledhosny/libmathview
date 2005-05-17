@@ -20,45 +20,30 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __TFMComputerModernShaper_hh__
+#define __TFMComputerModernShaper_hh__
 
-#include <cassert>
+#include "ComputerModernShaper.hh"
 
-#include "Char.hh"
-#include "SVG_T1Font.hh"
-#include "SVG_RenderingContext.hh"
-#include "SVG_T1GlyphArea.hh"
-
-SVG_T1GlyphArea::SVG_T1GlyphArea(const SmartPtr<SVG_T1Font>& f, Char8 i)
-  : font(f), index(i)
-{ }
-
-SVG_T1GlyphArea::~SVG_T1GlyphArea()
-{ }
-
-SmartPtr<SVG_T1GlyphArea>
-SVG_T1GlyphArea::create(const SmartPtr<SVG_T1Font>& font, Char8 index)
-{ return new SVG_T1GlyphArea(font, index); }
-
-SmartPtr<SVG_T1Font>
-SVG_T1GlyphArea::getFont() const
-{ return font; }
-
-BoundingBox
-SVG_T1GlyphArea::box() const
-{ return font->getGlyphBoundingBox(index); }
-
-scaled
-SVG_T1GlyphArea::leftEdge() const
-{ return font->getGlyphLeftEdge(index); }
-
-scaled
-SVG_T1GlyphArea::rightEdge() const
-{ return font->getGlyphRightEdge(index); }
-
-void
-SVG_T1GlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+class TFMComputerModernShaper : public ComputerModernShaper
 {
-  SVG_RenderingContext& context = dynamic_cast<SVG_RenderingContext&>(c);
-  context.draw(x, y, font, index);
-}
+protected:
+  TFMComputerModernShaper(void);
+  virtual ~TFMComputerModernShaper();
+
+public:
+  virtual void shape(class ShapingContext&) const;
+
+  void setFontManager(const SmartPtr<class TFMFontManager>&);
+  SmartPtr<class TFMFontManager> getFontManager(void) const;
+
+protected:
+  virtual SmartPtr<class TFMFont> getFont(FontNameId, const scaled&) const;
+  FontNameId getFontNameId(const SmartPtr<class TFMFont>&) const;
+  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const = 0;
+
+private:
+  SmartPtr<class TFMFontManager> tfmFontManager;
+};
+
+#endif // __TFMComputerModernShaper_hh__

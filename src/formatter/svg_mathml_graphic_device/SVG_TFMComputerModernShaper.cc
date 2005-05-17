@@ -20,26 +20,33 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __SVG_TTF_T1GlyphArea_hh__
-#define __SVG_TTF_T1GlyphArea_hh__
+#include <config.h>
 
-#include "SVG_T1GlyphArea.hh"
+#include "TFMFont.hh"
+#include "SVG_AreaFactory.hh"
+#include "SVG_TFMComputerModernShaper.hh"
+#include "SVG_TFMGlyphArea.hh"
 
-class SVG_TTF_T1GlyphArea : public SVG_T1GlyphArea
+SVG_TFMComputerModernShaper::SVG_TFMComputerModernShaper()
+{ }
+
+SVG_TFMComputerModernShaper::~SVG_TFMComputerModernShaper()
+{ }
+
+AreaRef
+SVG_TFMComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, 
+					  FontNameId fontNameId, Char8 index, const scaled& size) const
+{ return SVG_TFMGlyphArea::create(getFont(fontNameId, size), index); }
+
+bool
+SVG_TFMComputerModernShaper::getGlyphData(const AreaRef& area, SmartPtr<TFMFont>& font, Char8& index) const
 {
-protected:
-  SVG_TTF_T1GlyphArea(const SmartPtr<class SVG_T1Font>&, Char8, Char8);
-  virtual ~SVG_TTF_T1GlyphArea();
-
-public:
-  static SmartPtr<SVG_TTF_T1GlyphArea> create(const SmartPtr<class SVG_T1Font>&, Char8, Char8);
-
-  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-
-  Char8 getTTFIndex(void) const { return ttf_index; }
-
-private:
-  Char8 ttf_index;
-};
-
-#endif // __SVG_TTF_T1GlyphArea_hh__
+  if (SmartPtr<const SVG_TFMGlyphArea> glyphArea = smart_cast<const SVG_TFMGlyphArea>(area))
+    {
+      font = glyphArea->getFont();
+      index = glyphArea->getIndex();
+      return true;
+    }
+  else
+    return false;
+}

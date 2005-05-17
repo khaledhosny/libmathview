@@ -15,10 +15,10 @@ libsvg_areamodel_la_SOURCES = \
   SVG_RenderingContext.hh \
   SVG_StreamRenderingContext.cc \
   SVG_StreamRenderingContext.hh \
-  SVG_T1GlyphArea.cc \
-  SVG_T1GlyphArea.hh \
-  SVG_TTF_T1GlyphArea.cc \
-  SVG_TTF_T1GlyphArea.hh \
+  SVG_TFMGlyphArea.cc \
+  SVG_TFMGlyphArea.hh \
+  SVG_TTF_TFMGlyphArea.cc \
+  SVG_TTF_TFMGlyphArea.hh \
   $(NULL)
 
 INCLUDES = \

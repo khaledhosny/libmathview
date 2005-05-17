@@ -22,23 +22,41 @@
 
 #include <config.h>
 
-#include "SVG_T1Font.hh"
-#include "SVG_TTFComputerModernShaper.hh"
-#include "SVG_TTF_T1GlyphArea.hh"
+#include "TFMManager.hh"
+#include "TFMFont.hh"
+#include "TFMFontManager.hh"
 
-SVG_TTFComputerModernShaper::SVG_TTFComputerModernShaper()
+TFMFontManager::TFMFontManager(const SmartPtr<TFMManager>& tm)
+  : tfmManager(tm)
 { }
 
-SVG_TTFComputerModernShaper::~SVG_TTFComputerModernShaper()
+TFMFontManager::~TFMFontManager()
 { }
 
-AreaRef
-SVG_TTFComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
-					  ComputerModernShaper::FontNameId fontNameId, 
-					  Char8 index, const scaled& size) const
+SmartPtr<TFMFontManager>
+TFMFontManager::create(const SmartPtr<TFMManager>& tm)
+{ return new TFMFontManager(tm); }
+
+SmartPtr<TFMFont>
+TFMFontManager::createFont(const SmartPtr<TFM>& tfm, const scaled& size) const
+{ return TFMFont::create(tfm, size); }
+
+SmartPtr<TFMFont>
+TFMFontManager::getFont(const SmartPtr<TFM>& tfm, const scaled& size) const
 {
-
-  const SmartPtr<SVG_T1Font> font = getT1Font(fontNameId, size);
-  assert(font);
-  return SVG_TTF_T1GlyphArea::create(font, index, ComputerModernShaper::toTTFGlyphIndex(fontNameId, index));
+  const CachedFontKey key(tfm->getName(), size);
+  FontCache::iterator p = fontCache.find(key);
+  if (p != fontCache.end())
+    return p->second;
+  else if (const SmartPtr<TFMFont> font = createFont(tfm, size))
+    {
+      fontCache[key] = font;
+      return font;
+    }
+  else
+    return 0;
 }
+
+SmartPtr<TFMFont>
+TFMFontManager::getFont(const String& name, const scaled& size) const
+{ return getFont(tfmManager->getTFM(name), size); }

@@ -50,6 +50,7 @@ public:
   unsigned chunkSize(void) const;
   unsigned getShaperId(void) const;
 
+  unsigned nAreas(void) const { return res.size(); }
   AreaRef popArea(CharIndex&);
   void pushArea(CharIndex, const AreaRef&);
   AreaRef getArea(int = -1) const;

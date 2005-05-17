@@ -28,12 +28,12 @@
 #include "Configuration.hh"
 #include "SVG_AreaFactory.hh"
 #include "SVG_MathGraphicDevice.hh"
-#include "SVG_T1ComputerModernShaper.hh"
-#include "SVG_TTFComputerModernShaper.hh"
+#include "SVG_TFMComputerModernShaper.hh"
+#include "SVG_TTF_TFMComputerModernShaper.hh"
 #include "SpaceShaper.hh"
 #include "NullShaper.hh"
 #include "TFMManager.hh"
-#include "TFM_T1FontManager.hh"
+#include "TFMFontManager.hh"
 
 SVG_MathGraphicDevice::SVG_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
   : MathGraphicDevice(l)
@@ -44,7 +44,7 @@ SVG_MathGraphicDevice::SVG_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
   // shapers for the SVG backend share the same font manager is just a
   // twisted coincidence. Beware
   SmartPtr<TFMManager> tfm = TFMManager::create();
-  SmartPtr<TFM_T1FontManager> fm = TFM_T1FontManager::create(tfm);
+  SmartPtr<TFMFontManager> fm = TFMFontManager::create(tfm);
 
   for (std::vector<Configuration::ConfiguredShaper>::const_iterator p = conf->getShapers().begin();
        p != conf->getShapers().end();
@@ -60,14 +60,14 @@ SVG_MathGraphicDevice::SVG_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, 
 	else if (name == "computer-modern-type1")
 	  {
 	    getLogger()->out(LOG_INFO, "Activating ComputerModern/Type1 shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
-	    SmartPtr<SVG_T1ComputerModernShaper> cmShaper = SVG_T1ComputerModernShaper::create();
+	    SmartPtr<SVG_TFMComputerModernShaper> cmShaper = SVG_TFMComputerModernShaper::create();
 	    cmShaper->setFontManager(fm);
 	    getShaperManager()->registerShaper(cmShaper);
 	  }
 	else if (name == "computer-modern-ttf")
 	  {
 	    getLogger()->out(LOG_INFO, "Activating ComputerModern/TT shaper (TFM %s)", conf->getUseTFM() ? "enabled" : "disabled");
-	    SmartPtr<SVG_TTFComputerModernShaper> cmShaper = SVG_TTFComputerModernShaper::create();
+	    SmartPtr<SVG_TTF_TFMComputerModernShaper> cmShaper = SVG_TTF_TFMComputerModernShaper::create();
 	    cmShaper->setFontManager(fm);
 	    getShaperManager()->registerShaper(cmShaper);
 	  }

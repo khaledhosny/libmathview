@@ -80,14 +80,15 @@ public:
   };
 
 protected:
-  TFM(const Font*, const Dimension*, const Character*);
+  TFM(const String&, const Font*, const Dimension*, const Character*);
   virtual ~TFM();
 
 public:
   static SmartPtr<TFM>
-  create(const Font* _font, const Dimension* _dimension, const Character* _character)
-  { return new TFM(_font, _dimension, _character); }
+  create(const String& _name, const Font* _font, const Dimension* _dimension, const Character* _character)
+  { return new TFM(_name, _font, _dimension, _character); }
 
+  String getName(void) const { return name; }
   String getFamily(void) const { return font->family; }
   unsigned char getFace(void) const { return font->face; }
   String getCodingScheme(void) const { return font->codingScheme; }
@@ -109,6 +110,7 @@ protected:
   const Character& getCharacter(Char8) const;
 
 private:
+  const String name;
   const Font* font;
   const Dimension* dimension;
   const Character* character;

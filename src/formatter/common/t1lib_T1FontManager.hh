@@ -39,6 +39,7 @@ public:
   static SmartPtr<t1lib_T1FontManager> create(void)
   { return new t1lib_T1FontManager(); }
 
+  String getFontFileName(int) const;
   SmartPtr<class t1lib_T1Font> getT1Font(const String&, const scaled&) const;
 
 protected:

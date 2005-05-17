@@ -44,7 +44,8 @@ public:
     bool valid(void) const { return fontName > FN_NIL && fontName < FN_NOT_VALID; }
   };
   
-  struct PlainChar {
+  struct PlainChar
+  {
     Char16 ch;
     Char8  index;
   };

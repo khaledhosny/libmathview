@@ -30,8 +30,8 @@ scaled
 TFM::scaledOfFIX(int v)
 { return scaled(v >> (UNITY_SHIFT - scaled::getPrecision()), true); }
 
-TFM::TFM(const Font* _font, const Dimension* _dimension, const Character* _character)
-  : font(_font), dimension(_dimension), character(_character)
+TFM::TFM(const String& _name, const Font* _font, const Dimension* _dimension, const Character* _character)
+  : name(_name), font(_font), dimension(_dimension), character(_character)
 {
   assert(font);
   assert(dimension);

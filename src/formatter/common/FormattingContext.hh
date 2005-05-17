@@ -42,6 +42,7 @@ public:
   ~FormattingContext();
 
   enum PropertyId {
+    MATH_MODE,
     SIZE,
     ACTUAL_SIZE,
     VARIANT,
@@ -81,6 +82,8 @@ public:
     LAST_NAMED_PROPERTY_ENTRY
   };
 
+  bool getMathMode(void) const { return get<bool>(MATH_MODE); }
+  void setMathMode(bool m) { set<bool>(MATH_MODE, m); }
   scaled getSize(void) const { return get<scaled>(SIZE); }
   void setSize(const scaled& s) { set<scaled>(SIZE, s); }
   scaled getActualSize(void) const { return get<scaled>(ACTUAL_SIZE); }
