@@ -30,7 +30,9 @@
 #include "AreaFactory.hh"
 
 TFMComputerModernShaper::TFMComputerModernShaper()
-{ }
+{
+  setPostShapingMode(POST_SHAPING_ALWAYS);
+}
 
 TFMComputerModernShaper::~TFMComputerModernShaper()
 { }
@@ -47,10 +49,8 @@ TFMComputerModernShaper::getFontManager() const
 { return tfmFontManager; }
 
 void
-TFMComputerModernShaper::shape(ShapingContext& context) const
+TFMComputerModernShaper::postShape(ShapingContext& context) const
 {
-  ComputerModernShaper::shape(context);
-#if 0
   if (context.nAreas() > 1)
     {
       Char8 index1;
@@ -58,37 +58,38 @@ TFMComputerModernShaper::shape(ShapingContext& context) const
       SmartPtr<TFMFont> font1;
       SmartPtr<TFMFont> font2;
       if (getGlyphData(context.getArea(-2), font1, index1) && getGlyphData(context.getArea(-1), font2, index2))
-	if (font1 == font2)
-	  {
-	    const SmartPtr<TFM> tfm = font1->getTFM();
-	    Char8 newGlyph;
-	    Char8 ligatureMode;
-	    scaled kerning;
-	    if (tfm->getGlyphLigature(index1, index2, newGlyph, ligatureMode))
-	      {
-		CharIndex n1;
-		CharIndex n2;
-		const AreaRef a2 = context.popArea(n2);
-		const AreaRef a1 = context.popArea(n1);
-		switch (ligatureMode)
-		  {
-		  default:
+	{
+	  if (font1 == font2)
+	    {
+	      const SmartPtr<TFM> tfm = font1->getTFM();
+	      Char8 newGlyph;
+	      Char8 ligatureMode;
+	      scaled kerning;
+	      if (tfm->getGlyphLigature(index1, index2, newGlyph, ligatureMode))
+		{
+		  CharIndex n1;
+		  CharIndex n2;
+		  const AreaRef a2 = context.popArea(n2);
+		  const AreaRef a1 = context.popArea(n1);
+		  switch (ligatureMode)
 		    {
-		      AreaRef newArea = getGlyphArea(context.getFactory(), getFontNameId(font1), newGlyph, font1->getSize());
-		      context.pushArea(n1 + n2, newArea);
+		    default:
+		      {
+			AreaRef newArea = getGlyphArea(context.getFactory(), getFontNameId(font1), newGlyph, font1->getSize());
+			context.pushArea(n1 + n2, newArea);
+		      }
 		    }
-		  }
-	      }
-	    else if (tfm->getGlyphKerning(index1, index2, kerning))
+		}
+	      else if (tfm->getGlyphKerning(index1, index2, kerning))
 		{
 		  CharIndex n2;
 		  const AreaRef a2 = context.popArea(n2);
-		  context.pushArea(0, context.getFactory()->horizontalSpace(kerning));
+		  context.pushArea(0, context.getFactory()->horizontalSpace(kerning * font1->getScale()));
 		  context.pushArea(n2, a2);
 		}
 	    }
+	}
     }
-#endif
 }
 
 static const char* fontId[] = {

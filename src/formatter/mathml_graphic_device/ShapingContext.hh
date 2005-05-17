@@ -37,8 +37,10 @@ public:
 		 const UCS4String&,
 		 const std::vector<GlyphSpec>&,
 		 const scaled&,
+		 bool,
 		 const scaled& = 0, const scaled& = 0);
 
+  bool inMathMode(void) const { return mathMode; }
   SmartPtr<class Element> getElement(void) const;
   SmartPtr<class AreaFactory> getFactory(void) const;
   UCS4String getSource(void) const { return source; }
@@ -74,6 +76,7 @@ private:
   UCS4String source;
   std::vector<GlyphSpec> spec;
   scaled size;
+  bool mathMode;
   scaled vSpan;
   scaled hSpan;
   UCS4String::size_type index;

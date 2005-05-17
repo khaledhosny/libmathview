@@ -28,10 +28,24 @@
 
 class ComputerModernShaper : public Shaper
 {
+protected:
+  ComputerModernShaper(void);
+  virtual ~ComputerModernShaper();
+
 public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
+
+  enum PostShapingMode {
+    POST_SHAPING_NEVER,
+    POST_SHAPING_MATH,
+    POST_SHAPING_TEXT,
+    POST_SHAPING_ALWAYS
+  };
+
+  PostShapingMode getPostShapingMode(void) const { return postShapingMode; }
+  void setPostShapingMode(PostShapingMode m) { postShapingMode = m; }
 
   enum FontNameId { FN_NIL, FN_CMR, FN_CMB, FN_CMBXTI, FN_CMTI, FN_CMSS, FN_CMSSI,
 		    FN_CMSSBX, FN_CMTT, FN_CMSY, FN_CMBSY, FN_CMMI, FN_CMMIB, 
@@ -73,12 +87,16 @@ public:
   static Char8 toTTFGlyphIndex(FontNameId, Char8);
 
 protected:
+  virtual void postShape(class ShapingContext&) const;
   virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, FontNameId, Char8, const scaled&) const = 0;
   AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, const GlyphIndex&, const scaled&) const;
 
   AreaRef shapeChar(const class ShapingContext&, FontNameId) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
+
+private:
+  PostShapingMode postShapingMode;
 };
 
 #endif // __ComputerModernShaper_hh__

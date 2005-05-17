@@ -33,8 +33,9 @@ ShapingContext::ShapingContext(const SmartPtr<Element>& el,
 			       const UCS4String& src,
 			       const std::vector<GlyphSpec>& s,
 			       const scaled& sz,
+			       bool mm,
 			       const scaled& v, const scaled& h)
-  : element(el), factory(f), source(src), spec(s), size(sz), vSpan(v), hSpan(h), index(0)
+  : element(el), factory(f), source(src), spec(s), size(sz), mathMode(mm), vSpan(v), hSpan(h), index(0)
 { }
 
 SmartPtr<Element>
@@ -48,11 +49,15 @@ ShapingContext::getFactory() const
 unsigned
 ShapingContext::chunkSize() const
 {
-  assert(!done());
-  unsigned n = 1;
-  unsigned si = getShaperId();
-  while (index + n < spec.size() && spec[index + n].getShaperId() == si) n++;
-  return n;
+  if (done())
+    return 0;
+  else
+    {
+      unsigned n = 1;
+      unsigned si = getShaperId();
+      while (index + n < spec.size() && spec[index + n].getShaperId() == si) n++;
+      return n;
+    }
 }
 
 unsigned

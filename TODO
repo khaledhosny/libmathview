@@ -6,6 +6,14 @@
 - = LONG TERM
 ? = unsure
 
+// General
+
+MISSING
+
++ configuration file is growing, turn it into a simple key-value
+  file
++ add configuration for post shaping modes
+
 // AbiWord
 
 * move Char.hh.in into auto and cleanup dependencies with the top_builddir?
@@ -72,7 +80,7 @@ MISSING
 
 MISSING
 
-- rendering of BoxML into SVG
+- rendering of BoxML into SVG (hard because we need the shapers!)
 - cross-embedding of MathML and SVG following the guidelines?
 - cross-embedding of MathML and SVG with coordinates computation?
 - document alpha channel in RGBColor

@@ -1137,6 +1137,13 @@ ComputerModernShaper::toTTFGlyphIndex(FontNameId name, Char8 index)
   return map[index];
 }
 
+ComputerModernShaper::ComputerModernShaper()
+  : postShapingMode(POST_SHAPING_NEVER)
+{ }
+
+ComputerModernShaper::~ComputerModernShaper()
+{ }
+
 void
 ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
@@ -1193,6 +1200,7 @@ ComputerModernShaper::shape(ShapingContext& context) const
       switch (context.getSpec().getFontId())
 	{
 	case H_BIG_FONT_INDEX:
+	  assert(false);
 	  break;
 	case H_STRETCHY_FONT_INDEX:
 	  res = shapeStretchyCharH(context);
@@ -1212,8 +1220,29 @@ ComputerModernShaper::shape(ShapingContext& context) const
       if (!res) break;
 
       context.pushArea(1, res);
+
+      switch (getPostShapingMode())
+	{
+	case POST_SHAPING_ALWAYS:
+	  postShape(context);
+	  break;
+	case POST_SHAPING_MATH:
+	  if (context.inMathMode()) postShape(context);
+	  break;
+	case POST_SHAPING_TEXT:
+	  if (!context.inMathMode()) postShape(context);
+	  break;
+	case POST_SHAPING_NEVER:
+	  break;
+	default:
+	  assert(false);
+	}
     }
 }
+
+void
+ComputerModernShaper::postShape(ShapingContext&) const
+{ /* do nothing */ }
 
 AreaRef
 ComputerModernShaper::shapeChar(const ShapingContext& context, FontNameId name) const

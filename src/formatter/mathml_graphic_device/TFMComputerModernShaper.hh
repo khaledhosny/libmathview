@@ -32,12 +32,11 @@ protected:
   virtual ~TFMComputerModernShaper();
 
 public:
-  virtual void shape(class ShapingContext&) const;
-
   void setFontManager(const SmartPtr<class TFMFontManager>&);
   SmartPtr<class TFMFontManager> getFontManager(void) const;
 
 protected:
+  virtual void postShape(class ShapingContext&) const;
   virtual SmartPtr<class TFMFont> getFont(FontNameId, const scaled&) const;
   FontNameId getFontNameId(const SmartPtr<class TFMFont>&) const;
   virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const = 0;
