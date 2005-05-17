@@ -348,8 +348,8 @@ gtk_math_view_paint(GtkMathView* math_view)
   to_view_coords(math_view, &x, &y);
   g_signal_emit(GTK_OBJECT(math_view), decorate_under_signal, 0, math_view->pixmap);
   math_view->view->render(*rc,
-			  Gtk_RenderingContext::fromGtkX(x),
-			  Gtk_RenderingContext::fromGtkY(y));
+			  Gtk_RenderingContext::fromGtkX(-x),
+			  Gtk_RenderingContext::fromGtkY(-y));
 
   gtk_math_view_update(math_view, 0, 0, width, height);
 }

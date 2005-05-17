@@ -372,12 +372,12 @@ main(int argc, char* argv[])
       if (cropping)
 	{
 	  rc.documentStart(box.horizontalExtent(), box.verticalExtent());
-	  view->render(rc, 0, box.height);
+	  view->render(rc, 0, -box.height);
 	}
       else
 	{
 	  rc.documentStart(widthS, heightS);
-	  view->render(rc, xMarginS, yMarginS + box.height);
+	  view->render(rc, xMarginS, -(yMarginS + box.height));
 	}
       rc.documentEnd();
       view->resetRootElement();
