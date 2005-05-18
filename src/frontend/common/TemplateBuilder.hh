@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "defs.h"
+#include "Attribute.hh"
 #include "MathML.hh"
 #include "MathMLTableContentFactory.hh"
 #include "MathMLNamespaceContext.hh"
