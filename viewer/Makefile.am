@@ -91,5 +91,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/widget \
-  -I$(top_srcdir)/src/formatter/areamodel/
+  -I$(top_srcdir)/src/backend/common/ \
+  $(NULL)
 

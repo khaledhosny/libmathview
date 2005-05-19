@@ -35,6 +35,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/engine/adapters \
   -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/formatter/areamodel \
+  -I$(top_srcdir)/src/backend/common \
   $(NULL)
 

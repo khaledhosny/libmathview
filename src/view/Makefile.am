@@ -20,7 +20,7 @@ lib_LTLIBRARIES += libmathview_gmetadom.la
 endif
 
 MATHVIEW_LIBS = \
-  $(top_builddir)/src/formatter/libformatter.la \
+  $(top_builddir)/src/backend/libbackend.la \
   $(top_builddir)/src/engine/libengine.la \
   $(top_builddir)/src/common/libcommon.la \
   $(NULL)
@@ -81,10 +81,5 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
-  -I$(top_srcdir)/src/formatter/common \
-  -I$(top_srcdir)/src/formatter/areamodel \
-  -I$(top_srcdir)/src/formatter/gtk_areamodel \
-  -I$(top_srcdir)/src/formatter/mathml_graphic_device \
-  -I$(top_srcdir)/src/formatter/gtk_mathml_graphic_device \
-  -I$(top_srcdir)/src/formatter/boxml_graphic_device \
-  -I$(top_srcdir)/src/formatter/gtk_boxml_graphic_device
+  -I$(top_srcdir)/src/backend/common \
+  $(NULL)

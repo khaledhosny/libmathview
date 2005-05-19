@@ -54,8 +54,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/formatter/common \
-  -I$(top_srcdir)/src/formatter/areamodel \
-  -I$(top_srcdir)/src/formatter/boxml_graphic_device \
+  -I$(top_srcdir)/src/backend/common \
   $(NULL)
 

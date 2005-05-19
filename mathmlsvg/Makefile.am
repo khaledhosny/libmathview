@@ -25,11 +25,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/frontend/libxml2_reader \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/formatter/common \
-  -I$(top_srcdir)/src/formatter/areamodel \
-  -I$(top_srcdir)/src/formatter/svg_areamodel \
-  -I$(top_srcdir)/src/formatter/mathml_graphic_device \
-  -I$(top_srcdir)/src/formatter/svg_mathml_graphic_device \
-  -I$(top_srcdir)/src/formatter/boxml_graphic_device \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/svg \
   -I$(top_srcdir)/src/view \
   $(NULL)

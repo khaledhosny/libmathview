@@ -490,17 +490,11 @@ AC_CONFIG_FILES([
  src/engine/boxml/Makefile
  src/engine/mathml/Makefile
  src/engine/adapters/Makefile
- src/formatter/Makefile
- src/formatter/common/Makefile
- src/formatter/common/tfm/Makefile
- src/formatter/areamodel/Makefile
- src/formatter/gtk_areamodel/Makefile
- src/formatter/svg_areamodel/Makefile
- src/formatter/mathml_graphic_device/Makefile
- src/formatter/gtk_mathml_graphic_device/Makefile
- src/formatter/svg_mathml_graphic_device/Makefile
- src/formatter/boxml_graphic_device/Makefile
- src/formatter/gtk_boxml_graphic_device/Makefile
+ src/backend/Makefile
+ src/backend/common/Makefile
+ src/backend/common/tfm/Makefile
+ src/backend/gtk/Makefile
+ src/backend/svg/Makefile
  src/view/Makefile
  src/widget/Makefile
  viewer/Makefile
