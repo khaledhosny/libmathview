@@ -1,7 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-MathFormattingContext.lo
-MathGraphicDevice.lo
-libmath_areamodel.la
