@@ -41,10 +41,11 @@
 #include "SVG_StreamRenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
+#if ENABLE_BOXML
+#include "BoxGraphicDevice.hh"
+#endif // ENABLE_BOXML
 
 typedef libxml2_reader_MathView MathView;
-
-static char appName[64];
 
 static double width = 21;
 static double height = 29.7;
@@ -74,7 +75,8 @@ enum CommandLineOptionId {
 static void
 printVersion()
 {
-  std::cout << appName << " - written by Luca Padovani (C) 2005" << std::endl;
+  std::cout << "MathML to SVG converter - written by Luca Padovani (C) 2005" << std::endl
+	    << "Based on GtkMathView " << VERSION << std::endl;
 #ifdef DEBUG
   std::cout << "Compiled " << __DATE__ << " " << __TIME__ << std::endl;
 #endif

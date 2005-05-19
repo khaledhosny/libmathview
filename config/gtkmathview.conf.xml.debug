@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE math-engine-configuration SYSTEM "math-engine-configuration.dtd">
 <!--
-Copyright (C) 2000, Luca Padovani (luca.padovani@cs.unibo.it).
+Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 
 This file is part of GtkMathView, a Gtk widget for MathML.
-
+ 
 GtkMathView is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
@@ -18,26 +18,83 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with GtkMathView; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
+ 
 For details, see the GtkMathView World-Wide-Web page,
-http://cs.unibo.it/~lpadovan/mml-widget, or send a mail to
-(luca.padovani@cs.unibo.it)
+http://helm.cs.unibo.it/mml-widget/, or send a mail to
+<lpadovan@cs.unibo.it>
 -->
 
 <math-engine-configuration>
-  <logger verbosity="3"/>
-  <dictionary-path>./config/dictionary.xml</dictionary-path>
-  <dictionary-path>./config/dictionary-debug.xml</dictionary-path>
-  <font-size     size="10pt"/>
-  <color         foreground="black" background="white"/>
-  <link-color    foreground="#32648b" background="white"/>
-  <select-color  foreground="black" background="red"/>
-  <shaper name="pango-default"/>
-  <shaper name="space"/>
-<!--
-  <shaper name="pango"/>
-  <shaper name="adobe"/>
--->
-  <shaper name="computer-modern-ttf" backend="svg"/>
-  <tfm enabled="yes"/>
+  <key name="version">DEBUG</key>
+
+  <section name="logger">
+    <key name="verbosity">3</key>
+  </section>
+
+  <section name="dictionary">
+    <key name="path">./config/dictionary.xml</key>
+    <key name="path">./config/dictionary-debug.xml</key>
+  </section>
+
+  <section name="default">
+    <key name="font-size">12pt</key>
+    <section name="color">
+      <key name="foreground">#000000</key>
+      <key name="background">#ffffff</key>
+    </section>
+    <section name="link-color">
+      <key name="foreground">#32648b</key>
+      <key name="background">#ffffff</key>
+    </section>
+    <section name="select-color">
+      <key name="foreground">#000000</key>
+      <key name="background">#ff6a6a</key>
+    </section>
+  </section>
+
+  <section name="gtk-backend">
+    <section name="pango-default-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">0</key>
+    </section>
+    <section name="space-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="pango-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="adobe-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="type1-computer-modern-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="ttf-computer-modern-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
+  </section>
+
+  <section name="svg-backend">
+    <section name="null-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">0</key>
+    </section>
+    <section name="space-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="type1-computer-modern-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="ttf-computer-modern-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+  </section>
 </math-engine-configuration>

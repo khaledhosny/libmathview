@@ -1,35 +1,8 @@
 <?xml version="1.0" encoding="iso8859-1"?>
-<!ELEMENT math-engine-configuration
-  (dictionary-path|font-configuration-path|
-   color|font-size|link-color|select-color)*
->
+<!ELEMENT math-engine-configuration (key|section)*>
 
-<!ELEMENT dictionary-path (#PCDATA)>
+<!ELEMENT section (section|key)*>
+<!ATTLIST section name NMTOKEN #REQUIRED>
 
-<!ELEMENT font-configuration-path (#PCDATA)>
-
-<!ELEMENT font-size EMPTY>
-<!ATTLIST font-size
-  size CDATA #REQUIRED
->
-
-<!ELEMENT color EMPTY>
-<!ATTLIST color
-  foreground CDATA #REQUIRED
-  background CDATA #REQUIRED
->
-
-<!ELEMENT link-color EMPTY>
-<!ATTLIST link-color
-  foreground CDATA #REQUIRED
-  background CDATA #REQUIRED
->
-
-<!ELEMENT select-color EMPTY>
-<!ATTLIST select-color
-  foreground CDATA #REQUIRED
-  background CDATA #REQUIRED
->
-
-
-
+<!ELEMENT key (#PCDATA)>
+<!ATTLIST key name NMTOKEN #REQUIRED>

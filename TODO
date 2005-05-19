@@ -8,11 +8,11 @@
 
 // General
 
-MISSING
-
-+ configuration file is growing, turn it into a simple key-value
-  file
 + add configuration for post shaping modes
++ remove configuration field from gtkmathview class structure
++ find a way to configure t1lib opaque/aa modes
++ pass Configuration to View constructor and initializes default font size
++ T1 CM shaper useful for SVG?
 
 // AbiWord
 
@@ -22,7 +22,7 @@ MISSING
 
 BUGS
 
-* when index == length in a glyph area the caret is drawn
+- when index == length in a glyph area the caret is drawn
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially
   for mo elements
@@ -63,9 +63,6 @@ MISSING
   open wrapper for groups
 - implement PS area model (using pslib?)
 - implement T1lib area model (using pslib instead?)
-- implement MGD for TeX fonts
-- implement shaper for TeX fonts (this should be usable with
-  both the T1lib and PS area models)
 - implement shaper for Mathematica fonts
 - implement shaper for Euclid fonts
 - runtime selection of backend

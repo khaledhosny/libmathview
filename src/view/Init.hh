@@ -37,12 +37,10 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
   if (confPath != NULL) res = MathView::loadConfiguration(logger, configuration, confPath);
   if (!res) res = MathView::loadConfiguration(logger, configuration, MathView::getDefaultConfigurationPath());
   if (!res) res = MathView::loadConfiguration(logger, configuration, "config/gtkmathview.conf.xml");
-  if (!res)
-    {
-      logger->out(LOG_ERROR, "could not load configuration file");
-      exit(-1);
-    }
-
+  if (!res) logger->out(LOG_WARNING, "could not load configuration file");
+  String confVersion = configuration->getString(logger, "version", "<undefined>");
+  if (confVersion != VERSION)
+    logger->out(LOG_WARNING, "configuration file version (%s) differs from binary version (%s)", confVersion.c_str(), VERSION);
   return configuration;
 }
 
@@ -51,9 +49,10 @@ SmartPtr<MathMLOperatorDictionary>
 initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
 {
   SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
-  if (!configuration->getDictionaries().empty())
-    for (std::vector<std::string>::const_iterator dit = configuration->getDictionaries().begin();
-	 dit != configuration->getDictionaries().end();
+  std::vector<String> paths = configuration->getStringList("dictionary/path");
+  if (!paths.empty())
+    for (std::vector<String>::const_iterator dit = paths.begin();
+	 dit != paths.end();
 	 dit++)
       {
 	logger->out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());

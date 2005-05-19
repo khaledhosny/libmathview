@@ -30,5 +30,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/formatter/svg_areamodel \
   -I$(top_srcdir)/src/formatter/mathml_graphic_device \
   -I$(top_srcdir)/src/formatter/svg_mathml_graphic_device \
+  -I$(top_srcdir)/src/formatter/boxml_graphic_device \
   -I$(top_srcdir)/src/view \
   $(NULL)

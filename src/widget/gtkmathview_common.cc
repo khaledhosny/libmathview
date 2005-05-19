@@ -112,6 +112,10 @@ struct _GtkMathViewClass
   GtkMathViewDecorateSignal decorate_over;
 
   AbstractLogger* logger;
+  RGBColor defaultForeground;
+  RGBColor defaultBackground;
+  RGBColor defaultSelectForeground;
+  RGBColor defaultSelectBackground;
   Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
   Gtk_MathGraphicDevice* math_graphic_device;
@@ -333,11 +337,11 @@ gtk_math_view_paint(GtkMathView* math_view)
     }
 
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
-  rc->setForegroundColor(math_view_class->configuration->getSelectForeground());
-  rc->setBackgroundColor(math_view_class->configuration->getSelectBackground());
+  rc->setForegroundColor(math_view_class->defaultSelectForeground);
+  rc->setBackgroundColor(math_view_class->defaultSelectBackground);
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(math_view_class->configuration->getForeground());
-  rc->setBackgroundColor(math_view_class->configuration->getBackground());
+  rc->setForegroundColor(math_view_class->defaultForeground);
+  rc->setBackgroundColor(math_view_class->defaultBackground);
 
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
@@ -425,6 +429,11 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, getenv("GTKMATHVIEWCONF"));
   configuration->ref();
   math_view_class->configuration = configuration;
+
+  math_view_class->defaultForeground = configuration->getRGBColor(logger, "default/color/foreground", DEFAULT_FOREGROUND);
+  math_view_class->defaultBackground = configuration->getRGBColor(logger, "default/color/background", DEFAULT_BACKGROUND);
+  math_view_class->defaultSelectForeground = configuration->getRGBColor(logger, "default/select-color/foreground", DEFAULT_SELECT_FOREGROUND);
+  math_view_class->defaultSelectBackground = configuration->getRGBColor(logger, "default/select-color/background", DEFAULT_SELECT_BACKGROUND);
 
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
   dictionary->ref();

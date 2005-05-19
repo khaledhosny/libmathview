@@ -329,8 +329,6 @@ void
 Gtk_AdobeShaper::setFontManager(const SmartPtr<Gtk_XftFontManager>& fm)
 { xftFontManager = fm; }
 
-#include <iostream>
-
 void
 Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
@@ -431,7 +429,7 @@ Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 			      unsigned fi, unsigned gi,
 			      const scaled& size) const
 {
-#if 0
+#if 1
   return createPangoGlyphArea(factory, fi, gi, size);
 #else
   return createXftGlyphArea(factory, fi, gi, size);

@@ -26,91 +26,60 @@
 #include <vector>
 
 #include "defs.h"
-#include "scaled.hh"
 #include "String.hh"
 #include "RGBColor.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
+#include "HashMap.hh"
+#include "Length.hh"
 
 class Configuration : public Object
 {
 protected:
-  Configuration(void)
-    : useTFM(true),
-      drawMissingGlyphs(true),
-      fontSize(DEFAULT_FONT_SIZE), 
-      foreground(DEFAULT_FOREGROUND),
-      background(DEFAULT_BACKGROUND),
-      linkForeground(DEFAULT_LINK_FOREGROUND),
-      linkBackground(DEFAULT_LINK_BACKGROUND),
-      selectForeground(DEFAULT_SELECT_FOREGROUND),
-      selectBackground(DEFAULT_SELECT_BACKGROUND)
-  { }
-
+  Configuration(void);
   virtual ~Configuration();
 
 public:
-  class ConfiguredShaper
-  {
-  public:
-    ConfiguredShaper(const String& n, const String& b) : name(n), backend(b) { }
-    String getName(void) const { return name; }
-    String getBackend(void) const { return backend; }
-  private:
-    String name;
-    String backend;
-  };
-
   static SmartPtr<Configuration> create(void)
   { return new Configuration(); }
 
-  void addDictionary(const String& s) { dictionaries.push_back(s); }
-  const std::vector<String>& getDictionaries(void) const { return dictionaries; }
-
-  void addShaper(const String& name, const String& backend) { shapers.push_back(ConfiguredShaper(name, backend)); }
-  const std::vector<ConfiguredShaper>& getShapers(void) const { return shapers; }
-
-  bool getUseTFM(void) const { return useTFM; }
-  void setUseTFM(bool b) { useTFM = b; }
-
-  bool getDrawMissingGlyphs(void) const { return drawMissingGlyphs; }
-  void setDrawMissingGlyphs(bool b) { drawMissingGlyphs = b; }
-
-  void setFontSize(unsigned s) { fontSize = s; }
-  unsigned getFontSize(void) const { return fontSize; }
-
-  void setForeground(const RGBColor& c) { foreground = c; }
-  void setBackground(const RGBColor& c) { background = c; }
-  RGBColor getForeground(void) const { return foreground; }
-  RGBColor getBackground(void) const { return background; }
-
-  void setLinkForeground(const RGBColor& c) { linkForeground = c; }
-  void setLinkBackground(const RGBColor& c) { linkBackground = c; }
-  RGBColor getLinkForeground(void) const { return linkForeground; }
-  RGBColor getLinkBackground(void) const { return linkBackground; }
-
-  void setSelectForeground(const RGBColor& c) { selectForeground = c; }
-  void setSelectBackground(const RGBColor& c) { selectBackground = c; }
-  RGBColor getSelectForeground(void) const { return selectForeground; }
-  RGBColor getSelectBackground(void) const { return selectBackground; }
+  bool has(const String&) const;
+  void set(const String&, const String&);
+  String getString(const SmartPtr<class AbstractLogger>&, const String&, const String&) const;
+  std::vector<String> getStringList(const String&) const;
+  int getInt(const SmartPtr<class AbstractLogger>&, const String&, int) const;
+  bool getBool(const SmartPtr<class AbstractLogger>&, const String&, bool) const;
+  RGBColor getRGBColor(const SmartPtr<class AbstractLogger>&, const String&, const RGBColor&) const;
+  Length getLength(const SmartPtr<class AbstractLogger>&, const String&, const Length&) const;
 
 private:
-  std::vector<std::string> dictionaries;
-  std::vector<ConfiguredShaper> shapers;
+  class Entry : public Object
+  {
+  protected:
+    Entry(const String&, const SmartPtr<Entry>&);
+    virtual ~Entry();
 
-  bool useTFM;
-  bool drawMissingGlyphs;
-  int verbosity;
-  unsigned fontSize;
+  public:
+    static SmartPtr<Entry> create(const String&, const SmartPtr<Entry>&);
 
-  RGBColor foreground;
-  RGBColor background;
+    String getValue(void) const { return value; }
+    String asString(void) const { return value; }
+    bool asInt(int&) const;
+    bool asBool(bool&) const;
+    bool asRGBColor(RGBColor&) const;
+    SmartPtr<Entry> getNext(void) const;
 
-  RGBColor linkForeground;
-  RGBColor linkBackground;
+  private:
+    String value;
+    SmartPtr<Entry> next;
+  };
 
-  RGBColor selectForeground;
-  RGBColor selectBackground;
+protected:
+  const SmartPtr<class Entry> get(const String&) const;
+
+private:
+  typedef HASH_MAP_NS::hash_map<String, SmartPtr<Entry>, StringHash, StringEq> Map;
+  Map map;
 };
 
 #endif // __Configuration_hh__

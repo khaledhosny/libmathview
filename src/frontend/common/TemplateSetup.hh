@@ -1,24 +1,24 @@
-// Copyright (C) 2000, Luca Padovani <luca.padovani@cs.unibo.it>.
-// 
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
+//
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
-// 
+//
 // GtkMathView is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with GtkMathView; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://cs.unibo.it/~lpadovan/mml-widget/, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
 #include <config.h>
 
@@ -35,41 +35,17 @@
 template <typename Model>
 struct TemplateSetup
 {
-  static bool
-  parseColor(const AbstractLogger& logger,
-	     const typename Model::Element& node, RGBColor& f, RGBColor& b)
+  static String
+  appendSectionName(const String& path, const String& name)
   {
-    const String fs = Model::getAttribute(node, "foreground");
-    const String bs = Model::getAttribute(node, "background");
-    
-    if (fs.empty() || bs.empty())
-      {
-	const String s_name = Model::getNodeName(Model::asNode(node));
-	logger.out(LOG_WARNING, "malformed `%s' element in configuration file", s_name.c_str());
-	return false;
-      }
-
-    SmartPtr<Value> fv = ATTRIBUTE_SIGNATURE(MathML, Token, mathcolor).parseValue(fs);
-    SmartPtr<Value> bv = ATTRIBUTE_SIGNATURE(MathML, Token, mathbackground).parseValue(bs);
-
-    if (!fv || !bv)
-      {
-	const String s_name = Model::getNodeName(Model::asNode(node));
-	logger.out(LOG_WARNING, "malformed color attribute in configuration file, `%s' element", s_name.c_str());
-	return false;
-      }
-
-    f = ToRGB(fv);
-    if (ToTokenId(bv) == T_TRANSPARENT)
-      b.set(0, 0, 0, 0);
+    if (path.empty())
+      return name;
     else
-      b = ToRGB(bv);
-
-    return true;
+      return path + "/" + name;
   }
 
   static void
-  parse(const AbstractLogger& logger, Configuration& conf, const typename Model::Element& node)
+  parse(const AbstractLogger& logger, Configuration& conf, const typename Model::Element& node, const String& path)
   {
     for (typename Model::ElementIterator iter(node); iter.more(); iter.next())
       {
@@ -77,84 +53,25 @@ struct TemplateSetup
 	assert(elem);
 	const String name = Model::getNodeName(Model::asNode(elem));
 
-	if (name == "logger")
+	if (name == "section")
 	  {
-	    const String attr = Model::getAttribute(elem, "verbosity");
-	    if (attr.empty())
-	      logger.out(LOG_WARNING, "malformed `logger' element, cannot find `verbosity' attribute");
-	    else
-	      {
-		logger.setLogLevel(LogLevelId(atoi(attr.c_str())));
-		logger.out(LOG_DEBUG, "logger verbosity set to %d", logger.getLogLevel());
-	      }
+	    const String sectionName = Model::getAttribute(elem, "name");
+	    parse(logger, conf, elem, appendSectionName(path, sectionName));
 	  }
-	else if (name == "dictionary-path")
+	else if (name == "key")
 	  {
-	    const String path = Model::getElementValue(elem);
-	    if (!path.empty())
-	      {
-		logger.out(LOG_DEBUG, "found dictionary path `%s'", path.c_str());
-		conf.addDictionary(path);
-	      }
-	  } 
-	else if (name == "font-size")
-	  {
-	    const String attr = Model::getAttribute(elem, "size");
-	    if (attr.empty())
-	      logger.out(LOG_WARNING, "malformed `font-size' element, cannot find `size' attribute");
-	    else
-	      {
-		conf.setFontSize(atoi(attr.c_str()));
-		logger.out(LOG_DEBUG, "default font size set to %d points", conf.getFontSize());
-	      }
-	  } 
-	else if (name == "color")
-	  {
-	    RGBColor f;
-	    RGBColor b;
-	    if (parseColor(logger, elem, f, b))
-	      {
-		conf.setForeground(f); 
-		conf.setBackground(b);
-	      }
-	  }
-	else if (name == "link-color")
-	  {
-	    RGBColor f;
-	    RGBColor b;
-	    if (parseColor(logger, elem, f, b))
-	      {
-		conf.setLinkForeground(f);
-		conf.setLinkBackground(b);
-	      }
-	  }
-	else if (name == "select-color")
-	  {
-	    RGBColor f;
-	    RGBColor b;
-	    if (parseColor(logger, elem, f, b))
-	      {
-		conf.setSelectForeground(f);
-		conf.setSelectBackground(b);
-	      }
-	  }
-	else if (name == "tfm")
-	  {
-	    const String attr = Model::getAttribute(elem, "enabled");
-	    conf.setUseTFM(attr == "yes");
-	  }
-	else if (name == "shaper")
-	  {
-	    const String shaperName = Model::getAttribute(elem, "name");
-	    if (shaperName.empty() || shaperName.length() == 0)
-	      logger.out(LOG_WARNING, "malformed `shaper' element, unspecified or empty `name' attribute");
-	    else
-	      conf.addShaper(shaperName, Model::getAttribute(elem, "backend"));
+	    const String keyName = Model::getAttribute(elem, "name");
+	    const String keyValue = Model::getElementValue(elem);
+	    conf.set(appendSectionName(path, keyName), keyValue);
 	  }
 	else
 	  logger.out(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());
       } 
   }
+
+  static void
+  parse(const AbstractLogger& logger, Configuration& conf, const typename Model::Element& node)
+  { parse(logger, conf, node, ""); }
 
   static void
   getAttribute(const typename Model::Element& node, const AttributeSignature& signature,
