@@ -37,6 +37,7 @@
 #include "Configuration.hh"
 #include "libxml2_reader_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
+#include "SVG_Backend.hh"
 #include "SVG_MathGraphicDevice.hh"
 #include "SVG_StreamRenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
@@ -331,8 +332,9 @@ main(int argc, char* argv[])
   SmartPtr<AbstractLogger> logger = Logger::create();
   logger->setLogLevel(LogLevelId(logLevel));
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
-  SmartPtr<SVG_MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(logger, configuration);
   if (logLevelSet) logger->setLogLevel(LogLevelId(logLevel));
+  SmartPtr<Backend> backend = SVG_Backend::create(logger, configuration);
+  SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
 
   logger->out(LOG_INFO, "Font size : %f", fontSize);

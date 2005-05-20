@@ -64,11 +64,12 @@ typedef gmetadom_MathView MathView;
 #include "MathMLElement.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "MathMLNamespaceContext.hh"
-#include "Gtk_MathGraphicDevice.hh"
 #if ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
-#include "Gtk_BoxGraphicDevice.hh"
 #endif // ENABLE_BOXML
+#include "MathGraphicDevice.hh"
+#include "BoxGraphicDevice.hh"
+#include "Gtk_Backend.hh"
 #include "Gtk_RenderingContext.hh"
 #include "Gtk_WrapperArea.hh"
 
@@ -118,10 +119,7 @@ struct _GtkMathViewClass
   RGBColor defaultSelectBackground;
   Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
-  Gtk_MathGraphicDevice* math_graphic_device;
-#if defined(ENABLE_BOXML)
-  Gtk_BoxGraphicDevice* box_graphic_device;
-#endif // ENABLE_BOXML
+  Gtk_Backend* backend;
 };
 
 struct _GtkMathView
@@ -439,15 +437,9 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   dictionary->ref();
   math_view_class->dictionary = dictionary;
 
-  SmartPtr<Gtk_MathGraphicDevice> mathGraphicDevice = Gtk_MathGraphicDevice::create(logger, configuration);
-  mathGraphicDevice->ref();
-  math_view_class->math_graphic_device = mathGraphicDevice;
-
-#if defined(ENABLE_BOXML)
-  SmartPtr<Gtk_BoxGraphicDevice> boxGraphicDevice = Gtk_BoxGraphicDevice::create();
-  boxGraphicDevice->ref();
-  math_view_class->box_graphic_device = boxGraphicDevice;
-#endif // ENABLE_BOXML
+  SmartPtr<Gtk_Backend> backend = Gtk_Backend::create(logger, configuration);
+  backend->ref();
+  math_view_class->backend = backend;
 }
 
 static void
@@ -455,18 +447,10 @@ gtk_math_view_base_class_finalize(GtkMathViewClass* math_view_class)
 {
   g_return_if_fail(math_view_class != NULL);
 
-#if defined(ENABLE_BOXML)
-  if (math_view_class->box_graphic_device)
+  if (math_view_class->backend)
     {
-      math_view_class->box_graphic_device->unref();
-      math_view_class->box_graphic_device = 0;
-    }
-#endif // ENABLE_BOXML
-
-  if (math_view_class->math_graphic_device)
-    {
-      math_view_class->math_graphic_device->unref();
-      math_view_class->math_graphic_device = 0;
+      math_view_class->backend->unref();
+      math_view_class->backend = 0;
     }
 
   if (math_view_class->dictionary)
@@ -715,9 +699,9 @@ gtk_math_view_init(GtkMathView* math_view)
 
   view->setLogger(math_view_class->logger);
   view->setOperatorDictionary(math_view_class->dictionary);
-  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->math_graphic_device));
+  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));
 #if ENABLE_BOXML
-  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, math_view_class->box_graphic_device));
+  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, math_view_class->backend->getBoxGraphicDevice()));
 #endif // ENABLE_BOXML
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
