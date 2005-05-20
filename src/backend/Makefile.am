@@ -16,7 +16,7 @@ SUBDIRS = \
 noinst_LTLIBRARIES = libmathview_backend.la
 
 if COND_SVG
-MAYBE_SVG_LIBADD = $(top_builddir)/src/backend/svg/libbackend_svg.la
+MAYBE_SVG_LIBADD = $(top_builddir)/src/backend/svg/libmathview_backend_svg.la
 else
 MAYBE_SVG_LIBADD = $(NULL)
 endif

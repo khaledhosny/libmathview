@@ -178,7 +178,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   $(NULL)
 
-libbackend_common_la_LIBADD = \
+libmathview_backend_common_la_LIBADD = \
   $(MAYBE_LIBTFM) \
   $(NULL)
 
