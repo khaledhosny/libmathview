@@ -42,6 +42,11 @@ Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice(const SmartPtr<AbstractLogger>& logge
 Gtk_BoxGraphicDevice::~Gtk_BoxGraphicDevice()
 { }
 
+SmartPtr<Gtk_BoxGraphicDevice>
+Gtk_BoxGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
+			     const SmartPtr<Configuration>& conf)
+{ return new Gtk_BoxGraphicDevice(logger, conf); }
+
 void
 Gtk_BoxGraphicDevice::setFactory(const SmartPtr<Gtk_AreaFactory>& f)
 {
@@ -82,7 +87,7 @@ Gtk_BoxGraphicDevice::string(const FormattingContext& context,
       pango_layout_set_attributes(layout, attrList);
 
       // set attributes...
-      return factory->pangoLayout(layout);
+      return gtk_factory->pangoLayout(layout);
     }
 }
 
@@ -168,7 +173,7 @@ Gtk_BoxGraphicDevice::paragraph(const FormattingContext& context,
 //   std::cerr << "the final box will be " << finalBox << " the first line ascent being " << first_line_ascent << std::endl;
 
   std::vector<BoxedLayoutArea::XYArea> c;
-  c.push_back(BoxedLayoutArea::XYArea(scaled::zero(), scaled::zero(), factory->pangoLayout(layout)));
+  c.push_back(BoxedLayoutArea::XYArea(scaled::zero(), scaled::zero(), getFactory()->pangoLayout(layout)));
   for (std::vector<BoxedParagraph::Object>::const_iterator obj = p.begin(); obj != p.end(); obj++)
     if ((*obj).area)
       {
@@ -200,7 +205,7 @@ Gtk_BoxGraphicDevice::paragraph(const FormattingContext& context,
 
       }
   
-  return factory->boxedLayout(finalBox, c);
+  return getFactory()->boxedLayout(finalBox, c);
 }
 #endif
 
@@ -208,6 +213,6 @@ AreaRef
 Gtk_BoxGraphicDevice::wrapper(const FormattingContext& context,
 			      const AreaRef& base) const
 {
-  return factory->wrapper(base, base->box(), context.getBoxMLElement());
+  return gtk_factory->wrapper(base, base->box(), context.getBoxMLElement());
 }
 

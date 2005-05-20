@@ -40,8 +40,6 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_InkArea.cc \
   Gtk_InkArea.hh \
   Gtk_MathGraphicDevice.cc \
-  Gtk_MathGraphicDevice.cc \
-  Gtk_MathGraphicDevice.hh \
   Gtk_MathGraphicDevice.hh \
   Gtk_PangoFontManager.cc \
   Gtk_PangoFontManager.hh \

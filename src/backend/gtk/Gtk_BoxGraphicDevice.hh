@@ -35,8 +35,7 @@ protected:
   virtual ~Gtk_BoxGraphicDevice();
 
 public:
-  static SmartPtr<Gtk_BoxGraphicDevice> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&)
-  { return new Gtk_BoxGraphicDevice(); }
+  static SmartPtr<Gtk_BoxGraphicDevice> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
 
   virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
   virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const;

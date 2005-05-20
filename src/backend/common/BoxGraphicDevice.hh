@@ -34,12 +34,7 @@ protected:
   virtual ~BoxGraphicDevice();
 
 public:
-  virtual SmartPtr<class AreaFactory> getFactory(void) const = 0;
-
-  // Length evaluation, fundamental properties
-
   virtual scaled ex(const class FormattingContext&) const;
-
   virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const = 0;
   virtual AreaRef dummy(const class FormattingContext&) const;
   virtual AreaRef wrapper(const class FormattingContext&, const AreaRef&) const = 0;
