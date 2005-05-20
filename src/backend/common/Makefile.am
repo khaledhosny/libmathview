@@ -86,12 +86,10 @@ libmathview_backend_common_la_SOURCES = \
   ColorArea.cc \
   ComputerModernShaper.cc \
   FormattingContext.cc \
-  FormattingContext.hh \
   GlyphArea.cc \
   GlyphStringArea.cc \
   GlyphWrapperArea.cc \
   GraphicDevice.cc \
-  GraphicDevice.hh \
   HideArea.cc \
   HorizontalArrayArea.cc \
   HorizontalFillerArea.cc \
@@ -101,7 +99,6 @@ libmathview_backend_common_la_SOURCES = \
   InkArea.cc \
   LinearContainerArea.cc \
   MathGraphicDevice.cc \
-  MathGraphicDevice.hh \
   NullShaper.cc \
   OverlapArrayArea.cc \
   Shaper.cc \
@@ -135,10 +132,12 @@ mathview_HEADERS = \
   ComputerModernShaper.hh \
   ContainerArea.hh \
   FillerArea.hh \
+  FormattingContext.hh \
   GlyphArea.hh \
   GlyphSpec.hh \
   GlyphStringArea.hh \
   GlyphWrapperArea.hh \
+  GraphicDevice.hh \
   HideArea.hh \
   HorizontalArrayArea.hh \
   HorizontalFillerArea.hh \
@@ -147,6 +146,7 @@ mathview_HEADERS = \
   IgnoreArea.hh	\
   InkArea.hh \
   LinearContainerArea.hh \
+  MathGraphicDevice.hh \
   NullShaper.hh \
   OverlapArrayArea.hh \
   RenderingContext.hh \
