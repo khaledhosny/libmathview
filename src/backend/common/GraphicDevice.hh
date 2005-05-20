@@ -26,21 +26,33 @@
 #include "Object.hh"
 #include "Length.hh"
 #include "scaled.hh"
+#include "AreaFactory.hh"
 
 class GraphicDevice : public Object
 {
 protected:
-  GraphicDevice(void);
+  GraphicDevice(const SmartPtr<class AbstractLogger>&);
   virtual ~GraphicDevice();
 
 public:
-  // Length evaluation, fundamental properties
+  SmartPtr<class AbstractLogger> getLogger(void) const;
 
+  virtual void setFactory(const SmartPtr<AreaFactory>&);
+  SmartPtr<AreaFactory> getFactory(void) const { return factory; }
+  virtual void setShaperManager(const SmartPtr<class ShaperManager>&);
+  SmartPtr<ShaperManager> getShaperManager(void) const;
+
+  // Length evaluation, fundamental properties
   virtual double dpi(const class FormattingContext&) const;
   virtual scaled evaluate(const class FormattingContext&, const Length&, const scaled&) const;
   virtual scaled em(const class FormattingContext&) const;
   virtual scaled ex(const class FormattingContext&) const = 0;
   virtual scaled defaultLineThickness(const class FormattingContext&) const;
+
+private:
+  SmartPtr<class AbstractLogger> logger;
+  SmartPtr<AreaFactory> factory;
+  SmartPtr<class ShaperManager> shaperManager;
 };
 
 #endif // __GraphicDevice_hh__

@@ -11,9 +11,9 @@ endif
 
 SUBDIRS = $(MAYBE_TFM_SUBDIRS)
 
-noinst_LTLIBRARIES = libcommon.la
+noinst_LTLIBRARIES = libbackend_common.la
 
-libcommon_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libbackend_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 if COND_BOXML
 MAYBE_BOXML_S = \
@@ -74,11 +74,12 @@ MAYBE_T1LIB_S = $(NULL)
 MAYBE_T1LIB_H = $(NULL)
 endif
 
-libcommon_la_SOURCES = \
+libbackend_common_la_SOURCES = \
   Area.cc \
   AreaFactory.cc \
   AreaId.cc \
   AreaIdAux.cc \
+  Backend.cc \
   BinContainerArea.cc \
   BoxArea.cc \
   BoxedLayoutArea.cc \
@@ -125,6 +126,7 @@ mathview_HEADERS = \
   AreaFactory.hh \
   AreaId.hh \
   AreaIdAux.hh \
+  Backend.hh \
   BinContainerArea.hh \
   BoxArea.hh \
   BoxedLayoutArea.hh \
@@ -176,7 +178,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   $(NULL)
 
-libcommon_la_LIBADD = \
+libbackend_common_la_LIBADD = \
   $(MAYBE_LIBTFM) \
   $(NULL)
 

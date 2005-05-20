@@ -23,89 +23,17 @@
 #include <config.h>
 
 #include <cassert>
-#include <map>
 
 #include "AbstractLogger.hh"
 #include "Configuration.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
-#include "Gtk_XftFontManager.hh"
-#include "Gtk_DefaultPangoShaper.hh"
-#include "Gtk_PangoShaper.hh"
-#include "Gtk_AdobeShaper.hh"
-#if HAVE_LIBT1
-#include "t1lib_T1FontManager.hh"
-#if HAVE_TFM
-#include "t1lib_TFM_T1FontManager.hh"
-#endif // HAVE_TFM
-#include "Gtk_T1ComputerModernShaper.hh"
-#endif // HAVE_LIBT1
-#include "SpaceShaper.hh"
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
 
 Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-  : MathGraphicDevice(l), gtk_factory(Gtk_AreaFactory::create())
-{
-  setFactory(gtk_factory);
-
-  GObjectPtr<PangoContext> context = gdk_pango_context_get();
-
-  std::multimap<int, SmartPtr<Shaper> > shaperSet;
-  if (conf->getBool(l, "gtk-backend/pango-default-shaper/enabled", true))
-    {
-      SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
-      defaultPangoShaper->setPangoContext(context);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-default-shaper/priority", 0), defaultPangoShaper));
-    }
-
-  if (conf->getBool(l, "gtk-backend/space-shaper/enabled", false))
-    {
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/space-shaper/priority", 0), SpaceShaper::create()));
-    }
-
-  if (conf->getBool(l, "gtk-backend/pango-shaper/enabled", false))
-    {
-      SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
-      pangoShaper->setPangoContext(context);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-shaper/priority", 0), pangoShaper));
-    }
-
-  if (conf->getBool(l, "gtk-backend/adobe-shaper/enabled", false))
-    {
-      // FIXME: the XFT font manager works really bad
-      SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
-      SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-      adobeShaper->setFontManager(xftFontManager);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/adobe-shaper/priority", 0), adobeShaper));
-    }
-
-  if (conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/enabled", false))
-    {
-      const bool useTFM = conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/use-tfm", false);
-#if HAVE_LIBT1
-      SmartPtr<t1lib_T1FontManager> t1FontManager;
-#if HAVE_TFM
-      if (useTFM)
-	t1FontManager = t1lib_TFM_T1FontManager::create(TFMManager::create());
-      else
-	t1FontManager = t1lib_T1FontManager::create();
-#else
-      t1FontManager = t1lib_T1FontManager::create();
-#endif // HAVE_TFM
-      SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create();
-      cmShaper->setFontManager(t1FontManager);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/type1-computer-modern-shaper/priority", 0), cmShaper));
-#else
-      getLogger()->out(LOG_WARNING, "t1lib support has not been compiled in, ");
-#endif // HAVE_LIBT1
-    }
-
-  for (std::multimap<int, SmartPtr<Shaper> >::const_iterator p = shaperSet.begin();
-       p != shaperSet.end();
-       p++)
-    getShaperManager()->registerShaper(p->second);
-}
+  : MathGraphicDevice(l)
+{ }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
 { }
@@ -113,8 +41,13 @@ Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
 SmartPtr<Gtk_MathGraphicDevice>
 Gtk_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
 			      const SmartPtr<Configuration>& conf)
-{ 
-  return new Gtk_MathGraphicDevice(logger, conf);
+{ return new Gtk_MathGraphicDevice(logger, conf); }
+
+void
+Gtk_MathGraphicDevice::setFactory(const SmartPtr<Gtk_AreaFactory>& f)
+{
+  MathGraphicDevice::setFactory(f);
+  gtk_factory = f;
 }
 
 AreaRef

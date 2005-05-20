@@ -31,21 +31,21 @@
 class Gtk_BoxGraphicDevice : public BoxGraphicDevice
 {
 protected:
-  Gtk_BoxGraphicDevice(void);
+  Gtk_BoxGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
   virtual ~Gtk_BoxGraphicDevice();
 
 public:
-  static SmartPtr<Gtk_BoxGraphicDevice> create(void)
+  static SmartPtr<Gtk_BoxGraphicDevice> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&)
   { return new Gtk_BoxGraphicDevice(); }
 
-  virtual SmartPtr<class AreaFactory> getFactory(void) const;
+  virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
   virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const;
   virtual AreaRef dummy(const class FormattingContext&) const;
   virtual AreaRef wrapper(const class FormattingContext&, const AreaRef&) const;
 
 private:
   GObjectPtr<PangoContext> pango_context;
-  SmartPtr<class Gtk_AreaFactory> factory;
+  SmartPtr<class Gtk_AreaFactory> gtk_factory;
 };
 
 #endif // __Gtk_MathGraphicDevice_hh__

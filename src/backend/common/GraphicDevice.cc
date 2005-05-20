@@ -22,14 +22,33 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
 #include "FormattingContext.hh"
 #include "GraphicDevice.hh"
+#include "ShaperManager.hh"
 
-GraphicDevice::GraphicDevice()
+GraphicDevice::GraphicDevice(const SmartPtr<AbstractLogger>& l)
+  : logger(l)
 { }
 
 GraphicDevice::~GraphicDevice()
 { }
+
+SmartPtr<AbstractLogger>
+GraphicDevice::getLogger() const
+{ return logger; }
+
+void
+GraphicDevice::setFactory(const SmartPtr<AreaFactory>& f)
+{ factory = f; }
+
+void
+GraphicDevice::setShaperManager(const SmartPtr<ShaperManager>& sm)
+{ shaperManager = sm; }
+
+SmartPtr<ShaperManager>
+GraphicDevice::getShaperManager() const
+{ return shaperManager; }
 
 scaled
 GraphicDevice::evaluate(const FormattingContext& context,

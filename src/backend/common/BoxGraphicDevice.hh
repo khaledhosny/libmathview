@@ -30,7 +30,7 @@
 class BoxGraphicDevice : public GraphicDevice
 {
 protected:
-  BoxGraphicDevice(void);
+  BoxGraphicDevice(const SmartPtr<class AbstractLogger>&);
   virtual ~BoxGraphicDevice();
 
 public:

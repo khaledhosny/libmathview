@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2004, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -22,35 +22,41 @@
 
 #include <config.h>
 
-#include <cassert>
-
+#include "Backend.hh"
+#include "ShaperManager.hh"
+#include "MathGraphicDevice.hh"
 #include "BoxGraphicDevice.hh"
-#include "FormattingContext.hh"
-#include "BoxMLElement.hh"
-#include "AreaFactory.hh"
 
-BoxGraphicDevice::BoxGraphicDevice(const SmartPtr<AbstractLogger>& logger)
-  : GraphicDevice(logger)
+Backend::Backend(const SmartPtr<Configuration>&)
+  : shaperManager(ShaperManager::create())
 { }
 
-BoxGraphicDevice::~BoxGraphicDevice()
-{ }
-
-scaled
-BoxGraphicDevice::ex(const FormattingContext& context) const
+Backend::~Backend()
 {
-  return string(context, "x", scaled::min())->box().height;
+  shaperManager->unregisterShapers();
 }
 
-AreaRef
-BoxGraphicDevice::wrapper(const FormattingContext&, const AreaRef& area) const
+void
+Backend::setDevices(const SmartPtr<MathGraphicDevice>& mgd,
+		    const SmartPtr<BoxGraphicDevice>& bgd)
 {
-  return area;
+  mathGraphicDevice = mgd;
+  boxGraphicDevice = bgd;
+  if (mathGraphicDevice)
+    mathGraphicDevice->setShaperManager(shaperManager);
+  if (boxGraphicDevice)
+    boxGraphicDevice->setShaperManager(shaperManager);
 }
 
-AreaRef
-BoxGraphicDevice::dummy(const FormattingContext&) const
-{
-  //assert(false);
-  return getFactory()->horizontalSpace(scaled::zero());
-}
+SmartPtr<ShaperManager>
+Backend::getShaperManager() const
+{ return shaperManager; }
+
+SmartPtr<MathGraphicDevice>
+Backend::getMathGraphicDevice() const
+{ return mathGraphicDevice; }
+
+SmartPtr<BoxGraphicDevice>
+Backend::getBoxGraphicDevice() const
+{ return boxGraphicDevice; }
+

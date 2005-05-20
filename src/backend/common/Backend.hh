@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,29 +17,32 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __Gtk_MathGraphicDevice_hh__
-#define __Gtk_MathGraphicDevice_hh__
+#ifndef __Backend_hh__
+#define __Backend_hh__
 
-#include "MathGraphicDevice.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
 
-class Gtk_MathGraphicDevice : public MathGraphicDevice
+class Backend : public Object
 {
 protected:
-  Gtk_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
-  virtual ~Gtk_MathGraphicDevice();
+  Backend(const SmartPtr<class Configuration>&);
+  virtual ~Backend();
 
 public:
-  static SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
-						const SmartPtr<class Configuration>&);
-
-  virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
-  virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
+  void setDevices(const SmartPtr<class MathGraphicDevice>&,
+		  const SmartPtr<class BoxGraphicDevice>&);
+  SmartPtr<class ShaperManager> getShaperManager(void) const;
+  virtual SmartPtr<class MathGraphicDevice> getMathGraphicDevice(void) const;
+  virtual SmartPtr<class BoxGraphicDevice> getBoxGraphicDevice(void) const;
 
 private:
-  SmartPtr<class Gtk_AreaFactory> gtk_factory;
+  SmartPtr<class ShaperManager> shaperManager;
+  SmartPtr<class MathGraphicDevice> mathGraphicDevice;
+  SmartPtr<class BoxGraphicDevice> boxGraphicDevice;
 };
 
-#endif // __Gtk_MathGraphicDevice_hh__
+#endif // __Backend_hh__

@@ -24,27 +24,19 @@
 
 #include <cassert>
 
-#include "AbstractLogger.hh"
 #include "AreaFactory.hh"
 #include "MathMLElement.hh"
 #include "MathGraphicDevice.hh"
 #include "MathVariantMap.hh"
 #include "FormattingContext.hh"
+#include "ShaperManager.hh"
 
-MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& l)
-  : logger(l), shaperManager(ShaperManager::create())
+MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& logger)
+  : GraphicDevice(logger)
 { }
 
 MathGraphicDevice::~MathGraphicDevice()
-{
-  shaperManager->unregisterShapers();
-}
-
-SmartPtr<AbstractLogger>
-MathGraphicDevice::getLogger() const
-{
-  return logger;
-}
+{ }
 
 scaled
 MathGraphicDevice::ex(const FormattingContext& context) const
@@ -66,7 +58,7 @@ MathGraphicDevice::axis(const FormattingContext& context) const
 AreaRef
 MathGraphicDevice::wrapper(const FormattingContext&, const AreaRef& area) const
 {
-  return factory->box(area, area->box());
+  return getFactory()->box(area, area->box());
 }
 
 AreaRef
@@ -183,16 +175,16 @@ MathGraphicDevice::fraction(const FormattingContext& context,
 
   std::vector<AreaRef> v;
 
-  AreaRef s = factory->verticalSpace(context.getDisplayStyle() ? RULE * 3 : RULE, scaled::zero());
+  AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle() ? RULE * 3 : RULE, scaled::zero());
 
   v.reserve(5);
   v.push_back(denominator);
   v.push_back(s);
-  v.push_back(factory->horizontalLine(evaluate(context, lineThickness, RULE), context.getColor()));
+  v.push_back(getFactory()->horizontalLine(evaluate(context, lineThickness, RULE), context.getColor()));
   v.push_back(s);
   v.push_back(numerator);
 
-  return factory->shift(factory->verticalArray(v, 2), axis(context));
+  return getFactory()->shift(getFactory()->verticalArray(v, 2), axis(context));
 }
 
 AreaRef
@@ -210,7 +202,7 @@ MathGraphicDevice::bevelledFraction(const FormattingContext& context,
   h.push_back(stretchStringV(context, "/", std::max(n.height, d.height), std::max(n.depth, d.depth)));
   h.push_back(denominator);
   
-  return factory->horizontalArray(h);
+  return getFactory()->horizontalArray(h);
 }
 
 AreaRef
@@ -226,18 +218,18 @@ MathGraphicDevice::radical(const FormattingContext& context,
   std::vector<AreaRef> v;
   v.reserve(3);
   v.push_back(base);
-  v.push_back(factory->verticalSpace(RULE, 0));
-  v.push_back(factory->horizontalLine(RULE, context.getColor()));
+  v.push_back(getFactory()->verticalSpace(RULE, 0));
+  v.push_back(getFactory()->horizontalLine(RULE, context.getColor()));
 
-  AreaRef baseArea = factory->verticalArray(v, 0);
+  AreaRef baseArea = getFactory()->verticalArray(v, 0);
 
   std::vector<AreaRef> h;
   h.reserve(index ? 3 : 2);
   if (index) h.push_back(index);
-  h.push_back(factory->shift(rootArea, baseArea->box().height - rootArea->box().height));
+  h.push_back(getFactory()->shift(rootArea, baseArea->box().height - rootArea->box().height));
   h.push_back(baseArea);
 
-  return factory->horizontalArray(h);
+  return getFactory()->horizontalArray(h);
 }
 
 void
@@ -325,18 +317,18 @@ MathGraphicDevice::script(const FormattingContext& context,
 
   std::vector<AreaRef> o;
   o.reserve(2);
-  if (subScript) o.push_back(factory->shift(subScript, -subScriptShift));
-  if (superScript) o.push_back(factory->shift(superScript, superScriptShift));
+  if (subScript) o.push_back(getFactory()->shift(subScript, -subScriptShift));
+  if (superScript) o.push_back(getFactory()->shift(superScript, superScriptShift));
 
   std::vector<AreaRef> h;
   h.reserve(2);
   h.push_back(base);
   if (o.size() > 1)
-    h.push_back(factory->overlapArray(o));
+    h.push_back(getFactory()->overlapArray(o));
   else
     h.push_back(o.front());
 
-  return factory->horizontalArray(h);
+  return getFactory()->horizontalArray(h);
 }
 
 AreaRef
@@ -392,11 +384,11 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
     {
       std::vector<AreaRef> o;
       o.reserve(2);
-      if (*preP) o.push_back(factory->right(factory->shift(*preP, -subScriptShift)));
-      if (*preQ) o.push_back(factory->right(factory->shift(*preQ, superScriptShift)));
+      if (*preP) o.push_back(getFactory()->right(getFactory()->shift(*preP, -subScriptShift)));
+      if (*preQ) o.push_back(getFactory()->right(getFactory()->shift(*preQ, superScriptShift)));
 
       if (o.size() > 1)
-	h.push_back(factory->overlapArray(o));
+	h.push_back(getFactory()->overlapArray(o));
       else
 	h.push_back(o.front());
     }
@@ -409,16 +401,16 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
     {
       std::vector<AreaRef> o;
       o.reserve(2);
-      if (*postP) o.push_back(factory->shift(*postP, -subScriptShift));
-      if (*postQ) o.push_back(factory->shift(*postQ, superScriptShift));
+      if (*postP) o.push_back(getFactory()->shift(*postP, -subScriptShift));
+      if (*postQ) o.push_back(getFactory()->shift(*postQ, superScriptShift));
 
       if (o.size() > 1)
-	h.push_back(factory->overlapArray(o));
+	h.push_back(getFactory()->overlapArray(o));
       else
 	h.push_back(o.front());
     }
 
-  return factory->horizontalArray(h);
+  return getFactory()->horizontalArray(h);
 }
 
 AreaRef
@@ -429,11 +421,11 @@ MathGraphicDevice::underOver(const FormattingContext& context,
 {
   std::vector<AreaRef> v;
   v.reserve(3);
-  if (underScript) v.push_back(factory->center(underScript));
-  v.push_back(factory->center(base));
-  if (overScript) v.push_back(factory->center(overScript));
+  if (underScript) v.push_back(getFactory()->center(underScript));
+  v.push_back(getFactory()->center(base));
+  if (overScript) v.push_back(getFactory()->center(overScript));
 
-  return factory->verticalArray(v, underScript ? 1 : 0);
+  return getFactory()->verticalArray(v, underScript ? 1 : 0);
 }
 
 AreaRef
@@ -450,26 +442,26 @@ MathGraphicDevice::enclose(const FormattingContext& context,
 
       AreaRef res = base;
 
-      AreaRef vobj = factory->verticalLine(defaultLineThickness(context), context.getColor());
-      AreaRef hobj = factory->horizontalLine(defaultLineThickness(context), context.getColor());
+      AreaRef vobj = getFactory()->verticalLine(defaultLineThickness(context), context.getColor());
+      AreaRef hobj = getFactory()->horizontalLine(defaultLineThickness(context), context.getColor());
 
       if (notation == "box" || notation == "longdiv" || notation == "left") c.push_back(vobj);
       c.push_back(res);
       if (notation == "box" || notation == "actuarial" || notation == "right") c.push_back(vobj);
-      if (c.size() > 1) res = factory->horizontalArray(c);
+      if (c.size() > 1) res = getFactory()->horizontalArray(c);
 
       c.clear();
       if (notation == "box" || notation == "bottom") c.push_back(hobj);
       c.push_back(res);
       if (notation == "box" || notation == "longdiv" || notation == "actuarial" || notation == "top") c.push_back(hobj);
-      if (c.size() > 1) res = factory->verticalArray(c, (notation == "top") ? 0 : 1);
+      if (c.size() > 1) res = getFactory()->verticalArray(c, (notation == "top") ? 0 : 1);
 
       c.clear();
       c.push_back(res);
-      if (notation == "verticalstrike") c.push_back(factory->center(vobj));
-      else if (notation == "horizontalstrike") c.push_back(factory->middle(hobj));
+      if (notation == "verticalstrike") c.push_back(getFactory()->center(vobj));
+      else if (notation == "horizontalstrike") c.push_back(getFactory()->middle(hobj));
       else if (notation == "baselinestrike") c.push_back(hobj);
-      if (c.size() > 1) res = factory->overlapArray(c);
+      if (c.size() > 1) res = getFactory()->overlapArray(c);
 
       return res;
     }

@@ -30,6 +30,7 @@
 #include "MathMLElement.hh"
 #include "MathVariantMap.hh"
 #include "ShapingContext.hh"
+#include "ShaperManager.hh"
 
 struct HStretchyChar
 {

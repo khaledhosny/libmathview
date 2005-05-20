@@ -24,8 +24,6 @@
 #define __MathGraphicDevice_hh__
 
 #include "GraphicDevice.hh"
-#include "AreaFactory.hh"
-#include "ShaperManager.hh"
 
 class MathGraphicDevice : public GraphicDevice
 {
@@ -34,11 +32,6 @@ protected:
   virtual ~MathGraphicDevice();
 
 public:
-  SmartPtr<class AbstractLogger> getLogger(void) const;
-  void setFactory(const SmartPtr<AreaFactory>& f) { factory = f; }
-  SmartPtr<AreaFactory> getFactory(void) const { return factory; }
-  SmartPtr<ShaperManager> getShaperManager(void) const { return shaperManager; }
-
   // Length evaluation, fundamental properties
 
   virtual scaled axis(const class FormattingContext&) const;
@@ -105,11 +98,6 @@ protected:
 				    const BoundingBox& superScriptBox,
 				    const Length& superScriptMinShift,
 				    scaled& v, scaled& u) const;
-
-private:
-  SmartPtr<class AbstractLogger> logger;
-  SmartPtr<AreaFactory> factory;
-  SmartPtr<ShaperManager> shaperManager;
 };
 
 #endif // __MathGraphicDevice_hh__

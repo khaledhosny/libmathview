@@ -24,25 +24,29 @@
 
 #include <cassert>
 
+#include "AbstractLogger.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_BoxGraphicDevice.hh"
 #include "Gtk_RenderingContext.hh"
 #include "FormattingContext.hh"
 #include "BoxMLElement.hh"
+#include "Configuration.hh"
 
-Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice()
+Gtk_BoxGraphicDevice::Gtk_BoxGraphicDevice(const SmartPtr<AbstractLogger>& logger,
+					   const SmartPtr<Configuration>& conf)
+  : BoxGraphicDevice(logger)
 {
-  factory = Gtk_AreaFactory::create();
   pango_context = gdk_pango_context_get();
 }
 
 Gtk_BoxGraphicDevice::~Gtk_BoxGraphicDevice()
 { }
 
-SmartPtr<AreaFactory>
-Gtk_BoxGraphicDevice::getFactory() const
+void
+Gtk_BoxGraphicDevice::setFactory(const SmartPtr<Gtk_AreaFactory>& f)
 {
-  return factory;
+  BoxGraphicDevice::setFactory(f);
+  gtk_factory = f;
 }
 
 AreaRef

@@ -16,14 +16,14 @@ SUBDIRS = \
 noinst_LTLIBRARIES = libbackend.la
 
 if COND_SVG
-MAYBE_SVG_LIBADD = $(top_builddir)/src/backend/svg/libsvg.la
+MAYBE_SVG_LIBADD = $(top_builddir)/src/backend/svg/libbackend_svg.la
 else
 MAYBE_SVG_LIBADD = $(NULL)
 endif
 
 libbackend_la_LIBADD = \
-  $(top_builddir)/src/backend/gtk/libgtk.la \
-  $(top_builddir)/src/backend/common/libcommon.la \
+  $(top_builddir)/src/backend/gtk/libbackend_gtk.la \
+  $(top_builddir)/src/backend/common/libbackend_common.la \
   $(MAYBE_SVG_LIBADD) \
   $(NULL)
 
