@@ -110,7 +110,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
       cmShaper->setFontManager(t1FontManager);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/type1-computer-modern-shaper/priority", 0), cmShaper));
 #else
-      getLogger()->out(LOG_WARNING, "t1lib support has not been compiled in, ");
+      l->out(LOG_WARNING, "t1lib support has not been compiled in, ");
 #endif // HAVE_LIBT1
     }
 
