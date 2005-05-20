@@ -13,7 +13,7 @@ SUBDIRS = \
   $(MAYBE_SVG_SUBDIRS) \
   $(NULL)
 
-noinst_LTLIBRARIES = libbackend.la
+noinst_LTLIBRARIES = libmathview_backend.la
 
 if COND_SVG
 MAYBE_SVG_LIBADD = $(top_builddir)/src/backend/svg/libbackend_svg.la
@@ -21,11 +21,11 @@ else
 MAYBE_SVG_LIBADD = $(NULL)
 endif
 
-libbackend_la_LIBADD = \
-  $(top_builddir)/src/backend/gtk/libbackend_gtk.la \
-  $(top_builddir)/src/backend/common/libbackend_common.la \
+libmathview_backend_la_LIBADD = \
+  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
   $(MAYBE_SVG_LIBADD) \
+  $(top_builddir)/src/backend/common/libmathview_backend_common.la \
   $(NULL)
 
-libbackend_la_SOURCES =
+libmathview_backend_la_SOURCES = $(NULL)
 

@@ -1,7 +1,7 @@
 
 NULL =
 
-noinst_LTLIBRARIES = libbackend_gtk.la
+noinst_LTLIBRARIES = libmathview_backend_gtk.la
 
 if COND_BOXML
 MAYBE_BOXML_S = Gtk_BoxGraphicDevice.cc
@@ -25,7 +25,7 @@ MAYBE_T1_S = $(NULL)
 MAYBE_T1_H = $(NULL)
 endif
 
-libbackend_gtk_la_SOURCES = \
+libmathview_backend_gtk_la_SOURCES = \
   Gtk_AdobeShaper.cc \
   Gtk_AdobeShaper.hh \
   Gtk_AreaFactory.hh \

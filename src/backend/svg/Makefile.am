@@ -1,7 +1,7 @@
 
 NULL =
 
-noinst_LTLIBRARIES = libbackend_svg.la
+noinst_LTLIBRARIES = libmathview_backend_svg.la
 
 if COND_TFM
 MAYBE_TFM_S = \
@@ -18,7 +18,7 @@ MAYBE_TFM_S = $(NULL)
 MAYBE_TFM_H = $(NULL)
 endif
 
-libbackend_svg_la_SOURCES = \
+libmathview_backend_svg_la_SOURCES = \
   SVG_AreaFactory.hh \
   SVG_Backend.cc \
   SVG_Backend.hh \

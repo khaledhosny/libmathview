@@ -11,9 +11,9 @@ endif
 
 SUBDIRS = $(MAYBE_TFM_SUBDIRS)
 
-noinst_LTLIBRARIES = libbackend_common.la
+noinst_LTLIBRARIES = libmathview_backend_common.la
 
-libbackend_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_backend_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 if COND_BOXML
 MAYBE_BOXML_S = \
@@ -74,7 +74,7 @@ MAYBE_T1LIB_S = $(NULL)
 MAYBE_T1LIB_H = $(NULL)
 endif
 
-libbackend_common_la_SOURCES = \
+libmathview_backend_common_la_SOURCES = \
   Area.cc \
   AreaFactory.cc \
   AreaId.cc \

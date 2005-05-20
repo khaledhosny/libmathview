@@ -20,9 +20,7 @@ lib_LTLIBRARIES += libmathview_gmetadom.la
 endif
 
 MATHVIEW_LIBS = \
-  $(top_builddir)/src/backend/libbackend.la \
-  $(top_builddir)/src/engine/libengine.la \
-  $(top_builddir)/src/common/libcommon.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 libmathview_custom_reader_la_LIBADD = \
@@ -65,7 +63,8 @@ mathview_HEADERS = \
   custom_reader_MathView.hh \
   libxml2_reader_MathView.hh \
   libxml2_MathView.hh \
-  gmetadom_MathView.hh
+  gmetadom_MathView.hh \
+  $(NULL)
 
 INCLUDES = \
   $(XML_CFLAGS) \
