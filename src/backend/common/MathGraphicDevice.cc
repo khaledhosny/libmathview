@@ -76,7 +76,8 @@ AreaRef
 MathGraphicDevice::stretchedString(const FormattingContext& context, const String& str) const
 {
   static ShapedStretchyStringCache cache;
-  CachedShapedStretchyStringKey key(str, context.getSize(), context.getStretchH(), context.getStretchV());
+  CachedShapedStretchyStringKey key(str, context.getVariant(), context.getSize(),
+				    context.getStretchH(), context.getStretchV());
 #if 1
   std::pair<ShapedStretchyStringCache::iterator, bool> r = cache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
@@ -109,7 +110,7 @@ AreaRef
 MathGraphicDevice::unstretchedString(const FormattingContext& context, const String& str) const
 {
   static ShapedStringCache cache;
-  CachedShapedStringKey key(str, context.getSize());
+  CachedShapedStringKey key(str, context.getVariant(), context.getSize());
 
 #if 1
   std::pair<ShapedStringCache::iterator, bool> r = cache.insert(std::make_pair(key, AreaRef(0)));
@@ -211,22 +212,32 @@ MathGraphicDevice::radical(const FormattingContext& context,
 			   const AreaRef& index) const
 {
   const scaled RULE = defaultLineThickness(context);
-  UCS4String root(1, 0x221a);
-  BoundingBox baseBox = base->box();
-  AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + 2 * RULE, baseBox.depth);
-  
+  const UCS4String root(1, 0x221a);
+  const BoundingBox baseBox = base->box();
+  const AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + 2 * RULE, baseBox.depth);
+  const BoundingBox rootBox = rootArea->box();
+
   std::vector<AreaRef> v;
   v.reserve(3);
   v.push_back(base);
   v.push_back(getFactory()->verticalSpace(RULE, 0));
   v.push_back(getFactory()->horizontalLine(RULE, context.getColor()));
 
-  AreaRef baseArea = getFactory()->verticalArray(v, 0);
+  const AreaRef baseArea = getFactory()->verticalArray(v, 0);
 
   std::vector<AreaRef> h;
-  h.reserve(index ? 3 : 2);
-  if (index) h.push_back(index);
-  h.push_back(getFactory()->shift(rootArea, baseArea->box().height - rootArea->box().height));
+  h.reserve(index ? 4 : 2);
+  if (index)
+    {
+      const Length zero(0.0f, Length::PT_UNIT);
+      const BoundingBox indexBox = index->box();
+      scaled u;
+      scaled v;
+      calculateScriptShift(context, baseArea->box(), BoundingBox(), zero, indexBox, zero, v, u);
+      h.push_back(getFactory()->shift(index, u));
+      h.push_back(getFactory()->horizontalSpace(-rootBox.width / 2));
+    }
+  h.push_back(getFactory()->shift(rootArea, baseArea->box().height - rootBox.height));
   h.push_back(baseArea);
 
   return getFactory()->horizontalArray(h);

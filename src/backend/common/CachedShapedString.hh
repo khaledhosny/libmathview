@@ -27,32 +27,35 @@
 
 struct CachedShapedStringKey
 {
-  CachedShapedStringKey(const String& s, const scaled& sz)
-    : source(s), size(sz) { }
+  CachedShapedStringKey(const String& s, MathVariant v, const scaled& sz)
+    : source(s), variant(v), size(sz) { }
 
   bool operator==(const CachedShapedStringKey& key) const
-  { return source == key.source && size == key.size; }
+  { return source == key.source && variant == key.variant && size == key.size; }
 
   String source;
+  MathVariant variant;
   scaled size;
 };
 
 struct CachedShapedStringKeyHash
 {
   size_t operator()(const CachedShapedStringKey& key) const
-  { return StringHash()(key.source) ^ key.size.getValue(); }
+  { return StringHash()(key.source) ^ key.variant ^ key.size.getValue(); }
 };
 
 struct CachedShapedStretchyStringKey : public CachedShapedStringKey
 {
   CachedShapedStretchyStringKey(const String& s,
+				MathVariant v,
 				const scaled& sz,
 				const scaled& sh,
 				const scaled& sv)
-    : CachedShapedStringKey(s, sz), spanH(sh), spanV(sv) { }
+    : CachedShapedStringKey(s, v, sz), spanH(sh), spanV(sv) { }
 
   bool operator==(const CachedShapedStretchyStringKey& key) const
-  { return source == key.source && size == key.size && spanH == key.spanH && spanV == key.spanV; }
+  { return source == key.source && variant == key.variant && size == key.size
+      && spanH == key.spanH && spanV == key.spanV; }
 
   scaled spanH;
   scaled spanV;
@@ -61,7 +64,8 @@ struct CachedShapedStretchyStringKey : public CachedShapedStringKey
 struct CachedShapedStretchyStringKeyHash
 {
   size_t operator()(const CachedShapedStretchyStringKey& key) const
-  { return StringHash()(key.source) ^ key.size.getValue() ^ key.spanH.getValue() ^ key.spanV.getValue(); }
+  { return StringHash()(key.source) ^ key.variant ^ key.size.getValue()
+      ^ key.spanH.getValue() ^ key.spanV.getValue(); }
 };
 
 #endif // __CachedShapedString_hh__

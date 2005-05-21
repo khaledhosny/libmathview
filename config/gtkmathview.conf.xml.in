@@ -53,6 +53,59 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     </section>
   </section>
 
+<!--
+  <section name="fonts">
+    <section name="computer-modern">
+      <section name="cmr">
+        <key name="size">5</key>
+        <key name="size">6</key>
+        <key name="size">7</key>
+        <key name="size">8</key>
+        <key name="size">9</key>
+        <key name="size">10</key>
+        <key name="size">12</key>
+        <key name="size">17</key>
+      </section>
+      <section name="cmb">
+        <key name="size">10</key>
+      </section>
+      <section name="cmbxti">
+        <key name="size">10</key>
+      </section>
+      <section name="cmti">
+        <key name="size">10</key>
+      </section>
+      <section name="cmss">
+        <key name="size">10</key>
+      </section>
+      <section name="cmssi">
+        <key name="size">10</key>
+      </section>
+      <section name="cmssbx">
+        <key name="size">10</key>
+      </section>
+      <section name="cmtt">
+        <key name="size">10</key>
+      </section>
+      <section name="cmsy">
+        <key name="size">10</key>
+      </section>
+      <section name="cmbsy">
+        <key name="size">10</key>
+      </section>
+      <section name="cmmi">
+        <key name="size">10</key>
+      </section>
+      <section name="cmmib">
+        <key name="size">10</key>
+      </section>
+      <section name="cmmex">
+        <key name="size">10</key>
+      </section>
+    </section>
+  </section>
+-->
+
   <section name="gtk-backend">
     <section name="pango-default-shaper">
       <key name="enabled">true</key>
@@ -71,14 +124,16 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="priority">1</key>
     </section>
     <section name="type1-computer-modern-shaper">
-      <key name="enabled">true</key>
+      <key name="enabled">false</key>
       <key name="priority">1</key>
       <key name="use-tfm">false</key>
+      <key name="post-shaping">false</key>
     </section>
     <section name="ttf-computer-modern-shaper">
       <key name="enabled">false</key>
       <key name="priority">1</key>
       <key name="use-tfm">false</key>
+      <key name="post-shaping">false</key>
     </section>
   </section>
 
@@ -95,11 +150,13 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="enabled">false</key>
       <key name="priority">1</key>
       <key name="use-tfm">false</key>
+      <key name="post-shaping">false</key>
     </section>
     <section name="ttf-computer-modern-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
       <key name="use-tfm">false</key>
+      <key name="post-shaping">false</key>
     </section>
   </section>
 </math-engine-configuration>
