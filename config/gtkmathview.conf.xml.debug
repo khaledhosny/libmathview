@@ -155,6 +155,10 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="foreground">#000000</key>
       <key name="background">#ff6a6a</key>
     </section>
+    <section name="t1lib">
+      <key name="opaque-mode">false</key>
+      <key name="anti-aliasing">false</key>
+    </section>
   </section>
 
   <section name="gtk-backend">
@@ -203,7 +207,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <section name="ttf-computer-modern-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
-      <key name="post-shaping">never</key>
+      <key name="post-shaping">always</key>
     </section>
   </section>
 </math-engine-configuration>

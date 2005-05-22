@@ -28,6 +28,7 @@ EXTRA_DIST = \
   list-to-def.xsl \
   token-list.xml \
   stretchy.list \
+  Char.hh.in.in \
   Char.hh.in \
   token.dec \
   token.def \
@@ -59,8 +60,18 @@ config.dirs: Makefile
 	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@
 	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@
 
+Char.hh: $(top_builddir)/auto/Char.hh.in
+	( \
+	if test ! \( -e $@ \); then \
+	  cp $< $@; \
+        elif ! diff $< $@; then \
+	  cp $< $@; \
+	fi \
+	)
+
 INCLUDES = \
   $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/gmetadom \
-  -I$(top_builddir)
+  -I$(top_builddir) \
+  $(NULL)

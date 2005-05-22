@@ -65,6 +65,12 @@ SVG_StreamRenderingContext::endGroup()
 }
 
 void
+SVG_StreamRenderingContext::metadata(const String& content)
+{
+  output << "<metadata>" << content << "</metadata>" << std::endl;
+}
+
+void
 SVG_StreamRenderingContext::rect(const scaled& x, const scaled& y, const scaled& width, const scaled& height,
 				 const RGBColor& fillColor, const RGBColor& strokeColor, const scaled& strokeWidth)
 {

@@ -67,6 +67,7 @@ void
 SVG_RenderingContext::documentStart(const scaled& width, const scaled& height)
 {
   beginDocument(width, height);
+  metadata("Created by "PACKAGE" version "VERSION);
 }
 
 void

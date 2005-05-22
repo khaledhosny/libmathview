@@ -117,6 +117,8 @@ struct _GtkMathViewClass
   RGBColor defaultBackground;
   RGBColor defaultSelectForeground;
   RGBColor defaultSelectBackground;
+  bool defaultT1OpaqueMode;
+  bool defaultT1AntiAliasedMode;
   Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
   Gtk_Backend* backend;
@@ -432,6 +434,8 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   math_view_class->defaultBackground = configuration->getRGBColor(logger, "default/color/background", DEFAULT_BACKGROUND);
   math_view_class->defaultSelectForeground = configuration->getRGBColor(logger, "default/select-color/foreground", DEFAULT_SELECT_FOREGROUND);
   math_view_class->defaultSelectBackground = configuration->getRGBColor(logger, "default/select-color/background", DEFAULT_SELECT_BACKGROUND);
+  math_view_class->defaultT1OpaqueMode = configuration->getBool(logger, "default/t1lib/opaque-mode", false);
+  math_view_class->defaultT1AntiAliasedMode = configuration->getBool(logger, "default/t1lib/anti-aliasing", false);
 
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
   dictionary->ref();
@@ -706,6 +710,8 @@ gtk_math_view_init(GtkMathView* math_view)
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
+  math_view->renderingContext->setT1OpaqueMode(math_view_class->defaultT1OpaqueMode);
+  math_view->renderingContext->setT1AntiAliasedMode(math_view_class->defaultT1AntiAliasedMode);
 #endif
 }
 

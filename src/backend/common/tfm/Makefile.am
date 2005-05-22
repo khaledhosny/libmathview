@@ -12,6 +12,7 @@ TFM_LEVEL_2_CC = \
   $(TFM_LEVEL_1_CC) \
   cmb10.cc \
   cmbsy10.cc \
+  cmbxti10.cc \
   cmmib10.cc \
   cmss10.cc \
   cmssbx10.cc \
@@ -29,7 +30,6 @@ TFM_LEVEL_3_CC = \
   cmbx7.cc \
   cmbx8.cc \
   cmbx9.cc \
-  cmbxti10.cc \
   cmex10.cc \
   cmex9.cc \
   cmmi12.cc \
@@ -81,7 +81,7 @@ endif
 endif
 endif
 
-CLEANFILES = $(AUTO_CC)
+MAINTAINERCLEANFILES = $(AUTO_CC)
 
 noinst_LTLIBRARIES = libtfm.la
 

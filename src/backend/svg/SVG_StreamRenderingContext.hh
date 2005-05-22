@@ -39,6 +39,7 @@ protected:
   virtual void endDocument(void);
   virtual void beginGroup(void);
   virtual void endGroup(void);
+  virtual void metadata(const String&);
   virtual void text(const scaled&, const scaled&, const String&, const scaled&,
 		    const RGBColor&, const RGBColor&, const scaled&, const String&);
   virtual void rect(const scaled&, const scaled&, const scaled&, const scaled&,

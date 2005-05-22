@@ -8,13 +8,10 @@
 
 // General
 
-+ add configuration for post shaping modes
 + remove configuration field from gtkmathview class structure
 + find a way to configure t1lib opaque/aa modes
 + pass Configuration to View constructor and initializes default font size
 + T1 CM shaper useful for SVG?
-+ add getShaperName virtual method in every shaper
-+ pass backend name to shaper constructor
 
 // AbiWord
 

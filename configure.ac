@@ -104,13 +104,15 @@ AC_ARG_ENABLE(
 )
 if test $enable_tfm = "yes"; then
   enable_tfm="2"
+elif test $enable_tfm = "no"; then
+  enable_tfm="0"
 fi
 
 AC_ARG_ENABLE(
 	svg,
-	[  --enable-svg[=ARG]  enable SVG backend [default=no]],
+	[  --enable-svg[=ARG]  enable SVG backend [default=yes]],
 	enable_svg=$enableval,
-	enable_svg="no"
+	enable_svg="yes"
 )
 
 AC_ARG_WITH(
@@ -472,12 +474,12 @@ AM_CONDITIONAL([COND_TFM_LEVEL_1], [test "$enable_tfm" = "1"])
 AM_CONDITIONAL([COND_TFM_LEVEL_2], [test "$enable_tfm" = "2"])
 AM_CONDITIONAL([COND_TFM_LEVEL_3], [test "$enable_tfm" = "3"])
 
-if test $enable_tfm = no -a $enable_svg = yes; then
+if test "$enable_tfm" = "0" -a "$enable_svg" = "yes"; then
 	AC_MSG_WARN([SVG support requires TFM support])
 	enable_svg="no"
 fi
 	
-if test $enable_svg = yes; then
+if test "$enable_svg" = "yes"; then
 	AC_DEFINE(ENABLE_SVG,1,[Define to 1 if you want to enable the SVG backend])
 fi
 AM_CONDITIONAL([COND_SVG], [test "$enable_svg" = "yes"])
@@ -489,7 +491,7 @@ AC_CONFIG_FILES([
  config/gtkmathview.conf.xml
  scripts/Makefile
  auto/Makefile
- auto/Char.hh
+ auto/Char.hh.in
  src/Makefile
  src/common/Makefile
  src/common/mathvariants/Makefile
@@ -549,7 +551,7 @@ Frontend
 Backend
 
   Type1 fonts (t1lib) ${t1lib}
-  TFM support         ${enable_tfm}
+  TFM support level   ${enable_tfm}
   SVG support         ${enable_svg}
 
 Performance
