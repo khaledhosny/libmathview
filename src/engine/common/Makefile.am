@@ -6,7 +6,6 @@ noinst_LTLIBRARIES = libengine_common.la
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libengine_common_la_SOURCES = \
-  Configuration.cc \
   Attribute.cc \
   AttributeSet.cc \
   AttributeSignature.cc \
@@ -31,11 +30,8 @@ noinst_HEADERS = \
   AttributeSignature.hh \
   BinContainerTemplate.hh \
   CommonStringParsers.hh \
-  Configuration.hh \
   ElementFactory.hh \
   LinearContainerTemplate.hh \
-  TemplateStringParsers.hh \
-  TemplateStringScanners.hh \
   $(NULL)
 
 INCLUDES = \

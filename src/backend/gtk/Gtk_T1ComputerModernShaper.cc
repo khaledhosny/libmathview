@@ -22,34 +22,28 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "t1lib_T1Font.hh"
 #include "Gtk_AreaFactory.hh"
 #include "t1lib_T1FontManager.hh"
 #include "Gtk_T1ComputerModernShaper.hh"
 #include "Gtk_t1lib_T1GlyphArea.hh"
 
-static const char* fontFile[] = {
-  NULL,
-  "cmr10.pfb",
-  "cmb10.pfb",
-  "cmbxti10.pfb",
-  "cmti10.pfb",
-  "cmss10.pfb",
-  "cmssi10.pfb",
-  "cmssbx10.pfb",
-  "cmtt10.pfb",
-  "cmsy10.pfb",
-  "cmbsy10.pfb",
-  "cmmi10.pfb",
-  "cmmib10.pfb",
-  "cmex10.pfb"
-};
-
-Gtk_T1ComputerModernShaper::Gtk_T1ComputerModernShaper()
-{ }
+Gtk_T1ComputerModernShaper::Gtk_T1ComputerModernShaper(const SmartPtr<AbstractLogger>& l,
+						       const SmartPtr<Configuration>& conf)
+  : ComputerModernShaper(l, conf)
+{
+  setPostShapingMode(conf->getString(l, "gtk-backend/type1-computer-modern-shaper/post-shaping", "never"));
+}
 
 Gtk_T1ComputerModernShaper::~Gtk_T1ComputerModernShaper()
 { }
+
+SmartPtr<Gtk_T1ComputerModernShaper>
+Gtk_T1ComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
+				   const SmartPtr<Configuration>& conf)
+{ return new Gtk_T1ComputerModernShaper(l, conf); }
 
 void
 Gtk_T1ComputerModernShaper::setFontManager(const SmartPtr<t1lib_T1FontManager>& fm)
@@ -59,22 +53,23 @@ Gtk_T1ComputerModernShaper::setFontManager(const SmartPtr<t1lib_T1FontManager>& 
 }
 
 SmartPtr<t1lib_T1Font>
-Gtk_T1ComputerModernShaper::getT1Font(ComputerModernShaper::FontNameId fontNameId,
+Gtk_T1ComputerModernShaper::getT1Font(FontNameId fontNameId, FontSizeId designSize,
 				      const scaled& size) const
 {
-  assert(fontNameId >= 0 && fontNameId < sizeof(fontFile) / sizeof(const char*));
-  assert(fontFile[fontNameId] != NULL);
-  return t1FontManager->getT1Font(fontFile[fontNameId], size);
+  const String fontName = nameOfFont(fontNameId, designSize);
+  if (SmartPtr<t1lib_T1Font> font = t1FontManager->getT1Font(fontName + ".pfb", size))
+    return font;
+  else
+    return t1FontManager->getT1Font(fontName + ".pfa", size);
 }
 
 AreaRef
-Gtk_T1ComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory,
-					 ComputerModernShaper::FontNameId fontNameId, 
-					 Char8 index, const scaled& size) const
+Gtk_T1ComputerModernShaper::getGlyphArea(FontNameId fontNameId, FontSizeId designSize,
+					 Char8 index, int size) const
 {
 
   assert(t1FontManager);
-  const SmartPtr<t1lib_T1Font> font = getT1Font(fontNameId, size);
+  const SmartPtr<t1lib_T1Font> font = getT1Font(fontNameId, designSize, scaled(size));
   assert(font);
 
 #if 0

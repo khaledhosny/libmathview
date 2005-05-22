@@ -14,6 +14,7 @@ libcommon_la_SOURCES = \
   BoundingBox.cc \
   BoundingBoxAux.cc \
   Clock.cc \
+  Configuration.cc \
   LengthAux.cc \
   Logger.cc \
   PointAux.cc \
@@ -30,6 +31,7 @@ mathview_HEADERS = \
   AbstractLogger.hh \
   BoundingBox.hh \
   BoundingBoxAux.hh \
+  Configuration.hh \
   HashMap.hh \
   Length.hh \
   LengthAux.hh \
@@ -61,6 +63,8 @@ noinst_HEADERS = \
   Clock.hh \
   GObjectPtr.hh \
   Rope.hh \
+  TemplateStringScanners.hh \
+  TemplateStringParsers.hh \
   TokenSet.hh \
   for_each_if.h \
   token.hh \

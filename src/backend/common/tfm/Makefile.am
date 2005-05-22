@@ -114,9 +114,6 @@ xtfms: $(XTFMS)
 
 endif
 
-a:
-	echo $(AUTO_CC)
-
 INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \

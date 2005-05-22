@@ -115,6 +115,9 @@ libmathview_backend_common_la_SOURCES = \
   $(MAYBE_BOXML_S) \
   $(MAYBE_TFM_S) \
   $(MAYBE_T1LIB_S) \
+  $(MAYBE_TFM_H) \
+  $(MAYBE_T1LIB_H) \
+  $(MAYBE_BOXML_H) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView

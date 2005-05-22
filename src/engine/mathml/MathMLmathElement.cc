@@ -43,7 +43,7 @@ MathMLmathElement::format(FormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-
+      ctxt.setMathMode(true);
       SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, math, display);
       assert(value);
       ctxt.setDisplayStyle(ToTokenId(value) == T_BLOCK);

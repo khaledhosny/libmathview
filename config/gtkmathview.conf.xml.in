@@ -15,7 +15,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU General Public Licensefamily
 along with GtkMathView; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  
@@ -53,58 +53,111 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     </section>
   </section>
 
-<!--
   <section name="fonts">
     <section name="computer-modern">
-      <section name="cmr">
-        <key name="size">5</key>
-        <key name="size">6</key>
-        <key name="size">7</key>
-        <key name="size">8</key>
-        <key name="size">9</key>
-        <key name="size">10</key>
-        <key name="size">12</key>
-        <key name="size">17</key>
-      </section>
-      <section name="cmb">
-        <key name="size">10</key>
-      </section>
-      <section name="cmbxti">
-        <key name="size">10</key>
-      </section>
-      <section name="cmti">
-        <key name="size">10</key>
-      </section>
-      <section name="cmss">
-        <key name="size">10</key>
-      </section>
-      <section name="cmssi">
-        <key name="size">10</key>
-      </section>
-      <section name="cmssbx">
-        <key name="size">10</key>
-      </section>
-      <section name="cmtt">
-        <key name="size">10</key>
-      </section>
-      <section name="cmsy">
-        <key name="size">10</key>
-      </section>
-      <section name="cmbsy">
-        <key name="size">10</key>
-      </section>
-      <section name="cmmi">
-        <key name="size">10</key>
-      </section>
-      <section name="cmmib">
-        <key name="size">10</key>
-      </section>
-      <section name="cmmex">
-        <key name="size">10</key>
-      </section>
+<!--
+      <key name="font-name">cmr10</key>
+      <key name="font-name">cmmi10</key>
+      <key name="font-name">cmsy10</key>
+      <key name="font-name">cmex10</key>
+-->
+
+      <key name="font-name">cmr10</key>
+      <key name="font-name">cmb10</key>
+      <key name="font-name">cmbx10</key>
+      <key name="font-name">cmbxti10</key>
+      <key name="font-name">cmti10</key>
+      <key name="font-name">cmss10</key>
+      <key name="font-name">cmssi10</key>
+      <key name="font-name">cmssbx10</key>
+      <key name="font-name">cmtt10</key>
+      <key name="font-name">cmsy10</key>
+      <key name="font-name">cmbsy10</key>
+      <key name="font-name">cmmi10</key>
+      <key name="font-name">cmmib10</key>
+      <key name="font-name">cmex10</key>
+
+<!--
+      <key name="font-name">cmr5</key>
+      <key name="font-name">cmr6</key>
+      <key name="font-name">cmr7</key>
+      <key name="font-name">cmr8</key>
+      <key name="font-name">cmr9</key>
+      <key name="font-name">cmr10</key>
+      <key name="font-name">cmr12</key>
+      <key name="font-name">cmr17</key>
+
+      <key name="font-name">cmb10</key>
+
+      <key name="font-name">cmbx5</key>
+      <key name="font-name">cmbx6</key>
+      <key name="font-name">cmbx7</key>
+      <key name="font-name">cmbx8</key>
+      <key name="font-name">cmbx9</key>
+      <key name="font-name">cmbx10</key>
+      <key name="font-name">cmbx12</key>
+
+      <key name="font-name">cmbxti10</key>
+
+      <key name="font-name">cmti7</key>
+      <key name="font-name">cmti8</key>
+      <key name="font-name">cmti9</key>
+      <key name="font-name">cmti10</key>
+      <key name="font-name">cmti12</key>
+
+      <key name="font-name">cmss8</key>
+      <key name="font-name">cmss9</key>
+      <key name="font-name">cmss10</key>
+      <key name="font-name">cmss12</key>
+      <key name="font-name">cmss17</key>
+
+      <key name="font-name">cmssi8</key>
+      <key name="font-name">cmssi9</key>
+      <key name="font-name">cmssi10</key>
+      <key name="font-name">cmssi12</key>
+      <key name="font-name">cmssi17</key>
+
+      <key name="font-name">cmssbx10</key>
+
+      <key name="font-name">cmtt8</key>
+      <key name="font-name">cmtt9</key>
+      <key name="font-name">cmtt10</key>
+      <key name="font-name">cmtt12</key>
+
+      <key name="font-name">cmsy5</key>
+      <key name="font-name">cmsy6</key>
+      <key name="font-name">cmsy7</key>
+      <key name="font-name">cmsy8</key>
+      <key name="font-name">cmsy9</key>
+      <key name="font-name">cmsy10</key>
+
+      <key name="font-name">cmbsy6</key>
+      <key name="font-name">cmbsy7</key>
+      <key name="font-name">cmbsy8</key>
+      <key name="font-name">cmbsy9</key>
+      <key name="font-name">cmbsy10</key>
+
+      <key name="font-name">cmmi5</key>
+      <key name="font-name">cmmi6</key>
+      <key name="font-name">cmmi7</key>
+      <key name="font-name">cmmi8</key>
+      <key name="font-name">cmmi9</key>
+      <key name="font-name">cmmi10</key>
+      <key name="font-name">cmmi12</key>
+
+      <key name="font-name">cmmib6</key>
+      <key name="font-name">cmmib7</key>
+      <key name="font-name">cmmib8</key>
+      <key name="font-name">cmmib9</key>
+      <key name="font-name">cmmib10</key>
+
+      <key name="font-name">cmex7</key>
+      <key name="font-name">cmex8</key>
+      <key name="font-name">cmex9</key>
+      <key name="font-name">cmex10</key>
+-->
     </section>
   </section>
--->
 
   <section name="gtk-backend">
     <section name="pango-default-shaper">
@@ -127,13 +180,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="enabled">false</key>
       <key name="priority">1</key>
       <key name="use-tfm">false</key>
-      <key name="post-shaping">false</key>
-    </section>
-    <section name="ttf-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="use-tfm">false</key>
-      <key name="post-shaping">false</key>
+      <key name="post-shaping">never</key>
     </section>
   </section>
 
@@ -146,17 +193,10 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>
-    <section name="type1-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="use-tfm">false</key>
-      <key name="post-shaping">false</key>
-    </section>
     <section name="ttf-computer-modern-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
-      <key name="use-tfm">false</key>
-      <key name="post-shaping">false</key>
+      <key name="post-shaping">always</key>
     </section>
   </section>
 </math-engine-configuration>

@@ -22,21 +22,30 @@
 
 #include <config.h>
 
-#include "TFMFont.hh"
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "SVG_AreaFactory.hh"
 #include "SVG_TFMComputerModernShaper.hh"
 #include "SVG_TFMGlyphArea.hh"
+#include "TFMFont.hh"
 
-SVG_TFMComputerModernShaper::SVG_TFMComputerModernShaper()
+SVG_TFMComputerModernShaper::SVG_TFMComputerModernShaper(const SmartPtr<AbstractLogger>& l,
+							 const SmartPtr<Configuration>& conf)
+  : TFMComputerModernShaper(l, conf)
 { }
 
 SVG_TFMComputerModernShaper::~SVG_TFMComputerModernShaper()
 { }
 
+SmartPtr<SVG_TFMComputerModernShaper>
+SVG_TFMComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
+				    const SmartPtr<Configuration>& conf)
+{ return new SVG_TFMComputerModernShaper(l, conf); }
+
 AreaRef
-SVG_TFMComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, 
-					  FontNameId fontNameId, Char8 index, const scaled& size) const
-{ return SVG_TFMGlyphArea::create(getFont(fontNameId, size), index); }
+SVG_TFMComputerModernShaper::getGlyphArea(FontNameId fontNameId, FontSizeId designSize,
+					  Char8 index, int size) const
+{ return SVG_TFMGlyphArea::create(getFont(fontNameId, designSize, size), index); }
 
 bool
 SVG_TFMComputerModernShaper::getGlyphData(const AreaRef& area, SmartPtr<TFMFont>& font, Char8& index) const

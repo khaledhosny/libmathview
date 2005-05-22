@@ -22,17 +22,29 @@
 
 #include <config.h>
 
-#include "TFMFont.hh"
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "SVG_TTF_TFMComputerModernShaper.hh"
 #include "SVG_TTF_TFMGlyphArea.hh"
+#include "TFMFont.hh"
 
-SVG_TTF_TFMComputerModernShaper::SVG_TTF_TFMComputerModernShaper()
-{ }
+SVG_TTF_TFMComputerModernShaper::SVG_TTF_TFMComputerModernShaper(const SmartPtr<AbstractLogger>& l,
+								 const SmartPtr<Configuration>& conf)
+  : SVG_TFMComputerModernShaper(l, conf)
+{
+  setPostShapingMode(conf->getString(l, "svg-backend/ttf-computer-modern-shaper/post-shaping", "never"));
+}
 
 SVG_TTF_TFMComputerModernShaper::~SVG_TTF_TFMComputerModernShaper()
 { }
 
+SmartPtr<SVG_TTF_TFMComputerModernShaper>
+SVG_TTF_TFMComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
+					const SmartPtr<Configuration>& conf)
+{ return new SVG_TTF_TFMComputerModernShaper(l, conf); }
+
 AreaRef
-SVG_TTF_TFMComputerModernShaper::getGlyphArea(const SmartPtr<AreaFactory>& factory, 
-					      FontNameId fontNameId, Char8 index, const scaled& size) const
-{ return SVG_TTF_TFMGlyphArea::create(getFont(fontNameId, size), index, toTTFGlyphIndex(fontNameId, index)); }
+SVG_TTF_TFMComputerModernShaper::getGlyphArea(FontNameId fontNameId, FontSizeId designSize, 
+					      Char8 index, int size) const
+{ return SVG_TTF_TFMGlyphArea::create(getFont(fontNameId, designSize, size), index,
+				      toTTFGlyphIndex(encIdOfFontNameId(fontNameId), index)); }

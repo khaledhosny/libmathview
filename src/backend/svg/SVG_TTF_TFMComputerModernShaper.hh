@@ -28,15 +28,16 @@
 class SVG_TTF_TFMComputerModernShaper : public SVG_TFMComputerModernShaper
 {
 protected:
-  SVG_TTF_TFMComputerModernShaper(void);
+  SVG_TTF_TFMComputerModernShaper(const SmartPtr<class AbstractLogger>&,
+				  const SmartPtr<class Configuration>&);
   virtual ~SVG_TTF_TFMComputerModernShaper();
 
 public:
-  static SmartPtr<SVG_TTF_TFMComputerModernShaper> create(void)
-  { return new SVG_TTF_TFMComputerModernShaper(); }
+  static SmartPtr<SVG_TTF_TFMComputerModernShaper> create(const SmartPtr<class AbstractLogger>&,
+							  const SmartPtr<class Configuration>&);
 
 protected:
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, FontNameId, Char8, const scaled&) const;
+  virtual AreaRef getGlyphArea(FontNameId, FontSizeId, Char8, int) const;
 };
 
 #endif // __SVG_TTF_TFMComputerModernShaper_hh__

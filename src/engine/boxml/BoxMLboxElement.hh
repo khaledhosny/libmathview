@@ -34,6 +34,8 @@ protected:
 public:
   static SmartPtr<BoxMLboxElement> create(const SmartPtr<class BoxMLNamespaceContext>& view)
   { return new BoxMLboxElement(view); }
+
+  virtual AreaRef format(class FormattingContext&);
 };
 
 #endif // __BoxMLboxElement_hh__

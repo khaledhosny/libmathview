@@ -28,6 +28,7 @@
 #include "String.hh"
 #include "GlyphSpec.hh"
 #include "Area.hh"
+#include "MathVariant.hh"
 
 class ShapingContext
 {
@@ -37,9 +38,11 @@ public:
 		 const UCS4String&,
 		 const std::vector<GlyphSpec>&,
 		 const scaled&,
+		 MathVariant,
 		 bool,
 		 const scaled& = 0, const scaled& = 0);
 
+  MathVariant getMathVariant(void) const { return mathVariant; }
   bool inMathMode(void) const { return mathMode; }
   SmartPtr<class Element> getElement(void) const;
   SmartPtr<class AreaFactory> getFactory(void) const;
@@ -76,6 +79,7 @@ private:
   UCS4String source;
   std::vector<GlyphSpec> spec;
   scaled size;
+  MathVariant mathVariant;
   bool mathMode;
   scaled vSpan;
   scaled hSpan;

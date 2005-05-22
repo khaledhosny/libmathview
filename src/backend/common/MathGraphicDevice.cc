@@ -83,7 +83,8 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
   if (r.second)
     {
       UCS4String source = UCS4StringOfString(str);
-      mapMathVariant(context.getVariant(), source);
+      if (context.getMathMode())
+	mapMathVariant(context.getVariant(), source);
       r.first->second = getShaperManager()->shapeStretchy(context, source,
 							  context.getStretchV(),
 							  context.getStretchH());
@@ -117,7 +118,8 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
   if (r.second)
     {
       UCS4String source = UCS4StringOfString(str);
-      mapMathVariant(context.getVariant(), source);
+      if (context.getMathMode())
+	mapMathVariant(context.getVariant(), source);
       r.first->second = getShaperManager()->shape(context, source);
       return r.first->second;
     }

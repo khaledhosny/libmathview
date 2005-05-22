@@ -45,6 +45,7 @@ libmathview_backend_svg_la_SOURCES = \
 INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/common/tfm \

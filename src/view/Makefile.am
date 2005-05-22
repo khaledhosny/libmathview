@@ -60,6 +60,7 @@ libmathview_gmetadom_la_SOURCES = gmetadom_MathView.cc
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
+  Init.hh \
   custom_reader_MathView.hh \
   libxml2_reader_MathView.hh \
   libxml2_MathView.hh \

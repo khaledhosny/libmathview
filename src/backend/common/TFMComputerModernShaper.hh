@@ -28,7 +28,7 @@
 class TFMComputerModernShaper : public ComputerModernShaper
 {
 protected:
-  TFMComputerModernShaper(void);
+  TFMComputerModernShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
   virtual ~TFMComputerModernShaper();
 
 public:
@@ -36,9 +36,9 @@ public:
   SmartPtr<class TFMFontManager> getFontManager(void) const;
 
 protected:
+  static FontNameId fontNameIdOfTFM(const SmartPtr<class TFM>&);
   virtual void postShape(class ShapingContext&) const;
-  virtual SmartPtr<class TFMFont> getFont(FontNameId, const scaled&) const;
-  FontNameId getFontNameId(const SmartPtr<class TFMFont>&) const;
+  virtual SmartPtr<class TFMFont> getFont(FontNameId, FontSizeId, const scaled&) const;
   virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const = 0;
 
 private:

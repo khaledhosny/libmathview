@@ -48,12 +48,11 @@ BoxMLMathMLAdapter::format(FormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-
+      ctxt.setMathMode(true);
       if (SmartPtr<MathMLElement> child = getChild())
 	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
       else
 	setArea(ctxt.BGD()->dummy(ctxt));
-      
       ctxt.pop();
       resetDirtyLayout();
     }

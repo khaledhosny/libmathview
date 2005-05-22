@@ -33,9 +33,9 @@ ShapingContext::ShapingContext(const SmartPtr<Element>& el,
 			       const UCS4String& src,
 			       const std::vector<GlyphSpec>& s,
 			       const scaled& sz,
-			       bool mm,
+			       MathVariant mv, bool mm,
 			       const scaled& v, const scaled& h)
-  : element(el), factory(f), source(src), spec(s), size(sz), mathMode(mm), vSpan(v), hSpan(h), index(0)
+  : element(el), factory(f), source(src), spec(s), size(sz), mathVariant(mv), mathMode(mm), vSpan(v), hSpan(h), index(0)
 { }
 
 SmartPtr<Element>

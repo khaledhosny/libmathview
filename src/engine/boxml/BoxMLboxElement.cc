@@ -24,6 +24,8 @@
 
 #include "BoxMLNamespaceContext.hh"
 #include "BoxMLboxElement.hh"
+#include "FormattingContext.hh"
+#include "BoxGraphicDevice.hh"
 
 BoxMLboxElement::BoxMLboxElement(const SmartPtr<BoxMLNamespaceContext>& context)
   : BoxMLBinContainerElement(context)
@@ -31,3 +33,19 @@ BoxMLboxElement::BoxMLboxElement(const SmartPtr<BoxMLNamespaceContext>& context)
 
 BoxMLboxElement::~BoxMLboxElement()
 { }
+
+AreaRef
+BoxMLboxElement::format(FormattingContext& ctxt)
+{
+  if (dirtyLayout())
+    {
+      ctxt.push(this);
+      ctxt.setMathMode(false);
+      if (SmartPtr<BoxMLElement> child = getChild())
+	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
+      ctxt.pop();
+      resetDirtyLayout();
+    }
+
+  return getArea();
+}

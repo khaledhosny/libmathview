@@ -98,10 +98,13 @@ AC_ARG_ENABLE(
 
 AC_ARG_ENABLE(
 	tfm,
-	[  --enable-tfm[=ARG]  enable support for TeX Font Metrics [default=no]],
+	[  --enable-tfm[=ARG]  enable support level for TeX Font Metrics (0,1,2,3) [disabled=0,default=2]],
 	enable_tfm=$enableval,
-	enable_tfm="no"
+	enable_tfm="2"
 )
+if test $enable_tfm = "yes"; then
+  enable_tfm="2"
+fi
 
 AC_ARG_ENABLE(
 	svg,
@@ -114,7 +117,7 @@ AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
 	t1lib=$withval,
-	t1lib=no
+	t1lib=auto
 )
 
 AC_ARG_WITH(
@@ -452,10 +455,22 @@ if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
-if test $enable_tfm = yes; then
+if test "$enable_tfm" != "0"; then
 	AC_DEFINE(ENABLE_TFM,1,[Define to 1 if you want to enable support for TeX Font Metrics])
 fi
-AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" = "yes"])
+if test "$enable_tfm" = "1"; then
+	AC_DEFINE(ENABLE_TFM_LEVEL_1,1,[Define to 1 if you want to enable support for BASIC TeX Fonts])
+fi
+if test "$enable_tfm" = "2"; then
+	AC_DEFINE(ENABLE_TFM_LEVEL_2,1,[Define to 1 if you want to enable support for COMPLETE TeX Fonts at 10 points])
+fi
+if test "$enable_tfm" = "3"; then
+	AC_DEFINE(ENABLE_TFM_LEVEL_3,1,[Define to 1 if you want to enable support for COMPLETE TeX Fonts])
+fi
+AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" != "0"])
+AM_CONDITIONAL([COND_TFM_LEVEL_1], [test "$enable_tfm" = "1"])
+AM_CONDITIONAL([COND_TFM_LEVEL_2], [test "$enable_tfm" = "2"])
+AM_CONDITIONAL([COND_TFM_LEVEL_3], [test "$enable_tfm" = "3"])
 
 if test $enable_tfm = no -a $enable_svg = yes; then
 	AC_MSG_WARN([SVG support requires TFM support])

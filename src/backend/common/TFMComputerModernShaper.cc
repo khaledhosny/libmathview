@@ -29,10 +29,10 @@
 #include "TFMComputerModernShaper.hh"
 #include "AreaFactory.hh"
 
-TFMComputerModernShaper::TFMComputerModernShaper()
-{
-  setPostShapingMode(POST_SHAPING_ALWAYS);
-}
+TFMComputerModernShaper::TFMComputerModernShaper(const SmartPtr<AbstractLogger>& l,
+						 const SmartPtr<Configuration>& conf)
+  : ComputerModernShaper(l, conf)
+{ }
 
 TFMComputerModernShaper::~TFMComputerModernShaper()
 { }
@@ -47,6 +47,34 @@ TFMComputerModernShaper::setFontManager(const SmartPtr<TFMFontManager>& fm)
 SmartPtr<TFMFontManager>
 TFMComputerModernShaper::getFontManager() const
 { return tfmFontManager; }
+
+ComputerModernShaper::FontNameId
+TFMComputerModernShaper::fontNameIdOfTFM(const SmartPtr<TFM>& tfm)
+{
+  assert(tfm);
+  static const char* name[] = {
+    "CMR",
+    "CMB",
+    "CMBX",
+    "CMBXTI",
+    "CMTI",
+    "CMSS",
+    "CMSSI",
+    "CMSSBX",
+    "CMTT",
+    "CMSY",
+    "CMBSY",
+    "CMMI",
+    "CMMIB",
+    "CMEX"
+  };
+  assert(sizeof(name) / sizeof(const char*) == FN_NOT_VALID);
+  const String familyName = tfm->getFamily();
+  for (int i = 0; i < sizeof(name) / sizeof(const char*); i++)
+    if (familyName == name[i])
+      return FontNameId(i);
+  return FN_NIL;
+}
 
 void
 TFMComputerModernShaper::postShape(ShapingContext& context) const
@@ -75,7 +103,9 @@ TFMComputerModernShaper::postShape(ShapingContext& context) const
 		    {
 		    default:
 		      {
-			AreaRef newArea = getGlyphArea(context.getFactory(), getFontNameId(font1), newGlyph, font1->getSize());
+			AreaRef newArea = getGlyphArea(fontNameIdOfTFM(tfm), 
+						       fontSizeIdOfSize(tfm->getDesignSize().toInt()),
+						       newGlyph, font1->getSize().toInt());
 			context.pushArea(n1 + n2, newArea);
 		      }
 		    }
@@ -92,39 +122,9 @@ TFMComputerModernShaper::postShape(ShapingContext& context) const
     }
 }
 
-static const char* fontId[] = {
-  NULL,
-  "cmr10",
-  "cmb10",
-  "cmbxti10",
-  "cmti10",
-  "cmss10",
-  "cmssi10",
-  "cmssbx10",
-  "cmtt10",
-  "cmsy10",
-  "cmbsy10",
-  "cmmi10",
-  "cmmib10",
-  "cmex10"
-};
-
-ComputerModernShaper::FontNameId
-TFMComputerModernShaper::getFontNameId(const SmartPtr<TFMFont>& font) const
-{
-  assert(font);
-  const String name = font->getTFM()->getName();
-  for (unsigned i = 1; i < sizeof(fontId) / sizeof(const char*); i++)
-    if (name == fontId[i])
-      return FontNameId(i);
-  return FN_NOT_VALID;
-}
-
 SmartPtr<TFMFont>
-TFMComputerModernShaper::getFont(FontNameId fontNameId, const scaled& size) const
+TFMComputerModernShaper::getFont(FontNameId fontNameId, FontSizeId designSize, const scaled& size) const
 {
   assert(tfmFontManager);
-  assert(fontNameId >= 0 && fontNameId < sizeof(fontId) / sizeof(const char*));
-  assert(fontId[fontNameId] != NULL);
-  return tfmFontManager->getFont(fontId[fontNameId], size);
+  return tfmFontManager->getFont(nameOfFont(fontNameId, designSize), size);
 }

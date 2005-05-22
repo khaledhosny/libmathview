@@ -72,7 +72,7 @@ ShaperManager::shape(const FormattingContext& ctxt, const UCS4String& source) co
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(map(source[i]));
   ShapingContext context(ctxt.getMathMLElement(), ctxt.MGD()->getFactory(), source, spec,
-			 ctxt.getSize(), ctxt.getMathMode());
+			 ctxt.getSize(), ctxt.getVariant(), ctxt.getMathMode());
   return shapeAux(context);
 }
 
@@ -87,7 +87,7 @@ ShaperManager::shapeStretchy(const FormattingContext& ctxt,
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(mapStretchy(source[i]));
   ShapingContext context(ctxt.getMathMLElement(), ctxt.MGD()->getFactory(), source, spec,
-			 ctxt.getSize(), ctxt.getMathMode(), vSpan, hSpan);
+			 ctxt.getSize(), ctxt.getVariant(), ctxt.getMathMode(), vSpan, hSpan);
   return shapeAux(context);
 }
 

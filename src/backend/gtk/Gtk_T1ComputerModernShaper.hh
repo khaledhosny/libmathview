@@ -28,20 +28,18 @@
 class Gtk_T1ComputerModernShaper : public ComputerModernShaper
 {
 protected:
-  Gtk_T1ComputerModernShaper(void);
+  Gtk_T1ComputerModernShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
   virtual ~Gtk_T1ComputerModernShaper();
 
 public:
-  static SmartPtr<Gtk_T1ComputerModernShaper> create(void)
-  { return new Gtk_T1ComputerModernShaper(); }
+  static SmartPtr<Gtk_T1ComputerModernShaper> create(const SmartPtr<class AbstractLogger>&,
+						     const SmartPtr<class Configuration>&);
 
   void setFontManager(const SmartPtr<class t1lib_T1FontManager>&);
 
 protected:
-  SmartPtr<class t1lib_T1Font> getT1Font(ComputerModernShaper::FontNameId, const scaled&) const;
-  virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&,
-			       ComputerModernShaper::FontNameId,
-			       Char8, const scaled&) const;
+  SmartPtr<class t1lib_T1Font> getT1Font(FontNameId, FontSizeId, const scaled&) const;
+  virtual AreaRef getGlyphArea(FontNameId, FontSizeId, Char8, int) const;
 
 private:
   SmartPtr<class t1lib_T1FontManager> t1FontManager;

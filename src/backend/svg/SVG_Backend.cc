@@ -78,7 +78,7 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 #if ENABLE_TFM
   if (conf->getBool(l, "svg-backend/type1-computer-modern-shaper/enabled", false))
     {
-      SmartPtr<SVG_TFMComputerModernShaper> cmShaper = SVG_TFMComputerModernShaper::create();
+      SmartPtr<SVG_TFMComputerModernShaper> cmShaper = SVG_TFMComputerModernShaper::create(l, conf);
       cmShaper->setFontManager(fm);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/type1-computer-modern-shaper/priority", 0),
 							cmShaper));
@@ -86,7 +86,7 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 
   if (conf->getBool(l, "svg-backend/ttf-computer-modern-shaper/enabled", false))
     {
-      SmartPtr<SVG_TTF_TFMComputerModernShaper> cmShaper = SVG_TTF_TFMComputerModernShaper::create();
+      SmartPtr<SVG_TTF_TFMComputerModernShaper> cmShaper = SVG_TTF_TFMComputerModernShaper::create(l, conf);
       cmShaper->setFontManager(fm);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/ttf-computer-modern-shaper/priority", 0),
 							cmShaper));
