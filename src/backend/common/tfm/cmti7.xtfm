@@ -1,0 +1,370 @@
+<?xml version="1.0"?>
+<!DOCTYPE XTFM SYSTEM "xtfm.dtd">
+
+<XTFM version="0.1.1">
+  <Unity value="00100000"/>
+  <Font family="CMTI" face="f0" coding-scheme="TeX text" design-size="00700000" checksum="747d5cca">
+    <Dimensions>
+      <Dimension index="01" name="slant" value="00040000"/>
+      <Dimension index="02" name="space" value="0006d4f2"/>
+      <Dimension index="03" name="space_stretch" value="0002d1b0"/>
+      <Dimension index="04" name="space_shrink" value="0001e120"/>
+      <Dimension index="05" name="x_height" value="0006e38e"/>
+      <Dimension index="06" name="quad" value="00134d45"/>
+      <Dimension index="07" name="extra_space" value="0001e120"/>
+    </Dimensions>
+    <Data>
+      <Character index="00" width="000bc0a7" height="000ad8fe" depth="00000000" italic="0000f2cb"/>
+      <Character index="01" width="000f4a02" height="000ad8fe" depth="00000000" italic="00000000"/>
+      <Character index="02" width="000e5972" height="000ad8fe" depth="00000000" italic="0000c42e"/>
+      <Character index="03" width="000cea1b" height="000ad8fe" depth="00000000" italic="00000000"/>
+      <Character index="04" width="000c7852" height="000ad8fe" depth="00000000" italic="000067d2"/>
+      <Character index="05" width="000ddaab" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="06" width="000d68e2" height="000ad8fe" depth="00000000" italic="0000c375"/>
+      <Character index="07" width="000e5972" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="08" width="000d68e2" height="000ad8fe" depth="00000000" italic="0000e595"/>
+      <Character index="09" width="000e5972" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="0a" width="000d68e2" height="000ad8fe" depth="00000000" italic="000133e9"/>
+      <Character index="0b" width="000bc8c7" height="000b1c72" depth="00031c72" italic="0000f05b">
+        <Kerning index="21" value="0001c2a5"/>
+        <Kerning index="27" value="0001c2a5"/>
+        <Kerning index="29" value="0001c2a5"/>
+        <Kerning index="3f" value="0001c2a5"/>
+        <Kerning index="5d" value="0001c2a5"/>
+        <Ligature index="69" mode="00" result="0e"/>
+        <Ligature index="6c" mode="00" result="0f"/>
+      </Character>
+      <Character index="0c" width="000ad839" height="000b1c72" depth="00031c72" italic="0000e595"/>
+      <Character index="0d" width="000b5080" height="000b1c72" depth="00031c72" italic="0000e595"/>
+      <Character index="0e" width="0010f8be" height="000b1c72" depth="00031c72" italic="0000e595"/>
+      <Character index="0f" width="001134e2" height="000b1c72" depth="00031c72" italic="0000e595"/>
+      <Character index="10" width="0005e462" height="0006e38e" depth="00000000" italic="00006e1e"/>
+      <Character index="11" width="00065cab" height="0006e38e" depth="00031c72" italic="00006e1e"/>
+      <Character index="12" width="0009a6a2" height="000b1c72" depth="00000000" italic="00000000"/>
+      <Character index="13" width="0009a6a2" height="000b1c72" depth="00000000" italic="00006429"/>
+      <Character index="14" width="0009a6a2" height="000a0e39" depth="00000000" italic="000133e9"/>
+      <Character index="15" width="0009a6a2" height="000b1c72" depth="00000000" italic="00000000"/>
+      <Character index="16" width="0009a6a2" height="00092b10" depth="00000000" italic="00013670"/>
+      <Character index="17" width="000f42f7" height="000b1c72" depth="00000000" italic="00000000"/>
+      <Character index="18" width="0008b612" height="00000000" depth="0002b8e5" italic="00000000"/>
+      <Character index="19" width="000a1eee" height="000b1c72" depth="00031c72" italic="00012aab"/>
+      <Character index="1a" width="000d68e2" height="0006e38e" depth="00000000" italic="00012aab"/>
+      <Character index="1b" width="000d68e2" height="0006e38e" depth="00000000" italic="00012aab"/>
+      <Character index="1c" width="0009a6a2" height="000871c7" depth="00018e39" italic="000087b7"/>
+      <Character index="1d" width="00107377" height="000ad8fe" depth="00000000" italic="0000c375"/>
+      <Character index="1e" width="00125497" height="000ad8fe" depth="00000000" italic="0000c375"/>
+      <Character index="1f" width="000e5972" height="000bb60e" depth="0000c71e" italic="0000c42e"/>
+      <Character index="20" width="0004f3d2" height="0006e38e" depth="00000000" italic="00000000">
+        <Kerning index="4c" value="fff9e2b9"/>
+        <Kerning index="6c" value="fffb0c2e"/>
+      </Character>
+      <Character index="21" width="0005e462" height="000b1c72" depth="00000000" italic="0000c42e">
+        <Ligature index="60" mode="00" result="3c"/>
+      </Character>
+      <Character index="22" width="0009a6a2" height="000b1c72" depth="00000000" italic="0000c42e"/>
+      <Character index="23" width="000f4a02" height="000b1c72" depth="00031c72" italic="00011102"/>
+      <Character index="24" width="000e1560" height="000b1c72" depth="00000000" italic="00000000"/>
+      <Character index="25" width="000f4a02" height="000c0000" depth="0000e38e" italic="00011102"/>
+      <Character index="26" width="000e5972" height="000b1c72" depth="00000000" italic="00006429"/>
+      <Character index="27" width="0005e462" height="000b1c72" depth="00000000" italic="0000c42e">
+        <Kerning index="21" value="0001e120"/>
+        <Kerning index="3f" value="0001e120"/>
+        <Ligature index="27" mode="00" result="22"/>
+      </Character>
+      <Character index="28" width="0007c582" height="000c0000" depth="00040000" italic="000087b7"/>
+      <Character index="29" width="0007c582" height="000c0000" depth="00040000" italic="000087b7"/>
+      <Character index="2a" width="0009a6a2" height="000c0000" depth="00000000" italic="00000000"/>
+      <Character index="2b" width="000e5972" height="0009a360" depth="0001a360" italic="000087b7"/>
+      <Character index="2c" width="0005e462" height="0001d75e" depth="00031c72" italic="00000000"/>
+      <Character index="2d" width="0006d4f2" height="0006e38e" depth="00000000" italic="00006429">
+        <Ligature index="2d" mode="00" result="7b"/>
+      </Character>
+      <Character index="2e" width="0005e462" height="0001d75e" depth="00000000" italic="00000000"/>
+      <Character index="2f" width="0009a6a2" height="000c0000" depth="00040000" italic="000087b7"/>
+      <Character index="30" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="31" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="32" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="33" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="34" width="0009a6a2" height="000a4fa5" depth="00031c72" italic="00012aab"/>
+      <Character index="35" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="36" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="37" width="0009a6a2" height="000a4fa5" depth="00031c72" italic="00012aab"/>
+      <Character index="38" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="39" width="0009a6a2" height="000a4fa5" depth="00000000" italic="00012aab"/>
+      <Character index="3a" width="0005e462" height="0006e38e" depth="00000000" italic="0000c375"/>
+      <Character index="3b" width="0005e462" height="0006e38e" depth="00031c72" italic="0000c375"/>
+      <Character index="3c" width="0005e462" height="00080000" depth="00031c72" italic="00010a90"/>
+      <Character index="3d" width="000e5972" height="00062530" depth="fffe2530" italic="00011102"/>
+      <Character index="3e" width="0009a6a2" height="00080000" depth="00031c72" italic="00000000"/>
+      <Character index="3f" width="0009a6a2" height="000b1c72" depth="00000000" italic="0000c855">
+        <Ligature index="60" mode="00" result="3e"/>
+      </Character>
+      <Character index="40" width="000e5972" height="000b1c72" depth="00000000" italic="0000c855"/>
+      <Character index="41" width="000ddaab" height="000ad8fe" depth="00000000" italic="00000000">
+        <Kerning index="43" value="ffff87b7"/>
+        <Kerning index="47" value="ffff87b7"/>
+        <Kerning index="4f" value="ffff87b7"/>
+        <Kerning index="51" value="ffff87b7"/>
+        <Kerning index="54" value="fffe9727"/>
+        <Kerning index="55" value="ffff87b7"/>
+        <Kerning index="56" value="fffe1ee0"/>
+        <Kerning index="57" value="fffe1ee0"/>
+        <Kerning index="59" value="fffe9727"/>
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="62" value="ffff87b7"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="68" value="ffff87b7"/>
+        <Kerning index="69" value="ffff87b7"/>
+        <Kerning index="6b" value="ffff87b7"/>
+        <Kerning index="6c" value="ffff87b7"/>
+        <Kerning index="6d" value="ffff87b7"/>
+        <Kerning index="6e" value="ffff87b7"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+        <Kerning index="72" value="ffff87b7"/>
+        <Kerning index="74" value="ffff87b7"/>
+        <Kerning index="75" value="ffff87b7"/>
+        <Kerning index="76" value="ffff87b7"/>
+        <Kerning index="77" value="ffff87b7"/>
+      </Character>
+      <Character index="42" width="000d2980" height="000ad8fe" depth="00000000" italic="000133e9"/>
+      <Character index="43" width="000d68e2" height="000ad8fe" depth="00000000" italic="000133e9"/>
+      <Character index="44" width="000e1a10" height="000ad8fe" depth="00000000" italic="0000c42e">
+        <Kerning index="41" value="ffff87b7"/>
+        <Kerning index="56" value="ffff87b7"/>
+        <Kerning index="57" value="ffff87b7"/>
+        <Kerning index="58" value="ffff87b7"/>
+        <Kerning index="59" value="ffff87b7"/>
+      </Character>
+      <Character index="45" width="000cb137" height="000ad8fe" depth="00000000" italic="0000c375"/>
+      <Character index="46" width="000c38f0" height="000ad8fe" depth="00000000" italic="0000f2cb">
+        <Kerning index="41" value="fffe1ee0"/>
+        <Kerning index="43" value="ffff87b7"/>
+        <Kerning index="47" value="ffff87b7"/>
+        <Kerning index="4f" value="ffff87b7"/>
+        <Kerning index="51" value="ffff87b7"/>
+        <Kerning index="61" value="fffe9727"/>
+        <Kerning index="65" value="fffe9727"/>
+        <Kerning index="6f" value="fffe9727"/>
+        <Kerning index="72" value="fffe9727"/>
+        <Kerning index="75" value="fffe9727"/>
+      </Character>
+      <Character index="47" width="000e75e5" height="000ad8fe" depth="00000000" italic="00013670"/>
+      <Character index="48" width="000ddaab" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="49" width="000746bb" height="000ad8fe" depth="00000000" italic="00006e1e"/>
+      <Character index="4a" width="0009df87" height="000ad8fe" depth="00000000" italic="0000f05b"/>
+      <Character index="4b" width="000e52f5" height="000ad8fe" depth="00000000" italic="000133e9">
+        <Kerning index="43" value="ffff87b7"/>
+        <Kerning index="47" value="ffff87b7"/>
+        <Kerning index="4f" value="ffff87b7"/>
+        <Kerning index="51" value="ffff87b7"/>
+      </Character>
+      <Character index="4c" width="000bc0a7" height="000ad8fe" depth="00000000" italic="00000000">
+        <Kerning index="54" value="fffe9727"/>
+        <Kerning index="56" value="fffe1ee0"/>
+        <Kerning index="57" value="fffe1ee0"/>
+        <Kerning index="59" value="fffe9727"/>
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="4d" width="0010ac5b" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="4e" width="000ddaab" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="4f" width="000e5972" height="000ad8fe" depth="00000000" italic="0000c42e">
+        <Kerning index="41" value="ffff87b7"/>
+        <Kerning index="56" value="ffff87b7"/>
+        <Kerning index="57" value="ffff87b7"/>
+        <Kerning index="58" value="ffff87b7"/>
+        <Kerning index="59" value="ffff87b7"/>
+      </Character>
+      <Character index="50" width="000cb137" height="000ad8fe" depth="00000000" italic="000133e9">
+        <Kerning index="41" value="fffe9727"/>
+      </Character>
+      <Character index="51" width="000e5972" height="000ad8fe" depth="00031c72" italic="0000c42e"/>
+      <Character index="52" width="000da1c7" height="000ad8fe" depth="00000000" italic="000067d2">
+        <Kerning index="43" value="ffff87b7"/>
+        <Kerning index="47" value="ffff87b7"/>
+        <Kerning index="4f" value="ffff87b7"/>
+        <Kerning index="51" value="ffff87b7"/>
+        <Kerning index="54" value="fffe9727"/>
+        <Kerning index="55" value="ffff87b7"/>
+        <Kerning index="56" value="fffe1ee0"/>
+        <Kerning index="57" value="fffe1ee0"/>
+        <Kerning index="59" value="fffe9727"/>
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="62" value="ffff87b7"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="68" value="ffff87b7"/>
+        <Kerning index="69" value="ffff87b7"/>
+        <Kerning index="6b" value="ffff87b7"/>
+        <Kerning index="6c" value="ffff87b7"/>
+        <Kerning index="6d" value="ffff87b7"/>
+        <Kerning index="6e" value="ffff87b7"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+        <Kerning index="72" value="ffff87b7"/>
+        <Kerning index="74" value="ffff87b7"/>
+        <Kerning index="75" value="ffff87b7"/>
+        <Kerning index="76" value="ffff87b7"/>
+        <Kerning index="77" value="ffff87b7"/>
+      </Character>
+      <Character index="53" width="000a9732" height="000ad8fe" depth="00000000" italic="0000c375"/>
+      <Character index="54" width="000d68e2" height="000ad8fe" depth="00000000" italic="0000f2cb">
+        <Kerning index="41" value="fffe9727"/>
+        <Kerning index="61" value="fffe9727"/>
+        <Kerning index="65" value="fffe9727"/>
+        <Kerning index="6f" value="fffe9727"/>
+        <Kerning index="72" value="fffe9727"/>
+        <Kerning index="75" value="fffe9727"/>
+        <Kerning index="79" value="fffe9727"/>
+      </Character>
+      <Character index="55" width="000ddaab" height="000ad8fe" depth="00000000" italic="00006429"/>
+      <Character index="56" width="000ddaab" height="000ad8fe" depth="00000000" italic="0000c42e">
+        <Kerning index="41" value="fffe1ee0"/>
+        <Kerning index="43" value="ffff87b7"/>
+        <Kerning index="47" value="ffff87b7"/>
+        <Kerning index="4f" value="ffff87b7"/>
+        <Kerning index="51" value="ffff87b7"/>
+        <Kerning index="61" value="fffe9727"/>
+        <Kerning index="65" value="fffe9727"/>
+        <Kerning index="6f" value="fffe9727"/>
+        <Kerning index="72" value="fffe9727"/>
+        <Kerning index="75" value="fffe9727"/>
+      </Character>
+      <Character index="57" width="00128d7b" height="000ad8fe" depth="00000000" italic="0000c42e">
+        <Kerning index="41" value="fffe9727"/>
+      </Character>
+      <Character index="58" width="000ddaab" height="000ad8fe" depth="00000000" italic="00006e1e">
+        <Kerning index="43" value="ffff87b7"/>
+        <Kerning index="47" value="ffff87b7"/>
+        <Kerning index="4f" value="ffff87b7"/>
+        <Kerning index="51" value="ffff87b7"/>
+      </Character>
+      <Character index="59" width="000ddaab" height="000ad8fe" depth="00000000" italic="0000e595">
+        <Kerning index="41" value="fffe9727"/>
+        <Kerning index="61" value="fffe9727"/>
+        <Kerning index="65" value="fffe9727"/>
+        <Kerning index="6f" value="fffe9727"/>
+        <Kerning index="72" value="fffe9727"/>
+        <Kerning index="75" value="fffe9727"/>
+      </Character>
+      <Character index="5a" width="000b87c2" height="000ad8fe" depth="00000000" italic="000133e9"/>
+      <Character index="5b" width="0005e462" height="000c0000" depth="00040000" italic="0000c855"/>
+      <Character index="5c" width="0009a6a2" height="000b1c72" depth="00000000" italic="0000c375"/>
+      <Character index="5d" width="0005e462" height="000c0000" depth="00040000" italic="00010a90"/>
+      <Character index="5e" width="0009a6a2" height="000b1c72" depth="00000000" italic="0000f05b"/>
+      <Character index="5f" width="0005e462" height="000ad8fe" depth="00000000" italic="00006e1e"/>
+      <Character index="60" width="0005e462" height="000b1c72" depth="00000000" italic="0000c42e">
+        <Ligature index="60" mode="00" result="5c"/>
+      </Character>
+      <Character index="61" width="0009a6a2" height="0006e38e" depth="00000000" italic="00006e1e"/>
+      <Character index="62" width="0008b612" height="000b1c72" depth="00000000" italic="0000f2cb">
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="63" width="0008b612" height="0006e38e" depth="00000000" italic="0000c855">
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="64" width="0009a6a2" height="000b1c72" depth="00000000" italic="0000e595">
+        <Kerning index="6c" value="0000f090"/>
+      </Character>
+      <Character index="65" width="0008b612" height="0006e38e" depth="00000000" italic="00012aab">
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="66" width="0005e465" height="000b1c72" depth="00031c72" italic="0000f05b">
+        <Kerning index="21" value="0001c2a5"/>
+        <Kerning index="27" value="0001c2a5"/>
+        <Kerning index="29" value="0001c2a5"/>
+        <Kerning index="3f" value="0001c2a5"/>
+        <Kerning index="5d" value="0001c2a5"/>
+        <Ligature index="66" mode="00" result="0b"/>
+        <Ligature index="69" mode="00" result="0c"/>
+        <Ligature index="6c" mode="00" result="0d"/>
+      </Character>
+      <Character index="67" width="0008b612" height="0006e38e" depth="00031c72" italic="000067d2"/>
+      <Character index="68" width="0009a6a2" height="000b1c72" depth="00000000" italic="00006e1e"/>
+      <Character index="69" width="0005e462" height="000a8209" depth="00000000" italic="0000c375"/>
+      <Character index="6a" width="0005e462" height="000a8209" depth="00031c72" italic="00013670"/>
+      <Character index="6b" width="0008b612" height="000b1c72" depth="00000000" italic="000067d2"/>
+      <Character index="6c" width="0004f3d2" height="000b1c72" depth="00000000" italic="0000e595">
+        <Kerning index="6c" value="0000f090"/>
+      </Character>
+      <Character index="6d" width="000f4a02" height="0006e38e" depth="00000000" italic="00006e1e"/>
+      <Character index="6e" width="000a9732" height="0006e38e" depth="00000000" italic="00006e1e">
+        <Kerning index="27" value="fffe1ee0"/>
+      </Character>
+      <Character index="6f" width="0009a6a2" height="0006e38e" depth="00000000" italic="0000f2cb">
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="70" width="0009a6a2" height="0006e38e" depth="00031c72" italic="0000f2cb">
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="71" width="0008b612" height="0006e38e" depth="00031c72" italic="000067d2"/>
+      <Character index="72" width="000801a7" height="0006e38e" depth="00000000" italic="000067d2">
+        <Kerning index="61" value="ffff0f70"/>
+        <Kerning index="63" value="ffff0f70"/>
+        <Kerning index="64" value="ffff0f70"/>
+        <Kerning index="65" value="ffff0f70"/>
+        <Kerning index="67" value="ffff0f70"/>
+        <Kerning index="6f" value="ffff0f70"/>
+        <Kerning index="71" value="ffff0f70"/>
+      </Character>
+      <Character index="73" width="0007c582" height="0006e38e" depth="00000000" italic="00000000"/>
+      <Character index="74" width="00065cab" height="0009d75e" depth="00000000" italic="0000f05b"/>
+      <Character index="75" width="000a1eeb" height="0006e38e" depth="00000000" italic="00006e1e"/>
+      <Character index="76" width="0008b612" height="0006e38e" depth="00000000" italic="000067d2"/>
+      <Character index="77" width="000c7852" height="0006e38e" depth="00000000" italic="000067d2">
+        <Kerning index="6c" value="0000f090"/>
+      </Character>
+      <Character index="78" width="0008b615" height="0006e38e" depth="00000000" italic="0000e595"/>
+      <Character index="79" width="00092e5b" height="0006e38e" depth="00031c72" italic="000067d2"/>
+      <Character index="7a" width="0007c585" height="0006e38e" depth="00000000" italic="00010a90"/>
+      <Character index="7b" width="0009a6a2" height="0006e38e" depth="00000000" italic="00011102">
+        <Ligature index="2d" mode="00" result="7c"/>
+      </Character>
+      <Character index="7c" width="00134d45" height="0006e38e" depth="00000000" italic="00011102"/>
+      <Character index="7d" width="0009a6a2" height="000b1c72" depth="00000000" italic="0000c855"/>
+      <Character index="7e" width="0009a6a2" height="000ad8fe" depth="00000000" italic="000087b7"/>
+      <Character index="7f" width="0009a6a2" height="000ad8fe" depth="00000000" italic="0000f2cb"/>
+    </Data>
+  </Font>
+</XTFM>

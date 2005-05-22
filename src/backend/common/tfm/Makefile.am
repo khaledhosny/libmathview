@@ -1,25 +1,91 @@
 
 NULL =
 
-AUTO_CC = \
-  cmr10.cc \
-  cmb10.cc \
-  cmbxti10.cc \
-  cmti10.cc \
-  cmss10.cc \
-  cmssi10.cc \
-  cmssbx10.cc \
-  cmtt10.cc \
-  cmsy10.cc \
-  cmbsy10.cc \
-  cmmi10.cc \
-  cmmib10.cc \
+TFM_LEVEL_1_CC = \
   cmex10.cc \
+  cmmi10.cc \
+  cmr10.cc \
+  cmsy10.cc \
   $(NULL)
+
+TFM_LEVEL_2_CC = \
+  $(TFM_LEVEL_1_CC) \
+  cmb10.cc \
+  cmbsy10.cc \
+  cmmib10.cc \
+  cmss10.cc \
+  cmssbx10.cc \
+  cmssi10.cc \
+  cmti10.cc \
+  cmtt10.cc \
+  $(NULL)
+
+TFM_LEVEL_3_CC = \
+  $(TFM_LEVEL_2_CC) \
+  cmbx10.cc \
+  cmbx12.cc \
+  cmbx5.cc \
+  cmbx6.cc \
+  cmbx7.cc \
+  cmbx8.cc \
+  cmbx9.cc \
+  cmbxti10.cc \
+  cmex10.cc \
+  cmex9.cc \
+  cmmi12.cc \
+  cmmi5.cc \
+  cmmi6.cc \
+  cmmi7.cc \
+  cmmi8.cc \
+  cmmi9.cc \
+  cmr12.cc \
+  cmr17.cc \
+  cmr5.cc \
+  cmr6.cc \
+  cmr7.cc \
+  cmr8.cc \
+  cmr9.cc \
+  cmss12.cc \
+  cmss17.cc \
+  cmss8.cc \
+  cmss9.cc \
+  cmssi12.cc \
+  cmssi17.cc \
+  cmssi8.cc \
+  cmssi9.cc \
+  cmsy5.cc \
+  cmsy6.cc \
+  cmsy7.cc \
+  cmsy8.cc \
+  cmsy9.cc \
+  cmti12.cc \
+  cmti7.cc \
+  cmti8.cc \
+  cmti9.cc \
+  cmtt12.cc \
+  cmtt8.cc \
+  cmtt9.cc \
+  $(NULL)
+
+if COND_TFM_LEVEL_1
+AUTO_CC = $(TFM_LEVEL_1_CC)
+else
+if COND_TFM_LEVEL_2
+AUTO_CC = $(TFM_LEVEL_2_CC)
+else
+if COND_TFM_LEVEL_3
+AUTO_CC = $(TFM_LEVEL_3_CC)
+else
+AUTO_CC = $(NULL)
+endif
+endif
+endif
 
 CLEANFILES = $(AUTO_CC)
 
 noinst_LTLIBRARIES = libtfm.la
+
+BUILT_SOURCES = $(AUTO_CC)
 
 libtfm_la_SOURCES = \
   $(AUTO_CC) \
@@ -29,11 +95,9 @@ libtfm_la_SOURCES = \
   TFMManager.cc \
   $(NULL)
 
-BUILT_SOURCES = $(AUTO_CC)
-
 TFMDUMP = ~/Luca-CVS/Projects/xtfm/tfmdump
 
-XTFMS = $(AUTO_CC:%.cc=$(srcdir)/%.xtfm)
+XTFMS = $(CMS:%=$(srcdir)/%.xtfm)
 
 $(srcdir)/%.xtfm: /usr/share/texmf/fonts/tfm/public/cm/%.tfm
 	$(TFMDUMP) $< >$@
@@ -49,6 +113,9 @@ LICENSE = $(top_srcdir)/LICENSE
 xtfms: $(XTFMS)
 
 endif
+
+a:
+	echo $(AUTO_CC)
 
 INCLUDES = \
   -I$(top_builddir)/auto \

@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<!DOCTYPE XTFM SYSTEM "xtfm.dtd">
+
+<XTFM version="0.1.1">
+  <Unity value="00100000"/>
+  <Font family="CMEX" face="ec" coding-scheme="TeX math extension" design-size="00900000" checksum="7ac0d369">
+    <Dimensions>
+      <Dimension index="01" name="slant" value="00000000"/>
+      <Dimension index="02" name="space" value="00000000"/>
+      <Dimension index="03" name="space_stretch" value="00000000"/>
+      <Dimension index="04" name="space_shrink" value="00000000"/>
+      <Dimension index="05" name="x_height" value="0006e38e"/>
+      <Dimension index="06" name="quad" value="001071c0"/>
+      <Dimension index="07" name="extra_space" value="00000000"/>
+      <Dimension index="08" name="default_rule_thickness" value="0000acf2"/>
+      <Dimension index="09" name="big_op_spacing1" value="0001c71c"/>
+      <Dimension index="0a" name="big_op_spacing2" value="0002aaab"/>
+      <Dimension index="0b" name="big_op_spacing3" value="00033334"/>
+      <Dimension index="0c" name="big_op_spacing4" value="0009add4"/>
+      <Dimension index="0d" name="big_op_spacing5" value="0001c71c"/>
+    </Dimensions>
+    <Data>
+      <Character index="00" width="00078977" height="0000acf2" depth="0012864e" italic="00000000" larger="10"/>
+      <Character index="01" width="00078977" height="0000acf2" depth="0012864e" italic="00000000" larger="11"/>
+      <Character index="02" width="0006da10" height="0000acf2" depth="0012864e" italic="00000000" larger="68"/>
+      <Character index="03" width="0006da10" height="0000acf2" depth="0012864e" italic="00000000" larger="69"/>
+      <Character index="04" width="0007c3f0" height="0000acf2" depth="0012864e" italic="00000000" larger="6a"/>
+      <Character index="05" width="0007c3f0" height="0000acf2" depth="0012864e" italic="00000000" larger="6b"/>
+      <Character index="06" width="0007c3f0" height="0000acf2" depth="0012864e" italic="00000000" larger="6c"/>
+      <Character index="07" width="0007c3f0" height="0000acf2" depth="0012864e" italic="00000000" larger="6d"/>
+      <Character index="08" width="000997b2" height="0000acf2" depth="0012864e" italic="00000000" larger="6e"/>
+      <Character index="09" width="000997b2" height="0000acf2" depth="0012864e" italic="00000000" larger="6f"/>
+      <Character index="0a" width="0007c3f2" height="0000acf2" depth="0012864e" italic="00000000" larger="44"/>
+      <Character index="0b" width="0007c3f2" height="0000acf2" depth="0012864e" italic="00000000" larger="45"/>
+      <Character index="0c" width="00057b40" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="0c"/>
+      </Character>
+      <Character index="0d" width="000922c0" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="0d"/>
+      </Character>
+      <Character index="0e" width="0009804c" height="0000acf2" depth="0012864e" italic="00000000" larger="2e"/>
+      <Character index="0f" width="0009804c" height="0000acf2" depth="0012864e" italic="00000000" larger="2f"/>
+      <Character index="10" width="0009d227" height="0000acf2" depth="001c1fee" italic="00000000" larger="12"/>
+      <Character index="11" width="0009d227" height="0000acf2" depth="001c1fee" italic="00000000" larger="13"/>
+      <Character index="12" width="000c1ad7" height="0000acf2" depth="0025b98e" italic="00000000" larger="20"/>
+      <Character index="13" width="000c1ad7" height="0000acf2" depth="0025b98e" italic="00000000" larger="21"/>
+      <Character index="14" width="0008add0" height="0000acf2" depth="0025b98e" italic="00000000" larger="22"/>
+      <Character index="15" width="0008add0" height="0000acf2" depth="0025b98e" italic="00000000" larger="23"/>
+      <Character index="16" width="000997b0" height="0000acf2" depth="0025b98e" italic="00000000" larger="24"/>
+      <Character index="17" width="000997b0" height="0000acf2" depth="0025b98e" italic="00000000" larger="25"/>
+      <Character index="18" width="000997b0" height="0000acf2" depth="0025b98e" italic="00000000" larger="26"/>
+      <Character index="19" width="000997b0" height="0000acf2" depth="0025b98e" italic="00000000" larger="27"/>
+      <Character index="1a" width="000c5552" height="0000acf2" depth="0025b98e" italic="00000000" larger="28"/>
+      <Character index="1b" width="000c5552" height="0000acf2" depth="0025b98e" italic="00000000" larger="29"/>
+      <Character index="1c" width="000c5552" height="0000acf2" depth="0025b98e" italic="00000000" larger="2a"/>
+      <Character index="1d" width="000c5552" height="0000acf2" depth="0025b98e" italic="00000000" larger="2b"/>
+      <Character index="1e" width="00112cdb" height="0000acf2" depth="0025b98e" italic="00000000" larger="2c"/>
+      <Character index="1f" width="00112cdb" height="0000acf2" depth="0025b98e" italic="00000000" larger="2d"/>
+      <Character index="20" width="000d04b7" height="0000acf2" depth="002f532e" italic="00000000" larger="30"/>
+      <Character index="21" width="000d04b7" height="0000acf2" depth="002f532e" italic="00000000" larger="31"/>
+      <Character index="22" width="000997b0" height="0000acf2" depth="002f532e" italic="00000000" larger="32"/>
+      <Character index="23" width="000997b0" height="0000acf2" depth="002f532e" italic="00000000" larger="33"/>
+      <Character index="24" width="000a8190" height="0000acf2" depth="002f532e" italic="00000000" larger="34"/>
+      <Character index="25" width="000a8190" height="0000acf2" depth="002f532e" italic="00000000" larger="35"/>
+      <Character index="26" width="000a8190" height="0000acf2" depth="002f532e" italic="00000000" larger="36"/>
+      <Character index="27" width="000a8190" height="0000acf2" depth="002f532e" italic="00000000" larger="37"/>
+      <Character index="28" width="000d3f30" height="0000acf2" depth="002f532e" italic="00000000" larger="38"/>
+      <Character index="29" width="000d3f30" height="0000acf2" depth="002f532e" italic="00000000" larger="39"/>
+      <Character index="2a" width="000d3f30" height="0000acf2" depth="002f532e" italic="00000000"/>
+      <Character index="2b" width="000d3f30" height="0000acf2" depth="002f532e" italic="00000000"/>
+      <Character index="2c" width="00150320" height="0000acf2" depth="002f532e" italic="00000000"/>
+      <Character index="2d" width="00150320" height="0000acf2" depth="002f532e" italic="00000000"/>
+      <Character index="2e" width="000d5694" height="0000acf2" depth="001c1fee" italic="00000000" larger="1e"/>
+      <Character index="2f" width="000d5694" height="0000acf2" depth="001c1fee" italic="00000000" larger="1f"/>
+      <Character index="30" width="000e6387" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="30" middle="00" bottom="40" repeat="42"/>
+      </Character>
+      <Character index="31" width="000e6387" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="31" middle="00" bottom="41" repeat="43"/>
+      </Character>
+      <Character index="32" width="000af680" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="32" middle="00" bottom="34" repeat="36"/>
+      </Character>
+      <Character index="33" width="000af680" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="33" middle="00" bottom="35" repeat="37"/>
+      </Character>
+      <Character index="34" width="000af680" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="00" middle="00" bottom="34" repeat="36"/>
+      </Character>
+      <Character index="35" width="000af680" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="00" middle="00" bottom="35" repeat="37"/>
+      </Character>
+      <Character index="36" width="000af680" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="32" middle="00" bottom="00" repeat="36"/>
+      </Character>
+      <Character index="37" width="000af680" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="33" middle="00" bottom="00" repeat="37"/>
+      </Character>
+      <Character index="38" width="000e9e00" height="00000000" depth="000e6670" italic="00000000">
+        <Extensible top="38" middle="3c" bottom="3a" repeat="3e"/>
+      </Character>
+      <Character index="39" width="000e9e00" height="00000000" depth="000e6670" italic="00000000">
+        <Extensible top="39" middle="3d" bottom="3b" repeat="3e"/>
+      </Character>
+      <Character index="3a" width="000e9e00" height="00000000" depth="000e6670" italic="00000000">
+        <Extensible top="38" middle="00" bottom="3a" repeat="3e"/>
+      </Character>
+      <Character index="3b" width="000e9e00" height="00000000" depth="000e6670" italic="00000000">
+        <Extensible top="39" middle="00" bottom="3b" repeat="3e"/>
+      </Character>
+      <Character index="3c" width="000e9e00" height="00000000" depth="001ccce0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="3f"/>
+      </Character>
+      <Character index="3d" width="000e9e00" height="00000000" depth="001ccce0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="77"/>
+      </Character>
+      <Character index="3e" width="000e9e00" height="00000000" depth="0004ccd0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="3e"/>
+      </Character>
+      <Character index="3f" width="000af680" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="78" middle="00" bottom="79" repeat="3f"/>
+      </Character>
+      <Character index="40" width="000e6387" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="38" middle="00" bottom="3b" repeat="3e"/>
+      </Character>
+      <Character index="41" width="000e6387" height="0000acf2" depth="001c1fee" italic="00000000">
+        <Extensible top="39" middle="00" bottom="3a" repeat="3e"/>
+      </Character>
+      <Character index="42" width="000e6387" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="42"/>
+      </Character>
+      <Character index="43" width="000e6387" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="00" repeat="43"/>
+      </Character>
+      <Character index="44" width="000a0ca0" height="0000acf2" depth="001c1fee" italic="00000000" larger="1c"/>
+      <Character index="45" width="000a0ca0" height="0000acf2" depth="001c1fee" italic="00000000" larger="1d"/>
+      <Character index="46" width="000db420" height="00000000" depth="0010000e" italic="00000000" larger="47"/>
+      <Character index="47" width="00124580" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="48" width="0007c3f0" height="00000000" depth="0011c729" italic="00033290" larger="49"/>
+      <Character index="49" width="000922c0" height="00000000" depth="00238e52" italic="00074f00"/>
+      <Character index="4a" width="00124580" height="00000000" depth="0010000e" italic="00000000" larger="4b"/>
+      <Character index="4b" width="0018d965" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="4c" width="00124580" height="00000000" depth="0010000e" italic="00000000" larger="4d"/>
+      <Character index="4d" width="0018d965" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="4e" width="00124580" height="00000000" depth="0010000e" italic="00000000" larger="4f"/>
+      <Character index="4f" width="0018d965" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="50" width="00115ba0" height="00000000" depth="0010000e" italic="00000000" larger="58"/>
+      <Character index="51" width="000f87e0" height="00000000" depth="0010000e" italic="00000000" larger="59"/>
+      <Character index="52" width="0007c3f0" height="00000000" depth="0011c729" italic="00033290" larger="5a"/>
+      <Character index="53" width="000db420" height="00000000" depth="0010000e" italic="00000000" larger="5b"/>
+      <Character index="54" width="000db420" height="00000000" depth="0010000e" italic="00000000" larger="5c"/>
+      <Character index="55" width="000db420" height="00000000" depth="0010000e" italic="00000000" larger="5d"/>
+      <Character index="56" width="000db420" height="00000000" depth="0010000e" italic="00000000" larger="5e"/>
+      <Character index="57" width="000db420" height="00000000" depth="0010000e" italic="00000000" larger="5f"/>
+      <Character index="58" width="0017c0c0" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="59" width="00150320" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="5a" width="000922c0" height="00000000" depth="00238e52" italic="00074f00"/>
+      <Character index="5b" width="00124580" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="5c" width="00124580" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="5d" width="00124580" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="5e" width="00124580" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="5f" width="00124580" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="60" width="000f87e0" height="00000000" depth="0010000e" italic="00000000" larger="61"/>
+      <Character index="61" width="00150320" height="0001999b" depth="0018000c" italic="00000000"/>
+      <Character index="62" width="000922c0" height="000b8e39" depth="00000000" italic="00000000" larger="63"/>
+      <Character index="63" width="001071c0" height="000c0000" depth="00000000" italic="00000000" larger="64"/>
+      <Character index="64" width="0017c0c0" height="000c0000" depth="00000000" italic="00000000"/>
+      <Character index="65" width="000922c0" height="000b8e39" depth="00000000" italic="00000000" larger="66"/>
+      <Character index="66" width="001071c0" height="000c0000" depth="00000000" italic="00000000" larger="67"/>
+      <Character index="67" width="0017c0c0" height="000c0000" depth="00000000" italic="00000000"/>
+      <Character index="68" width="0007c3f0" height="0000acf2" depth="001c1fee" italic="00000000" larger="14"/>
+      <Character index="69" width="0007c3f0" height="0000acf2" depth="001c1fee" italic="00000000" larger="15"/>
+      <Character index="6a" width="0008add0" height="0000acf2" depth="001c1fee" italic="00000000" larger="16"/>
+      <Character index="6b" width="0008add0" height="0000acf2" depth="001c1fee" italic="00000000" larger="17"/>
+      <Character index="6c" width="0008add0" height="0000acf2" depth="001c1fee" italic="00000000" larger="18"/>
+      <Character index="6d" width="0008add0" height="0000acf2" depth="001c1fee" italic="00000000" larger="19"/>
+      <Character index="6e" width="000af680" height="0000acf2" depth="001c1fee" italic="00000000" larger="1a"/>
+      <Character index="6f" width="000af680" height="0000acf2" depth="001c1fee" italic="00000000" larger="1b"/>
+      <Character index="70" width="001071c0" height="0000acf2" depth="0012864e" italic="00000000" larger="71"/>
+      <Character index="71" width="001071c0" height="0000acf2" depth="001c1fee" italic="00000000" larger="72"/>
+      <Character index="72" width="001071c0" height="0000acf2" depth="0025b98e" italic="00000000" larger="73"/>
+      <Character index="73" width="001071c0" height="0000acf2" depth="002f532e" italic="00000000" larger="74"/>
+      <Character index="74" width="00115ba0" height="00000000" depth="001ccce0" italic="00000000">
+        <Extensible top="76" middle="00" bottom="74" repeat="75"/>
+      </Character>
+      <Character index="75" width="00115ba0" height="00000000" depth="000999a0" italic="00000000"/>
+      <Character index="76" width="00115ba0" height="0000acf2" depth="0008ecae" italic="00000000"/>
+      <Character index="77" width="000cca40" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="7e" middle="00" bottom="7f" repeat="77"/>
+      </Character>
+      <Character index="78" width="000af680" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="78" middle="00" bottom="00" repeat="3f"/>
+      </Character>
+      <Character index="79" width="000af680" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="79" repeat="3f"/>
+      </Character>
+      <Character index="7a" width="00073339" height="000206d5" depth="00000000" italic="00000000"/>
+      <Character index="7b" width="00073339" height="000206d5" depth="00000000" italic="00000000"/>
+      <Character index="7c" width="00073339" height="000206d5" depth="00000000" italic="00000000"/>
+      <Character index="7d" width="00073339" height="000206d5" depth="00000000" italic="00000000"/>
+      <Character index="7e" width="000cca40" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="7e" middle="00" bottom="00" repeat="77"/>
+      </Character>
+      <Character index="7f" width="000cca40" height="00000000" depth="000999a0" italic="00000000">
+        <Extensible top="00" middle="00" bottom="7f" repeat="77"/>
+      </Character>
+    </Data>
+  </Font>
+</XTFM>
