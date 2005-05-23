@@ -22,20 +22,26 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "TFMManager.hh"
 #include "t1lib_TFM_T1Font.hh"
 #include "t1lib_TFM_T1FontManager.hh"
 
-t1lib_TFM_T1FontManager::t1lib_TFM_T1FontManager(const SmartPtr<TFMManager>& tm)
-  : tfmManager(tm)
+t1lib_TFM_T1FontManager::t1lib_TFM_T1FontManager(const SmartPtr<AbstractLogger>& logger,
+						 const SmartPtr<Configuration>& conf,
+						 const SmartPtr<TFMManager>& tm)
+  : t1lib_T1FontManager(logger, conf), tfmManager(tm)
 { }
 
 t1lib_TFM_T1FontManager::~t1lib_TFM_T1FontManager()
 { }
 
 SmartPtr<t1lib_TFM_T1FontManager>
-t1lib_TFM_T1FontManager::create(const SmartPtr<TFMManager>& tm)
-{ return new t1lib_TFM_T1FontManager(tm); }
+t1lib_TFM_T1FontManager::create(const SmartPtr<AbstractLogger>& logger,
+				const SmartPtr<Configuration>& conf,
+				const SmartPtr<TFMManager>& tm)
+{ return new t1lib_TFM_T1FontManager(logger, conf, tm); }
 
 SmartPtr<t1lib_T1Font>
 t1lib_TFM_T1FontManager::createT1Font(const String& name, const scaled& size) const

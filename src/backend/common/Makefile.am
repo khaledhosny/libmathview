@@ -3,17 +3,15 @@ NULL =
 
 if COND_TFM
 MAYBE_TFM_SUBDIRS = tfm
-MAYBE_LIBTFM = $(top_builddir)/src/backend/common/tfm/libtfm.la
+MAYBE_TFM_L = $(top_builddir)/src/backend/common/tfm/libtfm.la
 else
 MAYBE_TFM_SUBDIRS =
-MAYBE_LIBTFM =
+MAYBE_TFM_L = $(NULL)
 endif
 
 SUBDIRS = $(MAYBE_TFM_SUBDIRS)
 
-noinst_LTLIBRARIES = libmathview_backend_common.la
-
-libmathview_backend_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+noinst_LTLIBRARIES = libbackend_common.la
 
 if COND_BOXML
 MAYBE_BOXML_S = \
@@ -69,12 +67,14 @@ MAYBE_T1LIB_H = \
   t1lib_T1FontManager.hh \
   $(MAYBE_T1LIB_TFM_H) \
   $(NULL)
+MAYBE_T1LIB_L = $(T1_LIBS)
 else
 MAYBE_T1LIB_S = $(NULL)
 MAYBE_T1LIB_H = $(NULL)
+MAYBE_T1LIB_L = $(NULL)
 endif
 
-libmathview_backend_common_la_SOURCES = \
+libbackend_common_la_SOURCES = \
   Area.cc \
   AreaFactory.cc \
   AreaId.cc \
@@ -181,7 +181,8 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   $(NULL)
 
-libmathview_backend_common_la_LIBADD = \
-  $(MAYBE_LIBTFM) \
+libbackend_common_la_LIBADD = \
+  $(MAYBE_TFM_L) \
+  $(MAYBE_T1LIB_L) \
   $(NULL)
 

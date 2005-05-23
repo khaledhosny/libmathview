@@ -32,12 +32,12 @@
 class t1lib_T1FontManager : public Object
 {
 protected:
-  t1lib_T1FontManager(void);
+  t1lib_T1FontManager(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
   virtual ~t1lib_T1FontManager();
 
 public:
-  static SmartPtr<t1lib_T1FontManager> create(void)
-  { return new t1lib_T1FontManager(); }
+  static SmartPtr<t1lib_T1FontManager> create(const SmartPtr<class AbstractLogger>&, 
+					      const SmartPtr<class Configuration>&);
 
   String getFontFileName(int) const;
   SmartPtr<class t1lib_T1Font> getT1Font(const String&, const scaled&) const;

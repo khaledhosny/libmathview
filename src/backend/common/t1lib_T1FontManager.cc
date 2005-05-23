@@ -24,6 +24,8 @@
 
 #include <t1lib.h>
 
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "t1lib_T1Font.hh"
 #include "t1lib_T1FontManager.hh"
 
@@ -31,10 +33,19 @@ bool t1lib_T1FontManager::firstTime = true;
 
 // #include <iostream>
 
-t1lib_T1FontManager::t1lib_T1FontManager()
+t1lib_T1FontManager::t1lib_T1FontManager(const SmartPtr<AbstractLogger>& logger,
+					 const SmartPtr<Configuration>& configuration)
 {
   if (firstTime)
     {
+      if (getenv("T1LIB_CONFIG") == NULL)
+	{
+	  logger->out(LOG_WARNING, "T1LIB_CONFIG environment variable not set");
+
+	  String path = configuration->getString(logger, "default/t1lib/configuration", "");
+	  setenv("T1LIB_CONFIG", path.c_str(), 1);
+	}
+
       const void* res = T1_InitLib(LOGFILE | IGNORE_FONTDATABASE);
       assert(res != 0);
       firstTime = false;
@@ -50,6 +61,11 @@ t1lib_T1FontManager::~t1lib_T1FontManager()
 
   // should free the structures
 }
+
+SmartPtr<t1lib_T1FontManager>
+t1lib_T1FontManager::create(const SmartPtr<AbstractLogger>& logger,
+			    const SmartPtr<Configuration>& configuration)
+{ return new t1lib_T1FontManager(logger, configuration); }
 
 int
 t1lib_T1FontManager::loadFont(const String& name) const

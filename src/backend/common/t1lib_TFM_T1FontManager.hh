@@ -28,11 +28,15 @@
 class t1lib_TFM_T1FontManager : public t1lib_T1FontManager
 {
 protected:
-  t1lib_TFM_T1FontManager(const SmartPtr<class TFMManager>&);
+  t1lib_TFM_T1FontManager(const SmartPtr<class AbstractLogger>&,
+			  const SmartPtr<class Configuration>&,
+			  const SmartPtr<class TFMManager>&);
   virtual ~t1lib_TFM_T1FontManager();
 
 public:
-  static SmartPtr<t1lib_TFM_T1FontManager> create(const SmartPtr<class TFMManager>&);
+  static SmartPtr<t1lib_TFM_T1FontManager> create(const SmartPtr<class AbstractLogger>&,
+						  const SmartPtr<class Configuration>&,
+						  const SmartPtr<class TFMManager>&);
 
 protected:
   virtual SmartPtr<class t1lib_T1Font> createT1Font(const String&, const scaled&) const;
