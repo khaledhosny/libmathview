@@ -34,11 +34,12 @@ protected:
 public:
   enum { N_FONTS = 10 };
 
-  static SmartPtr<Gtk_AdobeShaper> create(void)
-  { return new Gtk_AdobeShaper(); }
+  static SmartPtr<Gtk_AdobeShaper> create(void);
 
   void setFontManager(const SmartPtr<class Gtk_PangoFontManager>&);
+#if HAVE_XFT
   void setFontManager(const SmartPtr<class Gtk_XftFontManager>&);
+#endif // HAVE_XFT
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
@@ -47,13 +48,17 @@ public:
 protected:
   AreaRef getGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
   AreaRef createPangoGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+#if HAVE_XFT
   AreaRef createXftGlyphArea(const SmartPtr<class Gtk_AreaFactory>&, unsigned, unsigned, const scaled&) const;
+#endif // HAVE_XFT
   AreaRef shapeChar(const class ShapingContext&) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
 
   SmartPtr<class Gtk_PangoFontManager> pangoFontManager;
+#if HAVE_XFT
   SmartPtr<class Gtk_XftFontManager> xftFontManager;
+#endif // HAVE_XFT
 };
 
 #endif // __Gtk_AdobeShaper_hh__

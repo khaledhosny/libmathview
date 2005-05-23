@@ -5,7 +5,10 @@ SUBDIRS = mathvariants
 
 noinst_LTLIBRARIES = libcommon.la
 
-libcommon_la_LIBADD = $(top_builddir)/src/common/mathvariants/libmathvariants.la
+libcommon_la_LIBADD = \
+  $(top_builddir)/src/common/mathvariants/libmathvariants.la \
+  $(GLIB_LIBS) \
+  $(NULL)
 
 libcommon_la_SOURCES = \
   AbstractLogger.cc \

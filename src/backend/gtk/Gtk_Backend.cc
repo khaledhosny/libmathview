@@ -36,7 +36,7 @@
 #else
 #include "BoxGraphicDevice.hh"
 #endif // ENABLE_BOXML
-#include "Gtk_XftFontManager.hh"
+#include "Gtk_PangoFontManager.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_AdobeShaper.hh"
@@ -87,9 +87,9 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 
   if (conf->getBool(l, "gtk-backend/adobe-shaper/enabled", false))
     {
-      SmartPtr<Gtk_XftFontManager> xftFontManager = Gtk_XftFontManager::create();
+      SmartPtr<Gtk_PangoFontManager> pangoFontManager = Gtk_PangoFontManager::create();
       SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-      adobeShaper->setFontManager(xftFontManager);
+      adobeShaper->setFontManager(pangoFontManager);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/adobe-shaper/priority", 0), adobeShaper));
     }
 

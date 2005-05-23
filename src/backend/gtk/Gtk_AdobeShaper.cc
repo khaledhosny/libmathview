@@ -30,7 +30,9 @@
 #include "Gtk_AdobeShaper.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_PangoFontManager.hh"
+#if HAVE_XFT
 #include "Gtk_XftFontManager.hh"
+#endif // HAVE_XFT
 #include "MathVariant.hh"
 #include "MathVariantMap.hh"
 #include "ShaperManager.hh"
@@ -324,9 +326,15 @@ void
 Gtk_AdobeShaper::setFontManager(const SmartPtr<Gtk_PangoFontManager>& fm)
 { pangoFontManager = fm; }
 
+SmartPtr<Gtk_AdobeShaper>
+Gtk_AdobeShaper::create()
+{ return new Gtk_AdobeShaper(); }
+
+#if HAVE_XFT
 void
 Gtk_AdobeShaper::setFontManager(const SmartPtr<Gtk_XftFontManager>& fm)
 { xftFontManager = fm; }
+#endif // HAVE_XFT
 
 void
 Gtk_AdobeShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
@@ -408,6 +416,7 @@ Gtk_AdobeShaper::createPangoGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   return factory->pangoGlyph(font, gs);
 }
 
+#if HAVE_XFT
 AreaRef
 Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
 				    unsigned fi, unsigned gi,
@@ -422,6 +431,7 @@ Gtk_AdobeShaper::createXftGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,
   assert(font);
   return factory->xftGlyph(font, gi);
 }
+#endif // HAVE_XFT
 
 AreaRef
 Gtk_AdobeShaper::getGlyphArea(const SmartPtr<Gtk_AreaFactory>& factory,

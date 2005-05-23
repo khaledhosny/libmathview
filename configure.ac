@@ -386,12 +386,12 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
   AC_SUBST(PANGOX_CFLAGS)
   AC_SUBST(PANGOX_LIBS)
 
-  PKG_CHECK_MODULES(XFT, xft, [have_xft="yes"])
-  AC_SUBST(XFT_CFLAGS)
-  AC_SUBST(XFT_LIBS)
+dnl   PKG_CHECK_MODULES(XFT, xft, [have_xft="yes"])
+dnl   AC_SUBST(XFT_CFLAGS)
+dnl   AC_SUBST(XFT_LIBS)
 fi
 
-AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" -a "$have_pango" = "yes" -a "$have_xft" = "yes" \)])
+AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" -a "$have_pango" = "yes"\)])
 
 AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
 

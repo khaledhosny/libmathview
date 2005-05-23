@@ -57,26 +57,25 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_RenderingContext.hh \
   Gtk_WrapperArea.cc \
   Gtk_WrapperArea.hh \
-  Gtk_XftFontManager.cc \
-  Gtk_XftFontManager.hh \
-  Gtk_XftGlyphArea.cc \
-  Gtk_XftGlyphArea.hh \
   $(MAYBE_BOXML_S) \
   $(MAYBE_BOXML_H) \
   $(MAYBE_T1_S) \
   $(MAYBE_T1_H) \
   $(NULL)
 
+#   Gtk_XftFontManager.cc
+#   Gtk_XftFontManager.hh
+#   Gtk_XftGlyphArea.cc
+#   Gtk_XftGlyphArea.hh
+
 libmathview_backend_gtk_la_LIBADD = \
   $(PANGOX_LIBS) \
-  $(XFT_LIBS) \
   $(GTK_LIBS) \
   $(T1_LIBS) \
   $(NULL)
 
 INCLUDES = \
   $(PANGOX_CFLAGS) \
-  $(XFT_CFLAGS) \
   $(GTK_CFLAGS) \
   $(T1_CFLAGS) \
   -I$(top_builddir)/auto \
