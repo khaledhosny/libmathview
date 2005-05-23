@@ -18,6 +18,8 @@ MAYBE_TFM_S = $(NULL)
 MAYBE_TFM_H = $(NULL)
 endif
 
+libmathview_backend_svg_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
 libmathview_backend_svg_la_SOURCES = \
   SVG_AreaFactory.hh \
   SVG_Backend.cc \

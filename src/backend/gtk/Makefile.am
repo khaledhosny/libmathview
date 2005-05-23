@@ -25,6 +25,8 @@ MAYBE_T1_S = $(NULL)
 MAYBE_T1_H = $(NULL)
 endif
 
+libmathview_backend_gtk_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
 libmathview_backend_gtk_la_SOURCES = \
   Gtk_AdobeShaper.cc \
   Gtk_AdobeShaper.hh \
