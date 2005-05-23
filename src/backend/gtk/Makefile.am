@@ -1,7 +1,7 @@
 
 NULL =
 
-noinst_LTLIBRARIES = libmathview_backend_gtk.la
+lib_LTLIBRARIES = libmathview_backend_gtk.la
 
 if COND_BOXML
 MAYBE_BOXML_S = Gtk_BoxGraphicDevice.cc
@@ -63,6 +63,13 @@ libmathview_backend_gtk_la_SOURCES = \
   $(MAYBE_BOXML_H) \
   $(MAYBE_T1_S) \
   $(MAYBE_T1_H) \
+  $(NULL)
+
+libmathview_backend_gtk_la_LIBADD = \
+  $(PANGOX_LIBS) \
+  $(XFT_LIBS) \
+  $(GTK_LIBS) \
+  $(T1_LIBS) \
   $(NULL)
 
 INCLUDES = \

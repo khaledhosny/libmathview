@@ -1,14 +1,20 @@
 
 NULL =
 
-if COND_SVG
-MAYBE_SVG = mathmlsvg
+if COND_GTK
+MAYBE_GTK_SUBDIRS = viewer
 else
-MAYBE_SVG = $(NULL)
+MAYBE_GTK_SUBDIRS = $(NULL)
+endif
+
+if COND_SVG
+MAYBE_SVG_SUBDIRS = mathmlsvg
+else
+MAYBE_SVG_SUBDIRS = $(NULL)
 endif
 
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
-SUBDIRS = scripts config auto src doc viewer $(MAYBE_SVG)
+SUBDIRS = scripts config auto src doc $(MAYBE_GTK_SUBDIRS) $(MAYBE_SVG_SUBDIRS)
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig

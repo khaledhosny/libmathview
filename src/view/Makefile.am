@@ -1,62 +1,66 @@
 
 NULL =
 
-lib_LTLIBRARIES =
-
 if COND_CUSTOM_READER
-lib_LTLIBRARIES += libmathview_custom_reader.la
+MAYBE_CUSTOM_READER = libmathview_frontend_custom_reader.la
+else
+MAYBE_CUSTOM_READER = $(NULL)
 endif
 
 if COND_LIBXML2_READER
-lib_LTLIBRARIES += libmathview_libxml2_reader.la
+MAYBE_LIBXML2_READER = libmathview_frontend_libxml2_reader.la
+else
+MAYBE_LIBXML2_READER = $(NULL)
 endif
 
 if COND_LIBXML2
-lib_LTLIBRARIES += libmathview_libxml2.la
+MAYBE_LIBXML2 = libmathview_frontend_libxml2.la
+else
+MAYBE_LIBXML2 = $(NULL)
 endif
 
 if COND_GMETADOM
-lib_LTLIBRARIES += libmathview_gmetadom.la
+MAYBE_GMETADOM = libmathview_frontend_gmetadom.la
+else
+MAYBE_GMETADOM = $(NULL)
 endif
 
-MATHVIEW_LIBS = \
+lib_LTLIBRARIES = $(MAYBE_CUSTOM_READER) $(MAYBE_LIBXML2_READER) $(MAYBE_LIBXML2) $(MAYBE_GMETADOM)
+
+libmathview_frontend_custom_reader_la_LIBADD = \
+  $(XML_LIBS) \
+  $(top_builddir)/src/frontend/libxml2_reader/libfrontend_libxml2_reader.la \
+  $(top_builddir)/src/frontend/custom_reader/libfrontend_custom_reader.la \
   $(top_builddir)/src/libmathview.la \
   $(NULL)
 
-libmathview_custom_reader_la_LIBADD = \
+libmathview_frontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
-  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
-  $(top_builddir)/src/frontend/custom_reader/libmathview_frontend_custom_reader.la \
-  $(MATHVIEW_LIBS) \
+  $(top_builddir)/src/frontend/libxml2_reader/libfrontend_libxml2_reader.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
-libmathview_libxml2_reader_la_LIBADD = \
+libmathview_frontend_libxml2_la_LIBADD = \
   $(XML_LIBS) \
-  $(top_builddir)/src/frontend/libxml2_reader/libmathview_frontend_libxml2_reader.la \
-  $(MATHVIEW_LIBS) \
+  $(top_builddir)/src/frontend/libxml2/libfrontend_libxml2.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
-libmathview_libxml2_la_LIBADD = \
-  $(XML_LIBS) \
-  $(top_builddir)/src/frontend/libxml2/libmathview_frontend_libxml2.la \
-  $(MATHVIEW_LIBS) \
-  $(NULL)
-
-libmathview_gmetadom_la_LIBADD = \
+libmathview_frontend_gmetadom_la_LIBADD = \
   $(DOM_LIBS) \
-  $(top_builddir)/src/frontend/gmetadom/libmathview_frontend_gmetadom.la \
-  $(MATHVIEW_LIBS) \
+  $(top_builddir)/src/frontend/gmetadom/libfrontend_gmetadom.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
-libmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_frontend_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
-libmathview_custom_reader_la_SOURCES = custom_reader_MathView.cc
-libmathview_libxml2_reader_la_SOURCES = libxml2_reader_MathView.cc
-libmathview_libxml2_la_SOURCES = libxml2_MathView.cc
-libmathview_gmetadom_la_SOURCES = gmetadom_MathView.cc
+libmathview_frontend_custom_reader_la_SOURCES = custom_reader_MathView.cc
+libmathview_frontend_libxml2_reader_la_SOURCES = libxml2_reader_MathView.cc
+libmathview_frontend_libxml2_la_SOURCES = libxml2_MathView.cc
+libmathview_frontend_gmetadom_la_SOURCES = gmetadom_MathView.cc
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \

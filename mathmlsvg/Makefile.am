@@ -12,7 +12,9 @@ mathmlsvg_SOURCES = \
 
 mathmlsvg_LDADD = \
   $(GLIB_LIBS) \
-  $(top_builddir)/src/view/libmathview_libxml2_reader.la \
+  $(top_builddir)/src/backend/svg/libmathview_backend_svg.la \
+  $(top_builddir)/src/view/libmathview_frontend_libxml2_reader.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 INCLUDES = \

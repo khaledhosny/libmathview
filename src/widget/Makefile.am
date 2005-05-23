@@ -1,48 +1,58 @@
 
 NULL =
 
-lib_LTLIBRARIES =
-
 if COND_CUSTOM_READER
 if COND_LIBXML2_READER
-lib_LTLIBRARIES += libgtkmathview_custom_reader.la
+MAYBE_CUSTOM_READER = libgtkmathview_custom_reader.la
+else
+MAYBE_CUSTOM_READER = $(NULL)
 endif
+else
+MAYBE_CUSTOM_READER = $(NULL)
 endif
 
 if COND_LIBXML2_READER
-lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
+MAYBE_LIBXML2_READER = libgtkmathview_libxml2_reader.la
+else
+MAYBE_LIBXML2_READER = $(NULL)
 endif
 
 if COND_LIBXML2
-lib_LTLIBRARIES += libgtkmathview_libxml2.la
+MAYBE_LIBXML2 = libgtkmathview_libxml2.la
+else
+MAYBE_LIBXML2 = $(NULL)
 endif
 
 if COND_GMETADOM
-lib_LTLIBRARIES += libgtkmathview_gmetadom.la
+MAYBE_GMETADOM = libgtkmathview_gmetadom.la
+else
+MAYBE_GMETADOM = $(NULL)
 endif
+
+lib_LTLIBRARIES = $(MAYBE_CUSTOM_READER) $(MAYBE_LIBXML2_READER) $(MAYBE_LIBXML2) $(MAYBE_GMETADOM)
 
 libgtkmathview_custom_reader_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_custom_reader.la \
+  $(top_builddir)/src/view/libmathview_frontend_custom_reader.la \
   $(NULL)
 
 libgtkmathview_libxml2_reader_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_libxml2_reader.la \
+  $(top_builddir)/src/view/libmathview_frontend_libxml2_reader.la \
   $(NULL)
 
 libgtkmathview_libxml2_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_libxml2.la \
+  $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
   $(NULL)
 
 libgtkmathview_gmetadom_la_LIBADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
-  $(top_builddir)/src/view/libmathview_gmetadom.la \
+  $(top_builddir)/src/view/libmathview_frontend_gmetadom.la \
   $(NULL)
 
 libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@

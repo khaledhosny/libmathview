@@ -1,6 +1,12 @@
 
 NULL =
 
+if COND_GTK
+MAYBE_GTK_SUBDIRS = gtk
+else
+MAYBE_GTK_SUBDIRS = $(NULL)
+endif
+
 if COND_SVG
 MAYBE_SVG_SUBDIRS = svg
 else
@@ -9,23 +15,6 @@ endif
 
 SUBDIRS = \
   common \
-  gtk \
+  $(MAYBE_GTK_SUBDIRS) \
   $(MAYBE_SVG_SUBDIRS) \
   $(NULL)
-
-noinst_LTLIBRARIES = libmathview_backend.la
-
-if COND_SVG
-MAYBE_SVG_LIBADD = $(top_builddir)/src/backend/svg/libmathview_backend_svg.la
-else
-MAYBE_SVG_LIBADD = $(NULL)
-endif
-
-libmathview_backend_la_LIBADD = \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(MAYBE_SVG_LIBADD) \
-  $(top_builddir)/src/backend/common/libmathview_backend_common.la \
-  $(NULL)
-
-libmathview_backend_la_SOURCES = $(NULL)
-

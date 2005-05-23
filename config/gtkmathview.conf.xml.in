@@ -52,6 +52,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="background">#ff6a6a</key>
     </section>
     <section name="t1lib">
+      <key name="configuration">@prefix@/share/gtkmathview/t1.config</key>
       <key name="opaque-mode">false</key>
       <key name="anti-aliasing">false</key>
     </section>

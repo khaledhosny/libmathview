@@ -100,11 +100,11 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
       SmartPtr<t1lib_T1FontManager> t1FontManager;
 #if HAVE_TFM
       if (useTFM)
-	t1FontManager = t1lib_TFM_T1FontManager::create(TFMManager::create());
+	t1FontManager = t1lib_TFM_T1FontManager::create(l, conf, TFMManager::create());
       else
-	t1FontManager = t1lib_T1FontManager::create();
+	t1FontManager = t1lib_T1FontManager::create(l, conf);
 #else
-      t1FontManager = t1lib_T1FontManager::create();
+      t1FontManager = t1lib_T1FontManager::create(l, conf);
 #endif // HAVE_TFM
       SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create(l, conf);
       cmShaper->setFontManager(t1FontManager);

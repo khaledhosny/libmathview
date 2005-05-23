@@ -109,6 +109,13 @@ elif test $enable_tfm = "no"; then
 fi
 
 AC_ARG_ENABLE(
+	gtk,
+	[  --enable-gtk[=ARG]  enable SVG backend [default=auto]],
+	enable_gtk=$enableval,
+	enable_gtk="auto"
+)
+
+AC_ARG_ENABLE(
 	svg,
 	[  --enable-svg[=ARG]  enable SVG backend [default=yes]],
 	enable_svg=$enableval,
@@ -364,23 +371,33 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.3,, AC_MSG_ERROR(could not fint GLIB))
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4.10,, AC_MSG_ERROR(could not find GTK))
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_LIBS)
+have_gtk="no"
+have_pango="no"
+have_xft="no"
+if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
+  PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4.10,
+    AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
+    [have_gtk="yes"],
+    AC_MSG_WARN([could not find GTK+]))
+  AC_SUBST(GTK_CFLAGS)
+  AC_SUBST(GTK_LIBS)
 
-PKG_CHECK_MODULES(PANGOX, pangox)
-AC_SUBST(PANGOX_CFLAGS)
-AC_SUBST(PANGOX_LIBS)
+  PKG_CHECK_MODULES(PANGOX, pangox, [have_pango="yes"])
+  AC_SUBST(PANGOX_CFLAGS)
+  AC_SUBST(PANGOX_LIBS)
 
-PKG_CHECK_MODULES(XFT, xft)
-AC_SUBST(XFT_CFLAGS)
-AC_SUBST(XFT_LIBS)
+  PKG_CHECK_MODULES(XFT, xft, [have_xft="yes"])
+  AC_SUBST(XFT_CFLAGS)
+  AC_SUBST(XFT_LIBS)
+fi
+
+AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" -a "$have_pango" = "yes" -a "$have_xft" = "yes" \)])
 
 AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
 
 have_libxml2="no"
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.0.0,
-  AC_DEFINE(HAVE_LIBXML,1,[Define to 1 is libxml2 is installed])
+  AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
   have_libxml2="yes",
   AC_MSG_WARN([could not find libxml2]))
 AC_SUBST(XML_CFLAGS)
@@ -550,9 +567,10 @@ Frontend
 
 Backend
 
+  GTK+                ${enable_gtk}
   Type1 fonts (t1lib) ${t1lib}
   TFM support level   ${enable_tfm}
-  SVG support         ${enable_svg}
+  SVG                 ${enable_svg}
 
 Performance
 

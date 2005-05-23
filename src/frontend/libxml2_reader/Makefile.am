@@ -1,17 +1,13 @@
 
 NULL =
 
-lib_LTLIBRARIES = libmathview_frontend_libxml2_reader.la
+noinst_LTLIBRARIES = libfrontend_libxml2_reader.la
 
-libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-
-libmathview_frontend_libxml2_reader_la_LIBADD = \
+libfrontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
-  $(top_builddir)/src/frontend/common/libfrontend_common.la \
-  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
-libmathview_frontend_libxml2_reader_la_SOURCES = \
+libfrontend_libxml2_reader_la_SOURCES = \
   libxmlXmlReader.cc \
   libxml2_reader_Builder.cc \
   libxml2_reader_Setup.cc \

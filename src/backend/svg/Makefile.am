@@ -1,7 +1,7 @@
 
 NULL =
 
-noinst_LTLIBRARIES = libmathview_backend_svg.la
+lib_LTLIBRARIES = libmathview_backend_svg.la
 
 if COND_TFM
 MAYBE_TFM_S = \
