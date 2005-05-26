@@ -29,9 +29,6 @@ mathmlviewer_static_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_gmetadom.la \
-  $(top_builddir)/src/libmathview.la \
   $(T1_LIBS) \
   $(NULL)
 
@@ -41,9 +38,6 @@ mathmlviewer_LDADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_gmetadom.la \
-  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 test_embedding_SOURCES = test_embedding.c
@@ -53,9 +47,6 @@ test_embedding_LDADD = \
   $(XML_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
-  $(top_builddir)/src/libmathview.la \
   $(T1_LIBS) \
   $(NULL)
 
@@ -67,9 +58,6 @@ test_loading_LDADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
-  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 test_building_SOURCES = test_building.cc
@@ -80,9 +68,6 @@ test_building_LDADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
-  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 test_loading_reader_SOURCES = test_loading_reader.c
@@ -93,9 +78,6 @@ test_loading_reader_LDADD = \
   $(GTK_LIBS) \
   $(T1_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_libxml2_reader.la \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_libxml2_reader.la \
-  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 INCLUDES = \

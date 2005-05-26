@@ -367,13 +367,12 @@ AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have
 
 AC_LANG([C])
 
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.3,, AC_MSG_ERROR(could not fint GLIB))
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.3,,[AC_MSG_ERROR(could not fint GLIB)])
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
 have_gtk="no"
 have_pango="no"
-have_xft="no"
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
   PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4.10,
     AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
@@ -381,17 +380,15 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
     AC_MSG_WARN([could not find GTK+]))
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
-
-  PKG_CHECK_MODULES(PANGOX, pangox, [have_pango="yes"])
+  PKG_CHECK_MODULES(PANGOX, pangox,
+    AC_DEFINE(HAVE_PANGO,1,[Define to 1 if Pango is installed])
+    [have_pango="yes"],
+    AC_MSG_WARN([could not find Pango]))
   AC_SUBST(PANGOX_CFLAGS)
   AC_SUBST(PANGOX_LIBS)
-
-dnl   PKG_CHECK_MODULES(XFT, xft, [have_xft="yes"])
-dnl   AC_SUBST(XFT_CFLAGS)
-dnl   AC_SUBST(XFT_LIBS)
 fi
 
-AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" -a "$have_pango" = "yes"\)])
+AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a \( "$have_gtk" = "yes" -a "$have_pango" = "yes" \) \) ])
 
 AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
 

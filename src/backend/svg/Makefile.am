@@ -40,6 +40,8 @@ libmathview_backend_svg_la_SOURCES = \
   SVG_TFMGlyphArea.hh \
   SVG_TTF_TFMGlyphArea.cc \
   SVG_TTF_TFMGlyphArea.hh \
+  SVG_WrapperArea.cc \
+  SVG_WrapperArea.hh \
   $(MAYBE_TFM_S) \
   $(MAYBE_TFM_H) \
   $(NULL)
@@ -49,6 +51,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/common/tfm \
   $(NULL)
