@@ -158,7 +158,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <section name="t1lib">
       <key name="configuration">../../gtkmathview/config/t1.config</key>
       <key name="opaque-mode">false</key>
-      <key name="anti-aliasing">false</key>
+      <key name="anti-aliasing">true</key>
     </section>
   </section>
 
