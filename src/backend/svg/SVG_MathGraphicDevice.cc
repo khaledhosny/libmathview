@@ -26,7 +26,10 @@
 
 #include "AbstractLogger.hh"
 #include "Configuration.hh"
+#include "FormattingContext.hh"
+#include "MathMLElement.hh"
 #include "SVG_MathGraphicDevice.hh"
+#include "SVG_WrapperArea.hh"
 
 SVG_MathGraphicDevice::SVG_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
   : MathGraphicDevice(l)
@@ -40,3 +43,6 @@ SVG_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
 			      const SmartPtr<Configuration>& conf)
 { return new SVG_MathGraphicDevice(logger, conf); }
 
+AreaRef
+SVG_MathGraphicDevice::wrapper(const FormattingContext& ctxt, const AreaRef& area) const
+{ return SVG_WrapperArea::create(area, area->box(), ctxt.getMathMLElement()); }

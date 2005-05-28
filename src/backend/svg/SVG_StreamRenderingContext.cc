@@ -35,14 +35,40 @@ SVG_StreamRenderingContext::~SVG_StreamRenderingContext()
 { }
 
 void
-SVG_StreamRenderingContext::beginDocument(const scaled& width, const scaled& height)
+SVG_StreamRenderingContext::wrapperStart(const scaled& x, const scaled& y, const BoundingBox& box,
+					 const SmartPtr<Element>& elem)
+{
+  const String id = getId(elem);
+  output << "<g";
+  if (!id.empty()) output << " id=\"" << id << "\"";
+  output << " gmv:x=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " gmv:y=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " gmv:width=\"" << toSVGLength(box.horizontalExtent()) << "\""
+	 << " gmv:height=\"" << toSVGLength(box.height) << "\""
+	 << " gmv:depth=\"" << toSVGLength(box.depth) << "\""
+	 << ">" << std::endl;
+}
+
+String
+SVG_StreamRenderingContext::getId(const SmartPtr<Element>& elem) const
+{ return ""; }
+
+void
+SVG_StreamRenderingContext::wrapperEnd()
+{
+  output << "</g>" << std::endl;
+}
+
+void
+SVG_StreamRenderingContext::beginDocument(const BoundingBox& bbox)
 {
   output << "<?xml version=\"1.0\"?>" << std::endl;
   output << "<svg"
 	 << " version=\"1\""
-	 << " width=\"" << toSVGLength(width) << "\""
-	 << " height=\"" << toSVGLength(height) << "\""
+	 << " width=\"" << toSVGLength(bbox.horizontalExtent()) << "\""
+	 << " height=\"" << toSVGLength(bbox.verticalExtent()) << "\""
 	 << " xmlns=\"http://www.w3.org/2000/svg\""
+	 << " xmlns:gmv=\"http://helm.cs.unibo.it/2005/GtkMathView\""
 	 << ">" << std::endl;
 }
 
@@ -50,18 +76,6 @@ void
 SVG_StreamRenderingContext::endDocument()
 {
   output << "</svg>" << std::endl;
-}
-
-void
-SVG_StreamRenderingContext::beginGroup()
-{
-  output << "<g>" << std::endl;
-}
-
-void
-SVG_StreamRenderingContext::endGroup()
-{
-  output << "</g>" << std::endl;
 }
 
 void

@@ -71,6 +71,7 @@ public:
     FE_H_STRETCHY,
     FE_V_STRETCHY,
     FE_H_BIG,
+    FE_H_BRACE,
     FE_NOT_VALID
   };
 
@@ -125,6 +126,12 @@ public:
     GlyphIndex bottom;
   };
 
+  struct HBigChar
+  {
+    Char16 ch;
+    GlyphIndex big[3];
+  };
+
   static const char* nameOfFontNameId(FontNameId);
   static String nameOfFont(FontNameId, FontSizeId);
   static Char8 toTTFGlyphIndex(FontEncId, Char8);
@@ -147,6 +154,8 @@ protected:
   AreaRef shapeChar(const class ShapingContext&, FontEncId) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
+  AreaRef shapeBigCharH(const class ShapingContext&) const;
+  AreaRef shapeHorizontalBrace(const class ShapingContext&) const;
 
 private:
   PostShapingMode postShapingMode;

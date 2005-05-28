@@ -42,32 +42,30 @@ public:
   RGBColor getForegroundColor(void) const { return fgColor; }
   RGBColor getBackgroundColor(void) const { return bgColor; }
 
-  virtual void documentStart(const scaled&, const scaled&);
+  virtual void documentStart(const BoundingBox&);
   virtual void documentEnd(void);
   virtual void fill(const scaled&, const scaled&, const BoundingBox&);
   virtual void draw(const scaled&, const scaled&, const SmartPtr<class TFMFont>&, Char8);
-  virtual void wrapperStart(const scaled&, const scaled&, const BoundingBox&);
+  virtual void wrapperStart(const scaled&, const scaled&, const BoundingBox&, const SmartPtr<class Element>&);
   virtual void wrapperEnd(void);
 
   static scaled toSVGX(const scaled& x) { return x; }
   static scaled toSVGY(const scaled& y) { return -y; }
 
-protected:
   static String toSVGLength(const scaled&);
   static String toSVGColor(const RGBColor&);
   static String toSVGOpacity(const RGBColor&);
 
-  virtual void beginDocument(const scaled&, const scaled&) = 0;
-  virtual void endDocument(void) = 0;
-  virtual void beginGroup(void) = 0;
-  virtual void endGroup(void) = 0;
-  virtual void metadata(const String&) = 0;
+protected:
+  virtual void beginDocument(const BoundingBox&);
+  virtual void endDocument(void);
+  virtual void metadata(const String&);
   virtual void text(const scaled&, const scaled&, const String&, const scaled&,
-		    const RGBColor&, const RGBColor&, const scaled&, const String&) = 0;
+		    const RGBColor&, const RGBColor&, const scaled&, const String&);
   virtual void rect(const scaled&, const scaled&, const scaled&, const scaled&,
-		    const RGBColor&, const RGBColor&, const scaled&) = 0;
+		    const RGBColor&, const RGBColor&, const scaled&);
   virtual void line(const scaled&, const scaled&, const scaled&, const scaled&,
-		    const RGBColor&, const scaled&) = 0;
+		    const RGBColor&, const scaled&);
 
 protected:
   SmartPtr<class AbstractLogger> logger;

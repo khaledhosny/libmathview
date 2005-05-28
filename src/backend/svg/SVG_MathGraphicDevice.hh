@@ -34,6 +34,8 @@ protected:
 public:
   static SmartPtr<SVG_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
 						const SmartPtr<class Configuration>&);
+
+  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef& area) const;
 };
 
 #endif // __SVG_MathGraphicDevice_hh__

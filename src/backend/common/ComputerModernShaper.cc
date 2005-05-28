@@ -901,25 +901,16 @@ static ComputerModernShaper::VStretchyChar vMap[] =
     { 0x0000, { {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} }
   };
 
-#if 0
-static ComputerModernShaper::BigHChar hbMap[] =
+static ComputerModernShaper::HBigChar hbMap[] =
   {
-    { 0x02DC, {CME, 0x65}, {CME, 0x66}, {CME, 0x67}, {NIL, 0x00} },
-    { 0x0302, {CME, 0x62}, {CME, 0x63}, {CME, 0x64}, {NIL, 0x00} },
-    
-    { 0x0000, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} }
+    { 0x02DC, { {CME, 0x65}, {CME, 0x66}, {CME, 0x67} } },
+    { 0x0302, { {CME, 0x62}, {CME, 0x63}, {CME, 0x64} } },
   };
-#endif
 
-#if 0
-// horizontal curly braces must be handled explicitly
-static ComputerModernShaper::PlainChar cmexMap[] = {
- 0x7A  0xFE37:L  // bracehtipdownleft
- 0x7B  0xFE37:R  // bracehtipdownright
- 0x7C  0xFE38:L  // bracehtipupleft
- 0x7D  0xFE38:R  // bracehtipupright
-};
-#endif
+#define OVER_BRACE  0xfe37
+#define UNDER_BRACE 0xfe38
+#define OVER_BRACE_INDEX OVER_BRACE
+#define UNDER_BRACE_INDEX UNDER_BRACE
 
 static Char8 cmexTTFMap[] =
   {
@@ -1423,10 +1414,11 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
   for (unsigned i = 0; hMap[i].ch; i++)
     sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, makeFontId(FE_H_STRETCHY), i));
 
-#if 0
-  for (unsigned i = 0; hbMap[i].ch; i++)
-    registerStretchyCharHB(sm, shaperId, hbMap[i], makeFontId(FE_H_BIG), i);
-#endif
+  sm->registerStretchyChar(UNDER_BRACE, GlyphSpec(shaperId, makeFontId(FE_H_BRACE), UNDER_BRACE_INDEX));
+  sm->registerStretchyChar(OVER_BRACE, GlyphSpec(shaperId, makeFontId(FE_H_BRACE), OVER_BRACE_INDEX));
+
+  for (unsigned i = 0; i < sizeof(hbMap) / sizeof(HBigChar); i++)
+    sm->registerStretchyChar(hbMap[i].ch, GlyphSpec(shaperId, makeFontId(FE_H_BIG), i));
 }
 
 void
@@ -1446,6 +1438,9 @@ ComputerModernShaper::shape(ShapingContext& context) const
 	{
 	case FE_H_BIG:
 	  assert(false);
+	  break;
+	case FE_H_BRACE:
+	  res = shapeHorizontalBrace(context);
 	  break;
 	case FE_H_STRETCHY:
 	  res = shapeStretchyCharH(context);
@@ -1536,6 +1531,80 @@ ComputerModernShaper::shapeStretchyCharH(const ShapingContext& context) const
   AreaRef right = getGlyphArea(variant, charSpec.right, size);
 
   return composeStretchyCharH(factory, normal, left, glue, right, span);
+}
+
+AreaRef
+ComputerModernShaper::shapeHorizontalBrace(const ShapingContext& context) const
+{
+  const MathVariant variant = context.getMathVariant();
+  const SmartPtr<AreaFactory> factory = context.getFactory();
+  const scaled size = context.getSize();
+  const scaled span = context.getHSpan() - (1 * size) / 10;
+  
+  AreaRef tipDL = getGlyphArea(variant, FE_CMEX, 0x7a, size);
+  AreaRef tipDR = getGlyphArea(variant, FE_CMEX, 0x7b, size);
+  AreaRef tipUL = getGlyphArea(variant, FE_CMEX, 0x7c, size);
+  AreaRef tipUR = getGlyphArea(variant, FE_CMEX, 0x7d, size);
+  
+  const scaled thickness = tipDL->box().height;
+  const scaled fixedWidth = tipDL->box().width + tipDR->box().width + tipUL->box().width + tipUR->box().width;
+  const scaled barWidth = std::max(scaled::zero(), span - fixedWidth);
+
+  std::vector<AreaRef> barC;
+  barC.reserve(2);
+  barC.push_back(factory->verticalSpace(thickness, 0));
+  barC.push_back(factory->horizontalSpace(barWidth / 2));
+
+  const AreaRef bar =
+    (barWidth > scaled::zero())
+    ? factory->ink(factory->horizontalArray(barC))
+    : 0;
+
+  std::vector<AreaRef> c;
+  c.reserve(7);
+  c.push_back(factory->verticalSpace(size / 2, size / 2 - thickness));
+  switch (context.getSpec().getGlyphId())
+    {
+    case UNDER_BRACE_INDEX:
+      c.push_back(tipUL);
+      if (bar) c.push_back(bar);
+      c.push_back(tipDR);
+      c.push_back(tipDL);
+      if (bar) c.push_back(bar);
+      c.push_back(tipUR);
+      break;
+    case OVER_BRACE_INDEX:
+      c.push_back(tipDL);
+      if (bar) c.push_back(bar);
+      c.push_back(tipUR);
+      c.push_back(tipUL);
+      if (bar) c.push_back(bar);
+      c.push_back(tipDR);
+      break;
+    default:
+      assert(false);
+    }
+
+  return factory->horizontalArray(c);
+}
+
+AreaRef
+ComputerModernShaper::shapeBigCharH(const ShapingContext& context) const
+{
+  const MathVariant variant = context.getMathVariant();
+  const SmartPtr<AreaFactory> factory = context.getFactory();
+  const scaled size = context.getSize();
+  const scaled span = context.getHSpan() - (1 * size) / 10;
+  
+  AreaRef res;
+  for (unsigned i = 0; i < sizeof(hbMap[0].big) / sizeof(GlyphSpec); i++)
+    {
+      res = getGlyphArea(variant, hbMap[i].big[i], size);
+      if (res && res->box().width >= span)
+	return res;
+    }
+  
+  return res;
 }
 
 AreaRef

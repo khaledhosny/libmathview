@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <cassert>
+#include <iomanip>
 
 #include "AbstractLogger.hh"
 #include "SVG_RenderingContext.hh"
@@ -45,7 +46,7 @@ String
 SVG_RenderingContext::toSVGLength(const scaled& s)
 {
   std::ostringstream buffer;
-  buffer << s.toFloat() << "pt";
+  buffer << std::fixed << std::setprecision(2) << s.toFloat() << "pt";
   return buffer.str();
 }
 
@@ -64,9 +65,9 @@ SVG_RenderingContext::toSVGOpacity(const RGBColor& c)
 }
 
 void
-SVG_RenderingContext::documentStart(const scaled& width, const scaled& height)
+SVG_RenderingContext::documentStart(const BoundingBox& bbox)
 {
-  beginDocument(width, height);
+  beginDocument(bbox);
   metadata("Created by "PACKAGE" version "VERSION);
 }
 
@@ -101,13 +102,37 @@ SVG_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<TFMF
 }
 
 void
-SVG_RenderingContext::wrapperStart(const scaled&, const scaled&, const BoundingBox&)
-{
-  beginGroup();
-}
+SVG_RenderingContext::wrapperStart(const scaled&, const scaled&, const BoundingBox&, 
+				   const SmartPtr<Element>&)
+{ }
 
 void
 SVG_RenderingContext::wrapperEnd()
-{
-  endGroup();
-}
+{ }
+
+void
+SVG_RenderingContext::beginDocument(const BoundingBox&)
+{ }
+
+void
+SVG_RenderingContext::endDocument()
+{ }
+
+void
+SVG_RenderingContext::metadata(const String&)
+{ }
+
+void
+SVG_RenderingContext::text(const scaled&, const scaled&, const String&, const scaled&,
+			   const RGBColor&, const RGBColor&, const scaled&, const String&)
+{ }
+
+void
+SVG_RenderingContext::rect(const scaled&, const scaled&, const scaled&, const scaled&,
+			   const RGBColor&, const RGBColor&, const scaled&)
+{ }
+
+void
+SVG_RenderingContext::line(const scaled&, const scaled&, const scaled&, const scaled&,
+			   const RGBColor&, const scaled&)
+{ }

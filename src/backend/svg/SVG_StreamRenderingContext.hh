@@ -34,11 +34,14 @@ public:
   SVG_StreamRenderingContext(const SmartPtr<class AbstractLogger>&, std::ostream&);
   virtual ~SVG_StreamRenderingContext();
 
+  virtual void wrapperStart(const scaled&, const scaled&, const BoundingBox&,
+			    const SmartPtr<class Element>&);
+  virtual void wrapperEnd(void);
+
 protected:
-  virtual void beginDocument(const scaled&, const scaled&);
+  virtual String getId(const SmartPtr<class Element>&) const;
+  virtual void beginDocument(const BoundingBox&);
   virtual void endDocument(void);
-  virtual void beginGroup(void);
-  virtual void endGroup(void);
   virtual void metadata(const String&);
   virtual void text(const scaled&, const scaled&, const String&, const scaled&,
 		    const RGBColor&, const RGBColor&, const scaled&, const String&);
