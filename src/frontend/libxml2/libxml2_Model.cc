@@ -85,15 +85,7 @@ String
 libxml2_Model::getNodeValue(const Node& n)
 {
   assert(n);
-  assert(n->content);
-  return fromModelString(n->content);
-}
-
-String
-libxml2_Model::getElementValue(const Element& el)
-{
-  assert(el);
-  if (xmlChar* res = xmlNodeGetContent((xmlNode*) el))
+  if (xmlChar* res = xmlNodeGetContent(n))
     {
       String _res(fromModelString(res));
       xmlFree(res);
@@ -102,6 +94,10 @@ libxml2_Model::getElementValue(const Element& el)
   else
     return String();
 }
+
+String
+libxml2_Model::getElementValue(const Element& el)
+{ return getNodeValue(asNode(el)); }
 
 String
 libxml2_Model::getNodeNamespaceURI(const Node& n)
