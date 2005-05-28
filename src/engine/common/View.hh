@@ -91,8 +91,8 @@ public:
   void setAvailableWidth(const scaled&);
 
 protected:
-  void setDirtyLayout(void) const;
   SmartPtr<const class Area> getRootArea(void) const;
+  void setDirtyLayout(void) const;
   SmartPtr<const class Area> formatElement(const SmartPtr<class Element>&) const;
 
 private:
