@@ -3,10 +3,20 @@ NULL =
 
 bin_PROGRAMS = $(NULL)
 if COND_LIBXML2
-bin_PROGRAMS += mathmlsvg svgmathmlsvg
+bin_PROGRAMS += mathmlsvg
 endif
 
 mathmlsvg_SOURCES = \
+  Fragment.cc \
+  Fragment.hh \
+  Location.cc \
+  Location.hh \
+  Scanner.cc \
+  Scanner.hh \
+  SMS.cc \
+  SMS.hh \
+  SVG_EvalRenderingContext.cc \
+  SVG_EvalRenderingContext.hh \
   SVG_libxml2_StreamRenderingContext.cc \
   SVG_libxml2_StreamRenderingContext.hh \
   main.cc \
@@ -16,20 +26,6 @@ mathmlsvg_LDADD = \
   $(GLIB_LIBS) \
   $(top_builddir)/src/backend/svg/libmathview_backend_svg.la \
   $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
-  $(top_builddir)/src/libmathview.la \
-  $(NULL)
-
-svgmathmlsvg_SOURCES = \
-  SVG_libxml2_StreamRenderingContext.cc \
-  SVG_libxml2_StreamRenderingContext.hh \
-  SVG_EvalRenderingContext.cc \
-  SVG_EvalRenderingContext.hh \
-  Fragment.cc \
-  Fragment.hh \
-  Location.cc \
-  Location.hh \
-  SMS.cc \
-  SMS.hh \
   $(NULL)
 
 INCLUDES = \

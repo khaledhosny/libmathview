@@ -35,18 +35,20 @@
 
 #include "Init.hh"
 #include "Configuration.hh"
-#include "libxml2_reader_MathView.hh"
+#include "libxml2_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "SVG_Backend.hh"
 #include "SVG_MathGraphicDevice.hh"
-#include "SVG_StreamRenderingContext.hh"
+#include "SVG_libxml2_StreamRenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
 #if ENABLE_BOXML
 #include "BoxGraphicDevice.hh"
 #endif // ENABLE_BOXML
+#include "SMS.hh"
+#include "Fragment.hh"
 
-typedef libxml2_reader_MathView MathView;
+typedef libxml2_MathView MathView;
 
 static double width = 21;
 static double height = 29.7;
@@ -365,22 +367,27 @@ main(int argc, char* argv[])
 
       char* outName = getOutputFileName(argv[optind]);
       assert(outName != NULL);
+#if 1
+#if 0
       xmlTextReaderPtr reader = xmlNewTextReaderFilename(argv[optind]);
 
       assert(reader);
       view->loadReader(reader);
+#endif
+      view->loadURI(argv[optind]);
       const BoundingBox box = view->getBoundingBox();
 
       std::ofstream os(outName);
-      SVG_StreamRenderingContext rc(logger, os);
+      //SVG_StreamRenderingContext rc(logger, os);
+      SVG_libxml2_StreamRenderingContext rc(logger, os, view);
       if (cropping)
 	{
-	  rc.documentStart(box.horizontalExtent(), box.verticalExtent());
+	  rc.documentStart(box);
 	  view->render(rc, 0, -box.height);
 	}
       else
 	{
-	  rc.documentStart(widthS, heightS);
+	  rc.documentStart(BoundingBox(widthS, box.height, heightS - box.height));
 	  view->render(rc, xMarginS, -(yMarginS + box.height));
 	}
       rc.documentEnd();
@@ -389,6 +396,10 @@ main(int argc, char* argv[])
       // WARNING: currently the text reader is freed by libxmlXmlReader
       // not sure this is what we want
       //xmlFreeTextReader(reader);
+#else
+      SMS sms(logger, view);
+      sms.process(argv[optind]);
+#endif
 
       optind++;
     }
