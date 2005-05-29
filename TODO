@@ -26,17 +26,9 @@ BUGS
   more appropriate to draw it just after the glyph, especially
   for mo elements
 ? selecting the root <math> element does not show selection
-+ fix X font loading mechanism
-+ the xft font selection mechanism behaves in strange ways, in
-  particular it is no longer possible to select the 'symbol' font
-  event if the pattern is close. See the fonts in xfree86 howto by
-  Juliusz
 
 ARCH IMPROVEMENTS
 
-? add text/math flag in formatting context, split sparsemap in
-  3 maps (text, math, stretchy), default pango shaper registers
-  itself as text (is the fallback)
 ? make GlyphStringArea a leaf-like area?
 - change the clone method for areas so that it checks if the
   content is unchanged, and possibly implement the replace this

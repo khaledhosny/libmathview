@@ -441,7 +441,7 @@ MathGraphicDevice::underOver(const FormattingContext& context,
   if (overScript && !accent) n += 3;
 
   std::vector<AreaRef> v;
-  v.reserve(3);
+  v.reserve(n);
   if (underScript)
     {
       if (!accentUnder) v.push_back(singleSpace);
@@ -456,7 +456,7 @@ MathGraphicDevice::underOver(const FormattingContext& context,
       if (!accent) v.push_back(singleSpace);
     }
 
-  return getFactory()->verticalArray(v, underScript ? 3 : 0);
+  return getFactory()->verticalArray(v, underScript ? (accentUnder ? 1 : 3) : 0);
 }
 
 AreaRef

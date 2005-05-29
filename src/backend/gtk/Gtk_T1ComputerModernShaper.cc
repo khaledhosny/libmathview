@@ -53,10 +53,11 @@ Gtk_T1ComputerModernShaper::setFontManager(const SmartPtr<t1lib_T1FontManager>& 
 }
 
 SmartPtr<t1lib_T1Font>
-Gtk_T1ComputerModernShaper::getT1Font(FontNameId fontNameId, FontSizeId designSize,
+Gtk_T1ComputerModernShaper::getT1Font(ComputerModernFamily::FontNameId fontNameId,
+				      ComputerModernFamily::FontSizeId designSize,
 				      const scaled& size) const
 {
-  const String fontName = nameOfFont(fontNameId, designSize);
+  const String fontName = getFamily()->nameOfFont(fontNameId, designSize);
   if (SmartPtr<t1lib_T1Font> font = t1FontManager->getT1Font(fontName + ".pfb", size))
     return font;
   else
@@ -64,7 +65,8 @@ Gtk_T1ComputerModernShaper::getT1Font(FontNameId fontNameId, FontSizeId designSi
 }
 
 AreaRef
-Gtk_T1ComputerModernShaper::getGlyphArea(FontNameId fontNameId, FontSizeId designSize,
+Gtk_T1ComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,
+					 ComputerModernFamily::FontSizeId designSize,
 					 Char8 index, int size) const
 {
 

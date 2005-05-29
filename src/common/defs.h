@@ -25,7 +25,10 @@
 #define __defs_h__
 
 #define MATHML_NS_URI "http://www.w3.org/1998/Math/MathML"
+#define XLINK_NS_URI "http://www.w3.org/1999/xlink"
+#define SVG_NS_URI "http://www.w3.org/2000/svg"
 #define BOXML_NS_URI "http://helm.cs.unibo.it/2003/BoxML"
+#define GMV_NS_URI "http://helm.cs.unibo.it/2005/GtkMathView"
 
 #define EPSILON 0.01f
 
