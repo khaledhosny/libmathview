@@ -31,7 +31,7 @@
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
 
-Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>&)
   : MathGraphicDevice(l)
 { }
 

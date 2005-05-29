@@ -48,7 +48,7 @@ SmartPtr<TFMFontManager>
 TFMComputerModernShaper::getFontManager() const
 { return tfmFontManager; }
 
-ComputerModernShaper::FontNameId
+ComputerModernFamily::FontNameId
 TFMComputerModernShaper::fontNameIdOfTFM(const SmartPtr<TFM>& tfm)
 {
   assert(tfm);
@@ -68,12 +68,12 @@ TFMComputerModernShaper::fontNameIdOfTFM(const SmartPtr<TFM>& tfm)
     "CMMIB",
     "CMEX"
   };
-  assert(sizeof(name) / sizeof(const char*) == FN_NOT_VALID);
+  assert(sizeof(name) / sizeof(const char*) == ComputerModernFamily::FN_NOT_VALID);
   const String familyName = tfm->getFamily();
   for (int i = 0; i < sizeof(name) / sizeof(const char*); i++)
     if (familyName == name[i])
-      return FontNameId(i);
-  return FN_NIL;
+      return ComputerModernFamily::FontNameId(i);
+  return ComputerModernFamily::FN_NIL;
 }
 
 void
@@ -104,7 +104,7 @@ TFMComputerModernShaper::postShape(ShapingContext& context) const
 		    default:
 		      {
 			AreaRef newArea = getGlyphArea(fontNameIdOfTFM(tfm), 
-						       fontSizeIdOfSize(tfm->getDesignSize().toInt()),
+						       ComputerModernFamily::fontSizeIdOfSize(tfm->getDesignSize().toInt()),
 						       newGlyph, font1->getSize().toInt());
 			context.pushArea(n1 + n2, newArea);
 		      }
@@ -123,8 +123,9 @@ TFMComputerModernShaper::postShape(ShapingContext& context) const
 }
 
 SmartPtr<TFMFont>
-TFMComputerModernShaper::getFont(FontNameId fontNameId, FontSizeId designSize, const scaled& size) const
+TFMComputerModernShaper::getFont(ComputerModernFamily::FontNameId fontNameId,
+				 ComputerModernFamily::FontSizeId designSize, const scaled& size) const
 {
   assert(tfmFontManager);
-  return tfmFontManager->getFont(nameOfFont(fontNameId, designSize), size);
+  return tfmFontManager->getFont(ComputerModernFamily::nameOfFont(fontNameId, designSize), size);
 }

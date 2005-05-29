@@ -43,4 +43,8 @@ enum MathVariant
     MONOSPACE_VARIANT
   };
 
+inline bool
+validMathVariant(MathVariant id)
+{ return id >= NORMAL_VARIANT && id <= MONOSPACE_VARIANT; }
+
 #endif // __MathVariant_hh__

@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include <cassert>
-#include <sstream>
 
 #include "Area.hh"
 #include "AreaFactory.hh"
@@ -36,11 +35,11 @@
 
 enum
   {
-    NIL = ComputerModernShaper::FE_NIL,
-    CMR = ComputerModernShaper::FE_CMR,
-    CMM = ComputerModernShaper::FE_CMMI,
-    CMS = ComputerModernShaper::FE_CMSY,
-    CME = ComputerModernShaper::FE_CMEX
+    NIL = ComputerModernFamily::FE_NIL,
+    CMR = ComputerModernFamily::FE_CMR,
+    CMM = ComputerModernFamily::FE_CMMI,
+    CMS = ComputerModernFamily::FE_CMSY,
+    CME = ComputerModernFamily::FE_CMEX
   };
 
 static ComputerModernShaper::PlainChar cmmMap[] =
@@ -1047,149 +1046,56 @@ static Char8 cmexTTFMap[] =
 struct FontDesc
 {
   MathVariant variant;
-  ComputerModernShaper::FontNameId name;
+  ComputerModernFamily::FontNameId name;
 };
 
 static FontDesc variantDesc[] =
   {
-    { NORMAL_VARIANT, ComputerModernShaper::FN_CMR },
-    { BOLD_VARIANT, ComputerModernShaper::FN_CMB },
-    { ITALIC_VARIANT, ComputerModernShaper::FN_CMTI },
-    { BOLD_ITALIC_VARIANT, ComputerModernShaper::FN_CMBXTI },
-    { SANS_SERIF_VARIANT, ComputerModernShaper::FN_CMSS },
-    { BOLD_SANS_SERIF_VARIANT, ComputerModernShaper::FN_CMSSBX },
-    { SANS_SERIF_ITALIC_VARIANT, ComputerModernShaper::FN_CMSSI },
-    { MONOSPACE_VARIANT, ComputerModernShaper::FN_CMTT }
+    { NORMAL_VARIANT, ComputerModernFamily::FN_CMR },
+    { BOLD_VARIANT, ComputerModernFamily::FN_CMB },
+    { ITALIC_VARIANT, ComputerModernFamily::FN_CMTI },
+    { BOLD_ITALIC_VARIANT, ComputerModernFamily::FN_CMBXTI },
+    { SANS_SERIF_VARIANT, ComputerModernFamily::FN_CMSS },
+    { BOLD_SANS_SERIF_VARIANT, ComputerModernFamily::FN_CMSSBX },
+    { SANS_SERIF_ITALIC_VARIANT, ComputerModernFamily::FN_CMSSI },
+    { MONOSPACE_VARIANT, ComputerModernFamily::FN_CMTT }
   };
-
-inline bool
-validMathVariant(MathVariant id)
-{ return id >= NORMAL_VARIANT && id <= MONOSPACE_VARIANT; }
-
-inline bool
-validFontNameId(ComputerModernShaper::FontNameId id)
-{ return id > ComputerModernShaper::FN_NIL && id < ComputerModernShaper::FN_NOT_VALID; }
-
-inline bool
-validFontEncId(ComputerModernShaper::FontEncId id)
-{ return id > ComputerModernShaper::FE_NIL && id < ComputerModernShaper::FE_NOT_VALID; }
-
-inline bool
-validFontSizeId(ComputerModernShaper::FontSizeId id)
-{ return id > ComputerModernShaper::FS_NIL && id < ComputerModernShaper::FS_NOT_VALID; }
-
-int
-ComputerModernShaper::sizeOfFontSizeId(FontSizeId id)
-{
-  assert(validFontSizeId(id));
-  static int size[] = { 5, 6, 7, 8, 9, 10, 12, 17 };
-  return size[id];
-}
-
-ComputerModernShaper::FontSizeId
-ComputerModernShaper::fontSizeIdOfSize(int size)
-{
-  static FontSizeId fontSizeId[] = {
-    FS_5, FS_6, FS_7, FS_8, FS_9, FS_10, FS_NIL, FS_12, FS_NIL, FS_NIL, FS_NIL, FS_NIL, FS_17
-  };
-
-  if (size >= 5 && size <= 17)
-    return fontSizeId[size - 5];
-  else
-    return FS_NIL;
-}
-
-const char*
-ComputerModernShaper::nameOfFontNameId(FontNameId id)
-{
-  assert(validFontNameId(id));
-  static const char* name[] = {
-    "cmr",
-    "cmb",
-    "cmbx",
-    "cmbxti",
-    "cmti",
-    "cmss",
-    "cmssi",
-    "cmssbx",
-    "cmtt",
-    "cmsy",
-    "cmbsy",
-    "cmmi",
-    "cmmib",
-    "cmex"
-  };
-  assert(sizeof(name) / sizeof(const char*) == FN_NOT_VALID);
-  return name[id];
-}
-
-String
-ComputerModernShaper::nameOfFont(FontNameId id, FontSizeId designSize)
-{
-  std::ostringstream os;
-  os << nameOfFontNameId(id) << sizeOfFontSizeId(designSize);
-  return os.str();
-}
-
-ComputerModernShaper::FontEncId
-ComputerModernShaper::encIdOfFontNameId(FontNameId id)
-{
-  assert(validFontNameId(id));
-  static FontEncId enc[] = {
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMR,
-    FE_CMSY,
-    FE_CMSY,
-    FE_CMMI,
-    FE_CMMI, 
-    FE_CMEX
-  };
-  assert(sizeof(enc) / sizeof(FontEncId) == FN_NOT_VALID);
-  return enc[id];
-}
 
 inline Char8
-makeFontId(ComputerModernShaper::FontEncId id, MathVariant variant = NORMAL_VARIANT)
+makeFontId(ComputerModernFamily::FontEncId id, MathVariant variant = NORMAL_VARIANT)
 {
-  assert(validFontEncId(id));
+  assert(ComputerModernFamily::validFontEncId(id));
   assert(validMathVariant(variant));
   return id | ((variant - NORMAL_VARIANT) << 4);
 }
 
-inline ComputerModernShaper::FontEncId
+inline ComputerModernFamily::FontEncId
 encIdOfFontId(Char8 id)
-{ return ComputerModernShaper::FontEncId(id & 0x0f); }
+{ return ComputerModernFamily::FontEncId(id & 0x0f); }
 
 inline MathVariant
 variantOfFontId(Char8 id)
 { return MathVariant((id >> 4) + NORMAL_VARIANT); }
 
 Char8
-ComputerModernShaper::toTTFGlyphIndex(FontEncId name, Char8 index)
+ComputerModernShaper::toTTFGlyphIndex(ComputerModernFamily::FontEncId name, Char8 index)
 {
   Char8* map = 0;
   switch (name)
     {
-    case FE_CMR:
+    case ComputerModernFamily::FE_CMR:
       assert(index < sizeof(cmrTTFMap));
       map = cmrTTFMap;
       break;
-    case FE_CMMI:
+    case ComputerModernFamily::FE_CMMI:
       assert(index < sizeof(cmmTTFMap));
       map = cmmTTFMap;
       break;
-    case FE_CMSY:
+    case ComputerModernFamily::FE_CMSY:
       assert(index < sizeof(cmsTTFMap));
       map = cmsTTFMap;
       break;
-    case FE_CMEX:
+    case ComputerModernFamily::FE_CMEX:
       assert(index < sizeof(cmexTTFMap));
       map = cmexTTFMap;
       break;
@@ -1201,17 +1107,8 @@ ComputerModernShaper::toTTFGlyphIndex(FontEncId name, Char8 index)
 }
 
 ComputerModernShaper::ComputerModernShaper(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-  : postShapingMode(POST_SHAPING_NEVER)
-{
-  std::vector<String> fl = conf->getStringList("fonts/computer-modern/font-name");
-
-  for (unsigned fn = FN_NIL + 1; fn < FN_NOT_VALID; fn++)
-    for (unsigned fs = FS_NIL + 1; fs < FS_NOT_VALID; fs++)
-      {
-	const String fontName = nameOfFont(FontNameId(fn), FontSizeId(fs));
-	configuredFont[fn][fs] = std::find(fl.begin(), fl.end(), fontName) != fl.end();
-      }
-}
+  : postShapingMode(POST_SHAPING_NEVER), family(ComputerModernFamily::create(l, conf))
+{ }
 
 ComputerModernShaper::~ComputerModernShaper()
 { }
@@ -1232,141 +1129,6 @@ ComputerModernShaper::setPostShapingMode(const String& m)
   return true;
 }
 
-bool
-ComputerModernShaper::fontEnabled(FontNameId name, FontSizeId size) const
-{
-  assert(validFontNameId(name));
-  assert(validFontSizeId(size));
-  return configuredFont[name][size];
-}
-
-ComputerModernShaper::FontNameId
-ComputerModernShaper::findBestFont(MathVariant variant, FontEncId encId, int size, FontSizeId& designSize) const
-{
-  assert(validFontEncId(encId));
-  assert(validMathVariant(variant));
-
-  designSize = FS_5;
-  int bestDiff = std::abs(size - sizeOfFontSizeId(designSize));
-  for (int i = FS_5; i < FS_NOT_VALID; i++)
-    if (std::abs(size - sizeOfFontSizeId(FontSizeId(i))) < bestDiff)
-      designSize = FontSizeId(i);
-
-  static FontNameId family[FE_NOT_VALID][MONOSPACE_VARIANT - NORMAL_VARIANT + 1] =
-    {
-      { FN_CMR,  FN_CMB,   FN_CMTI, FN_CMBXTI, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_CMSS, FN_CMSSBX, FN_CMSSI, FN_NIL, FN_CMTT },
-      { FN_NIL,  FN_NIL,   FN_CMMI, FN_CMMIB,  FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
-      { FN_CMSY, FN_CMBSY, FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
-      { FN_CMEX, FN_NIL,   FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL }
-    };
-
-  return family[encId - FE_CMR][variant - NORMAL_VARIANT];
-}
-
-ComputerModernShaper::FontNameId
-ComputerModernShaper::findFont(MathVariant variant, FontEncId encId, scaled& size, FontSizeId& designSize) const
-{
-  size = round(size);
-  FontNameId family = findBestFont(variant, encId, size.toInt(), designSize);
-  if (variant == BOLD_VARIANT && encId == FE_CMR && fontEnabled(FN_CMBX, designSize))
-    return FN_CMBX;
-  else if (family != FN_NIL && fontEnabled(family, designSize))
-    return family;
-
-  // we prefer scaling the font rather than renouncing to the precise family
-  designSize = FS_10;
-  if (family != FN_NIL && fontEnabled(family, designSize))
-    return family;
-
-  switch (encId)
-    {
-    case FE_CMR:
-      switch (variant)
-	{
-	case NORMAL_VARIANT:
-	case BOLD_VARIANT:
-	case ITALIC_VARIANT:
-	case SCRIPT_VARIANT:
-	case FRAKTUR_VARIANT:
-	case SANS_SERIF_VARIANT:
-	case MONOSPACE_VARIANT:
-	case DOUBLE_STRUCK_VARIANT:
-	  if (fontEnabled(FN_CMR)) return FN_CMR;
-	  else return FN_NIL;
-	case BOLD_ITALIC_VARIANT:
-	  if (fontEnabled(FN_CMTI)) return FN_CMTI;
-	  else if (fontEnabled(FN_CMB)) return FN_CMB;
-	  else if (fontEnabled(FN_CMR)) return FN_CMR;
-	  else return FN_NIL;
-	case BOLD_FRAKTUR_VARIANT:
-	case BOLD_SCRIPT_VARIANT:
-	  if (fontEnabled(FN_CMB)) return FN_CMB;
-	  else if (fontEnabled(FN_CMR)) return FN_CMR;
-	  else return FN_NIL;
-	case BOLD_SANS_SERIF_VARIANT:
-	  if (fontEnabled(FN_CMSS)) return FN_CMSS;
-	  else if (fontEnabled(FN_CMB)) return FN_CMB;
-	  else if (fontEnabled(FN_CMR)) return FN_CMR;
-	  else return FN_NIL;
-	case SANS_SERIF_ITALIC_VARIANT:
-	  if (fontEnabled(FN_CMSS)) return FN_CMSS;
-	  else if (fontEnabled(FN_CMTI)) return FN_CMTI;
-	  else if (fontEnabled(FN_CMR)) return FN_CMR;
-	  else return FN_NIL;
-	case SANS_SERIF_BOLD_ITALIC_VARIANT:
-	  if (fontEnabled(FN_CMSSBX)) return FN_CMSSBX;
-	  else if (fontEnabled(FN_CMSSI)) return FN_CMSSI;
-	  else if (fontEnabled(FN_CMSS)) return FN_CMSS;
-	  else if (fontEnabled(FN_CMTI)) return FN_CMTI;
-	  else if (fontEnabled(FN_CMB)) return FN_CMB;
-	  else if (fontEnabled(FN_CMR)) return FN_CMR;
-	  else return FN_NIL;
-	default:
-	  assert(false);
-	}
-      break;
-    case FE_CMMI:
-      switch (variant)
-	{
-	case BOLD_ITALIC_VARIANT:
-	case BOLD_FRAKTUR_VARIANT:
-	case BOLD_SCRIPT_VARIANT:
-	case BOLD_SANS_SERIF_VARIANT:
-	case SANS_SERIF_BOLD_ITALIC_VARIANT:
-	  if (fontEnabled(FN_CMMIB)) return FN_CMMIB;
-	  else if (fontEnabled(FN_CMSY)) return FN_CMSY;
-	  else return FN_NIL;
-	default:
-	  if (fontEnabled(FN_CMSY)) return FN_CMSY;
-	  else return FN_NIL;
-	}
-      break;
-    case FE_CMSY:
-      switch (variant)
-	{
-	case BOLD_ITALIC_VARIANT:
-	case BOLD_FRAKTUR_VARIANT:
-	case BOLD_SCRIPT_VARIANT:
-	case BOLD_SANS_SERIF_VARIANT:
-	case SANS_SERIF_BOLD_ITALIC_VARIANT:
-	  if (fontEnabled(FN_CMBSY)) return FN_CMBSY;
-	  else if (fontEnabled(FN_CMSY)) return FN_CMSY;
-	  else return FN_NIL;
-	default:
-	  if (fontEnabled(FN_CMSY)) return FN_CMSY;
-	  else return FN_NIL;
-	}
-      break;
-    case FE_CMEX:
-      if (fontEnabled(FN_CMEX)) return FN_CMEX;
-      else return FN_NIL;
-    default:
-      assert(false);
-    }
-
-  return FN_NIL;
-}
-
 void
 ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
 {
@@ -1376,11 +1138,12 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
     for (unsigned i = 0; cmrMap[i].ch; i++)
       {
 	const Char32 vch = mapMathVariant(variantDesc[j].variant, cmrMap[i].ch);
-	if (fontEnabled(variantDesc[j].name)
+	if (family->fontEnabled(variantDesc[j].name)
 	    && (variantDesc[j].variant == NORMAL_VARIANT || vch != cmrMap[i].ch))
 	  sm->registerChar(vch,
 			   GlyphSpec(shaperId,
-				     makeFontId(encIdOfFontNameId(variantDesc[j].name), variantDesc[j].variant),
+				     makeFontId(ComputerModernFamily::encIdOfFontNameId(variantDesc[j].name),
+						variantDesc[j].variant),
 				     cmrMap[i].index));
       }
 
@@ -1389,11 +1152,11 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       const Char32 ch = mapMathVariant(ITALIC_VARIANT, cmmMap[i].ch);
       const Char32 vch = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
 
-      if (fontEnabled(FN_CMMI))
-	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(FE_CMMI, ITALIC_VARIANT), cmmMap[i].index));
+      if (family->fontEnabled(ComputerModernFamily::FN_CMMI))
+	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, ITALIC_VARIANT), cmmMap[i].index));
 
-      if (fontEnabled(FN_CMMIB) && vch != ch)
-	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(FE_CMMI, BOLD_ITALIC_VARIANT), cmmMap[i].index));
+      if (family->fontEnabled(ComputerModernFamily::FN_CMMIB) && vch != ch)
+	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, BOLD_ITALIC_VARIANT), cmmMap[i].index));
     }
 
   for (unsigned i = 0; cmsMap[i].ch; i++)
@@ -1401,24 +1164,24 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       const Char32 ch = cmsMap[i].ch;
       const Char32 vch = mapMathVariant(BOLD_VARIANT, ch);
 
-      if (fontEnabled(FN_CMSY))
-	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(FE_CMSY), cmsMap[i].index));
+      if (family->fontEnabled(ComputerModernFamily::FN_CMSY))
+	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMSY), cmsMap[i].index));
 
-      if (fontEnabled(FN_CMBSY) && vch != ch)
-	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(FE_CMSY, BOLD_VARIANT), cmsMap[i].index));
+      if (family->fontEnabled(ComputerModernFamily::FN_CMBSY) && vch != ch)
+	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMSY, BOLD_VARIANT), cmsMap[i].index));
     }
 
   for (unsigned i = 0; vMap[i].ch; i++)
-    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, makeFontId(FE_V_STRETCHY), i));
+    sm->registerStretchyChar(vMap[i].ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_V_STRETCHY), i));
 
   for (unsigned i = 0; hMap[i].ch; i++)
-    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, makeFontId(FE_H_STRETCHY), i));
+    sm->registerStretchyChar(hMap[i].ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_H_STRETCHY), i));
 
-  sm->registerStretchyChar(UNDER_BRACE, GlyphSpec(shaperId, makeFontId(FE_H_BRACE), UNDER_BRACE_INDEX));
-  sm->registerStretchyChar(OVER_BRACE, GlyphSpec(shaperId, makeFontId(FE_H_BRACE), OVER_BRACE_INDEX));
+  sm->registerStretchyChar(UNDER_BRACE, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_H_BRACE), UNDER_BRACE_INDEX));
+  sm->registerStretchyChar(OVER_BRACE, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_H_BRACE), OVER_BRACE_INDEX));
 
   for (unsigned i = 0; i < sizeof(hbMap) / sizeof(HBigChar); i++)
-    sm->registerStretchyChar(hbMap[i].ch, GlyphSpec(shaperId, makeFontId(FE_H_BIG), i));
+    sm->registerStretchyChar(hbMap[i].ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_H_BIG), i));
 }
 
 void
@@ -1433,19 +1196,19 @@ ComputerModernShaper::shape(ShapingContext& context) const
   for (unsigned n = context.chunkSize(); n > 0; n--)
     {
       AreaRef res;
-      const FontEncId encId = encIdOfFontId(context.getSpec().getFontId());
+      const ComputerModernFamily::FontEncId encId = encIdOfFontId(context.getSpec().getFontId());
       switch (encId)
 	{
-	case FE_H_BIG:
+	case ComputerModernFamily::FE_H_BIG:
 	  assert(false);
 	  break;
-	case FE_H_BRACE:
+	case ComputerModernFamily::FE_H_BRACE:
 	  res = shapeHorizontalBrace(context);
 	  break;
-	case FE_H_STRETCHY:
+	case ComputerModernFamily::FE_H_STRETCHY:
 	  res = shapeStretchyCharH(context);
 	  break;
-	case FE_V_STRETCHY:
+	case ComputerModernFamily::FE_V_STRETCHY:
 	  res = shapeStretchyCharV(context);
 	  break;
 	default:
@@ -1481,7 +1244,7 @@ ComputerModernShaper::postShape(ShapingContext&) const
 { /* do nothing */ }
 
 AreaRef
-ComputerModernShaper::shapeChar(const ShapingContext& context, FontEncId encId) const
+ComputerModernShaper::shapeChar(const ShapingContext& context, ComputerModernFamily::FontEncId encId) const
 {
   const MathVariant hardVariant = variantOfFontId(context.getSpec().getFontId());
   const MathVariant softVariant = context.getMathVariant();
@@ -1541,10 +1304,10 @@ ComputerModernShaper::shapeHorizontalBrace(const ShapingContext& context) const
   const scaled size = context.getSize();
   const scaled span = context.getHSpan() - (1 * size) / 10;
   
-  AreaRef tipDL = getGlyphArea(variant, FE_CMEX, 0x7a, size);
-  AreaRef tipDR = getGlyphArea(variant, FE_CMEX, 0x7b, size);
-  AreaRef tipUL = getGlyphArea(variant, FE_CMEX, 0x7c, size);
-  AreaRef tipUR = getGlyphArea(variant, FE_CMEX, 0x7d, size);
+  AreaRef tipDL = getGlyphArea(variant, ComputerModernFamily::FE_CMEX, 0x7a, size);
+  AreaRef tipDR = getGlyphArea(variant, ComputerModernFamily::FE_CMEX, 0x7b, size);
+  AreaRef tipUL = getGlyphArea(variant, ComputerModernFamily::FE_CMEX, 0x7c, size);
+  AreaRef tipUR = getGlyphArea(variant, ComputerModernFamily::FE_CMEX, 0x7d, size);
   
   const scaled thickness = tipDL->box().height;
   const scaled fixedWidth = tipDL->box().width + tipDR->box().width + tipUL->box().width + tipUR->box().width;
@@ -1562,7 +1325,7 @@ ComputerModernShaper::shapeHorizontalBrace(const ShapingContext& context) const
 
   std::vector<AreaRef> c;
   c.reserve(7);
-  c.push_back(factory->verticalSpace(size / 2, size / 2 - thickness));
+  c.push_back(factory->verticalSpace(3 * thickness, 2 * thickness));
   switch (context.getSpec().getGlyphId())
     {
     case UNDER_BRACE_INDEX:
@@ -1611,19 +1374,20 @@ AreaRef
 ComputerModernShaper::getGlyphArea(MathVariant variant, const GlyphIndex& glyph, const scaled& size) const
 {
   if (glyph.valid())
-    return getGlyphArea(variant, FontEncId(glyph.fontEnc), glyph.index, size);
+    return getGlyphArea(variant, ComputerModernFamily::FontEncId(glyph.fontEnc), glyph.index, size);
   else
     return 0;
 }
 
 AreaRef
-ComputerModernShaper::getGlyphArea(MathVariant variant, FontEncId encId, Char8 index, const scaled& size) const
+ComputerModernShaper::getGlyphArea(MathVariant variant, ComputerModernFamily::FontEncId encId, Char8 index, const scaled& size) const
 {
   scaled finalSize = size;
-  FontSizeId designSize;
-  const FontNameId fontNameId = findFont(variant, encId, finalSize, designSize);
-  if (fontNameId != FN_NIL)
+  ComputerModernFamily::FontSizeId designSize;
+  const ComputerModernFamily::FontNameId fontNameId = family->findFont(variant, encId, finalSize, designSize);
+  if (fontNameId != ComputerModernFamily::FN_NIL)
     return getGlyphArea(fontNameId, designSize, index, finalSize.toInt());
   else
     return 0;
 }
+

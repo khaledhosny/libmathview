@@ -255,9 +255,9 @@ MathGraphicDevice::calculateDefaultScriptShift(const FormattingContext& context,
 {
   assert(baseBox.defined());
 
-  scaled EX = ex(context);
-  scaled AXIS = axis(context);
-  scaled RULE = defaultLineThickness(context);
+  const scaled EX = ex(context);
+  const scaled AXIS = axis(context);
+  const scaled RULE = defaultLineThickness(context);
 
   u = std::max(EX, baseBox.height - AXIS);
   v = std::max(AXIS, baseBox.depth + AXIS);
@@ -432,13 +432,31 @@ MathGraphicDevice::underOver(const FormattingContext& context,
 			     const AreaRef& underScript, bool accentUnder,
 			     const AreaRef& overScript, bool accent) const
 {
+  const scaled RULE = defaultLineThickness(context);
+  const AreaRef singleSpace = getFactory()->verticalSpace(RULE, 0);
+  const AreaRef tripleSpace = getFactory()->verticalSpace(3 * RULE, 0);
+
+  int n = 1;
+  if (underScript && !accentUnder) n += 3;
+  if (overScript && !accent) n += 3;
+
   std::vector<AreaRef> v;
   v.reserve(3);
-  if (underScript) v.push_back(getFactory()->center(underScript));
+  if (underScript)
+    {
+      if (!accentUnder) v.push_back(singleSpace);
+      v.push_back(getFactory()->center(underScript));
+      if (!accentUnder) v.push_back(tripleSpace);
+    }
   v.push_back(getFactory()->center(base));
-  if (overScript) v.push_back(getFactory()->center(overScript));
+  if (overScript)
+    {
+      if (!accent) v.push_back(tripleSpace);
+      v.push_back(getFactory()->center(overScript));
+      if (!accent) v.push_back(singleSpace);
+    }
 
-  return getFactory()->verticalArray(v, underScript ? 1 : 0);
+  return getFactory()->verticalArray(v, underScript ? 3 : 0);
 }
 
 AreaRef

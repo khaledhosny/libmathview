@@ -9,16 +9,16 @@
 	<mo>+</mo>
 	<mrow>
 	  <mn>2</mn>
-	  <mo>&it;</mo>
+	  <mo>&#x2062;</mo>
 	  <mi>x</mi>
 	</mrow>
 	<mpadded width="0em">
-	  <mi>&ZeroWidthSpace;</mi>
+	  <mi>&#x200b;</mi>
 	  <mo>+</mo>
 	  <mn>1</mn>
 	</mpadded>
       </mrow>
-      <mo>&UnderBrace;</mo>
+      <mo>&#xfe38;</mo>
     </munder>
   </mpadded>
   <mrow>
@@ -28,19 +28,19 @@
 	<mn>2</mn>
       </msup>
       <mo>+</mo>
-      <mi>&ZeroWidthSpace;</mi>
+      <mrow/>
     </mphantom>    
     <mover>
       <mphantom>
 	<mrow>
 	  <mn>2</mn>
-	  <mo>&it;</mo>
+	  <mo>&#x2062;</mo>
 	  <mi>x</mi>
 	</mrow>
 	<mo>+</mo>
 	<mn>1</mn>
       </mphantom>
-      <mo>&OverBrace;</mo>
+      <mo>&#xfe37;</mo>
     </mover>
   </mrow>
 </math>

@@ -36,7 +36,8 @@ public:
 						      const SmartPtr<class Configuration>&);
 
 protected:
-  virtual AreaRef getGlyphArea(FontNameId, FontSizeId, Char8, int) const;
+  virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
+			       ComputerModernFamily::FontSizeId, Char8, int) const;
   virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const;
 };
 

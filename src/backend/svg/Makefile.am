@@ -5,11 +5,13 @@ lib_LTLIBRARIES = libmathview_backend_svg.la
 
 if COND_TFM
 MAYBE_TFM_S = \
+  SVG_TFMComputerModernMathGraphicDevice.cc \
   SVG_TFMComputerModernShaper.cc \
   SVG_TTF_TFMComputerModernShaper.cc \
   SVG_TTF_TFMComputerModernShaper.hh \
   $(NULL)
 MAYBE_TFM_H = \
+  SVG_TFMComputerModernMathGraphicDevice.hh \
   SVG_TFMComputerModernShaper.hh \
   SVG_TTF_TFMComputerModernShaper.hh \
   $(NULL)

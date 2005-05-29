@@ -20,30 +20,30 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __TFMComputerModernShaper_hh__
-#define __TFMComputerModernShaper_hh__
+#include <config.h>
 
-#include "ComputerModernShaper.hh"
+#include <cassert>
 
-class TFMComputerModernShaper : public ComputerModernShaper
-{
-protected:
-  TFMComputerModernShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
-  virtual ~TFMComputerModernShaper();
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
+#include "FormattingContext.hh"
+#include "MathMLElement.hh"
+#include "SVG_TFMComputerModernMathGraphicDevice.hh"
+#include "SVG_WrapperArea.hh"
 
-public:
-  void setFontManager(const SmartPtr<class TFMFontManager>&);
-  SmartPtr<class TFMFontManager> getFontManager(void) const;
+SVG_TFMComputerModernMathGraphicDevice::SVG_TFMComputerModernMathGraphicDevice(const SmartPtr<AbstractLogger>& l,
+									       const SmartPtr<Configuration>&)
+  : TFMComputerModernMathGraphicDevice(l)
+{ }
 
-protected:
-  static ComputerModernFamily::FontNameId fontNameIdOfTFM(const SmartPtr<class TFM>&);
-  virtual void postShape(class ShapingContext&) const;
-  virtual SmartPtr<class TFMFont> getFont(ComputerModernFamily::FontNameId,
-					  ComputerModernFamily::FontSizeId, const scaled&) const;
-  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const = 0;
+SVG_TFMComputerModernMathGraphicDevice::~SVG_TFMComputerModernMathGraphicDevice()
+{ }
 
-private:
-  SmartPtr<class TFMFontManager> tfmFontManager;
-};
+SmartPtr<SVG_TFMComputerModernMathGraphicDevice>
+SVG_TFMComputerModernMathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
+					       const SmartPtr<Configuration>& conf)
+{ return new SVG_TFMComputerModernMathGraphicDevice(logger, conf); }
 
-#endif // __TFMComputerModernShaper_hh__
+AreaRef
+SVG_TFMComputerModernMathGraphicDevice::wrapper(const FormattingContext& ctxt, const AreaRef& area) const
+{ return SVG_WrapperArea::create(area, area->box(), ctxt.getMathMLElement()); }

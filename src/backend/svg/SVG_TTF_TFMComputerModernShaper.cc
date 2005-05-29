@@ -44,7 +44,8 @@ SVG_TTF_TFMComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
 { return new SVG_TTF_TFMComputerModernShaper(l, conf); }
 
 AreaRef
-SVG_TTF_TFMComputerModernShaper::getGlyphArea(FontNameId fontNameId, FontSizeId designSize, 
+SVG_TTF_TFMComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,
+					      ComputerModernFamily::FontSizeId designSize, 
 					      Char8 index, int size) const
 { return SVG_TTF_TFMGlyphArea::create(getFont(fontNameId, designSize, size), index,
-				      toTTFGlyphIndex(encIdOfFontNameId(fontNameId), index)); }
+				      toTTFGlyphIndex(ComputerModernFamily::encIdOfFontNameId(fontNameId), index)); }

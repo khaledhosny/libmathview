@@ -39,6 +39,7 @@
 #ifdef ENABLE_TFM
 #include "TFMManager.hh"
 #include "TFMFontManager.hh"
+#include "SVG_TFMComputerModernMathGraphicDevice.hh"
 #include "SVG_TFMComputerModernShaper.hh"
 #include "SVG_TTF_TFMComputerModernShaper.hh"
 #endif // ENABLE_TFM
@@ -48,17 +49,9 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   : Backend(conf)
 {
   SmartPtr<SVG_AreaFactory> factory = SVG_AreaFactory::create();
-  SmartPtr<SVG_MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(l, conf);
-  mgd->setFactory(factory);
-#if 0 && ENABLE_BOXML
-  SmartPtr<SVG_BoxGraphicDevice> bgd = SVG_BoxGraphicDevice::create(l, conf);
-  bgd->setFactory(factory);
-  setDevices(mgd, bgd);
-#else
-  setDevices(mgd, 0);
-#endif // ENABLE_BOXML
 
 #if ENABLE_TFM
+  SmartPtr<TFMComputerModernShaper> cmShaper;
   // the fact that the Type1 and TT versions of the computer modern
   // shapers for the SVG backend share the same font manager is just a
   // twisted coincidence. Beware
@@ -78,7 +71,7 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 #if ENABLE_TFM
   if (conf->getBool(l, "svg-backend/type1-computer-modern-shaper/enabled", false))
     {
-      SmartPtr<SVG_TFMComputerModernShaper> cmShaper = SVG_TFMComputerModernShaper::create(l, conf);
+      cmShaper = SVG_TFMComputerModernShaper::create(l, conf);
       cmShaper->setFontManager(fm);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/type1-computer-modern-shaper/priority", 0),
 							cmShaper));
@@ -86,12 +79,35 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 
   if (conf->getBool(l, "svg-backend/ttf-computer-modern-shaper/enabled", false))
     {
-      SmartPtr<SVG_TTF_TFMComputerModernShaper> cmShaper = SVG_TTF_TFMComputerModernShaper::create(l, conf);
+      cmShaper = SVG_TTF_TFMComputerModernShaper::create(l, conf);
       cmShaper->setFontManager(fm);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/ttf-computer-modern-shaper/priority", 0),
 							cmShaper));
     }
 #endif // ENABLE_TFM
+
+#if ENABLE_TFM
+  SmartPtr<MathGraphicDevice> mgd;
+  if (cmShaper)
+    {
+      SmartPtr<TFMComputerModernMathGraphicDevice> tfmMGD = SVG_TFMComputerModernMathGraphicDevice::create(l, conf);
+      tfmMGD->setFamily(cmShaper->getFamily());
+      tfmMGD->setTFMManager(tfm);
+      mgd = tfmMGD;
+    }
+  else
+    mgd = SVG_MathGraphicDevice::create(l, conf);
+#else
+  SmartPtr<MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(l, conf);
+#endif
+  mgd->setFactory(factory);
+#if 0 && ENABLE_BOXML
+  SmartPtr<BoxGraphicDevice> bgd = SVG_BoxGraphicDevice::create(l, conf);
+  bgd->setFactory(factory);
+  setDevices(mgd, bgd);
+#else
+  setDevices(mgd, 0);
+#endif // ENABLE_BOXML
 
   for (std::multimap<int, SmartPtr<Shaper> >::const_iterator p = shaperSet.begin();
        p != shaperSet.end();

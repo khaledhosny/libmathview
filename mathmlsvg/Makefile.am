@@ -11,6 +11,8 @@ mathmlsvg_SOURCES = \
   Fragment.hh \
   Location.cc \
   Location.hh \
+  MathView.hh \
+  Model.hh \
   Scanner.cc \
   Scanner.hh \
   SMS.cc \

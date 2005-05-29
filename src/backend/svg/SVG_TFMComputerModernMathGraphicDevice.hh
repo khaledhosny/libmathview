@@ -20,30 +20,23 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
-#ifndef __TFMComputerModernShaper_hh__
-#define __TFMComputerModernShaper_hh__
+#ifndef __SVG_TFMComputerModernMathGraphicDevice_hh__
+#define __SVG_TFMComputerModernMathGraphicDevice_hh__
 
-#include "ComputerModernShaper.hh"
+#include "TFMComputerModernMathGraphicDevice.hh"
 
-class TFMComputerModernShaper : public ComputerModernShaper
+class SVG_TFMComputerModernMathGraphicDevice : public TFMComputerModernMathGraphicDevice
 {
 protected:
-  TFMComputerModernShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
-  virtual ~TFMComputerModernShaper();
+  SVG_TFMComputerModernMathGraphicDevice(const SmartPtr<class AbstractLogger>&,
+					 const SmartPtr<class Configuration>&);
+  virtual ~SVG_TFMComputerModernMathGraphicDevice();
 
 public:
-  void setFontManager(const SmartPtr<class TFMFontManager>&);
-  SmartPtr<class TFMFontManager> getFontManager(void) const;
+  static SmartPtr<SVG_TFMComputerModernMathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
+								 const SmartPtr<class Configuration>&);
 
-protected:
-  static ComputerModernFamily::FontNameId fontNameIdOfTFM(const SmartPtr<class TFM>&);
-  virtual void postShape(class ShapingContext&) const;
-  virtual SmartPtr<class TFMFont> getFont(ComputerModernFamily::FontNameId,
-					  ComputerModernFamily::FontSizeId, const scaled&) const;
-  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const = 0;
-
-private:
-  SmartPtr<class TFMFontManager> tfmFontManager;
+  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef& area) const;
 };
 
-#endif // __TFMComputerModernShaper_hh__
+#endif // __SVG_TFMComputerModernMathGraphicDevice_hh__

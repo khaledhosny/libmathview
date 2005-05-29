@@ -25,7 +25,7 @@
 
 #include "Char.hh"
 #include "Shaper.hh"
-#include "MathVariant.hh"
+#include "ComputerModernFamily.hh"
 
 class ComputerModernShaper : public Shaper
 {
@@ -34,6 +34,8 @@ protected:
   virtual ~ComputerModernShaper();
 
 public:
+  SmartPtr<ComputerModernFamily> getFamily(void) const { return family; }
+
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
@@ -44,61 +46,17 @@ public:
     POST_SHAPING_TEXT,
     POST_SHAPING_ALWAYS
   };
-
+  
   PostShapingMode getPostShapingMode(void) const { return postShapingMode; }
   void setPostShapingMode(PostShapingMode m) { postShapingMode = m; }
   bool setPostShapingMode(const String&);
-
-  enum FontSizeId {
-    FS_NIL = -1,
-    FS_5,
-    FS_6,
-    FS_7,
-    FS_8,
-    FS_9,
-    FS_10,
-    FS_12,
-    FS_17,
-    FS_NOT_VALID
-  };
-
-  enum FontEncId {
-    FE_NIL = -1,
-    FE_CMR,
-    FE_CMMI,
-    FE_CMSY,
-    FE_CMEX,
-    FE_H_STRETCHY,
-    FE_V_STRETCHY,
-    FE_H_BIG,
-    FE_H_BRACE,
-    FE_NOT_VALID
-  };
-
-  enum FontNameId {
-    FN_NIL = -1,
-    FN_CMR,
-    FN_CMB,
-    FN_CMBX,
-    FN_CMBXTI,
-    FN_CMTI,
-    FN_CMSS,
-    FN_CMSSI,
-    FN_CMSSBX,
-    FN_CMTT,
-    FN_CMSY,
-    FN_CMBSY,
-    FN_CMMI,
-    FN_CMMIB, 
-    FN_CMEX,
-    FN_NOT_VALID
-  };
 
   struct GlyphIndex
   {
     signed char fontEnc;
     Char8 index;
-    bool valid(void) const { return fontEnc > FE_NIL && fontEnc < FE_NOT_VALID; }
+    bool valid(void) const
+    { return ComputerModernFamily::validFontEncId(ComputerModernFamily::FontEncId(fontEnc)); }
   };
   
   struct PlainChar
@@ -132,26 +90,16 @@ public:
     GlyphIndex big[3];
   };
 
-  static const char* nameOfFontNameId(FontNameId);
-  static String nameOfFont(FontNameId, FontSizeId);
-  static Char8 toTTFGlyphIndex(FontEncId, Char8);
+  static Char8 toTTFGlyphIndex(ComputerModernFamily::FontEncId, Char8);
 
 protected:
-  static FontEncId encIdOfFontNameId(FontNameId);
-  static FontSizeId fontSizeIdOfSize(int);
-  static int sizeOfFontSizeId(FontSizeId);
-
-  bool fontEnabled(FontNameId, FontSizeId = FS_10) const;
-
-  FontNameId findBestFont(MathVariant, FontEncId, int, FontSizeId&) const;
-  FontNameId findFont(MathVariant, FontEncId, scaled&, FontSizeId&) const;
-
   virtual void postShape(class ShapingContext&) const;
-  virtual AreaRef getGlyphArea(FontNameId, FontSizeId, Char8, int) const = 0;
-  AreaRef getGlyphArea(MathVariant, FontEncId, Char8, const scaled&) const;
+  virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
+			       ComputerModernFamily::FontSizeId, Char8, int) const = 0;
+  AreaRef getGlyphArea(MathVariant, ComputerModernFamily::FontEncId, Char8, const scaled&) const;
   AreaRef getGlyphArea(MathVariant, const GlyphIndex&, const scaled&) const;
 
-  AreaRef shapeChar(const class ShapingContext&, FontEncId) const;
+  AreaRef shapeChar(const class ShapingContext&, ComputerModernFamily::FontEncId) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
   AreaRef shapeBigCharH(const class ShapingContext&) const;
@@ -159,7 +107,7 @@ protected:
 
 private:
   PostShapingMode postShapingMode;
-  bool configuredFont[FN_NOT_VALID][FS_NOT_VALID];
+  SmartPtr<ComputerModernFamily> family;
 };
 
 #endif // __ComputerModernShaper_hh__

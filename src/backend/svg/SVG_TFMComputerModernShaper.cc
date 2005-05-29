@@ -43,7 +43,8 @@ SVG_TFMComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
 { return new SVG_TFMComputerModernShaper(l, conf); }
 
 AreaRef
-SVG_TFMComputerModernShaper::getGlyphArea(FontNameId fontNameId, FontSizeId designSize,
+SVG_TFMComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,
+					  ComputerModernFamily::FontSizeId designSize,
 					  Char8 index, int size) const
 { return SVG_TFMGlyphArea::create(getFont(fontNameId, designSize, size), index); }
 

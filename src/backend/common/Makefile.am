@@ -28,12 +28,14 @@ endif
 if COND_TFM
 MAYBE_TFM_S = \
   TFMComputerModernShaper.cc \
+  TFMComputerModernMathGraphicDevice.cc \
   TFMFont.cc \
   TFMFontManager.cc \
   TFMGlyphArea.cc \
   $(NULL)
 MAYBE_TFM_H = \
   TFMComputerModernShaper.hh \
+  TFMComputerModernMathGraphicDevice.hh \
   TFMFont.hh \
   TFMFontManager.hh \
   TFMGlyphArea.hh \
@@ -84,6 +86,7 @@ libbackend_common_la_SOURCES = \
   BoxArea.cc \
   BoxedLayoutArea.cc \
   ColorArea.cc \
+  ComputerModernFamily.cc \
   ComputerModernShaper.cc \
   FormattingContext.cc \
   GlyphArea.cc \
@@ -132,6 +135,7 @@ mathview_HEADERS = \
   BoxedLayoutArea.hh \
   CachedShapedString.hh \
   ColorArea.hh	\
+  ComputerModernFamily.hh \
   ComputerModernShaper.hh \
   ContainerArea.hh \
   FillerArea.hh \
