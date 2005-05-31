@@ -35,9 +35,9 @@ protected:
 
 public:
   virtual scaled ex(const class FormattingContext&) const;
-  virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const = 0;
+  virtual AreaRef string(const class FormattingContext&, const String&, const scaled&) const;
   virtual AreaRef dummy(const class FormattingContext&) const;
-  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef&) const = 0;
+  virtual AreaRef wrapper(const class FormattingContext&, const AreaRef&) const;
 };
 
 #endif // __BoxGraphicDevice_hh__

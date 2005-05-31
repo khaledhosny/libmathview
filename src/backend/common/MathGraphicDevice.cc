@@ -85,7 +85,10 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
       UCS4String source = UCS4StringOfString(str);
       if (context.getMathMode())
 	mapMathVariant(context.getVariant(), source);
-      r.first->second = getShaperManager()->shapeStretchy(context, source,
+      r.first->second = getShaperManager()->shapeStretchy(context,
+							  context.getMathMLElement(),
+							  context.MGD()->getFactory(),
+							  source,
 							  context.getStretchV(),
 							  context.getStretchH());
       return r.first->second;
@@ -100,7 +103,10 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
     {
       UCS4String source = UCS4StringOfString(str);
       mapMathVariant(context.getVariant(), source);
-      return (cache[key] = getShaperManager()->shapeStretchy(context, source,
+      return (cache[key] = getShaperManager()->shapeStretchy(context,
+							     context.getMathMLElement(),
+							     context.MGD()->getFactory(),
+							     source,
 							     context.getStretchV(),
 							     context.getStretchH()));
     }
@@ -120,7 +126,10 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
       UCS4String source = UCS4StringOfString(str);
       if (context.getMathMode())
 	mapMathVariant(context.getVariant(), source);
-      r.first->second = getShaperManager()->shape(context, source);
+      r.first->second = getShaperManager()->shape(context,
+						  context.getMathMLElement(),
+						  context.MGD()->getFactory(),
+						  source);
       return r.first->second;
     }
   else
@@ -133,7 +142,10 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
     {
       UCS4String source = UCS4StringOfString(str);
       mapMathVariant(context.getVariant(), source);
-      return (cache[key] = getShaperManager()->shape(context, source));
+      return (cache[key] = getShaperManager()->shape(context,
+						     context.getMathMLElement(),
+						     context.MGD()->getFactory(),
+						     source));
     }
 #endif
 }
@@ -156,7 +168,10 @@ MathGraphicDevice::stretchStringV(const FormattingContext& context,
 				  const scaled& height,
 				  const scaled& depth) const
 {
-  return getShaperManager()->shapeStretchy(context, UCS4StringOfString(str), height + depth, 0);
+  return getShaperManager()->shapeStretchy(context,
+					   context.getMathMLElement(),
+					   context.MGD()->getFactory(),
+					   UCS4StringOfString(str), height + depth, 0);
 }
 
 AreaRef

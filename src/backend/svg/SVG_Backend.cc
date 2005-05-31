@@ -29,7 +29,7 @@
 #include "SVG_Backend.hh"
 #include "SVG_AreaFactory.hh"
 #include "SVG_MathGraphicDevice.hh"
-#if 0 && ENABLE_BOXML
+#if ENABLE_BOXML
 #include "SVG_BoxGraphicDevice.hh"
 #else
 #include "BoxGraphicDevice.hh"
@@ -101,7 +101,7 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(l, conf);
 #endif
   mgd->setFactory(factory);
-#if 0 && ENABLE_BOXML
+#if ENABLE_BOXML
   SmartPtr<BoxGraphicDevice> bgd = SVG_BoxGraphicDevice::create(l, conf);
   bgd->setFactory(factory);
   setDevices(mgd, bgd);

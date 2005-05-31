@@ -40,6 +40,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/frontend/libxml2 \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/svg \
   -I$(top_srcdir)/src/view \

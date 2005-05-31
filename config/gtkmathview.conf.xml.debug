@@ -172,7 +172,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="priority">1</key>
     </section>
     <section name="pango-shaper">
-      <key name="enabled">true</key>
+      <key name="enabled">false</key>
       <key name="priority">1</key>
     </section>
     <section name="adobe-shaper">

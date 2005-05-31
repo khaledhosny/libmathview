@@ -24,10 +24,11 @@
 
 #include <cassert>
 
-#include "BoxGraphicDevice.hh"
-#include "FormattingContext.hh"
-#include "BoxMLElement.hh"
 #include "AreaFactory.hh"
+#include "BoxGraphicDevice.hh"
+#include "BoxMLElement.hh"
+#include "FormattingContext.hh"
+#include "ShaperManager.hh"
 
 BoxGraphicDevice::BoxGraphicDevice(const SmartPtr<AbstractLogger>& logger)
   : GraphicDevice(logger)
@@ -53,4 +54,15 @@ BoxGraphicDevice::dummy(const FormattingContext&) const
 {
   //assert(false);
   return getFactory()->horizontalSpace(scaled::zero());
+}
+
+AreaRef
+BoxGraphicDevice::string(const FormattingContext& context, const String& str, const scaled&) const
+{
+  const UCS4String source = UCS4StringOfString(str);
+  const AreaRef res = getShaperManager()->shape(context,
+						context.getBoxMLElement(),
+						context.BGD()->getFactory(),
+						source);
+  return res;
 }

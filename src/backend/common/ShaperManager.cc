@@ -30,7 +30,7 @@
 #include "ShaperManager.hh"
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
-#include "MathMLElement.hh"
+#include "Element.hh"
 
 ShaperManager::ShaperManager() : nextShaperId(0)
 {
@@ -65,19 +65,24 @@ ShaperManager::shapeAux(ShapingContext& context) const
 }
 
 AreaRef
-ShaperManager::shape(const FormattingContext& ctxt, const UCS4String& source) const
+ShaperManager::shape(const FormattingContext& ctxt,
+		     const SmartPtr<Element>& elem,
+		     const SmartPtr<AreaFactory>& factory,
+		     const UCS4String& source) const
 {
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(map(source[i]));
-  ShapingContext context(ctxt.getMathMLElement(), ctxt.MGD()->getFactory(), source, spec,
+  ShapingContext context(elem, factory, source, spec,
 			 ctxt.getSize(), ctxt.getVariant(), ctxt.getMathMode());
   return shapeAux(context);
 }
 
 AreaRef
 ShaperManager::shapeStretchy(const FormattingContext& ctxt,
+			     const SmartPtr<Element>& elem,
+			     const SmartPtr<AreaFactory>& factory,
 			     const UCS4String& source,
 			     const scaled& vSpan,
 			     const scaled& hSpan) const
@@ -86,7 +91,7 @@ ShaperManager::shapeStretchy(const FormattingContext& ctxt,
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(mapStretchy(source[i]));
-  ShapingContext context(ctxt.getMathMLElement(), ctxt.MGD()->getFactory(), source, spec,
+  ShapingContext context(elem, factory, source, spec,
 			 ctxt.getSize(), ctxt.getVariant(), ctxt.getMathMode(), vSpan, hSpan);
   return shapeAux(context);
 }

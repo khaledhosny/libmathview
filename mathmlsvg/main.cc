@@ -43,6 +43,7 @@
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
 #if ENABLE_BOXML
+#include "BoxMLNamespaceContext.hh"
 #include "BoxGraphicDevice.hh"
 #endif // ENABLE_BOXML
 #include "SMS.hh"
@@ -347,10 +348,14 @@ main(int argc, char* argv[])
   view->setLogger(logger);
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, mgd));
+#if ENABLE_BOXML
+  SmartPtr<BoxGraphicDevice> bgd = backend->getBoxGraphicDevice();
+  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, bgd));
+#endif
   view->setDefaultFontSize(static_cast<unsigned>(fontSize));
 
 #if ENABLE_BOXML
-  FormattingContext context(mgd, 0);
+  FormattingContext context(mgd, bgd);
 #else
   FormattingContext context(mgd);
 #endif

@@ -64,6 +64,7 @@ AreaRef
 Gtk_BoxGraphicDevice::string(const FormattingContext& context,
 			     const String& str, const scaled& width) const
 {
+#if 0
   if (str.length() == 0)
     return dummy(context);
   else
@@ -89,6 +90,9 @@ Gtk_BoxGraphicDevice::string(const FormattingContext& context,
       // set attributes...
       return gtk_factory->pangoLayout(layout);
     }
+#else
+  return BoxGraphicDevice::string(context, str, width);
+#endif
 }
 
 #if 0
