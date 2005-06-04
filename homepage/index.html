@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+ -->
+
+  <title>GtkMathView Home Page</title>
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link href="gtkmathview.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body id="bodytext">
+
+<table>
+<tr>
+<td class="framed" valign="top" style="width: 200px;">
+
+<div class="center">
+<a href="t1lib.png">
+<img src="t1lib-small.png" alt="Rendering with Computer Modern fonts"/>
+</a>
+<div class="small">&#x21e7;Rendering with Computer Modern fonts (detail)</div>
+</div>
+
+<h3>quick download</h3>
+
+<ul class="compact">
+  <li><b>Latest version</b> (source) [<a href="sources/gtkmathview-latest.tar.gz">.tar.gz</a>]</li>
+  <li><b>Debian package</b> (lib) [<a href="http://packages.debian.org/unstable/libs/libgtkmathview0">.html</a>]</li>
+  <li><b>Debian package</b> (dev) [<a href="http://packages.debian.org/unstable/libdevel/libgtkmathview-dev">.html</a>]</li>
+  <li><b>Debian package</b> (bin) [<a href="http://packages.debian.org/unstable/misc/libgtkmathview-bin">.html</a>]</li>
+</ul>
+
+<div style="font-size: small; text-align: center;">
+[<a href="#moredownload">more download</a>]
+</div>
+
+
+<h3 id="documentation">documentation</h3>
+
+<ul class="compact">
+  <li>The (out-of-date) <a href="gtkmathview.html">reference
+  manual</a> for the GTK+ widget and the underlying C++ rendering
+  engine is available with the distribution.  </li>
+
+  <li>For online discussions you can occasionally find me on the <tt>#gtkmathview</tt>
+  IRC channel on <tt>irc.gimp.org</tt>.
+  </li>
+
+  <li>A <a
+  href="http://www.cs.unibo.it/cgi-bin/mailman/listinfo/gtkmathview">mailing
+  list</a> is available for general discussions about the widget and
+  applications using it.  Note that posting to this mailing list
+  <em>is allowed to members only</em> and that posts by non-members
+  will be automatically discarded without notification.
+  </li>
+
+  <li>There is a <a
+  href="http://bugs.mowgli.cs.unibo.it/cgi-bin/bugzilla/index.cgi">bugzilla
+  module</a> dedicated to GtkMathView.  Please, submit bug reports
+  here so that I don't lose track of them.  </li>
+
+</ul>
+
+<h3 id="fonts">fonts</h3>
+
+<div class="small">
+  The GTK+ backend will work with fonts supported by Pango and also
+  with Type 1 fonts if t1lib is installed.  The SVG backend relies on
+  the SVG renderer to find the appropriate fonts.  </div>
+
+
+<ul class="compact">
+
+  <li>Minimal set of Computer Modern fonts
+   [<a href="http://www.mozilla.org/projects/mathml/fonts/bakoma/texcm-ttf.zip">True Type</a>Type 1]</li>
+
+  <li>Complete set of Computer Modern fonts
+   [<a href="ftp://cis.uniroma2.it/TeX/fonts/cm/ps-type1/bakoma/ttf/">True Type</a>,
+    <a href="ftp://ftp.ams.org/pub/tex/psfonts/cm/cmps-unix.tar.gz">Type 1</a>]</li>
+
+</ul>
+
+<h3 id="links">links</h3>
+
+<ul class="compact">
+  <li>GtkMathView at <a href="http://www.gnomefiles.org/app.php?soft_id=197">Gnome Files</a>.</li>
+  <li>GtkMathView at <a href="http://freshmeat.net/projects/gtkmathview/?highlight=gtkmathview">freshmeat.net</a>.</li>
+  <li>GtkMathView at <a href="http://www.icewalkers.com/Linux/Software/513460/GtkMathView.html">icewalkers</a>.</li>
+  <li><a href="http://xmlsoft.org/">libxml2</a>, the GNOME XML library</li>
+  <li><a href="http://gdome2.cs.unibo.it/">Gdome2</a>, libxml2 wrapper exposing the DOM API for the C language</li>
+  <li><a href="http://gmetadom.sourceforge.net/">GMetaDOM</a>, Gdome2 wrapper exposing the DOM API for the C++ and OCaml languages</li>
+</ul>
+
+<h3 id="moredownload">more download</h3>
+
+<h4>latest</h4>
+<ul class="compact">
+  <li><b>gtkmathview-0.7.0</b> [<a href="sources/gtkmathview-0.7.0.tar.gz">.tar.gz</a>]</li>
+</ul>
+
+<h4>0.6.x</h4>
+  <ul class="compact">
+    <li><b>gtkmathview-0.6.5</b> [<a href="sources/gtkmathview-0.6.5.tar.gz">.tar.gz</a>]</li>
+    <li><b>gtkmathview-0.6.4</b> [<a href="sources/gtkmathview-0.6.4.tar.gz">.tar.gz</a>]</li>
+    <li><b>gtkmathview-0.6.3</b> [<a href="sources/gtkmathview-0.6.3.tar.gz">.tar.gz</a>]</li>
+    <li><b>gtkmathview-0.6.2</b> [<a href="sources/gtkmathview-0.6.2.tar.gz">.tar.gz</a>]</li>
+    <li><b>gtkmathview-0.6.1</b> [<a href="sources/gtkmathview-0.6.1.tar.gz">.tar.gz</a>]</li>
+    <li><b>gtkmathview-0.6.0</b> [<a href="sources/gtkmathview-0.6.0.tar.gz">.tar.gz</a>]</li>
+  </ul>
+
+<h4>0.5.x</h4>
+<ul class="compact">
+  <li><b>gtkmathview-0.5.3</b> [<a href="sources/gtkmathview-0.5.3.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.5.2</b> [<a href="sources/gtkmathview-0.5.2.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.5.1</b> [<a href="sources/gtkmathview-0.5.1.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.5.0</b> [<a href="sources/gtkmathview-0.5.0.tar.gz">.tar.gz</a>]</li>
+</ul>
+
+<h4>GTK 1.2, gmetadom, editing</h4>
+<ul class="compact">
+  <li><b>gtkmathview-0.4.3</b> [<a href="sources/gtkmathview-0.4.3.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.4.2</b> [<a href="sources/gtkmathview-0.4.2.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.4.1</b> [<a href="sources/gtkmathview-0.4.1.tar.gz">.tar.gz</a>]</li>
+</ul>
+
+<h4>GTK 1.2, miniDOM, no editing, PS</h4>
+<ul class="compact">
+  <li><b>gtkmathview-0.3.1</b> [<a href="sources/gtkmathview-0.3.1.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.3.0</b> [<a href="sources/gtkmathview-0.3.0.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.9</b> [<a href="sources/gtkmathview-0.2.9.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.8</b> [<a href="sources/gtkmathview-0.2.8.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.7</b> [<a href="sources/gtkmathview-0.2.7.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.6</b> [<a href="sources/gtkmathview-0.2.6.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.5</b> [<a href="sources/gtkmathview-0.2.5.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.4</b> [<a href="sources/gtkmathview-0.2.4.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.3</b> [<a href="sources/gtkmathview-0.2.3.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.2</b> [<a href="sources/gtkmathview-0.2.2.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.2.0</b> [<a href="sources/gtkmathview-0.2.0.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.1.2</b> [<a href="sources/gtkmathview-0.1.2.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.1.1</b> [<a href="sources/gtkmathview-0.1.1.tar.gz">.tar.gz</a>]</li>
+  <li><b>gtkmathview-0.1.0</b> [<a href="sources/gtkmathview-0.1.0.tar.gz">.tar.gz</a>]</li>
+</ul>
+
+<h4>Ocaml bindings</h4>
+<ul class="compact">
+  <li><b>lablgtkmathview 0.6.3</b>
+    [<a href="sources/lablgtkmathview-0.6.3.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>lablgtkmathview 0.5.1</b>
+    [<a href="sources/lablgtkmathview-0.5.1.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>lablgtkmathview 0.4.1</b>
+
+    [<a href="sources/lablgtkmathview-0.4.1.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>lablgtkmathview 0.3.0</b>
+    [<a href="sources/lablgtkmathview-0.3.0.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>lablgtkmathview 0.2.8</b>
+    [<a href="sources/lablgtkmathview-0.2.8.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>lablgtkmathview 0.2.2</b>
+    [<a href="sources/lablgtkmathview-0.2.2.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>Debian package</b> (lib) [<a href="http://packages.debian.org/unstable/libs/liblablgtkmathview-ocaml">.html</a>]</li>
+  <li><b>Debian package</b> (dev) [<a href="http://packages.debian.org/unstable/libdevel/liblablgtkmathview-ocaml-dev">.html</a>]</li>
+</ul>
+
+<h4><em class="strike">miniDOM</em> (<em>obsolete</em>)</h4>
+<ul class="compact">
+  <li><b>minidom-0.1.4</b> [<a href="sources/minidom-0.1.4.tar.gz">.tar.gz</a>]</li>
+  <li><b>minidom-0.1.3</b> [<a href="sources/minidom-0.1.3.tar.gz">.tar.gz</a>]</li>
+
+  <li><b>minidom-0.1.2</b> [<a href="sources/minidom-0.1.2.tar.gz">.tar.gz</a>]</li>
+  <li><b>minidom-0.1.1</b> [<a href="sources/minidom-0.1.1.tar.gz">.tar.gz</a>]</li>
+  <li><b>minidom-0.1.0</b> [<a href="sources/minidom-0.1.0.tar.gz">.tar.gz</a>]</li>
+</ul>
+
+<h4><em class="strike">OCaml Bindings for miniDOM</em> (<em>obsolete</em>)</h4>
+<ul class="compact">
+  <li><b>mlminidom 0.2.1</b>
+    [<a href="sources/mlminidom-0.2.1.tar.gz">.tar.gz</a>]
+  </li>
+
+  <li><b>mlminidom 0.2.0</b>
+    [<a href="sources/mlminidom-0.2.0.tar.gz">.tar.gz</a>]
+  </li>
+  <li><b>mlminidom 0.0.1</b>
+    [<a href="sources/mlminidom-0.0.1.tar.gz">.tar.gz</a>]
+  </li>
+</ul>
+
+<h4><em class="strike">old OCaml bindings</em> (<em>obsolete</em>)</h4>
+<ul class="compact">
+  <li>
+    <b>for lablgtk_20001129 0.2.2</b>
+    	[<a href="sources/lablgtk-20001129_gtkmathview-0.2.2.tar.gz">.tar.gz</a>]
+  </li>
+  <li>
+    <b>for lablgtk_20000829 0.2.0</b>
+    	[<a href="sources/lablgtk-20000829_gtkmathview-0.2.0.tar.gz">.tar.gz</a>]
+  </li>
+
+  <li>
+    <b>for lablgtk_20000829 0.1.0</b>
+    	[<a href="sources/lablgtk-20000829_gtkmathview-0.1.0.tar.gz">.tar.gz</a>]
+  </li>
+</ul>
+
+<hr/>
+
+<p style="text-align: center; font-size: small;">
+[Contact: <a href="http://www.cs.unibo.it/%7Elpadovan/">Luca Padovani</a>]
+</p>
+
+<div class="center">
+<p>
+      <a href="http://validator.w3.org/check?uri=referer"><img
+          src="http://www.w3.org/Icons/valid-xhtml11"
+          alt="Valid XHTML 1.1!" height="31" width="88" /></a>
+<a href="http://jigsaw.w3.org/css-validator/check/referer">
+<img src="http://jigsaw.w3.org/css-validator/images/vcss.gif" alt="Valid CSS!" height="31" width="88"/>
+</a>
+</p>
+<a href="http://www.w3.org/Math/">
+<img src="mathmllogo-small.png" alt="MathML logo (small)"/>
+</a>
+
+<p>
+[<a href="http://validator.w3.org/checklink?uri=http://helm.cs.unibo.it/software/mml-widget/index.html">check links</a>]
+</p>
+</div>
+
+</td>
+<td class="framed" valign="top" style="width: 500px;">
+
+  <div class="center">
+  <img src="logo.png" alt="GtkMathView logo"/>
+  </div>
+
+  <p style="font-size: small; text-align: center;">
+  [<a href="#documentation">documentation</a>]
+  [<a href="#requirements">requirements</a>]
+  [<a href="#cvs">CVS</a>]
+  [<a href="#projects">projects</a>]
+  [<a href="#examples">examples &amp; screenshots</a>]
+  [<a href="#fonts">fonts</a>]
+  [<a href="#links">links</a>]
+  </p>
+
+  <p>
+    GtkMathView is a C++ rendering engine for <a
+    href="http://www.w3.org/Math/">MathML</a> documents. It provides an
+    interactive view that can be used for browsing and editing MathML
+    markup.
+  </p>
+
+  <p>
+    GtkMathView reads MathML documents by means of a <em>frontend</em>
+    whose purpose is to traverse the MathML document (or part of it)
+    and to appropriately instantiate GtkMathView's internal data
+    structures that are suitable for rendering it. Currently the
+    following frontends are supported:
+  </p>
+  <ul>
+    <li><a href="http://xmlsoft.org">libxml2</a> frontend, in which
+      the MathML document is represented as a tree and navigated with
+      the libxml2 tree API.</li>
+
+    <li><a href="http://xmlsoft.org">libxml2 reader</a> frontend, in
+      which the MathML document is not entirely loaded in memory and
+      is navigated with the libxml2 reader API. This frontend is
+      mostly useful for batch rendering of MathML documents.</li>
+
+    <li><a href="http://gmetadom.sourceforge.net">GMetaDOM</a>
+      frontend, in which the MathML document is represented as a tree
+      and is navigated with the DOM API provided by GMetaDOM, which in
+      turn is a DOM-compliant wrapper for libxml2.</li>
+
+    <li><em>custom</em> frontend, in which the MathML document is
+      represented in some application-specific format and is navigated
+      with application-provided callback functions.</li>
+  </ul>
+ 
+  <p>
+    GtkMathView renders MathML documents through a <em>backend</em>
+    whose purpose is to provide an interface between the portable
+    rendering engine and the platform-specific capabilities (like
+    retrieving fonts, drawing on the screen, and so on). Currently the
+    following backends are provided:
+  </p>
+
+  <ul>
+    <li>GTK+ backend, for rendering MathML documents using Pango in
+    GTK+ applications.</li>
+
+    <li>GTK+ widget backend, which wraps GtkMathView in a GTK+ widget
+    to be directly embedded in GTK+ applications.</li>
+
+    <li>SVG backend, which renders MathML into SVG.</li>
+
+    <li><a href="http://www.abisource.com/">AbiWord</a> backend, which
+    allows one to embed MathML documents into AbiWord by means of the
+    AbiMathView plugin.</li>
+
+   </ul>
+
+   <p>
+     GtkMathView fully supports Computer Modern fonts for achieving
+     the best possible quality.
+   </p>
+
+<h3 class="reverse" id="requirements">requirements</h3>
+
+<ul>
+  <li><a href="http://www.gtk.org">GLib</a> &#x2265; 2.2.3 </li>
+
+  <li><a href="http://www.gtk.org">GTK+</a> &#x2265; 2.4.10 (required up
+  to version <b>0.6.5</b>, optional starting from <b>0.7.0</b>
+  for the GTK+ backend)</li>
+
+  <li><a href="http://gmetadom.sourceforge.net">GMetaDOM</a> &#x2265;
+    0.1.8 (required for versions up to and including <b>0.6.1</b>,
+    optional starting from <b>0.6.2</b> for the GMetaDOM frontend)</li>
+
+  <li><a href="old-download.html">miniDOM</a> is not supported anymore
+    and won't work with gtkmathview &#x2265; <b>0.4.<em>x</em></b>.  As
+    of now, the latest GMetaDOM version that works with gtkmathview
+    <b>0.3.<em>x</em></b> is
+    <b>0.0.3c</b>.  </li>
+
+  <li><a href="http://xmlsoft.org/">libxml</a> &#x2265; 2.0.0 (required
+    for versions up to <b>0.6.2</b>, then only if the libxml2 and
+    libxml2 reader frontend) </li>
+
+  <li><a
+    href="ftp://sunsite.unc.edu/pub/Linux/libs/graphics/">t1lib</a>
+    &#x2265; 5 (required for the GTK+ backend if you plan to use Type 1
+    fonts and anti-aliasing). RPM packages for t1lib can be found at
+    <a
+    href="http://www.math.unl.edu/~rdieter1/Software/Linux/apps/gtkmathview/">Didier's
+    page for GtkMathView</a>.  </li>
+
+</ul>
+<p>
+Further information can be found in the <a href="gtkmathview.html">GtkMathView reference manual</a> (included in
+the source distribution).
+</p>
+
+<h3 id="cvs" class="reverse">CVS</h3>
+
+<p>
+The source code is available on the <a
+href="http://cvs.gnome.org/">GNOME</a> CVS repository, the module name
+is <code>gtkmathview</code>:
+</p>
+
+<table style="text-align: center;" border="1">
+  <tr>
+    <th>CVSROOT</th>
+    <th>access</th>
+  </tr>
+  <tr>
+    <td><code>:pserver:anonymous@anoncvs.gnome.org:/cvs/gnome</code></td>
+    <td>read-only</td>
+  </tr>
+  <tr>
+    <td><code>:pserver:<em>username</em>@cvs.gnome.org:/cvs/gnome</code></td>
+    <td>read-write</td>
+  </tr>
+  <tr>
+    <td><code>:extssh:<em>username</em>@cvs.gnome.org:/cvs/gnome</code></td>
+    <td>read-write</td>
+  </tr>
+</table>
+
+<p>
+You can also browse the content of the repository online <a
+href="http://cvs.gnome.org/viewcvs/gtkmathview/">here (ViewCVS)</a>.
+</p>
+
+<p>
+Currently there are four active branches of the CVS repository. The
+<b>no-edit</b> branch refers to the <b>0.3.x</b> versions. It can compile
+with both GMetaDOM and minidom, it does not support editing, but it is
+probably the most accurate one w.r.t. PostScript rendering. The <b>pre_v0_4_2</b>
+branch refers to the <b>0.4.x</b> versions, it supports editing and it is
+based on GTK 1.2.  The <b>gtk2_patches</b> branch has been forked off
+tag <b>v0_5_0</b> and refers to the GTK2 version with the <b>0.4.x</b>
+architecture.
+The main trunk of the repository is the main development
+trunk.
+</p>
+
+<h3 class="reverse" id="projects">projects</h3>
+
+<p>
+
+The following are known projects and/or people using (or going to use)
+GtkMathView or the applications coming along the source package. If
+you're not listed here, please e-mail me!
+
+</p><ul>
+  <li>
+    <a href="http://sylpheed-claws.sourceforge.net/">Sylpheed-Claws</a>
+    provides a plugin for MathML that uses GtkMathView. Check
+    out the <a href="http://sylpheed-claws.sourceforge.net/features.php">features section</a>.
+  </li>
+  <li>
+    <a href="http://numerator.sourceforge.net">gNumerator</a>
+    uses ideas and technology from GtkMathView.
+  </li>
+  <li><a href="http://helm.cs.unibo.it/">The HELM Project</a>, uses GtkMathView
+    for rendering mathematical proofs.
+  </li>
+  <li><a href="http://mathshield.sourceforge.net/">MathShield</a>, a GTK-Perl Math Interface</li>
+  <li><a href="http://citrus.sourceforge.net/">Citrus</a>, a number/unit conversion utility</li>
+
+  <li>John Wiley &amp; Sons, Inc. publisher, uses GtkMathView for
+    rendering MathML to bitmap images in the <a
+    href="http://www.mrw.interscience.wiley.com/epst/index.html">Encyclopedia
+    of Polymer Science and Technology</a> as well as in several other
+    encyclopedias and textbooks.</li>
+
+  <li>
+    <a
+    href="http://www.math.mcgill.ca/%7Edrew/mathmlrender/">mathmlrender</a>,
+    an extension for PHP4 allowing a PHP script to read a MathML
+    document and render it as an image in a standard format. Formats
+    currently supported are PNG and JPEG.  </li>
+
+</ul>
+
+<p>
+
+</p><h3 class="reverse" id="examples">examples &amp; screenshots</h3>
+
+<p>
+
+</p><ul>
+  <li>rotated SVG output of MathML as rendered by <a href="http://www.sodipodi.com/">Sodipodi</a> [<a href="screenshots/svg.png">.png</a>]</li>
+  <li>support for Computer Modern fonts, support for ligatures. There is no Sans Serif Bold Italic font, the screenshot
+    shows the best-match algorithm of GtkMathView in action. [<a href="screenshots/font.png">.png</a>]</li>
+  <li>tentative SVG logo for MathML to SVG converter [<a href="screenshots/svgmathml.png">.png</a>]</li>
+  <li>AbiMathView plugin rendering a MathML fragment embedded in <a href="http://www.abisource.com/">AbiWord</a> documents) [<a href="screenshots/abiword.png">.png</a>]</li>
+  <li>Type 1 shaper in GTK+ windows with the t1lib library [<a href="screenshots/t1lib.png">.png</a>]</li>
+  <li>Pango shaper in GTK+ windows [<a href="screenshots/pango.png">.png</a>]</li>
+  <li><a href="test1.xml">test1.xml</a>, old screenshot with X fonts [<a href="test1.png">.png</a>]</li>
+  <li><a href="test4.xml">test4.xml</a>, old screenshot with X fonts [<a href="test4.png">.png</a>]</li>
+  <li><a href="test5.xml">test5.xml</a>, old screenshot with X fonts [<a href="test5.png">.png</a>]</li>
+</ul>
+
+<p>
+
+<b>Warning</b>: you may notice some differences between the rendering
+of GtkMathView and the screenshots above. This is primarily due to the
+actual fonts installed on your system. Note also that some fonts are
+buggy, that is they have wrong/strange metrics for some symbols. In
+particular, the <tt>symbol</tt> font (75dpi) usually shipped with
+Unix/Linux has a buggy vertical bar for the integral sign, so that
+large integrals have the middle part misaligned.
+
+</p><p>
+
+</p>
+</td>
+<td style="width: 200px;" class="framed" valign="top">
+
+<div class="center">
+<a href="svg.png">
+<img src="svg-small.png" alt="MathML rendered to SVG"/>
+</a>
+<div class="small">&#x21e7;MathML rendered to SVG</div>
+<br />
+<div class="small">&#x21e9;AbiMathView plugin at work</div>
+<a href="abiword.png">
+<img src="abiword-small.png" alt="AbiMathView plugin at work"/>
+</a>
+</div>
+
+<h3 class="reverse">news</h3>
+
+ <dl class="compact">
+   <dt>May 31, 2005</dt>
+   <dd>
+    Release of version <b>0.7.0</b> (tag <b>v0_7_0</b>). This is a major release
+    with many new features, including support for SVG output, improved support
+    for Computer Modern fonts, high-quality rendering, TrueType fonts, and much more.
+    Check the mailing list archives for the full announcement, and make sure to have
+    a look at the screenshots in the dedicated section at the bottom of this page.
+   </dd>
+   
+   <dt>Apr 22, 2005</dt>
+   <dd>
+    Release of version <b>0.6.5</b> (tag <b>v0_6_5</b>). Support for
+    MathML tables has been partially restored. Labeled rows and alignment
+    don't work, but the current implementation should cover most of
+    the common table usages. Support for Computer Modern Type 1 fonts using <tt>t1lib</tt>
+    is also being developed, although it is still unstable and hence disabled
+    by default.
+   </dd>
+
+   <dt>Nov 10, 2004</dt>
+   <dd>
+     Release of version <b>0.6.4</b> (tag <b>v0_6_4</b>). This is mostly
+     a bug-fix release, especially for the GTK+ interface. In addition,
+     the configuration file has changed name, it is now called
+     <tt>gtkmathview.conf.xml</tt>.
+   </dd>
+
+   <dt>Jun 30, 2004</dt>
+   <dd>
+     The slides of my talk at <a href="http://2004.guadec.org">GUADEC 2004</a>
+     about GtkMathView are available online
+     [<a href="http://www.cs.unibo.it/%7Elpadovan/talks/guadec2004.pdf">.pdf</a>]
+   </dd>
+
+   <dt>Jun 18, 2004</dt>
+   <dd>
+     Release of version <b>0.6.3</b> (tag <b>v0_6_3</b>). The main
+     improvements are:
+     <ul class="compact">
+       <li>implemented the custom_ and libxml2_ reader interfaces in the widget API</li>
+       <li>implemented read from in-memory buffer for gmetadom and libxml2 frontends (thanks Shuying Wang)</li>
+       <li>fixed a few bugs related to the cursor and selections</li>
+       <li>removed margin around the formula, which causes problems when
+         the widget is embedded
+       </li>
+       <li>added a test program that shows how to embed gtkmathview inside
+         a GtkTextView widget (the test uses the plain libxml2 frontend)
+       </li>
+       <li>fixed bugs in fixed-point arithmetics that cause wrong
+         alignment of formulas with respect to surrounding text</li>
+     </ul>
+   </dd>
+
+   <dt>May 22, 2004</dt>
+   <dd>
+     Release of version <b>0.6.2</b> (tag <b>v0_6_2</b>). The main
+     improvements are:
+     <ul class="compact">
+       <li><em>Frontends:</em> Taking
+     advantage of the renewed architecture I have implemented 3 more 
+     frontends in addition to the one using GMetaDOM. GtkMathView is now
+     able to read MathML documents accessible via GMetaDOM, libxml2,
+     the libxml2 reader and also a customizable reader for which a
+     C API is provided. In other words, GtkMathView is not tied to
+     GMetaDOM anymore, plain libxml2 trees can be used, and also GtkMathView
+     can read application-specific encodings of MathML documents. We
+     plan to exploit this feature to read OCaml data structures directly,
+     without passing through a DOM representation.<br/>
+     The 4 frontends are completely unrelated and they can be compiled
+     in isolation.
+       </li>
+       <li><em>Library modularization:</em> GtkMathView is now compiled into
+         several libraries: <tt>libmathview</tt> (frontend independent
+	 rendering engine for MathML and BoxML); <tt>libmathview_frontent_*</tt>
+	 (one library for each supported frontend);
+	 <tt>libgtkmathview_*</tt> (GTK+ API, one for each supported
+	 frontend).
+       </li>
+       <li><em>Cursor:</em>
+         I have introduced an API for handling a cursor, which can
+         be displayed as the combination of a focus and/or a caret.
+	 The implementation is not completely bug-free, but it is
+	 already usable. Those willing to develop
+	 direct-manipulation editors of MathML markup should have
+	 something to experiment with. The <tt>mathmlviewer</tt>
+	 test program has been modified so as to set the cursor
+	 to the clicked element.
+       </li>
+       <li><em>Optional BoxML:</em>
+         Support for the BoxML markup has been made optional.
+       </li>
+       <li><em>Lighter GTK+ implementation:</em>
+         GtkMathView now extends the
+         GtkWidget class directly (not GtkEventBox as before) and
+	 uses no more a GtkDrawingArea for painting, but draws directly
+	 in its own window.
+       </li>
+       <li>Some code and API cleanup.
+       </li>
+     </ul>
+   </dd>
+
+   <dt>Apr 24, 2004</dt>
+   <dd>
+     Release of version <b>0.6.1</b> (tag <b>v0_6_1</b>). This is another
+     development release for gtkmathview, which introduces
+     a totally redesigned "frontend" for the widget. Starting from this
+     version, the frontend is completely decoupled from the formatting
+     engine and it is thus much easier to feed gtkmathview with MathML
+     documents available by means other than gmetadom. See the
+     announcement on the mailing list for more details.
+   </dd>
+
+   <dt>Apr 07, 2004</dt>
+   <dd>
+     Released version <b>0.5.3</b> (tag <b>v0_5_3</b>). This closes
+     the bug referred to in <a href="http://www.cs.unibo.it/cgi-bin/mailman/private/gtkmathview/2003-August/000241.html">this email</a> on the mailing list.
+   </dd>
+
+   <dt>Feb 24, 2004</dt>
+   <dd>
+    Release of version <b>0.6.0</b> (tag <b>v0_6_0</b>). This is a major
+    rewrite of most code of the widget which now implements the architecture
+    described in my thesis. Although many features which were previously
+    implemented are missing in this version (PostScript support and MathML tables),
+    I felt too much time had passed
+    since the last release and people working at porting and using gtkmathview
+    might find more convenient to have a recent snapshot to look at.
+   </dd>
+
+   <dt>Feb 14, 2004</dt>
+   <dd>
+     The new mailing list is set up. Check it <a href="http://www.cs.unibo.it/cgi-bin/mailman/listinfo/gtkmathview">here</a>.
+   </dd>
+
+</dl>
+
+<hr/>
+
+<p style="text-align: center; font-size: small;">
+[<a href="news.html">older news</a>]
+</p>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

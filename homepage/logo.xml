@@ -1,0 +1,20 @@
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+<mstyle mathcolor="#005a9c60">
+ <mrow>
+  <mstyle mathbackground="#005a9c60">
+  <mpadded lspace="0.1em" width="+0.2em" height="+0.1em" depth="+0.1em">
+  <mi mathcolor="white" mathvariant="bold-sans-serif">Gtk</mi>
+  </mpadded>
+  </mstyle>
+  <msub>
+    <mi mathcolor="#005a9c" mathvariant="bold-sans-serif">Math</mi>
+    <mi mathvariant="sans-serif">ML</mi>
+  </msub>
+  <mspace width="-0.2em"/>
+  <msub>
+    <mi mathcolor="#005a9c" mathvariant="bold-sans-serif">View</mi>
+    <mn mathvariant="sans-serif">0.7.0</mn>
+  </msub>
+ </mrow>
+</mstyle>
+</math>
