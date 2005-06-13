@@ -1,0 +1,13 @@
+# This is a comment
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datadir=@datadir@
+
+Name: GtkMathView
+Description: MathML rendering engine (SVG backend)
+Version: @VERSION@
+Requires: glib-2.0 mathview-core
+Libs: -L${libdir} -lmathview_backend_svg
+Cflags: -I${includedir}/@PACKAGE@

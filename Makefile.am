@@ -18,9 +18,9 @@ SUBDIRS = scripts config auto src doc $(MAYBE_GTK_SUBDIRS) $(MAYBE_SVG_SUBDIRS)
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = $(NULL)
+pkgconfig_DATA = mathview.pc
 if COND_LIBXML2
-pkgconfig_DATA += mathview-libxml2.pc gtkmathview-libxml2.pc
+pkgconfig_DATA += mathview-frontend-libxml2.pc gtkmathview-libxml2.pc
 endif
 if COND_LIBXML2_READER
 pkgconfig_DATA += gtkmathview-libxml2-reader.pc
@@ -30,6 +30,9 @@ pkgconfig_DATA += gtkmathview-custom-reader.pc
 endif
 if COND_GMETADOM
 pkgconfig_DATA += gtkmathview-gmetadom.pc
+endif
+if COND_SVG
+pkgconfig_DATA += mathview-backend-svg.pc
 endif
 
 SCRIPTDIR = ./scripts

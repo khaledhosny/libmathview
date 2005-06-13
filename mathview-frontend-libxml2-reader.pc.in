@@ -1,0 +1,14 @@
+# This is a comment
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datadir=@datadir@
+
+Name: MathView
+Description: MathML rendering engine (libxml2 reader frontend)
+Version: @VERSION@
+Requires: glib-2.0 libxml-2.0 mathview-core
+Libs: @XML_LIBS@ -L${libdir} -lmathview_frontend_libxml2_reader
+Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@
+

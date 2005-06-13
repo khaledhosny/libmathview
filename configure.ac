@@ -185,7 +185,6 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LN_S
 AC_ISC_POSIX
-AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -229,25 +228,25 @@ AC_SUBST(GTKMATHVIEW_SIZEOF_LONG, "$ac_cv_sizeof_unsigned_long")
 AC_SUBST(GTKMATHVIEW_SIZEOF_LONG_LONG, "$ac_cv_sizeof_unsigned_long_long")
 AC_SUBST(GTKMATHVIEW_SIZEOF_WCHAR_T, "$ac_cv_sizeof_wchar_t")
 
+AC_LANG_PUSH(C++)
 
 dnl Check for iconv with const pointer as second argument
-AC_MSG_CHECKING(whether iconv has a const argument)
-AC_LANG_PUSH(C++)
-AC_TRY_COMPILE(
-	[#include <iconv.h>],
-	[
-		const char* inbuf;
-		iconv_t     cd;
-		iconv(cd, &inbuf, 0, 0, 0);
-	],
-	[
-		AC_DEFINE(ICONV_CONST,1,[Define to 1 if iconv has a const second argument])
-		AC_MSG_RESULT(yes)
-	],
-	[
-		AC_MSG_RESULT(no)
-	]
-)
+dnl AC_MSG_CHECKING(whether iconv has a const argument)
+dnl AC_TRY_COMPILE(
+dnl 	[#include <iconv.h>],
+dnl 	[
+dnl 		const char* inbuf;
+dnl 		iconv_t     cd;
+dnl 		iconv(cd, &inbuf, 0, 0, 0);
+dnl 	],
+dnl 	[
+dnl 		AC_DEFINE(ICONV_CONST,1,[Define to 1 if iconv has a const second argument])
+dnl 		AC_MSG_RESULT(yes)
+dnl 	],
+dnl 	[
+dnl 		AC_MSG_RESULT(no)
+dnl 	]
+dnl )
 
 AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
@@ -321,41 +320,41 @@ if test $HAVE_XSLTPROC = "no"; then
 fi
 AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
 
-AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
-if test $HAVE_ICONV = "yes"; then
-	if iconv -t UTF-8 -f UTF-8 </dev/null >/dev/null 2>&1; then
-		ICONV_UTF8="UTF-8"
-	else
-		AC_MSG_WARN(UTF-8 to UTF-8 is not supported. This may result in failed assertions)
-		ICONV_UTF8="UTF-8"
-	fi
+dnl AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
+dnl if test $HAVE_ICONV = "yes"; then
+dnl 	if iconv -t UTF-8 -f UTF-8 </dev/null >/dev/null 2>&1; then
+dnl 		ICONV_UTF8="UTF-8"
+dnl 	else
+dnl 		AC_MSG_WARN(UTF-8 to UTF-8 is not supported. This may result in failed assertions)
+dnl 		ICONV_UTF8="UTF-8"
+dnl 	fi
 
-	if iconv -t UCS-4BE -f UCS-4BE </dev/null >/dev/null 2>&1; then
-		ICONV_UCS4BE="UCS-4BE"
-	elif iconv -t UCS-4 -f UCS-4 </dev/null >/dev/null 2>&1; then
-		AC_MSG_WARN(assuming that iconv UCS-4 is bigendian)
-		ICONV_UCS4BE="UCS-4"
-	else
-		AC_MSG_WARN(UCS-4 to UCS-4 is not supported. This may result in failed assertions)
-		ICONV_UCS4BE="UCS-4"
-	fi
+dnl 	if iconv -t UCS-4BE -f UCS-4BE </dev/null >/dev/null 2>&1; then
+dnl 		ICONV_UCS4BE="UCS-4BE"
+dnl 	elif iconv -t UCS-4 -f UCS-4 </dev/null >/dev/null 2>&1; then
+dnl 		AC_MSG_WARN(assuming that iconv UCS-4 is bigendian)
+dnl 		ICONV_UCS4BE="UCS-4"
+dnl 	else
+dnl 		AC_MSG_WARN(UCS-4 to UCS-4 is not supported. This may result in failed assertions)
+dnl 		ICONV_UCS4BE="UCS-4"
+dnl 	fi
 
-	if iconv -t UCS-4LE -f UCS-4LE </dev/null >/dev/null 2>&1; then
-		ICONV_UCS4LE="UCS-4LE"
-	else
-		ICONV_UCS4LE="no"
-	fi
-else
-	AC_MSG_WARN(iconv not found. Assuming that UTF-8 and UCS-4 exist. This may result in failed assertions)
-	ICONV_UTF8="UTF-8"
-	ICONV_UCS4BE="UCS-4"
-	ICONV_UCS4LE="no"
-fi
-AC_DEFINE_UNQUOTED(ICONV_UTF8, "$ICONV_UTF8", iconv UTF-8 encoding)
-AC_DEFINE_UNQUOTED(ICONV_UCS4BE, "$ICONV_UCS4BE", iconv UCS-4 encoding big endian)
-if test $ICONV_UCS4LE != "no"; then
-	AC_DEFINE_UNQUOTED(ICONV_UCS4LE, "$ICONV_UCS4LE", iconv UCS-4 encoding little endian)
-fi
+dnl 	if iconv -t UCS-4LE -f UCS-4LE </dev/null >/dev/null 2>&1; then
+dnl 		ICONV_UCS4LE="UCS-4LE"
+dnl 	else
+dnl 		ICONV_UCS4LE="no"
+dnl 	fi
+dnl else
+dnl 	AC_MSG_WARN(iconv not found. Assuming that UTF-8 and UCS-4 exist. This may result in failed assertions)
+dnl 	ICONV_UTF8="UTF-8"
+dnl 	ICONV_UCS4BE="UCS-4"
+dnl 	ICONV_UCS4LE="no"
+dnl fi
+dnl AC_DEFINE_UNQUOTED(ICONV_UTF8, "$ICONV_UTF8", iconv UTF-8 encoding)
+dnl AC_DEFINE_UNQUOTED(ICONV_UCS4BE, "$ICONV_UCS4BE", iconv UCS-4 encoding big endian)
+dnl if test $ICONV_UCS4LE != "no"; then
+dnl 	AC_DEFINE_UNQUOTED(ICONV_UCS4LE, "$ICONV_UCS4LE", iconv UCS-4 encoding little endian)
+dnl fi
 
 dnl Checks for libraries
 AC_CHECK_LIB(iberty, getopt_long,
@@ -531,7 +530,13 @@ AC_CONFIG_FILES([
  viewer/Makefile
  mathmlsvg/Makefile
  doc/Makefile
- mathview-libxml2.pc
+ mathview-core.pc
+ mathview-frontend-custom-reader.pc
+ mathview-frontend-libxml2-reader.pc
+ mathview-frontend-libxml2.pc
+ mathview-frontend-gmetadom.pc
+ mathview-backend-svg.pc
+ mathview-backend-gtk.pc
  gtkmathview-custom-reader.pc
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc

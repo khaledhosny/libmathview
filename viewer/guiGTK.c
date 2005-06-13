@@ -739,6 +739,7 @@ create_widget_set()
   main_area = gtk_math_view_new(NULL, NULL);
   gtk_widget_show(main_area);
   gtk_container_add(GTK_CONTAINER(scrolled_area), main_area);
+  gtk_widget_set_double_buffered(main_area, FALSE);
 
   g_signal_connect(GTK_OBJECT (main_area),
 		   "select_begin", 

@@ -879,7 +879,7 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
 			     allocation->x, allocation->y,
 			     allocation->width, allocation->height);
 
-      gtk_math_view_paint(math_view);
+      //gtk_math_view_paint(math_view);
     }
 }
 

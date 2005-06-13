@@ -26,6 +26,7 @@ BUGS
   more appropriate to draw it just after the glyph, especially
   for mo elements
 ? selecting the root <math> element does not show selection
++ numalign="left" doesn't work in mfrac
 
 ARCH IMPROVEMENTS
 

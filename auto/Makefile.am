@@ -57,8 +57,12 @@ token.def: token-list.xml list-to-def.xsl
 endif
 
 config.dirs: Makefile
-	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@
-	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@
+	( \
+	if test ! \( -e $@ \); then \
+	  echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@; \
+	  echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@; \
+	fi \
+	)
 
 Char.hh: $(top_builddir)/auto/Char.hh.in
 	( \

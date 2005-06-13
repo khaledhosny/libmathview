@@ -33,7 +33,6 @@ libmathview_backend_svg_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libmathview_backend_svg_la_SOURCES = \
   SVG_AreaFactory.hh \
   SVG_Backend.cc \
-  SVG_Backend.hh \
   SVG_BackgroundArea.cc \
   SVG_BackgroundArea.hh \
   SVG_ColorArea.cc \
@@ -43,9 +42,7 @@ libmathview_backend_svg_la_SOURCES = \
   SVG_MathGraphicDevice.cc \
   SVG_MathGraphicDevice.hh \
   SVG_RenderingContext.cc \
-  SVG_RenderingContext.hh \
   SVG_StreamRenderingContext.cc \
-  SVG_StreamRenderingContext.hh \
   SVG_TFMGlyphArea.cc \
   SVG_TFMGlyphArea.hh \
   SVG_TTF_TFMGlyphArea.cc \
@@ -56,6 +53,13 @@ libmathview_backend_svg_la_SOURCES = \
   $(MAYBE_BOXML_H) \
   $(MAYBE_TFM_S) \
   $(MAYBE_TFM_H) \
+  $(NULL)
+
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  SVG_Backend.hh \
+  SVG_RenderingContext.hh \
+  SVG_StreamRenderingContext.hh \
   $(NULL)
 
 INCLUDES = \

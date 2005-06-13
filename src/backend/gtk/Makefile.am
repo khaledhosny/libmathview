@@ -32,7 +32,6 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_AdobeShaper.hh \
   Gtk_AreaFactory.hh \
   Gtk_Backend.cc \
-  Gtk_Backend.hh \
   Gtk_BackgroundArea.cc \
   Gtk_BackgroundArea.hh \
   Gtk_ColorArea.cc \
@@ -61,6 +60,11 @@ libmathview_backend_gtk_la_SOURCES = \
   $(MAYBE_BOXML_H) \
   $(MAYBE_T1_S) \
   $(MAYBE_T1_H) \
+  $(NULL)
+
+mathviewdir = $(pkgincludedir)/MathView
+mathview_HEADERS = \
+  Gtk_Backend.hh \
   $(NULL)
 
 #   Gtk_XftFontManager.cc
