@@ -8,10 +8,15 @@
 
 // General
 
-+ add SVG namespace and GtkMathView namespace to defs.h?
+* Priorities for the next minor release:
+* Make high-quality, nice to see rendering in Pango, for both Math and Box
+* Make the widget more robust (font management)
+
 + remove configuration field from gtkmathview class structure
 + pass Configuration to View constructor and initializes default font size
 + T1 CM shaper useful for SVG?
+? have callback functions to notify progress while building/formatting/etc?
+  these should not depend on the backend
 
 // AbiWord
 
