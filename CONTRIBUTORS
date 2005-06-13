@@ -1,4 +1,4 @@
-In alphabetical order:
+In no particular order:
 
 * John Pedersen, from John Wiley & Sons, Inc.
   for his detailed and constant feedback about high-quality rendering,
@@ -13,4 +13,16 @@ In alphabetical order:
 
 * Endre Somogyi
   for the porting of the widget to Windows (not yet completed).
+
+* Pouria Masoudi
+  porting to GTK2 and Bonobo Control for GtkMathView
+
+* Nathan Hurst
+  feedback for cursor API
+
+* Shuying Wang
+  read-from-buffer methods in widget and gmetadom frontend
+
+* Jean Brefort
+  patch for configure.ac and auto/Makefile.am
 
