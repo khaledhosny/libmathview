@@ -26,6 +26,7 @@
 
 #include "defs.h"
 #include <stdio.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -37,6 +38,9 @@ extern GdomeDOMString* find_hyperlink(GdomeElement*, const char*, const char*);
 extern GdomeElement* find_xref_element(GdomeElement*);
 extern GdomeElement* find_common_ancestor(GdomeElement*, GdomeElement*);
 extern GdomeElement* find_self_or_ancestor(GdomeElement*, const char*, const char*);
+extern GdomeElement* find_action_element(GdomeElement*);
+extern void action_toggle(GdomeElement*);
+extern void delete_element(GdomeElement*);
 
 static GtkWidget* window;
 static GtkWidget* main_area;
@@ -70,40 +74,41 @@ static void selection_reset(GtkWidget*, gpointer);
 static void help_about(GtkWidget*, gpointer);
 
 static GtkItemFactoryEntry menu_items[] = {
-  { "/_File",                          NULL,         NULL,          0, "<Branch>" },
-  { "/File/_Open...",                  "<control>O", file_open,     0, NULL },
-  { "/File/_Reopen",                   NULL,         file_re_open,  0, NULL },
-  { "/File/_Close",                    "<control>W", file_close,    0, NULL },
-  { "/File/sep1",                      NULL,         NULL,          0, "<Separator>" },
-  { "/File/_Quit",                     "<control>Q", gtk_main_quit, 0, NULL },
+  { "/_File",                          NULL,         NULL,          0, "<Branch>", 0 },
+  { "/File/_Open...",                  "<control>O", file_open,     0, NULL, 0 },
+  { "/File/_Reopen",                   NULL,         file_re_open,  0, NULL, 0 },
+  { "/File/_Close",                    "<control>W", file_close,    0, NULL, 0 },
+  { "/File/sep1",                      NULL,         NULL,          0, "<Separator>", 0 },
+  { "/File/_Quit",                     "<control>Q", gtk_main_quit, 0, NULL, 0 },
 
-  { "/_Selection",                     NULL, NULL,                  0,  "<Branch>" },
-  { "/Selection/Reset",                NULL, selection_reset,       0, NULL },
-  { "/Selection/Delete",               NULL, selection_delete,      0, NULL },
-  { "/Selection/Select Parent",        NULL, selection_parent,      0, NULL },
+  { "/_Selection",                     NULL, NULL,                  0,  "<Branch>", 0 },
+  { "/Selection/Reset",                NULL, selection_reset,       0, NULL, 0 },
+  { "/Selection/Delete",               NULL, selection_delete,      0, NULL, 0 },
+  { "/Selection/Select Parent",        NULL, selection_parent,      0, NULL, 0 },
 
-  { "/_Options",                       NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Default _Font Size",     NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Default Font Size/Set...", NULL, options_set_font_size, 0,  NULL },
-  { "/Options/Default Font Size/sep1", NULL, NULL,                  0,  "<Separator>" },
-  { "/Options/Default Font Size/Larger", "<control>2", options_change_font_size, TRUE, NULL },
-  { "/Options/Default Font Size/Smaller", "<control>1", options_change_font_size, FALSE, NULL },
-  { "/Options/Verbosity",              NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Verbosity/_Errors",      NULL, options_verbosity,     0,  "<RadioItem>" },
-  { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors" },
-  { "/Options/Verbosity/_Info",        NULL, options_verbosity,     2,  "/Options/Verbosity/Errors" },
-  { "/Options/Verbosity/_Debug",       NULL, options_verbosity,     3,  "/Options/Verbosity/Errors" },
-  { "/Options/Type 1",                 NULL, NULL,                  0,  "<Branch>" },
-  { "/Options/Type 1/_Transparent",    NULL, options_transparent,   TRUE,  "<CheckItem>" },
-  { "/Options/Type 1/_Anti Aliased",   NULL, options_anti_aliased,  0,  "<CheckItem>" },
-  { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>" },
-  { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>" },
-  { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure" },
+  { "/_Options",                       NULL, NULL,                  0,  "<Branch>", 0 },
+  { "/Options/Default _Font Size",     NULL, NULL,                  0,  "<Branch>", 0 },
+  { "/Options/Default Font Size/Set...", NULL, options_set_font_size, 0,  NULL, 0 },
+  { "/Options/Default Font Size/sep1", NULL, NULL,                  0,  "<Separator>", 0 },
+  { "/Options/Default Font Size/Larger", "<control>2", options_change_font_size, TRUE, NULL, 0 },
+  { "/Options/Default Font Size/Smaller", "<control>1", options_change_font_size, FALSE, NULL, 0 },
+  { "/Options/Verbosity",              NULL, NULL,                  0,  "<Branch>", 0 },
+  { "/Options/Verbosity/_Errors",      NULL, options_verbosity,     0,  "<RadioItem>", 0 },
+  { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors", 0 },
+  { "/Options/Verbosity/_Info",        NULL, options_verbosity,     2,  "/Options/Verbosity/Errors", 0 },
+  { "/Options/Verbosity/_Debug",       NULL, options_verbosity,     3,  "/Options/Verbosity/Errors", 0 },
+  { "/Options/Type 1",                 NULL, NULL,                  0,  "<Branch>", 0 },
+  { "/Options/Type 1/_Transparent",    NULL, options_transparent,   TRUE,  "<CheckItem>", 0 },
+  { "/Options/Type 1/_Anti Aliased",   NULL, options_anti_aliased,  0,  "<CheckItem>", 0 },
+  { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>", 0 },
+  { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>", 0 },
+  { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure", 0 },
 
-  { "/_Help" ,        NULL,         NULL,          0, "<LastBranch>" },
-  { "/Help/About...", NULL,         help_about,    0, NULL }
+  { "/_Help" ,        NULL,         NULL,          0, "<LastBranch>", 0 },
+  { "/Help/About...", NULL,         help_about,    0, NULL, 0 }
 };
 
+#if 0
 static void
 quick_message(const char* msg)
 {
@@ -147,6 +152,7 @@ load_error_msg(const char* name)
   quick_message(msg);
   g_free(msg);
 }
+#endif
 
 void
 GUI_init(int* argc, char*** argv, char* title, guint width, guint height, gint logLevel)
@@ -181,8 +187,6 @@ GUI_uninit()
 int
 GUI_load_document(const char* name)
 {
-  GdomeException exc = 0;
-  GdomeElement* root;
   GtkMathView* math_view;
 
   g_return_val_if_fail(name != NULL, -1);
@@ -233,7 +237,7 @@ GUI_run()
 static void
 store_filename(GtkFileSelection* selector, GtkWidget* user_data)
 {
-  gchar* selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
+  const gchar* selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
   if (selected_filename != NULL)
     GUI_load_document(selected_filename);
 }
@@ -333,7 +337,7 @@ selection_parent(GtkWidget* widget, gpointer data)
   if (root_selected != NULL)
     {
       GdomeException exc = 0;
-      GdomeElement* parent = gdome_n_parentNode(root_selected, &exc);
+      GdomeElement* parent = (GdomeElement*) gdome_n_parentNode((GdomeNode*) root_selected, &exc);
       g_assert(exc == 0);
       gdome_el_unref(root_selected, &exc);
       g_assert(exc == 0);
@@ -574,7 +578,7 @@ select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
       while (root_selected != NULL && !gtk_math_view_select(math_view, root_selected))
 	{
-	  GdomeElement* new_root = gdome_el_parentNode(root_selected, &exc);
+	  GdomeElement* new_root = (GdomeElement*) gdome_el_parentNode(root_selected, &exc);
 	  g_assert(exc == 0);
 	  gdome_el_unref(root_selected, &exc);
 	  g_assert(exc == 0);
@@ -717,7 +721,6 @@ create_widget_set()
 {
   GtkWidget* main_vbox;
   GtkWidget* menu_bar;
-  GtkWidget* frame;
 
   main_vbox = gtk_vbox_new(FALSE, 1);
   gtk_container_border_width(GTK_CONTAINER(main_vbox), 1);
@@ -771,7 +774,7 @@ create_widget_set()
 		   G_CALLBACK(click),
 		   (gpointer) main_area);
 
-  cursor = gtk_math_view_decor_default_cursor_new(main_area);
+  cursor = gtk_math_view_decor_default_cursor_new(GTK_MATH_VIEW(main_area));
   g_timeout_add(500, cursor_blink, cursor);
 
   status_bar = gtk_statusbar_new();
@@ -787,7 +790,6 @@ get_main_menu()
 {
   GtkItemFactory* item_factory;
   GtkAccelGroup* accel_group;
-  GtkWidget* menu_item;
 
   gint nmenu_items = sizeof(menu_items) / sizeof(menu_items[0]);
 
