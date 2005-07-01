@@ -76,11 +76,16 @@ static VStretchyChar vMap[] =
 #define V_STRETCHY_INDEX 2
 #define MAPPED_BASE_INDEX 3
 
-Gtk_PangoShaper::Gtk_PangoShaper()
+Gtk_PangoShaper::Gtk_PangoShaper(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+  : Gtk_DefaultPangoShaper(l, conf)
 { }
 
 Gtk_PangoShaper::~Gtk_PangoShaper()
 { }
+
+SmartPtr<Gtk_PangoShaper>
+Gtk_PangoShaper::create(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+{ return new Gtk_PangoShaper(l, conf); }
 
 void
 Gtk_PangoShaper::registerShaper(const SmartPtr<class ShaperManager>& sm, unsigned shaperId)

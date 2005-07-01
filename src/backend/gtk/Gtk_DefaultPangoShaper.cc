@@ -31,11 +31,15 @@
 #include "MathGraphicDevice.hh"
 #include "ShapingContext.hh"
 
-Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper()
+Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper(const SmartPtr<AbstractLogger>&, const SmartPtr<Configuration>&)
 { }
 
 Gtk_DefaultPangoShaper::~Gtk_DefaultPangoShaper()
 { }
+
+SmartPtr<Gtk_DefaultPangoShaper>
+Gtk_DefaultPangoShaper::create(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+{ return new Gtk_DefaultPangoShaper(l, conf); }
 
 void
 Gtk_DefaultPangoShaper::registerShaper(const SmartPtr<class ShaperManager>&, unsigned)

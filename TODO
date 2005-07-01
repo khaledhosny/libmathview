@@ -35,6 +35,8 @@ BUGS
 
 ARCH IMPROVEMENTS
 
++ make pango text attributes configurable in the pango shapers
+  (what about boxml?)
 ? make GlyphStringArea a leaf-like area?
 - change the clone method for areas so that it checks if the
   content is unchanged, and possibly implement the replace this

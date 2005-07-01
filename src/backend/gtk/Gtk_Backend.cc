@@ -68,7 +68,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   std::multimap<int, SmartPtr<Shaper> > shaperSet;
   if (conf->getBool(l, "gtk-backend/pango-default-shaper/enabled", true))
     {
-      SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create();
+      SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create(l, conf);
       defaultPangoShaper->setPangoContext(context);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-default-shaper/priority", 0), defaultPangoShaper));
     }
@@ -80,7 +80,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 
   if (conf->getBool(l, "gtk-backend/pango-shaper/enabled", false))
     {
-      SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create();
+      SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create(l, conf);
       pangoShaper->setPangoContext(context);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-shaper/priority", 0), pangoShaper));
     }

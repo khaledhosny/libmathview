@@ -30,12 +30,11 @@
 class Gtk_PangoShaper : public Gtk_DefaultPangoShaper
 {
 protected:
-  Gtk_PangoShaper(void);
+  Gtk_PangoShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
   virtual ~Gtk_PangoShaper();
 
 public:
-  static SmartPtr<Gtk_PangoShaper> create(void)
-  { return new Gtk_PangoShaper(); }
+  static SmartPtr<Gtk_PangoShaper> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
