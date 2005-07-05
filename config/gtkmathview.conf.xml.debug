@@ -166,8 +166,8 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <section name="pango-default-shaper">
       <key name="enabled">true</key>
       <key name="priority">0</key>
-<!--
       <section name="variants">
+<!--
 	<section name="normal">
 	  <key name="family">monospace</key>
 	</section>
@@ -175,14 +175,18 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
 	  <key name="family">monospace</key>
 	  <key name="style">normal</key>
 	</section>
-      </section>
 -->
+      </section>
     </section>
     <section name="space-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>
     <section name="pango-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="pango-computer-modern-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>

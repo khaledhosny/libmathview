@@ -39,6 +39,7 @@
 #include "Gtk_PangoFontManager.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
+#include "Gtk_PangoComputerModernShaper.hh"
 #include "Gtk_AdobeShaper.hh"
 #if HAVE_LIBT1
 #include "t1lib_T1FontManager.hh"
@@ -64,11 +65,12 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   setDevices(mgd, 0);
 #endif // ENABLE_BOXML
 
+  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper;
   GObjectPtr<PangoContext> context = gdk_pango_context_get();
   std::multimap<int, SmartPtr<Shaper> > shaperSet;
   if (conf->getBool(l, "gtk-backend/pango-default-shaper/enabled", true))
     {
-      SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper = Gtk_DefaultPangoShaper::create(l, conf);
+      defaultPangoShaper = Gtk_DefaultPangoShaper::create(l, conf);
       defaultPangoShaper->setPangoContext(context);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-default-shaper/priority", 0), defaultPangoShaper));
     }
@@ -91,6 +93,19 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
       SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
       adobeShaper->setFontManager(pangoFontManager);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/adobe-shaper/priority", 0), adobeShaper));
+    }
+
+  if (conf->getBool(l, "gtk-backend/pango-computer-modern-shaper/enabled", false))
+    {
+      if (defaultPangoShaper)
+	{
+	  SmartPtr<Gtk_PangoComputerModernShaper> pangoCMShaper = Gtk_PangoComputerModernShaper::create(l, conf);
+	  pangoCMShaper->setPangoShaper(defaultPangoShaper);
+	  shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-computer-modern-shaper/priority", 0),
+							    pangoCMShaper));
+	}
+      else
+	l->out(LOG_WARNING, "default Pango shaper must be enabled before Pango Computer Modern shaper");
     }
 
   if (conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/enabled", false))

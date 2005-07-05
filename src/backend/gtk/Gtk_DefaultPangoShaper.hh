@@ -70,6 +70,8 @@ protected:
   PangoLayout* createPangoLayout(const gchar*, glong, const scaled&, const PangoTextAttributes&) const;
   AreaRef shapeString(const class ShapingContext&, const gunichar*, unsigned) const;
 
+  friend class Gtk_PangoComputerModernShaper;
+
 private:
   PangoTextAttributes variantDesc[MONOSPACE_VARIANT - NORMAL_VARIANT + 1];
   GObjectPtr<PangoContext> context;
