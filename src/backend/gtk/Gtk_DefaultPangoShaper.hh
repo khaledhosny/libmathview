@@ -49,17 +49,29 @@ protected:
   struct PangoTextAttributes
   {
     MathVariant variant;
-    const gchar* family;
+    String family;
     PangoStyle style;
     PangoWeight weight;
   };
 
-  static const PangoTextAttributes& getTextAttributes(MathVariant);
+  struct DefaultPangoTextAttributes
+  {
+    const gchar* variant;
+    MathVariant variantId;
+    const gchar* family;
+    const gchar* style;
+    PangoStyle styleId;
+    const gchar* weight;
+    PangoWeight weightId;
+  };
+
+  const PangoTextAttributes& getTextAttributes(MathVariant) const;
   static const PangoTextAttributes& getDefaultTextAttributes(void);
   PangoLayout* createPangoLayout(const gchar*, glong, const scaled&, const PangoTextAttributes&) const;
   AreaRef shapeString(const class ShapingContext&, const gunichar*, unsigned) const;
 
 private:
+  PangoTextAttributes variantDesc[MONOSPACE_VARIANT - NORMAL_VARIANT + 1];
   GObjectPtr<PangoContext> context;
 };
 

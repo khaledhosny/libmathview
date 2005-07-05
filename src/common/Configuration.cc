@@ -63,7 +63,7 @@ Configuration::getString(const SmartPtr<AbstractLogger>& logger, const String& k
     return entry->getValue();
   else
     {
-      logger->out(LOG_WARNING, "missing `%s' key in configuration", key.c_str());
+      logger->out(LOG_INFO, "missing `%s' key in configuration", key.c_str());
       return def;
     }
 }
@@ -93,7 +93,7 @@ Configuration::getInt(const SmartPtr<AbstractLogger>& logger, const String& key,
     }
   else
     {
-      logger->out(LOG_WARNING, "missing `%s' key in configuration", key.c_str());
+      logger->out(LOG_INFO, "missing `%s' key in configuration", key.c_str());
       return def;
     }
 }
@@ -114,7 +114,7 @@ Configuration::getBool(const SmartPtr<AbstractLogger>& logger, const String& key
     }
   else
     {
-      logger->out(LOG_WARNING, "missing `%s' key in configuration", key.c_str());
+      logger->out(LOG_INFO, "missing `%s' key in configuration", key.c_str());
       return def;
     }
 }
@@ -135,7 +135,7 @@ Configuration::getRGBColor(const SmartPtr<AbstractLogger>& logger, const String&
     }
   else
     {
-      logger->out(LOG_WARNING, "missing `%s' key in configuration", key.c_str());
+      logger->out(LOG_INFO, "missing `%s' key in configuration", key.c_str());
       return def;
     }
 }

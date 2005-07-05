@@ -24,6 +24,7 @@
 
 #include <cassert>
 
+#include "Configuration.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_RenderingContext.hh"
@@ -31,8 +32,41 @@
 #include "MathGraphicDevice.hh"
 #include "ShapingContext.hh"
 
-Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper(const SmartPtr<AbstractLogger>&, const SmartPtr<Configuration>&)
-{ }
+Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration>& conf)
+{
+  static const DefaultPangoTextAttributes defaultVariantDesc[] =
+    {
+      { "normal", NORMAL_VARIANT, "Serif", "normal", PANGO_STYLE_NORMAL, "normal", PANGO_WEIGHT_NORMAL },
+      { "bold", BOLD_VARIANT, "Serif", "normal", PANGO_STYLE_NORMAL, "bold", PANGO_WEIGHT_BOLD },
+      { "italic", ITALIC_VARIANT, "Serif", "italic", PANGO_STYLE_ITALIC, "normal", PANGO_WEIGHT_NORMAL },
+      { "bold-italic", BOLD_ITALIC_VARIANT, "Serif", "italic", PANGO_STYLE_ITALIC, "bold", PANGO_WEIGHT_BOLD }, 
+      { "double-struck", DOUBLE_STRUCK_VARIANT, "Sans", "normal", PANGO_STYLE_NORMAL, "bold", PANGO_WEIGHT_BOLD },
+      { "bold-fraktur", BOLD_FRAKTUR_VARIANT, "Serif", "normal", PANGO_STYLE_NORMAL, "bold", PANGO_WEIGHT_BOLD },
+      { "script", SCRIPT_VARIANT, "Sans", "normal", PANGO_STYLE_NORMAL, "normal", PANGO_WEIGHT_NORMAL },
+      { "bold-script", BOLD_SCRIPT_VARIANT, "Sans", "normal", PANGO_STYLE_NORMAL, "bold", PANGO_WEIGHT_BOLD },
+      { "fraktur", FRAKTUR_VARIANT, "Serif", "normal", PANGO_STYLE_NORMAL,"bold",  PANGO_WEIGHT_BOLD },
+      { "sans-serif", SANS_SERIF_VARIANT, "Sans", "normal", PANGO_STYLE_NORMAL, "normal", PANGO_WEIGHT_NORMAL },
+      { "bold-sans-serif", BOLD_SANS_SERIF_VARIANT, "Sans", "normal", PANGO_STYLE_NORMAL, "bold", PANGO_WEIGHT_BOLD },
+      { "sans-serif-italic", SANS_SERIF_ITALIC_VARIANT, "Sans", "italic", PANGO_STYLE_ITALIC, "normal", PANGO_WEIGHT_NORMAL },
+      { "sans-serif-bold-italic", SANS_SERIF_BOLD_ITALIC_VARIANT, "Sans", "italic", PANGO_STYLE_ITALIC, "normal", PANGO_WEIGHT_NORMAL },
+      { "monospace", MONOSPACE_VARIANT, "Monospace", "normal", PANGO_STYLE_NORMAL, "normal", PANGO_WEIGHT_NORMAL }
+    };
+
+  const String baseKey = "gtk-backend/pango-default-shaper/variants/";
+  for (unsigned i = 0; i < sizeof(defaultVariantDesc) / sizeof(DefaultPangoTextAttributes); i++)
+    {
+      const String key = baseKey + defaultVariantDesc[i].variant;
+      const String family = conf->getString(logger, key + "/family", defaultVariantDesc[i].family);
+      const String style = conf->getString(logger, key + "/style", defaultVariantDesc[i].style);
+      const String weight = conf->getString(logger, key + "/weight", defaultVariantDesc[i].weight);
+      const PangoStyle pangoStyle = (style == "italic") ? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL;
+      const PangoWeight pangoWeight = (weight == "bold") ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
+      variantDesc[i].variant = defaultVariantDesc[i].variantId;
+      variantDesc[i].family = family;
+      variantDesc[i].style = pangoStyle;
+      variantDesc[i].weight = pangoWeight;
+    }
+}
 
 Gtk_DefaultPangoShaper::~Gtk_DefaultPangoShaper()
 { }
@@ -85,31 +119,31 @@ Gtk_DefaultPangoShaper::shapeString(const ShapingContext& context, const gunicha
 const Gtk_DefaultPangoShaper::PangoTextAttributes&
 Gtk_DefaultPangoShaper::getDefaultTextAttributes()
 {
-  static const PangoTextAttributes desc = { NORMAL_VARIANT, 0, PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL };
+  static const PangoTextAttributes desc = { NORMAL_VARIANT, "serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL };
   return desc;
 }
 
 const Gtk_DefaultPangoShaper::PangoTextAttributes&
-Gtk_DefaultPangoShaper::getTextAttributes(MathVariant variant)
+Gtk_DefaultPangoShaper::getTextAttributes(MathVariant variant) const
 {
   assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
-  static const PangoTextAttributes variantDesc[] =
-    {
-      { NORMAL_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
-      { BOLD_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-      { ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
-      { BOLD_ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_BOLD }, 
-      { DOUBLE_STRUCK_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-      { BOLD_FRAKTUR_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-      { SCRIPT_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
-      { BOLD_SCRIPT_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-      { FRAKTUR_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-      { SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
-      { BOLD_SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
-      { SANS_SERIF_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
-      { SANS_SERIF_BOLD_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
-      { MONOSPACE_VARIANT, "Monospace", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL }
-    };
+//   static const PangoTextAttributes variantDesc[] =
+//     {
+//       { NORMAL_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
+//       { BOLD_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+//       { ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
+//       { BOLD_ITALIC_VARIANT, "Serif", PANGO_STYLE_ITALIC, PANGO_WEIGHT_BOLD }, 
+//       { DOUBLE_STRUCK_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+//       { BOLD_FRAKTUR_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+//       { SCRIPT_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
+//       { BOLD_SCRIPT_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+//       { FRAKTUR_VARIANT, "Serif", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+//       { SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL },
+//       { BOLD_SANS_SERIF_VARIANT, "Sans", PANGO_STYLE_NORMAL, PANGO_WEIGHT_BOLD },
+//       { SANS_SERIF_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
+//       { SANS_SERIF_BOLD_ITALIC_VARIANT, "Sans", PANGO_STYLE_ITALIC, PANGO_WEIGHT_NORMAL },
+//       { MONOSPACE_VARIANT, "Monospace", PANGO_STYLE_NORMAL, PANGO_WEIGHT_NORMAL }
+//     };
   return variantDesc[variant - NORMAL_VARIANT];
 }
 
@@ -132,7 +166,7 @@ Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, con
 
 #if 1
   PangoFontDescription* fontDesc = pango_font_description_new();
-  if (attributes.family) pango_font_description_set_family_static(fontDesc, attributes.family);
+  if (!attributes.family.empty()) pango_font_description_set_family_static(fontDesc, attributes.family.c_str());
   if (attributes.weight != PANGO_WEIGHT_NORMAL) pango_font_description_set_weight(fontDesc, attributes.weight);
   if (attributes.style != PANGO_STYLE_NORMAL) pango_font_description_set_style(fontDesc, attributes.style);
   pango_font_description_set_size(fontDesc, size);
