@@ -174,7 +174,7 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x0000, 0x00 }
   };
 
-static Char8 cmmTTFMap[] =
+static UChar8 cmmTTFMap[] =
   {
     /* 0x00 */ 0xa1, // Gamma
     /* 0x01 */ 0xa2, // Delta
@@ -439,7 +439,7 @@ static ComputerModernShaper::PlainChar cmrMap[] =
     { 0x0000, 0x00 }
   };
 
-static Char8 cmrTTFMap[] =
+static UChar8 cmrTTFMap[] =
   {
     /* 0x00 */ 0xa1, // Gamma
     /* 0x01 */ 0xa2, // Delta
@@ -704,7 +704,7 @@ static ComputerModernShaper::PlainChar cmsMap[] =
     { 0x0000, 0x00 }
   };
 
-static Char8 cmsTTFMap[] =
+static UChar8 cmsTTFMap[] =
   {
     /* 0x00 */ 0xa1, // minus
     /* 0x01 */ 0xa2, // periodcentered
@@ -911,7 +911,7 @@ static ComputerModernShaper::HBigChar hbMap[] =
 #define OVER_BRACE_INDEX OVER_BRACE
 #define UNDER_BRACE_INDEX UNDER_BRACE
 
-static Char8 cmexTTFMap[] =
+static UChar8 cmexTTFMap[] =
   {
     /* 0x00 */ 0xa1, // parenleftbig
     /* 0x01 */ 0xa2, // parenrightbig
@@ -1061,7 +1061,7 @@ static FontDesc variantDesc[] =
     { MONOSPACE_VARIANT, ComputerModernFamily::FN_CMTT }
   };
 
-inline Char8
+inline UChar8
 makeFontId(ComputerModernFamily::FontEncId id, MathVariant variant = NORMAL_VARIANT)
 {
   assert(ComputerModernFamily::validFontEncId(id));
@@ -1070,17 +1070,17 @@ makeFontId(ComputerModernFamily::FontEncId id, MathVariant variant = NORMAL_VARI
 }
 
 inline ComputerModernFamily::FontEncId
-encIdOfFontId(Char8 id)
+encIdOfFontId(UChar8 id)
 { return ComputerModernFamily::FontEncId(id & 0x0f); }
 
 inline MathVariant
-variantOfFontId(Char8 id)
+variantOfFontId(UChar8 id)
 { return MathVariant((id >> 4) + NORMAL_VARIANT); }
 
-Char8
-ComputerModernShaper::toTTFGlyphIndex(ComputerModernFamily::FontEncId name, Char8 index)
+UChar8
+ComputerModernShaper::toTTFGlyphIndex(ComputerModernFamily::FontEncId name, UChar8 index)
 {
-  Char8* map = 0;
+  UChar8* map = 0;
   switch (name)
     {
     case ComputerModernFamily::FE_CMR:
@@ -1380,7 +1380,7 @@ ComputerModernShaper::getGlyphArea(MathVariant variant, const GlyphIndex& glyph,
 }
 
 AreaRef
-ComputerModernShaper::getGlyphArea(MathVariant variant, ComputerModernFamily::FontEncId encId, Char8 index, const scaled& size) const
+ComputerModernShaper::getGlyphArea(MathVariant variant, ComputerModernFamily::FontEncId encId, UChar8 index, const scaled& size) const
 {
   scaled finalSize = size;
   ComputerModernFamily::FontSizeId designSize;

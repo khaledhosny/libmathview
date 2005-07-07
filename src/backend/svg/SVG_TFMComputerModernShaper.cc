@@ -45,11 +45,11 @@ SVG_TFMComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
 AreaRef
 SVG_TFMComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,
 					  ComputerModernFamily::FontSizeId designSize,
-					  Char8 index, int size) const
+					  UChar8 index, int size) const
 { return SVG_TFMGlyphArea::create(getFont(fontNameId, designSize, size), index); }
 
 bool
-SVG_TFMComputerModernShaper::getGlyphData(const AreaRef& area, SmartPtr<TFMFont>& font, Char8& index) const
+SVG_TFMComputerModernShaper::getGlyphData(const AreaRef& area, SmartPtr<TFMFont>& font, UChar8& index) const
 {
   if (SmartPtr<const SVG_TFMGlyphArea> glyphArea = smart_cast<const SVG_TFMGlyphArea>(area))
     {

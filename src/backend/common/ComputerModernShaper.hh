@@ -54,7 +54,7 @@ public:
   struct GlyphIndex
   {
     signed char fontEnc;
-    Char8 index;
+    UChar8 index;
     bool valid(void) const
     { return ComputerModernFamily::validFontEncId(ComputerModernFamily::FontEncId(fontEnc)); }
   };
@@ -62,7 +62,7 @@ public:
   struct PlainChar
   {
     Char16 ch;
-    Char8  index;
+    UChar8  index;
   };
 
   struct HStretchyChar
@@ -90,13 +90,13 @@ public:
     GlyphIndex big[3];
   };
 
-  static Char8 toTTFGlyphIndex(ComputerModernFamily::FontEncId, Char8);
+  static UChar8 toTTFGlyphIndex(ComputerModernFamily::FontEncId, UChar8);
 
 protected:
   virtual void postShape(class ShapingContext&) const;
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
-			       ComputerModernFamily::FontSizeId, Char8, int) const = 0;
-  AreaRef getGlyphArea(MathVariant, ComputerModernFamily::FontEncId, Char8, const scaled&) const;
+			       ComputerModernFamily::FontSizeId, UChar8, int) const = 0;
+  AreaRef getGlyphArea(MathVariant, ComputerModernFamily::FontEncId, UChar8, const scaled&) const;
   AreaRef getGlyphArea(MathVariant, const GlyphIndex&, const scaled&) const;
 
   AreaRef shapeChar(const class ShapingContext&, ComputerModernFamily::FontEncId) const;

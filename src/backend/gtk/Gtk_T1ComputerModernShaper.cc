@@ -67,7 +67,7 @@ Gtk_T1ComputerModernShaper::getT1Font(ComputerModernFamily::FontNameId fontNameI
 AreaRef
 Gtk_T1ComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,
 					 ComputerModernFamily::FontSizeId designSize,
-					 Char8 index, int size) const
+					 UChar8 index, int size) const
 {
 
   assert(t1FontManager);

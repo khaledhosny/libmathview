@@ -37,8 +37,8 @@ public:
 
 protected:
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
-			       ComputerModernFamily::FontSizeId, Char8, int) const;
-  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const;
+			       ComputerModernFamily::FontSizeId, UChar8, int) const;
+  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, UChar8&) const;
 };
 
 #endif // __SVG_TFMComputerModernShaper_hh__

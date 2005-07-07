@@ -40,7 +40,7 @@ protected:
   virtual void postShape(class ShapingContext&) const;
   virtual SmartPtr<class TFMFont> getFont(ComputerModernFamily::FontNameId,
 					  ComputerModernFamily::FontSizeId, const scaled&) const;
-  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, Char8&) const = 0;
+  virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, UChar8&) const = 0;
 
 private:
   SmartPtr<class TFMFontManager> tfmFontManager;

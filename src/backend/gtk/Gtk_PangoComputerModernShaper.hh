@@ -40,7 +40,7 @@ public:
 
 protected:
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
-			       ComputerModernFamily::FontSizeId, Char8, int) const;
+			       ComputerModernFamily::FontSizeId, UChar8, int) const;
 
 private:
   SmartPtr<class Gtk_DefaultPangoShaper> pangoShaper;

@@ -40,7 +40,7 @@ public:
 protected:
   virtual AreaRef getGlyphArea(const SmartPtr<class AreaFactory>&, 
 			       ComputerModernShaper::FontMapId map,
-			       Char8 index, const scaled&) const;
+			       UChar8 index, const scaled&) const;
 
 private:
   SmartPtr<class Gtk_XftFontManager> xftFontManager;

@@ -38,7 +38,7 @@ public:
 
 protected:
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId, 
-			       ComputerModernFamily::FontSizeId, Char8, int) const;
+			       ComputerModernFamily::FontSizeId, UChar8, int) const;
 };
 
 #endif // __SVG_TTF_TFMComputerModernShaper_hh__

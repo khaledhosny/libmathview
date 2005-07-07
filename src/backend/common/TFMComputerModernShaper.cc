@@ -81,8 +81,8 @@ TFMComputerModernShaper::postShape(ShapingContext& context) const
 {
   if (context.nAreas() > 1)
     {
-      Char8 index1;
-      Char8 index2;
+      UChar8 index1;
+      UChar8 index2;
       SmartPtr<TFMFont> font1;
       SmartPtr<TFMFont> font2;
       if (getGlyphData(context.getArea(-2), font1, index1) && getGlyphData(context.getArea(-1), font2, index2))
@@ -90,8 +90,8 @@ TFMComputerModernShaper::postShape(ShapingContext& context) const
 	  if (font1 == font2)
 	    {
 	      const SmartPtr<TFM> tfm = font1->getTFM();
-	      Char8 newGlyph;
-	      Char8 ligatureMode;
+	      UChar8 newGlyph;
+	      UChar8 ligatureMode;
 	      scaled kerning;
 	      if (tfm->getGlyphLigature(index1, index2, newGlyph, ligatureMode))
 		{

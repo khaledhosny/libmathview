@@ -54,7 +54,7 @@ Gtk_PangoComputerModernShaper::getPangoShaper() const
 AreaRef
 Gtk_PangoComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,
 					    ComputerModernFamily::FontSizeId designSize,
-					    Char8 index, int size) const
+					    UChar8 index, int size) const
 {
   Gtk_DefaultPangoShaper::PangoTextAttributes attributes;
   attributes.variant = NORMAL_VARIANT;

@@ -41,7 +41,7 @@ protected:
   SmartPtr<class t1lib_T1Font> getT1Font(ComputerModernFamily::FontNameId,
 					 ComputerModernFamily::FontSizeId, const scaled&) const;
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
-			       ComputerModernFamily::FontSizeId, Char8, int) const;
+			       ComputerModernFamily::FontSizeId, UChar8, int) const;
 
 private:
   SmartPtr<class t1lib_T1FontManager> t1FontManager;
