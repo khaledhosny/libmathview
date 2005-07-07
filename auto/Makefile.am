@@ -56,11 +56,17 @@ token.def: token-list.xml list-to-def.xsl
 	$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
 endif
 
-config.dirs: Makefile
+.PHONY: config.dirs
+config.dirs:
 	( \
+	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@.maybe; \
+	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@.maybe; \
 	if test ! \( -e $@ \); then \
-	  echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@; \
-	  echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@; \
+	  mv $@.maybe $@; \
+        elif ! diff $@.maybe $@ >/dev/null; then \
+	  mv $@.maybe $@; \
+	else \
+	  rm $@.maybe; \
 	fi \
 	)
 
@@ -68,7 +74,7 @@ Char.hh: $(top_builddir)/auto/Char.hh.in
 	( \
 	if test ! \( -e $@ \); then \
 	  cp $< $@; \
-        elif ! diff $< $@; then \
+        elif ! diff $< $@ >/dev/null; then \
 	  cp $< $@; \
 	fi \
 	)

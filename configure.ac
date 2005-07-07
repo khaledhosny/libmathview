@@ -367,23 +367,23 @@ AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have
 
 AC_LANG([C])
 
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.2.3,,[AC_MSG_ERROR(could not fint GLIB)])
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.3],,[AC_MSG_ERROR(could not fint GLIB)])
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
 have_gtk="no"
 have_pango="no"
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
-  PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.4.10,
-    AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
-    [have_gtk="yes"],
-    AC_MSG_WARN([could not find GTK+]))
+  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.4.10],
+    [AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
+     have_gtk="yes"],
+    [AC_MSG_WARN([could not find GTK+])])
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
   PKG_CHECK_MODULES(PANGOX, pangox,
-    AC_DEFINE(HAVE_PANGO,1,[Define to 1 if Pango is installed])
-    [have_pango="yes"],
-    AC_MSG_WARN([could not find Pango]))
+    [AC_DEFINE(HAVE_PANGO,1,[Define to 1 if Pango is installed])
+     have_pango="yes"],
+    [AC_MSG_WARN([could not find Pango])])
   AC_SUBST(PANGOX_CFLAGS)
   AC_SUBST(PANGOX_LIBS)
 fi
@@ -393,10 +393,10 @@ AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "au
 AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
 
 have_libxml2="no"
-PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.0.0,
-  AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
-  have_libxml2="yes",
-  AC_MSG_WARN([could not find libxml2]))
+PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.0.0],
+  [AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
+   have_libxml2="yes"],
+  [AC_MSG_WARN([could not find libxml2])])
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 AM_CONDITIONAL([COND_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
@@ -404,11 +404,11 @@ AM_CONDITIONAL([COND_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o 
 
 have_gmetadom="no"
 if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
-  PKG_CHECK_MODULES(DOM, gdome2-cpp-smart >= 0.1.8,
-    AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 if gmetadom is installed])
-    have_gmetadom="yes",
-    AC_MSG_WARN([could not find GMetaDOM])
-    enable_gmetadom="no")
+  PKG_CHECK_MODULES(DOM, [gdome2-cpp-smart >= 0.1.8],
+    [AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 if gmetadom is installed])
+     have_gmetadom="yes"],
+    [AC_MSG_WARN([could not find GMetaDOM])]
+    [enable_gmetadom="no"])
   AC_SUBST(DOM_CFLAGS)
   AC_SUBST(DOM_LIBS)
 fi
