@@ -55,20 +55,20 @@ public:
 
   struct Kerning
   {
-    Char8 index;
+    UChar8 index;
     int value;
   };
 
   struct Ligature
   {
-    Char8 index;
-    Char8 mode;
-    Char8 result;
+    UChar8 index;
+    UChar8 mode;
+    UChar8 result;
   };
 
   struct Character
   {
-    Char8 index;
+    UChar8 index;
     int width;
     int height;
     int depth;
@@ -98,16 +98,16 @@ public:
   scaled getDimension(unsigned) const;
   scaled getDimension(const String&) const;
 
-  BoundingBox getGlyphBoundingBox(Char8) const;
-  scaled getGlyphItalicCorrection(Char8) const;
-  bool getGlyphKerning(Char8, Char8, scaled&) const;
-  bool getGlyphLigature(Char8, Char8, Char8&, Char8&) const;
+  BoundingBox getGlyphBoundingBox(UChar8) const;
+  scaled getGlyphItalicCorrection(UChar8) const;
+  bool getGlyphKerning(UChar8, UChar8, scaled&) const;
+  bool getGlyphLigature(UChar8, UChar8, UChar8&, UChar8&) const;
 
   float getScale(const scaled&) const;
 
 protected:
   static scaled scaledOfFIX(int);
-  const Character& getCharacter(Char8) const;
+  const Character& getCharacter(UChar8) const;
 
 private:
   const String name;

@@ -85,7 +85,7 @@ TFM::getDimension(const String& name) const
 }
 
 const TFM::Character&
-TFM::getCharacter(Char8 index) const
+TFM::getCharacter(UChar8 index) const
 {
   assert(index < font->nCharacters);
   assert(character[index].index == index);
@@ -93,18 +93,18 @@ TFM::getCharacter(Char8 index) const
 }
 
 BoundingBox
-TFM::getGlyphBoundingBox(Char8 index) const
+TFM::getGlyphBoundingBox(UChar8 index) const
 {
   const Character& c = getCharacter(index);
   return BoundingBox(scaledOfFIX(c.width), scaledOfFIX(c.height), scaledOfFIX(c.depth));
 }
 
 scaled
-TFM::getGlyphItalicCorrection(Char8 index) const
+TFM::getGlyphItalicCorrection(UChar8 index) const
 { return scaledOfFIX(getCharacter(index).italicCorrection); }
 
 bool
-TFM::getGlyphKerning(Char8 index1, Char8 index2, scaled& result) const
+TFM::getGlyphKerning(UChar8 index1, UChar8 index2, scaled& result) const
 {
   const Character& c = getCharacter(index1);
   for (unsigned i = 0; i < c.nKernings; i++)
@@ -117,7 +117,7 @@ TFM::getGlyphKerning(Char8 index1, Char8 index2, scaled& result) const
 }
 
 bool
-TFM::getGlyphLigature(Char8 index1, Char8 index2, Char8& result, Char8& mode) const
+TFM::getGlyphLigature(UChar8 index1, UChar8 index2, UChar8& result, UChar8& mode) const
 {
   const Character& c = getCharacter(index1);
   for (unsigned i = 0; i < c.nLigatures; i++)
