@@ -169,10 +169,10 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <section name="variants">
 <!--
 	<section name="normal">
-	  <key name="family">monospace</key>
+	  <key name="family">courier</key>
 	</section>
 	<section name="italic">
-	  <key name="family">monospace</key>
+	  <key name="family">courier</key>
 	  <key name="style">normal</key>
 	</section>
 -->
@@ -189,6 +189,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <section name="pango-computer-modern-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
+      <key name="post-shaping">always</key>
     </section>
     <section name="adobe-shaper">
       <key name="enabled">false</key>
@@ -199,11 +200,6 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="priority">1</key>
       <key name="post-shaping">never</key>
       <key name="use-tfm">true</key>
-    </section>
-    <section name="ttf-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">never</key>
     </section>
   </section>
 

@@ -173,13 +173,18 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>
+    <section name="adobe-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
     <section name="pango-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>
-    <section name="adobe-shaper">
+    <section name="pango-computer-modern-shaper">
       <key name="enabled">false</key>
       <key name="priority">1</key>
+      <key name="post-shaping">never</key>
     </section>
     <section name="type1-computer-modern-shaper">
       <key name="enabled">false</key>
