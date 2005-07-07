@@ -1,0 +1,58 @@
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+ <mtable columnalign="left">
+  <mtr> <mtd>
+   <mo id="I1">&#x2190;</mo>
+  </mtd><mtd>
+   <mo mathvariant="bold">&#x2190;</mo>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mi>x</mi>
+  </mtd><mtd>
+   <mi mathvariant="normal">x</mi>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mi>sin</mi>
+  </mtd><mtd>
+   <mi mathvariant="italic">sin</mi>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mi id="I2">differential</mi>
+  </mtd><mtd>
+   <mi mathvariant="italic">differential</mi>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mi mathvariant="italic">first</mi>
+  </mtd><mtd>
+   <mi mathvariant="normal">first</mi>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mtext mathvariant="normal">normal</mtext>
+  </mtd><mtd>
+   <mtext mathvariant="italic">italic</mtext>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mtext mathvariant="bold">bold</mtext>
+  </mtd><mtd>
+   <mtext mathvariant="bold-italic">bold-italic</mtext>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mtext mathvariant="sans-serif">sans-serif</mtext>
+  </mtd><mtd>
+   <mtext mathvariant="sans-serif-italic">sans-serif-italic</mtext>
+  </mtd> </mtr>
+
+  <mtr> <mtd>
+   <mtext mathvariant="bold-sans-serif">bold-sans-serif</mtext>
+  </mtd><mtd>
+   <mtext mathvariant="sans-serif-bold-italic">sans-serif-bold-italic</mtext>
+  </mtd> </mtr>
+
+ </mtable>
+</math>
