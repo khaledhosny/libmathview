@@ -25,6 +25,8 @@ HOME_FILES = \
   $(PNG_FILES)
   $(NULL)
 
+all: $(HOME_FILES) $(PNG_FILES)
+
 abiword-small.png: abiword.png
 	convert -resize 200x $< $@
 

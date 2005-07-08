@@ -12,6 +12,7 @@
 * Make high-quality, nice to see rendering in Pango, for both Math and Box
 * Make the widget more robust (font management)
 
++ make pangolayout pangolinelayout areas configurable (glyph area?)
 + find a way of having TFM support orthogonal to the other classes
 + remove configuration field from gtkmathview class structure
 + pass Configuration to View constructor and initializes default font size
