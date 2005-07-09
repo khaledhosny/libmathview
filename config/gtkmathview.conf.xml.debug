@@ -36,6 +36,89 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <key name="path">./config/dictionary-debug.xml</key>
   </section>
 
+  <section name="default">
+    <key name="font-size">12pt</key>
+    <section name="color">
+      <key name="foreground">#000000</key>
+      <key name="background">#ffffff</key>
+    </section>
+    <section name="link-color">
+      <key name="foreground">#32648b</key>
+      <key name="background">#ffffff</key>
+    </section>
+    <section name="select-color">
+      <key name="foreground">#000000</key>
+      <key name="background">#ff6a6a</key>
+    </section>
+    <section name="t1lib">
+      <key name="configuration">../../gtkmathview/config/t1.config</key>
+      <key name="opaque-mode">false</key>
+      <key name="anti-aliasing">true</key>
+    </section>
+  </section>
+
+  <section name="gtk-backend">
+    <section name="pango-default-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">0</key>
+      <section name="variants">
+<!--
+	<section name="normal">
+	  <key name="family">courier</key>
+	</section>
+	<section name="italic">
+	  <key name="family">courier</key>
+	  <key name="style">normal</key>
+	</section>
+-->
+      </section>
+    </section>
+    <section name="space-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="pango-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="pango-computer-modern-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+      <key name="post-shaping">always</key>
+    </section>
+    <section name="adobe-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="type1-computer-modern-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+      <key name="post-shaping">never</key>
+      <key name="use-tfm">true</key>
+    </section>
+  </section>
+
+  <section name="svg-backend">
+    <section name="null-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">0</key>
+    </section>
+    <section name="space-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+    </section>
+    <section name="type1-computer-modern-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+      <key name="post-shaping">never</key>
+    </section>
+    <section name="ttf-computer-modern-shaper">
+      <key name="enabled">true</key>
+      <key name="priority">1</key>
+      <key name="post-shaping">always</key>
+    </section>
+  </section>
+
   <section name="fonts">
     <section name="computer-modern">
 <!--
@@ -138,89 +221,6 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmex9</key>
       <key name="font-name">cmex10</key>
 -->
-    </section>
-  </section>
-
-  <section name="default">
-    <key name="font-size">12pt</key>
-    <section name="color">
-      <key name="foreground">#000000</key>
-      <key name="background">#ffffff</key>
-    </section>
-    <section name="link-color">
-      <key name="foreground">#32648b</key>
-      <key name="background">#ffffff</key>
-    </section>
-    <section name="select-color">
-      <key name="foreground">#000000</key>
-      <key name="background">#ff6a6a</key>
-    </section>
-    <section name="t1lib">
-      <key name="configuration">../../gtkmathview/config/t1.config</key>
-      <key name="opaque-mode">false</key>
-      <key name="anti-aliasing">true</key>
-    </section>
-  </section>
-
-  <section name="gtk-backend">
-    <section name="pango-default-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">0</key>
-      <section name="variants">
-<!--
-	<section name="normal">
-	  <key name="family">courier</key>
-	</section>
-	<section name="italic">
-	  <key name="family">courier</key>
-	  <key name="style">normal</key>
-	</section>
--->
-      </section>
-    </section>
-    <section name="space-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">1</key>
-    </section>
-    <section name="pango-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-    </section>
-    <section name="pango-computer-modern-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">always</key>
-    </section>
-    <section name="adobe-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-    </section>
-    <section name="type1-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">never</key>
-      <key name="use-tfm">true</key>
-    </section>
-  </section>
-
-  <section name="svg-backend">
-    <section name="null-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">0</key>
-    </section>
-    <section name="space-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">1</key>
-    </section>
-    <section name="type1-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">never</key>
-    </section>
-    <section name="ttf-computer-modern-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">always</key>
     </section>
   </section>
 </math-engine-configuration>
