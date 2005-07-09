@@ -34,9 +34,9 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
   SmartPtr<Configuration> configuration = Configuration::create();
 
   bool res = false;
+  if (!res) res = MathView::loadConfiguration(logger, configuration, "gtkmathview.conf.xml");
   if (confPath != NULL) res = MathView::loadConfiguration(logger, configuration, confPath);
   if (!res) res = MathView::loadConfiguration(logger, configuration, MathView::getDefaultConfigurationPath());
-  if (!res) res = MathView::loadConfiguration(logger, configuration, "config/gtkmathview.conf.xml");
   if (!res) logger->out(LOG_WARNING, "could not load configuration file");
   logger->setLogLevel(LogLevelId(configuration->getInt(logger, "logger/verbosity", 1)));
   String confVersion = configuration->getString(logger, "version", "<undefined>");
