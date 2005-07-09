@@ -32,6 +32,28 @@
 #include "MathGraphicDevice.hh"
 #include "ShapingContext.hh"
 
+static PangoStyle
+parsePangoStyle(const String& s, PangoStyle v)
+{
+  if (s == "italic")
+    return PANGO_STYLE_ITALIC;
+  else if (s == "oblique")
+    return PANGO_STYLE_OBLIQUE;
+  else
+    return v;
+}
+
+static PangoWeight
+parsePangoWeight(const String& s, PangoWeight v)
+{
+  if (s == "light")
+    return PANGO_WEIGHT_LIGHT;
+  else if (s == "bold")
+    return PANGO_WEIGHT_BOLD;
+  else
+    return v;
+}
+
 Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration>& conf)
 {
   static const DefaultPangoTextAttributes defaultVariantDesc[] =
@@ -59,8 +81,8 @@ Gtk_DefaultPangoShaper::Gtk_DefaultPangoShaper(const SmartPtr<AbstractLogger>& l
       const String family = conf->getString(logger, key + "/family", defaultVariantDesc[i].family);
       const String style = conf->getString(logger, key + "/style", defaultVariantDesc[i].style);
       const String weight = conf->getString(logger, key + "/weight", defaultVariantDesc[i].weight);
-      const PangoStyle pangoStyle = (style == "italic") ? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL;
-      const PangoWeight pangoWeight = (weight == "bold") ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
+      const PangoStyle pangoStyle = parsePangoStyle(style, PANGO_STYLE_NORMAL);
+      const PangoWeight pangoWeight = parsePangoWeight(weight, PANGO_WEIGHT_NORMAL);
       variantDesc[i].variant = defaultVariantDesc[i].variantId;
       variantDesc[i].family = family;
       variantDesc[i].style = pangoStyle;
@@ -113,6 +135,7 @@ Gtk_DefaultPangoShaper::shapeString(const ShapingContext& context, const gunicha
 
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
   assert(factory);
+  // LUCA: what is the difference between PangoLayout and PangoLayoutLine?
   return factory->pangoLayoutLine(layout);
 }
 

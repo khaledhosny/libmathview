@@ -54,8 +54,11 @@ ShapingContext::chunkSize() const
   else
     {
       unsigned n = 1;
-      unsigned si = getShaperId();
-      while (index + n < spec.size() && spec[index + n].getShaperId() == si) n++;
+      unsigned si = spec[index].getShaperId();
+      unsigned fi = spec[index].getFontId();
+      while (index + n < spec.size()
+	     && spec[index + n].getShaperId() == si
+	     && spec[index + n].getFontId() == fi) n++;
       return n;
     }
 }

@@ -42,6 +42,7 @@ public:
 
 protected:
   AreaRef shapeChar(const class ShapingContext&) const;
+  AreaRef shapeChunk(const class ShapingContext&, unsigned) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
 };

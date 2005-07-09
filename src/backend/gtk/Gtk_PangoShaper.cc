@@ -126,7 +126,14 @@ Gtk_PangoShaper::shape(ShapingContext& context) const
       context.pushArea(1, shapeStretchyCharV(context));
       break;
     default:
-      context.pushArea(1, shapeChar(context));
+      {
+	const unsigned n = context.chunkSize();
+	assert(n > 0);
+	if (n > 1)
+	  context.pushArea(n, shapeChunk(context, n));
+	else
+	  context.pushArea(1, shapeChar(context));
+      }
       break;
     }
 }
@@ -139,6 +146,26 @@ Gtk_PangoShaper::shapeChar(const ShapingContext& context) const
 
   PangoLayout* layout = createPangoLayout(buffer, length, context.getSize(),
 					  getTextAttributes(MathVariant(context.getSpec().getFontId() - MAPPED_BASE_INDEX + NORMAL_VARIANT)));
+  SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
+  assert(factory);
+  return factory->pangoLayoutLine(layout);
+}
+
+AreaRef
+Gtk_PangoShaper::shapeChunk(const ShapingContext& context, unsigned n) const
+{
+  gunichar* uni_buffer = new gunichar[n];
+  for (unsigned i = 0; i < n; i++)
+    uni_buffer[i] = context.getSpec(i).getGlyphId();
+
+  glong length;
+  gchar* buffer = g_ucs4_to_utf8(uni_buffer, n, NULL, &length, NULL);
+  delete [] uni_buffer;
+  PangoLayout* layout = createPangoLayout(buffer, length,
+					  context.getSize(),
+					  getTextAttributes(MathVariant(context.getSpec().getFontId() - MAPPED_BASE_INDEX + NORMAL_VARIANT)));
+  g_free(buffer);
+
   SmartPtr<Gtk_AreaFactory> factory = smart_cast<Gtk_AreaFactory>(context.getFactory());
   assert(factory);
   return factory->pangoLayoutLine(layout);
