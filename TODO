@@ -9,16 +9,19 @@
 // General
 
 * Priorities for the next minor release:
-* Make high-quality, nice to see rendering in Pango, for both Math and Box
-* Make the widget more robust (font management)
+  * Make high-quality, nice to see rendering in Pango, for both Math and Box
+  * Make the widget more robust (font management)
 
 + make pangolayout pangolinelayout areas configurable (glyph area?)
 + find a way of having TFM support orthogonal to the other classes
 + remove configuration field from gtkmathview class structure
 + pass Configuration to View constructor and initializes default font size
-+ T1 CM shaper useful for SVG?
+? T1 CM shaper useful for SVG?
 ? have callback functions to notify progress while building/formatting/etc?
   these should not depend on the backend
+- add new Box area that stores both the entry baseline and the exit baseline
+  and remove shift field from box element. use this to implement linebreaking
+  in mrows
 
 // AbiWord
 
