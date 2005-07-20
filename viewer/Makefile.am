@@ -16,6 +16,7 @@ if COND_LIBXML2
 noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
 noinst_PROGRAMS += test_building
+noinst_PROGRAMS += test_rendering
 endif
 if COND_LIBXML2_READER
 noinst_PROGRAMS += test_loading_reader
@@ -70,6 +71,18 @@ test_building_LDADD = \
   $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
   $(NULL)
 
+test_rendering_SOURCES = test_rendering.cc
+test_rendering_LDFLASG = -no-install -static
+test_rendering_LDADD = \
+  -lstdc++ \
+  $(XML_LIBS) \
+  $(GTK_LIBS) \
+  $(T1_LIBS) \
+  $(GLIB_LIBS) \
+  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
+  $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
+  $(NULL)
+
 test_loading_reader_SOURCES = test_loading_reader.c
 test_loading_reader_LDFLASG = -no-install -static
 test_loading_reader_LDADD = \
@@ -87,10 +100,13 @@ INCLUDES = \
   $(XML_CFLAGS) \
   -I$(top_builddir)/auto/ \
   -I$(top_srcdir)/src/common/ \
+  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/frontend/gmetadom/ \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/widget \
+  -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/common/ \
+  -I$(top_srcdir)/src/backend/gtk/ \
   $(NULL)
 
