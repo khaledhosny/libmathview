@@ -35,14 +35,9 @@ public:
   static SmartPtr<BoxMLHElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   static AreaRef formatHorizontalArray(class FormattingContext&,
-				       const std::vector<SmartPtr<BoxMLElement> >&,
-				       const std::vector<scaled>&,
-				       scaled&);
+				       const std::vector<AreaRef>&,
+				       const scaled&);
   virtual AreaRef format(class FormattingContext&);
-  virtual scaled getStep(void) const { return step; }
-
-private:
-  scaled step;
 };
 
 #endif // __BoxMLHElement_hh__

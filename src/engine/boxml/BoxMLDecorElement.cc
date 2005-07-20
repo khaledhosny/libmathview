@@ -95,8 +95,7 @@ BoxMLDecorElement::format(FormattingContext& ctxt)
 
       SmartPtr<ValueSequence> type = ToSequence(GET_ATTRIBUTE_VALUE(BoxML, Decor, type));
       SmartPtr<Value> color = GET_ATTRIBUTE_VALUE(BoxML, Decor, color);
-      const scaled thickness = ctxt.BGD()->evaluate(ctxt,
-							  ToLength(GET_ATTRIBUTE_VALUE(BoxML, Decor, thickness)),
+      const scaled thickness = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Decor, thickness)),
 							  ctxt.BGD()->defaultLineThickness(ctxt));
       RGBColor col;
       if (color && IsTokenId(color) && ToTokenId(color) == T_TRANSPARENT)
@@ -104,13 +103,23 @@ BoxMLDecorElement::format(FormattingContext& ctxt)
       else if (color)
 	col = ToRGB(color);
 
-      if (getChild())
+      if (SmartPtr<BoxMLElement> child = getChild())
 	{
-	  AreaRef res = getChild()->format(ctxt);
+	  child->format(ctxt);
+	  
+	  AreaRef res = child->getMaxArea();
 	  for (unsigned i = 0; i < type->getSize(); i++)
 	    res = decorate(ctxt, res, thickness, col, ToString(type->getValue(i)));
-
 	  res = ctxt.BGD()->wrapper(ctxt, res);
+	  setMaxArea(res);
+
+	  if (res->box().width > ctxt.getAvailableWidth())
+	    {
+	      res = child->getArea();
+	      for (unsigned i = 0; i < type->getSize(); i++)
+		res = decorate(ctxt, res, thickness, col, ToString(type->getValue(i)));
+	      res = ctxt.BGD()->wrapper(ctxt, res);
+	    }
 	  setArea(res);
 	}
       else

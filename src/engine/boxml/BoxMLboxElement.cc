@@ -42,7 +42,11 @@ BoxMLboxElement::format(FormattingContext& ctxt)
       ctxt.push(this);
       ctxt.setMathMode(false);
       if (SmartPtr<BoxMLElement> child = getChild())
-	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
+	{
+	  child->format(ctxt);
+	  setMaxArea(ctxt.BGD()->wrapper(ctxt, child->getMaxArea()));
+	  setArea(ctxt.BGD()->wrapper(ctxt, child->getArea()));
+	}
       ctxt.pop();
       resetDirtyLayout();
     }

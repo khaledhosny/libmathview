@@ -64,6 +64,7 @@ BoxMLSpaceElement::format(FormattingContext& ctxt)
 
       AreaRef res = makeSpaceArea(ctxt);
       res = ctxt.BGD()->wrapper(ctxt, res);
+      setMaxArea(res);
       setArea(res);
 
       ctxt.pop();

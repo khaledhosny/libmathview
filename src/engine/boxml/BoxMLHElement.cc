@@ -43,35 +43,21 @@ BoxMLHElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 
 AreaRef
 BoxMLHElement::formatHorizontalArray(FormattingContext& ctxt,
-				     const std::vector<SmartPtr<BoxMLElement> >& content,
-				     const std::vector<scaled>& spacing,
-				     scaled& step)
+				     const std::vector<AreaRef>& content,
+				     const scaled& spacing)
 {
-  assert(content.size() == spacing.size() + 1);
-
-  step = 0;
+  const AreaRef spacingArea = ctxt.BGD()->getFactory()->horizontalSpace(spacing);
 
   std::vector<AreaRef> c;
   c.reserve(content.size());
-  for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
+  for (std::vector<AreaRef>::const_iterator p = content.begin();
        p != content.end();
        p++)
-    if (SmartPtr<BoxMLElement> el = *p)
+    if (*p)
       {
-	AreaRef area = el->format(ctxt);
-	assert(area);
-	if (step != scaled::zero())
-	  area = ctxt.BGD()->getFactory()->shift(area, step);
-	step += el->getStep();
-	
-	c.push_back(area);
-
-	if (p + 1 != content.end())
-	  {
-	    const scaled thisSpacing = spacing[p - content.begin()];
-	    if (thisSpacing != scaled::zero())
-	      c.push_back(ctxt.BGD()->getFactory()->horizontalSpace(thisSpacing));
-	  }
+	c.push_back(*p);
+	if (p + 1 != content.end() && spacing != scaled::zero())
+	  c.push_back(spacingArea);
       }
 
   AreaRef res;
@@ -90,9 +76,13 @@ BoxMLHElement::format(FormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      const SmartPtr<Value> spacingV = GET_ATTRIBUTE_VALUE(BoxML, H, spacing);
+      const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, H, spacing)), scaled::zero());
       scaled availableWidth = ctxt.getAvailableWidth();
 
+      std::vector<AreaRef> c;
+      c.reserve(content.getSize());
+      std::vector<AreaRef> cMax;
+      cMax.reserve(content.getSize());
       std::vector<scaled> sc;
       sc.reserve(content.getSize());
       for (std::vector<SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
@@ -102,13 +92,20 @@ BoxMLHElement::format(FormattingContext& ctxt)
 	  assert(*p);
 	  ctxt.setAvailableWidth(availableWidth);
 	  const AreaRef area = (*p)->format(ctxt);
-	  availableWidth -= area->box().width;
-	  if (p != content.begin())
-	    sc.push_back(ctxt.BGD()->evaluate(ctxt, ToLength(GetComponent(spacingV, (p - 1) - content.begin())), scaled::zero()));
+	  c.push_back(area);
+	  cMax.push_back((*p)->getMaxArea());
+	  availableWidth -= area->box().width + spacing;
 	}
 
-      AreaRef res = formatHorizontalArray(ctxt, content.getContent(), sc, step);
+      AreaRef res = formatHorizontalArray(ctxt, cMax, spacing);
       res = ctxt.BGD()->wrapper(ctxt, res);
+      setMaxArea(res);
+
+      if (res->box().width > availableWidth)
+	{
+	  res = formatHorizontalArray(ctxt, c, spacing);
+	  res = ctxt.BGD()->wrapper(ctxt, res);
+	}
       setArea(res);
 
       ctxt.pop();

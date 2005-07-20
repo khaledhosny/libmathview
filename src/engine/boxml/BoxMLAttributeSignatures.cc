@@ -37,14 +37,14 @@ DEFINE_ATTRIBUTE(BoxML, Space, "height", height, true, false, false, false, "0pt
 DEFINE_ATTRIBUTE(BoxML, Space, "depth", depth, true, false, false, false, "0pt");
 DEFINE_ATTRIBUTE(BoxML, H, "spacing", spacing, true, false, false, false, "0pt");
 DEFINE_ATTRIBUTE(BoxML, HV, "spacing", spacing, true, false, false, false, "0pt");
-DEFINE_ATTRIBUTE(BoxML, HV, "indent", indent, true, false, false, false, "left");
+DEFINE_ATTRIBUTE(BoxML, HV, "indent", indent, true, false, false, false, "1em");
 DEFINE_ATTRIBUTE(BoxML, HV, "minlinespacing", minlinespacing, true, false, false, false, "1.4em");
 DEFINE_ATTRIBUTE(BoxML, HOV, "spacing", spacing, true, false, false, false, "0pt");
-DEFINE_ATTRIBUTE(BoxML, HOV, "indent", indent, true, false, false, false, "left");
+DEFINE_ATTRIBUTE(BoxML, HOV, "indent", indent, true, false, false, false, "1em");
 DEFINE_ATTRIBUTE(BoxML, HOV, "minlinespacing", minlinespacing, true, false, false, false, "1.4em");
 DEFINE_ATTRIBUTE(BoxML, V, "enter", enter, true, false, false, false, "1");
 DEFINE_ATTRIBUTE(BoxML, V, "exit", exit, true, false, false, false, "-1");
-DEFINE_ATTRIBUTE(BoxML, V, "indent", indent, true, false, false, false, "left");
+DEFINE_ATTRIBUTE(BoxML, V, "indent", indent, true, false, false, false, "1em");
 DEFINE_ATTRIBUTE(BoxML, V, "minlinespacing", minlinespacing, true, false, false, false, "1.4em");
 DEFINE_ATTRIBUTE(BoxML, Layout, "width", width, true, false, false, false, 0);
 DEFINE_ATTRIBUTE(BoxML, Layout, "height", height, true, false, false, false, 0);

@@ -49,59 +49,68 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      const SmartPtr<Value> spacingV = GET_ATTRIBUTE_VALUE(BoxML, HOV, spacing);
-      const SmartPtr<Value> indentV = GET_ATTRIBUTE_VALUE(BoxML, HOV, indent);
+      const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, HOV, spacing)), 0);
+      const scaled indent = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, HOV, indent)), 0);
       const scaled minLineSpacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
 
       const scaled availableWidth = ctxt.getAvailableWidth();
-      std::vector<SmartPtr<BoxMLElement> > hc;
+
+      std::vector<AreaRef> cMax;
+      cMax.reserve(content.getSize());
+      std::vector<AreaRef> hc;
       hc.reserve(content.getSize());
       std::vector<AreaRef> vc;
       vc.reserve(content.getSize());
-      std::vector<SmartPtr<Value> > ic;
-      ic.reserve(content.getSize());
-      std::vector<scaled> sc;
-      sc.reserve(content.getSize());
-      
-      std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
+
+      std::vector<SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
       while (p != content.end())
 	{
+	  const scaled availableWidthPerLine = vc.empty() ? availableWidth : availableWidth - indent;
+	  scaled remainingWidthForThisLine = availableWidthPerLine;
+
 	  hc.clear();
-	  sc.clear();
 
-	  const SmartPtr<Value> indent = GetComponent(indentV, p - content.begin());
-	  const scaled remainingWidthForThisLine = availableWidth - BoxMLVElement::getMinimumIndentation(ctxt, indent);
-	  ctxt.setAvailableWidth(remainingWidthForThisLine);
-	  AreaRef firstArea = (*p)->format(ctxt);
-	  ic.push_back(indent);
-	  hc.push_back(*p);
-	  scaled remainingWidth = remainingWidthForThisLine - firstArea->box().width;
-	  p++;
+	  ctxt.setAvailableWidth(availableWidthPerLine);
 
-	  while (p != content.end())
+	  AreaRef area;
+	  AreaRef maxArea;
+	  do
 	    {
-	      const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GetComponent(spacingV, (p - 1) - content.begin())), scaled::zero());
-	      remainingWidth -= spacing;
-	      const SmartPtr<Value> indent = GetComponent(indentV, p - content.begin());
-	      const scaled width = std::max(remainingWidth, availableWidth - BoxMLVElement::getMinimumIndentation(ctxt, indent));
-	      ctxt.setAvailableWidth(width);
-	      AreaRef area = (*p)->format(ctxt);
-	      const scaled areaWidth = area->box().width;
-	      if (areaWidth > remainingWidth)
+	      area = (*p)->format(ctxt);
+	      maxArea = (*p)->getMaxArea();
+	      cMax.push_back(maxArea);
+	      if (maxArea->box().width > remainingWidthForThisLine)
 		break;
-
-	      remainingWidth -= areaWidth;
-	      sc.push_back(spacing);
-	      hc.push_back(*p);
+	      hc.push_back(maxArea);
+	      remainingWidthForThisLine -= maxArea->box().width + spacing;
 	      p++;
 	    }
+	  while (p != content.end());
 
-	  vc.push_back(BoxMLHElement::formatHorizontalArray(ctxt, hc, sc, step));
+	  if (!hc.empty())
+	    vc.push_back(BoxMLHElement::formatHorizontalArray(ctxt, hc, spacing));
+	  else if (p != content.end())
+	    {
+	      if (maxArea->box().width <= availableWidthPerLine)
+		vc.push_back(maxArea);
+	      else
+		vc.push_back(area);
+	      p++;
+	    }
 	}
 
-      AreaRef res = BoxMLVElement::formatVerticalArray(ctxt, vc, minLineSpacing, 1, -1, ic, step);
+      AreaRef res = BoxMLHElement::formatHorizontalArray(ctxt, cMax, spacing);
       res = ctxt.BGD()->wrapper(ctxt, res);
-      setArea(res);
+      setMaxArea(res);
+
+      if (res->box().width <= availableWidth)
+	setArea(res);
+      else
+	{
+	  res = BoxMLVElement::formatVerticalArray(ctxt, vc, minLineSpacing, 1, -1, indent);
+	  res = ctxt.BGD()->wrapper(ctxt, res);
+	  setArea(res);
+	}
 
       ctxt.pop();
       resetDirtyLayout();

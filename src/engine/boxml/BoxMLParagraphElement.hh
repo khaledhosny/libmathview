@@ -35,10 +35,6 @@ public:
   static SmartPtr<BoxMLParagraphElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual AreaRef format(class FormattingContext&);
-  virtual scaled getStep(void) const { return step; }
-
-private:
-  scaled step;
 };
 
 #endif // __BoxMLParagraphElement_hh__

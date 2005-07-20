@@ -32,9 +32,10 @@ protected:
   virtual ~VerticalArrayArea() { }
 
 public:
-  static SmartPtr<VerticalArrayArea> create(const std::vector<AreaRef>& children, AreaIndex r = 0)
-  { return new VerticalArrayArea(children, r); }
-  virtual AreaRef clone(const std::vector<AreaRef>& children) const { return create(children, getRefArea()); }
+  static SmartPtr<VerticalArrayArea> create(const std::vector<AreaRef>& children, AreaIndex ref = 0)
+  { return new VerticalArrayArea(children, ref); }
+  virtual AreaRef clone(const std::vector<AreaRef>& children) const
+  { return create(children, getRefArea()); }
 
   virtual AreaRef flatten(void) const;
 

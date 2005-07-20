@@ -70,14 +70,18 @@ BoxMLActionElement::format(FormattingContext& ctxt)
       else
 	getLogger()->out(LOG_WARNING, "no action specified for `maction' element");
 
-      AreaRef res;
       if (SmartPtr<BoxMLElement> elem = getChild(selection))
-	res = elem->format(ctxt);
+	{
+	  elem->format(ctxt);
+	  AreaRef res = ctxt.BGD()->wrapper(ctxt, elem->getMaxArea());
+	  setMaxArea(res);
+	  if (res->box().width > ctxt.getAvailableWidth())
+	    res = ctxt.BGD()->wrapper(ctxt, elem->getArea());
+	  setArea(res);
+	}
       else
-	res = ctxt.BGD()->dummy(ctxt);
-      assert(res);
+	setArea(ctxt.BGD()->wrapper(ctxt, ctxt.BGD()->dummy(ctxt)));
 
-      setArea(ctxt.BGD()->wrapper(ctxt, res));
       ctxt.pop();
 
       resetDirtyLayout();
@@ -114,13 +118,4 @@ unsigned
 BoxMLActionElement::getSelectedIndex() const
 {
   return (content.getSize() > 0) ? selection + 1 : 0;
-}
-
-scaled
-BoxMLActionElement::getStep() const
-{
-  if (SmartPtr<BoxMLElement> elem = getSelectedElement())
-    return elem->getStep();
-  else
-    return scaled::zero();
 }

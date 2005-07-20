@@ -48,6 +48,7 @@ public:
   virtual CharIndex lengthTo(AreaIndex) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
   virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+  virtual scaled getStep(void) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;

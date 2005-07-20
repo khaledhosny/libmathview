@@ -35,10 +35,10 @@ public:
   static SmartPtr<BoxMLHVElement> create(const SmartPtr<class BoxMLNamespaceContext>&);
 
   virtual AreaRef format(class FormattingContext&);
-  virtual scaled getStep(void) const { return step; }
+  virtual AreaRef getMaxArea(void) const;
 
 private:
-  scaled step;
+  AreaRef maxArea;
 };
 
 #endif // __BoxMLHVElement_hh__

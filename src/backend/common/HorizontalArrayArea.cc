@@ -62,36 +62,51 @@ BoundingBox
 HorizontalArrayArea::box() const
 {
   BoundingBox bbox;
+  scaled step = 0;
   for (std::vector<AreaRef>::const_iterator p = content.begin();
        p != content.end();
        p++)
-    bbox.append((*p)->box());
+    {
+      bbox.append((*p)->box());
+      const scaled childStep = (*p)->getStep();
+      bbox.height -= childStep;
+      bbox.depth += childStep;
+      step += childStep;
+    }
+  // must restore the baseline
+  bbox.height += step;
+  bbox.depth -= step;
+
   return bbox;
 }
 
 void
-HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, const scaled& y) const
+HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, const scaled& y0) const
 {
   scaled x = x0;
+  scaled y = y0;
   for (std::vector<AreaRef>::const_iterator p = content.begin();
        p != content.end();
        p++)
     {
       (*p)->render(context, x, y);
       x += (*p)->box().horizontalExtent();
+      y += (*p)->getStep();
     }
 }
 
 bool
-HorizontalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) const
+HorizontalArrayArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y0) const
 {
   scaled offset;
+  scaled y = y0;
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
     {
       id.append(p - content.begin(), *p, offset, scaled::zero());
       if ((*p)->searchByCoords(id, x - offset, y)) return true;
       id.pop_back();
       offset += (*p)->box().horizontalExtent();
+      y += (*p)->getStep();
     }
 
   return false;
@@ -210,5 +225,17 @@ HorizontalArrayArea::origin(AreaIndex i, Point& point) const
 {
   assert(i >= 0 && i < content.size());
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
-    point.x += (*p)->box().horizontalExtent();
+    {
+      point.x += (*p)->box().horizontalExtent();
+      point.y += (*p)->getStep();
+    }
+}
+
+scaled
+HorizontalArrayArea::getStep() const
+{
+  scaled step = 0;
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+    step += (*p)->getStep();
+  return step;
 }

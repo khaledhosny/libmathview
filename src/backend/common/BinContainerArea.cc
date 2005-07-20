@@ -133,3 +133,7 @@ BinContainerArea::positionOfIndex(CharIndex index, class Point* p, BoundingBox* 
 CharIndex
 BinContainerArea::length() const
 { return child->length(); }
+
+scaled
+BinContainerArea::getStep() const
+{ return child->getStep(); }

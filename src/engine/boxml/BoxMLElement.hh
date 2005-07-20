@@ -32,7 +32,11 @@ protected:
   virtual ~BoxMLElement();
 
 public:
-  virtual scaled getStep(void) const;
+  void setMaxArea(const AreaRef&);
+  AreaRef getMaxArea(void) const;
+
+private:
+  AreaRef maxArea;
 };
 
 #endif // __BoxMLElement_hh__

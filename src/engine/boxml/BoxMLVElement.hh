@@ -37,19 +37,13 @@ public:
   virtual AreaRef format(class FormattingContext&);
 
   static AreaRef indentArea(const class FormattingContext&,
-			    const SmartPtr<Value>&, const AreaRef&);
+			    const AreaRef&, const AreaRef&);
   static scaled getMinimumIndentation(const class FormattingContext&,
 				      const SmartPtr<Value>&);
   static AreaRef formatVerticalArray(class FormattingContext&,
 				     const std::vector<AreaRef>&,
 				     const scaled&, int, int,
-				     const std::vector<SmartPtr<Value> >&,
-				     scaled&);
-
-  virtual scaled getStep(void) const { return step; }
-
-private:
-  scaled step;
+				     const scaled&);
 };
 
 #endif // __BoxMLVElement_hh__

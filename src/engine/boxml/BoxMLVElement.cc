@@ -45,27 +45,14 @@ BoxMLVElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 
 AreaRef
 BoxMLVElement::indentArea(const FormattingContext& ctxt,
-			  const SmartPtr<Value>& indent,
+			  const AreaRef& indentArea,
 			  const AreaRef& area)
 {
-  if (IsTokenId(indent))
-    switch (ToTokenId(indent))
-      {
-      case T_LEFT: return area;
-      case T_CENTER: return ctxt.BGD()->getFactory()->center(area);
-      case T_RIGHT: return ctxt.BGD()->getFactory()->right(area);
-      default:
-	assert(false);
-	break;
-      }
-  else
-    {
-      std::vector<AreaRef> c;
-      c.reserve(2);
-      c.push_back(ctxt.BGD()->getFactory()->horizontalSpace(ctxt.BGD()->evaluate(ctxt, ToLength(indent), scaled::zero())));
-      c.push_back(area);
-      return ctxt.BGD()->getFactory()->horizontalArray(c);
-    }
+  std::vector<AreaRef> c;
+  c.reserve(2);
+  c.push_back(indentArea);
+  c.push_back(area);
+  return ctxt.BGD()->getFactory()->horizontalArray(c);
 }
 
 scaled
@@ -83,8 +70,7 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 				   const std::vector<AreaRef>& content,
 				   const scaled& minLineSpacing,
 				   int enter, int exit,
-				   const std::vector<SmartPtr<Value> >& indentV,
-				   scaled& step)
+				   const scaled& indent)
 {
   if (enter < 0) enter = content.size() + enter + 1;
   if (exit < 0) exit = content.size() + exit + 1;
@@ -97,14 +83,17 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
   scaled prevHeight;
   std::vector<AreaRef> c;
   c.reserve(content.size());
+
+  const AreaRef iArea = ctxt.BGD()->getFactory()->horizontalSpace(indent);
+
   for (std::vector<AreaRef>::const_reverse_iterator p = content.rbegin();
        p != content.rend();
        p++)
     if (AreaRef area = *p)
       if (BoundingBox areaBox = area->box())
 	{
-	  const SmartPtr<Value> indent = indentV[content.size() - (p - content.rbegin()) - 1];
-	  area = indentArea(ctxt, indent, area);
+	  if (p != content.rend() - 1)
+	    area = indentArea(ctxt, iArea, area);
 
 	  if (prevArea)
 	    {
@@ -119,7 +108,6 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 	  c.push_back(area);
 	}
 
-  step = 0;
   AreaRef res;
   switch (c.size())
     {
@@ -136,23 +124,10 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 	  AreaRef res1 = ctxt.BGD()->getFactory()->verticalArray(c, exit_index);
 	  assert(res->box().defined());
 	  assert(res1->box().defined());
-	  step = res->box().height - res1->box().height;
-
-#if 0
-	  for (unsigned i = 0; i < c.size(); i++)
-	    {
-	      std::cerr << "AREA " << i << " HAS BOX = " << c[i]->box() << std::endl;
-	    }
-
-	  std::cerr << enter_index << "/" << exit_index << " ************ " << res->box().height << " //// " << res1->box().height << std::endl;
-#endif
+	  res = ctxt.BGD()->getFactory()->step(res, res->box().height - res1->box().height);
 	}
       break;
     }
-
-#if 0
-  std::cerr << "==================== " << this << " STEP IS " << step << std::endl;
-#endif
 
   return res;
 }
@@ -164,7 +139,7 @@ BoxMLVElement::format(FormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      const SmartPtr<Value> indentV = GET_ATTRIBUTE_VALUE(BoxML, V, indent);
+      const scaled indent = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, indent)), 0);
       int enter = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, enter));
       int exit = ToInteger(GET_ATTRIBUTE_VALUE(BoxML, V, exit));
       const scaled minLineSpacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
@@ -172,20 +147,16 @@ BoxMLVElement::format(FormattingContext& ctxt)
       const scaled availableWidth = ctxt.getAvailableWidth();
       std::vector<AreaRef> c;
       c.reserve(content.getSize());
-      std::vector<SmartPtr<Value> > ic;
-      ic.reserve(content.getSize());
       for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	if (*p)
 	  {
-	    const SmartPtr<Value> indent = GetComponent(indentV, p - content.begin());
-	    ctxt.setAvailableWidth(availableWidth - getMinimumIndentation(ctxt, indent));
+	    ctxt.setAvailableWidth(availableWidth - indent);
 	    c.push_back((*p)->format(ctxt));
-	    ic.push_back(indent);
 	  }
 
-      AreaRef res = formatVerticalArray(ctxt, c, minLineSpacing, enter, exit, ic, step);
+      AreaRef res = formatVerticalArray(ctxt, c, minLineSpacing, enter, exit, indent);
       res = ctxt.BGD()->wrapper(ctxt, res);
       setArea(res);
 

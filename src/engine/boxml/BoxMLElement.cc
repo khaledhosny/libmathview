@@ -32,7 +32,10 @@ BoxMLElement::BoxMLElement(const SmartPtr<BoxMLNamespaceContext>& context) : Ele
 BoxMLElement::~BoxMLElement()
 { }
 
-scaled
-BoxMLElement::getStep() const
-{ return scaled::zero(); }
+void
+BoxMLElement::setMaxArea(const AreaRef& area)
+{ maxArea = area; }
 
+AreaRef
+BoxMLElement::getMaxArea() const
+{ return maxArea ? maxArea : getArea(); }

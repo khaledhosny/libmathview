@@ -50,6 +50,7 @@ BoxMLParagraphElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 AreaRef
 BoxMLParagraphElement::format(FormattingContext& ctxt)
 {
+  assert(false);
   std::cerr << "sto per formattare il par " << dirtyLayout() << std::endl;
 
   if (dirtyLayout())

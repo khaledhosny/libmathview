@@ -34,7 +34,6 @@ protected:
 
 public:
   virtual AreaRef format(class FormattingContext&);
-  virtual scaled getStep(void) const;
 
   SmartPtr<BoxMLElement> getChild(void) const { return content.getChild(); }
   void setChild(const SmartPtr<BoxMLElement>& child) { content.setChild(this, child); }

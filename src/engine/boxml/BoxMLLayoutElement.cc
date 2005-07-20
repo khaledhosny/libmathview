@@ -53,7 +53,6 @@ BoxMLLayoutElement::format(FormattingContext& ctxt)
       scaled height = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, height)), ctxt.getSize());
       scaled depth = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, Layout, depth)), ctxt.getSize());
 
-      scaled step = 0;
       std::vector<BoxedLayoutArea::XYArea> c;
       c.reserve(content.getSize());
       for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
@@ -67,6 +66,7 @@ BoxMLLayoutElement::format(FormattingContext& ctxt)
 
       AreaRef res = ctxt.BGD()->getFactory()->boxedLayout(BoundingBox(width, height, depth), c);
       res = ctxt.BGD()->wrapper(ctxt, res);
+      setMaxArea(res);
       setArea(res);
 
       ctxt.pop();

@@ -43,56 +43,53 @@ BoxMLHVElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 { return new BoxMLHVElement(context); }
 
 AreaRef
+BoxMLHVElement::getMaxArea() const
+{ return maxArea; }
+
+AreaRef
 BoxMLHVElement::format(FormattingContext& ctxt)
 {
   if (dirtyLayout())
     {
       ctxt.push(this);
 
-      const SmartPtr<Value> spacingV = GET_ATTRIBUTE_VALUE(BoxML, HV, spacing);
-      const SmartPtr<Value> indentV = GET_ATTRIBUTE_VALUE(BoxML, HV, indent);
+      const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, HV, spacing)), 0);
+      const scaled indent = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, HV, indent)), 0);
       const scaled minLineSpacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, V, minlinespacing)), 0);
 
       const scaled availableWidth = ctxt.getAvailableWidth();
-      scaled remainingWidth = availableWidth;
       std::vector<AreaRef> c;
       c.reserve(content.getSize());
-      std::vector<SmartPtr<Value> > ic;
-      ic.reserve(content.getSize());
+      std::vector<AreaRef> cMax;
+      cMax.reserve(content.getSize());
       std::vector<scaled> sc;
       sc.reserve(content.getSize());
+
       for (std::vector< SmartPtr<BoxMLElement> >::const_iterator p = content.begin();
 	   p != content.end();
 	   p++)
 	if (*p)
 	  {
-	    const SmartPtr<Value> indent = GetComponent(indentV, p - content.begin());
-	    ctxt.setAvailableWidth(availableWidth - BoxMLVElement::getMinimumIndentation(ctxt, indent));
-	    const AreaRef childArea = (*p)->format(ctxt);
-	    remainingWidth -= childArea->box().width;
-	    c.push_back(childArea);
-	    ic.push_back(indent);
+	    const scaled thisIndent = (p == content.begin()) ? 0 : indent;
+	    ctxt.setAvailableWidth(availableWidth - thisIndent);
+	    c.push_back((*p)->format(ctxt));
+	    cMax.push_back((*p)->getMaxArea());
 
 	    if (p + 1 != content.end())
-	      {
-		const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GetComponent(spacingV, p - content.begin())), scaled::zero());
-		remainingWidth -= spacing;
-		sc.push_back(spacing);
-	      }
+	      sc.push_back(spacing);
 	  }
 
       AreaRef res;
-      if (c.size() == 1)
-	{
-	  res = c[0];
-	  step = 0;
-	}
-      else if (remainingWidth < scaled::zero())
-	res = BoxMLVElement::formatVerticalArray(ctxt, c, minLineSpacing, 1, -1, ic, step);
-      else
-	res = BoxMLHElement::formatHorizontalArray(ctxt, content.getContent(), sc, step);
-
+      res = BoxMLHElement::formatHorizontalArray(ctxt, cMax, spacing);
       res = ctxt.BGD()->wrapper(ctxt, res);
+      setMaxArea(res);
+      
+      if (res->box().width > availableWidth)
+	{
+	  res = BoxMLVElement::formatVerticalArray(ctxt, c, minLineSpacing, 1, -1, indent);
+	  res = ctxt.BGD()->wrapper(ctxt, res);
+	}
+
       setArea(res);
 
       ctxt.pop();

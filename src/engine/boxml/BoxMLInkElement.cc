@@ -59,6 +59,7 @@ BoxMLInkElement::format(FormattingContext& ctxt)
       res = ctxt.BGD()->getFactory()->ink(res);
       if (oldColor != newColor) res = ctxt.BGD()->getFactory()->color(res, newColor);
       res = ctxt.BGD()->wrapper(ctxt, res);
+      setMaxArea(res);
       setArea(res);
 
       ctxt.pop();

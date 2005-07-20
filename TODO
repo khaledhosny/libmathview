@@ -19,9 +19,15 @@
 ? T1 CM shaper useful for SVG?
 ? have callback functions to notify progress while building/formatting/etc?
   these should not depend on the backend
-- add new Box area that stores both the entry baseline and the exit baseline
-  and remove shift field from box element. use this to implement linebreaking
-  in mrows
+- use step area to implement linebreaking in mrows
+- add possibility of disabling shaping of certain characters for shapers. Eg:
+  <section name="disable-shaping">
+    <key name="char">03BB</key>
+    <section name="range">
+      <key name="from">A0</key>
+      <key name="to">B0</key>
+    </section>
+  </section>
 
 // AbiWord
 

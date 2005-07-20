@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,46 +17,28 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#include <config.h>
+#ifndef __StepArea_hh__
+#define __StepArea_hh__
 
-#include <cassert>
+#include "BinContainerArea.hh"
 
-#include "Area.hh"
-#include "Point.hh"
-#include "Element.hh"
-#include "Rectangle.hh"
-
-scaled
-Area::originX(AreaIndex i) const
+class StepArea : public BinContainerArea
 {
-  Point p;
-  origin(i, p);
-  return p.x;
-}
+protected:
+  StepArea(const AreaRef&, const scaled&);
+  virtual ~StepArea();
 
-scaled
-Area::originY(AreaIndex i) const
-{
-  Point p;
-  origin(i, p);
-  return p.y;
-}
+public:
+  static SmartPtr<StepArea> create(const AreaRef&, const scaled&);
+  virtual AreaRef clone(const AreaRef&) const;
 
-bool
-Area::indexOfPosition(const scaled&, const scaled&, CharIndex&) const
-{ return false; }
+  virtual scaled getStep(void) const;
 
-bool
-Area::positionOfIndex(CharIndex, class Point*, BoundingBox*) const
-{ return false; }
+private:
+  scaled step;
+};
 
-SmartPtr<Element>
-Area::getElement() const
-{ return 0; }
-
-scaled
-Area::getStep() const
-{ return 0; }
+#endif // __StepArea_hh__

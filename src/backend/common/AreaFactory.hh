@@ -38,6 +38,7 @@
 #include "Object.hh"
 #include "OverlapArrayArea.hh"
 #include "ShiftArea.hh"
+#include "StepArea.hh"
 #include "VerticalArrayArea.hh"
 #include "VerticalFillerArea.hh"
 #include "VerticalSpaceArea.hh"
@@ -84,6 +85,8 @@ public:
   { return VerticalFillerArea::create(); }
   virtual SmartPtr<ShiftArea> shift(const AreaRef& area, const scaled& s) const
   { return ShiftArea::create(area, s); }
+  virtual SmartPtr<StepArea> step(const AreaRef& area, const scaled& s) const
+  { return StepArea::create(area, s); }
   virtual SmartPtr<BoxedLayoutArea> boxedLayout(const BoundingBox& box, const std::vector<BoxedLayoutArea::XYArea>& content) const
   { return BoxedLayoutArea::create(box, content); }
 

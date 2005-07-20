@@ -81,6 +81,7 @@ BoxMLTextElement::format(FormattingContext& ctxt)
 	res = ctxt.BGD()->getFactory()->background(res, newBackground);
 
       res = ctxt.BGD()->wrapper(ctxt, res);
+      setMaxArea(res);
       setArea(res);
 
       ctxt.pop();

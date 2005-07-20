@@ -40,19 +40,14 @@ BoxMLBinContainerElement::format(FormattingContext& ctxt)
     {
       ctxt.push(this);
       if (SmartPtr<BoxMLElement> child = getChild())
-	setArea(ctxt.BGD()->wrapper(ctxt, child->format(ctxt)));
+	{
+	  child->format(ctxt);
+	  setMaxArea(ctxt.BGD()->wrapper(ctxt, child->getMaxArea()));
+	  setArea(ctxt.BGD()->wrapper(ctxt, child->getArea()));
+	}
       ctxt.pop();
       resetDirtyLayout();
     }
 
   return getArea();
-}
-
-scaled
-BoxMLBinContainerElement::getStep() const
-{
-  if (SmartPtr<BoxMLElement> child = getChild())
-    return child->getStep();
-  else
-    return scaled::zero();
 }

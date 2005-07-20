@@ -104,7 +104,7 @@ static GtkItemFactoryEntry menu_items[] = {
   { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>", 0 },
   { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure", 0 },
 
-  { "/_Help" ,        NULL,         NULL,          0, "<LastBranch>", 0 },
+  { "/_Help" ,        NULL,         NULL,          0, "<Branch>", 0 },
   { "/Help/About...", NULL,         help_about,    0, NULL, 0 }
 };
 
