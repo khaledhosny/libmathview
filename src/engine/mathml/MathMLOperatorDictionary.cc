@@ -42,23 +42,11 @@ MathMLOperatorDictionary::add(const AbstractLogger& logger,
 {
   FormDefaults& formDefaults = items[opName];
   if (form == "prefix")
-    if (formDefaults.prefix)
-      logger.out(LOG_WARNING, "duplicate `prefix' form for operator `%s' in dictionary (ignored)",
-		 escape(UCS4StringOfString(opName)).c_str());
-    else
-      formDefaults.prefix = defaults;
+    formDefaults.prefix = defaults;
   else if (form == "infix")
-    if (formDefaults.infix)
-      logger.out(LOG_WARNING, "duplicate `infix' form for operator `%s' in dictionary (ignored)",
-		 escape(UCS4StringOfString(opName)).c_str());
-    else
-      formDefaults.infix = defaults;
+    formDefaults.infix = defaults;
   else if (form == "postfix")
-    if (formDefaults.postfix)
-      logger.out(LOG_WARNING, "duplicate `postfix' form for operator `%s' in dictionary (ignored)",
-		 escape(UCS4StringOfString(opName)).c_str());
-    else
-      formDefaults.postfix = defaults;
+    formDefaults.postfix = defaults;
   else
     logger.out(LOG_WARNING, 
 	       "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
