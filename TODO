@@ -42,7 +42,6 @@ BUGS
   more appropriate to draw it just after the glyph, especially
   for mo elements
 ? selecting the root <math> element does not show selection
-+ numalign="left" doesn't work in mfrac
 
 ARCH IMPROVEMENTS
 
@@ -76,6 +75,11 @@ MISSING
 - runtime selection of backend
 
 // BoxML
+
+BUGS
+
+- understand whether getStep should be used for the height as well
+  in a vertical box for determining the distance between elements
 
 MISSING
 

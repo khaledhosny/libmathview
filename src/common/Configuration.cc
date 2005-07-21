@@ -26,11 +26,21 @@
 #include "Configuration.hh"
 #include "TemplateStringParsers.hh"
 
+std::vector<String> Configuration::configurationPaths;
+
 Configuration::Configuration()
 { }
 
 Configuration::~Configuration()
 { }
+
+void
+Configuration::addConfigurationPath(const String& path)
+{ configurationPaths.push_back(path); }
+
+const std::vector<String>&
+Configuration::getConfigurationPaths()
+{ return configurationPaths; }
 
 void
 Configuration::set(const String& key, const String& value)

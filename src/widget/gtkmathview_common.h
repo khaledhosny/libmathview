@@ -135,6 +135,7 @@ extern "C" {
   void       GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)(GtkMathView*, gboolean);
   gboolean   GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)(GtkMathView*, gboolean);
+  void       GTKMATHVIEW_METHOD_NAME(add_configuration_path)(const gchar*);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

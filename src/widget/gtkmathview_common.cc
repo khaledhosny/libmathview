@@ -1791,3 +1791,10 @@ GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView* math_view)
   g_return_val_if_fail(math_view->renderingContext != 0, FALSE);
   return math_view->renderingContext->getT1AntiAliasedMode() ? TRUE : FALSE;
 }
+
+extern "C" void
+GTKMATHVIEW_METHOD_NAME(add_configuration_path)(const gchar* path)
+{
+  g_return_if_fail(path != NULL);
+  Configuration::addConfigurationPath(path);
+}

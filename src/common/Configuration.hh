@@ -43,6 +43,9 @@ public:
   static SmartPtr<Configuration> create(void)
   { return new Configuration(); }
 
+  static void addConfigurationPath(const String&);
+  static const std::vector<String>& getConfigurationPaths(void);
+
   bool has(const String&) const;
   void set(const String&, const String&);
   String getString(const SmartPtr<class AbstractLogger>&, const String&, const String&) const;
@@ -78,6 +81,7 @@ protected:
   const SmartPtr<class Entry> get(const String&) const;
 
 private:
+  static std::vector<String> configurationPaths;
   typedef HASH_MAP_NS::hash_map<String, SmartPtr<Entry>, StringHash, StringEq> Map;
   Map map;
 };
