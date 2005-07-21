@@ -97,8 +97,9 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 
 	  if (prevArea)
 	    {
-	      if (prevHeight + areaBox.depth < minLineSpacing)
-		c.push_back(ctxt.BGD()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaBox.depth, 0));
+	      const scaled areaDepth = areaBox.depth + area->getStep();
+	      if (prevHeight + areaDepth < minLineSpacing)
+		c.push_back(ctxt.BGD()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaDepth, 0));
 	    }
 	  prevHeight = areaBox.height;
 	  prevArea = area;
