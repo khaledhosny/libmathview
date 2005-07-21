@@ -122,10 +122,11 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
       res = ctxt.BGD()->getFactory()->verticalArray(c, enter_index);
       if (enter != exit)
 	{
-	  AreaRef res1 = ctxt.BGD()->getFactory()->verticalArray(c, exit_index);
+	  const SmartPtr<VerticalArrayArea> res1 = ctxt.BGD()->getFactory()->verticalArray(c, exit_index);
 	  assert(res->box().defined());
 	  assert(res1->box().defined());
-	  res = ctxt.BGD()->getFactory()->step(res, res->box().height - res1->box().height);
+	  const scaled step = res->box().height - res1->box().height + res1->node(exit_index)->getStep();
+	  res = ctxt.BGD()->getFactory()->step(res, step);
 	}
       break;
     }
