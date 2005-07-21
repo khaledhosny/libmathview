@@ -187,7 +187,9 @@ Gtk_PangoShaper::shapeStretchyCharH(const ShapingContext& context) const
 AreaRef
 Gtk_PangoShaper::shapeStretchyCharV(const ShapingContext& context) const
 {
-  const scaled span = context.getVSpan() - (1 * context.getSize()) / 10;
+  // we use 2 * so that text-mode parentheses are not required to stretch
+  // when a glyph goes below the baseline (like p or y)
+  const scaled span = context.getVSpan() - (2 * context.getSize()) / 10;
 
   const VStretchyChar* charSpec = &vMap[context.getSpec().getGlyphId()];
 
