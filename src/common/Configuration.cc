@@ -84,6 +84,7 @@ Configuration::getStringList(const String& key) const
   std::vector<String> res;
   for (SmartPtr<Entry> entry = get(key); entry; entry = entry->getNext())
     res.push_back(entry->getValue());
+  std::reverse(res.begin(), res.end());
   return res;
 }
 
