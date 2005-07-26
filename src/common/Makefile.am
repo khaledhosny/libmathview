@@ -23,6 +23,7 @@ libcommon_la_SOURCES = \
   Rectangle.cc \
   String.cc \
   StringAux.cc \
+  Utils.cc \
   ValueConversion.cc \
   token.cc \
   $(NULL)
@@ -67,6 +68,7 @@ noinst_HEADERS = \
   TemplateStringScanners.hh \
   TemplateStringParsers.hh \
   TokenSet.hh \
+  Utils.hh \
   for_each_if.h \
   token.hh \
   $(NULL)
