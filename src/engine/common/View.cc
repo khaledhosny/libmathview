@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include "defs.h"
 #include "config.dirs"
 
 #include "Clock.hh"
@@ -39,7 +40,8 @@
 #include "MathGraphicDevice.hh"
 #include "BoxGraphicDevice.hh"
 
-View::View() : defaultFontSize(10), freezeCounter(0)
+View::View(const SmartPtr<AbstractLogger>&)
+  : defaultFontSize(DEFAULT_FONT_SIZE), freezeCounter(0)
 { }
 
 View::~View()

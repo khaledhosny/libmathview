@@ -12,10 +12,8 @@
   * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
-+ make pangolayout pangolinelayout areas configurable (glyph area?)
 + find a way of having TFM support orthogonal to the other classes
-+ remove configuration field from gtkmathview class structure
-+ pass Configuration to View constructor and initializes default font size
+? make pangolayout pangolinelayout areas configurable (glyph area?)
 ? T1 CM shaper useful for SVG?
 ? have callback functions to notify progress while building/formatting/etc?
   these should not depend on the backend
@@ -47,6 +45,7 @@ BUGS
 
 ARCH IMPROVEMENTS
 
+? make default value of attributes configurable
 ? make GlyphStringArea a leaf-like area?
 - change the clone method for areas so that it checks if the
   content is unchanged, and possibly implement the replace this
@@ -80,9 +79,6 @@ MISSING
 
 BUGS
 
-- understand whether getStep should be used for the height as well
-  in a vertical box for determining the distance between elements
-
 MISSING
 
 - add documentation for boxml
@@ -91,7 +87,6 @@ MISSING
 
 MISSING
 
-- rendering of BoxML into SVG (hard because we need the shapers!)
 - cross-embedding of MathML and SVG following the guidelines?
 - cross-embedding of MathML and SVG with coordinates computation?
 - document alpha channel in RGBColor

@@ -62,7 +62,7 @@ struct TemplateSetup
 	  {
 	    const String keyName = Model::getAttribute(elem, "name");
 	    const String keyValue = Model::getElementValue(elem);
-	    conf.set(appendSectionName(path, keyName), keyValue);
+	    conf.add(appendSectionName(path, keyName), keyValue);
 	  }
 	else
 	  logger.out(LOG_WARNING, "unrecognized element `%s' in configuration file (ignored)", name.c_str());

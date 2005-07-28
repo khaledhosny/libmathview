@@ -28,8 +28,8 @@
 #include "libxml2_Setup.hh"
 #include "libxml2_Builder.hh"
 
-libxml2_MathView::libxml2_MathView()
-  : currentDoc(0), docOwner(false)
+libxml2_MathView::libxml2_MathView(const SmartPtr<AbstractLogger>& logger)
+  : View(logger), currentDoc(0), docOwner(false)
 {
   setBuilder(libxml2_Builder::create());
 }
@@ -40,6 +40,10 @@ libxml2_MathView::~libxml2_MathView()
   currentDoc = 0;
   docOwner = false;
 }
+
+SmartPtr<libxml2_MathView>
+libxml2_MathView::create(const SmartPtr<AbstractLogger>& logger)
+{ return new libxml2_MathView(logger, conf); }
 
 void
 libxml2_MathView::unload()

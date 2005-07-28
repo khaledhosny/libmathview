@@ -32,7 +32,7 @@
 class View : public Object
 {
 protected:
-  View(void);
+  View(const SmartPtr<class AbstractLogger>&);
   virtual ~View();
 
 public:

@@ -43,19 +43,6 @@ public:
   static SmartPtr<Configuration> create(void)
   { return new Configuration(); }
 
-  static void addConfigurationPath(const String&);
-  static const std::vector<String>& getConfigurationPaths(void);
-
-  bool has(const String&) const;
-  void set(const String&, const String&);
-  String getString(const SmartPtr<class AbstractLogger>&, const String&, const String&) const;
-  std::vector<String> getStringList(const String&) const;
-  int getInt(const SmartPtr<class AbstractLogger>&, const String&, int) const;
-  bool getBool(const SmartPtr<class AbstractLogger>&, const String&, bool) const;
-  RGBColor getRGBColor(const SmartPtr<class AbstractLogger>&, const String&, const RGBColor&) const;
-  Length getLength(const SmartPtr<class AbstractLogger>&, const String&, const Length&) const;
-
-private:
   class Entry : public Object
   {
   protected:
@@ -77,8 +64,20 @@ private:
     SmartPtr<Entry> next;
   };
 
-protected:
-  const SmartPtr<class Entry> get(const String&) const;
+  static void addConfigurationPath(const String&);
+  static const std::vector<String>& getConfigurationPaths(void);
+
+  bool has(const String&) const;
+  void add(const String&, const String&);
+  SmartPtr<Entry> get(const String&) const;
+  std::vector<SmartPtr<Entry> > getAll(const String&) const;
+
+  String getString(const SmartPtr<class AbstractLogger>&, const String&, const String&) const;
+  std::vector<String> getStringList(const String&) const;
+  int getInt(const SmartPtr<class AbstractLogger>&, const String&, int) const;
+  bool getBool(const SmartPtr<class AbstractLogger>&, const String&, bool) const;
+  RGBColor getRGBColor(const SmartPtr<class AbstractLogger>&, const String&, const RGBColor&) const;
+  Length getLength(const SmartPtr<class AbstractLogger>&, const String&, const Length&) const;
 
 private:
   static std::vector<String> configurationPaths;

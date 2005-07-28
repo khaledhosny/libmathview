@@ -28,13 +28,18 @@
 #include "libxml2_reader_Builder.hh"
 #include "libxml2_reader_Setup.hh"
 
-libxml2_reader_MathView::libxml2_reader_MathView()
+libxml2_reader_MathView::libxml2_reader_MathView(const SmartPtr<AbstractLogger>& logger)
+  : View(logger)
 {
   setBuilder(libxml2_reader_Builder::create());
 }
 
 libxml2_reader_MathView::~libxml2_reader_MathView()
 { }
+
+SmartPtr<libxml2_reader_MathView>
+libxml2_reader_MathView::create(const SmartPtr<AbstractLogger>& logger)
+{ return new libxml2_reader_MathView(logger); }
 
 void
 libxml2_reader_MathView::unload()

@@ -30,11 +30,11 @@
 class libxml2_MathView : public View
 {
 protected:
-  libxml2_MathView(void);
+  libxml2_MathView(const SmartPtr<class AbstractLogger>&);
   virtual ~libxml2_MathView();
 
 public:
-  static SmartPtr<libxml2_MathView> create(void) { return new libxml2_MathView(); }
+  static SmartPtr<libxml2_MathView> create(const SmartPtr<class AbstractLogger>&);
 
   virtual void unload(void);
   bool loadURI(const char*);

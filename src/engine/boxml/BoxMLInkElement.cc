@@ -22,7 +22,6 @@
 
 #include <config.h>
 
-#include "View.hh"
 #include "BoxMLInkElement.hh"
 #include "BoxMLAttributeSignatures.hh"
 #include "FormattingContext.hh"

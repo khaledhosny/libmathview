@@ -30,7 +30,8 @@
 #include "gmetadom_MathView.hh"
 #include "Element.hh"
 
-gmetadom_MathView::gmetadom_MathView()
+gmetadom_MathView::gmetadom_MathView(const SmartPtr<AbstractLogger>& logger)
+  : View(logger)
 {
   setBuilder(gmetadom_Builder::create());
 }
@@ -39,6 +40,10 @@ gmetadom_MathView::~gmetadom_MathView()
 {
   unload();
 }
+
+SmartPtr<gmetadom_MathView>
+gmetadom_MathView::create(const SmartPtr<AbstractLogger>& logger)
+{ return new gmetadom_MathView(logger); }
 
 void
 gmetadom_MathView::unload()

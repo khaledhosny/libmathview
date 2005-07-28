@@ -43,7 +43,7 @@ Configuration::getConfigurationPaths()
 { return configurationPaths; }
 
 void
-Configuration::set(const String& key, const String& value)
+Configuration::add(const String& key, const String& value)
 {
   Map::iterator p = map.find(key);
   if (p != map.end())
@@ -56,7 +56,7 @@ bool
 Configuration::has(const String& key) const
 { return map.find(key) != map.end(); }
 
-const SmartPtr<Configuration::Entry>
+SmartPtr<Configuration::Entry>
 Configuration::get(const String& key) const
 {
   const Map::const_iterator p = map.find(key);
@@ -64,6 +64,16 @@ Configuration::get(const String& key) const
     return p->second;
   else
     return 0;
+}
+
+std::vector<SmartPtr<Configuration::Entry> >
+Configuration::getAll(const String& prefix) const
+{
+  std::vector<SmartPtr<Entry> > content;
+  for (Map::const_iterator p = map.begin(); p != map.end(); p++)
+    if (p->first.substr(0, prefix.length()) == prefix)
+      content.push_back(p->second);
+  return content;
 }
 
 String

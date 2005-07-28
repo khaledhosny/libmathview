@@ -31,11 +31,11 @@
 class custom_reader_MathView : public View
 {
 protected:
-  custom_reader_MathView(void);
+  custom_reader_MathView(const SmartPtr<class AbstractLogger>&);
   virtual ~custom_reader_MathView();
 
 public:
-  static SmartPtr<custom_reader_MathView> create(void) { return new custom_reader_MathView(); }
+  static SmartPtr<custom_reader_MathView> create(const SmartPtr<class AbstractLogger>&);
 
   virtual void unload(void);
   bool loadReader(const c_customXmlReader*, c_customModelUserData);

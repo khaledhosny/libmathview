@@ -22,17 +22,23 @@
 
 #include <config.h>
 
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
 #include "custom_reader_MathView.hh"
 #include "custom_reader_Builder.hh"
 
-custom_reader_MathView::custom_reader_MathView()
-  : data(0)
+custom_reader_MathView::custom_reader_MathView(const SmartPtr<AbstractLogger>& logger)
+  : View(logger), data(0)
 {
   setBuilder(custom_reader_Builder::create());
 }
 
 custom_reader_MathView::~custom_reader_MathView()
 { }
+
+SmartPtr<custom_reader_MathView>
+custom_reader_MathView::create(const SmartPtr<AbstractLogger>& logger)
+{ return new custom_reader_MathView(logger); }
 
 void
 custom_reader_MathView::unload()

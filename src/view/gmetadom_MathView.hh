@@ -31,11 +31,11 @@
 class gmetadom_MathView : public View
 {
 protected:
-  gmetadom_MathView(void);
+  gmetadom_MathView(const SmartPtr<class AbstractLogger>&);
   virtual ~gmetadom_MathView();
 
 public:
-  static SmartPtr<gmetadom_MathView> create(void) { return new gmetadom_MathView(); }
+  static SmartPtr<gmetadom_MathView> create(const SmartPtr<class AbstractLogger>&);
 
   virtual void unload(void);
   bool loadURI(const String&);

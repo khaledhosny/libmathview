@@ -22,7 +22,6 @@
 
 #include <config.h>
 
-#include "View.hh"
 #include "BoxMLElement.hh"
 #include "BoxMLNamespaceContext.hh"
 

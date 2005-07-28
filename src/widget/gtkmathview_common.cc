@@ -109,9 +109,9 @@ struct _GtkMathViewClass
   GtkMathViewDecorateSignal decorate_over;
 
   AbstractLogger* logger;
+  gint defaultFontSize;
   bool defaultT1OpaqueMode;
   bool defaultT1AntiAliasedMode;
-  Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
   Gtk_Backend* backend;
 };
@@ -205,9 +205,9 @@ static guint decorate_over_signal = 0;
 
 /* auxiliary C++ functions */
 
-static RGBColor
-RGBColorOfGdkColor(const GdkColor& c)
-{ return RGBColor(c.red >> 8, c.green >> 8, c.blue >> 8); }
+// static RGBColor
+// RGBColorOfGdkColor(const GdkColor& c)
+// { return RGBColor(c.red >> 8, c.green >> 8, c.blue >> 8); }
 
 static SmartPtr<const Gtk_WrapperArea>
 findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
@@ -420,8 +420,8 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
 
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, getenv("GTKMATHVIEWCONF"));
   configuration->ref();
-  math_view_class->configuration = configuration;
 
+  math_view_class->defaultFontSize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
   math_view_class->defaultT1OpaqueMode = configuration->getBool(logger, "default/t1lib/opaque-mode", false);
   math_view_class->defaultT1AntiAliasedMode = configuration->getBool(logger, "default/t1lib/anti-aliasing", false);
 
@@ -449,12 +449,6 @@ gtk_math_view_base_class_finalize(GtkMathViewClass* math_view_class)
     {
       math_view_class->dictionary->unref();
       math_view_class->dictionary = 0;
-    }
-
-  if (math_view_class->configuration)
-    {
-      math_view_class->configuration->unref();
-      math_view_class->configuration = 0;
     }
 
   if (math_view_class->logger)
@@ -649,15 +643,15 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
-#if 1
-  SmartPtr<MathView> view = MathView::create();
+  GtkMathViewClass* math_view_class = GTK_MATH_VIEW_CLASS(gtk_type_class(gtk_math_view_get_type()));
+  g_assert(math_view_class != NULL);
+
+  SmartPtr<MathView> view = MathView::create(math_view_class->logger);
   view->ref();
   math_view->view = view;
 
-  GtkMathViewClass* math_view_class = GTK_MATH_VIEW_CLASS(G_OBJECT_GET_CLASS(G_OBJECT(math_view)));
-  g_assert(math_view_class != NULL);
-
   view->setLogger(math_view_class->logger);
+  view->setDefaultFontSize(math_view_class->defaultFontSize);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));
 #if ENABLE_BOXML
@@ -668,7 +662,6 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
   math_view->renderingContext->setT1OpaqueMode(math_view_class->defaultT1OpaqueMode);
   math_view->renderingContext->setT1AntiAliasedMode(math_view_class->defaultT1AntiAliasedMode);
-#endif
 }
 
 extern "C" GtkWidget*
