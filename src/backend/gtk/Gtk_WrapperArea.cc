@@ -59,14 +59,19 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
     }
 
   if (old_style != context.getStyle())
-    {
-      RGBColor old_foregroundColor;
-      RGBColor backgroundColor;
+    {      
+      GdkColor old_foregroundColor;
+      GdkColor backgroundColor;
       context.getForegroundColor(old_foregroundColor);
       context.getBackgroundColor(backgroundColor);
       context.setForegroundColor(backgroundColor);
 
-      context.fill(x, y, box());
+      BoundingBox areaBox = box();
+      const scaled margin = Gtk_RenderingContext::fromGtkPixels(1);
+      areaBox.width += margin * 2;
+      areaBox.height += margin;
+      areaBox.depth += margin;
+      context.fill(x - margin, y, areaBox);
 
       context.setForegroundColor(old_foregroundColor);
     }
