@@ -86,10 +86,6 @@ enum SelectState
 enum GtkMathViewProperties
   {
     PROP_DEFAULT_FONT_SIZE,
-    PROP_DEFAULT_FOREGROUND_COLOR,
-    PROP_DEFAULT_BACKGROUND_COLOR,
-    PROP_DEFAULT_SELECTED_FOREGROUND_COLOR,
-    PROP_DEFAULT_SELECTED_BACKGROUND_COLOR,
     PROP_LOG_VERBOSITY
   };
 
@@ -113,10 +109,6 @@ struct _GtkMathViewClass
   GtkMathViewDecorateSignal decorate_over;
 
   AbstractLogger* logger;
-  RGBColor defaultForeground;
-  RGBColor defaultBackground;
-  RGBColor defaultSelectForeground;
-  RGBColor defaultSelectBackground;
   bool defaultT1OpaqueMode;
   bool defaultT1AntiAliasedMode;
   Configuration* configuration;
@@ -213,6 +205,10 @@ static guint decorate_over_signal = 0;
 
 /* auxiliary C++ functions */
 
+static RGBColor
+RGBColorOfGdkColor(const GdkColor& c)
+{ return RGBColor(c.red >> 8, c.green >> 8, c.blue >> 8); }
+
 static SmartPtr<const Gtk_WrapperArea>
 findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
 {
@@ -268,10 +264,6 @@ gtk_math_view_set_property (GObject* object,
   switch (prop_id)
     {
     case PROP_DEFAULT_FONT_SIZE:
-    case PROP_DEFAULT_FOREGROUND_COLOR:
-    case PROP_DEFAULT_BACKGROUND_COLOR:
-    case PROP_DEFAULT_SELECTED_FOREGROUND_COLOR:
-    case PROP_DEFAULT_SELECTED_BACKGROUND_COLOR:
     case PROP_LOG_VERBOSITY:
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -337,11 +329,11 @@ gtk_math_view_paint(GtkMathView* math_view)
     }
 
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
-  rc->setForegroundColor(math_view_class->defaultSelectForeground);
-  rc->setBackgroundColor(math_view_class->defaultSelectBackground);
+  rc->setForegroundColor(widget->style->fg[GTK_STATE_SELECTED]);
+  rc->setBackgroundColor(widget->style->bg[GTK_STATE_SELECTED]);
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(math_view_class->defaultForeground);
-  rc->setBackgroundColor(math_view_class->defaultBackground);
+  rc->setForegroundColor(widget->style->fg[GTK_STATE_NORMAL]);
+  rc->setBackgroundColor(widget->style->bg[GTK_STATE_NORMAL]);
 
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
@@ -430,10 +422,6 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   configuration->ref();
   math_view_class->configuration = configuration;
 
-  math_view_class->defaultForeground = configuration->getRGBColor(logger, "default/color/foreground", DEFAULT_FOREGROUND);
-  math_view_class->defaultBackground = configuration->getRGBColor(logger, "default/color/background", DEFAULT_BACKGROUND);
-  math_view_class->defaultSelectForeground = configuration->getRGBColor(logger, "default/select-color/foreground", DEFAULT_SELECT_FOREGROUND);
-  math_view_class->defaultSelectBackground = configuration->getRGBColor(logger, "default/select-color/background", DEFAULT_SELECT_BACKGROUND);
   math_view_class->defaultT1OpaqueMode = configuration->getBool(logger, "default/t1lib/opaque-mode", false);
   math_view_class->defaultT1AntiAliasedMode = configuration->getBool(logger, "default/t1lib/anti-aliasing", false);
 
@@ -603,38 +591,6 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 						   100,
 						   -1,
 						   G_PARAM_READWRITE));
-
-  g_object_class_install_property(gobject_class,
-				  PROP_DEFAULT_FOREGROUND_COLOR,
-				  g_param_spec_string("foreground_color",
-						      "Foreground color",
-						      "The default foreground color",
-						      NULL,
-						      G_PARAM_READWRITE));
-
-  g_object_class_install_property(gobject_class,
-				  PROP_DEFAULT_BACKGROUND_COLOR,
-				  g_param_spec_string("background_color",
-						      "Background color",
-						      "The default background color",
-						      NULL,
-						      G_PARAM_READWRITE));
-
-  g_object_class_install_property(gobject_class,
-				  PROP_DEFAULT_SELECT_FOREGROUND_COLOR,
-				  g_param_spec_string("select_foreground_color",
-						      "Select foreground color",
-						      "The default foreground color for selected markup",
-						      NULL,
-						      G_PARAM_READWRITE));
-
-  g_object_class_install_property(gobject_class,
-				  PROP_DEFAULT_SELECT_BACKGROUND_COLOR,
-				  g_param_spec_string("select_background_color",
-						      "Select background color",
-						      "The default background color for selected markup",
-						      NULL,
-						      G_PARAM_READWRITE));
 
   g_object_class_install_property(gobject_class,
 				  PROP_LOG_VERBOSITY,
