@@ -97,11 +97,11 @@ BoxMLVElement::formatVerticalArray(FormattingContext& ctxt,
 
 	  if (prevArea)
 	    {
-	      const scaled areaDepth = areaBox.depth + area->getStep();
+	      const scaled areaDepth = areaBox.depth + std::min(scaled::zero(), area->getStep());
 	      if (prevHeight + areaDepth < minLineSpacing)
 		c.push_back(ctxt.BGD()->getFactory()->verticalSpace(minLineSpacing - prevHeight - areaDepth, 0));
 	    }
-	  prevHeight = areaBox.height;
+	  prevHeight = areaBox.height - std::min(scaled::zero(), -area->getStep());
 	  prevArea = area;
 	  
 	  if (enter-- == 0) enter_index = c.size();
