@@ -34,6 +34,7 @@ typedef SmartPtr<Value> (*AttributeParser)(const UCS4String::const_iterator&,
 struct AttributeSignature
 {
   String name;
+  String fullName;
   AttributeParser parser;
   bool fromElement;
   bool fromContext;
@@ -53,12 +54,13 @@ typedef const AttributeSignature* AttributeId;
 #define ATTRIBUTE_ID(ns,el,name) (ATTRIBUTE_ID_OF_SIGNATURE(ATTRIBUTE_SIGNATURE(ns,el,name)))
 #define ATTRIBUTE_PARSER(ns,el,name) &Parse_##ns##_##el##_##name::parse
 #define ATTRIBUTE_NAME_OF_ID(id) ((id)->name)
+#define ATTRIBUTE_FULL_NAME(ns,el,name) #ns"."#el"."#name
 #define REFINE_ATTRIBUTE(ctxt,ns,el,name) refineAttribute(ctxt, ATTRIBUTE_SIGNATURE(ns,el,name))
 #define GET_ATTRIBUTE_VALUE(ns,el,name) getAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name))
 #define GET_ATTRIBUTE_DEFAULT_VALUE(ns,el,name) (ATTRIBUTE_SIGNATURE(ns,el,name).getDefaultValue())
 #define DECLARE_ATTRIBUTE(ns,el,name) extern const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name)
-#define DEFINE_ATTRIBUTE(ns,el,s,name,fe,fc,de,em,df) \
+#define DEFINE_ATTRIBUTE(ns,el,name,fe,fc,de,em,df) \
   const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name) = \
-  { s, ATTRIBUTE_PARSER(ns,el,name), fe, fc, de, em, df, 0 }
+  { #name, ATTRIBUTE_FULL_NAME(ns,el,name), ATTRIBUTE_PARSER(ns,el,name), fe, fc, de, em, df, 0 }
 
 #endif // __AttributeSignature_hh__
