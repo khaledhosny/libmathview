@@ -35,7 +35,7 @@
 #include "Gtk_RenderingContext.hh"
 
 Gtk_RenderingContext::Gtk_RenderingContext(const SmartPtr<AbstractLogger>& l)
-  : logger(l), style(NORMAL_STYLE), xft_draw(0), t1_opaque_mode(false), t1_aa_mode(false)
+  : logger(l), style(NORMAL_STYLE), t1_opaque_mode(false), t1_aa_mode(false)
 {
   assert(logger);
 }
@@ -49,14 +49,6 @@ void
 Gtk_RenderingContext::releaseResources()
 {
   // should free the gc's? 
-  if (xft_draw)
-    {
-      // It seems that by using XftDrawDestroy the drawable will be destroyed
-      // as well, so we only free the structure hoping that nothing bad
-      // will happen. This was taken from gr_UnixGraphics.cpp in AbiWord
-      free(xft_draw);
-      xft_draw = 0;
-    }
 }
 
 void
@@ -69,12 +61,6 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
     {
       for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
-
-      xft_draw = XftDrawCreate(GDK_DISPLAY(),
-			       gdk_x11_drawable_get_xid(drawable),
-			       GDK_VISUAL_XVISUAL(gdk_drawable_get_visual(drawable)),
-			       GDK_COLORMAP_XCOLORMAP(gdk_colormap));
-      assert(xft_draw);
 
 #if HAVE_LIBT1
       Display* xdisplay = GDK_DRAWABLE_XDISPLAY(drawable);
@@ -140,17 +126,6 @@ Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
 		  Gtk_RenderingContext::toGtkX(x),
 		  Gtk_RenderingContext::toGtkY(y),
 		  glyphs);
-}
-
-void
-Gtk_RenderingContext::draw(const scaled& x, const scaled& y, XftFont* font, FcChar8 glyph) const
-{
-  XftDrawString8(xft_draw,
-		 getXftForegroundColor(),
-		 font,
-		 Gtk_RenderingContext::toXftX(x),
-		 Gtk_RenderingContext::toXftY(y),
-		 &glyph, 1);
 }
 
 #if HAVE_LIBT1
