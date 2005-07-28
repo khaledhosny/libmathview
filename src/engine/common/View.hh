@@ -45,7 +45,6 @@ public:
   static String getDefaultConfigurationPath(void);
   static String getDefaultOperatorDictionaryPath(void);
 
-  void setLogger(const SmartPtr<class AbstractLogger>&);
   SmartPtr<class AbstractLogger> getLogger(void) const;
   void setOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&);
   SmartPtr<class MathMLOperatorDictionary> getOperatorDictionary(void) const;

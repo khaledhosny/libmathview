@@ -99,8 +99,7 @@ int main(int argc, char *argv[]) {
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
 
-  view = MathView::create();
-  view->setLogger(logger);
+  view = MathView::create(logger);
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, mgd));
 #if ENABLE_BOXML

@@ -650,7 +650,6 @@ gtk_math_view_init(GtkMathView* math_view)
   view->ref();
   math_view->view = view;
 
-  view->setLogger(math_view_class->logger);
   view->setDefaultFontSize(math_view_class->defaultFontSize);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));

@@ -43,7 +43,7 @@ libxml2_MathView::~libxml2_MathView()
 
 SmartPtr<libxml2_MathView>
 libxml2_MathView::create(const SmartPtr<AbstractLogger>& logger)
-{ return new libxml2_MathView(logger, conf); }
+{ return new libxml2_MathView(logger); }
 
 void
 libxml2_MathView::unload()

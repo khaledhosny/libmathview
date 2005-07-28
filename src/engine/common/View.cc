@@ -40,8 +40,8 @@
 #include "MathGraphicDevice.hh"
 #include "BoxGraphicDevice.hh"
 
-View::View(const SmartPtr<AbstractLogger>&)
-  : defaultFontSize(DEFAULT_FONT_SIZE), freezeCounter(0)
+View::View(const SmartPtr<AbstractLogger>& l)
+  : logger(l), defaultFontSize(DEFAULT_FONT_SIZE), freezeCounter(0)
 { }
 
 View::~View()
@@ -72,13 +72,6 @@ View::getDefaultConfigurationPath()
 String
 View::getDefaultOperatorDictionaryPath()
 { return PKGDATADIR"/dictionary.xml"; }
-
-void
-View::setLogger(const SmartPtr<AbstractLogger>& l)
-{
-  logger = l;
-  if (SmartPtr<Builder> builder = getBuilder()) builder->setLogger(logger);
-}
 
 SmartPtr<AbstractLogger>
 View::getLogger() const

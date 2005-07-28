@@ -344,8 +344,7 @@ main(int argc, char* argv[])
   logger->out(LOG_INFO, "Paper size: %fx%f", width, height);
   logger->out(LOG_INFO, "Margins   : %fx%f", xMargin, yMargin);
 
-  SmartPtr<MathView> view = MathView::create();
-  view->setLogger(logger);
+  SmartPtr<MathView> view = MathView::create(logger);
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, mgd));
 #if ENABLE_BOXML
