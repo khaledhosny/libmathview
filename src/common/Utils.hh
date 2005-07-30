@@ -23,6 +23,10 @@
 #ifndef __Utils_hh__
 #define __Utils_hh__
 
+namespace MathViewNS {
+
 bool fileExists(const char*);
+
+}
 
 #endif // __Utils_hh__

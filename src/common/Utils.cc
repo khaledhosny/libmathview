@@ -27,6 +27,11 @@
 
 #include "Utils.hh"
 
+namespace MathViewNS {
+
 bool
 fileExists(const char* fileName)
 { return g_file_test(fileName, G_FILE_TEST_EXISTS); }
+
+}
+

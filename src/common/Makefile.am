@@ -51,6 +51,7 @@ mathview_HEADERS = \
   SparseMap.hh \
   String.hh \
   StringAux.hh \
+  Utils.hh \
   Value.hh \
   ValueConversion.hh \
   Variant.hh \
@@ -68,7 +69,6 @@ noinst_HEADERS = \
   TemplateStringScanners.hh \
   TemplateStringParsers.hh \
   TokenSet.hh \
-  Utils.hh \
   for_each_if.h \
   token.hh \
   $(NULL)
