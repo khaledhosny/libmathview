@@ -27,7 +27,7 @@
 
 char buffer[257];
 
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   printf("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n");
   printf("<!DOCTYPE dictionary SYSTEM \"%s\">\n", argv[1]);
@@ -44,5 +44,7 @@ main(int argc, char* argv[])
     }
   }
   printf("</dictionary>\n");
+  
+  return 0;
 }
 

@@ -27,7 +27,8 @@
 #include "Variant.hh"
 #include "RGBColor.hh"
 #include "Length.hh"
-#include "MathVariant.hh"
+// full path needed for Win32
+#include "../../common/mathvariants/MathVariant.hh"
 #include "FastScopedHashMap.hh"
 
 class FormattingContext

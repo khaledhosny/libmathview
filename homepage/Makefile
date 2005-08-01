@@ -3,6 +3,7 @@ NULL =
 
 HTML_FILES = \
   index.html \
+  news.html \
   $(NULL)
 
 PNG_FILES = \

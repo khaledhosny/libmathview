@@ -424,18 +424,22 @@ if test $t1lib = "yes"; then
 
         if test $with_t1lib_prefix = "yes"; then
                 T1_CFLAGS="-I$T1LIB_PREFIX/include"
-		T1_LIBS="-L$T1LIB_PREFIX/lib -lt1x -lt1"
+		T1_LIBS="-L$T1LIB_PREFIX/lib -lt1"
+		T1_LIBS_X="-L$T1LIB_PREFIX/lib -lt1x"
 	else
 		T1_CFLAGS=""
-		T1_LIBS="-lt1x -lt1"
+		T1_LIBS="-lt1"
+		T1_LIBS_X="-lt1x"
         fi
 else
 	T1_CFLAGS=""
 	T1_LIBS=""
+	T1_LIBS_X=""
 fi
 AM_CONDITIONAL([COND_T1LIB], [test $t1lib = "yes"])
 AC_SUBST(T1_CFLAGS)
 AC_SUBST(T1_LIBS)
+AC_SUBST(T1_LIBS_X)
 
 if test "(" $t1lib = "no" ")" -a "(" "x$export_PS" = "xyes" ")"; then
 	AC_MSG_WARN(cannot export to PostScript if t1lib is not available)

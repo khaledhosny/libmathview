@@ -78,6 +78,7 @@ libmathview_backend_gtk_la_LIBADD = \
   $(PANGOX_LIBS) \
   $(GTK_LIBS) \
   $(T1_LIBS) \
+  $(T1_LIBS_X) \
   $(NULL)
 
 INCLUDES = \

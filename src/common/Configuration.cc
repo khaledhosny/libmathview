@@ -34,6 +34,10 @@ Configuration::Configuration()
 Configuration::~Configuration()
 { }
 
+const char*
+Configuration::getBinaryVersion()
+{ return VERSION; }
+
 void
 Configuration::addConfigurationPath(const String& path)
 { configurationPaths.push_back(path); }

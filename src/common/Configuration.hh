@@ -64,6 +64,7 @@ public:
     SmartPtr<Entry> next;
   };
 
+  static const char* getBinaryVersion(void);
   static void addConfigurationPath(const String&);
   static const std::vector<String>& getConfigurationPaths(void);
 

@@ -23,11 +23,12 @@
 #ifndef __View_hh__
 #define __View_hh__
 
-#include "Area.hh"
 #include "Object.hh"
 #include "String.hh"
 #include "SmartPtr.hh"
 #include "BoundingBox.hh"
+// Area.hh moved down here for Win32 build
+#include "Area.hh"
 
 class View : public Object
 {

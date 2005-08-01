@@ -1,0 +1,531 @@
+<!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+ -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+  <title>GtkMathView News Page</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />                
+  <link href="http://www.cs.unibo.it/~lpadovan/luca.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body id="bodytext">
+
+ <table class="title" border="0" width="100%" cellspacing="0" cellpadding="4">
+   <tr>
+     <td id="news" class="title">news</td>
+     <td class="top"><a href="#top">top</a></td>
+   </tr>
+ </table>
+
+ <dl>
+   <dt>Nov 10, 2004</dt>
+   <dd>
+     Release of version <b>0.6.4</b> (tag <b>v0_6_4</b>). This is mostly
+     a bug-fix release, especially for the GTK+ interface. In addition,
+     the configuration file has changed name, it is now called
+     <tt>gtkmathview.conf.xml</tt>.
+   </dd>
+
+   <dt>Jun 30, 2004</dt>
+   <dd>
+     The slides of my talk at <a href="http://2004.guadec.org">GUADEC 2004</a>
+     about GtkMathView are available online
+     [<a href="http://www.cs.unibo.it/%7Elpadovan/talks/guadec2004.pdf">.pdf</a>]
+   </dd>
+
+   <dt>Jun 18, 2004</dt>
+   <dd>
+     Release of version <b>0.6.3</b> (tag <b>v0_6_3</b>). The main
+     improvements are:
+     <ul class="compact">
+       <li>implemented the custom_ and libxml2_ reader interfaces in the widget API</li>
+       <li>implemented read from in-memory buffer for gmetadom and libxml2 frontends (thanks Shuying Wang)</li>
+       <li>fixed a few bugs related to the cursor and selections</li>
+       <li>removed margin around the formula, which causes problems when
+         the widget is embedded
+       </li>
+       <li>added a test program that shows how to embed gtkmathview inside
+         a GtkTextView widget (the test uses the plain libxml2 frontend)
+       </li>
+       <li>fixed bugs in fixed-point arithmetics that cause wrong
+         alignment of formulas with respect to surrounding text</li>
+     </ul>
+   </dd>
+
+   <dt>May 22, 2004</dt>
+   <dd>
+     Release of version <b>0.6.2</b> (tag <b>v0_6_2</b>). The main
+     improvements are:
+     <ul class="compact">
+       <li><em>Frontends:</em> Taking
+     advantage of the renewed architecture I have implemented 3 more 
+     frontends in addition to the one using GMetaDOM. GtkMathView is now
+     able to read MathML documents accessible via GMetaDOM, libxml2,
+     the libxml2 reader and also a customizable reader for which a
+     C API is provided. In other words, GtkMathView is not tied to
+     GMetaDOM anymore, plain libxml2 trees can be used, and also GtkMathView
+     can read application-specific encodings of MathML documents. We
+     plan to exploit this feature to read OCaml data structures directly,
+     without passing through a DOM representation.<br/>
+     The 4 frontends are completely unrelated and they can be compiled
+     in isolation.
+       </li>
+       <li><em>Library modularization:</em> GtkMathView is now compiled into
+         several libraries: <tt>libmathview</tt> (frontend independent
+	 rendering engine for MathML and BoxML); <tt>libmathview_frontent_*</tt>
+	 (one library for each supported frontend);
+	 <tt>libgtkmathview_*</tt> (GTK+ API, one for each supported
+	 frontend).
+       </li>
+       <li><em>Cursor:</em>
+         I have introduced an API for handling a cursor, which can
+         be displayed as the combination of a focus and/or a caret.
+	 The implementation is not completely bug-free, but it is
+	 already usable. Those willing to develop
+	 direct-manipulation editors of MathML markup should have
+	 something to experiment with. The <tt>mathmlviewer</tt>
+	 test program has been modified so as to set the cursor
+	 to the clicked element.
+       </li>
+       <li><em>Optional BoxML:</em>
+         Support for the BoxML markup has been made optional.
+       </li>
+       <li><em>Lighter GTK+ implementation:</em>
+         GtkMathView now extends the
+         GtkWidget class directly (not GtkEventBox as before) and
+	 uses no more a GtkDrawingArea for painting, but draws directly
+	 in its own window.
+       </li>
+       <li>Some code and API cleanup.
+       </li>
+     </ul>
+   </dd>
+
+   <dt>Apr 24, 2004</dt>
+   <dd>
+     Release of version <b>0.6.1</b> (tag <b>v0_6_1</b>). This is another
+     development release for gtkmathview, which introduces
+     a totally redesigned "frontend" for the widget. Starting from this
+     version, the frontend is completely decoupled from the formatting
+     engine and it is thus much easier to feed gtkmathview with MathML
+     documents available by means other than gmetadom. See the
+     announcement on the mailing list for more details.
+   </dd>
+
+   <dt>Apr 07, 2004</dt>
+   <dd>
+     Released version <b>0.5.3</b> (tag <b>v0_5_3</b>). This closes
+     the bug referred to in <a href="http://www.cs.unibo.it/cgi-bin/mailman/private/gtkmathview/2003-August/000241.html">this email</a> on the mailing list.
+   </dd>
+
+   <dt>Feb 24, 2004</dt>
+   <dd>
+    Release of version <b>0.6.0</b> (tag <b>v0_6_0</b>). This is a major
+    rewrite of most code of the widget which now implements the architecture
+    described in my thesis. Although many features which were previously
+    implemented are missing in this version (PostScript support and MathML tables),
+    I felt too much time had passed
+    since the last release and people working at porting and using gtkmathview
+    might find more convenient to have a recent snapshot to look at.
+   </dd>
+
+   <dt>Feb 14, 2004</dt>
+   <dd>
+     The new mailing list is set up. Check it <a href="http://www.cs.unibo.it/cgi-bin/mailman/listinfo/gtkmathview">here</a>.
+   </dd>
+
+   <dt>Nov 30, 2003</dt>
+   <dd>
+     Added a pointer to the <a href="http://numerator.sourceforge.net">
+     gNumerator</a> project by Endre Somogyi. Although he is not using
+     GtkMathView directly, he's taking GtkMathView's new architecture
+     as starting point for implementing a brand new MathML rendering
+     engine written in C#. I think his work is particularly relevant as the
+     new architecture has not been completely implemented in GtkMathView yet.
+     Having one more reference implementation may provide important feedback
+     on possible improvements. Week after week gNumerator's home page
+     is enriched with screenshots that testify Endre's steady improvements
+     and, indirectly, that the architecture actually works! Thanks Endre.
+   </dd>
+
+   <dt>Nov 16, 2003</dt>
+   <dd>
+     I have tagged the main trunk with <b>new_arch_test</b>. It is a version
+     of the source tree where many things have been updated or are currently
+     broken, but it compiles and runs some simple tests. It is important
+     to see the new architecture at work, and to compare performances
+     with the older versions, especially w.r.t the area model and the
+     font selection mechanism.
+   </dd>
+
+   <dt>Nov 14, 2003</dt>
+   <dd>
+    Release of version <b>0.5.2</b> (tag <b>v0_5_2</b>). Only bugfixes for
+    tables (collapse bug) and GTK2 instantiation.
+   </dd>
+
+   <dt>Sep 13, 2003</dt>
+   <dd>
+    Release of version <b>0.5.1</b> (tag <b>v0_5_1</b>).
+   </dd>
+
+   <dt>Sep 10, 2003</dt>
+   <dd>
+     I have created a new branch with tag <b>gtk2_patches</b>
+     which is used for bug fixes of the GTK2 port with the old
+     architecture.
+     The code in the main trunk has been largely
+     rewritten and is still undergoing major changes.
+   </dd>
+
+   <dt>Jul 31, 2003</dt>
+   <dd>
+     Version <b>0.5.0</b> has been released (tag <b>v0_5_0</b>).
+     This is the first version
+     of GtkMathView ported to GTK2. The porting is not complete as
+     GtkMathView still uses some deprecated APIs, however it should be
+     as usable as the GTK1.2-based version. Special thanks go to Pouria
+     Masoudi who worked on this. In the next few month I expect to maintain
+     actively both 0.4.x and 0.5.x versions.
+   </dd>
+
+   <dt>Jul 22, 2003</dt>
+   <dd>
+     I've just released version <b>0.4.3</b>. There's been a certain delay
+     w.r.t. the uploading of the Debian package, but the sources are finally
+     available. Note that this release is in a branch of the CVS repository
+     which is going to be dismissed as soon as the GTK2 porting (in
+     the main trunk) stabilizes. Among other important news, a
+     Bonobo component for embedding GtkMathView is soon to come.
+   </dd>
+
+   <dt>May 22, 2003</dt>
+   <dd>
+     Version <b>0.4.2</b> has been released. As usual this minor release
+     fixes a few bugs of the previous version, but it also switches to
+     the <em>pkg-config </em> method for providing compilation and linking
+     flags. The reference manual has been extensively updated and is now
+     back in sync with the API. Rainer Menzner has released version 5.0.0
+     of t1lib, but the bugs that cause
+     GtkMathView to crash haven't been fixed.
+   </dd>
+   <dt>Sep 13, 2003</dt>
+   <dd>
+     Release of version <b>0.5.1</b> (tag <b>v0_5_1</b>).
+   </dd>
+
+   <dt>Sep 10, 2003</dt>
+   <dd>
+     I have created a new branch with tag <b>gtk2_patches</b>
+     which is used for bug fixes of the GTK2 port with the old
+     architecture.      The code in the main trunk has been largely
+     rewritten and is still undergoing major changes.
+   </dd>
+                                                                                 
+   <dt>Jul 31, 2003</dt>
+   <dd>
+     Version <b>0.5.0</b> has been released (tag <b>v0_5_0</b>).
+     This is the first version
+     of GtkMathView ported to GTK2. The porting is not complete as
+     GtkMathView still uses some deprecated APIs, however it should be
+     as usable as the GTK1.2-based version. Special thanks go to Pouria
+     Masoudi who worked on this. In the next few month I expect to maintain
+     actively both 0.4.x and 0.5.x versions.
+   </dd>
+
+   <dt>Jul 22, 2003</dt>
+   <dd>
+     I've just released version <b>0.4.3</b>. There's been a certain delay
+     w.r.t. the uploading of the Debian package, but the sources are finally
+     available. Note that this release is in a branch of the CVS repository
+     which is going to be dismissed as soon as the GTK2 porting (in
+     the main trunk) stabilizes. Among other important news, a
+     Bonobo component for embedding GtkMathView is soon to come.
+   </dd>
+
+   <dt>May 22, 2003</dt>
+   <dd>
+     Version <b>0.4.2</b> has been released. As usual this minor release
+     fixes a few bugs of the previous version, but it also switches to
+     the <em>pkg-config </em> method for providing compilation and linking
+     flags. The reference manual has been extensively updated and is now
+     back in sync with the API. Rainer Menzner has released version 5.0.0
+     of t1lib, but the bugs that cause
+     GtkMathView to crash haven't been fixed.
+   </dd>
+
+   <dt>May 6, 2003</dt>
+   <dd>
+     Charles A Edwards has uploaded Mandrake RPMs for
+     <a href="http://gdome2.cs.unibo.it">Gdome2</a>,
+     <a href="http://gmetadom.sourceforge.net">GMetaDOM</a>,
+     and GtkMathView. They can be downloaded from the Contrib dir on any
+     Mandrake Cooker mirror (<a href="http://www.mandrakelinux.com/en/cookerdevel.php3">list of mirrors</a>
+     and <a href="ftp://sunsite.uio.no/pub/unix/Linux/Mandrake/Mandrake-devel/contrib/i586">primary location</a>). Thanks Charles!
+   </dd>
+
+   <dt>March 24, 2003</dt>
+   <dd>
+     The <b>reference manual</b> for GtkMathView has been extensively
+     updated, read it <a href="gtkmathview.html">here</a>.
+   </dd>
+
+   <dt>March 12, 2003</dt>
+   <dd>
+     <b>Bugzilla</b> for GtkMathView is now available at
+     <a href="http://bugs.mowgli.cs.unibo.it">http://bugs.mowgli.cs.unibo.it</a>.
+     You need to open a bugzilla account and to select the GtkMathView module.
+   </dd>
+
+   <dt>March 7, 2003</dt>
+   <dd>
+     At last the <b>edit</b> branch has been merged into the main
+     trunk of the repository. At the same time, I've forked off a new
+     branch called <b>no-edit</b> from the most updated version of the
+     old architecture.
+   </dd>
+
+   <dt>February 13, 2003</dt>
+   <dd>
+     Version <b>0.4.1</b> has been released. This is a major release
+     as it is the first version of gtkmathview supporting editing.
+     The widget is now able to react to modifications of the source
+     MathML tree and re-layout the document incrementally.
+     The tag in the CVS repository is v0_4_1. The <b>edit</b> branch will
+     be probably merged into the main trunk sometime in the future.
+     <br />
+     The documentation has not been updated, although very few things
+     changed in the API (just the signals, selections and management
+     of <tt>maction</tt> elements).
+     <br />
+     miniDOM is not supported anymore (but the <tt>configure.ac</tt>
+     still tries to detect it).
+   </dd>
+   
+   <dt>December 9, 2002</dt>
+   <dd>
+     Version <b>0.3.1</b> has been released. This is the first release
+     after many months. Actually, 0.3.1 fixes a few minor bugs. The
+     main development efforts have been spent on the <b>edit</b>
+     branch of the repository, where support for editing is being
+     implemented. The tag in the repository is v0_3_1.
+   </dd>
+
+   <dt>December 2, 2002</dt>
+   <dd>
+     A little restyling of the home page. Many exciting news will be
+     posted shortly.
+   </dd>
+
+   <dt>August 12, 2002</dt>
+   <dd>
+     Drew Bowering has written a module for PHP that provides an
+     interface to generate images of MathML in PNG or JPEG format in a
+     PHP script.  For more information, examples, and source look <a
+     href="http://www.math.mcgill.ca/~drew/mathmlrender">here</a>.
+   </dd>
+
+  <dt>April 24, 2002</dt>
+  <dd>
+    A new tarball for version <b>0.3.0</b> has been released. This
+    tarball reflects the status of the source files that were used to
+    build the Debian package for the next Debian version. CVS tag:
+    v0_3_0deb.
+  </dd>
+
+  <dt>March 30, 2002</dt>
+  <dd>
+    <b>miniDOM 0.1.4</b> released. This is just a minor version which
+    fixes some problems in the configuration script. Use of miniDOM is
+    now deprecated, since the widget should be used with GMetaDOM.
+  </dd>
+
+  <dt>March 28, 2002</dt>
+  <dd>
+    Version <b>0.3.0</b> has been released. The main news is that the
+    widget is now based on <a
+    href="http://gmetadom.sourceforge.net">GMetaDOM</a>, even though
+    backward compatibility with <b>miniDOM</b> has been retained. If
+    both libraries are installed, then <b>GMetaDOM</b> is used. The
+    CVS tag for this release is v0_3_0.
+  </dd>
+
+  <dt>February 11, 2002</dt>
+  <dd>
+    Last October the <a href="http://www.interscience.wiley.com/">Wiley
+    InterScience</a> <a
+    href="http://www.mrw.interscience.wiley.com/epst/index.html">Encyclopedia
+    of Polymer Science and Technology</a> has been released. All the
+    displayed mathematics in the articles were obtained with the
+    <tt>mathml2ps</tt> tool coming with the widget, which allows to
+    render MathML in Postscript.  Unfortunately the encyclopedia is only
+    available after subscription, but here is a <a
+    href="wiley.png">screenshot</a>.
+  </dd>
+
+  <dt>November 21, 2001</dt>
+  <dd>
+    <a href="http://www.math.unl.edu/~rdieter/">Rex Dieter</a> has
+    kindly created RPM packages for the widget, minidom and <a
+    href="http://www.cs.unibo.it/helm/helmpot/">HELMPoT</a>, the
+    MathML plug-out for mozilla/netscape. You can download the
+    packages from <a href="http://www.math.unl.edu/~rdieter/">his home
+    page</a> or by following the links in the <a
+    href="index.html#download">download section</a>.
+  </dd>
+  
+  <dt>November 20, 2001</dt>
+  <dd>
+    Here is another release, the 0.2.9, which fixes a few minor bugs,
+    mostly related to selection, introduced in 0.2.8.
+  </dd>
+  
+  <dt>November 19, 2001</dt>
+  <dd>
+    The new release 0.2.1 of the OCaml binding for miniDOM released.
+    The code is exactly the same, but the autoconf/Makefile stuff has
+    been improved.  Moreover, the version number has been changed to
+    keep it in sync with the debian package. The upgrade is necessary
+    only for packagers, while normal users can just keep the 0.0.2
+    version. Sorry for the trouble.
+  </dd>
+  
+  <dt>November 16, 2001</dt>
+  <dd>
+    The new OCaml bindings for miniDOM and GtkMathView have been
+    released.  There are still problems with the memory management of
+    the miniDOM binding: it is up to the user to avoid to invoke
+    methods on the nodes of the tree after the whole tree has been
+    garbage collected. The problem should disappear once GDome2 is
+    adopted.
+  </dd>
+  
+  <dt>November 13, 2001</dt>
+  <dd>
+    The <a href="#examples">test files</a> at the bottom of this page
+    have been updated so that they can also be viewed with <a
+    href="http://www.mozilla.org">Mozilla</a> and <a
+    href="http://www.w3.org/Amaya/">Amaya</a>.
+  </dd>
+  
+  <dt>November 12, 2001</dt>
+  <dd>
+    0.2.8 has been released. This version contains a few bug fixes for
+    the GTK interface, a better handling for the <tt>maction</tt>
+    element. But the most important improvement is a much higher
+    quality rendering to PostScript, now almost comparable to that of
+    TeX. Unfortunately, the current architecture is showing its
+    limits, and for further refinements it will have to be
+    considerably redesigned. Note that you need the latest version of
+    minidom (0.1.3).
+  </dd>
+  
+  <dt>August 21, 2001</dt>
+  <dd>
+    Ok guys, here is another version without support for Gdome2. Sorry
+    for that, but I had to fix a number of bugs related to the
+    &lt;maction&gt; element. This version is on the secondary branch
+    in the CVS repository, the tag is v0_2_7.
+  </dd>
+  
+  <dt>July 3, 2001</dt>
+  <dd>
+    Released version 0.2.6, which uses t1lib subsetting in order to
+    get smaller exported Postscript files.  This extra-release has
+    been packaged in a hurry, so it may contain bugs. Note also that
+    there is a branch in the CVS repository starting at v0_2_5, since
+    the main trunk has already adopted Gdome, while 0.2.6 still uses
+    minidom.
+  </dd>
+  
+  <dt>May 19, 2001</dt>
+  <dd>
+    Released version 0.2.5. This is, in my intentions, the last
+    version supporting minidom. I plan to adopt gdome2 for the next
+    release.  Note that the latest stable version remains
+    <b>0.2.4</b>.
+  </dd>
+  
+  <dt>May 15, 2001</dt>
+  <dd>
+    GtkMathView is on <a
+    href="http://developer.gnome.org/news/summary/2001_May06-May12.html">GNOME
+    News of the Week</a>.
+  </dd>
+  
+  <dt>May 12, 2001</dt>
+  <dd>
+    minidom 0.1.2 released. This is a minor fix release, the module
+    will be dismissed soon.
+  </dd>
+  
+  <dt>May 11, 2001</dt>
+  <dd>
+    The gtkmathview module in the CVS repository <em>has
+    moved</em>. It is now hosted by <tt>cvs.gnome.org</tt>. More
+    detailed information below.
+  </dd>
+  
+  <dt>March 19, 2001</dt>
+  <dd>
+    0.2.4 released. A bug fixed in the PostScript exporting process,
+    added support for following links in the viewer. More minor bugs
+    detected, but I'm not going to fix them if noone is using the
+    widget.
+  </dd>
+  
+  <dt>March 16, 2001</dt>
+  <dd>
+    The mailing list archive is on, anybody writing on it?
+  </dd>
+  
+  <dt>Feb 2, 2001</dt>
+  <dd>
+    0.2.3 is out! Moreover, GtkMathView is going to become an official
+    package in the next Debian distribution of Linux. You can find
+    preliminary .deb packages below.
+  </dd>
+  
+  <dt>Jan 22, 2001</dt>
+  <dd>
+    The mailing list for gtkmathview is set up. Click <a
+    href="index.html#docs">here</a> for more info.
+  </dd>
+  
+  <dt>Dec 19, 2000</dt>
+  <dd>
+    gtkmathview 0.2.2 released, added more flexible support for
+    configuration.
+  </dd>
+  
+  <dt>Nov 24, 2000</dt>
+  <dd>
+    miniDOM binary package released
+  </dd>
+  
+  <dt>Nov 20, 2000</dt>
+  <dd>
+    miniDOM is now a separate package, since I intend to use it in
+    other projects until GDOME is eventually released.
+  </dd>
+  
+  <dt>Nov 6, 2000</dt>
+  <dd>
+    Released version 0.2.0
+  </dd>
+  
+  <dt>Oct 11, 2000</dt>
+  <dd>
+    Working on version 0.2.0. New features: improved performances,
+    support for t1lib and Type 1 fonts (anti-aliasing), exportation to
+    PostScript.
+  </dd>
+</dl>
+
+</body>
+
+</html>

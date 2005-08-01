@@ -49,8 +49,9 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
   if (!res) logger->out(LOG_WARNING, "could not load configuration file");
   logger->setLogLevel(LogLevelId(configuration->getInt(logger, "logger/verbosity", 1)));
   String confVersion = configuration->getString(logger, "version", "<undefined>");
-  if (confVersion != VERSION)
-    logger->out(LOG_WARNING, "configuration file version (%s) differs from binary version (%s)", confVersion.c_str(), VERSION);
+  if (confVersion != Configuration::getBinaryVersion())
+    logger->out(LOG_WARNING, "configuration file version (%s) differs from binary version (%s)",
+		    confVersion.c_str(), Configuration::getBinaryVersion());
   return configuration;
 }
 
