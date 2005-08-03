@@ -111,7 +111,7 @@ fi
 
 AC_ARG_ENABLE(
 	gtk,
-	[  --enable-gtk[=ARG]  enable SVG backend [default=auto]],
+	[  --enable-gtk[=ARG]  enable GTK backend [default=auto]],
 	enable_gtk=$enableval,
 	enable_gtk="auto"
 )
