@@ -238,7 +238,9 @@
     </ul>
     <p>
      Entries in the configuration file can be set multiple times, the last
-     value set is the one found.
+     value set is the one found. Note that it is not necessary for a configuration
+     file to be &quot;complete&quot;. Simply, its entries will override the ones
+     loaded from previous configuration files.
     </p>
    </dd>
 
@@ -323,6 +325,28 @@
  <h3 class="reverse">TeX Fonts</h3>
 
  <dl>
+   <dt>I have installed GtkMathView and <tt>mathmlviewer</tt> does seem to work correctly, however it does not
+     use TeX fonts. What's wrong?</dt>
+   <dd>
+    <p>
+     By default Computer Modern fonts are not enabled because not every system has them.
+     Here are the instructions for enabling Computer Modern fonts with the GTK+ backend
+     under the Debian system:
+    </p>
+    <ol>
+     <li>Download the True Type version of Computer Modern fonts and copy them in the
+       <tt>~/.fonts</tt> directory</li>
+     <li>either modify the system-wide GtkMathView configuration file or create a new
+       one so that the <tt>gtk-backend/pango-computer-modern-shaper</tt> is enabled</li>
+     <li>in the <tt>fonts/computer-modern</tt> section uncomment the fonts that you
+       have installed and that you want to use. If you want to use TFMs, make sure that
+       the set of uncommented fonts is included in the TFM support level specified at configuration
+       time (TFM level 1 includes the minimal set, TFM level 2, which is the default, includes
+       the normal set, and TFM level 3 includes the full set).</li>
+     <li>now you're ready to render MathML documents using Computer Modern fonts</li>
+    </ol>
+   </dd>
+
    <dt>What is <em>post-shaping</em>?</dt>
    <dd>
     <p>
