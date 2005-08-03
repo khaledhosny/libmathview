@@ -51,7 +51,7 @@ XSLTPROC = xsltproc
 	$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
 	$(CXX) -o $(@:%.cc=%) -I$(top_builddir)/auto $<
 	echo "Char32 " >>$@
-	echo -n "map_variant_$@" | cut -d '.' -f1 | tr "-" "_" >>$@
+	basename $@ .cc | tr "-" "_" >>$@
 	echo "(Char32 ch)" >>$@
 	echo "{" >>$@
 	./$(@:%.cc=%) >>$@
