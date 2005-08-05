@@ -106,11 +106,13 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
 
   <section name="fonts">
     <section name="computer-modern">
+      <!-- MINIMAL SET (TFM = 1) -->
       <key name="font-name">cmr10</key>
       <key name="font-name">cmmi10</key>
       <key name="font-name">cmsy10</key>
       <key name="font-name">cmex10</key>
 
+      <!-- NORMAL SET (TFM = 2) -->
 <!--
       <key name="font-name">cmr10</key>
       <key name="font-name">cmb10</key>
@@ -128,6 +130,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmex10</key>
 -->
 
+      <!-- FULL SET (TFM = 3) -->
 <!--
       <key name="font-name">cmr5</key>
       <key name="font-name">cmr6</key>

@@ -111,14 +111,16 @@ View::formatElement(const SmartPtr<Element>& elem) const
 
   if (elem->dirtyLayout())
     {
+      const SmartPtr<MathGraphicDevice> mgd = mathmlContext ? mathmlContext->getGraphicDevice() : 0;
+      assert(mgd != 0);
 #if ENABLE_BOXML
-      FormattingContext ctxt(mathmlContext->getGraphicDevice(),
-			     boxmlContext->getGraphicDevice());
+      const SmartPtr<BoxGraphicDevice> bgd = boxmlContext ? boxmlContext->getGraphicDevice() : 0;
+      FormattingContext ctxt(mgd, bgd);
 #else
-      FormattingContext ctxt(mathmlContext->getGraphicDevice());
+      FormattingContext ctxt(mgd);
 #endif // ENABLE_BOXML
       Length defaultSize(getDefaultFontSize(), Length::PT_UNIT);
-      scaled l = mathmlContext->getGraphicDevice()->evaluate(ctxt, defaultSize, scaled::zero());
+      scaled l = mgd->evaluate(ctxt, defaultSize, scaled::zero());
       ctxt.setSize(l);
       ctxt.setActualSize(ctxt.getSize());
       ctxt.setAvailableWidth(getAvailableWidth());

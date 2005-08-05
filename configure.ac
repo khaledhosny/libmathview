@@ -189,10 +189,10 @@ AC_ISC_POSIX
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(wctype.h,,AC_MSG_WARN(could not find required header file wctype.h))
-AC_CHECK_HEADERS(wchar.h,,AC_MSG_WARN(could not find required header file wchar.h))
+dnl AC_CHECK_HEADERS(cwctype,,AC_MSG_WARN(could not find required header file cwctype))
+dnl AC_CHECK_HEADERS(cwchar,,AC_MSG_WARN(could not find required header file cwchar))
 AC_CHECK_HEADERS(unistd.h)
-AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file iconv.h))
+dnl AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file iconv.h))
 AC_CHECK_HEADERS(getopt.h)
 AC_MSG_CHECKING(for hidden getopt.h)
 AC_TRY_COMPILE(
@@ -367,7 +367,7 @@ AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have
 
 AC_LANG([C])
 
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.3],,[AC_MSG_ERROR(could not fint GLIB)])
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.3],,[AC_MSG_ERROR(could not find GLIB)])
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
