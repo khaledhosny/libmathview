@@ -26,6 +26,7 @@
 #include <pango/pango.h>
 
 #include "Shaper.hh"
+#include "String.hh"
 #include "GObjectPtr.hh"
 #include "MathVariant.hh"
 

@@ -265,56 +265,13 @@ AC_TRY_LINK(
 		s2 = s3;
 	],
 	[
+		AC_DEFINE(STD_TRAITS,1,[Define to 1 if standard traits for char and wchar_t are provided])
 		AC_MSG_RESULT(yes)
-		STD_TRAITS="yes"
 	],
 	[
 		AC_MSG_RESULT(no)
-		STD_TRAITS="no"
 	]
 )
-AC_SUBST(STD_TRAITS)
-
-AC_MSG_CHECKING([whether the C++ compiler supports non-standard character traits])
-AC_TRY_COMPILE(
-	[#include <string>],
-	[
-		std::basic_string<unsigned short> s1;
-		std::basic_string<unsigned int> s2;
-		std::basic_string<unsigned long> s3;
-	],
-	[
-		AC_MSG_RESULT(yes)
-		ALL_TRAITS="1"
-	],
-	[
-		AC_MSG_RESULT(no)
-		ALL_TRAITS="0"
-	]
-)
-AC_SUBST(ALL_TRAITS)
-
-AC_MSG_CHECKING([whether the C++ compiler supports template specialization])
-AC_TRY_COMPILE(
-	[
-		#include <string>
-
-		namespace std
-		{
-			template<> struct char_traits<unsigned short> { };
-		}
-	],
-	[ ],
-	[
-		AC_MSG_RESULT(yes)
-		TRAIT_SPEC="1"
-	],
-	[
-		AC_MSG_RESULT(no)
-		TRAIT_SPEC="0"
-	]
-)
-AC_SUBST(TRAIT_SPEC)
 
 AC_LANG_POP(C++)
 
@@ -396,7 +353,7 @@ AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "au
 AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
 
 have_libxml2="no"
-PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.0.0],
+PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
   [AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
    have_libxml2="yes"],
   [AC_MSG_WARN([could not find libxml2])])
