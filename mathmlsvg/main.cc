@@ -118,7 +118,7 @@ Usage: mathmlsvg [options] file ...\n\n\
   -r, --crop[=yes|no]             Enable/disable cropping to bounding box (default='yes')\n\
       --cut-filename[=yes|no]     Cut the prefix dir from the output file (default='yes')\n\
   --config=<path>                 Configuration file path\n\
-  --verbose[=0-3]                 Display messages\n\n\
+  -V, --verbose[=0-3]             Display messages\n\n\
 Valid units are:\n\n\
   cm    centimeter\n\
   mm    millimeter\n\
@@ -272,9 +272,9 @@ main(int argc, char* argv[])
 	  { NULL,              no_argument, NULL, 0 }
 	};
 
-      int c = getopt_long(argc, argv, "vhg:u:m:f:r::", long_options, &option_index);
+      int c = getopt_long(argc, argv, "vhg:u:m:f:r::V::", long_options, &option_index);
 #else
-      int c = getopt(argc, argv, "vhg:u:m:f:r::");
+      int c = getopt(argc, argv, "vhg:u:m:f:r::V::");
 #endif // HAVE_GETOPT
 
       if (c == -1) break;
@@ -309,6 +309,7 @@ main(int argc, char* argv[])
 	break;
 
       case OPTION_VERBOSE:
+      case 'V':
 	if (optarg && (*optarg < '0' || *optarg > '3')) printHelp();
 	else if (optarg == NULL) logLevel = LOG_ERROR;
 	else logLevel = *optarg - '0';
