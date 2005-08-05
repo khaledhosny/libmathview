@@ -23,11 +23,11 @@
 #ifndef __RGBColor_hh__
 #define __RGBColor_hh__
 
-#include "String.hh"
+#include "Char.hh"
 
 struct RGBColor
 {
-  RGBColor(Char8 r = 0, Char8 g = 0, Char8 b = 0, Char8 a = 0xff)
+  RGBColor(UChar8 r = 0, UChar8 g = 0, UChar8 b = 0, UChar8 a = 0xff)
     : red(r), green(g), blue(b), alpha(a)
   { }
 
@@ -58,10 +58,10 @@ struct RGBColor
 
   bool transparent(void) const { return alpha == 0; }
 
-  Char8 red;
-  Char8 green;
-  Char8 blue;
-  Char8 alpha;
+  UChar8 red;
+  UChar8 green;
+  UChar8 blue;
+  UChar8 alpha;
 };
 
 #endif // __RGBColor_hh__
