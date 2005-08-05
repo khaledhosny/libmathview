@@ -370,7 +370,7 @@ AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have
 
 AC_LANG([C])
 
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.3],,[AC_MSG_ERROR(could not find GLIB)])
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1],,[AC_MSG_ERROR(could not find GLIB)])
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
