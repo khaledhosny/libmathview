@@ -206,6 +206,7 @@ AC_TRY_COMPILE(
 		AC_MSG_RESULT(no)
 	]
 )
+AC_CHECK_LIB(gnugetopt, getopt_long)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -255,11 +256,13 @@ AC_CHECK_HEADERS(rope)
 AC_CHECK_HEADERS(ext/rope)
 
 AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
-AC_TRY_COMPILE(
+AC_TRY_LINK(
 	[#include <string>],
 	[
 		std::basic_string<char> s1;
 		std::basic_string<wchar_t> s2;
+		std::basic_string<wchar_t> s3;
+		s2 = s3;
 	],
 	[
 		AC_MSG_RESULT(yes)

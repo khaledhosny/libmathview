@@ -27,8 +27,10 @@
 
 #if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
 #include <getopt.h>
+#elif defined(HAVE_GNUGETOPT)
+#include <gnugetopt/getopt.h>
 #else
-#include <../getopt/getopt.h>
+#error "no getopt could be found"
 #endif
 
 #include "Logger.hh"
