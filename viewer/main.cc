@@ -21,7 +21,10 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
-#include <assert.h>
+
+#include "CharTraits.icc"
+
+#include <cassert>
 #if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
 #include <getopt.h>
 #elif defined(HAVE_GNUGETOPT)
@@ -91,6 +94,7 @@ main(int argc, char *argv[])
 
   while (TRUE) {
     int option_index = 0;
+#if HAVE_GETOPT_H
     static struct option long_options[] =
     {
       { "version", 	 no_argument, NULL, OPTION_VERSION },
@@ -102,6 +106,9 @@ main(int argc, char *argv[])
     };
 
     int c = getopt_long(argc, argv, "Vv:dh", long_options, &option_index);
+#else
+    int c = getopt(argc, argv, "Vv:dh");
+#endif // HAVE_GETOPT_H
 
     if (c == -1) break;
 

@@ -25,12 +25,13 @@
 #include <cassert>
 #include <fstream>
 
+// needed for old versions of GCC, must come before String.hh!
+#include "CharTraits.icc"
+
 #if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
 #include <getopt.h>
 #elif defined(HAVE_GNUGETOPT)
 #include <gnugetopt/getopt.h>
-#else
-#error "no getopt could be found"
 #endif
 
 #include "Logger.hh"
@@ -50,6 +51,20 @@
 #endif // ENABLE_BOXML
 #include "SMS.hh"
 #include "Fragment.hh"
+
+#if !defined(STD_TRAITS)
+
+#if 0
+// force template instantiation
+typedef wchar_t* (*CT)(wchar_t*, const wchar_t*, size_t);
+typedef wchar_t* (*AT)(wchar_t*, size_t, wchar_t);
+
+static CT dont_discard_copy = &std::char_traits<wchar_t>::copy;
+static CT dont_discard_move = &std::char_traits<wchar_t>::move;
+static AT dont_discard_assign = &std::char_traits<wchar_t>::assign;
+#endif
+
+#endif // !defined(STD_TRAITS)
 
 typedef libxml2_MathView MathView;
 
@@ -240,6 +255,7 @@ main(int argc, char* argv[])
   while (true)
     {
       int option_index = 0;
+#if HAVE_GETOPT
       static struct option long_options[] =
 	{
 	  { "version", 	       no_argument,       NULL, OPTION_VERSION },
@@ -257,6 +273,9 @@ main(int argc, char* argv[])
 	};
 
       int c = getopt_long(argc, argv, "vhg:u:m:f:r::", long_options, &option_index);
+#else
+      int c = getopt(argc, argv, "vhg:u:m:f:r::");
+#endif // HAVE_GETOPT
 
       if (c == -1) break;
 
