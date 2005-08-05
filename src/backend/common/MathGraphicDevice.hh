@@ -23,6 +23,7 @@
 #ifndef __MathGraphicDevice_hh__
 #define __MathGraphicDevice_hh__
 
+#include "String.hh"
 #include "GraphicDevice.hh"
 
 class MathGraphicDevice : public GraphicDevice
