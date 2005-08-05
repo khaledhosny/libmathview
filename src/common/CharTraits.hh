@@ -20,14 +20,17 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <lpadovan@cs.unibo.it>
 
+#ifndef __CharTraits_hh__
+#define __CharTraits_hh__
+
 #include <string>
 
 namespace std {
 
   template<>
-  struct char_traits<Char16>
+  struct char_traits<Char32>
   {
-    typedef Char16 char_type;
+    typedef Char32 char_type;
 
     typedef unsigned long int_type;
 
@@ -112,4 +115,6 @@ namespace std {
   };
 
 }
+
+#endif // __CharTraits_hh__
 

@@ -44,12 +44,18 @@ public:
   }
 
   operator P*() const { return ptr; }
-  template <class Q> friend SmartPtr<Q> smart_cast(const SmartPtr& p) { return SmartPtr<Q>(dynamic_cast<Q*>(p.ptr)); }  
-  template <class Q> friend bool is_a(const SmartPtr& p) { return dynamic_cast<Q*>(p.ptr) != 0; }
+  template <class Q, class R> friend SmartPtr<Q> smart_cast(const SmartPtr<R>&);
+  template <class Q, class R> friend bool is_a(const SmartPtr<R>&);
   template <class Q> operator SmartPtr<Q>() const { return SmartPtr<Q>(ptr); }
 
 private:
   P* ptr;
 };
+
+template <class Q, class P> SmartPtr<Q> smart_cast(const SmartPtr<P>& p)
+{ return SmartPtr<Q>(dynamic_cast<Q*>(p.ptr)); }  
+
+template <class Q, class R> bool is_a(const SmartPtr<R>& p)
+{ return dynamic_cast<Q*>(p.ptr) != 0; }
 
 #endif // __SmartPtr_hh__

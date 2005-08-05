@@ -28,11 +28,13 @@
 #include "String.hh"
 #include "ValueConversion.hh"
 
+typedef Variant<void> Variant_void;
+
 bool
 IsEmpty(const SmartPtr<Value>& value)
 {
   assert(value);
-  return is_a< Variant<void> >(value);
+  return is_a<const Variant_void>(value);
 }
 
 bool

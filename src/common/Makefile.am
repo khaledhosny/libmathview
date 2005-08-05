@@ -63,6 +63,8 @@ mathview_HEADERS = \
   $(NULL)
 
 noinst_HEADERS = \
+  CharTraits.hh \
+  CharTraits.icc \
   Clock.hh \
   GObjectPtr.hh \
   Rope.hh \
