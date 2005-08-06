@@ -1,0 +1,68 @@
+
+GtkMathView can be compiled under MacOSX. Currently only the SVG
+backend is supported.
+
+Requirements
+============
+
+You will need the following libraries installed:
+
+* GLib >= 2.2.1
+* libxml2 >= 2.6.7
+* popt >= 1.7
+
+In order to create the configuration files from the CVS repository,
+the following packages are also needed:
+
+* automake >= 1.7.6
+* autoconf >= 2.57
+* libxslt-bin >= 1.0.32 (xsltproc)
+
+It is possible that GtkMathView will compile with older
+versions of the libraries/packages above, but this has not been
+tested.
+
+Compiling
+=========
+
+I'm assuming that you will be using fink packages. In this case
+most or all of the required libraries and include files will be
+installed under
+
+	/sw/lib
+	/sw/include
+
+To configure GtkMathView properly, use this line
+
+./configure 
+	CPPFLAGS=-I/sw/include
+	LDFLAGS=-L/sw/lib
+	--disable-gtk
+	[--disable-custom-reader]
+	[--disable-libxml2-reader]
+	[--disable-boxml]
+
+The options in square brackets will disable some unusual features
+that will save you compilation time.
+
+Fonts
+=====
+
+In order to use Computer Modern fonts, download and drag them
+in your Font folder.
+
+Note about the GTK+ backend
+===========================
+
+Currently the GTK+ backend cannot be compiled because the class
+
+	src/backend/gtk/Gtk_RenderingContext
+
+uses a construct that is not supported by
+
+	gcc (GCC) 3.3 20030304 (Apple Computer, Inc. build 1493)
+
+which is installed in MacOSX. When the compiler will be upgraded,
+it will be possible to compile the GTK+ backend.
+
+

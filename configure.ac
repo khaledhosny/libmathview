@@ -276,7 +276,7 @@ AC_SUBST(GLIB_LIBS)
 have_gtk="no"
 have_pango="no"
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
-  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.4.10],
+  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1],
     [AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
      have_gtk="yes"],
     [AC_MSG_WARN([could not find GTK+])])

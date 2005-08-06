@@ -46,7 +46,7 @@ typedef char Char;
 #define CHAR16 1
 #elif 2 == @GTKMATHVIEW_SIZEOF_WCHAR_T@
   typedef wchar_t Char16;
-#elif 1 == @ALL_TRAITS@
+#else
 #if 2 == @GTKMATHVIEW_SIZEOF_SHORT@
   typedef unsigned short Char16;
 #elif 2 == @GTKMATHVIEW_SIZEOF_INT@
@@ -56,8 +56,6 @@ typedef char Char;
 #else
 #error "could not define type Char16"
 #endif
-#else
-#error "could not define type Char16"
 #endif
 
 #if 4 == @GTKMATHVIEW_SIZEOF_CHAR@
@@ -65,7 +63,7 @@ typedef char Char;
 #define CHAR32 1
 #elif 4 == @GTKMATHVIEW_SIZEOF_WCHAR_T@
   typedef wchar_t Char32;
-#elif 1 == @ALL_TRAITS@
+#else
 #if 4 == @GTKMATHVIEW_SIZEOF_INT@
   typedef unsigned int Char32;
 #elif 4 == @GTKMATHVIEW_SIZEOF_LONG@
@@ -75,8 +73,6 @@ typedef char Char;
 #else
 #error "could not define type Char32"
 #endif
-#else
-#error "could not define type Char32"
 #endif
 
 #endif // __Char_hh__
