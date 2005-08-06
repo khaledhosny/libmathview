@@ -12,6 +12,7 @@
   * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
++ make DPI a configurable parameter
 + find a way of having TFM support orthogonal to the other classes
 ? make pangolayout pangolinelayout areas configurable (glyph area?)
 ? T1 CM shaper useful for SVG?

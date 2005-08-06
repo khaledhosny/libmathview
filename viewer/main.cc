@@ -22,19 +22,11 @@
 
 #include <config.h>
 
+// needed for old versions of GCC, must come before String.hh!
 #include "CharTraits.icc"
 
 #include <cassert>
-#if defined(HAVE_GETOPT_H) || defined(HAVE_HIDDEN_GETOPT)
-#include <getopt.h>
-#elif defined(HAVE_GNUGETOPT)
-#include <gnugetopt/getopt.h>
-#else
-#error "no getopt could be found"
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif // HAVE_UNISTD_H
+#include <popt.h>
 #include <stdlib.h>
 
 #include "defs.h"
@@ -49,8 +41,6 @@
 
 enum CommandLineOptionId {
   OPTION_VERSION = 256,
-  OPTION_DEBUG,
-  OPTION_HELP,
   OPTION_VERBOSE
 };
 
@@ -63,108 +53,65 @@ extern void *parseMathMLFile(char *);
 
 static void printVersion()
 {
-  printf("%s - written by Luca Padovani (C) 2000-2004.\n", appName);
-#ifdef DEBUG
-  //printf("Compiled %s %s\n", __DATE__, __TIME__);
-#endif // DEBUG
+  printf("%s - written by Luca Padovani (C) 2000-2005.\n", appName);
   exit(0);
 }
 
-static void
-printHelp()
-{
-  static char* helpMsg = "\
-Usage: mathmlviewer [options] file ...\n\n\
-  -V, --version                 Output version information\n\
-  -d, --debug                   Debug mode\n\
-  -h, --help                    This small usage guide\n\
-  -v, --verbose[=0-3]           Display messages\n\
-";
+static gint logLevel = -1;
+static struct poptOption optionsTable[] = {
+  { "version", 'V', POPT_ARG_NONE, 0, OPTION_VERSION, "Output version information", 0 },
+  { "verbose", 'v', POPT_ARG_INT, &logLevel, OPTION_VERBOSE, "Display messages", "[0-3]" },
+  POPT_AUTOHELP
+  { 0, 0, 0, 0, 0, 0, 0 }
+};
 
-  printf("%s\n", helpMsg);
+static void
+usage(poptContext optCon, int exitcode, const char* msg)
+{
+  poptPrintUsage(optCon, stderr, 0);
+  if (msg) fprintf(stderr, "%s\n", msg);
+  exit(exitcode);
 }
 
 int
-main(int argc, char *argv[])
+main(int argc, const char *argv[])
 {
-  bool debugMode = false;
-  gint logLevel = -1; 
-
+  poptContext ctxt = poptGetContext(NULL, argc, argv, optionsTable, 0);
   sprintf(appName, "mathmlviewer v%s", VERSION);
 
-  while (TRUE) {
-    int option_index = 0;
-#if HAVE_GETOPT_H
-    static struct option long_options[] =
+  gint c;
+  while ((c = poptGetNextOpt(ctxt)) >= 0)
     {
-      { "version", 	 no_argument, NULL, OPTION_VERSION },
-      { "debug",         no_argument, NULL, OPTION_DEBUG },
-      { "help",    	 no_argument, NULL, OPTION_HELP },
-      { "verbose",       optional_argument, NULL, OPTION_VERBOSE },
-
-      { NULL,            no_argument, NULL, 0 }
-    };
-
-    int c = getopt_long(argc, argv, "Vv:dh", long_options, &option_index);
-#else
-    int c = getopt(argc, argv, "Vv:dh");
-#endif // HAVE_GETOPT_H
-
-    if (c == -1) break;
-
-    switch (c) {
-    case OPTION_VERSION:
-    case 'V':
-      printVersion();
-      break;
-
-    case OPTION_DEBUG:
-    case 'd':
-      debugMode = true;
-      break;
-
-    case OPTION_HELP:
-    case 'h':
-      printHelp();
-      exit(0);
-      break;
-
-    case OPTION_VERBOSE:
-    case 'v':
-      if (optarg == NULL) logLevel = -1;
-      else logLevel = *optarg - '0';
-      break;
-
-    case '?':
-      break;
-
-    default:
-      printf("*** getopt returned %c value\n", c);
-      break;
-    }
-  }
-
-#ifdef DEBUG
-  atexit(checkCounters);
-#endif // DEBUG
-
-  if (optind < argc) {
-    GUI_init(&argc, &argv, appName, 500, 600, logLevel);
-
-    while (optind < argc) {
-
-      if (GUI_load_document(argv[optind]) < 0)
-	printf("mathmlviewer: fatal error: cannot load document `%s'\n", argv[optind]);
-
-      if (debugMode) optind++;
-      else {
-	GUI_run();
+      switch (c) {
+      case OPTION_VERSION:
+	printVersion();
 	break;
+      case OPTION_VERBOSE:
+	break;
+      default:
+	assert(false);
       }
     }
 
-    GUI_uninit();
-  } else printHelp();
+  if (c < -1)
+    {
+      /* an error occurred during option processing */
+      fprintf(stderr, "%s: %s\n",
+	      poptBadOption(ctxt, POPT_BADOPTION_NOALIAS),
+	      poptStrerror(c));
+      return 1;
+    }
 
+  const gchar* file = poptGetArg(ctxt);
+  if (file == 0 || !(poptPeekArg(ctxt) == 0))
+    usage(ctxt, 1, "fatal error: no input document");
+
+  poptFreeContext(ctxt);
+
+  GUI_init(&argc, &argv, appName, 500, 600, logLevel);
+  if (GUI_load_document(file) < 0)
+    printf("fatal error: cannot load document `%s'\n", file);
+  GUI_run();
+  GUI_uninit();
   exit(0);
 }

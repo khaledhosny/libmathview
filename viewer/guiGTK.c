@@ -155,7 +155,7 @@ load_error_msg(const char* name)
 #endif
 
 void
-GUI_init(int* argc, char*** argv, char* title, guint width, guint height, gint logLevel)
+GUI_init(int* argc, const char*** argv, char* title, guint width, guint height, gint logLevel)
 {
   gtk_init(argc, argv);
 

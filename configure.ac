@@ -189,24 +189,7 @@ AC_ISC_POSIX
 
 dnl Checks for header files.
 AC_HEADER_STDC
-dnl AC_CHECK_HEADERS(cwctype,,AC_MSG_WARN(could not find required header file cwctype))
-dnl AC_CHECK_HEADERS(cwchar,,AC_MSG_WARN(could not find required header file cwchar))
 AC_CHECK_HEADERS(unistd.h)
-dnl AC_CHECK_HEADER(iconv.h,,AC_MSG_ERROR(could not find required header file iconv.h))
-AC_CHECK_HEADERS(getopt.h)
-AC_MSG_CHECKING(for hidden getopt.h)
-AC_TRY_COMPILE(
-	[#include <getopt.h>],
-	[],
-	[
-		AC_DEFINE(HAVE_HIDDEN_GETOPT,1,[Define to 1 if #include <getopt.h> works even when HAVE_GETOPT_H is false])
-		AC_MSG_RESULT(yes)
-	],
-	[
-		AC_MSG_RESULT(no)
-	]
-)
-AC_CHECK_LIB(gnugetopt, getopt_long)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -254,6 +237,7 @@ AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
 AC_CHECK_HEADERS(rope)
 AC_CHECK_HEADERS(ext/rope)
+AC_CHECK_HEADERS(popt.h)
 
 AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
 AC_TRY_LINK(
@@ -281,49 +265,7 @@ if test $HAVE_XSLTPROC = "no"; then
 fi
 AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
 
-dnl AC_CHECK_PROG(HAVE_ICONV, iconv, yes, no)
-dnl if test $HAVE_ICONV = "yes"; then
-dnl 	if iconv -t UTF-8 -f UTF-8 </dev/null >/dev/null 2>&1; then
-dnl 		ICONV_UTF8="UTF-8"
-dnl 	else
-dnl 		AC_MSG_WARN(UTF-8 to UTF-8 is not supported. This may result in failed assertions)
-dnl 		ICONV_UTF8="UTF-8"
-dnl 	fi
-
-dnl 	if iconv -t UCS-4BE -f UCS-4BE </dev/null >/dev/null 2>&1; then
-dnl 		ICONV_UCS4BE="UCS-4BE"
-dnl 	elif iconv -t UCS-4 -f UCS-4 </dev/null >/dev/null 2>&1; then
-dnl 		AC_MSG_WARN(assuming that iconv UCS-4 is bigendian)
-dnl 		ICONV_UCS4BE="UCS-4"
-dnl 	else
-dnl 		AC_MSG_WARN(UCS-4 to UCS-4 is not supported. This may result in failed assertions)
-dnl 		ICONV_UCS4BE="UCS-4"
-dnl 	fi
-
-dnl 	if iconv -t UCS-4LE -f UCS-4LE </dev/null >/dev/null 2>&1; then
-dnl 		ICONV_UCS4LE="UCS-4LE"
-dnl 	else
-dnl 		ICONV_UCS4LE="no"
-dnl 	fi
-dnl else
-dnl 	AC_MSG_WARN(iconv not found. Assuming that UTF-8 and UCS-4 exist. This may result in failed assertions)
-dnl 	ICONV_UTF8="UTF-8"
-dnl 	ICONV_UCS4BE="UCS-4"
-dnl 	ICONV_UCS4LE="no"
-dnl fi
-dnl AC_DEFINE_UNQUOTED(ICONV_UTF8, "$ICONV_UTF8", iconv UTF-8 encoding)
-dnl AC_DEFINE_UNQUOTED(ICONV_UCS4BE, "$ICONV_UCS4BE", iconv UCS-4 encoding big endian)
-dnl if test $ICONV_UCS4LE != "no"; then
-dnl 	AC_DEFINE_UNQUOTED(ICONV_UCS4LE, "$ICONV_UCS4LE", iconv UCS-4 encoding little endian)
-dnl fi
-
-dnl Checks for libraries
-AC_CHECK_LIB(iberty, getopt_long,
-	LIBS="$LIBS -liberty",
-	,
-	-liberty
-)
-AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG,1,[Define to 1 if you have getopt_long]))
+AC_CHECK_LIB(popt, poptGetContext,,[AC_MSG_ERROR([popt is required])])
 
 AC_LANG([C])
 
