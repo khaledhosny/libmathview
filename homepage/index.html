@@ -322,10 +322,16 @@
 
 <h3 class="reverse" id="requirements">requirements</h3>
 
+<p>For compiling the source from the tarballs:</p>
 <ul>
-  <li><a href="http://www.gtk.org">GLib</a> &#x2265; 2.2.3 </li>
+  <li><a href="http:/gcc.gnu.org/">GCC</a> &#x2265; 3.4
+    (some versions of GCC 3.3 are known to have problems compiling
+    some classes in GtkMathView)
+  </li>
 
-  <li><a href="http://www.gtk.org">GTK+</a> &#x2265; 2.4.10 (required up
+  <li><a href="http://www.gtk.org">GLib</a> &#x2265; 2.2.1 </li>
+
+  <li><a href="http://www.gtk.org">GTK+</a> &#x2265; 2.2.1 (required up
   to version <b>0.6.5</b>, optional starting from <b>0.7.0</b>
   for the GTK+ backend)</li>
 
@@ -339,7 +345,7 @@
     <b>0.3.<em>x</em></b> is
     <b>0.0.3c</b>.  </li>
 
-  <li><a href="http://xmlsoft.org/">libxml</a> &#x2265; 2.0.0 (required
+  <li><a href="http://xmlsoft.org/">libxml</a> &#x2265; 2.6.7 (required
     for versions up to <b>0.6.2</b>, then only if the libxml2 and
     libxml2 reader frontend) </li>
 
@@ -351,11 +357,19 @@
     href="http://www.math.unl.edu/~rdieter1/Software/Linux/apps/gtkmathview/">Didier's
     page for GtkMathView</a>.  </li>
 
+  <li>popt &#x2265; 1.7 (if not present, only the libraries will be built)</li>
 </ul>
-<p>
-Further information can be found in the <a href="gtkmathview.html">GtkMathView reference manual</a> (included in
-the source distribution).
-</p>
+
+<p>For compiling a freshly checked out source tree from the CVS, you'll also need:</p>
+<ul>
+  <li>automake &#x2265; 1.7.6</li>
+  <li>autoconf &#x2265; 2.57</li>
+  <li><a href="http://xmlsoft.org/xslt">libxslt</a> &#x2265; 1.0.32
+    (in particular the <tt>xsltproc</tt> utility)</li>
+</ul>
+
+<p>NOTE: You may succeed compiling GtkMathView with older versions of the above
+libraries/tools.</p>
 
 <h3 id="cvs" class="reverse">CVS</h3>
 
@@ -491,6 +505,11 @@ large integrals have the middle part misaligned.
 <h3 class="reverse">news</h3>
 
  <dl class="compact">
+   <dt>Aug 6, 2005</dt>
+   <dd>GtkMathView compiles and runs under MacOSX!
+     See the <tt>README.MacOSX</tt> file in CVS for more information.
+   </dd>
+
    <dt>Aug 2, 2005</dt>
    <dd>Added a <a href="qna.html">Questions &amp; Answers</a> page.
    </dd>
@@ -522,7 +541,7 @@ large integrals have the middle part misaligned.
     with many new features, including support for SVG output, improved support
     for Computer Modern fonts, high-quality rendering, TrueType fonts, and much more.
     Check the mailing list archives for the full announcement, and make sure to have
-    a look at the screenshots in the dedicated section at the bottom of this page.
+    a look at the screenshots at the top of this page.
    </dd>
    
    <dt>Apr 22, 2005</dt>
