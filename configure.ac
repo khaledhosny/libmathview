@@ -237,15 +237,6 @@ AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
 AC_CHECK_HEADERS(rope)
 AC_CHECK_HEADERS(ext/rope)
-AC_CHECK_HEADERS(popt.h,[
-	AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
-	have_popt_h="yes"
-],[
-	AC_MSG_WARN([popt.h could not be found, the build may be incomplete])
-	have_popt_h="no"
-])
-dnl we make the assumption that if the header file is present, the library is present as well
-AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt_h" = "yes"])
 
 AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
 AC_TRY_LINK(
@@ -273,7 +264,42 @@ if test $HAVE_XSLTPROC = "no"; then
 fi
 AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
 
-AC_CHECK_LIB(popt, poptGetContext,,[AC_MSG_ERROR([popt is required])])
+AC_ARG_WITH(
+	popt-framework,
+	[  --with-popt-framework[=PFX] use popt framework (in PFX, if given) instead of library [default=no] (MacOSX only)],
+	if test "x`uname`" = "xDarwin"; then
+		popt_framework=$withval
+	else
+		popt_framework=no
+	fi,
+	popt_framework=no
+)
+
+if test "x$popt_framework" = "xno"; then
+	POPTFMWK_CFLAGS=""
+	POPTFMWK_LIBS=""
+	AC_CHECK_HEADERS(popt.h,[
+		AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
+		have_popt_h="yes"
+	],[
+		AC_MSG_WARN([popt.h could not be found, the build may be incomplete])
+		have_popt_h="no"
+	])
+	dnl we make the assumption that if the header file is present, the library is present as well
+	AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt_h" = "yes"])
+	AC_CHECK_LIB(popt, poptGetContext,,[AC_MSG_ERROR([popt is required])])
+else
+	AC_DEFINE(USE_POPT_FRAMEWORK,1,[Define to 1 if building against popt framework rather than library (MacOSX only)])
+	if test "x$popt_framework" = "xyes"; then
+		POPTFMWK_CFLAGS=""
+		POPTFMWK_LIBS="-framework popt"
+	else
+		POPTFMWK_CFLAGS="-F$popt_framework"
+		POPTFMWK_LIBS="-F$popt_framework -framework popt"
+	fi
+fi
+AC_SUBST(POPTFMWK_CFLAGS)
+AC_SUBST(POPTFMWK_LIBS)
 
 AC_LANG([C])
 

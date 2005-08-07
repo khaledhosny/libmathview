@@ -26,8 +26,13 @@
 #include "CharTraits.icc"
 
 #include <cassert>
-#include <popt.h>
 #include <stdlib.h>
+
+#if USE_POPT_FRAMEWORK
+#include <popt/popt.h>
+#else
+#include <popt.h>
+#endif
 
 #include "defs.h"
 #include "guiGTK.h"

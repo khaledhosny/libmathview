@@ -32,30 +32,34 @@ libmathview_frontend_custom_reader_la_LIBADD = \
   $(top_builddir)/src/frontend/libxml2_reader/libfrontend_libxml2_reader.la \
   $(top_builddir)/src/frontend/custom_reader/libfrontend_custom_reader.la \
   $(top_builddir)/src/libmathview.la \
+  -lstdc++ \
   $(NULL)
 
 libmathview_frontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/libxml2_reader/libfrontend_libxml2_reader.la \
   $(top_builddir)/src/libmathview.la \
+  -lstdc++ \
   $(NULL)
 
 libmathview_frontend_libxml2_la_LIBADD = \
   $(XML_LIBS) \
   $(top_builddir)/src/frontend/libxml2/libfrontend_libxml2.la \
   $(top_builddir)/src/libmathview.la \
+  -lstdc++ \
   $(NULL)
 
 libmathview_frontend_gmetadom_la_LIBADD = \
   $(DOM_LIBS) \
   $(top_builddir)/src/frontend/gmetadom/libfrontend_gmetadom.la \
   $(top_builddir)/src/libmathview.la \
+  -lstdc++ \
   $(NULL)
 
-libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libmathview_frontend_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
+libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
+libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
+libmathview_frontend_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 
 libmathview_frontend_custom_reader_la_SOURCES = custom_reader_MathView.cc
 libmathview_frontend_libxml2_reader_la_SOURCES = libxml2_reader_MathView.cc
