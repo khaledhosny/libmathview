@@ -12,6 +12,8 @@
   * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
+- implement GnomePrint backend
+- implement PS backend
 + make DPI a configurable parameter
 + find a way of having TFM support orthogonal to the other classes
 ? make pangolayout pangolinelayout areas configurable (glyph area?)

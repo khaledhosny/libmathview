@@ -2,13 +2,21 @@
 NULL =
 
 if COND_GTK
+if COND_HAVE_POPT
 MAYBE_GTK_SUBDIRS = viewer
+else
+MAYBE_GTK_SUBDIRS = $(NULL)
+endif
 else
 MAYBE_GTK_SUBDIRS = $(NULL)
 endif
 
 if COND_SVG
+if COND_HAVE_POPT
 MAYBE_SVG_SUBDIRS = mathmlsvg
+else
+MAYBE_SVG_SUBDIRS = mathmlsvg
+endif
 else
 MAYBE_SVG_SUBDIRS = $(NULL)
 endif

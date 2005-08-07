@@ -237,7 +237,15 @@ AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
 AC_CHECK_HEADERS(rope)
 AC_CHECK_HEADERS(ext/rope)
-AC_CHECK_HEADERS(popt.h)
+AC_CHECK_HEADERS(popt.h,[
+	AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
+	have_popt_h="yes"
+],[
+	AC_MSG_WARN([popt.h could not be found, the build may be incomplete])
+	have_popt_h="no"
+])
+dnl we make the assumption that if the header file is present, the library is present as well
+AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt_h" = "yes"])
 
 AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
 AC_TRY_LINK(
