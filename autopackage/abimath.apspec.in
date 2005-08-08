@@ -1,0 +1,67 @@
+# -*-shell-script-*-
+
+[Meta]
+RootName: gnome.org/gtkmathview:@VERSION@
+DisplayName: A GTK Widget for Rendering MathML Documents
+ShortName: gtkmathview
+Maintainer: Luca Padovani <luca.padovani@cs.unibo.it>
+Packager: Robert Staudinger <robsta@stereolyzer.net>
+Summary: A GTK Widget for Rendering MathML Documents.
+SoftwareVersion: @VERSION@
+AutopackageTarget: 1.0
+PackageVersion: 1
+
+# Only uncomment InterfaceVersion if your package exposes interfaces to other software,
+# for instance if it includes DSOs or python/perl modules. See the developer guide for more info,
+# or ask on autopackage-dev if you don't understand interface versioning in autopackage.
+
+InterfaceVersion: @MAJOR_VERSION@.@MINOR_VERSION@
+
+[Description]
+GtkMathView is a C++ rendering engine for MathML documents. It provides an interactive view that can be used for browsing and editing MathML markup. A number of different frontends and backends is supported. For more information see http://helm.cs.unibo.it/mml-widget/
+
+[BuildPrepare]
+orig_src_root=`pwd`
+orig_build_root="$build_root"
+prepareBuild --enable-binreloc --disable-debug --disable-boxml --disable-gmetadom --disable-libxml2-reader --disable-custom-reader --enable-pipe --disable-tfm --disable-svg --disable-gtk --disable-static --with-t1lib=no
+mkdir -p "$build_root/fonts"
+cp -R $orig_src_root/fonts/* "$build_root/fonts/"
+
+[BuildUnprepare]
+unprepareBuild
+
+[Imports]
+echo '*' | import
+
+[Prepare]
+require @gtk.org/glib 2.2
+require @xmlsoft.org/libxml2 2.0
+
+[Install]
+CONFDIR="etc/gtkmathview"
+if [ ! -e "$PREFIX/$CONFDIR" ] ; then
+	mkdirs "$PREFIX/$CONFDIR"
+fi
+macro1='@'"prefix"'@'
+macro2='@'"VERSION"'@'
+sed -e "s%$macro1%$PREFIX%g" -e "s%$macro2%$SOFTWAREVERSION%g" "./$CONFDIR/gtkmathview.conf.xml.in" > "./$CONFDIR/gtkmathview.conf.xml"
+copyFile "./$CONFDIR/gtkmathview.conf.xml" "$PREFIX/$CONFDIR/gtkmathview.conf.xml"
+installLib ./lib/*.so.*.*.*
+installMan 1 ./man/man1/*
+installData ./share/*
+# fonts
+if [ $UID == 0 ] ; then 
+	FONTDIR="/usr/share/fonts/truetype"
+else 
+	FONTDIR=~/.fonts
+fi
+mkdirs $FONTDIR
+for entry in $( ls ./fonts ) ; do
+	if [ -d ./fonts/$entry ] ; then
+		mkdirs "$FONTDIR/$entry"
+		copyFiles ./fonts/$entry/* "$FONTDIR/$entry/"		
+	fi
+done
+
+[Uninstall]
+uninstallFromLog

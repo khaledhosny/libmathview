@@ -27,7 +27,7 @@ noinst_HEADERS = guiGTK.h
 mathmlviewer_static_SOURCES = main.cc aux.cc guiGTK.c
 mathmlviewer_static_LDFLAGS = -no-install -static
 mathmlviewer_static_LDADD = \
-  $(POPTFMWK_LIBS) \
+  $(POPT_LIBS) \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
@@ -102,7 +102,7 @@ test_loading_reader_LDADD = \
   $(NULL)
 
 INCLUDES = \
-  $(POPTFMWK_CFLAGS) \
+  $(POPT_CFLAGS) \
   $(GTK_CFLAGS) \
   $(XML_CFLAGS) \
   $(DOM_CFLAGS) \

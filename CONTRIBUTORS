@@ -8,11 +8,8 @@ In no particular order:
 * Claudio Sacerdoti Coen,
   for his bug-reports and useful feedback for the GTK+ interface and
   the implementation of the <maction> element (toggle mode). He's also
-  contributed into the development of various bindings for the Ocaml
+  contributed into the development of various bindings for the OCaml
   language.
-
-* Endre Somogyi
-  for the porting of the widget to Windows (not yet completed).
 
 * Pouria Masoudi
   porting to GTK2 and Bonobo Control for GtkMathView
@@ -24,5 +21,14 @@ In no particular order:
   read-from-buffer methods in widget and gmetadom frontend
 
 * Jean Brefort
-  patch for configure.ac and auto/Makefile.am
+  patches for configure.ac and auto/Makefile.am
+
+* Hubert Figuere, Francis James Franklin
+  MacOSX/fink port
+
+* Robert Staudinger
+  autopackage support
+
+* Jean Marc Maurer
+  Win32/mingw port
 

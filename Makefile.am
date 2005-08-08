@@ -15,14 +15,14 @@ if COND_SVG
 if COND_HAVE_POPT
 MAYBE_SVG_SUBDIRS = mathmlsvg
 else
-MAYBE_SVG_SUBDIRS = mathmlsvg
+MAYBE_SVG_SUBDIRS = $(NULL)
 endif
 else
 MAYBE_SVG_SUBDIRS = $(NULL)
 endif
 
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in README.MacOSX
-SUBDIRS = scripts config auto src doc $(MAYBE_GTK_SUBDIRS) $(MAYBE_SVG_SUBDIRS)
+SUBDIRS = scripts config auto autopackage src doc $(MAYBE_GTK_SUBDIRS) $(MAYBE_SVG_SUBDIRS)
 CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig

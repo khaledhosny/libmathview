@@ -28,11 +28,7 @@
 #include <cassert>
 #include <stdlib.h>
 
-#if USE_POPT_FRAMEWORK
-#include <popt/popt.h>
-#else
 #include <popt.h>
-#endif
 
 #include "defs.h"
 #include "guiGTK.h"

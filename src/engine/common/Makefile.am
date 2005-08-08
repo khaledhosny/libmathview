@@ -13,6 +13,8 @@ libengine_common_la_SOURCES = \
   View.cc \
   Node.cc \
   Element.cc \
+  prefix.c \
+  prefix.h \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView

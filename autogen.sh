@@ -17,6 +17,7 @@ libtoolize --force --copy || {
 # 
 echo "Creating aclocal.m4: aclocal $ACLOCAL_FLAGS"
 
+ACLOCAL_FLAGS="-I ac-helpers $ACLOCAL_FLAGS"
 aclocal $ACLOCAL_FLAGS || {
     echo "aclocal failed! Unable to continue."
     exit 1

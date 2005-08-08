@@ -44,9 +44,6 @@ To configure GtkMathView properly, use this line
 The options in square brackets will disable some unusual features to
 save you considerable compilation time.
 
-You can also use the --with-popt-framework option if you intend to
-link popt as a framework rather than as a library.
-
 Fonts
 =====
 

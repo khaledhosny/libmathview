@@ -67,3 +67,7 @@ entities-table.xml: $(srcdir)/entities-table.in
 	@echo Making entities table...
 	$(SCRIPTDIR)/makeEntitiesTable <$<  >$@
 
+if WITH_BINRELOC
+install-data-hook:
+	cp $(srcdir)/gtkmathview.conf.xml.in $(DESTDIR)/$(pkgsysconfdir)
+endif

@@ -10,9 +10,11 @@ MATHVIEW_VERSION=$MATHVIEW_MAJOR_VERSION.$MATHVIEW_MINOR_VERSION.$MATHVIEW_MICRO
 MATHVIEW_VERSION_INFO=`expr $MATHVIEW_MAJOR_VERSION + $MATHVIEW_MINOR_VERSION`:$MATHVIEW_MICRO_VERSION:$MATHVIEW_MINOR_VERSION
 
 MAJOR_VERSION=$MATHVIEW_MAJOR_VERSION
+MINOR_VERSION=$MATHVIEW_MINOR_VERSION
 VERSION=$MATHVIEW_VERSION
 
 AC_SUBST(MAJOR_VERSION)
+AC_SUBST(MINOR_VERSION)
 AC_SUBST(MATHVIEW_VERSION)
 AC_SUBST(MATHVIEW_VERSION_INFO)
 
@@ -265,41 +267,47 @@ fi
 AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
 
 AC_ARG_WITH(
-	popt-framework,
-	[  --with-popt-framework[=PFX] use popt framework (in PFX, if given) instead of library [default=no] (MacOSX only)],
-	if test "x`uname`" = "xDarwin"; then
-		popt_framework=$withval
-	else
-		popt_framework=no
-	fi,
-	popt_framework=no
+	popt,
+	[  --with-popt[=PFX] use popt (in PFX, if given) - required for mathmlsvg and viewer],
+	popt_val=$withval,
+	popt_val="no"
 )
 
-if test "x$popt_framework" = "xno"; then
-	POPTFMWK_CFLAGS=""
-	POPTFMWK_LIBS=""
+have_popt="no"
+
+if test "x$popt_val" != "xno"; then
+	if test "x$popt_val" = "xyes"; then
+	   	POPT_CFLAGS=""
+		POPT_LIBS=""
+	else
+	   	POPT_CFLAGS="-I$popt_val/include"
+		POPT_LIBS="-L$popt_val/lib"
+		_cppflags=$CPPFLAGS
+		_ldflags=$LDFLAGS
+		CPPFLAGS="$CPPFLAGS $POPT_CFLAGS"
+		LDFLAGS="$LDFLAGS $POPT_LIBS"
+	fi
 	AC_CHECK_HEADERS(popt.h,[
 		AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
-		have_popt_h="yes"
+
+		dnl we make the assumption that if the header file is present, the library is present as well
+		AC_CHECK_LIB(popt, poptGetContext,
+			POPT_LIBS="$POPT_LIBS -lpopt"
+			have_popt="yes",
+			[AC_MSG_ERROR([libpopt not found])])
 	],[
-		AC_MSG_WARN([popt.h could not be found, the build may be incomplete])
-		have_popt_h="no"
+		AC_MSG_ERROR([popt.h could not be found, the build may be incomplete])
 	])
-	dnl we make the assumption that if the header file is present, the library is present as well
-	AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt_h" = "yes"])
-	AC_CHECK_LIB(popt, poptGetContext,,[AC_MSG_ERROR([popt is required])])
-else
-	AC_DEFINE(USE_POPT_FRAMEWORK,1,[Define to 1 if building against popt framework rather than library (MacOSX only)])
-	if test "x$popt_framework" = "xyes"; then
-		POPTFMWK_CFLAGS=""
-		POPTFMWK_LIBS="-framework popt"
-	else
-		POPTFMWK_CFLAGS="-F$popt_framework"
-		POPTFMWK_LIBS="-F$popt_framework -framework popt"
+	if test "x$popt_val" != "xyes"; then
+		CPPFLAGS=$_cppflags
+		LDFLAGS=$_ldflags
 	fi
 fi
-AC_SUBST(POPTFMWK_CFLAGS)
-AC_SUBST(POPTFMWK_LIBS)
+
+AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt" = "yes"])
+
+AC_SUBST(POPT_CFLAGS)
+AC_SUBST(POPT_LIBS)
 
 AC_LANG([C])
 
@@ -438,6 +446,9 @@ if test "$enable_svg" = "yes"; then
 fi
 AM_CONDITIONAL([COND_SVG], [test "$enable_svg" = "yes"])
 
+AM_BINRELOC
+AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
+
 AC_CONFIG_FILES([
  Makefile
  gtkmathview.spec
@@ -446,6 +457,7 @@ AC_CONFIG_FILES([
  scripts/Makefile
  auto/Makefile
  auto/Char.hh.in
+ autopackage/Makefile
  src/Makefile
  src/common/Makefile
  src/common/mathvariants/Makefile
@@ -482,6 +494,7 @@ AC_CONFIG_FILES([
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc
  gtkmathview-gmetadom.pc
+ autopackage/abimath.apspec
 ])
 AC_OUTPUT
 

@@ -25,11 +25,7 @@
 #include <cassert>
 #include <fstream>
 
-#if USE_POPT_FRAMEWORK
-#include <popt/popt.h>
-#else
 #include <popt.h>
-#endif
 
 // needed for old versions of GCC, must come before String.hh!
 #include "CharTraits.icc"
