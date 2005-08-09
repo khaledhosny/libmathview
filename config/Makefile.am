@@ -70,4 +70,7 @@ entities-table.xml: $(srcdir)/entities-table.in
 if WITH_BINRELOC
 install-data-hook:
 	cp $(srcdir)/gtkmathview.conf.xml.in $(DESTDIR)/$(pkgsysconfdir)
+else
+install-data-hook:
+	true
 endif
