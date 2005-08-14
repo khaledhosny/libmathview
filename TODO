@@ -48,6 +48,7 @@ BUGS
 
 ARCH IMPROVEMENTS
 
+* MathMLNormalizingContainerElement::format can be removed
 ? make default value of attributes configurable
 ? make GlyphStringArea a leaf-like area?
 - change the clone method for areas so that it checks if the
