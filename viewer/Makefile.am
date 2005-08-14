@@ -37,6 +37,7 @@ mathmlviewer_static_LDADD = \
 
 mathmlviewer_SOURCES = main.cc aux.cc guiGTK.c
 mathmlviewer_LDADD = \
+  $(POPT_LIBS) \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
   $(T1_LIBS) \

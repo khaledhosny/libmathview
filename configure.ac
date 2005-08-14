@@ -128,8 +128,8 @@ AC_ARG_ENABLE(
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
-	t1lib=$withval,
-	t1lib=auto
+	with_t1lib=$withval,
+	with_t1lib=auto
 )
 
 AC_ARG_WITH(
@@ -142,6 +142,25 @@ AC_ARG_WITH(
         [
                 with_t1lib_prefix=no
         ]
+)
+
+AC_ARG_WITH(
+        popt-prefix,
+        [  --with-popt-prefix=PFX prefix dir where popt is installed],
+        [
+                with_popt_prefix="yes"
+                POPT_PREFIX=$withval
+        ],
+        [
+                with_popt_prefix="no"
+        ]
+)
+
+AC_ARG_WITH(
+	popt,
+	[  --with-popt[=ARG] use popt - required for mathmlsvg and viewer (default=auto)],
+	with_popt=$withval,
+	with_popt="auto"
 )
 
 dnl Automake configuration
@@ -217,24 +236,6 @@ AC_SUBST(GTKMATHVIEW_SIZEOF_WCHAR_T, "$ac_cv_sizeof_wchar_t")
 
 AC_LANG_PUSH(C++)
 
-dnl Check for iconv with const pointer as second argument
-dnl AC_MSG_CHECKING(whether iconv has a const argument)
-dnl AC_TRY_COMPILE(
-dnl 	[#include <iconv.h>],
-dnl 	[
-dnl 		const char* inbuf;
-dnl 		iconv_t     cd;
-dnl 		iconv(cd, &inbuf, 0, 0, 0);
-dnl 	],
-dnl 	[
-dnl 		AC_DEFINE(ICONV_CONST,1,[Define to 1 if iconv has a const second argument])
-dnl 		AC_MSG_RESULT(yes)
-dnl 	],
-dnl 	[
-dnl 		AC_MSG_RESULT(no)
-dnl 	]
-dnl )
-
 AC_CHECK_HEADERS(hash_map)
 AC_CHECK_HEADERS(ext/hash_map)
 AC_CHECK_HEADERS(rope)
@@ -266,46 +267,30 @@ if test $HAVE_XSLTPROC = "no"; then
 fi
 AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
 
-AC_ARG_WITH(
-	popt,
-	[  --with-popt[=PFX] use popt (in PFX, if given) - required for mathmlsvg and viewer],
-	popt_val=$withval,
-	popt_val="no"
-)
-
 have_popt="no"
-
-if test "x$popt_val" != "xno"; then
-	if test "x$popt_val" = "xyes"; then
-	   	POPT_CFLAGS=""
-		POPT_LIBS=""
-	else
-	   	POPT_CFLAGS="-I$popt_val/include"
-		POPT_LIBS="-L$popt_val/lib"
-		_cppflags=$CPPFLAGS
-		_ldflags=$LDFLAGS
-		CPPFLAGS="$CPPFLAGS $POPT_CFLAGS"
-		LDFLAGS="$LDFLAGS $POPT_LIBS"
-	fi
+if test $with_popt = "auto"; then
 	AC_CHECK_HEADERS(popt.h,[
-		AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
-
-		dnl we make the assumption that if the header file is present, the library is present as well
-		AC_CHECK_LIB(popt, poptGetContext,
-			POPT_LIBS="$POPT_LIBS -lpopt"
-			have_popt="yes",
-			[AC_MSG_ERROR([libpopt not found])])
-	],[
-		AC_MSG_ERROR([popt.h could not be found, the build may be incomplete])
+		AC_CHECK_LIB(popt, poptGetContext, [have_popt="yes"])
 	])
-	if test "x$popt_val" != "xyes"; then
-		CPPFLAGS=$_cppflags
-		LDFLAGS=$_ldflags
-	fi
+else
+	have_popt=$with_popt
 fi
 
-AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt" = "yes"])
+if test $have_popt = "yes"; then
+	AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
 
+        if test $with_popt_prefix = "yes"; then
+                POPT_CFLAGS="-I$POPT_PREFIX/include"
+		POPT_LIBS="-L$POPT_PREFIX/lib -lpopt"
+	else
+		POPT_CFLAGS=""
+		POPT_LIBS="-lpopt"
+        fi
+else
+	POPT_CFLAGS=""
+	POPT_LIBS=""
+fi
+AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt" = "yes"])
 AC_SUBST(POPT_CFLAGS)
 AC_SUBST(POPT_LIBS)
 
@@ -358,12 +343,16 @@ if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
 fi
 AM_CONDITIONAL([COND_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
 
-if test $t1lib = "auto"; then
-	AC_CHECK_LIB(t1, T1_InitLib, t1lib="yes", t1lib="no", -lm)
-	AC_CHECK_HEADER(t1lib.h,, t1lib="no")
+have_t1lib="no"
+if test $with_t1lib = "auto"; then
+	AC_CHECK_HEADERS(t1lib.h,[
+		AC_CHECK_LIB(t1, T1_InitLib, [have_t1lib="yes"],,[-lm])
+	])
+else
+	have_t1lib=$with_t1lib
 fi
 
-if test $t1lib = "yes"; then
+if test $have_t1lib = "yes"; then
 	AC_DEFINE(HAVE_LIBT1,1,[Define to 1 to compile with t1lib for Type 1 fonts])
 
         if test $with_t1lib_prefix = "yes"; then
@@ -380,19 +369,10 @@ else
 	T1_LIBS=""
 	T1_LIBS_X=""
 fi
-AM_CONDITIONAL([COND_T1LIB], [test $t1lib = "yes"])
+AM_CONDITIONAL([COND_T1LIB], [test $have_t1lib = "yes"])
 AC_SUBST(T1_CFLAGS)
 AC_SUBST(T1_LIBS)
 AC_SUBST(T1_LIBS_X)
-
-if test "(" $t1lib = "no" ")" -a "(" "x$export_PS" = "xyes" ")"; then
-	AC_MSG_WARN(cannot export to PostScript if t1lib is not available)
-	export_PS=no
-fi
-
-if test "x$export_PS" = "xauto"; then
-	export_PS=yes
-fi
 
 CFLAGS="$CFLAGS -W -Wall"
 CXXFLAGS="$CXXFLAGS -W -Wall"
@@ -508,6 +488,7 @@ Compilation
   Profiling           ${enable_profile}
   Debugging           ${enable_debug}
   xsltproc            ${HAVE_XSLTPROC}
+  popt                ${have_popt}
 
 Engine
 
@@ -523,8 +504,8 @@ Frontend
 
 Backend
 
-  GTK+                ${enable_gtk}
-  Type1 fonts (t1lib) ${t1lib}
+  GTK+                ${have_gtk}
+  Type1 fonts (t1lib) ${have_t1lib}
   TFM support level   ${enable_tfm}
   SVG                 ${enable_svg}
 

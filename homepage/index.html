@@ -294,10 +294,9 @@
  
   <p>
     GtkMathView renders MathML documents through a <em>backend</em>
-    whose purpose is to provide an interface between the portable
-    rendering engine and the platform-specific capabilities (like
-    retrieving fonts, drawing on the screen, and so on). Currently the
-    following backends are provided:
+    whose purpose is to provide an abstraction of the platform-specific
+    capabilities (available fonts, drawing drawing primitives, and so on).
+    Currently the following backends are provided:
   </p>
 
   <ul>
@@ -312,12 +311,11 @@
     <li><a href="http://www.abisource.com/">AbiWord</a> backend, which
     allows one to embed MathML documents into AbiWord by means of the
     AbiMathView plugin.</li>
-
    </ul>
 
    <p>
-     GtkMathView fully supports Computer Modern fonts for achieving
-     the best possible quality.
+     GtkMathView compiles under Linux (all backends), MacOSX
+     (SVG and AbiWord backends), Win32 (SVG and AbiWord backend).
    </p>
 
 <h3 class="reverse" id="requirements">requirements</h3>
