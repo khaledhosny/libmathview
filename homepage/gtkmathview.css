@@ -302,3 +302,6 @@ span.adage {
   font-weight: bold;
 }
 
+tt.error {
+  color: red;
+}

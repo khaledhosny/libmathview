@@ -67,42 +67,6 @@
     </p>
    </dd>
 
-   <dt>GtkMathView takes ages to compile, is it normal?</dt>
-   <dd>
-    <p>
-     GtkMathView makes large use of C++ templates and GCC is known to be kind
-     of slow to compile them. However, chances are that you don't need to
-     compile <em>every</em> feature provided by GtkMathView, here are a few
-     suggestions in decreasing order of effectiveness:
-     <ul>
-       <li>Disable compilation of shared libraries (useful if you don't plan to
-         install the libraries and executables) with <tt>--disable-shared</tt>
-	 (this basically cuts compilation time by 50%)
-       </li>
-       <li>Disable the frontends you don't want to use with
-        <ul>
-         <li><tt>--disable-gmetadom</tt> (don't compile GMetaDOM frontend)</li>
-         <li><tt>--disable-libxml2</tt> (don't compile libxml2 tree-based frontend)</li>
-         <li><tt>--disable-libxml2-reader</tt> (don't compile libxml2 reader-based frontend)</li>
-         <li><tt>--disable-custom-reader</tt> (don't compile custom reader-based frontend)</li>
-	</ul>
-       </li>
-       <li>Disable support for BoxML markup with <tt>--disable-boxml</tt>.
-       </li>
-       <li>Disable the backends you don't want to use with
-        <ul>
-         <li><tt>--disable-gtk</tt> (don't compile GTK+ backend)</li>
-         <li><tt>--disable-svg</tt> (don't compile SVG backend)</li>
-	</ul>
-       </li>
-       <li>Use <tt>--enable-pipe</tt> at configuration time. In many cases
-         this option speeds up GCC.</li>
-       <li>Disable support for TFM (TeX Font Metrics) with <tt>--enable-tfm=0</tt>.
-       </li>
-     </ul>
-    </p>
-   </dd>
-
    <dt>When I render a document I get a funny question mark in a red diamond, what is it?</dt>
    <dd>
     <p>
@@ -250,11 +214,79 @@
      as a <tt>path</tt> key in the <tt>dictionary</tt> section.
     </p>
    </dd>
+
+ </dl>
+
+ <h3 class="reverse">Compiling and linking issues</h3>
+
+ <dl>
+   <dt>GtkMathView takes ages to compile, is it normal?</dt>
+   <dd>
+    <p>
+     GtkMathView makes large use of C++ templates and GCC is known to be kind
+     of slow to compile them. However, chances are that you don't need to
+     compile <em>every</em> feature provided by GtkMathView, here are a few
+     suggestions in decreasing order of effectiveness:
+     <ul>
+       <li>Disable compilation of shared libraries (useful if you don't plan to
+         install the libraries and executables) with <tt>--disable-shared</tt>
+	 (this basically cuts compilation time by 50%)
+       </li>
+       <li>Disable the frontends you don't want to use with
+        <ul>
+         <li><tt>--disable-gmetadom</tt> (don't compile GMetaDOM frontend)</li>
+         <li><tt>--disable-libxml2</tt> (don't compile libxml2 tree-based frontend)</li>
+         <li><tt>--disable-libxml2-reader</tt> (don't compile libxml2 reader-based frontend)</li>
+         <li><tt>--disable-custom-reader</tt> (don't compile custom reader-based frontend)</li>
+	</ul>
+       </li>
+       <li>Disable support for BoxML markup with <tt>--disable-boxml</tt>.
+       </li>
+       <li>Disable the backends you don't want to use with
+        <ul>
+         <li><tt>--disable-gtk</tt> (don't compile GTK+ backend)</li>
+         <li><tt>--disable-svg</tt> (don't compile SVG backend)</li>
+	</ul>
+       </li>
+       <li>Use <tt>--enable-pipe</tt> at configuration time. In many cases
+         this option speeds up GCC.</li>
+       <li>Disable support for TFM (TeX Font Metrics) with <tt>--enable-tfm=0</tt>.
+       </li>
+     </ul>
+    </p>
+   </dd>
+
+   <dt>Compilation fails with the message <tt class="error">undefined reference to `T1_GetNoFonts'</tt>.</dt>
+   <dd>This is due to a wrong version of the <tt>t1lib</tt> library (1.x instead of 5.y). You can
+     <ol>
+       <li>upgrade <tt>t1lib</tt>, or</li>
+       <li>disable <tt>t1lib</tt> at configuration time with the <tt>--with-t1lib=no</tt> option, or</li>
+       <li>patch gtkmathview's source code to use the the old <tt>T1_Get_no_fonts</tt>
+       instead of <tt>T1_GetNoFonts</tt>.
+     </ol>
+   </dd>
  </dl>
 
  <h3 class="reverse">Gtk Backend</h3>
 
  <dl>
+   <dt>Where does GtkMathView sit in the GTK+ heirachy?</dt>
+   <dd>
+     <p>
+       GtkMathView derives from GtkWidget directly.
+     </p>
+   </dd>
+
+   <dt>Is the GtkMathView widget able to get GTK+ events?
+   <dd>
+     <p>
+      Yes, you have to set the right flags and, for keyboard events, enable focus like this:
+      <pre>
+        gtk_widget_add_events(GTK_WIDGET(math_view), GDK_KEY_PRESS_MASK);
+	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(math_view), GTK_CAN_FOCUS);</pre>
+     </p>
+   </dd>
+
    <dt>Can I control which fonts GtkMathView uses with the Pango shaper?</dt>
    <dd>
     <p>
