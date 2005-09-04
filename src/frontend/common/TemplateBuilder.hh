@@ -553,7 +553,7 @@ protected:
     typedef MathMLAlignGroupElement type;
 
     static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<MathMLAlignGroupElement>& elem)
+    refine(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<MathMLAlignGroupElement>&)
     {
       // NO ATTRIBUTES TO REFINE???
     }
@@ -1005,11 +1005,11 @@ protected:
     { }
 
     static void
-    refine(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>& elem)
+    refine(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>&)
     { }
 
     static void
-    construct(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>& elem)
+    construct(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>&)
     { }
   };
 
@@ -1186,7 +1186,7 @@ protected:
     }
 
     static void
-    construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLTextElement>& elem)
+    construct(const TemplateBuilder&, const typename Model::Element& el, const SmartPtr<BoxMLTextElement>& elem)
     {
       String content;
       for (typename Model::NodeIterator iter(Model::asNode(el)); iter.more(); iter.next())
