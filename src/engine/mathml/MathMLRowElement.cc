@@ -103,7 +103,7 @@ MathMLRowElement::format(FormattingContext& ctxt)
 	      {
 		const int i = op - erow.begin();
 		ctxt.setStretchOperator(*op);
-		getChild(i)->setDirtyLayout();
+		(*op)->setDirtyLayout();
 		row[i] = getChild(i)->format(ctxt);
 	      }
 	  ctxt.setStretchOperator(0);
