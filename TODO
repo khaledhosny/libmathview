@@ -5,6 +5,7 @@
 + = SHORT TERM
 - = LONG TERM
 ? = unsure
+O = OK, done
 
 // General
 
@@ -12,8 +13,12 @@
   * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
+* AC_LIBTOOL_WIN32_DLL (before AC_PROG_LIBTOOL)
+  after having decorated all the exported data/functions/classes
 - implement GnomePrint backend
 - implement PS backend
++ HAVE_BOXML and HAVE_EXT_HASH_MAP_H are needed in installed header files:
+  store these definitions in the .pc files (possibly with a unique name)
 + make DPI a configurable parameter
 + find a way of having TFM support orthogonal to the other classes
 ? make pangolayout pangolinelayout areas configurable (glyph area?)
@@ -33,6 +38,7 @@
 // AbiWord
 
 * move Char.hh.in into auto and cleanup dependencies with the top_builddir?
+* commit default shaper in abimathview
 
 // MathML
 
@@ -40,10 +46,10 @@ BUGS
 
 + implement combining characters when TFM is enabled for the
   computer modern shaper
-- when index == length in a glyph area the caret is drawn
+? when index == length in a glyph area the caret is drawn
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially
-  for mo elements
+  for mo elements. Is this really better?
 ? selecting the root <math> element does not show selection
 
 ARCH IMPROVEMENTS
@@ -55,13 +61,15 @@ ARCH IMPROVEMENTS
   content is unchanged, and possibly implement the replace this
   way
 - implement auxiliary methods for searching into the area model
-- it seems like the choice of having that the first child of a
-  vertical area is the bottommost is a bit weird. Think of the cursor:
-  intuitively at increasing indices the cursor should go forward (that
-  is right or down depending on the container)
 - It may be feasible to generalize searching functions
   over areas by implementing a visitor
 - remove cast in gmetadom_Model::documentFromBuffer when gdome API is OK
+O it seems like the choice of having that the first child of a
+  vertical area is the bottommost is a bit weird. Think of the cursor:
+  intuitively at increasing indices the cursor should go forward (that
+  is right or down depending on the container). No, it is consistent
+  with the coordinate system used by areas where the origin is at the
+  bottom
 
 PERFORMANCE IMPROVEMENTS
 

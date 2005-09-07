@@ -23,7 +23,9 @@
 #ifndef __RenderingContext_hh__
 #define __RenderingContext_hh__
 
-class RenderingContext
+#include "gmv_defines.h"
+
+class GMV_EXPORT RenderingContext
 {
 public:
   RenderingContext(void) { }

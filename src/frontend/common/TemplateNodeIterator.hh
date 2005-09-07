@@ -23,8 +23,10 @@
 #ifndef __TemplateNodeIterator_hh__
 #define __TemplateNodeIterator_hh__
 
+#include "gmv_defines.h"
+
 template <class Model>
-class TemplateNodeIterator
+class GMV_EXPORT TemplateNodeIterator
 {
 public:
   TemplateNodeIterator(const typename Model::Node& root) : currentNode(Model::getFirstChild(root)) { }

@@ -28,7 +28,7 @@
 #include "String.hh"
 #include "SVG_RenderingContext.hh"
 
-class SVG_StreamRenderingContext : public SVG_RenderingContext
+class GMV_EXPORT SVG_StreamRenderingContext : public SVG_RenderingContext
 {
 public:
   SVG_StreamRenderingContext(const SmartPtr<class AbstractLogger>&, std::ostream&);

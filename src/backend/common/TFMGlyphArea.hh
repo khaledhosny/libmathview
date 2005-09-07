@@ -25,7 +25,7 @@
 
 #include "GlyphArea.hh"
 
-class TFMGlyphArea : public GlyphArea
+class GMV_EXPORT TFMGlyphArea : public GlyphArea
 {
 protected:
   TFMGlyphArea(const SmartPtr<class TFMFont>&);

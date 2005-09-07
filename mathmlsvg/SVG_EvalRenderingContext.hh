@@ -24,6 +24,7 @@
 #define __SVG_EvalRenderingContext_hh__
 
 #include "BoundingBox.hh"
+#include "StringHash.hh"
 #include "HashMap.hh"
 #include "MathView.hh"
 #include "SVG_RenderingContext.hh"

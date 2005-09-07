@@ -28,7 +28,7 @@
 
 #include "c_customXmlReader.h"
 
-class custom_reader_MathView : public View
+class GMV_EXPORT custom_reader_MathView : public View
 {
 protected:
   custom_reader_MathView(const SmartPtr<class AbstractLogger>&);

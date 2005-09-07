@@ -27,7 +27,7 @@
 #include "Element.hh"
 
 // MathMLElement: base class for every MathML Element
-class MathMLElement : public Element
+class GMV_EXPORT MathMLElement : public Element
 {
 protected:
   MathMLElement(const SmartPtr<class MathMLNamespaceContext>&);

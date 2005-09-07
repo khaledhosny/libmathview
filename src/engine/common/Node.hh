@@ -26,7 +26,7 @@
 #include "Object.hh"
 #include "SmartPtr.hh"
 
-class Node : public Object
+class GMV_EXPORT Node : public Object
 {
 protected:
   Node(void) { }

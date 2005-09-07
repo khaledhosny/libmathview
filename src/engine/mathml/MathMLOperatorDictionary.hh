@@ -23,14 +23,13 @@
 #ifndef __MathMLOperatorDictionary_hh__
 #define __MathMLOperatorDictionary_hh__
 
-#include <vector>
-
 #include "SmartPtr.hh"
 #include "String.hh"
+#include "StringHash.hh"
 #include "HashMap.hh"
 #include "Object.hh"
 
-class MathMLOperatorDictionary : public Object
+class GMV_EXPORT MathMLOperatorDictionary : public Object
 {
 protected:
   MathMLOperatorDictionary(void);

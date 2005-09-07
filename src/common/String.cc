@@ -91,23 +91,6 @@ toLowerCase(const String& s)
   return res;
 }
 
-size_t
-StringHash::operator()(const String& s) const
-{
-  size_t h = 0;
-  for (String::const_iterator i = s.begin(); i != s.end(); i++)
-    {
-      h = (h << 4) + *i;
-      if (size_t g = h & 0xf0000000)
-	{
-	  h = h ^ (g >> 24);
-	  h = h ^ g;
-	}
-    }
-
-  return h;
-}
-
 template <typename DEST_CHAR, typename SOURCE_CHAR, typename DEST_STRING, typename SOURCE_STRING, 
 	  DEST_CHAR* (*f)(const SOURCE_CHAR*, glong, glong*, glong*, GError**)>
 DEST_STRING

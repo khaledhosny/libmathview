@@ -29,7 +29,7 @@
 #include "SmartPtr.hh"
 #include "scaled.hh"
 
-class t1lib_T1FontManager : public Object
+class GMV_EXPORT t1lib_T1FontManager : public Object
 {
 protected:
   t1lib_T1FontManager(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);

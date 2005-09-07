@@ -23,7 +23,9 @@
 #ifndef __Length_hh__
 #define __Length_hh__
 
-struct Length
+#include "gmv_defines.h"
+
+struct GMV_EXPORT Length
 {
   enum Unit {
     UNDEFINED_UNIT,

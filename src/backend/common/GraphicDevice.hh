@@ -28,7 +28,7 @@
 #include "scaled.hh"
 #include "AreaFactory.hh"
 
-class GraphicDevice : public Object
+class GMV_EXPORT GraphicDevice : public Object
 {
 protected:
   GraphicDevice(const SmartPtr<class AbstractLogger>&);

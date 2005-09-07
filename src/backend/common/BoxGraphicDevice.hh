@@ -27,7 +27,7 @@
 #include "String.hh"
 #include "GraphicDevice.hh"
 
-class BoxGraphicDevice : public GraphicDevice
+class GMV_EXPORT BoxGraphicDevice : public GraphicDevice
 {
 protected:
   BoxGraphicDevice(const SmartPtr<class AbstractLogger>&);

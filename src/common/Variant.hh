@@ -29,7 +29,7 @@
 #include "Value.hh"
 
 template <typename T>
-class Variant : public Value
+class GMV_EXPORT Variant : public Value
 {
 protected:
   Variant(const T& v) : value(v) { }
@@ -44,7 +44,7 @@ private:
 };
 
 template <>
-class Variant<void> : public Value
+class GMV_EXPORT Variant<void> : public Value
 {
 protected:
   Variant(void) { }
@@ -59,7 +59,7 @@ public:
 // There are more accessor methods and getValue returns a
 // const reference instead of a copy fo the object
 template <>
-class Variant< std::vector< SmartPtr<Value> > > : public Value
+class GMV_EXPORT Variant< std::vector< SmartPtr<Value> > > : public Value
 {
 protected:
   Variant(const std::vector< SmartPtr<Value> >& v) : content(v) { }
@@ -79,7 +79,8 @@ private:
 typedef Variant< std::vector< SmartPtr<Value> > > ValueSequence;
 
 template <typename T>
-T as(const Value* v)
+GMV_EXPORT T
+as(const Value* v)
 {
   if (const Variant<T>* obj = dynamic_cast<const Variant<T>*>(v))
     return obj->getValue();

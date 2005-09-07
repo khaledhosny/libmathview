@@ -29,7 +29,7 @@
 #include "MathMLOperatorDictionary.hh"
 
 template <typename MathView>
-SmartPtr<Configuration>
+GMV_EXPORT SmartPtr<Configuration>
 initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
 {
   SmartPtr<Configuration> configuration = Configuration::create();
@@ -65,7 +65,7 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
 }
 
 template <typename MathView>
-SmartPtr<MathMLOperatorDictionary>
+GMV_EXPORT SmartPtr<MathMLOperatorDictionary>
 initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
 {
   SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();

@@ -26,7 +26,7 @@
 #include "SimpleArea.hh"
 #include "BoundingBox.hh"
 
-class GlyphArea : public SimpleArea
+class GMV_EXPORT GlyphArea : public SimpleArea
 {
 protected:
   GlyphArea(void) { }

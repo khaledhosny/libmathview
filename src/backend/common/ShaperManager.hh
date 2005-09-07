@@ -30,7 +30,7 @@
 #include "Object.hh"
 #include "SmartPtr.hh"
 
-class ShaperManager : public Object
+class GMV_EXPORT ShaperManager : public Object
 {
 protected:
   ShaperManager(void);

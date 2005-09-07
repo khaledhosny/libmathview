@@ -3,6 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libfrontend_custom_reader.la
 
+libfrontend_custom_reader_la_CPPFLAGS = -DGMV_DLL
 libfrontend_custom_reader_la_LIBADD = $(NULL)
 
 libfrontend_custom_reader_la_SOURCES = \

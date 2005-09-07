@@ -23,9 +23,10 @@
 #ifndef __BoundingBox_hh__
 #define __BoundingBox_hh__
 
+#include "gmv_defines.h"
 #include "scaled.hh"
 
-struct BoundingBox
+struct GMV_EXPORT BoundingBox
 {
   BoundingBox(void) : width(scaled::zero()), height(scaled::min()), depth(scaled::min()) { }
   BoundingBox(const scaled& w, const scaled& h, const scaled& d) : width(w), height(h), depth(d) { }

@@ -16,7 +16,8 @@ AUTO_CC = \
   sans-serif-bold-italic.cc \
   sans-serif-italic.cc \
   sans-serif.cc \
-  script.cc
+  script.cc \
+  $(NULL)
 
 EXTRA_DIST = variant.top variant.bot extract.xsl
 
@@ -26,9 +27,11 @@ CLEANFILES = $(AUTO_CC)
 
 noinst_LTLIBRARIES = libmathvariants.la
 
+libmathvariants_la_CPPFLAGS = -DGMV_DLL
 libmathvariants_la_SOURCES = \
   $(AUTO_CC) \
-  MathVariantMap.cc
+  MathVariantMap.cc \
+  $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \

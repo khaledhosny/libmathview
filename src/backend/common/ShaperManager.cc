@@ -155,7 +155,7 @@ ShaperManager::mapStretchy(Char32 ch) const
 SmartPtr<class Shaper>
 ShaperManager::getShaper(unsigned si) const
 {
-  assert(si < MAX_SHAPERS);
+  assert(si < nextShaperId);
   assert(shaper[si]);
   return shaper[si];
 }

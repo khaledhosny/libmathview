@@ -36,13 +36,13 @@
 #endif // ENABLE_BOXML
 #include "SpaceShaper.hh"
 #include "NullShaper.hh"
-#ifdef ENABLE_TFM
+#ifdef GMV_ENABLE_TFM
 #include "TFMManager.hh"
 #include "TFMFontManager.hh"
 #include "SVG_TFMComputerModernMathGraphicDevice.hh"
 #include "SVG_TFMComputerModernShaper.hh"
 #include "SVG_TTF_TFMComputerModernShaper.hh"
-#endif // ENABLE_TFM
+#endif // GMV_ENABLE_TFM
 #include "ShaperManager.hh"
 
 SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
@@ -50,25 +50,25 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 {
   SmartPtr<SVG_AreaFactory> factory = SVG_AreaFactory::create();
 
-#if ENABLE_TFM
+#if GMV_ENABLE_TFM
   SmartPtr<TFMComputerModernShaper> cmShaper;
   // the fact that the Type1 and TT versions of the computer modern
   // shapers for the SVG backend share the same font manager is just a
   // twisted coincidence. Beware
   SmartPtr<TFMManager> tfm = TFMManager::create();
   SmartPtr<TFMFontManager> fm = TFMFontManager::create(tfm);
-#endif // ENABLE_TFM
+#endif // GMV_ENABLE_TFM
 
   std::multimap<int, SmartPtr<Shaper> > shaperSet;
   if (conf->getBool(l, "svg-backend/null-shaper/enabled", true))
     shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/null-shaper/priority", 0),
-						      NullShaper::create()));
+						      NullShaper::create(l)));
 
   if (conf->getBool(l, "svg-backend/space-shaper/enabled", false))
     shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/space-shaper/priority", 0),
 						      SpaceShaper::create()));
 
-#if ENABLE_TFM
+#if GMV_ENABLE_TFM
   if (conf->getBool(l, "svg-backend/type1-computer-modern-shaper/enabled", false))
     {
       cmShaper = SVG_TFMComputerModernShaper::create(l, conf);
@@ -84,9 +84,9 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/ttf-computer-modern-shaper/priority", 0),
 							cmShaper));
     }
-#endif // ENABLE_TFM
+#endif // GMV_ENABLE_TFM
 
-#if ENABLE_TFM
+#if GMV_ENABLE_TFM
   SmartPtr<MathGraphicDevice> mgd;
   if (cmShaper)
     {
@@ -99,7 +99,7 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
     mgd = SVG_MathGraphicDevice::create(l, conf);
 #else
   SmartPtr<MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(l, conf);
-#endif
+#endif // GMV_ENABLE_TFM
   mgd->setFactory(factory);
 #if ENABLE_BOXML
   SmartPtr<BoxGraphicDevice> bgd = SVG_BoxGraphicDevice::create(l, conf);

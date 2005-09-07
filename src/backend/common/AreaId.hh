@@ -28,7 +28,7 @@
 #include "Area.hh"
 #include "Point.hh"
 
-class AreaId
+class GMV_EXPORT AreaId
 {
 public:
   AreaId(const AreaRef& r) : root(r) { };

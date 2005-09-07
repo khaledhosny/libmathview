@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,28 +17,20 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <lpadovan@cs.unibo.it>
 
-#ifndef __HorizontalFillerArea_hh__
-#define __HorizontalFillerArea_hh__
+#ifndef __gmv_defines_h__
+#define __gmv_defines_h__
 
-#include "FillerArea.hh"
+#if defined(WIN32)
+#if defined(GMV_DLL) 
+#define GMV_EXPORT __declspec(dllexport)
+#else
+#define GMV_EXPORT __declspec(dllimport)
+#endif
+#else
+#define GMV_EXPORT
+#endif /* WIN32 */
 
-class GMV_EXPORT HorizontalFillerArea : public FillerArea
-{
-protected:
-  HorizontalFillerArea(void) { }
-  virtual ~HorizontalFillerArea() { }
-
-public:
-  static SmartPtr<HorizontalFillerArea> create(void);
-
-  virtual BoundingBox box(void) const;
-  virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  virtual scaled leftEdge(void) const;
-  virtual scaled rightEdge(void) const;
-  virtual void strength(int&, int&, int&) const;
-};
-
-#endif // __HorizontalFillerArea_hh__
+#endif /* __gmv_defines_h__ */

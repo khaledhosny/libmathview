@@ -25,7 +25,7 @@
 
 #include "Area.hh"
 
-class ContainerArea : public Area
+class GMV_EXPORT ContainerArea : public Area
 {
 protected:
   ContainerArea(void) { }

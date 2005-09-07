@@ -23,9 +23,10 @@
 #ifndef __BoxMLElement_hh__
 #define __BoxMLElement_hh__
 
+#include "gmv_defines.h"
 #include "Element.hh"
 
-class BoxMLElement : public Element
+class GMV_EXPORT BoxMLElement : public Element
 {
 protected:
   BoxMLElement(const SmartPtr<class BoxMLNamespaceContext>&);

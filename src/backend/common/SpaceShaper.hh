@@ -25,7 +25,7 @@
 
 #include "Shaper.hh"
 
-class SpaceShaper : public Shaper
+class GMV_EXPORT SpaceShaper : public Shaper
 {
 protected:
   SpaceShaper(void) { }

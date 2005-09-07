@@ -41,6 +41,7 @@
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
 #include "HashMap.hh"
+#include "StringHash.hh"
 
 template <class Model, class Builder, class RefinementContext>
 class TemplateBuilder : public Builder

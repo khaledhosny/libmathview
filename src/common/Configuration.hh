@@ -27,13 +27,14 @@
 
 #include "defs.h"
 #include "String.hh"
+#include "StringHash.hh"
 #include "RGBColor.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
 #include "HashMap.hh"
 #include "Length.hh"
 
-class Configuration : public Object
+class GMV_EXPORT Configuration : public Object
 {
 protected:
   Configuration(void);

@@ -30,7 +30,7 @@
 #include "Area.hh"
 #include "MathVariant.hh"
 
-class ShapingContext
+class GMV_EXPORT ShapingContext
 {
 public:
   ShapingContext(const SmartPtr<class Element>&,

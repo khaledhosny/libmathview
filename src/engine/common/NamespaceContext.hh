@@ -28,7 +28,7 @@
 #include "WeakPtr.hh"
 #include "String.hh"
 
-class NamespaceContext : public Object
+class GMV_EXPORT NamespaceContext : public Object
 {
 protected:
   NamespaceContext(const String&, const SmartPtr<class View>&);

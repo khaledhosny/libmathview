@@ -28,7 +28,7 @@
 
 #include "BoundingBox.hh"
 
-std::string toString(const BoundingBox&);
-std::ostream& operator<<(std::ostream&, const BoundingBox&);
+GMV_EXPORT std::string toString(const BoundingBox&);
+GMV_EXPORT std::ostream& operator<<(std::ostream&, const BoundingBox&);
 
 #endif // __BoundingBoxAux_hh__

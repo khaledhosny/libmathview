@@ -76,6 +76,7 @@ MAYBE_T1LIB_H = $(NULL)
 MAYBE_T1LIB_L = $(NULL)
 endif
 
+libbackend_common_la_CPPFLAGS = -DGMV_DLL
 libbackend_common_la_SOURCES = \
   Area.cc \
   AreaFactory.cc \

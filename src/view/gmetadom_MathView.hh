@@ -28,7 +28,7 @@
 #include "View.hh"
 #include "String.hh"
 
-class gmetadom_MathView : public View
+class GMV_EXPORT gmetadom_MathView : public View
 {
 protected:
   gmetadom_MathView(const SmartPtr<class AbstractLogger>&);

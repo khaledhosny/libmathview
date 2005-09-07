@@ -25,7 +25,7 @@
 
 #include "BinContainerArea.hh"
 
-class StepArea : public BinContainerArea
+class GMV_EXPORT StepArea : public BinContainerArea
 {
 protected:
   StepArea(const AreaRef&, const scaled&);

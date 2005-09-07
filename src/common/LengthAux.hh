@@ -28,15 +28,15 @@
 
 #include "Length.hh"
 
-std::string toString(Length::Unit);
-bool fromString(const std::string&, Length::Unit&);
+GMV_EXPORT std::string toString(Length::Unit);
+GMV_EXPORT bool fromString(const std::string&, Length::Unit&);
 
-std::ostream& operator<<(std::ostream&, const Length::Unit&);
-std::istream& operator>>(std::istream&, Length::Unit&);
+GMV_EXPORT std::ostream& operator<<(std::ostream&, const Length::Unit&);
+GMV_EXPORT std::istream& operator>>(std::istream&, Length::Unit&);
 
-std::string toString(const Length&);
+GMV_EXPORT std::string toString(const Length&);
 
-std::ostream& operator<<(std::ostream&, const Length&);
-std::istream& operator>>(std::istream&, Length&);
+GMV_EXPORT std::ostream& operator<<(std::ostream&, const Length&);
+GMV_EXPORT std::istream& operator>>(std::istream&, Length&);
 
 #endif // __LengthAux_hh__

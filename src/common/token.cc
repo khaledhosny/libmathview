@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include "HashMap.hh"
+#include "StringHash.hh"
 #include "token.hh"
 
 struct Entry

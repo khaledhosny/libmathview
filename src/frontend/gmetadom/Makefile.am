@@ -3,6 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libfrontend_gmetadom.la
 
+libfrontend_gmetadom_la_CPPFLAGS = -DGMV_DLL
 libfrontend_gmetadom_la_LIBADD = \
   $(DOM_LIBS) \
   $(NULL)

@@ -5,6 +5,7 @@ SUBDIRS = mathvariants
 
 noinst_LTLIBRARIES = libcommon.la
 
+libcommon_la_CPPFLAGS = -DGMV_DLL
 libcommon_la_LIBADD = \
   $(top_builddir)/src/common/mathvariants/libmathvariants.la \
   $(GLIB_LIBS) \
@@ -23,6 +24,7 @@ libcommon_la_SOURCES = \
   Rectangle.cc \
   String.cc \
   StringAux.cc \
+  StringHash.cc \
   Utils.cc \
   ValueConversion.cc \
   token.cc \
@@ -44,13 +46,13 @@ mathview_HEADERS = \
   RGBColor.hh \
   RGBColorAux.hh \
   Rectangle.hh \
-  Rectangle.hh \
   SmartPtr.hh \
   ScopedHashMap.hh \
   FastScopedHashMap.hh \
   SparseMap.hh \
   String.hh \
   StringAux.hh \
+  StringHash.hh \
   Utils.hh \
   Value.hh \
   ValueConversion.hh \
@@ -58,6 +60,7 @@ mathview_HEADERS = \
   WeakPtr.hh \
   defs.h \
   fixed.hh \
+  gmv_defines.h \
   scaled.hh \
   scaledAux.hh \
   $(NULL)

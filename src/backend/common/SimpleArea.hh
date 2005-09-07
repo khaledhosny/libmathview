@@ -25,7 +25,7 @@
 
 #include "Area.hh"
 
-class SimpleArea : public Area
+class GMV_EXPORT SimpleArea : public Area
 {
 protected:
   SimpleArea(void) { }

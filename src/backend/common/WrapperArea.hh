@@ -26,7 +26,7 @@
 #include "BoxArea.hh"
 #include "WeakPtr.hh"
 
-class WrapperArea : public BoxArea
+class GMV_EXPORT WrapperArea : public BoxArea
 {
 protected:
   WrapperArea(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);

@@ -3,6 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libfrontend_common.la
 
+libfrontend_common_la_CPP_FLAGS = -DGMV_DLL
 libfrontend_common_la_SOURCES = \
   Builder.cc \
   $(NULL)

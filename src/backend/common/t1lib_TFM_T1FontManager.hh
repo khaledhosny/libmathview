@@ -25,7 +25,7 @@
 
 #include "t1lib_T1FontManager.hh"
 
-class t1lib_TFM_T1FontManager : public t1lib_T1FontManager
+class GMV_EXPORT t1lib_TFM_T1FontManager : public t1lib_T1FontManager
 {
 protected:
   t1lib_TFM_T1FontManager(const SmartPtr<class AbstractLogger>&,

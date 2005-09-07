@@ -54,3 +54,4 @@ escape(const UCS4String& s)
 std::ostream&
 operator<<(std::ostream& os, const UCS4String& s)
 { return os << escape(s); }
+

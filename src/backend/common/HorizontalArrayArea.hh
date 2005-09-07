@@ -25,7 +25,7 @@
 
 #include "LinearContainerArea.hh"
 
-class HorizontalArrayArea : public LinearContainerArea
+class GMV_EXPORT HorizontalArrayArea : public LinearContainerArea
 {
 protected:
   HorizontalArrayArea(const std::vector<AreaRef>& children) : LinearContainerArea(children) { }

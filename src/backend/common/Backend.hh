@@ -26,7 +26,7 @@
 #include "Object.hh"
 #include "SmartPtr.hh"
 
-class Backend : public Object
+class GMV_EXPORT Backend : public Object
 {
 protected:
   Backend(const SmartPtr<class Configuration>&);

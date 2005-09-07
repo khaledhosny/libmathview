@@ -23,10 +23,11 @@
 #ifndef __Logger_hh__
 #define __Logger_hh__
 
+#include "gmv_defines.h"
 #include "SmartPtr.hh"
 #include "AbstractLogger.hh"
 
-class Logger : public AbstractLogger
+class GMV_EXPORT Logger : public AbstractLogger
 {
 protected:
   Logger(void) { }

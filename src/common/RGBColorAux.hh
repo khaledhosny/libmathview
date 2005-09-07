@@ -28,7 +28,7 @@
 
 #include "RGBColor.hh"
 
-std::string toString(const RGBColor&);
-std::ostream& operator<<(std::ostream&, const RGBColor&);
+GMV_EXPORT std::string toString(const RGBColor&);
+GMV_EXPORT std::ostream& operator<<(std::ostream&, const RGBColor&);
 
 #endif // __RGBColorAux_hh__

@@ -31,7 +31,7 @@
 #include "../../common/mathvariants/MathVariant.hh"
 #include "FastScopedHashMap.hh"
 
-class FormattingContext
+class GMV_EXPORT FormattingContext
 {
 public:
 #if ENABLE_BOXML

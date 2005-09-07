@@ -25,7 +25,7 @@
 
 #include "Object.hh"
 
-class Value : public Object
+class GMV_EXPORT Value : public Object
 {
 protected:
   Value(void) { }

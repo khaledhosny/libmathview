@@ -25,7 +25,7 @@
 
 #include "Backend.hh"
 
-class Gtk_Backend : public Backend
+class GMV_EXPORT Gtk_Backend : public Backend
 {
 protected:
   Gtk_Backend(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);

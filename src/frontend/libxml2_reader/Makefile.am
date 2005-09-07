@@ -3,6 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libfrontend_libxml2_reader.la
 
+libfrontend_libxml2_reader_la_CPPFLAGS = -DGMV_DLL
 libfrontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
   $(NULL)

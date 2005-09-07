@@ -25,7 +25,7 @@
 
 #include "BinContainerArea.hh"
 
-class InkArea : public BinContainerArea
+class GMV_EXPORT InkArea : public BinContainerArea
 {
 protected:
   InkArea(const AreaRef& area) : BinContainerArea(area) { }

@@ -28,7 +28,7 @@
 #include "SmartPtr.hh"
 #include "BoundingBox.hh"
 
-class t1lib_TFM_T1Font : public t1lib_T1Font
+class GMV_EXPORT t1lib_TFM_T1Font : public t1lib_T1Font
 {
 protected:
   t1lib_TFM_T1Font(int, const scaled&, const SmartPtr<class TFM>&);

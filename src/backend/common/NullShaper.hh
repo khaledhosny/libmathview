@@ -25,19 +25,21 @@
 
 #include "Shaper.hh"
 
-class NullShaper : public Shaper
+class GMV_EXPORT NullShaper : public Shaper
 {
 protected:
-  NullShaper(void) { }
+  NullShaper(const SmartPtr<class AbstractLogger>&);
   virtual ~NullShaper() { }
 
 public:
-  static SmartPtr<NullShaper> create(void)
-  { return new NullShaper(); }
+  static SmartPtr<NullShaper> create(const SmartPtr<class AbstractLogger>&);
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
+
+private:
+  SmartPtr<class AbstractLogger> logger;
 };
 
 #endif // __NullShaper_hh__

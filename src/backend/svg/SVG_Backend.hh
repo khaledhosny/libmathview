@@ -25,7 +25,7 @@
 
 #include "Backend.hh"
 
-class SVG_Backend : public Backend
+class GMV_EXPORT SVG_Backend : public Backend
 {
 protected:
   SVG_Backend(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);

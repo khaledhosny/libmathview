@@ -23,7 +23,9 @@
 #ifndef __GlyphSpec_hh__
 #define __GlyphSpec_hh__
 
-class GlyphSpec
+#include "gmv_defines.h"
+
+class GMV_EXPORT GlyphSpec
 {
 public:
   GlyphSpec(void) : shaperId(0), fontId(0), glyphId(0) { }

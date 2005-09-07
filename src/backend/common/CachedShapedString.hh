@@ -24,8 +24,9 @@
 #define __CachedShapedString_hh__
 
 #include "String.hh"
+#include "StringHash.hh"
 
-struct CachedShapedStringKey
+struct GMV_EXPORT CachedShapedStringKey
 {
   CachedShapedStringKey(const String& s, MathVariant v, const scaled& sz)
     : source(s), variant(v), size(sz) { }
@@ -38,13 +39,13 @@ struct CachedShapedStringKey
   scaled size;
 };
 
-struct CachedShapedStringKeyHash
+struct GMV_EXPORT CachedShapedStringKeyHash
 {
   size_t operator()(const CachedShapedStringKey& key) const
   { return StringHash()(key.source) ^ key.variant ^ key.size.getValue(); }
 };
 
-struct CachedShapedStretchyStringKey : public CachedShapedStringKey
+struct GMV_EXPORT CachedShapedStretchyStringKey : public CachedShapedStringKey
 {
   CachedShapedStretchyStringKey(const String& s,
 				MathVariant v,
@@ -61,7 +62,7 @@ struct CachedShapedStretchyStringKey : public CachedShapedStringKey
   scaled spanV;
 };
 
-struct CachedShapedStretchyStringKeyHash
+struct GMV_EXPORT CachedShapedStretchyStringKeyHash
 {
   size_t operator()(const CachedShapedStretchyStringKey& key) const
   { return StringHash()(key.source) ^ key.variant ^ key.size.getValue()

@@ -25,7 +25,7 @@
 
 #include "scaled.hh"
 
-struct Point
+struct GMV_EXPORT Point
 {
   Point(void) : x(scaled::zero()), y(scaled::zero()) { }
   Point(const scaled& x0, const scaled& y0) : x(x0), y(y0) { }

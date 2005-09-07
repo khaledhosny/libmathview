@@ -24,9 +24,10 @@
 #define __SmartPtr_hh__
 
 #include <cassert>
+#include "gmv_defines.h"
 
 template <class P>
-class SmartPtr
+class GMV_EXPORT SmartPtr
 {
 public:
   SmartPtr(P* p = 0) : ptr(p) { if (ptr) ptr->ref(); }
@@ -52,10 +53,14 @@ private:
   P* ptr;
 };
 
-template <class Q, class P> SmartPtr<Q> smart_cast(const SmartPtr<P>& p)
+template <class Q, class P>
+GMV_EXPORT SmartPtr<Q>
+smart_cast(const SmartPtr<P>& p)
 { return SmartPtr<Q>(dynamic_cast<Q*>(p.ptr)); }  
 
-template <class Q, class R> bool is_a(const SmartPtr<R>& p)
+template <class Q, class R>
+GMV_EXPORT bool
+is_a(const SmartPtr<R>& p)
 { return dynamic_cast<Q*>(p.ptr) != 0; }
 
 #endif // __SmartPtr_hh__

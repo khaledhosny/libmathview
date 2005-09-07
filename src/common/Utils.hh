@@ -23,9 +23,11 @@
 #ifndef __Utils_hh__
 #define __Utils_hh__
 
+#include "gmv_defines.h"
+
 namespace MathViewNS {
 
-bool fileExists(const char*);
+GMV_EXPORT bool fileExists(const char*);
 
 }
 

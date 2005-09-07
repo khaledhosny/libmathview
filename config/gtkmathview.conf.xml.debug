@@ -58,8 +58,12 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
   </section>
 
   <section name="gtk-backend">
-    <section name="pango-default-shaper">
+    <section name="null-shaper">
       <key name="enabled">true</key>
+      <key name="priority">0</key>
+    </section>
+    <section name="pango-default-shaper">
+      <key name="enabled">false</key>
       <key name="priority">0</key>
       <section name="variants">
 <!--
@@ -74,11 +78,11 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       </section>
     </section>
     <section name="space-shaper">
-      <key name="enabled">true</key>
+      <key name="enabled">false</key>
       <key name="priority">1</key>
     </section>
     <section name="pango-shaper">
-      <key name="enabled">true</key>
+      <key name="enabled">false</key>
       <key name="priority">1</key>
     </section>
     <section name="pango-computer-modern-shaper">

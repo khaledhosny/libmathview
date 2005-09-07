@@ -25,8 +25,10 @@
 
 #include <cassert>
 
+#include "gmv_defines.h"
+
 template <class P>
-class WeakPtr
+class GMV_EXPORT WeakPtr
 {
 public:
   WeakPtr(P* p = 0) : ptr(p) { }

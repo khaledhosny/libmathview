@@ -23,6 +23,8 @@
 #ifndef __c_customXmlReader_h__
 #define __c_customXmlReader_h__
 
+#include "gmv_defines.h"
+
 enum
   {
     C_CUSTOM_TEXT_NODE = 1,
@@ -32,7 +34,7 @@ enum
 typedef void* c_customModelElementId;
 typedef void* c_customModelUserData;
 
-struct _c_customXmlReader
+struct GMV_EXPORT _c_customXmlReader
 {
   /* auxiliary methods */
   void  (*free_data)(c_customModelUserData);

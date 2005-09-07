@@ -43,7 +43,7 @@
 #include "VerticalFillerArea.hh"
 #include "VerticalSpaceArea.hh"
 
-class AreaFactory : public Object
+class GMV_EXPORT AreaFactory : public Object
 {
 protected:
   AreaFactory(void) { }

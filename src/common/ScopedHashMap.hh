@@ -23,10 +23,11 @@
 #ifndef __ScopedHashMap_hh__
 #define __ScopedHashMap_hh__
 
+#include "gmv_defines.h"
 #include "HashMap.hh"
 
 template <class K, class T, class HashFcn = HASH_MAP_NS::hash<K>, class EqualKey = std::equal_to<K>, class Alloc = std::allocator<T> >
-class ScopedHashMap
+class GMV_EXPORT ScopedHashMap
 {
 public:
   ScopedHashMap(void) : env(0)

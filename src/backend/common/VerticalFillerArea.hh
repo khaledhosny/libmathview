@@ -25,7 +25,7 @@
 
 #include "FillerArea.hh"
 
-class VerticalFillerArea : public FillerArea
+class GMV_EXPORT VerticalFillerArea : public FillerArea
 {
 protected:
   VerticalFillerArea(void) { }

@@ -29,7 +29,7 @@
 #include "scaled.hh"
 #include "MathVariant.hh"
 
-class ComputerModernFamily : public Object
+class GMV_EXPORT ComputerModernFamily : public Object
 {
 protected:
   ComputerModernFamily(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);

@@ -25,7 +25,7 @@
 
 #include "BinContainerArea.hh"
 
-class ShiftArea : public BinContainerArea
+class GMV_EXPORT ShiftArea : public BinContainerArea
 {
 protected:
   ShiftArea(const AreaRef& area, const scaled& s) : BinContainerArea(area), shift(s) { }

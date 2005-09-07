@@ -31,5 +31,6 @@ operator<<(std::ostream& os, const AreaId& box)
        p != box.getPath().end();
        p++)
     os << "/" << (*p);
+  return os;
 }
 

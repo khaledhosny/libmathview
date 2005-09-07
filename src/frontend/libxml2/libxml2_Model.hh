@@ -31,7 +31,7 @@
 #include "TemplateNodeIterator.hh"
 #include "TemplateElementIterator.hh"
 
-struct libxml2_Model
+struct GMV_EXPORT libxml2_Model
 {
   enum {
     TEXT_NODE = XML_TEXT_NODE,

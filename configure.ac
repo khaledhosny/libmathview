@@ -166,7 +166,7 @@ AC_ARG_WITH(
 dnl Automake configuration
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
-dnl AC_DISABLE_SHARED
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 dnl config.h top and bottom
@@ -199,6 +199,8 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
+#define GMV_ENABLE_TFM (GMV_TFM_LEVEL != 0)
+
 #endif /* config_h */
 ])
 
@@ -399,18 +401,7 @@ if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
-if test "$enable_tfm" != "0"; then
-	AC_DEFINE(ENABLE_TFM,1,[Define to 1 if you want to enable support for TeX Font Metrics])
-fi
-if test "$enable_tfm" = "1"; then
-	AC_DEFINE(ENABLE_TFM_LEVEL_1,1,[Define to 1 if you want to enable support for BASIC TeX Fonts])
-fi
-if test "$enable_tfm" = "2"; then
-	AC_DEFINE(ENABLE_TFM_LEVEL_2,1,[Define to 1 if you want to enable support for COMPLETE TeX Fonts at 10 points])
-fi
-if test "$enable_tfm" = "3"; then
-	AC_DEFINE(ENABLE_TFM_LEVEL_3,1,[Define to 1 if you want to enable support for COMPLETE TeX Fonts])
-fi
+AC_DEFINE(GMV_TFM_LEVEL, $enable_tfm, [Define to 0, 1, 2, or 3 depending on the TFM support level you want])
 AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" != "0"])
 AM_CONDITIONAL([COND_TFM_LEVEL_1], [test "$enable_tfm" = "1"])
 AM_CONDITIONAL([COND_TFM_LEVEL_2], [test "$enable_tfm" = "2"])

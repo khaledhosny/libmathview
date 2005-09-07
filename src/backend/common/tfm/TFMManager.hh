@@ -27,6 +27,7 @@
 #include "Object.hh"
 #include "SmartPtr.hh"
 #include "String.hh"
+#include "StringHash.hh"
 #include "TFM.hh"
 #include "scaled.hh"
 

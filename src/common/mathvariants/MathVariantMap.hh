@@ -26,7 +26,7 @@
 #include "String.hh"
 #include "MathVariant.hh"
 
-Char32 mapMathVariant(MathVariant, Char32);
-void mapMathVariant(MathVariant, UCS4String&);
+GMV_EXPORT Char32 mapMathVariant(MathVariant, Char32);
+GMV_EXPORT void mapMathVariant(MathVariant, UCS4String&);
 
 #endif // __MathVariantMap_hh__

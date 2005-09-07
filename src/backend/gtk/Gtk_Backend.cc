@@ -48,6 +48,7 @@
 #endif // HAVE_TFM
 #include "Gtk_T1ComputerModernShaper.hh"
 #endif // HAVE_LIBT1
+#include "NullShaper.hh"
 #include "SpaceShaper.hh"
 #include "ShaperManager.hh"
 
@@ -68,7 +69,12 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper;
   GObjectPtr<PangoContext> context = gdk_pango_context_get();
   std::multimap<int, SmartPtr<Shaper> > shaperSet;
-  if (conf->getBool(l, "gtk-backend/pango-default-shaper/enabled", true))
+  if (conf->getBool(l, "gtk-backend/null-shaper/enabled", false))
+    {
+      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/null-shaper/priority", 0), NullShaper::create(l)));
+    }
+
+  if (conf->getBool(l, "gtk-backend/pango-default-shaper/enabled", false))
     {
       defaultPangoShaper = Gtk_DefaultPangoShaper::create(l, conf);
       defaultPangoShaper->setPangoContext(context);

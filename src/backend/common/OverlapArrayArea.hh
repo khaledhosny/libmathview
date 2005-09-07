@@ -25,7 +25,7 @@
 
 #include "LinearContainerArea.hh"
 
-class OverlapArrayArea : public LinearContainerArea
+class GMV_EXPORT OverlapArrayArea : public LinearContainerArea
 {
 protected:
   OverlapArrayArea(const std::vector<AreaRef>& children) : LinearContainerArea(children) { }

@@ -25,11 +25,12 @@
 
 #include "Object.hh"
 #include "String.hh"
+#include "StringHash.hh"
 #include "HashMap.hh"
 #include "SmartPtr.hh"
 #include "scaled.hh"
 
-class TFMFontManager : public Object
+class GMV_EXPORT TFMFontManager : public Object
 {
 protected:
   TFMFontManager(const SmartPtr<class TFMManager>&);
