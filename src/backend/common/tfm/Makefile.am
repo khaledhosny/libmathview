@@ -87,6 +87,7 @@ noinst_LTLIBRARIES = libtfm.la
 
 BUILT_SOURCES = $(AUTO_CC)
 
+libtfm_la_CPPFLAGS = -DGMV_DLL
 libtfm_la_SOURCES = \
   $(AUTO_CC) \
   TFM.hh \
