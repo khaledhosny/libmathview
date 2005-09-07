@@ -54,12 +54,12 @@ private:
 };
 
 template <class Q, class P>
-GMV_EXPORT SmartPtr<Q>
+SmartPtr<Q>
 smart_cast(const SmartPtr<P>& p)
 { return SmartPtr<Q>(dynamic_cast<Q*>(p.ptr)); }  
 
 template <class Q, class R>
-GMV_EXPORT bool
+bool
 is_a(const SmartPtr<R>& p)
 { return dynamic_cast<Q*>(p.ptr) != 0; }
 
