@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 #include "NamespaceContext.hh"
 
-class GMV_EXPORT BoxMLNamespaceContext : public NamespaceContext
+class GMV_MathView_EXPORT BoxMLNamespaceContext : public NamespaceContext
 {
 protected:
   BoxMLNamespaceContext(const SmartPtr<class View>&,

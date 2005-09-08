@@ -13,7 +13,10 @@
       <mspace width="-0.2em"/>
       <msub>
         <mi mathcolor="#005a9c" mathvariant="bold-sans-serif">View</mi>
-	<mn mathvariant="sans-serif">0.7.x</mn>
+	<mpadded width="+0.2em">
+	  <mn>0.7.</mn>
+	  <mi>x</mi>
+	</mpadded>
       </msub>
     </mrow>
   </mstyle>

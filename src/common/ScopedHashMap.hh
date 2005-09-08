@@ -27,7 +27,7 @@
 #include "HashMap.hh"
 
 template <class K, class T, class HashFcn = HASH_MAP_NS::hash<K>, class EqualKey = std::equal_to<K>, class Alloc = std::allocator<T> >
-class GMV_EXPORT ScopedHashMap
+class GMV_MathView_EXPORT ScopedHashMap
 {
 public:
   ScopedHashMap(void) : env(0)

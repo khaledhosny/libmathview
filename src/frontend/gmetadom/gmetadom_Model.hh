@@ -33,7 +33,7 @@
 
 namespace DOM = GdomeSmartDOM;
 
-struct GMV_EXPORT gmetadom_Model
+struct GMV_FrontEnd_EXPORT gmetadom_Model
 {
   enum {
     TEXT_NODE = DOM::Node::TEXT_NODE,

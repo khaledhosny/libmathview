@@ -29,7 +29,7 @@
 #include "HashMap.hh"
 #include "Object.hh"
 
-class GMV_EXPORT MathMLOperatorDictionary : public Object
+class GMV_MathView_EXPORT MathMLOperatorDictionary : public Object
 {
 protected:
   MathMLOperatorDictionary(void);

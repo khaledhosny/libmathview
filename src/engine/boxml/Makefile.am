@@ -3,7 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libboxml.la
 
-libboxml_la_CPPFLAGS = -DGMV_DLL
+libboxml_la_CPPFLAGS = -DGMV_MathView_DLL
 libboxml_la_SOURCES = \
   BoxML.hh \
   BoxMLActionElement.cc \

@@ -27,8 +27,8 @@
 
 #include "String.hh"
 
-GMV_EXPORT std::string escape(const UCS4String&);
-GMV_EXPORT std::ostream& operator<<(std::ostream&, const UCS4String&);
+GMV_MathView_EXPORT std::string escape(const UCS4String&);
+GMV_MathView_EXPORT std::ostream& operator<<(std::ostream&, const UCS4String&);
 
 #endif // __StringAux_hh__
 

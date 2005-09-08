@@ -25,7 +25,7 @@
 
 #include "Shaper.hh"
 
-class GMV_EXPORT NullShaper : public Shaper
+class GMV_MathView_EXPORT NullShaper : public Shaper
 {
 protected:
   NullShaper(const SmartPtr<class AbstractLogger>&);

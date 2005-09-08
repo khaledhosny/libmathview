@@ -27,7 +27,7 @@
 #include "gmv_defines.h"
 
 template <class P>
-class GMV_EXPORT SmartPtr
+class GMV_MathView_EXPORT SmartPtr
 {
 public:
   SmartPtr(P* p = 0) : ptr(p) { if (ptr) ptr->ref(); }

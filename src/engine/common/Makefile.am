@@ -3,7 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libengine_common.la
 
-libengine_common_la_CPPFLAGS = -DGMV_DLL
+libengine_common_la_CPPFLAGS = -DGMV_MathView_DLL
 libengine_common_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libengine_common_la_SOURCES = \

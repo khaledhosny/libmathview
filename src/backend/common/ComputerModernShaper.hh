@@ -27,7 +27,7 @@
 #include "Shaper.hh"
 #include "ComputerModernFamily.hh"
 
-class GMV_EXPORT ComputerModernShaper : public Shaper
+class GMV_MathView_EXPORT ComputerModernShaper : public Shaper
 {
 protected:
   ComputerModernShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);

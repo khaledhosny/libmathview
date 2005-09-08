@@ -33,33 +33,33 @@ typedef std::basic_string<Char8> UTF8String;
 //typedef std::basic_string<Char16> UTF16String;
 typedef std::basic_string<Char32> UCS4String;
 
-inline GMV_EXPORT bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
+inline GMV_MathView_EXPORT bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
 
-GMV_EXPORT String trimSpacesLeft(const String&);
-GMV_EXPORT String trimSpacesRight(const String&);
-GMV_EXPORT String collapseSpaces(const String&);
-GMV_EXPORT String deleteSpaces(const String&);
-GMV_EXPORT String toLowerCase(const String&);
+GMV_MathView_EXPORT String trimSpacesLeft(const String&);
+GMV_MathView_EXPORT String trimSpacesRight(const String&);
+GMV_MathView_EXPORT String collapseSpaces(const String&);
+GMV_MathView_EXPORT String deleteSpaces(const String&);
+GMV_MathView_EXPORT String toLowerCase(const String&);
 
-GMV_EXPORT UTF8String UTF8StringOfUCS4String(const UCS4String&);
-GMV_EXPORT UCS4String UCS4StringOfUTF8String(const UTF8String&);
+GMV_MathView_EXPORT UTF8String UTF8StringOfUCS4String(const UCS4String&);
+GMV_MathView_EXPORT UCS4String UCS4StringOfUTF8String(const UTF8String&);
 #if 0
-GMV_EXPORT UTF16String UTF16StringOfUCS4String(const UCS4String&);
-GMV_EXPORT UCS4String UCS4StringOfUTF16String(const UTF16String&);
+GMV_MathView_EXPORT UTF16String UTF16StringOfUCS4String(const UCS4String&);
+GMV_MathView_EXPORT UCS4String UCS4StringOfUTF16String(const UTF16String&);
 #endif
 
 #if CHAR8 == 1
-inline GMV_EXPORT String StringOfUCS4String(const UCS4String& s) { return UTF8StringOfUCS4String(s); }
-inline GMV_EXPORT UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF8String(s); }
+inline GMV_MathView_EXPORT String StringOfUCS4String(const UCS4String& s) { return UTF8StringOfUCS4String(s); }
+inline GMV_MathView_EXPORT UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF8String(s); }
 #elif CHAR16 == 1
 #error "UTF16 encoding is not supported"
 #if 0
-inline GMV_EXPORT String StringOfUCS4String(const UCS4String& s) { return UTF16StringOfUCS4String(s); }
-inline GMV_EXPORT UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF16String(s); }
+inline GMV_MathView_EXPORT String StringOfUCS4String(const UCS4String& s) { return UTF16StringOfUCS4String(s); }
+inline GMV_MathView_EXPORT UCS4String UCS4StringOfString(const String& s) { return UCS4StringOfUTF16String(s); }
 #endif
 #elif CHAR32 == 1
-inline GMV_EXPORT String StringOfUCS4String(const UCS4String& s) { return s; }
-inline GMV_EXPORT UCS4String UCS4StringOfString(const String& s) { return s; }
+inline GMV_MathView_EXPORT String StringOfUCS4String(const UCS4String& s) { return s; }
+inline GMV_MathView_EXPORT UCS4String UCS4StringOfString(const String& s) { return s; }
 #else
 #error "could not define string conversion functions"
 #endif

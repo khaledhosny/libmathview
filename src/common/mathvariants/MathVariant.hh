@@ -45,7 +45,7 @@ enum MathVariant
     MONOSPACE_VARIANT
   };
 
-inline GMV_EXPORT bool
+inline GMV_MathView_EXPORT bool
 validMathVariant(MathVariant id)
 { return id >= NORMAL_VARIANT && id <= MONOSPACE_VARIANT; }
 

@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 
 template <class T, int M, int N>
-class GMV_EXPORT SparseMap
+class GMV_MathView_EXPORT SparseMap
 {
 public:
   SparseMap(void)

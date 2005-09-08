@@ -3,7 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libmathml.la
 
-libmathml_la_CPPFLAGS = -DGMV_DLL
+libmathml_la_CPPFLAGS = -DGMV_MathView_DLL
 libmathml_la_SOURCES = \
   MathMLActionElement.cc \
   MathMLAlignGroupElement.cc \

@@ -28,7 +28,7 @@
 #include "HashMap.hh"
 #include "Shaper.hh"
 
-class GMV_EXPORT StandardSymbolsShaper : public Shaper
+class GMV_MathView_EXPORT StandardSymbolsShaper : public Shaper
 {
 public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);

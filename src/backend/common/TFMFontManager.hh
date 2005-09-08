@@ -30,7 +30,7 @@
 #include "SmartPtr.hh"
 #include "scaled.hh"
 
-class GMV_EXPORT TFMFontManager : public Object
+class GMV_MathView_EXPORT TFMFontManager : public Object
 {
 protected:
   TFMFontManager(const SmartPtr<class TFMManager>&);

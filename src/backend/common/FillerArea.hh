@@ -25,7 +25,7 @@
 
 #include "SimpleArea.hh"
 
-class GMV_EXPORT FillerArea : public SimpleArea
+class GMV_MathView_EXPORT FillerArea : public SimpleArea
 {
 protected:
   FillerArea(void) { }

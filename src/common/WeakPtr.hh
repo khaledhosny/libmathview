@@ -28,7 +28,7 @@
 #include "gmv_defines.h"
 
 template <class P>
-class GMV_EXPORT WeakPtr
+class GMV_MathView_EXPORT WeakPtr
 {
 public:
   WeakPtr(P* p = 0) : ptr(p) { }

@@ -25,7 +25,7 @@
 
 #include "gmv_defines.h"
 
-class GMV_EXPORT Object
+class GMV_MathView_EXPORT Object
 {
 protected:
   // Having a protected constructor makes it impossible for users

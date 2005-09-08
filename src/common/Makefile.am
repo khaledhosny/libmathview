@@ -5,7 +5,7 @@ SUBDIRS = mathvariants
 
 noinst_LTLIBRARIES = libcommon.la
 
-libcommon_la_CPPFLAGS = -DGMV_DLL
+libcommon_la_CPPFLAGS = -DGMV_MathView_DLL
 libcommon_la_LIBADD = \
   $(top_builddir)/src/common/mathvariants/libmathvariants.la \
   $(GLIB_LIBS) \

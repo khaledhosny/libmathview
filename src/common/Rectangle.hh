@@ -26,7 +26,7 @@
 #include "scaled.hh"
 #include "BoundingBox.hh"
 
-struct GMV_EXPORT Rectangle
+struct GMV_MathView_EXPORT Rectangle
 {
   scaled x;
   scaled y;

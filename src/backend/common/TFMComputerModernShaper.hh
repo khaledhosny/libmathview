@@ -25,7 +25,7 @@
 
 #include "ComputerModernShaper.hh"
 
-class GMV_EXPORT TFMComputerModernShaper : public ComputerModernShaper
+class GMV_MathView_EXPORT TFMComputerModernShaper : public ComputerModernShaper
 {
 protected:
   TFMComputerModernShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);

@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 #include "Char.hh"
 
-struct GMV_EXPORT RGBColor
+struct GMV_MathView_EXPORT RGBColor
 {
   RGBColor(UChar8 r = 0, UChar8 g = 0, UChar8 b = 0, UChar8 a = 0xff)
     : red(r), green(g), blue(b), alpha(a)

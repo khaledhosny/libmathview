@@ -56,10 +56,10 @@ libmathview_frontend_gmetadom_la_LIBADD = \
   -lstdc++ \
   $(NULL)
 
-libmathview_frontend_custom_reader_la_CPPFLAGS = -DGMV_DLL
-libmathview_frontend_libxml2_reader_la_CPPFLAGS = -DGMV_DLL
-libmathview_frontend_libxml2_la_CPPFLAGS = -DGMV_DLL
-libmathview_frontend_gmetadom_la_CPPFLAGS = -DGMV_DLL
+libmathview_frontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
+libmathview_frontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
+libmathview_frontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
+libmathview_frontend_gmetadom_la_CPPFLAGS = -DGMV_FrontEnd_DLL
 
 libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined

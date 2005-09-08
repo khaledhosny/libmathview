@@ -25,7 +25,7 @@
 
 #include "gmv_defines.h"
 
-class GMV_EXPORT RenderingContext
+class GMV_MathView_EXPORT RenderingContext
 {
 public:
   RenderingContext(void) { }

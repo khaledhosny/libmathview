@@ -3,7 +3,7 @@ NULL =
 
 noinst_LTLIBRARIES = libadapters.la
 
-libadapters_la_CPPFLAGS = -DGMV_DLL
+libadapters_la_CPPFLAGS = -DGMV_MathView_DLL
 libadapters_la_SOURCES = \
   BoxMLMathMLAdapter.cc \
   MathMLBoxMLAdapter.cc \

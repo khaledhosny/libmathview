@@ -25,7 +25,7 @@
 
 #include "ContainerArea.hh"
 
-class GMV_EXPORT BinContainerArea : public ContainerArea
+class GMV_MathView_EXPORT BinContainerArea : public ContainerArea
 {
 protected:
   BinContainerArea(const AreaRef& area) : child(area) { }

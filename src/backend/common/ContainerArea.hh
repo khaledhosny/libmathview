@@ -25,7 +25,7 @@
 
 #include "Area.hh"
 
-class GMV_EXPORT ContainerArea : public Area
+class GMV_MathView_EXPORT ContainerArea : public Area
 {
 protected:
   ContainerArea(void) { }

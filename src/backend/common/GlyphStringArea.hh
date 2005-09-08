@@ -25,7 +25,7 @@
 
 #include "HorizontalArrayArea.hh"
 
-class GMV_EXPORT GlyphStringArea : public HorizontalArrayArea
+class GMV_MathView_EXPORT GlyphStringArea : public HorizontalArrayArea
 {
 protected:
   GlyphStringArea(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c)

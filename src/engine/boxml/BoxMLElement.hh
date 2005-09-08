@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 #include "Element.hh"
 
-class GMV_EXPORT BoxMLElement : public Element
+class GMV_MathView_EXPORT BoxMLElement : public Element
 {
 protected:
   BoxMLElement(const SmartPtr<class BoxMLNamespaceContext>&);

@@ -27,7 +27,7 @@
 #include "SmartPtr.hh"
 #include "AbstractLogger.hh"
 
-class GMV_EXPORT Logger : public AbstractLogger
+class GMV_MathView_EXPORT Logger : public AbstractLogger
 {
 protected:
   Logger(void) { }

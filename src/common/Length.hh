@@ -25,7 +25,7 @@
 
 #include "gmv_defines.h"
 
-struct GMV_EXPORT Length
+struct GMV_MathView_EXPORT Length
 {
   enum Unit {
     UNDEFINED_UNIT,

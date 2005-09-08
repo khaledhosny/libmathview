@@ -27,7 +27,7 @@
 
 #include "ContainerArea.hh"
 
-class GMV_EXPORT BoxedLayoutArea : public ContainerArea
+class GMV_MathView_EXPORT BoxedLayoutArea : public ContainerArea
 {
 public:
   struct XYArea

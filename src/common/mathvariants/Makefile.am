@@ -27,7 +27,7 @@ CLEANFILES = $(AUTO_CC)
 
 noinst_LTLIBRARIES = libmathvariants.la
 
-libmathvariants_la_CPPFLAGS = -DGMV_DLL
+libmathvariants_la_CPPFLAGS = -DGMV_MathView_DLL
 libmathvariants_la_SOURCES = \
   $(AUTO_CC) \
   MathVariantMap.cc \

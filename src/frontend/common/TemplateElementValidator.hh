@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 
 template <class Model>
-class GMV_EXPORT TemplateElementValidator
+class GMV_MathView_EXPORT TemplateElementValidator
 {
 public:
   TemplateElementValidator(const String& ns = "*", const String& n = "*")

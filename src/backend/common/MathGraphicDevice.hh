@@ -26,7 +26,7 @@
 #include "String.hh"
 #include "GraphicDevice.hh"
 
-class GMV_EXPORT MathGraphicDevice : public GraphicDevice
+class GMV_MathView_EXPORT MathGraphicDevice : public GraphicDevice
 {
 protected:
   MathGraphicDevice(const SmartPtr<class AbstractLogger>&);

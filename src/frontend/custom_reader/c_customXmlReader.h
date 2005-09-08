@@ -34,7 +34,7 @@ enum
 typedef void* c_customModelElementId;
 typedef void* c_customModelUserData;
 
-struct GMV_EXPORT _c_customXmlReader
+struct GMV_FrontEnd_EXPORT _c_customXmlReader
 {
   /* auxiliary methods */
   void  (*free_data)(c_customModelUserData);

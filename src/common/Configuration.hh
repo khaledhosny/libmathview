@@ -34,7 +34,7 @@
 #include "HashMap.hh"
 #include "Length.hh"
 
-class GMV_EXPORT Configuration : public Object
+class GMV_MathView_EXPORT Configuration : public Object
 {
 protected:
   Configuration(void);

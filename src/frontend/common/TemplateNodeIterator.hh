@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 
 template <class Model>
-class GMV_EXPORT TemplateNodeIterator
+class GMV_MathView_EXPORT TemplateNodeIterator
 {
 public:
   TemplateNodeIterator(const typename Model::Node& root) : currentNode(Model::getFirstChild(root)) { }

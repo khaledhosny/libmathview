@@ -26,7 +26,7 @@
 #include "gmv_defines.h"
 
 template <int MAX, class T>
-class GMV_EXPORT FastScopedHashMap
+class GMV_MathView_EXPORT FastScopedHashMap
 {
 public:
   FastScopedHashMap(void) : env(0)

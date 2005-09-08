@@ -28,7 +28,7 @@
 #include "SmartPtr.hh"
 #include "BoundingBox.hh"
 
-class GMV_EXPORT T1Font : public Object
+class GMV_MathView_EXPORT T1Font : public Object
 {
 protected:
   T1Font(const scaled& s) : size(s) { }

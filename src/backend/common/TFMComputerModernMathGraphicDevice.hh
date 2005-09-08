@@ -26,7 +26,7 @@
 #include "MathGraphicDevice.hh"
 #include "ComputerModernFamily.hh"
 
-class GMV_EXPORT TFMComputerModernMathGraphicDevice : public MathGraphicDevice
+class GMV_MathView_EXPORT TFMComputerModernMathGraphicDevice : public MathGraphicDevice
 {
 protected:
   TFMComputerModernMathGraphicDevice(const SmartPtr<class AbstractLogger>&);

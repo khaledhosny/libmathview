@@ -27,7 +27,7 @@
 
 namespace MathViewNS {
 
-GMV_EXPORT bool fileExists(const char*);
+GMV_MathView_EXPORT bool fileExists(const char*);
 
 }
 

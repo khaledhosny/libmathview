@@ -25,7 +25,7 @@
 
 #include "gmv_defines.h"
 
-class GMV_EXPORT GlyphSpec
+class GMV_MathView_EXPORT GlyphSpec
 {
 public:
   GlyphSpec(void) : shaperId(0), fontId(0), glyphId(0) { }

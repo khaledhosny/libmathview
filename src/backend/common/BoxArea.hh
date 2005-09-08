@@ -25,7 +25,7 @@
 
 #include "BinContainerArea.hh"
 
-class GMV_EXPORT BoxArea : public BinContainerArea
+class GMV_MathView_EXPORT BoxArea : public BinContainerArea
 {
 protected:
   BoxArea(const AreaRef&, const BoundingBox&);

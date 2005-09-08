@@ -28,7 +28,7 @@ MAYBE_TFM_S = $(NULL)
 MAYBE_TFM_H = $(NULL)
 endif
 
-libmathview_backend_svg_la_CPPFLAGS = -DGMV_DLL
+libmathview_backend_svg_la_CPPFLAGS = -DGMV_BackEnd_DLL
 libmathview_backend_svg_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_backend_svg_la_SOURCES = \

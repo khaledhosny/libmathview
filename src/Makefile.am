@@ -20,7 +20,7 @@ endif
 
 lib_LTLIBRARIES = libmathview.la
 
-libmathview_la_CPPFLAGS = -DGMV_DLL
+libmathview_la_CPPFLAGS = -DGMV_MathView_DLL
 libmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 
 libmathview_la_SOURCES = $(NULL)

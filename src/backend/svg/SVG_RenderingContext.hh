@@ -30,7 +30,7 @@
 #include "RenderingContext.hh"
 #include "String.hh"
 
-class GMV_EXPORT SVG_RenderingContext : public RenderingContext
+class GMV_BackEnd_EXPORT SVG_RenderingContext : public RenderingContext
 {
 public:
   SVG_RenderingContext(const SmartPtr<class AbstractLogger>&);

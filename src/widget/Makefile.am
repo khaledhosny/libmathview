@@ -73,6 +73,11 @@ libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_libxml2_reader.cc
 libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc
 libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
 
+libgtkmathview_custom_reader_la_CPPFLAGS = -DGMV_Widget_DLL
+libgtkmathview_libxml2_reader_la_CPPFLAGS = -DGMV_Widget_DLL
+libgtkmathview_libxml2_la_CPPFLAGS = -DGMV_Widget_DLL
+libgtkmathview_gmetadom_la_CPPFLAGS = -DGMV_Widget_DLL
+
 EXTRA_DIST = \
   gtkmathview_common.cc \
   gtkmathview_decorators_common.cc \

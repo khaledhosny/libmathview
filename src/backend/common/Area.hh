@@ -32,7 +32,7 @@ typedef SmartPtr<const class Area> AreaRef;
 typedef int CharIndex;
 typedef int AreaIndex;
 
-class GMV_EXPORT Area : public Object
+class GMV_MathView_EXPORT Area : public Object
 {
 protected:
   Area(void) { };
