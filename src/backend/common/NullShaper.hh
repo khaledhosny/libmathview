@@ -29,7 +29,7 @@ class GMV_MathView_EXPORT NullShaper : public Shaper
 {
 protected:
   NullShaper(const SmartPtr<class AbstractLogger>&);
-  virtual ~NullShaper() { }
+  virtual ~NullShaper();
 
 public:
   static SmartPtr<NullShaper> create(const SmartPtr<class AbstractLogger>&);

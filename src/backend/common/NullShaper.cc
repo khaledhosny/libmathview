@@ -32,6 +32,9 @@ NullShaper::NullShaper(const SmartPtr<AbstractLogger>& l)
   : logger(l)
 { }
 
+NullShaper::~NullShaper()
+{ }
+
 SmartPtr<NullShaper>
 NullShaper::create(const SmartPtr<AbstractLogger>& l)
 { return new NullShaper(l); }
