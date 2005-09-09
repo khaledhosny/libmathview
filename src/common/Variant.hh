@@ -79,7 +79,7 @@ private:
 typedef Variant< std::vector< SmartPtr<Value> > > ValueSequence;
 
 template <typename T>
-GMV_MathView_EXPORT T
+/* GMV_MathView_EXPORT */ T
 as(const Value* v)
 {
   if (const Variant<T>* obj = dynamic_cast<const Variant<T>*>(v))
