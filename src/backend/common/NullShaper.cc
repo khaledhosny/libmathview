@@ -40,7 +40,7 @@ NullShaper::create(const SmartPtr<AbstractLogger>& l)
 { return new NullShaper(l); }
 
 void
-NullShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned shaperId)
+NullShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned)
 {
   assert(sm);
 }
