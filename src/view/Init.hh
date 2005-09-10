@@ -28,8 +28,7 @@
 #include "Configuration.hh"
 #include "MathMLOperatorDictionary.hh"
 
-template <typename MathView>
-GMV_FrontEnd_EXPORT SmartPtr<Configuration>
+template <typename MathView> SmartPtr<Configuration>
 initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
 {
   SmartPtr<Configuration> configuration = Configuration::create();
@@ -64,8 +63,7 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
   return configuration;
 }
 
-template <typename MathView>
-GMV_FrontEnd_EXPORT SmartPtr<MathMLOperatorDictionary>
+template <typename MathView> SmartPtr<MathMLOperatorDictionary>
 initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
 {
   SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
