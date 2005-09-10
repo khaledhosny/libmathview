@@ -29,7 +29,9 @@
 #include <sys/time.h>
 #endif
 
-class Clock {
+#include "gmv_defines.h"
+
+class GMV_MathView_EXPORT Clock {
 public:
   Clock(void);
 
