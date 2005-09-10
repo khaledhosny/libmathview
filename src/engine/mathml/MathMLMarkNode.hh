@@ -26,7 +26,7 @@
 #include "token.hh"
 #include "MathMLTextNode.hh"
 
-class MathMLMarkNode : public MathMLTextNode
+class GMV_MathView_EXPORT MathMLMarkNode : public MathMLTextNode
 {
 protected:
   MathMLMarkNode(TokenId = T__NOTVALID);

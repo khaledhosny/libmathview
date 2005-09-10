@@ -25,7 +25,7 @@
 
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLErrorElement : public MathMLNormalizingContainerElement
+class GMV_MathView_EXPORT MathMLErrorElement : public MathMLNormalizingContainerElement
 {
 protected:
   MathMLErrorElement(const SmartPtr<class MathMLNamespaceContext>&);

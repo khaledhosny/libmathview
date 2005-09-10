@@ -25,7 +25,7 @@
 
 #include "MathMLTextNode.hh"
 
-class MathMLGlyphNode : public MathMLTextNode
+class GMV_MathView_EXPORT MathMLGlyphNode : public MathMLTextNode
 {
 protected:
   MathMLGlyphNode(const String&, const String&, const String&);

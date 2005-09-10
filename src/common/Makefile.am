@@ -5,11 +5,19 @@ SUBDIRS = mathvariants
 
 noinst_LTLIBRARIES = libcommon.la
 
-libcommon_la_CPPFLAGS = -DGMV_MathView_DLL
+libcommon_la_CPPFLAGS = $(NULL)
+libcommon_la_CPPFLAGS += -DGMV_MathView_DLL
 libcommon_la_LIBADD = \
   $(top_builddir)/src/common/mathvariants/libmathvariants.la \
   $(GLIB_LIBS) \
   $(NULL)
+
+# if USE_GCC_PCH
+# BUILT_SOURCES = all.hh
+# include ./$(DEPDIR)/all.Po
+# include $(top_srcdir)/gcc-pch.mk
+# libcommon_la_CPPFLAGS += -include all.hh
+# endif
 
 libcommon_la_SOURCES = \
   AbstractLogger.cc \

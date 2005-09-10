@@ -26,7 +26,7 @@
 #include "token.hh"
 #include "MathMLElement.hh"
 
-class MathMLAlignMarkElement : public MathMLElement
+class GMV_MathView_EXPORT MathMLAlignMarkElement : public MathMLElement
 {
 protected:
   MathMLAlignMarkElement(const SmartPtr<class MathMLNamespaceContext>& view);

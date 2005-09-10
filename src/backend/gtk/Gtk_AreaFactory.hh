@@ -33,7 +33,7 @@
 #include "Gtk_PangoLayoutArea.hh"
 #include "Gtk_PangoLayoutLineArea.hh"
 #if HAVE_XFT
-#include "Gtk_XftGlyphArea.hh"
+  #include "Gtk_XftGlyphArea.hh"
 #endif // HAVE_XFT
 #include "Gtk_WrapperArea.hh"
 

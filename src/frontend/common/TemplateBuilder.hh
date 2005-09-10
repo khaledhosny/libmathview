@@ -32,11 +32,11 @@
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
 #if ENABLE_BOXML
-#include "BoxML.hh"
-#include "BoxMLNamespaceContext.hh"
-#include "BoxMLAttributeSignatures.hh"
-#include "BoxMLMathMLAdapter.hh"
-#include "MathMLBoxMLAdapter.hh"
+  #include "BoxML.hh"
+  #include "BoxMLNamespaceContext.hh"
+  #include "BoxMLAttributeSignatures.hh"
+  #include "BoxMLMathMLAdapter.hh"
+  #include "MathMLBoxMLAdapter.hh"
 #endif // ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"

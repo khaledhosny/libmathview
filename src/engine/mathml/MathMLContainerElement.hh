@@ -26,7 +26,7 @@
 #include "MathMLElement.hh"
 
 // base class for every non-empty MathML container element
-class MathMLContainerElement : public MathMLElement
+class GMV_MathView_EXPORT MathMLContainerElement : public MathMLElement
 {
 protected:
   MathMLContainerElement(const SmartPtr<class MathMLNamespaceContext>&);

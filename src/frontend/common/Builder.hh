@@ -26,7 +26,7 @@
 #include "Object.hh"
 #include "SmartPtr.hh"
 
-class Builder : public Object
+class GMV_FrontEnd_EXPORT Builder : public Object
 {
 protected:
   Builder(void);

@@ -27,7 +27,7 @@
 #include "WeakPtr.hh"
 #include "SmartPtr.hh"
 
-class MathMLNode : public Node
+class GMV_MathView_EXPORT MathMLNode : public Node
 {
 protected:
   MathMLNode(void);

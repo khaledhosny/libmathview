@@ -25,7 +25,7 @@
 
 #include "MathMLElement.hh"
 
-class MathMLDummyElement : public MathMLElement
+class GMV_MathView_EXPORT MathMLDummyElement : public MathMLElement
 {
 protected:
   MathMLDummyElement(const SmartPtr<class MathMLNamespaceContext>&);

@@ -25,7 +25,7 @@
 
 #include "MathMLTokenElement.hh"
 
-class MathMLIdentifierElement : public MathMLTokenElement
+class GMV_MathView_EXPORT MathMLIdentifierElement : public MathMLTokenElement
 {
 protected:
   MathMLIdentifierElement(const SmartPtr<class MathMLNamespaceContext>&);

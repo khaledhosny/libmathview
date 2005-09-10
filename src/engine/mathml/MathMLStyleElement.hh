@@ -26,7 +26,7 @@
 #include "MathMLEmbellishment.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLStyleElement
+class GMV_MathView_EXPORT MathMLStyleElement
   : public MathMLNormalizingContainerElement, public MathMLEmbellishment
 {
 public:

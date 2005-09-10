@@ -25,7 +25,7 @@
 
 #include "BoxMLLinearContainerElement.hh"
 
-class BoxMLVElement : public BoxMLLinearContainerElement
+class GMV_MathView_EXPORT BoxMLVElement : public BoxMLLinearContainerElement
 {
 protected:
   BoxMLVElement(const SmartPtr<class BoxMLNamespaceContext>&);

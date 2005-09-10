@@ -25,7 +25,7 @@
 
 #include "MathMLLinearContainerElement.hh"
 
-class MathMLTableRowElement
+class GMV_MathView_EXPORT MathMLTableRowElement
   : public MathMLLinearContainerElement
 {
 protected:

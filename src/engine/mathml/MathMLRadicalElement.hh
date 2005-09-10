@@ -26,7 +26,7 @@
 #include "MathMLContainerElement.hh"
 #include "BinContainerTemplate.hh"
 
-class MathMLRadicalElement : public MathMLContainerElement
+class GMV_MathView_EXPORT MathMLRadicalElement : public MathMLContainerElement
 {
 protected:
   MathMLRadicalElement(const SmartPtr<class MathMLNamespaceContext>&);

@@ -25,7 +25,7 @@
 
 #include "MathMLTextNode.hh"
 
-class MathMLFunctionApplicationNode : public MathMLTextNode
+class GMV_MathView_EXPORT MathMLFunctionApplicationNode : public MathMLTextNode
 {
 protected:
   MathMLFunctionApplicationNode(void) { }

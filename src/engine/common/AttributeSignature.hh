@@ -31,7 +31,7 @@ typedef SmartPtr<Value> (*AttributeParser)(const UCS4String::const_iterator&,
 					   const UCS4String::const_iterator&,
 					   UCS4String::const_iterator&);
 
-struct AttributeSignature
+struct GMV_MathView_EXPORT AttributeSignature
 {
   String name;
   String fullName;
@@ -58,7 +58,7 @@ typedef const AttributeSignature* AttributeId;
 #define REFINE_ATTRIBUTE(ctxt,ns,el,name) refineAttribute(ctxt, ATTRIBUTE_SIGNATURE(ns,el,name))
 #define GET_ATTRIBUTE_VALUE(ns,el,name) getAttributeValue(ATTRIBUTE_SIGNATURE(ns,el,name))
 #define GET_ATTRIBUTE_DEFAULT_VALUE(ns,el,name) (ATTRIBUTE_SIGNATURE(ns,el,name).getDefaultValue())
-#define DECLARE_ATTRIBUTE(ns,el,name) extern const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name)
+#define DECLARE_ATTRIBUTE(ns,el,name) extern GMV_MathView_EXPORT const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name)
 #define DEFINE_ATTRIBUTE(ns,el,name,fe,fc,de,em,df) \
   const AttributeSignature ATTRIBUTE_SIGNATURE(ns,el,name) = \
   { #name, ATTRIBUTE_FULL_NAME(ns,el,name), ATTRIBUTE_PARSER(ns,el,name), fe, fc, de, em, df, 0 }

@@ -25,10 +25,10 @@
 
 // !!! BEGIN WARNING: rope is not part of the STL !!!
 #if defined(HAVE_EXT_ROPE)
-#include <ext/rope>
+  #include <ext/rope>
 #define ROPE_NS __gnu_cxx
 #elif defined(HAVE_ROPE)
-#include <rope>
+  #include <rope>
 #define ROPE_NS std
 #else
 #error "no implementation of rope could be found"

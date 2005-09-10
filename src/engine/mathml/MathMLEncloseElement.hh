@@ -26,7 +26,7 @@
 #include "RGBColor.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class MathMLEncloseElement : public MathMLNormalizingContainerElement
+class GMV_MathView_EXPORT MathMLEncloseElement : public MathMLNormalizingContainerElement
 {
 protected:
   MathMLEncloseElement(const SmartPtr<class MathMLNamespaceContext>&);

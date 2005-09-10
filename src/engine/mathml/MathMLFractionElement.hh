@@ -27,7 +27,7 @@
 #include "MathMLContainerElement.hh"
 #include "BinContainerTemplate.hh"
 
-class MathMLFractionElement
+class GMV_MathView_EXPORT MathMLFractionElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:

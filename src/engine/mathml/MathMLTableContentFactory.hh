@@ -27,7 +27,7 @@
 
 #include "MathMLTableCellElement.hh"
 
-class MathMLTableContentFactory
+class GMV_MathView_EXPORT MathMLTableContentFactory
 {
 public:
   MathMLTableContentFactory(void) { }
