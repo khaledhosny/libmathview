@@ -15,4 +15,8 @@
  <operator name="&#x2146;" form="prefix" lspace="0em" rspace="0em"/> <!-- dd -->
  <operator name="&#x2145;" form="prefix" lspace="0em" rspace="0em"/> <!-- DD -->
  <operator name="&#x2022;" form="prefix" lspace="0em" rspace="0em"/> <!-- PartialD -->
+
+ <!-- || is stretchy -->
+ <operator name="&#x2225;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
+ <operator name="&#x2223;" form="infix" stretchy="true" lspace="thickmathspace" rspace="thickmathspace"/>
 </dictionary>
