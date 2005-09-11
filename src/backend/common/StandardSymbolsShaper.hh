@@ -23,8 +23,6 @@
 #ifndef __StandardSymbolsShaper_hh__
 #define __StandardSymbolsShaper_hh__
 
-#include <functional>
-
 #include "HashMap.hh"
 #include "Shaper.hh"
 
