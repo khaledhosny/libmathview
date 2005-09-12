@@ -125,6 +125,13 @@ AC_ARG_ENABLE(
 	enable_svg="yes"
 )
 
+AC_ARG_ENABLE(
+	gcc-pch,
+	[  --enable-gcc-pch=[yes/no/auto]       use gcc4 pch support (default=auto)],
+	enable_gcc_pch=$enableval,
+	enable_gcc_pch="auto"
+)
+
 AC_ARG_WITH(
 	t1lib,
 	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
@@ -419,6 +426,31 @@ AM_CONDITIONAL([COND_SVG], [test "$enable_svg" = "yes"])
 
 AM_BINRELOC
 AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
+
+AC_MSG_CHECKING([whether to use GCC precompiled headers with $CXX])
+if test "x$GCC" = "xyes" ; then
+	_gmv_gcc_version=`$CXX --version | grep -m 1 GCC |  cut -f 3 -d " "`
+        _gmv_gcc_major=`echo $_gmv_gcc_version | cut -f 1 -d "."`
+
+	if [[ "$_gmv_gcc_major" -ge "4" ]] ; then
+		if test "x$enable_gcc_pch" = "xyes" ; then
+			AC_MSG_RESULT(yes)
+			gmv_gcc_pch="yes"
+		elif test "x$enable_gcc_pch" = "xauto" ; then
+			AC_MSG_RESULT(yes)
+			gmv_gcc_pch="yes"
+		else
+			AC_MSG_RESULT(no)
+			gmv_gcc_pch="no"
+		fi
+	else
+		AC_MSG_RESULT(no)
+		gmv_gcc_pch="no"
+	fi
+else
+	gmv_gcc_pch="no"
+fi
+AM_CONDITIONAL(USE_GCC_PCH, test "x$gmv_gcc_pch" = "xyes")
 
 AC_CONFIG_FILES([
  Makefile
