@@ -173,6 +173,8 @@ static gboolean gtk_math_view_expose_event(GtkWidget*, GdkEventExpose*);
 static gboolean gtk_math_view_button_press_event(GtkWidget*, GdkEventButton*);
 static gboolean gtk_math_view_button_release_event(GtkWidget*, GdkEventButton*);
 static gboolean gtk_math_view_motion_notify_event(GtkWidget*, GdkEventMotion*);
+static gboolean gtk_math_view_focus_in_event(GtkWidget*, GdkEventFocus*);
+static gboolean gtk_math_view_focus_out_event(GtkWidget*, GdkEventFocus*);
 static void     gtk_math_view_realize(GtkWidget*);
 static void     gtk_math_view_size_request(GtkWidget*, GtkRequisition*);
 static void     gtk_math_view_size_allocate(GtkWidget*, GtkAllocation*);
@@ -329,8 +331,16 @@ gtk_math_view_paint(GtkMathView* math_view)
     }
 
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
-  rc->setForegroundColor(widget->style->fg[GTK_STATE_SELECTED]);
-  rc->setBackgroundColor(widget->style->bg[GTK_STATE_SELECTED]);
+  if (GTK_WIDGET_HAS_FOCUS(math_view))
+    {
+      rc->setForegroundColor(widget->style->text[GTK_STATE_SELECTED]);
+      rc->setBackgroundColor(widget->style->base[GTK_STATE_SELECTED]);
+    }
+  else
+    {
+      rc->setForegroundColor(widget->style->text[GTK_STATE_ACTIVE]);
+      rc->setBackgroundColor(widget->style->base[GTK_STATE_ACTIVE]);
+    }
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
   rc->setForegroundColor(widget->style->fg[GTK_STATE_NORMAL]);
   rc->setBackgroundColor(widget->style->bg[GTK_STATE_NORMAL]);
@@ -493,6 +503,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
   widget_class->button_press_event = gtk_math_view_button_press_event;
   widget_class->button_release_event = gtk_math_view_button_release_event;
   widget_class->motion_notify_event = gtk_math_view_motion_notify_event;
+  widget_class->focus_in_event = gtk_math_view_focus_in_event;
+  widget_class->focus_out_event = gtk_math_view_focus_out_event;
 
   widget_class->set_scroll_adjustments_signal = 
     g_signal_new("set_scroll_adjustments",
@@ -761,7 +773,7 @@ gtk_math_view_realize(GtkWidget* widget)
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_MATH_VIEW (widget));
 
-  GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+  GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED | GTK_CAN_FOCUS);
   math_view = GTK_MATH_VIEW (widget);
 
   attributes.x = widget->allocation.x;
@@ -829,6 +841,20 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
 
       //gtk_math_view_paint(math_view);
     }
+}
+
+static gboolean
+gtk_math_view_focus_in_event(GtkWidget* widget, GdkEventFocus*)
+{
+  gtk_math_view_paint(GTK_MATH_VIEW(widget));
+  return FALSE;
+}
+
+static gboolean
+gtk_math_view_focus_out_event(GtkWidget* widget, GdkEventFocus*)
+{
+  gtk_math_view_paint(GTK_MATH_VIEW(widget));
+  return FALSE;
 }
 
 static gint
