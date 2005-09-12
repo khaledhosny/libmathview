@@ -29,7 +29,8 @@
 class GMV_MathView_EXPORT Backend : public Object
 {
 protected:
-  Backend(const SmartPtr<class Configuration>&);
+  Backend(const SmartPtr<class AbstractLogger>&,
+	  const SmartPtr<class Configuration>&);
   virtual ~Backend();
 
 public:

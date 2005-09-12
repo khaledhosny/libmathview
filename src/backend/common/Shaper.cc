@@ -105,3 +105,7 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
   // character was
   return factory->glyphWrapper(factory->verticalArray(v, 0), 1);
 }
+
+bool
+Shaper::isDefaultShaper() const
+{ return false; }

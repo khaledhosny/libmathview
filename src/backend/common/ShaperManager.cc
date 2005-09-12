@@ -23,16 +23,18 @@
 #include <config.h>
 
 #include <cassert>
-#include <iostream>
 
+#include "AbstractLogger.hh"
 #include "Shaper.hh"
+#include "NullShaper.hh"
 #include "ShapingContext.hh"
 #include "ShaperManager.hh"
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "Element.hh"
 
-ShaperManager::ShaperManager() : nextShaperId(0)
+ShaperManager::ShaperManager(const SmartPtr<AbstractLogger>& l)
+  : nextShaperId(0), logger(l), errorShaper(smart_cast<Shaper>(NullShaper::create(l)))
 {
   for (unsigned i = 0; i < MAX_SHAPERS; i++)
     shaper[i] = 0;
@@ -41,23 +43,30 @@ ShaperManager::ShaperManager() : nextShaperId(0)
 ShaperManager::~ShaperManager()
 { }
 
+SmartPtr<ShaperManager>
+ShaperManager::create(const SmartPtr<AbstractLogger>& logger)
+{ return new ShaperManager(logger); }
+
 AreaRef
 ShaperManager::shapeAux(ShapingContext& context) const
 {
   while (!context.done())
     {
       const unsigned index = context.getIndex();
-      getShaper(context.getShaperId())->shape(context);
+      if (SmartPtr<Shaper> shaper = getShaper(context.getShaperId()))
+	shaper->shape(context);
       if (index == context.getIndex())
 	{
-	  // this is very severe, a Shaper has declared it is able to handle
-	  // a character but it turned out that it has eaten no characters from
-	  // the context! This may make sense for example if there is a sort of
-	  // fallback mechanism and a given shaper can "refuse" to process a
-	  // character in some context
-	  std::cerr << "Internal fatal error: Shaper " << context.getShaperId() << std::endl;
-	  assert(false);
-	  return 0;
+	  // this is very severe, either no shaper was configured, or
+	  // a Shaper has declared it is able to handle a character
+	  // but it turned out that it has eaten no characters from
+	  // the context! This would make sense for example if there
+	  // were a sort of fallback mechanism and a given shaper
+	  // could "refuse" to process a character in some context,
+	  // but unfortunately there is not!
+	  errorShaper->shape(context);
+	  // the default shapper cannot fail
+	  assert(index != context.getIndex());
 	}
     }
 
@@ -102,6 +111,12 @@ ShaperManager::registerShaper(const SmartPtr<Shaper>& s)
   assert(s);
   assert(nextShaperId < MAX_SHAPERS);
   unsigned shaperId = nextShaperId++;
+  // if the shaper is not capable of handling every character we
+  // cannot assign it the index 0, because this index is the default
+  // for characters that have not been explicitly registered.
+  // In the worst case the error shaper will be used as fallback.
+  if (shaperId == 0 && !s->isDefaultShaper())
+    shaperId = nextShaperId++;
   shaper[shaperId] = s;
   s->registerShaper(this, shaperId);
   return shaperId;
@@ -154,8 +169,4 @@ ShaperManager::mapStretchy(Char32 ch) const
 
 SmartPtr<class Shaper>
 ShaperManager::getShaper(unsigned si) const
-{
-  assert(si < nextShaperId);
-  assert(shaper[si]);
-  return shaper[si];
-}
+{ return (si < nextShaperId) ? shaper[si] : 0; }

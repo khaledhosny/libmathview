@@ -235,3 +235,6 @@ Gtk_DefaultPangoShaper::createPangoLayout(const gchar* buffer, glong length, con
   return layout;
 }
 
+bool
+Gtk_DefaultPangoShaper::isDefaultShaper() const
+{ return true; }

@@ -53,7 +53,7 @@
 #include "ShaperManager.hh"
 
 Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-  : Backend(conf)
+  : Backend(l, conf)
 {
   SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
   SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, conf);

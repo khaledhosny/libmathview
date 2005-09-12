@@ -46,7 +46,7 @@
 #include "ShaperManager.hh"
 
 SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-  : Backend(conf)
+  : Backend(l, conf)
 {
   SmartPtr<SVG_AreaFactory> factory = SVG_AreaFactory::create();
 

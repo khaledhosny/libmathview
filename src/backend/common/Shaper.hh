@@ -35,6 +35,7 @@ public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned) = 0;
   virtual void shape(class ShapingContext&) const = 0;
+  virtual bool isDefaultShaper(void) const;
 
 protected:
   virtual AreaRef composeStretchyCharV(const SmartPtr<class AreaFactory>&,

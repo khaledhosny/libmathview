@@ -57,8 +57,13 @@ NullShaper::shape(ShapingContext& context) const
   SmartPtr<AreaFactory> factory = context.getFactory();
   std::vector<AreaRef> c;
   c.reserve(2);
-  c.push_back(factory->horizontalSpace(context.getSize()));
-  c.push_back(factory->verticalSpace(context.getSize(), 0));
+  const scaled hSpan = (context.getHSpan() != scaled::zero()) ? context.getHSpan() : context.getSize();
+  const scaled vSpan = (context.getVSpan() != scaled::zero()) ? context.getVSpan() : context.getSize();
+  c.push_back(factory->horizontalSpace(hSpan));
+  c.push_back(factory->verticalSpace(vSpan, 0));
   context.pushArea(1, factory->background(factory->horizontalArray(c), RGBColor::RED()));
 }
 
+bool
+NullShaper::isDefaultShaper() const
+{ return true; }

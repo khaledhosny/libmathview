@@ -37,6 +37,7 @@ public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
+  virtual bool isDefaultShaper(void) const;
 
 private:
   SmartPtr<class AbstractLogger> logger;

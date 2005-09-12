@@ -42,6 +42,7 @@ public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
+  virtual bool isDefaultShaper(void) const;
 
   void setPangoContext(const GObjectPtr<PangoContext>& c) { context = c; }
   GObjectPtr<PangoContext> getPangoContext(void) const { return context; }

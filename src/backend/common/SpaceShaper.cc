@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <cassert>
+
 #include "MathMLElement.hh"
 #include "AreaFactory.hh"
 #include "ShapingContext.hh"
@@ -78,13 +80,20 @@ void
 SpaceShaper::pushSpace(ShapingContext& context, int space, unsigned n)
 {
   assert(n > 0);
-  context.pushArea(n, context.getFactory()->horizontalSpace(context.getSize() * space / 18));
+  const SmartPtr<AreaFactory> factory = context.getFactory();
+  std::vector<AreaRef> content;
+  content.reserve(2);
+  content.push_back(factory->verticalSpace(scaled::zero(), scaled::zero()));
+  content.push_back(factory->horizontalSpace(context.getSize() * space / 18));  
+  context.pushArea(n, factory->glyphWrapper(factory->horizontalArray(content), n));
 }
 
 void
 SpaceShaper::shapeFixedSpace(ShapingContext& context, const GlyphSpec& spec)
 {
   unsigned n = 1;
+  assert(spec.getGlyphId() < sizeof(fixedSpaceMap) / sizeof(FixedSpaceData));
+  assert(context.thisChar() == fixedSpaceMap[spec.getGlyphId()].ch);
   int space = fixedSpaceMap[spec.getGlyphId()].space;
   if (context.nextChar() == 0xfe00)
     {
