@@ -13,6 +13,7 @@ PNG_FILES = \
   svgmathml.png \
   font.png \
   abiword.png \
+  abiword-macosx.png \
   abiword-small.png \
   t1lib.png \
   t1lib-small.png \
