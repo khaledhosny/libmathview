@@ -60,7 +60,7 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 #endif // GMV_ENABLE_TFM
 
   std::multimap<int, SmartPtr<Shaper> > shaperSet;
-  if (conf->getBool(l, "svg-backend/null-shaper/enabled", true))
+  if (conf->getBool(l, "svg-backend/null-shaper/enabled", false))
     shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "svg-backend/null-shaper/priority", 0),
 						      NullShaper::create(l)));
 

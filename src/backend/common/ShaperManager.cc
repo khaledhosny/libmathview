@@ -131,7 +131,8 @@ ShaperManager::unregisterShapers()
   // and then decremented (the parameter is a smart pointer) resulting in
   // another call to the destructor
   for (unsigned i = 0; i < nextShaperId; i++)
-    shaper[i]->unregisterShaper(this, i);
+    if (shaper[i])
+      shaper[i]->unregisterShaper(this, i);
 }
 
 GlyphSpec

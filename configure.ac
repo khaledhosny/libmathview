@@ -408,7 +408,7 @@ if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
-AC_DEFINE(GMV_TFM_LEVEL, $enable_tfm, [Define to 0, 1, 2, or 3 depending on the TFM support level you want])
+AC_DEFINE_UNQUOTED(GMV_TFM_LEVEL, $enable_tfm, [Define to 0, 1, 2, or 3 depending on the TFM support level you want])
 AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" != "0"])
 AM_CONDITIONAL([COND_TFM_LEVEL_1], [test "$enable_tfm" = "1"])
 AM_CONDITIONAL([COND_TFM_LEVEL_2], [test "$enable_tfm" = "2"])

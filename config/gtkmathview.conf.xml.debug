@@ -59,7 +59,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
 
   <section name="gtk-backend">
     <section name="null-shaper">
-      <key name="enabled">true</key>
+      <key name="enabled">false</key>
       <key name="priority">0</key>
     </section>
     <section name="pango-default-shaper">
@@ -78,7 +78,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       </section>
     </section>
     <section name="space-shaper">
-      <key name="enabled">false</key>
+      <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>
     <section name="pango-shaper">
@@ -104,7 +104,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
 
   <section name="svg-backend">
     <section name="null-shaper">
-      <key name="enabled">true</key>
+      <key name="enabled">false</key>
       <key name="priority">0</key>
     </section>
     <section name="space-shaper">
@@ -125,12 +125,13 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
 
   <section name="fonts">
     <section name="computer-modern">
+<!--
       <key name="font-name">cmr10</key>
       <key name="font-name">cmmi10</key>
       <key name="font-name">cmsy10</key>
       <key name="font-name">cmex10</key>
+-->
 
-<!--
       <key name="font-name">cmr10</key>
       <key name="font-name">cmb10</key>
       <key name="font-name">cmbx10</key>
@@ -145,7 +146,6 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmmi10</key>
       <key name="font-name">cmmib10</key>
       <key name="font-name">cmex10</key>
--->
 <!--
       <key name="font-name">cmr5</key>
       <key name="font-name">cmr6</key>

@@ -13,8 +13,6 @@ O = OK, done
   * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
-* AC_LIBTOOL_WIN32_DLL (before AC_PROG_LIBTOOL)
-  after having decorated all the exported data/functions/classes
 - implement GnomePrint backend
 - implement PS backend
 + HAVE_BOXML and HAVE_EXT_HASH_MAP_H are needed in installed header files:
@@ -97,9 +95,21 @@ MISSING
 
 // SVG Backend
 
+IMPROVEMENTS
+
+- do not draw the contour of text, so that letters are thinner
+
 MISSING
 
 - cross-embedding of MathML and SVG following the guidelines?
 - cross-embedding of MathML and SVG with coordinates computation?
 - document alpha channel in RGBColor
 
+// GTK Backend
+
+ARCH IMPROVEMENTS
+
++ define selection as a pluggable feature (much like decorators)
+instead of a built-in feature. For some operations it may be desirable
+not to have selection implemented this way
++ same with click
