@@ -108,6 +108,8 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
 	  if (underOp && underOp->IsStretchy())
 	    {
 	      ctxt.push(this);
+	      ctxt.setDisplayStyle(false);
+	      if (!accentUnder) ctxt.addScriptLevel(1);
 	      ctxt.setStretchToWidth(w);
 	      ctxt.setStretchOperator(underOp);
 	      getUnderScript()->setDirtyLayout();
@@ -118,6 +120,8 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
 	  if (overOp && overOp->IsStretchy())
 	    {
 	      ctxt.push(this);
+	      ctxt.setDisplayStyle(false);
+	      if (!accent) ctxt.addScriptLevel(1);
 	      ctxt.setStretchToWidth(w);
 	      ctxt.setStretchOperator(overOp);
 	      getOverScript()->setDirtyLayout();
