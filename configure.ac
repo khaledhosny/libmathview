@@ -68,8 +68,12 @@ AC_ARG_ENABLE(
 )
 AM_CONDITIONAL([COND_BOXML], [test "$enable_boxml" = "yes"])
 if test "x$enable_boxml" = "xyes"; then
-	AC_DEFINE(ENABLE_BOXML,1,[Define to 1 if you want support for BoxML markup])
+	AC_DEFINE(GMV_ENABLE_BOXML,1,[Define to 1 if you want support for BoxML markup])
+	GMV_ENABLE_BOXML_CFLAGS=-DGMV_ENABLE_BOXML=1
+else
+	GMV_ENABLE_BOXML_CFLAGS=
 fi
+AC_SUBST(GMV_ENABLE_BOXML_CFLAGS)
 
 AC_ARG_ENABLE(
 	gmetadom,
@@ -245,10 +249,26 @@ AC_SUBST(GTKMATHVIEW_SIZEOF_WCHAR_T, "$ac_cv_sizeof_wchar_t")
 
 AC_LANG_PUSH(C++)
 
-AC_CHECK_HEADERS(hash_map)
-AC_CHECK_HEADERS(ext/hash_map)
-AC_CHECK_HEADERS(rope)
-AC_CHECK_HEADERS(ext/rope)
+AC_CHECK_HEADERS(hash_map,
+	[
+		AC_DEFINE(GMV_HAVE_HASH_MAP,1,[Define if <hash_map> is provided])
+		GMV_HAVE_HASH_MAP_CFLAGS=-DGMV_HAVE_HASH_MAP=1
+	],
+	[
+		GMV_HAVE_HASH_MAP_CFLAGS=
+	]
+)
+AC_SUBST(GMV_HAVE_HASH_MAP_CFLAGS)
+AC_CHECK_HEADERS(ext/hash_map,
+	[
+		AC_DEFINE(GMV_HAVE_EXT_HASH_MAP,1,[Define if <ext/hash_map> is provided])
+		GMV_HAVE_EXT_HASH_MAP_CFLAGS=-DGMV_HAVE_EXT_HASH_MAP=1
+	],
+	[
+		GMV_HAVE_EXT_HASH_MAP_CFLAGS=
+	]
+)
+AC_SUBST(GMV_HAVE_EXT_HASH_MAP_CFLAGS)
 
 AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
 AC_TRY_LINK(

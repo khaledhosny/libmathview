@@ -64,9 +64,9 @@ typedef gmetadom_MathView MathView;
 #include "MathMLElement.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "MathMLNamespaceContext.hh"
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 #include "MathGraphicDevice.hh"
 #include "BoxGraphicDevice.hh"
 #include "Gtk_Backend.hh"
@@ -665,9 +665,9 @@ gtk_math_view_init(GtkMathView* math_view)
   view->setDefaultFontSize(math_view_class->defaultFontSize);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, math_view_class->backend->getBoxGraphicDevice()));
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));

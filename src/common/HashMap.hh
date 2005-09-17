@@ -24,10 +24,10 @@
 #define __HashMap_hh__
 
 // !!! BEGIN WARNING: hash_map is not part of the STL !!!
-#if defined(HAVE_EXT_HASH_MAP)
+#if defined(GMV_HAVE_EXT_HASH_MAP)
   #include <ext/hash_map>
 #define HASH_MAP_NS __gnu_cxx
-#elif defined(HAVE_HASH_MAP)
+#elif defined(GMV_HAVE_HASH_MAP)
   #include <hash_map>
 #define HASH_MAP_NS std
 #else

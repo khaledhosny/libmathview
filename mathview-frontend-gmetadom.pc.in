@@ -10,5 +10,5 @@ Description: MathML rendering engine (GMetaDOM frontend)
 Version: @VERSION@
 Requires: glib-2.0 gdome2-cpp-smart mathview-core
 Libs: @DOM_LIBS@ -L${libdir} -lmathview_frontend_gmetadom
-Cflags: @DOM_CFLAGS@ -I${includedir}/@PACKAGE@
+Cflags: @DOM_CFLAGS@ -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@ @GMV_HAVE_HASH_MAP_CFLAGS@ @GMV_HAVE_EXT_HASH_MAP_CFLAGS@
 

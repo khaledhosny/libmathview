@@ -15,8 +15,6 @@ O = OK, done
 
 - implement GnomePrint backend
 - implement PS backend
-+ HAVE_BOXML and HAVE_EXT_HASH_MAP_H are needed in installed header files:
-  store these definitions in the .pc files (possibly with a unique name)
 + make DPI a configurable parameter
 + find a way of having TFM support orthogonal to the other classes
 ? make pangolayout pangolinelayout areas configurable (glyph area?)

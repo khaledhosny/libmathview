@@ -53,10 +53,10 @@ public:
   SmartPtr<class Builder> getBuilder(void) const;
   void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   void setBoxMLNamespaceContext(const SmartPtr<class BoxMLNamespaceContext>&);
   SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
   SmartPtr<class Element> getRootElement(void) const;
   void resetRootElement(void);
@@ -101,9 +101,9 @@ private:
   SmartPtr<class MathMLOperatorDictionary> dictionary;
   SmartPtr<class Builder> builder;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   SmartPtr<class BoxMLNamespaceContext> boxmlContext;
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
   unsigned defaultFontSize;
   unsigned freezeCounter;
   scaled availableWidth;

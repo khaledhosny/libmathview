@@ -31,13 +31,13 @@
 #include "MathMLTableContentFactory.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   #include "BoxML.hh"
   #include "BoxMLNamespaceContext.hh"
   #include "BoxMLAttributeSignatures.hh"
   #include "BoxMLMathMLAdapter.hh"
   #include "MathMLBoxMLAdapter.hh"
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
 #include "HashMap.hh"
@@ -141,7 +141,7 @@ protected:
 	mathmlMapInitialized = true;
       }
 
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
     static struct
     {
       String tag;
@@ -170,7 +170,7 @@ protected:
 
 	boxmlMapInitialized = true;
       }
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
   }
 
   ////////////////////////////////////
@@ -253,7 +253,7 @@ protected:
 	    String encoding = Model::getAttribute(e, "encoding");
 	    if (encoding == "MathML-Presentation")
 	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
 	    else if (encoding == "BoxML")
 	      {
 		// this element can probably be associated with the model element
@@ -312,7 +312,7 @@ protected:
     return MathMLMarkNode::create(align);
   }
 
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   ///////////////////////////////////
   // SPECIALIZED BOXML UPDATE METHODS
   ///////////////////////////////////
@@ -338,7 +338,7 @@ protected:
       return createBoxMLDummyElement();
 #endif
   }
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
   //////////////////
   // MATHML BUILDERS
@@ -984,7 +984,7 @@ protected:
     }
   };
 
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   /////////////////
   // BOXML BUILDERS
   /////////////////
@@ -1241,7 +1241,7 @@ protected:
       builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, minlinespacing));
     }
   };
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
   ////////////////////////////
   // BUILDER AUXILIARY METHODS
@@ -1410,7 +1410,7 @@ protected:
     return elem;
   }
 
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   //////////////////////////////////////
   // BUILDER AUXILIARY METHODS FOR BOXML
   //////////////////////////////////////
@@ -1448,7 +1448,7 @@ protected:
     assert(false);
     return 0;
   }
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
 public:
   static SmartPtr<Builder> create(void) { return new TemplateBuilder(); }
@@ -1464,9 +1464,9 @@ public:
       {
 	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
 	if (ns == MATHML_NS_URI) return getMathMLElement(root);
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
 	else if (ns == BOXML_NS_URI) return getBoxMLElement(root);
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
       }
     return 0;
   }
@@ -1480,12 +1480,12 @@ private:
   typedef HASH_MAP_NS::hash_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
   static MathMLBuilderMap mathmlMap;
   static bool mathmlMapInitialized;
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
   typedef HASH_MAP_NS::hash_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
   static BoxMLBuilderMap boxmlMap;
   static bool boxmlMapInitialized;
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
   mutable RefinementContext refinementContext;
 };
@@ -1496,12 +1496,12 @@ typename TemplateBuilder<Model,Builder,RefinementContext>::MathMLBuilderMap Temp
 template <class Model, class Builder, class RefinementContext>
 bool TemplateBuilder<Model,Builder,RefinementContext>::mathmlMapInitialized = false;
 
-#ifdef ENABLE_BOXML
+#ifdef GMV_ENABLE_BOXML
 template <class Model, class Builder, class RefinementContext>
 typename TemplateBuilder<Model,Builder,RefinementContext>::BoxMLBuilderMap TemplateBuilder<Model,Builder,RefinementContext>::boxmlMap;
 
 template <class Model, class Builder, class RefinementContext>
 bool TemplateBuilder<Model,Builder,RefinementContext>::boxmlMapInitialized = false;
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
 #endif // __TemplateBuilder_hh__

@@ -10,5 +10,5 @@ Description: MathML rendering engine (libxml2 frontend)
 Version: @VERSION@
 Requires: glib-2.0 libxml-2.0 mathview-core
 Libs: @XML_LIBS@ -L${libdir} -lmathview_frontend_libxml2
-Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@
+Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@ @GMV_HAVE_HASH_MAP_CFLAGS@ @GMV_HAVE_EXT_HASH_MAP_CFLAGS@
 

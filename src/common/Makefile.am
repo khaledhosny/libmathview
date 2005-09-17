@@ -78,7 +78,6 @@ noinst_HEADERS = \
   CharTraits.icc \
   Clock.hh \
   GObjectPtr.hh \
-  Rope.hh \
   TemplateStringScanners.hh \
   TemplateStringParsers.hh \
   TokenSet.hh \

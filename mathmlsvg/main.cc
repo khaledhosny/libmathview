@@ -41,10 +41,10 @@
 #include "SVG_libxml2_StreamRenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
 #include "BoxMLNamespaceContext.hh"
 #include "BoxGraphicDevice.hh"
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 #include "SMS.hh"
 #include "Fragment.hh"
 
@@ -307,13 +307,13 @@ main(int argc, const char* argv[])
   SmartPtr<MathView> view = MathView::create(logger);
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, mgd));
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   SmartPtr<BoxGraphicDevice> bgd = backend->getBoxGraphicDevice();
   view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, bgd));
 #endif
   view->setDefaultFontSize(static_cast<unsigned>(fontSize));
 
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   FormattingContext context(mgd, bgd);
 #else
   FormattingContext context(mgd);

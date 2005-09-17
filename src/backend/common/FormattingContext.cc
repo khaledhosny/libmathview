@@ -32,7 +32,7 @@
 
 #include <iostream>
 
-#if ENABLE_BOXML
+#if GMV_GMV_ENABLE_BOXML
 FormattingContext::FormattingContext(const SmartPtr<MathGraphicDevice>& md,
 				     const SmartPtr<BoxGraphicDevice>& bd)
   : mathGraphicDevice(md), boxGraphicDevice(bd)
@@ -99,7 +99,7 @@ SmartPtr<MathGraphicDevice>
 FormattingContext::MGD() const
 { return mathGraphicDevice; }
 
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
 void
 FormattingContext::push(const SmartPtr<BoxMLElement>& el)
 {
@@ -114,4 +114,4 @@ FormattingContext::getBoxMLElement() const
 SmartPtr<BoxGraphicDevice>
 FormattingContext::BGD() const
 { return boxGraphicDevice; }
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML

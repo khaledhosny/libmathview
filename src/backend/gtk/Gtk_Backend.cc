@@ -31,11 +31,11 @@
 #include "Gtk_Backend.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
 #include "Gtk_BoxGraphicDevice.hh"
 #else
 #include "BoxGraphicDevice.hh"
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 #include "Gtk_PangoFontManager.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
@@ -58,13 +58,13 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
   SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, conf);
   mgd->setFactory(factory);
-#if ENABLE_BOXML
+#if GMV_ENABLE_BOXML
   SmartPtr<Gtk_BoxGraphicDevice> bgd = Gtk_BoxGraphicDevice::create(l, conf);
   bgd->setFactory(factory);
   setDevices(mgd, bgd);
 #else
   setDevices(mgd, 0);
-#endif // ENABLE_BOXML
+#endif // GMV_ENABLE_BOXML
 
   SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper;
   GObjectPtr<PangoContext> context = gdk_pango_context_get();

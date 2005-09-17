@@ -10,5 +10,5 @@ Description: MathML rendering engine (core)
 Version: @VERSION@
 Requires: glib-2.0
 Libs: -L${libdir} -lmathview @T1_LIBS@
-Cflags: -I${includedir}/@PACKAGE@
+Cflags: -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@ @GMV_HAVE_HASH_MAP_CFLAGS@ @GMV_HAVE_EXT_HASH_MAP_CFLAGS@
 
