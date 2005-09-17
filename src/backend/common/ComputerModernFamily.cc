@@ -241,10 +241,10 @@ ComputerModernFamily::findFont(MathVariant variant, FontEncId encId, scaled& siz
 	case BOLD_SANS_SERIF_VARIANT:
 	case SANS_SERIF_BOLD_ITALIC_VARIANT:
 	  if (fontEnabled(FN_CMMIB)) return FN_CMMIB;
-	  else if (fontEnabled(FN_CMSY)) return FN_CMSY;
+	  else if (fontEnabled(FN_CMMI)) return FN_CMMI;
 	  else return FN_NIL;
 	default:
-	  if (fontEnabled(FN_CMSY)) return FN_CMSY;
+	  if (fontEnabled(FN_CMMI)) return FN_CMMI;
 	  else return FN_NIL;
 	}
       break;

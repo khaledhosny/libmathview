@@ -847,8 +847,8 @@ static ComputerModernShaper::HStretchyChar hMap[] =
     { 0x21aa, {NIL, 0x00}, {CMM, 0x2C}, {CMS, 0x00}, {CMS, 0x21} },
     { 0x21bc, {CMM, 0x28}, {NIL, 0x00}, {CMS, 0x00}, {NIL, 0x00} },
     { 0x21bd, {CMM, 0x29}, {NIL, 0x00}, {CMS, 0x00}, {NIL, 0x00} },
-    { 0x21c0, {CMS, 0x2A}, {NIL, 0x00}, {CMS, 0x00}, {NIL, 0x00} },
-    { 0x21c1, {CMS, 0x2B}, {NIL, 0x00}, {CMS, 0x00}, {NIL, 0x00} },
+    { 0x21c0, {CMM, 0x2A}, {NIL, 0x00}, {CMS, 0x00}, {NIL, 0x00} },
+    { 0x21c1, {CMM, 0x2B}, {NIL, 0x00}, {CMS, 0x00}, {NIL, 0x00} },
     { 0x21d0, {CMS, 0x28}, {CMS, 0x28}, {NIL, 0x00}, {NIL, 0x00} },
     { 0x21d4, {CMS, 0x2C}, {CMS, 0x28}, {NIL, 0x00}, {CMS, 0x29} },
     { 0x21d2, {CMS, 0x29}, {NIL, 0x00}, {NIL, 0x00}, {CMS, 0x29} },
@@ -1149,14 +1149,22 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
 
   for (unsigned i = 0; cmmMap[i].ch; i++)
     {
-      const Char32 ch = mapMathVariant(ITALIC_VARIANT, cmmMap[i].ch);
-      const Char32 vch = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
-
+      const Char32 ch = cmmMap[i].ch;
+      const Char32 ch1 = mapMathVariant(ITALIC_VARIANT, ch);
       if (family->fontEnabled(ComputerModernFamily::FN_CMMI))
-	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, ITALIC_VARIANT), cmmMap[i].index));
+	{
+	  sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, NORMAL_VARIANT), cmmMap[i].index));
+	  if (ch1 != ch)
+	    sm->registerChar(ch1, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, ITALIC_VARIANT), cmmMap[i].index));
+	}
 
-      if (family->fontEnabled(ComputerModernFamily::FN_CMMIB) && vch != ch)
-	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, BOLD_ITALIC_VARIANT), cmmMap[i].index));
+      const Char32 ch2 = mapMathVariant(BOLD_VARIANT, ch);
+      if (ch2 != ch && family->fontEnabled(ComputerModernFamily::FN_CMMIB))
+	sm->registerChar(ch2, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, BOLD_VARIANT), cmmMap[i].index));
+
+      const Char32 ch3 = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
+      if (ch3 != ch && ch3 != ch2 && family->fontEnabled(ComputerModernFamily::FN_CMMIB))
+	sm->registerChar(ch3, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, BOLD_ITALIC_VARIANT), cmmMap[i].index));
     }
 
   for (unsigned i = 0; cmsMap[i].ch; i++)
