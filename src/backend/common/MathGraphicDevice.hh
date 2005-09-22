@@ -33,6 +33,8 @@ protected:
   virtual ~MathGraphicDevice();
 
 public:
+  virtual void clearCache(void) const;
+
   // Length evaluation, fundamental properties
 
   virtual scaled axis(const class FormattingContext&) const;

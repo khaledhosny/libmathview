@@ -72,14 +72,23 @@ MathGraphicDevice::dummy(const FormattingContext& context) const
 typedef HASH_MAP_NS::hash_map<CachedShapedStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStringCache;
 typedef HASH_MAP_NS::hash_map<CachedShapedStretchyStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStretchyStringCache;
 
+static ShapedStretchyStringCache stretchyStringCache;
+static ShapedStringCache stringCache;
+
+void
+MathGraphicDevice::clearCache() const
+{
+  stretchyStringCache.clear();
+  stringCache.clear();
+}
+
 AreaRef
 MathGraphicDevice::stretchedString(const FormattingContext& context, const String& str) const
 {
-  static ShapedStretchyStringCache cache;
   CachedShapedStretchyStringKey key(str, context.getVariant(), context.getSize(),
 				    context.getStretchH(), context.getStretchV());
 #if 1
-  std::pair<ShapedStretchyStringCache::iterator, bool> r = cache.insert(std::make_pair(key, AreaRef(0)));
+  std::pair<ShapedStretchyStringCache::iterator, bool> r = stretchyStringCache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
     {
       UCS4String source = UCS4StringOfString(str);
@@ -96,19 +105,19 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
   else
     return r.first->second;
 #else
-  ShapedStretchyStringCache::const_iterator p = cache.find(key);
-  if (p != cache.end())
+  ShapedStretchyStringCache::const_iterator p = stretchyStringCache.find(key);
+  if (p != stretchyStringCache.end())
     return p->second;
   else
     {
       UCS4String source = UCS4StringOfString(str);
       mapMathVariant(context.getVariant(), source);
-      return (cache[key] = getShaperManager()->shapeStretchy(context,
-							     context.getMathMLElement(),
-							     context.MGD()->getFactory(),
-							     source,
-							     context.getStretchV(),
-							     context.getStretchH()));
+      return (stretchyStringCache[key] = getShaperManager()->shapeStretchy(context,
+									   context.getMathMLElement(),
+									   context.MGD()->getFactory(),
+									   source,
+									   context.getStretchV(),
+									   context.getStretchH()));
     }
 #endif
 }
@@ -116,11 +125,10 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
 AreaRef
 MathGraphicDevice::unstretchedString(const FormattingContext& context, const String& str) const
 {
-  static ShapedStringCache cache;
   CachedShapedStringKey key(str, context.getVariant(), context.getSize());
 
 #if 1
-  std::pair<ShapedStringCache::iterator, bool> r = cache.insert(std::make_pair(key, AreaRef(0)));
+  std::pair<ShapedStringCache::iterator, bool> r = stringCache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
     {
       UCS4String source = UCS4StringOfString(str);
@@ -135,17 +143,17 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
   else
     return r.first->second;
 #else
-  ShapedStringCache::const_iterator p = cache.find(key);
-  if (p != cache.end())
+  ShapedStringCache::const_iterator p = stringCache.find(key);
+  if (p != stringCache.end())
     return p->second;
   else
     {
       UCS4String source = UCS4StringOfString(str);
       mapMathVariant(context.getVariant(), source);
-      return (cache[key] = getShaperManager()->shape(context,
-						     context.getMathMLElement(),
-						     context.MGD()->getFactory(),
-						     source));
+      return (stringCache[key] = getShaperManager()->shape(context,
+							   context.getMathMLElement(),
+							   context.MGD()->getFactory(),
+							   source));
     }
 #endif
 }
