@@ -3,6 +3,7 @@ NULL =
 
 HTML_FILES = \
   index.html \
+  form.html \
   news.html \
   qna.html \
   $(NULL)
@@ -24,6 +25,7 @@ PNG_FILES = \
 
 HOME_FILES = \
   gtkmathview.css \
+  gtkmathview-online.conf.xml \
   $(HTML_FILES) \
   $(PNG_FILES)
   $(NULL)
@@ -50,4 +52,5 @@ mathmllogo-small.png: mathmllogo.png
 
 sync: $(HOME_FILES)
 	rsync --cvs-exclude -r -v $^ lpadovan@mowgli.cs.unibo.it:/projects/helm/public_html/software/mml-widget
+	rsync render.cgi lpadovan@mowgli.cs.unibo.it:/projects/helm/public_html/software/mml-widget/cgi-bin
 
