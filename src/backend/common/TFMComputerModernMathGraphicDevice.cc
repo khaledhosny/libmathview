@@ -99,3 +99,4 @@ TFMComputerModernMathGraphicDevice::glyph(const class FormattingContext& context
 {
   return MathGraphicDevice::glyph(context, alt, family, index);
 }
+
