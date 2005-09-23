@@ -36,6 +36,18 @@ public:
   static SmartPtr<SVG_TFMComputerModernMathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
 								 const SmartPtr<class Configuration>&);
 
+  virtual AreaRef script(const class FormattingContext&,
+			 const AreaRef& base,
+			 const AreaRef& subScript, const Length& subScriptShift,
+			 const AreaRef& superScript, const Length& superScriptShift) const;
+  virtual AreaRef multiScripts(const class FormattingContext&,
+			       const AreaRef& base,
+			       const std::vector<AreaRef>& subScripts,
+			       const std::vector<AreaRef>& preSubScripts,
+			       const Length& subScriptShift,
+			       const std::vector<AreaRef>& superScripts,
+			       const std::vector<AreaRef>& preSuperScripts,
+			       const Length& superScriptShift) const;
   virtual AreaRef wrapper(const class FormattingContext&, const AreaRef& area) const;
 };
 
