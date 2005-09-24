@@ -28,6 +28,7 @@ unlink "$tmp.svg";
 my $t_svgpng = [gettimeofday];
 
 open (MAIL, '|mail -s "GtkMathView Online" lpadovan@cs.unibo.it');
+print MAIL "Remote host: ", $q->remote_host(), "\n";
 print MAIL "Source MathML:\n";
 print MAIL "==============\n";
 print MAIL $source;
