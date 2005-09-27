@@ -280,9 +280,9 @@
 
   <p>
     GtkMathView is a C++ rendering engine for <a
-    href="http://www.w3.org/Math/">MathML</a> documents. It provides an
-    interactive view that can be used for browsing and editing MathML
-    markup.
+    href="http://www.w3.org/Math/">MathML</a> documents. It provides
+    an interactive view that can be used for browsing and editing
+    MathML markup.
   </p>
 
   <p>
@@ -294,8 +294,8 @@
   </p>
   <ul>
     <li><a href="http://xmlsoft.org">libxml2</a> frontend, in which
-      the MathML document is represented as a tree and navigated with
-      the libxml2 tree API.</li>
+      the MathML document is represented as a tree and is navigated
+      with the libxml2 tree API.</li>
 
     <li><a href="http://xmlsoft.org">libxml2 reader</a> frontend, in
       which the MathML document is not entirely loaded in memory and
@@ -320,8 +320,8 @@
   </p>
 
   <ul>
-    <li>GTK+ backend, for rendering MathML documents using Pango in
-    GTK+ applications.</li>
+    <li>GTK+ backend, for rendering MathML documents using Pango
+    and/or t1lib in GTK+ applications.</li>
 
     <li>GTK+ widget backend, which wraps GtkMathView in a GTK+ widget
     to be directly embedded in GTK+ applications.</li>
@@ -344,7 +344,7 @@
 <ul>
   <li><a href="http:/gcc.gnu.org/">GCC</a> &#x2265; 3.4
     (some versions of GCC 3.3 are known to have problems compiling
-    some classes in GtkMathView)
+    some of the classes in GtkMathView)
   </li>
 
   <li><a href="http://www.gtk.org">GLib</a> &#x2265; 2.2.1 </li>
@@ -356,12 +356,6 @@
   <li><a href="http://gmetadom.sourceforge.net">GMetaDOM</a> &#x2265;
     0.1.8 (required for versions up to and including <b>0.6.1</b>,
     optional starting from <b>0.6.2</b> for the GMetaDOM frontend)</li>
-
-  <li><a href="old-download.html">miniDOM</a> is not supported anymore
-    and won't work with gtkmathview &#x2265; <b>0.4.<em>x</em></b>.  As
-    of now, the latest GMetaDOM version that works with gtkmathview
-    <b>0.3.<em>x</em></b> is
-    <b>0.0.3c</b>.  </li>
 
   <li><a href="http://xmlsoft.org/">libxml</a> &#x2265; 2.6.7 (required
     for versions up to <b>0.6.2</b>, then only if the libxml2 and
@@ -376,6 +370,12 @@
     page for GtkMathView</a>.  </li>
 
   <li>popt &#x2265; 1.7 (if not present, only the libraries will be built)</li>
+
+  <li><a href="old-download.html">miniDOM</a> is no longer supported
+    and won't work with gtkmathview &#x2265; <b>0.4.<em>x</em></b>.
+    As of now, the latest GMetaDOM version that works with gtkmathview
+    <b>0.3.<em>x</em></b> is
+    <b>0.0.3c</b>.  </li>
 </ul>
 
 <p>For compiling a freshly checked out source tree from the CVS, you'll also need:</p>
