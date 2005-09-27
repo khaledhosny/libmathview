@@ -1153,9 +1153,10 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       const Char32 ch1 = mapMathVariant(ITALIC_VARIANT, ch);
       if (family->fontEnabled(ComputerModernFamily::FN_CMMI))
 	{
-	  sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, NORMAL_VARIANT), cmmMap[i].index));
 	  if (ch1 != ch)
 	    sm->registerChar(ch1, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, ITALIC_VARIANT), cmmMap[i].index));
+	  else
+	    sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, NORMAL_VARIANT), cmmMap[i].index));
 	}
 
       const Char32 ch2 = mapMathVariant(BOLD_VARIANT, ch);
@@ -1163,7 +1164,7 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
 	sm->registerChar(ch2, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, BOLD_VARIANT), cmmMap[i].index));
 
       const Char32 ch3 = mapMathVariant(BOLD_ITALIC_VARIANT, ch);
-      if (ch3 != ch && ch3 != ch2 && family->fontEnabled(ComputerModernFamily::FN_CMMIB))
+      if (ch3 != ch && ch3 != ch && family->fontEnabled(ComputerModernFamily::FN_CMMIB))
 	sm->registerChar(ch3, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, BOLD_ITALIC_VARIANT), cmmMap[i].index));
     }
 
