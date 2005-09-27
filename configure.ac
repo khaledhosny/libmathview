@@ -449,7 +449,7 @@ AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
 
 AC_MSG_CHECKING([whether to use GCC precompiled headers with $CXX])
 if test "x$GCC" = "xyes" ; then
-	_gmv_gcc_version=`$CXX --version | grep -m 1 GCC |  cut -f 3 -d " "`
+	_gmv_gcc_version=`$CXX --version | grep GCC | head -1 | cut -f 3 -d " "`
         _gmv_gcc_major=`echo $_gmv_gcc_version | cut -f 1 -d "."`
 
 	if [[ "$_gmv_gcc_major" -ge "4" ]] ; then
