@@ -292,14 +292,14 @@ BoundingBox
 MathMLTableFormatter::assignTableWidth(const scaled& minimumTableWidth)
 {
   const scaled tableWidth = computeTableWidth(minimumTableWidth);
+  setWidth(tableWidth);
+
   if (equalColumns)
     assignTableWidthT(width);
   else
     assignTableWidthF(width);
 
   // TODO: assignment propagation
-
-  setWidth(tableWidth);
 
   initTempHeightDepth();
   const scaled tableHeightDepth = equalRows ? computeTableHeightDepthT() : computeTableHeightDepthF();
@@ -480,7 +480,7 @@ MathMLTableFormatter::assignTableWidthF(const scaled& tableWidth)
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
   const scaled extraWidth = std::max(scaled::zero(), tableWidth - assignedWidth - sumCont);
 
-#if 0			
+#if 0
   std::cerr << "initWidthsF tableWidth = " << tableWidth << std::endl
 	  << "sumScale = " << sumScale << std::endl
 	  << "assignedWidth = " << assignedWidth << std::endl
