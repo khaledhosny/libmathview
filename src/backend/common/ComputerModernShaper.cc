@@ -668,6 +668,7 @@ static ComputerModernShaper::PlainChar cmsMap[] =
     { 0x22A4, 0x3E },  // DOWN TACK
     { 0x22A5, 0x3F },  // UP TACK
     { 0x22C4, 0x05 },  // DIAMOND OPERATOR
+    { 0x22C5, 0x01 },  // DOT OPERATOR
     { 0x22C6, 0x03 },  // STAR OPERATOR
     { 0x2308, 0x64 },  // LEFT CEILING
     { 0x2309, 0x65 },  // RIGHT CEILING
