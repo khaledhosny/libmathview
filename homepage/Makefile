@@ -21,6 +21,7 @@ PNG_FILES = \
   pango.png \
   logo.png \
   mathmllogo-small.png \
+  stats.png \
   $(NULL)
 
 HOME_FILES = \
@@ -46,6 +47,12 @@ logo.png: logo.svg
 
 logo.svg: logo.xml
 	~/projects/BUILDS/gtkmathview_svg/mathmlsvg/mathmlsvg --font-size=12 --config=/home/luca/projects/gtkmathview/config/gtkmathview.conf.xml.debug $<
+
+stats.png: stats.gp stats.data
+	gnuplot $< >$@
+
+stats.data: mkstats.sh ~/.evolution/mail/local/Misc.sbd/GtkMathView\ online
+	./mkstats.sh >$@
 
 mathmllogo-small.png: mathmllogo.png
 	convert -resize 88x $< $@
