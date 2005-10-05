@@ -63,21 +63,22 @@ SVG_TFMComputerModernMathGraphicDevice::script(const class FormattingContext& co
     nucleus = smart_cast<const BinContainerArea>(nucleus)->getChild();
 
   AreaRef newSuperScript = superScript;
-  if (SmartPtr<const SVG_TFMGlyphArea> glyph = smart_cast<const SVG_TFMGlyphArea>(nucleus))
-    {
-      const SmartPtr<TFMFont> font = glyph->getFont();
-      const SmartPtr<TFM> tfm = font->getTFM();
-      const Char8 index = glyph->getIndex();
-      const scaled ic = tfm->getGlyphItalicCorrection(index) * tfm->getScale(font->getSize());
-      if (ic != scaled::zero())
-	{
-	  std::vector<AreaRef> c;
-	  c.reserve(2);
-	  c.push_back(getFactory()->horizontalSpace(ic));
-	  c.push_back(superScript);
-	  newSuperScript = getFactory()->horizontalArray(c);
-	}
-    }
+  if (superScript)
+    if (SmartPtr<const SVG_TFMGlyphArea> glyph = smart_cast<const SVG_TFMGlyphArea>(nucleus))
+      {
+	const SmartPtr<TFMFont> font = glyph->getFont();
+	const SmartPtr<TFM> tfm = font->getTFM();
+	const Char8 index = glyph->getIndex();
+	const scaled ic = tfm->getGlyphItalicCorrection(index) * tfm->getScale(font->getSize());
+	if (ic != scaled::zero())
+	  {
+	    std::vector<AreaRef> c;
+	    c.reserve(2);
+	    c.push_back(getFactory()->horizontalSpace(ic));
+	    c.push_back(superScript);
+	    newSuperScript = getFactory()->horizontalArray(c);
+	  }
+      }
 
   return MathGraphicDevice::script(context, base,
 				   subScript, subScriptShift,

@@ -23,7 +23,7 @@ my $res = `mathmlsvg --font-size=$fontsize --verbose=3 --config=/projects/helm/p
 unlink $tmp;
 my $t_mathmlsvg = [gettimeofday];
 
-my $png_res = `rsvg -w 320 $tmp.svg $tmp.png 2>&1`;
+my $png_res = `rsvg $tmp.svg $tmp.png 2>&1`;
 #my $png_res = `unset DISPLAY; /usr/bin/sodipodi -z -w 320 -e $tmp.png $tmp.svg 2>&1`;
 unlink "$tmp.svg";
 my $t_svgpng = [gettimeofday];
