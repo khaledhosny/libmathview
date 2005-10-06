@@ -23,12 +23,12 @@ In no particular order:
 * Jean Brefort
   patches for configure.ac and auto/Makefile.am
 
-* Hubert Figuere, Francis James Franklin
+* Hubert Figuere (hub), Francis James Franklin (fjf)
   MacOSX/fink port
 
 * Robert Staudinger
   autopackage support
 
-* Jean Marc Maurer
+* Marc Maurer (uwog)
   Win32/mingw port
 
