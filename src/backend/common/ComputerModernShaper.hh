@@ -102,8 +102,10 @@ protected:
   AreaRef shapeChar(const class ShapingContext&, ComputerModernFamily::FontEncId) const;
   AreaRef shapeStretchyCharV(const class ShapingContext&) const;
   AreaRef shapeStretchyCharH(const class ShapingContext&) const;
-  AreaRef shapeBigCharH(const class ShapingContext&) const;
+  AreaRef shapeBigCharH(const class ShapingContext&, const ComputerModernShaper::HBigChar&) const;
   AreaRef shapeHorizontalBrace(const class ShapingContext&) const;
+  AreaRef shapeHorizontalBar(const class ShapingContext&) const;
+  AreaRef shapeSpecialChar(const class ShapingContext&) const;
 
 private:
   PostShapingMode postShapingMode;

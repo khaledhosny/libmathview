@@ -150,6 +150,7 @@ ShaperManager::registerStretchyChar(Char32 ch, const GlyphSpec& spec)
 {
   assert(ch <= BIGGEST_CHAR);
   GlyphSpec oldSpec = glyphSpec[ch];
+  //printf("registering stretchy %x (old spec shaper id was %d new is %d)\n", ch, oldSpec.getShaperId(), spec.getShaperId());
   glyphSpec.set(ch | STRETCHY_FLAG, spec);
   return oldSpec;
 }

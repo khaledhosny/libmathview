@@ -59,8 +59,7 @@ public:
     FE_CMEX,
     FE_H_STRETCHY,
     FE_V_STRETCHY,
-    FE_H_BIG,
-    FE_H_BRACE,
+    FE_SPECIAL,
     FE_NOT_VALID
   };
 
