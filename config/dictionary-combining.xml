@@ -1,8 +1,8 @@
 <dictionary>
  <operator name="&#x0300;" form="infix" accent="true" stretchy="false" lspace="0em" rspace="0em"/>
  <operator name="&#x0301;" form="infix" accent="true" stretchy="false" lspace="0em" rspace="0em"/>
- <operator name="&#x0302;" form="infix" accent="true" stretchy="false" lspace="0em" rspace="0em"/>
- <operator name="&#x0303;" form="infix" accent="true" stretchy="false" lspace="0em" rspace="0em"/>
+ <operator name="&#x0302;" form="infix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
+ <operator name="&#x0303;" form="infix" accent="true" stretchy="true" lspace="0em" rspace="0em"/>
  <operator name="&#x0304;" form="infix" accent="true" stretchy="false" lspace="0em" rspace="0em"/>
  <operator name="&#x0305;" form="infix" accent="false" stretchy="true" lspace="0em" rspace="0em"/>
  <operator name="&#x0306;" form="infix" accent="true" stretchy="false" lspace="0em" rspace="0em"/>
