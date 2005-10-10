@@ -33,6 +33,8 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
 
   <section name="dictionary">
     <key name="path">./config/dictionary.xml</key>
+    <key name="path">/home/luca/projects/gtkmathview/config/dictionary-combining.xml</key>
+    <key name="path">/home/luca/projects/gtkmathview/config/dictionary-local.xml</key>
     <key name="path">./config/dictionary-debug.xml</key>
   </section>
 
