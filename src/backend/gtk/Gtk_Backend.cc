@@ -58,12 +58,11 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
   SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, conf);
   mgd->setFactory(factory);
+  setMathGraphicDevice(mgd);
 #if GMV_ENABLE_BOXML
   SmartPtr<Gtk_BoxGraphicDevice> bgd = Gtk_BoxGraphicDevice::create(l, conf);
   bgd->setFactory(factory);
-  setDevices(mgd, bgd);
-#else
-  setDevices(mgd, 0);
+  setBoxGraphicDevice(bgd);
 #endif // GMV_ENABLE_BOXML
 
   SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper;

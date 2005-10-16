@@ -34,16 +34,20 @@ protected:
   virtual ~Backend();
 
 public:
-  void setDevices(const SmartPtr<class MathGraphicDevice>&,
-		  const SmartPtr<class BoxGraphicDevice>&);
   SmartPtr<class ShaperManager> getShaperManager(void) const;
+  void setMathGraphicDevice(const SmartPtr<class MathGraphicDevice>&);
   virtual SmartPtr<class MathGraphicDevice> getMathGraphicDevice(void) const;
+#if GMV_ENABLE_BOXML
+  void setBoxGraphicDevice(const SmartPtr<class BoxGraphicDevice>&);
   virtual SmartPtr<class BoxGraphicDevice> getBoxGraphicDevice(void) const;
+#endif // GMV_ENABLE_BOXML
 
 private:
   SmartPtr<class ShaperManager> shaperManager;
   SmartPtr<class MathGraphicDevice> mathGraphicDevice;
+#if GMV_ENABLE_BOXML
   SmartPtr<class BoxGraphicDevice> boxGraphicDevice;
+#endif // GMV_ENABLE_BOXML
 };
 
 #endif // __Backend_hh__

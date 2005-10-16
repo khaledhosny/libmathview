@@ -10,7 +10,7 @@ entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
 
 else
 entitiesTable.inc:
-	cp entitiesTable.inc_ entitiesTable.inc
+	cp $(top_srcdir)/auto/entitiesTable.inc_ entitiesTable.inc
 endif
 
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc

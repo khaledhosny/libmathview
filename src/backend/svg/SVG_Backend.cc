@@ -101,12 +101,11 @@ SVG_Backend::SVG_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<MathGraphicDevice> mgd = SVG_MathGraphicDevice::create(l, conf);
 #endif // GMV_ENABLE_TFM
   mgd->setFactory(factory);
+  setMathGraphicDevice(mgd);
 #if GMV_ENABLE_BOXML
   SmartPtr<BoxGraphicDevice> bgd = SVG_BoxGraphicDevice::create(l, conf);
   bgd->setFactory(factory);
-  setDevices(mgd, bgd);
-#else
-  setDevices(mgd, 0);
+  setBoxGraphicDevice(bgd);
 #endif // GMV_ENABLE_BOXML
 
   for (std::multimap<int, SmartPtr<Shaper> >::const_iterator p = shaperSet.begin();

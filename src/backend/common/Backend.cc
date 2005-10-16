@@ -26,7 +26,9 @@
 #include "Backend.hh"
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
+#if GMV_ENABLE_BOXML
 #include "BoxGraphicDevice.hh"
+#endif // GMV_ENABLE_BOXML
 
 Backend::Backend(const SmartPtr<AbstractLogger>& logger,
 		 const SmartPtr<Configuration>&)
@@ -38,27 +40,33 @@ Backend::~Backend()
   shaperManager->unregisterShapers();
 }
 
-void
-Backend::setDevices(const SmartPtr<MathGraphicDevice>& mgd,
-		    const SmartPtr<BoxGraphicDevice>& bgd)
-{
-  mathGraphicDevice = mgd;
-  boxGraphicDevice = bgd;
-  if (mathGraphicDevice)
-    mathGraphicDevice->setShaperManager(shaperManager);
-  if (boxGraphicDevice)
-    boxGraphicDevice->setShaperManager(shaperManager);
-}
-
 SmartPtr<ShaperManager>
 Backend::getShaperManager() const
 { return shaperManager; }
+
+void
+Backend::setMathGraphicDevice(const SmartPtr<MathGraphicDevice>& mgd)
+{
+  mathGraphicDevice = mgd;
+  if (mathGraphicDevice)
+    mathGraphicDevice->setShaperManager(shaperManager);
+}
 
 SmartPtr<MathGraphicDevice>
 Backend::getMathGraphicDevice() const
 { return mathGraphicDevice; }
 
+#if GMV_ENABLE_BOXML
+void
+Backend::setBoxGraphicDevice(const SmartPtr<BoxGraphicDevice>& bgd)
+{
+  boxGraphicDevice = bgd;
+  if (boxGraphicDevice)
+    boxGraphicDevice->setShaperManager(shaperManager);
+}
+
 SmartPtr<BoxGraphicDevice>
 Backend::getBoxGraphicDevice() const
 { return boxGraphicDevice; }
+#endif // GMV_ENABLE_BOXML
 
