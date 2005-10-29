@@ -37,21 +37,21 @@ abiword-small.png: abiword.png
 	convert -resize 200x $< $@
 
 svg-small.png: svg.png
-	convert -resize 200x %< %@
+	convert -resize 200x $< $@
 
 t1lib-small.png: t1lib.png
 	convert -crop 200x120+0+0 $< $@
 
-logo.png: logo.svg
-	inkscape -d 300 -e $@ $<
+%.svg: %.xml
+	./mathmlsvg.sh --font-size=48 $<
 
-logo.svg: logo.xml
-	~/projects/BUILDS/gtkmathview_svg/mathmlsvg/mathmlsvg --font-size=12 --config=/home/luca/projects/gtkmathview/config/gtkmathview.conf.xml.debug $<
+%.png: %.svg
+	rsvg -d 72 $< $@
 
 stats.png: stats.gp stats.data
 	gnuplot $< >$@
 
-stats.data: mkstats.sh ~/.evolution/mail/local/Misc.sbd/GtkMathView\ online
+stats.data: mkstats.sh
 	./mkstats.sh >$@
 
 mathmllogo-small.png: mathmllogo.png
