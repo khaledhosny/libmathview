@@ -217,7 +217,8 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 	    const unsigned i = el->getRowIndex();
 	    const unsigned j = el->getColumnIndex();
 	    //std::cerr << "LINES: FOUND ELEMENT at " << i << "," << j << std::endl;
-	    if (i + el->getRowSpan() < nRows && ToTokenId(GetComponent(rowLinesV, i)) != T_NONE)
+	    if (i + el->getRowSpan() < nRows
+		&& ToTokenId(GetComponent(rowLinesV, i + el->getRowSpan() - 1)) != T_NONE)
 	      {
 		const scaled dx0 =
 		  (j == 0) ?
@@ -238,7 +239,8 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
 		content.push_back(area);
 	      }
 
-	    if (j + el->getColumnSpan() < nColumns && ToTokenId(GetComponent(columnLinesV, j)) != T_NONE)
+	    if (j + el->getColumnSpan() < nColumns
+		&& ToTokenId(GetComponent(columnLinesV, j + el->getColumnSpan() - 1)) != T_NONE)
 	      {
 		const scaled dy0 =
 		  (i == 0) ?
