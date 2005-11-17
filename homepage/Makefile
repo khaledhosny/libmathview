@@ -51,7 +51,7 @@ t1lib-small.png: t1lib.png
 stats.png: stats.gp stats.data
 	gnuplot $< >$@
 
-stats.data: mkstats.sh
+stats.data: mkstats.sh /Users/luca/Library/Mail/Mailboxes/Mailing\ Lists/GtkMathView\ Online.mbox/Messages/
 	./mkstats.sh >$@
 
 mathmllogo-small.png: mathmllogo.png
