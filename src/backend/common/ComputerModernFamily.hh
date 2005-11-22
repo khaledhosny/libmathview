@@ -57,6 +57,8 @@ public:
     FE_CMMI,
     FE_CMSY,
     FE_CMEX,
+    FE_MSAM,
+    FE_MSBM,
     FE_H_STRETCHY,
     FE_V_STRETCHY,
     FE_SPECIAL,
@@ -79,6 +81,8 @@ public:
     FN_CMMI,
     FN_CMMIB, 
     FN_CMEX,
+    FN_MSAM,
+    FN_MSBM,
     FN_NOT_VALID
   };
 

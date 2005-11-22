@@ -705,6 +705,267 @@ static ComputerModernShaper::PlainChar cmsMap[] =
     { 0x0000, 0x00 }
   };
 
+static ComputerModernShaper::PlainChar msamMap[] =
+  {
+    { 0x22A1, 0x00 },  //squared dot
+    { 0x229E, 0x01 },  //squared plus
+    { 0x22A0, 0x02 },  //squared times
+    { 0x25A1, 0x03 },  //white square (d'Alembertian :()
+    { 0x25A0, 0x04 },  //black square
+    { 0x00B7, 0x05 },  //center dot
+    { 0x25CA, 0x06 },  //lozenge
+    { 0x29EB, 0x07 },  //black lozenge
+    { 0x21BB, 0x08 },  //circlearrowright
+    { 0x21BA, 0x09 },  //circlearrowleft
+    { 0x21CC, 0x0A },  //rightleftharpoons
+    { 0x21CB, 0x0B },  //leftrightharpoons
+    { 0x229F, 0x0C },  //squared minus
+    // case 0x0D:pmath=mo;	//Vdash  precomposedNegative(0x22A9,0x22AE);
+    { 0x22AA, 0x0E },  //Vvdash
+    // case 0x0F:pmath=mo;	//vDash	precomposedNegative(0x22A8,0x22AD);
+    { 0x21A0, 0x10 },  //twoheadrightarrow
+    { 0x219E, 0x11 },  //twoheadleftarrow
+    { 0x21C7, 0x12 },  //left paired arrows
+    { 0x21C9, 0x13 },  //right paired arrows
+    { 0x21C8, 0x14 },  //up paired arrows
+    { 0x21CA, 0x15 },  //down paired arrows
+    { 0x21BE, 0x16 },  //up harpoon right barb
+    { 0x21C2, 0x17 },  //down harpoon right barb
+    { 0x21BF, 0x18 },  //up harpoon left barb
+    { 0x21C3, 0x19 },  //down harpoon left barb
+    { 0x21A3, 0x1A },  //rightarrowtail
+    { 0x21A2, 0x1B },  //leftarrowtail
+    { 0x21C6, 0x1C },  //left over right arrows
+    { 0x21C4, 0x1D },  //right over left arrows
+    { 0x21B0, 0x1E },  //uparrow left tip
+    { 0x21B1, 0x1F },  //uparrow right tip
+    { 0x21DD, 0x20 },  //right squiggle arrow
+    { 0x21AD, 0x21 },  //leftright wave arrow
+    { 0x21AB, 0x22 },  //left arrow loop
+    { 0x21AC, 0x23 },  //right arrow loop
+    { 0x2257, 0x24 },  //ring equal
+    { 0x227F, 0x25 },  //succeedes equivalent
+    // case 0x26:pmath=mo; //greater equivalent precomposedNegative(0x2273,0x2275);
+    { 0x2267, 0x27 },  //greater over equal
+    { 0x22B8, 0x28 },  //multimap
+    { 0x2234, 0x29 },  //therefore
+    { 0x2235, 0x2A },  //because
+    { 0x2251, 0x2B },  //geometric equal
+    { 0x225C, 0x2C },  //delta equal
+    { 0x227E, 0x2D },  //precedes equiv
+    // case 0x2E:pmath=mo; //less equiv	precomposedNegative(0x2272,0x2274);
+    { 0x2AB7, 0x2F },  //precapprox
+    { 0x22DC, 0x30 },  //equal less
+    { 0x22DD, 0x31 },  //equal greater
+    { 0x22DE, 0x32 },  //equal preceds
+    { 0x22DF, 0x33 },  //equal succeedes
+    // case 0x34:pmath=mo;	//precedes equal precomposedNegative(0x227C,0x22E0);
+    { 0x2266, 0x35 },  //less over equal
+    { 0x2A7D, 0x36 },  //leqslant
+    // case 0x37:pmath=mo; //less greater precomposedNegative(0x2276,0x2278);
+    { 0x2035, 0x38 },  //back prime
+    { 0x2012, 0x39 },  //figure dash
+    { 0x2253, 0x3A },  //image approx
+    { 0x2252, 0x3B },  //approx image
+    // case 0x3C:pmath=mo;	//succeeds equal precomposedNegative(0x227D,0x22E1);
+    { 0x2267, 0x3D },  //greater over equal
+    { 0x2A7E, 0x3E },  //greater equal slant
+    // case 0x3F:pmath=mo; //greater lessprecomposedNegative(0x2277,0x2279);
+    { 0x228F, 0x40 },  //square subset
+    { 0x2290, 0x41 },  //square superset
+// 			case 0x42:pmath=mo;	//normal subgroup
+// 				precomposedNegative(0x22B2,0x22EA);
+// 			case 0x43:pmath=mo;	//contains as normal subgroup
+// 				precomposedNegative(0x22B3,0x22EB);
+// 			case 0x44:pmath=mo;	//contains as normal subgroup equal
+// 				precomposedNegative(0x22B5,0x22ED);
+// 			case 0x45:pmath=mo;	//normal subgroup equal
+// 				precomposedNegative(0x22B4,0x22EC);
+    { 0x2605, 0x46 },  //bigstar
+    { 0x226C, 0x47 },  //between
+    { 0x25BE, 0x48 },  //black triangle down
+    { 0x25B8, 0x49 },  //black triangle right
+    { 0x25C2, 0x4A },  //black triangle left
+    { 0x20D7, 0x4B },  //combining arrow right
+    { 0x20D6, 0x4C },  //combining arrow left
+    { 0x25B5, 0x4D },  //white triangle up
+    { 0x25B4, 0x4E },  //black triangle up
+    { 0x25BF, 0x4F },  //white triangle down
+    { 0x2256, 0x50 },  //ring in equal to
+    { 0x22DA, 0x51 },  //less equal greater
+    { 0x22DB, 0x52 },  //greater equal less
+    { 0x2A8B, 0x53 },  //less eqqual greater
+    { 0x2A8C, 0x54 },  //greater eqqual less
+    { 0x00A5, 0x55 },  //yuan
+    { 0x21DB, 0x56 },  //right triple arrow
+    { 0x21DA, 0x57 },  //left triple arrow
+    { 0x2713, 0x58 },  //check mark
+    { 0x22BB, 0x59 },  //xor
+    { 0x22BC, 0x5A },  //nand
+    { 0x2306, 0x5B },  //perspective
+    { 0x2220, 0x5C },  //angle
+    { 0x2221, 0x5D },  //measured angle
+    { 0x2222, 0x5E },  //arc angle
+    { 0x221D, 0x5F },  //propto
+    { 0x2323, 0x60 },  //ssmile
+    { 0x2322, 0x61 },  //sfrown
+    { 0x22D0, 0x62 },  //double subset
+    { 0x22D1, 0x63 },  //double superset
+    { 0x22D2, 0x64 },  //double union
+    { 0x22D3, 0x65 },  //double intersection
+    { 0x22CF, 0x66 },  //curly logical and
+    { 0x22CE, 0x67 },  //curly logical or
+    { 0x22CB, 0x68 },  //left semidirect product
+    { 0x22CC, 0x69 },  //right semidirect product
+    { 0x2AC5, 0x6A },  //subseteqq
+    { 0x2AC6, 0x6B },  //supseteqq
+    { 0x224F, 0x6C },  //difference
+    { 0x224E, 0x6D },  //geometrical equivalent
+    { 0x22D8, 0x6E },  //very much less
+    { 0x22D9, 0x6F },  //very much greater
+    { 0x231C, 0x70 },  //top left corner
+    { 0x231D, 0x71 },  //top right corner
+    { 0x24C7, 0x72 },  //circle R
+    { 0x24C8, 0x73 },  //circle S
+    { 0x22D4, 0x74 },  //pitchfork
+    { 0x2214, 0x75 },  //dot plus
+    { 0x223D, 0x76 },  //reversed tilde
+    { 0x22CD, 0x77 },  //reversed tilde equal
+    { 0x231E, 0x78 },  //bottom left corner
+    { 0x231F, 0x79 },  //bottom right corner
+    { 0x2720, 0x7A },  //maltese cross
+    { 0x2201, 0x7B },  //complement
+    { 0x22BA, 0x7C },  //intercal
+    { 0x229A, 0x7D },  //circled ring
+    { 0x229B, 0x7E },  //circled asterisk
+    { 0x229D, 0x7F },  //circled dash
+
+    { 0x0000, 0x00 }
+  };
+
+static ComputerModernShaper::PlainChar msbmMap[] =
+  {
+    { 0x2268, 0x00 },  //less not equal
+    { 0x2269, 0x01 },  //greater not equal
+    { 0x2270, 0x02 },  //not less not equal
+    { 0x2271, 0x03 },  //not greater not equal
+    { 0x226E, 0x04 },  //not less
+    { 0x226F, 0x05 },  //not greater
+    { 0x2280, 0x06 },  //not precede
+    { 0x2281, 0x07 },  //not succceed
+    { 0x2268, 0x08 },  //less than not equal
+    { 0x2269, 0x09 },  //greater than not equal
+    { 0x2270, 0x0A },  //not less not equal
+    { 0x2271, 0x0B },  //not greater not equal
+    { 0x2A87, 0x0C },  //less not equal
+    { 0x2A88, 0x0D },  //greater not equal
+    // case 0x0E:p("<mo>");p(ul2utf8(0x2AAF));p(ul2utf8(0x0338));p("</mo>");break;//not precedes not equal
+    // case 0x0F:p("<mo>");p(ul2utf8(0x2AB0));p(ul2utf8(0x0338));p("</mo>");break;//not succeeds not equal
+    { 0x22E7, 0x10 },  //precedes not equivalent
+    { 0x22E8, 0x11 },  //succeeds not equivalent
+    { 0x22E6, 0x12 },  //less not equivalent
+    { 0x22E7, 0x13 },  //greater not equivalent
+    // case 0x14:p("<mo>");p(ul2utf8(0x2266));p(ul2utf8(0x0338));p("</mo>");break;//not less not equal
+    // case 0x15:p("<mo>");p(ul2utf8(0x2267));p(ul2utf8(0x0338));p("</mo>");break;//not greater not equal
+    { 0x2AB5, 0x16 },  //precedes not equal
+    { 0x2AB6, 0x17 },  //succeedes not equal
+    { 0x2AB9, 0x18 },  //precedes not approx
+    { 0x2ABA, 0x19 },  //succeeds not approx
+    { 0x2A89, 0x1A },  //less not approx
+    { 0x2A8A, 0x1B },  //greater not approx
+    { 0x2241, 0x1C },  //not tilde
+    { 0x2247, 0x1D },  //not approximate not equal
+    { 0x2571, 0x1E },  //diagup
+    { 0x2572, 0x1F },  //diagdown
+    // case 0x20:p("<mo>");p(ul2utf8(0x228A));p(ul2utf8(0xFE00));p("</mo>");break;//var subset not equal
+    // case 0x21:p("<mo>");p(ul2utf8(0x228B));p(ul2utf8(0xFE00));p("</mo>");break;//var supset not equal
+    // case 0x22:p("<mo>");p(ul2utf8(0x2AC5));p(ul2utf8(0x0338));p("</mo>");break;//not subset not eqqual
+    // case 0x23:p("<mo>");p(ul2utf8(0x2AC6));p(ul2utf8(0x0338));p("</mo>");break;//not superset not eqqual
+    { 0x2ACB, 0x24 },  //subset not eqqual
+    { 0x2ACC, 0x25 },  //superset not eqqual
+    // case 0x26:p("<mo>");p(ul2utf8(0x2ACB));p(ul2utf8(0xFE00));p("/<mo>");break;//var subset not eqqual
+    // case 0x27:p("<mo>");p(ul2utf8(0x2ACC));p(ul2utf8(0xFE00));p("/<mo>");break;//var superset not eqqual
+    { 0x228A, 0x28 },  //subset not equal
+    { 0x228B, 0x29 },  //superset not equal
+    { 0x2288, 0x2A },  //not subset not equal
+    { 0x2289, 0x2B },  //not superset not equal
+    { 0x2226, 0x2C },  //not parallel
+    { 0x2224, 0x2D },  //not divide
+    { 0x2224, 0x2E },  //short not divide
+    { 0x2226, 0x2F },  //short not parallel
+    { 0x22AC, 0x30 },  //does not prove
+    { 0x22AE, 0x31 },  //does not force
+    { 0x22AD, 0x32 },  //not true
+    { 0x22AF, 0x33 },  //nVDash
+    { 0x22ED, 0x34 },  //not triangle right not equal
+    { 0x22EC, 0x35 },  //not triangle left not equal
+    { 0x22EA, 0x36 },  //not triangle left
+    { 0x22EC, 0x37 },  //not triangle right
+    { 0x219A, 0x38 },  //not left arrow
+    { 0x219B, 0x39 },  //not right arrow
+    { 0x21CD, 0x3A },  //not left double arrow
+    { 0x21CF, 0x3B },  //not right double arrow
+    { 0x21CE, 0x3C },  //not left right double arrow
+    { 0x21AE, 0x3D },  //not left right arrow
+    { 0x22C7, 0x3E },  //division times
+    { 0x2205, 0x3F },  //var empty set
+    { 0x2204, 0x40 },  //not exist
+    { 0x1D538, 0x41 },  //double A
+    { 0x1D538, 0x42 },  //double B
+    { 0x2102, 0x43 },  //double C
+    { 0x1D53B, 0x44 },  //double D
+    { 0x1D53C, 0x45 },  //double E
+    { 0x1D53D, 0x46 },  //double F
+    { 0x1D53E, 0x47 },  //double G
+    { 0x210D, 0x48 },  //double H
+    { 0x1D540, 0x49 },  //double I
+    { 0x1D541, 0x4A },  //double J
+    { 0x1D542, 0x4B },  //double K
+    { 0x1D543, 0x4C },  //double L
+    { 0x1D544, 0x4D },  //double M
+    { 0x2115, 0x4E },  //double N
+    { 0x1D546, 0x4F },  //double O
+    { 0x2119, 0x50 },  //double P
+    { 0x211A, 0x51 },  //double Q
+    { 0x211D, 0x52 },  //double R
+    { 0x1D54A, 0x53 },  //double S
+    { 0x1D54B, 0x54 },  //double T
+    { 0x1D54C, 0x55 },  //double U
+    { 0x1D54D, 0x56 },  //double V
+    { 0x1D54E, 0x57 },  //double W
+    { 0x1D54F, 0x58 },  //double X
+    { 0x1D550, 0x59 },  //double Y
+    { 0x2124, 0x5A },  //double Z
+    { 0x2127, 0x66 },  //mho
+    { 0x00D0, 0x67 },  //eth
+    { 0x2242, 0x68 },  //minus tilde
+    { 0x2136, 0x69 },  //beth
+    { 0x2137, 0x6A },  //gimel
+    { 0x2138, 0x6B },  //daleth
+    { 0x22D6, 0x6C },  //less dot
+    { 0x22D7, 0x6D },  //greater dot
+    { 0x22C9, 0x6E },  //up down double arrow
+    { 0x2216, 0x6F },  //set minus
+    { 0x2223, 0x70 },  //shortmid
+    { 0x2225, 0x71 },  //shortparallel
+    { 0x2216, 0x72 },  //smallsetminus
+    // case 0x73:pmath=mob; //thicksim	precomposedNegative(0x223C, 0x2241);
+    // case 0x74:pmath=mob; //thickapprox precomposedNegative(0x2248, 0x2249);
+    { 0x224A, 0x75 },  //approxeq
+    { 0x2AB8, 0x76 },  //succapprox
+    { 0x2AB7, 0x77 },  //precapprox
+    { 0x21B6, 0x78 },  //curve arrow left
+    { 0x21B7, 0x79 },  //curve arrow right
+    { 0x03DD, 0x7A },  //digamma
+    { 0x03F0, 0x7B },  //varkappa
+    { 0x006b, 0x7C },  //bbbk
+    { 0x210F, 0x7D },  //hslash
+    { 0x210F, 0x7E },  //hbar
+    { 0x03F6, 0x7F },  //backepsilon
+
+    { 0x0000, 0x00 }
+  };
+
 static UChar8 cmsTTFMap[] =
   {
     /* 0x00 */ 0xa1, // minus
@@ -901,8 +1162,11 @@ static ComputerModernShaper::VStretchyChar vMap[] =
     { 0x0000, { {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} }
   };
 
-static ComputerModernShaper::HBigChar wideHatMap = { 0x0302, { {CME, 0x62}, {CME, 0x63}, {CME, 0x64} } };
-static ComputerModernShaper::HBigChar wideTildeMap = { 0x0303, { {CME, 0x65}, {CME, 0x66}, {CME, 0x67} } };
+// TODO: add extra wide hat and tilde from MS?M fonts, but modify shapeBigCharH too!
+static ComputerModernShaper::HBigChar wideHatMap =
+  { 0x0302, { {CME, 0x62}, {CME, 0x63}, {CME, 0x64} } };
+static ComputerModernShaper::HBigChar wideTildeMap =
+  { 0x0303, { {CME, 0x65}, {CME, 0x66}, {CME, 0x67} } };
 
 #define WIDEHAT    0x0302
 #define WIDETILDE  0x0303
@@ -1101,6 +1365,10 @@ ComputerModernShaper::toTTFGlyphIndex(ComputerModernFamily::FontEncId name, UCha
       assert(index < sizeof(cmexTTFMap));
       map = cmexTTFMap;
       break;
+    case ComputerModernFamily::FE_MSAM:
+    case ComputerModernFamily::FE_MSBM:
+      // TODO: what is the map for TTF version of MS?M fonts?
+      return index;
     default:
       assert(false);
       break;
@@ -1180,6 +1448,20 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
 
       if (family->fontEnabled(ComputerModernFamily::FN_CMBSY) && vch != ch)
 	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMSY, BOLD_VARIANT), cmsMap[i].index));
+    }
+
+  for (unsigned i = 0; msamMap[i].ch; i++)
+    {
+      const Char32 ch = msamMap[i].ch;
+      if (family->fontEnabled(ComputerModernFamily::FN_MSAM))
+	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_MSAM), msamMap[i].index));
+    }
+
+  for (unsigned i = 0; msbmMap[i].ch; i++)
+    {
+      const Char32 ch = msbmMap[i].ch;
+      if (family->fontEnabled(ComputerModernFamily::FN_MSBM))
+	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_MSBM), msbmMap[i].index));
     }
 
   for (unsigned i = 0; vMap[i].ch; i++)

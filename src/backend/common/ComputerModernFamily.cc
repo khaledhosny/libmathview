@@ -87,7 +87,9 @@ ComputerModernFamily::nameOfFontNameId(FontNameId id)
     "cmbsy",
     "cmmi",
     "cmmib",
-    "cmex"
+    "cmex",
+    "msam",
+    "msbm"
   };
   assert(sizeof(name) / sizeof(const char*) == FN_NOT_VALID);
   return name[id];
@@ -133,7 +135,9 @@ ComputerModernFamily::encIdOfFontNameId(FontNameId id)
     FE_CMSY,
     FE_CMMI,
     FE_CMMI, 
-    FE_CMEX
+    FE_CMEX,
+    FE_MSAM,
+    FE_MSBM
   };
   assert(sizeof(enc) / sizeof(FontEncId) == FN_NOT_VALID);
   return enc[id];
@@ -164,7 +168,9 @@ ComputerModernFamily::findBestFont(MathVariant variant, FontEncId encId, int siz
       { FN_CMR,  FN_CMB,   FN_CMTI, FN_CMBXTI, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_CMSS, FN_CMSSBX, FN_CMSSI, FN_NIL, FN_CMTT },
       { FN_NIL,  FN_NIL,   FN_CMMI, FN_CMMIB,  FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
       { FN_CMSY, FN_CMBSY, FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
-      { FN_CMEX, FN_NIL,   FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL }
+      { FN_CMEX, FN_NIL,   FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
+      { FN_MSAM, FN_NIL,   FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
+      { FN_MSBM, FN_NIL,   FN_NIL,  FN_NIL,    FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL, FN_NIL,  FN_NIL,    FN_NIL,   FN_NIL, FN_NIL },
     };
 
   return family[encId - FE_CMR][variant - NORMAL_VARIANT];
@@ -266,6 +272,12 @@ ComputerModernFamily::findFont(MathVariant variant, FontEncId encId, scaled& siz
       break;
     case FE_CMEX:
       if (fontEnabled(FN_CMEX)) return FN_CMEX;
+      else return FN_NIL;
+    case FE_MSAM:
+      if (fontEnabled(FN_MSAM)) return FN_MSAM;
+      else return FN_NIL;
+    case FE_MSBM:
+      if (fontEnabled(FN_MSBM)) return FN_MSBM;
       else return FN_NIL;
     default:
       assert(false);
