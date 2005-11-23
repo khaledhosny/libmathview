@@ -128,6 +128,8 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmmi10</key>
       <key name="font-name">cmmib10</key>
       <key name="font-name">cmex10</key>
+      <key name="font-name">msam10</key>
+      <key name="font-name">msbm10</key>
 -->
 
       <!-- FULL SET (TFM = 3) -->
@@ -209,6 +211,21 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmex8</key>
       <key name="font-name">cmex9</key>
       <key name="font-name">cmex10</key>
+
+      <key name="font-name">msam5</key>
+      <key name="font-name">msam6</key>
+      <key name="font-name">msam7</key>
+      <key name="font-name">msam8</key>
+      <key name="font-name">msam9</key>
+      <key name="font-name">msam10</key>
+
+      <key name="font-name">msbm5</key>
+      <key name="font-name">msbm6</key>
+      <key name="font-name">msbm7</key>
+      <key name="font-name">msbm8</key>
+      <key name="font-name">msbm9</key>
+      <key name="font-name">msbm10</key>
+
 -->
     </section>
   </section>
