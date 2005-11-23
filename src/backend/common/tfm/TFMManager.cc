@@ -39,6 +39,8 @@ DECLARE_TABLE(cmbsy10_tables)
 DECLARE_TABLE(cmmi10_tables)
 DECLARE_TABLE(cmmib10_tables)
 DECLARE_TABLE(cmex10_tables)
+DECLARE_TABLE(msam10_tables)
+DECLARE_TABLE(msbm10_tables)
 
 TFMManager::TFMManager()
 {
@@ -56,6 +58,8 @@ TFMManager::TFMManager()
     { "cmmi10", cmmi10_tables },
     { "cmmib10", cmmib10_tables },
     { "cmex10", cmex10_tables },
+    { "msam10", msam10_tables },
+    { "msbm10", msbm10_tables },
     { 0, 0 }
   };
 

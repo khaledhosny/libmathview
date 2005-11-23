@@ -19,6 +19,8 @@ TFM_LEVEL_2_CC = \
   cmssi10.cc \
   cmti10.cc \
   cmtt10.cc \
+  msam10.cc \
+  msbm10.cc \
   $(NULL)
 
 TFM_LEVEL_3_CC = \
@@ -65,6 +67,16 @@ TFM_LEVEL_3_CC = \
   cmtt12.cc \
   cmtt8.cc \
   cmtt9.cc \
+  msam5.cc \
+  msam6.cc \
+  msam7.cc \
+  msam8.cc \
+  msam9.cc \
+  msbm5.cc \
+  msbm6.cc \
+  msbm7.cc \
+  msbm8.cc \
+  msbm9.cc \
   $(NULL)
 
 if COND_TFM_LEVEL_1
