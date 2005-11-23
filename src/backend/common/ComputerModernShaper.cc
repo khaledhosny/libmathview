@@ -39,7 +39,8 @@ enum
     CMR = ComputerModernFamily::FE_CMR,
     CMM = ComputerModernFamily::FE_CMMI,
     CMS = ComputerModernFamily::FE_CMSY,
-    CME = ComputerModernFamily::FE_CMEX
+    CME = ComputerModernFamily::FE_CMEX,
+    MSBM = ComputerModernFamily::FE_MSBM
   };
 
 static ComputerModernShaper::PlainChar cmmMap[] =
@@ -1177,9 +1178,9 @@ static ComputerModernShaper::VStretchyChar vMap[] =
 
 // TODO: add extra wide hat and tilde from MS?M fonts, but modify shapeBigCharH too!
 static ComputerModernShaper::HBigChar wideHatMap =
-  { 0x0302, { {CME, 0x62}, {CME, 0x63}, {CME, 0x64} } };
+  { 0x0302, { {CME, 0x62}, {CME, 0x63}, {CME, 0x64}, {MSBM, 0x5B}, {MSBM, 0x5C} } };
 static ComputerModernShaper::HBigChar wideTildeMap =
-  { 0x0303, { {CME, 0x65}, {CME, 0x66}, {CME, 0x67} } };
+  { 0x0303, { {CME, 0x65}, {CME, 0x66}, {CME, 0x67}, {MSBM, 0x5D}, {MSBM, 0x5E} } };
 
 #define WIDEHAT    0x0302
 #define WIDETILDE  0x0303
@@ -1797,12 +1798,16 @@ ComputerModernShaper::shapeBigCharH(const ShapingContext& context, const Compute
   accent.reserve(2);
 
   AreaRef accentGlyph;
-  for (unsigned i = 0; i < 3; i++)
+  for (unsigned i = 0; i < 5; i++)
     {
-      accentGlyph = getGlyphArea(variant, map.big[i], size);
+      AreaRef bigger = getGlyphArea(variant, map.big[i], size);
+      if (!bigger)
+	break;
+      accentGlyph = bigger;
       if (accentGlyph && accentGlyph->box().width >= span)
 	break;
     }
+  assert(accentGlyph);
 
   accent.push_back(factory->verticalSpace(-ex->box().height, 0));
   accent.push_back(factory->shift(accentGlyph, -ex->box().height));

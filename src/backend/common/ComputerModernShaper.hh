@@ -93,7 +93,7 @@ public:
   struct HBigChar
   {
     Char16 ch;
-    GlyphIndex big[3];
+    GlyphIndex big[5];
   };
 
   static UChar8 toTTFGlyphIndex(ComputerModernFamily::FontEncId, UChar8);
