@@ -62,7 +62,13 @@ public:
   struct PlainChar
   {
     Char16 ch;
-    UChar8  index;
+    UChar8 index;
+  };
+
+  struct PlainChar32
+  {
+    Char32 ch;
+    UChar8 index;
   };
 
   struct HStretchyChar

@@ -174,6 +174,7 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x0000, 0x00 }
   };
 
+#if 0
 static UChar8 cmmTTFMap[] =
   {
     /* 0x00 */ 0xa1, // Gamma
@@ -305,6 +306,7 @@ static UChar8 cmmTTFMap[] =
     /* 0x7e */ 0x7e, // vector
     /* 0x7f */ 0xc4, // tie
   };
+#endif
 
 static ComputerModernShaper::PlainChar cmrMap[] =
   {
@@ -439,6 +441,7 @@ static ComputerModernShaper::PlainChar cmrMap[] =
     { 0x0000, 0x00 }
   };
 
+#if 0
 static UChar8 cmrTTFMap[] =
   {
     /* 0x00 */ 0xa1, // Gamma
@@ -570,6 +573,7 @@ static UChar8 cmrTTFMap[] =
     /* 0x7e */ 0x7e, // tilde
     /* 0x7f */ 0xc4, // dieresis
   };
+#endif
 
 static ComputerModernShaper::PlainChar cmsMap[] =
   {
@@ -910,31 +914,12 @@ static ComputerModernShaper::PlainChar msbmMap[] =
     { 0x22C7, 0x3E },  //division times
     { 0x2205, 0x3F },  //var empty set
     { 0x2204, 0x40 },  //not exist
-    { 0x1D538, 0x41 },  //double A
-    { 0x1D538, 0x42 },  //double B
     { 0x2102, 0x43 },  //double C
-    { 0x1D53B, 0x44 },  //double D
-    { 0x1D53C, 0x45 },  //double E
-    { 0x1D53D, 0x46 },  //double F
-    { 0x1D53E, 0x47 },  //double G
     { 0x210D, 0x48 },  //double H
-    { 0x1D540, 0x49 },  //double I
-    { 0x1D541, 0x4A },  //double J
-    { 0x1D542, 0x4B },  //double K
-    { 0x1D543, 0x4C },  //double L
-    { 0x1D544, 0x4D },  //double M
     { 0x2115, 0x4E },  //double N
-    { 0x1D546, 0x4F },  //double O
     { 0x2119, 0x50 },  //double P
     { 0x211A, 0x51 },  //double Q
     { 0x211D, 0x52 },  //double R
-    { 0x1D54A, 0x53 },  //double S
-    { 0x1D54B, 0x54 },  //double T
-    { 0x1D54C, 0x55 },  //double U
-    { 0x1D54D, 0x56 },  //double V
-    { 0x1D54E, 0x57 },  //double W
-    { 0x1D54F, 0x58 },  //double X
-    { 0x1D550, 0x59 },  //double Y
     { 0x2124, 0x5A },  //double Z
     { 0x2127, 0x66 },  //mho
     { 0x00D0, 0x67 },  //eth
@@ -966,6 +951,33 @@ static ComputerModernShaper::PlainChar msbmMap[] =
     { 0x0000, 0x00 }
   };
 
+static ComputerModernShaper::PlainChar32 msbmMap32[] =
+  {
+    { 0x1D538, 0x41 },  //double A
+    { 0x1D538, 0x42 },  //double B
+    { 0x1D53B, 0x44 },  //double D
+    { 0x1D53C, 0x45 },  //double E
+    { 0x1D53D, 0x46 },  //double F
+    { 0x1D53E, 0x47 },  //double G
+    { 0x1D540, 0x49 },  //double I
+    { 0x1D541, 0x4A },  //double J
+    { 0x1D542, 0x4B },  //double K
+    { 0x1D543, 0x4C },  //double L
+    { 0x1D544, 0x4D },  //double M
+    { 0x1D546, 0x4F },  //double O
+    { 0x1D54A, 0x53 },  //double S
+    { 0x1D54B, 0x54 },  //double T
+    { 0x1D54C, 0x55 },  //double U
+    { 0x1D54D, 0x56 },  //double V
+    { 0x1D54E, 0x57 },  //double W
+    { 0x1D54F, 0x58 },  //double X
+    { 0x1D550, 0x59 },  //double Y
+
+    { 0x0000, 0x00 }
+  };
+
+
+#if 0
 static UChar8 cmsTTFMap[] =
   {
     /* 0x00 */ 0xa1, // minus
@@ -1097,6 +1109,7 @@ static UChar8 cmsTTFMap[] =
     /* 0x7e */ 0x7e, // heart
     /* 0x7f */ 0xc4, // spade
   };
+#endif
 
 static ComputerModernShaper::HStretchyChar hMap[] =
   {
@@ -1177,6 +1190,7 @@ static ComputerModernShaper::HBigChar wideTildeMap =
 
 static Char16 specials[] = { WIDEHAT, WIDETILDE, OVERLINE, UNDERLINE, OVERBRACE, UNDERBRACE };
 
+#if 0
 static UChar8 cmexTTFMap[] =
   {
     /* 0x00 */ 0xa1, // parenleftbig
@@ -1308,6 +1322,7 @@ static UChar8 cmexTTFMap[] =
     /* 0x7e */ 0x7e, // arrowdbltp
     /* 0x7f */ 0xc4, // arrowdblbt
   };
+#endif
 
 struct FontDesc
 {
@@ -1346,34 +1361,140 @@ variantOfFontId(UChar8 id)
 UChar8
 ComputerModernShaper::toTTFGlyphIndex(ComputerModernFamily::FontEncId name, UChar8 index)
 {
-  UChar8* map = 0;
-  switch (name)
+  static UChar8 ttfMap[] =
     {
-    case ComputerModernFamily::FE_CMR:
-      assert(index < sizeof(cmrTTFMap));
-      map = cmrTTFMap;
-      break;
-    case ComputerModernFamily::FE_CMMI:
-      assert(index < sizeof(cmmTTFMap));
-      map = cmmTTFMap;
-      break;
-    case ComputerModernFamily::FE_CMSY:
-      assert(index < sizeof(cmsTTFMap));
-      map = cmsTTFMap;
-      break;
-    case ComputerModernFamily::FE_CMEX:
-      assert(index < sizeof(cmexTTFMap));
-      map = cmexTTFMap;
-      break;
-    case ComputerModernFamily::FE_MSAM:
-    case ComputerModernFamily::FE_MSBM:
-      // TODO: what is the map for TTF version of MS?M fonts?
-      return index;
-    default:
-      assert(false);
-      break;
-    }
-  return map[index];
+      /* 0x00 */ 0xa1, 
+      /* 0x01 */ 0xa2, 
+      /* 0x02 */ 0xa3, 
+      /* 0x03 */ 0xa4, 
+      /* 0x04 */ 0xa5, 
+      /* 0x05 */ 0xa6, 
+      /* 0x06 */ 0xa7, 
+      /* 0x07 */ 0xa8, 
+      /* 0x08 */ 0xa9, 
+      /* 0x09 */ 0xaa, 
+      /* 0x0a */ 0xad, 
+      /* 0x0b */ 0xae, 
+      /* 0x0c */ 0xaf, 
+      /* 0x0d */ 0xb0, 
+      /* 0x0e */ 0xb1, 
+      /* 0x0f */ 0xb2, 
+      /* 0x10 */ 0xb3, 
+      /* 0x11 */ 0xb4, 
+      /* 0x12 */ 0xb5, 
+      /* 0x13 */ 0xb6, 
+      /* 0x14 */ 0xb7, 
+      /* 0x15 */ 0xb8, 
+      /* 0x16 */ 0xb9, 
+      /* 0x17 */ 0xba, 
+      /* 0x18 */ 0xbb, 
+      /* 0x19 */ 0xbc, 
+      /* 0x1a */ 0xbd, 
+      /* 0x1b */ 0xbe, 
+      /* 0x1c */ 0xbf, 
+      /* 0x1d */ 0xc0, 
+      /* 0x1e */ 0xc1, 
+      /* 0x1f */ 0xc2, 
+      /* 0x20 */ 0xc3, 
+      /* 0x21 */ 0x21, 
+      /* 0x22 */ 0x22, 
+      /* 0x23 */ 0x23, 
+      /* 0x24 */ 0x24, 
+      /* 0x25 */ 0x25, 
+      /* 0x26 */ 0x26, 
+      /* 0x27 */ 0x27, 
+      /* 0x28 */ 0x28, 
+      /* 0x29 */ 0x29, 
+      /* 0x2a */ 0x2a, 
+      /* 0x2b */ 0x2b, 
+      /* 0x2c */ 0x2c, 
+      /* 0x2d */ 0x2d, 
+      /* 0x2e */ 0x2e, 
+      /* 0x2f */ 0x2f, 
+      /* 0x30 */ 0x30, 
+      /* 0x31 */ 0x31, 
+      /* 0x32 */ 0x32, 
+      /* 0x33 */ 0x33, 
+      /* 0x34 */ 0x34, 
+      /* 0x35 */ 0x35, 
+      /* 0x36 */ 0x36, 
+      /* 0x37 */ 0x37, 
+      /* 0x38 */ 0x38, 
+      /* 0x39 */ 0x39, 
+      /* 0x3a */ 0x3a, 
+      /* 0x3b */ 0x3b, 
+      /* 0x3c */ 0x3c, 
+      /* 0x3d */ 0x3d, 
+      /* 0x3e */ 0x3e, 
+      /* 0x3f */ 0x3f, 
+      /* 0x40 */ 0x40, 
+      /* 0x41 */ 0x41, 
+      /* 0x42 */ 0x42, 
+      /* 0x43 */ 0x43, 
+      /* 0x44 */ 0x44, 
+      /* 0x45 */ 0x45, 
+      /* 0x46 */ 0x46, 
+      /* 0x47 */ 0x47, 
+      /* 0x48 */ 0x48, 
+      /* 0x49 */ 0x49, 
+      /* 0x4a */ 0x4a, 
+      /* 0x4b */ 0x4b, 
+      /* 0x4c */ 0x4c, 
+      /* 0x4d */ 0x4d, 
+      /* 0x4e */ 0x4e, 
+      /* 0x4f */ 0x4f, 
+      /* 0x50 */ 0x50, 
+      /* 0x51 */ 0x51, 
+      /* 0x52 */ 0x52, 
+      /* 0x53 */ 0x53, 
+      /* 0x54 */ 0x54, 
+      /* 0x55 */ 0x55, 
+      /* 0x56 */ 0x56, 
+      /* 0x57 */ 0x57, 
+      /* 0x58 */ 0x58, 
+      /* 0x59 */ 0x59, 
+      /* 0x5a */ 0x5a, 
+      /* 0x5b */ 0x5b, 
+      /* 0x5c */ 0x5c, 
+      /* 0x5d */ 0x5d, 
+      /* 0x5e */ 0x5e, 
+      /* 0x5f */ 0x5f, 
+      /* 0x60 */ 0x60, 
+      /* 0x61 */ 0x61, 
+      /* 0x62 */ 0x62, 
+      /* 0x63 */ 0x63, 
+      /* 0x64 */ 0x64, 
+      /* 0x65 */ 0x65, 
+      /* 0x66 */ 0x66, 
+      /* 0x67 */ 0x67, 
+      /* 0x68 */ 0x68, 
+      /* 0x69 */ 0x69, 
+      /* 0x6a */ 0x6a, 
+      /* 0x6b */ 0x6b, 
+      /* 0x6c */ 0x6c, 
+      /* 0x6d */ 0x6d, 
+      /* 0x6e */ 0x6e, 
+      /* 0x6f */ 0x6f, 
+      /* 0x70 */ 0x70, 
+      /* 0x71 */ 0x71, 
+      /* 0x72 */ 0x72, 
+      /* 0x73 */ 0x73, 
+      /* 0x74 */ 0x74, 
+      /* 0x75 */ 0x75, 
+      /* 0x76 */ 0x76, 
+      /* 0x77 */ 0x77, 
+      /* 0x78 */ 0x78, 
+      /* 0x79 */ 0x79, 
+      /* 0x7a */ 0x7a, 
+      /* 0x7b */ 0x7b, 
+      /* 0x7c */ 0x7c, 
+      /* 0x7d */ 0x7d, 
+      /* 0x7e */ 0x7e, 
+      /* 0x7f */ 0xc4, 
+    };
+
+  assert(index < sizeof(ttfMap));
+  return ttfMap[index];
 }
 
 ComputerModernShaper::ComputerModernShaper(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
@@ -1462,6 +1583,13 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
       const Char32 ch = msbmMap[i].ch;
       if (family->fontEnabled(ComputerModernFamily::FN_MSBM))
 	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_MSBM), msbmMap[i].index));
+    }
+
+  for (unsigned i = 0; msbmMap32[i].ch; i++)
+    {
+      const Char32 ch = msbmMap32[i].ch;
+      if (family->fontEnabled(ComputerModernFamily::FN_MSBM))
+	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_MSBM), msbmMap32[i].index));
     }
 
   for (unsigned i = 0; vMap[i].ch; i++)
