@@ -2,9 +2,8 @@
 NULL =
 
 DISTCLEANFILES = \
-  dictionary.xml \
-  entities-table.xml \
-  gtkmathview.conf.xml
+  gtkmathview.conf.xml \
+  $(NULL)
 
 EXTRA_DIST = \
   mathml-entities.dtd \
@@ -22,6 +21,7 @@ EXTRA_DIST = \
   gtkmathview.conf.xml.debug \
   t1.config \
   t1.config.debug \
+  Makefile.slow \
   $(NULL)
 
 pkgsysconfdir = $(sysconfdir)/@PACKAGE@
@@ -41,31 +41,6 @@ pkgdata_DATA = \
 
 noinst_DATA = \
   gtkmathview.conf.xml.debug
-
-noinst_PROGRAMS = makeDictionary
-makeDictionary_SOURCES = makeDictionary.c
-
-SCRIPTDIR = $(srcdir)/../scripts
-
-if COND_XSLTPROC
-XSLTPROC = xsltproc
-
-dictionary.xml: makeDictionary $(srcdir)/dictionary.in
-	@echo Making operator dictionary...
-	@( \
-	./makeDictionary "$(srcdir)/mathml-entities.dtd" < $(srcdir)/dictionary.in | \
-	tr -s '\t' ' ' | tr -s ' ' ' ' | \
-	$(XSLTPROC) $(SCRIPTDIR)/copy.xsl - >$@ \
-	)
-endif
-
-mathml-entities.dtd: $(srcdir)/entities-table.in
-	@echo Making DTD for the MathML entities...
-	$(SCRIPTDIR)/makeEntitiesTableDTD <$< >$@
-
-entities-table.xml: $(srcdir)/entities-table.in
-	@echo Making entities table...
-	$(SCRIPTDIR)/makeEntitiesTable <$<  >$@
 
 if WITH_BINRELOC
 install-data-hook:

@@ -1,0 +1,30 @@
+
+NULL =
+XSLTPROC = xsltproc
+SCRIPTDIR = ../scripts
+
+TARGETS = \
+  dictionary.xml \
+  mathml-entities.dtd \
+  entities-table.xml \
+  $(NULL)
+
+# to be run in the source tree with make -f Makefile.slow
+all: $(TARGETS)
+
+dictionary.xml: makeDictionary dictionary.in mathml-entities.dtd
+	@echo Making operator dictionary...
+	@( \
+	./makeDictionary "mathml-entities.dtd" < dictionary.in | \
+	tr -s '\t' ' ' | tr -s ' ' ' ' | \
+	$(XSLTPROC) $(SCRIPTDIR)/copy.xsl - >$@ \
+	)
+
+mathml-entities.dtd: entities-table.in
+	@echo Making DTD for the MathML entities...
+	$(SCRIPTDIR)/makeEntitiesTableDTD <$< >$@
+
+entities-table.xml: entities-table.in
+	@echo Making entities table...
+	$(SCRIPTDIR)/makeEntitiesTable <$<  >$@
+
