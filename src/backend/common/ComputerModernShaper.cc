@@ -710,6 +710,20 @@ static ComputerModernShaper::PlainChar cmsMap[] =
     { 0x0000, 0x00 }
   };
 
+// characters are only available in this font
+static ComputerModernShaper::PlainChar cmeMap[] =
+  {
+    { 0x220F, 0x51 },
+    { 0x2211, 0x50 },
+    { 0x222E, 0x48 },
+    { 0x22C0, 0x56 },
+    { 0x22C1, 0x57 },
+    { 0x22C2, 0x54 },
+    { 0x22C3, 0x53 },
+
+    { 0x0000, 0x00 }
+  };
+
 static ComputerModernShaper::PlainChar msamMap[] =
   {
     { 0x22A1, 0x00 },  //squared dot
@@ -1164,6 +1178,7 @@ static ComputerModernShaper::VStretchyChar vMap[] =
     { 0x2295, { {CMS, 0x08}, {CME, 0x4C}, {CME, 0x4D}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} },
     { 0x2297, { {CMS, 0x0A}, {CME, 0x4E}, {CME, 0x4F}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} },
     { 0x2299, { {CMS, 0x0C}, {CME, 0x4A}, {CME, 0x4B}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} },
+    // BEWARE: 22C2 and 22C3 are N-ARY union/intersection
     { 0x22C2, { {NIL, 0x00}, {CME, 0x54}, {CME, 0x5C}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} },
     { 0x22C3, { {NIL, 0x00}, {CME, 0x53}, {CME, 0x5B}, {NIL, 0x00}, {NIL, 0x00} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} },
     { 0x2308, { {CMS, 0x64}, {CME, 0x06}, {CME, 0x6C}, {CME, 0x18}, {CME, 0x26} }, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00}, {NIL, 0x00} },
@@ -1570,6 +1585,13 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
 
       if (family->fontEnabled(ComputerModernFamily::FN_CMBSY) && vch != ch)
 	sm->registerChar(vch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMSY, BOLD_VARIANT), cmsMap[i].index));
+    }
+
+  for (unsigned i = 0; cmeMap[i].ch; i++)
+    {
+      const Char32 ch = cmeMap[i].ch;
+      if (family->fontEnabled(ComputerModernFamily::FN_CMEX))
+	sm->registerChar(ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMEX), cmeMap[i].index));
     }
 
   for (unsigned i = 0; msamMap[i].ch; i++)
