@@ -16,7 +16,12 @@
 #include "TFM.hh"
 
 static TFM::Font font = {
-  "<xsl:value-of select = "Font/@family"/>",
+<xsl:choose>
+  <xsl:when test="contains(Font/@family, ' ')">"<xsl:value-of select = "substring-before(Font/@family, ' ')"/>",
+</xsl:when>
+  <xsl:otherwise>"<xsl:value-of select = "Font/@family"/>",
+</xsl:otherwise>
+</xsl:choose>
   0x<xsl:value-of select="Font/@face"/>,
   "<xsl:value-of select="Font/@coding-scheme"/>",
   0x<xsl:value-of select="Font/@design-size"/>,

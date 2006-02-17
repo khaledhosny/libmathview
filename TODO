@@ -93,6 +93,11 @@ MISSING
 
 // SVG Backend
 
+BUGS
+
+- character 2211 is not displayed (and probably others) because there is
+  no default shaper (?)
+
 IMPROVEMENTS
 
 - do not draw the contour of text, so that letters are thinner

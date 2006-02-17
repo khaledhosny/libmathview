@@ -110,9 +110,18 @@ libtfm_la_SOURCES = \
 
 TFMDUMP = ~/Luca-CVS/Projects/xtfm/tfmdump
 
-XTFMS = $(CMS:%=$(srcdir)/%.xtfm)
+XTFMS = $(TFM_LEVEL_3_CC:%.cc=$(srcdir)/%.xtfm)
 
+# Linux cm* fonts
 $(srcdir)/%.xtfm: /usr/share/texmf/fonts/tfm/public/cm/%.tfm
+	$(TFMDUMP) $< >$@
+
+# OSX cm* fonts
+$(srcdir)/%.xtfm: /usr/local/teTeX/share/texmf.tetex/fonts/tfm/public/cm/%.tfm
+	$(TFMDUMP) $< >$@
+
+# OSX ms* fonts
+$(srcdir)/%.xtfm: /usr/local/teTeX/share/texmf.tetex/fonts/tfm/ams/symbols/%.tfm
 	$(TFMDUMP) $< >$@
 
 if COND_XSLTPROC
@@ -123,6 +132,7 @@ LICENSE = $(top_srcdir)/LICENSE
 	cat $(LICENSE) >$@
 	$(XSLTPROC) --stringparam name $(@:%.cc=%) $(XTFMTOCC) $< >>$@
 
+.PHONY: xtfms
 xtfms: $(XTFMS)
 
 endif

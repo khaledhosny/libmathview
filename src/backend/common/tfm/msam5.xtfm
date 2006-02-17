@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE XTFM SYSTEM "xtfm.dtd">
 
-<XTFM version="0.1.0">
+<XTFM version="0.1.1">
   <Unity value="00100000"/>
   <Font family="MSAM V2.2" face="f4" coding-scheme="TeX math symbols" design-size="00500000" checksum="22891c78">
     <Dimensions>

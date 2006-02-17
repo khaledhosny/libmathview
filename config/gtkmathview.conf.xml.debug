@@ -148,6 +148,9 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmmi10</key>
       <key name="font-name">cmmib10</key>
       <key name="font-name">cmex10</key>
+      <key name="font-name">msam10</key>
+      <key name="font-name">msbm10</key>
+
 <!--
       <key name="font-name">cmr5</key>
       <key name="font-name">cmr6</key>
