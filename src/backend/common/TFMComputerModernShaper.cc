@@ -66,7 +66,9 @@ TFMComputerModernShaper::fontNameIdOfTFM(const SmartPtr<TFM>& tfm)
     "CMBSY",
     "CMMI",
     "CMMIB",
-    "CMEX"
+    "CMEX",
+    "MSAM",
+    "MSBM"
   };
   assert(sizeof(name) / sizeof(const char*) == ComputerModernFamily::FN_NOT_VALID);
   const String familyName = tfm->getFamily();
