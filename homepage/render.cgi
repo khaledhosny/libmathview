@@ -66,6 +66,23 @@ Content-type: text/html
     Conversion from SVG to PNG (<tt>rsvg</tt>) took $elapsed_svgpng seconds
   </p>
 
+  <p>If what follows is not the rendering you expected, here are some tips:</p>
+     <ol>
+       <li>Do not forget to use the MathML namespace for every MathML
+         element you want to be rendered. The simplest thing to do is
+	 to declare a default namespace as in the example.
+       </li>
+       <li>Only MathML presentation tags are understood by GtkMathView.</li>
+       <li>Use the <tt>display=&quot;block&quot;</tt> attribute on the root
+         <tt>math</tt> element for better results, especially if the formula
+         contains deeply nested scripts and/or fractions.
+       </li>
+			 <li>Check the diagnostic messages below for a few hints about what might have gone wrong.
+				If you have found a bug or something that renders badly, please report it.
+			 </li>
+     </ol>
+
+  <h3>Result</h3>
   <img src="data:image/png;base64,
 EOF
 

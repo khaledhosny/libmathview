@@ -21,7 +21,6 @@ PNG_FILES = \
   pango.png \
   logo.png \
   mathmllogo-small.png \
-  stats.png \
   $(NULL)
 
 HOME_FILES = \
