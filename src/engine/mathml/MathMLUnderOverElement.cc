@@ -129,13 +129,17 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
 	      ctxt.pop();
 	    }
 
+	  ctxt.push(this);
 	  res = ctxt.MGD()->underOver(ctxt, baseArea,
 					    underArea, accentUnder,
 					    overArea, accent);
+	  ctxt.pop();
 	}
 
+      ctxt.push(this);
       res = formatEmbellishment(this, ctxt, res);
       setArea(ctxt.MGD()->wrapper(ctxt, res));
+      ctxt.pop();
 
       resetDirtyLayout();
     }
