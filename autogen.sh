@@ -1,10 +1,17 @@
 #!/bin/sh
 
-automake --version | perl -ne 'if (/\(GNU automake\) ([0-9].[0-9])/) {print;  if ($1 < 1.7) {exit 1;}}'
+AUTOMAKE=automake
+ACLOCAL=aclocal
+$AUTOMAKE --version | perl -ne 'if (/\(GNU $AUTOMAKE\) ([0-9].[0-9])/) {print; if ($1 < 1.7) {exit 1;}}'
+AUTOMAKE=automake-1.7
+ACLOCAL=aclocal-1.7
+if [ $? -ne 0 ]; then
+$AUTOMAKE --version | perl -ne 'if (/\(GNU $AUTOMAKE\) ([0-9].[0-9])/) {print; if ($1 < 1.7) {exit 1;}}'
 
 if [ $? -ne 0 ]; then
     echo "Error: you need automake 1.7 or later.  Please upgrade."
     exit 1
+fi
 fi
 
 echo "libtoolize --force --copy"
@@ -15,11 +22,11 @@ libtoolize --force --copy || {
 
 # Produce aclocal.m4, so autoconf gets the automake macros it needs
 # 
-echo "Creating aclocal.m4: aclocal $ACLOCAL_FLAGS"
+echo "Creating aclocal.m4: $ACLOCAL $ACLOCAL_FLAGS"
 
 ACLOCAL_FLAGS="-I ac-helpers $ACLOCAL_FLAGS"
-aclocal $ACLOCAL_FLAGS || {
-    echo "aclocal failed! Unable to continue."
+$ACLOCAL $ACLOCAL_FLAGS || {
+    echo "$ACLOCAL failed! Unable to continue."
     exit 1
 }
 
@@ -32,9 +39,9 @@ else
 fi
 
 if test "x$pkgcheckdef" = "x"; then
-  echo "Running aclocal -I ac-helpers/pkg-config $ACLOCAL_FLAGS"
-  aclocal -I ac-helpers/pkg-config $ACLOCAL_FLAGS || {
-    echo "aclocal failed! Unable to continue."
+  echo "Running $ACLOCAL -I ac-helpers/pkg-config $ACLOCAL_FLAGS"
+  $ACLOCAL -I ac-helpers/pkg-config $ACLOCAL_FLAGS || {
+    echo "$ACLOCAL failed! Unable to continue."
     exit 1
   }
   if test -f autom4te.cache/requests; then
@@ -64,9 +71,9 @@ autoheader
 # Produce all the `GNUmakefile.in's and create neat missing things
 # like `install-sh', etc.
 # 
-echo "automake --add-missing --copy --foreign"
+echo "$AUTOMAKE --add-missing --copy --foreign"
 
-automake --add-missing --copy --foreign || {
+$AUTOMAKE --add-missing --copy --foreign || {
     echo ""
     echo "* * * warning: possible errors while running automake"
     echo ""
