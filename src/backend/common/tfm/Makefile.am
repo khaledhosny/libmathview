@@ -130,7 +130,7 @@ XTFMTOCC = $(top_srcdir)/auto/xtfm-to-cc.xsl
 LICENSE = $(top_srcdir)/LICENSE
 %.cc: $(srcdir)/%.xtfm $(XTFMTOCC) $(LICENSE)
 	cat $(LICENSE) >$@
-	$(XSLTPROC) --stringparam name $(@:%.cc=%) $(XTFMTOCC) $< >>$@
+	$(XSLTPROC) --stringparam name $(basename $(notdir $(@:%.cc=%))) $(XTFMTOCC) $< >>$@
 
 .PHONY: xtfms
 xtfms: $(XTFMS)
