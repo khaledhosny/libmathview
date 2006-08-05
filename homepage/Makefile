@@ -56,7 +56,11 @@ stats.data: mkstats.sh /Users/luca/Library/Mail/Mailboxes/Mailing\ Lists/GtkMath
 mathmllogo-small.png: mathmllogo.png
 	convert -resize 88x $< $@
 
-sync: $(HOME_FILES)
+sync_all: $(HOME_FILES)
+	rsync --cvs-exclude -r -v $^ lpadovan@mowgli.cs.unibo.it:/projects/helm/public_html/software/mml-widget
+	rsync render.cgi lpadovan@mowgli.cs.unibo.it:/projects/helm/public_html/software/mml-widget/cgi-bin
+
+sync: $(HTML_FILES)
 	rsync --cvs-exclude -r -v $^ lpadovan@mowgli.cs.unibo.it:/projects/helm/public_html/software/mml-widget
 	rsync render.cgi lpadovan@mowgli.cs.unibo.it:/projects/helm/public_html/software/mml-widget/cgi-bin
 
