@@ -131,7 +131,6 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x03B2, 0x0C },  // GREEK SMALL LETTER BETA
     { 0x03B3, 0x0D },  // GREEK SMALL LETTER GAMMA
     { 0x03B4, 0x0E },  // GREEK SMALL LETTER DELTA
-    { 0x03B5, 0x0F },  // GREEK SMALL LETTER EPSILON
     { 0x03B6, 0x10 },  // GREEK SMALL LETTER ZETA
     { 0x03B7, 0x11 },  // GREEK SMALL LETTER ETA
     { 0x03B8, 0x12 },  // GREEK SMALL LETTER THETA
@@ -155,6 +154,7 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x03D5, 0x27 },  // GREEK PHI SYMBOL, phiv, varphi
     { 0x03D6, 0x24 },  // GREEK PI SYMBOL
     { 0x03F1, 0x25 },  // GREEK RHO SYMBOL
+    { 0x03F5, 0x0F },  // GREEK SMALL LETTER EPSILON
     { 0x20D7, 0x7E },  // COMBINING RIGHT ARROW ABOVE
     { 0x2113, 0x60 },  // SCRIPT SMALL L
     { 0x2118, 0x7D },  // SCRIPT CAPITAL P
@@ -395,6 +395,7 @@ static ComputerModernShaper::PlainChar cmrMap[] =
     { 0x0079, 0x79 },  // LATIN SMALL LETTER Y
     { 0x007A, 0x7A },  // LATIN SMALL LETTER Z
     { 0x00A1, 0x3C },  // INVERTED EXCLAMATION MARK
+    { 0x00AF, 0x16 },  // BAR
     { 0x00BF, 0x3E },  // INVERTED QUESTION MARK
     { 0x00C6, 0x1D },  // LATIN CAPITAL LETTER AE
     { 0x00D8, 0x1F },  // LATIN CAPITAL LETTER O WITH STROKE
@@ -408,6 +409,7 @@ static ComputerModernShaper::PlainChar cmrMap[] =
     { 0x0301, 0x13 },  // COMBINING ACUTE ACCENT
     { 0x0302, 0x5E },  // COMBINING CIRCUMFLEX ACCENT
     { 0x0303, 0x7E },  // COMBINING TILDE
+    { 0x0304, 0x16 },  // COMBINING BAR
     { 0x0305, 0x16 },  // COMBINING OVERLINE
     { 0x0306, 0x15 },  // COMBINING BREVE
     { 0x0307, 0x5F },  // COMBINING DOT ABOVE
