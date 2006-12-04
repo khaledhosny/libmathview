@@ -42,8 +42,16 @@ SVG_RenderingContext::SVG_RenderingContext(const SmartPtr<AbstractLogger>& l)
 SVG_RenderingContext::~SVG_RenderingContext()
 { }
 
+scaled
+SVG_RenderingContext::toSVGX(const scaled& x) const
+{ return x; }
+
+scaled
+SVG_RenderingContext::toSVGY(const scaled& y) const
+{ return -y; }
+
 String
-SVG_RenderingContext::toSVGLength(const scaled& s)
+SVG_RenderingContext::toSVGLength(const scaled& s) const
 {
   std::ostringstream buffer;
   buffer << std::fixed << std::setprecision(2) << s.toFloat() << "pt";
@@ -51,13 +59,13 @@ SVG_RenderingContext::toSVGLength(const scaled& s)
 }
 
 String
-SVG_RenderingContext::toSVGColor(const RGBColor& c)
+SVG_RenderingContext::toSVGColor(const RGBColor& c) const
 {
   return toString(RGBColor(c.red, c.green, c.blue));
 }
 
 String
-SVG_RenderingContext::toSVGOpacity(const RGBColor& c)
+SVG_RenderingContext::toSVGOpacity(const RGBColor& c) const
 {
   std::ostringstream buffer;
   buffer << static_cast<float>(c.alpha) / 255;

@@ -49,12 +49,11 @@ public:
   virtual void wrapperStart(const scaled&, const scaled&, const BoundingBox&, const SmartPtr<class Element>&);
   virtual void wrapperEnd(void);
 
-  static scaled toSVGX(const scaled& x) { return x; }
-  static scaled toSVGY(const scaled& y) { return -y; }
-
-  static String toSVGLength(const scaled&);
-  static String toSVGColor(const RGBColor&);
-  static String toSVGOpacity(const RGBColor&);
+  virtual scaled toSVGX(const scaled& x) const;
+  virtual scaled toSVGY(const scaled& y) const;
+  virtual String toSVGLength(const scaled&) const;
+  virtual String toSVGColor(const RGBColor&) const;
+  virtual String toSVGOpacity(const RGBColor&) const;
 
 protected:
   virtual void beginDocument(const BoundingBox&);
