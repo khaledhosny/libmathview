@@ -49,8 +49,9 @@ public:
   virtual void wrapperStart(const scaled&, const scaled&, const BoundingBox&, const SmartPtr<class Element>&);
   virtual void wrapperEnd(void);
 
-  virtual scaled toSVGX(const scaled& x) const;
-  virtual scaled toSVGY(const scaled& y) const;
+  static scaled toSVGX(const scaled& x) { return x; }
+  static scaled toSVGY(const scaled& y) { return -y; }
+
   virtual String toSVGLength(const scaled&) const;
   virtual String toSVGColor(const RGBColor&) const;
   virtual String toSVGOpacity(const RGBColor&) const;

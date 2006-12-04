@@ -42,14 +42,6 @@ SVG_RenderingContext::SVG_RenderingContext(const SmartPtr<AbstractLogger>& l)
 SVG_RenderingContext::~SVG_RenderingContext()
 { }
 
-scaled
-SVG_RenderingContext::toSVGX(const scaled& x) const
-{ return x; }
-
-scaled
-SVG_RenderingContext::toSVGY(const scaled& y) const
-{ return -y; }
-
 String
 SVG_RenderingContext::toSVGLength(const scaled& s) const
 {
