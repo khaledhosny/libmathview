@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2006, Luca Padovani <padovani@sti.uniurb.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -18,4 +18,4 @@
 // 
 // For details, see the GtkMathView World-Wide-Web page,
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
-// <lpadovan@cs.unibo.it>
+// <padovani@sti.uniurb.it>
