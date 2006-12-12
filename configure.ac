@@ -130,6 +130,13 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
+	ps,
+	[  --enable-ps[=ARG]  enable PostScript backend [default=yes]],
+	enable_ps=$enableval,
+	enable_ps="yes"
+)
+
+AC_ARG_ENABLE(
 	gcc-pch,
 	[  --enable-gcc-pch=[yes/no/auto]       use gcc4 pch support (default=auto)],
 	enable_gcc_pch=$enableval,
@@ -444,6 +451,11 @@ if test "$enable_svg" = "yes"; then
 fi
 AM_CONDITIONAL([COND_SVG], [test "$enable_svg" = "yes"])
 
+if test "$enable_ps" = "yes"; then
+	AC_DEFINE(ENABLE_PS,1,[Define to 1 if you want to enable the PostScript backend])
+fi
+AM_CONDITIONAL([COND_PS], [test "$enable_ps" = "yes"])
+
 AM_BINRELOC
 AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
 
@@ -501,10 +513,12 @@ AC_CONFIG_FILES([
  src/backend/common/tfm/Makefile
  src/backend/gtk/Makefile
  src/backend/svg/Makefile
+ src/backend/ps/Makefile
  src/view/Makefile
  src/widget/Makefile
  viewer/Makefile
  mathmlsvg/Makefile
+ mathmlps/Makefile
  doc/Makefile
  mathview-core.pc
  mathview-frontend-custom-reader.pc
@@ -551,6 +565,7 @@ Backend
   Type1 fonts (t1lib) ${have_t1lib}
   TFM support level   ${enable_tfm}
   SVG                 ${enable_svg}
+  PostScript          ${enable_ps}
 
 Performance
 
