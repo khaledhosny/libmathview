@@ -70,6 +70,10 @@ if COND_SVG
 pkgconfig_DATA += mathview-backend-svg.pc
 endif
 
+if COND_PS
+pkgconfig_DATA += mathview-backend-ps.pc
+endif
+
 SCRIPTDIR = ./scripts
 
 backup:

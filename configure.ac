@@ -525,6 +525,7 @@ AC_CONFIG_FILES([
  mathview-frontend-libxml2-reader.pc
  mathview-frontend-libxml2.pc
  mathview-frontend-gmetadom.pc
+ mathview-backend-ps.pc
  mathview-backend-svg.pc
  mathview-backend-gtk.pc
  gtkmathview-custom-reader.pc
