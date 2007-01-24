@@ -47,7 +47,7 @@ public:
   scaled getX(void) const { return x; }
   scaled getY(void) const { return y; }
   const BoundingBox& getBoundingBox(void) const { return box; }
-  void setOrigin(const scaled&, const scaled&);
+  void setPosition(const scaled&, const scaled&);
 
 private:
   enum FragmentColor { WHITE, GRAY, BLACK };

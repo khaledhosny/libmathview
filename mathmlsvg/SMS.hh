@@ -75,6 +75,7 @@ protected:
   SmartPtr<Value> fun_x(const HandlerArgs&) const;
   SmartPtr<Value> fun_y(const HandlerArgs&) const;
   SmartPtr<Value> fun_origin(const HandlerArgs&) const;
+  SmartPtr<Value> fun_center(const HandlerArgs&) const;
   SmartPtr<Value> fun_width(const HandlerArgs&) const;
   SmartPtr<Value> fun_height(const HandlerArgs&) const;
   SmartPtr<Value> fun_depth(const HandlerArgs&) const;

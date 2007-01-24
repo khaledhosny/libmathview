@@ -63,7 +63,7 @@ Fragment::visit(std::list<SmartPtr<Fragment> >& sortedFragmentList)
 }
 
 void
-Fragment::setOrigin(const scaled& ox, const scaled& oy)
+Fragment::setPosition(const scaled& ox, const scaled& oy)
 {
   x = ox;
   y = oy;

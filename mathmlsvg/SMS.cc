@@ -50,6 +50,7 @@ SMS::SMS(const SmartPtr<AbstractLogger>& _logger,
   funMap["x"] = &SMS::fun_x;
   funMap["y"] = &SMS::fun_y;
   funMap["origin"] = &SMS::fun_origin;
+  funMap["center"] = &SMS::fun_center;
   funMap["width"] = &SMS::fun_width;
   funMap["height"] = &SMS::fun_height;
   funMap["depth"] = &SMS::fun_depth;
@@ -309,8 +310,10 @@ SMS::substFragments()
     {
       const SmartPtr<Fragment> fragment = *p;
       std::ostringstream os;
-      os << "translate(" << toUserUnits(fragment->getX())
-	 << ", " << toUserUnits(fragment->getY()) << ")";
+      const scaled ox = fragment->getX() - fragment->getBoundingBox().width / 2;
+      const scaled oy = fragment->getY() + (fragment->getBoundingBox().height - fragment->getBoundingBox().depth) / 2;
+      os << "translate(" << toUserUnits(ox)
+	 << ", " << toUserUnits(oy) << ")";
       Model::setAttribute(fragment->getNewRoot(), "transform", os.str());
       xmlReplaceNode(Model::asNode(fragment->getOldRoot()), 
 		     Model::asNode(fragment->getNewRoot()));
@@ -409,9 +412,21 @@ SMS::fun_origin(const HandlerArgs& args) const
   
   SmartPtr<Location> loc;
   if (asLocation(args[0], loc))
-    {
-      return PairValue::create(Point(loc->getX() + (loc->getBoundingBox().width / 2), loc->getY() + loc->getBoundingBox().depth - ((loc->getBoundingBox().height + loc->getBoundingBox().depth) / 2)  ));
-    }
+    return PairValue::create(Point(loc->getX(), loc->getY()));
+  else
+    return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_center(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX() + loc->getBoundingBox().width / 2,
+				   loc->getY() - (loc->getBoundingBox().height - loc->getBoundingBox().depth) / 2));
   else
     return 0;
 }
@@ -680,7 +695,11 @@ SMS::getLocationOfId(const String& name) const
   SmartPtr<Fragment> frag = p->second;
   assert(frag != 0);
   if (SmartPtr<Location> loc = evalContext.getLocation(name))
-    return Location::create(name, frag->getX() + loc->getX(), frag->getY() + loc->getY(), loc->getBoundingBox());
+    {
+      const scaled lx = frag->getX() - frag->getBoundingBox().width / 2 + loc->getX();
+      const scaled ly = frag->getY() + (frag->getBoundingBox().height - frag->getBoundingBox().depth) / 2 - loc->getY();
+      return Location::create(name, lx, ly, loc->getBoundingBox());
+    }
   
   return 0;
 }
@@ -825,6 +844,8 @@ SMS::evalAttributes(const Model::Node& node)
             evalPairAttribute(elem, value, "width", "height");
           else if (name == "r")
             evalPairAttribute(elem, value, "rx", "ry");
+          else if (name == "c")
+            evalPairAttribute(elem, value, "cx", "cy");
           else
             evalScalarAttribute(elem, value, name);
 	}
@@ -886,7 +907,7 @@ SMS::process(const String& uri)
       const String y = Model::getAttributeNoNS(object, "y");
       const scaled sx = fromUserUnits(atof(x.c_str()));
       const scaled sy = fromUserUnits(atof(y.c_str()));
-      (*f)->setOrigin(sx, sy);
+      (*f)->setPosition(sx, sy);
 
       //std::cerr << "FRAGMENT AT " << x << ", " << y << " SIZE = " << (*f)->getBoundingBox() << std::endl;
     }
