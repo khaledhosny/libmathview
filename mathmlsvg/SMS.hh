@@ -25,6 +25,7 @@
 
 #include <list>
 
+#include "Fragment.hh"
 #include "MathView.hh"
 #include "Model.hh"
 #include "Length.hh"
@@ -45,17 +46,35 @@ protected:
   typedef SmartPtr<Value> (SMS::* Handler)(const HandlerArgs&) const;
 
   static scaled evaluate(const Length&, const scaled& = 0);
+  float toUserUnits(const scaled&) const;
+  scaled fromUserUnits(float) const;
+  bool asLocation(const SmartPtr<Value>&, SmartPtr<Location>&) const;
+  bool asNumber(const SmartPtr<Value>&, float&) const;
+  bool asScalar(const SmartPtr<Value>&, scaled&) const;
+  bool asPair(const SmartPtr<Value>&, Point&) const;
   void traverse(const Model::Node&);
   void substFragments(void);
   void evalAttributes(const Model::Node&);
   SmartPtr<Value> evalExpr(class Scanner&);
-  String evalAttribute(const String&);
-  scaled evalScaled(const String&, const scaled&);
+  //String evalAttribute(const String&);
+  bool evalScalarAttribute(const Model::Element& , const String&, const String&);
+  bool evalPairAttribute(const Model::Element&, const String&, const String&, const String&);
+  //scaled evalScaled(const String&, const scaled&);
+  void dependAssocList(const Model::Node&, SmartPtr<Fragment>);
+  bool isGmvNamespace(const xmlChar* ns);
+  void createFragDepList();
+
+  void findFragmentDependencies();
+  void assoc(const Model::Node&, const SmartPtr<Fragment>&);
+  bool sortFragments(std::list<SmartPtr<Fragment> >&) const;
+
+  SmartPtr<Location> getLocationOfId(const String&) const;
 
   Handler getFunHandler(const String&) const;
 
   SmartPtr<Value> fun_x(const HandlerArgs&) const;
   SmartPtr<Value> fun_y(const HandlerArgs&) const;
+  SmartPtr<Value> fun_origin(const HandlerArgs&) const;
   SmartPtr<Value> fun_width(const HandlerArgs&) const;
   SmartPtr<Value> fun_height(const HandlerArgs&) const;
   SmartPtr<Value> fun_depth(const HandlerArgs&) const;
@@ -64,13 +83,26 @@ protected:
   SmartPtr<Value> fun_mul(const HandlerArgs&) const;
   SmartPtr<Value> fun_div(const HandlerArgs&) const;
   SmartPtr<Value> fun_neg(const HandlerArgs&) const;
+  SmartPtr<Value> fun_nw(const HandlerArgs&) const;
+  SmartPtr<Value> fun_n(const HandlerArgs&) const;
+  SmartPtr<Value> fun_ne(const HandlerArgs&) const;
+  SmartPtr<Value> fun_e(const HandlerArgs&) const;
+  SmartPtr<Value> fun_se(const HandlerArgs&) const;
+  SmartPtr<Value> fun_s(const HandlerArgs&) const;
+  SmartPtr<Value> fun_sw(const HandlerArgs&) const;
+  SmartPtr<Value> fun_w(const HandlerArgs&) const;
+  SmartPtr<Value> fun_depart(const HandlerArgs&) const;
 
 private:
   SmartPtr<class AbstractLogger> logger;
   SmartPtr<MathView> view;
   SVG_EvalRenderingContext evalContext;
-  std::list<SmartPtr<class Fragment> > fragList;
   Model::Document doc;
+  std::list<SmartPtr<Fragment> > fragmentList;
+  std::list<xmlChar*> getDepFromAttr(const xmlChar *value);
+
+  typedef HASH_MAP_NS::hash_map<String,SmartPtr<Fragment>,StringHash,StringEq> IdFragmentMap;
+  IdFragmentMap idFragmentMap;
 
   typedef HASH_MAP_NS::hash_map<String,Handler,StringHash,StringEq> FunMap;
   FunMap funMap;

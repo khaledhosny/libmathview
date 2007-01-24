@@ -40,25 +40,24 @@ void
 SVG_EvalRenderingContext::wrapperStart(const scaled& x, const scaled& y, const BoundingBox& box,
 				       const SmartPtr<Element>& elem)
 {
-  std::cerr << "SVG_EvalRenderingContext::wrapperStart IN" << std::endl;
   assert(elem);
   if (xmlElement* el = view->modelElementOfElement(elem))
     {
       if (xmlChar* id = xmlGetProp((xmlNode*) el, Model::toModelString("id")))
 	{
 	  const String name = Model::fromModelString(id);
-	  std::cerr << "FOUND ID = " << name << std::endl;
 	  idMap[name] = Location::create(name, x, y, box);
 	  xmlFree(id);
+
+
+
 	}
     }
-  std::cerr << "SVG_EvalRenderingContext::wrapperStart OUT" << std::endl;
 }
 
 void
 SVG_EvalRenderingContext::wrapperEnd()
 {
-  std::cerr << "SVG_EvalRenderingContext::wrapperEnd" << std::endl;
 }
 
 SmartPtr<Location>

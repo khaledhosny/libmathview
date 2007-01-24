@@ -22,16 +22,50 @@
 
 #include <config.h>
 
+#include <algorithm>
+
 #include "Fragment.hh"
 
-Fragment::Fragment(const Model::Element& _oldRoot, const Model::Element& _newRoot)
-  : oldRoot(_oldRoot), newRoot(_newRoot)
+Fragment::Fragment(const Model::Element& _oldRoot, const Model::Element& _newRoot, const BoundingBox& _box)
+  : color(WHITE), oldRoot(_oldRoot), newRoot(_newRoot), box(_box)
 { }
 
 Fragment::~Fragment()
 { }
 
 SmartPtr<Fragment>
-Fragment::create(const Model::Element& _oldRoot, const Model::Element& _newRoot)
-{ return new Fragment(_oldRoot, _newRoot); }
+Fragment::create(const Model::Element& _oldRoot, const Model::Element& _newRoot, const BoundingBox& _box)
+{ return new Fragment(_oldRoot, _newRoot, _box); }
+
+void
+Fragment::addDependency(const SmartPtr<Fragment>& frag)
+{
+  if (std::find(dependencies.begin(), dependencies.end(), frag) == dependencies.end())
+    dependencies.push_back(frag);
+}
+
+bool
+Fragment::visit(std::list<SmartPtr<Fragment> >& sortedFragmentList)
+{
+  if (color == GRAY)
+    return true;
+
+  if (color == WHITE)
+    {
+      color = GRAY;
+      for (std::list<SmartPtr<Fragment> >::iterator f = dependencies.begin(); f != dependencies.end(); f++)
+	if ((*f)->visit(sortedFragmentList))
+	  return true;
+      color = BLACK;
+      sortedFragmentList.push_back(this);
+    }
+  return false;
+}
+
+void
+Fragment::setOrigin(const scaled& ox, const scaled& oy)
+{
+  x = ox;
+  y = oy;
+}
 

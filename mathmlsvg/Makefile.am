@@ -12,6 +12,7 @@ mathmlsvg_SOURCES = \
   Location.cc \
   Location.hh \
   MathView.hh \
+  Model.cc \
   Model.hh \
   Scanner.cc \
   Scanner.hh \

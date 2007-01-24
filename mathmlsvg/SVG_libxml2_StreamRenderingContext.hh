@@ -33,6 +33,7 @@ public:
 				     const SmartPtr<class libxml2_MathView>&);
   virtual ~SVG_libxml2_StreamRenderingContext();
 
+  virtual String toSVGLength(const scaled&) const;
   virtual String getId(const SmartPtr<class Element>&) const;
 
 private:

@@ -1,6 +1,6 @@
 // Copyright (C) 2000-2005, Luca Padovani <luca.padovani@cs.unibo.it>.
 //
-// This file is part of GtkMathView, a Gtk widget for MathML.
+// This file is part of GtkMath	View, a Gtk widget for MathML.
 // 
 // GtkMathView is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include <sstream>
-
 #include "defs.h"
 #include "AbstractLogger.hh"
 #include "ValueConversion.hh"
@@ -34,6 +33,7 @@
 #include "SVG_libxml2_StreamRenderingContext.hh"
 #include "LengthAux.hh"
 #include "Element.hh"
+#include "Point.hh"
 
 #define SVG_NS_URI "http://www.w3.org/2000/svg"
 #define GMV_NS_URI "http://helm.cs.unibo.it/2005/GtkMathView"
@@ -42,16 +42,26 @@ SMS::SMS(const SmartPtr<AbstractLogger>& _logger,
 	 const SmartPtr<MathView>& _view)
   : logger(_logger), view(_view), evalContext(logger, view)
 {
-  funMap["x"] = &SMS::fun_x;
-  funMap["y"] = &SMS::fun_y;
-  funMap["width"] = &SMS::fun_width;
-  funMap["height"] = &SMS::fun_height;
-  funMap["depth"] = &SMS::fun_depth;
   funMap["add"] = &SMS::fun_add;
   funMap["sub"] = &SMS::fun_sub;
   funMap["mul"] = &SMS::fun_mul;
   funMap["div"] = &SMS::fun_div;  
   funMap["neg"] = &SMS::fun_neg;
+  funMap["x"] = &SMS::fun_x;
+  funMap["y"] = &SMS::fun_y;
+  funMap["origin"] = &SMS::fun_origin;
+  funMap["width"] = &SMS::fun_width;
+  funMap["height"] = &SMS::fun_height;
+  funMap["depth"] = &SMS::fun_depth;
+  funMap["nw"] = &SMS::fun_nw;
+  funMap["n"] = &SMS::fun_n;
+  funMap["ne"] = &SMS::fun_ne;
+  funMap["e"] = &SMS::fun_e;
+  funMap["se"] = &SMS::fun_se;
+  funMap["s"] = &SMS::fun_s;
+  funMap["sw"] = &SMS::fun_sw;
+  funMap["w"] = &SMS::fun_w;
+  funMap["depart"]  = &SMS::fun_depart;
 }
 
 scaled
@@ -85,11 +95,132 @@ SMS::evaluate(const Length& length, const scaled& defaultValue)
 
 #include "scaledAux.hh"
 
+bool
+SMS::sortFragments(std::list<SmartPtr<Fragment> >& sortedFragmentList) const
+{
+  for (std::list<SmartPtr<Fragment> >::const_iterator f = fragmentList.begin(); f != fragmentList.end(); f++)
+    if ((*f)->visit(sortedFragmentList))
+      return true;
+  return false;
+}
+
+
+bool xmlIsNull(const xmlChar* str)
+{
+  return(str[0] == (xmlChar)'0');
+}
+
+bool SMS::isGmvNamespace(const xmlChar* ns)
+{
+  int i;
+  char *gmvNs = GMV_NS_URI;
+  for (i = 0; i < 41; i++)
+    {
+      if (ns[i] != gmvNs[i])
+	return(false);
+    }
+  return(true);
+}
+
+
+
+// Funzione che cerca gli ID all'interno degli attributi
+// deve essere sostituita con una funzione di parsing dell'intero attributo
+
+std::list<xmlChar*> SMS::getDepFromAttr(const xmlChar *value)
+{
+  std::list<xmlChar *> idRetLst;
+  String attribute((char *)value);
+  Scanner scanner(UCS4StringOfString(attribute), false);
+  
+  while (true)
+    {
+      switch(scanner.getToken())
+	{
+	case Scanner::RAW :
+	  scanner.advance();
+	  break;
+	  
+	case Scanner::EOS :
+	  return(idRetLst);
+	  break;
+	  
+	case Scanner::DOLLAR :
+	  scanner.advance();
+	  if (scanner.getToken() == Scanner::ID)
+	    {
+	      String tmp("");
+	      tmp.append(StringOfUCS4String(scanner.getString()));
+	      scanner.advance();
+	      xmlChar *xmlTmp = (xmlChar *)calloc(sizeof(tmp.c_str()), sizeof(xmlChar));
+	      strcpy((char *)xmlTmp, (char *)tmp.c_str());
+	      idRetLst.push_back((xmlChar *)xmlTmp);
+	      break;
+	    }
+	  else
+	    {
+	      scanner.advance();
+	      break;
+	    }
+	  
+	case Scanner::ID :
+	  scanner.advance();
+	  break;
+	  
+	  
+	default :
+	  scanner.advance();
+	  break;
+	}
+    }
+}
+
+
+void
+SMS::assoc(const Model::Node& node, const SmartPtr<Fragment>& frag)
+{
+  if (Model::Element el = Model::asElement(node))
+    {
+      if (Model::hasAttribute(el, "id"))
+        idFragmentMap[Model::getAttribute(el, "id")] = frag;
+      for (Model::NodeIterator p(Model::asNode(el)); p.more(); p.next())
+	assoc(p.node(), frag);
+    }
+}
+
+void
+SMS::findFragmentDependencies()
+{
+  for (std::list<SmartPtr<Fragment> >::iterator f = fragmentList.begin();
+       f != fragmentList.end();
+       f++)
+    if (xmlAttr* attr = Model::asNode((*f)->getOldRoot())->properties)
+      for (; attr != NULL; attr = attr->next)
+	{
+	  if (Model::Node attrNode = (xmlNode*) attr)
+	    if (Model::getNodeNamespaceURI(attrNode) == GMV_NS_URI)
+	      for (Scanner scanner(UCS4StringOfString(Model::getNodeValue(attrNode)), false); scanner.more(); scanner.advance())
+// FIX MEEEEEEEEEE!!!!!!!!
+//
+		if (scanner.getToken() == Scanner::ID)
+                {
+                  String readString = StringOfUCS4String(scanner.getString());
+                  if (readString == "width" || readString == "height" || readString == "depth")
+                  {
+                    scanner.advance();
+                    while (scanner.getToken() != Scanner::ID) scanner.advance();
+                    scanner.advance();
+                  }
+		  else if (SmartPtr<Fragment> tmp = idFragmentMap[StringOfUCS4String(scanner.getString())])
+		    (*f)->addDependency(tmp);
+	        }
+        }
+}
+
 void
 SMS::traverse(const Model::Node& node)
 {
   assert(node);
-  std::cerr << "found " << Model::getNodeName(node) << std::endl;
   if (Model::getNodeType(node) == Model::ELEMENT_NODE)
     {
       Model::Element elem = Model::asElement(node);
@@ -101,46 +232,49 @@ SMS::traverse(const Model::Node& node)
 	  Model::ElementIterator p(elem, MATHML_NS_URI);
 	  if (Model::Element mmlRoot = p.element())
 	    {
-	      std::cerr << "found MathML fragment" << std::endl;
 	      view->loadRootElement(mmlRoot);
 	      // set available width with width attribute on foreignObject
 	      if (SmartPtr<Element> root = view->getRootElement())
 		{
-		  //AreaRef area = root->getArea();
-		  //assert(area);
-
-		  const scaled x = evalScaled(Model::getAttribute(elem, "x"), scaled::zero());
-		  const scaled y = evalScaled(Model::getAttribute(elem, "y"), scaled::zero());
-		  std::cerr << "found coordinates " << x << "," << x << std::endl;
-
-		  view->render(evalContext, x, -y);
-
+		  // questa prima resa serve per conoscere le dimensioni del frammento
+		  // e di tutti gli elementi MathML in esso contenuti
+		  
+		  
+		  view->render(evalContext, 0, 0);
 		  std::ostringstream os;
 		  SVG_libxml2_StreamRenderingContext context(logger, os, view);
-		  //std::cerr << "found fragment area " << area->box() << std::endl;
 		  const BoundingBox box = view->getBoundingBox();
 		  context.documentStart(box);
-		  view->render(context, x, -y);
+		  // questa seconda resa serve per generare l'SVG corrispondente al
+		  // frammento di MathML
+		  view->render(context, 0, 0);
 		  context.documentEnd();
+		  
+		  // creazione albero SVG equivalente
+		  
 		  const String buffer = os.str();
-		  std::cerr << "fragment SVG" << std::endl << buffer << std::endl;
 		  if (Model::Document doc = xmlParseMemory(buffer.c_str(), buffer.length()))
 		    {
-		      std::cerr << "fragment parsed" << std::endl;
 		      if (Model::Element root = Model::getDocumentElement(doc))
 			{
-			  std::cerr << "got parsed root" << std::endl;
 			  Model::ElementIterator p(root, SVG_NS_URI, "g");
 			  Model::Element clonedFragment = Model::asElement(xmlCopyNode(Model::asNode(p.element()), 1));
 			  assert(clonedFragment);
-			  SmartPtr<Fragment> frag = Fragment::create(elem, clonedFragment);
-			  fragList.push_back(frag);
+			  SmartPtr<Fragment> frag = Fragment::create(elem, clonedFragment, box);
+			  // aggiungi un fragment alla lista fragList
+			  fragmentList.push_back(frag);
+			  // crea una lista associativa fra id e fragment di riferimento
+			  assoc(node, frag);
+			  // crea una lista fra fragment e id dai quali dipende
+			  
+			  
 			}
 		      xmlFreeDoc(doc);
 		    }
 		}
 	      view->resetRootElement();
 	    }
+	  
 	}
       else
 	{
@@ -150,56 +284,85 @@ SMS::traverse(const Model::Node& node)
     }
 }
 
+
 #include "BoundingBoxAux.hh"
+
+float
+SMS::toUserUnits(const scaled& s) const
+{
+  return (s.toFloat() * 72.27) / 90;
+  //return (s.toFloat());
+  
+}
+
+scaled
+SMS::fromUserUnits(float f) const
+{
+  return (f * 90) / 72.27;
+  //return (f);
+}
 
 void
 SMS::substFragments()
 {
-  for (std::list<SmartPtr<Fragment> >::const_iterator p = fragList.begin(); p != fragList.end(); p++)
+  for (std::list<SmartPtr<Fragment> >::const_iterator p = fragmentList.begin(); p != fragmentList.end(); p++)
     {
       const SmartPtr<Fragment> fragment = *p;
+      std::ostringstream os;
+      os << "translate(" << toUserUnits(fragment->getX())
+	 << ", " << toUserUnits(fragment->getY()) << ")";
+      Model::setAttribute(fragment->getNewRoot(), "transform", os.str());
       xmlReplaceNode(Model::asNode(fragment->getOldRoot()), 
 		     Model::asNode(fragment->getNewRoot()));
     }
 }
 
-typedef Variant<scaled> ScaledValue;
 typedef Variant<float> NumberValue;
-typedef Variant<String> StringValue;
-typedef Variant<SmartPtr<Location> > LocationValue;
-typedef Variant<Point> PointValue;
+typedef Variant<scaled> ScalarValue;
+typedef Variant<SmartPtr<Location> > RefValue;
+typedef Variant<Point> PairValue;
 
-static SmartPtr<Location>
-asLocation(const SmartPtr<Value>& value)
+bool
+SMS::asLocation(const SmartPtr<Value>& value, SmartPtr<Location>& res) const
 {
-  if (is_a<LocationValue>(value))
-    return smart_cast<LocationValue>(value)->getValue();
-  else
-    return 0;
+  if (is_a<RefValue>(value)) {
+    res = smart_cast<RefValue>(value)->getValue();
+    return true;
+  }
+  return false;
 }
 
-static scaled
-asScaled(const SmartPtr<Value>& value)
+bool
+SMS::asNumber(const SmartPtr<Value>& value, float& res) const
 {
-  const SmartPtr<ScaledValue> v = smart_cast<ScaledValue>(value);
-  assert(v);
-  return v->getValue();
+  if (is_a<NumberValue>(value)) {
+    res = smart_cast<NumberValue>(value)->getValue();
+    return true;
+  }
+  return false;
 }
 
-static float
-asNumber(const SmartPtr<Value>& value)
+bool
+SMS::asScalar(const SmartPtr<Value>& value, scaled& res) const
 {
-  const SmartPtr<NumberValue> v = smart_cast<NumberValue>(value);
-  assert(v);
-  return v->getValue();
+  if (is_a<NumberValue>(value)) {
+    res = fromUserUnits(smart_cast<NumberValue>(value)->getValue());
+    return true;
+  } if (is_a<ScalarValue>(value)) {
+    res = smart_cast<ScalarValue>(value)->getValue();
+    return true;
+  }
+  return false;
 }
 
-static String
-asString(const SmartPtr<Value>& value)
+bool
+SMS::asPair(const SmartPtr<Value>& value, Point& res) const
 {
-  const SmartPtr<StringValue> v = smart_cast<StringValue>(value);
-  assert(v);
-  return v->getValue();
+  if (is_a<PairValue>(value)) {
+    res = smart_cast<PairValue>(value)->getValue();
+    return true;
+  }
+  return false;
 }
 
 SMS::Handler
@@ -218,8 +381,9 @@ SMS::fun_x(const HandlerArgs& args) const
   if (args.size() != 1)
     return 0;
 
-  if (const SmartPtr<Location> loc = asLocation(args[0]))
-    return ScaledValue::create(loc->getX());
+  Point point;
+  if (asPair(args[0], point))
+    return ScalarValue::create(point.x);
   else
     return 0;
 }
@@ -229,9 +393,25 @@ SMS::fun_y(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
+  
+  Point point;
+  if (asPair(args[0], point))
+    return ScalarValue::create(point.y);
+  else
+    return 0;
+}
 
-  if (const SmartPtr<Location> loc = asLocation(args[0]))
-    return ScaledValue::create(-loc->getY());
+SmartPtr<Value>
+SMS::fun_origin(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    {
+      return PairValue::create(Point(loc->getX() + (loc->getBoundingBox().width / 2), loc->getY() + loc->getBoundingBox().depth - ((loc->getBoundingBox().height + loc->getBoundingBox().depth) / 2)  ));
+    }
   else
     return 0;
 }
@@ -241,9 +421,10 @@ SMS::fun_width(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
-
-  if (const SmartPtr<Location> loc = asLocation(args[0]))
-    return ScaledValue::create(loc->getBox().width);
+  
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return ScalarValue::create(loc->getBoundingBox().width);
   else
     return 0;
 }
@@ -253,9 +434,10 @@ SMS::fun_height(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
-
-  if (const SmartPtr<Location> loc = asLocation(args[0]))
-    return ScaledValue::create(loc->getBox().height);
+  
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return ScalarValue::create(loc->getBoundingBox().height);
   else
     return 0;
 }
@@ -265,25 +447,35 @@ SMS::fun_depth(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
-
-  if (const SmartPtr<Location> loc = asLocation(args[0]))
-    return ScaledValue::create(loc->getBox().depth);
+  
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return ScalarValue::create(loc->getBoundingBox().depth);
   else
     return 0;
 }
 
 SmartPtr<Value>
 SMS::fun_add(const HandlerArgs& args) const
-{
-  scaled res = 0;
-  for (HandlerArgs::const_iterator p = args.begin(); p != args.end(); p++)
-    {
-      if (SmartPtr<ScaledValue> v = smart_cast<ScaledValue>(*p))
-	res += v->getValue();
-      else
-	return 0;
-    }
-  return ScaledValue::create(res);
+{  
+  if (args.size() != 2)
+    return 0;
+  
+  float n1;
+  float n2;
+  Point pair1;
+  Point pair2;
+  scaled s1;
+  scaled s2;
+  if (asNumber(args[0], n1) && asNumber(args[1], n2))
+    return NumberValue::create(n1 + n2);
+  else if (asScalar(args[0], s1) && asScalar(args[1], s2))
+    return ScalarValue::create(s1 + s2);
+  else if (asPair(args[0], pair1) && asPair(args[1], pair2))
+    return PairValue::create(Point(pair1.x + pair2.x, pair1.y + pair2.y));
+  else
+    return 0;
+
 }
 
 SmartPtr<Value>
@@ -291,11 +483,21 @@ SMS::fun_sub(const HandlerArgs& args) const
 {
   if (args.size() != 2)
     return 0;
+  float f1;
+  float f2;
+  Point pair1;
+  Point pair2;
+  scaled s1;
+  scaled s2;
+  if (asNumber(args[0], f1) && asNumber(args[1], f2))
+    return(NumberValue::create(f1 - f2));
+  if (asScalar(args[0], s1) && asScalar(args[1], s2))
+    return ScalarValue::create(s1 - s2);
+  else if (asPair(args[0], pair1) && asPair(args[1], pair2))
+    return PairValue::create(Point(pair1.x - pair2.x, pair1.y - pair2.y));
+  else
+    return 0;
 
-  if (SmartPtr<ScaledValue> v1 = smart_cast<ScaledValue>(args[0]))
-    if (SmartPtr<ScaledValue> v2 = smart_cast<ScaledValue>(args[1]))
-      return ScaledValue::create(v1->getValue() - v2->getValue());
-  return 0;
 }
 
 SmartPtr<Value>
@@ -303,11 +505,19 @@ SMS::fun_mul(const HandlerArgs& args) const
 {
   if (args.size() != 2)
     return 0;
-
-  if (SmartPtr<ScaledValue> v1 = smart_cast<ScaledValue>(args[0]))
-    if (SmartPtr<NumberValue> v2 = smart_cast<NumberValue>(args[1]))
-      return ScaledValue::create(v1->getValue() * v2->getValue());
-  return 0;
+  
+  Point pair;
+  scaled s;
+  float n1;
+  float n2;
+  if (asNumber(args[0], n1) && asNumber(args[1], n2))
+    return NumberValue::create(n1 * n2);
+  else if (asScalar(args[0], s) && asNumber(args[1], n2))
+    return ScalarValue::create(s * n2);
+  else if (asPair(args[0], pair) && asNumber(args[1], n2))
+    return PairValue::create(Point(pair.x * n2, pair.y * n2));
+  else
+    return 0;
 }
 
 SmartPtr<Value>
@@ -315,96 +525,227 @@ SMS::fun_neg(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
+  
+  float n;
+  scaled s;
+  Point p;
+  if (asNumber(args[0], n))
+    return NumberValue::create(-n);
+  if (asScalar(args[0], s))
+    return ScalarValue::create(-s);
+  if (asPair(args[0], p))
+    return PairValue::create(Point(-p.x, -p.y));
+  else return 0;
+}
 
-  if (SmartPtr<ScaledValue> v = smart_cast<ScaledValue>(args[0]))
-    return ScaledValue::create(-v->getValue());
-  return 0;
+SmartPtr<Value>
+SMS::fun_nw(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX(), loc->getY() - loc->getBoundingBox().height));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_n(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX() + (loc->getBoundingBox().width / 2), loc->getY() - loc->getBoundingBox().height));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_ne(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX() + loc->getBoundingBox().width , loc->getY() - loc->getBoundingBox().height));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_e(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX() + loc->getBoundingBox().width, loc->getY() - loc->getBoundingBox().height + ((loc->getBoundingBox().height + loc->getBoundingBox().depth) / 2)));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_se(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX() + loc->getBoundingBox().width, loc->getY() + loc->getBoundingBox().depth));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_s(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX() + (loc->getBoundingBox().width / 2), loc->getY() + loc->getBoundingBox().depth));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_sw(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX(), loc->getY() + loc->getBoundingBox().depth));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_w(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getX(), loc->getY() - loc->getBoundingBox().height + ((loc->getBoundingBox().height + loc->getBoundingBox().depth) / 2)));
+  else return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_depart(const HandlerArgs& args) const
+{
+  if (args.size() != 2)
+    return 0;
+  SmartPtr<Location> loc1, loc2;
+  if (asLocation(args[0], loc1) && asLocation(args[1], loc2))
+  // delete "return 0" and insert here the code
+    return 0;
 }
 
 SmartPtr<Value>
 SMS::fun_div(const HandlerArgs& args) const
 {
   if (args.size() != 2)
+   return 0;
+  
+  Point pair;
+  scaled s;
+  float n1;
+  float n2;
+  if (asNumber(args[0], n1) && asNumber(args[1], n2))
+    return NumberValue::create(n1 / n2);
+  else if (asScalar(args[0], s) && asNumber(args[1], n2))
+    return ScalarValue::create(s / n2);
+  else if (asPair(args[0], pair) && asNumber(args[1], n2))
+    return PairValue::create(Point(pair.x / n2, pair.y / n2));
+  else
     return 0;
+ 
+}
 
-  if (SmartPtr<ScaledValue> v1 = smart_cast<ScaledValue>(args[0]))
-    if (SmartPtr<NumberValue> v2 = smart_cast<NumberValue>(args[1]))
-      return ScaledValue::create(v1->getValue() / v2->getValue());
+Point intersezione(Point lato1, Point lato2, Point retta1, Point retta2)
+{
+  if (retta1.x == retta2.x)
+    if (lato1.y == lato2.y)
+      return Point(retta1.x, lato1.y);
+    else assert(false);
+  else if (lato1.x == lato2.x)
+    return Point(lato1.x, retta1.y);
+  else assert(false);
+
+}
+
+SmartPtr<Location>
+SMS::getLocationOfId(const String& name) const
+{
+  const IdFragmentMap::const_iterator p = idFragmentMap.find(name);
+  if (p == idFragmentMap.end())
+    return 0;
+  
+  SmartPtr<Fragment> frag = p->second;
+  assert(frag != 0);
+  if (SmartPtr<Location> loc = evalContext.getLocation(name))
+    return Location::create(name, frag->getX() + loc->getX(), frag->getY() + loc->getY(), loc->getBoundingBox());
+  
   return 0;
 }
 
 SmartPtr<Value>
 SMS::evalExpr(Scanner& scanner)
 {
-  std::cerr << "SMS::evalExpr ENTER get token " << scanner.getToken() << std::endl;
-  switch (scanner.getToken())
+  int a = scanner.getToken();
+  switch (a)
     {
     case Scanner::NUMBER:
       {
 	const float value = scanner.getNumber();
 	scanner.advance();
-	std::cerr << "read number " << value << std::endl;
-	if (scanner.getToken() == Scanner::ID)
-	  {
-	    const String unit = StringOfUCS4String(scanner.getString());
-	    Length::Unit unitId;
-	    if (fromString(unit, unitId))
-	      {
-		std::cerr << "read unit " << unit << std::endl;
-		scanner.advance();
-		return ScaledValue::create(evaluate(Length(value, unitId), scaled::zero()));
-	      }
-	  }
-	else
-	  return NumberValue::create(value);
+	return NumberValue::create(value);
       }
       break;
-    case Scanner::SHARP:
+    case Scanner::DOLLAR:
       {
 	scanner.advance();
 	if (scanner.getToken() != Scanner::ID)
 	  return 0;
 	const String name = StringOfUCS4String(scanner.getString());
 	scanner.advance();
-	std::cerr << "Found Location " << name << std::endl;
-	return LocationValue::create(evalContext.getLocation(name));
+	if (SmartPtr<Location> loc = getLocationOfId(name))
+	  return RefValue::create(loc);
+	else
+	  return 0;
       }
       break;
     case Scanner::ID:
       {
 	const String id = StringOfUCS4String(scanner.getString());
+
+
+
 	scanner.advance();
-	std::cerr << "found ID = " << id << std::endl;
+	if (scanner.getToken() != Scanner::LPAREN)
+          return 0;
+	scanner.advance();
 
 	std::vector<SmartPtr<Value> > args;
-	while (scanner.getToken() != Scanner::EOS 
-	       && scanner.getToken() != Scanner::ERROR
-	       && scanner.getToken() != Scanner::RPAREN
-	       && scanner.getToken() != Scanner::RBRACE)
+	for (;;)
 	  {
+	    if (!scanner.more())
+	      return 0;
 	    if (SmartPtr<Value> v = evalExpr(scanner))
 	      args.push_back(v);
 	    else
 	      return 0;
-	  }
-
-	std::cerr << "found " << args.size() << " arguments" << std::endl;
-
-	switch (scanner.getToken())
-	  {
-	  case Scanner::RPAREN:
-	  case Scanner::RBRACE:
-	    if (Handler handler = getFunHandler(id))
-	      return (this->*handler)(args);
-	    else
+            if (scanner.getToken() == Scanner::RPAREN) {
+	      scanner.advance();
+	      break;
+	    }
+            if (scanner.getToken() != Scanner::COMMA)
 	      return 0;
-	    break;
-	  case Scanner::ERROR:
-	  case Scanner::EOS:
-	    return 0;
-	  default:
-	    assert(false);
-	  }
+	    else scanner.advance();
+          }
+
+
+
+	if (Handler handler = getFunHandler(id))
+	  return (this->*handler)(args);
+	else
+	  return 0;
       }
     case Scanner::LPAREN:
       {
@@ -419,164 +760,47 @@ SMS::evalExpr(Scanner& scanner)
 	  return 0;
       }
       break;
+    case Scanner::ERROR:
+    case Scanner::EOS:
+      return 0;
     default:
-      break;
+      std::cout << StringOfUCS4String(scanner.getString()) << " " << a << std::endl;
+      assert(false);
     }
-
+  
   return 0;
 }
 
-String
-SMS::evalAttribute(const String& value)
-{
-  std::ostringstream os;
-  Scanner scanner(UCS4StringOfString(value));
-  while (true)
-    {
-      switch (scanner.getToken())
-	{
-	case Scanner::RAW:
-	  os << StringOfUCS4String(scanner.getString());
-	  scanner.advance();
-	  break;
-	case Scanner::UNDEFINED:
-	  assert(false);
-	  break;
-	case Scanner::EOS:
-	  return os.str();
-	case Scanner::ERROR:
-	  return value;
-	case Scanner::LBRACE:
-	  {
-	    scanner.advance();
-	    const SmartPtr<Value> v = evalExpr(scanner);
-	    if (scanner.getToken() != Scanner::RBRACE)
-	      return value;
-	    scanner.advance();
-	    if (is_a<ScaledValue>(v))
-	      os << asScaled(v).toFloat() << "pt";
-	    else if (is_a<NumberValue>(v))
-	      os << asNumber(v);
-	    else if (is_a<StringValue>(v))
-	      os << asString(v);
-	    else
-	      return value;
-	  }
-	  break;
-	default:
-	  assert(false);
-	  return value;
-	}
-    }
-  return value;
-}
-
-#if 0
 bool
-SMS::evalExpr(const UCS4String::const_iterator& begin,
-	      const UCS4String::const_iterator& end,
-	      UCS4String::const_iterator& next,
-	      scaled& res)
+SMS::evalScalarAttribute(const Model::Element& el, const String& value, const String& name)
 {
-  UCS4String::const_iterator p = begin;
-  ScanSpaces::scan(p, end, next);
-  if (next == end) return false;
-  p = next;
-  
-  if (ScanLiteral<'+'>::scan(p, end, next)
-      || ScanLiteral<'-'>::scan(p, end, next)
-      || ScanLiteral<'*'>::scan(p, end, next)
-      || ScanLiteral<'/'>::scan(p, end, next))
-    {
-      UCS4String::value_type op = *p;
-      p = next;
-      scaled a;
-      if (!evalExpr(p, end, next, a)) return false;
-      p = next;
-      scaled b;
-      if (!evalExpr(p, end, next, b)) return false;
-      switch (op)
-	{
-	case '+':
-	  res = a + b;
-	  break;
-	case '-':
-	  res = a - b;
-	  break;
-	case '*':
-	  res = a * b;
-	  break;
-	case '/':
-	  assert(false);
-	  //res = a / b;
-	  break;
-	default:
-	  return false;
-	}
-      return true;
-    }
-  else if (ScanLiteral<'#'>::scan(p, end, next))
-    {
-      std::cerr << "found reference 1" << std::endl;
-      p = next;
-      SmartPtr<Value> idV = ParseId::parse(p, end, next);
-      if (!idV) return false;
-      p = next;
-      std::cerr << "found reference 2 " << ToString(idV) << std::endl;
-      if (!ScanLiteral<'@'>::scan(p, end, next))
-	return false;
-      p = next;
-      std::cerr << "found reference 3" << std::endl;
-      SmartPtr<Value> propV = ParseKeyword::parse(p, end, next);
-      if (!propV) return false;
-
-      const String id = ToString(idV);
-      const String prop = ToString(propV);
-      std::cerr << "searching for property " << id << "@" << prop << std::endl;
-      if (const SmartPtr<Location> loc = evalContext.getLocation(id))
-	{
-	  if (prop == "width")
-	    res = loc->getBox().width;
-	  else if (prop == "height")
-	    res = loc->getBox().height;
-	  else if (prop == "depth")
-	    res = loc->getBox().depth;
-	  else if (prop == "x")
-	    res = loc->getX();
-	  else if (prop == "y")
-	    res = -loc->getY();
-	  else
-	    return false;
-	  return true;
-	}
-      else
-	return false;
-    }
-  else if (SmartPtr<Value> v = ParseLength::parse(p, end, next))
-    {
-      const Length l = ToLength(v);
-      res = evaluate(l);
-      return true;
-    }
-  else if (SmartPtr<Value> v = ParseKeyword::parse(p, end, next))
-    {
-      assert(false);
-      // a function?
-      // abs max min sin cos tan
-      return false;
-    }
+  Scanner scanner(UCS4StringOfString(value));
+  scaled v;
+  if (asScalar(evalExpr(scanner), v)) {
+    std::ostringstream os;
+    // os << v.toFloat();
+    os << toUserUnits(v); 
+    Model::setAttribute(el, name, os.str());
+    return true;
+  }
+  return false;
 }
-#endif
 
-scaled
-SMS::evalScaled(const String& s, const scaled& defaultValue)
+bool
+SMS::evalPairAttribute(const Model::Element& el, const String& value, const String& name1, const String& name2)
 {
-  const UCS4String us = UCS4StringOfString(s);
-  Scanner scanner(us, false);
-  if (SmartPtr<ScaledValue> v = smart_cast<ScaledValue>(evalExpr(scanner)))
-    return v->getValue();
-  else
-    return defaultValue;
+  Scanner scanner(UCS4StringOfString(value));
+  Point p;
+  if (asPair(evalExpr(scanner), p)) {
+    std::ostringstream os1;
+    std::ostringstream os2;
+    os1 << toUserUnits(p.x);
+    os2 << toUserUnits(p.y);
+    Model::setAttribute(el, name1, os1.str());
+    Model::setAttribute(el, name2, os2.str());
+    return true;
+  }
+  return false;
 }
 
 void
@@ -586,17 +810,45 @@ SMS::evalAttributes(const Model::Node& node)
   if (Model::getNodeType(node) == Model::ELEMENT_NODE)
     {
       Model::Element elem = Model::asElement(node);
-      for (Model::Node attr = (Model::Node) elem->attributes; attr; attr = attr->next)
+	for (xmlAttr *attr =  node->properties; attr; attr = attr->next) {
+        if (attr->ns && Model::fromModelString(attr->ns->href) == GMV_NS_URI)
 	{
-	  const String value = Model::getNodeValue(attr);
-	  const String v1 = evalAttribute(value);
-	  std::cerr << "found attribute " << Model::getNodeName(attr) << "=" << value << " -> " << v1 << std::endl;
-	  xmlNodeSetContent(attr, Model::toModelString(v1));
+          String name = Model::getNodeName((xmlNode*) attr);
+          String value = Model::getNodeValue((xmlNode*) attr);
+         if (name == "at")
+            evalPairAttribute(elem, value, "x", "y");
+          else if (name == "from")
+            evalPairAttribute(elem, value, "x1", "y1");
+          else if (name == "to")
+            evalPairAttribute(elem, value, "x2", "y2");
+          else if (name == "size")
+            evalPairAttribute(elem, value, "width", "height");
+          else if (name == "r")
+            evalPairAttribute(elem, value, "rx", "ry");
+          else
+            evalScalarAttribute(elem, value, name);
 	}
-      
+	}
       for (Model::NodeIterator p(node); p.more(); p.next())
 	evalAttributes(p.node());
     }
+}
+
+void printDocument(Model::Node node)
+{
+  for (Model::Node ptr = node;
+    ptr; 
+      ptr = ptr->next)
+  {
+    std::cerr << ptr->name;
+    if (ptr->content)
+      std::cerr << ptr->content;
+    std::cerr << " ( ";
+    if (ptr->children){
+      for (Model::Node tmp = ptr->children; tmp; tmp = tmp->next)
+        printDocument(tmp);
+      std::cerr << " ) ";}
+  }
 }
 
 bool
@@ -604,16 +856,44 @@ SMS::process(const String& uri)
 {
   doc = Model::document(*logger, uri, false);
   if (!doc) return false;
-
-  std::cerr << "TRAVERSE" << std::endl;
   traverse(Model::asNode(Model::getDocumentElement(doc)));
-  std::cerr << "SUBST" << std::endl;
-  substFragments();
-  std::cerr << "EVAL" << std::endl;
-  evalAttributes(Model::asNode(Model::getDocumentElement(doc)));
-  std::cerr << "DONE" << std::endl;
-  xmlSaveFile("a.svg", doc);
+  findFragmentDependencies();
+#if 0
+  std::cerr << "stampa dipendenze" << std::endl;
+  for (std::list<SmartPtr<Fragment> >::iterator it = fragmentList.begin();
+       it != fragmentList.end();
+       it++)
+    {
+      std::cerr << *it << std::endl;
+      (*it)->printDep();
+    }
+#endif
+  
+  std::list<SmartPtr<Fragment> > sortedFragments;
+  if (sortFragments(sortedFragments))
+    {
+      std::cerr << "circular dependencies\n";
+      exit(1);
+    }
+  
+  for (std::list<SmartPtr<Fragment> >::const_iterator f = sortedFragments.begin();
+       f != sortedFragments.end();
+       f++)
+    {
+      Model::Element object = (*f)->getOldRoot();
+      evalAttributes(Model::asNode(object));
+      const String x = Model::getAttributeNoNS(object, "x");
+      const String y = Model::getAttributeNoNS(object, "y");
+      const scaled sx = fromUserUnits(atof(x.c_str()));
+      const scaled sy = fromUserUnits(atof(y.c_str()));
+      (*f)->setOrigin(sx, sy);
 
+      //std::cerr << "FRAGMENT AT " << x << ", " << y << " SIZE = " << (*f)->getBoundingBox() << std::endl;
+    }
+  evalAttributes(Model::asNode(Model::getDocumentElement(doc)));
+  substFragments();
+//  printDocument(Model::asNode(Model::getDocumentElement(doc)));
+  xmlSaveFile("a.svg", doc);
   return true;
 }
 

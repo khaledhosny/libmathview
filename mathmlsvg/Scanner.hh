@@ -45,7 +45,9 @@ public:
       RPAREN,
       LBRACE,
       RBRACE,
-      SHARP
+      SHARP,
+      DOLLAR,
+      COMMA
     };
 
   bool more(void) const { return p != end; }
@@ -62,6 +64,7 @@ private:
   bool raw;
   TokenId token;
   SmartPtr<Value> value;
+  UCS4String buffer;
   UCS4String::const_iterator p;
   UCS4String::const_iterator end;
 };

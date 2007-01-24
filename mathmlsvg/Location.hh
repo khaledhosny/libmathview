@@ -41,7 +41,7 @@ public:
   String getId(void) const { return id; }
   scaled getX(void) const { return x; }
   scaled getY(void) const { return y; }
-  BoundingBox getBox(void) const { return box; }
+  BoundingBox getBoundingBox(void) const { return box; }
 
 private:
   String id;

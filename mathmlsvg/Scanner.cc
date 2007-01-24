@@ -26,12 +26,13 @@
 #include "Variant.hh"
 #include "token.hh"
 #include "TemplateStringScanners.hh"
+#include <iostream>
 
 typedef ScanChoice<ScanLetterOrMinus,ScanDecDigit> ScanLetterOrMinusOrDigit;
 typedef ScanSeq<ScanLetter,ScanZeroOrMore<ScanLetterOrMinusOrDigit> > ScanIdToken;
 
 Scanner::Scanner(const UCS4String& s, bool mode)
-  : raw(mode), token(UNDEFINED), p(s.begin()), end(s.end())
+  : raw(mode), token(UNDEFINED), buffer(s), p(buffer.begin()), end(buffer.end())
 { }
 
 Scanner::~Scanner()
@@ -44,25 +45,6 @@ Scanner::scanToken(void)
     {
       UCS4String acc;
       UCS4String::const_iterator begin = p;
-      while (p != end && raw)
-	{
-	  if (*p == '$')
-	    if (p + 1 < end && *(p + 1) == '$')
-	      {
-		acc.append(begin, p);
-		acc.append(1, '$');
-		begin = p = p + 2;
-	      }
-	    else
-	      {
-		acc.append(begin, p);
-		begin = p = p + 1;
-		raw = false;
-	      }
-	  else
-	    p++;
-	}
-
       acc.append(begin, p);
       if (!acc.empty())
 	{
@@ -78,6 +60,12 @@ Scanner::scanToken(void)
 
       switch (*p)
 	{
+	case '$' :
+		p++;
+		return DOLLAR;
+	case ',':
+	  p++;
+	  return COMMA;
 	case '(':
 	  p++;
 	  return LPAREN;
@@ -109,8 +97,8 @@ Scanner::scanToken(void)
 		p = next;
 		return ID;
 	      }
-	    else
-	      return ERROR;
+	    else{ std::cerr << "Scanner Error" << std::endl; 
+	      return ERROR;}
 	  }
 	}
     }

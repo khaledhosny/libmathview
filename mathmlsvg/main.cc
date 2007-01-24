@@ -332,7 +332,9 @@ main(int argc, const char* argv[])
 
       char* outName = getOutputFileName(file);
       assert(outName != NULL);
-#if 1
+#if 0
+
+
 #if 0
       xmlTextReaderPtr reader = xmlNewTextReaderFilename(file);
 

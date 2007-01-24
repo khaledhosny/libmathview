@@ -25,6 +25,12 @@
 
 #include "libxml2_Model.hh"
 
-typedef libxml2_Model Model;
+struct Model : libxml2_Model
+{
+  static String getAttributeNS(const Element&, const String&, const String&);
+  static String getAttributeNoNS(const Element&, const String&);
+  static void setAttribute(const Element&, const String&, const String&);
+  static bool setAttributeNS(const Element&, const String&, const String&, const String&);
+};
 
 #endif // __Model_hh__

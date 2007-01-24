@@ -23,25 +23,42 @@
 #ifndef __Fragment_hh__
 #define __Fragment_hh__
 
+#include <list>
+
 #include "Model.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
+#include "Location.hh"
 
 class Fragment : public Object
 {
 protected:
-  Fragment(const Model::Element&, const Model::Element&);
+  Fragment(const Model::Element&, const Model::Element&, const BoundingBox&);
   virtual ~Fragment();
 
 public:
-  static SmartPtr<Fragment> create(const Model::Element&, const Model::Element&);
+  static SmartPtr<Fragment> create(const Model::Element&, const Model::Element&, const BoundingBox&);
 
   Model::Element getOldRoot(void) const { return oldRoot; }
   Model::Element getNewRoot(void) const { return newRoot; }
 
+  void addDependency(const SmartPtr<Fragment>&);
+  bool visit(std::list<SmartPtr<Fragment > >&);
+  scaled getX(void) const { return x; }
+  scaled getY(void) const { return y; }
+  const BoundingBox& getBoundingBox(void) const { return box; }
+  void setOrigin(const scaled&, const scaled&);
+
 private:
+  enum FragmentColor { WHITE, GRAY, BLACK };
+  FragmentColor color;
+
   Model::Element oldRoot;
   Model::Element newRoot;
+  std::list<SmartPtr<Fragment> > dependencies;
+  scaled x;
+  scaled y;
+  BoundingBox box;
 };
 
 #endif // __Fragment_hh__

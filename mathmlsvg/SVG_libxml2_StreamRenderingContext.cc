@@ -22,6 +22,9 @@
 
 #include <config.h>
 
+#include <sstream>
+#include <iomanip>
+#include <iostream>
 #include "AbstractLogger.hh"
 #include "libxml2_Model.hh"
 #include "libxml2_MathView.hh"
@@ -35,6 +38,14 @@ SVG_libxml2_StreamRenderingContext::SVG_libxml2_StreamRenderingContext(const Sma
 
 SVG_libxml2_StreamRenderingContext::~SVG_libxml2_StreamRenderingContext()
 { }
+
+String
+SVG_libxml2_StreamRenderingContext::toSVGLength(const scaled& s) const
+{
+  std::ostringstream buffer;
+  buffer << std::fixed << std::setprecision(2) << (s.toFloat() * 72.27) / 90;
+  return buffer.str();
+}
 
 String
 SVG_libxml2_StreamRenderingContext::getId(const SmartPtr<Element>& elem) const
