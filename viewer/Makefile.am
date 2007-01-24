@@ -45,7 +45,7 @@ mathmlviewer_LDADD = \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
   $(NULL)
 
-test_embedding_SOURCES = test_embedding.c
+test_embedding_SOURCES = test_embedding.c dummy.cc
 test_embedding_LDFLAGS = -no-install -static
 test_embedding_LDADD = \
   -lstdc++ \
@@ -56,7 +56,7 @@ test_embedding_LDADD = \
   $(T1_LIBS_X) \
   $(NULL)
 
-test_loading_SOURCES = test_loading.c
+test_loading_SOURCES = test_loading.c dummy.cc
 test_loading_LDFLASG = -no-install -static
 test_loading_LDADD = \
   -lstdc++ \
