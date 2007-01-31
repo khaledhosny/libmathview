@@ -45,6 +45,10 @@ Scanner::scanToken(void)
     {
       UCS4String acc;
       UCS4String::const_iterator begin = p;
+      while (raw && p != end && *p != '{')
+	p++;
+
+      raw = false;
       acc.append(begin, p);
       if (!acc.empty())
 	{
@@ -61,8 +65,8 @@ Scanner::scanToken(void)
       switch (*p)
 	{
 	case '$' :
-		p++;
-		return DOLLAR;
+	  p++;
+	  return DOLLAR;
 	case ',':
 	  p++;
 	  return COMMA;
@@ -97,8 +101,8 @@ Scanner::scanToken(void)
 		p = next;
 		return ID;
 	      }
-	    else{ std::cerr << "Scanner Error" << std::endl; 
-	      return ERROR;}
+	    else
+	      return ERROR;
 	  }
 	}
     }

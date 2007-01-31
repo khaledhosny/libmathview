@@ -30,7 +30,7 @@
 class Scanner
 {
 public:
-  Scanner(const UCS4String&, bool = true);
+  Scanner(const UCS4String&, bool = false);
   ~Scanner();
 
   enum TokenId

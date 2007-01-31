@@ -42,6 +42,7 @@ SMS::SMS(const SmartPtr<AbstractLogger>& _logger,
 	 const SmartPtr<MathView>& _view)
   : logger(_logger), view(_view), evalContext(logger, view)
 {
+  funMap["pair"] = &SMS::fun_pair;
   funMap["add"] = &SMS::fun_add;
   funMap["sub"] = &SMS::fun_sub;
   funMap["mul"] = &SMS::fun_mul;
@@ -123,12 +124,11 @@ bool SMS::isGmvNamespace(const xmlChar* ns)
   return(true);
 }
 
-
-
 // Funzione che cerca gli ID all'interno degli attributi
 // deve essere sostituita con una funzione di parsing dell'intero attributo
 
-std::list<xmlChar*> SMS::getDepFromAttr(const xmlChar *value)
+std::list<xmlChar*>
+SMS::getDepFromAttr(const xmlChar *value)
 {
   std::list<xmlChar *> idRetLst;
   String attribute((char *)value);
@@ -175,7 +175,6 @@ std::list<xmlChar*> SMS::getDepFromAttr(const xmlChar *value)
 	}
     }
 }
-
 
 void
 SMS::assoc(const Model::Node& node, const SmartPtr<Fragment>& frag)
@@ -240,7 +239,6 @@ SMS::traverse(const Model::Node& node)
 		  // questa prima resa serve per conoscere le dimensioni del frammento
 		  // e di tutti gli elementi MathML in esso contenuti
 		  
-		  
 		  view->render(evalContext, 0, 0);
 		  std::ostringstream os;
 		  SVG_libxml2_StreamRenderingContext context(logger, os, view);
@@ -292,15 +290,12 @@ float
 SMS::toUserUnits(const scaled& s) const
 {
   return (s.toFloat() * 72.27) / 90;
-  //return (s.toFloat());
-  
 }
 
 scaled
 SMS::fromUserUnits(float f) const
 {
   return (f * 90) / 72.27;
-  //return (f);
 }
 
 void
@@ -324,6 +319,37 @@ typedef Variant<float> NumberValue;
 typedef Variant<scaled> ScalarValue;
 typedef Variant<SmartPtr<Location> > RefValue;
 typedef Variant<Point> PairValue;
+
+String
+SMS::serializeValue(const SmartPtr<Value>& value) const
+{
+  if (is_a<RefValue>(value))
+    return smart_cast<RefValue>(value)->getValue()->getId();
+  else if (is_a<NumberValue>(value))
+    {
+      std::ostringstream os;
+      os << smart_cast<NumberValue>(value)->getValue();
+      return os.str();
+    }
+  else if (is_a<ScalarValue>(value))
+    {
+      std::ostringstream os;
+      os << toUserUnits(smart_cast<ScalarValue>(value)->getValue());
+      return os.str();
+    }
+  else if (is_a<PairValue>(value))
+    {
+      const SmartPtr<PairValue> pair = smart_cast<PairValue>(value);
+      std::ostringstream os;
+      os << toUserUnits(pair->getValue().x) << "," << toUserUnits(pair->getValue().y);
+      return os.str();
+    }
+  else
+    {
+      assert(false);
+      return "???";
+    }
+}
 
 bool
 SMS::asLocation(const SmartPtr<Value>& value, SmartPtr<Location>& res) const
@@ -374,6 +400,20 @@ SMS::getFunHandler(const String& name) const
   const FunMap::const_iterator p = funMap.find(name);
   if (p != funMap.end())
     return p->second;
+  else
+    return 0;
+}
+
+SmartPtr<Value>
+SMS::fun_pair(const HandlerArgs& args) const
+{
+  if (args.size() != 2)
+    return 0;
+
+  scaled s1;
+  scaled s2;
+  if (asScalar(args[0], s1) && asScalar(args[1], s2))
+    return PairValue::create(Point(s1, s2));
   else
     return 0;
 }
@@ -733,9 +773,6 @@ SMS::evalExpr(Scanner& scanner)
     case Scanner::ID:
       {
 	const String id = StringOfUCS4String(scanner.getString());
-
-
-
 	scanner.advance();
 	if (scanner.getToken() != Scanner::LPAREN)
           return 0;
@@ -779,6 +816,19 @@ SMS::evalExpr(Scanner& scanner)
 	  return 0;
       }
       break;
+    case Scanner::LBRACE:
+      {
+	scanner.advance();
+	const SmartPtr<Value> value = evalExpr(scanner);
+	if (scanner.getToken() == Scanner::RBRACE)
+	  {
+	    scanner.advance();
+	    return value;
+	  }
+	else
+	  return 0;
+      }
+      break;
     case Scanner::ERROR:
     case Scanner::EOS:
       return 0;
@@ -791,19 +841,43 @@ SMS::evalExpr(Scanner& scanner)
 }
 
 bool
+SMS::evalAttribute(const Model::Element& el, const String& value, const String& name)
+{
+  Scanner scanner(UCS4StringOfString(value), true);
+  String acc;
+
+  while (scanner.more())
+    {
+      if (scanner.getToken() == Scanner::RAW)
+	{
+	  acc.append(StringOfUCS4String(scanner.getString()));
+	  scanner.advance();
+	}
+      else if (SmartPtr<Value> v = evalExpr(scanner))
+	acc.append(serializeValue(v));
+      else
+	return false;
+    }
+
+  Model::setAttribute(el, name, acc);
+  return true;
+}
+
+#if 0
+bool
 SMS::evalScalarAttribute(const Model::Element& el, const String& value, const String& name)
 {
   Scanner scanner(UCS4StringOfString(value));
   scaled v;
   if (asScalar(evalExpr(scanner), v)) {
     std::ostringstream os;
-    // os << v.toFloat();
     os << toUserUnits(v); 
     Model::setAttribute(el, name, os.str());
     return true;
   }
   return false;
 }
+#endif
 
 bool
 SMS::evalPairAttribute(const Model::Element& el, const String& value, const String& name1, const String& name2)
@@ -828,28 +902,29 @@ SMS::evalAttributes(const Model::Node& node)
   assert(node);
   if (Model::getNodeType(node) == Model::ELEMENT_NODE)
     {
-      Model::Element elem = Model::asElement(node);
-	for (xmlAttr *attr =  node->properties; attr; attr = attr->next) {
-        if (attr->ns && Model::fromModelString(attr->ns->href) == GMV_NS_URI)
-	{
-          String name = Model::getNodeName((xmlNode*) attr);
-          String value = Model::getNodeValue((xmlNode*) attr);
-         if (name == "at")
-            evalPairAttribute(elem, value, "x", "y");
-          else if (name == "from")
-            evalPairAttribute(elem, value, "x1", "y1");
-          else if (name == "to")
-            evalPairAttribute(elem, value, "x2", "y2");
-          else if (name == "size")
-            evalPairAttribute(elem, value, "width", "height");
-          else if (name == "r")
-            evalPairAttribute(elem, value, "rx", "ry");
-          else if (name == "c")
-            evalPairAttribute(elem, value, "cx", "cy");
-          else
-            evalScalarAttribute(elem, value, name);
-	}
-	}
+      const Model::Element elem = Model::asElement(node);
+      const String elemName = Model::getNodeName(node);
+      for (xmlAttr *attr =  node->properties; attr; attr = attr->next) {
+	if (attr->ns && Model::fromModelString(attr->ns->href) == GMV_NS_URI)
+	  {
+	    const String name = Model::getNodeName((xmlNode*) attr);
+	    const String value = Model::getNodeValue((xmlNode*) attr);
+	    if (elemName == "rect" && name == "at")
+	      evalPairAttribute(elem, value, "x", "y");
+	    else if (elemName == "rect" && name == "size")
+	      evalPairAttribute(elem, value, "width", "height");
+	    else if ((elemName == "rect" || elemName == "ellipse") && name == "radius")
+	      evalPairAttribute(elem, value, "rx", "ry");
+	    else if ((elemName == "circle" || elemName == "ellipse") && name == "at")
+	      evalPairAttribute(elem, value, "cx", "cy");
+	    else if (elemName == "line" && name == "from")
+	      evalPairAttribute(elem, value, "x1", "y1");
+	    else if (elemName == "line" && name == "to")
+	      evalPairAttribute(elem, value, "x2", "y2");
+	    else
+	      evalAttribute(elem, value, name);
+	  }
+      }
       for (Model::NodeIterator p(node); p.more(); p.next())
 	evalAttributes(p.node());
     }

@@ -48,6 +48,7 @@ protected:
   static scaled evaluate(const Length&, const scaled& = 0);
   float toUserUnits(const scaled&) const;
   scaled fromUserUnits(float) const;
+  String serializeValue(const SmartPtr<Value>&) const;
   bool asLocation(const SmartPtr<Value>&, SmartPtr<Location>&) const;
   bool asNumber(const SmartPtr<Value>&, float&) const;
   bool asScalar(const SmartPtr<Value>&, scaled&) const;
@@ -56,10 +57,9 @@ protected:
   void substFragments(void);
   void evalAttributes(const Model::Node&);
   SmartPtr<Value> evalExpr(class Scanner&);
-  //String evalAttribute(const String&);
-  bool evalScalarAttribute(const Model::Element& , const String&, const String&);
+  bool evalAttribute(const Model::Element&, const String&, const String&);
+  // bool evalScalarAttribute(const Model::Element& , const String&, const String&);
   bool evalPairAttribute(const Model::Element&, const String&, const String&, const String&);
-  //scaled evalScaled(const String&, const scaled&);
   void dependAssocList(const Model::Node&, SmartPtr<Fragment>);
   bool isGmvNamespace(const xmlChar* ns);
   void createFragDepList();
@@ -72,6 +72,7 @@ protected:
 
   Handler getFunHandler(const String&) const;
 
+  SmartPtr<Value> fun_pair(const HandlerArgs&) const;
   SmartPtr<Value> fun_x(const HandlerArgs&) const;
   SmartPtr<Value> fun_y(const HandlerArgs&) const;
   SmartPtr<Value> fun_origin(const HandlerArgs&) const;
