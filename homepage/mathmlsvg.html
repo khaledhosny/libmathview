@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+  <title>MathML to SVG converter</title>
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link href="http://www.sti.uniurb.it/padovani/luca.css" rel="stylesheet" type="text/css"/>
+  <style type="text/css">
+  span.nt { 
+  	font-style: italic;
+  }
+  span.fun {
+  	font-family: monospace;
+  }	
+  span.t {
+  	font-weight: bold;
+  }	
+  table.syntax {
+  	margin-left: auto;
+  	margin-right: auto;
+  }
+  table.funtable {
+  	margin-left: auto;
+  	margin-right: auto;
+  }
+  body.bodytext {
+  	width: 800px;
+  }
+  </style>
+</head>
+
+<body class="bodytext">
+  <h3>MathML to SVG converter</h3>
+
+  This page documents the <tt>mathmlsvg</tt> utility provided with
+  <a href="http://mowgli.cs.unibo.it/software/mml-widget/">gtkmathview</a>.
+
+  <h4>Basic idea</h4>
+
+  <p>
+  Complex mathematical objects such as commutative diagrams or finite state
+  automata are typically represented as a combination of mathematical formulas
+  and more or less complicated graphical entities such as arrows, circles, and
+  other kinds of decorations. Given that there already exist two standard
+  languages for the representation of mathematical formulas (<a
+  href="">MathML</a>) and
+  vectorial graphics (<a href="">SVG</a>), it seems natural to try to combine the two languages
+  and provide one standard way of encoding such complex mathematical objects, so
+  that they can be displayed in Web pages.
+  </p>
+
+  <p>
+  It is possible to embed MathML fragments within a SVG document. Typically such
+  fragments are wrapped within a <tt>foreignObject</tt> SVG element, which is
+  specifically designed to include foreign markup in a SVG document. However,
+  with the exception of the <a href="">mozilla</a>-based Web browsers, no tool
+  is currently capable of correctly displaying documents mixing both MathML and
+  SVG markup. This situation, which is going to last for a long time, prevents
+  compound documents to be authored in an effective way.
+  </p>
+
+  <p>
+  GtkMathView provides an SVG backend which is capable of rendering a MathML
+  formula to SVG markup. One advantage of using this backend is that it is
+  possible to produce high-quality formulas in a commonly recognized language,
+  for which a large number of plugins and processing tools are available, as
+  opposed to MathML. In addition, it is possible to use this backend to convert
+  MathML islands embedded in an SVG document to SVG, so as to obtain a document
+  that is purely SVG, and yet it mixes formulas and graphics.
+  </p>
+
+  <p>
+  One problem of this solution is that the position of any piece of SVG graphics that is
+  meant to decorate a MathML (sub)formula must be guessed or refined by
+  trial-and-error. Indeed, as MathML encodes a formula according to its
+  structure, there is no way to know the precise location of a (sub)formula, as
+  this information is computed by the MathML rendering engine (GtkMathView in
+  this case) and discarded as the target document is created. Furthermore, any
+  subsequent change to the MathML fragments forces the compound document's
+  author to re-compute the exact position of the decorations, as these might
+  refer to portions of the MathML that have changed their position. In
+  particular, this problem prevents any batch generation of compound MathML+SVG
+  documents with nontrivial SVG decorations.
+  </p>
+
+  <p>
+  The <tt>mathmlsvg</tt> overcomes these problems as it allows SVG elements to
+  refer to the position of MathML (sub)formulas by means of their unique
+  identifier (in the <tt>id</tt> attribute). Thus, the author is allowed to
+  write a piece of SVG document that looks like this:
+<pre>
+  &lt;line gmv:from="origin($numerator1)" gmv:to="origin($denominator2)"/&gt;
+</pre>
+  with the intention to draw a line that connects the origins of the MathML
+  elements identified by <tt>numerator1</tt> and <tt>denominator2</tt>.
+  The idea is that <tt>mathmlsvg</tt>, which internally knows the position of
+  any MathML (sub)formula, in addition to converting any MathML fragment into the
+  corresponding SVG will also replace the <tt>gmv:from</tt> attribute with a
+  pair of SVG attributes <tt>x1</tt> and <tt>y1</tt> where their content is
+  exactly the origin of the MathML element identified as <tt>numerator1</tt>.
+  The attribute <tt>gmv:to</tt> undergoes a similar expansion, except that it
+  produces the attributes <tt>x2</tt> and <tt>y2</tt>.
+  </p>
+
+  <h4>Attribute syntax</h4>
+
+  <p>
+  Special attributes are normal XML attributes in the <tt>GtkMathView</tt>
+namespace, which is defined to be
+  </p>
+<pre>
+http://helm.cs.unibo.it/2005/GtkMathView
+</pre>
+
+  <p>
+  It is usually the case that this namespace is associated with the <tt>gmv</tt>
+prefix. All the examples that follow use this convention.
+  </p>
+
+<table class="syntax">
+  <tr>
+    <td><span class="nt">expr</span></td>
+    <td>::=</td>
+    <td><span class="t">number</span> [<span class="t">unit</span>]</td>
+  </tr>
+  <tr>
+    <td/><td>|</td>
+    <td>$<span class="t">identifier</span></td>
+  </tr>  
+  <tr>
+    <td/><td>|</td>
+    <td><span class="t">identifier</span>(<span
+    class="nt">expr</span><sub>1</sub>,...,<span
+    class="nt">expr</span><sub>n</sub>)</td>
+    <td>n &ge; 0 </td>
+  </tr>  
+  <tr>
+    <td/><td>|</td>
+    <td>(<span class="nt">expr</span>)</td>
+  </tr>  
+</table>
+
+
+  <h4>Available functions</h4>
+
+<table class="funtable" border="1">
+  <tr>
+    <th>Name</th>
+    <th>Arguments</th>
+    <th>Returned value</th>
+  </tr>
+  <tr>
+    <td class="fun">origin</td>
+    <td class="arg">loc</td>
+    <td>A pair (x,y) with the coordinates of the origin of <span
+    class="arg">loc</span>'s location.
+    </td>
+  </tr>
+</table>
+
+  <h4>Examples</h4>
+</body>
+</html>
