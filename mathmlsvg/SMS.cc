@@ -55,14 +55,17 @@ SMS::SMS(const SmartPtr<AbstractLogger>& _logger,
   funMap["width"] = &SMS::fun_width;
   funMap["height"] = &SMS::fun_height;
   funMap["depth"] = &SMS::fun_depth;
-  funMap["nw"] = &SMS::fun_nw;
-  funMap["n"] = &SMS::fun_n;
-  funMap["ne"] = &SMS::fun_ne;
-  funMap["e"] = &SMS::fun_e;
-  funMap["se"] = &SMS::fun_se;
-  funMap["s"] = &SMS::fun_s;
-  funMap["sw"] = &SMS::fun_sw;
-  funMap["w"] = &SMS::fun_w;
+  funMap["size"] = &SMS::fun_size;
+
+  funMap["north-west"] = &SMS::fun_north_west;
+  funMap["north"] = &SMS::fun_north;
+  funMap["north-east"] = &SMS::fun_north_east;
+  funMap["east"] = &SMS::fun_east;
+  funMap["south-east"] = &SMS::fun_south_east;
+  funMap["south"] = &SMS::fun_south;
+  funMap["south-west"] = &SMS::fun_south_west;
+  funMap["west"] = &SMS::fun_west;
+
   funMap["depart"]  = &SMS::fun_depart;
 }
 
@@ -472,6 +475,19 @@ SMS::fun_center(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
+SMS::fun_size(const HandlerArgs& args) const
+{
+  if (args.size() != 1)
+    return 0;
+  
+  SmartPtr<Location> loc;
+  if (asLocation(args[0], loc))
+    return PairValue::create(Point(loc->getBoundingBox().width, loc->getBoundingBox().height + loc->getBoundingBox().depth));
+  else
+    return 0;
+}
+
+SmartPtr<Value>
 SMS::fun_width(const HandlerArgs& args) const
 {
   if (args.size() != 1)
@@ -594,7 +610,7 @@ SMS::fun_neg(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_nw(const HandlerArgs& args) const
+SMS::fun_north_west(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -605,7 +621,7 @@ SMS::fun_nw(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_n(const HandlerArgs& args) const
+SMS::fun_north(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -616,7 +632,7 @@ SMS::fun_n(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_ne(const HandlerArgs& args) const
+SMS::fun_north_east(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -627,7 +643,7 @@ SMS::fun_ne(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_e(const HandlerArgs& args) const
+SMS::fun_east(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -638,7 +654,7 @@ SMS::fun_e(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_se(const HandlerArgs& args) const
+SMS::fun_south_east(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -649,7 +665,7 @@ SMS::fun_se(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_s(const HandlerArgs& args) const
+SMS::fun_south(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -660,7 +676,7 @@ SMS::fun_s(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_sw(const HandlerArgs& args) const
+SMS::fun_south_west(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;
@@ -671,7 +687,7 @@ SMS::fun_sw(const HandlerArgs& args) const
 }
 
 SmartPtr<Value>
-SMS::fun_w(const HandlerArgs& args) const
+SMS::fun_west(const HandlerArgs& args) const
 {
   if (args.size() != 1)
     return 0;

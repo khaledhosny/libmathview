@@ -79,20 +79,21 @@ protected:
   SmartPtr<Value> fun_center(const HandlerArgs&) const;
   SmartPtr<Value> fun_width(const HandlerArgs&) const;
   SmartPtr<Value> fun_height(const HandlerArgs&) const;
+  SmartPtr<Value> fun_size(const HandlerArgs&) const;
   SmartPtr<Value> fun_depth(const HandlerArgs&) const;
   SmartPtr<Value> fun_add(const HandlerArgs&) const;
   SmartPtr<Value> fun_sub(const HandlerArgs&) const;
   SmartPtr<Value> fun_mul(const HandlerArgs&) const;
   SmartPtr<Value> fun_div(const HandlerArgs&) const;
   SmartPtr<Value> fun_neg(const HandlerArgs&) const;
-  SmartPtr<Value> fun_nw(const HandlerArgs&) const;
-  SmartPtr<Value> fun_n(const HandlerArgs&) const;
-  SmartPtr<Value> fun_ne(const HandlerArgs&) const;
-  SmartPtr<Value> fun_e(const HandlerArgs&) const;
-  SmartPtr<Value> fun_se(const HandlerArgs&) const;
-  SmartPtr<Value> fun_s(const HandlerArgs&) const;
-  SmartPtr<Value> fun_sw(const HandlerArgs&) const;
-  SmartPtr<Value> fun_w(const HandlerArgs&) const;
+  SmartPtr<Value> fun_north_west(const HandlerArgs&) const;
+  SmartPtr<Value> fun_north(const HandlerArgs&) const;
+  SmartPtr<Value> fun_north_east(const HandlerArgs&) const;
+  SmartPtr<Value> fun_east(const HandlerArgs&) const;
+  SmartPtr<Value> fun_south_east(const HandlerArgs&) const;
+  SmartPtr<Value> fun_south(const HandlerArgs&) const;
+  SmartPtr<Value> fun_south_west(const HandlerArgs&) const;
+  SmartPtr<Value> fun_west(const HandlerArgs&) const;
   SmartPtr<Value> fun_depart(const HandlerArgs&) const;
 
 private:
