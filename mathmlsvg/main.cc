@@ -55,16 +55,12 @@ static double height = 29.7;
 static Length::Unit unitId = Length::CM_UNIT;
 static double xMargin = 2;
 static double yMargin = 2;
-static gint fontSize = DEFAULT_FONT_SIZE;
-static gboolean cropping = TRUE;
-static gboolean cutFileName = TRUE;
-static gchar* configS = 0;
-static gchar* unitS = 0;
-static gchar* pageSizeS = 0;
-static gchar* marginsS = 0;
-static gint logLevel = LOG_ERROR;
-static gboolean logLevelSet = FALSE;
-static gboolean extendedSVG = FALSE;
+static gdouble fontSize = DEFAULT_FONT_SIZE;
+static bool cropping = true;
+static bool cutFileName = true;
+static gchar* configPath = 0;
+static gint logLevel = -1;
+static bool extendedSVG = false;
 static gboolean version = FALSE;
 static gchar** filenameA = 0;
 
@@ -80,96 +76,9 @@ printVersion()
 }
 
 static gboolean
-cropCB(const gchar* name, const gchar* value, gpointer, GError**)
+unitArgCB(const gchar*, const gchar* s, gpointer, GError**)
 {
-  std::cout << "option " << name << " = " << value << std::endl;
-}
-
-static GOptionEntry optionsTable[] = {
-  { "version", 'V', 0, G_OPTION_ARG_NONE, &version, "Output version information", 0 },
-  { "verbose", 'v', 0, G_OPTION_ARG_INT, &logLevel, "Display messages", "[0-3]" },
-  { "unit", 'u', 0, G_OPTION_ARG_STRING, &unitS, "Unit for dimensions (default='cm')", "<unit>" },
-  { "page-size", 'p', 0, G_OPTION_ARG_STRING, &pageSizeS, "Page size (width x height) (default = 21 x 29.7)", "<float>x<float>" },
-  { "margins", 'm', 0, G_OPTION_ARG_STRING, &marginsS, "Margins (top x left) (default = 2 x 2)", "<float>x<float>" },
-  { "font-size", 'f', 0, G_OPTION_ARG_INT, &fontSize, "Default font size (in pt, default=10)", "<float>" },
-  { "config", 0, 0, G_OPTION_ARG_FILENAME, &configS, "Configuration file path", "<path>" },
-  { "crop", 'r', 0, G_OPTION_ARG_CALLBACK, (gpointer) &cropCB, "Enable/disable cropping to bounding box (default='yes')", "[yes,no]" },
-
-#if 0
-  { "cut-filename", G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, cutFilenameCB, "Cut the prefix dir from the output file (default='yes')", "[yes,no]" },
-
-  { "extended-svg", 'x', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, extendedSVGCB, "Extended SVG processing (default='no')", "[yes,no]" },
-#endif
-
-  { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &filenameA, 0, 0 },
-  { 0, 0, 0, G_OPTION_ARG_NONE, 0, 0, 0 }
-};
-
-static void
-usage(const char* msg, const char* arg)
-{
-  fprintf(stderr, "\
-Valid units are:\n\n\
-  cm    centimeter\n\
-  mm    millimeter\n\
-  in    inch (1 in = 2.54 cm)\n\
-  pt    point (1 in = 72.27 pt)\n\
-  pc    pica (1 pc = 12 pt)\n\
-  px    pixel (1 in = 72 px)\n\
-");
-  if (msg && arg) fprintf(stderr, "%s %s\n", msg, arg);
-  exit(0);
-}
-
-#if 0
-static void
-parseError(poptContext optCon, const char* option)
-{
-  assert(option != NULL);
-  usage(optCon, 1, "error while parsing option", option);
-}
-#endif
-
-static bool
-parseSize(const char* s)
-{
-  assert(s != NULL);
-
-  char* nptr;
-
-  double w = strtod(s, &nptr);
-  if (nptr == s) return false;
-  if (nptr == NULL || *nptr != 'x') return false;
-
-  s = nptr + 1;
-  double h = strtod(s, &nptr);
-  if (nptr == s) return false;
-
-  width = w;
-  height = h;
-
-  return true;
-}
-
-static bool
-parseBoolean(const String& s, bool& res)
-{
-  std::cout << "option = " << s << std::endl;
-  if (s == "yes") {
-    res = true;
-    return true;
-  } else if (s == "no") {
-    res = false;
-    return true;
-  }
-
-  return false;
-}
-
-static bool
-parseUnit(const char* s)
-{
-  assert(s != NULL);
+  assert(s != 0);
 
   struct {
     const char* name;
@@ -185,35 +94,113 @@ parseUnit(const char* s)
   };
 
   unsigned i;
-  for (i = 0; unit[i].name != NULL && strcmp(unit[i].name, s); i++) ;
-
-  if (unit[i].name == NULL) return false;
+  for (i = 0; unit[i].name && strcmp(unit[i].name, s); i++) ;
+  if (!unit[i].name) return FALSE;
 
   unitId = unit[i].id;
 
-  return true;
+  return TRUE;
 }
 
-static bool
-parseMargins(const char* s)
+static gboolean
+floatPairArgCB(const gchar* name, const gchar* s, gpointer, GError**)
 {
-  assert(s != NULL);
+  assert(name != 0);
+  assert(s != 0);
 
-  char* nptr;
+  gchar* nptr;
 
-  double x = strtod(s, &nptr);
-  if (nptr == s) return false;
-  if (nptr == NULL || *nptr != 'x') return false;
+  const double x = strtod(s, &nptr);
+  if (nptr == s) return FALSE;
+  if (nptr == NULL || *nptr != 'x') return FALSE;
   
   s = nptr + 1;
-  double y = strtod(s, &nptr);
-  if (nptr == s) return false;
+  const double y = strtod(s, &nptr);
+  if (nptr == s) return FALSE;
 
-  xMargin = x;
-  yMargin = y;
+  const String n = name;
+  if (n == "page-size")
+    {
+      width = x;
+      height = y;
+    }
+  else if (n == "margins")
+    {
+      xMargin = x;
+      yMargin = y;
+    }
 
-  return true;
+  return TRUE;
 }
+
+static gboolean
+booleanArgCB(const gchar* name, const gchar* value, gpointer, GError**)
+{
+  assert(name != 0);
+  const String n = name;
+  const String v = (value == 0) ? "yes" : value;
+
+  if (n != "yes" && n != "no")
+    return FALSE;
+
+  const bool res = n == "yes";
+  if (n == "crop")
+    cropping = res;
+  else if (n == "cut-filename")
+    cutFileName = res;
+  else if (n == "extended-svg")
+    extendedSVG = res;
+
+  return TRUE;
+}
+
+static GOptionEntry optionsTable[] = {
+  { "version", 'V',
+    0, G_OPTION_ARG_NONE, &version,
+    "Output version information", 0
+  },
+  { "verbose", 'v',
+    0, G_OPTION_ARG_INT, &logLevel,
+    "Display messages", "[0-3]"
+  },
+  { "unit", 'u',
+    0, G_OPTION_ARG_CALLBACK, (gpointer) &unitArgCB,
+    "Unit for dimensions (default='cm')", "<unit>"
+  },
+  { "page-size", 'p',
+    0, G_OPTION_ARG_CALLBACK, (gpointer) &floatPairArgCB,
+    "Page size (width x height) (default = 21 x 29.7)", "<float>x<float>"
+  },
+  { "margins", 'm',
+    0, G_OPTION_ARG_CALLBACK, (gpointer) &floatPairArgCB,
+    "Margins (top x left) (default = 2 x 2)", "<float>x<float>"
+  },
+  { "font-size", 'f',
+    0, G_OPTION_ARG_DOUBLE, &fontSize,
+    "Default font size (in pt, default=10)", "<float>"
+  },
+  { "config", 0,
+    0, G_OPTION_ARG_FILENAME, &configPath,
+    "Configuration file path", "<path>"
+  },
+  { "crop", 'r',
+    G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, (gpointer) &booleanArgCB,
+    "Enable/disable cropping to bounding box (default='yes')", "[yes,no]"
+  },
+  { "cut-filename", 0,
+    G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, (gpointer) &booleanArgCB,
+    "Cut the prefix dir from the output file (default='yes')", "[yes,no]"
+  },
+  { "extended-svg", 'x', 
+    G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_CALLBACK, (gpointer) &booleanArgCB,
+    "Extended SVG processing (default='no')", "[yes,no]"
+  },
+  { G_OPTION_REMAINING, 0,
+    0, G_OPTION_ARG_FILENAME_ARRAY, &filenameA,
+    0, 0
+  },
+  { 0, 0, 0, G_OPTION_ARG_NONE, 0, 0, 0 }
+};
 
 static char*
 getOutputFileName(const char* in)
@@ -244,75 +231,37 @@ main(int argc, char* argv[])
 {
   GError* error = 0;
   GOptionContext* ctxt = g_option_context_new("<filename> ...");
+  g_option_context_set_description(ctxt, "\
+Valid units are:\n\
+  cm    centimeter\n\
+  mm    millimeter\n\
+  in    inch (1 in = 2.54 cm)\n\
+  pt    point (1 in = 72.27 pt)\n\
+  pc    pica (1 pc = 12 pt)\n\
+  px    pixel (1 in = 72 px)\n\
+");
+
   g_option_context_set_help_enabled(ctxt, TRUE);
   g_option_context_add_main_entries(ctxt, optionsTable, 0);
-  g_option_context_parse(ctxt, &argc, &argv, &error);
 
-#if 0  
-  int c;
-  while ((c = poptGetNextOpt(ctxt)) >= 0)
+  if (!g_option_context_parse(ctxt, &argc, &argv, &error))
     {
-      const char* arg = poptGetOptArg(ctxt);
-      switch (c)
-	{
-	case OPTION_VERSION:
-	  printVersion();
-	  break;
-	case OPTION_VERBOSE:
-	  if (logLevel < 0 || logLevel > 3) parseError(ctxt, "verbose");
-	  logLevelSet = true;
-	  break;
-	case OPTION_PAGE_SIZE:
-	  assert(arg != 0);
-	  if (!parseSize(arg)) parseError(ctxt, "size");
-	  break;
-	case OPTION_UNIT:
-	  assert(arg != 0);
-	  if (!parseUnit(arg)) parseError(ctxt, "unit");
-	  break;
-	case OPTION_MARGINS:
-	  assert(arg != 0);
-	  if (!parseMargins(arg)) parseError(ctxt, "margins");
-	  break;
-	case OPTION_FONT_SIZE:
-	  break;
-	case OPTION_CROP:
-	  if (arg == 0) cropping = true;
-	  else if (!parseBoolean(arg, cropping)) parseError(ctxt, "crop");
-	  break;
-	case OPTION_CUT_FILENAME:
-	  if (arg == 0) cutFileName = true;
-	  else if (!parseBoolean(arg, cutFileName)) parseError(ctxt, "cut-filename");
-	  break;
-	case OPTION_CONFIG:
-	  assert(arg != 0);
-	  configPath = strdup(arg);
-	  break;
-	case OPTION_XSVG:
-	  if (arg == 0) extendedSVG = true;
-	  else if (!parseBoolean(arg, extendedSVG)) parseError(ctxt, "extended-svg");
-	  break;
-	default:
-	  assert(false);
-	}
-    }
-
-  if (c < -1)
-    {
-      /* an error occurred during option processing */
-      fprintf(stderr, "%s: %s\n",
-	      poptBadOption(ctxt, POPT_BADOPTION_NOALIAS),
-	      poptStrerror(c));
+      std::cerr << "error: unrecognized option or syntax error, use --help for help" << std::endl;
       return 1;
     }
-#endif
 
-  if (configS == 0) configS = getenv("GTKMATHVIEWCONF");
+  if (version)
+    {
+      printVersion();
+      return 0;
+    }
+
+  if (configPath == 0) configPath = getenv("GTKMATHVIEWCONF");
 
   SmartPtr<AbstractLogger> logger = Logger::create();
   logger->setLogLevel(LogLevelId(logLevel));
-  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configS);
-  if (logLevelSet) logger->setLogLevel(LogLevelId(logLevel));
+  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
+  if (logLevel >= LOG_ERROR && logLevel <= LOG_DEBUG) logger->setLogLevel(LogLevelId(logLevel));
   SmartPtr<Backend> backend = SVG_Backend::create(logger, configuration);
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
@@ -386,8 +335,6 @@ main(int argc, char* argv[])
 	  SMS sms(logger, view);
 	  sms.process(file, outName);
 	}
-
-      optind++;
     }
 
   g_option_context_free(ctxt);
