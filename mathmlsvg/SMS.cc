@@ -729,18 +729,6 @@ SMS::fun_div(const HandlerArgs& args) const
  
 }
 
-Point intersezione(Point lato1, Point lato2, Point retta1, Point retta2)
-{
-  if (retta1.x == retta2.x)
-    if (lato1.y == lato2.y)
-      return Point(retta1.x, lato1.y);
-    else assert(false);
-  else if (lato1.x == lato2.x)
-    return Point(lato1.x, retta1.y);
-  else assert(false);
-
-}
-
 SmartPtr<Location>
 SMS::getLocationOfId(const String& name) const
 {
@@ -811,8 +799,6 @@ SMS::evalExpr(Scanner& scanner)
 	      return 0;
 	    else scanner.advance();
           }
-
-
 
 	if (Handler handler = getFunHandler(id))
 	  return (this->*handler)(args);
@@ -925,7 +911,7 @@ SMS::evalAttributes(const Model::Node& node)
 	  {
 	    const String name = Model::getNodeName((xmlNode*) attr);
 	    const String value = Model::getNodeValue((xmlNode*) attr);
-	    if (elemName == "rect" && name == "at")
+	    if ((elemName == "rect" || elemName == "text") && name == "at")
 	      evalPairAttribute(elem, value, "x", "y");
 	    else if (elemName == "rect" && name == "size")
 	      evalPairAttribute(elem, value, "width", "height");
@@ -964,7 +950,7 @@ void printDocument(Model::Node node)
 }
 
 bool
-SMS::process(const String& uri)
+SMS::process(const String& uri, const String& outName)
 {
   doc = Model::document(*logger, uri, false);
   if (!doc) return false;
@@ -1005,7 +991,8 @@ SMS::process(const String& uri)
   evalAttributes(Model::asNode(Model::getDocumentElement(doc)));
   substFragments();
 //  printDocument(Model::asNode(Model::getDocumentElement(doc)));
-  xmlSaveFile("a.svg", doc);
+  xmlSaveFile(outName.c_str(), doc);
+
   return true;
 }
 

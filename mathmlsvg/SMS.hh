@@ -38,7 +38,7 @@ class SMS
 public:
   SMS(const SmartPtr<class AbstractLogger>&, const SmartPtr<MathView>&);
 
-  bool process(const String&);
+  bool process(const String&, const String&);
   Model::Document getDocument(void) const { return doc; }
 
 protected:

@@ -26,14 +26,13 @@ mathmlsvg_SOURCES = \
   $(NULL)
 
 mathmlsvg_LDADD = \
-  $(POPT_LIBS) \
   $(GLIB_LIBS) \
   $(top_builddir)/src/backend/svg/libmathview_backend_svg.la \
   $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
   $(NULL)
 
 INCLUDES = \
-  $(POPT_CFLAGS) \
+  $(GLIB_CFLAGS) \
   $(XML_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
