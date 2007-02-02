@@ -39,7 +39,6 @@ public:
   SMS(const SmartPtr<class AbstractLogger>&, const SmartPtr<MathView>&);
 
   bool process(const String&, const String&);
-  Model::Document getDocument(void) const { return doc; }
 
 protected:
   typedef std::vector<SmartPtr<Value> > HandlerArgs;
@@ -100,7 +99,6 @@ private:
   SmartPtr<class AbstractLogger> logger;
   SmartPtr<MathView> view;
   SVG_EvalRenderingContext evalContext;
-  Model::Document doc;
   std::list<SmartPtr<Fragment> > fragmentList;
   std::list<xmlChar*> getDepFromAttr(const xmlChar *value);
 

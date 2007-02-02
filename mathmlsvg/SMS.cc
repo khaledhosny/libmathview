@@ -932,29 +932,34 @@ SMS::evalAttributes(const Model::Node& node)
     }
 }
 
-void printDocument(Model::Node node)
-{
-  for (Model::Node ptr = node;
-    ptr; 
-      ptr = ptr->next)
-  {
-    std::cerr << ptr->name;
-    if (ptr->content)
-      std::cerr << ptr->content;
-    std::cerr << " ( ";
-    if (ptr->children){
-      for (Model::Node tmp = ptr->children; tmp; tmp = tmp->next)
-        printDocument(tmp);
-      std::cerr << " ) ";}
-  }
-}
-
 bool
 SMS::process(const String& uri, const String& outName)
 {
-  doc = Model::document(*logger, uri, false);
+  const Model::Document doc = Model::document(*logger, uri, false);
   if (!doc) return false;
-  traverse(Model::asNode(Model::getDocumentElement(doc)));
+
+  const Model::Element root = Model::getDocumentElement(doc);
+  assert(root);
+
+#if 0
+  // conversion from physical to user coordinates
+  // 1in : 90 = width : x  ==>  x = (90 * width) / 1in
+
+  // (1) if there is a viewbox attribute on the root svg element, adjust
+  //     the page width and height so that they are in the same ratio as
+  //     the viewbox width and height
+  // (2) if there is no width (height) attribute in the root svg element,
+  //     set it with the page width (height)
+  // (3) if there is no viewbox in the source document, set the viewbox
+  //     in the target document computed with the formula above
+  // (4) use the viewbox attribute to compute the ratio between scaled
+  //     points and user coordinates
+
+  if (!Model::hasAttribute(root, "width"))
+    Model::setAttribute(root, "width", ...);
+#endif
+
+  traverse(Model::asNode(root));
   findFragmentDependencies();
 #if 0
   std::cerr << "stampa dipendenze" << std::endl;
@@ -990,7 +995,6 @@ SMS::process(const String& uri, const String& outName)
     }
   evalAttributes(Model::asNode(Model::getDocumentElement(doc)));
   substFragments();
-//  printDocument(Model::asNode(Model::getDocumentElement(doc)));
   xmlSaveFile(outName.c_str(), doc);
 
   return true;

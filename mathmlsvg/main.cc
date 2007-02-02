@@ -244,9 +244,11 @@ Valid units are:\n\
   g_option_context_set_help_enabled(ctxt, TRUE);
   g_option_context_add_main_entries(ctxt, optionsTable, 0);
 
+  SmartPtr<AbstractLogger> logger = Logger::create();
+
   if (!g_option_context_parse(ctxt, &argc, &argv, &error))
     {
-      std::cerr << "error: unrecognized option or syntax error, use --help for help" << std::endl;
+      logger->out(LOG_ERROR, "unrecognized option, use -? or --help for help");
       return 1;
     }
 
@@ -258,7 +260,6 @@ Valid units are:\n\
 
   if (configPath == 0) configPath = getenv("GTKMATHVIEWCONF");
 
-  SmartPtr<AbstractLogger> logger = Logger::create();
   logger->setLogLevel(LogLevelId(logLevel));
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
   if (logLevel >= LOG_ERROR && logLevel <= LOG_DEBUG) logger->setLogLevel(LogLevelId(logLevel));
