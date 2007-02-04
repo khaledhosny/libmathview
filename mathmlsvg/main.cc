@@ -50,12 +50,15 @@
 
 typedef libxml2_MathView MathView;
 
+#define DEFAULT_DPI 90
+
 static double width = 21;
 static double height = 29.7;
 static Length::Unit unitId = Length::CM_UNIT;
 static double xMargin = 2;
 static double yMargin = 2;
 static gdouble fontSize = DEFAULT_FONT_SIZE;
+static gdouble dpi = DEFAULT_DPI;
 static bool cropping = true;
 static bool cutFileName = true;
 static gchar* configPath = 0;
@@ -119,12 +122,12 @@ floatPairArgCB(const gchar* name, const gchar* s, gpointer, GError**)
   if (nptr == s) return FALSE;
 
   const String n = name;
-  if (n == "page-size")
+  if (n == "--page-size" || n == "-p")
     {
       width = x;
       height = y;
     }
-  else if (n == "margins")
+  else if (n == "--margins" || n == "-m")
     {
       xMargin = x;
       yMargin = y;
@@ -140,16 +143,18 @@ booleanArgCB(const gchar* name, const gchar* value, gpointer, GError**)
   const String n = name;
   const String v = (value == 0) ? "yes" : value;
 
-  if (n != "yes" && n != "no")
+  if (v != "yes" && v != "no")
     return FALSE;
 
-  const bool res = n == "yes";
-  if (n == "crop")
+  const bool res = v == "yes";
+  if (n == "--crop" || n == "-r")
     cropping = res;
-  else if (n == "cut-filename")
+  else if (n == "--cut-filename")
     cutFileName = res;
-  else if (n == "extended-svg")
+  else if (n == "--extended-svg" || n == "-x")
     extendedSVG = res;
+  else
+    assert(false);
 
   return TRUE;
 }
@@ -178,6 +183,10 @@ static GOptionEntry optionsTable[] = {
   { "font-size", 'f',
     0, G_OPTION_ARG_DOUBLE, &fontSize,
     "Default font size (in pt, default=10)", "<float>"
+  },
+  { "dpi", 0,
+    0, G_OPTION_ARG_DOUBLE, &dpi,
+    "DPI (dots per inch, default=90)", "<float>"
   },
   { "config", 0,
     0, G_OPTION_ARG_FILENAME, &configPath,
@@ -258,6 +267,12 @@ Valid units are:\n\
       return 0;
     }
 
+  if (dpi < EPSILON)
+    {
+      logger->out(LOG_WARNING, "invalid DPI value, restored to default");
+      dpi = DEFAULT_DPI;
+    }
+
   if (configPath == 0) configPath = getenv("GTKMATHVIEWCONF");
 
   logger->setLogLevel(LogLevelId(logLevel));
@@ -333,7 +348,7 @@ Valid units are:\n\
 	}
       else
 	{
-	  SMS sms(logger, view);
+	  SMS sms(logger, view, widthS, heightS, dpi);
 	  sms.process(file, outName);
 	}
     }

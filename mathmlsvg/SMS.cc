@@ -34,13 +34,17 @@
 #include "LengthAux.hh"
 #include "Element.hh"
 #include "Point.hh"
+#include "TemplateStringParsers.hh"
 
 #define SVG_NS_URI "http://www.w3.org/2000/svg"
 #define GMV_NS_URI "http://helm.cs.unibo.it/2005/GtkMathView"
  
 SMS::SMS(const SmartPtr<AbstractLogger>& _logger,
-	 const SmartPtr<MathView>& _view)
-  : logger(_logger), view(_view), evalContext(logger, view)
+	 const SmartPtr<MathView>& _view,
+	 const scaled& _pageWidth, const scaled& _pageHeight,
+	 float _dpi)
+  : logger(_logger), view(_view), evalContext(logger, view),
+    pageWidth(_pageWidth), pageHeight(_pageHeight), dpi(_dpi)
 {
   funMap["pair"] = &SMS::fun_pair;
   funMap["add"] = &SMS::fun_add;
@@ -286,19 +290,16 @@ SMS::traverse(const Model::Node& node)
     }
 }
 
-
-#include "BoundingBoxAux.hh"
-
 float
 SMS::toUserUnits(const scaled& s) const
 {
-  return (s.toFloat() * 72.27) / 90;
+  return (s.toFloat() * viewBoxWidth) / canvasWidth.toFloat();
 }
 
 scaled
 SMS::fromUserUnits(float f) const
 {
-  return (f * 90) / 72.27;
+  return (canvasWidth * f) / viewBoxWidth;
 }
 
 void
@@ -911,7 +912,7 @@ SMS::evalAttributes(const Model::Node& node)
 	  {
 	    const String name = Model::getNodeName((xmlNode*) attr);
 	    const String value = Model::getNodeValue((xmlNode*) attr);
-	    if ((elemName == "rect" || elemName == "text") && name == "at")
+	    if ((elemName == "rect" || elemName == "text" || elemName == "foreignObject") && name == "at")
 	      evalPairAttribute(elem, value, "x", "y");
 	    else if (elemName == "rect" && name == "size")
 	      evalPairAttribute(elem, value, "width", "height");
@@ -941,6 +942,84 @@ SMS::process(const String& uri, const String& outName)
   const Model::Element root = Model::getDocumentElement(doc);
   assert(root);
 
+  logger->out(LOG_INFO, "Page size: %f x %f", pageWidth.toFloat(), pageHeight.toFloat());
+
+  viewBoxX = 0;
+  viewBoxY = 0;
+  viewBoxWidth = 0;
+  viewBoxHeight = 0;
+  if (Model::hasAttribute(root, "viewBox")) {
+    const UCS4String viewbox = UCS4StringOfString(Model::getAttribute(root, "viewBox"));
+    UCS4String::const_iterator p = viewbox.begin();
+    UCS4String::const_iterator next = viewbox.begin();
+
+    if (SmartPtr<Value> v = Parse<ScanInteger, int>::parse(p, viewbox.end(), next)) {
+      viewBoxX = ToInteger(v);
+      p = next;
+    }
+    
+    if (SmartPtr<Value> v = Parse<ScanInteger, int>::parse(p, viewbox.end(), next)) {
+      viewBoxY = ToInteger(v);
+      p = next;
+    }
+    
+    if (SmartPtr<Value> v = Parse<ScanInteger, int>::parse(p, viewbox.end(), next)) {
+      viewBoxWidth = ToInteger(v);
+      p = next;
+    }
+    
+    if (SmartPtr<Value> v = Parse<ScanInteger, int>::parse(p, viewbox.end(), next)) {
+      viewBoxHeight = ToInteger(v);
+      p = next;
+    }
+  }
+
+  if (viewBoxWidth > EPSILON && viewBoxHeight > EPSILON) {
+    const float ratio = ((float) viewBoxWidth) / ((float) viewBoxHeight);
+    const scaled adjustedPageWidth = pageHeight * ratio;
+    const scaled adjustedPageHeight = pageWidth / ratio;
+
+    if (adjustedPageWidth > pageWidth) {
+      assert(adjustedPageHeight <= pageHeight);
+      pageHeight = adjustedPageHeight;
+    } else {
+      assert(adjustedPageWidth <= pageWidth);
+      pageWidth = adjustedPageWidth;
+    }
+  }
+
+  canvasWidth = pageWidth;
+  canvasHeight = pageHeight;
+
+  logger->out(LOG_INFO, "Adjusted page size: %f x %f", canvasWidth.toFloat(), canvasHeight.toFloat());
+
+  if (Model::hasAttribute(root, "width")) {
+    const UCS4String s = UCS4StringOfString(Model::getAttribute(root, "width"));
+    UCS4String::const_iterator next;
+    if (SmartPtr<Value> v = ParseLength::parse(s.begin(), s.end(), next))
+      canvasWidth = evaluate(ToLength(v), canvasWidth);
+  }
+
+  if (Model::hasAttribute(root, "height")) {
+    const UCS4String s = UCS4StringOfString(Model::getAttribute(root, "height"));
+    UCS4String::const_iterator next;
+    if (SmartPtr<Value> v = ParseLength::parse(s.begin(), s.end(), next))
+      canvasHeight = evaluate(ToLength(v), canvasHeight);
+  }
+
+  logger->out(LOG_INFO, "Canvas size: %f x %f", canvasWidth.toFloat(), canvasHeight.toFloat());
+
+  if (viewBoxWidth < EPSILON)
+    viewBoxWidth = dpi * canvasWidth.toFloat() / 72.27f;
+
+  if (viewBoxHeight < EPSILON)
+    viewBoxHeight = dpi * canvasHeight.toFloat() / 72.27f;
+
+  logger->out(LOG_INFO, "Viewbox size: %f x %f", viewBoxWidth, viewBoxHeight);
+  logger->out(LOG_DEBUG, "Ratio: %f x %f",
+	      viewBoxWidth / canvasWidth.toFloat(),
+	      viewBoxHeight / canvasHeight.toFloat());
+
 #if 0
   // conversion from physical to user coordinates
   // 1in : 90 = width : x  ==>  x = (90 * width) / 1in
@@ -954,9 +1033,6 @@ SMS::process(const String& uri, const String& outName)
   //     in the target document computed with the formula above
   // (4) use the viewbox attribute to compute the ratio between scaled
   //     points and user coordinates
-
-  if (!Model::hasAttribute(root, "width"))
-    Model::setAttribute(root, "width", ...);
 #endif
 
   traverse(Model::asNode(root));
@@ -975,7 +1051,7 @@ SMS::process(const String& uri, const String& outName)
   std::list<SmartPtr<Fragment> > sortedFragments;
   if (sortFragments(sortedFragments))
     {
-      std::cerr << "circular dependencies\n";
+      logger->out(LOG_ERROR, "circular dependencies in MathML fragments");
       exit(1);
     }
   

@@ -36,7 +36,8 @@
 class SMS
 {
 public:
-  SMS(const SmartPtr<class AbstractLogger>&, const SmartPtr<MathView>&);
+  SMS(const SmartPtr<class AbstractLogger>&, const SmartPtr<MathView>&,
+      const scaled&, const scaled&, float);
 
   bool process(const String&, const String&);
 
@@ -101,6 +102,15 @@ private:
   SVG_EvalRenderingContext evalContext;
   std::list<SmartPtr<Fragment> > fragmentList;
   std::list<xmlChar*> getDepFromAttr(const xmlChar *value);
+  scaled pageWidth;
+  scaled pageHeight;
+  scaled canvasWidth;
+  scaled canvasHeight;
+  float viewBoxX;
+  float viewBoxY;
+  float viewBoxWidth;
+  float viewBoxHeight;
+  float dpi;
 
   typedef HASH_MAP_NS::hash_map<String,SmartPtr<Fragment>,StringHash,StringEq> IdFragmentMap;
   IdFragmentMap idFragmentMap;
