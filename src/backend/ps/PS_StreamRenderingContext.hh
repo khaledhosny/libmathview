@@ -20,7 +20,6 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <padovani@sti.uniurb.it>
 
-
 #ifndef __PS_StreamRenderingContext_hh__
 #define __PS_StreamRenderingContext_hh__
 
@@ -30,11 +29,13 @@
 #include "PS_RenderingContext.hh"
 #include "String.hh"
 #include "FontDataBase.hh"
+#include "T1_FontDataBase.hh"
 
 class GMV_BackEnd_EXPORT PS_StreamRenderingContext : public PS_RenderingContext
 {
 public:
-  PS_StreamRenderingContext(const SmartPtr<class AbstractLogger>&, std::ostream&);
+  PS_StreamRenderingContext(const SmartPtr<class AbstractLogger>&, std::ostream&,
+			    SmartPtr<FontDataBase> fDb);
   virtual ~PS_StreamRenderingContext();
   
   virtual void documentStart(const scaled& x, const scaled& y,
@@ -42,7 +43,7 @@ public:
   virtual void documentEnd(void);
 
 protected:
-  virtual String getId(const SmartPtr<class Element>&) const;
+//virtual String getId(const SmartPtr<class Element>&) const;
   virtual void setGraphicsContext(const RGBColor& strokeColor, const scaled& strokeWidth);
   virtual void drawChar(unsigned char ch);
   virtual void text(const scaled&, const scaled&, const String&, const scaled&,
@@ -56,7 +57,7 @@ private:
   std::ostream& output;
   std::ostringstream header;
   std::ostringstream body;
-  FontDataBase fontDb;
+  SmartPtr<FontDataBase> fontDb;
 };
 
 #endif // __PS_StreamRenderingContext_hh__

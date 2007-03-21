@@ -28,18 +28,22 @@
 #include "PS_StreamRenderingContext.hh"
 #include "String.hh"
 #include "FontDataBase.hh"
+#include "T1_FontDataBase.hh"
 
 PS_StreamRenderingContext::PS_StreamRenderingContext(const SmartPtr<AbstractLogger>& logger,
-						     std::ostream& os)
-  : PS_RenderingContext(logger), output(os)
+						     std::ostream& os,
+						     SmartPtr<FontDataBase> fDb)
+  : PS_RenderingContext(logger), output(os), fontDb(fDb)
 { }
 
 PS_StreamRenderingContext::~PS_StreamRenderingContext()
 { }
 
+/*
 String
 PS_StreamRenderingContext::getId(const SmartPtr<Element>& elem) const
 { return ""; }
+*/
 
 void
 PS_StreamRenderingContext::documentStart(const scaled& x, const scaled& y,
@@ -63,12 +67,11 @@ PS_StreamRenderingContext::documentStart(const scaled& x, const scaled& y,
 }
 
 void
-PS_StreamRenderingContext::documentEnd()
+PS_StreamRenderingContext::documentEnd(void)
 {
   output << header.str();
-  output << "%%BeginSetup" << std::endl;
-  fontDb.dumpFontTable(output);
-  output << "%%EndSetup" << std::endl << std::endl;
+  fontDb->dumpFontTable(output);
+  output << std::endl; 
   output << body.str();
   output << "showpage" << std::endl;
   output << "%%Trailer" << std::endl;
@@ -103,7 +106,7 @@ PS_StreamRenderingContext::rect(const scaled& x, const scaled& y,
        << 0.0 
        << " rlineto" << std::endl;
   body << 0.0 << " "
-       << -PS_RenderingContext::toPS(height) 
+       << -(PS_RenderingContext::toPS(height)) 
        << " rlineto" << std::endl;
   body << -(PS_RenderingContext::toPS(width)) << " "
        << 0.0 
@@ -122,8 +125,8 @@ PS_StreamRenderingContext::text(const scaled& x, const scaled& y,
 				const RGBColor& fillColor, const RGBColor& strokeColor,
 				const scaled& strokeWidth, const String& content)
 {
-  const int familyId = fontDb.getFontId(family, toPS(size));
-  fontDb.recallFont(familyId, body);
+  int familyId = fontDb->getFontId(family, toPS(size));
+  fontDb->recallFont(familyId, body);
   setGraphicsContext(strokeColor, strokeWidth);
   
   body << "newpath" << std::endl;
@@ -135,6 +138,8 @@ PS_StreamRenderingContext::text(const scaled& x, const scaled& y,
   for (String::const_iterator i = content.begin(); i != content.end(); i++)
     drawChar((unsigned char) (*i));
   body << ") show" << std::endl;
+  
+  fontDb->usedChar(content, family);
 
   body << fillColor.red / 255.0 << " "
        << fillColor.green / 255.0 << " "

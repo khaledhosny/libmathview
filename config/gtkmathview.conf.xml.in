@@ -52,16 +52,31 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="background">#ff6a6a</key>
     </section>
     <section name="t1lib">
-      <key name="configuration">@prefix@/share/gtkmathview/t1.config</key>
+      <key name="t1-font-path">/usr/share/texmf/fonts/type1/bluesky/cm</key>
       <key name="opaque-mode">false</key>
-      <key name="anti-aliasing">false</key>
+      <key name="anti-aliasing">true</key>
     </section>
   </section>
 
   <section name="gtk-backend">
+    <section name="null-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">0</key>
+    </section>
     <section name="pango-default-shaper">
       <key name="enabled">true</key>
       <key name="priority">0</key>
+      <section name="variants">
+<!--
+	<section name="normal">
+	  <key name="family">courier</key>
+	</section>
+	<section name="italic">
+	  <key name="family">courier</key>
+	  <key name="style">normal</key>
+	</section>
+-->
+      </section>
     </section>
     <section name="space-shaper">
       <key name="enabled">true</key>
@@ -78,12 +93,12 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <section name="pango-computer-modern-shaper">
       <key name="enabled">false</key>
       <key name="priority">1</key>
-      <key name="post-shaping">never</key>
+      <key name="post-shaping">always</key>
     </section>
     <section name="type1-computer-modern-shaper">
       <key name="enabled">false</key>
       <key name="priority">1</key>
-      <key name="use-tfm">false</key>
+      <key name="use-tfm">true</key>
       <key name="post-shaping">never</key>
     </section>
   </section>
@@ -96,6 +111,11 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
     <section name="space-shaper">
       <key name="enabled">true</key>
       <key name="priority">1</key>
+    </section>
+    <section name="type1-computer-modern-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+      <key name="post-shaping">always</key>
     </section>
     <section name="ttf-computer-modern-shaper">
       <key name="enabled">true</key>

@@ -20,42 +20,48 @@
 // http://helm.cs.unibo.it/mml-widget/, or send a mail to
 // <padovani@sti.uniurb.it>
 
-#ifndef __FontDataBase_hh__
-#define __FontDataBase_hh__
+#ifndef __T1_FontDataBase_hh__
+#define __T1_FontDataBase_hh__
 
-#include <iostream>
+#include <t1lib.h>
+#include <config.h>
+#include <map>
 #include <list>
-#include <sstream>
+
 #include "Object.hh"
 #include "SmartPtr.hh"
-#include "String.hh"
 
-class GMV_BackEnd_EXPORT FontDataBase : public Object
+#include "AbstractLogger.hh"
+#include "Configuration.hh"
+#include "FontDataBase.hh"
+
+class GMV_BackEnd_EXPORT T1_FontDataBase : public FontDataBase
 {
 protected:
-  FontDataBase();
-  virtual ~FontDataBase();
+  T1_FontDataBase(const SmartPtr<AbstractLogger>&, const SmartPtr<class Configuration>&, bool);
+  virtual ~T1_FontDataBase();
 
 public:
+  static SmartPtr<T1_FontDataBase> create(const SmartPtr<AbstractLogger>&, const SmartPtr<class Configuration>&, bool);			         
   virtual int getFontId(const String& fontName, float fontSize);
   virtual void dumpFontTable(std::ostream& os) const;
   virtual void recallFont(const int id, std::ostringstream& body);
   virtual void usedChar(const String& content, const String& family);
-  static SmartPtr<FontDataBase> create();
 
 private:
-  struct FontDesc
-  {
-    String name;
-    float  size;
-    int    id;
+  SmartPtr<class AbstractLogger> logger;
+  const bool subset;
 
-    FontDesc(const String& fontName, const float fontSize, const int i)
-      : name(fontName), size(fontSize), id(i)
-    { };
+  struct T1_DataBase 
+  {
+    String fontName;
+    UChar8 used[256];
+    int id;
+
+    T1_DataBase(String& name, int i, int initVal);
   };
-  
-  std::list<FontDesc> fd; 
+
+  std::list<T1_DataBase> T1_dB;
 };
 
-#endif  // __FontDataBase_hh__
+#endif // __T1_FontDataBase_hh__

@@ -53,7 +53,7 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="background">#ff6a6a</key>
     </section>
     <section name="t1lib">
-      <key name="configuration">../../gtkmathview/config/t1.config</key>
+      <key name="t1-font-path">/usr/share/texmf/fonts/type1/bluesky/cm</key>
       <key name="opaque-mode">false</key>
       <key name="anti-aliasing">true</key>
     </section>
@@ -83,6 +83,10 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="enabled">true</key>
       <key name="priority">1</key>
     </section>
+    <section name="adobe-shaper">
+      <key name="enabled">false</key>
+      <key name="priority">1</key>
+    </section>
     <section name="pango-shaper">
       <key name="enabled">false</key>
       <key name="priority">1</key>
@@ -92,21 +96,17 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="priority">1</key>
       <key name="post-shaping">always</key>
     </section>
-    <section name="adobe-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-    </section>
     <section name="type1-computer-modern-shaper">
       <key name="enabled">false</key>
       <key name="priority">1</key>
-      <key name="post-shaping">never</key>
       <key name="use-tfm">true</key>
+      <key name="post-shaping">never</key>
     </section>
   </section>
 
   <section name="svg-backend">
     <section name="null-shaper">
-      <key name="enabled">false</key>
+      <key name="enabled">true</key>
       <key name="priority">0</key>
     </section>
     <section name="space-shaper">
@@ -245,6 +245,21 @@ http://helm.cs.unibo.it/mml-widget/, or send a mail to
       <key name="font-name">cmex8</key>
       <key name="font-name">cmex9</key>
       <key name="font-name">cmex10</key>
+
+      <key name="font-name">msam5</key>
+      <key name="font-name">msam6</key>
+      <key name="font-name">msam7</key>
+      <key name="font-name">msam8</key>
+      <key name="font-name">msam9</key>
+      <key name="font-name">msam10</key>
+
+      <key name="font-name">msbm5</key>
+      <key name="font-name">msbm6</key>
+      <key name="font-name">msbm7</key>
+      <key name="font-name">msbm8</key>
+      <key name="font-name">msbm9</key>
+      <key name="font-name">msbm10</key>
+
 -->
     </section>
   </section>

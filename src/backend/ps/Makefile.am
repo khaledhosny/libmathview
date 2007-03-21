@@ -25,6 +25,14 @@ MAYBE_TFM_S = $(NULL)
 MAYBE_TFM_H = $(NULL)
 endif
 
+if COND_T1LIB
+MAYBE_T1LIB_S = T1_FontDataBase.cc
+MAYBE_T1LIB_H = T1_FontDataBase.hh
+else
+MAYBE_T1LIB_S = $(NULL)
+MAYBE_T1LIB_H = $(NULL)
+endif
+
 libmathview_backend_ps_la_CPPFLAGS = -DGMV_BackEnd_DLL
 libmathview_backend_ps_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
@@ -49,6 +57,8 @@ libmathview_backend_ps_la_SOURCES = \
   $(MAYBE_BOXML_H) \
   $(MAYBE_TFM_S) \
   $(MAYBE_TFM_H) \
+  $(MAYBE_T1LIB_S) \
+  $(MAYBE_T1LIB_H) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
