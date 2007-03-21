@@ -110,7 +110,7 @@ T1_FontDataBase::getFontId(const String& fontName, float fontSize)
       T1_dB.push_back(T1_DataBase(fileName, i, 1));
   } 
   else
-    logger->out(LOG_INFO, "font '%s' exists in the fontDataBase", fileName.c_str());
+    logger->out(LOG_DEBUG, "font '%s' exists in the fontDataBase", fileName.c_str());
    
   int id = FontDataBase::getFontId(fontName, fontSize);
   return (id);
