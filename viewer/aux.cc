@@ -21,6 +21,7 @@
 // <luca.padovani@cs.unibo.it>
 
 #include <config.h>
+#include <cstdlib>
 #include <assert.h>
 
 #include <sstream>
