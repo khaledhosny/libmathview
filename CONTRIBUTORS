@@ -32,3 +32,9 @@ In no particular order:
 * Marc Maurer (uwog)
   Win32/mingw port
 
+* Alessandro Appeddu
+  MathML to SVG converter
+
+* Nicola Rossi
+  PostScript backend and accents
+
