@@ -19,8 +19,6 @@ EXTRA_DIST = \
   gtkmathview.conf.dtd \
   gtkmathview.conf.xml \
   gtkmathview.conf.xml.debug \
-  t1.config \
-  t1.config.debug \
   Makefile.slow \
   $(NULL)
 
