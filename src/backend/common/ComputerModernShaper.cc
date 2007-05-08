@@ -115,6 +115,7 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x007A, 0x7A },  // LATIN SMALL LETTER Z
     { 0x0131, 0x7B },  // LATIN SMALL LETTER DOTLESS I
     { 0x025B, 0x22 },  // LATIN SMALL LETTER OPEN E, epsiv, varepsilon
+    { 0x03B5, 0x22 },  // LATIN SMALL LETTER OPEN E, epsiv, varepsilon
     { 0x0311, 0x7F },  // COMBINING INVERTED BREVE
     { 0x0393, 0x00 },  // GREEK CAPITAL LETTER GAMMA
     { 0x0394, 0x01 },  // GREEK CAPITAL LETTER DELTA
