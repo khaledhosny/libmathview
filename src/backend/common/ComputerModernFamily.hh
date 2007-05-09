@@ -59,9 +59,10 @@ public:
     FE_CMEX,
     FE_MSAM,
     FE_MSBM,
+    FE_COMBINING,
     FE_H_STRETCHY,
     FE_V_STRETCHY,
-    FE_SPECIAL,
+    FE_SPECIAL_STRETCHY,
     FE_NOT_VALID
   };
 

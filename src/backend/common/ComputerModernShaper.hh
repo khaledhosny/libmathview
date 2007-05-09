@@ -96,6 +96,12 @@ public:
     GlyphIndex big[5];
   };
 
+  struct CombiningChar
+  {
+    Char16 ch;
+    GlyphIndex spec;
+  };
+
   static UChar8 toTTFGlyphIndex(ComputerModernFamily::FontEncId, UChar8);
 
 protected:
@@ -105,13 +111,14 @@ protected:
   AreaRef getGlyphArea(MathVariant, ComputerModernFamily::FontEncId, UChar8, const scaled&) const;
   AreaRef getGlyphArea(MathVariant, const GlyphIndex&, const scaled&) const;
 
-  AreaRef shapeChar(const class ShapingContext&, ComputerModernFamily::FontEncId) const;
-  AreaRef shapeStretchyCharV(const class ShapingContext&) const;
-  AreaRef shapeStretchyCharH(const class ShapingContext&) const;
-  AreaRef shapeBigCharH(const class ShapingContext&, const ComputerModernShaper::HBigChar&) const;
-  AreaRef shapeHorizontalBrace(const class ShapingContext&) const;
-  AreaRef shapeHorizontalBar(const class ShapingContext&) const;
-  AreaRef shapeSpecialChar(const class ShapingContext&) const;
+  bool shapeChar(class ShapingContext&, ComputerModernFamily::FontEncId) const;
+  bool shapeStretchyCharV(class ShapingContext&) const;
+  bool shapeStretchyCharH(class ShapingContext&) const;
+  bool shapeBigCharH(class ShapingContext&, const ComputerModernShaper::HBigChar&) const;
+  bool shapeHorizontalBrace(class ShapingContext&) const;
+  bool shapeHorizontalBar(class ShapingContext&) const;
+  bool shapeSpecialStretchyChar(class ShapingContext&) const;
+  bool shapeCombiningChar(class ShapingContext&) const;
 
 private:
   PostShapingMode postShapingMode;
