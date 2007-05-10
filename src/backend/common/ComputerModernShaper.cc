@@ -1644,7 +1644,7 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
   for (unsigned i = 0; i < sizeof(special) / sizeof(Char16); i++)
     sm->registerStretchyChar(special[i], GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_SPECIAL_STRETCHY), 0));
 
-  for (unsigned i = 0; i < sizeof(combining) / sizeof(Char16); i++)
+  for (unsigned i = 0; i < sizeof(combining) / sizeof(ComputerModernShaper::CombiningChar); i++)
     sm->registerChar(combining[i].ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_COMBINING), i));
 }
 
@@ -1729,7 +1729,10 @@ ComputerModernShaper::shapeStretchyCharV(ShapingContext& context) const
     if (AreaRef tryNormal = getGlyphArea(variant, charSpec.normal[i], size))
       {
 	if (tryNormal->box().verticalExtent() >= span)
-	  return tryNormal;
+	  {
+	    context.pushArea(1, tryNormal);
+	    return true;
+	  }
 	else
 	  normal = tryNormal;
       }

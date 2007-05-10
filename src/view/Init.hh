@@ -79,6 +79,8 @@ initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Co
 	    if (!MathView::loadOperatorDictionary(logger, dictionary, (*dit).c_str()))
 	      logger->out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
 	  }
+	else
+	  logger->out(LOG_WARNING, "dictionary `%s' does not exist", (*dit).c_str());
       }
   else
     {

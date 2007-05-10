@@ -53,7 +53,7 @@ void
 NullShaper::shape(ShapingContext& context) const
 {
   assert(!context.done());
-  logger->out(LOG_WARNING, "shaping U+%04X as null", context.thisChar());
+  logger->out(LOG_WARNING, "shaping U+%04X as a red box", context.thisChar());
   SmartPtr<AreaFactory> factory = context.getFactory();
   std::vector<AreaRef> c;
   c.reserve(2);
