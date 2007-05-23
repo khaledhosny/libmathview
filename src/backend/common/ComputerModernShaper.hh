@@ -108,6 +108,7 @@ protected:
   virtual void postShape(class ShapingContext&) const;
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
 			       ComputerModernFamily::FontSizeId, UChar8, int) const = 0;
+  virtual void computeCombiningCharOffsets(const AreaRef&, const AreaRef&, const AreaRef&, scaled&, scaled&) const;
   AreaRef getGlyphArea(MathVariant, ComputerModernFamily::FontEncId, UChar8, const scaled&) const;
   AreaRef getGlyphArea(MathVariant, const GlyphIndex&, const scaled&) const;
 

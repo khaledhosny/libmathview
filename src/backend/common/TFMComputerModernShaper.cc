@@ -131,3 +131,53 @@ TFMComputerModernShaper::getFont(ComputerModernFamily::FontNameId fontNameId,
   assert(tfmFontManager);
   return tfmFontManager->getFont(ComputerModernFamily::nameOfFont(fontNameId, designSize), size);
 }
+
+void
+TFMComputerModernShaper::computeCombiningCharOffsets(const AreaRef& base,
+						     const AreaRef& accent,
+						     const AreaRef& ex,
+						     scaled& dx,
+						     scaled& dy) const
+{
+  ComputerModernShaper::computeCombiningCharOffsets(base, accent, ex, dx, dy);
+
+  UChar8 index;
+  UChar8 baseIndex;
+  SmartPtr<TFMFont> font;
+  SmartPtr<TFMFont> accentFont;
+  SmartPtr<TFMFont> baseFont;
+
+  if (getGlyphData(accent, accentFont, index))
+    {
+      const SmartPtr<TFM> accentTFM  = accentFont->getTFM();
+      ComputerModernFamily::FontNameId accentNameId = fontNameIdOfTFM(accentTFM);
+  
+      if (accentNameId == ComputerModernFamily::FN_CMBXTI ||
+	  accentNameId == ComputerModernFamily::FN_CMTI ||
+	  accentNameId == ComputerModernFamily::FN_CMMI ||
+	  accentNameId == ComputerModernFamily::FN_CMSSI)
+	{
+	  return;
+	}
+    } 
+
+  if (getGlyphData(base, baseFont, baseIndex))
+    {
+      const SmartPtr<TFM> tfm = baseFont->getTFM();
+
+      ComputerModernFamily::FontNameId fontNameId = fontNameIdOfTFM(tfm);
+      ComputerModernFamily::FontEncId fontEncId = ComputerModernFamily::encIdOfFontNameId(fontNameId);
+
+      if (fontEncId == ComputerModernFamily::FE_CMMI || fontEncId == ComputerModernFamily::FE_CMR)
+	{
+	  const Char8 skewChar = (fontEncId == ComputerModernFamily::FE_CMMI) ? 0177 : 060;
+	  scaled kerning;
+
+	  if (tfm->getGlyphKerning(baseIndex, skewChar, kerning))
+	    {
+	      kerning *= baseFont->getScale();
+	      dx += kerning;
+	    }
+	}
+    }
+}

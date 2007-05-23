@@ -1896,6 +1896,17 @@ ComputerModernShaper::shapeSpecialStretchyChar(ShapingContext& context) const
     }
 }
 
+void
+ComputerModernShaper::computeCombiningCharOffsets(const AreaRef& base,
+						  const AreaRef& accent,
+						  const AreaRef& ex,
+						  scaled& dx,
+						  scaled& dy) const
+{
+  dx = (base->box().width - accent->box().width) / 2;
+  dy = -(std::min(base->box().height, ex->box().height));
+}
+
 bool
 ComputerModernShaper::shapeCombiningChar(ShapingContext& context) const
 {
@@ -1913,17 +1924,19 @@ ComputerModernShaper::shapeCombiningChar(ShapingContext& context) const
   const AreaRef base = context.popArea(n);
   const AreaRef accentGlyph = getGlyphArea(variant, ComputerModernFamily::FontEncId(charSpec.spec.fontEnc), charSpec.spec.index, size);
 
+  scaled dx;
+  scaled dy;
+  computeCombiningCharOffsets(base, accentGlyph, ex, dx, dy);
+
   std::vector<AreaRef> accent;
   accent.reserve(2);
-  accent.push_back(factory->horizontalSpace((base->box().width - accentGlyph->box().width) / 2));
+  accent.push_back(factory->horizontalSpace(dx));
   accent.push_back(accentGlyph);
   
-  const scaled delta = std::min(base->box().height, ex->box().height);
-
   std::vector<AreaRef> combined;
   combined.reserve(3);
   combined.push_back(base);
-  combined.push_back(factory->verticalSpace(-delta, 0));
+  combined.push_back(factory->verticalSpace(dy, 0));
   combined.push_back(factory->horizontalArray(accent));
 
   context.pushArea(n + 1, factory->verticalArray(combined, 0));
