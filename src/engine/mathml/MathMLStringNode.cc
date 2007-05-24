@@ -29,6 +29,12 @@
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
+inline bool
+isCombining(Char32 ch)
+{
+  return (ch >= 0x0300 && ch <= 0x0362) || (ch >= 0x20d0 && ch <= 0x20e8);
+}
+
 MathMLStringNode::MathMLStringNode(const String& c)
   : content(c)
 { }
@@ -42,7 +48,18 @@ MathMLStringNode::format(FormattingContext& ctxt)
 
 unsigned
 MathMLStringNode::GetLogicalContentLength() const
-{ return UCS4StringOfUTF8String(content).length(); }
+{
+  UCS4String s = UCS4StringOfString(content);
+
+  unsigned length = 0;
+  for (UCS4String::const_iterator i = s.begin(); i != s.end(); i++)
+    {
+      if (!isCombining(*i) || i == s.begin())
+	length++;
+    }
+
+  return length;
+}
 
 String
 MathMLStringNode::GetRawContent() const

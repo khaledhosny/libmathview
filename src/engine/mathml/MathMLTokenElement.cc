@@ -207,4 +207,6 @@ MathMLTokenElement::GetLogicalContentLength() const
 
 unsigned
 MathMLTokenElement::getContentLength() const
-{ return GetLogicalContentLength(); }
+{ 
+  return UCS4StringOfString(GetRawContent()).length();
+}
