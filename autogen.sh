@@ -3,8 +3,8 @@
 AUTOMAKE=automake
 ACLOCAL=aclocal
 $AUTOMAKE --version | perl -ne 'if (/\(GNU $AUTOMAKE\) ([0-9].[0-9])/) {print; if ($1 < 1.7) {exit 1;}}'
-AUTOMAKE=automake-1.7
-ACLOCAL=aclocal-1.7
+#AUTOMAKE=automake-1.7
+#ACLOCAL=aclocal-1.7
 if [ $? -ne 0 ]; then
 $AUTOMAKE --version | perl -ne 'if (/\(GNU $AUTOMAKE\) ([0-9].[0-9])/) {print; if ($1 < 1.7) {exit 1;}}'
 
