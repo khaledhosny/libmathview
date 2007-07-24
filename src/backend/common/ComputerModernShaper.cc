@@ -114,6 +114,7 @@ static ComputerModernShaper::PlainChar cmmMap[] =
     { 0x0079, 0x79 },  // LATIN SMALL LETTER Y
     { 0x007A, 0x7A },  // LATIN SMALL LETTER Z
     { 0x0131, 0x7B },  // LATIN SMALL LETTER DOTLESS I
+    { 0x0237, 0x7C },  // LATIN SMALL LETTER DOTLESS J
     { 0x025B, 0x22 },  // LATIN SMALL LETTER OPEN E, epsiv, varepsilon
     { 0x03B5, 0x22 },  // LATIN SMALL LETTER OPEN E, epsiv, varepsilon
     { 0x0311, 0x7F },  // COMBINING INVERTED BREVE
@@ -404,6 +405,7 @@ static ComputerModernShaper::PlainChar cmrMap[] =
     { 0x00E6, 0x1A },  // LATIN SMALL LETTER AE
     { 0x00F8, 0x1C },  // LATIN SMALL LETTER O WITH STROKE
     { 0x0131, 0x10 },  // LATIN SMALL LETTER DOTLESS I
+    { 0x0237, 0x11 },  // LATIN SMALL LETTER DOTLESS J
     { 0x0152, 0x1E },  // LATIN CAPITAL LIGATURE OE
     { 0x0153, 0x1B },  // LATIN SMALL LIGATURE OE
     { 0x0300, 0x12 },  // COMBINING GRAVE ACCENT
