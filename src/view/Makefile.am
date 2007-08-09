@@ -81,8 +81,6 @@ mathview_HEADERS = \
   $(NULL)
 
 INCLUDES = \
-  $(XML_CFLAGS) \
-  $(DOM_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
@@ -95,4 +93,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/backend/common \
+  $(XML_CFLAGS) \
+  $(DOM_CFLAGS) \
   $(NULL)

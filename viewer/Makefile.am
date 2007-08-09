@@ -103,11 +103,6 @@ test_loading_reader_LDADD = \
   $(NULL)
 
 INCLUDES = \
-  $(POPT_CFLAGS) \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(DOM_CFLAGS) \
-  $(XML_CFLAGS) \
   -I$(top_builddir)/auto/ \
   -I$(top_srcdir)/src/common/ \
   -I$(top_srcdir)/src/common/mathvariants \
@@ -119,5 +114,10 @@ INCLUDES = \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/common/ \
   -I$(top_srcdir)/src/backend/gtk/ \
+  $(POPT_CFLAGS) \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(DOM_CFLAGS) \
+  $(XML_CFLAGS) \
   $(NULL)
 

@@ -95,9 +95,6 @@ gtk_HEADERS = \
   gtkmathview_gmetadom.h
 
 INCLUDES = \
-  $(GTK_CFLAGS) \
-  $(DOM_CFLAGS) \
-  $(XML_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
@@ -113,5 +110,8 @@ INCLUDES = \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/gtk \
   -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(DOM_CFLAGS) \
+  $(XML_CFLAGS) \
   $(NULL)
 

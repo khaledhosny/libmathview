@@ -20,8 +20,6 @@ mathmlps_LDADD = \
   $(NULL)
 
 INCLUDES = \
-  $(POPT_CFLAGS) \
-  $(XML_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
@@ -34,5 +32,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/ps \
   -I$(top_srcdir)/src/view \
+  $(POPT_CFLAGS) \
+  $(XML_CFLAGS) \
   $(NULL)
 

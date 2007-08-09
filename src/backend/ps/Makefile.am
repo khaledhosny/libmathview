@@ -69,7 +69,6 @@ mathview_HEADERS = \
   $(NULL)
 
 INCLUDES = \
-  $(T1_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
@@ -78,4 +77,5 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/common/tfm \
+  $(T1_CFLAGS) \
   $(NULL)

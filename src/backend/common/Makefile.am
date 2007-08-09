@@ -179,7 +179,6 @@ mathview_HEADERS = \
   $(NULL)
 
 INCLUDES = \
-  $(T1_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
@@ -187,6 +186,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
+  $(T1_CFLAGS) \
   $(NULL)
 
 libbackend_common_la_LIBADD = \

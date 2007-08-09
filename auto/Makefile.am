@@ -80,8 +80,8 @@ Char.hh: $(top_builddir)/auto/Char.hh.in
 	)
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_builddir) \
+  $(DOM_CFLAGS) \
   $(NULL)

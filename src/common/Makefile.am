@@ -86,8 +86,8 @@ noinst_HEADERS = \
   $(NULL)
 
 INCLUDES = \
-  $(GLIB_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
+  $(GLIB_CFLAGS) \
   $(NULL)
 

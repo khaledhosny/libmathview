@@ -16,8 +16,9 @@ mathml2ps_debug_LDADD = \
   $(top_builddir)/src/libgtkmathview.la
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_builddir) \
   -I$(top_srcdir)/src/ \
-  -I$(top_srcdir)/auto/
+  -I$(top_srcdir)/auto/ \
+  $(DOM_CFLAGS) \
+  $(NULL)
 

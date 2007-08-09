@@ -25,7 +25,6 @@ mathview_HEADERS = \
   $(NULL)
 
 INCLUDES = \
-  $(DOM_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
@@ -35,5 +34,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/adapters \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/backend/common \
+  $(DOM_CFLAGS) \
   $(NULL)
 

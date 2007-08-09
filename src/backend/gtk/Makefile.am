@@ -83,9 +83,6 @@ libmathview_backend_gtk_la_LIBADD = \
   $(NULL)
 
 INCLUDES = \
-  $(PANGOX_CFLAGS) \
-  $(GTK_CFLAGS) \
-  $(T1_CFLAGS) \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
@@ -93,4 +90,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/backend/common \
+  $(PANGOX_CFLAGS) \
+  $(GTK_CFLAGS) \
+  $(T1_CFLAGS) \
   $(NULL)
