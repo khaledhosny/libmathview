@@ -32,7 +32,6 @@ TFM_LEVEL_3_CC = \
   cmbx7.cc \
   cmbx8.cc \
   cmbx9.cc \
-  cmex10.cc \
   cmex9.cc \
   cmmi12.cc \
   cmmi5.cc \
