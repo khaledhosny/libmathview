@@ -126,7 +126,7 @@ $(srcdir)/%.xtfm: /usr/local/teTeX/share/texmf.tetex/fonts/tfm/ams/symbols/%.tfm
 if COND_XSLTPROC
 XSLTPROC = xsltproc
 XTFMTOCC = $(top_srcdir)/auto/xtfm-to-cc.xsl
-LICENSE = $(top_srcdir)/LICENSE
+LICENSE = $(top_srcdir)/doc/LICENSE.cc
 %.cc: $(srcdir)/%.xtfm $(XTFMTOCC) $(LICENSE)
 	cat $(LICENSE) >$@
 	$(XSLTPROC) --stringparam name $(basename $(notdir $(@:%.cc=%))) $(XTFMTOCC) $< >>$@
