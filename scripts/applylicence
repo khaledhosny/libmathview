@@ -3,7 +3,7 @@
 FILES=`find . -name "*.cc"`
 for i in $FILES
 do
-	cp doc/LICENCE.cc /tmp/f
+	cp doc/LICENSE.cc /tmp/f
 	./scripts/cutlicence.pl <$i >>/tmp/f
 	mv /tmp/f $i
 done
@@ -11,7 +11,7 @@ done
 FILES=`find . -name "*.hh"`
 for i in $FILES
 do
-	cp doc/LICENCE.cc /tmp/f
+	cp doc/LICENSE.cc /tmp/f
 	./scripts/cutlicence.pl <$i >>/tmp/f
 	mv /tmp/f $i
 done
@@ -19,7 +19,7 @@ done
 FILES=`find . -name "*.c"`
 for i in $FILES
 do
-	cp doc/LICENCE.c /tmp/f
+	cp doc/LICENSE.c /tmp/f
 	./scripts/cutlicence.pl <$i >>/tmp/f
 	mv /tmp/f $i
 done
@@ -27,7 +27,7 @@ done
 FILES=`find . -name "*.h"`
 for i in $FILES
 do
-	cp doc/LICENCE.c /tmp/f
+	cp doc/LICENSE.c /tmp/f
 	./scripts/cutlicence.pl <$i >>/tmp/f
 	mv /tmp/f $i
 done
