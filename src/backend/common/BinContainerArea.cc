@@ -24,6 +24,8 @@
 
 #include "AreaId.hh"
 #include "BinContainerArea.hh"
+#include "GlyphStringArea.hh"
+#include "GlyphArea.hh"
 
 BoundingBox
 BinContainerArea::box() const
@@ -137,3 +139,12 @@ BinContainerArea::length() const
 scaled
 BinContainerArea::getStep() const
 { return child->getStep(); }
+
+SmartPtr<const GlyphStringArea>
+BinContainerArea::getGlyphStringArea() const
+{ return child->getGlyphStringArea(); }
+
+SmartPtr<const GlyphArea>
+BinContainerArea::getGlyphArea() const
+{ return child->getGlyphArea(); }
+

@@ -107,3 +107,7 @@ GlyphStringArea::positionOfIndex(CharIndex index, Point* point, BoundingBox* b) 
 
   return false;
 }
+
+SmartPtr<const GlyphStringArea>
+GlyphStringArea::getGlyphStringArea() const
+{ return this; }

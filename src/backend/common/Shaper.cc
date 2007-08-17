@@ -109,3 +109,29 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
 bool
 Shaper::isDefaultShaper() const
 { return false; }
+
+bool
+Shaper::shapeCombiningChar(const ShapingContext&) const
+{ return false; }
+
+bool
+Shaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
+				    	 const AreaRef& script,
+				    	 scaled& dx,
+				    	 scaled& dy) const
+{
+  dx = (base->box().width - script->box().width) / 2;
+  dy = base->box().height + script->box().depth;
+    
+  return true;
+}
+
+bool
+Shaper::computeCombiningCharOffsetsBelow(const AreaRef& base,
+				         const AreaRef& script,
+				         scaled& dxUnder) const
+{
+  dxUnder = (base->box().width - script->box().width) / 2;
+
+  return true;
+}

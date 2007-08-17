@@ -61,6 +61,9 @@ public:
 
   virtual SmartPtr<class Element> getElement(void) const;
 
+  virtual SmartPtr<const class GlyphStringArea> getGlyphStringArea(void) const;  
+  virtual SmartPtr<const class GlyphArea> getGlyphArea(void) const;
+
   scaled originX(AreaIndex) const;
   scaled originY(AreaIndex) const;
 };

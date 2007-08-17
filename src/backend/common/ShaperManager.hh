@@ -27,6 +27,7 @@
 #include "scaled.hh"
 #include "GlyphSpec.hh"
 #include "SparseMap.hh"
+#include "Area.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
 
@@ -53,6 +54,10 @@ public:
   void unregisterShapers(void);
   GlyphSpec registerChar(Char32 ch, const GlyphSpec& spec);
   GlyphSpec registerStretchyChar(Char32 ch, const GlyphSpec& spec);
+  AreaRef compose(const FormattingContext& context,
+	          const AreaRef base, const UCS4String baseSource,
+	          const AreaRef script, const UCS4String scriptSource,
+	          bool overScript);
 
 private:
   const GlyphSpec& map(Char32 ch) const;

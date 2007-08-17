@@ -33,6 +33,7 @@
 #include "ShaperManager.hh"
 #include "Configuration.hh"
 
+
 enum
   {
     NIL = ComputerModernFamily::FE_NIL,
@@ -1898,16 +1899,7 @@ ComputerModernShaper::shapeSpecialStretchyChar(ShapingContext& context) const
     }
 }
 
-void
-ComputerModernShaper::computeCombiningCharOffsets(const AreaRef& base,
-						  const AreaRef& accent,
-						  const AreaRef& ex,
-						  scaled& dx,
-						  scaled& dy) const
-{
-  dx = (base->box().width - accent->box().width) / 2;
-  dy = -(std::min(base->box().height, ex->box().height));
-}
+#include <stdio.h>
 
 bool
 ComputerModernShaper::shapeCombiningChar(ShapingContext& context) const
@@ -1917,32 +1909,43 @@ ComputerModernShaper::shapeCombiningChar(ShapingContext& context) const
   const scaled size = context.getSize();
   const CombiningChar& charSpec = combining[context.getSpec().getGlyphId()];
 
-  const AreaRef ex = getGlyphArea(variant, ComputerModernFamily::FE_CMMI, 'x', size);
-
   if (context.nAreas() == 0)
-    return getGlyphArea(variant, ComputerModernFamily::FontEncId(charSpec.spec.fontEnc), charSpec.spec.index, size);
+    {
+      context.pushArea(1, getGlyphArea(variant, 
+				       ComputerModernFamily::FontEncId(charSpec.spec.fontEnc), 
+				       charSpec.spec.index, size));
+      return true;
+    }
 
   CharIndex n;
   const AreaRef base = context.popArea(n);
   const AreaRef accentGlyph = getGlyphArea(variant, ComputerModernFamily::FontEncId(charSpec.spec.fontEnc), charSpec.spec.index, size);
 
+  AreaRef accent = NULL;
+  AreaRef under = NULL;
   scaled dx;
   scaled dy;
-  computeCombiningCharOffsets(base, accentGlyph, ex, dx, dy);
-
-  std::vector<AreaRef> accent;
-  accent.reserve(2);
-  accent.push_back(factory->horizontalSpace(dx));
-  accent.push_back(accentGlyph);
+  scaled dxUnder;
   
-  std::vector<AreaRef> combined;
-  combined.reserve(3);
-  combined.push_back(base);
-  combined.push_back(factory->verticalSpace(dy, 0));
-  combined.push_back(factory->horizontalArray(accent));
+  // The code "0x18" rappresent the index of Cedilla, that is the only combining char below.
+  // This is not general condition.
 
-  context.pushArea(n + 1, factory->verticalArray(combined, 0));
+  if (charSpec.spec.index == 0x18)
+    {
+      // printf("eseguo per under\n");
+      under = accentGlyph;
+      computeCombiningCharOffsetsBelow(base, under, dxUnder);
+    }
+  else
+    {
+      // printf("eseguo per over\n");
+      accent = accentGlyph;
+      computeCombiningCharOffsetsAbove(base, accent, dx, dy);
+    }
 
+  context.pushArea(n + 1, factory->combinedGlyph(base, accent, under, 
+						 dx, dy, dxUnder));
+					
   return true;
 }
 
@@ -1958,7 +1961,7 @@ ComputerModernShaper::getGlyphArea(MathVariant variant, const GlyphIndex& glyph,
 AreaRef
 ComputerModernShaper::getGlyphArea(MathVariant variant, ComputerModernFamily::FontEncId encId, UChar8 index, const scaled& size) const
 {
-  scaled finalSize = size;
+  scaled finalSize = size; 
   ComputerModernFamily::FontSizeId designSize;
   const ComputerModernFamily::FontNameId fontNameId = family->findFont(variant, encId, finalSize, designSize);
   if (fontNameId != ComputerModernFamily::FN_NIL)

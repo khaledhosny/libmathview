@@ -32,6 +32,9 @@
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "Element.hh"
+#include "MathMLElement.hh"
+#include "Area.hh"
+#include "GlyphArea.hh"
 
 ShaperManager::ShaperManager(const SmartPtr<AbstractLogger>& l)
   : nextShaperId(0), logger(l), errorShaper(smart_cast<Shaper>(NullShaper::create(l)))
@@ -172,3 +175,41 @@ ShaperManager::mapStretchy(Char32 ch) const
 SmartPtr<class Shaper>
 ShaperManager::getShaper(unsigned si) const
 { return (si < nextShaperId) ? shaper[si] : 0; }
+
+#include <stdio.h>
+AreaRef
+ShaperManager::compose(const FormattingContext& context,
+		       const AreaRef base, const UCS4String baseSource,
+	       	       const AreaRef script, const UCS4String scriptSource,
+	       	       bool overScript)
+{
+   const GlyphSpec& baseGlyphSpec = map(baseSource[0]);
+   
+//  AreaRef baseArea = base->getGlyphArea();
+//  AreaRef overScriptArea = overScript->getGlyphArea();
+  scaled dx = scaled::zero();
+  scaled dy = scaled::zero();
+  scaled dxUnder= scaled::zero();
+
+
+  const GlyphSpec& scriptGlyphSpec = map(scriptSource[0]);
+  if (baseGlyphSpec.getShaperId() == scriptGlyphSpec.getShaperId())
+  {
+    if (overScript)
+      shaper[baseGlyphSpec.getShaperId()]->computeCombiningCharOffsetsAbove(base,
+   					               	     	     	    script,
+								            dx, dy);
+    else
+      shaper[baseGlyphSpec.getShaperId()]->computeCombiningCharOffsetsBelow(base,
+   					               	     	       	    script,
+								            dxUnder);
+  } 
+  else
+  {  /* ... da implementare ....*/ }
+
+  const AreaRef over = overScript ? script : NULL;
+  const AreaRef under = overScript ? NULL : script;
+   
+  return context.MGD()->getFactory()->combinedGlyph(base, over, under,
+					    	    dx, dy, dxUnder);
+}

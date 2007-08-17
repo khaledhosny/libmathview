@@ -37,6 +37,12 @@ public:
   virtual void shape(class ShapingContext&) const = 0;
   virtual bool isDefaultShaper(void) const;
 
+  virtual bool shapeCombiningChar(const ShapingContext&) const;
+  virtual bool computeCombiningCharOffsetsAbove(const AreaRef&, const AreaRef&,
+					        scaled&, scaled&) const;
+  virtual bool computeCombiningCharOffsetsBelow(const AreaRef&, const AreaRef&,
+					        scaled&) const;
+
 protected:
   virtual AreaRef composeStretchyCharV(const SmartPtr<class AreaFactory>&,
 				       const AreaRef&, const AreaRef&, const AreaRef&, const AreaRef&, const AreaRef&,

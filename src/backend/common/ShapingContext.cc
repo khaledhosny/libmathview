@@ -87,10 +87,15 @@ ShapingContext::data() const
 AreaRef
 ShapingContext::area() const
 {
-  if (res.size() == 1) 
-    return res[0];
-  else
-    return factory->glyphString(res, res_n);
+  //
+
+#if 0
+    if (res.size() == 1) 
+      return res[0];
+    else
+#endif
+
+    return factory->glyphString(res, res_n, source);
 }
 
 Char32

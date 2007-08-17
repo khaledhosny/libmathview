@@ -30,6 +30,9 @@
 #include "MathVariantMap.hh"
 #include "FormattingContext.hh"
 #include "ShaperManager.hh"
+#include "String.hh"
+#include "Area.hh"
+#include "GlyphArea.hh"
 
 MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& logger)
   : GraphicDevice(logger)
@@ -449,12 +452,156 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
   return getFactory()->horizontalArray(h);
 }
 
+#if 1
+#include <iostream>
+#include <stdio.h>
+#endif
+
+/*
+inline bool
+isCombiningUnder(Char32 ch)
+{
+  return (ch == 0x0327);
+}
+
+
+inline bool
+isCombiningOver(Char32 ch)
+{
+  return (ch >= 0x0300 && ch <= 0x0308) || (ch >= 0x030A && ch <= 0x030C);
+}
+*/
+
 AreaRef
 MathGraphicDevice::underOver(const FormattingContext& context,
 			     const AreaRef& base,
 			     const AreaRef& underScript, bool accentUnder,
 			     const AreaRef& overScript, bool accent) const
 {
+  SmartPtr<const GlyphStringArea> baseStringArea = base ? base->getGlyphStringArea() : NULL;
+  SmartPtr<const GlyphStringArea> overStringArea = overScript ? overScript->getGlyphStringArea()
+						 	        : NULL;
+  SmartPtr<const GlyphStringArea> underStringArea = underScript ? 
+						    underScript->getGlyphStringArea() : NULL;
+
+#if 0
+  printf("base GlyphArea %s\n", base->getGlyphArea() ? "true" : "false");
+  printf("over GlyphArea %s\n", overScript->getGlyphArea() ? "true" : "false");  
+
+  printf("base GlyphStringArea %s\n", base->getGlyphStringArea() ? "true" : "false"); 
+  printf("over GlyphStringArea %s\n", base->getGlyphStringArea() ? "true" : "false"); 
+#endif
+
+  if (baseStringArea)
+  {
+    UCS4String baseSource;
+    UCS4String overSource;
+    UCS4String underSource;
+    AreaRef res;
+    bool overCondition = overStringArea && accent && 
+			 ((overSource = overStringArea->getSource()).length() == 1);
+    bool underCondition = underStringArea && accentUnder &&
+	   		  ((underSource = underStringArea->getSource()).length() == 1);
+
+    baseSource = baseStringArea->getSource();
+
+#if 0
+    printf("valore di accentUnder %d\n", accentUnder);
+    printf("valore overCond %d\n", overCondition);
+    printf("valore underCond %d\n", underCondition);
+#endif
+
+    if (baseSource.length() == 1)
+    {
+      if (overScript && underScript)
+      {
+        if (overCondition)
+        {
+	  res = shaperManager->compose(context,
+				       base, baseSource,
+				       overScript, overSource, true);
+	  if (underCondition)
+            res = shaperManager->compose(context,
+					 res, baseSource,
+					 underScript, underSource, false);
+          else
+	    res = underOver(context, res, underScript, accentUnder, NULL, accent);  
+
+	  return res;
+        }
+        else if (underCondition)
+	{
+	  res = shaperManager->compose(context,
+				       base, baseSource,
+				       underScript, underSource, false);
+	  res = underOver(context, res, NULL, accentUnder, overScript, accent);   
+
+	  return res;
+        }
+      }
+
+      else if (overScript || underScript)
+      {
+	if (overCondition)
+	{
+          res = shaperManager->compose(context,
+		     	  	       base, baseSource,
+			               overScript, overSource, true);
+          return res;
+        }
+        if (underCondition)
+	{
+	  res = shaperManager->compose(context,
+		     	  	       base, baseSource,
+			               underScript, underSource, false);
+          return res;
+        }
+      }
+    }
+  }
+/*
+      if ((overStringArea && accent &&  
+	   (overSource = overStringArea->getSource()).length() == 1) || 
+	  (underStringArea && accentUnder &&
+	   (underSource = underStringArea->getSource()).length() == 1))
+      {
+        printf("eseguo compose di ShaperManager\n");
+        return shaperManager->compose(context,
+		     	  	      base, baseSource,
+			              overScript, overSource,
+				      underScript, underSource);
+      }
+    }
+  }
+*/
+
+#if 0
+
+   if (baseStringArea &&
+       overStringArea &&
+       !underStringArea)
+  {
+    //std::cout << "eseguo primo if" << std::endl;
+    const AreaRef baseArea = base->getGlyphArea();
+    const AreaRef overScriptArea = overScript->getGlyphArea();
+ 
+    const UCS4String baseSource = baseStringArea->getSource();
+    const UCS4String overSource = overStringArea->getSource();
+  
+    if (baseSource.length() == 1 &&
+        overSource.length() == 1 && 
+        accent &&
+	baseArea &&
+	overScriptArea)
+    {
+     //std::cout << "2° if" << std::endl;
+     return shaperManager->compose(context,
+		     	  	   base, baseArea, baseSource[0],
+			           overScript, overScriptArea, overSource[0]);
+    }
+  }	
+#endif
+
   const scaled RULE = defaultLineThickness(context);
   const AreaRef singleSpace = getFactory()->verticalSpace(RULE, 0);
   const AreaRef tripleSpace = getFactory()->verticalSpace(3 * RULE, 0);
@@ -466,18 +613,18 @@ MathGraphicDevice::underOver(const FormattingContext& context,
   std::vector<AreaRef> v;
   v.reserve(n);
   if (underScript)
-    {
-      if (!accentUnder) v.push_back(singleSpace);
-      v.push_back(getFactory()->center(underScript));
-      if (!accentUnder) v.push_back(tripleSpace);
-    }
+  {
+    if (!accentUnder) v.push_back(singleSpace);
+    v.push_back(getFactory()->center(underScript));
+    if (!accentUnder) v.push_back(tripleSpace);
+  }
   v.push_back(getFactory()->center(base));
   if (overScript)
-    {
-      if (!accent) v.push_back(tripleSpace);
-      v.push_back(getFactory()->center(overScript));
-      if (!accent) v.push_back(singleSpace);
-    }
+  {
+    if (!accent) v.push_back(tripleSpace);
+    v.push_back(getFactory()->center(overScript));
+    if (!accent) v.push_back(singleSpace);
+  }
 
   return getFactory()->verticalArray(v, underScript ? (accentUnder ? 1 : 3) : 0);
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2003, Luca Padovani <luca.padovani@cs.unibo.it>.
+// Copyright (C) 2000-2006, Luca Padovani <padovani@sti.uniurb.it>.
 //
 // This file is part of GtkMathView, a Gtk widget for MathML.
 // 
@@ -17,50 +17,62 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // 
 // For details, see the GtkMathView World-Wide-Web page,
-// http://helm.cs.unibo.it/mml-widget, or send a mail to
-// <luca.padovani@cs.unibo.it>
+// http://helm.cs.unibo.it/mml-widget/, or send a mail to
+// <padovani@sti.uniurb.it>
 
-#ifndef __BinContainerArea_hh__
-#define __BinContainerArea_hh__
-
+#ifndef __CombinedGlyphArea_hh__
+#define __CombinedGlyphArea_hh__
+  
+#include "Area.hh"
 #include "ContainerArea.hh"
+#include "BoundingBox.hh"
 
-class GMV_MathView_EXPORT BinContainerArea : public ContainerArea
+class GMV_MathView_EXPORT CombinedGlyphArea : public ContainerArea
 {
 protected:
-  BinContainerArea(const AreaRef& area) : child(area) { }
-  virtual ~BinContainerArea() { }
+  CombinedGlyphArea(const AreaRef& , const AreaRef&, const AreaRef&,
+		    const scaled&, const scaled&, const scaled&); 
+  virtual ~CombinedGlyphArea();
 
 public:
-  virtual AreaRef clone(const AreaRef&) const = 0;
-
+  static SmartPtr<CombinedGlyphArea> create(const AreaRef& baseArea, const AreaRef& accentArea,
+					    const AreaRef& underArea,
+					    const scaled& skewchar, const scaled& verticalSpace,
+					    const scaled& underSkew)
+    { return new CombinedGlyphArea(baseArea, accentArea, underArea, 
+				   skewchar, verticalSpace, underSkew); }
+  virtual AreaRef clone(const AreaRef& nB, const AreaRef& nA, const AreaRef& nU,
+			const scaled& nDx, const scaled& nDy, const scaled& nDxUnder) const 
+    { return create(nB, nA, nU, nDx, nDy, nDxUnder); }
   virtual BoundingBox box(void) const;
-  virtual void render(class RenderingContext& context, const scaled& x, const scaled& y) const;
+  virtual void render(class RenderingContext&, const scaled& x, const scaled& y) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual scaled leftEdge(void) const;
   virtual scaled rightEdge(void) const;
   virtual void strength(int&, int&, int&) const;
-  virtual AreaIndex size(void) const { return 1; }
   virtual AreaRef node(AreaIndex) const;
   virtual void origin(AreaIndex, class Point&) const;
-  virtual AreaRef replace(AreaIndex, const AreaRef&) const;
-  virtual CharIndex length(void) const;
   virtual CharIndex lengthTo(AreaIndex) const;
-  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
-  virtual scaled getStep(void) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
   virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+
+  virtual SmartPtr<const class GlyphArea> getGlyphArea(void) const;
   virtual SmartPtr<const class GlyphStringArea> getGlyphStringArea(void) const;  
-  virtual SmartPtr<const class GlyphArea> getGlyphArea(void) const;  
 
-  AreaRef getChild(void) const { return child; }
+protected:
+ BoundingBox bbox;
+ AreaRef base;
+ AreaRef accent;
+ AreaRef under;
+ scaled dx;
+ scaled dy; 
+ scaled dxUnder;
 
-private:
-  AreaRef child;
 };
 
-#endif // __BinContainerArea_hh__
+#endif // __CombinedGlyphArea_hh__

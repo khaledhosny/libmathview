@@ -41,10 +41,12 @@ protected:
   virtual SmartPtr<class TFMFont> getFont(ComputerModernFamily::FontNameId,
 					  ComputerModernFamily::FontSizeId, const scaled&) const;
   virtual bool getGlyphData(const AreaRef&, SmartPtr<class TFMFont>&, UChar8&) const = 0;
-  virtual void computeCombiningCharOffsets(const AreaRef&, const AreaRef&, const AreaRef&, scaled&, scaled&) const;
-
+  virtual bool computeCombiningCharOffsetsAbove(const AreaRef&, const AreaRef&,
+					        scaled&, scaled&) const;
+  
 private:
   SmartPtr<class TFMFontManager> tfmFontManager;
 };
+
 
 #endif // __TFMComputerModernShaper_hh__

@@ -47,6 +47,9 @@ public:
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
+  virtual SmartPtr<const class GlyphStringArea> getGlyphStringArea(void) const;
+  virtual SmartPtr<const class GlyphArea> getGlyphArea(void) const;
+
   const std::vector<AreaRef> getChildren(void) const { return content; }
 
 protected:

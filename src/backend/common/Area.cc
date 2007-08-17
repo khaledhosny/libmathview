@@ -28,6 +28,8 @@
 #include "Point.hh"
 #include "Element.hh"
 #include "Rectangle.hh"
+#include "GlyphStringArea.hh"
+#include "GlyphArea.hh"
 
 scaled
 Area::originX(AreaIndex i) const
@@ -60,3 +62,12 @@ Area::getElement() const
 scaled
 Area::getStep() const
 { return 0; }
+
+SmartPtr<const GlyphStringArea> 
+Area::getGlyphStringArea() const
+{ return 0; }
+
+SmartPtr<const GlyphArea>
+Area::getGlyphArea() const
+{ return 0; }
+

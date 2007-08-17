@@ -87,6 +87,7 @@ libbackend_common_la_SOURCES = \
   BoxArea.cc \
   BoxedLayoutArea.cc \
   ColorArea.cc \
+  CombinedGlyphArea.cc \
   ComputerModernFamily.cc \
   ComputerModernShaper.cc \
   FormattingContext.cc \

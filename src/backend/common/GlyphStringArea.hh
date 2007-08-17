@@ -23,28 +23,33 @@
 #ifndef __GlyphStringArea_hh__
 #define __GlyphStringArea_hh__
 
+#include "String.hh"
 #include "HorizontalArrayArea.hh"
 
 class GMV_MathView_EXPORT GlyphStringArea : public HorizontalArrayArea
 {
 protected:
-  GlyphStringArea(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c)
-    : HorizontalArrayArea(children), counters(c)
+  GlyphStringArea(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c, const UCS4String& s)
+    : HorizontalArrayArea(children), counters(c), source(s)
   { assert(children.size() == counters.size()); }
   virtual ~GlyphStringArea() { }
 
 public:
-  static SmartPtr<GlyphStringArea> create(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c)
-  { return new GlyphStringArea(children, c); }
-  virtual AreaRef clone(const std::vector<AreaRef>& c) const { return create(c, counters); }
+  static SmartPtr<GlyphStringArea> create(const std::vector<AreaRef>& children, const std::vector<CharIndex>& c, const UCS4String& s)
+  { return new GlyphStringArea(children, c, s); }
+  virtual AreaRef clone(const std::vector<AreaRef>& c) const { return create(c, counters, source); }
 
   virtual CharIndex length(void) const;
   virtual CharIndex lengthTo(AreaIndex) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
   virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
-
+  const UCS4String& getSource() const { return source; }
+  
+  virtual SmartPtr<const class GlyphStringArea> getGlyphStringArea(void) const;  
+  
 private:
   std::vector<CharIndex> counters;
+  UCS4String source;
 };
 
 #endif // __GlyphStringArea_hh__

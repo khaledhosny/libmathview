@@ -22,6 +22,8 @@
 
 #include "AreaId.hh"
 #include "LinearContainerArea.hh"
+#include "GlyphStringArea.hh"
+#include "GlyphArea.hh"
 
 void
 LinearContainerArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
@@ -130,4 +132,22 @@ LinearContainerArea::lengthTo(AreaIndex i) const
   for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
     length += (*p)->length();
   return length;
+}
+
+SmartPtr<const GlyphStringArea>
+LinearContainerArea::getGlyphStringArea() const
+{
+  if (content.size() == 1)
+    return (*(content.begin()))->getGlyphStringArea();
+  else
+    return 0;
+}
+
+SmartPtr<const GlyphArea> 
+LinearContainerArea::getGlyphArea() const
+{
+  if (content.size() == 1)
+    return (*(content.begin()))->getGlyphArea();
+  else
+    return 0;
 }

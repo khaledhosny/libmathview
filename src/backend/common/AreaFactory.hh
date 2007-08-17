@@ -42,6 +42,7 @@
 #include "VerticalArrayArea.hh"
 #include "VerticalFillerArea.hh"
 #include "VerticalSpaceArea.hh"
+#include "CombinedGlyphArea.hh"
 
 class GMV_MathView_EXPORT AreaFactory : public Object
 {
@@ -63,8 +64,8 @@ public:
   { return HideArea::create(area); }
   virtual SmartPtr<HorizontalArrayArea> horizontalArray(const std::vector<AreaRef>& content) const
   { return HorizontalArrayArea::create(content); }
-  virtual SmartPtr<HorizontalArrayArea> glyphString(const std::vector<AreaRef>& content, const std::vector<CharIndex>& counters) const
-  { return GlyphStringArea::create(content, counters); }
+  virtual SmartPtr<GlyphStringArea> glyphString(const std::vector<AreaRef>& content, const std::vector<CharIndex>& counters, UCS4String s) const
+  { return GlyphStringArea::create(content, counters, s); }
   virtual SmartPtr<VerticalArrayArea> verticalArray(const std::vector<AreaRef>& content, AreaIndex ref) const
   { return VerticalArrayArea::create(content, ref); }
   virtual SmartPtr<OverlapArrayArea> overlapArray(const std::vector<AreaRef>& content) const
@@ -89,6 +90,11 @@ public:
   { return StepArea::create(area, s); }
   virtual SmartPtr<BoxedLayoutArea> boxedLayout(const BoundingBox& box, const std::vector<BoxedLayoutArea::XYArea>& content) const
   { return BoxedLayoutArea::create(box, content); }
+  virtual SmartPtr<CombinedGlyphArea> combinedGlyph(const AreaRef& base, const AreaRef& accent,
+						    const AreaRef& under,
+						    const scaled& dx, const scaled& dy,
+						    const scaled& dxUnder) const
+  { return CombinedGlyphArea::create(base, accent, under, dx, dy, dxUnder); }
 
   // macro areas
   virtual AreaRef background(const AreaRef& area, const RGBColor& color) const;

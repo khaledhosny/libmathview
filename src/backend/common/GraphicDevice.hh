@@ -49,10 +49,12 @@ public:
   virtual scaled ex(const class FormattingContext&) const = 0;
   virtual scaled defaultLineThickness(const class FormattingContext&) const;
 
+protected:
+ SmartPtr<class ShaperManager> shaperManager;
+
 private:
   SmartPtr<class AbstractLogger> logger;
   SmartPtr<AreaFactory> factory;
-  SmartPtr<class ShaperManager> shaperManager;
 };
 
 #endif // __GraphicDevice_hh__

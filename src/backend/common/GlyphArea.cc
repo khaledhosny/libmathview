@@ -59,3 +59,7 @@ GlyphArea::positionOfIndex(CharIndex index, Point*, BoundingBox* b) const
   else
     return false;
 }
+
+SmartPtr<const GlyphArea>
+GlyphArea::getGlyphArea() const
+{ return this; }
