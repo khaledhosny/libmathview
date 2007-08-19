@@ -1,7 +1,7 @@
 
 NULL =
 
-DISTCLEANFILES = \
+MAINTERNERCLEANFILES = \
   gtkmathview.conf.xml \
   $(NULL)
 
