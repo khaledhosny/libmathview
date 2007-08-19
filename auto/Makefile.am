@@ -35,7 +35,7 @@ EXTRA_DIST = \
   entitiesTable.inc_ \
   $(NULL)
 
-DISTCLEANFILES = $(AUTOFILES) Char.hh
+MAINTAINERCLEANFILES = $(AUTOFILES) Char.hh
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \

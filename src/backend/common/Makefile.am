@@ -138,6 +138,7 @@ mathview_HEADERS = \
   BoxedLayoutArea.hh \
   CachedShapedString.hh \
   ColorArea.hh	\
+  CombinedGlyphArea.hh \
   ComputerModernFamily.hh \
   ComputerModernShaper.hh \
   ContainerArea.hh \
