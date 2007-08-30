@@ -66,7 +66,7 @@ private:
   static const unsigned LOW_BITS = 8;
   static const unsigned STRETCHY_BIT = LOW_BITS + HIGH_BITS;
   static const unsigned STRETCHY_FLAG = 1 << STRETCHY_BIT;
-  static const Char32 BIGGEST_CHAR = 1 << (HIGH_BITS + 1 + LOW_BITS) - 1;
+  static const Char32 BIGGEST_CHAR = (1 << (HIGH_BITS + 1 + LOW_BITS)) - 1;
 
   SparseMap<GlyphSpec, HIGH_BITS + 1, LOW_BITS> glyphSpec;
 
