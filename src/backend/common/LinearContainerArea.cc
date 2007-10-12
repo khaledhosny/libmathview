@@ -133,17 +133,33 @@ LinearContainerArea::lengthTo(AreaIndex i) const
 SmartPtr<const GlyphStringArea>
 LinearContainerArea::getGlyphStringArea() const
 {
-  if (content.size() == 1)
-    return (*(content.begin()))->getGlyphStringArea();
-  else
-    return 0;
+  SmartPtr<const GlyphStringArea> ptr = NULL;
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+  {
+    if (!ptr && (((*p)->getGlyphStringArea())))  
+      ptr = (*p)->getGlyphStringArea(); 	
+    else if (ptr && (((*p)->getGlyphStringArea())))
+      { ptr = NULL;
+	return ptr;
+      }
+  }
+
+  return ptr;
 }
 
 SmartPtr<const GlyphArea> 
 LinearContainerArea::getGlyphArea() const
 {
-  if (content.size() == 1)
-    return (*(content.begin()))->getGlyphArea();
-  else
-    return 0;
+  SmartPtr<const GlyphArea> ptr = NULL;
+  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+  {
+    if (!ptr && (((*p)->getGlyphArea())))
+      ptr = (*p)->getGlyphArea();
+    else if (ptr && (((*p)->getGlyphArea()))) 
+      { ptr = NULL;
+	return ptr;
+      }
+ }
+
+  return ptr;
 }

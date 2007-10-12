@@ -1928,13 +1928,11 @@ ComputerModernShaper::shapeCombiningChar(ShapingContext& context) const
 
   if (charSpec.spec.index == 0x18)
     {
-      // printf("eseguo per under\n");
       under = accentGlyph;
       computeCombiningCharOffsetsBelow(base, under, dxUnder);
     }
   else
     {
-      // printf("eseguo per over\n");
       accent = accentGlyph;
       computeCombiningCharOffsetsAbove(base, accent, dx, dy);
     }

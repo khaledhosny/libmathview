@@ -149,6 +149,7 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 
   if (baseArea && scriptArea)
     {
+      //we define a correct value of dx
       dx = (base->box().width - script->box().width) / 2;
 
       if (!getGlyphData(baseArea, baseFont, baseIndex))
@@ -161,6 +162,10 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 
       if (accentData)
 	{
+	  //we find a TFM accent font. The size
+	  //is very important to find a correct x_height,
+	  //that is the height that will use to 
+	  //estimate the dy
 	  accentTFM = accentFont->getTFM();
 	  accentNameId = fontNameIdOfTFM(accentTFM);
       
@@ -186,8 +191,11 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
       const ComputerModernFamily::FontNameId baseNameId = fontNameIdOfTFM(baseTFM);
       bool math = false;
 
+      //we control if we have in the math mode 
+      //or in the text mode. The base font
+      //affect the mode.
       switch (baseNameId) {
-	// these are all the TeX text fonts 
+	//these are all the TeX text fonts 
       case ComputerModernFamily::FN_CMR:
       case ComputerModernFamily::FN_CMB:
       case ComputerModernFamily::FN_CMBX:
@@ -199,7 +207,7 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
       case ComputerModernFamily::FN_CMTT:
 	math = false;
 	break;
-	// these are all the TeX math fonts 
+	//these are all the TeX math fonts 
       case ComputerModernFamily::FN_CMSY:
       case ComputerModernFamily::FN_CMBSY:
       case ComputerModernFamily::FN_CMMI:
@@ -213,8 +221,8 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 	assert(false); /* IMPOSSIBLE */
       }
 
-      // printf("modo %d accentData? %d\n", math, accentData);
-
+      //in the math mode we estimate the dy
+      //as indicated in the Appendix G of the TeXBook
       if (math)
 	{
 	  if (accentData)
@@ -225,6 +233,9 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 	    }
 
 	  const ComputerModernFamily::FontEncId fontEncId = ComputerModernFamily::encIdOfFontNameId(baseNameId);
+          //the skewchar is estimate only if the base char
+          //belong to a family 1 or family 2 and if the 
+          //accent char not belong to a italic fonts
 	  if ((fontEncId == ComputerModernFamily::FE_CMMI ||       //family 1 (math italic font)
 	       fontEncId == ComputerModernFamily::FE_CMSY) &&      //family 2 (math symbol font)
 	      !(accentNameId == ComputerModernFamily::FN_CMBXTI ||
@@ -232,17 +243,18 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 		accentNameId == ComputerModernFamily::FN_CMMI ||
 		accentNameId == ComputerModernFamily::FN_CMSSI))
 	    {
-	      // printf("Imposto lo skewchar\n");
 	      const Char8 skewChar = (fontEncId == ComputerModernFamily::FE_CMMI) ? 0177 : 0060;
 	      scaled kerning;
 
 	      if (baseTFM->getGlyphKerning(baseIndex, skewChar, kerning))
 		{
-		  kerning *= baseFont->getScale();
+		  kerning *= baseFont->getScale(); //the kerning must be scaled to a font scale
 		  dx += kerning;
 		}
 	    }
 	}
+       //if we are in the text mode we use define dx and
+       //dy like the Tex primitive (accent) estimate dx and dy
       else
 	{
 	  if (accentData)
@@ -261,46 +273,9 @@ TFMComputerModernShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 	}
       res = true;
     }
-
+  //we return to a defalt estimate of dx and dy
   else
     res = Shaper::computeCombiningCharOffsetsAbove(base, script, dx, dy);
 
   return res;
 }
-
-
-#if 0
-/*  
-  SmartPtr<TFMFont> exTFMFont = getFont(ComputerModernFamily::FN_CMR,
-					ComputerModernFamily::FS_10, 
-				        baseFont->getScale());
-
-  unsigned index = 5;  //position of x-height in CMR Font
-  SmartPtr<TFM> exTFM = exTFMFont->getTFM();
-  dy = -(std::min(base->box().height, (exTFM->getDimension(index) * baseFont->getScale())));
-*/
-
-  if (getGlyphData(accent, accentFont, accentIndex))
-    {
-      
-      if (accentNameId == ComputerModernFamily::FN_CMBXTI ||
-	  accentNameId == ComputerModernFamily::FN_CMTI ||
-	  accentNameId == ComputerModernFamily::FN_CMMI ||
-	  accentNameId == ComputerModernFamily::FN_CMSSI)
-	{
-          if (base->box().height != (exTFM->getDimension(index) * baseFont->getScale()))
-          { 
-//	    dx = scaled::zero();
-//            return true;
-//	    unsigned int index1 = 1;
-//	    scaled baseSlant = baseFont->getTFM()->getDimension(index1);
-//	    scaled accentSlant = accentTFM->getDimension(index1);
-//	    dx = dx + base->box().height * baseSlant - accent->box().height * accentSlant;
-	    dx += baseFont->getTFM()->getGlyphItalicCorrection(baseIndex) * baseFont->getScale();
-          }
-	    return true;
-	}
-    } 
-  return true;
-}
-#endif 

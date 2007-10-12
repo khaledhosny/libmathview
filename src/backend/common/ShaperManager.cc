@@ -172,23 +172,20 @@ SmartPtr<class Shaper>
 ShaperManager::getShaper(unsigned si) const
 { return (si < nextShaperId) ? shaper[si] : 0; }
 
-#include <stdio.h>
 AreaRef
 ShaperManager::compose(const FormattingContext& context,
 		       const AreaRef base, const UCS4String baseSource,
 	       	       const AreaRef script, const UCS4String scriptSource,
 	       	       bool overScript)
 {
-   const GlyphSpec& baseGlyphSpec = map(baseSource[0]);
-   
-//  AreaRef baseArea = base->getGlyphArea();
-//  AreaRef overScriptArea = overScript->getGlyphArea();
   scaled dx = scaled::zero();
   scaled dy = scaled::zero();
   scaled dxUnder= scaled::zero();
 
-
+  const GlyphSpec& baseGlyphSpec = map(baseSource[0]);
   const GlyphSpec& scriptGlyphSpec = map(scriptSource[0]);
+  //we control if the base char and the combining char are render
+  //to the same Shaper
   if (baseGlyphSpec.getShaperId() == scriptGlyphSpec.getShaperId())
   {
     if (overScript)
@@ -200,8 +197,12 @@ ShaperManager::compose(const FormattingContext& context,
    					               	     	       	    script,
 								            dxUnder);
   } 
+  //we define a default values of dx and dy 
   else
-  {  /* ... da implementare ....*/ }
+  {
+    dx = (base->box().width + script->box().width)/ 2;
+    dy = base->box().height + script->box().depth;
+  }
 
   const AreaRef over = overScript ? script : NULL;
   const AreaRef under = overScript ? NULL : script;

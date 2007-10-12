@@ -448,25 +448,10 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
   return getFactory()->horizontalArray(h);
 }
 
-#if 1
+#if 0
 #include <iostream>
 #include <stdio.h>
 #endif
-
-/*
-inline bool
-isCombiningUnder(Char32 ch)
-{
-  return (ch == 0x0327);
-}
-
-
-inline bool
-isCombiningOver(Char32 ch)
-{
-  return (ch >= 0x0300 && ch <= 0x0308) || (ch >= 0x030A && ch <= 0x030C);
-}
-*/
 
 AreaRef
 MathGraphicDevice::underOver(const FormattingContext& context,
@@ -494,37 +479,40 @@ MathGraphicDevice::underOver(const FormattingContext& context,
     UCS4String overSource;
     UCS4String underSource;
     AreaRef res;
+    
+    //controls if overScript and/or underScript are very sinlge character
     bool overCondition = overStringArea && accent && 
 			 ((overSource = overStringArea->getSource()).length() == 1);
     bool underCondition = underStringArea && accentUnder &&
 	   		  ((underSource = underStringArea->getSource()).length() == 1);
 
     baseSource = baseStringArea->getSource();
-
-#if 0
-    printf("valore di accentUnder %d\n", accentUnder);
-    printf("valore overCond %d\n", overCondition);
-    printf("valore underCond %d\n", underCondition);
-#endif
-
+    //controls if the base character is a single char
     if (baseSource.length() == 1)
     {
       if (overScript && underScript)
       {
         if (overCondition)
         {
+	  //we have that overScript is a single character
 	  res = shaperManager->compose(context,
 				       base, baseSource,
 				       overScript, overSource, true);
+
+	  //if this condition is true then also underScript is a single char
 	  if (underCondition)
             res = shaperManager->compose(context,
 					 res, baseSource,
 					 underScript, underSource, false);
+
+          //we have that the overScript is a single char
+          //but the underScript isn't a single char
           else
 	    res = underOver(context, res, underScript, accentUnder, NULL, accent);  
 
 	  return res;
         }
+        //we have that only the underScript is a single char  
         else if (underCondition)
 	{
 	  res = shaperManager->compose(context,
@@ -536,6 +524,8 @@ MathGraphicDevice::underOver(const FormattingContext& context,
         }
       }
 
+      //we control if one of overScript and underScript
+      //is a single char
       else if (overScript || underScript)
       {
 	if (overCondition)
@@ -555,49 +545,9 @@ MathGraphicDevice::underOver(const FormattingContext& context,
       }
     }
   }
-/*
-      if ((overStringArea && accent &&  
-	   (overSource = overStringArea->getSource()).length() == 1) || 
-	  (underStringArea && accentUnder &&
-	   (underSource = underStringArea->getSource()).length() == 1))
-      {
-        printf("eseguo compose di ShaperManager\n");
-        return shaperManager->compose(context,
-		     	  	      base, baseSource,
-			              overScript, overSource,
-				      underScript, underSource);
-      }
-    }
-  }
-*/
-
-#if 0
-
-   if (baseStringArea &&
-       overStringArea &&
-       !underStringArea)
-  {
-    //std::cout << "eseguo primo if" << std::endl;
-    const AreaRef baseArea = base->getGlyphArea();
-    const AreaRef overScriptArea = overScript->getGlyphArea();
- 
-    const UCS4String baseSource = baseStringArea->getSource();
-    const UCS4String overSource = overStringArea->getSource();
   
-    if (baseSource.length() == 1 &&
-        overSource.length() == 1 && 
-        accent &&
-	baseArea &&
-	overScriptArea)
-    {
-     //std::cout << "2° if" << std::endl;
-     return shaperManager->compose(context,
-		     	  	   base, baseArea, baseSource[0],
-			           overScript, overScriptArea, overSource[0]);
-    }
-  }	
-#endif
-
+  //the next instructions represent the default behavior
+  //in which overScript and underScript aren't single char
   const scaled RULE = defaultLineThickness(context);
   const AreaRef singleSpace = getFactory()->verticalSpace(RULE, 0);
   const AreaRef tripleSpace = getFactory()->verticalSpace(3 * RULE, 0);

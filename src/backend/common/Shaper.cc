@@ -116,6 +116,7 @@ Shaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
 				    	 scaled& dx,
 				    	 scaled& dy) const
 {
+  //default value of dx and dy
   dx = (base->box().width - script->box().width) / 2;
   dy = base->box().height + script->box().depth;
     
