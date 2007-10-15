@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <key name="background">#ff6a6a</key>
     </section>
     <section name="t1lib">
-      <key name="t1-font-path">/usr/share/texmf/fonts/type1/bluesky/cm</key>
+      <key name="t1-font-path">/usr/share/texmf-tetex/fonts/type1/bluesky/cm</key>
       <key name="opaque-mode">false</key>
       <key name="anti-aliasing">true</key>
     </section>

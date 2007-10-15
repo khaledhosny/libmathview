@@ -35,7 +35,8 @@ EXTRA_DIST = \
   entitiesTable.inc_ \
   $(NULL)
 
-MAINTAINERCLEANFILES = $(AUTOFILES) Char.hh
+DISTCLEANFILES = config.dirs entitiesTable.inc Char.hh
+MAINTAINERCLEANFILES = token.dec token.def
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = \
