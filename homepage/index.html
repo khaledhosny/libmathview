@@ -110,6 +110,11 @@
 
 <h3 id="moredownload">more download</h3>
 
+<h4>0.8.x (sources)</h4>
+<ul class="compact">
+  <li><b>gtkmathview-0.8.0</b> [<a href="sources/gtkmathview-0.8.0.tar.gz">.tar.gz</a>]</li>
+</ul>
+
 <h4>0.7.x (sources)</h4>
 <ul class="compact">
   <li><b>gtkmathview-0.7.8</b> [<a href="sources/gtkmathview-0.7.8.tar.gz">.tar.gz</a>]</li>
@@ -276,7 +281,7 @@
   <p style="font-size: small; text-align: center;">
   [<a href="#documentation">documentation</a>]
   [<a href="#requirements">requirements</a>]
-  [<a href="#cvs">CVS</a>]
+  [<a href="#svn">SVN</a>]
   [<a href="#projects">projects</a>]
   [<a href="#examples">examples &amp; screenshots</a>]
   [<a href="#fonts">fonts</a>]
@@ -284,7 +289,7 @@
   </p>
 
   <p style="font-size: small; text-align: center;">
-  [<b><a href="form.html">Try GtkMathView online!</a></b>]
+  <b>GtkMathView is now <a href="http://www.gnu.org/licenses/lgpl.html">LGPL</a> software</b>.
   </p>
 
   <p>
@@ -390,7 +395,9 @@
     <b>0.0.3c</b>.  </li>
 </ul>
 
-<p>For compiling a freshly checked out source tree from the CVS, you'll also need:</p>
+<p>For compiling a freshly checked out source tree from the <a
+href="http://svn.gnome.org/">GNOME SVN repository</a>, you'll also
+need:</p>
 <ul>
   <li>automake &#x2265; 1.7.6</li>
   <li>autoconf &#x2265; 2.57</li>
@@ -401,36 +408,37 @@
 <p>NOTE: You may succeed compiling GtkMathView with older versions of the above
 libraries/tools.</p>
 
-<h3 id="cvs" class="reverse">CVS</h3>
+<h3 id="svn" class="reverse">SVN</h3>
 
 <p>
 The source code is available on the <a
-href="http://cvs.gnome.org/">GNOME</a> CVS repository, the module name
-is <code>gtkmathview</code>:
+href="http://svn.gnome.org/">GNOME</a> SVN repository, the module name
+is <code>gtkmathview</code>.
 </p>
 
 <table style="text-align: center;" border="1">
   <tr>
-    <th>CVSROOT</th>
-    <th>access</th>
+    <th>command</th>
+    <th>user</th>
   </tr>
   <tr>
-    <td><code>:extssh:anonymous@anoncvs.gnome.org:/cvs/gnome</code></td>
-    <td>read-only</td>
+    <td><code>svn co http://svn.gnome.org/svn/gtkmathview/trunk gtkmathview</code></td>
+    <td>anonymous</td>
   </tr>
   <tr>
-    <td><code>:extssh:<em>username</em>@cvs.gnome.org:/cvs/gnome</code></td>
-    <td>read-write</td>
+    <td><code>svn co svn+ssh://<em>login</em>@svn.gnome.org/svn/gtkmathview/trunk gtkmathview</code></td>
+    <td>registered</td>
   </tr>
 </table>
 
 <p>
 You can also browse the content of the repository online <a
-href="http://cvs.gnome.org/viewcvs/gtkmathview/">here (ViewCVS)</a>.
+href="http://svn.gnome.org/viewvc/gtkmathview/">here (ViewVC)</a>.
 </p>
 
+<!--
 <p>
-Currently there are four active branches of the CVS repository. The
+Currently there are four active branches of the SVN repository. The
 <b>no-edit</b> branch refers to the <b>0.3.x</b> versions. It can compile
 with both GMetaDOM and minidom, it does not support editing, but it is
 probably the most accurate one w.r.t. PostScript rendering. The <b>pre_v0_4_2</b>
@@ -441,6 +449,7 @@ architecture.
 The main trunk of the repository is the main development
 trunk.
 </p>
+-->
 
 <h3 class="reverse" id="projects">projects</h3>
 
@@ -535,6 +544,15 @@ large integrals have the middle part misaligned.
 <h3 class="reverse">news</h3>
 
  <dl class="compact">
+   <dt>Oct 15, 2007</dt>
+   <dd>Release of version <b>0.8.0</b>. 
+    Nicola Rossi has implemented high-quality support for accents and
+    other diacritical marks, following TeX typesetting engine.
+    Starting from this version, <b>GtkMathView will be released under the
+    terms of the <a href="http://www.gnu.org/licenses/lgpl.html">GNU
+    Lesser General Public License (version 3)</a></b>.
+   </dd>
+
    <dt>May 08, 2007</dt>
    <dd>Release of version <b>0.7.8</b> (tag <b>v0_7_8</b>). 
     Restored PostScript backend.

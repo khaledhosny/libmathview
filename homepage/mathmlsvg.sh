@@ -1,10 +1,10 @@
 #!/bin/sh
 
-if test `uname` == "Darwin"; then
+if test `uname` = "Darwin"; then
   BUILD_PATH=~/Projects/Builds/gtkmathview_svg
   SOURCE_PATH=~/Projects/gtkmathview
 else
-  BUILD_PATH=/localdisk/luca/Builds/gtkmathview_gmetadom_full
+  BUILD_PATH=~/Projects/gtkmathview
   SOURCE_PATH=~/Projects/gtkmathview
 fi
 
