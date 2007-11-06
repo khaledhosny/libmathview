@@ -45,6 +45,10 @@ struct GMV_FrontEnd_EXPORT libxml2_Model
   static xmlDoc* document(const class AbstractLogger&, const String&, bool = false);
   static xmlDoc* documentFromBuffer(const class AbstractLogger&, const String&, bool = false);
 
+  // method for freeing a document
+  // MUST be available, may be noop
+  static void freeDocument(xmlDoc*);
+
   static Element getDocumentElement(const Document&);
 
   // methods for casting an element to a node and viceversa

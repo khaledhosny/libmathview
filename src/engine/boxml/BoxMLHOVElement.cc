@@ -41,8 +41,10 @@ BoxMLHOVElement::create(const SmartPtr<BoxMLNamespaceContext>& context)
 AreaRef
 BoxMLHOVElement::format(FormattingContext& ctxt)
 {
+  static int counter = 0;
   if (dirtyLayout())
     {
+      printf("IN %d\n", counter++);
       ctxt.push(this);
 
       const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, HOV, spacing)), 0);
@@ -70,15 +72,17 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
 
 	  AreaRef area;
 	  AreaRef maxArea;
+	  scaled maxAreaWidth;
 	  do
 	    {
 	      area = (*p)->format(ctxt);
 	      maxArea = (*p)->getMaxArea();
+	      maxAreaWidth = maxArea->box().width;
 	      cMax.push_back(maxArea);
-	      if (maxArea->box().width > remainingWidthForThisLine)
+	      if (maxAreaWidth > remainingWidthForThisLine)
 		break;
 	      hc.push_back(maxArea);
-	      remainingWidthForThisLine -= maxArea->box().width + spacing;
+	      remainingWidthForThisLine -= maxAreaWidth + spacing;
 	      p++;
 	    }
 	  while (p != content.end());
@@ -87,7 +91,7 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
 	    vc.push_back(BoxMLHElement::formatHorizontalArray(ctxt, hc, spacing));
 	  else if (p != content.end())
 	    {
-	      if (maxArea->box().width <= availableWidthPerLine)
+	      if (maxAreaWidth <= availableWidthPerLine)
 		vc.push_back(maxArea);
 	      else
 		vc.push_back(area);
@@ -107,6 +111,7 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
 	  res = ctxt.BGD()->wrapper(ctxt, res);
 	  setArea(res);
 	}
+      printf("OUT %d\n", --counter);
 
       ctxt.pop();
       resetDirtyLayout();

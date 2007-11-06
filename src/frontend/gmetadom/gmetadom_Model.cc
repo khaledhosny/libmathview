@@ -116,6 +116,12 @@ gmetadom_Model::documentFromBuffer(const AbstractLogger& logger, const String& b
   return res;
 }
 
+void
+gmetadom_Model::freeDocument(const DOM::Document&)
+{
+  // noop: reference counting
+}
+
 String
 gmetadom_Model::getElementValue(const DOM::Element& elem)
 {

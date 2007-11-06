@@ -339,6 +339,7 @@ main(int argc, const char* argv[])
       const BoundingBox box = view->getBoundingBox();
 
       std::ofstream os(outName);
+      delete [] outName;
       //SVG_StreamRenderingContext rc(logger, os);
       SVG_libxml2_StreamRenderingContext rc(logger, os, view);
       if (cropping)

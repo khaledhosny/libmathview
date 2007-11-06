@@ -46,7 +46,7 @@ TFMFont::getGlyphLeftEdge(Char8) const
 
 scaled
 TFMFont::getGlyphRightEdge(Char8 index) const
-{ return tfm->getGlyphBoundingBox(index).width * tfm->getScale(getSize()); }
+{ return (tfm->getGlyphBoundingBox(index).width + tfm->getGlyphItalicCorrection(index)) * tfm->getScale(getSize()); }
 
 BoundingBox
 TFMFont::getGlyphBoundingBox(Char8 index) const

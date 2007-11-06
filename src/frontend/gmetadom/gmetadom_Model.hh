@@ -47,6 +47,10 @@ struct GMV_FrontEnd_EXPORT gmetadom_Model
   static DOM::Document document(const class AbstractLogger&, const String&, bool = false);
   static DOM::Document documentFromBuffer(const class AbstractLogger&, const String&, bool = false);
 
+  // method for freeing a document
+  // MUST be available, may be noop
+  static void freeDocument(const DOM::Document&);
+
   // conversion methods
   static DOM::Element asNode(const DOM::Element& el) { return el; }
   static DOM::Node asElement(const DOM::Node& n) { return n; }

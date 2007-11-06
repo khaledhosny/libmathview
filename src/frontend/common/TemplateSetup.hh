@@ -119,14 +119,19 @@ struct TemplateSetup
   {
     logger.out(LOG_DEBUG, "loading %s from `%s'...", description.c_str(), path.c_str());
     if (typename Model::Document doc = Model::document(logger, path, subst))
-      if (typename Model::Element root = Model::getDocumentElement(doc))
-	if (Model::getNodeName(Model::asNode(root)) == rootTag)
-	  {
+      {
+	bool res = true;
+	if (typename Model::Element root = Model::getDocumentElement(doc))
+	  if (Model::getNodeName(Model::asNode(root)) == rootTag)
 	    parse(logger, obj, root);
-	    return true;
-	  }
-	else 
-	  logger.out(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
+	  else 
+	    {
+	      logger.out(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
+	      res = false;
+	    }
+	Model::freeDocument(doc);
+	return res;
+      }
     return false;
   }
 };

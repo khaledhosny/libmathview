@@ -48,6 +48,12 @@ libxml2_Model::documentFromBuffer(const AbstractLogger& logger, const String& bu
   return doc;  
 }
 
+void
+libxml2_Model::freeDocument(xmlDoc* doc)
+{
+  xmlFreeDoc(doc);
+}
+
 xmlElement*
 libxml2_Model::getDocumentElement(const Document& doc)
 {

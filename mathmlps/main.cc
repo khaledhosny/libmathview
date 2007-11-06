@@ -367,6 +367,7 @@ main(int argc, const char* argv[])
 #endif
 
       std::ofstream os(outName);
+      delete [] outName;
       PS_StreamRenderingContext rc(logger, os, fDb);
 
       if (cropping)

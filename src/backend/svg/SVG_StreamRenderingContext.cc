@@ -43,6 +43,25 @@ SVG_StreamRenderingContext::wrapperStart(const scaled& x, const scaled& y, const
 	 << " gmv:height=\"" << toSVGLength(box.height) << "\""
 	 << " gmv:depth=\"" << toSVGLength(box.depth) << "\""
 	 << ">" << std::endl;
+#if 1
+  output << "<rect"
+	 << " x=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
+	 << " width=\"" << toSVGLength(box.horizontalExtent()) << "\""
+	 << " height=\"" << toSVGLength(box.verticalExtent()) << "\""
+	 << " stroke=\"red\""
+	 << " stroke-width=\"0.1\""
+	 << " fill-opacity=\"0\""
+	 << "/>" << std::endl;
+  output << "<line"
+	 << " x1=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
+	 << " y1=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " x2=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x + box.horizontalExtent())) << "\""
+	 << " y2=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
+	 << " stroke=\"red\""
+	 << " stroke-width=\"0.1\""
+	 << "/>" << std::endl;
+#endif
 }
 
 String
@@ -103,25 +122,6 @@ SVG_StreamRenderingContext::text(const scaled& x, const scaled& y,
 				 const RGBColor& fillColor, const RGBColor& strokeColor,
 				 const scaled& strokeWidth, const String& content)
 {
-#if 0
-  output << "<rect"
-	 << " x=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
-	 << " y=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y + box.height)) << "\""
-	 << " width=\"" << toSVGLength(box.horizontalExtent()) << "\""
-	 << " height=\"" << toSVGLength(box.verticalExtent()) << "\""
-	 << " stroke=\"red\""
-	 << " stroke-width=\"0.1\""
-	 << " fill-opacity=\"0\""
-	 << "/>" << std::endl;
-  output << "<line"
-	 << " x1=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x)) << "\""
-	 << " y1=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
-	 << " x2=\"" << toSVGLength(SVG_RenderingContext::toSVGX(x + box.horizontalExtent())) << "\""
-	 << " y2=\"" << toSVGLength(SVG_RenderingContext::toSVGY(y)) << "\""
-	 << " stroke=\"red\""
-	 << " stroke-width=\"0.1\""
-	 << "/>" << std::endl;
-#endif
   output << "<text"
 	 << " x=\"" << toSVGLength(x) << "\""
 	 << " y=\"" << toSVGLength(y) << "\""

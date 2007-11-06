@@ -285,10 +285,10 @@ static VStretchyChar vMap[] =
 struct XFontDesc
 {
   MathVariant variant;
-  char* family;
-  char* weight;
-  char* slant;
-  char* charset;
+  const char* family;
+  const char* weight;
+  const char* slant;
+  const char* charset;
 };
 
 #define SYMBOL_INDEX 0
