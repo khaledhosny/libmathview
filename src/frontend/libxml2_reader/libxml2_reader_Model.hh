@@ -25,6 +25,10 @@
 struct libxml2_reader_Model : public TemplateReaderModel<libxmlXmlReader>
 {
   typedef class libxml2_reader_Builder Builder;
+
+  // method for freeing a document
+  // MUST be available, may be noop
+  static void freeDocument(Document) { }
 };
 
 #endif // __libxml2_reader_Model_hh__
