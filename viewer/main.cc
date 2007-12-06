@@ -1,20 +1,24 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
-// 
+//
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
 // 
 // GtkMathView is free software; you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as published
-// by the Free Software Foundation; either version 3 of the License, or
-// (at your option) any later version.
-// 
+// either under the terms of the GNU Lesser General Public License version
+// 3 as published by the Free Software Foundation (the "LGPL") or, at your
+// option, under the terms of the GNU General Public License version 2 as
+// published by the Free Software Foundation (the "GPL").  If you do not
+// alter this notice, a recipient may use your version of this file under
+// either the GPL or the LGPL.
+//
 // GtkMathView is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the LGPL or
+// the GPL for more details.
 // 
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the LGPL and of the GPL along with
+// this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
+// <http://www.gnu.org/licenses/>.
 
 #include <config.h>
 
@@ -23,8 +27,6 @@
 
 #include <cassert>
 #include <stdlib.h>
-
-#include <popt.h>
 
 #include "defs.h"
 #include "guiGTK.h"
@@ -36,13 +38,14 @@
 #ifdef ENABLE_PROFILE
 #endif // ENABLE_PROFILE
 
-enum CommandLineOptionId {
-  OPTION_VERSION = 256,
-  OPTION_VERBOSE
-};
+static gboolean option_version = FALSE;
+static gint option_verbose = -1;
 
-// global options
-bool entityWarning = false;
+static GOptionEntry optionEntries[] = {
+  { "version", 'V', 0, G_OPTION_ARG_NONE, &option_version, "Output version information", 0 },
+  { "verbose", 'v', 0, G_OPTION_ARG_INT, &option_verbose, "Display messages", "[0-3]" },
+  { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
+};
 
 static char appName[64];
 
@@ -50,62 +53,40 @@ extern void *parseMathMLFile(char *);
 
 static void printVersion()
 {
-  printf("%s - written by Luca Padovani (C) 2000-2005.\n", appName);
+  printf("%s - written by Luca Padovani (C) 2000-2007.\n", appName);
   exit(0);
 }
 
-static gint logLevel = -1;
-static struct poptOption optionsTable[] = {
-  { "version", 'V', POPT_ARG_NONE, 0, OPTION_VERSION, "Output version information", 0 },
-  { "verbose", 'v', POPT_ARG_INT, &logLevel, OPTION_VERBOSE, "Display messages", "[0-3]" },
-  POPT_AUTOHELP
-  { 0, 0, 0, 0, 0, 0, 0 }
-};
-
 static void
-usage(poptContext optCon, int exitcode, const char* msg)
+usage(GOptionContext* ctxt, int exitcode, const char* msg)
 {
-  poptPrintUsage(optCon, stderr, 0);
+  gchar* help = g_option_context_get_help(ctxt, TRUE, NULL);
+  fprintf(stderr, "%s", help);
   if (msg) fprintf(stderr, "%s\n", msg);
+  g_free(help);
   exit(exitcode);
 }
 
 int
-main(int argc, const char *argv[])
+main(int argc, char* argv[])
 {
-  poptContext ctxt = poptGetContext(NULL, argc, argv, optionsTable, 0);
-  sprintf(appName, "mathmlviewer v%s", VERSION);
+  GOptionContext* ctxt = g_option_context_new("<file> - display MathML documents");
+  g_option_context_add_main_entries(ctxt, optionEntries, NULL);
+  g_option_context_set_help_enabled(ctxt, TRUE);
+  if (!g_option_context_parse(ctxt, &argc, &argv, NULL))
+    usage(ctxt, 1, "error parsing options");
 
-  gint c;
-  while ((c = poptGetNextOpt(ctxt)) >= 0)
-    {
-      switch (c) {
-      case OPTION_VERSION:
-	printVersion();
-	break;
-      case OPTION_VERBOSE:
-	break;
-      default:
-	assert(false);
-      }
-    }
+  sprintf(appName, "%s v%s", g_get_prgname(), VERSION);
 
-  if (c < -1)
-    {
-      /* an error occurred during option processing */
-      fprintf(stderr, "%s: %s\n",
-	      poptBadOption(ctxt, POPT_BADOPTION_NOALIAS),
-	      poptStrerror(c));
-      return 1;
-    }
+  if (option_version)
+    printVersion();
 
-  const gchar* file = poptGetArg(ctxt);
-  if (file == 0 || !(poptPeekArg(ctxt) == 0))
-    usage(ctxt, 1, "fatal error: no input document");
+  if (argc <= 1) usage(ctxt, 1, "fatal error: no input document");
 
-  poptFreeContext(ctxt);
+  g_option_context_free(ctxt);
 
-  GUI_init(&argc, &argv, appName, 500, 600, logLevel);
+  const gchar* file = argv[1];
+  GUI_init(&argc, &argv, appName, 500, 600, option_verbose);
   if (GUI_load_document(file) < 0)
     printf("fatal error: cannot load document `%s'\n", file);
   GUI_run();
