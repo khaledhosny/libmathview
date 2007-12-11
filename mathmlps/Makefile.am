@@ -33,6 +33,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/backend/ps \
   -I$(top_srcdir)/src/view \
   $(POPT_CFLAGS) \
+  $(GLIB_CFLAGS) \
   $(XML_CFLAGS) \
   $(NULL)
 

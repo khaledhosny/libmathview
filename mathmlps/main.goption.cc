@@ -25,7 +25,7 @@
 #include <cassert>
 #include <fstream>
 
-#include <popt.h>
+#include <glib.h>
 
 // needed for old versions of GCC, must come before String.hh!
 #include "CharTraits.icc"
@@ -59,33 +59,25 @@ static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = DEFAULT_FONT_SIZE;
 static bool cropping = true;
-#ifdef HAVE_LIBT1
-static int fontEmbed = 2;
-#else
-static int fontEmbed = 0;
-#endif
-static bool cutFileName = true;
-static char* configPath = 0;
-static int  logLevel = LOG_ERROR;
-static bool logLevelSet = false;
 
-enum CommandLineOptionId {
-  OPTION_VERSION = 256,
-  OPTION_VERBOSE,
-  OPTION_PAGE_SIZE,
-  OPTION_UNIT,
-  OPTION_MARGINS,
-  OPTION_FONT_SIZE,
-  OPTION_FONT_EMBED,
-  OPTION_CROP,
-  OPTION_CUT_FILENAME,
-  OPTION_CONFIG
-};
+static gboolean option_version = FALSE;
+static gint option_verbose = -1;
+static gchar* option_unit = NULL;
+static gchar* option_page_size = NULL;
+static gchar* option_margins = NULL;
+static gdouble option_font_size = 0.0;
+#ifdef HAVE_LIBT1
+static gint option_font_embed = 2;
+#else
+static int option_font_embed = 0;
+#endif
+static gchar* option_config = NULL;
+static gchar* option_crop = NULL;
 
 static void
 printVersion()
 {
-  std::cout << "MathML to PostScript converter - written by Luca Padovani & Nicola Rossi (C) 2006" << std::endl
+  std::cout << "MathML to PostScript converter - written by Luca Padovani & Nicola Rossi (C) 2006-2007" << std::endl
 	    << "Based on GtkMathView " << VERSION << std::endl;
 #ifdef DEBUG
   std::cout << "Compiled " << __DATE__ << " " << __TIME__ << std::endl;
@@ -93,29 +85,29 @@ printVersion()
   exit(0);
 }
 
-static struct poptOption optionsTable[] = {
-  { "version", 'V', POPT_ARG_NONE, 0, OPTION_VERSION, "Output version information", 0 },
-  { "verbose", 'v', POPT_ARG_INT, &logLevel, OPTION_VERBOSE, "Display messages", "[0-3]" },
-  { "unit", 'u',    POPT_ARG_STRING, 0, OPTION_UNIT, "Unit for dimensions (default='cm')", "<unit>" },
-  { "page-size", 'p', POPT_ARG_STRING, 0, OPTION_PAGE_SIZE, "Page size (width x height) (default = 21 x 29.7)", "<float>x<float>" },
-  { "margins", 'm', POPT_ARG_STRING, 0, OPTION_MARGINS, "Margins (top x left) (default = 2 x 2)", "<float>x<float>" },
-  { "font-size", 'f', POPT_ARG_DOUBLE, &fontSize, OPTION_FONT_SIZE, "Default font size (in pt, default=10)", "<float>" },
+static GOptionEntry optionEntries[] = {
+  { "version", 'V', 0, G_OPTION_ARG_NONE, &option_version, "Output version information", 0 },
+  { "verbose", 'v', 0, G_OPTION_ARG_INT, &option_verbose, "Display messages", "[0-3]" },
+  { "unit", 'u', 0, G_OPTION_ARG_STRING, &option_unit, "Unit for dimensions (default='cm')", "<unit>" },
+  { "page-size", 'p', 0, G_OPTION_ARG_STRING, &option_page_size, "Page size (width x height) (default = 21 x 29.7)", "<float>x<float>" },
+  { "margins", 'm', 0, G_OPTION_ARG_STRING, &option_margins, "Margins (top x left) (default = 2 x 2)", "<float>x<float>" },
+  { "font-size", 'f', 0, G_OPTION_ARG_DOUBLE, &option_font_size, "Default font size (in pt, default=10)", "<float>" },
 #ifdef HAVE_LIBT1
-  { "font-embed", 0, POPT_ARG_INT, &fontEmbed, OPTION_FONT_EMBED, "Enable/disable embedding (default=2)", "[0=disable,1=embed,2=subset]" },
+  { "font-embed", 0, 0, G_OPTION_ARG_INT, &option_font_embed, "Enable/disable embedding (default=2)", "[0=disable,1=embed,2=subset]" },
 #endif // HAVE_LIBT1
-  { "config", 0, POPT_ARG_STRING, 0, OPTION_CONFIG, "Configuration file path", "<path>" },
-  { "crop", 'r', POPT_ARG_STRING | POPT_ARGFLAG_OPTIONAL, 0, OPTION_CROP, "Enable/disable cropping to bounding box (default='yes')", "[yes,no]" },
-  { "cut-filename", 0, POPT_ARG_STRING | POPT_ARGFLAG_OPTIONAL, 0, OPTION_CUT_FILENAME, "Cut the prefix dir from the output file (default='yes')", "[yes,no]" },
-  POPT_AUTOHELP
-  { 0, 0, 0, 0, 0, 0, 0 }
+  { "config", 0, 0, G_OPTION_ARG_FILENAME, &option_config, "Configuration file path", "<path>" },
+  { "crop", 'r', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_STRING, &option_crop, "Enable/disable cropping to bounding box", "[yes,no]" },
+
+  { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };
 
 static void
-usage(poptContext optCon, int exitcode, const char* msg, const char* arg)
+usage(GOptionContext* ctxt, int exitcode, const char* msg, const char* arg)
 {
-  poptPrintUsage(optCon, stderr, 0);
+  gchar* help = g_option_context_get_help(ctxt, TRUE, NULL);
+  fprintf(stderr, "%s", help);
   fprintf(stderr, "\
-Valid units are:\n\n\
+Valid units are:\n\
   cm    centimeter\n\
   mm    millimeter\n\
   in    inch (1 in = 2.54 cm)\n\
@@ -124,14 +116,15 @@ Valid units are:\n\n\
   px    pixel (1 in = 72 px)\n\
 ");
   if (msg && arg) fprintf(stderr, "%s %s\n", msg, arg);
+  g_free(help);
   exit(exitcode);
 }
 
 static void
-parseError(poptContext optCon, const char* option)
+parseError(GOptionContext* ctxt, const char* option)
 {
   assert(option != NULL);
-  usage(optCon, 1, "error while parsing option", option);
+  usage(ctxt, 1, "error while parsing option", option);
 }
 
 static bool
@@ -227,7 +220,7 @@ getOutputFileName(const char* in)
   assert(in != NULL);
   const char* dot = strrchr(in, '.');
   const char* slash = strrchr(in, '/');
-  if (cutFileName && slash != NULL) in = slash + 1;
+  if (slash != NULL) in = slash + 1;
 
   if (dot == NULL) {
     out = new char[strlen(in) + 5];
@@ -244,74 +237,33 @@ getOutputFileName(const char* in)
 }
 
 int
-main(int argc, const char* argv[])
+main(int argc, char* argv[])
 {
-  poptContext ctxt = poptGetContext(NULL, argc, argv, optionsTable, 0);
+  GOptionContext* ctxt = g_option_context_new("<file> - display MathML documents");
+  g_option_context_add_main_entries(ctxt, optionEntries, NULL);
+  g_option_context_set_help_enabled(ctxt, TRUE);
+  if (!g_option_context_parse(ctxt, &argc, &argv, NULL))
+    usage(ctxt, 1, "error parsing options", "");
 
-  int c;
-  while ((c = poptGetNextOpt(ctxt)) >= 0)
-    {
-      const char* arg = poptGetOptArg(ctxt);
-      switch (c)
-	{
-	case OPTION_VERSION:
-	  printVersion();
-	  break;
-	case OPTION_VERBOSE:
-	  if (logLevel < 0 || logLevel > 3) parseError(ctxt, "verbose");
-	  logLevelSet = true;
-	  break;
-	case OPTION_PAGE_SIZE:
-	  assert(arg != 0);
-	  if (!parseSize(arg)) parseError(ctxt, "size");
-	  break;
-	case OPTION_UNIT:
-	  assert(arg != 0);
-	  if (!parseUnit(arg)) parseError(ctxt, "unit");
-	  break;
-	case OPTION_MARGINS:
-	  assert(arg != 0);
-	  if (!parseMargins(arg)) parseError(ctxt, "margins");
-	  break;
-	case OPTION_FONT_SIZE:
-	  break;
+  if (option_version)
+    printVersion();
+
+  if (option_page_size && !parseSize(option_page_size)) parseError(ctxt, "page-size");
+  if (option_unit && !parseUnit(option_unit)) parseError(ctxt, "unit");
+  if (option_margins && !parseMargins(option_margins)) parseError(ctxt, "margins");
 #ifdef HAVE_LIBT1
-        case OPTION_FONT_EMBED:
-       	  if (fontEmbed < 0 || fontEmbed > 2) parseError(ctxt, "font-embed");
- 	  break;
+  if (option_font_embed < 0 || option_font_embed > 2) parseError(ctxt, "font-embed");
 #endif // HAVE_LIBT1
-        case OPTION_CROP:
-	  if (arg == 0) cropping = true;
-	  else if (!parseBoolean(arg, cropping)) parseError(ctxt, "crop");
-	  break;
-	case OPTION_CUT_FILENAME:
-	  if (arg == 0) cutFileName = true;
-	  else if (!parseBoolean(arg, cutFileName)) parseError(ctxt, "cut-filename");
-	  break;
-	case OPTION_CONFIG:
-	  assert(arg != 0);
-	  configPath = strdup(arg);
-	  break;
-	default:
-	  assert(false);
-	}
-    }
+  if (option_crop && !parseBoolean(option_crop, cropping)) parseError(ctxt, "crop");
 
-  if (c < -1)
-    {
-      /* an error occurred during option processing */
-      fprintf(stderr, "%s: %s\n",
-	      poptBadOption(ctxt, POPT_BADOPTION_NOALIAS),
-	      poptStrerror(c));
-      return 1;
-    }
+  if (option_config == NULL) option_config = getenv("GTKMATHVIEWCONF");
 
-  if (configPath == 0) configPath = getenv("GTKMATHVIEWCONF");
+  g_option_context_free(ctxt);
 
   SmartPtr<AbstractLogger> logger = Logger::create();
-  logger->setLogLevel(LogLevelId(logLevel));
-  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
-  if (logLevelSet) logger->setLogLevel(LogLevelId(logLevel));
+  if (option_verbose >= 0 && option_verbose <= 3) logger->setLogLevel(LogLevelId(option_verbose));
+  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, option_config);
+  if (option_verbose >= 0 && option_verbose <= 3) logger->setLogLevel(LogLevelId(option_verbose));
   SmartPtr<Backend> backend = PS_Backend::create(logger, configuration);
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
@@ -341,9 +293,9 @@ main(int argc, const char* argv[])
 
   view->setAvailableWidth(widthS - xMarginS * 2);
 
-  const char* file = 0;
-  while ((file = poptGetArg(ctxt)) != 0)
+  for (int i = 1; i < argc; i++)
     {
+      const char* file = argv[i];
       logger->out(LOG_INFO, "Processing `%s'...", file);
 
       char* outName = getOutputFileName(file);
@@ -360,11 +312,11 @@ main(int argc, const char* argv[])
      
 #ifdef HAVE_LIBT1
       SmartPtr<FontDataBase> fDb;
-      switch (fontEmbed) {
-      case 0: fDb = FontDataBase::create(); break;
-      case 1: fDb = T1_FontDataBase::create(logger, configuration, false); break;
-      case 2: fDb = T1_FontDataBase::create(logger, configuration, true); break;
-      default: assert(false); /* IMPOSSIBLE */
+      switch (option_font_embed) {
+        case 0: fDb = FontDataBase::create(); break;
+	case 1: fDb = T1_FontDataBase::create(logger, configuration, false); break;
+	case 2: fDb = T1_FontDataBase::create(logger, configuration, true); break;
+	default: assert(false); /* IMPOSSIBLE */
       }
 #else // !HAVE_LIBT1
       SmartPtr<FontDataBase> fDb = FontDataBase::create();
@@ -388,6 +340,7 @@ main(int argc, const char* argv[])
 	}
 
       delete [] outName;
+
       rc.documentEnd();
       view->resetRootElement();
       os.close();
@@ -398,11 +351,7 @@ main(int argc, const char* argv[])
       SMS sms(logger, view);
       sms.process(argv[optind]);
 #endif
-
-      optind++;
     }
-
-  poptFreeContext(ctxt);
 
   return 0;
 }
