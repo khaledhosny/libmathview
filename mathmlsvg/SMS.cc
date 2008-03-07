@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include <cstring>
 #include <sstream>
 #include "defs.h"
 #include "AbstractLogger.hh"

@@ -23,6 +23,7 @@
 #include <config.h>
 
 #include <cassert>
+#include <cstring>
 #include <fstream>
 
 #include <popt.h>
