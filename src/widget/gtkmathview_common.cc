@@ -36,6 +36,8 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 
+#include "gtkmathview_marshal.h"
+
 #include "gtkmathview_common.h"
 #if GTKMATHVIEW_USES_CUSTOM_READER
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_Custom_Reader"
@@ -512,7 +514,7 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET(GtkMathViewClass,set_scroll_adjustments),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER_POINTER,
+		 gtkmathview_marshal_VOID__POINTER_POINTER,
 		 G_TYPE_NONE , 2, GTK_TYPE_ADJUSTMENT, GTK_TYPE_ADJUSTMENT); 
 	
   click_signal = 
@@ -521,8 +523,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, click),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
   select_begin_signal=
     g_signal_new("select_begin",
@@ -530,8 +532,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, select_begin),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 	
   select_over_signal = 
     g_signal_new("select_over",
@@ -539,8 +541,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, select_over),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 	
   select_end_signal = 
     g_signal_new("select_end",
@@ -548,8 +550,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, select_end),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 	
   select_abort_signal = 
     g_signal_new("select_abort",
@@ -557,7 +559,7 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, select_abort),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	
   element_over_signal = 
@@ -566,8 +568,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, element_over),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
   decorate_under_signal =
     g_signal_new("decorate_under",
@@ -575,8 +577,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, decorate_under),
 		 NULL, NULL,
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
   decorate_over_signal =
     g_signal_new("decorate_over",
@@ -584,8 +586,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 G_SIGNAL_RUN_FIRST,
 		 G_STRUCT_OFFSET(GtkMathViewClass, decorate_over),
 		 NULL, NULL, 
-		 gtk_marshal_NONE__POINTER,
-		 G_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 #if 0	
   g_object_class_install_property(gobject_class,

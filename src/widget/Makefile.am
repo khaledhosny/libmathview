@@ -68,10 +68,14 @@ libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 libgtkmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
-libgtkmathview_custom_reader_la_SOURCES = gtkmathview_custom_reader.cc
-libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_libxml2_reader.cc
-libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc
-libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc
+libgtkmathview_custom_reader_la_SOURCES = gtkmathview_custom_reader.cc \
+  gtkmathview_marshal.c
+libgtkmathview_libxml2_reader_la_SOURCES = gtkmathview_libxml2_reader.cc \
+  gtkmathview_marshal.c
+libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc \
+  gtkmathview_marshal.c
+libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc \
+  gtkmathview_marshal.c
 
 libgtkmathview_custom_reader_la_CPPFLAGS = -DGMV_Widget_DLL
 libgtkmathview_libxml2_reader_la_CPPFLAGS = -DGMV_Widget_DLL
@@ -81,6 +85,7 @@ libgtkmathview_gmetadom_la_CPPFLAGS = -DGMV_Widget_DLL
 EXTRA_DIST = \
   gtkmathview_common.cc \
   gtkmathview_decorators_common.cc \
+  marshal.list \
   $(NULL)
 
 gtkdir = $(includedir)/$(PACKAGE)/gtk
@@ -93,6 +98,25 @@ gtk_HEADERS = \
   gtkmathview_libxml2_reader.h \
   gtkmathview_libxml2.h \
   gtkmathview_gmetadom.h
+
+noinst_HEADERS = \
+  gtkmathview_marshal.h \
+  $(NULL)
+
+BUILT_SOURCES = \
+  gtkmathview_marshal.c \
+  gtkmathview_marshal.h \
+  $(NULL)
+
+CLEANFILES = \
+  $(BUILT_SOURCES) \
+  $(NULL)
+
+gtkmathview_marshal.h: marshal.list
+	$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --header > $@
+
+gtkmathview_marshal.c: marshal.list
+	$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --body > $@
 
 INCLUDES = \
   -I$(top_builddir)/auto \

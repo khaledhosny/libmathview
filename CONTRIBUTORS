@@ -38,3 +38,5 @@ In no particular order:
 * Nicola Rossi
   PostScript backend and accents
 
+* Ed Catmur
+  patch for marshalling functions in new gtk
