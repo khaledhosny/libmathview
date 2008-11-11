@@ -22,7 +22,8 @@
 
 #include <config.h>
 
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdio>
 
 #include "AbstractLogger.hh"
 
