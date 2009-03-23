@@ -102,9 +102,6 @@ MathMLTableFormatter::init(const FormattingContext& ctxt,
   equalRows = ToBoolean(equalRowsV);
   equalColumns = ToBoolean(equalColumnsV);
 
-  assert(nGridRows >= 0);
-  assert(nGridColumns >= 0);
-
 #if 0
   std::cerr << "CI SIAMO: " << nRows << "x" << nColumns << std::endl
 	    << "grid: " << nGridRows << "x" << nGridColumns << std::endl

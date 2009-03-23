@@ -582,7 +582,7 @@ static UChar8 cmrTTFMap[] =
   };
 #endif
 
-static ComputerModernShaper::PlainChar cmsMap[] =
+static ComputerModernShaper::PlainChar32 cmsMap[] =
   {
     { 0x007B, 0x66 },  // LEFT CURLY BRACKET
     { 0x007D, 0x67 },  // RIGHT CURLY BRACKET
