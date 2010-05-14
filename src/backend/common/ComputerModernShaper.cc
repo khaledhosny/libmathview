@@ -975,7 +975,7 @@ static ComputerModernShaper::PlainChar msbmMap[] =
 static ComputerModernShaper::PlainChar32 msbmMap32[] =
   {
     { 0x1D538, 0x41 },  //double A
-    { 0x1D538, 0x42 },  //double B
+    { 0x1D539, 0x42 },  //double B
     { 0x1D53B, 0x44 },  //double D
     { 0x1D53C, 0x45 },  //double E
     { 0x1D53D, 0x46 },  //double F
