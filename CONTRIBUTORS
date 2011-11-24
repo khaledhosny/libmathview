@@ -40,3 +40,6 @@ In no particular order:
 
 * Ed Catmur
   patch for marshalling functions in new gtk
+
+* Matthew Wiebe
+  patch for non-italicized lowercase greek letters in ComputerModernShaper.cc
