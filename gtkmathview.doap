@@ -14,7 +14,7 @@
   <download-page rdf:resource="http://helm.cs.unibo.it/mml-widget/" />
   <bug-database rdf:resource="http://bugs.mowgli.cs.unibo.it/cgi-bin/bugzilla/index.cgi" />
 
-  <category rdf:resource="http://api.gnome.org/doap-extensions#gtk" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#desktop" />
 
   <maintainer>
     <foaf:Person>
