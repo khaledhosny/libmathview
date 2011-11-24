@@ -1564,6 +1564,13 @@ ComputerModernShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned
 {
   assert(sm);
 
+  // make sure there are normal variant options for lower case greek letters
+  if (family->fontEnabled(ComputerModernFamily::FN_CMMI)) {
+    for (unsigned i = 0; cmmMap[i].ch; i++) {
+      sm->registerChar(cmmMap[i].ch, GlyphSpec(shaperId, makeFontId(ComputerModernFamily::FE_CMMI, NORMAL_VARIANT), cmmMap[i].index));
+    }
+  }
+
   for (unsigned j = 0; j < sizeof(variantDesc) / sizeof(FontDesc); j++)
     for (unsigned i = 0; cmrMap[i].ch; i++)
       {
