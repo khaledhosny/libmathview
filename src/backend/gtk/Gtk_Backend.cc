@@ -115,10 +115,10 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 
   if (conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/enabled", false))
     {
-      const bool useTFM = conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/use-tfm", false);
 #if HAVE_LIBT1
       SmartPtr<t1lib_T1FontManager> t1FontManager;
 #if HAVE_TFM
+      const bool useTFM = conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/use-tfm", false);
       if (useTFM)
 	t1FontManager = t1lib_TFM_T1FontManager::create(l, conf, TFMManager::create());
       else
