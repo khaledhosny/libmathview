@@ -1,8 +1,0 @@
-.libs
-.deps
-Makefile
-Makefile.in
-makeDictionary
-dictionary.xml
-entities-table.xml
-gtkmathview.conf.xml
