@@ -43,9 +43,9 @@
 #include "Gtk_AdobeShaper.hh"
 #if HAVE_LIBT1
 #include "t1lib_T1FontManager.hh"
-#if HAVE_TFM
+#if COND_TFM
 #include "t1lib_TFM_T1FontManager.hh"
-#endif // HAVE_TFM
+#endif // COND_TFM
 #include "Gtk_T1ComputerModernShaper.hh"
 #endif // HAVE_LIBT1
 #include "NullShaper.hh"
@@ -117,7 +117,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
     {
 #if HAVE_LIBT1
       SmartPtr<t1lib_T1FontManager> t1FontManager;
-#if HAVE_TFM
+#if COND_TFM
       const bool useTFM = conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/use-tfm", false);
       if (useTFM)
 	t1FontManager = t1lib_TFM_T1FontManager::create(l, conf, TFMManager::create());
@@ -125,7 +125,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 	t1FontManager = t1lib_T1FontManager::create(l, conf);
 #else
       t1FontManager = t1lib_T1FontManager::create(l, conf);
-#endif // HAVE_TFM
+#endif // COND_TFM
       SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create(l, conf);
       cmShaper->setFontManager(t1FontManager);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/type1-computer-modern-shaper/priority", 0), cmShaper));
