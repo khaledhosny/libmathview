@@ -633,13 +633,10 @@ select_abort(GtkMathView* math_view)
 static void
 click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
-  gboolean res;
   gint index;
   GdomeElement* elem;
   GdomeException exc;
   GdomeDOMString* name;
-  GdomeDOMString* ns_uri;
-  GdomeElement* p;
 
   gint w, h;
   gtk_math_view_get_size(math_view, &w, &h);
