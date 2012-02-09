@@ -31,7 +31,7 @@
 #include "RGBColor.hh"
 #include "Object.hh"
 #include "SmartPtr.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "Length.hh"
 
 class GMV_MathView_EXPORT Configuration : public Object
@@ -83,7 +83,7 @@ public:
 
 private:
   static std::vector<String> configurationPaths;
-  typedef HASH_MAP_NS::hash_map<String, SmartPtr<Entry>, StringHash, StringEq> Map;
+  typedef std::tr1::unordered_map<String, SmartPtr<Entry>, StringHash, StringEq> Map;
   Map map;
 };
 

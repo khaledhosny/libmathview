@@ -23,7 +23,7 @@
 #ifndef __StandardSymbolsShaper_hh__
 #define __StandardSymbolsShaper_hh__
 
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "Shaper.hh"
 
 class GMV_MathView_EXPORT StandardSymbolsShaper : public Shaper

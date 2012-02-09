@@ -23,7 +23,7 @@
 #ifndef __TFMManager_hh__
 #define __TFMManager_hh__
 
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "Object.hh"
 #include "SmartPtr.hh"
 #include "String.hh"
@@ -47,7 +47,7 @@ protected:
   typedef void (*TFMTables)(TFM::Font*&, TFM::Dimension*&, TFM::Character*&);
 
 private:
-  typedef HASH_MAP_NS::hash_map<String,SmartPtr<class TFM>,StringHash> TFMCache;
+  typedef std::tr1::unordered_map<String,SmartPtr<class TFM>,StringHash> TFMCache;
   mutable TFMCache tfmCache;  
 
   struct TFMTable

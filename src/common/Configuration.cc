@@ -20,6 +20,7 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
+#include <algorithm>
 #include <config.h>
 
 #include "AbstractLogger.hh"

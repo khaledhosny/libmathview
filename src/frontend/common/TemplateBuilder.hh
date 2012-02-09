@@ -40,7 +40,7 @@
 #endif // GMV_ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "StringHash.hh"
 
 template <class Model, class Builder, class RefinementContext>
@@ -1474,16 +1474,16 @@ public:
 
 private:
 #if ENABLE_BUILDER_CACHE
-  typedef HASH_MAP_NS::hash_map<String, SmartPtr<MathMLTextNode>, StringHash, StringEq> MathMLTextNodeCache;
+  typedef std::tr1::unordered_map<String, SmartPtr<MathMLTextNode>, StringHash, StringEq> MathMLTextNodeCache;
   mutable MathMLTextNodeCache mathmlTextNodeCache;
 #endif // ENABLE_BUILDER_CACHE
   typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
-  typedef HASH_MAP_NS::hash_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
+  typedef std::tr1::unordered_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
   static MathMLBuilderMap mathmlMap;
   static bool mathmlMapInitialized;
 #if GMV_ENABLE_BOXML
   typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
-  typedef HASH_MAP_NS::hash_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
+  typedef std::tr1::unordered_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
   static BoxMLBuilderMap boxmlMap;
   static bool boxmlMapInitialized;
 #endif // GMV_ENABLE_BOXML

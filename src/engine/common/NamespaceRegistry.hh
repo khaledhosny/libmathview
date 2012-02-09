@@ -24,7 +24,7 @@
 #define __NamespaceRegistry_hh__
 
 #include "Object.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "String.hh"
 #include "SmartPtr.hh"
 
@@ -42,7 +42,7 @@ public:
   bool remove(const String&);
 
 private:
-  typedef HASH_MAP_NS::hash_map<String,SmartPtr<class NamespaceContext>,StringHash,StringEq> ElementFactoryMap;
+  typedef std::tr1::unordered_map<String,SmartPtr<class NamespaceContext>,StringHash,StringEq> ElementFactoryMap;
   ElementFactoryMap map;
 };
 

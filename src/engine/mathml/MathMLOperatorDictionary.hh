@@ -26,7 +26,7 @@
 #include "SmartPtr.hh"
 #include "String.hh"
 #include "StringHash.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "Object.hh"
 
 class GMV_MathView_EXPORT MathMLOperatorDictionary : public Object
@@ -55,7 +55,7 @@ private:
     SmartPtr<class AttributeSet> postfix;
   };
 
-  typedef HASH_MAP_NS::hash_map<String,FormDefaults,StringHash,StringEq> Dictionary;
+  typedef std::tr1::unordered_map<String,FormDefaults,StringHash,StringEq> Dictionary;
   Dictionary items;
 };
 

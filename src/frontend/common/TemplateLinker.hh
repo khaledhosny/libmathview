@@ -23,7 +23,7 @@
 #ifndef __TemplateLinker_hh__
 #define __TemplateLinker_hh__
 
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 
 template <class Model, typename ELEMENT = typename Model::Element>
 class TemplateLinker
@@ -116,8 +116,8 @@ protected:
     }
   };
 
-  typedef HASH_MAP_NS::hash_map<ELEMENT, class Element*, typename Model::Hash> ForwardMap;
-  typedef HASH_MAP_NS::hash_map<class Element*, ELEMENT, Element_hash> BackwardMap;
+  typedef std::tr1::unordered_map<ELEMENT, class Element*, typename Model::Hash> ForwardMap;
+  typedef std::tr1::unordered_map<class Element*, ELEMENT, Element_hash> BackwardMap;
   ForwardMap forwardMap;
   BackwardMap backwardMap;
 };

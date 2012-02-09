@@ -71,9 +71,9 @@ MathGraphicDevice::dummy(const FormattingContext& context) const
 }
 
 #include "CachedShapedString.hh"
-#include "HashMap.hh"
-typedef HASH_MAP_NS::hash_map<CachedShapedStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStringCache;
-typedef HASH_MAP_NS::hash_map<CachedShapedStretchyStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStretchyStringCache;
+#include <tr1/unordered_map>
+typedef std::tr1::unordered_map<CachedShapedStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStringCache;
+typedef std::tr1::unordered_map<CachedShapedStretchyStringKey, AreaRef, CachedShapedStringKeyHash> ShapedStretchyStringCache;
 
 static ShapedStretchyStringCache stretchyStringCache;
 static ShapedStringCache stringCache;

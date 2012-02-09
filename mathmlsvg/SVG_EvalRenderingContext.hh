@@ -25,7 +25,7 @@
 
 #include "BoundingBox.hh"
 #include "StringHash.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "MathView.hh"
 #include "SVG_RenderingContext.hh"
 
@@ -44,7 +44,7 @@ public:
 
 private:
   SmartPtr<MathView> view;
-  typedef HASH_MAP_NS::hash_map<String,SmartPtr<class Location>,StringHash,StringEq> IdMap;
+  typedef std::tr1::unordered_map<String,SmartPtr<class Location>,StringHash,StringEq> IdMap;
   IdMap idMap;
 };
 

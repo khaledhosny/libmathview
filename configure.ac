@@ -252,37 +252,6 @@ AC_SUBST(GTKMATHVIEW_SIZEOF_WCHAR_T, "$ac_cv_sizeof_wchar_t")
 
 AC_LANG_PUSH(C++)
 
-AC_CHECK_HEADERS(unordered_map,
-	[
-		AC_DEFINE(GMV_HAVE_UNORDERED_MAP,1,[Define if <unordered_map> is provided])
-		GMV_HAVE_UNORDERED_MAP_CFLAGS=-DGMV_HAVE_UNORDERED_MAP=1
-	],
-	[
-		GMV_HAVE_UNORDERED_MAP_CFLAGS=
-	]
-)
-AC_SUBST(GMV_HAVE_UNORDERED_MAP_CFLAGS)
-AC_CHECK_HEADERS(hash_map,
-	[
-		AC_DEFINE(GMV_HAVE_HASH_MAP,1,[Define if <hash_map> is provided])
-		GMV_HAVE_HASH_MAP_CFLAGS=-DGMV_HAVE_HASH_MAP=1
-	],
-	[
-		GMV_HAVE_HASH_MAP_CFLAGS=
-	]
-)
-AC_SUBST(GMV_HAVE_HASH_MAP_CFLAGS)
-AC_CHECK_HEADERS(ext/hash_map,
-	[
-		AC_DEFINE(GMV_HAVE_EXT_HASH_MAP,1,[Define if <ext/hash_map> is provided])
-		GMV_HAVE_EXT_HASH_MAP_CFLAGS=-DGMV_HAVE_EXT_HASH_MAP=1
-	],
-	[
-		GMV_HAVE_EXT_HASH_MAP_CFLAGS=
-	]
-)
-AC_SUBST(GMV_HAVE_EXT_HASH_MAP_CFLAGS)
-
 AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
 AC_TRY_LINK(
 	[#include <string>],

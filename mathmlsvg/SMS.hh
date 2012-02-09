@@ -30,7 +30,7 @@
 #include "Model.hh"
 #include "Length.hh"
 #include "scaled.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "SVG_EvalRenderingContext.hh"
 
 class SMS
@@ -112,10 +112,10 @@ private:
   float viewBoxHeight;
   float dpi;
 
-  typedef HASH_MAP_NS::hash_map<String,SmartPtr<Fragment>,StringHash,StringEq> IdFragmentMap;
+  typedef std::tr1::unordered_map<String,SmartPtr<Fragment>,StringHash,StringEq> IdFragmentMap;
   IdFragmentMap idFragmentMap;
 
-  typedef HASH_MAP_NS::hash_map<String,Handler,StringHash,StringEq> FunMap;
+  typedef std::tr1::unordered_map<String,Handler,StringHash,StringEq> FunMap;
   FunMap funMap;
 };
 

@@ -28,7 +28,7 @@
 #include "Object.hh"
 #include "String.hh"
 #include "StringHash.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "SmartPtr.hh"
 
 class Gtk_PangoFontManager : public Object
@@ -85,7 +85,7 @@ private:
     int subfont;
   };
 
-  typedef HASH_MAP_NS::hash_map<String,CachedPangoFontData,StringHash> PangoFontCache;  
+  typedef std::tr1::unordered_map<String,CachedPangoFontData,StringHash> PangoFontCache;  
   mutable PangoFontCache fontCache;
 };
 

@@ -26,7 +26,7 @@
 #include "Object.hh"
 #include "String.hh"
 #include "StringHash.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "SmartPtr.hh"
 #include "scaled.hh"
 
@@ -64,7 +64,7 @@ private:
     { return StringHash()(key.name) ^ key.size.getValue(); }
   };
 
-  typedef HASH_MAP_NS::hash_map<CachedFontKey,SmartPtr<class TFMFont>,CachedFontHash> FontCache;
+  typedef std::tr1::unordered_map<CachedFontKey,SmartPtr<class TFMFont>,CachedFontHash> FontCache;
   mutable FontCache fontCache;
   SmartPtr<class TFMManager> tfmManager;
 };

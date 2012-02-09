@@ -24,9 +24,9 @@
 #define __ScopedHashMap_hh__
 
 #include "gmv_defines.h"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 
-template <class K, class T, class HashFcn = HASH_MAP_NS::hash<K>, class EqualKey = std::equal_to<K>, class Alloc = std::allocator<T> >
+template <class K, class T, class HashFcn = std::tr1::hash<K>, class EqualKey = std::equal_to<K>, class Alloc = std::allocator<T> >
 class GMV_MathView_EXPORT ScopedHashMap
 {
 public:
@@ -131,7 +131,7 @@ private:
     Entry* first;
   };
 
-  typedef HASH_MAP_NS::hash_map<const K,Bucket*,HashFcn,EqualKey,Alloc> Map;
+  typedef std::tr1::unordered_map<const K,Bucket*,HashFcn,EqualKey,Alloc> Map;
 
   Env* env;
   Map map;

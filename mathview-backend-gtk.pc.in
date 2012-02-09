@@ -11,4 +11,4 @@ Description: MathML rendering engine (GTK+ backend)
 Version: @VERSION@
 Requires: glib-2.0 mathview-core
 Libs: -L${libdir} -lmathview_backend_gtk
-Cflags: -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@ @GMV_HAVE_HASH_MAP_CFLAGS@ @GMV_HAVE_EXT_HASH_MAP_CFLAGS@
+Cflags: -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@

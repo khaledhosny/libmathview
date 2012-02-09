@@ -27,7 +27,7 @@
 
 #include "Object.hh"
 #include "String.hh"
-#include "HashMap.hh"
+#include <tr1/unordered_map>
 #include "SmartPtr.hh"
 
 class Gtk_XftFontManager : public Object
@@ -60,7 +60,7 @@ public:
 private:
   XftFont* createXftFont(const XLFD&) const;
 
-  typedef HASH_MAP_NS::hash_map<String,XftFont*,StringHash> XftFontCache;  
+  typedef std::tr1::unordered_map<String,XftFont*,StringHash> XftFontCache;  
   mutable XftFontCache fontCache;
 };
 

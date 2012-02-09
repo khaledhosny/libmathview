@@ -44,7 +44,6 @@ mathview_HEADERS = \
   BoundingBox.hh \
   BoundingBoxAux.hh \
   Configuration.hh \
-  HashMap.hh \
   Length.hh \
   LengthAux.hh \
   Logger.hh \
