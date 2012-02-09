@@ -32,9 +32,6 @@
 #include "Gtk_PangoGlyphArea.hh"
 #include "Gtk_PangoLayoutArea.hh"
 #include "Gtk_PangoLayoutLineArea.hh"
-#if HAVE_XFT
-  #include "Gtk_XftGlyphArea.hh"
-#endif // HAVE_XFT
 #include "Gtk_WrapperArea.hh"
 
 class Gtk_AreaFactory : public AreaFactory
@@ -64,10 +61,6 @@ public:
   { return Gtk_PangoLayoutArea::create(layout); }
   virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayoutLine(PangoLayout* layout) const
   { return Gtk_PangoLayoutLineArea::create(layout); }
-#if HAVE_XFT
-  virtual SmartPtr<Gtk_XftGlyphArea> xftGlyph(XftFont* font, FcChar8 glyph) const
-  { return Gtk_XftGlyphArea::create(font, glyph); }
-#endif // HAVE_XFT
   virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
   { return Gtk_WrapperArea::create(area, box, el); }
 };

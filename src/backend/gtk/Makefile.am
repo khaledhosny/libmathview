@@ -52,11 +52,6 @@ mathview_HEADERS = \
   Gtk_Backend.hh \
   $(NULL)
 
-#   Gtk_XftFontManager.cc
-#   Gtk_XftFontManager.hh
-#   Gtk_XftGlyphArea.cc
-#   Gtk_XftGlyphArea.hh
-
 libmathview_backend_gtk_la_LIBADD = \
   $(PANGOX_LIBS) \
   $(GTK_LIBS) \
