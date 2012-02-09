@@ -27,6 +27,7 @@
 
 #include <cassert>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "defs.h"
 #include "guiGTK.h"
