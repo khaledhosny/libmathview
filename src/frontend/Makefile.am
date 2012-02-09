@@ -27,3 +27,5 @@ endif
 
 SUBDIRS = common $(MAYBE_CUSTOM_READER) $(MAYBE_LIBXML2_READER) $(MAYBE_LIBXML2) $(MAYBE_GMETADOM)
 
+
+-include $(top_srcdir)/git.mk

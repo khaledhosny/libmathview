@@ -64,3 +64,5 @@ XSLTPROC = xsltproc
 	cat $(srcdir)/variant.bot >>$@
 endif
 
+
+-include $(top_srcdir)/git.mk

@@ -12,3 +12,5 @@ EXTRA_DIST = \
   $(noinst_SCRIPTS) \
   copy.xsl
 
+
+-include $(top_srcdir)/git.mk

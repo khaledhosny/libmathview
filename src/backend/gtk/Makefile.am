@@ -75,3 +75,5 @@ INCLUDES = \
   $(PANGOX_CFLAGS) \
   $(GTK_CFLAGS) \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

@@ -86,3 +86,5 @@ INCLUDES = \
   -I$(top_builddir) \
   $(DOM_CFLAGS) \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

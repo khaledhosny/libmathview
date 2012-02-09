@@ -25,3 +25,5 @@ SUBDIRS = \
   $(MAYBE_SVG_SUBDIRS) \
   $(MAYBE_PS_SUBDIRS) \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

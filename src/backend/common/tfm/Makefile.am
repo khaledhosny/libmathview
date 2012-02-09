@@ -140,3 +140,5 @@ INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

@@ -38,3 +38,5 @@ INCLUDES = \
   -I$(top_srcdir)/src/backend/common \
   $(NULL)
 
+
+-include $(top_srcdir)/git.mk

@@ -8,3 +8,5 @@ MAYBE_BOXML_SUBDIRS = $(NULL)
 endif
 
 SUBDIRS = common mathml $(MAYBE_BOXML_SUBDIRS)
+
+-include $(top_srcdir)/git.mk

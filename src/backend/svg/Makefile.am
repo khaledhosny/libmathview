@@ -73,3 +73,5 @@ INCLUDES = \
   -I$(top_srcdir)/src/backend/common \
   -I$(top_srcdir)/src/backend/common/tfm \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

@@ -14,3 +14,5 @@ EXTRA_DIST = \
   sans-serif.xml \
   script.xml
 
+
+-include $(top_srcdir)/git.mk

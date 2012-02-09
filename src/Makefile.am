@@ -34,3 +34,5 @@ libmathview_la_LIBADD = \
   $(top_builddir)/src/common/libcommon.la \
   -lstdc++ \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

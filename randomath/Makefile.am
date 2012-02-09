@@ -9,3 +9,5 @@ randomath_SOURCES = randomath.c
 randomath_LDADD = $(GLIB_LIBS)
 
 INCLUDES = $(GLIB_CFLAGS)
+
+-include $(top_srcdir)/git.mk

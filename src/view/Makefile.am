@@ -96,3 +96,5 @@ INCLUDES = \
   $(XML_CFLAGS) \
   $(DOM_CFLAGS) \
   $(NULL)
+
+-include $(top_srcdir)/git.mk

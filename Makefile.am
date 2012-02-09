@@ -95,3 +95,5 @@ lc:
 distdiff:
 	diff -r src/ @PACKAGE@-@VERSION@/src/ | grep '.\(cc\|hh\)$$'
 
+
+-include $(top_srcdir)/git.mk

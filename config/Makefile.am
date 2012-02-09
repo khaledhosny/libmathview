@@ -47,3 +47,5 @@ else
 install-data-hook:
 	true
 endif
+
+-include $(top_srcdir)/git.mk

@@ -7,3 +7,5 @@ man_MANS = mathmlviewer.1
 
 CLEANFILES = *.html
 
+
+-include $(top_srcdir)/git.mk

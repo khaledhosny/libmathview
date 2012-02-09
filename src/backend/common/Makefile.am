@@ -160,3 +160,5 @@ libbackend_common_la_LIBADD = \
   $(MAYBE_TFM_L) \
   $(NULL)
 
+
+-include $(top_srcdir)/git.mk
