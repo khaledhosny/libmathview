@@ -15,8 +15,6 @@ libmathview_backend_gtk_la_CPPFLAGS = -DGMV_BackEnd_DLL
 libmathview_backend_gtk_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_backend_gtk_la_SOURCES = \
-  Gtk_AdobeShaper.cc \
-  Gtk_AdobeShaper.hh \
   Gtk_AreaFactory.hh \
   Gtk_Backend.cc \
   Gtk_BackgroundArea.cc \

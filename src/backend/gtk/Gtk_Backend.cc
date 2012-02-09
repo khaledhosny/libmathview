@@ -40,7 +40,6 @@
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_PangoComputerModernShaper.hh"
-#include "Gtk_AdobeShaper.hh"
 #include "NullShaper.hh"
 #include "SpaceShaper.hh"
 #include "ShaperManager.hh"
@@ -83,14 +82,6 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
       SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create(l, conf);
       pangoShaper->setPangoContext(context);
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-shaper/priority", 0), pangoShaper));
-    }
-
-  if (conf->getBool(l, "gtk-backend/adobe-shaper/enabled", false))
-    {
-      SmartPtr<Gtk_PangoFontManager> pangoFontManager = Gtk_PangoFontManager::create();
-      SmartPtr<Gtk_AdobeShaper> adobeShaper = Gtk_AdobeShaper::create();
-      adobeShaper->setFontManager(pangoFontManager);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/adobe-shaper/priority", 0), adobeShaper));
     }
 
   if (conf->getBool(l, "gtk-backend/pango-computer-modern-shaper/enabled", false))
