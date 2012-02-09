@@ -493,6 +493,8 @@ else
 fi
 AM_CONDITIONAL(USE_GCC_PCH, test "x$gmv_gcc_pch" = "xyes")
 
+AM_SILENT_RULES([yes])
+
 AC_CONFIG_FILES([
  Makefile
  gtkmathview.spec
