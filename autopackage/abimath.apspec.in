@@ -23,7 +23,7 @@ GtkMathView is a C++ rendering engine for MathML documents. It provides an inter
 [BuildPrepare]
 orig_src_root=`pwd`
 orig_build_root="$build_root"
-prepareBuild --enable-binreloc --disable-debug --disable-boxml --disable-gmetadom --disable-libxml2-reader --disable-custom-reader --enable-pipe --disable-tfm --disable-svg --disable-gtk --disable-static --with-t1lib=no
+prepareBuild --enable-binreloc --disable-debug --disable-boxml --disable-gmetadom --disable-libxml2-reader --disable-custom-reader --enable-pipe --disable-tfm --disable-svg --disable-gtk --disable-static
 mkdir -p "$build_root/fonts"
 cp -R $orig_src_root/fonts/* "$build_root/fonts/"
 

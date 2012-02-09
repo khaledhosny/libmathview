@@ -41,13 +41,6 @@
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_PangoComputerModernShaper.hh"
 #include "Gtk_AdobeShaper.hh"
-#if HAVE_LIBT1
-#include "t1lib_T1FontManager.hh"
-#if COND_TFM
-#include "t1lib_TFM_T1FontManager.hh"
-#endif // COND_TFM
-#include "Gtk_T1ComputerModernShaper.hh"
-#endif // HAVE_LIBT1
 #include "NullShaper.hh"
 #include "SpaceShaper.hh"
 #include "ShaperManager.hh"
@@ -111,27 +104,6 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 	}
       else
 	l->out(LOG_WARNING, "default Pango shaper must be enabled before Pango Computer Modern shaper");
-    }
-
-  if (conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/enabled", false))
-    {
-#if HAVE_LIBT1
-      SmartPtr<t1lib_T1FontManager> t1FontManager;
-#if COND_TFM
-      const bool useTFM = conf->getBool(l, "gtk-backend/type1-computer-modern-shaper/use-tfm", false);
-      if (useTFM)
-	t1FontManager = t1lib_TFM_T1FontManager::create(l, conf, TFMManager::create());
-      else
-	t1FontManager = t1lib_T1FontManager::create(l, conf);
-#else
-      t1FontManager = t1lib_T1FontManager::create(l, conf);
-#endif // COND_TFM
-      SmartPtr<Gtk_T1ComputerModernShaper> cmShaper = Gtk_T1ComputerModernShaper::create(l, conf);
-      cmShaper->setFontManager(t1FontManager);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/type1-computer-modern-shaper/priority", 0), cmShaper));
-#else
-      l->out(LOG_WARNING, "t1lib support has not been compiled in, ");
-#endif // HAVE_LIBT1
     }
 
   for (std::multimap<int, SmartPtr<Shaper> >::const_iterator p = shaperSet.begin();

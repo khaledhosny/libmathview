@@ -74,12 +74,6 @@ recognizes. These are:
      (the same holds also for version 1.x). If no explicit value
      is given, then the configuration script tries to guess it.
 
-  7. --with-t1lib and --without-t1lib. Enable this if you have
-     installed version 1.x of t1lib, disable otherwise. t1lib
-     will enable to render Type1 fonts with anti-aliasing and
-     kerning. If no explicit value is given, then the configuration
-     script tries to guess it.
-
       Generic Instructions for Building Auto-Configured Packages
       ==========================================================
 

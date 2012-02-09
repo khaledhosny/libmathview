@@ -112,8 +112,6 @@ struct _GtkMathViewClass
 
   AbstractLogger* logger;
   gint defaultFontSize;
-  bool defaultT1OpaqueMode;
-  bool defaultT1AntiAliasedMode;
   MathMLOperatorDictionary* dictionary;
   Gtk_Backend* backend;
 };
@@ -434,8 +432,6 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   configuration->ref();
 
   math_view_class->defaultFontSize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
-  math_view_class->defaultT1OpaqueMode = configuration->getBool(logger, "default/t1lib/opaque-mode", false);
-  math_view_class->defaultT1AntiAliasedMode = configuration->getBool(logger, "default/t1lib/anti-aliasing", false);
 
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
   dictionary->ref();
@@ -673,8 +669,6 @@ gtk_math_view_init(GtkMathView* math_view)
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
-  math_view->renderingContext->setT1OpaqueMode(math_view_class->defaultT1OpaqueMode);
-  math_view->renderingContext->setT1AntiAliasedMode(math_view_class->defaultT1AntiAliasedMode);
 }
 
 extern "C" GtkWidget*
@@ -1732,40 +1726,6 @@ GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView* math_view)
   g_return_val_if_fail(math_view != NULL, LOG_ERROR);
   g_return_val_if_fail(math_view->view != 0, LOG_ERROR);
   return math_view->view->getLogger()->getLogLevel();
-}
-
-extern "C" void
-GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)(GtkMathView* math_view, gboolean mode)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->renderingContext != 0);
-  math_view->renderingContext->setT1OpaqueMode(mode == TRUE);
-  gtk_math_view_paint(math_view);
-}
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_t1_opaque_mode)(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->renderingContext != 0, FALSE);
-  return math_view->renderingContext->getT1OpaqueMode() ? TRUE : FALSE;
-}
-
-extern "C" void
-GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)(GtkMathView* math_view, gboolean mode)
-{
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(math_view->renderingContext != 0);
-  math_view->renderingContext->setT1AntiAliasedMode(mode == TRUE);
-  gtk_math_view_paint(math_view);
-}
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->renderingContext != 0, FALSE);
-  return math_view->renderingContext->getT1AntiAliasedMode() ? TRUE : FALSE;
 }
 
 extern "C" void

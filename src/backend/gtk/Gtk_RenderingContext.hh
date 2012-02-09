@@ -69,12 +69,6 @@ public:
   void draw(const scaled&, const scaled&, PangoLayout*) const;
   void draw(const scaled&, const scaled&, PangoLayoutLine*) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
-  void draw(const scaled&, const scaled&, const SmartPtr<class t1lib_T1Font>&, Char8) const;
-
-  void setT1OpaqueMode(bool b) { t1_opaque_mode = b; }
-  bool getT1OpaqueMode(void) const { return t1_opaque_mode; }
-  void setT1AntiAliasedMode(bool b) { t1_aa_mode = b; }
-  bool getT1AntiAliasedMode(void) const { return t1_aa_mode; }
 
   static int toGtkPixels(const scaled& s)
   { return round(s * (72.27 / 72.0)).toInt(); }
@@ -161,10 +155,6 @@ protected:
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;
   GObjectPtr<GdkColormap> gdk_colormap;
-
-  // t1lib-specific fields
-  bool t1_opaque_mode;
-  bool t1_aa_mode;
 };
 
 #endif // __Gtk_RenderingContext_hh__

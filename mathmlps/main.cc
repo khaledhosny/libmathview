@@ -44,9 +44,6 @@
 #include "Configuration.hh"
 #include "libxml2_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
-#if HAVE_LIBT1
-#include "T1_FontDataBase.hh"
-#endif //HAVE_LIBT1
 #include "FontDataBase.hh"
 #include "PS_Backend.hh"
 #include "PS_MathGraphicDevice.hh"
@@ -67,11 +64,6 @@ static double xMargin = 2;
 static double yMargin = 2;
 static double fontSize = DEFAULT_FONT_SIZE;
 static bool cropping = true;
-#ifdef HAVE_LIBT1
-static int fontEmbed = 2;
-#else
-static int fontEmbed = 0;
-#endif
 static bool cutFileName = true;
 static char* configPath = 0;
 static int  logLevel = LOG_ERROR;
@@ -108,9 +100,6 @@ static struct poptOption optionsTable[] = {
   { "page-size", 'p', POPT_ARG_STRING, 0, OPTION_PAGE_SIZE, "Page size (width x height) (default = 21 x 29.7)", "<float>x<float>" },
   { "margins", 'm', POPT_ARG_STRING, 0, OPTION_MARGINS, "Margins (top x left) (default = 2 x 2)", "<float>x<float>" },
   { "font-size", 'f', POPT_ARG_DOUBLE, &fontSize, OPTION_FONT_SIZE, "Default font size (in pt, default=10)", "<float>" },
-#ifdef HAVE_LIBT1
-  { "font-embed", 0, POPT_ARG_INT, &fontEmbed, OPTION_FONT_EMBED, "Enable/disable embedding (default=2)", "[0=disable,1=embed,2=subset]" },
-#endif // HAVE_LIBT1
   { "config", 0, POPT_ARG_STRING, 0, OPTION_CONFIG, "Configuration file path", "<path>" },
   { "crop", 'r', POPT_ARG_STRING | POPT_ARGFLAG_OPTIONAL, 0, OPTION_CROP, "Enable/disable cropping to bounding box (default='yes')", "[yes,no]" },
   { "cut-filename", 0, POPT_ARG_STRING | POPT_ARGFLAG_OPTIONAL, 0, OPTION_CUT_FILENAME, "Cut the prefix dir from the output file (default='yes')", "[yes,no]" },
@@ -283,11 +272,6 @@ main(int argc, const char* argv[])
 	  break;
 	case OPTION_FONT_SIZE:
 	  break;
-#ifdef HAVE_LIBT1
-        case OPTION_FONT_EMBED:
-       	  if (fontEmbed < 0 || fontEmbed > 2) parseError(ctxt, "font-embed");
- 	  break;
-#endif // HAVE_LIBT1
         case OPTION_CROP:
 	  if (arg == 0) cropping = true;
 	  else if (!parseBoolean(arg, cropping)) parseError(ctxt, "crop");
@@ -366,17 +350,7 @@ main(int argc, const char* argv[])
       view->loadURI(file);
       const BoundingBox box = view->getBoundingBox();
      
-#ifdef HAVE_LIBT1
-      SmartPtr<FontDataBase> fDb;
-      switch (fontEmbed) {
-      case 0: fDb = FontDataBase::create(); break;
-      case 1: fDb = T1_FontDataBase::create(logger, configuration, false); break;
-      case 2: fDb = T1_FontDataBase::create(logger, configuration, true); break;
-      default: assert(false); /* IMPOSSIBLE */
-      }
-#else // !HAVE_LIBT1
       SmartPtr<FontDataBase> fDb = FontDataBase::create();
-#endif
 
       std::ofstream os(outName);
       PS_StreamRenderingContext rc(logger, os, fDb);

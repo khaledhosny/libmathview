@@ -217,10 +217,6 @@ only if you want to use GtkMathView with the @emph{DOM} frontend.
 @code{libxml2} @url{http://xmlsoft.org/}. This library is required
 only if you want to use GtkMathView with the @emph{libxml2} or
 @emph{libxml2 reader} frontends.
-@item
-@code{t1lib} @url{?}. This library is required if you want to be able
-to use GtkMathView with Type 1 fonts independently of the X font
-server.
 @end itemize
 
 @node     Installing, Compile and Link, Requirements, Usage
@@ -320,12 +316,6 @@ There are usually several instances of the
 
 The format of the font configuration file will be detailed in
 @ref{Font Setup}.
-
-@item @code{t1-config-path}: the content of this element is the
-full path of the @code{t1lib} font configuration file.  The format of
-this file is detailed in the @code{t1lib} documentation and will not
-be described here. Also, this entry is only necessary if the use of
-Type~1 fonts is required.
 
 @item @code{font-size}: the attribute @code{size} of this
 element can be used to set the default value of font size used for
@@ -530,54 +520,6 @@ their use.  Since their handling is almost completely hidden inside
 the X font server, the widget needs not any special configuration to
 use them, apart from a proper setting of the font configuration file
 (@file{font-configuration.xml}). 
-
-@noindent
-@strong{Type1 fonts and the t1lib library}: starting from version
-0.2.0, the rendering engine can use the @code{t1lib} library to render
-Type1 fonts.  It is known that @code{t1lib} has some bugs that can
-cause the widget to crash, especially in version 0.4.1 or later.  Here
-are some tips to configure the engine so that you can use Type1 fonts
-(please, consult the @code{t1lib} documentation at library's home page
-for firther details).
-
-@noindent
-First of all, you have to setup a little configuration file for the
-@code{t1lib} library.  Call this file @file{t1.config} and place it
-somewhere in your home directory.  Here is a sample file (also
-provided with the standard distribution):
-
-@example
-#
-#
-ENCODING=.
-AFM=/usr/share/texmf/fonts/afm/
-TYPE1=/usr/share/texmf/fonts/type1/bluesky/cm/:.
-@end example
-
-@noindent
-In particular, you have to specify where your Type1 fonts reside
-(@code{TYPE1}) along with their metrics (@code{AFM}). Metric
-information in optional, since it can be (mostly) recovered from the
-font file itself. However, metrics from the @code{AFM} file can be
-more precise than that automatically inferred. A sample configuration
-file for @code{t1lib} is included in the standard distribution of
-@code{gtkmathview} and is installed in
-@file{/usr/local/share/gtkmathview/}.
-
-@noindent
-Next, you have to setup an environment variable @env{T1LIB_CONFIG}
-with the full path to this configuration file. For example, if you use
-@code{bash}:
-
-@command{export T1LIB_CONFIG=./config/t1.config}
-
-@noindent
-And, if you use @code{tcsh}:
-
-@command{setenv T1LIB_CONFIG ./config/t1.config}
-
-@noindent
-Now you are ready to use Type1 fonts.
 
 @node     Interactivity Support, Sample Application, Usage, Top
 @chapter  Interactivity Support
@@ -1288,31 +1230,6 @@ Set the verbosity level to @var{level}. Valid levels are the integers from
 Return the current level of verbosity as an index from 0 to 3.
 @end deftypemethod
 
-@deftypemethod  MathMLRenderingEngine void SetAntiAliasing (bool @var{b})
-Enable anti-aliasing if @var{b} is @code{true}, disable otherwise. The
-document is updated at each invocation of this method. Anti-aliasing
-is available with Type1 fonts only and it is much slower than
-non-anti-aliased mode.
-@end deftypemethod
-
-@deftypemethod  MathMLRenderingEngine bool GetAntiAliasing ()
-Return @code{true} if anti-aliasing is enabled.
-@end deftypemethod
-
-@deftypemethod  MathMLRenderingEngine void SetTransparency (bool @var{b})
-Enable transparency if @var{b} is true, disable
-otherwise. Transparency allows two or more glyphs to overlap
-transparently, which is rather useful in the case of combining
-characters. Since these characters are not frequent and transparency
-is slower than standard rendering mode, the default for transparency
-is @code{false}. Note also that transparency is currently supported
-for Type1 fonts only.
-@end deftypemethod
-
-@deftypemethod  MathMLRenderingEngine bool GetTransparency ()
-Return @code{true} if transparency is enabled.
-@end deftypemethod
-
 @node     GTK+ Interface, Tools, C++ Interface, Top
 @comment  node-name,  next,  previous,  up
 @chapter  GTK+ Interface
@@ -1483,31 +1400,6 @@ set the default font @var{size} (in points) for displaying documents.
 return the default font size (in points) for displaying documents.
 @end deftypefn
 
-@deftypefn {Method} void gtk_math_view_set_anti_aliasing (GtkMathView* @var{widget}, gboolean @var{b})
-enable or disable anti-aliasing according to the value of
-@var{flag}. Anti-aliasing of characters is only available when Type1
-fonts are used.
-@end deftypefn
-
-@deftypefn {Method} gboolean gtk_math_view_get_anti_aliasing (GtkMathView* @var{widget})
-return @code{TRUE} if anti-aliasing is enabled (even if it is not
-supported), @code{FALSE} otherwise.
-@end deftypefn
-
-@deftypefn {Method} gboolean gtk_math_view_set_transparency (GtkMathView* @var{widget}, gboolean @var{b})
-enable/disable transparency. This is available for Type1 fonts
-only. Transparency can be enabled for documents containing combining
-or otherwise overlapping characters. When transparency is enabled,
-only coloured pixels are drawn, leaving the background untouched. This
-prevents from glyphs overwriting one each other when they
-overlap. Since transparent mode is heavier than opaque mode, it is
-disabled by default.
-@end deftypefn
-
-@deftypefn {Method} gboolean gtk_math_view_get_transparency (GtkMathView* @var{widget}, gboolean @var{b})
-retrieve the current state of transparency.
-@end deftypefn
-
 @deftypefn {Method} void gtk_math_view_log_set_verbosity (GtkMathView* @var{widget}, gint @var{level})
 set the level of verbosity for displayed messages. @var{level} can be
 an integer from @code{0} (very few messages, in case of error only) to
@@ -1532,12 +1424,6 @@ Set the font manager used by the @var{widget} to retrieve fonts. Up
 'till now, there are two valid values for @var{id}: use
 @code{FONT_MANAGER_GTK} to use the GTK font manager (actually, this is
 just a wrapper for the X font manager). This is the default.
-Alternatively, use @code{FONT_MANAGER_T1} to use @code{t1lib} and
-Type1 fonts. This font manager is availabe only if you have installed
-the @code{t1lib} library.
-@end deftypefn
-
-@deftypefn {Method} FontManagerId gtk_math_view_get_font_manager_type (GtkMathView* @var{widget})
 Return the current font manager id.
 @end deftypefn
 

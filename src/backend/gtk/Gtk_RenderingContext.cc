@@ -25,17 +25,12 @@
 #include <cassert>
 
 #include <gdk/gdkx.h>
-#if HAVE_LIBT1
-#include <t1lib.h>
-#include <t1libx.h>
-#include "t1lib_T1Font.hh"
-#endif // HAVE_LIBT1
 
 #include "AbstractLogger.hh"
 #include "Gtk_RenderingContext.hh"
 
 Gtk_RenderingContext::Gtk_RenderingContext(const SmartPtr<AbstractLogger>& l)
-  : logger(l), style(NORMAL_STYLE), t1_opaque_mode(false), t1_aa_mode(false)
+  : logger(l), style(NORMAL_STYLE)
 {
   assert(logger);
 }
@@ -61,21 +56,6 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
     {
       for (unsigned i = 0; i < MAX_STYLE; i++)
 	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
-
-#if HAVE_LIBT1
-      Display* xdisplay = GDK_DRAWABLE_XDISPLAY(drawable);
-      assert(xdisplay != NULL);
-      Colormap xcolormap = GDK_COLORMAP_XCOLORMAP(gdk_colormap);
-      GdkVisual* visual = gdk_colormap_get_visual(gdk_colormap);
-      assert(visual != NULL);
-      Visual* xvisual = GDK_VISUAL_XVISUAL(visual);
-      assert(xvisual != NULL);
-
-      T1_AASetBitsPerPixel(visual->depth);
-      logger->out(LOG_DEBUG, "t1lib: X11 depth = %d AAGetLevel = %d AAGetBitsPerPixel = %d", 
-		  visual->depth, T1_AAGetLevel(), T1_AAGetBitsPerPixel());
-      T1_SetX11Params(xdisplay, xvisual, visual->depth, xcolormap);
-#endif // HAVE_LIBT1
     }
   else
     {
@@ -127,20 +107,3 @@ Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
 		  Gtk_RenderingContext::toGtkY(y),
 		  glyphs);
 }
-
-#if HAVE_LIBT1
-void
-Gtk_RenderingContext::draw(const scaled& x, const scaled& y, const SmartPtr<t1lib_T1Font>& font, Char8 glyph) const
-{
-  if (t1_aa_mode)
-    T1_AASetCharX(GDK_DRAWABLE_XID(getDrawable()),
-		  GDK_GC_XGC(getGC()), t1_opaque_mode ? T1_OPAQUE : T1_TRANSPARENT,
-		  Gtk_RenderingContext::toGtkX(x), Gtk_RenderingContext::toGtkY(y),
-		  font->getFontId(), glyph, font->getScale(), NULL);
-  else
-    T1_SetCharX(GDK_DRAWABLE_XID(getDrawable()),
-		GDK_GC_XGC(getGC()), t1_opaque_mode ? T1_OPAQUE : T1_TRANSPARENT,
-		Gtk_RenderingContext::toGtkX(x), Gtk_RenderingContext::toGtkY(y),
-		font->getFontId(), glyph, font->getScale(), NULL);
-}
-#endif // HAVE_LIBT1

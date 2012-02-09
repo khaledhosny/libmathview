@@ -144,25 +144,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_WITH(
-	t1lib,
-	[  --with-t1lib[=ARG]      compile with t1lib 1.x library [default=auto]],
-	with_t1lib=$withval,
-	with_t1lib=auto
-)
-
-AC_ARG_WITH(
-        t1lib-prefix,
-        [  --with-t1lib-prefix=PFX prefix dir where t1lib is installed],
-        [
-                with_t1lib_prefix=yes
-                T1LIB_PREFIX=$withval
-        ],
-        [
-                with_t1lib_prefix=no
-        ]
-)
-
-AC_ARG_WITH(
         popt-prefix,
         [  --with-popt-prefix=PFX prefix dir where popt is installed],
         [
@@ -357,37 +338,6 @@ if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
 fi
 AM_CONDITIONAL([COND_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
 
-have_t1lib="no"
-if test $with_t1lib = "auto"; then
-	AC_CHECK_HEADERS(t1lib.h,[
-		AC_CHECK_LIB(t1, T1_InitLib, [have_t1lib="yes"],,[-lm])
-	])
-else
-	have_t1lib=$with_t1lib
-fi
-
-if test $have_t1lib = "yes"; then
-	AC_DEFINE(HAVE_LIBT1,1,[Define to 1 to compile with t1lib for Type 1 fonts])
-
-        if test $with_t1lib_prefix = "yes"; then
-                T1_CFLAGS="-I$T1LIB_PREFIX/include"
-		T1_LIBS="-L$T1LIB_PREFIX/lib -lt1"
-		T1_LIBS_X="-L$T1LIB_PREFIX/lib -lt1x"
-	else
-		T1_CFLAGS=""
-		T1_LIBS="-lt1"
-		T1_LIBS_X="-lt1x"
-        fi
-else
-	T1_CFLAGS=""
-	T1_LIBS=""
-	T1_LIBS_X=""
-fi
-AM_CONDITIONAL([COND_T1LIB], [test $have_t1lib = "yes"])
-AC_SUBST(T1_CFLAGS)
-AC_SUBST(T1_LIBS)
-AC_SUBST(T1_LIBS_X)
-
 CFLAGS="$CFLAGS -W -Wall"
 CXXFLAGS="$CXXFLAGS -W -Wall"
 
@@ -543,7 +493,6 @@ Frontend
 Backend
 
   GTK+                ${have_gtk}
-  Type1 fonts (t1lib) ${have_t1lib}
   TFM support level   ${enable_tfm}
   SVG                 ${enable_svg}
   PostScript          ${enable_ps}

@@ -11,20 +11,6 @@ MAYBE_BOXML_S = $(NULL)
 MAYBE_BOXML_H = $(NULL)
 endif
 
-if COND_T1LIB
-MAYBE_T1_S = \
-  Gtk_T1ComputerModernShaper.cc \
-  Gtk_t1lib_T1GlyphArea.cc \
-  $(NULL)
-MAYBE_T1_H = \
-  Gtk_T1ComputerModernShaper.hh \
-  Gtk_t1lib_T1GlyphArea.hh \
-  $(NULL)
-else
-MAYBE_T1_S = $(NULL)
-MAYBE_T1_H = $(NULL)
-endif
-
 libmathview_backend_gtk_la_CPPFLAGS = -DGMV_BackEnd_DLL
 libmathview_backend_gtk_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
@@ -61,8 +47,6 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_WrapperArea.hh \
   $(MAYBE_BOXML_S) \
   $(MAYBE_BOXML_H) \
-  $(MAYBE_T1_S) \
-  $(MAYBE_T1_H) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
@@ -78,8 +62,6 @@ mathview_HEADERS = \
 libmathview_backend_gtk_la_LIBADD = \
   $(PANGOX_LIBS) \
   $(GTK_LIBS) \
-  $(T1_LIBS) \
-  $(T1_LIBS_X) \
   $(NULL)
 
 INCLUDES = \
@@ -92,5 +74,4 @@ INCLUDES = \
   -I$(top_srcdir)/src/backend/common \
   $(PANGOX_CFLAGS) \
   $(GTK_CFLAGS) \
-  $(T1_CFLAGS) \
   $(NULL)

@@ -36,9 +36,6 @@
 #include "Configuration.hh"
 #include "libxml2_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
-#if HAVE_LIBT1
-#include "T1_FontDataBase.hh"
-#endif //HAVE_LIBT1
 #include "FontDataBase.hh"
 #include "PS_Backend.hh"
 #include "PS_MathGraphicDevice.hh"
@@ -66,11 +63,7 @@ static gchar* option_unit = NULL;
 static gchar* option_page_size = NULL;
 static gchar* option_margins = NULL;
 static gdouble option_font_size = 0.0;
-#ifdef HAVE_LIBT1
-static gint option_font_embed = 2;
-#else
 static int option_font_embed = 0;
-#endif
 static gchar* option_config = NULL;
 static gchar* option_crop = NULL;
 
@@ -92,9 +85,6 @@ static GOptionEntry optionEntries[] = {
   { "page-size", 'p', 0, G_OPTION_ARG_STRING, &option_page_size, "Page size (width x height) (default = 21 x 29.7)", "<float>x<float>" },
   { "margins", 'm', 0, G_OPTION_ARG_STRING, &option_margins, "Margins (top x left) (default = 2 x 2)", "<float>x<float>" },
   { "font-size", 'f', 0, G_OPTION_ARG_DOUBLE, &option_font_size, "Default font size (in pt, default=10)", "<float>" },
-#ifdef HAVE_LIBT1
-  { "font-embed", 0, 0, G_OPTION_ARG_INT, &option_font_embed, "Enable/disable embedding (default=2)", "[0=disable,1=embed,2=subset]" },
-#endif // HAVE_LIBT1
   { "config", 0, 0, G_OPTION_ARG_FILENAME, &option_config, "Configuration file path", "<path>" },
   { "crop", 'r', G_OPTION_FLAG_OPTIONAL_ARG, G_OPTION_ARG_STRING, &option_crop, "Enable/disable cropping to bounding box", "[yes,no]" },
 
@@ -251,9 +241,6 @@ main(int argc, char* argv[])
   if (option_page_size && !parseSize(option_page_size)) parseError(ctxt, "page-size");
   if (option_unit && !parseUnit(option_unit)) parseError(ctxt, "unit");
   if (option_margins && !parseMargins(option_margins)) parseError(ctxt, "margins");
-#ifdef HAVE_LIBT1
-  if (option_font_embed < 0 || option_font_embed > 2) parseError(ctxt, "font-embed");
-#endif // HAVE_LIBT1
   if (option_crop && !parseBoolean(option_crop, cropping)) parseError(ctxt, "crop");
 
   if (option_config == NULL) option_config = getenv("GTKMATHVIEWCONF");
@@ -310,17 +297,7 @@ main(int argc, char* argv[])
       view->loadURI(file);
       const BoundingBox box = view->getBoundingBox();
      
-#ifdef HAVE_LIBT1
-      SmartPtr<FontDataBase> fDb;
-      switch (option_font_embed) {
-        case 0: fDb = FontDataBase::create(); break;
-	case 1: fDb = T1_FontDataBase::create(logger, configuration, false); break;
-	case 2: fDb = T1_FontDataBase::create(logger, configuration, true); break;
-	default: assert(false); /* IMPOSSIBLE */
-      }
-#else // !HAVE_LIBT1
       SmartPtr<FontDataBase> fDb = FontDataBase::create();
-#endif
 
       std::ofstream os(outName);
       PS_StreamRenderingContext rc(logger, os, fDb);

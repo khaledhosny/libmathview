@@ -59,10 +59,6 @@
 #define gtk_math_view_get_font_size            GTKMATHVIEW_METHOD_NAME(get_font_size)
 #define gtk_math_view_set_log_verbosity        GTKMATHVIEW_METHOD_NAME(set_log_verbosity)
 #define gtk_math_view_get_log_verbosity        GTKMATHVIEW_METHOD_NAME(get_log_verbosity)
-#define gtk_math_view_get_t1_opaque_mode       GTKMATHVIEW_METHOD_NAME(get_t1_opaque_mode)
-#define gtk_math_view_set_t1_opaque_mode       GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)
-#define gtk_math_view_get_t1_anti_aliased_mode GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)
-#define gtk_math_view_set_t1_anti_aliased_mode GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)
 #define gtk_math_view_add_configuration_path   GTKMATHVIEW_METHOD_NAME(add_configuration_path)
 
 #endif /* __gtkmathview_h__ */

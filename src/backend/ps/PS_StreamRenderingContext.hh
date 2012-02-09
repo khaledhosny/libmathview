@@ -29,7 +29,6 @@
 #include "PS_RenderingContext.hh"
 #include "String.hh"
 #include "FontDataBase.hh"
-#include "T1_FontDataBase.hh"
 
 class GMV_BackEnd_EXPORT PS_StreamRenderingContext : public PS_RenderingContext
 {

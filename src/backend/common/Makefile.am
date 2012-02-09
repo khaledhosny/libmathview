@@ -45,37 +45,6 @@ MAYBE_TFM_S = $(NULL)
 MAYBE_TFM_H = $(NULL)
 endif
 
-if COND_T1LIB
-if COND_TFM
-MAYBE_T1LIB_TFM_S = \
-  t1lib_TFM_T1Font.cc \
-  t1lib_TFM_T1FontManager.cc \
-  $(NULL)
-MAYBE_T1LIB_TFM_H = \
-  t1lib_TFM_T1Font.hh \
-  t1lib_TFM_T1FontManager.hh \
-  $(NULL)
-else
-MAYBE_T1LIB_TFM_S = $(NULL)
-MAYBE_T1LIB_TFM_H = $(NULL)
-endif
-MAYBE_T1LIB_S = \
-  t1lib_T1Font.cc \
-  t1lib_T1FontManager.cc \
-  $(MAYBE_T1LIB_TFM_S) \
-  $(NULL)
-MAYBE_T1LIB_H = \
-  t1lib_T1Font.hh \
-  t1lib_T1FontManager.hh \
-  $(MAYBE_T1LIB_TFM_H) \
-  $(NULL)
-MAYBE_T1LIB_L = $(T1_LIBS)
-else
-MAYBE_T1LIB_S = $(NULL)
-MAYBE_T1LIB_H = $(NULL)
-MAYBE_T1LIB_L = $(NULL)
-endif
-
 libbackend_common_la_CPPFLAGS = -DGMV_MathView_DLL
 libbackend_common_la_SOURCES = \
   Area.cc \
@@ -120,9 +89,7 @@ libbackend_common_la_SOURCES = \
   WrapperArea.cc \
   $(MAYBE_BOXML_S) \
   $(MAYBE_TFM_S) \
-  $(MAYBE_T1LIB_S) \
   $(MAYBE_TFM_H) \
-  $(MAYBE_T1LIB_H) \
   $(MAYBE_BOXML_H) \
   $(NULL)
 
@@ -176,7 +143,6 @@ mathview_HEADERS = \
   VerticalSpaceArea.hh \
   WrapperArea.hh \
   $(MAYBE_TFM_H) \
-  $(MAYBE_T1LIB_H) \
   $(MAYBE_BOXML_H) \
   $(NULL)
 
@@ -188,11 +154,9 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
-  $(T1_CFLAGS) \
   $(NULL)
 
 libbackend_common_la_LIBADD = \
   $(MAYBE_TFM_L) \
-  $(MAYBE_T1LIB_L) \
   $(NULL)
 

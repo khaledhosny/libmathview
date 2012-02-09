@@ -130,10 +130,6 @@ extern "C" {
   guint      GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint);
   gint       GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView*);
-  gboolean   GTKMATHVIEW_METHOD_NAME(get_t1_opaque_mode)(GtkMathView*);
-  void       GTKMATHVIEW_METHOD_NAME(set_t1_opaque_mode)(GtkMathView*, gboolean);
-  gboolean   GTKMATHVIEW_METHOD_NAME(get_t1_anti_aliased_mode)(GtkMathView*);
-  void       GTKMATHVIEW_METHOD_NAME(set_t1_anti_aliased_mode)(GtkMathView*, gboolean);
   void       GTKMATHVIEW_METHOD_NAME(add_configuration_path)(const gchar*);
 #ifdef __cplusplus
 }

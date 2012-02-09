@@ -28,7 +28,6 @@
 #include "PS_StreamRenderingContext.hh"
 #include "String.hh"
 #include "FontDataBase.hh"
-#include "T1_FontDataBase.hh"
 
 PS_StreamRenderingContext::PS_StreamRenderingContext(const SmartPtr<AbstractLogger>& logger,
 						     std::ostream& os,
