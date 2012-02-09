@@ -13,17 +13,10 @@ else
 MAYBE_SVG_SUBDIRS = $(NULL)
 endif
 
-if COND_PS
-MAYBE_PS_SUBDIRS = ps
-else
-MAYBE_PS_SUBDIRS = $(NULL)
-endif
-
 SUBDIRS = \
   common \
   $(MAYBE_GTK_SUBDIRS) \
   $(MAYBE_SVG_SUBDIRS) \
-  $(MAYBE_PS_SUBDIRS) \
   $(NULL)
 
 -include $(top_srcdir)/git.mk

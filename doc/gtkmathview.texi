@@ -1475,11 +1475,10 @@ in the following two sections.
 
 @menu
 * mathmlviewer::                A simple viewer application.
-* mathml2ps::                   A MathML => PostScript conversion utility.
 @end menu
 
 
-@node     mathmlviewer, mathml2ps, Tools, Tools
+@node     mathmlviewer, Tools, Tools
 @comment  node-name,  next,  previous,  up
 @section  @code{mathmlviewer}
 @noindent
@@ -1489,13 +1488,7 @@ it allows viewing MathML documents. A document is referenced by means
 of a URL or just a file name.
 
 
-@node     mathml2ps,  , mathmlviewer, Tools
-@section  @code{mathml2ps}
-@noindent
-This is a simple utility which allows to render a MathML document to
-PostScript. In addition to this, it shows how the widget's rendering
-engine can be exploited in a non-GTK+ application.
-
+@node       , mathmlviewer, Tools
 
 @node     Bugs,  , Tools, Top
 @comment  node-name,  next,  previous,  up

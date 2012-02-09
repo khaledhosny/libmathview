@@ -23,7 +23,6 @@ make install
 
 /usr/local/bin/gtkmathview-config
 /usr/local/bin/mathmlviewer
-/usr/local/bin/mathml2ps
 /usr/local/lib/libgtkmathview.so
 /usr/local/lib/libgtkmathview.so.@MAJOR_VERSION@
 /usr/local/lib/libgtkmathview.so.@VERSION@
@@ -33,5 +32,4 @@ make install
 /usr/local/share/gtkmathview/
 /usr/local/info/gtkmathview.info
 /usr/local/man/mathmlviewer.1
-/usr/local/man/mathml2ps.1
 
