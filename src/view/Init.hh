@@ -49,10 +49,12 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
     res |= MathView::loadConfiguration(logger, configuration, "gtkmathview.conf.xml");
 
   if (confPath != NULL)
+    {
     if (MathViewNS::fileExists(confPath))
       res |= MathView::loadConfiguration(logger, configuration, confPath);
     else
       logger->out(LOG_WARNING, "configuration file %s explicitly specified but not found", confPath);
+    }
 
   if (!res) logger->out(LOG_WARNING, "could not load configuration file");
   logger->setLogLevel(LogLevelId(configuration->getInt(logger, "logger/verbosity", 1)));

@@ -165,8 +165,10 @@ MathMLRowElement::getCoreOperator()
        elem != content.end();
        elem++)
     if ((*elem) && !(*elem)->IsSpaceLike())
+      {
       if (!candidate) candidate = *elem;
       else return 0;
+      }
 
   return candidate ? candidate->getCoreOperator() : 0;
 }

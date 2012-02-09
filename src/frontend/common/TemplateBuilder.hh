@@ -239,13 +239,19 @@ protected:
   {
     typename Model::ElementIterator iter(el, MATHML_NS_URI);
     if (iter.more())
+      {
       if (typename Model::Element e = iter.element())
+        {
 	if (Model::getNodeName(Model::asNode(e)) != "annotation"
 	    && Model::getNodeName(Model::asNode(e)) != "annotation-xml")
+          {
 	  if (SmartPtr<MathMLElement> elem = getMathMLElementNoCreate(iter.element()))
 	    return elem;
 	  else
 	    iter.next();
+          }
+        }
+      }
 
     while (typename Model::Element e = iter.element())
       {

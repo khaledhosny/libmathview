@@ -120,10 +120,12 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
       float maxMultiplier = 0.0f;
       scaled maxSize;
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, maxsize, defaults))
+        {
 	if (ToTokenId(value) == T_INFINITY)
 	  maxSize = scaled::max();
 	else
 	  parseLimitValue(value, ctxt, maxMultiplier, maxSize);
+        }
 
       float minMultiplier = 0.0f;
       scaled minSize;

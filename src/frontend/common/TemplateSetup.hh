@@ -126,6 +126,7 @@ struct TemplateSetup
       {
 	bool res = true;
 	if (typename Model::Element root = Model::getDocumentElement(doc))
+          {
 	  if (Model::getNodeName(Model::asNode(root)) == rootTag)
 	    parse(logger, obj, root);
 	  else 
@@ -133,6 +134,7 @@ struct TemplateSetup
 	      logger.out(LOG_WARNING, "configuration file `%s': could not find root element", path.c_str());
 	      res = false;
 	    }
+          }
 	Model::freeDocument(doc);
 	return res;
       }

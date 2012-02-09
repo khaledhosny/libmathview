@@ -91,10 +91,12 @@ VerticalArrayArea::prepareChildBoxes(std::vector<BoundingBox>& box) const
       const AreaIndex i = p - content.begin();
       box.push_back((*p)->box());
       if (BoundingBox backBox = box.back())
+        {
 	if (i < refArea)
 	  depth += backBox.verticalExtent();
 	else if (i == refArea)
 	  depth += backBox.depth;
+        }
     }
 
   return depth;
