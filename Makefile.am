@@ -23,7 +23,6 @@ endif
 
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in README.MacOSX
 SUBDIRS = scripts config auto autopackage src doc $(MAYBE_GTK_SUBDIRS) $(MAYBE_SVG_SUBDIRS)
-CLEANFILES = core *.log *.eps
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = mathview-core.pc
