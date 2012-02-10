@@ -297,12 +297,12 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
     [AC_MSG_WARN([could not find GTK+])])
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
-  PKG_CHECK_MODULES(PANGOX, pangox,
+  PKG_CHECK_MODULES(PANGO, pango,
     [AC_DEFINE(HAVE_PANGO,1,[Define to 1 if Pango is installed])
      have_pango="yes"],
     [AC_MSG_WARN([could not find Pango])])
-  AC_SUBST(PANGOX_CFLAGS)
-  AC_SUBST(PANGOX_LIBS)
+  AC_SUBST(PANGO_CFLAGS)
+  AC_SUBST(PANGO_LIBS)
 fi
 
 AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a \( "$have_gtk" = "yes" -a "$have_pango" = "yes" \) \) ])

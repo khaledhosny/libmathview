@@ -29,8 +29,6 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_MathGraphicDevice.hh \
   Gtk_PangoComputerModernShaper.cc \
   Gtk_PangoComputerModernShaper.hh \
-  Gtk_PangoFontManager.cc \
-  Gtk_PangoFontManager.hh \
   Gtk_PangoGlyphArea.cc \
   Gtk_PangoGlyphArea.hh \
   Gtk_PangoLayoutArea.cc \
@@ -53,7 +51,7 @@ mathview_HEADERS = \
   $(NULL)
 
 libmathview_backend_gtk_la_LIBADD = \
-  $(PANGOX_LIBS) \
+  $(PANGO_LIBS) \
   $(GTK_LIBS) \
   $(NULL)
 
@@ -65,7 +63,7 @@ INCLUDES = \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/backend/common \
-  $(PANGOX_CFLAGS) \
+  $(PANGO_CFLAGS) \
   $(GTK_CFLAGS) \
   $(NULL)
 

@@ -36,7 +36,6 @@
 #else
 #include "BoxGraphicDevice.hh"
 #endif // GMV_ENABLE_BOXML
-#include "Gtk_PangoFontManager.hh"
 #include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_PangoComputerModernShaper.hh"
