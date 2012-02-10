@@ -455,34 +455,29 @@ cat <<EOF
 
 GtkMathView ${MATHVIEW_VERSION}
 
-Compilation
-
+Compilation:
   GCC pipe            ${enable_pipe}
   Profiling           ${enable_profile}
   Debugging           ${enable_debug}
   xsltproc            ${HAVE_XSLTPROC}
   popt                ${have_popt}
 
-Engine
-
+Engine:
   MathML              yes
   BoxML               ${enable_boxml}
 
-Frontend
-
+Frontend:
   GMetaDOM            ${enable_gmetadom}
   libxml2             ${enable_libxml2}
   libxml2 reader      ${enable_libxml2_reader}
   custom reader       ${enable_custom_reader}
 
-Backend
-
+Backend:
   GTK+                ${have_gtk}
   TFM support level   ${enable_tfm}
   SVG                 ${enable_svg}
 
-Performance
-
+Performance:
   Builder cache       ${enable_builder_cache}
 
 EOF
