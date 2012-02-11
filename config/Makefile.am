@@ -18,7 +18,6 @@ EXTRA_DIST = \
   gtkmathview.conf.xml.in \
   gtkmathview.conf.dtd \
   gtkmathview.conf.xml \
-  gtkmathview.conf.xml.debug \
   Makefile.slow \
   $(NULL)
 
@@ -36,9 +35,6 @@ pkgdata_DATA = \
   entities-table.xml \
   gtkmathview.conf.dtd \
   $(NULL)
-
-noinst_DATA = \
-  gtkmathview.conf.xml.debug
 
 if WITH_BINRELOC
 install-data-hook:
