@@ -53,7 +53,6 @@ libbackend_common_la_SOURCES = \
   ShiftArea.cc \
   SimpleArea.cc \
   SpaceShaper.cc \
-  StandardSymbolsShaper.cc \
   StepArea.cc \
   VerticalArrayArea.cc \
   VerticalFillerArea.cc \
@@ -105,7 +104,6 @@ mathview_HEADERS = \
   ShiftArea.hh \
   SimpleArea.hh \
   SpaceShaper.hh \
-  StandardSymbolsShaper.hh \
   StepArea.hh \
   VerticalArrayArea.hh \
   VerticalFillerArea.hh \
