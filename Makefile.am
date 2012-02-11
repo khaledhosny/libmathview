@@ -11,18 +11,8 @@ else
 MAYBE_GTK_SUBDIRS = $(NULL)
 endif
 
-if COND_SVG
-if COND_HAVE_POPT
-MAYBE_SVG_SUBDIRS = mathmlsvg
-else
-MAYBE_SVG_SUBDIRS = $(NULL)
-endif
-else
-MAYBE_SVG_SUBDIRS = $(NULL)
-endif
-
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in README.MacOSX
-SUBDIRS = scripts config auto autopackage src doc $(MAYBE_GTK_SUBDIRS) $(MAYBE_SVG_SUBDIRS)
+SUBDIRS = scripts config auto autopackage src doc $(MAYBE_GTK_SUBDIRS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = mathview-core.pc
@@ -53,10 +43,6 @@ endif
 if COND_GMETADOM
 pkgconfig_DATA += gtkmathview-gmetadom.pc
 endif
-endif
-
-if COND_SVG
-pkgconfig_DATA += mathview-backend-svg.pc
 endif
 
 SCRIPTDIR = ./scripts

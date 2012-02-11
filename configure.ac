@@ -123,13 +123,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	svg,
-	[  --enable-svg[=ARG]  enable SVG backend [default=yes]],
-	enable_svg=$enableval,
-	enable_svg="yes"
-)
-
-AC_ARG_ENABLE(
 	gcc-pch,
 	[  --enable-gcc-pch=[yes/no/auto]       use gcc4 pch support (default=auto)],
 	enable_gcc_pch=$enableval,
@@ -362,16 +355,6 @@ AM_CONDITIONAL([COND_TFM_LEVEL_1], [test "$enable_tfm" = "1"])
 AM_CONDITIONAL([COND_TFM_LEVEL_2], [test "$enable_tfm" = "2"])
 AM_CONDITIONAL([COND_TFM_LEVEL_3], [test "$enable_tfm" = "3"])
 
-if test "$enable_tfm" = "0" -a "$enable_svg" = "yes"; then
-	AC_MSG_WARN([SVG support requires TFM support])
-	enable_svg="no"
-fi
-	
-if test "$enable_svg" = "yes"; then
-	AC_DEFINE(ENABLE_SVG,1,[Define to 1 if you want to enable the SVG backend])
-fi
-AM_CONDITIONAL([COND_SVG], [test "$enable_svg" = "yes"])
-
 AM_BINRELOC
 AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
 
@@ -430,18 +413,15 @@ AC_CONFIG_FILES([
  src/backend/common/Makefile
  src/backend/common/tfm/Makefile
  src/backend/gtk/Makefile
- src/backend/svg/Makefile
  src/view/Makefile
  src/widget/Makefile
  viewer/Makefile
- mathmlsvg/Makefile
  doc/Makefile
  mathview-core.pc
  mathview-frontend-custom-reader.pc
  mathview-frontend-libxml2-reader.pc
  mathview-frontend-libxml2.pc
  mathview-frontend-gmetadom.pc
- mathview-backend-svg.pc
  mathview-backend-gtk.pc
  gtkmathview-custom-reader.pc
  gtkmathview-libxml2-reader.pc
@@ -475,7 +455,6 @@ Frontend:
 Backend:
   GTK+                ${have_gtk}
   TFM support level   ${enable_tfm}
-  SVG                 ${enable_svg}
 
 Performance:
   Builder cache       ${enable_builder_cache}

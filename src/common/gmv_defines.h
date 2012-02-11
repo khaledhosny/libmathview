@@ -46,7 +46,6 @@ src/Makefile.am:lib_LTLIBRARIES = libmathview.la
 
 /*
 src/backend/gtk/Makefile.am:lib_LTLIBRARIES = libmathview_backend_gtk.la
-src/backend/svg/Makefile.am:lib_LTLIBRARIES = libmathview_backend_svg.la
 */
 #if defined(GMV_BackEnd_DLL) 
 #define GMV_BackEnd_EXPORT __declspec(dllexport)

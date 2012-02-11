@@ -90,27 +90,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </section>
   </section>
 
-  <section name="svg-backend">
-    <section name="null-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">0</key>
-    </section>
-    <section name="space-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">1</key>
-    </section>
-    <section name="type1-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">always</key>
-    </section>
-    <section name="ttf-computer-modern-shaper">
-      <key name="enabled">true</key>
-      <key name="priority">1</key>
-      <key name="post-shaping">always</key>
-    </section>
-  </section>
-
   <section name="fonts">
     <section name="computer-modern">
       <!-- MINIMAL SET (TFM = 1) -->
