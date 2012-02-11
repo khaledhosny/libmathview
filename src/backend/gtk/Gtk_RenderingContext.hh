@@ -24,7 +24,6 @@
 #define __Gtk_RenderingContext_hh__
 
 #include <gtk/gtk.h>
-#include <gdk/gdk.h>
 
 #include "Char.hh"
 #include "SmartPtr.hh"

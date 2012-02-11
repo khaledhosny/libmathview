@@ -24,8 +24,6 @@
 
 #include <cassert>
 
-#include <gdk/gdkx.h>
-
 #include "AbstractLogger.hh"
 #include "Gtk_RenderingContext.hh"
 
