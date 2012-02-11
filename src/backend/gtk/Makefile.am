@@ -35,8 +35,6 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_PangoLayoutArea.hh \
   Gtk_PangoLayoutLineArea.cc \
   Gtk_PangoLayoutLineArea.hh \
-  Gtk_PangoShaper.cc \
-  Gtk_PangoShaper.hh \
   Gtk_RenderingContext.cc \
   Gtk_RenderingContext.hh \
   Gtk_WrapperArea.cc \

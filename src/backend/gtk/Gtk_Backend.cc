@@ -37,7 +37,6 @@
 #include "BoxGraphicDevice.hh"
 #endif // GMV_ENABLE_BOXML
 #include "Gtk_DefaultPangoShaper.hh"
-#include "Gtk_PangoShaper.hh"
 #include "Gtk_PangoComputerModernShaper.hh"
 #include "NullShaper.hh"
 #include "SpaceShaper.hh"
@@ -74,13 +73,6 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   if (conf->getBool(l, "gtk-backend/space-shaper/enabled", false))
     {
       shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/space-shaper/priority", 0), SpaceShaper::create()));
-    }
-
-  if (conf->getBool(l, "gtk-backend/pango-shaper/enabled", false))
-    {
-      SmartPtr<Gtk_PangoShaper> pangoShaper = Gtk_PangoShaper::create(l, conf);
-      pangoShaper->setPangoContext(context);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-shaper/priority", 0), pangoShaper));
     }
 
   if (conf->getBool(l, "gtk-backend/pango-computer-modern-shaper/enabled", false))
