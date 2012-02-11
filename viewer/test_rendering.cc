@@ -64,7 +64,6 @@ expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
       // needed to cleanup the pixmap
       gdk_draw_rectangle(pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
       Gtk_RenderingContext rc(logger);
-      rc.setColorMap(gtk_widget_get_colormap(GTK_WIDGET(widget)));
       rc.setDrawable(pixmap);
       view->render(rc, scaled::zero(), -box.height);
     }

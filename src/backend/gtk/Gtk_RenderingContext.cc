@@ -52,16 +52,6 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 
   gdk_drawable = drawable;
   cairo_context = gdk_cairo_create (drawable);
-  if (gdk_drawable)
-    {
-      for (unsigned i = 0; i < MAX_STYLE; i++)
-	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
-    }
-  else
-    {
-      for (unsigned i = 0; i < MAX_STYLE; i++)
-	data[i].gdk_gc = 0;
-    }
 }
 
 void

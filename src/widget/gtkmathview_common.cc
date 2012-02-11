@@ -668,7 +668,6 @@ gtk_math_view_init(GtkMathView* math_view)
 #endif // GMV_ENABLE_BOXML
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
-  math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
 }
 
 extern "C" GtkWidget*
