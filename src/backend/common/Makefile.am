@@ -107,7 +107,6 @@ mathview_HEADERS = \
   SpaceShaper.hh \
   StandardSymbolsShaper.hh \
   StepArea.hh \
-  T1Font.hh \
   VerticalArrayArea.hh \
   VerticalFillerArea.hh \
   VerticalSpaceArea.hh \
