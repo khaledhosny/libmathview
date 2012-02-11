@@ -154,6 +154,9 @@ protected:
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;
   GObjectPtr<GdkColormap> gdk_colormap;
+
+  // Cairo
+  cairo_t * cairo_context;
 };
 
 #endif // __Gtk_RenderingContext_hh__

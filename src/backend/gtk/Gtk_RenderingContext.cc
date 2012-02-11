@@ -42,6 +42,7 @@ void
 Gtk_RenderingContext::releaseResources()
 {
   // should free the gc's? 
+  cairo_destroy (cairo_context);
 }
 
 void
@@ -50,6 +51,7 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
   releaseResources();
 
   gdk_drawable = drawable;
+  cairo_context = gdk_cairo_create (drawable);
   if (gdk_drawable)
     {
       for (unsigned i = 0; i < MAX_STYLE; i++)
@@ -65,43 +67,32 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 void
 Gtk_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
 {
-  gdk_draw_rectangle(getDrawable(),
-		     getGC(),
-		     TRUE,
-		     Gtk_RenderingContext::toGtkX(x),
-		     Gtk_RenderingContext::toGtkY(y + box.height),
-		     Gtk_RenderingContext::toGtkPixels(box.width),
-		     Gtk_RenderingContext::toGtkPixels(box.height + box.depth));
+  cairo_rectangle(cairo_context,
+                  toGtkX(x),
+                  toGtkY(y + box.height),
+                  toGtkPixels(box.width),
+                  toGtkPixels(box.height + box.depth));
+  cairo_fill(cairo_context);
 }
 
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayout* layout) const
 {
-  gdk_draw_layout(getDrawable(),
-		  getGC(),
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y),
-		  layout);
+  cairo_move_to(cairo_context, toGtkX(x), toGtkY(y));
+  pango_cairo_show_layout(cairo_context, layout);
 }
 
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayoutLine* line) const
 {
-  gdk_draw_layout_line(getDrawable(),
-		       getGC(),
-		       Gtk_RenderingContext::toGtkX(x),
-		       Gtk_RenderingContext::toGtkY(y),
-		       line);
+  cairo_move_to(cairo_context, toGtkX(x), toGtkY(y));
+  pango_cairo_show_layout_line(cairo_context, line);
 }
 
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
 			   PangoGlyphString* glyphs) const
 {
-  gdk_draw_glyphs(getDrawable(),
-		  getGC(),
-		  font,
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y),
-		  glyphs);
+  cairo_move_to(cairo_context, toGtkX(x), toGtkY(y));
+  pango_cairo_show_glyph_string(cairo_context, font, glyphs);
 }
