@@ -1,15 +1,7 @@
 
 NULL =
 
-if COND_TFM
-MAYBE_TFM_SUBDIRS = tfm
-MAYBE_TFM_L = $(top_builddir)/src/backend/common/tfm/libtfm.la
-else
-MAYBE_TFM_SUBDIRS =
-MAYBE_TFM_L = $(NULL)
-endif
-
-SUBDIRS = $(MAYBE_TFM_SUBDIRS)
+SUBDIRS = 
 
 noinst_LTLIBRARIES = libbackend_common.la
 
@@ -23,26 +15,6 @@ MAYBE_BOXML_H = \
 else
 MAYBE_BOXML_S = $(NULL)
 MAYBE_BOXML_H = $(NULL)
-endif
-
-if COND_TFM
-MAYBE_TFM_S = \
-  TFMComputerModernShaper.cc \
-  TFMComputerModernMathGraphicDevice.cc \
-  TFMFont.cc \
-  TFMFontManager.cc \
-  TFMGlyphArea.cc \
-  $(NULL)
-MAYBE_TFM_H = \
-  TFMComputerModernShaper.hh \
-  TFMComputerModernMathGraphicDevice.hh \
-  TFMFont.hh \
-  TFMFontManager.hh \
-  TFMGlyphArea.hh \
-  $(NULL)
-else
-MAYBE_TFM_S = $(NULL)
-MAYBE_TFM_H = $(NULL)
 endif
 
 libbackend_common_la_CPPFLAGS = -DGMV_MathView_DLL
@@ -88,8 +60,6 @@ libbackend_common_la_SOURCES = \
   VerticalSpaceArea.cc \
   WrapperArea.cc \
   $(MAYBE_BOXML_S) \
-  $(MAYBE_TFM_S) \
-  $(MAYBE_TFM_H) \
   $(MAYBE_BOXML_H) \
   $(NULL)
 
@@ -142,7 +112,6 @@ mathview_HEADERS = \
   VerticalFillerArea.hh \
   VerticalSpaceArea.hh \
   WrapperArea.hh \
-  $(MAYBE_TFM_H) \
   $(MAYBE_BOXML_H) \
   $(NULL)
 
@@ -150,14 +119,12 @@ INCLUDES = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
-  -I$(top_srcdir)/src/backend/common/tfm \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/engine/boxml \
   $(NULL)
 
 libbackend_common_la_LIBADD = \
-  $(MAYBE_TFM_L) \
   $(NULL)
 
 

@@ -104,18 +104,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	tfm,
-	[  --enable-tfm[=ARG]  enable support level for TeX Font Metrics (0,1,2,3) [disabled=0,default=2]],
-	enable_tfm=$enableval,
-	enable_tfm="2"
-)
-if test $enable_tfm = "yes"; then
-  enable_tfm="2"
-elif test $enable_tfm = "no"; then
-  enable_tfm="0"
-fi
-
-AC_ARG_ENABLE(
 	gtk,
 	[  --enable-gtk[=ARG]  enable GTK backend [default=auto]],
 	enable_gtk=$enableval,
@@ -180,8 +168,6 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-#define GMV_ENABLE_TFM (GMV_TFM_LEVEL != 0)
-
 #endif /* config_h */
 ])
 
@@ -349,12 +335,6 @@ if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
-AC_DEFINE_UNQUOTED(GMV_TFM_LEVEL, $enable_tfm, [Define to 0, 1, 2, or 3 depending on the TFM support level you want])
-AM_CONDITIONAL([COND_TFM], [test "$enable_tfm" != "0"])
-AM_CONDITIONAL([COND_TFM_LEVEL_1], [test "$enable_tfm" = "1"])
-AM_CONDITIONAL([COND_TFM_LEVEL_2], [test "$enable_tfm" = "2"])
-AM_CONDITIONAL([COND_TFM_LEVEL_3], [test "$enable_tfm" = "3"])
-
 AM_BINRELOC
 AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
 
@@ -411,7 +391,6 @@ AC_CONFIG_FILES([
  src/engine/adapters/Makefile
  src/backend/Makefile
  src/backend/common/Makefile
- src/backend/common/tfm/Makefile
  src/backend/gtk/Makefile
  src/view/Makefile
  src/widget/Makefile
@@ -454,7 +433,6 @@ Frontend:
 
 Backend:
   GTK+                ${have_gtk}
-  TFM support level   ${enable_tfm}
 
 Performance:
   Builder cache       ${enable_builder_cache}

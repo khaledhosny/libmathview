@@ -82,24 +82,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <key name="priority">1</key>
       <key name="post-shaping">always</key>
     </section>
-    <section name="type1-computer-modern-shaper">
-      <key name="enabled">false</key>
-      <key name="priority">1</key>
-      <key name="use-tfm">true</key>
-      <key name="post-shaping">never</key>
-    </section>
   </section>
 
   <section name="fonts">
     <section name="computer-modern">
-      <!-- MINIMAL SET (TFM = 1) -->
+      <!-- MINIMAL SET -->
       <key name="font-name">cmr10</key>
       <key name="font-name">cmmi10</key>
       <key name="font-name">cmsy10</key>
       <key name="font-name">cmex10</key>
 
-      <!-- NORMAL SET (TFM = 2) -->
-<!--
+      <!-- NORMAL SET -->
       <key name="font-name">cmr10</key>
       <key name="font-name">cmb10</key>
       <key name="font-name">cmbx10</key>
@@ -116,10 +109,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <key name="font-name">cmex10</key>
       <key name="font-name">msam10</key>
       <key name="font-name">msbm10</key>
--->
 
-      <!-- FULL SET (TFM = 3) -->
-<!--
+      <!-- FULL SET -->
       <key name="font-name">cmr5</key>
       <key name="font-name">cmr6</key>
       <key name="font-name">cmr7</key>
@@ -212,7 +203,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <key name="font-name">msbm9</key>
       <key name="font-name">msbm10</key>
 
--->
     </section>
   </section>
 </math-engine-configuration>

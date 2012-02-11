@@ -29,7 +29,6 @@
 /*
 src/Makefile.am:lib_LTLIBRARIES = libmathview.la
    SUBLIB: src/backend/common/libbackend_common.la
-   SUBLIB: src/backend/common/tfm/libtfm.la
    SUBLIB: src/frontend/common/libfrontend_common.la
    SUBLIB: src/engine/mathml/libmathml.la
    SUBLIB: src/engine/boxml/libboxml.la
