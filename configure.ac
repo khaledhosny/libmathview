@@ -117,25 +117,6 @@ AC_ARG_ENABLE(
 	enable_gcc_pch="auto"
 )
 
-AC_ARG_WITH(
-        popt-prefix,
-        [  --with-popt-prefix=PFX prefix dir where popt is installed],
-        [
-                with_popt_prefix="yes"
-                POPT_PREFIX=$withval
-        ],
-        [
-                with_popt_prefix="no"
-        ]
-)
-
-AC_ARG_WITH(
-	popt,
-	[  --with-popt[=ARG] use popt - required for mathmlsvg and viewer (default=auto)],
-	with_popt=$withval,
-	with_popt="auto"
-)
-
 dnl Automake configuration
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
@@ -230,33 +211,6 @@ if test $HAVE_XSLTPROC = "no"; then
 	AC_MSG_WARN(xsltproc not found, the compilation may fail)
 fi
 AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
-
-have_popt="no"
-if test $with_popt = "auto"; then
-	AC_CHECK_HEADERS(popt.h,[
-		AC_CHECK_LIB(popt, poptGetContext, [have_popt="yes"])
-	])
-else
-	have_popt=$with_popt
-fi
-
-if test $have_popt = "yes"; then
-	AC_DEFINE(HAVE_POPT_H,1,[Define to 1 if popt.h is available])
-
-        if test $with_popt_prefix = "yes"; then
-                POPT_CFLAGS="-I$POPT_PREFIX/include"
-		POPT_LIBS="-L$POPT_PREFIX/lib -lpopt"
-	else
-		POPT_CFLAGS=""
-		POPT_LIBS="-lpopt"
-        fi
-else
-	POPT_CFLAGS=""
-	POPT_LIBS=""
-fi
-AM_CONDITIONAL([COND_HAVE_POPT], [test "$have_popt" = "yes"])
-AC_SUBST(POPT_CFLAGS)
-AC_SUBST(POPT_LIBS)
 
 AC_LANG([C])
 
@@ -419,7 +373,6 @@ Compilation:
   Profiling           ${enable_profile}
   Debugging           ${enable_debug}
   xsltproc            ${HAVE_XSLTPROC}
-  popt                ${have_popt}
 
 Engine:
   MathML              yes
