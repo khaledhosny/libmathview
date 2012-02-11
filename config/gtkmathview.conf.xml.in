@@ -74,7 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <key name="priority">1</key>
     </section>
     <section name="pango-computer-modern-shaper">
-      <key name="enabled">false</key>
+      <key name="enabled">true</key>
       <key name="priority">1</key>
       <key name="post-shaping">always</key>
     </section>
