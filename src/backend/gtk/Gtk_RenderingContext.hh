@@ -43,10 +43,10 @@ public:
   Gtk_RenderingContext(const SmartPtr<class AbstractLogger>&);
   virtual ~Gtk_RenderingContext();
 
-  void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND_INDEX>(c); }
-  void setBackgroundColor(const RGBColor& c) { setColor<BACKGROUND_INDEX>(c); }
-  void setForegroundColor(GdkColor& c) { setColor<FOREGROUND_INDEX>(c); }
-  void setBackgroundColor(GdkColor& c) { setColor<BACKGROUND_INDEX>(c); }
+  void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
+  void setBackgroundColor(const RGBColor& c) { setColor<BACKGROUND_INDEX, gdk_gc_set_background>(c); }
+  void setForegroundColor(GdkColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
+  void setBackgroundColor(GdkColor& c) { setColor<BACKGROUND_INDEX, gdk_gc_set_background>(c); }
 
   // the return value is passed as an argument so that
   // we can use overloading
@@ -55,8 +55,11 @@ public:
   void getForegroundColor(GdkColor& c) const { getColor<GdkColor, FOREGROUND_INDEX>(c); }
   void getBackgroundColor(GdkColor& c) const { getColor<GdkColor, BACKGROUND_INDEX>(c); }
 
+  void setColorMap(const GObjectPtr<GdkColormap>& cm) { gdk_colormap = cm; }
+  GObjectPtr<GdkColormap> getColorMap(void) const { return gdk_colormap; }
   void setDrawable(const GObjectPtr<GdkDrawable>&);
   GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
+  GObjectPtr<GdkGC> getGC(void) const { return data[getStyle()].gdk_gc; }
 
   void setStyle(ColorStyle s) { style = s; }
   ColorStyle getStyle(void) const { return style; }
@@ -89,14 +92,13 @@ public:
 
 protected:
   void prepare(const scaled& x, const scaled& y) const;
-
-  template <ColorIndex index>
+  template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
   void setColor(const RGBColor& c)
-  { data[getStyle()].setColor<index>(c); }
+  { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
 
-  template <ColorIndex index>
+  template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
   void setColor(const GdkColor& c)
-  { data[getStyle()].setColor<index>(c); }
+  { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
 
   template <typename C, ColorIndex index>
   void getColor(C& c) const
@@ -104,11 +106,12 @@ protected:
   
   struct ContextData
   {
+    GObjectPtr<GdkGC> gdk_gc;
     RGBColor color[MAX_INDEX];
     GdkColor gdk_color[MAX_INDEX];
     
-    template <ColorIndex index>
-    void setColor(const RGBColor& c)
+    template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
+    void setColor(const RGBColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
     {
       color[index] = c;
 
@@ -118,15 +121,15 @@ protected:
       gdk_c.blue = c.blue * (65535/255);
       gdk_c.pixel = c.red * 65536 + c.green * 256 + c.blue;
       
-      gdk_color[index] = gdk_c;
+      setColor<index,set>(gdk_c, gdk_colormap);
     }
 
     template <ColorIndex index>
     void getColor(RGBColor& c) const
     { c = color[index]; }
 
-    template <ColorIndex index>
-    void setColor(const GdkColor& c)
+    template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
+    void setColor(const GdkColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
     { 
       gdk_color[index] = c;
 
@@ -137,6 +140,12 @@ protected:
       rgb_c.alpha = 255;
 
       color[index] = rgb_c;
+
+      assert(gdk_colormap);
+      const gboolean ret = gdk_colormap_alloc_color(gdk_colormap, &gdk_color[index], FALSE, TRUE);
+      assert(ret == TRUE);
+      
+      set(gdk_gc, &gdk_color[index]);
     }
 
     template <ColorIndex index>
@@ -153,6 +162,7 @@ protected:
 
   // GDK-specific fields
   GObjectPtr<GdkDrawable> gdk_drawable;
+  GObjectPtr<GdkColormap> gdk_colormap;
 
   // Cairo
   cairo_t * cairo_context;
