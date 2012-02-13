@@ -50,10 +50,10 @@ public:
 
   // the return value is passed as an argument so that
   // we can use overloading
-  void getForegroundColor(RGBColor& c) const { getColor<RGBColor, FOREGROUND_INDEX>(c); }
-  void getBackgroundColor(RGBColor& c) const { getColor<RGBColor, BACKGROUND_INDEX>(c); }
-  void getForegroundColor(GdkColor& c) const { getColor<GdkColor, FOREGROUND_INDEX>(c); }
-  void getBackgroundColor(GdkColor& c) const { getColor<GdkColor, BACKGROUND_INDEX>(c); }
+  void getForegroundColor(RGBColor& c) { getColor<RGBColor, FOREGROUND_INDEX>(c); }
+  void getBackgroundColor(RGBColor& c) { getColor<RGBColor, BACKGROUND_INDEX>(c); }
+  void getForegroundColor(GdkColor& c) { getColor<GdkColor, FOREGROUND_INDEX>(c); }
+  void getBackgroundColor(GdkColor& c) { getColor<GdkColor, BACKGROUND_INDEX>(c); }
 
   void setColorMap(const GObjectPtr<GdkColormap>& cm) { gdk_colormap = cm; }
   GObjectPtr<GdkColormap> getColorMap(void) const { return gdk_colormap; }
@@ -91,7 +91,6 @@ public:
   { return fromGtkPixels(-y); }
 
 protected:
-  void prepare(const scaled& x, const scaled& y) const;
   template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
   void setColor(const RGBColor& c)
   { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
@@ -132,14 +131,6 @@ protected:
     void setColor(const GdkColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
     { 
       gdk_color[index] = c;
-
-      RGBColor rgb_c;
-      rgb_c.red = c.red/65535. * 255;
-      rgb_c.green = c.green/65535. * 255;
-      rgb_c.blue = c.blue/65535. * 255;
-      rgb_c.alpha = 255;
-
-      color[index] = rgb_c;
 
       assert(gdk_colormap);
       const gboolean ret = gdk_colormap_alloc_color(gdk_colormap, &gdk_color[index], FALSE, TRUE);
