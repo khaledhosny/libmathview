@@ -56,6 +56,7 @@ public:
   void getBackgroundColor(GdkColor& c) const { getColor<GdkColor, BACKGROUND_INDEX>(c); }
 
   void setDrawable(const GObjectPtr<GdkDrawable>&);
+  GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
 
   void setStyle(ColorStyle s) { style = s; }
   ColorStyle getStyle(void) const { return style; }
@@ -149,6 +150,9 @@ protected:
 
   ColorStyle style;
   ContextData data[MAX_STYLE];
+
+  // GDK-specific fields
+  GObjectPtr<GdkDrawable> gdk_drawable;
 
   // Cairo
   cairo_t * cairo_context;

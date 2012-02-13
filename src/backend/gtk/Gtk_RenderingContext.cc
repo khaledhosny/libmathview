@@ -50,6 +50,7 @@ Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
 {
   releaseResources();
 
+  gdk_drawable = drawable;
   cairo_context = gdk_cairo_create (drawable);
 }
 
