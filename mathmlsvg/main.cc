@@ -25,6 +25,13 @@
 #include <cassert>
 #include <cstring>
 #include <fstream>
+#ifdef __linux__
+/* to get getopt on Linux */
+#ifndef __USE_POSIX2
+#define __USE_POSIX2
+#endif
+#endif
+#include <unistd.h>
 
 #include <popt.h>
 

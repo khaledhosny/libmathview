@@ -47,7 +47,7 @@ protected:
   findValidNodeForward(const typename Model::Node& p0) const
   {
     for (typename Model::Node p = p0; p; p = Model::getNextSibling(p))
-      if (valid(p)) return Model::asElement(p);
+      if (this->valid(p)) return Model::asElement(p);
     return typename Model::Element();
   }
     

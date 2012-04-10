@@ -708,6 +708,7 @@ SMS::fun_depart(const HandlerArgs& args) const
   if (asLocation(args[0], loc1) && asLocation(args[1], loc2))
   // delete "return 0" and insert here the code
     return 0;
+  return 0;
 }
 
 SmartPtr<Value>
