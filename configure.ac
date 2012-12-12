@@ -290,9 +290,6 @@ if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
 
-AM_BINRELOC
-AM_CONDITIONAL(WITH_BINRELOC, test "x$br_cv_binreloc" = "xyes")
-
 AC_MSG_CHECKING([whether to use GCC precompiled headers with $CXX])
 if test "x$GCC" = "xyes" ; then
 	_gmv_gcc_version=`$CXX --version | grep GCC | head -1 | cut -f 3 -d " "`
@@ -328,7 +325,6 @@ AC_CONFIG_FILES([
  scripts/Makefile
  auto/Makefile
  auto/Char.hh.in
- autopackage/Makefile
  src/Makefile
  src/common/Makefile
  src/common/mathvariants/Makefile
@@ -361,7 +357,6 @@ AC_CONFIG_FILES([
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc
  gtkmathview-gmetadom.pc
- autopackage/abimath.apspec
 ])
 AC_OUTPUT
 

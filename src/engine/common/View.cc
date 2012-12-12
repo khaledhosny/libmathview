@@ -39,9 +39,6 @@
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 #include "BoxGraphicDevice.hh"
-#ifdef ENABLE_BINRELOC
-#include "prefix.h"
-#endif // ENABLE_BINRELOC
 
 View::View(const SmartPtr<AbstractLogger>& l)
   : logger(l), defaultFontSize(DEFAULT_FONT_SIZE), freezeCounter(0)
@@ -71,21 +68,13 @@ View::thaw()
 String
 View::getDefaultConfigurationPath()
 {
-#ifdef ENABLE_BINRELOC
-return BR_SYSCONFDIR("/gtkmathview.conf.xml");
-#else
 return PKGSYSCONFDIR"/gtkmathview.conf.xml"; 
-#endif
 }
 
 String
 View::getDefaultOperatorDictionaryPath()
 { 
-#ifdef ENABLE_BINRELOC
-return BR_DATADIR("/gtkmathview/dictionary.xml");
-#else
 return PKGDATADIR"/dictionary.xml"; 
-#endif
 }
 
 SmartPtr<AbstractLogger>
