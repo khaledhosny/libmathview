@@ -111,13 +111,6 @@ AC_ARG_ENABLE(
 	enable_gtk="auto"
 )
 
-AC_ARG_ENABLE(
-	gcc-pch,
-	[  --enable-gcc-pch=[yes/no/auto]       use gcc4 pch support (default=auto)],
-	enable_gcc_pch=$enableval,
-	enable_gcc_pch="auto"
-)
-
 dnl Automake configuration
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gtkmathview, $MATHVIEW_VERSION)
@@ -289,31 +282,6 @@ fi
 if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
-
-AC_MSG_CHECKING([whether to use GCC precompiled headers with $CXX])
-if test "x$GCC" = "xyes" ; then
-	_gmv_gcc_version=`$CXX --version | grep GCC | head -1 | cut -f 3 -d " "`
-        _gmv_gcc_major=`echo $_gmv_gcc_version | cut -f 1 -d "."`
-
-	if [[ "$_gmv_gcc_major" -ge "4" ]] ; then
-		if test "x$enable_gcc_pch" = "xyes" ; then
-			AC_MSG_RESULT(yes)
-			gmv_gcc_pch="yes"
-		elif test "x$enable_gcc_pch" = "xauto" ; then
-			AC_MSG_RESULT(yes)
-			gmv_gcc_pch="yes"
-		else
-			AC_MSG_RESULT(no)
-			gmv_gcc_pch="no"
-		fi
-	else
-		AC_MSG_RESULT(no)
-		gmv_gcc_pch="no"
-	fi
-else
-	gmv_gcc_pch="no"
-fi
-AM_CONDITIONAL(USE_GCC_PCH, test "x$gmv_gcc_pch" = "xyes")
 
 AM_SILENT_RULES([yes])
 

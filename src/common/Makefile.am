@@ -12,13 +12,6 @@ libcommon_la_LIBADD = \
   $(GLIB_LIBS) \
   $(NULL)
 
-# if USE_GCC_PCH
-# BUILT_SOURCES = all.hh
-# include ./$(DEPDIR)/all.Po
-# include $(top_srcdir)/gcc-pch.mk
-# libcommon_la_CPPFLAGS += -include all.hh
-# endif
-
 libcommon_la_SOURCES = \
   AbstractLogger.cc \
   BoundingBox.cc \
