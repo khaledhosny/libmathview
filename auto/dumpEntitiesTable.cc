@@ -50,7 +50,7 @@ dump(const char* fileName)
 	if (!name.empty() && !value.empty()) {
 	  DOM::UTF8String s_value = value;
 
-	  printf("{ \"%s\", \"", name.c_str());
+	  printf("{ (char*) \"%s\", (char*) \"", name.c_str());
 	  for (unsigned i = 0; i < s_value.length(); i++) printf("\\x%02x", s_value[i] & 0xff);
 	  printf("\\x00\", 0, 0 },\n");
 	}
