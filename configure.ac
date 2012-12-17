@@ -30,13 +30,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	pipe,
-	[  --enable-pipe[=ARG]     enable the -pipe option in the GCC compiler [default=no]],
-	enable_pipe=$enableval,
-	enable_pipe=no
-)
-
-AC_ARG_ENABLE(
 	profile,
 	[  --enable-profile[=ARG]  include profiling information [default=no]],
 	enable_profile=$enableval,
@@ -274,11 +267,6 @@ if test $enable_profile = yes; then
 fi
 AM_CONDITIONAL([COND_PROFILE], [test "$enable_profile" = "yes"])
 
-if test $enable_pipe = yes; then
-	CFLAGS="$CFLAGS -pipe"
-	CXXFLAGS="$CXXFLAGS -pipe"
-fi
-
 if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
@@ -333,7 +321,6 @@ cat <<EOF
 GtkMathView ${MATHVIEW_VERSION}
 
 Compilation:
-  GCC pipe            ${enable_pipe}
   Profiling           ${enable_profile}
   Debugging           ${enable_debug}
   xsltproc            ${HAVE_XSLTPROC}
