@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <gtk/gtk.h>
+
 #include "AbstractLogger.hh"
 #include "Configuration.hh"
 #include "Gtk_PangoLayoutLineArea.hh"
@@ -32,6 +34,9 @@ Gtk_PangoComputerModernShaper::Gtk_PangoComputerModernShaper(const SmartPtr<Abst
 							     const SmartPtr<Configuration>& conf)
   : ComputerModernShaper(l, conf)
 {
+  GObjectPtr<PangoContext> context = gdk_pango_context_get();
+  pangoShaper = Gtk_DefaultPangoShaper::create(l, conf);
+  pangoShaper->setPangoContext(context);
   setPostShapingMode(conf->getString(l, "gtk-backend/pango-computer-modern-shaper/post-shaping", "never"));
 }
 
@@ -42,14 +47,6 @@ SmartPtr<Gtk_PangoComputerModernShaper>
 Gtk_PangoComputerModernShaper::create(const SmartPtr<AbstractLogger>& l,
 				      const SmartPtr<Configuration>& conf)
 { return new Gtk_PangoComputerModernShaper(l, conf); }
-
-void
-Gtk_PangoComputerModernShaper::setPangoShaper(const SmartPtr<Gtk_DefaultPangoShaper>& shaper)
-{ pangoShaper = shaper; }
-
-SmartPtr<Gtk_DefaultPangoShaper>
-Gtk_PangoComputerModernShaper::getPangoShaper() const
-{ return pangoShaper; }
 
 AreaRef
 Gtk_PangoComputerModernShaper::getGlyphArea(ComputerModernFamily::FontNameId fontNameId,

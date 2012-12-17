@@ -35,9 +35,6 @@ public:
   static SmartPtr<Gtk_PangoComputerModernShaper> create(const SmartPtr<class AbstractLogger>&,
 							const SmartPtr<class Configuration>&);
 
-  void setPangoShaper(const SmartPtr<class Gtk_DefaultPangoShaper>&);
-  SmartPtr<class Gtk_DefaultPangoShaper> getPangoShaper(void) const;
-
 protected:
   virtual AreaRef getGlyphArea(ComputerModernFamily::FontNameId,
 			       ComputerModernFamily::FontSizeId, UChar8, int) const;

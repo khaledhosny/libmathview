@@ -36,10 +36,7 @@
 #else
 #include "BoxGraphicDevice.hh"
 #endif // GMV_ENABLE_BOXML
-#include "Gtk_DefaultPangoShaper.hh"
 #include "Gtk_PangoComputerModernShaper.hh"
-#include "NullShaper.hh"
-#include "SpaceShaper.hh"
 #include "ShaperManager.hh"
 
 Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
@@ -55,43 +52,8 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   setBoxGraphicDevice(bgd);
 #endif // GMV_ENABLE_BOXML
 
-  SmartPtr<Gtk_DefaultPangoShaper> defaultPangoShaper;
-  GObjectPtr<PangoContext> context = gdk_pango_context_get();
-  std::multimap<int, SmartPtr<Shaper> > shaperSet;
-  if (conf->getBool(l, "gtk-backend/null-shaper/enabled", false))
-    {
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/null-shaper/priority", 0), NullShaper::create(l)));
-    }
-
-  if (conf->getBool(l, "gtk-backend/pango-default-shaper/enabled", false))
-    {
-      defaultPangoShaper = Gtk_DefaultPangoShaper::create(l, conf);
-      defaultPangoShaper->setPangoContext(context);
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-default-shaper/priority", 0), defaultPangoShaper));
-    }
-
-  if (conf->getBool(l, "gtk-backend/space-shaper/enabled", false))
-    {
-      shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/space-shaper/priority", 0), SpaceShaper::create()));
-    }
-
-  if (conf->getBool(l, "gtk-backend/pango-computer-modern-shaper/enabled", false))
-    {
-      if (defaultPangoShaper)
-	{
-	  SmartPtr<Gtk_PangoComputerModernShaper> pangoCMShaper = Gtk_PangoComputerModernShaper::create(l, conf);
-	  pangoCMShaper->setPangoShaper(defaultPangoShaper);
-	  shaperSet.insert(std::pair<int,SmartPtr<Shaper> >(conf->getInt(l, "gtk-backend/pango-computer-modern-shaper/priority", 0),
-							    pangoCMShaper));
-	}
-      else
-	l->out(LOG_WARNING, "default Pango shaper must be enabled before Pango Computer Modern shaper");
-    }
-
-  for (std::multimap<int, SmartPtr<Shaper> >::const_iterator p = shaperSet.begin();
-       p != shaperSet.end();
-       p++)
-    getShaperManager()->registerShaper(p->second);
+  SmartPtr<Gtk_PangoComputerModernShaper> pangoShaper = Gtk_PangoComputerModernShaper::create(l, conf);
+  getShaperManager()->registerShaper(pangoShaper);
 }
 
 Gtk_Backend::~Gtk_Backend()
