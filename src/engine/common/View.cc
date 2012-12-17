@@ -284,7 +284,7 @@ View::getCharAt(const scaled& x, const scaled& y, CharIndex& index, Point* charO
 	  }
     }
 
-  return false;
+  return 0;
 }
 
 bool
