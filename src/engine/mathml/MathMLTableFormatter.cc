@@ -452,7 +452,6 @@ MathMLTableFormatter::computeMinimumTableWidthF()
   sumScale = 0;
 
   scaled max = 0;
-  scaled tempWidth = 0;
 	
   for (unsigned j = 0; j < columns.size(); j++)
     if (columns[j].isContentColumn() && columns[j].getSpec() == Column::SCALE)

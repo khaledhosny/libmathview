@@ -762,7 +762,6 @@ GTKMATHVIEW_METHOD_NAME(update)(GtkMathView* math_view, GdkRectangle* rect)
 static void
 gtk_math_view_realize(GtkWidget* widget)
 {
-  GtkMathView* math_view;
   GdkWindowAttr attributes;
   gint attributes_mask;
 
@@ -770,7 +769,6 @@ gtk_math_view_realize(GtkWidget* widget)
   g_return_if_fail (GTK_IS_MATH_VIEW (widget));
 
   GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED | GTK_CAN_FOCUS);
-  math_view = GTK_MATH_VIEW (widget);
 
   attributes.x = widget->allocation.x;
   attributes.y = widget->allocation.y;
