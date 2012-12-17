@@ -7,11 +7,6 @@ bin_PROGRAMS += mathmlviewer
 endif
 
 noinst_PROGRAMS = $(NULL)
-if COND_GMETADOM
-if COND_PROFILE
-noinst_PROGRAMS += mathmlviewer.static
-endif
-endif
 if COND_LIBXML2
 noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
@@ -23,14 +18,6 @@ noinst_PROGRAMS += test_loading_reader
 endif
 
 noinst_HEADERS = guiGTK.h
-
-mathmlviewer_static_SOURCES = main.cc aux.cc guiGTK.c
-mathmlviewer_static_LDFLAGS = -no-install -static
-mathmlviewer_static_LDADD = \
-  $(DOM_LIBS) \
-  $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
-  $(NULL)
 
 mathmlviewer_SOURCES = main.cc aux.cc guiGTK.c
 mathmlviewer_LDADD = \

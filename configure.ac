@@ -30,13 +30,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	profile,
-	[  --enable-profile[=ARG]  include profiling information [default=no]],
-	enable_profile=$enableval,
-	enable_profile=no
-)
-
-AC_ARG_ENABLE(
 	debug,
 	[  --enable-debug[=ARG]    include debugging debug [default=yes]],
 	enable_debug=$enableval,
@@ -260,13 +253,6 @@ if test $enable_debug = yes; then
 	AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
 fi
 
-if test $enable_profile = yes; then
-	CFLAGS="$CFLAGS -pg"
-	CXXFLAGS="$CXXFLAGS -pg"
-	AC_DEFINE(ENABLE_PROFILE,1,[Define to 1 to let the widget collect some information for profiling purposes])
-fi
-AM_CONDITIONAL([COND_PROFILE], [test "$enable_profile" = "yes"])
-
 if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
@@ -321,7 +307,6 @@ cat <<EOF
 GtkMathView ${MATHVIEW_VERSION}
 
 Compilation:
-  Profiling           ${enable_profile}
   Debugging           ${enable_debug}
   xsltproc            ${HAVE_XSLTPROC}
 
