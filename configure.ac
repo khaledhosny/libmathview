@@ -30,13 +30,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	debug,
-	[  --enable-debug[=ARG]    include debugging debug [default=yes]],
-	enable_debug=$enableval,
-	enable_debug=no
-)
-
-AC_ARG_ENABLE(
 	breaks,
 	[  --enable-breaks[=ARG]   enable linebreaking with mspace elements [default=no]],
 	enable_breaks=$enableval,
@@ -247,12 +240,6 @@ AM_CONDITIONAL([COND_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_
 CFLAGS="$CFLAGS -W -Wall"
 CXXFLAGS="$CXXFLAGS -W -Wall"
 
-if test $enable_debug = yes; then
-	CFLAGS="$CFLAGS -O0"
-	CXXFLAGS="$CXXFLAGS -O0"
-	AC_DEFINE(ENABLE_DEBUG,1,[Define to 1 if you want to enable validity checks while running])
-fi
-
 if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
@@ -307,7 +294,6 @@ cat <<EOF
 GtkMathView ${MATHVIEW_VERSION}
 
 Compilation:
-  Debugging           ${enable_debug}
   xsltproc            ${HAVE_XSLTPROC}
 
 Engine:
