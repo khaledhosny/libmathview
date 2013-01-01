@@ -37,6 +37,7 @@
 #include "BoxGraphicDevice.hh"
 #endif // GMV_ENABLE_BOXML
 #include "Gtk_PangoComputerModernShaper.hh"
+#include "SpaceShaper.hh"
 #include "ShaperManager.hh"
 
 Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
@@ -54,6 +55,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
 
   SmartPtr<Gtk_PangoComputerModernShaper> pangoShaper = Gtk_PangoComputerModernShaper::create(l, conf);
   getShaperManager()->registerShaper(pangoShaper);
+  getShaperManager()->registerShaper(SpaceShaper::create());
 }
 
 Gtk_Backend::~Gtk_Backend()
