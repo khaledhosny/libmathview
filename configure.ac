@@ -30,17 +30,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	breaks,
-	[  --enable-breaks[=ARG]   enable linebreaking with mspace elements [default=no]],
-	enable_breaks=$enableval,
-	enable_breaks=no
-)
-
-if test "x$enable_breaks" = "xyes"; then
-	AC_DEFINE(ENABLE_BREAKS,1,[Define to 1 if you want to enable linebreaking using mspace elements])
-fi
-
-AC_ARG_ENABLE(
 	boxml,
 	[  --enable-boxml[=ARG]    enable support for BoxML markup [default=yes]],
 	enable_boxml=$enableval,

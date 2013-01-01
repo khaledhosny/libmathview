@@ -47,11 +47,7 @@ MathMLRowElement::~MathMLRowElement()
 SmartPtr<MathMLRowElement>
 MathMLRowElement::create(const SmartPtr<class MathMLNamespaceContext>& context)
 {
-#if defined(ENABLE_BREAKS)
   return new MathMLRowElement(context);
-#else
-  return new MathMLRowElement(context);
-#endif
 }
 
 AreaRef
