@@ -47,3 +47,7 @@ In no particular order:
 * Vincent Untz
   patch for gcc 4.7 support
   patch for missing return in mathmlsvg
+
+* Ryan Lortie
+  patch for recent toolchain
+  removed printf's
