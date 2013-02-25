@@ -15,7 +15,7 @@ fi
 fi
 
 echo "libtoolize --force --copy"
-glibtoolize --force --copy || {
+libtoolize --force --copy || {
     echo "libtoolize failed! Unable to continue."
     exit 1
 }

@@ -89,6 +89,7 @@ test_rendering_LDADD = \
   $(GLIB_LIBS) \
   $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
   $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 test_loading_reader_SOURCES = test_loading_reader.c

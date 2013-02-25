@@ -48,7 +48,6 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
   static int counter = 0;
   if (dirtyLayout())
     {
-      printf("IN %d\n", counter++);
       ctxt.push(this);
 
       const scaled spacing = ctxt.BGD()->evaluate(ctxt, ToLength(GET_ATTRIBUTE_VALUE(BoxML, HOV, spacing)), 0);
@@ -115,7 +114,6 @@ BoxMLHOVElement::format(FormattingContext& ctxt)
 	  res = ctxt.BGD()->wrapper(ctxt, res);
 	  setArea(res);
 	}
-      printf("OUT %d\n", --counter);
 
       ctxt.pop();
       resetDirtyLayout();

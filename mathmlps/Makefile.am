@@ -17,6 +17,7 @@ mathmlps_LDADD = \
   $(GLIB_LIBS) \
   $(top_builddir)/src/backend/ps/libmathview_backend_ps.la \
   $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
+  $(top_builddir)/src/libmathview.la \
   $(NULL)
 
 INCLUDES = \
