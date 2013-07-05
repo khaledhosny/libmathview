@@ -11,5 +11,5 @@ Description: MathML rendering engine (custom frontend)
 Version: @PACKAGE_VERSION@
 Requires: glib-2.0 mathview-core
 Libs: -L${libdir} -lmathview_frontend_custom_reader
-Cflags: -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@
+Cflags: -I${includedir}/@PACKAGE@
 

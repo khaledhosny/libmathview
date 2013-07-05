@@ -25,21 +25,6 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
-	boxml,
-	[  --enable-boxml[=ARG]    enable support for BoxML markup [default=yes]],
-	enable_boxml=$enableval,
-	enable_boxml=yes
-)
-AM_CONDITIONAL([COND_BOXML], [test "$enable_boxml" = "yes"])
-if test "x$enable_boxml" = "xyes"; then
-	AC_DEFINE(GMV_ENABLE_BOXML,1,[Define to 1 if you want support for BoxML markup])
-	GMV_ENABLE_BOXML_CFLAGS=-DGMV_ENABLE_BOXML=1
-else
-	GMV_ENABLE_BOXML_CFLAGS=
-fi
-AC_SUBST(GMV_ENABLE_BOXML_CFLAGS)
-
-AC_ARG_ENABLE(
 	gmetadom,
 	[  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
 	enable_gmetadom=$enableval,
@@ -247,9 +232,7 @@ AC_CONFIG_FILES([
  src/frontend/gmetadom/Makefile
  src/engine/Makefile
  src/engine/common/Makefile
- src/engine/boxml/Makefile
  src/engine/mathml/Makefile
- src/engine/adapters/Makefile
  src/backend/Makefile
  src/backend/common/Makefile
  src/backend/gtk/Makefile
@@ -276,10 +259,6 @@ GtkMathView ${PACKAGE_VERSION}
 
 Compilation:
   xsltproc            ${HAVE_XSLTPROC}
-
-Engine:
-  MathML              yes
-  BoxML               ${enable_boxml}
 
 Frontend:
   GMetaDOM            ${enable_gmetadom}

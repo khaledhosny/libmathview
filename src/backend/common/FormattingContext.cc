@@ -25,21 +25,13 @@
 #include <cmath>
 
 #include "MathMLElement.hh"
-#include "BoxMLElement.hh"
 #include "MathGraphicDevice.hh"
-#include "BoxGraphicDevice.hh"
 #include "FormattingContext.hh"
 
 #include <iostream>
 
-#if GMV_ENABLE_BOXML
-FormattingContext::FormattingContext(const SmartPtr<MathGraphicDevice>& md,
-				     const SmartPtr<BoxGraphicDevice>& bd)
-  : mathGraphicDevice(md), boxGraphicDevice(bd)
-#else
 FormattingContext::FormattingContext(const SmartPtr<MathGraphicDevice>& md)
   : mathGraphicDevice(md)
-#endif
 {
   setMathMode(true);
   setSize(mathGraphicDevice->evaluate(*this, Length(10.0, Length::PT_UNIT), scaled::zero()));
@@ -99,19 +91,3 @@ SmartPtr<MathGraphicDevice>
 FormattingContext::MGD() const
 { return mathGraphicDevice; }
 
-#if GMV_ENABLE_BOXML
-void
-FormattingContext::push(const SmartPtr<BoxMLElement>& el)
-{
-  push();
-  set(BOXML_ELEMENT, el);
-}
-
-SmartPtr<BoxMLElement> 
-FormattingContext::getBoxMLElement() const
-{ return get< SmartPtr<BoxMLElement> >(BOXML_ELEMENT); }
-
-SmartPtr<BoxGraphicDevice>
-FormattingContext::BGD() const
-{ return boxGraphicDevice; }
-#endif // GMV_ENABLE_BOXML

@@ -3,14 +3,6 @@ NULL =
 
 lib_LTLIBRARIES = libmathview_backend_gtk.la
 
-if COND_BOXML
-MAYBE_BOXML_S = Gtk_BoxGraphicDevice.cc
-MAYBE_BOXML_H = Gtk_BoxGraphicDevice.hh
-else
-MAYBE_BOXML_S = $(NULL)
-MAYBE_BOXML_H = $(NULL)
-endif
-
 libmathview_backend_gtk_la_CPPFLAGS = -DGMV_BackEnd_DLL
 libmathview_backend_gtk_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
@@ -39,8 +31,6 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_RenderingContext.hh \
   Gtk_WrapperArea.cc \
   Gtk_WrapperArea.hh \
-  $(MAYBE_BOXML_S) \
-  $(MAYBE_BOXML_H) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
@@ -59,7 +49,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/engine/boxml \
   -I$(top_srcdir)/src/backend/common \
   $(PANGO_CFLAGS) \
   $(GTK_CFLAGS) \

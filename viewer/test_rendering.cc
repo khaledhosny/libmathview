@@ -38,10 +38,6 @@
 #include "Gtk_RenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
-#if GMV_ENABLE_BOXML
-#include "BoxMLNamespaceContext.hh"
-#include "BoxGraphicDevice.hh"
-#endif // GMV_ENABLE_BOXML
 
 typedef libxml2_MathView MathView;
 
@@ -102,17 +98,9 @@ int main(int argc, char *argv[]) {
   view = MathView::create(logger);
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, mgd));
-#if GMV_ENABLE_BOXML
-  SmartPtr<BoxGraphicDevice> bgd = backend->getBoxGraphicDevice();
-  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, bgd));
-#endif
   //view->setDefaultFontSize(static_cast<unsigned>(fontSize));
 
-#if GMV_ENABLE_BOXML
-  FormattingContext context(mgd, bgd);
-#else
   FormattingContext context(mgd);
-#endif
 
   view->loadURI(argv[1]);
   gtk_main ();

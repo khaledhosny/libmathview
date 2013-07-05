@@ -31,13 +31,6 @@
 #include "MathMLTableContentFactory.hh"
 #include "MathMLNamespaceContext.hh"
 #include "MathMLAttributeSignatures.hh"
-#if GMV_ENABLE_BOXML
-  #include "BoxML.hh"
-  #include "BoxMLNamespaceContext.hh"
-  #include "BoxMLAttributeSignatures.hh"
-  #include "BoxMLMathMLAdapter.hh"
-  #include "MathMLBoxMLAdapter.hh"
-#endif // GMV_ENABLE_BOXML
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
 #include <tr1/unordered_map>
@@ -141,37 +134,6 @@ protected:
 
 	mathmlMapInitialized = true;
       }
-
-#if GMV_ENABLE_BOXML
-    static struct
-    {
-      String tag;
-      BoxMLUpdateMethod update;
-    } boxml_tab[] = {
-      { "at",            &TemplateBuilder::template updateElement<BoxML_at_ElementBuilder> },
-      { "layout",        &TemplateBuilder::template updateElement<BoxML_layout_ElementBuilder> },
-      { "h",             &TemplateBuilder::template updateElement<BoxML_h_ElementBuilder> },
-      { "ink",           &TemplateBuilder::template updateElement<BoxML_ink_ElementBuilder> },
-      { "space",         &TemplateBuilder::template updateElement<BoxML_space_ElementBuilder> },
-      { "text",          &TemplateBuilder::template updateElement<BoxML_text_ElementBuilder> },
-      { "v",             &TemplateBuilder::template updateElement<BoxML_v_ElementBuilder> },
-      { "hv",            &TemplateBuilder::template updateElement<BoxML_hv_ElementBuilder> },
-      { "hov",           &TemplateBuilder::template updateElement<BoxML_hov_ElementBuilder> },
-      { "box",           &TemplateBuilder::template updateElement<BoxML_box_ElementBuilder> },
-      { "action",        &TemplateBuilder::template updateElement<BoxML_action_ElementBuilder> },
-      { "obj",           &TemplateBuilder::update_BoxML_obj_Element },
-      { "decor",         &TemplateBuilder::template updateElement<BoxML_decor_ElementBuilder> },
-      { "",              0 }
-    };
-
-    if (!boxmlMapInitialized)
-      {
-	for (unsigned i = 0; boxml_tab[i].update; i++)
-	  boxmlMap[boxml_tab[i].tag] = boxml_tab[i].update;
-
-	boxmlMapInitialized = true;
-      }
-#endif // GMV_ENABLE_BOXML
   }
 
   ////////////////////////////////////
@@ -260,18 +222,6 @@ protected:
 	    String encoding = Model::getAttribute(e, "encoding");
 	    if (encoding == "MathML-Presentation")
 	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
-#if GMV_ENABLE_BOXML
-	    else if (encoding == "BoxML")
-	      {
-		// this element can probably be associated with the model element
-		SmartPtr<MathMLBoxMLAdapter> adapter = getElement<MathMLBoxMLAdapterBuilder>(el);
-		assert(adapter);
-		adapter->setChild(getBoxMLElement(typename Model::ElementIterator(e, BOXML_NS_URI).element()));
-		adapter->resetDirtyStructure();
-		adapter->resetDirtyAttribute();
-		return adapter;
-	      }
-#endif
 	  }
 	iter.next();
       }
@@ -318,34 +268,6 @@ protected:
     
     return MathMLMarkNode::create(align);
   }
-
-#if GMV_ENABLE_BOXML
-  ///////////////////////////////////
-  // SPECIALIZED BOXML UPDATE METHODS
-  ///////////////////////////////////
-
-  SmartPtr<BoxMLElement>
-  update_BoxML_obj_Element(const typename Model::Element& el) const
-  {
-    String encoding = Model::getAttribute(el, "encoding");
-    if (encoding == "BoxML")
-      return getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element());
-    else /* if (encoding == "MathML-Presentation") */
-      {
-	// this element can be associated to the corresponding model element
-	SmartPtr<BoxMLMathMLAdapter> adapter = getElement<BoxMLMathMLAdapterBuilder>(el);
-	assert(adapter);
-	adapter->setChild(getMathMLElement(typename Model::ElementIterator(el, MATHML_NS_URI).element()));
-	adapter->resetDirtyStructure();
-	adapter->resetDirtyAttribute();
-	return adapter;
-      }
-#if 0
-    else
-      return createBoxMLDummyElement();
-#endif
-  }
-#endif // GMV_ENABLE_BOXML
 
   //////////////////
   // MATHML BUILDERS
@@ -991,265 +913,6 @@ protected:
     }
   };
 
-#if GMV_ENABLE_BOXML
-  /////////////////
-  // BOXML BUILDERS
-  /////////////////
-
-  struct BoxMLElementBuilder
-  {
-    typedef BoxMLElement target_type;
-
-    static SmartPtr<BoxMLNamespaceContext>
-    getContext(const TemplateBuilder& builder)
-    { return builder.getBoxMLNamespaceContext(); }
-
-    static void
-    begin(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>&)
-    { }
-
-    static void
-    end(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>&)
-    { }
-
-    static void
-    refine(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>&)
-    { }
-
-    static void
-    construct(const TemplateBuilder&, const typename Model::Element&, const SmartPtr<BoxMLElement>&)
-    { }
-  };
-
-  struct MathMLBoxMLAdapterBuilder : public MathMLElementBuilder
-  { typedef MathMLBoxMLAdapter type; };
-
-  struct BoxMLMathMLAdapterBuilder : public BoxMLElementBuilder
-  { typedef BoxMLMathMLAdapter type; };
-
-  struct BoxMLBinContainerElementBuilder : public BoxMLElementBuilder
-  {
-    static void
-    construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLBinContainerElement>& elem)
-    { elem->setChild(builder.getBoxMLElement(typename Model::ElementIterator(el, BOXML_NS_URI).element())); }
-  };
-
-  struct BoxMLLinearContainerElementBuilder : public BoxMLElementBuilder
-  {
-    static void
-    construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLLinearContainerElement>& elem)
-    {
-      std::vector<SmartPtr<BoxMLElement> > content;
-      builder.getChildBoxMLElements(el, content);
-      elem->swapContent(content);
-    }
-  };
-
-  struct BoxML_box_ElementBuilder : public BoxMLBinContainerElementBuilder
-  { typedef BoxMLboxElement type; };
-
-  struct BoxML_action_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLActionElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLActionElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Action, selection));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Action, actiontype));
-    }
-  };
-
-  struct BoxML_at_ElementBuilder : public BoxMLBinContainerElementBuilder
-  {
-    typedef BoxMLAtElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLAtElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, At, x));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, At, y));
-    }
-  };
-
-  struct BoxML_decor_ElementBuilder : public BoxMLBinContainerElementBuilder
-  {
-    typedef BoxMLDecorElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLDecorElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Decor, type));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Decor, color));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Decor, thickness));
-    }
-  };
-
-  struct BoxML_g_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLGroupElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLGroupElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, size));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, color));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, background));
-    }
-  };
-
-  struct BoxML_h_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLHElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLHElement>& elem)
-    { builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, H, spacing)); }
-  };
-  
-  struct BoxML_ink_ElementBuilder : public BoxMLElementBuilder
-  {
-    typedef BoxMLInkElement type;
-    
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLInkElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Ink, color));
-      BoxML_space_ElementBuilder::refine(builder, el, elem);
-    }
-  };
-
-  struct BoxML_layout_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLLayoutElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLLayoutElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Layout, width));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Layout, height));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Layout, depth));
-    }
-  };
-
-#if 0
-  struct BoxML_par_ElementBuilder : public BoxMLElementBuilder
-  {
-    typedef BoxMLParagraphElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLParagraphElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, align));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, minlinespacing));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, width));
-    }
-
-    static void
-    construct(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLParagraphElement>& elem)
-    {
-      std::vector<SmartPtr<BoxMLElement> > content;
-      for (typename Model::NodeIterator iter(Model::asNode(el)); iter.more(); iter.next())
-	{
-	  typename Model::Node p = iter.node();
-	  assert(p);
-	  if (Model::getNodeType(p) == Model::TEXT_NODE)
-	    {
-	      SmartPtr<BoxMLTextElement> text = builder.getElement<BoxML_text_ElementBuilder>(el);
-	      text->setContent(Model::getNodeValue(p));
-	      content.push_back(text);
-	    }
-	  else if (Model::getNodeType(p) == Model::ELEMENT_NODE && Model::getNodeNamespaceURI(p) == BOXML_NS_URI)
-	    content.push_back(builder.getBoxMLElement(Model::asElement(p)));
-	}
-      elem->swapContent(content);
-    }
-  };
-#endif
-
-  struct BoxML_space_ElementBuilder : public BoxMLElementBuilder
-  {
-    typedef BoxMLSpaceElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLSpaceElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Space, width));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Space, height));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Space, depth));
-    }
-  };
-
-  struct BoxML_text_ElementBuilder : public BoxMLElementBuilder
-  {
-    typedef BoxMLTextElement type;
-    
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLTextElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, size));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, color));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, background));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, Text, width));
-    }
-
-    static void
-    construct(const TemplateBuilder&, const typename Model::Element& el, const SmartPtr<BoxMLTextElement>& elem)
-    {
-      String content;
-      for (typename Model::NodeIterator iter(Model::asNode(el)); iter.more(); iter.next())
-	{
-	  typename Model::Node p = iter.node();
-	  assert(p);
-	  if (Model::getNodeType(p) == Model::TEXT_NODE)
-	    content += Model::getNodeValue(p);
-	}
-      content = trimSpacesLeft(trimSpacesRight(collapseSpaces(content)));
-      elem->setContent(content);
-    }
-  };
-
-  struct BoxML_v_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLVElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLVElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, enter));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, exit));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, indent));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, V, minlinespacing));
-    }
-  };
-
-  struct BoxML_hv_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLHVElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLHVElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HV, spacing));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HV, indent));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HV, minlinespacing));
-    }
-  };
-
-  struct BoxML_hov_ElementBuilder : public BoxMLLinearContainerElementBuilder
-  {
-    typedef BoxMLHOVElement type;
-
-    static void
-    refine(const TemplateBuilder& builder, const typename Model::Element& el, const SmartPtr<BoxMLHOVElement>& elem)
-    {
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, spacing));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, indent));
-      builder.refineAttribute(elem, el, ATTRIBUTE_SIGNATURE(BoxML, HOV, minlinespacing));
-    }
-  };
-#endif // GMV_ENABLE_BOXML
-
   ////////////////////////////
   // BUILDER AUXILIARY METHODS
   ////////////////////////////
@@ -1417,46 +1080,6 @@ protected:
     return elem;
   }
 
-#if GMV_ENABLE_BOXML
-  //////////////////////////////////////
-  // BUILDER AUXILIARY METHODS FOR BOXML
-  //////////////////////////////////////
-
-  SmartPtr<BoxMLElement>
-  getBoxMLElement(const typename Model::Element& el) const
-  {
-    if (el)
-      {
-	typename BoxMLBuilderMap::const_iterator m = boxmlMap.find(Model::getNodeName(Model::asNode(el)));
-	if (m != boxmlMap.end())
-	  {
-	    SmartPtr<BoxMLElement> elem = (this->*(m->second))(el);
-	    assert(elem);
-	    elem->resetDirtyStructure();
-	    elem->resetDirtyAttribute();
-	    return elem;
-	  }
-      }
-
-    return createBoxMLDummyElement();
-  }
-
-  void
-  getChildBoxMLElements(const typename Model::Element& el, std::vector<SmartPtr<BoxMLElement> >& content) const
-  {
-    content.clear();
-    for (typename Model::ElementIterator iter(el, BOXML_NS_URI); iter.more(); iter.next())
-      content.push_back(getBoxMLElement(iter.element()));
-  }
-
-  SmartPtr<BoxMLElement>
-  createBoxMLDummyElement(void) const
-  {
-    assert(false);
-    return 0;
-  }
-#endif // GMV_ENABLE_BOXML
-
 public:
   static SmartPtr<Builder> create(void) { return new TemplateBuilder(); }
 
@@ -1471,9 +1094,6 @@ public:
       {
 	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
 	if (ns == MATHML_NS_URI) return getMathMLElement(root);
-#if GMV_ENABLE_BOXML
-	else if (ns == BOXML_NS_URI) return getBoxMLElement(root);
-#endif // GMV_ENABLE_BOXML
       }
     return 0;
   }
@@ -1487,13 +1107,6 @@ private:
   typedef std::tr1::unordered_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
   static MathMLBuilderMap mathmlMap;
   static bool mathmlMapInitialized;
-#if GMV_ENABLE_BOXML
-  typedef SmartPtr<class BoxMLElement> (TemplateBuilder::* BoxMLUpdateMethod)(const typename Model::Element&) const;
-  typedef std::tr1::unordered_map<String, BoxMLUpdateMethod, StringHash, StringEq> BoxMLBuilderMap;
-  static BoxMLBuilderMap boxmlMap;
-  static bool boxmlMapInitialized;
-#endif // GMV_ENABLE_BOXML
-
   mutable RefinementContext refinementContext;
 };
 
@@ -1502,13 +1115,5 @@ typename TemplateBuilder<Model,Builder,RefinementContext>::MathMLBuilderMap Temp
 
 template <class Model, class Builder, class RefinementContext>
 bool TemplateBuilder<Model,Builder,RefinementContext>::mathmlMapInitialized = false;
-
-#ifdef GMV_ENABLE_BOXML
-template <class Model, class Builder, class RefinementContext>
-typename TemplateBuilder<Model,Builder,RefinementContext>::BoxMLBuilderMap TemplateBuilder<Model,Builder,RefinementContext>::boxmlMap;
-
-template <class Model, class Builder, class RefinementContext>
-bool TemplateBuilder<Model,Builder,RefinementContext>::boxmlMapInitialized = false;
-#endif // GMV_ENABLE_BOXML
 
 #endif // __TemplateBuilder_hh__

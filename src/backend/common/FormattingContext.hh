@@ -34,12 +34,7 @@
 class GMV_MathView_EXPORT FormattingContext
 {
 public:
-#if GMV_ENABLE_BOXML
-  FormattingContext(const SmartPtr<class MathGraphicDevice>&,
-		    const SmartPtr<class BoxGraphicDevice>&);
-#else
   FormattingContext(const SmartPtr<class MathGraphicDevice>&);
-#endif
   ~FormattingContext();
 
   enum PropertyId {
@@ -54,9 +49,6 @@ public:
     DISPLAY_STYLE,
     SIZE_MULT,
     MATHML_ELEMENT,
-#if GMV_ENABLE_BOXML
-    BOXML_ELEMENT,
-#endif
     AVAILABLE_WIDTH,
     STRETCH_OP,
     STRETCH_TO_WIDTH,
@@ -125,12 +117,6 @@ public:
   SmartPtr<class MathMLElement> getMathMLElement(void) const;
   SmartPtr<class MathGraphicDevice> MGD(void) const;
 
-#if GMV_ENABLE_BOXML  
-  void push(const SmartPtr<class BoxMLElement>&);
-  SmartPtr<class BoxMLElement> getBoxMLElement(void) const;
-  SmartPtr<class BoxGraphicDevice> BGD(void) const;
-#endif // GMV_ENABLE_BOXML
-
 protected:
   template <typename T>
   void set(int id, const T& v)
@@ -149,9 +135,6 @@ public:
 
 private:
   SmartPtr<class MathGraphicDevice> mathGraphicDevice;
-#if GMV_ENABLE_BOXML
-  SmartPtr<class BoxGraphicDevice> boxGraphicDevice;
-#endif // GMV_ENABLE_BOXML
   FastScopedHashMap<LAST_NAMED_PROPERTY_ENTRY, SmartPtr<Value> > map;
 };
 

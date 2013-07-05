@@ -108,7 +108,6 @@ Source Document
 * MathML
 * Extensions to MathML
 * MathML Entities
-* BoxML
 *
 Interactivity Support
 

@@ -205,8 +205,7 @@ extern "C" GdomeElement*
 find_action_element(GdomeElement* elem)
 {
   for (DOM::Element el(elem); el; el = el.get_parentNode())
-    if ((el.get_namespaceURI() == MATHML_NS_URI && el.get_localName() == "maction") ||
-	(el.get_namespaceURI() == BOXML_NS_URI && el.get_localName() == "action"))
+    if (el.get_namespaceURI() == MATHML_NS_URI && el.get_localName() == "maction")
       return gdome_cast_el(el.gdome_object());
 
   return NULL;

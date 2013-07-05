@@ -26,7 +26,6 @@
 
 #define MATHML_NS_URI "http://www.w3.org/1998/Math/MathML"
 #define XLINK_NS_URI "http://www.w3.org/1999/xlink"
-#define BOXML_NS_URI "http://helm.cs.unibo.it/2003/BoxML"
 
 #define EPSILON 0.01f
 

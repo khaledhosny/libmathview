@@ -31,11 +31,6 @@
 #include "Gtk_Backend.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
-#if GMV_ENABLE_BOXML
-#include "Gtk_BoxGraphicDevice.hh"
-#else
-#include "BoxGraphicDevice.hh"
-#endif // GMV_ENABLE_BOXML
 #include "Gtk_PangoComputerModernShaper.hh"
 #include "SpaceShaper.hh"
 #include "ShaperManager.hh"
@@ -47,11 +42,6 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, conf);
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
-#if GMV_ENABLE_BOXML
-  SmartPtr<Gtk_BoxGraphicDevice> bgd = Gtk_BoxGraphicDevice::create(l, conf);
-  bgd->setFactory(factory);
-  setBoxGraphicDevice(bgd);
-#endif // GMV_ENABLE_BOXML
 
   getShaperManager()->registerShaper(Gtk_PangoComputerModernShaper::create(l, conf));
   getShaperManager()->registerShaper(SpaceShaper::create());

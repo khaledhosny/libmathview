@@ -1,5 +1,5 @@
 
-MathML/BoxML colors now support the alpha channel. It is possible to
+MathML colors now support the alpha channel. It is possible to
 write
 
 	#rgb		completely opaque

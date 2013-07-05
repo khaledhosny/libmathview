@@ -66,11 +66,7 @@ typedef gmetadom_MathView MathView;
 #include "MathMLElement.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "MathMLNamespaceContext.hh"
-#if GMV_ENABLE_BOXML
-#include "BoxMLNamespaceContext.hh"
-#endif // GMV_ENABLE_BOXML
 #include "MathGraphicDevice.hh"
-#include "BoxGraphicDevice.hh"
 #include "Gtk_Backend.hh"
 #include "Gtk_RenderingContext.hh"
 #include "Gtk_WrapperArea.hh"
@@ -219,17 +215,6 @@ findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
       return area;
   return 0;
 }
-
-#if 0
-static GtkMathViewModelId
-findAction(GtkMathView* math_view, GtkMathViewModelId node)
-{
-  SmartPtr<Element> elem = math_view->view->elementOfModelElement(node);
-  while (elem && !is_a<MathMLActionElement>(elem) && !is_a<BoxMLActionElement>(elem))
-    elem = elem->getParent();
-  return elem ? math_view->view->modelElementOfElement(elem) : GtkMathViewModelId();
-}
-#endif
 
 /* auxiliary C functions */
 
@@ -663,9 +648,6 @@ gtk_math_view_init(GtkMathView* math_view)
   view->setDefaultFontSize(math_view_class->defaultFontSize);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));
-#if GMV_ENABLE_BOXML
-  view->setBoxMLNamespaceContext(BoxMLNamespaceContext::create(view, math_view_class->backend->getBoxGraphicDevice()));
-#endif // GMV_ENABLE_BOXML
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
   math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));

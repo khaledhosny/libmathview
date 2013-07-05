@@ -5,18 +5,6 @@ SUBDIRS =
 
 noinst_LTLIBRARIES = libbackend_common.la
 
-if COND_BOXML
-MAYBE_BOXML_S = \
-  BoxGraphicDevice.cc \
-  $(NULL)
-MAYBE_BOXML_H = \
-  BoxGraphicDevice.hh \
-  $(NULL)
-else
-MAYBE_BOXML_S = $(NULL)
-MAYBE_BOXML_H = $(NULL)
-endif
-
 libbackend_common_la_CPPFLAGS = -DGMV_MathView_DLL
 libbackend_common_la_SOURCES = \
   Area.cc \
@@ -58,8 +46,6 @@ libbackend_common_la_SOURCES = \
   VerticalFillerArea.cc \
   VerticalSpaceArea.cc \
   WrapperArea.cc \
-  $(MAYBE_BOXML_S) \
-  $(MAYBE_BOXML_H) \
   $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
@@ -109,7 +95,6 @@ mathview_HEADERS = \
   VerticalFillerArea.hh \
   VerticalSpaceArea.hh \
   WrapperArea.hh \
-  $(MAYBE_BOXML_H) \
   $(NULL)
 
 INCLUDES = \
@@ -118,7 +103,6 @@ INCLUDES = \
   -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/engine/boxml \
   $(NULL)
 
 libbackend_common_la_LIBADD = \

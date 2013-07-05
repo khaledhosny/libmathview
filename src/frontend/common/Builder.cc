@@ -25,9 +25,6 @@
 #include "Builder.hh"
 #include "AbstractLogger.hh"
 #include "MathMLNamespaceContext.hh"
-#if GMV_ENABLE_BOXML
-#include "BoxMLNamespaceContext.hh"
-#endif // GMV_ENABLE_BOXML
 
 Builder::Builder()
 { }
@@ -42,16 +39,6 @@ Builder::setMathMLNamespaceContext(const SmartPtr<MathMLNamespaceContext>& ctxt)
 SmartPtr<MathMLNamespaceContext>
 Builder::getMathMLNamespaceContext() const
 { return mathmlContext; }
-
-#if GMV_ENABLE_BOXML
-void
-Builder::setBoxMLNamespaceContext(const SmartPtr<BoxMLNamespaceContext>& ctxt)
-{ boxmlContext = ctxt; }
-
-SmartPtr<BoxMLNamespaceContext>
-Builder::getBoxMLNamespaceContext() const
-{ return boxmlContext; }
-#endif // GMV_ENABLE_BOXML
 
 void
 Builder::setLogger(const SmartPtr<AbstractLogger>& l)

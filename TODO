@@ -83,14 +83,6 @@ MISSING
 - implement shaper for Euclid fonts
 - runtime selection of backend
 
-// BoxML
-
-BUGS
-
-MISSING
-
-- add documentation for boxml
-
 // SVG Backend
 
 BUGS

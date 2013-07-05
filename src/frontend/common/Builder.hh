@@ -41,17 +41,10 @@ public:
 
   void setMathMLNamespaceContext(const SmartPtr<class MathMLNamespaceContext>&);
   SmartPtr<class MathMLNamespaceContext> getMathMLNamespaceContext(void) const;
-#if GMV_ENABLE_BOXML
-  void setBoxMLNamespaceContext(const SmartPtr<class BoxMLNamespaceContext>&);
-  SmartPtr<class BoxMLNamespaceContext> getBoxMLNamespaceContext(void) const;
-#endif // GMV_ENABLE_BOXML
 
 protected:
   SmartPtr<class AbstractLogger> logger;
   SmartPtr<class MathMLNamespaceContext> mathmlContext;
-#if GMV_ENABLE_BOXML
-  SmartPtr<class BoxMLNamespaceContext> boxmlContext;
-#endif // GMV_ENABLE_BOXML
 };
 
 #endif // __Builder_hh__

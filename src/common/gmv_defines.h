@@ -31,8 +31,6 @@ src/Makefile.am:lib_LTLIBRARIES = libmathview.la
    SUBLIB: src/backend/common/libbackend_common.la
    SUBLIB: src/frontend/common/libfrontend_common.la
    SUBLIB: src/engine/mathml/libmathml.la
-   SUBLIB: src/engine/boxml/libboxml.la
-   SUBLIB: src/engine/adapters/libadapters.la
    SUBLIB: src/engine/common/libengine_common.la
    SUBLIB: src/common/libcommon.la
    SUBLIB: src/common/mathvariants/libmathvariants.la
