@@ -60,6 +60,7 @@ test_rendering_LDADD = \
   $(XML_LIBS) \
   $(GTK_LIBS) \
   $(GLIB_LIBS) \
+  $(top_builddir)/src/libmathview.la \
   $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
   $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
   $(NULL)
