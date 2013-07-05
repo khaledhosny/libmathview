@@ -45,7 +45,7 @@ endif
 SCRIPTDIR = ./scripts
 
 backup:
-	tar cvfz ../@PACKAGE@-@VERSION@-`date|tr ' ' '_'|tr ':' '_'`.tar.gz .
+	tar cvfz ../@PACKAGE@-@PACKAGE_VERSION@-`date|tr ' ' '_'|tr ':' '_'`.tar.gz .
 
 cleanbak:
 	-rm -f `find . -name "*~"`
@@ -61,7 +61,7 @@ lc:
 	)
 
 distdiff:
-	diff -r src/ @PACKAGE@-@VERSION@/src/ | grep '.\(cc\|hh\)$$'
+	diff -r src/ @PACKAGE@-@PACKAGE_VERSION@/src/ | grep '.\(cc\|hh\)$$'
 
 
 -include $(top_srcdir)/git.mk

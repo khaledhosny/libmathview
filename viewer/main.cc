@@ -77,7 +77,7 @@ main(int argc, char* argv[])
   if (!g_option_context_parse(ctxt, &argc, &argv, NULL))
     usage(ctxt, 1, "error parsing options");
 
-  sprintf(appName, "%s v%s", g_get_prgname(), VERSION);
+  sprintf(appName, "%s v%s", g_get_prgname(), PACKAGE_VERSION);
 
   if (option_version)
     printVersion();

@@ -8,7 +8,7 @@ datadir=@datadir@
 
 Name: GtkMathView
 Description: MathML rendering engine (GTK+ backend)
-Version: @VERSION@
+Version: @PACKAGE_VERSION@
 Requires: glib-2.0 mathview-core
 Libs: -L${libdir} -lmathview_backend_gtk
 Cflags: -I${includedir}/@PACKAGE@ @GMV_ENABLE_BOXML_CFLAGS@

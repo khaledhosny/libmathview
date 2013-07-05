@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <math-engine-configuration>
-  <key name="version">@VERSION@</key>
+  <key name="version">@PACKAGE_VERSION@</key>
 
   <section name="logger">
     <key name="verbosity">0</key>
