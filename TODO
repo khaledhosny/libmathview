@@ -40,8 +40,6 @@ O = OK, done
 
 BUGS
 
-+ implement combining characters when TFM is enabled for the
-  computer modern shaper
 ? when index == length in a glyph area the caret is drawn
   at the right end of the focus' bounding box. It would be
   more appropriate to draw it just after the glyph, especially

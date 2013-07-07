@@ -17,8 +17,6 @@ libbackend_common_la_SOURCES = \
   BoxedLayoutArea.cc \
   ColorArea.cc \
   CombinedGlyphArea.cc \
-  ComputerModernFamily.cc \
-  ComputerModernShaper.cc \
   FormattingContext.cc \
   GlyphArea.cc \
   GlyphStringArea.cc \
@@ -64,8 +62,6 @@ mathview_HEADERS = \
   CachedShapedString.hh \
   ColorArea.hh	\
   CombinedGlyphArea.hh \
-  ComputerModernFamily.hh \
-  ComputerModernShaper.hh \
   ContainerArea.hh \
   FillerArea.hh \
   FormattingContext.hh \

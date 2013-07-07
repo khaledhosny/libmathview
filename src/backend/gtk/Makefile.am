@@ -13,14 +13,10 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_BackgroundArea.hh \
   Gtk_ColorArea.cc \
   Gtk_ColorArea.hh \
-  Gtk_DefaultPangoShaper.cc \
-  Gtk_DefaultPangoShaper.hh \
   Gtk_InkArea.cc \
   Gtk_InkArea.hh \
   Gtk_MathGraphicDevice.cc \
   Gtk_MathGraphicDevice.hh \
-  Gtk_PangoComputerModernShaper.cc \
-  Gtk_PangoComputerModernShaper.hh \
   Gtk_PangoShaper.cc \
   Gtk_PangoShaper.hh \
   Gtk_PangoGlyphArea.cc \
