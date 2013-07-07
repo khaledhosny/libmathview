@@ -46,9 +46,13 @@ MathMLRadicalElement::format(FormattingContext& ctxt)
       AreaRef indexArea;
       if (getIndex())
 	{
+	  ctxt.push(this);
+
 	  ctxt.setDisplayStyle(false);
 	  ctxt.addScriptLevel(2);
 	  indexArea = getIndex()->format(ctxt);
+
+	  ctxt.pop();
 	}
       AreaRef res = ctxt.MGD()->radical(ctxt, baseArea, indexArea);
 
