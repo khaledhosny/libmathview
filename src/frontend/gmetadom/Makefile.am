@@ -24,7 +24,7 @@ mathview_HEADERS = \
   gmetadom_Model.hh \
   $(NULL)
 
-INCLUDES = \
+libfrontend_gmetadom_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \

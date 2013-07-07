@@ -77,7 +77,7 @@ noinst_HEADERS = \
   token.hh \
   $(NULL)
 
-INCLUDES = \
+libcommon_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   $(GLIB_CFLAGS) \

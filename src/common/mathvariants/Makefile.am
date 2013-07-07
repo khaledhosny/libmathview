@@ -39,7 +39,7 @@ mathview_HEADERS = \
   MathVariantMap.hh \
   $(NULL)
 
-INCLUDES = \
+libmathvariants_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common
 

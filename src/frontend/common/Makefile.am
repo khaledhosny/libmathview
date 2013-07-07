@@ -29,7 +29,7 @@ mathview_HEADERS = \
   TemplateElementIterator.hh \
   $(NULL)
 
-INCLUDES = \
+libfrontend_common_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \

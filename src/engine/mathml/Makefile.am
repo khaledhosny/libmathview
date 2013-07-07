@@ -112,7 +112,7 @@ noinst_HEADERS = \
   traverseAux.hh \
   $(NULL)
 
-INCLUDES = \
+libmathml_la_CPPFLAGS += \
   -I$(top_srcdir)/auto \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \

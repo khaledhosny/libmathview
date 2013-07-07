@@ -35,7 +35,7 @@ noinst_HEADERS = \
   LinearContainerTemplate.hh \
   $(NULL)
 
-INCLUDES = \
+libengine_common_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \

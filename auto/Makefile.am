@@ -15,6 +15,13 @@ endif
 
 dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
 dumpEntitiesTable_LDADD = @DOM_LIBS@
+dumpEntitiesTable_CPPFLAGS = \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/gmetadom \
+  -I$(top_builddir) \
+  $(DOM_CFLAGS) \
+  $(NULL)
+
 
 AUTOFILES = \
   token.dec \
@@ -79,12 +86,5 @@ Char.hh: $(top_builddir)/auto/Char.hh.in
 	  cp $< $@; \
 	fi \
 	)
-
-INCLUDES = \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/gmetadom \
-  -I$(top_builddir) \
-  $(DOM_CFLAGS) \
-  $(NULL)
 
 -include $(top_srcdir)/git.mk

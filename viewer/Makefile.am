@@ -36,7 +36,7 @@ test_embedding_LDADD = \
   $(NULL)
 
 test_loading_SOURCES = test_loading.c dummy.cc
-test_loading_LDFLASG = -no-install -static
+test_loading_LDFLAGS = -no-install -static
 test_loading_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -45,7 +45,7 @@ test_loading_LDADD = \
   $(NULL)
 
 test_building_SOURCES = test_building.cc
-test_building_LDFLASG = -no-install -static
+test_building_LDFLAGS = -no-install -static
 test_building_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -54,7 +54,7 @@ test_building_LDADD = \
   $(NULL)
 
 test_rendering_SOURCES = test_rendering.cc
-test_rendering_LDFLASG = -no-install -static
+test_rendering_LDFLAGS = -no-install -static
 test_rendering_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -74,7 +74,7 @@ test_loading_reader_LDADD = \
   $(top_builddir)/src/widget/libgtkmathview_libxml2_reader.la \
   $(NULL)
 
-INCLUDES = \
+AM_CPPFLAGS = \
   -I$(top_builddir)/auto/ \
   -I$(top_srcdir)/src/common/ \
   -I$(top_srcdir)/src/common/mathvariants \

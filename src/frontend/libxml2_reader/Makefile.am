@@ -21,7 +21,7 @@ noinst_HEADERS = \
   libxml2_reader_Setup.hh \
   $(NULL)
 
-INCLUDES = \
+libfrontend_libxml2_reader_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \

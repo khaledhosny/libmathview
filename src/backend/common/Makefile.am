@@ -100,7 +100,7 @@ mathview_HEADERS = \
   WrapperArea.hh \
   $(NULL)
 
-INCLUDES = \
+libbackend_common_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \

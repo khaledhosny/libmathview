@@ -69,11 +69,6 @@ libgtkmathview_libxml2_la_SOURCES = gtkmathview_libxml2.cc \
 libgtkmathview_gmetadom_la_SOURCES = gtkmathview_gmetadom.cc \
   gtkmathview_marshal.c
 
-libgtkmathview_custom_reader_la_CPPFLAGS = -DGMV_Widget_DLL
-libgtkmathview_libxml2_reader_la_CPPFLAGS = -DGMV_Widget_DLL
-libgtkmathview_libxml2_la_CPPFLAGS = -DGMV_Widget_DLL
-libgtkmathview_gmetadom_la_CPPFLAGS = -DGMV_Widget_DLL
-
 EXTRA_DIST = \
   gtkmathview_common.cc \
   gtkmathview_decorators_common.cc \
@@ -110,7 +105,8 @@ gtkmathview_marshal.h: marshal.list
 gtkmathview_marshal.c: marshal.list
 	$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --body > $@
 
-INCLUDES = \
+AM_CPPFLAGS = \
+  -DGMV_Widget_DLL \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \

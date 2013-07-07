@@ -56,11 +56,6 @@ libmathview_frontend_gmetadom_la_LIBADD = \
   -lstdc++ \
   $(NULL)
 
-libmathview_frontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-libmathview_frontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-libmathview_frontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-libmathview_frontend_gmetadom_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
 libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
@@ -80,7 +75,8 @@ mathview_HEADERS = \
   gmetadom_MathView.hh \
   $(NULL)
 
-INCLUDES = \
+AM_CPPFLAGS = \
+  -DGMV_FrontEnd_DLL \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \

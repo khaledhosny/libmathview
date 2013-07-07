@@ -41,7 +41,7 @@ libmathview_backend_gtk_la_LIBADD = \
   $(GTK_LIBS) \
   $(NULL)
 
-INCLUDES = \
+libmathview_backend_gtk_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
