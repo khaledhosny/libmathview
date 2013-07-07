@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -20,37 +21,32 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <config.h>
+#ifndef __Gtk_PangoShaper_hh__
+#define __Gtk_PangoShaper_hh__
 
-#include "AbstractLogger.hh"
-#include "Configuration.hh"
-#include "Gtk_AreaFactory.hh"
-#include "Gtk_MathGraphicDevice.hh"
-#include "MathMLElement.hh"
-#include "FormattingContext.hh"
+#include "OpenTypeShaper.hh"
 
-Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<MathFont>& f)
-  : OpenTypeMathGraphicDevice(l, f)
-{ }
-
-Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
-{ }
-
-SmartPtr<Gtk_MathGraphicDevice>
-Gtk_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
-                              const SmartPtr<MathFont>& font)
-{ return new Gtk_MathGraphicDevice(logger, font); }
-
-void
-Gtk_MathGraphicDevice::setFactory(const SmartPtr<Gtk_AreaFactory>& f)
+class Gtk_PangoShaper : public OpenTypeShaper
 {
-  OpenTypeMathGraphicDevice::setFactory(f);
-  gtk_factory = f;
-}
+protected:
+  Gtk_PangoShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+  virtual ~Gtk_PangoShaper();
 
-AreaRef
-Gtk_MathGraphicDevice::wrapper(const FormattingContext& context,
-                               const AreaRef& base) const
-{
-  return gtk_factory->wrapper(base, base->box(), context.getMathMLElement());
-}
+public:
+  static SmartPtr<Gtk_PangoShaper> create(const SmartPtr<class AbstractLogger>&,
+                                          const SmartPtr<class Configuration>&);
+
+  virtual bool isDefaultShaper(void) const { return true; }
+
+  virtual void setFont(const PangoFontDescription*);
+
+protected:
+  virtual AreaRef getGlyphArea(unsigned, const scaled&) const;
+  virtual unsigned shapeChar(Char32) const;
+
+private:
+  GObjectPtr<PangoContext> context;
+  GObjectPtr<PangoFont> font;
+};
+
+#endif // __Gtk_PangoShaper_hh__

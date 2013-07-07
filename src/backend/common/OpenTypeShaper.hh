@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -20,27 +21,34 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_MathGraphicDevice_hh__
-#define __Gtk_MathGraphicDevice_hh__
+#ifndef __OpenTypeShaper_hh__
+#define __OpenTypeShaper_hh__
 
-#include "OpenTypeMathGraphicDevice.hh"
-#include "MathFont.hh"
+#include "Char.hh"
+#include "Shaper.hh"
 
-class Gtk_MathGraphicDevice : public OpenTypeMathGraphicDevice
+class GMV_MathView_EXPORT OpenTypeShaper : public Shaper
 {
 protected:
-  Gtk_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathFont>&);
-  virtual ~Gtk_MathGraphicDevice();
+  OpenTypeShaper(void) { }
+  virtual ~OpenTypeShaper() { }
 
 public:
-  static SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
-						const SmartPtr<class MathFont>&);
+  virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) { }
+  virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned) { }
+  virtual bool isDefaultShaper(void) const { return false; }
 
-  virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
-  virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
+  virtual void shape(class ShapingContext&) const;
+  virtual bool shapeCombiningChar(const ShapingContext&) const;
+  virtual bool computeCombiningCharOffsetsAbove(const AreaRef&, const AreaRef&,
+                                                scaled&, scaled&) const;
+  virtual bool computeCombiningCharOffsetsBelow(const AreaRef&, const AreaRef&,
+                                                scaled&) const;
 
-private:
-  SmartPtr<class Gtk_AreaFactory> gtk_factory;
+protected:
+  virtual AreaRef getGlyphArea(unsigned, const scaled&) const = 0;
+  virtual unsigned shapeChar(Char32) const = 0;
 };
 
-#endif // __Gtk_MathGraphicDevice_hh__
+#endif // __OpenTypeShaper_hh__
+

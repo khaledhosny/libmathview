@@ -1,4 +1,4 @@
-// Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -20,27 +20,26 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_MathGraphicDevice_hh__
-#define __Gtk_MathGraphicDevice_hh__
+#ifndef __MathFont_hh__
+#define __MathFont_hh__
 
-#include "OpenTypeMathGraphicDevice.hh"
-#include "MathFont.hh"
+#include "Object.hh"
+#include "SmartPtr.hh"
+#include "MathTable.hh"
 
-class Gtk_MathGraphicDevice : public OpenTypeMathGraphicDevice
+class GMV_MathView_EXPORT MathFont : public Object
 {
 protected:
-  Gtk_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathFont>&);
-  virtual ~Gtk_MathGraphicDevice();
+  MathFont(unsigned char*);
+  virtual ~MathFont();
 
 public:
-  static SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
-						const SmartPtr<class MathFont>&);
-
-  virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
-  virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
+  static SmartPtr<MathFont> create(unsigned char*);
+  virtual int getConstant(MathConstant) const;
 
 private:
-  SmartPtr<class Gtk_AreaFactory> gtk_factory;
+  const unsigned char* tableData;
 };
 
-#endif // __Gtk_MathGraphicDevice_hh__
+#endif // __MathFont_hh__
+

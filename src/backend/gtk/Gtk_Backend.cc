@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -23,6 +24,8 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
+#include <pango/pangofc-font.h>
+#include FT_TRUETYPE_TABLES_H
 
 #include <map>
 
@@ -31,20 +34,53 @@
 #include "Gtk_Backend.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
-#include "Gtk_PangoComputerModernShaper.hh"
-#include "SpaceShaper.hh"
+#include "Gtk_PangoShaper.hh"
 #include "ShaperManager.hh"
+
+#define MATH_TAG  0X4D415448
 
 Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
   : Backend(l, conf)
 {
   SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
-  SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, conf);
+
+  String fontname = conf->getString(l, "default/font-family", DEFAULT_FONT_FAMILY);
+  int fontsize = conf->getInt(l, "default/font-size", DEFAULT_FONT_SIZE);
+  PangoFontDescription* description = pango_font_description_new();
+  pango_font_description_set_family(description, fontname.c_str());
+  pango_font_description_set_size(description, fontsize * PANGO_SCALE);
+
+  GObjectPtr<PangoContext> context = gdk_pango_context_get();
+  GObjectPtr<PangoFont> font = pango_context_load_font(context, description);
+  FT_Byte *table = NULL;
+  if (font)
+    {
+      PangoFcFont* fcfont = PANGO_FC_FONT(static_cast<PangoFont*>(font));
+      FT_Face face = pango_fc_font_lock_face(fcfont);
+
+      FT_ULong length = 0;
+      FT_Error error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, NULL, &length);
+      if (!error)
+        {
+          table = new FT_Byte[length];
+          error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, table, &length);
+          if (error)
+            free(table);
+        }
+
+      pango_fc_font_unlock_face(fcfont);
+    }
+
+  SmartPtr<MathFont> mathfont = MathFont::create(table);
+
+  SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, mathfont);
+
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  getShaperManager()->registerShaper(Gtk_PangoComputerModernShaper::create(l, conf));
-  getShaperManager()->registerShaper(SpaceShaper::create());
+  SmartPtr<Gtk_PangoShaper> shaper = Gtk_PangoShaper::create(l, conf);
+  shaper->setFont(description);
+  getShaperManager()->registerShaper(shaper);
 }
 
 Gtk_Backend::~Gtk_Backend()

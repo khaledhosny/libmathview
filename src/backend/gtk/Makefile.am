@@ -21,6 +21,8 @@ libmathview_backend_gtk_la_SOURCES = \
   Gtk_MathGraphicDevice.hh \
   Gtk_PangoComputerModernShaper.cc \
   Gtk_PangoComputerModernShaper.hh \
+  Gtk_PangoShaper.cc \
+  Gtk_PangoShaper.hh \
   Gtk_PangoGlyphArea.cc \
   Gtk_PangoGlyphArea.hh \
   Gtk_PangoLayoutArea.cc \

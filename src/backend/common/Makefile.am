@@ -33,8 +33,11 @@ libbackend_common_la_SOURCES = \
   InkArea.cc \
   LinearContainerArea.cc \
   MathGraphicDevice.cc \
+  MathFont.cc \
   NullShaper.cc \
   OverlapArrayArea.cc \
+  OpenTypeShaper.cc \
+  OpenTypeMathGraphicDevice.cc \
   Shaper.cc \
   ShaperManager.cc \
   ShapingContext.cc \
@@ -79,9 +82,13 @@ mathview_HEADERS = \
   IgnoreArea.hh	\
   InkArea.hh \
   LinearContainerArea.hh \
+  MathFont.hh \
   MathGraphicDevice.hh \
+  MathTable.hh \
   NullShaper.hh \
   OverlapArrayArea.hh \
+  OpenTypeMathGraphicDevice.hh \
+  OpenTypeShaper.hh \
   RenderingContext.hh \
   SearchingContext.hh \
   Shaper.hh \
