@@ -229,11 +229,11 @@ libbackend_common_la_SOURCES = \
   backend/common/IgnoreArea.cc	\
   backend/common/InkArea.cc \
   backend/common/LinearContainerArea.cc \
-  backend/common/MathGraphicDevice.cc \
   backend/common/MathFont.cc \
+  backend/common/MathGraphicDevice.cc \
+  backend/common/MathShaper.cc \
   backend/common/NullShaper.cc \
   backend/common/OverlapArrayArea.cc \
-  backend/common/OpenTypeShaper.cc \
   backend/common/Shaper.cc \
   backend/common/ShaperManager.cc \
   backend/common/ShapingContext.cc \
@@ -289,10 +289,10 @@ mathview_HEADERS += \
   backend/common/LinearContainerArea.hh \
   backend/common/MathFont.hh \
   backend/common/MathGraphicDevice.hh \
+  backend/common/MathShaper.hh \
   backend/common/MathTable.hh \
   backend/common/NullShaper.hh \
   backend/common/OverlapArrayArea.hh \
-  backend/common/OpenTypeShaper.hh \
   backend/common/RenderingContext.hh \
   backend/common/SearchingContext.hh \
   backend/common/Shaper.hh \

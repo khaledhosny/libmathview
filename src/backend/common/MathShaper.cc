@@ -21,34 +21,49 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __OpenTypeShaper_hh__
-#define __OpenTypeShaper_hh__
+#include <config.h>
 
-#include "Char.hh"
-#include "Shaper.hh"
+#include <vector>
 
-class GMV_MathView_EXPORT OpenTypeShaper : public Shaper
+#include "Area.hh"
+#include "MathShaper.hh"
+#include "ShapingContext.hh"
+
+void
+MathShaper::shape(ShapingContext& context) const
 {
-protected:
-  OpenTypeShaper(void) { }
-  virtual ~OpenTypeShaper() { }
+  for (unsigned n = context.chunkSize(); n > 0; n--)
+    {
+      unsigned glyphId = shapeChar(context.thisChar());
+      context.pushArea(1, getGlyphArea(glyphId, context.getSize()));
+    }
+}
 
-public:
-  virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) { }
-  virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned) { }
-  virtual bool isDefaultShaper(void) const { return false; }
+bool
+MathShaper::shapeCombiningChar(const ShapingContext&) const
+{
+  return false;
+}
 
-  virtual void shape(class ShapingContext&) const;
-  virtual bool shapeCombiningChar(const ShapingContext&) const;
-  virtual bool computeCombiningCharOffsetsAbove(const AreaRef&, const AreaRef&,
-                                                scaled&, scaled&) const;
-  virtual bool computeCombiningCharOffsetsBelow(const AreaRef&, const AreaRef&,
-                                                scaled&) const;
+bool
+MathShaper::computeCombiningCharOffsetsAbove(const AreaRef& base,
+                                             const AreaRef& script,
+                                             scaled& dx,
+                                             scaled& dy) const
+{
+  //default value of dx and dy
+  dx = (base->box().width - script->box().width) / 2;
+  dy = base->box().height + script->box().depth;
 
-protected:
-  virtual AreaRef getGlyphArea(unsigned, const scaled&) const = 0;
-  virtual unsigned shapeChar(Char32) const = 0;
-};
+  return true;
+}
 
-#endif // __OpenTypeShaper_hh__
+bool
+MathShaper::computeCombiningCharOffsetsBelow(const AreaRef& base,
+                                             const AreaRef& script,
+                                             scaled& dxUnder) const
+{
+  dxUnder = (base->box().width - script->box().width) / 2;
 
+  return true;
+}

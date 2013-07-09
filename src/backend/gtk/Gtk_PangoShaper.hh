@@ -24,9 +24,9 @@
 #ifndef __Gtk_PangoShaper_hh__
 #define __Gtk_PangoShaper_hh__
 
-#include "OpenTypeShaper.hh"
+#include "MathShaper.hh"
 
-class Gtk_PangoShaper : public OpenTypeShaper
+class Gtk_PangoShaper : public MathShaper
 {
 protected:
   Gtk_PangoShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
