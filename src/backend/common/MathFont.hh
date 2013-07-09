@@ -25,20 +25,27 @@
 
 #include "Object.hh"
 #include "SmartPtr.hh"
+#include "scaled.hh"
 #include "MathTable.hh"
+#include "stdio.h"
 
 class GMV_MathView_EXPORT MathFont : public Object
 {
 protected:
-  MathFont(unsigned char*);
+  MathFont(void);
   virtual ~MathFont();
 
 public:
-  static SmartPtr<MathFont> create(unsigned char*);
+  static SmartPtr<MathFont> create(void);
   virtual int getConstant(MathConstant) const;
+  virtual int getUnitsPerEM(void) const { return unitsPerEM; }
+
+  virtual void setData(unsigned char* data) { tableData = data; }
+  virtual void setUnitsPerEM(int em) { unitsPerEM = em; }
 
 private:
-  const unsigned char* tableData;
+  unsigned char* tableData;
+  int unitsPerEM;
 };
 
 #endif // __MathFont_hh__

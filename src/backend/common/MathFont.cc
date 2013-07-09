@@ -22,12 +22,11 @@
 
 #include <config.h>
 
-#include <vector>
-
 #include "MathFont.hh"
 
-MathFont::MathFont(unsigned char* data)
-  : tableData(data)
+MathFont::MathFont()
+  : tableData(0)
+  , unitsPerEM(0)
 { }
 
 MathFont::~MathFont()
@@ -36,9 +35,9 @@ MathFont::~MathFont()
 }
 
 SmartPtr<MathFont>
-MathFont::create(unsigned char* data)
+MathFont::create()
 {
-  return new MathFont(data);
+  return new MathFont();
 }
 
 int

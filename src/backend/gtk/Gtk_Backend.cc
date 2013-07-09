@@ -43,6 +43,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   : Backend(l, conf)
 {
   SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
+  SmartPtr<MathFont> mathfont = MathFont::create();
 
   String fontname = conf->getString(l, "default/font-family", DEFAULT_FONT_FAMILY);
   int fontsize = conf->getInt(l, "default/font-size", DEFAULT_FONT_SIZE);
@@ -65,13 +66,15 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
           table = new FT_Byte[length];
           error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, table, &length);
           if (error)
-            free(table);
+            delete [] table;
+          else
+            mathfont->setData(table);
         }
+
+      mathfont->setUnitsPerEM(face->units_per_EM);
 
       pango_fc_font_unlock_face(fcfont);
     }
-
-  SmartPtr<MathFont> mathfont = MathFont::create(table);
 
   SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, mathfont);
 

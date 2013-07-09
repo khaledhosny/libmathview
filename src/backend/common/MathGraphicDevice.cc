@@ -91,7 +91,7 @@ MathGraphicDevice::getConstant(const FormattingContext& context,
       case radicalDegreeBottomRaisePercent:
         break;
       default:
-        value = scaled((value * context.getSize().toInt()) / 1000);
+        value = (value * context.getSize()) / mathFont->getUnitsPerEM();
         break;
     }
 
