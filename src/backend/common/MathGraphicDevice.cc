@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -25,8 +26,8 @@
 #include <cassert>
 
 #include "AreaFactory.hh"
-#include "MathMLElement.hh"
 #include "MathGraphicDevice.hh"
+#include "MathMLElement.hh"
 #include "MathVariantMap.hh"
 #include "FormattingContext.hh"
 #include "ShaperManager.hh"
@@ -34,28 +35,95 @@
 #include "Area.hh"
 #include "GlyphArea.hh"
 
-MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& logger)
+MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& logger,
+                                     const SmartPtr<MathFont>& font)
   : GraphicDevice(logger)
+  , mathFont(font)
 { }
 
 MathGraphicDevice::~MathGraphicDevice()
 { }
 
 scaled
+MathGraphicDevice::getConstant(const FormattingContext& context,
+                               MathConstant constant) const
+{
+  if (context.getDisplayStyle())
+    {
+      // switch to display style version of the requested constant
+      switch (constant)
+        {
+          case stackTopShiftUp:
+            constant = stackTopDisplayStyleShiftUp;
+            break;
+          case stackBottomShiftDown:
+            constant = stackBottomDisplayStyleShiftDown;
+            break;
+          case stackGapMin:
+            constant = stackDisplayStyleGapMin;
+            break;
+          case fractionNumeratorShiftUp:
+            constant = fractionNumeratorDisplayStyleShiftUp;
+            break;
+          case fractionDenominatorShiftDown:
+            constant = fractionDenominatorDisplayStyleShiftDown;
+            break;
+          case fractionNumeratorGapMin:
+            constant = fractionNumeratorDisplayStyleGapMin;
+            break;
+          case fractionDenominatorGapMin:
+            constant = fractionDenominatorDisplayStyleGapMin;
+            break;
+          case radicalVerticalGap:
+            constant = radicalDisplayStyleVerticalGap;
+            break;
+          default:
+            break;
+        }
+    }
+
+  scaled value = mathFont->getConstant(constant);
+  // scale the non-percent constants
+  switch (constant)
+    {
+      case scriptPercentScaleDown:
+      case scriptScriptPercentScaleDown:
+      case radicalDegreeBottomRaisePercent:
+        break;
+      default:
+        value = scaled((value * context.getSize().toInt()) / 1000);
+        break;
+    }
+
+  return value;
+}
+
+scaled
+MathGraphicDevice::getRuleThickness(const FormattingContext& context,
+                                    MathConstant constant) const
+{
+  // at least 1px thick
+  return std::max(getConstant(context, constant), scaled(72.27f / dpi(context)));
+}
+
+scaled
 MathGraphicDevice::ex(const FormattingContext& context) const
 {
-  return unstretchedString(context, "x")->box().height;
+  // XXX
+  return getConstant(context, accentBaseHeight);
 }
 
 scaled
 MathGraphicDevice::axis(const FormattingContext& context) const
 {
-  const BoundingBox pbox = unstretchedString(context, "+")->box();
-  // the + is a better choice rather than x because its vertical extent
-  // is certainly an odd number of pixels, whereas the x has almost
-  // certainly an even number of pixels. This way it is reduced the
-  // approximation due to the / 2  
-  return (pbox.height - pbox.depth) / 2;
+  return getConstant(context, axisHeight);
+}
+
+scaled
+MathGraphicDevice::defaultLineThickness(const FormattingContext& context) const
+{
+  // XXX
+  return getRuleThickness(context, fractionRuleThickness);
 }
 
 AreaRef
@@ -89,40 +157,23 @@ AreaRef
 MathGraphicDevice::stretchedString(const FormattingContext& context, const String& str) const
 {
   CachedShapedStretchyStringKey key(str, context.getVariant(), context.getSize(),
-				    context.getStretchH(), context.getStretchV());
-#if 1
+                                    context.getStretchH(), context.getStretchV());
   std::pair<ShapedStretchyStringCache::iterator, bool> r = stretchyStringCache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
     {
       UCS4String source = UCS4StringOfString(str);
       if (context.getMathMode())
-	mapMathVariant(context.getVariant(), source);
+        mapMathVariant(context.getVariant(), source);
       r.first->second = getShaperManager()->shapeStretchy(context,
-							  context.getMathMLElement(),
-							  context.MGD()->getFactory(),
-							  source,
-							  context.getStretchV(),
-							  context.getStretchH());
+                                                          context.getMathMLElement(),
+                                                          context.MGD()->getFactory(),
+                                                          source,
+                                                          context.getStretchV(),
+                                                          context.getStretchH());
       return r.first->second;
     }
   else
     return r.first->second;
-#else
-  ShapedStretchyStringCache::const_iterator p = stretchyStringCache.find(key);
-  if (p != stretchyStringCache.end())
-    return p->second;
-  else
-    {
-      UCS4String source = UCS4StringOfString(str);
-      mapMathVariant(context.getVariant(), source);
-      return (stretchyStringCache[key] = getShaperManager()->shapeStretchy(context,
-									   context.getMathMLElement(),
-									   context.MGD()->getFactory(),
-									   source,
-									   context.getStretchV(),
-									   context.getStretchH()));
-    }
-#endif
 }
 
 AreaRef
@@ -130,40 +181,25 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
 {
   CachedShapedStringKey key(str, context.getVariant(), context.getSize());
 
-#if 1
   std::pair<ShapedStringCache::iterator, bool> r = stringCache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
     {
       UCS4String source = UCS4StringOfString(str);
       if (context.getMathMode())
-	mapMathVariant(context.getVariant(), source);
+        mapMathVariant(context.getVariant(), source);
       r.first->second = getShaperManager()->shape(context,
-						  context.getMathMLElement(),
-						  context.MGD()->getFactory(),
-						  source);
+                                                  context.getMathMLElement(),
+                                                  context.MGD()->getFactory(),
+                                                  source);
       return r.first->second;
     }
   else
     return r.first->second;
-#else
-  ShapedStringCache::const_iterator p = stringCache.find(key);
-  if (p != stringCache.end())
-    return p->second;
-  else
-    {
-      UCS4String source = UCS4StringOfString(str);
-      mapMathVariant(context.getVariant(), source);
-      return (stringCache[key] = getShaperManager()->shape(context,
-							   context.getMathMLElement(),
-							   context.MGD()->getFactory(),
-							   source));
-    }
-#endif
 }
 
 AreaRef
 MathGraphicDevice::string(const FormattingContext& context,
-			  const String& str) const
+                          const String& str) const
 {
   if (str.length() == 0)
     return dummy(context);
@@ -175,52 +211,89 @@ MathGraphicDevice::string(const FormattingContext& context,
 
 AreaRef
 MathGraphicDevice::stretchStringV(const FormattingContext& context,
-				  const String& str,
-				  const scaled& height,
-				  const scaled& depth) const
+                                  const String& str,
+                                  const scaled& height,
+                                  const scaled& depth) const
 {
   return getShaperManager()->shapeStretchy(context,
-					   context.getMathMLElement(),
-					   context.MGD()->getFactory(),
-					   UCS4StringOfString(str), height + depth, 0);
+                                           context.getMathMLElement(),
+                                           context.MGD()->getFactory(),
+                                           UCS4StringOfString(str), height + depth, 0);
 }
 
 AreaRef
-MathGraphicDevice::glyph(const FormattingContext& context,
-			 const String& alt,
-			 const String& fontFamily,
-			 unsigned long index) const
+MathGraphicDevice::glyph(const FormattingContext& /*context*/,
+                         const String& /*alt*/,
+                         const String& /*fontFamily*/,
+                         unsigned long /*index*/) const
 {
   assert(false);
 }
 
 AreaRef
 MathGraphicDevice::fraction(const FormattingContext& context,
-			    const AreaRef& numerator,
-			    const AreaRef& denominator,
-			    const Length& lineThickness) const
+                            const AreaRef& numerator,
+                            const AreaRef& denominator,
+                            const Length& lineThickness) const
 {
-  const scaled RULE = defaultLineThickness(context);
+  const scaled RULE = getRuleThickness(context, fractionRuleThickness);
+  const scaled AXIS = axis(context);
+  const scaled ruleThickness = evaluate(context, lineThickness, RULE);
+
+  BoundingBox n = numerator->box();
+  BoundingBox d = denominator->box();
 
   std::vector<AreaRef> v;
 
-  AreaRef s = getFactory()->verticalSpace(context.getDisplayStyle() ? RULE * 3 : RULE, scaled::zero());
+  if (ruleThickness == scaled::zero())
+    {
+      scaled shift_up = getConstant(context, stackTopShiftUp);
+      scaled shift_down = getConstant(context, stackBottomShiftDown);
+      scaled clr = getConstant(context, stackGapMin);
+      scaled delta = (clr - ((shift_up - n.depth) - (d.height - shift_down))) / 2;
+      if (delta > scaled::zero())
+        {
+          shift_up += delta;
+          shift_down += delta;
+        }
 
-  v.reserve(5);
-  v.push_back(denominator);
-  v.push_back(s);
-  v.push_back(getFactory()->horizontalLine(evaluate(context, lineThickness, RULE), context.getColor()));
-  v.push_back(s);
-  v.push_back(numerator);
+      v.reserve(3);
+      v.push_back(denominator);
+      v.push_back(getFactory()->verticalSpace((shift_up - n.depth) - (d.height - shift_down), 0));
+      v.push_back(numerator);
+    }
+  else
+    {
+      scaled shift_up = getConstant(context, fractionNumeratorShiftUp);
+      scaled shift_down = getConstant(context, fractionDenominatorShiftDown);
+      scaled delta = ruleThickness / 2;
 
-  return getFactory()->shift(getFactory()->verticalArray(v, 2), axis(context));
+      scaled clr1 = getConstant(context, fractionNumeratorGapMin);
+      scaled delta1 = clr1 - ((shift_up - n.depth) - (AXIS + delta));
+      if (delta1 > scaled::zero())
+        shift_up = shift_up + delta1;
+
+      scaled clr2 = getConstant(context, fractionDenominatorGapMin);
+      scaled delta2 = clr2 - ((AXIS - delta) - (d.height - shift_down));
+      if (delta2 > scaled::zero())
+        shift_down = shift_down + delta2;
+
+      v.reserve(5);
+      v.push_back(denominator);
+      v.push_back(getFactory()->verticalSpace((AXIS - delta) - (d.height - shift_down), 0));
+      v.push_back(getFactory()->horizontalLine(ruleThickness, context.getColor()));
+      v.push_back(getFactory()->verticalSpace((shift_up - n.depth) - (AXIS + delta), 0));
+      v.push_back(numerator);
+    }
+
+  return getFactory()->shift(getFactory()->verticalArray(v, 2), AXIS);
 }
 
 AreaRef
 MathGraphicDevice::bevelledFraction(const FormattingContext& context,
-				    const AreaRef& numerator,
-				    const AreaRef& denominator,
-				    const Length& lineThickness) const
+                                    const AreaRef& numerator,
+                                    const AreaRef& denominator,
+                                    const Length& lineThickness) const
 {
   BoundingBox n = numerator->box();
   BoundingBox d = denominator->box();
@@ -230,60 +303,73 @@ MathGraphicDevice::bevelledFraction(const FormattingContext& context,
   h.push_back(numerator);
   h.push_back(stretchStringV(context, "/", std::max(n.height, d.height), std::max(n.depth, d.depth)));
   h.push_back(denominator);
-  
+
   return getFactory()->horizontalArray(h);
 }
 
 AreaRef
 MathGraphicDevice::radical(const FormattingContext& context,
-			   const AreaRef& base,
-			   const AreaRef& index) const
+                           const AreaRef& base,
+                           const AreaRef& index) const
 {
-  const scaled RULE = defaultLineThickness(context);
+  const scaled RULE = getRuleThickness(context, radicalRuleThickness);
+  const scaled GAP = getConstant(context, radicalVerticalGap);
+  const scaled KERN = getConstant(context, radicalExtraAscender);
   const UCS4String root(1, 0x221a);
   const BoundingBox baseBox = base->box();
-  const AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + 2 * RULE, baseBox.depth);
+  const AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + GAP + RULE, baseBox.depth);
   const BoundingBox rootBox = rootArea->box();
 
+  scaled clr = GAP;
+  scaled delta = (rootBox.verticalExtent() - RULE) - (baseBox.verticalExtent() + GAP);
+  if (delta > scaled::zero())
+    clr += delta / 2;
+
   std::vector<AreaRef> v;
-  v.reserve(3);
+  v.reserve(4);
   v.push_back(base);
-  v.push_back(getFactory()->verticalSpace(RULE, 0));
+  v.push_back(getFactory()->verticalSpace(clr, 0));
   v.push_back(getFactory()->horizontalLine(RULE, context.getColor()));
+  v.push_back(getFactory()->verticalSpace(KERN, 0));
 
   const AreaRef baseArea = getFactory()->verticalArray(v, 0);
 
   std::vector<AreaRef> h;
-  h.reserve(index ? 4 : 2);
+  h.reserve(index ? 5 : 2);
   if (index)
     {
-      const Length zero(0.0f, Length::PT_UNIT);
-      const BoundingBox indexBox = index->box();
-      scaled u;
-      scaled v;
-      calculateScriptShift(context, baseArea->box(), BoundingBox(), zero, indexBox, zero, v, u);
-      h.push_back(getFactory()->shift(index, u));
-      h.push_back(getFactory()->horizontalSpace(-rootBox.width / 2));
+      const scaled KERN_BEFORE = getConstant(context, radicalKernBeforeDegree);
+      const scaled KERN_AFTER = getConstant(context, radicalKernAfterDegree);
+      const scaled RAISE = getConstant(context, radicalDegreeBottomRaisePercent);
+
+      scaled shift = baseArea->box().verticalExtent() * RAISE / 100;
+      h.push_back(getFactory()->horizontalSpace(KERN_BEFORE));
+      h.push_back(getFactory()->shift(index, shift));
+      h.push_back(getFactory()->horizontalSpace(KERN_AFTER));
     }
-  h.push_back(getFactory()->shift(rootArea, baseArea->box().height - rootBox.height));
+  h.push_back(getFactory()->shift(rootArea, baseArea->box().height - rootBox.height - KERN));
   h.push_back(baseArea);
 
   return getFactory()->horizontalArray(h);
 }
 
+// XXX does not handle single character vs subformala differently like TeX
 void
 MathGraphicDevice::calculateDefaultScriptShift(const FormattingContext& context,
-					       const BoundingBox& baseBox,
-					       const BoundingBox& subScriptBox,
-					       const BoundingBox& superScriptBox,
-					       scaled& v,
-					       scaled& u) const
+                                               const BoundingBox& baseBox,
+                                               const BoundingBox& subScriptBox,
+                                               const BoundingBox& superScriptBox,
+                                               scaled& v,
+                                               scaled& u) const
 {
   assert(baseBox.defined());
 
   const scaled EX = ex(context);
   const scaled AXIS = axis(context);
-  const scaled RULE = defaultLineThickness(context);
+  const scaled SUB_TOP_MAX = getConstant(context, subscriptTopMax);
+  const scaled SUB_GAP_MIN = getConstant(context, subSuperscriptGapMin);
+  const scaled SUP_BOT_MIN = getConstant(context, superscriptBottomMin);
+  const scaled SUP_BOT_MAX = getConstant(context, superscriptBottomMaxWithSubscript);
 
   u = std::max(EX, baseBox.height - AXIS);
   v = std::max(AXIS, baseBox.depth + AXIS);
@@ -291,22 +377,22 @@ MathGraphicDevice::calculateDefaultScriptShift(const FormattingContext& context,
   if (!superScriptBox.defined())
     {
       u = 0;
-      v = std::max(v, subScriptBox.height - (EX * 4) / 5);
+      v = std::max(v, subScriptBox.height - SUB_TOP_MAX);
     }
   else
     {
-      u = std::max(u, superScriptBox.depth + EX / 4);
+      u = std::max(u, superScriptBox.depth + SUP_BOT_MIN);
       if (!subScriptBox.defined())
-	{
-	  v = 0;
-	}
+        {
+          v = 0;
+        }
       else
-	{
-          if ((u - superScriptBox.depth) - (subScriptBox.height - v) < 4 * RULE)
+        {
+          if ((u - superScriptBox.depth) - (subScriptBox.height - v) < SUB_GAP_MIN)
             {
-              v = 4 * RULE - u + superScriptBox.depth + subScriptBox.height;
-  
-              scaled psi = (4 * EX) / 5 - (u - superScriptBox.depth);
+              v = SUB_GAP_MIN - u + superScriptBox.depth + subScriptBox.height;
+
+              scaled psi = SUP_BOT_MAX - (u - superScriptBox.depth);
               if (psi > scaled::zero())
                 {
                   u += psi;
@@ -319,26 +405,27 @@ MathGraphicDevice::calculateDefaultScriptShift(const FormattingContext& context,
 
 void
 MathGraphicDevice::calculateScriptShift(const FormattingContext& context,
-					const BoundingBox& baseBox,
-					const BoundingBox& subScriptBox,
-					const Length& subScriptMinShift,
-					const BoundingBox& superScriptBox,
-					const Length& superScriptMinShift,
-					scaled& v,
-					scaled& u) const
+                                        const BoundingBox& baseBox,
+                                        const BoundingBox& subScriptBox,
+                                        const Length& subScriptMinShift,
+                                        const BoundingBox& superScriptBox,
+                                        const Length& superScriptMinShift,
+                                        scaled& v,
+                                        scaled& u) const
 {
   calculateDefaultScriptShift(context, baseBox, subScriptBox, superScriptBox, v, u);
   v = std::max(v, evaluate(context, subScriptMinShift, v));
   u = std::max(u, evaluate(context, superScriptMinShift, u));
 }
 
+// XXX use italic correction/cut-ins
 AreaRef
 MathGraphicDevice::script(const FormattingContext& context,
-			  const AreaRef& base,
-			  const AreaRef& subScript,
-			  const Length& subScriptMinShift,
-			  const AreaRef& superScript,
-			  const Length& superScriptMinShift) const
+                          const AreaRef& base,
+                          const AreaRef& subScript,
+                          const Length& subScriptMinShift,
+                          const AreaRef& superScript,
+                          const Length& superScriptMinShift) const
 {
   assert(base);
 
@@ -346,13 +433,13 @@ MathGraphicDevice::script(const FormattingContext& context,
   scaled superScriptShift;
 
   calculateScriptShift(context,
-		       base->box(),
-		       subScript ? subScript->box() : BoundingBox(),
-		       subScriptMinShift,
-		       superScript ? superScript->box() : BoundingBox(),
-		       superScriptMinShift,
-		       subScriptShift,
-		       superScriptShift);
+                       base->box(),
+                       subScript ? subScript->box() : BoundingBox(),
+                       subScriptMinShift,
+                       superScript ? superScript->box() : BoundingBox(),
+                       superScriptMinShift,
+                       subScriptShift,
+                       superScriptShift);
 
   std::vector<AreaRef> o;
   o.reserve(2);
@@ -372,13 +459,13 @@ MathGraphicDevice::script(const FormattingContext& context,
 
 AreaRef
 MathGraphicDevice::multiScripts(const FormattingContext& context,
-				const AreaRef& base,
-				const std::vector<AreaRef>& subScripts,
-				const std::vector<AreaRef>& preSubScripts,
-				const Length& subScriptMinShift,
-				const std::vector<AreaRef>& superScripts,
-				const std::vector<AreaRef>& preSuperScripts,
-				const Length& superScriptMinShift) const
+                                const AreaRef& base,
+                                const std::vector<AreaRef>& subScripts,
+                                const std::vector<AreaRef>& preSubScripts,
+                                const Length& subScriptMinShift,
+                                const std::vector<AreaRef>& superScripts,
+                                const std::vector<AreaRef>& preSuperScripts,
+                                const Length& superScriptMinShift) const
 {
   assert(subScripts.size() == superScripts.size());
   assert(preSubScripts.size() == preSuperScripts.size());
@@ -386,33 +473,25 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
   BoundingBox subScriptsBox;
   BoundingBox superScriptsBox;
 
-  for (std::vector<AreaRef>::const_iterator p = subScripts.begin();
-       p != subScripts.end();
-       p++)
+  for (std::vector<AreaRef>::const_iterator p = subScripts.begin(); p != subScripts.end(); p++)
     if (*p) subScriptsBox.append((*p)->box());
-  for (std::vector<AreaRef>::const_iterator p = preSubScripts.begin();
-       p != preSubScripts.end();
-       p++)
+  for (std::vector<AreaRef>::const_iterator p = preSubScripts.begin(); p != preSubScripts.end(); p++)
     if (*p) subScriptsBox.append((*p)->box());
 
-  for (std::vector<AreaRef>::const_iterator p = superScripts.begin();
-       p != superScripts.end();
-       p++)
+  for (std::vector<AreaRef>::const_iterator p = superScripts.begin(); p != superScripts.end(); p++)
     if (*p) superScriptsBox.append((*p)->box());
-  for (std::vector<AreaRef>::const_iterator p = preSuperScripts.begin();
-       p != preSuperScripts.end();
-       p++)
+  for (std::vector<AreaRef>::const_iterator p = preSuperScripts.begin(); p != preSuperScripts.end(); p++)
     if (*p) superScriptsBox.append((*p)->box());
 
   scaled subScriptShift;
   scaled superScriptShift;
 
   calculateScriptShift(context,
-		       base->box(),
-		       subScriptsBox, subScriptMinShift,
-		       superScriptsBox, superScriptMinShift,
-		       subScriptShift,
-		       superScriptShift);
+                       base->box(),
+                       subScriptsBox, subScriptMinShift,
+                       superScriptsBox, superScriptMinShift,
+                       subScriptShift,
+                       superScriptShift);
 
   std::vector<AreaRef> h;
   h.reserve(subScripts.size() + preSubScripts.size() + 1);
@@ -427,9 +506,9 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
       if (*preQ) o.push_back(getFactory()->right(getFactory()->shift(*preQ, superScriptShift)));
 
       if (o.size() > 1)
-	h.push_back(getFactory()->overlapArray(o));
+        h.push_back(getFactory()->overlapArray(o));
       else
-	h.push_back(o.front());
+        h.push_back(o.front());
     }
 
   h.push_back(base);
@@ -444,38 +523,25 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
       if (*postQ) o.push_back(getFactory()->shift(*postQ, superScriptShift));
 
       if (o.size() > 1)
-	h.push_back(getFactory()->overlapArray(o));
+        h.push_back(getFactory()->overlapArray(o));
       else
-	h.push_back(o.front());
+        h.push_back(o.front());
     }
 
   return getFactory()->horizontalArray(h);
 }
 
-#if 0
-#include <iostream>
-#include <stdio.h>
-#endif
-
 AreaRef
 MathGraphicDevice::underOver(const FormattingContext& context,
-			     const AreaRef& base,
-			     const AreaRef& underScript, bool accentUnder,
-			     const AreaRef& overScript, bool accent) const
+                             const AreaRef& base,
+                             const AreaRef& underScript, bool accentUnder,
+                             const AreaRef& overScript, bool accent) const
 {
   SmartPtr<const GlyphStringArea> baseStringArea = base ? base->getGlyphStringArea() : NULL;
   SmartPtr<const GlyphStringArea> overStringArea = overScript ? overScript->getGlyphStringArea()
-						 	        : NULL;
-  SmartPtr<const GlyphStringArea> underStringArea = underScript ? 
-						    underScript->getGlyphStringArea() : NULL;
-
-#if 0
-  printf("base GlyphArea %s\n", base->getGlyphArea() ? "true" : "false");
-  printf("over GlyphArea %s\n", overScript->getGlyphArea() ? "true" : "false");  
-
-  printf("base GlyphStringArea %s\n", base->getGlyphStringArea() ? "true" : "false"); 
-  printf("over GlyphStringArea %s\n", base->getGlyphStringArea() ? "true" : "false"); 
-#endif
+                                                                : NULL;
+  SmartPtr<const GlyphStringArea> underStringArea = underScript ?
+                                                    underScript->getGlyphStringArea() : NULL;
 
   if (baseStringArea)
   {
@@ -483,12 +549,12 @@ MathGraphicDevice::underOver(const FormattingContext& context,
     UCS4String overSource;
     UCS4String underSource;
     AreaRef res;
-    
+
     //controls if overScript and/or underScript are very sinlge character
-    bool overCondition = overStringArea && accent && 
-			 ((overSource = overStringArea->getSource()).length() == 1);
+    bool overCondition = overStringArea && accent &&
+                         ((overSource = overStringArea->getSource()).length() == 1);
     bool underCondition = underStringArea && accentUnder &&
-	   		  ((underSource = underStringArea->getSource()).length() == 1);
+                          ((underSource = underStringArea->getSource()).length() == 1);
 
     baseSource = baseStringArea->getSource();
     //controls if the base character is a single char
@@ -498,33 +564,33 @@ MathGraphicDevice::underOver(const FormattingContext& context,
       {
         if (overCondition)
         {
-	  //we have that overScript is a single character
-	  res = shaperManager->compose(context,
-				       base, baseSource,
-				       overScript, overSource, true);
+          //we have that overScript is a single character
+          res = shaperManager->compose(context,
+                                       base, baseSource,
+                                       overScript, overSource, true);
 
-	  //if this condition is true then also underScript is a single char
-	  if (underCondition)
+          //if this condition is true then also underScript is a single char
+          if (underCondition)
             res = shaperManager->compose(context,
-					 res, baseSource,
-					 underScript, underSource, false);
+                                         res, baseSource,
+                                         underScript, underSource, false);
 
           //we have that the overScript is a single char
           //but the underScript isn't a single char
           else
-	    res = underOver(context, res, underScript, accentUnder, NULL, accent);  
+            res = underOver(context, res, underScript, accentUnder, NULL, accent);
 
-	  return res;
+          return res;
         }
-        //we have that only the underScript is a single char  
+        //we have that only the underScript is a single char
         else if (underCondition)
-	{
-	  res = shaperManager->compose(context,
-				       base, baseSource,
-				       underScript, underSource, false);
-	  res = underOver(context, res, NULL, accentUnder, overScript, accent);   
+        {
+          res = shaperManager->compose(context,
+                                       base, baseSource,
+                                       underScript, underSource, false);
+          res = underOver(context, res, NULL, accentUnder, overScript, accent);
 
-	  return res;
+          return res;
         }
       }
 
@@ -532,24 +598,24 @@ MathGraphicDevice::underOver(const FormattingContext& context,
       //is a single char
       else if (overScript || underScript)
       {
-	if (overCondition)
-	{
+        if (overCondition)
+        {
           res = shaperManager->compose(context,
-		     	  	       base, baseSource,
-			               overScript, overSource, true);
+                                       base, baseSource,
+                                       overScript, overSource, true);
           return res;
         }
         if (underCondition)
-	{
-	  res = shaperManager->compose(context,
-		     	  	       base, baseSource,
-			               underScript, underSource, false);
+        {
+          res = shaperManager->compose(context,
+                                       base, baseSource,
+                                       underScript, underSource, false);
           return res;
         }
       }
     }
   }
-  
+
   //the next instructions represent the default behavior
   //in which overScript and underScript aren't single char
   const scaled RULE = defaultLineThickness(context);
@@ -581,10 +647,10 @@ MathGraphicDevice::underOver(const FormattingContext& context,
 
 AreaRef
 MathGraphicDevice::enclose(const FormattingContext& context,
-			   const AreaRef& base,
-			   const String& notation) const
+                           const AreaRef& base,
+                           const String& notation) const
 {
-  if (notation == "radical") 
+  if (notation == "radical")
     return radical(context, base, 0);
   else
     {

@@ -30,7 +30,7 @@
 #include "FormattingContext.hh"
 
 Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<MathFont>& f)
-  : OpenTypeMathGraphicDevice(l, f)
+  : MathGraphicDevice(l, f)
 { }
 
 Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
@@ -44,7 +44,7 @@ Gtk_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
 void
 Gtk_MathGraphicDevice::setFactory(const SmartPtr<Gtk_AreaFactory>& f)
 {
-  OpenTypeMathGraphicDevice::setFactory(f);
+  MathGraphicDevice::setFactory(f);
   gtk_factory = f;
 }
 

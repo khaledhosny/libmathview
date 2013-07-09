@@ -23,10 +23,10 @@
 #ifndef __Gtk_MathGraphicDevice_hh__
 #define __Gtk_MathGraphicDevice_hh__
 
-#include "OpenTypeMathGraphicDevice.hh"
 #include "MathFont.hh"
+#include "MathGraphicDevice.hh"
 
-class Gtk_MathGraphicDevice : public OpenTypeMathGraphicDevice
+class Gtk_MathGraphicDevice : public MathGraphicDevice
 {
 protected:
   Gtk_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathFont>&);
@@ -34,7 +34,7 @@ protected:
 
 public:
   static SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
-						const SmartPtr<class MathFont>&);
+                                                const SmartPtr<class MathFont>&);
 
   virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
   virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;

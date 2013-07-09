@@ -234,7 +234,6 @@ libbackend_common_la_SOURCES = \
   backend/common/NullShaper.cc \
   backend/common/OverlapArrayArea.cc \
   backend/common/OpenTypeShaper.cc \
-  backend/common/OpenTypeMathGraphicDevice.cc \
   backend/common/Shaper.cc \
   backend/common/ShaperManager.cc \
   backend/common/ShapingContext.cc \
@@ -293,7 +292,6 @@ mathview_HEADERS += \
   backend/common/MathTable.hh \
   backend/common/NullShaper.hh \
   backend/common/OverlapArrayArea.hh \
-  backend/common/OpenTypeMathGraphicDevice.hh \
   backend/common/OpenTypeShaper.hh \
   backend/common/RenderingContext.hh \
   backend/common/SearchingContext.hh \
