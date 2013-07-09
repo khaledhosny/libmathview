@@ -29,6 +29,13 @@
 #include "MathShaper.hh"
 #include "ShapingContext.hh"
 
+MathShaper::MathShaper(const SmartPtr<MathFont>& font)
+  : mathFont(font)
+{ }
+
+MathShaper::~MathShaper()
+{ }
+
 void
 MathShaper::shape(ShapingContext& context) const
 {

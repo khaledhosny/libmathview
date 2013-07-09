@@ -81,7 +81,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  SmartPtr<Gtk_PangoShaper> shaper = Gtk_PangoShaper::create(l, conf);
+  SmartPtr<Gtk_PangoShaper> shaper = Gtk_PangoShaper::create(mathfont);
   shaper->setFont(description);
   getShaperManager()->registerShaper(shaper);
 }

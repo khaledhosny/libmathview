@@ -26,12 +26,13 @@
 
 #include "Char.hh"
 #include "Shaper.hh"
+#include "MathFont.hh"
 
 class GMV_MathView_EXPORT MathShaper : public Shaper
 {
 protected:
-  MathShaper(void) { }
-  virtual ~MathShaper() { }
+  MathShaper(const SmartPtr<MathFont>& font);
+  virtual ~MathShaper();
 
 public:
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned) { }
@@ -48,6 +49,9 @@ public:
 protected:
   virtual AreaRef getGlyphArea(unsigned, const scaled&) const = 0;
   virtual unsigned shapeChar(Char32) const = 0;
+
+private:
+  SmartPtr<class MathFont> mathFont;
 };
 
 #endif // __MathShaper_hh__

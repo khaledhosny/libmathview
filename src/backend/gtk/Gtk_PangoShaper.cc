@@ -34,8 +34,8 @@
 #include "Gtk_RenderingContext.hh"
 #include "ShapingContext.hh"
 
-Gtk_PangoShaper::Gtk_PangoShaper(const SmartPtr<AbstractLogger>& /*logger*/,
-                                 const SmartPtr<Configuration>& /*conf*/)
+Gtk_PangoShaper::Gtk_PangoShaper(const SmartPtr<MathFont>& f)
+  : MathShaper(f)
 {
   context = gdk_pango_context_get();
 }
@@ -50,10 +50,9 @@ Gtk_PangoShaper::setFont(const PangoFontDescription* description)
 }
 
 SmartPtr<Gtk_PangoShaper>
-Gtk_PangoShaper::create(const SmartPtr<AbstractLogger>& l,
-                        const SmartPtr<Configuration>& conf)
+Gtk_PangoShaper::create(const SmartPtr<MathFont>& f)
 {
-  return new Gtk_PangoShaper(l, conf);
+  return new Gtk_PangoShaper(f);
 }
 
 unsigned

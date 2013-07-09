@@ -29,12 +29,11 @@
 class Gtk_PangoShaper : public MathShaper
 {
 protected:
-  Gtk_PangoShaper(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+  Gtk_PangoShaper(const SmartPtr<class MathFont>&);
   virtual ~Gtk_PangoShaper();
 
 public:
-  static SmartPtr<Gtk_PangoShaper> create(const SmartPtr<class AbstractLogger>&,
-                                          const SmartPtr<class Configuration>&);
+  static SmartPtr<Gtk_PangoShaper> create(const SmartPtr<class MathFont>&);
 
   virtual bool isDefaultShaper(void) const { return true; }
 
