@@ -223,20 +223,6 @@ AC_CONFIG_FILES([
  src/Makefile
  src/common/Makefile
  src/common/mathvariants/Makefile
- src/common/mathvariants/xml/Makefile
- src/frontend/Makefile
- src/frontend/common/Makefile
- src/frontend/custom_reader/Makefile
- src/frontend/libxml2_reader/Makefile
- src/frontend/libxml2/Makefile
- src/frontend/gmetadom/Makefile
- src/engine/Makefile
- src/engine/common/Makefile
- src/engine/mathml/Makefile
- src/backend/Makefile
- src/backend/common/Makefile
- src/backend/gtk/Makefile
- src/view/Makefile
  src/widget/Makefile
  viewer/Makefile
  doc/Makefile

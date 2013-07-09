@@ -33,26 +33,26 @@ lib_LTLIBRARIES = $(MAYBE_CUSTOM_READER) $(MAYBE_LIBXML2_READER) $(MAYBE_LIBXML2
 
 libgtkmathview_custom_reader_la_LIBADD = \
   $(GTK_LIBS) \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_custom_reader.la \
+  $(top_builddir)/src/libmathview_backend_gtk.la \
+  $(top_builddir)/src/libmathview_frontend_custom_reader.la \
   $(NULL)
 
 libgtkmathview_libxml2_reader_la_LIBADD = \
   $(GTK_LIBS) \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_libxml2_reader.la \
+  $(top_builddir)/src/libmathview_backend_gtk.la \
+  $(top_builddir)/src/libmathview_frontend_libxml2_reader.la \
   $(NULL)
 
 libgtkmathview_libxml2_la_LIBADD = \
   $(GTK_LIBS) \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_libxml2.la \
+  $(top_builddir)/src/libmathview_backend_gtk.la \
+  $(top_builddir)/src/libmathview_frontend_libxml2.la \
   $(NULL)
 
 libgtkmathview_gmetadom_la_LIBADD = \
   $(GTK_LIBS) \
-  $(top_builddir)/src/backend/gtk/libmathview_backend_gtk.la \
-  $(top_builddir)/src/view/libmathview_frontend_gmetadom.la \
+  $(top_builddir)/src/libmathview_backend_gtk.la \
+  $(top_builddir)/src/libmathview_frontend_gmetadom.la \
   $(NULL)
 
 libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@

@@ -1,8 +1,6 @@
 
 NULL =
 
-SUBDIRS = xml
-
 AUTO_CC = \
   bold-fraktur.cc \
   bold-italic.cc \
@@ -63,6 +61,21 @@ XSLTPROC = xsltproc
 	rm -f $(@:%.cc=%)
 	cat $(srcdir)/variant.bot >>$@
 endif
+
+EXTRA_DIST += \
+  xml/bold-fraktur.xml \
+  xml/bold-italic.xml \
+  xml/bold-sans-serif.xml \
+  xml/bold-script.xml \
+  xml/bold.xml \
+  xml/double-struck.xml \
+  xml/fraktur.xml \
+  xml/italic.xml \
+  xml/monospace.xml \
+  xml/sans-serif-bold-italic.xml \
+  xml/sans-serif-italic.xml \
+  xml/sans-serif.xml \
+  xml/script.xml
 
 
 -include $(top_srcdir)/git.mk
