@@ -42,7 +42,24 @@ MathShaper::shape(ShapingContext& context) const
   for (unsigned n = context.chunkSize(); n > 0; n--)
     {
       unsigned glyphId = shapeChar(context.thisChar());
-      context.pushArea(1, getGlyphArea(glyphId, context.getSize()));
+      unsigned variantId = glyphId;
+      AreaRef glyphArea = getGlyphArea(glyphId, context.getSize());
+
+      if (glyphArea->box().verticalExtent() < context.getVSpan())
+        {
+          scaled span = (context.getVSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
+          variantId = mathFont->getVariant(glyphId, span, false);
+        }
+      if (glyphArea->box().horizontalExtent() < context.getHSpan())
+        {
+          scaled span = (context.getHSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
+          variantId = mathFont->getVariant(glyphId, span, true);
+        }
+
+      if (variantId != glyphId)
+        glyphArea = getGlyphArea(variantId, context.getSize());
+
+      context.pushArea(1, glyphArea);
     }
 }
 

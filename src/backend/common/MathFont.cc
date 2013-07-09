@@ -66,3 +66,70 @@ MathFont::getConstant(MathConstant constant) const
 
   return value;
 }
+
+static int32_t getCoverage(const Coverage* coverage, GlyphID g)
+{
+  if (SWAP(coverage->format) == 1)
+    {
+      const CoverageFormat1 *table = (const CoverageFormat1 *) coverage;
+      for (int i = 0; i < SWAP(table->glyphCount); i++)
+        {
+        if (SWAP(table->glyphArray[i]) == g)
+          return i;
+        }
+    }
+  else if (SWAP(coverage->format) == 2)
+    {
+      const CoverageFormat2 *table = (const CoverageFormat2 *) coverage;
+      for (int i = 0; i < SWAP(table->rangeCount); i++)
+        {
+          if (SWAP(table->rangeArray[i].start) <= g && SWAP(table->rangeArray[i].end) >= g)
+            return SWAP(table->rangeArray[i].startCoverageIndex) + (g - SWAP(table->rangeArray[i].start));
+        }
+    }
+
+  return -1;
+}
+
+unsigned
+MathFont::getVariant(int glyph, scaled size, bool horiz)
+{
+  int variant = glyph;
+
+  if (tableData)
+    {
+      uint16_t offset = SWAP(((const MathTableHeader*)tableData)->mathVariants);
+      if (offset != 0)
+        {
+          const MathVariants* variants = (const MathVariants*)(tableData + offset);
+
+          if (horiz)
+            offset = SWAP(variants->horizGlyphCoverage);
+          else
+            offset = SWAP(variants->vertGlyphCoverage);
+
+          if (offset != 0)
+            {
+              const Coverage* coverage = (const Coverage*)(((const char*)variants) + offset);
+
+              int32_t index = getCoverage(coverage, glyph);
+              if (index >= 0)
+                {
+                  if (horiz)
+                    index += SWAP(variants->vertGlyphCount);
+                  const MathGlyphConstruction* construction = (const MathGlyphConstruction*)(((const char*)variants)
+                                                              + SWAP(variants->vertGlyphConstruction[index]));
+                  for (int i = 0; i < SWAP(construction->variantCount); i++)
+                    {
+                      variant = SWAP(construction->mathGlyphVariantRecord[i].variantGlyph);
+                      int adv = SWAP(construction->mathGlyphVariantRecord[i].advanceMeasurement);
+                      if (adv > size.toInt())
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+  return variant;
+}

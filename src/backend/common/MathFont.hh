@@ -39,6 +39,7 @@ public:
   static SmartPtr<MathFont> create(void);
   virtual int getConstant(MathConstant) const;
   virtual int getUnitsPerEM(void) const { return unitsPerEM; }
+  virtual unsigned getVariant(int, scaled, bool);
 
   virtual void setData(unsigned char* data) { tableData = data; }
   virtual void setUnitsPerEM(int em) { unitsPerEM = em; }
