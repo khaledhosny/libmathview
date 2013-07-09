@@ -100,10 +100,10 @@ CLEANFILES = \
   $(NULL)
 
 gtkmathview_marshal.h: marshal.list
-	$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --header > $@
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --header > $@
 
 gtkmathview_marshal.c: marshal.list
-	$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --body > $@
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --body > $@
 
 AM_CPPFLAGS = \
   -DGMV_Widget_DLL \

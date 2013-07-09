@@ -45,21 +45,22 @@ if COND_XSLTPROC
 XSLTPROC = xsltproc
 
 %_gen.cc : $(srcdir)/xml/%.xml $(srcdir)/extract.xsl
-	$(XSLTPROC) --novalid $(srcdir)/extract.xsl $< >$@
+	$(AM_V_GEN)$(XSLTPROC) --novalid $(srcdir)/extract.xsl $< >$@
 
 %.cc : %_gen.cc $(srcdir)/variant.top $(srcdir)/variant.bot
-	cat $(srcdir)/variant.top >$@
-	$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
-	$(CXX) -o $(@:%.cc=%) -I$(top_builddir)/auto $<
-	echo "Char32 " >>$@
-	basename map_variant_$@ .cc | tr "-" "_" >>$@
-	echo "(Char32 ch)" >>$@
-	echo "{" >>$@
-	./$(@:%.cc=%) >>$@
-	echo "  return ch;" >>$@
-	echo "}" >>$@
-	rm -f $(@:%.cc=%)
-	cat $(srcdir)/variant.bot >>$@
+	$(AM_V_GEN)
+	$(AM_V_at)cat $(srcdir)/variant.top >$@
+	$(AM_V_at)$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/extract.xsl $(<:%_gen.cc=$(srcdir)/xml/%.xml) >>$@
+	$(AM_V_at)$(CXX) -o $(@:%.cc=%) -I$(top_builddir)/auto $<
+	$(AM_V_at)echo "Char32 " >>$@
+	$(AM_V_at)basename map_variant_$@ .cc | tr "-" "_" >>$@
+	$(AM_V_at)echo "(Char32 ch)" >>$@
+	$(AM_V_at)echo "{" >>$@
+	$(AM_V_at)./$(@:%.cc=%) >>$@
+	$(AM_V_at)echo "  return ch;" >>$@
+	$(AM_V_at)echo "}" >>$@
+	$(AM_V_at)rm -f $(@:%.cc=%)
+	$(AM_V_at)cat $(srcdir)/variant.bot >>$@
 endif
 
 EXTRA_DIST += \

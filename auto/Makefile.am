@@ -6,7 +6,7 @@ if COND_GMETADOM
 noinst_PROGRAMS += dumpEntitiesTable
 
 entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
-	./dumpEntitiesTable $< >$@
+	$(AM_V_GEN)./dumpEntitiesTable $< >$@
 
 else
 entitiesTable.inc:
@@ -58,20 +58,20 @@ if COND_XSLTPROC
 XSLTPROC = xsltproc
 
 token.dec: token-list.xml list-to-dec.xsl
-	$(XSLTPROC) $(srcdir)/list-to-dec.xsl $< >$@
+	$(AM_V_GEN)$(XSLTPROC) $(srcdir)/list-to-dec.xsl $< >$@
 
 token.def: token-list.xml list-to-def.xsl
-	$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
+	$(AM_V_GEN)$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
 endif
 
 .PHONY: config.dirs
 config.dirs:
-	( \
+	$(AM_V_GEN)( \
 	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@.maybe; \
 	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@.maybe; \
 	if test ! \( -e $@ \); then \
 	  mv $@.maybe $@; \
-        elif ! diff $@.maybe $@ >/dev/null; then \
+	elif ! diff $@.maybe $@ >/dev/null; then \
 	  mv $@.maybe $@; \
 	else \
 	  rm $@.maybe; \
@@ -79,10 +79,10 @@ config.dirs:
 	)
 
 Char.hh: $(top_builddir)/auto/Char.hh.in
-	( \
+	$(AM_V_GEN)( \
 	if test ! \( -e $@ \); then \
 	  cp $< $@; \
-        elif ! diff $< $@ >/dev/null; then \
+	elif ! diff $< $@ >/dev/null; then \
 	  cp $< $@; \
 	fi \
 	)
