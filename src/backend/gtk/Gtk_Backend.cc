@@ -36,6 +36,7 @@
 #include "Gtk_MathGraphicDevice.hh"
 #include "Gtk_PangoShaper.hh"
 #include "ShaperManager.hh"
+#include "SpaceShaper.hh"
 
 #define MATH_TAG  0X4D415448
 
@@ -84,6 +85,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   SmartPtr<Gtk_PangoShaper> shaper = Gtk_PangoShaper::create(mathfont);
   shaper->setFont(description);
   getShaperManager()->registerShaper(shaper);
+  getShaperManager()->registerShaper(SpaceShaper::create());
 }
 
 Gtk_Backend::~Gtk_Backend()
