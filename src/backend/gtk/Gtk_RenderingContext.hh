@@ -23,7 +23,8 @@
 #ifndef __Gtk_RenderingContext_hh__
 #define __Gtk_RenderingContext_hh__
 
-#include <gtk/gtk.h>
+#include <cairo/cairo.h>
+#include <pango/pangocairo.h>
 
 #include "Char.hh"
 #include "SmartPtr.hh"

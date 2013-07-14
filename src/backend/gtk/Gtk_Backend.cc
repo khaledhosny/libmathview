@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 #include <pango/pangofc-font.h>
 #include FT_TRUETYPE_TABLES_H
 
@@ -82,9 +82,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  SmartPtr<Gtk_PangoShaper> shaper = Gtk_PangoShaper::create(mathfont);
-  shaper->setFont(description);
-  getShaperManager()->registerShaper(shaper);
+  getShaperManager()->registerShaper(Gtk_PangoShaper::create(context, font, mathfont));
   getShaperManager()->registerShaper(SpaceShaper::create());
 }
 

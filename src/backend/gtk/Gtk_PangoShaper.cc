@@ -23,7 +23,6 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
 #define PANGO_ENABLE_ENGINE // for pango_fc_font_get_glyph()
 #include <pango/pangofc-font.h>
 
@@ -34,25 +33,23 @@
 #include "Gtk_RenderingContext.hh"
 #include "ShapingContext.hh"
 
-Gtk_PangoShaper::Gtk_PangoShaper(const SmartPtr<MathFont>& f)
-  : MathShaper(f)
-{
-  context = gdk_pango_context_get();
-}
+Gtk_PangoShaper::Gtk_PangoShaper(const GObjectPtr<PangoContext>& c,
+                                 const GObjectPtr<PangoFont>& f,
+                                 const SmartPtr<MathFont>& mf)
+  : MathShaper(mf)
+  , context(c)
+  , font(f)
+{ }
 
 Gtk_PangoShaper::~Gtk_PangoShaper()
 { }
 
-void
-Gtk_PangoShaper::setFont(const PangoFontDescription* description)
-{
-  font = pango_context_load_font(context, description);
-}
-
 SmartPtr<Gtk_PangoShaper>
-Gtk_PangoShaper::create(const SmartPtr<MathFont>& f)
+Gtk_PangoShaper::create(const GObjectPtr<PangoContext>& c,
+                        const GObjectPtr<PangoFont>& f,
+                        const SmartPtr<MathFont>& mf)
 {
-  return new Gtk_PangoShaper(f);
+  return new Gtk_PangoShaper(c, f, mf);
 }
 
 unsigned

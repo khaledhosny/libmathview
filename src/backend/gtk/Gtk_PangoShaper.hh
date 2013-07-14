@@ -29,15 +29,13 @@
 class Gtk_PangoShaper : public MathShaper
 {
 protected:
-  Gtk_PangoShaper(const SmartPtr<class MathFont>&);
+  Gtk_PangoShaper(const GObjectPtr<PangoContext>&, const GObjectPtr<PangoFont>&, const SmartPtr<class MathFont>&);
   virtual ~Gtk_PangoShaper();
 
 public:
-  static SmartPtr<Gtk_PangoShaper> create(const SmartPtr<class MathFont>&);
+  static SmartPtr<Gtk_PangoShaper> create(const GObjectPtr<PangoContext>&, const GObjectPtr<PangoFont>&, const SmartPtr<class MathFont>&);
 
   virtual bool isDefaultShaper(void) const { return true; }
-
-  virtual void setFont(const PangoFontDescription*);
 
 protected:
   virtual AreaRef getGlyphArea(unsigned, const scaled&) const;
