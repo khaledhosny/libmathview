@@ -27,7 +27,6 @@
 #include <pango/pangofc-font.h>
 
 #include "AbstractLogger.hh"
-#include "Configuration.hh"
 #include "Gtk_PangoGlyphArea.hh"
 #include "Gtk_PangoShaper.hh"
 #include "Gtk_RenderingContext.hh"

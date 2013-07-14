@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include "AbstractLogger.hh"
-#include "Configuration.hh"
 #include "Gtk_AreaFactory.hh"
 #include "Gtk_MathGraphicDevice.hh"
 #include "MathMLElement.hh"

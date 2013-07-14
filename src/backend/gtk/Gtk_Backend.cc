@@ -41,7 +41,7 @@
 #define MATH_TAG  0X4D415448
 
 Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-  : Backend(l, conf)
+  : Backend(l)
 {
   SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
   SmartPtr<MathFont> mathfont = MathFont::create();

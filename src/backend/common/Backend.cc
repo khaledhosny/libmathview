@@ -27,8 +27,7 @@
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
 
-Backend::Backend(const SmartPtr<AbstractLogger>& logger,
-		 const SmartPtr<Configuration>&)
+Backend::Backend(const SmartPtr<AbstractLogger>& logger)
   : shaperManager(ShaperManager::create(logger))
 { }
 
