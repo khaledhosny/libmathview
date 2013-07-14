@@ -118,6 +118,7 @@ struct _GtkMathView
 
   GtkWidget* 	 area;
   GdkPixmap*     pixmap;
+  cairo_t*       context;
 
   guint 	 hsignal; // what is this for?
   guint 	 vsignal; // what is this for?
@@ -203,9 +204,9 @@ static guint decorate_over_signal = 0;
 
 /* auxiliary C++ functions */
 
-// static RGBColor
-// RGBColorOfGdkColor(const GdkColor& c)
-// { return RGBColor(c.red >> 8, c.green >> 8, c.blue >> 8); }
+static RGBColor
+RGBColorOfGdkColor(const GdkColor& c)
+{ return RGBColor(c.red >> 8, c.green >> 8, c.blue >> 8); }
 
 static SmartPtr<const Gtk_WrapperArea>
 findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
@@ -312,23 +313,24 @@ gtk_math_view_paint(GtkMathView* math_view)
   if (math_view->pixmap == NULL)
     {
       math_view->pixmap = gdk_pixmap_new(widget->window, width, height, -1);
-      rc->setDrawable(math_view->pixmap);
+      math_view->context = gdk_cairo_create(math_view->pixmap);
+      rc->setContext(math_view->context);
     }
 
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
   if (GTK_WIDGET_HAS_FOCUS(math_view))
     {
-      rc->setForegroundColor(widget->style->text[GTK_STATE_SELECTED]);
-      rc->setBackgroundColor(widget->style->base[GTK_STATE_SELECTED]);
+      rc->setForegroundColor(RGBColorOfGdkColor(widget->style->text[GTK_STATE_SELECTED]));
+      rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->base[GTK_STATE_SELECTED]));
     }
   else
     {
-      rc->setForegroundColor(widget->style->text[GTK_STATE_ACTIVE]);
-      rc->setBackgroundColor(widget->style->base[GTK_STATE_ACTIVE]);
+      rc->setForegroundColor(RGBColorOfGdkColor(widget->style->text[GTK_STATE_ACTIVE]));
+      rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->base[GTK_STATE_ACTIVE]));
     }
   rc->setStyle(Gtk_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(widget->style->fg[GTK_STATE_NORMAL]);
-  rc->setBackgroundColor(widget->style->bg[GTK_STATE_NORMAL]);
+  rc->setForegroundColor(RGBColorOfGdkColor(widget->style->fg[GTK_STATE_NORMAL]));
+  rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->bg[GTK_STATE_NORMAL]));
 
   gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
 
@@ -650,7 +652,6 @@ gtk_math_view_init(GtkMathView* math_view)
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
-  math_view->renderingContext->setColorMap(gtk_widget_get_colormap(GTK_WIDGET(math_view)));
 }
 
 extern "C" GtkWidget*
@@ -702,6 +703,12 @@ gtk_math_view_destroy(GtkObject* object)
     {
       g_object_unref(G_OBJECT(math_view->pixmap));
       math_view->pixmap = NULL;
+    }
+
+  if (math_view->context != NULL)
+    {
+      cairo_destroy(math_view->context);
+      math_view->context = NULL;
     }
 
   gtk_math_view_release_document_resources(math_view);
@@ -806,6 +813,12 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
     {
       g_object_unref(math_view->pixmap);
       math_view->pixmap = NULL;
+    }
+
+  if (math_view->context != NULL)
+    {
+      cairo_destroy(math_view->context);
+      math_view->context = NULL;
     }
 
   widget->allocation = *allocation;

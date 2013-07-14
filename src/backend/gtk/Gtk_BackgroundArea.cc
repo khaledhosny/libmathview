@@ -32,10 +32,8 @@ Gtk_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y
 
   if (context.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
     {
-      RGBColor old_foregroundColor;
-      RGBColor old_backgroundColor;
-      context.getForegroundColor(old_foregroundColor);
-      context.getBackgroundColor(old_backgroundColor);
+      RGBColor old_foregroundColor = context.getForegroundColor();
+      RGBColor old_backgroundColor = context.getBackgroundColor();
 
       context.setForegroundColor(getColor());
       context.setBackgroundColor(getColor());

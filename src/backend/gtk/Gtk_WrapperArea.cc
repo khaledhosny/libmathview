@@ -60,10 +60,8 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
 
   if (old_style != context.getStyle())
     {      
-      GdkColor old_foregroundColor;
-      GdkColor backgroundColor;
-      context.getForegroundColor(old_foregroundColor);
-      context.getBackgroundColor(backgroundColor);
+      RGBColor old_foregroundColor = context.getForegroundColor();
+      RGBColor backgroundColor = context.getBackgroundColor();
       context.setForegroundColor(backgroundColor);
 
       BoundingBox areaBox = box();

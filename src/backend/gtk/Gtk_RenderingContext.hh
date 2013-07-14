@@ -43,23 +43,14 @@ public:
   Gtk_RenderingContext(const SmartPtr<class AbstractLogger>&);
   virtual ~Gtk_RenderingContext();
 
-  void setForegroundColor(const RGBColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
-  void setBackgroundColor(const RGBColor& c) { setColor<BACKGROUND_INDEX, gdk_gc_set_background>(c); }
-  void setForegroundColor(GdkColor& c) { setColor<FOREGROUND_INDEX, gdk_gc_set_foreground>(c); }
-  void setBackgroundColor(GdkColor& c) { setColor<BACKGROUND_INDEX, gdk_gc_set_background>(c); }
+  void setForegroundColor(const RGBColor& c) { data[getStyle()].setColor(FOREGROUND_INDEX, c); }
+  void setBackgroundColor(const RGBColor& c) { data[getStyle()].setColor(BACKGROUND_INDEX, c); }
 
-  // the return value is passed as an argument so that
-  // we can use overloading
-  void getForegroundColor(RGBColor& c) { getColor<RGBColor, FOREGROUND_INDEX>(c); }
-  void getBackgroundColor(RGBColor& c) { getColor<RGBColor, BACKGROUND_INDEX>(c); }
-  void getForegroundColor(GdkColor& c) { getColor<GdkColor, FOREGROUND_INDEX>(c); }
-  void getBackgroundColor(GdkColor& c) { getColor<GdkColor, BACKGROUND_INDEX>(c); }
+  RGBColor getForegroundColor(void) const { return data[getStyle()].getColor(FOREGROUND_INDEX); }
+  RGBColor getBackgroundColor(void) const { return data[getStyle()].getColor(BACKGROUND_INDEX); }
 
-  void setColorMap(const GObjectPtr<GdkColormap>& cm) { gdk_colormap = cm; }
-  GObjectPtr<GdkColormap> getColorMap(void) const { return gdk_colormap; }
-  void setDrawable(const GObjectPtr<GdkDrawable>&);
-  GObjectPtr<GdkDrawable> getDrawable(void) const { return gdk_drawable; }
-  GObjectPtr<GdkGC> getGC(void) const { return data[getStyle()].gdk_gc; }
+  void setContext(cairo_t* cr) { cairo_context = cr; }
+  cairo_t* getContext(void) const { return cairo_context; }
 
   void setStyle(ColorStyle s) { style = s; }
   ColorStyle getStyle(void) const { return style; }
@@ -69,91 +60,45 @@ public:
   void draw(const scaled&, const scaled&, PangoLayoutLine*) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
 
-  static int toGtkPixels(const scaled& s)
-  { return round(s * (72.27 / 72.0)).toInt(); }
-  static int toPangoPixels(const scaled& s)
-  { return round(s * PANGO_SCALE * (72.27 / 72.0)).toInt(); }
-  static int toPangoPoints(const scaled& s)
-  { return round(s * PANGO_SCALE).toInt(); }
-  static scaled fromGtkPixels(int s)
+  static double toGtkPixels(const scaled& s)
+  { return (s * (72.27 / 72.0)).toDouble(); }
+  static double toPangoPixels(const scaled& s)
+  { return (s * PANGO_SCALE * (72.27 / 72.0)).toDouble(); }
+  static double toPangoPoints(const scaled& s)
+  { return (s * PANGO_SCALE).toDouble(); }
+  static scaled fromGtkPixels(double s)
   { return scaled(s * (72.0 / 72.27)); }
   static scaled fromPangoPixels(int s)
   { return scaled((s * (72.0 / 72.27)) / PANGO_SCALE); }
 
-  static int toGtkX(const scaled& x)
+  static double toGtkX(const scaled& x)
   { return toGtkPixels(x); }
-  static int toGtkY(const scaled& y)
+  static double toGtkY(const scaled& y)
   { return toGtkPixels(-y); }
 
-  static scaled fromGtkX(int x)
+  static scaled fromGtkX(double x)
   { return fromGtkPixels(x); }
-  static scaled fromGtkY(int y)
+  static scaled fromGtkY(double y)
   { return fromGtkPixels(-y); }
 
 protected:
-  template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
-  void setColor(const RGBColor& c)
-  { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
-
-  template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
-  void setColor(const GdkColor& c)
-  { data[getStyle()].setColor<index,set>(c, gdk_colormap); }
-
-  template <typename C, ColorIndex index>
-  void getColor(C& c) const
-  { data[getStyle()].getColor<index>(c); }
-  
   struct ContextData
   {
-    GObjectPtr<GdkGC> gdk_gc;
     RGBColor color[MAX_INDEX];
-    GdkColor gdk_color[MAX_INDEX];
     
-    template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
-    void setColor(const RGBColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
-    {
-      color[index] = c;
+    void setColor(ColorIndex index, const RGBColor& c)
+    { color[index] = c; }
 
-      GdkColor gdk_c;
-      gdk_c.red = c.red * (65535/255);
-      gdk_c.green = c.green * (65535/255);
-      gdk_c.blue = c.blue * (65535/255);
-      gdk_c.pixel = c.red * 65536 + c.green * 256 + c.blue;
-      
-      setColor<index,set>(gdk_c, gdk_colormap);
-    }
-
-    template <ColorIndex index>
-    void getColor(RGBColor& c) const
-    { c = color[index]; }
-
-    template <ColorIndex index, void (*set)(GdkGC*, const GdkColor*)>
-    void setColor(const GdkColor& c, const GObjectPtr<GdkColormap>& gdk_colormap)
-    { 
-      gdk_color[index] = c;
-
-      assert(gdk_colormap);
-      const gboolean ret = gdk_colormap_alloc_color(gdk_colormap, &gdk_color[index], FALSE, TRUE);
-      assert(ret == TRUE);
-      
-      set(gdk_gc, &gdk_color[index]);
-    }
-
-    template <ColorIndex index>
-    void getColor(GdkColor& c) const
-    { c = gdk_color[index]; }
+    RGBColor getColor(ColorIndex index) const
+    { return color[index]; }
   };
-
-  void releaseResources(void);
 
   SmartPtr<class AbstractLogger> logger;
 
   ColorStyle style;
   ContextData data[MAX_STYLE];
 
-  // GDK-specific fields
-  GObjectPtr<GdkDrawable> gdk_drawable;
-  GObjectPtr<GdkColormap> gdk_colormap;
+  cairo_t* cairo_context;
 };
 
 #endif // __Gtk_RenderingContext_hh__

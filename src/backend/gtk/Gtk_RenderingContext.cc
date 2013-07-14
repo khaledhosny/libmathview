@@ -34,74 +34,61 @@ Gtk_RenderingContext::Gtk_RenderingContext(const SmartPtr<AbstractLogger>& l)
 }
 
 Gtk_RenderingContext::~Gtk_RenderingContext()
-{
-  releaseResources();
-}
-
-void
-Gtk_RenderingContext::releaseResources()
-{
-  // should free the gc's? 
-}
-
-void
-Gtk_RenderingContext::setDrawable(const GObjectPtr<GdkDrawable>& drawable)
-{
-  releaseResources();
-
-  gdk_drawable = drawable;
-  if (gdk_drawable)
-    {
-      for (unsigned i = 0; i < MAX_STYLE; i++)
-	data[i].gdk_gc = gdk_gc_new(gdk_drawable);
-    }
-  else
-    {
-      for (unsigned i = 0; i < MAX_STYLE; i++)
-	data[i].gdk_gc = 0;
-    }
-}
+{ }
 
 void
 Gtk_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
 {
-  gdk_draw_rectangle(getDrawable(),
-		     getGC(),
-		     TRUE,
-		     Gtk_RenderingContext::toGtkX(x),
-		     Gtk_RenderingContext::toGtkY(y + box.height),
-		     Gtk_RenderingContext::toGtkPixels(box.width),
-		     Gtk_RenderingContext::toGtkPixels(box.height + box.depth));
+  cairo_save(getContext());
+
+  RGBColor fg = getForegroundColor();
+  cairo_set_source_rgba(getContext(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_rectangle(getContext(),
+                  toGtkX(x),
+                  toGtkY(y + box.height),
+                  toGtkPixels(box.width),
+                  toGtkPixels(box.height + box.depth));
+  cairo_fill(getContext());
+
+  cairo_restore(getContext());
 }
 
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayout* layout) const
 {
-  gdk_draw_layout(getDrawable(),
-		  getGC(),
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y),
-		  layout);
+  cairo_save(getContext());
+
+  RGBColor fg = getForegroundColor();
+  cairo_set_source_rgba(getContext(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_move_to(getContext(), toGtkX(x), toGtkY(y));
+  pango_cairo_show_layout(getContext(), layout);
+
+  cairo_restore(getContext());
 }
 
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayoutLine* line) const
 {
-  gdk_draw_layout_line(getDrawable(),
-		       getGC(),
-		       Gtk_RenderingContext::toGtkX(x),
-		       Gtk_RenderingContext::toGtkY(y),
-		       line);
+  cairo_save(getContext());
+
+  RGBColor fg = getForegroundColor();
+  cairo_set_source_rgba(getContext(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_move_to(getContext(), toGtkX(x), toGtkY(y));
+  pango_cairo_show_layout_line(getContext(), line);
+
+  cairo_restore(getContext());
 }
 
 void
 Gtk_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
-			   PangoGlyphString* glyphs) const
+                           PangoGlyphString* glyphs) const
 {
-  gdk_draw_glyphs(getDrawable(),
-		  getGC(),
-		  font,
-		  Gtk_RenderingContext::toGtkX(x),
-		  Gtk_RenderingContext::toGtkY(y),
-		  glyphs);
+  cairo_save(getContext());
+
+  RGBColor fg = getForegroundColor();
+  cairo_set_source_rgba(getContext(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_move_to(getContext(), toGtkX(x), toGtkY(y));
+  pango_cairo_show_glyph_string(getContext(), font, glyphs);
+
+  cairo_restore(getContext());
 }
