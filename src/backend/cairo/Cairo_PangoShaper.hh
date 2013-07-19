@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -20,38 +21,29 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_PangoLayoutArea_hh__
-#define __Gtk_PangoLayoutArea_hh__
+#ifndef __Cairo_PangoShaper_hh__
+#define __Cairo_PangoShaper_hh__
 
-#include <pango/pango.h>
+#include "MathShaper.hh"
 
-#include "GObjectPtr.hh"
-#include "GlyphArea.hh"
-
-class Gtk_PangoLayoutArea : public GlyphArea 
+class Cairo_PangoShaper : public MathShaper
 {
 protected:
-  Gtk_PangoLayoutArea(PangoLayout*);
-  Gtk_PangoLayoutArea(PangoLayout*, bool);
-  virtual ~Gtk_PangoLayoutArea();
+  Cairo_PangoShaper(const GObjectPtr<PangoContext>&, const GObjectPtr<PangoFont>&, const SmartPtr<class MathFont>&);
+  virtual ~Cairo_PangoShaper();
 
 public:
-  static SmartPtr<Gtk_PangoLayoutArea> create(PangoLayout* layout)
-  { return new Gtk_PangoLayoutArea(layout); }
-  static SmartPtr<Gtk_PangoLayoutArea> create(PangoLayout* layout, bool)
-  { return new Gtk_PangoLayoutArea(layout, true); }
+  static SmartPtr<Cairo_PangoShaper> create(const GObjectPtr<PangoContext>&, const GObjectPtr<PangoFont>&, const SmartPtr<class MathFont>&);
 
-  virtual BoundingBox box(void) const;
-  virtual scaled leftEdge(void) const;
-  virtual scaled rightEdge(void) const;
-  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
-  virtual CharIndex length(void) const;
+  virtual bool isDefaultShaper(void) const { return true; }
 
 protected:
-  GObjectPtr<PangoLayout> layout;
-  BoundingBox bbox;
+  virtual AreaRef getGlyphArea(unsigned, const scaled&) const;
+  virtual unsigned shapeChar(Char32) const;
+
+private:
+  GObjectPtr<PangoContext> context;
+  GObjectPtr<PangoFont> font;
 };
 
-#endif // __Gtk_PangoLayoutArea_hh__
+#endif // __Cairo_PangoShaper_hh__

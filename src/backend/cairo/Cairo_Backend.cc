@@ -31,19 +31,19 @@
 
 #include "AbstractLogger.hh"
 #include "Configuration.hh"
-#include "Gtk_Backend.hh"
-#include "Gtk_AreaFactory.hh"
-#include "Gtk_MathGraphicDevice.hh"
-#include "Gtk_PangoShaper.hh"
+#include "Cairo_Backend.hh"
+#include "Cairo_AreaFactory.hh"
+#include "Cairo_MathGraphicDevice.hh"
+#include "Cairo_PangoShaper.hh"
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
 
 #define MATH_TAG  0X4D415448
 
-Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+Cairo_Backend::Cairo_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
   : Backend(l)
 {
-  SmartPtr<Gtk_AreaFactory> factory = Gtk_AreaFactory::create();
+  SmartPtr<Cairo_AreaFactory> factory = Cairo_AreaFactory::create();
   SmartPtr<MathFont> mathfont = MathFont::create();
 
   String fontname = conf->getString(l, "default/font-family", DEFAULT_FONT_FAMILY);
@@ -77,18 +77,18 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
       pango_fc_font_unlock_face(fcfont);
     }
 
-  SmartPtr<Gtk_MathGraphicDevice> mgd = Gtk_MathGraphicDevice::create(l, mathfont);
+  SmartPtr<Cairo_MathGraphicDevice> mgd = Cairo_MathGraphicDevice::create(l, mathfont);
 
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  getShaperManager()->registerShaper(Gtk_PangoShaper::create(context, font, mathfont));
+  getShaperManager()->registerShaper(Cairo_PangoShaper::create(context, font, mathfont));
   getShaperManager()->registerShaper(SpaceShaper::create());
 }
 
-Gtk_Backend::~Gtk_Backend()
+Cairo_Backend::~Cairo_Backend()
 { }
 
-SmartPtr<Gtk_Backend>
-Gtk_Backend::create(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-{ return new Gtk_Backend(l, conf); }
+SmartPtr<Cairo_Backend>
+Cairo_Backend::create(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
+{ return new Cairo_Backend(l, conf); }

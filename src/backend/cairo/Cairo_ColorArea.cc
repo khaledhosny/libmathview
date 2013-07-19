@@ -20,28 +20,23 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_WrapperArea_hh__
-#define __Gtk_WrapperArea_hh__
+#include <config.h>
 
-#include "WrapperArea.hh"
+#include "Cairo_ColorArea.hh"
+#include "Cairo_RenderingContext.hh"
 
-class Gtk_WrapperArea : public WrapperArea
+void
+Cairo_ColorArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-protected:
-  Gtk_WrapperArea(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
-  virtual ~Gtk_WrapperArea() { }
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
 
-public:
-  static SmartPtr<Gtk_WrapperArea> create(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
-  virtual AreaRef clone(const AreaRef&) const;
-
-  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
-
-  int getSelected(void) const { return selected; }
-  void setSelected(int n) const { selected = n; }
-
-private:
-  mutable int selected;
-};
-
-#endif // __Gtk_WrapperArea_hh__
+  if (context.getStyle() == Cairo_RenderingContext::NORMAL_STYLE)
+    {
+      RGBColor oldColor = context.getForegroundColor();
+      context.setForegroundColor(getColor());
+      getChild()->render(context, x, y);
+      context.setForegroundColor(oldColor);
+    }
+  else
+    getChild()->render(context, x, y);    
+}

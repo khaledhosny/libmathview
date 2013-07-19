@@ -20,36 +20,25 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <config.h>
+#ifndef __Cairo_Backend_hh__
+#define __Cairo_Backend_hh__
 
-#include "AbstractLogger.hh"
-#include "Gtk_AreaFactory.hh"
-#include "Gtk_MathGraphicDevice.hh"
-#include "MathMLElement.hh"
-#include "FormattingContext.hh"
+#include "Backend.hh"
 
-Gtk_MathGraphicDevice::Gtk_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<MathFont>& f)
-  : MathGraphicDevice(l, f)
-{ }
-
-Gtk_MathGraphicDevice::~Gtk_MathGraphicDevice()
-{ }
-
-SmartPtr<Gtk_MathGraphicDevice>
-Gtk_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
-                              const SmartPtr<MathFont>& font)
-{ return new Gtk_MathGraphicDevice(logger, font); }
-
-void
-Gtk_MathGraphicDevice::setFactory(const SmartPtr<Gtk_AreaFactory>& f)
+class GMV_BackEnd_EXPORT Cairo_Backend : public Backend
 {
-  MathGraphicDevice::setFactory(f);
-  gtk_factory = f;
-}
+protected:
+  Cairo_Backend(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+  virtual ~Cairo_Backend();
 
-AreaRef
-Gtk_MathGraphicDevice::wrapper(const FormattingContext& context,
-                               const AreaRef& base) const
-{
-  return gtk_factory->wrapper(base, base->box(), context.getMathMLElement());
-}
+public:
+  static SmartPtr<Cairo_Backend> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+
+  void setCairo(cairo_t* cr) { cairo_context = cr; }
+  cairo_t* getCairo(void) const { return cairo_context; }
+
+private:
+  cairo_t* cairo_context;
+};
+
+#endif // __Cairo_Backend_hh__

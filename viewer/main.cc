@@ -33,11 +33,6 @@
 #include "guiGTK.h"
 #include "String.hh"
 #include "MathMLTokenElement.hh"
-#ifdef DEBUG
-#include "Gtk_GraphicsContext.hh"
-#endif // DEBUG
-#ifdef ENABLE_PROFILE
-#endif // ENABLE_PROFILE
 
 static gboolean option_version = FALSE;
 static gint option_verbose = -1;

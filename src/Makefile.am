@@ -309,18 +309,18 @@ mathview_HEADERS += \
   $(NULL)
 
 if COND_GTK
-lib_LTLIBRARIES += libmathview_backend_gtk.la
+lib_LTLIBRARIES += libmathview_backend_cairo.la
 
-libmathview_backend_gtk_la_CPPFLAGS = -DGMV_BackEnd_DLL
+libmathview_backend_cairo_la_CPPFLAGS = -DGMV_BackEnd_DLL
 
-libmathview_backend_gtk_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_backend_cairo_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
-libmathview_backend_gtk_la_LIBADD = \
+libmathview_backend_cairo_la_LIBADD = \
   $(PANGO_LIBS) \
   $(GTK_LIBS) \
   $(NULL)
 
-libmathview_backend_gtk_la_CPPFLAGS += \
+libmathview_backend_cairo_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/common/mathvariants \
@@ -331,33 +331,33 @@ libmathview_backend_gtk_la_CPPFLAGS += \
   $(GTK_CFLAGS) \
   $(NULL)
 
-libmathview_backend_gtk_la_SOURCES = \
-  backend/gtk/Gtk_AreaFactory.hh \
-  backend/gtk/Gtk_Backend.cc \
-  backend/gtk/Gtk_BackgroundArea.cc \
-  backend/gtk/Gtk_BackgroundArea.hh \
-  backend/gtk/Gtk_ColorArea.cc \
-  backend/gtk/Gtk_ColorArea.hh \
-  backend/gtk/Gtk_InkArea.cc \
-  backend/gtk/Gtk_InkArea.hh \
-  backend/gtk/Gtk_MathGraphicDevice.cc \
-  backend/gtk/Gtk_MathGraphicDevice.hh \
-  backend/gtk/Gtk_PangoShaper.cc \
-  backend/gtk/Gtk_PangoShaper.hh \
-  backend/gtk/Gtk_PangoGlyphArea.cc \
-  backend/gtk/Gtk_PangoGlyphArea.hh \
-  backend/gtk/Gtk_PangoLayoutArea.cc \
-  backend/gtk/Gtk_PangoLayoutArea.hh \
-  backend/gtk/Gtk_PangoLayoutLineArea.cc \
-  backend/gtk/Gtk_PangoLayoutLineArea.hh \
-  backend/gtk/Gtk_RenderingContext.cc \
-  backend/gtk/Gtk_RenderingContext.hh \
-  backend/gtk/Gtk_WrapperArea.cc \
-  backend/gtk/Gtk_WrapperArea.hh \
+libmathview_backend_cairo_la_SOURCES = \
+  backend/cairo/Cairo_AreaFactory.hh \
+  backend/cairo/Cairo_Backend.cc \
+  backend/cairo/Cairo_BackgroundArea.cc \
+  backend/cairo/Cairo_BackgroundArea.hh \
+  backend/cairo/Cairo_ColorArea.cc \
+  backend/cairo/Cairo_ColorArea.hh \
+  backend/cairo/Cairo_InkArea.cc \
+  backend/cairo/Cairo_InkArea.hh \
+  backend/cairo/Cairo_MathGraphicDevice.cc \
+  backend/cairo/Cairo_MathGraphicDevice.hh \
+  backend/cairo/Cairo_PangoShaper.cc \
+  backend/cairo/Cairo_PangoShaper.hh \
+  backend/cairo/Cairo_PangoGlyphArea.cc \
+  backend/cairo/Cairo_PangoGlyphArea.hh \
+  backend/cairo/Cairo_PangoLayoutArea.cc \
+  backend/cairo/Cairo_PangoLayoutArea.hh \
+  backend/cairo/Cairo_PangoLayoutLineArea.cc \
+  backend/cairo/Cairo_PangoLayoutLineArea.hh \
+  backend/cairo/Cairo_RenderingContext.cc \
+  backend/cairo/Cairo_RenderingContext.hh \
+  backend/cairo/Cairo_WrapperArea.cc \
+  backend/cairo/Cairo_WrapperArea.hh \
   $(NULL)
 
 mathview_HEADERS += \
-  backend/gtk/Gtk_Backend.hh \
+  backend/cairo/Cairo_Backend.hh \
   $(NULL)
 endif
 

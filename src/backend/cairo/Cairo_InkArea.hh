@@ -1,5 +1,4 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
-// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -21,29 +20,23 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_PangoShaper_hh__
-#define __Gtk_PangoShaper_hh__
+#ifndef __Cairo_InkArea_hh__
+#define __Cairo_InkArea_hh__
 
-#include "MathShaper.hh"
+#include "InkArea.hh"
 
-class Gtk_PangoShaper : public MathShaper
+class Cairo_InkArea : public InkArea
 {
 protected:
-  Gtk_PangoShaper(const GObjectPtr<PangoContext>&, const GObjectPtr<PangoFont>&, const SmartPtr<class MathFont>&);
-  virtual ~Gtk_PangoShaper();
+  Cairo_InkArea(const AreaRef& area) : InkArea(area) { }
+  virtual ~Cairo_InkArea() { }
 
 public:
-  static SmartPtr<Gtk_PangoShaper> create(const GObjectPtr<PangoContext>&, const GObjectPtr<PangoFont>&, const SmartPtr<class MathFont>&);
+  static SmartPtr<Cairo_InkArea> create(const AreaRef& area)
+  { return new Cairo_InkArea(area); }
+  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
 
-  virtual bool isDefaultShaper(void) const { return true; }
-
-protected:
-  virtual AreaRef getGlyphArea(unsigned, const scaled&) const;
-  virtual unsigned shapeChar(Char32) const;
-
-private:
-  GObjectPtr<PangoContext> context;
-  GObjectPtr<PangoFont> font;
+  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
 };
 
-#endif // __Gtk_PangoShaper_hh__
+#endif // __Cairo_InkArea_hh__

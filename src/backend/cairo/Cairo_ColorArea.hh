@@ -20,23 +20,23 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_BackgroundArea_hh__
-#define __Gtk_BackgroundArea_hh__
+#ifndef __Cairo_ColorArea_hh__
+#define __Cairo_ColorArea_hh__
 
 #include "ColorArea.hh"
 
-class Gtk_BackgroundArea : public ColorArea
+class Cairo_ColorArea : public ColorArea
 {
 protected:
-  Gtk_BackgroundArea(const AreaRef& area, const RGBColor& c) : ColorArea(area, c) { }
-  virtual ~Gtk_BackgroundArea() { }
+  Cairo_ColorArea(const AreaRef& area, const RGBColor& c) : ColorArea(area, c) { }
+  virtual ~Cairo_ColorArea() { }
 
 public:
-  static SmartPtr<Gtk_BackgroundArea> create(const AreaRef& area, const RGBColor& c)
-  { return new Gtk_BackgroundArea(area, c); }
+  static SmartPtr<Cairo_ColorArea> create(const AreaRef& area, const RGBColor& c)
+  { return new Cairo_ColorArea(area, c); }
   virtual AreaRef clone(const AreaRef& area) const { return create(area, getColor()); }
 
   virtual void render(RenderingContext&, const scaled&, const scaled&) const;
 };
 
-#endif // __Gtk_BackgroundArea_hh__
+#endif // __Cairo_ColorArea_hh__

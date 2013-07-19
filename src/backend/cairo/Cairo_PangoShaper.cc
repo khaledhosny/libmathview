@@ -27,12 +27,12 @@
 #include <pango/pangofc-font.h>
 
 #include "AbstractLogger.hh"
-#include "Gtk_PangoGlyphArea.hh"
-#include "Gtk_PangoShaper.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_PangoGlyphArea.hh"
+#include "Cairo_PangoShaper.hh"
+#include "Cairo_RenderingContext.hh"
 #include "ShapingContext.hh"
 
-Gtk_PangoShaper::Gtk_PangoShaper(const GObjectPtr<PangoContext>& c,
+Cairo_PangoShaper::Cairo_PangoShaper(const GObjectPtr<PangoContext>& c,
                                  const GObjectPtr<PangoFont>& f,
                                  const SmartPtr<MathFont>& mf)
   : MathShaper(mf)
@@ -40,26 +40,26 @@ Gtk_PangoShaper::Gtk_PangoShaper(const GObjectPtr<PangoContext>& c,
   , font(f)
 { }
 
-Gtk_PangoShaper::~Gtk_PangoShaper()
+Cairo_PangoShaper::~Cairo_PangoShaper()
 { }
 
-SmartPtr<Gtk_PangoShaper>
-Gtk_PangoShaper::create(const GObjectPtr<PangoContext>& c,
+SmartPtr<Cairo_PangoShaper>
+Cairo_PangoShaper::create(const GObjectPtr<PangoContext>& c,
                         const GObjectPtr<PangoFont>& f,
                         const SmartPtr<MathFont>& mf)
 {
-  return new Gtk_PangoShaper(c, f, mf);
+  return new Cairo_PangoShaper(c, f, mf);
 }
 
 unsigned
-Gtk_PangoShaper::shapeChar(Char32 ch) const
+Cairo_PangoShaper::shapeChar(Char32 ch) const
 {
   PangoFcFont* fcfont = PANGO_FC_FONT(static_cast<PangoFont*>(font));
   return pango_fc_font_get_glyph(fcfont, ch);
 }
 
 AreaRef
-Gtk_PangoShaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
+Cairo_PangoShaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
 {
   PangoGlyphString* glyphstring = pango_glyph_string_new();
   pango_glyph_string_set_size(glyphstring, 1);
@@ -70,9 +70,9 @@ Gtk_PangoShaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
   glyphstring->glyphs[0].geometry.width = 0;
 
   PangoFontDescription* description = pango_font_describe(font);
-  const gint size = Gtk_RenderingContext::toPangoPoints(sp_size);
+  const gint size = Cairo_RenderingContext::toPangoPoints(sp_size);
   pango_font_description_set_size(description, size);
   GObjectPtr<PangoFont> newfont = pango_context_load_font(context, description);
 
-  return Gtk_PangoGlyphArea::create(newfont, glyphstring);
+  return Cairo_PangoGlyphArea::create(newfont, glyphstring);
 }

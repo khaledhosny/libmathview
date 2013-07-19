@@ -231,7 +231,7 @@ AC_CONFIG_FILES([
  mathview-frontend-libxml2-reader.pc
  mathview-frontend-libxml2.pc
  mathview-frontend-gmetadom.pc
- mathview-backend-gtk.pc
+ mathview-backend-cairo.pc
  gtkmathview-custom-reader.pc
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc

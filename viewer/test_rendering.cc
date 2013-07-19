@@ -33,9 +33,9 @@
 #include "Configuration.hh"
 #include "libxml2_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
-#include "Gtk_Backend.hh"
-#include "Gtk_MathGraphicDevice.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_Backend.hh"
+#include "Cairo_MathGraphicDevice.hh"
+#include "Cairo_RenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
 
@@ -60,7 +60,7 @@ expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
       pixmap = gdk_pixmap_new(widget->window, width, height, -1);
       // needed to cleanup the pixmap
       gdk_draw_rectangle(pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
-      Gtk_RenderingContext rc(logger);
+      Cairo_RenderingContext rc(logger);
       cr = gdk_cairo_create(pixmap);
       rc.setCairo(cr);
       view->render(rc, scaled::zero(), -box.height);
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 
   logger = Logger::create();
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
-  SmartPtr<Backend> backend = Gtk_Backend::create(logger, configuration);
+  SmartPtr<Backend> backend = Cairo_Backend::create(logger, configuration);
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
 

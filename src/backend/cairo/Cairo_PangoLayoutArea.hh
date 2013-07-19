@@ -20,28 +20,38 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_PangoLayoutLineArea_hh__
-#define __Gtk_PangoLayoutLineArea_hh__
+#ifndef __Cairo_PangoLayoutArea_hh__
+#define __Cairo_PangoLayoutArea_hh__
 
 #include <pango/pango.h>
 
-#include "Gtk_PangoLayoutArea.hh"
+#include "GObjectPtr.hh"
+#include "GlyphArea.hh"
 
-class Gtk_PangoLayoutLineArea : public Gtk_PangoLayoutArea 
+class Cairo_PangoLayoutArea : public GlyphArea 
 {
 protected:
-  Gtk_PangoLayoutLineArea(PangoLayout*);
-  virtual ~Gtk_PangoLayoutLineArea();
+  Cairo_PangoLayoutArea(PangoLayout*);
+  Cairo_PangoLayoutArea(PangoLayout*, bool);
+  virtual ~Cairo_PangoLayoutArea();
 
 public:
-  static SmartPtr<Gtk_PangoLayoutLineArea> create(PangoLayout* layout)
-  { return new Gtk_PangoLayoutLineArea(layout); }
+  static SmartPtr<Cairo_PangoLayoutArea> create(PangoLayout* layout)
+  { return new Cairo_PangoLayoutArea(layout); }
+  static SmartPtr<Cairo_PangoLayoutArea> create(PangoLayout* layout, bool)
+  { return new Cairo_PangoLayoutArea(layout, true); }
 
+  virtual BoundingBox box(void) const;
+  virtual scaled leftEdge(void) const;
+  virtual scaled rightEdge(void) const;
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
-#if 1
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
   virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
-#endif
+  virtual CharIndex length(void) const;
+
+protected:
+  GObjectPtr<PangoLayout> layout;
+  BoundingBox bbox;
 };
 
-#endif // __Gtk_PangoLayoutLineArea_hh__
+#endif // __Cairo_PangoLayoutArea_hh__

@@ -20,23 +20,23 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_PangoGlyphArea_hh__
-#define __Gtk_PangoGlyphArea_hh__
+#ifndef __Cairo_PangoGlyphArea_hh__
+#define __Cairo_PangoGlyphArea_hh__
 
 #include <pango/pango.h>
 
 #include "GObjectPtr.hh"
 #include "GlyphArea.hh"
 
-class Gtk_PangoGlyphArea : public GlyphArea
+class Cairo_PangoGlyphArea : public GlyphArea
 {
 protected:
-  Gtk_PangoGlyphArea(PangoFont*, PangoGlyphString*);
-  virtual ~Gtk_PangoGlyphArea();
+  Cairo_PangoGlyphArea(PangoFont*, PangoGlyphString*);
+  virtual ~Cairo_PangoGlyphArea();
 
 public:
-  static SmartPtr<Gtk_PangoGlyphArea> create(PangoFont* font, PangoGlyphString* glyphs)
-  { return new Gtk_PangoGlyphArea(font, glyphs); }
+  static SmartPtr<Cairo_PangoGlyphArea> create(PangoFont* font, PangoGlyphString* glyphs)
+  { return new Cairo_PangoGlyphArea(font, glyphs); }
 
   virtual BoundingBox box(void) const;
   virtual scaled leftEdge(void) const;
@@ -49,4 +49,4 @@ private:
   BoundingBox bbox;
 };
 
-#endif // __Gtk_PangoGlyphArea_hh__
+#endif // __Cairo_PangoGlyphArea_hh__

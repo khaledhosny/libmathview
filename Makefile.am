@@ -27,7 +27,7 @@ pkgconfig_DATA += mathview-frontend-gmetadom.pc
 endif
 
 if COND_GTK
-pkgconfig_DATA += mathview-backend-gtk.pc
+pkgconfig_DATA += mathview-backend-cairo.pc
 if COND_LIBXML2
 pkgconfig_DATA += gtkmathview-libxml2.pc
 endif

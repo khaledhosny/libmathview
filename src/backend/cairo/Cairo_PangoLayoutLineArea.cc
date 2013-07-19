@@ -25,40 +25,40 @@
 #include <cassert>
 
 #include "Point.hh"
-#include "Gtk_PangoLayoutLineArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_PangoLayoutLineArea.hh"
+#include "Cairo_RenderingContext.hh"
 
-Gtk_PangoLayoutLineArea::Gtk_PangoLayoutLineArea(PangoLayout* _layout)
-  : Gtk_PangoLayoutArea(_layout, true)
+Cairo_PangoLayoutLineArea::Cairo_PangoLayoutLineArea(PangoLayout* _layout)
+  : Cairo_PangoLayoutArea(_layout, true)
 {
   PangoRectangle rect;
   PangoLayoutLine* line = pango_layout_get_line(layout, 0);
   pango_layout_line_get_extents(line, &rect, 0);
 
-  bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
+  bbox = BoundingBox(Cairo_RenderingContext::fromPangoPixels(rect.width),
+		     Cairo_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
+		     Cairo_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
 }
 
-Gtk_PangoLayoutLineArea::~Gtk_PangoLayoutLineArea()
+Cairo_PangoLayoutLineArea::~Cairo_PangoLayoutLineArea()
 { }
 
 void
-Gtk_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Cairo_PangoLayoutLineArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
   context.draw(x, y, pango_layout_get_line(layout, 0));
 }
 
 #if 1
 
 bool
-Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
+Cairo_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
 {
   gint utf8_index;
   gint trailing;
   if (pango_layout_line_x_to_index(pango_layout_get_line(layout, 0),
-				   Gtk_RenderingContext::toPangoPixels(x),
+				   Cairo_RenderingContext::toPangoPixels(x),
 				   &utf8_index,
 				   &trailing))
     {
@@ -71,7 +71,7 @@ Gtk_PangoLayoutLineArea::indexOfPosition(const scaled& x, const scaled& y, CharI
 }
 
 bool
-Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
+Cairo_PangoLayoutLineArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
 {
   const gchar* buffer = pango_layout_get_text(layout);
 
@@ -84,7 +84,7 @@ Gtk_PangoLayoutLineArea::positionOfIndex(CharIndex index, Point* p, BoundingBox*
 
       if (p)
 	{
-	  p->x += Gtk_RenderingContext::fromPangoPixels(xpos);
+	  p->x += Cairo_RenderingContext::fromPangoPixels(xpos);
 	  p->y += scaled::zero();
 	}
 

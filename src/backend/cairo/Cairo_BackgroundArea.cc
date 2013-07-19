@@ -20,23 +20,30 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_InkArea_hh__
-#define __Gtk_InkArea_hh__
+#include <config.h>
 
-#include "InkArea.hh"
+#include "Cairo_BackgroundArea.hh"
+#include "Cairo_RenderingContext.hh"
 
-class Gtk_InkArea : public InkArea
+void
+Cairo_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-protected:
-  Gtk_InkArea(const AreaRef& area) : InkArea(area) { }
-  virtual ~Gtk_InkArea() { }
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
 
-public:
-  static SmartPtr<Gtk_InkArea> create(const AreaRef& area)
-  { return new Gtk_InkArea(area); }
-  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
+  if (context.getStyle() == Cairo_RenderingContext::NORMAL_STYLE)
+    {
+      RGBColor old_foregroundColor = context.getForegroundColor();
+      RGBColor old_backgroundColor = context.getBackgroundColor();
 
-  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
-};
+      context.setForegroundColor(getColor());
+      context.setBackgroundColor(getColor());
+      context.fill(x, y, box());
+      context.setForegroundColor(old_foregroundColor);
 
-#endif // __Gtk_InkArea_hh__
+      getChild()->render(context, x, y);
+
+      context.setBackgroundColor(old_backgroundColor);
+    }
+  else
+    getChild()->render(context, x, y);    
+}

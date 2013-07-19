@@ -22,28 +22,34 @@
 
 #include <config.h>
 
-#include "Gtk_BackgroundArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "AbstractLogger.hh"
+#include "Cairo_AreaFactory.hh"
+#include "Cairo_MathGraphicDevice.hh"
+#include "MathMLElement.hh"
+#include "FormattingContext.hh"
+
+Cairo_MathGraphicDevice::Cairo_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<MathFont>& f)
+  : MathGraphicDevice(l, f)
+{ }
+
+Cairo_MathGraphicDevice::~Cairo_MathGraphicDevice()
+{ }
+
+SmartPtr<Cairo_MathGraphicDevice>
+Cairo_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
+                              const SmartPtr<MathFont>& font)
+{ return new Cairo_MathGraphicDevice(logger, font); }
 
 void
-Gtk_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Cairo_MathGraphicDevice::setFactory(const SmartPtr<Cairo_AreaFactory>& f)
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+  MathGraphicDevice::setFactory(f);
+  cairo_factory = f;
+}
 
-  if (context.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
-    {
-      RGBColor old_foregroundColor = context.getForegroundColor();
-      RGBColor old_backgroundColor = context.getBackgroundColor();
-
-      context.setForegroundColor(getColor());
-      context.setBackgroundColor(getColor());
-      context.fill(x, y, box());
-      context.setForegroundColor(old_foregroundColor);
-
-      getChild()->render(context, x, y);
-
-      context.setBackgroundColor(old_backgroundColor);
-    }
-  else
-    getChild()->render(context, x, y);    
+AreaRef
+Cairo_MathGraphicDevice::wrapper(const FormattingContext& context,
+                               const AreaRef& base) const
+{
+  return cairo_factory->wrapper(base, base->box(), context.getMathMLElement());
 }

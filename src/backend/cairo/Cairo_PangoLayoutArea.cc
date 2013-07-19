@@ -24,11 +24,11 @@
 
 #include <cassert>
 
-#include "Gtk_PangoLayoutArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_PangoLayoutArea.hh"
+#include "Cairo_RenderingContext.hh"
 #include "Point.hh"
 
-Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout)
+Cairo_PangoLayoutArea::Cairo_PangoLayoutArea(PangoLayout* _layout)
   : layout(_layout)
 {
   PangoRectangle rect;
@@ -36,59 +36,59 @@ Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout)
   pango_layout_get_extents(layout, 0, &rect);
 
   PangoLayoutIter* iter = pango_layout_get_iter(layout);
-  const scaled height = Gtk_RenderingContext::fromPangoPixels(pango_layout_iter_get_baseline(iter));
+  const scaled height = Cairo_RenderingContext::fromPangoPixels(pango_layout_iter_get_baseline(iter));
   pango_layout_iter_free(iter);
 
-  bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-		     height, Gtk_RenderingContext::fromPangoPixels(rect.height) - height);
+  bbox = BoundingBox(Cairo_RenderingContext::fromPangoPixels(rect.width),
+		     height, Cairo_RenderingContext::fromPangoPixels(rect.height) - height);
 }
 
-Gtk_PangoLayoutArea::Gtk_PangoLayoutArea(PangoLayout* _layout, bool)
+Cairo_PangoLayoutArea::Cairo_PangoLayoutArea(PangoLayout* _layout, bool)
   : layout(_layout)
 {
   // this version of the constructor does not compute the bounding
   // box which is supposed to be initialized by a derived class
-  // (see Gtk_PangoLayoutLineArea)
+  // (see Cairo_PangoLayoutLineArea)
 }
 
-Gtk_PangoLayoutArea::~Gtk_PangoLayoutArea()
+Cairo_PangoLayoutArea::~Cairo_PangoLayoutArea()
 { }
 
 BoundingBox
-Gtk_PangoLayoutArea::box() const
+Cairo_PangoLayoutArea::box() const
 { return bbox; }
 
 scaled
-Gtk_PangoLayoutArea::leftEdge() const
+Cairo_PangoLayoutArea::leftEdge() const
 {
   PangoRectangle rect;
   pango_layout_get_extents(layout, &rect, 0);
-  return Gtk_RenderingContext::fromPangoPixels(PANGO_LBEARING(rect));
+  return Cairo_RenderingContext::fromPangoPixels(PANGO_LBEARING(rect));
 }
 
 scaled
-Gtk_PangoLayoutArea::rightEdge() const
+Cairo_PangoLayoutArea::rightEdge() const
 {
   PangoRectangle rect;
   pango_layout_get_extents(layout, &rect, 0);
-  return Gtk_RenderingContext::fromPangoPixels(PANGO_RBEARING(rect));
+  return Cairo_RenderingContext::fromPangoPixels(PANGO_RBEARING(rect));
 }
 
 void
-Gtk_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Cairo_PangoLayoutArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
   context.draw(x, y + bbox.height, layout);
 }
 
 bool
-Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
+Cairo_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& index) const
 {
   gint utf8_index;
   gint trailing;
   if (pango_layout_xy_to_index(layout,
-			       Gtk_RenderingContext::toPangoPixels(x),
-			       Gtk_RenderingContext::toPangoPixels(y + bbox.height),
+			       Cairo_RenderingContext::toPangoPixels(x),
+			       Cairo_RenderingContext::toPangoPixels(y + bbox.height),
 			       &utf8_index,
 			       &trailing))
     {
@@ -101,7 +101,7 @@ Gtk_PangoLayoutArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex
 }
 
 bool
-Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
+Cairo_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) const
 {
   const gchar* buffer = pango_layout_get_text(layout);
 
@@ -113,13 +113,13 @@ Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) 
 
       if (p)
 	{
-	  p->x += Gtk_RenderingContext::fromPangoPixels(rect.x);
-	  p->y += Gtk_RenderingContext::fromPangoPixels(rect.y);
+	  p->x += Cairo_RenderingContext::fromPangoPixels(rect.x);
+	  p->y += Cairo_RenderingContext::fromPangoPixels(rect.y);
 	}
 
-      if (b) *b = BoundingBox(Gtk_RenderingContext::fromPangoPixels(rect.width),
-			      Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
-			      Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
+      if (b) *b = BoundingBox(Cairo_RenderingContext::fromPangoPixels(rect.width),
+			      Cairo_RenderingContext::fromPangoPixels(PANGO_ASCENT(rect)),
+			      Cairo_RenderingContext::fromPangoPixels(PANGO_DESCENT(rect)));
 
       return true;
     }
@@ -128,7 +128,7 @@ Gtk_PangoLayoutArea::positionOfIndex(CharIndex index, Point* p, BoundingBox* b) 
 }
 
 CharIndex
-Gtk_PangoLayoutArea::length() const
+Cairo_PangoLayoutArea::length() const
 {
   return g_utf8_strlen(pango_layout_get_text(layout), -1);
 }

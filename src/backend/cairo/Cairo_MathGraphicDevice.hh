@@ -20,27 +20,27 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_MathGraphicDevice_hh__
-#define __Gtk_MathGraphicDevice_hh__
+#ifndef __Cairo_MathGraphicDevice_hh__
+#define __Cairo_MathGraphicDevice_hh__
 
 #include "MathFont.hh"
 #include "MathGraphicDevice.hh"
 
-class Gtk_MathGraphicDevice : public MathGraphicDevice
+class Cairo_MathGraphicDevice : public MathGraphicDevice
 {
 protected:
-  Gtk_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathFont>&);
-  virtual ~Gtk_MathGraphicDevice();
+  Cairo_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathFont>&);
+  virtual ~Cairo_MathGraphicDevice();
 
 public:
-  static SmartPtr<Gtk_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
+  static SmartPtr<Cairo_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
                                                 const SmartPtr<class MathFont>&);
 
-  virtual void setFactory(const SmartPtr<class Gtk_AreaFactory>&);
+  virtual void setFactory(const SmartPtr<class Cairo_AreaFactory>&);
   virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
 
 private:
-  SmartPtr<class Gtk_AreaFactory> gtk_factory;
+  SmartPtr<class Cairo_AreaFactory> cairo_factory;
 };
 
-#endif // __Gtk_MathGraphicDevice_hh__
+#endif // __Cairo_MathGraphicDevice_hh__

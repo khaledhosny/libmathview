@@ -61,7 +61,7 @@ test_rendering_LDADD = \
   $(GTK_LIBS) \
   $(GLIB_LIBS) \
   $(top_builddir)/src/libmathview.la \
-  $(top_builddir)/src/libmathview_backend_gtk.la \
+  $(top_builddir)/src/libmathview_backend_cairo.la \
   $(top_builddir)/src/libmathview_frontend_libxml2.la \
   $(NULL)
 
@@ -84,7 +84,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/widget \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/common/ \
-  -I$(top_srcdir)/src/backend/gtk/ \
+  -I$(top_srcdir)/src/backend/cairo/ \
   $(GTK_CFLAGS) \
   $(XML_CFLAGS) \
   $(DOM_CFLAGS) \

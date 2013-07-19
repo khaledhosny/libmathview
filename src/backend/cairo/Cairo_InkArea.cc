@@ -22,12 +22,12 @@
 
 #include <config.h>
 
-#include "Gtk_InkArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_InkArea.hh"
+#include "Cairo_RenderingContext.hh"
 
 void
-Gtk_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Cairo_InkArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
   context.fill(x, y, box());
 }

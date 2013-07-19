@@ -42,7 +42,7 @@ src/Makefile.am:lib_LTLIBRARIES = libmathview.la
 #endif
 
 /*
-src/backend/gtk/Makefile.am:lib_LTLIBRARIES = libmathview_backend_gtk.la
+src/backend/cairo/Makefile.am:lib_LTLIBRARIES = libmathview_backend_cairo.la
 */
 #if defined(GMV_BackEnd_DLL) 
 #define GMV_BackEnd_EXPORT __declspec(dllexport)
@@ -75,16 +75,16 @@ src/view/Makefile.am:lib_LTLIBRARIES = $(CUSTOM_READER) $(LIBXML2_READER) $(LIBX
 /*
 src/widget/Makefile.am:lib_LTLIBRARIES = $(CUSTOM_READER) $(LIBXML2_READER) $(LIBXML2) $(GMETADOM)
  CUSTOM_READER  = libgtkmathview_custom_reader.la
-  DEPENDS: libmathview_backend_gtk.la
+  DEPENDS: libmathview_backend_cairo.la
   DEPENDS: libmathview_frontend_custom_reader.la
  LIBXML2_READER = libgtkmathview_libxml2_reader.la
-  DEPENDS: libmathview_backend_gtk.la
+  DEPENDS: libmathview_backend_cairo.la
   DEPENDS: libmathview_frontend_libxml2_reader.la
  LIBXML2        = libgtkmathview_libxml2.la
-  DEPENDS: libmathview_backend_gtk.la
+  DEPENDS: libmathview_backend_cairo.la
   DEPENDS: libmathview_frontend_libxml2.la
  GMETADOM       = libgtkmathview_gmetadom.la
-  DEPENDS: libmathview_backend_gtk.la
+  DEPENDS: libmathview_backend_cairo.la
   DEPENDS: libmathview_frontend_gmetadom.la
 */
 #if defined(GMV_Widget_DLL) 

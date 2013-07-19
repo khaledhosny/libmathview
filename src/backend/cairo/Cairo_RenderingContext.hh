@@ -20,8 +20,8 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_RenderingContext_hh__
-#define __Gtk_RenderingContext_hh__
+#ifndef __Cairo_RenderingContext_hh__
+#define __Cairo_RenderingContext_hh__
 
 #include <cairo/cairo.h>
 #include <pango/pangocairo.h>
@@ -33,7 +33,7 @@
 #include "Rectangle.hh"
 #include "RenderingContext.hh"
 
-class Gtk_RenderingContext : public RenderingContext
+class Cairo_RenderingContext : public RenderingContext
 {
 protected:
   enum ColorIndex { FOREGROUND_INDEX, BACKGROUND_INDEX, MAX_INDEX };
@@ -41,8 +41,8 @@ protected:
 public:
   enum ColorStyle { NORMAL_STYLE, SELECTED_STYLE, MAX_STYLE };
 
-  Gtk_RenderingContext(const SmartPtr<class AbstractLogger>&);
-  virtual ~Gtk_RenderingContext();
+  Cairo_RenderingContext(const SmartPtr<class AbstractLogger>&);
+  virtual ~Cairo_RenderingContext();
 
   void setForegroundColor(const RGBColor& c) { data[getStyle()].setColor(FOREGROUND_INDEX, c); }
   void setBackgroundColor(const RGBColor& c) { data[getStyle()].setColor(BACKGROUND_INDEX, c); }
@@ -61,26 +61,26 @@ public:
   void draw(const scaled&, const scaled&, PangoLayoutLine*) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
 
-  static double toGtkPixels(const scaled& s)
+  static double toCairoPixels(const scaled& s)
   { return (s * (72.27 / 72.0)).toDouble(); }
   static double toPangoPixels(const scaled& s)
   { return (s * PANGO_SCALE * (72.27 / 72.0)).toDouble(); }
   static double toPangoPoints(const scaled& s)
   { return (s * PANGO_SCALE).toDouble(); }
-  static scaled fromGtkPixels(double s)
+  static scaled fromCairoPixels(double s)
   { return scaled(s * (72.0 / 72.27)); }
   static scaled fromPangoPixels(int s)
   { return scaled((s * (72.0 / 72.27)) / PANGO_SCALE); }
 
-  static double toGtkX(const scaled& x)
-  { return toGtkPixels(x); }
-  static double toGtkY(const scaled& y)
-  { return toGtkPixels(-y); }
+  static double toCairoX(const scaled& x)
+  { return toCairoPixels(x); }
+  static double toCairoY(const scaled& y)
+  { return toCairoPixels(-y); }
 
-  static scaled fromGtkX(double x)
-  { return fromGtkPixels(x); }
-  static scaled fromGtkY(double y)
-  { return fromGtkPixels(-y); }
+  static scaled fromCairoX(double x)
+  { return fromCairoPixels(x); }
+  static scaled fromCairoY(double y)
+  { return fromCairoPixels(-y); }
 
 private:
   struct ContextData
@@ -102,4 +102,4 @@ private:
   cairo_t* cairo_context;
 };
 
-#endif // __Gtk_RenderingContext_hh__
+#endif // __Cairo_RenderingContext_hh__

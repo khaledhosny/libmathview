@@ -25,10 +25,10 @@
 #include <cassert>
 #include <pango/pango.h>
 
-#include "Gtk_PangoGlyphArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_PangoGlyphArea.hh"
+#include "Cairo_RenderingContext.hh"
 
-Gtk_PangoGlyphArea::Gtk_PangoGlyphArea(PangoFont* f, PangoGlyphString* g)
+Cairo_PangoGlyphArea::Cairo_PangoGlyphArea(PangoFont* f, PangoGlyphString* g)
   : font(f), glyphs(g)
 {
   PangoRectangle ink_rect;
@@ -42,47 +42,47 @@ Gtk_PangoGlyphArea::Gtk_PangoGlyphArea(PangoFont* f, PangoGlyphString* g)
 	 ink_rect.y, ink_rect.height);
 #endif
 	 
-  bbox = BoundingBox(Gtk_RenderingContext::fromPangoPixels(logical_rect.width),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
+  bbox = BoundingBox(Cairo_RenderingContext::fromPangoPixels(logical_rect.width),
+		     Cairo_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
+		     Cairo_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
 }
 
-Gtk_PangoGlyphArea::~Gtk_PangoGlyphArea()
+Cairo_PangoGlyphArea::~Cairo_PangoGlyphArea()
 { }
 
 BoundingBox
-Gtk_PangoGlyphArea::box() const
+Cairo_PangoGlyphArea::box() const
 {
 #if 0
   PangoRectangle ink_rect;
   PangoRectangle logical_rect;
   pango_font_get_glyph_extents(font, glyphs->glyphs[0].glyph, &ink_rect, &logical_rect);
-  return BoundingBox(Gtk_RenderingContext::fromPangoPixels(logical_rect.width),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
-		     Gtk_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
+  return BoundingBox(Cairo_RenderingContext::fromPangoPixels(logical_rect.width),
+		     Cairo_RenderingContext::fromPangoPixels(PANGO_ASCENT(ink_rect)),
+		     Cairo_RenderingContext::fromPangoPixels(PANGO_DESCENT(ink_rect)));
 #endif
   return bbox;
 }
 
 scaled
-Gtk_PangoGlyphArea::leftEdge() const
+Cairo_PangoGlyphArea::leftEdge() const
 {
   PangoRectangle rect;
   pango_glyph_string_extents(glyphs, font, &rect, 0);
-  return Gtk_RenderingContext::fromPangoPixels(PANGO_LBEARING(rect));
+  return Cairo_RenderingContext::fromPangoPixels(PANGO_LBEARING(rect));
 }
 
 scaled
-Gtk_PangoGlyphArea::rightEdge() const
+Cairo_PangoGlyphArea::rightEdge() const
 {
   PangoRectangle rect;
   pango_glyph_string_extents(glyphs, font, &rect, 0);
-  return Gtk_RenderingContext::fromPangoPixels(PANGO_RBEARING(rect));
+  return Cairo_RenderingContext::fromPangoPixels(PANGO_RBEARING(rect));
 }
 
 void
-Gtk_PangoGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Cairo_PangoGlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
   context.draw(x, y, font, glyphs);
 }

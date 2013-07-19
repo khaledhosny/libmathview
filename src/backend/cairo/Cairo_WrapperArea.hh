@@ -20,23 +20,28 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <config.h>
+#ifndef __Cairo_WrapperArea_hh__
+#define __Cairo_WrapperArea_hh__
 
-#include "Gtk_ColorArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "WrapperArea.hh"
 
-void
-Gtk_ColorArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+class Cairo_WrapperArea : public WrapperArea
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+protected:
+  Cairo_WrapperArea(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
+  virtual ~Cairo_WrapperArea() { }
 
-  if (context.getStyle() == Gtk_RenderingContext::NORMAL_STYLE)
-    {
-      RGBColor oldColor = context.getForegroundColor();
-      context.setForegroundColor(getColor());
-      getChild()->render(context, x, y);
-      context.setForegroundColor(oldColor);
-    }
-  else
-    getChild()->render(context, x, y);    
-}
+public:
+  static SmartPtr<Cairo_WrapperArea> create(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
+  virtual AreaRef clone(const AreaRef&) const;
+
+  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
+
+  int getSelected(void) const { return selected; }
+  void setSelected(int n) const { selected = n; }
+
+private:
+  mutable int selected;
+};
+
+#endif // __Cairo_WrapperArea_hh__

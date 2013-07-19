@@ -20,25 +20,28 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_Backend_hh__
-#define __Gtk_Backend_hh__
+#ifndef __Cairo_PangoLayoutLineArea_hh__
+#define __Cairo_PangoLayoutLineArea_hh__
 
-#include "Backend.hh"
+#include <pango/pango.h>
 
-class GMV_BackEnd_EXPORT Gtk_Backend : public Backend
+#include "Cairo_PangoLayoutArea.hh"
+
+class Cairo_PangoLayoutLineArea : public Cairo_PangoLayoutArea 
 {
 protected:
-  Gtk_Backend(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
-  virtual ~Gtk_Backend();
+  Cairo_PangoLayoutLineArea(PangoLayout*);
+  virtual ~Cairo_PangoLayoutLineArea();
 
 public:
-  static SmartPtr<Gtk_Backend> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+  static SmartPtr<Cairo_PangoLayoutLineArea> create(PangoLayout* layout)
+  { return new Cairo_PangoLayoutLineArea(layout); }
 
-  void setCairo(cairo_t* cr) { cairo_context = cr; }
-  cairo_t* getCairo(void) const { return cairo_context; }
-
-private:
-  cairo_t* cairo_context;
+  virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
+#if 1
+  virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
+  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+#endif
 };
 
-#endif // __Gtk_Backend_hh__
+#endif // __Cairo_PangoLayoutLineArea_hh__

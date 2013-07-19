@@ -20,49 +20,49 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Gtk_AreaFactory_hh__
-#define __Gtk_AreaFactory_hh__
+#ifndef __Cairo_AreaFactory_hh__
+#define __Cairo_AreaFactory_hh__
 
 #include <pango/pango.h>
 
 #include "AreaFactory.hh"
-#include "Gtk_ColorArea.hh"
-#include "Gtk_BackgroundArea.hh"
-#include "Gtk_InkArea.hh"
-#include "Gtk_PangoGlyphArea.hh"
-#include "Gtk_PangoLayoutArea.hh"
-#include "Gtk_PangoLayoutLineArea.hh"
-#include "Gtk_WrapperArea.hh"
+#include "Cairo_ColorArea.hh"
+#include "Cairo_BackgroundArea.hh"
+#include "Cairo_InkArea.hh"
+#include "Cairo_PangoGlyphArea.hh"
+#include "Cairo_PangoLayoutArea.hh"
+#include "Cairo_PangoLayoutLineArea.hh"
+#include "Cairo_WrapperArea.hh"
 
-class Gtk_AreaFactory : public AreaFactory
+class Cairo_AreaFactory : public AreaFactory
 {
 protected:
-  Gtk_AreaFactory(void) { }
-  virtual ~Gtk_AreaFactory() { }
+  Cairo_AreaFactory(void) { }
+  virtual ~Cairo_AreaFactory() { }
 
 public:
-  static SmartPtr<Gtk_AreaFactory> create(void)
-  { return new Gtk_AreaFactory(); }
+  static SmartPtr<Cairo_AreaFactory> create(void)
+  { return new Cairo_AreaFactory(); }
 
   // redefined methods
 
   virtual SmartPtr<ColorArea> color(const AreaRef& area, const RGBColor& color) const
-  { return Gtk_ColorArea::create(area, color); }
+  { return Cairo_ColorArea::create(area, color); }
   virtual SmartPtr<InkArea> ink(const AreaRef& area) const
-  { return Gtk_InkArea::create(area); }
+  { return Cairo_InkArea::create(area); }
   virtual AreaRef background(const AreaRef& area, const RGBColor& color) const
-  { return Gtk_BackgroundArea::create(area, color); }
+  { return Cairo_BackgroundArea::create(area, color); }
 
   // new methods
 
-  virtual SmartPtr<Gtk_PangoGlyphArea> pangoGlyph(PangoFont* f, PangoGlyphString* gs) const
-  { return Gtk_PangoGlyphArea::create(f, gs); }
-  virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayout(PangoLayout* layout) const
-  { return Gtk_PangoLayoutArea::create(layout); }
-  virtual SmartPtr<Gtk_PangoLayoutArea> pangoLayoutLine(PangoLayout* layout) const
-  { return Gtk_PangoLayoutLineArea::create(layout); }
-  virtual SmartPtr<Gtk_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
-  { return Gtk_WrapperArea::create(area, box, el); }
+  virtual SmartPtr<Cairo_PangoGlyphArea> pangoGlyph(PangoFont* f, PangoGlyphString* gs) const
+  { return Cairo_PangoGlyphArea::create(f, gs); }
+  virtual SmartPtr<Cairo_PangoLayoutArea> pangoLayout(PangoLayout* layout) const
+  { return Cairo_PangoLayoutArea::create(layout); }
+  virtual SmartPtr<Cairo_PangoLayoutArea> pangoLayoutLine(PangoLayout* layout) const
+  { return Cairo_PangoLayoutLineArea::create(layout); }
+  virtual SmartPtr<Cairo_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
+  { return Cairo_WrapperArea::create(area, box, el); }
 };
 
-#endif // __Gtk_AreaFactory_hh__
+#endif // __Cairo_AreaFactory_hh__

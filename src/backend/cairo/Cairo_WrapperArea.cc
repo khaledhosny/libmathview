@@ -22,37 +22,37 @@
 
 #include <config.h>
 
-#include "Gtk_WrapperArea.hh"
-#include "Gtk_RenderingContext.hh"
+#include "Cairo_WrapperArea.hh"
+#include "Cairo_RenderingContext.hh"
 #include "SearchingContext.hh"
 #include "Element.hh"
 
-Gtk_WrapperArea::Gtk_WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Element>& el)
+Cairo_WrapperArea::Cairo_WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Element>& el)
   : WrapperArea(area, b, el), selected(0)
 { }
 
-SmartPtr<Gtk_WrapperArea>
-Gtk_WrapperArea::create(const AreaRef& area, const BoundingBox& b, const SmartPtr<class Element>& el)
-{ return new Gtk_WrapperArea(area, b, el); }
+SmartPtr<Cairo_WrapperArea>
+Cairo_WrapperArea::create(const AreaRef& area, const BoundingBox& b, const SmartPtr<class Element>& el)
+{ return new Cairo_WrapperArea(area, b, el); }
 
 AreaRef
-Gtk_WrapperArea::clone(const AreaRef& area) const
+Cairo_WrapperArea::clone(const AreaRef& area) const
 { return create(area, box(), getElement()); }
 
 void
-Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
+Cairo_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
-  Gtk_RenderingContext& context = dynamic_cast<Gtk_RenderingContext&>(c);
+  Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
 
-  Gtk_RenderingContext::ColorStyle old_style = context.getStyle();
+  Cairo_RenderingContext::ColorStyle old_style = context.getStyle();
 
   switch (old_style)
     {
-    case Gtk_RenderingContext::NORMAL_STYLE:
-      if (selected == 1) context.setStyle(Gtk_RenderingContext::SELECTED_STYLE);
+    case Cairo_RenderingContext::NORMAL_STYLE:
+      if (selected == 1) context.setStyle(Cairo_RenderingContext::SELECTED_STYLE);
       break;
-    case Gtk_RenderingContext::SELECTED_STYLE:
-      if (selected == -1) context.setStyle(Gtk_RenderingContext::NORMAL_STYLE);
+    case Cairo_RenderingContext::SELECTED_STYLE:
+      if (selected == -1) context.setStyle(Cairo_RenderingContext::NORMAL_STYLE);
       break;
     default:
       break;
@@ -65,7 +65,7 @@ Gtk_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) c
       context.setForegroundColor(backgroundColor);
 
       BoundingBox areaBox = box();
-      const scaled margin = Gtk_RenderingContext::fromGtkPixels(1);
+      const scaled margin = Cairo_RenderingContext::fromCairoPixels(1);
       areaBox.width += margin * 2;
       areaBox.height += margin;
       areaBox.depth += margin;
