@@ -107,9 +107,8 @@ struct _GtkMathViewClass
   GtkMathViewDecorateSignal decorate_over;
 
   AbstractLogger* logger;
-  gint defaultFontSize;
+  Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
-  Gtk_Backend* backend;
 };
 
 struct _GtkMathView
@@ -144,6 +143,7 @@ struct _GtkMathView
 
   MathView*      view;
   Gtk_RenderingContext* renderingContext;
+  Gtk_Backend* backend;
 };
 
 /* helper functions */
@@ -308,13 +308,16 @@ gtk_math_view_paint(GtkMathView* math_view)
   const gint height = widget->allocation.height;
 
   Gtk_RenderingContext* rc = math_view->renderingContext;
+  Gtk_Backend* be = math_view->backend;
   g_return_if_fail(rc != 0);
+  g_return_if_fail(be != 0);
 
   if (math_view->pixmap == NULL)
     {
       math_view->pixmap = gdk_pixmap_new(widget->window, width, height, -1);
       math_view->context = gdk_cairo_create(math_view->pixmap);
-      rc->setContext(math_view->context);
+      rc->setCairo(math_view->context);
+      be->setCairo(math_view->context);
     }
 
   rc->setStyle(Gtk_RenderingContext::SELECTED_STYLE);
@@ -417,28 +420,17 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
 
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, getenv("GTKMATHVIEWCONF"));
   configuration->ref();
-
-  math_view_class->defaultFontSize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
+  math_view_class->configuration = configuration;
 
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
   dictionary->ref();
   math_view_class->dictionary = dictionary;
-
-  SmartPtr<Gtk_Backend> backend = Gtk_Backend::create(logger, configuration);
-  backend->ref();
-  math_view_class->backend = backend;
 }
 
 static void
 gtk_math_view_base_class_finalize(GtkMathViewClass* math_view_class)
 {
   g_return_if_fail(math_view_class != NULL);
-
-  if (math_view_class->backend)
-    {
-      math_view_class->backend->unref();
-      math_view_class->backend = 0;
-    }
 
   if (math_view_class->dictionary)
     {
@@ -450,6 +442,12 @@ gtk_math_view_base_class_finalize(GtkMathViewClass* math_view_class)
     {
       math_view_class->logger->unref();
       math_view_class->logger = 0;
+    }
+
+  if (math_view_class->configuration)
+    {
+      math_view_class->configuration->unref();
+      math_view_class->configuration = 0;
     }
 }
 
@@ -631,6 +629,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->pixmap          = NULL;
   math_view->view            = 0;
   math_view->renderingContext = 0;
+  math_view->backend         = 0;
   math_view->freeze_counter  = 0;
   math_view->select_state    = SELECT_STATE_NO;
   math_view->button_pressed  = FALSE;
@@ -647,9 +646,15 @@ gtk_math_view_init(GtkMathView* math_view)
   view->ref();
   math_view->view = view;
 
-  view->setDefaultFontSize(math_view_class->defaultFontSize);
+  SmartPtr<Gtk_Backend> backend = Gtk_Backend::create(math_view_class->logger, math_view_class->configuration);
+  backend->ref();
+  math_view->backend = backend;
+
+  gint defaultFontSize = math_view_class->configuration->getInt(math_view_class->logger, "default/font-size", DEFAULT_FONT_SIZE);
+
+  view->setDefaultFontSize(defaultFontSize);
   view->setOperatorDictionary(math_view_class->dictionary);
-  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, math_view_class->backend->getMathGraphicDevice()));
+  view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, backend->getMathGraphicDevice()));
 
   math_view->renderingContext = new Gtk_RenderingContext(math_view_class->logger);
 }
@@ -685,6 +690,12 @@ gtk_math_view_destroy(GtkObject* object)
     {
       delete math_view->renderingContext;
       math_view->renderingContext = 0;
+    }
+
+  if (math_view->backend)
+    {
+      math_view->backend->unref();
+      math_view->backend = 0;
     }
 
   if (math_view->hadjustment != NULL)

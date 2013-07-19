@@ -52,7 +52,7 @@ Gtk_Backend::Gtk_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Confi
   pango_font_description_set_family(description, fontname.c_str());
   pango_font_description_set_size(description, fontsize * PANGO_SCALE);
 
-  GObjectPtr<PangoContext> context = gdk_pango_context_get();
+  GObjectPtr<PangoContext> context = pango_cairo_create_context(getCairo());
   GObjectPtr<PangoFont> font = pango_context_load_font(context, description);
   FT_Byte *table = NULL;
   if (font)

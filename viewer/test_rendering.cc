@@ -45,7 +45,7 @@ SmartPtr<AbstractLogger> logger;
 SmartPtr<MathView> view;
 GtkWidget* window = 0;
 GdkPixmap* pixmap = 0;
-cairo_t* context = 0;
+cairo_t* cr = 0;
 
 extern "C" gboolean
 expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
@@ -61,8 +61,8 @@ expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
       // needed to cleanup the pixmap
       gdk_draw_rectangle(pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
       Gtk_RenderingContext rc(logger);
-      context = gdk_cairo_create(pixmap);
-      rc.setContext(context);
+      cr = gdk_cairo_create(pixmap);
+      rc.setCairo(cr);
       view->render(rc, scaled::zero(), -box.height);
     }
 

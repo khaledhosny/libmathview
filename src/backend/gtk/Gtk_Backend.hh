@@ -33,6 +33,12 @@ protected:
 
 public:
   static SmartPtr<Gtk_Backend> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+
+  void setCairo(cairo_t* cr) { cairo_context = cr; }
+  cairo_t* getCairo(void) const { return cairo_context; }
+
+private:
+  cairo_t* cairo_context;
 };
 
 #endif // __Gtk_Backend_hh__

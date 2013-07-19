@@ -50,8 +50,8 @@ public:
   RGBColor getForegroundColor(void) const { return data[getStyle()].getColor(FOREGROUND_INDEX); }
   RGBColor getBackgroundColor(void) const { return data[getStyle()].getColor(BACKGROUND_INDEX); }
 
-  void setContext(cairo_t* cr) { cairo_context = cr; }
-  cairo_t* getContext(void) const { return cairo_context; }
+  void setCairo(cairo_t* cr) { cairo_context = cr; }
+  cairo_t* getCairo(void) const { return cairo_context; }
 
   void setStyle(ColorStyle s) { style = s; }
   ColorStyle getStyle(void) const { return style; }
@@ -82,7 +82,7 @@ public:
   static scaled fromGtkY(double y)
   { return fromGtkPixels(-y); }
 
-protected:
+private:
   struct ContextData
   {
     RGBColor color[MAX_INDEX];
