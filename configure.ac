@@ -169,7 +169,15 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
     [AC_MSG_WARN([could not find GTK+])])
   AC_SUBST(GTK_CFLAGS)
   AC_SUBST(GTK_LIBS)
-  PKG_CHECK_MODULES(PANGO, pango,
+
+  PKG_CHECK_MODULES(CAIRO, cairo,
+    [AC_DEFINE(HAVE_CAIRO,1,[Define to 1 if Cairo is installed])
+     have_cairo="yes"],
+    [AC_MSG_WARN([could not find Cairo])])
+  AC_SUBST(CAIRO_CFLAGS)
+  AC_SUBST(CAIRO_LIBS)
+
+  PKG_CHECK_MODULES(PANGO, pangocairo,
     [AC_DEFINE(HAVE_PANGO,1,[Define to 1 if Pango is installed])
      have_pango="yes"],
     [AC_MSG_WARN([could not find Pango])])

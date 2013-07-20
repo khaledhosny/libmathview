@@ -27,7 +27,7 @@ mathmlviewer_LDADD = \
   $(NULL)
 
 test_embedding_SOURCES = test_embedding.c dummy.cc
-test_embedding_LDFLAGS = -no-install -static
+test_embedding_LDFLAGS = -no-install
 test_embedding_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -36,7 +36,7 @@ test_embedding_LDADD = \
   $(NULL)
 
 test_loading_SOURCES = test_loading.c dummy.cc
-test_loading_LDFLAGS = -no-install -static
+test_loading_LDFLAGS = -no-install
 test_loading_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -45,7 +45,7 @@ test_loading_LDADD = \
   $(NULL)
 
 test_building_SOURCES = test_building.cc
-test_building_LDFLAGS = -no-install -static
+test_building_LDFLAGS = -no-install
 test_building_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -54,7 +54,7 @@ test_building_LDADD = \
   $(NULL)
 
 test_rendering_SOURCES = test_rendering.cc
-test_rendering_LDFLAGS = -no-install -static
+test_rendering_LDFLAGS = -no-install
 test_rendering_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
@@ -66,7 +66,7 @@ test_rendering_LDADD = \
   $(NULL)
 
 test_loading_reader_SOURCES = test_loading_reader.c
-test_loading_reader_LDFLASG = -no-install -static
+test_loading_reader_LDFLASG = -no-install
 test_loading_reader_LDADD = \
   -lstdc++ \
   $(XML_LIBS) \
