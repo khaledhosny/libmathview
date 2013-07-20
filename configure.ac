@@ -192,6 +192,17 @@ PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
   [AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
    have_libxml2="yes"],
   [AC_MSG_WARN([could not find libxml2])])
+if test "$have_libxml2" != "yes"; then
+	AC_CHECK_TOOL(XML2_CONFIG, xml2-config, no)
+	AC_MSG_CHECKING([for libxml2 by using xml2-config fallback])
+	if test "$XML2_CONFIG" != "no" && "$XML2_CONFIG" --version >/dev/null; then
+		XML_CFLAGS=`$XML2_CONFIG --cflags`
+		XML_LIBS=`$XML2_CONFIG --libs`
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+	fi
+fi
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 AM_CONDITIONAL([COND_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
