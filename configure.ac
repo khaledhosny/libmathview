@@ -222,7 +222,6 @@ AM_SILENT_RULES([yes])
 
 AC_CONFIG_FILES([
  Makefile
- gtkmathview.spec
  config/Makefile
  config/gtkmathview.conf.xml
  scripts/Makefile
