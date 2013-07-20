@@ -22,13 +22,12 @@
 
 #include <config.h>
 
-#include "AbstractLogger.hh"
 #include "Backend.hh"
 #include "ShaperManager.hh"
 #include "MathGraphicDevice.hh"
 
-Backend::Backend(const SmartPtr<AbstractLogger>& logger)
-  : shaperManager(ShaperManager::create(logger))
+Backend::Backend(void)
+  : shaperManager(ShaperManager::create())
 { }
 
 Backend::~Backend()

@@ -24,21 +24,16 @@
 #define __Cairo_Backend_hh__
 
 #include "Backend.hh"
+#include "GObjectPtr.hh"
 
 class GMV_BackEnd_EXPORT Cairo_Backend : public Backend
 {
 protected:
-  Cairo_Backend(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
+  Cairo_Backend(GObjectPtr<PangoContext>&);
   virtual ~Cairo_Backend();
 
 public:
-  static SmartPtr<Cairo_Backend> create(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&);
-
-  void setCairo(cairo_t* cr) { cairo_context = cr; }
-  cairo_t* getCairo(void) const { return cairo_context; }
-
-private:
-  cairo_t* cairo_context;
+  static SmartPtr<Cairo_Backend> create(GObjectPtr<PangoContext>&);
 };
 
 #endif // __Cairo_Backend_hh__

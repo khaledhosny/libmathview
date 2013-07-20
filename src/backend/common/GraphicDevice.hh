@@ -31,12 +31,10 @@
 class GMV_MathView_EXPORT GraphicDevice : public Object
 {
 protected:
-  GraphicDevice(const SmartPtr<class AbstractLogger>&);
+  GraphicDevice(void);
   virtual ~GraphicDevice();
 
 public:
-  SmartPtr<class AbstractLogger> getLogger(void) const;
-
   virtual void setFactory(const SmartPtr<AreaFactory>&);
   SmartPtr<AreaFactory> getFactory(void) const { return factory; }
   virtual void setShaperManager(const SmartPtr<class ShaperManager>&);
@@ -53,7 +51,6 @@ protected:
  SmartPtr<class ShaperManager> shaperManager;
 
 private:
-  SmartPtr<class AbstractLogger> logger;
   SmartPtr<AreaFactory> factory;
 };
 

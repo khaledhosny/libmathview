@@ -22,23 +22,21 @@
 
 #include <config.h>
 
-#include "AbstractLogger.hh"
 #include "Cairo_AreaFactory.hh"
 #include "Cairo_MathGraphicDevice.hh"
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
 
-Cairo_MathGraphicDevice::Cairo_MathGraphicDevice(const SmartPtr<AbstractLogger>& l, const SmartPtr<MathFont>& f)
-  : MathGraphicDevice(l, f)
+Cairo_MathGraphicDevice::Cairo_MathGraphicDevice(const SmartPtr<MathFont>& f)
+  : MathGraphicDevice(f)
 { }
 
 Cairo_MathGraphicDevice::~Cairo_MathGraphicDevice()
 { }
 
 SmartPtr<Cairo_MathGraphicDevice>
-Cairo_MathGraphicDevice::create(const SmartPtr<AbstractLogger>& logger,
-                              const SmartPtr<MathFont>& font)
-{ return new Cairo_MathGraphicDevice(logger, font); }
+Cairo_MathGraphicDevice::create(const SmartPtr<MathFont>& font)
+{ return new Cairo_MathGraphicDevice(font); }
 
 void
 Cairo_MathGraphicDevice::setFactory(const SmartPtr<Cairo_AreaFactory>& f)

@@ -60,10 +60,10 @@ expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
       pixmap = gdk_pixmap_new(widget->window, width, height, -1);
       // needed to cleanup the pixmap
       gdk_draw_rectangle(pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
-      Cairo_RenderingContext rc(logger);
+      Cairo_RenderingContext* rc = new Cairo_RenderingContext();
       cr = gdk_cairo_create(pixmap);
-      rc.setCairo(cr);
-      view->render(rc, scaled::zero(), -box.height);
+      rc->setCairo(cr);
+      view->render(*rc, scaled::zero(), -box.height);
     }
 
   gdk_draw_pixmap(widget->window,
@@ -92,7 +92,17 @@ int main(int argc, char *argv[]) {
 
   logger = Logger::create();
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
-  SmartPtr<Backend> backend = Cairo_Backend::create(logger, configuration);
+
+  const String fontname = configuration->getString(logger, "default/font-family", DEFAULT_FONT_FAMILY);
+  const int fontsize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
+
+  GObjectPtr<PangoContext> pango_context = gtk_widget_create_pango_context(window);
+  PangoFontDescription* description = pango_font_description_new();
+  pango_font_description_set_family(description, fontname.c_str());
+  pango_font_description_set_size(description, fontsize * PANGO_SCALE);
+  pango_context_set_font_description(pango_context, description);
+
+  SmartPtr<Backend> backend = Cairo_Backend::create(pango_context);
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
 

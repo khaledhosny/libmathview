@@ -24,7 +24,6 @@
 
 #include <cassert>
 
-#include "AbstractLogger.hh"
 #include "Shaper.hh"
 #include "NullShaper.hh"
 #include "ShapingContext.hh"
@@ -36,8 +35,9 @@
 #include "Area.hh"
 #include "GlyphArea.hh"
 
-ShaperManager::ShaperManager(const SmartPtr<AbstractLogger>& l)
-  : nextShaperId(0), logger(l), errorShaper(smart_cast<Shaper>(NullShaper::create(l)))
+ShaperManager::ShaperManager(void)
+  : nextShaperId(0)
+  , errorShaper(smart_cast<Shaper>(NullShaper::create()))
 {
   for (unsigned i = 0; i < MAX_SHAPERS; i++)
     shaper[i] = 0;
@@ -47,8 +47,8 @@ ShaperManager::~ShaperManager()
 { }
 
 SmartPtr<ShaperManager>
-ShaperManager::create(const SmartPtr<AbstractLogger>& logger)
-{ return new ShaperManager(logger); }
+ShaperManager::create(void)
+{ return new ShaperManager(); }
 
 AreaRef
 ShaperManager::shapeAux(ShapingContext& context) const

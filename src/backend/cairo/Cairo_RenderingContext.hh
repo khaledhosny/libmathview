@@ -41,7 +41,7 @@ protected:
 public:
   enum ColorStyle { NORMAL_STYLE, SELECTED_STYLE, MAX_STYLE };
 
-  Cairo_RenderingContext(const SmartPtr<class AbstractLogger>&);
+  Cairo_RenderingContext(void);
   virtual ~Cairo_RenderingContext();
 
   void setForegroundColor(const RGBColor& c) { data[getStyle()].setColor(FOREGROUND_INDEX, c); }
@@ -93,8 +93,6 @@ private:
     RGBColor getColor(ColorIndex index) const
     { return color[index]; }
   };
-
-  SmartPtr<class AbstractLogger> logger;
 
   ColorStyle style;
   ContextData data[MAX_STYLE];

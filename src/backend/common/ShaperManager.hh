@@ -34,11 +34,11 @@
 class GMV_MathView_EXPORT ShaperManager : public Object
 {
 protected:
-  ShaperManager(const SmartPtr<class AbstractLogger>&);
+  ShaperManager(void);
   virtual ~ShaperManager();
 
 public:
-  static SmartPtr<ShaperManager> create(const SmartPtr<class AbstractLogger>&);
+  static SmartPtr<ShaperManager> create(void);
 
   SmartPtr<const class Area> shape(const class FormattingContext&,
 				   const SmartPtr<class Element>&,
@@ -75,7 +75,6 @@ private:
   SparseMap<GlyphSpec, HIGH_BITS + 1, LOW_BITS> glyphSpec;
 
   unsigned nextShaperId;
-  SmartPtr<class AbstractLogger> logger;
   SmartPtr<class Shaper> errorShaper;
   SmartPtr<class Shaper> shaper[MAX_SHAPERS];
 };

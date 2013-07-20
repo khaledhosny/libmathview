@@ -31,7 +31,7 @@
 class GMV_MathView_EXPORT MathGraphicDevice : public GraphicDevice
 {
 protected:
-  MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<MathFont>& font);
+  MathGraphicDevice(const SmartPtr<MathFont>& font);
   virtual ~MathGraphicDevice();
 
 public:

@@ -26,7 +26,6 @@
 #define PANGO_ENABLE_ENGINE // for pango_fc_font_get_glyph()
 #include <pango/pangofc-font.h>
 
-#include "AbstractLogger.hh"
 #include "Cairo_PangoGlyphArea.hh"
 #include "Cairo_PangoShaper.hh"
 #include "Cairo_RenderingContext.hh"

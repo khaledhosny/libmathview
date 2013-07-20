@@ -35,10 +35,8 @@
 #include "Area.hh"
 #include "GlyphArea.hh"
 
-MathGraphicDevice::MathGraphicDevice(const SmartPtr<AbstractLogger>& logger,
-                                     const SmartPtr<MathFont>& font)
-  : GraphicDevice(logger)
-  , mathFont(font)
+MathGraphicDevice::MathGraphicDevice(const SmartPtr<MathFont>& font)
+  : mathFont(font)
 { }
 
 MathGraphicDevice::~MathGraphicDevice()

@@ -22,21 +22,15 @@
 
 #include <config.h>
 
-#include "AbstractLogger.hh"
 #include "FormattingContext.hh"
 #include "GraphicDevice.hh"
 #include "ShaperManager.hh"
 
-GraphicDevice::GraphicDevice(const SmartPtr<AbstractLogger>& l)
-  : logger(l)
+GraphicDevice::GraphicDevice(void)
 { }
 
 GraphicDevice::~GraphicDevice()
 { }
-
-SmartPtr<AbstractLogger>
-GraphicDevice::getLogger() const
-{ return logger; }
 
 void
 GraphicDevice::setFactory(const SmartPtr<AreaFactory>& f)

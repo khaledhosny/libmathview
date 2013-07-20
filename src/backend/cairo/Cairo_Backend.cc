@@ -29,8 +29,6 @@
 
 #include <map>
 
-#include "AbstractLogger.hh"
-#include "Configuration.hh"
 #include "Cairo_Backend.hh"
 #include "Cairo_AreaFactory.hh"
 #include "Cairo_MathGraphicDevice.hh"
@@ -40,19 +38,12 @@
 
 #define MATH_TAG  0X4D415448
 
-Cairo_Backend::Cairo_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-  : Backend(l)
+Cairo_Backend::Cairo_Backend(GObjectPtr<PangoContext>& context)
 {
   SmartPtr<Cairo_AreaFactory> factory = Cairo_AreaFactory::create();
   SmartPtr<MathFont> mathfont = MathFont::create();
 
-  String fontname = conf->getString(l, "default/font-family", DEFAULT_FONT_FAMILY);
-  int fontsize = conf->getInt(l, "default/font-size", DEFAULT_FONT_SIZE);
-  PangoFontDescription* description = pango_font_description_new();
-  pango_font_description_set_family(description, fontname.c_str());
-  pango_font_description_set_size(description, fontsize * PANGO_SCALE);
-
-  GObjectPtr<PangoContext> context = pango_cairo_create_context(getCairo());
+  PangoFontDescription* description = pango_context_get_font_description(context);
   GObjectPtr<PangoFont> font = pango_context_load_font(context, description);
   FT_Byte *table = NULL;
   if (font)
@@ -77,7 +68,7 @@ Cairo_Backend::Cairo_Backend(const SmartPtr<AbstractLogger>& l, const SmartPtr<C
       pango_fc_font_unlock_face(fcfont);
     }
 
-  SmartPtr<Cairo_MathGraphicDevice> mgd = Cairo_MathGraphicDevice::create(l, mathfont);
+  SmartPtr<Cairo_MathGraphicDevice> mgd = Cairo_MathGraphicDevice::create(mathfont);
 
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
@@ -90,5 +81,5 @@ Cairo_Backend::~Cairo_Backend()
 { }
 
 SmartPtr<Cairo_Backend>
-Cairo_Backend::create(const SmartPtr<AbstractLogger>& l, const SmartPtr<Configuration>& conf)
-{ return new Cairo_Backend(l, conf); }
+Cairo_Backend::create(GObjectPtr<PangoContext>& context)
+{ return new Cairo_Backend(context); }

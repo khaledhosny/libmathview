@@ -308,16 +308,13 @@ gtk_math_view_paint(GtkMathView* math_view)
   const gint height = widget->allocation.height;
 
   Cairo_RenderingContext* rc = math_view->renderingContext;
-  Cairo_Backend* be = math_view->backend;
   g_return_if_fail(rc != 0);
-  g_return_if_fail(be != 0);
 
   if (math_view->pixmap == NULL)
     {
       math_view->pixmap = gdk_pixmap_new(widget->window, width, height, -1);
       math_view->context = gdk_cairo_create(math_view->pixmap);
       rc->setCairo(math_view->context);
-      be->setCairo(math_view->context);
     }
 
   rc->setStyle(Cairo_RenderingContext::SELECTED_STYLE);
@@ -646,17 +643,24 @@ gtk_math_view_init(GtkMathView* math_view)
   view->ref();
   math_view->view = view;
 
-  SmartPtr<Cairo_Backend> backend = Cairo_Backend::create(math_view_class->logger, math_view_class->configuration);
+  String fontname = math_view_class->configuration->getString(math_view_class->logger, "default/font-family", DEFAULT_FONT_FAMILY);
+  int fontsize = math_view_class->configuration->getInt(math_view_class->logger, "default/font-size", DEFAULT_FONT_SIZE);
+
+  GObjectPtr<PangoContext> pango_context = gtk_widget_create_pango_context(GTK_WIDGET(math_view));
+  PangoFontDescription* description = pango_font_description_new();
+  pango_font_description_set_family(description, fontname.c_str());
+  pango_font_description_set_size(description, fontsize * PANGO_SCALE);
+  pango_context_set_font_description(pango_context, description);
+
+  SmartPtr<Cairo_Backend> backend = Cairo_Backend::create(pango_context);
   backend->ref();
   math_view->backend = backend;
 
-  gint defaultFontSize = math_view_class->configuration->getInt(math_view_class->logger, "default/font-size", DEFAULT_FONT_SIZE);
-
-  view->setDefaultFontSize(defaultFontSize);
+  view->setDefaultFontSize(fontsize);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, backend->getMathGraphicDevice()));
 
-  math_view->renderingContext = new Cairo_RenderingContext(math_view_class->logger);
+  math_view->renderingContext = new Cairo_RenderingContext();
 }
 
 extern "C" GtkWidget*

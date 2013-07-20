@@ -24,14 +24,11 @@
 
 #include <cassert>
 
-#include "AbstractLogger.hh"
 #include "Cairo_RenderingContext.hh"
 
-Cairo_RenderingContext::Cairo_RenderingContext(const SmartPtr<AbstractLogger>& l)
-  : logger(l), style(NORMAL_STYLE)
-{
-  assert(logger);
-}
+Cairo_RenderingContext::Cairo_RenderingContext(void)
+  : style(NORMAL_STYLE)
+{ }
 
 Cairo_RenderingContext::~Cairo_RenderingContext()
 { }

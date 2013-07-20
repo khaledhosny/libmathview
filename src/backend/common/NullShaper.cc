@@ -26,18 +26,16 @@
 #include "ShapingContext.hh"
 #include "ShaperManager.hh"
 #include "NullShaper.hh"
-#include "AbstractLogger.hh"
 
-NullShaper::NullShaper(const SmartPtr<AbstractLogger>& l)
-  : logger(l)
+NullShaper::NullShaper(void)
 { }
 
 NullShaper::~NullShaper()
 { }
 
 SmartPtr<NullShaper>
-NullShaper::create(const SmartPtr<AbstractLogger>& l)
-{ return new NullShaper(l); }
+NullShaper::create(void)
+{ return new NullShaper(); }
 
 void
 NullShaper::registerShaper(const SmartPtr<ShaperManager>& sm, unsigned)
@@ -53,7 +51,7 @@ void
 NullShaper::shape(ShapingContext& context) const
 {
   assert(!context.done());
-  logger->out(LOG_WARNING, "shaping U+%04X as a red box", context.thisChar());
+  //logger->out(LOG_WARNING, "shaping U+%04X as a red box", context.thisChar());
   SmartPtr<AreaFactory> factory = context.getFactory();
   std::vector<AreaRef> c;
   c.reserve(2);

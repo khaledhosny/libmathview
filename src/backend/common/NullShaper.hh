@@ -28,19 +28,16 @@
 class GMV_MathView_EXPORT NullShaper : public Shaper
 {
 protected:
-  NullShaper(const SmartPtr<class AbstractLogger>&);
+  NullShaper(void);
   virtual ~NullShaper();
 
 public:
-  static SmartPtr<NullShaper> create(const SmartPtr<class AbstractLogger>&);
+  static SmartPtr<NullShaper> create(void);
 
   virtual void registerShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void unregisterShaper(const SmartPtr<class ShaperManager>&, unsigned);
   virtual void shape(class ShapingContext&) const;
   virtual bool isDefaultShaper(void) const;
-
-private:
-  SmartPtr<class AbstractLogger> logger;
 };
 
 #endif // __NullShaper_hh__

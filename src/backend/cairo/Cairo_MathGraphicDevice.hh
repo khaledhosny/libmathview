@@ -29,12 +29,11 @@
 class Cairo_MathGraphicDevice : public MathGraphicDevice
 {
 protected:
-  Cairo_MathGraphicDevice(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathFont>&);
+  Cairo_MathGraphicDevice(const SmartPtr<class MathFont>&);
   virtual ~Cairo_MathGraphicDevice();
 
 public:
-  static SmartPtr<Cairo_MathGraphicDevice> create(const SmartPtr<class AbstractLogger>&,
-                                                const SmartPtr<class MathFont>&);
+  static SmartPtr<Cairo_MathGraphicDevice> create(const SmartPtr<class MathFont>&);
 
   virtual void setFactory(const SmartPtr<class Cairo_AreaFactory>&);
   virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
