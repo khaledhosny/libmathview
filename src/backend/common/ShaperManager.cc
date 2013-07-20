@@ -37,8 +37,9 @@
 
 ShaperManager::ShaperManager(void)
   : nextShaperId(0)
-  , errorShaper(smart_cast<Shaper>(NullShaper::create()))
+  , errorShaper(0)
 {
+  errorShaper = NullShaper::create();
   for (unsigned i = 0; i < MAX_SHAPERS; i++)
     shaper[i] = 0;
 }
