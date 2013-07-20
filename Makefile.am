@@ -8,7 +8,7 @@ else
 MAYBE_GTK_SUBDIRS = $(NULL)
 endif
 
-EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in README.MacOSX
+EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
 SUBDIRS = scripts config auto src doc $(MAYBE_GTK_SUBDIRS)
 
 pkgconfigdir = $(libdir)/pkgconfig
