@@ -23,7 +23,6 @@
 
 #include <config.h>
 
-#include <gdk/gdk.h>
 #include <pango/pangofc-font.h>
 #include FT_TRUETYPE_TABLES_H
 
