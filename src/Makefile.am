@@ -1,8 +1,6 @@
 
 NULL =
 
-SUBDIRS = .
-
 lib_LTLIBRARIES = $(NULL)
 noinst_LTLIBRARIES = $(NULL)
 
@@ -521,7 +519,7 @@ libmathview_backend_cairo_la_SOURCES = \
 mathview_HEADERS += \
   backend/cairo/Cairo_Backend.hh \
   $(NULL)
-endif
+endif # COND_GTK
 
 
 
@@ -591,7 +589,76 @@ libfrontend_custom_reader_la_CPPFLAGS += \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/backend/common \
   $(NULL)
-endif
+
+
+lib_LTLIBRARIES += libmathview_frontend_custom_reader.la
+
+libmathview_frontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
+
+libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
+
+libmathview_frontend_custom_reader_la_SOURCES = \
+  view/custom_reader_MathView.cc \
+  $(NULL)
+
+libmathview_frontend_custom_reader_la_CPPFLAGS += \
+  -I$(top_builddir)/auto \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/custom_reader \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libmathview_frontend_custom_reader_la_LIBADD = \
+  $(XML_LIBS) \
+  libfrontend_libxml2_reader.la \
+  libfrontend_custom_reader.la \
+  libmathview.la \
+  -lstdc++ \
+  $(NULL)
+
+mathview_HEADERS += \
+  view/custom_reader_MathView.hh \
+  $(NULL)
+
+
+if COND_GTK
+lib_LTLIBRARIES += libgtkmathview_custom_reader.la
+
+libgtkmathview_custom_reader_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/custom_reader \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_custom_reader_la_SOURCES = \
+  widget/gtkmathview_custom_reader.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
+libgtkmathview_custom_reader_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_custom_reader.la \
+  $(NULL)
+endif # COND_GTK
+endif # COND_CUSTOM_READER
 
 if COND_LIBXML2_READER
 noinst_LTLIBRARIES += libfrontend_libxml2_reader.la
@@ -625,7 +692,74 @@ libfrontend_libxml2_reader_la_CPPFLAGS += \
   -I$(top_srcdir)/src/backend/common \
   $(XML_CFLAGS) \
   $(NULL)
-endif
+
+
+lib_LTLIBRARIES += libmathview_frontend_libxml2_reader.la
+
+libmathview_frontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
+
+libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
+
+libmathview_frontend_libxml2_reader_la_SOURCES = \
+  view/libxml2_reader_MathView.cc \
+  $(NULL)
+
+libmathview_frontend_libxml2_reader_la_CPPFLAGS += \
+  -I$(top_builddir)/auto \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2_reader \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libmathview_frontend_libxml2_reader_la_LIBADD = \
+  $(XML_LIBS) \
+  libfrontend_libxml2_reader.la \
+  libmathview.la \
+  -lstdc++ \
+  $(NULL)
+
+mathview_HEADERS += \
+  view/libxml2_reader_MathView.hh \
+  $(NULL)
+
+
+if COND_GTK
+lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
+
+libgtkmathview_libxml2_reader_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2_reader \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_libxml2_reader_la_SOURCES = \
+  widget/gtkmathview_libxml2_reader.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_libxml2_reader_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_libxml2_reader.la \
+  $(NULL)
+endif # COND_GTK
+endif # COND_LIBXML2_READER
 
 if COND_LIBXML2
 noinst_LTLIBRARIES += libfrontend_libxml2.la
@@ -658,7 +792,74 @@ libfrontend_libxml2_la_CPPFLAGS += \
   -I$(top_srcdir)/src/backend/common \
   $(XML_CFLAGS) \
   $(NULL)
-endif
+
+
+lib_LTLIBRARIES += libmathview_frontend_libxml2.la
+
+libmathview_frontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
+
+libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
+
+libmathview_frontend_libxml2_la_SOURCES = \
+  view/libxml2_MathView.cc \
+  $(NULL)
+
+libmathview_frontend_libxml2_la_CPPFLAGS += \
+  -I$(top_builddir)/auto \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2 \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libmathview_frontend_libxml2_la_LIBADD = \
+  $(XML_LIBS) \
+  libfrontend_libxml2.la \
+  libmathview.la \
+  -lstdc++ \
+  $(NULL)
+
+mathview_HEADERS += \
+  view/libxml2_MathView.hh \
+  $(NULL)
+
+
+if COND_GTK
+lib_LTLIBRARIES += libgtkmathview_libxml2.la
+
+libgtkmathview_libxml2_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2 \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_libxml2_la_SOURCES = \
+  widget/gtkmathview_libxml2.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_libxml2_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_libxml2.la \
+  $(NULL)
+endif # COND_GTK
+endif # COND_LIBXML2
 
 if COND_GMETADOM
 noinst_LTLIBRARIES += libfrontend_gmetadom.la
@@ -694,117 +895,8 @@ libfrontend_gmetadom_la_CPPFLAGS += \
   -I$(top_srcdir)/src/backend/common \
   $(DOM_CFLAGS) \
   $(NULL)
-endif
 
 
-
-if COND_CUSTOM_READER
-lib_LTLIBRARIES += libmathview_frontend_custom_reader.la
-
-libmathview_frontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
-libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
-
-libmathview_frontend_custom_reader_la_SOURCES = \
-  view/custom_reader_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_custom_reader_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/custom_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
-  $(NULL)
-
-libmathview_frontend_custom_reader_la_LIBADD = \
-  $(XML_LIBS) \
-  libfrontend_libxml2_reader.la \
-  libfrontend_custom_reader.la \
-  libmathview.la \
-  -lstdc++ \
-  $(NULL)
-
-mathview_HEADERS += \
-  view/custom_reader_MathView.hh \
-  $(NULL)
-endif
-
-if COND_LIBXML2_READER
-lib_LTLIBRARIES += libmathview_frontend_libxml2_reader.la
-
-libmathview_frontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
-libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
-
-libmathview_frontend_libxml2_reader_la_SOURCES = \
-  view/libxml2_reader_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_libxml2_reader_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
-  $(NULL)
-
-libmathview_frontend_libxml2_reader_la_LIBADD = \
-  $(XML_LIBS) \
-  libfrontend_libxml2_reader.la \
-  libmathview.la \
-  -lstdc++ \
-  $(NULL)
-
-mathview_HEADERS += \
-  view/libxml2_reader_MathView.hh \
-  $(NULL)
-endif
-
-if COND_LIBXML2
-lib_LTLIBRARIES += libmathview_frontend_libxml2.la
-
-libmathview_frontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
-libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
-
-libmathview_frontend_libxml2_la_SOURCES = \
-  view/libxml2_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_libxml2_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2 \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
-  $(NULL)
-
-libmathview_frontend_libxml2_la_LIBADD = \
-  $(XML_LIBS) \
-  libfrontend_libxml2.la \
-  libmathview.la \
-  -lstdc++ \
-  $(NULL)
-
-mathview_HEADERS += \
-  view/libxml2_MathView.hh \
-  $(NULL)
-endif
-
-if COND_GMETADOM
 lib_LTLIBRARIES += libmathview_frontend_gmetadom.la
 
 libmathview_frontend_gmetadom_la_CPPFLAGS = -DGMV_FrontEnd_DLL
@@ -837,111 +929,13 @@ libmathview_frontend_gmetadom_la_LIBADD = \
 mathview_HEADERS += \
   view/gmetadom_MathView.hh \
   $(NULL)
-endif
+
 
 mathview_HEADERS += \
   view/Init.hh \
   $(NULL)
 
-
 if COND_GTK
-
-if COND_CUSTOM_READER
-lib_LTLIBRARIES += libgtkmathview_custom_reader.la
-libgtkmathview_custom_reader_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/custom_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(NULL)
-
-libgtkmathview_custom_reader_la_SOURCES = \
-  widget/gtkmathview_custom_reader.cc \
-  widget/gtkmathview_marshal.c \
-  $(NULL)
-
-libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libgtkmathview_custom_reader_la_LIBADD = \
-  $(GTK_LIBS) \
-  libmathview_backend_cairo.la \
-  libmathview_frontend_custom_reader.la \
-  $(NULL)
-endif # COND_CUSTOM_READER
-
-if COND_LIBXML2_READER
-lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
-
-libgtkmathview_libxml2_reader_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(NULL)
-
-libgtkmathview_libxml2_reader_la_SOURCES = \
-  widget/gtkmathview_libxml2_reader.cc \
-  widget/gtkmathview_marshal.c \
-  $(NULL)
-
-libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libgtkmathview_libxml2_reader_la_LIBADD = \
-  $(GTK_LIBS) \
-  libmathview_backend_cairo.la \
-  libmathview_frontend_libxml2_reader.la \
-  $(NULL)
-endif # COND_LIBXML2_READER
-
-if COND_LIBXML2
-lib_LTLIBRARIES += libgtkmathview_libxml2.la
-
-libgtkmathview_libxml2_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2 \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(NULL)
-
-libgtkmathview_libxml2_la_SOURCES = \
-  widget/gtkmathview_libxml2.cc \
-  widget/gtkmathview_marshal.c \
-  $(NULL)
-
-libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libgtkmathview_libxml2_la_LIBADD = \
-  $(GTK_LIBS) \
-  libmathview_backend_cairo.la \
-  libmathview_frontend_libxml2.la \
-  $(NULL)
-endif #COND_LIBXML2
-
-if COND_GMETADOM
 lib_LTLIBRARIES += libgtkmathview_gmetadom.la
 
 libgtkmathview_gmetadom_la_CPPFLAGS = \
@@ -971,8 +965,12 @@ libgtkmathview_gmetadom_la_LIBADD = \
   libmathview_backend_cairo.la \
   libmathview_frontend_gmetadom.la \
   $(NULL)
+endif # COND_GTK
 endif # COND_GMETADOM
 
+
+
+if COND_GTK
 EXTRA_DIST += \
   widget/gtkmathview_common.cc \
   widget/gtkmathview_decorators_common.cc \
