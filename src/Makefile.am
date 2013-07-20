@@ -93,7 +93,6 @@ mathview_HEADERS += \
 
 noinst_HEADERS += \
   common/CharTraits.hh \
-  common/CharTraits.icc \
   common/Clock.hh \
   common/GObjectPtr.hh \
   common/TemplateStringScanners.hh \

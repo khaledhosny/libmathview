@@ -22,9 +22,6 @@
 
 #include <config.h>
 
-// needed for old versions of GCC, must come before String.hh!
-#include "CharTraits.icc"
-
 #include <cassert>
 #include <stdlib.h>
 #include <stdio.h>
