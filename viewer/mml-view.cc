@@ -57,7 +57,7 @@ typedef libxml2_MathView MathView;
 static char **remaining_args = NULL;
 static GOptionEntry entries[] = {
   { G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &remaining_args, NULL, "[FILE...]" },
-  { NULL, 0, 0, (GOptionArg)0, NULL, NULL, NULL }
+  { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };
 
 static cairo_surface_t*
