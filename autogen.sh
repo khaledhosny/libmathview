@@ -11,8 +11,4 @@ run ()
     fi
 }
 
-run libtoolize --force --copy
-run aclocal -I ac-helpers
-run autoheader
-run automake --add-missing --copy --foreign
-run autoconf
+run autoreconf --install --force
