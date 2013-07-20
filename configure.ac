@@ -47,9 +47,9 @@ AC_ARG_ENABLE(
 
 AC_ARG_ENABLE(
 	custom-reader,
-	[  --enable-custom-reader[=ARG] enable the custom reader frontend [default=yes]],
+	[  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
 	enable_custom_reader=$enableval,
-	enable_custom_reader="yes"
+	enable_custom_reader="auto"
 )
 
 AC_ARG_ENABLE(
@@ -187,8 +187,6 @@ fi
 
 AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a \( "$have_gtk" = "yes" -a "$have_pango" = "yes" \) \) ])
 
-AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
-
 have_libxml2="no"
 PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
   [AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
@@ -198,6 +196,7 @@ AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
 AM_CONDITIONAL([COND_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
 AM_CONDITIONAL([COND_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o \( "$enable_libxml2_reader" = "auto" -a "$have_libxml2" = "yes" \)]) 
+AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o \( "$enable_custom_reader" = "auto" -a "$have_libxml2" = "yes" \)])
 
 have_gmetadom="no"
 if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
