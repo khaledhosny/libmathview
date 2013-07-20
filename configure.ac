@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 dnl Automake configuration
-AC_INIT([gtkmathview], [0.8.0])
+AC_INIT([gtkmathview], [1.0.0])
 AC_CONFIG_SRCDIR([src/common/Clock.hh])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_SED
