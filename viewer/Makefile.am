@@ -12,6 +12,7 @@ noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
 noinst_PROGRAMS += test_building
 noinst_PROGRAMS += test_rendering
+bin_PROGRAMS += mml-view
 endif
 if COND_LIBXML2_READER
 noinst_PROGRAMS += test_loading_reader
@@ -24,6 +25,17 @@ mathmlviewer_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
+  $(NULL)
+
+mml_view_SOURCES = mml-view.cc
+mml_view_LDADD = \
+  $(XML_LIBS) \
+  $(CAIRO_LIBS) \
+  $(PANGO_LIBS) \
+  $(GLIB_LIBS) \
+  $(top_builddir)/src/libmathview.la \
+  $(top_builddir)/src/libmathview_backend_cairo.la \
+  $(top_builddir)/src/libmathview_frontend_libxml2.la \
   $(NULL)
 
 test_embedding_SOURCES = test_embedding.c dummy.cc
