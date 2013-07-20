@@ -26,7 +26,6 @@ libmathview_la_LIBADD = \
   libengine_mathml.la \
   libengine_common.la \
   libcommon.la \
-  -lstdc++ \
   $(NULL)
 
 
@@ -618,7 +617,6 @@ libmathview_frontend_custom_reader_la_LIBADD = \
   libfrontend_libxml2_reader.la \
   libfrontend_custom_reader.la \
   libmathview.la \
-  -lstdc++ \
   $(NULL)
 
 mathview_HEADERS += \
@@ -720,7 +718,6 @@ libmathview_frontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
   libfrontend_libxml2_reader.la \
   libmathview.la \
-  -lstdc++ \
   $(NULL)
 
 mathview_HEADERS += \
@@ -820,7 +817,6 @@ libmathview_frontend_libxml2_la_LIBADD = \
   $(XML_LIBS) \
   libfrontend_libxml2.la \
   libmathview.la \
-  -lstdc++ \
   $(NULL)
 
 mathview_HEADERS += \
@@ -923,7 +919,6 @@ libmathview_frontend_gmetadom_la_LIBADD = \
   $(DOM_LIBS) \
   libfrontend_gmetadom.la \
   libmathview.la \
-  -lstdc++ \
   $(NULL)
 
 mathview_HEADERS += \
