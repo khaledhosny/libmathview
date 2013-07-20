@@ -228,9 +228,6 @@ AC_CONFIG_FILES([
  auto/Makefile
  auto/Char.hh.in
  src/Makefile
- src/common/Makefile
- src/common/mathvariants/Makefile
- src/widget/Makefile
  viewer/Makefile
  doc/Makefile
  mathview-core.pc

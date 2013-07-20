@@ -24,7 +24,7 @@ mathmlviewer_SOURCES = main.cc aux.cc guiGTK.c
 mathmlviewer_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_gmetadom.la \
+  $(top_builddir)/src/libgtkmathview_gmetadom.la \
   $(NULL)
 
 mml_view_SOURCES = mml-view.cc
@@ -43,7 +43,7 @@ test_embedding_LDFLAGS = -no-install
 test_embedding_LDADD = \
   $(XML_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(top_builddir)/src/libgtkmathview_libxml2.la \
   $(NULL)
 
 test_loading_SOURCES = test_loading.c dummy.cc
@@ -51,7 +51,7 @@ test_loading_LDFLAGS = -no-install
 test_loading_LDADD = \
   $(XML_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(top_builddir)/src/libgtkmathview_libxml2.la \
   $(NULL)
 
 test_building_SOURCES = test_building.cc
@@ -59,7 +59,7 @@ test_building_LDFLAGS = -no-install
 test_building_LDADD = \
   $(XML_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_libxml2.la \
+  $(top_builddir)/src/libgtkmathview_libxml2.la \
   $(NULL)
 
 test_rendering_SOURCES = test_rendering.cc
@@ -78,7 +78,7 @@ test_loading_reader_LDFLAGS = -no-install
 test_loading_reader_LDADD = \
   $(XML_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/widget/libgtkmathview_libxml2_reader.la \
+  $(top_builddir)/src/libgtkmathview_libxml2_reader.la \
   $(NULL)
 
 AM_CPPFLAGS = \

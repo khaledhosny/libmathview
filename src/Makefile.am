@@ -1,20 +1,18 @@
 
 NULL =
 
-if COND_GTK
-MAYBE_GTK_SUBDIRS = widget
-else
-MAYBE_GTK_SUBDIRS = $(NULL)
-endif
-
-SUBDIRS = common . $(MAYBE_GTK_SUBDIRS)
+SUBDIRS = .
 
 lib_LTLIBRARIES = $(NULL)
 noinst_LTLIBRARIES = $(NULL)
 
 mathviewdir = $(pkgincludedir)/MathView
 mathview_HEADERS = $(NULL)
+noinst_HEADERS = $(NULL)
 
+EXTRA_DIST = $(NULL)
+BUILT_SOURCES = $(NULL)
+CLEANFILES = $(NULL)
 
 
 lib_LTLIBRARIES += libmathview.la
@@ -29,9 +27,173 @@ libmathview_la_LIBADD = \
   libfrontend_common.la \
   libengine_mathml.la \
   libengine_common.la \
-  $(top_builddir)/src/common/libcommon.la \
+  libcommon.la \
   -lstdc++ \
   $(NULL)
+
+
+
+noinst_LTLIBRARIES += libcommon.la
+
+libcommon_la_CPPFLAGS = $(NULL)
+libcommon_la_CPPFLAGS += -DGMV_MathView_DLL
+libcommon_la_LIBADD = \
+  libmathvariants.la \
+  $(GLIB_LIBS) \
+  $(NULL)
+
+libcommon_la_SOURCES = \
+  common/AbstractLogger.cc \
+  common/BoundingBox.cc \
+  common/BoundingBoxAux.cc \
+  common/Clock.cc \
+  common/Configuration.cc \
+  common/LengthAux.cc \
+  common/Logger.cc \
+  common/PointAux.cc \
+  common/RGBColorAux.cc \
+  common/Rectangle.cc \
+  common/String.cc \
+  common/StringAux.cc \
+  common/StringHash.cc \
+  common/Utils.cc \
+  common/ValueConversion.cc \
+  common/token.cc \
+  $(NULL)
+
+mathview_HEADERS += \
+  common/AbstractLogger.hh \
+  common/BoundingBox.hh \
+  common/BoundingBoxAux.hh \
+  common/Configuration.hh \
+  common/Length.hh \
+  common/LengthAux.hh \
+  common/Logger.hh \
+  common/Object.hh \
+  common/Point.hh \
+  common/PointAux.hh \
+  common/RGBColor.hh \
+  common/RGBColorAux.hh \
+  common/Rectangle.hh \
+  common/SmartPtr.hh \
+  common/ScopedHashMap.hh \
+  common/FastScopedHashMap.hh \
+  common/SparseMap.hh \
+  common/String.hh \
+  common/StringAux.hh \
+  common/StringHash.hh \
+  common/Utils.hh \
+  common/Value.hh \
+  common/ValueConversion.hh \
+  common/Variant.hh \
+  common/WeakPtr.hh \
+  common/defs.h \
+  common/fixed.hh \
+  common/gmv_defines.h \
+  common/scaled.hh \
+  common/scaledAux.hh \
+  $(NULL)
+
+noinst_HEADERS += \
+  common/CharTraits.hh \
+  common/CharTraits.icc \
+  common/Clock.hh \
+  common/GObjectPtr.hh \
+  common/TemplateStringScanners.hh \
+  common/TemplateStringParsers.hh \
+  common/TokenSet.hh \
+  common/for_each_if.h \
+  common/token.hh \
+  $(NULL)
+
+libcommon_la_CPPFLAGS += \
+  -I$(top_builddir)/auto \
+  -I$(top_srcdir)/auto \
+  $(GLIB_CFLAGS) \
+  $(NULL)
+
+
+
+MATHVARIANTS_CC = \
+  common/mathvariants/bold-fraktur.cc \
+  common/mathvariants/bold-italic.cc \
+  common/mathvariants/bold-sans-serif.cc \
+  common/mathvariants/bold-script.cc \
+  common/mathvariants/bold.cc \
+  common/mathvariants/double-struck.cc \
+  common/mathvariants/fraktur.cc \
+  common/mathvariants/italic.cc \
+  common/mathvariants/monospace.cc \
+  common/mathvariants/sans-serif-bold-italic.cc \
+  common/mathvariants/sans-serif-italic.cc \
+  common/mathvariants/sans-serif.cc \
+  common/mathvariants/script.cc \
+  $(NULL)
+
+EXTRA_DIST += \
+  common/mathvariants/variant.top \
+  common/mathvariants/variant.bot \
+  common/mathvariants/extract.xsl \
+  $(NULL)
+
+BUILT_SOURCES += $(MATHVARIANTS_CC)
+
+noinst_LTLIBRARIES += libmathvariants.la
+
+libmathvariants_la_CPPFLAGS = -DGMV_MathView_DLL
+libmathvariants_la_SOURCES = \
+  $(MATHVARIANTS_CC) \
+  common/mathvariants/MathVariantMap.cc \
+  $(NULL)
+
+mathview_HEADERS += \
+  common/mathvariants/MathVariant.hh \
+  common/mathvariants/MathVariantMap.hh \
+  $(NULL)
+
+libmathvariants_la_CPPFLAGS += \
+  -I$(top_builddir)/auto \
+  -I$(top_srcdir)/src/common
+
+if COND_XSLTPROC
+XSLTPROC = xsltproc
+
+# XXX: rewrite this messy shell hackery into some readible script
+
+common/mathvariants/%_gen.cc : $(srcdir)/common/mathvariants/xml/%.xml $(srcdir)/common/mathvariants/extract.xsl
+	$(AM_V_GEN)$(XSLTPROC) --novalid $(srcdir)/common/mathvariants/extract.xsl $< >$@
+
+common/mathvariants/%.cc : common/mathvariants/%_gen.cc $(srcdir)/common/mathvariants/variant.top $(srcdir)/common/mathvariants/variant.bot
+	$(AM_V_GEN)
+	$(AM_V_at)cat $(srcdir)/common/mathvariants/variant.top >$@
+	$(AM_V_at)$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/common/mathvariants/extract.xsl $(srcdir)/common/mathvariants/xml/`basename $@ .cc`.xml >>$@
+	$(AM_V_at)$(CXX) -o $(@:%.cc=%) -I$(top_builddir)/auto $<
+	$(AM_V_at)echo "Char32 " >>$@
+	$(AM_V_at)echo "map_variant_`basename $@ .cc | tr '-' '_'`" >>$@
+	$(AM_V_at)echo "(Char32 ch)" >>$@
+	$(AM_V_at)echo "{" >>$@
+	$(AM_V_at)./$(@:%.cc=%) >>$@
+	$(AM_V_at)echo "  return ch;" >>$@
+	$(AM_V_at)echo "}" >>$@
+	$(AM_V_at)rm -f $(@:%.cc=%)
+	$(AM_V_at)cat $(srcdir)/common/mathvariants/variant.bot >>$@
+endif # COND_XSLTPROC
+
+EXTRA_DIST += \
+  common/mathvariants/xml/bold-fraktur.xml \
+  common/mathvariants/xml/bold-italic.xml \
+  common/mathvariants/xml/bold-sans-serif.xml \
+  common/mathvariants/xml/bold-script.xml \
+  common/mathvariants/xml/bold.xml \
+  common/mathvariants/xml/double-struck.xml \
+  common/mathvariants/xml/fraktur.xml \
+  common/mathvariants/xml/italic.xml \
+  common/mathvariants/xml/monospace.xml \
+  common/mathvariants/xml/sans-serif-bold-italic.xml \
+  common/mathvariants/xml/sans-serif-italic.xml \
+  common/mathvariants/xml/sans-serif.xml \
+  common/mathvariants/xml/script.xml
+
 
 
 
@@ -66,7 +228,7 @@ mathview_HEADERS += \
   engine/common/View.hh \
   $(NULL)
 
-noinst_HEADERS = \
+noinst_HEADERS += \
   engine/common/Adapters.hh \
   engine/common/Attribute.hh \
   engine/common/AttributeSet.hh \
@@ -137,7 +299,7 @@ libengine_mathml_la_CPPFLAGS += \
   -I$(top_srcdir)/auto \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants/ \
+  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/backend/common \
@@ -681,6 +843,173 @@ mathview_HEADERS += \
   view/Init.hh \
   $(NULL)
 
+
+if COND_GTK
+
+if COND_CUSTOM_READER
+lib_LTLIBRARIES += libgtkmathview_custom_reader.la
+libgtkmathview_custom_reader_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/custom_reader \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_custom_reader_la_SOURCES = \
+  widget/gtkmathview_custom_reader.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_custom_reader_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_custom_reader.la \
+  $(NULL)
+endif # COND_CUSTOM_READER
+
+if COND_LIBXML2_READER
+lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
+
+libgtkmathview_libxml2_reader_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2_reader \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_libxml2_reader_la_SOURCES = \
+  widget/gtkmathview_libxml2_reader.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_libxml2_reader_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_libxml2_reader.la \
+  $(NULL)
+endif # COND_LIBXML2_READER
+
+if COND_LIBXML2
+lib_LTLIBRARIES += libgtkmathview_libxml2.la
+
+libgtkmathview_libxml2_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/libxml2 \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(XML_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_libxml2_la_SOURCES = \
+  widget/gtkmathview_libxml2.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_libxml2_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_libxml2.la \
+  $(NULL)
+endif #COND_LIBXML2
+
+if COND_GMETADOM
+lib_LTLIBRARIES += libgtkmathview_gmetadom.la
+
+libgtkmathview_gmetadom_la_CPPFLAGS = \
+  -DGMV_Widget_DLL \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/gmetadom \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/view \
+  $(GTK_CFLAGS) \
+  $(DOM_CFLAGS) \
+  $(NULL)
+
+libgtkmathview_gmetadom_la_SOURCES = \
+  widget/gtkmathview_gmetadom.cc \
+  widget/gtkmathview_marshal.c \
+  $(NULL)
+
+libgtkmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libgtkmathview_gmetadom_la_LIBADD = \
+  $(GTK_LIBS) \
+  libmathview_backend_cairo.la \
+  libmathview_frontend_gmetadom.la \
+  $(NULL)
+endif # COND_GMETADOM
+
+EXTRA_DIST += \
+  widget/gtkmathview_common.cc \
+  widget/gtkmathview_decorators_common.cc \
+  widget/marshal.list \
+  $(NULL)
+
+gtkdir = $(includedir)/$(PACKAGE)/gtk
+gtk_HEADERS = \
+  widget/gtkmathview.h \
+  widget/gtkmathview_decorators.h \
+  widget/gtkmathview_common.h \
+  widget/gtkmathview_decorators_common.h \
+  widget/gtkmathview_custom_reader.h \
+  widget/gtkmathview_libxml2_reader.h \
+  widget/gtkmathview_libxml2.h \
+  widget/gtkmathview_gmetadom.h
+
+noinst_HEADERS += \
+  widget/gtkmathview_marshal.h \
+  $(NULL)
+
+BUILT_SOURCES += \
+  widget/gtkmathview_marshal.c \
+  widget/gtkmathview_marshal.h \
+  $(NULL)
+
+CLEANFILES += \
+  $(BUILT_SOURCES) \
+  $(NULL)
+
+widget/gtkmathview_marshal.h: widget/marshal.list
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --header > $@
+
+widget/gtkmathview_marshal.c: widget/marshal.list
+	$(AM_V_GEN)$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --body > $@
+
+endif # COND_GTK
 
 
 -include $(top_srcdir)/git.mk
