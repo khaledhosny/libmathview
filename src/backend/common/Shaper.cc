@@ -97,7 +97,7 @@ Shaper::composeStretchyCharV(const SmartPtr<class AreaFactory>& factory,
       for (int i = 0; i < n / 2; i++) v.push_back(glue);
     }
   else
-    for (unsigned i = 0; i < n; i++) v.push_back(glue);
+    for (int i = 0; i < n; i++) v.push_back(glue);
   if (top) v.push_back(top);
 
   // FIXME the 1 constant should not be hardcoded, the method
