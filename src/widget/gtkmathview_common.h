@@ -38,9 +38,9 @@ extern "C" {
   typedef GdkPoint GtkMathViewPoint;
 
   typedef struct _GtkMathViewBoundingBox {
-    gint width;
-    gint height;
-    gint depth;
+    double width;
+    double height;
+    double depth;
   } GtkMathViewBoundingBox;
 
   typedef struct _GtkMathView       GtkMathView;

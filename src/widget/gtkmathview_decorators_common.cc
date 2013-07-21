@@ -32,6 +32,46 @@ typedef struct _GtkMathViewDefaultCursorDecorator {
   gboolean char_index;
 } GtkMathViewDefaultCursorDecorator;
 
+// This is a (simplified) implementation of gtk_draw_insertion_cursor() that
+// make the caret stem width relative to font size not caret height, as the
+// later is variable in our case and gives us variable and often ugly carets
+static void
+draw_insertion_cursor(GtkMathView* math_view, GdkDrawable *drawable,
+		      double x, double y, double height,
+		      GtkTextDirection direction)
+{
+  cairo_t* cr;
+  GdkColor *cursor_color;
+  double stem_width, offset, cursor_aspect_ratio;
+  int font_size;
+
+  cr = gdk_cairo_create(drawable);
+
+  gtk_widget_style_get(GTK_WIDGET(math_view),
+	               "cursor-aspect-ratio",
+		       &cursor_aspect_ratio,
+	               NULL);
+  gtk_widget_style_get(GTK_WIDGET(math_view),
+		       "cursor-color",
+		       &cursor_color,
+		       NULL);
+
+  if (cursor_color)
+    gdk_cairo_set_source_color(cr, cursor_color);
+
+  font_size = GTKMATHVIEW_METHOD_NAME(get_font_size)(math_view);
+  stem_width = font_size * cursor_aspect_ratio + 1;
+
+  if (direction == GTK_TEXT_DIR_LTR)
+    offset = stem_width / 2;
+  else
+    offset = stem_width - stem_width / 2;
+
+  cairo_rectangle(cr, x - offset, y, stem_width, height);
+  cairo_fill(cr);
+  cairo_destroy(cr);
+}
+
 extern "C" void
 default_cursor_handler(GtkMathView* math_view, GdkDrawable* drawable,
 		       GtkMathViewDefaultCursorDecorator* cursor)
@@ -61,27 +101,27 @@ default_cursor_handler(GtkMathView* math_view, GdkDrawable* drawable,
  
       if (cursor->index >= 0)
 	{
-	  GdkRectangle crect;
 	  GtkMathViewPoint char_orig;
 	  GtkMathViewBoundingBox char_box;
+	  double x;
 	  if (cursor->char_index &&
 	      GTKMATHVIEW_METHOD_NAME(get_char_extents)(math_view, cursor->element, cursor->index,
 							&char_orig, &char_box))
-	    crect.x = char_orig.x;
+	    {
+	      x = char_orig.x;
+	    }
 	  else
 	    {
-	      crect.x = focus_orig.x;
-	      if (cursor->index > 0) crect.x += focus_box.width;
+	      x = focus_orig.x;
+	      if (cursor->index > 0) x += focus_box.width;
 	    }
-	  crect.y = focus_orig.y - focus_box.height;
-	  crect.height = focus_box.height + focus_box.depth;
-	  gtk_draw_insertion_cursor(GTK_WIDGET(math_view),
-				    drawable,
-				    NULL,
-				    &crect,
-				    TRUE,
-				    GTK_TEXT_DIR_LTR,
-				    FALSE);
+	  double y = focus_orig.y - focus_box.height;
+	  double height = focus_box.height + focus_box.depth;
+
+	  draw_insertion_cursor(math_view, drawable,
+				x, y, height,
+				GTK_TEXT_DIR_LTR);
+
 	}
     }
 }
