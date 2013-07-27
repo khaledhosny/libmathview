@@ -748,7 +748,7 @@ create_widget_set()
 		   (gpointer) main_area);
 
   cursor = gtk_math_view_decor_default_cursor_new(GTK_MATH_VIEW(main_area));
-  g_timeout_add(500, cursor_blink, cursor);
+  g_timeout_add(500, (GSourceFunc) cursor_blink, cursor);
 
   status_bar = gtk_statusbar_new();
   gtk_widget_show(status_bar);
