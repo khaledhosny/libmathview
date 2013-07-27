@@ -442,7 +442,6 @@ options_set_font_size(GtkWidget* widget, gpointer data)
 static void
 element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
-  GdomeElement* action = NULL;
   GdomeDOMString* link = NULL;
 
   g_return_if_fail(math_view != NULL);
@@ -458,8 +457,8 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   if (link != NULL)
     gdome_str_unref(link);
 
-  action = find_action_element(event->id);
 #if 0
+  GdomeElement* action = find_action_element(event->id);
   if (action != NULL) 
     {
       GdomeException exc = 0;
