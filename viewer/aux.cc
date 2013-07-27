@@ -143,6 +143,7 @@ rightmostChild(const DOM::Node& node)
   return rightmostChild(lastChild);
 }
 
+#if 0
 static DOM::Node
 leftSibling(const DOM::Node& node)
 {
@@ -181,6 +182,7 @@ rightSibling(const DOM::Node& node)
 
   return leftmostChild(nextSibling);
 }
+#endif
 
 extern "C" GdomeElement*
 find_common_ancestor(GdomeElement* first, GdomeElement* last)
