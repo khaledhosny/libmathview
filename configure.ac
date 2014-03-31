@@ -59,6 +59,13 @@ AC_ARG_ENABLE(
 	enable_gtk="auto"
 )
 
+AC_ARG_ENABLE(
+	qt,
+	[  --enable-qt[=ARG]  enable Qt backend [default=auto]],
+	enable_qt=$enableval,
+	enable_qt="auto"
+)
+
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
@@ -160,6 +167,24 @@ AC_SUBST(GLIB_LIBS)
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
+have_qt="no"
+if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
+  PKG_CHECK_MODULES([QT], [Qt5Core >= 5 Qt5Widgets Qt5Gui], [
+    QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix Qt5Core)"
+    AC_PATH_PROGS(MOC, [moc-qt5 moc], moc, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+    AC_PATH_PROG(RCC, [rcc-qt5 rcc], rcc, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+    AC_PATH_PROGS(UIC, [uic-qt5 uic], uic, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
+    AC_DEFINE(HAVE_QT,1,[Define to 1 if Qt is installed])
+    have_qt="yes"
+  ], [
+    AC_MSG_WARN([could not find qt])
+  ])
+  AC_SUBST(QT_CFLAGS)
+  AC_SUBST(QT_LIBS)
+fi
+
+AM_CONDITIONAL([COND_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
+
 have_gtk="no"
 have_pango="no"
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
@@ -246,6 +271,7 @@ AC_CONFIG_FILES([
  mathview-frontend-libxml2.pc
  mathview-frontend-gmetadom.pc
  mathview-backend-cairo.pc
+ mathview-backend-qt.pc
  gtkmathview-custom-reader.pc
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc
@@ -268,6 +294,7 @@ Frontend:
 
 Backend:
   GTK+                ${have_gtk}
+  Qt                  ${have_qt}
 
 Performance:
   Builder cache       ${enable_builder_cache}

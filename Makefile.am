@@ -3,13 +3,17 @@ ACLOCAL_AMFLAGS = -I m4
 NULL =
 
 if COND_GTK
-MAYBE_GTK_SUBDIRS = viewer
+MAYBE_SUBDIRS = viewer
 else
-MAYBE_GTK_SUBDIRS = $(NULL)
+if COND_QT
+MAYBE_SUBDIRS = viewer
+else
+MAYBE_SUBDIRS = $(NULL)
+endif
 endif
 
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
-SUBDIRS = scripts config auto src doc $(MAYBE_GTK_SUBDIRS)
+SUBDIRS = scripts config auto src doc $(MAYBE_SUBDIRS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = mathview-core.pc
@@ -28,6 +32,10 @@ endif
 
 if COND_GTK
 pkgconfig_DATA += mathview-backend-cairo.pc
+endif
+if COND_QT
+pkgconfig_DATA += mathview-backend-qt.pc
+endif
 if COND_LIBXML2
 pkgconfig_DATA += gtkmathview-libxml2.pc
 endif
@@ -39,7 +47,6 @@ pkgconfig_DATA += gtkmathview-custom-reader.pc
 endif
 if COND_GMETADOM
 pkgconfig_DATA += gtkmathview-gmetadom.pc
-endif
 endif
 
 SCRIPTDIR = ./scripts
