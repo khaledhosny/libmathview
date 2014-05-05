@@ -33,7 +33,7 @@
 #include "MathMLAttributeSignatures.hh"
 #include "ValueConversion.hh"
 #include "AbstractLogger.hh"
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include "StringHash.hh"
 
 template <class Model, class Builder, class RefinementContext>
@@ -1100,11 +1100,11 @@ public:
 
 private:
 #if ENABLE_BUILDER_CACHE
-  typedef std::tr1::unordered_map<String, SmartPtr<MathMLTextNode>, StringHash, StringEq> MathMLTextNodeCache;
+  typedef std::unordered_map<String, SmartPtr<MathMLTextNode>, StringHash, StringEq> MathMLTextNodeCache;
   mutable MathMLTextNodeCache mathmlTextNodeCache;
 #endif // ENABLE_BUILDER_CACHE
   typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
-  typedef std::tr1::unordered_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
+  typedef std::unordered_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
   static MathMLBuilderMap mathmlMap;
   static bool mathmlMapInitialized;
   mutable RefinementContext refinementContext;

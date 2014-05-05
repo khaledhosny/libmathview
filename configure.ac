@@ -247,7 +247,7 @@ fi
 AM_CONDITIONAL([COND_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
 
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
-CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter"
+CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
 
 if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
