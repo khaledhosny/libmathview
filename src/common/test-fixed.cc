@@ -25,7 +25,7 @@
 
 #include "fixed.hh"
 
-typedef fixed<long> FIXED;
+typedef math_view::fixed<long> FIXED;
 
 template <typename T>
 T
