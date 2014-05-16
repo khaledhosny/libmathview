@@ -2,9 +2,13 @@
 NULL =
 
 bin_PROGRAMS = $(NULL)
-if COND_GMETADOM
 if COND_GTK
+if COND_GMETADOM
 bin_PROGRAMS += mml-view-gtk
+else
+if COND_LIBXML2
+bin_PROGRAMS += mml-view-gtk
+endif
 endif
 endif
 
@@ -43,13 +47,23 @@ mml_view_qt_LDADD = \
 endif
 
 if COND_GTK
+GTK_VIEWER_LIBS = 
 noinst_HEADERS = Gtk_Window.h
 
-mml_view_gtk_SOURCES = mml-view-gtk.cc aux.cc Gtk_Window.c
+mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c
+
+if COND_GMETADOM
+mml_view_gtk_SOURCES += aux.cc
+GTK_VIEWER_LIBS += $(DOM_LIBS) \
+		   $(top_builddir)/src/libgtkmathview_gmetadom.la
+
+else
+GTK_VIEWER_LIBS += $(top_builddir)/src/libgtkmathview_libxml2.la
+endif
+
 mml_view_gtk_LDADD = \
-  $(DOM_LIBS) \
   $(GTK_LIBS) \
-  $(top_builddir)/src/libgtkmathview_gmetadom.la \
+  $(GTK_VIEWER_LIBS) \
   $(NULL)
 
 mml_view_SOURCES = mml-view.cc

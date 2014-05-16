@@ -28,9 +28,11 @@
 #include <string.h>
 #include <gtk/gtk.h>
 
+#include "Gtk_Window.h"
+
+#if defined(HAVE_GMETADOM)
 #include <gdome.h>
 #include "gtkmathview_gmetadom.h"
-#include "Gtk_Window.h"
 
 extern GdomeDOMString* find_hyperlink(GdomeElement*, const char*, const char*);
 extern GdomeElement* find_xref_element(GdomeElement*);
@@ -39,6 +41,9 @@ extern GdomeElement* find_self_or_ancestor(GdomeElement*, const char*, const cha
 extern GdomeElement* find_action_element(GdomeElement*);
 extern void action_toggle(GdomeElement*);
 extern void delete_element(GdomeElement*);
+#else
+#include "gtkmathview_libxml2.h"
+#endif
 
 static GtkWidget* window;
 static GtkWidget* main_area;
@@ -49,8 +54,13 @@ static GdkCursor* link_cursor;
 static gboolean   semantic_selection = FALSE;
 
 static gchar* doc_name = NULL;
+#if defined(HAVE_GMETADOM)
 static GdomeElement* first_selected = NULL;
 static GdomeElement* root_selected = NULL;
+#else
+static xmlElement* first_selected = NULL;
+static xmlElement* root_selected = NULL;
+#endif
 static GtkMathViewDefaultCursorDecorator* cursor = NULL;
 
 static guint statusbar_context;
@@ -298,11 +308,17 @@ selection_delete(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
     {
-      GdomeException exc;
       gtk_math_view_freeze(GTK_MATH_VIEW(main_area));
+#if defined(HAVE_GMETADOM)
+      GdomeException exc;
       delete_element(root_selected);
       gdome_el_unref(root_selected, &exc);
       g_assert(exc == 0);
+#else
+      gtk_math_view_structure_changed(GTK_MATH_VIEW(main_area), (GtkMathViewModelId) ((xmlNodePtr) root_selected)->parent);
+      xmlUnlinkNode((xmlNodePtr) root_selected);
+      xmlFreeNode((xmlNodePtr) root_selected);
+#endif
       root_selected = NULL;
       gtk_math_view_thaw(GTK_MATH_VIEW(main_area));
     }
@@ -313,11 +329,15 @@ selection_parent(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
     {
+#if defined(HAVE_GMETADOM)
       GdomeException exc = 0;
       GdomeElement* parent = (GdomeElement*) gdome_n_parentNode((GdomeNode*) root_selected, &exc);
       g_assert(exc == 0);
       gdome_el_unref(root_selected, &exc);
       g_assert(exc == 0);
+#else
+      xmlElement* parent = (xmlElement*) ((xmlNodePtr) root_selected)->parent;
+#endif
       root_selected = parent;
       gtk_math_view_select(GTK_MATH_VIEW(main_area), root_selected);
     }
@@ -328,10 +348,12 @@ selection_reset(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
     {
-      GdomeException exc = 0;
       gtk_math_view_unselect(GTK_MATH_VIEW(main_area), root_selected);
+#if defined(HAVE_GMETADOM)
+      GdomeException exc = 0;
       gdome_el_unref(root_selected, &exc);
       g_assert(exc == 0);
+#endif
       root_selected = NULL;
     }
 }
@@ -438,10 +460,10 @@ options_set_font_size(GtkWidget* widget, gpointer data)
   gtk_widget_show_all (dialog);
 }
 
-#if defined(HAVE_GMETADOM)
 static void
 element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
+#if defined(HAVE_GMETADOM)
   GdomeDOMString* link = NULL;
 
   g_return_if_fail(math_view != NULL);
@@ -467,6 +489,7 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       g_assert(exc == 0);
     }
 #endif
+#endif
 }
 
 static void
@@ -478,20 +501,25 @@ select_begin(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   if (event->id != NULL)
     {
+#if defined(HAVE_GMETADOM)
       GdomeException exc = 0;
+#endif
 
       gtk_math_view_freeze(math_view);
 
       if (root_selected != NULL)
 	{
 	  gtk_math_view_unselect(math_view, root_selected);
+#if defined(HAVE_GMETADOM)
 	  gdome_el_unref(root_selected, &exc);
 	  g_assert(exc == 0);
+#endif
 	  root_selected = NULL;
 	}
 
       if (semantic_selection)
 	{
+#if defined(HAVE_GMETADOM)
 	  GdomeElement* new_elem = find_xref_element(event->id);
 	  if (new_elem != NULL)
             {
@@ -499,13 +527,16 @@ select_begin(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 	      g_assert(exc == 0);
 	    }
           first_selected = root_selected = new_elem;
+#endif
 	}
       else
 	{
+#if defined(HAVE_GMETADOM)
 	  gdome_el_ref(event->id, &exc);
 	  g_assert(exc == 0);
 	  gdome_el_ref(event->id, &exc);
 	  g_assert(exc == 0);
+#endif
           first_selected = root_selected = event->id;
 	}
 
@@ -525,6 +556,7 @@ select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   if (first_selected != NULL && event->id != NULL)
     {
+#if defined(HAVE_GMETADOM)
       GdomeException exc = 0;
 
       gtk_math_view_freeze(math_view);
@@ -562,6 +594,7 @@ select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 	}
 
       gtk_math_view_thaw(math_view);
+#endif
     }
 }
 
@@ -574,9 +607,11 @@ select_end(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   if (first_selected != NULL)
     {
+#if defined(HAVE_GMETADOM)
       GdomeException exc = 0;
       gdome_el_unref(first_selected, &exc);
       g_assert(exc == 0);
+#endif
       first_selected = NULL;
     }
 }
@@ -584,15 +619,19 @@ select_end(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 static void
 select_abort(GtkMathView* math_view)
 {
+#if defined(HAVE_GMETADOM)
   GdomeException exc = 0;
+#endif
 
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
 
   if (first_selected != NULL)
     {
+#if defined(HAVE_GMETADOM)
       gdome_el_unref(first_selected, &exc);
       g_assert(exc == 0);
+#endif
       first_selected = NULL;
     }
 
@@ -601,19 +640,61 @@ select_abort(GtkMathView* math_view)
       gtk_math_view_freeze(math_view);
       gtk_math_view_unselect(math_view, root_selected);
       gtk_math_view_thaw(math_view);
+#if defined(HAVE_GMETADOM)
       gdome_el_unref(root_selected, &exc);
       g_assert(exc == 0);
+#endif
       root_selected = NULL;
     }
 }
+
+#if !defined(HAVE_GMETADOM)
+static xmlElement*
+find_action_element(xmlElement* elem)
+{
+  xmlNodePtr node;
+  for (node = (xmlNodePtr) elem; node && node->name; node = node->parent)
+  {
+    if (g_strcmp0((const char*) node->ns->href, MATHML_NS_URI) == 0
+     && g_strcmp0((const char*) node->name, "maction") == 0)
+      return (xmlElement*) node;
+  }
+  return NULL;
+}
+
+static void
+action_toggle(xmlElement* elem)
+{
+  xmlNodePtr node = (xmlNodePtr) elem;
+  const xmlChar selection[] = "selection";
+  guint idx = 1;
+
+  if (xmlHasProp(node, selection))
+    {
+      xmlChar* prop = xmlGetProp(node, selection);
+      idx = atoi((const char*) prop);
+      xmlFree(prop);
+    }
+
+  idx++;
+
+  gchar* prop = g_strdup_printf("%d", idx);
+  xmlSetProp(node, selection, (const xmlChar*) prop);
+  g_free(prop);
+}
+#endif
 
 static void
 click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 {
   gint index;
+#if defined(HAVE_GMETADOM)
   GdomeElement* elem;
   GdomeException exc;
   GdomeDOMString* name;
+#else
+  xmlElement* elem;
+#endif
 
   gint w, h;
   gtk_math_view_get_size(math_view, &w, &h);
@@ -632,20 +713,30 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   if (event->id != NULL)
     {
+#if defined(HAVE_GMETADOM)
       name = gdome_el_nodeName(event->id, &exc);
       g_assert(exc == 0);
       printf("node name: %s\n", name->str);
+#else
+      printf("node name: %s\n", ((xmlNodePtr) event->id)->name);
+#endif
     }
 
   if (event->id != NULL)
     {
+#if defined(HAVE_GMETADOM)
       GdomeElement* action;
+#else
+      xmlElement* action;
+#endif
+#if defined(HAVE_GMETADOM)
       GdomeDOMString* href = find_hyperlink(event->id, XLINK_NS_URI, "href");
       if (href != NULL)
 	{
  	  printf("hyperlink %s\n", href->str);
 	  gdome_str_unref(href);
 	}
+#endif
 
       action = find_action_element(event->id);
       printf("action? %p\n", action);
@@ -653,9 +744,14 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 	{
 	  gtk_math_view_freeze(math_view);
 	  action_toggle(action);
+#if !defined(HAVE_GMETADOM)
+          gtk_math_view_attribute_changed(math_view, event->id, (GtkMathViewModelString) "selection");
+#endif
 	  gtk_math_view_thaw(math_view);
+#if defined(HAVE_GMETADOM)
 	  gdome_el_unref(action, &exc);
 	  g_assert(exc == 0);
+#endif
 	  return;
 	}
     }
@@ -665,19 +761,23 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       gtk_math_view_freeze(math_view);
       gtk_math_view_unselect(math_view, root_selected);
       gtk_math_view_thaw(math_view);
+#if defined(HAVE_GMETADOM)
       gdome_el_unref(root_selected, &exc);
       g_assert(exc == 0);
+#endif
       root_selected = NULL;
     }
 }
-
-#endif // HAVE_GMETADOM
 
 static gboolean
 cursor_blink(GtkMathViewDefaultCursorDecorator* cursor)
 {
   gboolean enabled;
+#if defined(HAVE_GMETADOM)
   GdomeElement* focus;
+#else
+  xmlElement* focus;
+#endif
   gboolean draw_focus;
   gint index;
   gboolean char_index;
