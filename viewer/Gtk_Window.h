@@ -21,8 +21,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#ifndef guiGTK_h
-#define guiGTK_h
+#ifndef Gtk_Window_h
+#define Gtk_Window_h
 
 #include <glib.h>
 
@@ -45,4 +45,4 @@ extern "C" {
 }
 #endif
 
-#endif /* guiGTK_h */
+#endif /* Gtk_Window_h */

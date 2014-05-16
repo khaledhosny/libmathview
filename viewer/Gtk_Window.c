@@ -30,7 +30,7 @@
 
 #include <gdome.h>
 #include "gtkmathview_gmetadom.h"
-#include "guiGTK.h"
+#include "Gtk_Window.h"
 
 extern GdomeDOMString* find_hyperlink(GdomeElement*, const char*, const char*);
 extern GdomeElement* find_xref_element(GdomeElement*);

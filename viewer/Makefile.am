@@ -4,7 +4,7 @@ NULL =
 bin_PROGRAMS = $(NULL)
 if COND_GMETADOM
 if COND_GTK
-bin_PROGRAMS += mathmlviewer
+bin_PROGRAMS += mml-view-gtk
 endif
 endif
 
@@ -43,10 +43,10 @@ mml_view_qt_LDADD = \
 endif
 
 if COND_GTK
-noinst_HEADERS = guiGTK.h
+noinst_HEADERS = Gtk_Window.h
 
-mathmlviewer_SOURCES = main.cc aux.cc guiGTK.c
-mathmlviewer_LDADD = \
+mml_view_gtk_SOURCES = mml-view-gtk.cc aux.cc Gtk_Window.c
+mml_view_gtk_LDADD = \
   $(DOM_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/libgtkmathview_gmetadom.la \

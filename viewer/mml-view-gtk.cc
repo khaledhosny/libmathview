@@ -27,7 +27,7 @@
 #include <stdio.h>
 
 #include "defs.h"
-#include "guiGTK.h"
+#include "Gtk_Window.h"
 #include "String.hh"
 #include "MathMLTokenElement.hh"
 
