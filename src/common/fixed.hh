@@ -27,6 +27,8 @@
 
 #include "gmv_defines.h"
 
+namespace math_view {
+
 template<typename T = int, int precision = std::numeric_limits<T>::digits / 2>
 GMV_MathView_EXPORT class fixed
 {
@@ -290,6 +292,8 @@ template <typename T, int p>
 inline GMV_MathView_EXPORT bool
 operator>=(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value >= f2.value; }
+
+}
 
 #endif // __fixed_hh__
 

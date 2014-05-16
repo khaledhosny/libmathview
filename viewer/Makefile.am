@@ -3,21 +3,46 @@ NULL =
 
 bin_PROGRAMS = $(NULL)
 if COND_GMETADOM
+if COND_GTK
 bin_PROGRAMS += mathmlviewer
+endif
 endif
 
 noinst_PROGRAMS = $(NULL)
 if COND_LIBXML2
+if COND_GTK
 noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
 noinst_PROGRAMS += test_building
 noinst_PROGRAMS += test_rendering
 bin_PROGRAMS += mml-view
 endif
-if COND_LIBXML2_READER
-noinst_PROGRAMS += test_loading_reader
+if COND_QT
+moc_%.cc: %.hh
+	$(MOC) $< -o $@
+bin_PROGRAMS += mml-view-qt
+endif
 endif
 
+if COND_LIBXML2_READER
+if COND_GTK
+noinst_PROGRAMS += test_loading_reader
+endif
+endif
+
+if COND_QT
+mml_view_qt_SOURCES = mml-view-qt.cc Qt_RenderArea.cc moc_Qt_RenderArea.cc
+mml_view_qt_LDADD = \
+  $(QT_LIBS) \
+  $(XML_LIBS) \
+  $(GLIB_LIBS) \
+  $(top_builddir)/src/libmathview.la \
+  $(top_builddir)/src/libmathview_backend_qt.la \
+  $(top_builddir)/src/libmathview_frontend_libxml2.la \
+  $(NULL)
+endif
+
+if COND_GTK
 noinst_HEADERS = guiGTK.h
 
 mathmlviewer_SOURCES = main.cc aux.cc guiGTK.c
@@ -80,6 +105,7 @@ test_loading_reader_LDADD = \
   $(GTK_LIBS) \
   $(top_builddir)/src/libgtkmathview_libxml2_reader.la \
   $(NULL)
+endif
 
 AM_CPPFLAGS = \
   -I$(top_builddir)/auto/ \
@@ -92,6 +118,9 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/common/ \
   -I$(top_srcdir)/src/backend/cairo/ \
+  -I$(top_srcdir)/src/backend/qt/ \
+  $(QT_CFLAGS) -fPIC \
+  $(GLIB_CFLAGS) \
   $(GTK_CFLAGS) \
   $(XML_CFLAGS) \
   $(DOM_CFLAGS) \

@@ -24,7 +24,7 @@
 
 #include <cassert>
 
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include "StringHash.hh"
 #include "token.hh"
 
@@ -40,7 +40,7 @@ static Entry token[] =
     { T__NOTVALID, 0 }
   };
 
-typedef std::tr1::unordered_map<String,TokenId,StringHash,StringEq> Map;
+typedef std::unordered_map<String,TokenId,StringHash,StringEq> Map;
 static Map map;
 
 TokenId

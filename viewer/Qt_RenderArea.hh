@@ -1,8 +1,8 @@
-// Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2014, Yue Liu <yue.liu@mail.com>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
-// 
+//
 // GtkMathView is free software; you can redistribute it and/or modify it
 // either under the terms of the GNU Lesser General Public License version
 // 3 as published by the Free Software Foundation (the "LGPL") or, at your
@@ -15,35 +15,50 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the LGPL or
 // the GPL for more details.
-// 
+//
 // You should have received a copy of the LGPL and of the GPL along with
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __NamespaceRegistry_hh__
-#define __NamespaceRegistry_hh__
+#ifndef Qt_RenderArea_hh
+#define Qt_RenderArea_hh
 
-#include "Object.hh"
-#include <unordered_map>
-#include "String.hh"
-#include "SmartPtr.hh"
+#include "libxml2_MathView.hh"
 
-class NamespaceRegistry : public Object
+#include "Logger.hh"
+#include "Configuration.hh"
+#include "MathMLOperatorDictionary.hh"
+#include "Qt_Backend.hh"
+#include "Qt_MathGraphicDevice.hh"
+#include "MathMLNamespaceContext.hh"
+#include "FormattingContext.hh"
+#include "Qt_RenderingContext.hh"
+
+#include <QWidget>
+#include <QSize>
+
+typedef libxml2_MathView MathView;
+
+class Qt_RenderArea : public QWidget
 {
-protected:
-  NamespaceRegistry(void);
-  virtual ~NamespaceRegistry();
-
+    Q_OBJECT
 public:
-  static SmartPtr<NamespaceRegistry> create(void) { return new NamespaceRegistry(); }
+    Qt_RenderArea(SmartPtr<AbstractLogger> logger,
+               SmartPtr<Configuration> configuration,
+               QWidget* parent = 0);
+    virtual ~Qt_RenderArea();
+    void loadURI(const char* mml_file);
 
-  SmartPtr<class NamespaceContext> get(const String&) const;
-  bool add(const SmartPtr<class NamespaceContext>&);
-  bool remove(const String&);
+protected:
+    void paintEvent(QPaintEvent *event);
 
 private:
-  typedef std::unordered_map<String,SmartPtr<class NamespaceContext>,StringHash,StringEq> ElementFactoryMap;
-  ElementFactoryMap map;
+    SmartPtr<Backend> m_backend;
+    SmartPtr<MathGraphicDevice> m_device;
+    SmartPtr<MathMLOperatorDictionary> m_dictionary;
+    SmartPtr<MathView> m_view;
+    Qt_RenderingContext m_rc;
+    QRawFont m_rawFont;
 };
 
-#endif // __NamespaceRegistry_hh__
+#endif // Qt_RenderArea_hh

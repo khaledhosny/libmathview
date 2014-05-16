@@ -2,7 +2,7 @@
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
-// 
+//
 // GtkMathView is free software; you can redistribute it and/or modify it
 // either under the terms of the GNU Lesser General Public License version
 // 3 as published by the Free Software Foundation (the "LGPL") or, at your
@@ -15,38 +15,41 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the LGPL or
 // the GPL for more details.
-// 
+//
 // You should have received a copy of the LGPL and of the GPL along with
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <math.h>
-#include <iostream>
+#include <config.h>
 
-#include "fixed.hh"
+#include "Qt_AreaFactory.hh"
+#include "Qt_MathGraphicDevice.hh"
+#include "MathMLElement.hh"
+#include "FormattingContext.hh"
 
-typedef math_view::fixed<long> FIXED;
+Qt_MathGraphicDevice::Qt_MathGraphicDevice(const SmartPtr<MathFont>& f)
+    : MathGraphicDevice(f)
+{ }
 
-template <typename T>
-T
-fibo(unsigned n)
+Qt_MathGraphicDevice::~Qt_MathGraphicDevice()
+{ }
+
+SmartPtr<Qt_MathGraphicDevice>
+Qt_MathGraphicDevice::create(const SmartPtr<MathFont>& font)
 {
-  T prev = T(0.0);
-  T p = T(1.0);
-  T res = p;
-  while (n-- > 0)
-    {
-      T tmp = prev + p;
-      prev = p;
-      p = tmp;
-    }
-  return p;
+    return new Qt_MathGraphicDevice(font);
 }
 
-int
-main()
+void
+Qt_MathGraphicDevice::setFactory(const SmartPtr<Qt_AreaFactory>& f)
 {
-  std::cout << fibo<FIXED>(1950000000).toInt() << std::endl;
-  //std::cout << fibo<int>(1950000000) << std::endl;
+    MathGraphicDevice::setFactory(f);
+    area_factory = f;
 }
 
+AreaRef
+Qt_MathGraphicDevice::wrapper(const FormattingContext& context,
+                              const AreaRef& base) const
+{
+    return area_factory->wrapper(base, base->box(), context.getMathMLElement());
+}

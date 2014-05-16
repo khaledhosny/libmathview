@@ -2,7 +2,7 @@
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
-// 
+//
 // GtkMathView is free software; you can redistribute it and/or modify it
 // either under the terms of the GNU Lesser General Public License version
 // 3 as published by the Free Software Foundation (the "LGPL") or, at your
@@ -15,38 +15,32 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the LGPL or
 // the GPL for more details.
-// 
+//
 // You should have received a copy of the LGPL and of the GPL along with
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <math.h>
-#include <iostream>
+#ifndef __Qt_BackgroundArea_hh__
+#define __Qt_BackgroundArea_hh__
 
-#include "fixed.hh"
+#include "ColorArea.hh"
 
-typedef math_view::fixed<long> FIXED;
-
-template <typename T>
-T
-fibo(unsigned n)
+class Qt_BackgroundArea : public ColorArea
 {
-  T prev = T(0.0);
-  T p = T(1.0);
-  T res = p;
-  while (n-- > 0)
+protected:
+    Qt_BackgroundArea(const AreaRef& area, const RGBColor& c) : ColorArea(area, c) { }
+    virtual ~Qt_BackgroundArea() { }
+
+public:
+    static SmartPtr<Qt_BackgroundArea> create(const AreaRef& area, const RGBColor& c)
     {
-      T tmp = prev + p;
-      prev = p;
-      p = tmp;
+        return new Qt_BackgroundArea(area, c);
     }
-  return p;
-}
+    virtual AreaRef clone(const AreaRef& area) const {
+        return create(area, getColor());
+    }
 
-int
-main()
-{
-  std::cout << fibo<FIXED>(1950000000).toInt() << std::endl;
-  //std::cout << fibo<int>(1950000000) << std::endl;
-}
+    virtual void render(RenderingContext&, const scaled&, const scaled&) const;
+};
 
+#endif // __Qt_BackgroundArea_hh__

@@ -519,6 +519,52 @@ mathview_HEADERS += \
   $(NULL)
 endif # COND_GTK
 
+if COND_QT
+lib_LTLIBRARIES += libmathview_backend_qt.la
+
+libmathview_backend_qt_la_CPPFLAGS = -DGMV_BackEnd_DLL
+
+libmathview_backend_qt_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+
+libmathview_backend_qt_la_LIBADD = \
+  $(QT_LIBS) \
+  $(NULL)
+
+libmathview_backend_qt_la_CPPFLAGS += \
+  -I$(top_builddir)/auto \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/common/mathvariants \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/backend/common \
+  $(QT_CFLAGS) -fPIC \
+  $(NULL)
+
+libmathview_backend_qt_la_SOURCES = \
+  backend/qt/Qt_AreaFactory.hh \
+  backend/qt/Qt_Backend.cc \
+  backend/qt/Qt_BackgroundArea.cc \
+  backend/qt/Qt_BackgroundArea.hh \
+  backend/qt/Qt_ColorArea.cc \
+  backend/qt/Qt_ColorArea.hh \
+  backend/qt/Qt_InkArea.cc \
+  backend/qt/Qt_InkArea.hh \
+  backend/qt/Qt_MathGraphicDevice.cc \
+  backend/qt/Qt_MathGraphicDevice.hh \
+  backend/qt/Qt_Shaper.cc \
+  backend/qt/Qt_Shaper.hh \
+  backend/qt/Qt_GlyphArea.cc \
+  backend/qt/Qt_GlyphArea.hh \
+  backend/qt/Qt_RenderingContext.cc \
+  backend/qt/Qt_RenderingContext.hh \
+  backend/qt/Qt_WrapperArea.cc \
+  backend/qt/Qt_WrapperArea.hh \
+  $(NULL)
+
+mathview_HEADERS += \
+  backend/qt/Qt_Backend.hh \
+  $(NULL)
+endif # COND_QT
 
 
 noinst_LTLIBRARIES += libfrontend_common.la
