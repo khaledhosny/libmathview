@@ -25,7 +25,6 @@
 #define __defs_h__
 
 #define MATHML_NS_URI "http://www.w3.org/1998/Math/MathML"
-#define XLINK_NS_URI "http://www.w3.org/1999/xlink"
 
 #define EPSILON 0.01f
 

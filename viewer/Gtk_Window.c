@@ -437,20 +437,12 @@ findNodeWithAttribute(xmlNodePtr node, const xmlChar* name)
   return node;
 }
 
-static xmlNodePtr
-findNodeWithAttributeNS(xmlNodePtr node, const xmlChar* ns_uri, const xmlChar* name)
-{
-  while (node && !xmlHasNsProp(node, name, ns_uri))
-    node = node->parent;
-  return node;
-}
-
 static xmlChar*
-find_hyperlink(xmlElement* elem, const gchar* ns_uri, const gchar* name)
+find_hyperlink(xmlElement* elem, const gchar* name)
 {
-  xmlNodePtr node = findNodeWithAttributeNS((xmlNodePtr) elem, (xmlChar*) ns_uri, (xmlChar*) name);
+  xmlNodePtr node = findNodeWithAttribute((xmlNodePtr) elem, (xmlChar*) name);
   if (node)
-    return xmlGetNsProp(node, (xmlChar*) name, (xmlChar*) ns_uri);
+    return xmlGetProp(node, (xmlChar*) name);
   else
     return NULL;
 }
@@ -464,7 +456,7 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
   g_return_if_fail(event != NULL);
 
-  link = find_hyperlink(event->id, XLINK_NS_URI, "href");
+  link = find_hyperlink(event->id, "href");
   if (link != NULL)
     gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
   else
@@ -711,7 +703,7 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
   if (event->id != NULL)
     {
       xmlElement* action;
-      xmlChar* href = find_hyperlink(event->id, XLINK_NS_URI, "href");
+      xmlChar* href = find_hyperlink(event->id, "href");
       if (href != NULL)
 	{
 	  printf("hyperlink %s\n", href);
