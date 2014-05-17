@@ -31,7 +31,7 @@ AC_ARG_ENABLE(
 	gmetadom,
 	[  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
 	enable_gmetadom=$enableval,
-	enable_gmetadom="auto"
+	enable_gmetadom="no"
 )
 
 AC_ARG_ENABLE(
