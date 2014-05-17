@@ -1,0 +1,11 @@
+language: cpp
+compiler:
+        - gcc
+        - clang
+install:
+        - sudo apt-get install libxml2-dev    # for libxml2 frontend
+        - sudo apt-get install libglib2.0-dev # for some Unicode function
+        - sudo apt-get install libcairo2-dev  # for Cairo backend
+        - sudo apt-get install libgtk2.0-dev  # for GTK viewer
+        - sudo apt-get install qtbase5-dev    # for Qt backend
+script: ./autogen.sh && ./configure && make
