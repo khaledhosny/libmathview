@@ -6,7 +6,7 @@ AC_CONFIG_SRCDIR([src/common/Clock.hh])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_SED
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects foreign])
 
 MAJOR_VERSION=`echo "$PACKAGE_VERSION" | $SED 's/\([[^.]][[^.]]*\).*/\1/'`
 MINOR_VERSION=`echo "$PACKAGE_VERSION" | $SED 's/[[^.]][[^.]]*.\([[^.]][[^.]]*\).*/\1/'`
