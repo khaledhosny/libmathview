@@ -4,17 +4,20 @@ dnl Automake configuration
 AC_INIT([gtkmathview], [1.0.0])
 AC_CONFIG_SRCDIR([src/common/Clock.hh])
 AC_CONFIG_MACRO_DIR([m4])
-AC_PROG_SED
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 
-MAJOR_VERSION=`echo "$PACKAGE_VERSION" | $SED 's/\([[^.]][[^.]]*\).*/\1/'`
-MINOR_VERSION=`echo "$PACKAGE_VERSION" | $SED 's/[[^.]][[^.]]*.\([[^.]][[^.]]*\).*/\1/'`
-MICRO_VERSION=`echo "$PACKAGE_VERSION" | $SED 's/[[^.]][[^.]]*.[[^.]][[^.]]*.\(.*\)/\1/'`
+m4_define(version_triplet,m4_split(AC_PACKAGE_VERSION,[[.]]))
+m4_define(version_major,m4_argn(1,version_triplet))
+m4_define(version_minor,m4_argn(2,version_triplet))
+m4_define(version_micro,m4_argn(3,version_triplet))
+MAJOR_VERSION=version_major
+MINOR_VERSION=version_minor
+MICRO_VERSION=version_micro
 MATHVIEW_VERSION_INFO=`expr $MAJOR_VERSION + $MINOR_VERSION`:$MICRO_VERSION:$MINOR_VERSION
-
 AC_SUBST(MAJOR_VERSION)
 AC_SUBST(MINOR_VERSION)
+AC_SUBST(MICRO_VERSION)
 AC_SUBST(MATHVIEW_VERSION_INFO)
 
 AC_ARG_ENABLE(
