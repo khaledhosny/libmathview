@@ -3,6 +3,7 @@ compiler:
         - gcc
         - clang
 install:
+        - sudo apt-get install xsltproc       # build-time dependancy
         - sudo apt-get install libxml2-dev    # for libxml2 frontend
         - sudo apt-get install libglib2.0-dev # for some Unicode function
         - sudo apt-get install libcairo2-dev  # for Cairo backend

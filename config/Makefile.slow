@@ -1,6 +1,5 @@
 
 NULL =
-XSLTPROC = xsltproc
 SCRIPTDIR = ../scripts
 
 TARGETS = \

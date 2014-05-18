@@ -151,10 +151,7 @@ libmathvariants_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common
 
-if COND_XSLTPROC
-XSLTPROC = xsltproc
-
-# XXX: rewrite this messy shell hackery into some readible script
+# XXX: rewrite this messy shell hackery into some readable script
 
 common/mathvariants/%_gen.cc : $(srcdir)/common/mathvariants/xml/%.xml $(srcdir)/common/mathvariants/extract.xsl
 	$(AM_V_GEN)$(XSLTPROC) --novalid $(srcdir)/common/mathvariants/extract.xsl $< >$@
@@ -173,7 +170,6 @@ common/mathvariants/%.cc : common/mathvariants/%_gen.cc $(srcdir)/common/mathvar
 	$(AM_V_at)echo "}" >>$@
 	$(AM_V_at)rm -f $(@:%.cc=%)
 	$(AM_V_at)cat $(srcdir)/common/mathvariants/variant.bot >>$@
-endif # COND_XSLTPROC
 
 EXTRA_DIST += \
   common/mathvariants/xml/bold-fraktur.xml \

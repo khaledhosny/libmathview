@@ -54,15 +54,11 @@ noinst_HEADERS = $(AUTOFILES)
 SCRIPTDIR = ../scripts
 CONFIGDIR = ../config
 
-if COND_XSLTPROC
-XSLTPROC = xsltproc
-
 token.dec: token-list.xml list-to-dec.xsl
 	$(AM_V_GEN)$(XSLTPROC) $(srcdir)/list-to-dec.xsl $< >$@
 
 token.def: token-list.xml list-to-def.xsl
 	$(AM_V_GEN)$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
-endif
 
 .PHONY: config.dirs
 config.dirs:

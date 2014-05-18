@@ -155,12 +155,6 @@ AC_TRY_LINK(
 
 AC_LANG_POP(C++)
 
-AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, yes, no)
-if test $HAVE_XSLTPROC = "no"; then
-	AC_MSG_WARN(xsltproc not found, the compilation may fail)
-fi
-AM_CONDITIONAL([COND_XSLTPROC], [test "$HAVE_XSLTPROC" = "yes"])
-
 AC_LANG([C])
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1],,[AC_MSG_ERROR(could not find GLIB)])
@@ -169,6 +163,8 @@ AC_SUBST(GLIB_LIBS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
+
+AM_MISSING_PROG([XSLTPROC], [xsltproc])
 
 have_qt="no"
 if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
@@ -285,9 +281,6 @@ AC_OUTPUT
 cat <<EOF
 
 GtkMathView ${PACKAGE_VERSION}
-
-Compilation:
-  xsltproc            ${HAVE_XSLTPROC}
 
 Frontend:
   GMetaDOM            ${enable_gmetadom}
