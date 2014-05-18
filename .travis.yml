@@ -7,5 +7,7 @@ install:
         - sudo apt-get install libglib2.0-dev # for some Unicode function
         - sudo apt-get install libcairo2-dev  # for Cairo backend
         - sudo apt-get install libgtk2.0-dev  # for GTK viewer
+        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa # for Qt5
+        - sudo apt-get update                                   # ditto
         - sudo apt-get install qtbase5-dev    # for Qt backend
 script: ./autogen.sh && ./configure && make
