@@ -13,12 +13,8 @@ O = OK, done
   * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
-- implement GnomePrint backend
-- implement PS backend
 + make DPI a configurable parameter
-+ find a way of having TFM support orthogonal to the other classes
 ? make pangolayout pangolinelayout areas configurable (glyph area?)
-? T1 CM shaper useful for SVG?
 ? have callback functions to notify progress while building/formatting/etc?
   these should not depend on the backend
 - use step area to implement linebreaking in mrows
@@ -33,7 +29,6 @@ O = OK, done
 
 // AbiWord
 
-* move Char.hh.in into auto and cleanup dependencies with the top_builddir?
 * commit default shaper in abimathview
 
 // MathML
@@ -75,28 +70,7 @@ MISSING
 ? make setSelected virtual in Gtk_WrapperArea and implement
   an open Wrapper area that selects all its children. Use the
   open wrapper for groups
-- implement PS area model (using pslib?)
-- implement T1lib area model (using pslib instead?)
-- implement shaper for Mathematica fonts
-- implement shaper for Euclid fonts
 - runtime selection of backend
-
-// SVG Backend
-
-BUGS
-
-- character 2211 is not displayed (and probably others) because there is
-  no default shaper (?)
-
-IMPROVEMENTS
-
-- do not draw the contour of text, so that letters are thinner
-
-MISSING
-
-- cross-embedding of MathML and SVG following the guidelines?
-- cross-embedding of MathML and SVG with coordinates computation?
-- document alpha channel in RGBColor
 
 // GTK Backend
 
