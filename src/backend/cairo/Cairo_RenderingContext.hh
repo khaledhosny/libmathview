@@ -57,8 +57,6 @@ public:
   ColorStyle getStyle(void) const { return style; }
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
-  void draw(const scaled&, const scaled&, PangoLayout*) const;
-  void draw(const scaled&, const scaled&, PangoLayoutLine*) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
 
   static double toCairoPixels(const scaled& s)

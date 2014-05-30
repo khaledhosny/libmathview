@@ -51,32 +51,6 @@ Cairo_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox
 }
 
 void
-Cairo_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayout* layout) const
-{
-  cairo_save(getCairo());
-
-  RGBColor fg = getForegroundColor();
-  cairo_set_source_rgba(getCairo(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
-  cairo_move_to(getCairo(), toCairoX(x), toCairoY(y));
-  pango_cairo_show_layout(getCairo(), layout);
-
-  cairo_restore(getCairo());
-}
-
-void
-Cairo_RenderingContext::draw(const scaled& x, const scaled& y, PangoLayoutLine* line) const
-{
-  cairo_save(getCairo());
-
-  RGBColor fg = getForegroundColor();
-  cairo_set_source_rgba(getCairo(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
-  cairo_move_to(getCairo(), toCairoX(x), toCairoY(y));
-  pango_cairo_show_layout_line(getCairo(), line);
-
-  cairo_restore(getCairo());
-}
-
-void
 Cairo_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
                            PangoGlyphString* glyphs) const
 {
