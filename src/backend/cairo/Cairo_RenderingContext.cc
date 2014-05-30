@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2014, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -62,4 +63,21 @@ Cairo_RenderingContext::draw(const scaled& x, const scaled& y, PangoFont* font,
   pango_cairo_show_glyph_string(getCairo(), font, glyphs);
 
   cairo_restore(getCairo());
+}
+
+void
+Cairo_RenderingContext::draw(const scaled& x, const scaled& y, cairo_scaled_font_t* font,
+                             unsigned glyph) const
+{
+  cairo_t* cr = getCairo();
+  cairo_save(cr);
+
+  RGBColor fg = getForegroundColor();
+  cairo_set_scaled_font(cr, font);
+  cairo_set_source_rgba(cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+
+  cairo_glyph_t glyphs[1] = { { glyph, toCairoX(x), toCairoY(y) } };
+  cairo_show_glyphs(cr, glyphs, 1);
+
+  cairo_restore(cr);
 }

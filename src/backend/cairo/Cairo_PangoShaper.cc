@@ -1,5 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
-// Copyright (C) 2013, Khaled Hosny <khaledhosny@eglug.org>.
+// Copyright (C) 2013-2014, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -26,7 +26,7 @@
 #define PANGO_ENABLE_ENGINE // for pango_fc_font_get_glyph()
 #include <pango/pangofc-font.h>
 
-#include "Cairo_PangoGlyphArea.hh"
+#include "Cairo_GlyphArea.hh"
 #include "Cairo_PangoShaper.hh"
 #include "Cairo_RenderingContext.hh"
 #include "ShapingContext.hh"
@@ -60,18 +60,11 @@ Cairo_PangoShaper::shapeChar(Char32 ch) const
 AreaRef
 Cairo_PangoShaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
 {
-  PangoGlyphString* glyphstring = pango_glyph_string_new();
-  pango_glyph_string_set_size(glyphstring, 1);
-
-  glyphstring->glyphs[0].glyph = (PangoGlyph) glyph;
-  glyphstring->glyphs[0].geometry.x_offset = 0;
-  glyphstring->glyphs[0].geometry.y_offset = 0;
-  glyphstring->glyphs[0].geometry.width = 0;
-
   PangoFontDescription* description = pango_font_describe(font);
   const gint size = Cairo_RenderingContext::toPangoPoints(sp_size);
   pango_font_description_set_size(description, size);
-  GObjectPtr<PangoFont> newfont = pango_context_load_font(context, description);
+  GObjectPtr<PangoCairoFont> newfont = (PangoCairoFont*) pango_context_load_font(context, description);
+  cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (newfont);
 
-  return Cairo_PangoGlyphArea::create(newfont, glyphstring);
+  return Cairo_GlyphArea::create(cairo_font, glyph);
 }

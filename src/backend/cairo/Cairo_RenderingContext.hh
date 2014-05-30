@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2014, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -58,6 +59,7 @@ public:
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
   void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
+  void draw(const scaled&, const scaled&, cairo_scaled_font_t*, unsigned) const;
 
   static double toCairoPixels(const scaled& s)
   { return (s * (72.27 / 72.0)).toDouble(); }

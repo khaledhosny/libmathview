@@ -492,6 +492,8 @@ libmathview_backend_cairo_la_SOURCES = \
   backend/cairo/Cairo_BackgroundArea.hh \
   backend/cairo/Cairo_ColorArea.cc \
   backend/cairo/Cairo_ColorArea.hh \
+  backend/cairo/Cairo_GlyphArea.cc \
+  backend/cairo/Cairo_GlyphArea.hh \
   backend/cairo/Cairo_InkArea.cc \
   backend/cairo/Cairo_InkArea.hh \
   backend/cairo/Cairo_MathGraphicDevice.cc \
