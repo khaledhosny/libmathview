@@ -27,8 +27,6 @@
 
 #include "defs.h"
 
-// don't know why this is needed!!!
-#define PANGO_ENABLE_BACKEND
 #include <pango/pango.h>
 
 #include <math.h>
