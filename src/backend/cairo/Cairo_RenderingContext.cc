@@ -37,18 +37,19 @@ Cairo_RenderingContext::~Cairo_RenderingContext()
 void
 Cairo_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
 {
-  cairo_save(getCairo());
+  cairo_t* cr = getCairo();
+  cairo_save(cr);
 
   RGBColor fg = getForegroundColor();
-  cairo_set_source_rgba(getCairo(), fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
-  cairo_rectangle(getCairo(),
+  cairo_set_source_rgba(cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_rectangle(cr,
                   toCairoX(x),
                   toCairoY(y + box.height),
                   toCairoPixels(box.width),
                   toCairoPixels(box.height + box.depth));
-  cairo_fill(getCairo());
+  cairo_fill(cr);
 
-  cairo_restore(getCairo());
+  cairo_restore(cr);
 }
 
 void
