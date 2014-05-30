@@ -498,8 +498,6 @@ libmathview_backend_cairo_la_SOURCES = \
   backend/cairo/Cairo_InkArea.hh \
   backend/cairo/Cairo_MathGraphicDevice.cc \
   backend/cairo/Cairo_MathGraphicDevice.hh \
-  backend/cairo/Cairo_PangoShaper.cc \
-  backend/cairo/Cairo_PangoShaper.hh \
   backend/cairo/Cairo_RenderingContext.cc \
   backend/cairo/Cairo_RenderingContext.hh \
   backend/cairo/Cairo_Shaper.cc \
