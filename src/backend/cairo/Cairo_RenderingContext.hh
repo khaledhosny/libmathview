@@ -25,7 +25,6 @@
 #define __Cairo_RenderingContext_hh__
 
 #include <cairo/cairo.h>
-#include <pango/pangocairo.h>
 
 #include "Char.hh"
 #include "SmartPtr.hh"
@@ -62,8 +61,6 @@ public:
 
   static double toCairoPixels(const scaled& s)
   { return (s * (72.27 / 72.0)).toDouble(); }
-  static double toPangoPoints(const scaled& s)
-  { return (s * PANGO_SCALE).toDouble(); }
   static scaled fromCairoPixels(double s)
   { return scaled(s * (72.0 / 72.27)); }
 

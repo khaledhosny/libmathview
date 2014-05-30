@@ -61,7 +61,7 @@ AreaRef
 Cairo_PangoShaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
 {
   PangoFontDescription* description = pango_font_describe(font);
-  const gint size = Cairo_RenderingContext::toPangoPoints(sp_size);
+  const gint size = toPangoPoints(sp_size);
   pango_font_description_set_size(description, size);
   GObjectPtr<PangoCairoFont> newfont = (PangoCairoFont*) pango_context_load_font(context, description);
   cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (newfont);

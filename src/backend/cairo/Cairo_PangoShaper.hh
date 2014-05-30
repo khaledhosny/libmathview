@@ -24,6 +24,8 @@
 #ifndef __Cairo_PangoShaper_hh__
 #define __Cairo_PangoShaper_hh__
 
+#include <pango/pangocairo.h>
+
 #include "MathShaper.hh"
 
 class Cairo_PangoShaper : public MathShaper
@@ -42,6 +44,9 @@ protected:
   virtual unsigned shapeChar(Char32) const;
 
 private:
+  static double toPangoPoints(const scaled& s)
+  { return (s * PANGO_SCALE).toDouble(); }
+
   GObjectPtr<PangoContext> context;
   GObjectPtr<PangoFont> font;
 };
