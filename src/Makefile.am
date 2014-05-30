@@ -502,6 +502,8 @@ libmathview_backend_cairo_la_SOURCES = \
   backend/cairo/Cairo_PangoShaper.hh \
   backend/cairo/Cairo_RenderingContext.cc \
   backend/cairo/Cairo_RenderingContext.hh \
+  backend/cairo/Cairo_Shaper.cc \
+  backend/cairo/Cairo_Shaper.hh \
   backend/cairo/Cairo_WrapperArea.cc \
   backend/cairo/Cairo_WrapperArea.hh \
   $(NULL)

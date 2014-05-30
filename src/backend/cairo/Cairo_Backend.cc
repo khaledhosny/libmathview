@@ -23,6 +23,7 @@
 
 #include <config.h>
 
+#include <pango/pangocairo.h>
 #include <pango/pangofc-font.h>
 #include FT_TRUETYPE_TABLES_H
 
@@ -31,7 +32,7 @@
 #include "Cairo_Backend.hh"
 #include "Cairo_AreaFactory.hh"
 #include "Cairo_MathGraphicDevice.hh"
-#include "Cairo_PangoShaper.hh"
+#include "Cairo_Shaper.hh"
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
 
@@ -43,11 +44,11 @@ Cairo_Backend::Cairo_Backend(GObjectPtr<PangoContext>& context)
   SmartPtr<MathFont> mathfont = MathFont::create();
 
   PangoFontDescription* description = pango_context_get_font_description(context);
-  GObjectPtr<PangoFont> font = pango_context_load_font(context, description);
+  PangoFont* font = pango_context_load_font(context, description);
   FT_Byte *table = NULL;
   if (font)
     {
-      PangoFcFont* fcfont = PANGO_FC_FONT(static_cast<PangoFont*>(font));
+      PangoFcFont* fcfont = PANGO_FC_FONT(font);
       FT_Face face = pango_fc_font_lock_face(fcfont);
 
       FT_ULong length = 0;
@@ -72,7 +73,8 @@ Cairo_Backend::Cairo_Backend(GObjectPtr<PangoContext>& context)
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  getShaperManager()->registerShaper(Cairo_PangoShaper::create(context, font, mathfont));
+  cairo_scaled_font_t* cairofont = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
+  getShaperManager()->registerShaper(Cairo_Shaper::create(cairofont, mathfont));
   getShaperManager()->registerShaper(SpaceShaper::create());
 }
 
