@@ -28,7 +28,6 @@
 
 #include "Char.hh"
 #include "SmartPtr.hh"
-#include "GObjectPtr.hh"
 #include "RGBColor.hh"
 #include "Rectangle.hh"
 #include "RenderingContext.hh"

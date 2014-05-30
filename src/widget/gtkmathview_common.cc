@@ -68,6 +68,7 @@ typedef gmetadom_MathView MathView;
 #include "Cairo_Backend.hh"
 #include "Cairo_RenderingContext.hh"
 #include "Cairo_WrapperArea.hh"
+#include "GObjectPtr.hh"
 
 #define CLICK_SPACE_RANGE 1
 #define CLICK_TIME_RANGE  250

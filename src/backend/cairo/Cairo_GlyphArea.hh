@@ -26,7 +26,6 @@
 
 #include <cairo.h>
 
-#include "GObjectPtr.hh"
 #include "GlyphArea.hh"
 
 class Cairo_GlyphArea : public GlyphArea

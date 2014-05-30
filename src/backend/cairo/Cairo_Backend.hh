@@ -24,7 +24,6 @@
 #define __Cairo_Backend_hh__
 
 #include "Backend.hh"
-#include "GObjectPtr.hh"
 
 class GMV_BackEnd_EXPORT Cairo_Backend : public Backend
 {

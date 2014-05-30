@@ -38,6 +38,7 @@
 #include "Cairo_RenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
+#include "GObjectPtr.hh"
 
 typedef libxml2_MathView MathView;
 
