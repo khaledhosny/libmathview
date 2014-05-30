@@ -23,13 +23,9 @@
 #ifndef __EntitiesTable_hh__
 #define __EntitiesTable_hh__
 
-#if defined(HAVE_GMETADOM)
-
 #include <gdome.h>
 
 const GdomeEntitiesTableEntry* getMathMLEntities(void);
-
-#endif // HAVE_GMETADOM
 
 #endif // __EntitiesTable_hh__
 

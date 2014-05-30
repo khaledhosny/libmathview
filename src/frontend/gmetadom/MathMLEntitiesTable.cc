@@ -23,8 +23,6 @@
 #include <config.h>
 #include <stdlib.h>
 
-#if defined(HAVE_GMETADOM)
-
 #include <gdome.h>
 
 static const GdomeEntitiesTableEntry mathmlEntities[] = {
@@ -37,5 +35,3 @@ getMathMLEntities(void)
 {
   return mathmlEntities;
 }
-
-#endif // HAVE_GMETADOM
