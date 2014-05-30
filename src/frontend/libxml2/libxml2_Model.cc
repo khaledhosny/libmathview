@@ -40,7 +40,7 @@ entity_resolver(void* ctxt, const xmlChar *name) {
 
   for (size_t i = 0; entities[i].name != NULL; i++) {
     if (strcmp((const char*) name, entities[i].name) == 0) {
-      entity = xmlNewEntity(NULL, name, XML_INTERNAL_GENERAL_ENTITY, NULL, NULL, BAD_CAST(entities[i].value));
+      entity = xmlNewEntity(NULL, name, XML_INTERNAL_GENERAL_ENTITY, NULL, NULL, libxml2_Model::toModelString(entities[i].value));
       break;
     }
   }
