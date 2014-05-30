@@ -122,9 +122,10 @@ main(int argc, char *argv[])
   GObjectPtr<PangoContext> pango_context = pango_font_map_create_context(fontmap);
   PangoFontDescription* description = pango_font_description_new();
   pango_font_description_set_family(description, fontname.c_str());
-  pango_context_set_font_description(pango_context, description);
+  PangoFont* font = pango_context_load_font(pango_context, description);
+  cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
 
-  SmartPtr<Backend> backend = Cairo_Backend::create(pango_context);
+  SmartPtr<Backend> backend = Cairo_Backend::create(cairo_font);
   SmartPtr<MathGraphicDevice> device = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
 

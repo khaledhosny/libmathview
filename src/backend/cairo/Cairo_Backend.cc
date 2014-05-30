@@ -23,8 +23,7 @@
 
 #include <config.h>
 
-#include <pango/pangocairo.h>
-#include <pango/pangofc-font.h>
+#include <cairo-ft.h>
 #include FT_TRUETYPE_TABLES_H
 
 #include <map>
@@ -38,43 +37,36 @@
 
 #define MATH_TAG  0X4D415448
 
-Cairo_Backend::Cairo_Backend(GObjectPtr<PangoContext>& context)
+Cairo_Backend::Cairo_Backend(cairo_scaled_font_t* font)
 {
   SmartPtr<Cairo_AreaFactory> factory = Cairo_AreaFactory::create();
   SmartPtr<MathFont> mathfont = MathFont::create();
 
-  PangoFontDescription* description = pango_context_get_font_description(context);
-  PangoFont* font = pango_context_load_font(context, description);
   FT_Byte *table = NULL;
-  if (font)
+  FT_Face face = cairo_ft_scaled_font_lock_face(font);
+
+  FT_ULong length = 0;
+  FT_Error error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, NULL, &length);
+  if (!error)
     {
-      PangoFcFont* fcfont = PANGO_FC_FONT(font);
-      FT_Face face = pango_fc_font_lock_face(fcfont);
-
-      FT_ULong length = 0;
-      FT_Error error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, NULL, &length);
-      if (!error)
-        {
-          table = new FT_Byte[length];
-          error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, table, &length);
-          if (error)
-            delete [] table;
-          else
-            mathfont->setData(table);
-        }
-
-      mathfont->setUnitsPerEM(face->units_per_EM);
-
-      pango_fc_font_unlock_face(fcfont);
+      table = new FT_Byte[length];
+      error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, table, &length);
+      if (error)
+        delete [] table;
+      else
+        mathfont->setData(table);
     }
+
+  mathfont->setUnitsPerEM(face->units_per_EM);
+
+  cairo_ft_scaled_font_unlock_face(font);
 
   SmartPtr<Cairo_MathGraphicDevice> mgd = Cairo_MathGraphicDevice::create(mathfont);
 
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  cairo_scaled_font_t* cairofont = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
-  getShaperManager()->registerShaper(Cairo_Shaper::create(cairofont, mathfont));
+  getShaperManager()->registerShaper(Cairo_Shaper::create(font, mathfont));
   getShaperManager()->registerShaper(SpaceShaper::create());
 }
 
@@ -82,5 +74,5 @@ Cairo_Backend::~Cairo_Backend()
 { }
 
 SmartPtr<Cairo_Backend>
-Cairo_Backend::create(GObjectPtr<PangoContext>& context)
-{ return new Cairo_Backend(context); }
+Cairo_Backend::create(cairo_scaled_font_t* font)
+{ return new Cairo_Backend(font); }

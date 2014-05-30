@@ -648,9 +648,11 @@ gtk_math_view_init(GtkMathView* math_view)
   PangoFontDescription* description = pango_font_description_new();
   pango_font_description_set_family(description, fontname.c_str());
   pango_font_description_set_size(description, fontsize * PANGO_SCALE);
-  pango_context_set_font_description(pango_context, description);
 
-  SmartPtr<Cairo_Backend> backend = Cairo_Backend::create(pango_context);
+  PangoFont* font = pango_context_load_font(pango_context, description);
+  cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
+
+  SmartPtr<Cairo_Backend> backend = Cairo_Backend::create(cairo_font);
   backend->ref();
   math_view->backend = backend;
 

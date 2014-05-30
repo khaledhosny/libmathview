@@ -23,19 +23,17 @@
 #ifndef __Cairo_Backend_hh__
 #define __Cairo_Backend_hh__
 
-#include <pango/pango.h>
-
 #include "Backend.hh"
 #include "GObjectPtr.hh"
 
 class GMV_BackEnd_EXPORT Cairo_Backend : public Backend
 {
 protected:
-  Cairo_Backend(GObjectPtr<PangoContext>&);
+  Cairo_Backend(cairo_scaled_font_t* f);
   virtual ~Cairo_Backend();
 
 public:
-  static SmartPtr<Cairo_Backend> create(GObjectPtr<PangoContext>&);
+  static SmartPtr<Cairo_Backend> create(cairo_scaled_font_t* f);
 };
 
 #endif // __Cairo_Backend_hh__
