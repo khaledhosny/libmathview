@@ -29,7 +29,6 @@
 #include "Cairo_ColorArea.hh"
 #include "Cairo_BackgroundArea.hh"
 #include "Cairo_InkArea.hh"
-#include "Cairo_PangoGlyphArea.hh"
 #include "Cairo_WrapperArea.hh"
 
 class Cairo_AreaFactory : public AreaFactory
@@ -53,8 +52,6 @@ public:
 
   // new methods
 
-  virtual SmartPtr<Cairo_PangoGlyphArea> pangoGlyph(PangoFont* f, PangoGlyphString* gs) const
-  { return Cairo_PangoGlyphArea::create(f, gs); }
   virtual SmartPtr<Cairo_WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
   { return Cairo_WrapperArea::create(area, box, el); }
 };

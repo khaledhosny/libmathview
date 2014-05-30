@@ -58,19 +58,14 @@ public:
   ColorStyle getStyle(void) const { return style; }
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
-  void draw(const scaled&, const scaled&, PangoFont*, PangoGlyphString*) const;
   void draw(const scaled&, const scaled&, cairo_scaled_font_t*, unsigned) const;
 
   static double toCairoPixels(const scaled& s)
   { return (s * (72.27 / 72.0)).toDouble(); }
-  static double toPangoPixels(const scaled& s)
-  { return (s * PANGO_SCALE * (72.27 / 72.0)).toDouble(); }
   static double toPangoPoints(const scaled& s)
   { return (s * PANGO_SCALE).toDouble(); }
   static scaled fromCairoPixels(double s)
   { return scaled(s * (72.0 / 72.27)); }
-  static scaled fromPangoPixels(int s)
-  { return scaled((s * (72.0 / 72.27)) / PANGO_SCALE); }
 
   static double toCairoX(const scaled& x)
   { return toCairoPixels(x); }
