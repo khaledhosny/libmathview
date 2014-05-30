@@ -1,4 +1,5 @@
 // Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
+// Copyright (C) 2014, Khaled Hosny <khaledhosny@eglug.org>.
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
@@ -24,16 +25,53 @@
 
 #include "Clock.hh"
 #include "AbstractLogger.hh"
+#include "libxml2_EntitiesTable.hh"
 #include "libxml2_Model.hh"
 
 #include <iostream>
+#include <libxml/parserInternals.h>
+#include <string.h>
+
+static xmlEntity*
+entity_resolver(void* ctxt, const xmlChar *name) {
+  xmlEntity *entity = NULL;
+
+  const EntitiesTableEntry* entities = getMathMLEntities();
+
+  for (size_t i = 0; entities[i].name != NULL; i++) {
+    if (strcmp((const char*) name, entities[i].name) == 0) {
+      entity = xmlNewEntity(NULL, name, XML_INTERNAL_GENERAL_ENTITY, NULL, NULL, BAD_CAST(entities[i].value));
+      break;
+    }
+  }
+
+  if (entity == NULL)
+    entity = xmlGetPredefinedEntity(name);
+
+  return entity;
+}
 
 xmlDoc*
-libxml2_Model::document(const AbstractLogger& logger, const String& path, bool)
+libxml2_Model::document(const AbstractLogger& logger, const String& path, bool subst)
 {
   Clock perf;
   perf.Start();
-  xmlDoc* doc = xmlParseFile(path.c_str());
+
+  xmlDoc* doc = NULL;
+
+  if (!subst) {
+    doc = xmlParseFile(path.c_str());
+  } else {
+    xmlSubstituteEntitiesDefault(1);
+    xmlParserCtxt *ctxt = xmlCreateFileParserCtxt(path.c_str());
+    if (ctxt != NULL) {
+      ctxt->sax->getEntity = entity_resolver;
+      xmlParseDocument(ctxt);
+      doc = ctxt->myDoc;
+      xmlFreeParserCtxt(ctxt);
+    }
+  }
+
   perf.Stop();
   logger.out(LOG_INFO, "parsing time: %dms", perf());
 
@@ -41,11 +79,26 @@ libxml2_Model::document(const AbstractLogger& logger, const String& path, bool)
 }
 
 xmlDoc*
-libxml2_Model::documentFromBuffer(const AbstractLogger& logger, const String& buffer, bool)
+libxml2_Model::documentFromBuffer(const AbstractLogger& logger, const String& buffer, bool subst)
 {
   Clock perf;
   perf.Start();
-  xmlDoc* doc = xmlReadDoc(toModelString(buffer.c_str()), NULL, NULL, 0);
+
+  xmlDoc* doc = NULL;
+
+  if (!subst) {
+    doc = xmlReadDoc(toModelString(buffer.c_str()), NULL, NULL, 0);
+  } else {
+    xmlSubstituteEntitiesDefault(1);
+    xmlParserCtxt *ctxt = xmlCreateMemoryParserCtxt(buffer.c_str(), strlen(buffer.c_str()));
+    if (ctxt != NULL) {
+      ctxt->sax->getEntity = entity_resolver;
+      xmlParseDocument(ctxt);
+      doc = ctxt->myDoc;
+      xmlFreeParserCtxt(ctxt);
+    }
+  }
+
   perf.Stop();
   logger.out(LOG_INFO, "parsing time: %dms", perf());
 

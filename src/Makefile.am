@@ -809,6 +809,8 @@ libfrontend_libxml2_la_LIBADD = \
   $(NULL)
 
 libfrontend_libxml2_la_SOURCES = \
+  frontend/libxml2/libxml2_EntitiesTable.cc \
+  frontend/libxml2/libxml2_EntitiesTable.hh \
   frontend/libxml2/libxml2_Model.cc \
   frontend/libxml2/libxml2_Setup.cc \
   frontend/libxml2/libxml2_Builder.cc \
