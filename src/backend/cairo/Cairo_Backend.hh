@@ -23,6 +23,8 @@
 #ifndef __Cairo_Backend_hh__
 #define __Cairo_Backend_hh__
 
+#include <pango/pango.h>
+
 #include "Backend.hh"
 #include "GObjectPtr.hh"
 

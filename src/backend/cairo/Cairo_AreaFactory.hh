@@ -23,8 +23,6 @@
 #ifndef __Cairo_AreaFactory_hh__
 #define __Cairo_AreaFactory_hh__
 
-#include <pango/pango.h>
-
 #include "AreaFactory.hh"
 #include "Cairo_ColorArea.hh"
 #include "Cairo_BackgroundArea.hh"
