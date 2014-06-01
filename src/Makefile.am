@@ -462,7 +462,7 @@ mathview_HEADERS += \
   backend/common/WrapperArea.hh \
   $(NULL)
 
-if COND_GTK
+if HAVE_GTK
 lib_LTLIBRARIES += libmathview_backend_cairo.la
 
 libmathview_backend_cairo_la_CPPFLAGS = -DGMV_BackEnd_DLL
@@ -509,9 +509,9 @@ libmathview_backend_cairo_la_SOURCES = \
 mathview_HEADERS += \
   backend/cairo/Cairo_Backend.hh \
   $(NULL)
-endif # COND_GTK
+endif # HAVE_GTK
 
-if COND_QT
+if HAVE_QT
 lib_LTLIBRARIES += libmathview_backend_qt.la
 
 libmathview_backend_qt_la_CPPFLAGS = -DGMV_BackEnd_DLL
@@ -556,7 +556,7 @@ libmathview_backend_qt_la_SOURCES = \
 mathview_HEADERS += \
   backend/qt/Qt_Backend.hh \
   $(NULL)
-endif # COND_QT
+endif # HAVE_QT
 
 
 noinst_LTLIBRARIES += libfrontend_common.la
@@ -596,7 +596,7 @@ libfrontend_common_la_CPPFLAGS += \
   $(NULL)
 
 
-if COND_CUSTOM_READER
+if HAVE_CUSTOM_READER
 noinst_LTLIBRARIES += libfrontend_custom_reader.la
 
 libfrontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
@@ -661,7 +661,7 @@ mathview_HEADERS += \
   $(NULL)
 
 
-if COND_GTK
+if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_custom_reader.la
 
 libgtkmathview_custom_reader_la_CPPFLAGS = \
@@ -692,10 +692,10 @@ libgtkmathview_custom_reader_la_LIBADD = \
   libmathview_backend_cairo.la \
   libmathview_frontend_custom_reader.la \
   $(NULL)
-endif # COND_GTK
-endif # COND_CUSTOM_READER
+endif # HAVE_GTK
+endif # HAVE_CUSTOM_READER
 
-if COND_LIBXML2_READER
+if HAVE_LIBXML2_READER
 noinst_LTLIBRARIES += libfrontend_libxml2_reader.la
 
 libfrontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
@@ -762,7 +762,7 @@ mathview_HEADERS += \
   $(NULL)
 
 
-if COND_GTK
+if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
 
 libgtkmathview_libxml2_reader_la_CPPFLAGS = \
@@ -792,10 +792,10 @@ libgtkmathview_libxml2_reader_la_LIBADD = \
   libmathview_backend_cairo.la \
   libmathview_frontend_libxml2_reader.la \
   $(NULL)
-endif # COND_GTK
-endif # COND_LIBXML2_READER
+endif # HAVE_GTK
+endif # HAVE_LIBXML2_READER
 
-if COND_LIBXML2
+if HAVE_LIBXML2
 noinst_LTLIBRARIES += libfrontend_libxml2.la
 
 libfrontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
@@ -863,7 +863,7 @@ mathview_HEADERS += \
   $(NULL)
 
 
-if COND_GTK
+if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_libxml2.la
 
 libgtkmathview_libxml2_la_CPPFLAGS = \
@@ -893,10 +893,10 @@ libgtkmathview_libxml2_la_LIBADD = \
   libmathview_backend_cairo.la \
   libmathview_frontend_libxml2.la \
   $(NULL)
-endif # COND_GTK
-endif # COND_LIBXML2
+endif # HAVE_GTK
+endif # HAVE_LIBXML2
 
-if COND_GMETADOM
+if HAVE_GMETADOM
 noinst_LTLIBRARIES += libfrontend_gmetadom.la
 
 libfrontend_gmetadom_la_CPPFLAGS = -DGMV_FrontEnd_DLL
@@ -969,7 +969,7 @@ mathview_HEADERS += \
   view/Init.hh \
   $(NULL)
 
-if COND_GTK
+if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_gmetadom.la
 
 libgtkmathview_gmetadom_la_CPPFLAGS = \
@@ -999,12 +999,12 @@ libgtkmathview_gmetadom_la_LIBADD = \
   libmathview_backend_cairo.la \
   libmathview_frontend_gmetadom.la \
   $(NULL)
-endif # COND_GTK
-endif # COND_GMETADOM
+endif # HAVE_GTK
+endif # HAVE_GMETADOM
 
 
 
-if COND_GTK
+if HAVE_GTK
 EXTRA_DIST += \
   widget/gtkmathview_common.cc \
   widget/gtkmathview_decorators_common.cc \
@@ -1041,7 +1041,7 @@ widget/gtkmathview_marshal.h: widget/marshal.list
 widget/gtkmathview_marshal.c: widget/marshal.list
 	$(AM_V_GEN)$(GLIB_GENMARSHAL) --prefix=gtkmathview_marshal $< --body > $@
 
-endif # COND_GTK
+endif # HAVE_GTK
 
 
 -include $(top_srcdir)/git.mk

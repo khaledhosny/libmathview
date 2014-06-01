@@ -2,7 +2,7 @@
 NULL =
 
 noinst_PROGRAMS =
-if COND_GMETADOM
+if HAVE_GMETADOM
 noinst_PROGRAMS += dumpEntitiesTable
 
 entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable

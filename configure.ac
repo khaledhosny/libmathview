@@ -182,7 +182,7 @@ if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
   AC_SUBST(QT_LIBS)
 fi
 
-AM_CONDITIONAL([COND_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
+AM_CONDITIONAL([HAVE_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
 
 have_gtk="no"
 have_pango="no"
@@ -209,7 +209,7 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
   AC_SUBST(PANGO_LIBS)
 fi
 
-AM_CONDITIONAL([COND_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a \( "$have_gtk" = "yes" -a "$have_pango" = "yes" \) \) ])
+AM_CONDITIONAL([HAVE_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a \( "$have_gtk" = "yes" -a "$have_pango" = "yes" \) \) ])
 
 have_libxml2="no"
 PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
@@ -229,9 +229,9 @@ if test "$have_libxml2" != "yes"; then
 fi
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
-AM_CONDITIONAL([COND_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
-AM_CONDITIONAL([COND_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o \( "$enable_libxml2_reader" = "auto" -a "$have_libxml2" = "yes" \)]) 
-AM_CONDITIONAL([COND_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o \( "$enable_custom_reader" = "auto" -a "$have_libxml2" = "yes" \)])
+AM_CONDITIONAL([HAVE_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
+AM_CONDITIONAL([HAVE_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o \( "$enable_libxml2_reader" = "auto" -a "$have_libxml2" = "yes" \)]) 
+AM_CONDITIONAL([HAVE_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o \( "$enable_custom_reader" = "auto" -a "$have_libxml2" = "yes" \)])
 
 have_gmetadom="no"
 if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
@@ -243,7 +243,7 @@ if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
   AC_SUBST(DOM_CFLAGS)
   AC_SUBST(DOM_LIBS)
 fi
-AM_CONDITIONAL([COND_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
+AM_CONDITIONAL([HAVE_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
 
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
 CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"

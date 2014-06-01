@@ -2,35 +2,35 @@
 NULL =
 
 bin_PROGRAMS = $(NULL)
-if COND_GTK
-if COND_LIBXML2
+if HAVE_GTK
+if HAVE_LIBXML2
 bin_PROGRAMS += mml-view-gtk
 endif
 endif
 
 noinst_PROGRAMS = $(NULL)
-if COND_LIBXML2
-if COND_GTK
+if HAVE_LIBXML2
+if HAVE_GTK
 noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
 noinst_PROGRAMS += test_building
 noinst_PROGRAMS += test_rendering
 bin_PROGRAMS += mml-view
 endif
-if COND_QT
+if HAVE_QT
 moc_%.cc: %.hh
 	$(MOC) $< -o $@
 bin_PROGRAMS += mml-view-qt
 endif
 endif
 
-if COND_LIBXML2_READER
-if COND_GTK
+if HAVE_LIBXML2_READER
+if HAVE_GTK
 noinst_PROGRAMS += test_loading_reader
 endif
 endif
 
-if COND_QT
+if HAVE_QT
 mml_view_qt_SOURCES = mml-view-qt.cc Qt_RenderArea.cc moc_Qt_RenderArea.cc
 mml_view_qt_LDADD = \
   $(QT_LIBS) \
@@ -42,7 +42,7 @@ mml_view_qt_LDADD = \
   $(NULL)
 endif
 
-if COND_GTK
+if HAVE_GTK
 noinst_HEADERS = Gtk_Window.h
 
 mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c
