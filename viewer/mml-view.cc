@@ -24,6 +24,7 @@
 #include <config.h>
 
 #include <cairo.h>
+#include <cairo-ft.h>
 #ifdef CAIRO_HAS_SVG_SURFACE
 #  include <cairo-svg.h>
 #endif
@@ -34,7 +35,6 @@
 #  include <cairo-ps.h>
 #endif
 #include <glib.h>
-#include <pango/pangocairo.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -51,7 +51,6 @@
 #include "Cairo_RenderingContext.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
-#include "GObjectPtr.hh"
 
 typedef libxml2_MathView MathView;
 
@@ -119,14 +118,22 @@ main(int argc, char *argv[])
   const String fontname = configuration->getString(logger, "default/font-family", DEFAULT_FONT_FAMILY);
   const int fontsize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
 
-  PangoFontMap* fontmap = pango_cairo_font_map_get_default();
-  GObjectPtr<PangoContext> pango_context = pango_font_map_create_context(fontmap);
-  PangoFontDescription* description = pango_font_description_new();
-  pango_font_description_set_family(description, fontname.c_str());
-  PangoFont* font = pango_context_load_font(pango_context, description);
-  cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
+  FcResult result;
+  FcPattern* pattern = FcPatternCreate();
+  FcPatternAddString(pattern, FC_FAMILY, (FcChar8 *) fontname.c_str());
+  FcConfigSubstitute(NULL, pattern, FcMatchPattern);
+  FcDefaultSubstitute(pattern);
+  FcPattern* resolved = FcFontMatch(NULL, pattern, &result);
+  cairo_font_face_t* font_face = cairo_ft_font_face_create_for_pattern(resolved);
 
-  SmartPtr<Backend> backend = Cairo_Backend::create(cairo_font);
+  cairo_matrix_t font_matrix, font_ctm;
+  cairo_matrix_init_scale(&font_matrix, fontsize, fontsize);
+  cairo_matrix_init_identity(&font_ctm);
+  cairo_font_options_t* font_options = cairo_font_options_create();
+  cairo_scaled_font_t* font = cairo_scaled_font_create(font_face, &font_matrix, &font_ctm, font_options);
+  cairo_font_options_destroy(font_options);
+
+  SmartPtr<Backend> backend = Cairo_Backend::create(font);
   SmartPtr<MathGraphicDevice> device = backend->getMathGraphicDevice();
   SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
 
@@ -157,6 +164,9 @@ main(int argc, char *argv[])
   }
 
   view->resetRootElement();
+
+  cairo_scaled_font_destroy(font);
+  cairo_font_face_destroy(font_face);
 
   return 0;
 }

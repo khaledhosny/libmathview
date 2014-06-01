@@ -17,9 +17,7 @@ noinst_PROGRAMS += test_building
 noinst_PROGRAMS += test_rendering
 endif
 if HAVE_CAIRO
-if HAVE_PANGO
 bin_PROGRAMS += mml-view
-endif
 endif
 if HAVE_QT
 moc_%.cc: %.hh
@@ -51,7 +49,6 @@ mml_view_SOURCES = mml-view.cc
 mml_view_LDADD = \
   $(XML_LIBS) \
   $(CAIRO_LIBS) \
-  $(PANGO_LIBS) \
   $(GLIB_LIBS) \
   $(top_builddir)/src/libmathview.la \
   $(top_builddir)/src/libmathview_backend_cairo.la \
@@ -126,6 +123,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/backend/common/ \
   -I$(top_srcdir)/src/backend/cairo/ \
   -I$(top_srcdir)/src/backend/qt/ \
+  $(CAIRO_CFLAGS) \
   $(QT_CFLAGS) -fPIC \
   $(GLIB_CFLAGS) \
   $(GTK_CFLAGS) \
