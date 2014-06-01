@@ -470,7 +470,6 @@ libmathview_backend_cairo_la_CPPFLAGS = -DGMV_BackEnd_DLL
 libmathview_backend_cairo_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_backend_cairo_la_LIBADD = \
-  $(PANGO_LIBS) \
   $(CAIRO_LIBS) \
   $(NULL)
 
@@ -481,7 +480,6 @@ libmathview_backend_cairo_la_CPPFLAGS += \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/backend/common \
-  $(PANGO_CFLAGS) \
   $(CAIRO_CFLAGS) \
   $(NULL)
 
