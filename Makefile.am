@@ -2,18 +2,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 NULL =
 
-if HAVE_GTK
-MAYBE_SUBDIRS = viewer
-else
-if HAVE_QT
-MAYBE_SUBDIRS = viewer
-else
-MAYBE_SUBDIRS = $(NULL)
-endif
-endif
-
 EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
-SUBDIRS = scripts config auto src doc $(MAYBE_SUBDIRS)
+SUBDIRS = scripts config auto src doc viewer
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = mathview-core.pc
@@ -30,7 +20,7 @@ if HAVE_GMETADOM
 pkgconfig_DATA += mathview-frontend-gmetadom.pc
 endif
 
-if HAVE_GTK
+if HAVE_CAIRO
 pkgconfig_DATA += mathview-backend-cairo.pc
 endif
 if HAVE_QT

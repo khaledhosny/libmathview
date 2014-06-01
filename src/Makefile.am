@@ -462,7 +462,7 @@ mathview_HEADERS += \
   backend/common/WrapperArea.hh \
   $(NULL)
 
-if HAVE_GTK
+if HAVE_CAIRO
 lib_LTLIBRARIES += libmathview_backend_cairo.la
 
 libmathview_backend_cairo_la_CPPFLAGS = -DGMV_BackEnd_DLL
@@ -507,7 +507,7 @@ libmathview_backend_cairo_la_SOURCES = \
 mathview_HEADERS += \
   backend/cairo/Cairo_Backend.hh \
   $(NULL)
-endif # HAVE_GTK
+endif # HAVE_CAIRO
 
 if HAVE_QT
 lib_LTLIBRARIES += libmathview_backend_qt.la

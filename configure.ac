@@ -56,8 +56,22 @@ AC_ARG_ENABLE(
 )
 
 AC_ARG_ENABLE(
+	cairo,
+	[  --enable-cairo[=ARG]  enable Cairo backend [default=auto]],
+	enable_cairo=$enableval,
+	enable_cairo="auto"
+)
+
+AC_ARG_ENABLE(
+	pango,
+	[  --enable-pango[=ARG]  enable Pango support [default=auto]],
+	enable_pango=$enableval,
+	enable_pango="auto"
+)
+
+AC_ARG_ENABLE(
 	gtk,
-	[  --enable-gtk[=ARG]  enable GTK backend [default=auto]],
+	[  --enable-gtk[=ARG]  enable GTK widget and viewer [default=auto]],
 	enable_gtk=$enableval,
 	enable_gtk="auto"
 )
@@ -184,23 +198,20 @@ fi
 
 AM_CONDITIONAL([HAVE_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
 
-have_gtk="no"
-have_pango="no"
-if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
-  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1],
-    [AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
-     have_gtk="yes"],
-    [AC_MSG_WARN([could not find GTK+])])
-  AC_SUBST(GTK_CFLAGS)
-  AC_SUBST(GTK_LIBS)
-
+have_cairo="no"
+if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
   PKG_CHECK_MODULES(CAIRO, cairo,
     [AC_DEFINE(HAVE_CAIRO,1,[Define to 1 if Cairo is installed])
      have_cairo="yes"],
     [AC_MSG_WARN([could not find Cairo])])
   AC_SUBST(CAIRO_CFLAGS)
   AC_SUBST(CAIRO_LIBS)
+fi
 
+AM_CONDITIONAL([HAVE_CAIRO], [test "$enable_cairo" = "yes" -o \( "$enable_cairo" = "auto" -a "$have_cairo" = "yes" \) ])
+
+have_pango="no"
+if test "$enable_pango" = "auto" -o "$enable_pango" = "yes"; then
   PKG_CHECK_MODULES(PANGO, pangocairo,
     [AC_DEFINE(HAVE_PANGO,1,[Define to 1 if Pango is installed])
      have_pango="yes"],
@@ -209,7 +220,19 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
   AC_SUBST(PANGO_LIBS)
 fi
 
-AM_CONDITIONAL([HAVE_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a \( "$have_gtk" = "yes" -a "$have_pango" = "yes" \) \) ])
+AM_CONDITIONAL([HAVE_PANGO], [test "$enable_pango" = "yes" -o \( "$enable_pango" = "auto" -a "$have_pango" = "yes" \) ])
+
+have_gtk="no"
+if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
+  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1],
+    [AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
+     have_gtk="yes"],
+    [AC_MSG_WARN([could not find GTK+])])
+  AC_SUBST(GTK_CFLAGS)
+  AC_SUBST(GTK_LIBS)
+fi
+
+AM_CONDITIONAL([HAVE_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" \) ])
 
 have_libxml2="no"
 PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
@@ -289,6 +312,10 @@ Frontend:
   custom reader       ${enable_custom_reader}
 
 Backend:
+  Cairo               ${have_cairo}
+  Qt                  ${have_qt}
+
+Viewer:
   GTK+                ${have_gtk}
   Qt                  ${have_qt}
 

@@ -15,7 +15,11 @@ noinst_PROGRAMS += test_embedding
 noinst_PROGRAMS += test_loading
 noinst_PROGRAMS += test_building
 noinst_PROGRAMS += test_rendering
+endif
+if HAVE_CAIRO
+if HAVE_PANGO
 bin_PROGRAMS += mml-view
+endif
 endif
 if HAVE_QT
 moc_%.cc: %.hh
@@ -42,17 +46,7 @@ mml_view_qt_LDADD = \
   $(NULL)
 endif
 
-if HAVE_GTK
-noinst_HEADERS = Gtk_Window.h
-
-mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c
-
-
-mml_view_gtk_LDADD = \
-  $(GTK_LIBS) \
-  $(top_builddir)/src/libgtkmathview_libxml2.la \
-  $(NULL)
-
+if HAVE_CAIRO
 mml_view_SOURCES = mml-view.cc
 mml_view_LDADD = \
   $(XML_LIBS) \
@@ -62,6 +56,18 @@ mml_view_LDADD = \
   $(top_builddir)/src/libmathview.la \
   $(top_builddir)/src/libmathview_backend_cairo.la \
   $(top_builddir)/src/libmathview_frontend_libxml2.la \
+  $(NULL)
+endif
+
+if HAVE_GTK
+noinst_HEADERS = Gtk_Window.h
+
+mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c
+
+
+mml_view_gtk_LDADD = \
+  $(GTK_LIBS) \
+  $(top_builddir)/src/libgtkmathview_libxml2.la \
   $(NULL)
 
 test_embedding_SOURCES = test_embedding.c dummy.cc
