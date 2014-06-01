@@ -10,7 +10,6 @@ O = OK, done
 // General
 
 * Priorities for the next minor release:
-  * Make high-quality, nice to see rendering in Pango, for both Math and Box
   * Make the widget more robust (font management)
 
 + make DPI a configurable parameter
