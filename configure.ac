@@ -20,62 +20,6 @@ AC_SUBST(MINOR_VERSION)
 AC_SUBST(MICRO_VERSION)
 AC_SUBST(MATHVIEW_VERSION_INFO)
 
-AC_ARG_ENABLE(
-	builder-cache,
-	[  --enable-builder-cache[=ARG] enable the cache for MathML text nodes [default=no]],
-	enable_builder_cache=$enableval,
-	enable_builder_cache=no
-)
-
-AC_ARG_ENABLE(
-	gmetadom,
-	[  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
-	enable_gmetadom=$enableval,
-	enable_gmetadom="no"
-)
-
-AC_ARG_ENABLE(
-	libxml2,
-	[  --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
-	enable_libxml2=$enableval,
-	enable_libxml2="auto"
-)
-
-AC_ARG_ENABLE(
-	libxml2-reader,
-	[  --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
-	enable_libxml2_reader=$enableval,
-	enable_libxml2_reader="auto"
-)
-
-AC_ARG_ENABLE(
-	custom-reader,
-	[  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
-	enable_custom_reader=$enableval,
-	enable_custom_reader="auto"
-)
-
-AC_ARG_ENABLE(
-	cairo,
-	[  --enable-cairo[=ARG]  enable Cairo backend [default=auto]],
-	enable_cairo=$enableval,
-	enable_cairo="auto"
-)
-
-AC_ARG_ENABLE(
-	gtk,
-	[  --enable-gtk[=ARG]  enable GTK widget and viewer [default=auto]],
-	enable_gtk=$enableval,
-	enable_gtk="auto"
-)
-
-AC_ARG_ENABLE(
-	qt,
-	[  --enable-qt[=ARG]  enable Qt backend [default=auto]],
-	enable_qt=$enableval,
-	enable_qt="auto"
-)
-
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
@@ -171,6 +115,12 @@ AC_SUBST(GLIB_GENMARSHAL)
 
 AM_MISSING_PROG([XSLTPROC], [xsltproc])
 
+AC_ARG_ENABLE(
+	qt,
+	[  --enable-qt[=ARG]  enable Qt backend [default=auto]],
+	enable_qt=$enableval,
+	enable_qt="auto"
+)
 have_qt="no"
 if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
   PKG_CHECK_MODULES([QT], [Qt5Core >= 5 Qt5Widgets Qt5Gui], [
@@ -184,9 +134,14 @@ if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
     AC_MSG_WARN([could not find qt])
   ])
 fi
-
 AM_CONDITIONAL([HAVE_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
 
+AC_ARG_ENABLE(
+	cairo,
+	[  --enable-cairo[=ARG]  enable Cairo backend [default=auto]],
+	enable_cairo=$enableval,
+	enable_cairo="auto"
+)
 have_cairo="no"
 if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
   PKG_CHECK_MODULES(CAIRO, cairo cairo-fc cairo-ft,
@@ -194,9 +149,14 @@ if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
      have_cairo="yes"],
     [AC_MSG_WARN([could not find Cairo])])
 fi
-
 AM_CONDITIONAL([HAVE_CAIRO], [test "$enable_cairo" = "yes" -o \( "$enable_cairo" = "auto" -a "$have_cairo" = "yes" \) ])
 
+AC_ARG_ENABLE(
+	gtk,
+	[  --enable-gtk[=ARG]  enable GTK widget and viewer [default=auto]],
+	enable_gtk=$enableval,
+	enable_gtk="auto"
+)
 have_gtk="no"
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
   PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1],
@@ -204,9 +164,26 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
      have_gtk="yes"],
     [AC_MSG_WARN([could not find GTK+])])
 fi
-
 AM_CONDITIONAL([HAVE_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" \) ])
 
+AC_ARG_ENABLE(
+	libxml2,
+	[  --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
+	enable_libxml2=$enableval,
+	enable_libxml2="auto"
+)
+AC_ARG_ENABLE(
+	libxml2-reader,
+	[  --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
+	enable_libxml2_reader=$enableval,
+	enable_libxml2_reader="auto"
+)
+AC_ARG_ENABLE(
+	custom-reader,
+	[  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
+	enable_custom_reader=$enableval,
+	enable_custom_reader="auto"
+)
 have_libxml2="no"
 PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
   [AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
@@ -229,6 +206,12 @@ AM_CONDITIONAL([HAVE_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_li
 AM_CONDITIONAL([HAVE_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o \( "$enable_libxml2_reader" = "auto" -a "$have_libxml2" = "yes" \)]) 
 AM_CONDITIONAL([HAVE_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o \( "$enable_custom_reader" = "auto" -a "$have_libxml2" = "yes" \)])
 
+AC_ARG_ENABLE(
+	gmetadom,
+	[  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
+	enable_gmetadom=$enableval,
+	enable_gmetadom="no"
+)
 have_gmetadom="no"
 if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
   PKG_CHECK_MODULES(DOM, [gdome2-cpp-smart >= 0.1.8],
@@ -242,6 +225,12 @@ AM_CONDITIONAL([HAVE_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
 CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
 
+AC_ARG_ENABLE(
+	builder-cache,
+	[  --enable-builder-cache[=ARG] enable the cache for MathML text nodes [default=no]],
+	enable_builder_cache=$enableval,
+	enable_builder_cache=no
+)
 if test $enable_builder_cache = yes; then
     AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
 fi
