@@ -209,7 +209,7 @@ AC_ARG_ENABLE(
   enable_custom_reader=$enableval,
   enable_custom_reader="auto"
 )
-have_libxml2=flase
+have_libxml2=false
 if test "$enable_libxml2" = "auto" -o "$enable_libxml2" = "yes"; then
   PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7], have_libxml2=true, :)
   if test "$have_libxml2" != "true"; then
