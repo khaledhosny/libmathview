@@ -6,6 +6,7 @@ AC_CONFIG_SRCDIR([src/common/Clock.hh])
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([subdir-objects foreign])
+AM_SILENT_RULES([yes])
 
 m4_define(version_triplet,m4_split(AC_PACKAGE_VERSION,[[.]]))
 m4_define(version_major,m4_argn(1,version_triplet))
@@ -110,132 +111,170 @@ AC_LANG([C])
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1],,[AC_MSG_ERROR(could not find GLIB)])
 
-GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
-AC_SUBST(GLIB_GENMARSHAL)
-
 AM_MISSING_PROG([XSLTPROC], [xsltproc])
 
+dnl =============================================================================
+dnl Qt support
+dnl =============================================================================
+
 AC_ARG_ENABLE(
-	qt,
-	[  --enable-qt[=ARG]  enable Qt backend [default=auto]],
-	enable_qt=$enableval,
-	enable_qt="auto"
+  qt,
+  [  --enable-qt[=ARG]  enable Qt backend [default=auto]],
+  enable_qt=$enableval,
+  enable_qt="auto"
 )
-have_qt="no"
+have_qt=false
 if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
   PKG_CHECK_MODULES([QT], [Qt5Core >= 5 Qt5Widgets Qt5Gui], [
     QT_PATH="$(eval $PKG_CONFIG --variable=exec_prefix Qt5Core)"
     AC_PATH_PROGS(MOC, [moc-qt5 moc], moc, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
     AC_PATH_PROG(RCC, [rcc-qt5 rcc], rcc, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
     AC_PATH_PROGS(UIC, [uic-qt5 uic], uic, [${QT_PATH}/bin ${CONTRIB_DIR}/bin])
-    AC_DEFINE(HAVE_QT,1,[Define to 1 if Qt is installed])
-    have_qt="yes"
-  ], [
-    AC_MSG_WARN([could not find qt])
-  ])
+    have_qt=true
+  ], :)
 fi
-AM_CONDITIONAL([HAVE_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
+if test "$enable_qt" = "yes" -a "$have_qt" != "true"; then
+  AC_MSG_ERROR([Qt support requested but Qt could not found])
+fi
+if $have_qt; then
+  AC_DEFINE(HAVE_QT, 1, [Define to 1 if Qt is installed])
+fi
+AM_CONDITIONAL(HAVE_QT, $have_qt)
+
+dnl =============================================================================
+dnl Cairo support
+dnl =============================================================================
 
 AC_ARG_ENABLE(
-	cairo,
-	[  --enable-cairo[=ARG]  enable Cairo backend [default=auto]],
-	enable_cairo=$enableval,
-	enable_cairo="auto"
+  cairo,
+  [  --enable-cairo[=ARG]  enable Cairo backend [default=auto]],
+  enable_cairo=$enableval,
+  enable_cairo="auto"
 )
-have_cairo="no"
+have_cairo=false
 if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
-  PKG_CHECK_MODULES(CAIRO, cairo cairo-fc cairo-ft,
-    [AC_DEFINE(HAVE_CAIRO,1,[Define to 1 if Cairo is installed])
-     have_cairo="yes"],
-    [AC_MSG_WARN([could not find Cairo])])
+  PKG_CHECK_MODULES(CAIRO, cairo-fc, have_cairo=true, :)
 fi
-AM_CONDITIONAL([HAVE_CAIRO], [test "$enable_cairo" = "yes" -o \( "$enable_cairo" = "auto" -a "$have_cairo" = "yes" \) ])
+if test "$enable_cairo" = "yes" -a "$have_cairo" != "true"; then
+  AC_MSG_ERROR([Cairo support requested but cairo could not found])
+fi
+if $have_cairo; then
+  AC_DEFINE(HAVE_CAIRO, 1, [Define to 1 if Cairo is installed])
+fi
+AM_CONDITIONAL(HAVE_CAIRO, $have_cairo)
+
+dnl =============================================================================
+dnl GTK+ support
+dnl =============================================================================
 
 AC_ARG_ENABLE(
-	gtk,
-	[  --enable-gtk[=ARG]  enable GTK widget and viewer [default=auto]],
-	enable_gtk=$enableval,
-	enable_gtk="auto"
+  gtk,
+  [  --enable-gtk[=ARG]  enable GTK widget and viewer [default=auto]],
+  enable_gtk=$enableval,
+  enable_gtk="auto"
 )
-have_gtk="no"
+have_gtk=false
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
-  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1],
-    [AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
-     have_gtk="yes"],
-    [AC_MSG_WARN([could not find GTK+])])
+  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1], have_gtk=true, :)
+  GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 fi
-AM_CONDITIONAL([HAVE_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" \) ])
+if test "$enable_gtk" = "yes" -a "$have_gtk" != "true"; then
+  AC_MSG_ERROR([GTK+ support requested but gtk+-2.0 could not be found])
+fi
+if $have_gtk; then
+  AC_DEFINE(HAVE_GTK, 1, [Define to 1 if GTK+ is installed])
+fi
+AM_CONDITIONAL(HAVE_GTK, $have_gtk)
+AC_SUBST(GLIB_GENMARSHAL)
+
+dnl =============================================================================
+dnl libxml2 support
+dnl =============================================================================
 
 AC_ARG_ENABLE(
-	libxml2,
-	[  --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
-	enable_libxml2=$enableval,
-	enable_libxml2="auto"
+  libxml2,
+  [  --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
+  enable_libxml2=$enableval,
+  enable_libxml2="auto"
 )
 AC_ARG_ENABLE(
-	libxml2-reader,
-	[  --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
-	enable_libxml2_reader=$enableval,
-	enable_libxml2_reader="auto"
+  libxml2-reader,
+  [  --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
+  enable_libxml2_reader=$enableval,
+  enable_libxml2_reader="auto"
 )
 AC_ARG_ENABLE(
-	custom-reader,
-	[  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
-	enable_custom_reader=$enableval,
-	enable_custom_reader="auto"
+  custom-reader,
+  [  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
+  enable_custom_reader=$enableval,
+  enable_custom_reader="auto"
 )
-have_libxml2="no"
-PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7],
-  [AC_DEFINE(HAVE_LIBXML,1,[Define to 1 if libxml2 is installed])
-   have_libxml2="yes"],
-  [AC_MSG_WARN([could not find libxml2])])
-if test "$have_libxml2" != "yes"; then
-	AC_CHECK_TOOL(XML2_CONFIG, xml2-config, no)
-	AC_MSG_CHECKING([for libxml2 by using xml2-config fallback])
-	if test "$XML2_CONFIG" != "no" && "$XML2_CONFIG" --version >/dev/null; then
-		XML_CFLAGS=`$XML2_CONFIG --cflags`
-		XML_LIBS=`$XML2_CONFIG --libs`
-		AC_MSG_RESULT([yes])
-	else
-		AC_MSG_RESULT([no])
-	fi
+have_libxml2=flase
+if test "$enable_libxml2" = "auto" -o "$enable_libxml2" = "yes"; then
+  PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7], have_libxml2=true, :)
+  if test "$have_libxml2" != "true"; then
+    AC_CHECK_TOOL(XML2_CONFIG, xml2-config, no)
+    AC_MSG_CHECKING([for libxml2 by using xml2-config fallback])
+    if test "$XML2_CONFIG" != "no" && "$XML2_CONFIG" --version >/dev/null; then
+      have_libxml2=true
+      XML_CFLAGS=`$XML2_CONFIG --cflags`
+      XML_LIBS=`$XML2_CONFIG --libs`
+      AC_MSG_RESULT([yes])
+    else
+      AC_MSG_ERROR(could not find libxml2)
+    fi
+  fi
 fi
 AC_SUBST(XML_CFLAGS)
 AC_SUBST(XML_LIBS)
-AM_CONDITIONAL([HAVE_LIBXML2], [test "$enable_libxml2" = "yes" -o \( "$enable_libxml2" = "auto" -a "$have_libxml2" = "yes" \)]) 
-AM_CONDITIONAL([HAVE_LIBXML2_READER], [test "$enable_libxml2_reader" = "yes" -o \( "$enable_libxml2_reader" = "auto" -a "$have_libxml2" = "yes" \)]) 
-AM_CONDITIONAL([HAVE_CUSTOM_READER], [test "$enable_custom_reader" = "yes" -o \( "$enable_custom_reader" = "auto" -a "$have_libxml2" = "yes" \)])
+if test "$enable_libxml2" = "yes" -a "$have_libxml2" != "true"; then
+  AC_MSG_ERROR([libxml2 support requested but libxml-2.0 could not be found])
+fi
+if $have_libxml2; then
+  AC_DEFINE(HAVE_LIBXML, 1, [Define to 1 if libxml2 is installed])
+fi
+AM_CONDITIONAL(HAVE_LIBXML2, $have_libxml2)
+AM_CONDITIONAL(HAVE_LIBXML2_READER, [test "$enable_libxml2_reader" = "yes" -o "$enable_libxml2_reader" = "auto"])
+AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
+
+dnl =============================================================================
+dnl GMetaDOM support
+dnl =============================================================================
 
 AC_ARG_ENABLE(
-	gmetadom,
-	[  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
-	enable_gmetadom=$enableval,
-	enable_gmetadom="no"
+  gmetadom,
+  [  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
+  enable_gmetadom=$enableval,
+  enable_gmetadom="no"
 )
-have_gmetadom="no"
+have_gmetadom=false
 if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
-  PKG_CHECK_MODULES(DOM, [gdome2-cpp-smart >= 0.1.8],
-    [AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 if gmetadom is installed])
-     have_gmetadom="yes"],
-    [AC_MSG_WARN([could not find GMetaDOM])]
-    [enable_gmetadom="no"])
+  PKG_CHECK_MODULES(DOM, [gdome2-cpp-smart >= 0.1.8], have_gmetadom=true, :)
 fi
-AM_CONDITIONAL([HAVE_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
+if test "$enable_gmetadom" = "yes" -a "$have_gmetadom" != "true"; then
+  AC_MSG_WARN([GMetaDOM support requested but gdome2-cpp-smart could not be found])
+fi
+if $have_gmetadom; then
+  AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 if gmetadom is installed])
+fi
+AM_CONDITIONAL(HAVE_GMETADOM, $have_gmetadom)
+
+dnl =============================================================================
+
+AC_ARG_ENABLE(
+  builder-cache,
+  [  --enable-builder-cache[=ARG] enable the cache for MathML text nodes [default=no]],
+  enable_builder_cache=$enableval,
+  enable_builder_cache=no
+)
+if test $enable_builder_cache = yes; then
+    AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])
+fi
+
+dnl =============================================================================
 
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
 CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
-
-AC_ARG_ENABLE(
-	builder-cache,
-	[  --enable-builder-cache[=ARG] enable the cache for MathML text nodes [default=no]],
-	enable_builder_cache=$enableval,
-	enable_builder_cache=no
-)
-if test $enable_builder_cache = yes; then
-    AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])	
-fi
-
-AM_SILENT_RULES([yes])
 
 AC_CONFIG_FILES([
  Makefile
