@@ -114,7 +114,6 @@ endif
 AM_CPPFLAGS = \
   -I$(top_builddir)/auto/ \
   -I$(top_srcdir)/src/common/ \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/frontend/gmetadom/ \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \

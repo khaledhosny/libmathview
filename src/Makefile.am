@@ -110,81 +110,22 @@ libcommon_la_CPPFLAGS += \
 
 
 
-MATHVARIANTS_CC = \
-  common/mathvariants/bold-fraktur.cc \
-  common/mathvariants/bold-italic.cc \
-  common/mathvariants/bold-sans-serif.cc \
-  common/mathvariants/bold-script.cc \
-  common/mathvariants/bold.cc \
-  common/mathvariants/double-struck.cc \
-  common/mathvariants/fraktur.cc \
-  common/mathvariants/italic.cc \
-  common/mathvariants/monospace.cc \
-  common/mathvariants/sans-serif-bold-italic.cc \
-  common/mathvariants/sans-serif-italic.cc \
-  common/mathvariants/sans-serif.cc \
-  common/mathvariants/script.cc \
-  $(NULL)
-
-EXTRA_DIST += \
-  common/mathvariants/variant.top \
-  common/mathvariants/variant.bot \
-  common/mathvariants/extract.xsl \
-  $(NULL)
-
-BUILT_SOURCES += $(MATHVARIANTS_CC)
-
 noinst_LTLIBRARIES += libmathvariants.la
 
 libmathvariants_la_CPPFLAGS = -DGMV_MathView_DLL
 libmathvariants_la_SOURCES = \
-  $(MATHVARIANTS_CC) \
-  common/mathvariants/MathVariantMap.cc \
+  common/MathVariantMap.cc \
+  common/MathVariants.cc \
   $(NULL)
 
 mathview_HEADERS += \
-  common/mathvariants/MathVariant.hh \
-  common/mathvariants/MathVariantMap.hh \
+  common/MathVariant.hh \
+  common/MathVariantMap.hh \
   $(NULL)
 
 libmathvariants_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common
-
-# XXX: rewrite this messy shell hackery into some readable script
-
-common/mathvariants/%_gen.cc : $(srcdir)/common/mathvariants/xml/%.xml $(srcdir)/common/mathvariants/extract.xsl
-	$(AM_V_GEN)$(XSLTPROC) --novalid $(srcdir)/common/mathvariants/extract.xsl $< >$@
-
-common/mathvariants/%.cc : common/mathvariants/%_gen.cc $(srcdir)/common/mathvariants/variant.top $(srcdir)/common/mathvariants/variant.bot
-	$(AM_V_GEN)
-	$(AM_V_at)cat $(srcdir)/common/mathvariants/variant.top >$@
-	$(AM_V_at)$(XSLTPROC) --novalid --param temp "false()" $(srcdir)/common/mathvariants/extract.xsl $(srcdir)/common/mathvariants/xml/`basename $@ .cc`.xml >>$@
-	$(AM_V_at)$(CXX) -o $(@:%.cc=%) -I$(top_builddir)/auto $<
-	$(AM_V_at)echo "Char32 " >>$@
-	$(AM_V_at)echo "map_variant_`basename $@ .cc | tr '-' '_'`" >>$@
-	$(AM_V_at)echo "(Char32 ch)" >>$@
-	$(AM_V_at)echo "{" >>$@
-	$(AM_V_at)./$(@:%.cc=%) >>$@
-	$(AM_V_at)echo "  return ch;" >>$@
-	$(AM_V_at)echo "}" >>$@
-	$(AM_V_at)rm -f $(@:%.cc=%)
-	$(AM_V_at)cat $(srcdir)/common/mathvariants/variant.bot >>$@
-
-EXTRA_DIST += \
-  common/mathvariants/xml/bold-fraktur.xml \
-  common/mathvariants/xml/bold-italic.xml \
-  common/mathvariants/xml/bold-sans-serif.xml \
-  common/mathvariants/xml/bold-script.xml \
-  common/mathvariants/xml/bold.xml \
-  common/mathvariants/xml/double-struck.xml \
-  common/mathvariants/xml/fraktur.xml \
-  common/mathvariants/xml/italic.xml \
-  common/mathvariants/xml/monospace.xml \
-  common/mathvariants/xml/sans-serif-bold-italic.xml \
-  common/mathvariants/xml/sans-serif-italic.xml \
-  common/mathvariants/xml/sans-serif.xml \
-  common/mathvariants/xml/script.xml
 
 
 
@@ -206,7 +147,6 @@ libengine_common_la_SOURCES = \
 libengine_common_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/frontend/common \
@@ -291,7 +231,6 @@ libengine_mathml_la_CPPFLAGS += \
   -I$(top_srcdir)/auto \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/backend/common \
@@ -404,7 +343,6 @@ libbackend_common_la_SOURCES = \
 libbackend_common_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/backend/common \
@@ -476,7 +414,6 @@ libmathview_backend_cairo_la_LIBADD = \
 libmathview_backend_cairo_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/backend/common \
@@ -523,7 +460,6 @@ libmathview_backend_qt_la_LIBADD = \
 libmathview_backend_qt_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/backend/common \
@@ -638,7 +574,6 @@ libmathview_frontend_custom_reader_la_SOURCES = \
 libmathview_frontend_custom_reader_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/frontend/custom_reader \
   -I$(top_srcdir)/src/engine/common \
@@ -737,7 +672,6 @@ libmathview_frontend_libxml2_reader_la_SOURCES = \
 libmathview_frontend_libxml2_reader_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/frontend/libxml2_reader \
   -I$(top_srcdir)/src/engine/common \
@@ -838,7 +772,6 @@ libmathview_frontend_libxml2_la_SOURCES = \
 libmathview_frontend_libxml2_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/frontend/libxml2 \
   -I$(top_srcdir)/src/engine/common \
@@ -940,7 +873,6 @@ libmathview_frontend_gmetadom_la_SOURCES = \
 libmathview_frontend_gmetadom_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/common/mathvariants \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/frontend/gmetadom \
   -I$(top_srcdir)/src/engine/common \
