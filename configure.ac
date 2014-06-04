@@ -228,7 +228,20 @@ if $have_libxml2; then
   AC_DEFINE(HAVE_LIBXML, 1, [Define to 1 if libxml2 is installed])
 fi
 AM_CONDITIONAL(HAVE_LIBXML2, $have_libxml2)
-AM_CONDITIONAL(HAVE_LIBXML2_READER, [test "$enable_libxml2_reader" = "yes" -o "$enable_libxml2_reader" = "auto"])
+
+have_libxml2_reader=false
+if test "$enable_libxml2_reader" = "auto" -o "$enable_libxml2_reader" = "yes"; then
+  if $have_libxml2; then
+    have_libxml2_reader=true
+  fi
+fi
+if test "$enable_libxml2_reader" = "yes" -a "$have_libxml2_reader" != "true"; then
+  AC_MSG_ERROR([libxml2 reader support requested but libxml-2.0 could not be found])
+fi
+if $have_libxml2_reader; then
+  AC_DEFINE(HAVE_LIBXML2_READER, 1, [Define to 1 if libxml2 is installed])
+fi
+AM_CONDITIONAL(HAVE_LIBXML2_READER, $have_libxml2_reader)
 
 dnl =============================================================================
 dnl Custom XML reader support
@@ -310,9 +323,9 @@ cat <<EOF
 GtkMathView ${PACKAGE_VERSION}
 
 Frontend:
-  GMetaDOM            ${enable_gmetadom}
-  libxml2             ${enable_libxml2}
-  libxml2 reader      ${enable_libxml2_reader}
+  GMetaDOM            ${have_gmetadom}
+  libxml2             ${have_libxml2}
+  libxml2 reader      ${have_libxml2_reader}
   custom reader       ${enable_custom_reader}
 
 Backend:
