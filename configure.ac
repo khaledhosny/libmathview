@@ -165,8 +165,6 @@ AC_LANG_POP(C++)
 AC_LANG([C])
 
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1],,[AC_MSG_ERROR(could not find GLIB)])
-AC_SUBST(GLIB_CFLAGS)
-AC_SUBST(GLIB_LIBS)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
@@ -185,8 +183,6 @@ if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
   ], [
     AC_MSG_WARN([could not find qt])
   ])
-  AC_SUBST(QT_CFLAGS)
-  AC_SUBST(QT_LIBS)
 fi
 
 AM_CONDITIONAL([HAVE_QT], [test "$enable_qt" = "yes" -o \( "$enable_qt" = "auto" -a "$have_qt" = "yes" \) ])
@@ -197,8 +193,6 @@ if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
     [AC_DEFINE(HAVE_CAIRO,1,[Define to 1 if Cairo is installed])
      have_cairo="yes"],
     [AC_MSG_WARN([could not find Cairo])])
-  AC_SUBST(CAIRO_CFLAGS)
-  AC_SUBST(CAIRO_LIBS)
 fi
 
 AM_CONDITIONAL([HAVE_CAIRO], [test "$enable_cairo" = "yes" -o \( "$enable_cairo" = "auto" -a "$have_cairo" = "yes" \) ])
@@ -209,8 +203,6 @@ if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
     [AC_DEFINE(HAVE_GTK,1,[Define to 1 if GTK+ is installed])
      have_gtk="yes"],
     [AC_MSG_WARN([could not find GTK+])])
-  AC_SUBST(GTK_CFLAGS)
-  AC_SUBST(GTK_LIBS)
 fi
 
 AM_CONDITIONAL([HAVE_GTK], [test "$enable_gtk" = "yes" -o \( "$enable_gtk" = "auto" -a "$have_gtk" = "yes" \) ])
@@ -244,8 +236,6 @@ if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
      have_gmetadom="yes"],
     [AC_MSG_WARN([could not find GMetaDOM])]
     [enable_gmetadom="no"])
-  AC_SUBST(DOM_CFLAGS)
-  AC_SUBST(DOM_LIBS)
 fi
 AM_CONDITIONAL([HAVE_GMETADOM], [test "$enable_gmetadom" = "yes" -o \( "$enable_gmetadom" = "auto" -a "$have_gmetadom" = "yes" \)])
 
