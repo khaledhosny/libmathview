@@ -24,7 +24,6 @@
 #define __custom_reader_MathView_hh__
 
 #include "View.hh"
-#include "libxml/tree.h"
 
 #include "c_customXmlReader.h"
 

@@ -203,12 +203,6 @@ AC_ARG_ENABLE(
   enable_libxml2_reader=$enableval,
   enable_libxml2_reader="auto"
 )
-AC_ARG_ENABLE(
-  custom-reader,
-  [  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
-  enable_custom_reader=$enableval,
-  enable_custom_reader="auto"
-)
 have_libxml2=false
 if test "$enable_libxml2" = "auto" -o "$enable_libxml2" = "yes"; then
   PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7], have_libxml2=true, :)
@@ -235,6 +229,17 @@ if $have_libxml2; then
 fi
 AM_CONDITIONAL(HAVE_LIBXML2, $have_libxml2)
 AM_CONDITIONAL(HAVE_LIBXML2_READER, [test "$enable_libxml2_reader" = "yes" -o "$enable_libxml2_reader" = "auto"])
+
+dnl =============================================================================
+dnl Custom XML reader support
+dnl =============================================================================
+
+AC_ARG_ENABLE(
+  custom-reader,
+  [  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
+  enable_custom_reader=$enableval,
+  enable_custom_reader="auto"
+)
 AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
 
 dnl =============================================================================

@@ -644,12 +644,9 @@ libmathview_frontend_custom_reader_la_CPPFLAGS += \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
   -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
   $(NULL)
 
 libmathview_frontend_custom_reader_la_LIBADD = \
-  $(XML_LIBS) \
-  libfrontend_libxml2_reader.la \
   libfrontend_custom_reader.la \
   libmathview.la \
   $(NULL)
