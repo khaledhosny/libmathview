@@ -163,8 +163,6 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
       if (context.getMathMode())
         mapMathVariant(context.getVariant(), source);
       r.first->second = getShaperManager()->shapeStretchy(context,
-                                                          context.getMathMLElement(),
-                                                          context.MGD()->getFactory(),
                                                           source,
                                                           context.getStretchV(),
                                                           context.getStretchH());
@@ -185,10 +183,7 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
       UCS4String source = UCS4StringOfString(str);
       if (context.getMathMode())
         mapMathVariant(context.getVariant(), source);
-      r.first->second = getShaperManager()->shape(context,
-                                                  context.getMathMLElement(),
-                                                  context.MGD()->getFactory(),
-                                                  source);
+      r.first->second = getShaperManager()->shape(context, source);
       return r.first->second;
     }
   else
@@ -213,10 +208,7 @@ MathGraphicDevice::stretchStringV(const FormattingContext& context,
                                   const scaled& height,
                                   const scaled& depth) const
 {
-  return getShaperManager()->shapeStretchy(context,
-                                           context.getMathMLElement(),
-                                           context.MGD()->getFactory(),
-                                           UCS4StringOfString(str), height + depth, 0);
+  return getShaperManager()->shapeStretchy(context, UCS4StringOfString(str), height + depth, 0);
 }
 
 AreaRef
