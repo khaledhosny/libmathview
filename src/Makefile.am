@@ -104,7 +104,6 @@ noinst_HEADERS += \
 
 libcommon_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
-  -I$(top_srcdir)/auto \
   $(GLIB_CFLAGS) \
   $(NULL)
 
@@ -208,7 +207,6 @@ libengine_mathml_la_SOURCES = \
   $(NULL)
 
 libengine_mathml_la_CPPFLAGS += \
-  -I$(top_srcdir)/auto \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -535,7 +533,6 @@ noinst_HEADERS += \
 
 libfrontend_custom_reader_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
-  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
@@ -632,7 +629,6 @@ noinst_HEADERS += \
 
 libfrontend_libxml2_reader_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
-  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
@@ -732,7 +728,6 @@ mathview_HEADERS += \
 
 libfrontend_libxml2_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
-  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
@@ -833,7 +828,6 @@ mathview_HEADERS += \
 
 libfrontend_gmetadom_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
-  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
