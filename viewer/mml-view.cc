@@ -52,10 +52,20 @@
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
 
+#define XSTR(s) STR(s)
+#define STR(s) #s
+
+#define DEF_FONT_SIZE   XSTR(DEFAULT_FONT_SIZE)
+#define DEF_FONT_FAMILY DEFAULT_FONT_FAMILY
+
 typedef libxml2_MathView MathView;
 
 static char **remaining_args = NULL;
+static char *fontname = (char*) DEFAULT_FONT_FAMILY;
+static int fontsize = DEFAULT_FONT_SIZE;
 static GOptionEntry entries[] = {
+  { "font-family", 'f', 0, G_OPTION_ARG_STRING, &fontname, "Font name (default: " DEF_FONT_FAMILY ")",     "family" },
+  { "face-size",   's', 0, G_OPTION_ARG_INT,    &fontsize, "Face size (default: " DEF_FONT_SIZE ")", "size" },
   { G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &remaining_args, NULL, "[FILE...]" },
   { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
 };
@@ -115,12 +125,9 @@ main(int argc, char *argv[])
   SmartPtr<AbstractLogger> logger = Logger::create();
   SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
 
-  const String fontname = configuration->getString(logger, "default/font-family", DEFAULT_FONT_FAMILY);
-  const int fontsize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
-
   FcResult result;
   FcPattern* pattern = FcPatternCreate();
-  FcPatternAddString(pattern, FC_FAMILY, (FcChar8 *) fontname.c_str());
+  FcPatternAddString(pattern, FC_FAMILY, (FcChar8 *) fontname);
   FcConfigSubstitute(NULL, pattern, FcMatchPattern);
   FcDefaultSubstitute(pattern);
   FcPattern* resolved = FcFontMatch(NULL, pattern, &result);
