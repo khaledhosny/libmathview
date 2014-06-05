@@ -102,8 +102,12 @@ ShaperManager::shapeStretchy(const FormattingContext& ctxt,
 			     const scaled& hSpan) const
 {
   UCS4String source = UCS4StringOfString(str);
+#if 0
+  // XXX: does it make sense to do math variant mapping for stretchy
+  // characters?
   if (ctxt.getMathMode())
     mapMathVariant(ctxt.getVariant(), source);
+#endif
 
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
