@@ -83,7 +83,11 @@ ShaperManager::shape(const FormattingContext& ctxt,
 		     const String& str) const
 {
   UCS4String source = UCS4StringOfString(str);
+#if 0
+  // XXX: We might want to handle math variant differently for text mode, e.g.
+  // by using font styles instead so that we get proper text kerning and so on.
   if (ctxt.getMathMode())
+#endif
     mapMathVariant(ctxt.getVariant(), source);
 
   std::vector<GlyphSpec> spec;
