@@ -33,7 +33,6 @@ src/Makefile.am:lib_LTLIBRARIES = libmathview.la
    SUBLIB: src/engine/mathml/libmathml.la
    SUBLIB: src/engine/common/libengine_common.la
    SUBLIB: src/common/libcommon.la
-   SUBLIB: src/common/libmathvariants.la
 */
 #if defined(GMV_MathView_DLL) 
 #define GMV_MathView_EXPORT __declspec(dllexport)

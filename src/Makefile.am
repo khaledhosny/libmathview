@@ -35,7 +35,6 @@ noinst_LTLIBRARIES += libcommon.la
 libcommon_la_CPPFLAGS = $(NULL)
 libcommon_la_CPPFLAGS += -DGMV_MathView_DLL
 libcommon_la_LIBADD = \
-  libmathvariants.la \
   $(GLIB_LIBS) \
   $(NULL)
 
@@ -66,6 +65,7 @@ mathview_HEADERS += \
   common/Length.hh \
   common/LengthAux.hh \
   common/Logger.hh \
+  common/MathVariant.hh \
   common/Object.hh \
   common/Point.hh \
   common/PointAux.hh \
@@ -107,26 +107,6 @@ libcommon_la_CPPFLAGS += \
   -I$(top_srcdir)/auto \
   $(GLIB_CFLAGS) \
   $(NULL)
-
-
-
-noinst_LTLIBRARIES += libmathvariants.la
-
-libmathvariants_la_CPPFLAGS = -DGMV_MathView_DLL
-libmathvariants_la_SOURCES = \
-  common/MathVariantMap.cc \
-  common/MathVariants.cc \
-  $(NULL)
-
-mathview_HEADERS += \
-  common/MathVariant.hh \
-  common/MathVariantMap.hh \
-  $(NULL)
-
-libmathvariants_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common
-
 
 
 
@@ -325,6 +305,8 @@ libbackend_common_la_SOURCES = \
   backend/common/MathFont.cc \
   backend/common/MathGraphicDevice.cc \
   backend/common/MathShaper.cc \
+  backend/common/MathVariantMap.cc \
+  backend/common/MathVariants.cc \
   backend/common/NullShaper.cc \
   backend/common/OverlapArrayArea.cc \
   backend/common/Shaper.cc \
@@ -383,6 +365,7 @@ mathview_HEADERS += \
   backend/common/MathGraphicDevice.hh \
   backend/common/MathShaper.hh \
   backend/common/MathTable.hh \
+  backend/common/MathVariantMap.hh \
   backend/common/NullShaper.hh \
   backend/common/OverlapArrayArea.hh \
   backend/common/RenderingContext.hh \
