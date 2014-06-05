@@ -24,8 +24,7 @@
 #define __MathMLValueConversion_hh__
 
 #include "ValueConversion.hh"
-// full path needed for Win32
-#include "../../common/MathVariant.hh"
+#include "MathVariant.hh"
 
 bool isTokenId(const SmartPtr<Value>&, TokenId);
 MathVariant toMathVariant(TokenId);
