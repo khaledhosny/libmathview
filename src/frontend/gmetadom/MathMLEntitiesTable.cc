@@ -26,7 +26,7 @@
 #include <gdome.h>
 
 static const GdomeEntitiesTableEntry mathmlEntities[] = {
-#include "../auto/entitiesTable.inc"
+#include "entitiesTable.inc"
   { NULL, NULL, NULL, NULL }
 };
 

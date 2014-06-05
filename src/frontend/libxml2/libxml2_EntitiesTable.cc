@@ -27,7 +27,7 @@
 #include "libxml2_EntitiesTable.hh"
 
 static const EntitiesTableEntry mathmlEntities[] = {
-#include "../auto/entitiesTable.inc"
+#include "entitiesTable.inc"
   { NULL, NULL, NULL, NULL }
 };
 
