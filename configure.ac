@@ -300,7 +300,7 @@ AC_CONFIG_FILES([
  config/gtkmathview.conf.xml
  scripts/Makefile
  auto/Makefile
- auto/Char.hh.in
+ auto/Char.hh
  src/Makefile
  viewer/Makefile
  doc/Makefile

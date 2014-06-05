@@ -35,7 +35,6 @@ EXTRA_DIST = \
   list-to-def.xsl \
   token-list.xml \
   stretchy.list \
-  Char.hh.in.in \
   Char.hh.in \
   token.dec \
   token.def \
@@ -71,15 +70,6 @@ config.dirs:
 	  mv $@.maybe $@; \
 	else \
 	  rm $@.maybe; \
-	fi \
-	)
-
-Char.hh: $(top_builddir)/auto/Char.hh.in
-	$(AM_V_GEN)( \
-	if test ! \( -e $@ \); then \
-	  cp $< $@; \
-	elif ! diff $< $@ >/dev/null; then \
-	  cp $< $@; \
 	fi \
 	)
 
