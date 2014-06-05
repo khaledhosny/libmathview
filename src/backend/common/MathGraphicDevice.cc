@@ -28,7 +28,6 @@
 #include "AreaFactory.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
-#include "MathVariantMap.hh"
 #include "FormattingContext.hh"
 #include "ShaperManager.hh"
 #include "String.hh"
@@ -159,11 +158,8 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
   std::pair<ShapedStretchyStringCache::iterator, bool> r = stretchyStringCache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
     {
-      UCS4String source = UCS4StringOfString(str);
-      if (context.getMathMode())
-        mapMathVariant(context.getVariant(), source);
       r.first->second = getShaperManager()->shapeStretchy(context,
-                                                          source,
+                                                          str,
                                                           context.getStretchV(),
                                                           context.getStretchH());
       return r.first->second;
@@ -180,10 +176,7 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
   std::pair<ShapedStringCache::iterator, bool> r = stringCache.insert(std::make_pair(key, AreaRef(0)));
   if (r.second)
     {
-      UCS4String source = UCS4StringOfString(str);
-      if (context.getMathMode())
-        mapMathVariant(context.getVariant(), source);
-      r.first->second = getShaperManager()->shape(context, source);
+      r.first->second = getShaperManager()->shape(context, str);
       return r.first->second;
     }
   else
@@ -208,7 +201,7 @@ MathGraphicDevice::stretchStringV(const FormattingContext& context,
                                   const scaled& height,
                                   const scaled& depth) const
 {
-  return getShaperManager()->shapeStretchy(context, UCS4StringOfString(str), height + depth, 0);
+  return getShaperManager()->shapeStretchy(context, str, height + depth, 0);
 }
 
 AreaRef

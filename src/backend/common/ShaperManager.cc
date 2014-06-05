@@ -30,6 +30,7 @@
 #include "ShaperManager.hh"
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
+#include "MathVariantMap.hh"
 #include "Element.hh"
 #include "MathMLElement.hh"
 #include "Area.hh"
@@ -79,8 +80,12 @@ ShaperManager::shapeAux(ShapingContext& context) const
 
 AreaRef
 ShaperManager::shape(const FormattingContext& ctxt,
-		     const UCS4String& source) const
+		     const String& str) const
 {
+  UCS4String source = UCS4StringOfString(str);
+  if (ctxt.getMathMode())
+    mapMathVariant(ctxt.getVariant(), source);
+
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
@@ -92,10 +97,14 @@ ShaperManager::shape(const FormattingContext& ctxt,
 
 AreaRef
 ShaperManager::shapeStretchy(const FormattingContext& ctxt,
-			     const UCS4String& source,
+			     const String& str,
 			     const scaled& vSpan,
 			     const scaled& hSpan) const
 {
+  UCS4String source = UCS4StringOfString(str);
+  if (ctxt.getMathMode())
+    mapMathVariant(ctxt.getVariant(), source);
+
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
