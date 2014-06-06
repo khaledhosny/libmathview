@@ -279,18 +279,6 @@ AM_CONDITIONAL(HAVE_GMETADOM, $have_gmetadom)
 
 dnl =============================================================================
 
-AC_ARG_ENABLE(
-  builder-cache,
-  [  --enable-builder-cache[=ARG] enable the cache for MathML text nodes [default=no]],
-  enable_builder_cache=$enableval,
-  enable_builder_cache=no
-)
-if test $enable_builder_cache = yes; then
-    AC_DEFINE(ENABLE_BUILDER_CACHE,1,[Define to 1 to enable caching of MathML Text nodes (slower but saves memory)])
-fi
-
-dnl =============================================================================
-
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
 CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
 
@@ -335,8 +323,5 @@ Backend:
 Viewer:
   GTK+                ${have_gtk}
   Qt                  ${have_qt}
-
-Performance:
-  Builder cache       ${enable_builder_cache}
 
 EOF
