@@ -51,7 +51,6 @@ ARCH IMPROVEMENTS
 - implement auxiliary methods for searching into the area model
 - It may be feasible to generalize searching functions
   over areas by implementing a visitor
-- remove cast in gmetadom_Model::documentFromBuffer when gdome API is OK
 O it seems like the choice of having that the first child of a
   vertical area is the bottommost is a bit weird. Think of the cursor:
   intuitively at increasing indices the cursor should go forward (that

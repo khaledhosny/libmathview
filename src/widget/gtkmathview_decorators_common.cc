@@ -154,17 +154,7 @@ GTKMATHVIEW_METHOD_NAME(decor_default_cursor_free)(GtkMathViewDefaultCursorDecor
   g_signal_handler_disconnect(cursor->math_view, cursor->handler_id);
 
   cursor->math_view = NULL;
-#if GTKMATHVIEW_USES_GMETADOM
-  if (cursor->element)
-    {
-      GdomeException exc = 0;
-      gdome_el_unref(cursor->element, &exc);
-      g_assert(exc == 0);
-      cursor->element = NULL;
-    }
-#else
   cursor->element = 0;
-#endif 
   g_free(cursor);
 }
 
@@ -186,22 +176,7 @@ GTKMATHVIEW_METHOD_NAME(decor_default_cursor_set)(GtkMathViewDefaultCursorDecora
 
   if (cursor->element != elem)
     {
-#if GTKMATHVIEW_USES_GMETADOM
-      GdomeException exc = 0;
-      if (cursor->element)
-	{
-	  gdome_el_unref(cursor->element, &exc);
-	  g_assert(exc == 0);
-	}
-#endif
       cursor->element = elem;
-#if GTKMATHVIEW_USES_GMETADOM
-      if (cursor->element)
-	{
-	  gdome_el_ref(cursor->element, &exc);
-	  g_assert(exc == 0);
-	}
-#endif
       need_update = true;
     }
 

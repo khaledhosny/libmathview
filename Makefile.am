@@ -16,9 +16,6 @@ endif
 if HAVE_CUSTOM_READER
 pkgconfig_DATA += mathview-frontend-custom-reader.pc
 endif
-if HAVE_GMETADOM
-pkgconfig_DATA += mathview-frontend-gmetadom.pc
-endif
 
 if HAVE_CAIRO
 pkgconfig_DATA += mathview-backend-cairo.pc
@@ -34,9 +31,6 @@ pkgconfig_DATA += gtkmathview-libxml2-reader.pc
 endif
 if HAVE_CUSTOM_READER
 pkgconfig_DATA += gtkmathview-custom-reader.pc
-endif
-if HAVE_GMETADOM
-pkgconfig_DATA += gtkmathview-gmetadom.pc
 endif
 
 SCRIPTDIR = ./scripts

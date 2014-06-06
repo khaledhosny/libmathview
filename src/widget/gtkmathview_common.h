@@ -64,12 +64,6 @@ extern "C" {
   typedef xmlElement*               GtkMathViewModelId;
   typedef xmlDoc*                   GtkMathViewModelDocument;
   typedef const xmlChar*            GtkMathViewModelString;
-#elif GTKMATHVIEW_USES_GMETADOM
-#include <gdome.h>
-#define GTKMATHVIEW_METHOD_NAME(name) gtk_math_view_##name##__##gmetadom
-  typedef GdomeElement*             GtkMathViewModelId;
-  typedef GdomeDocument*            GtkMathViewModelDocument;
-  typedef GdomeDOMString*           GtkMathViewModelString;
 #endif
 
   typedef struct _GtkMathViewModelEvent {

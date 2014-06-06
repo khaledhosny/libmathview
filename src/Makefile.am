@@ -728,6 +728,7 @@ mathview_HEADERS += \
 
 libfrontend_libxml2_la_CPPFLAGS += \
   -I$(top_builddir)/auto \
+  -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
   -I$(top_srcdir)/src/engine/mathml \
@@ -802,110 +803,6 @@ libgtkmathview_libxml2_la_LIBADD = \
 endif # HAVE_GTK
 endif # HAVE_LIBXML2
 
-if HAVE_GMETADOM
-noinst_LTLIBRARIES += libfrontend_gmetadom.la
-
-libfrontend_gmetadom_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
-libfrontend_gmetadom_la_LIBADD = \
-  $(DOM_LIBS) \
-  $(NULL)
-
-libfrontend_gmetadom_la_SOURCES = \
-  frontend/gmetadom/MathMLEntitiesTable.cc \
-  frontend/gmetadom/MathMLEntitiesTable.hh \
-  frontend/gmetadom/gmetadom.hh \
-  frontend/gmetadom/gmetadom_Builder.cc \
-  frontend/gmetadom/gmetadom_Builder.hh \
-  frontend/gmetadom/gmetadom_Model.cc \
-  frontend/gmetadom/gmetadom_Setup.cc \
-  frontend/gmetadom/gmetadom_Setup.hh \
-  $(NULL)
-
-mathview_HEADERS += \
-  frontend/gmetadom/gmetadom_Model.hh \
-  $(NULL)
-
-libfrontend_gmetadom_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/backend/common \
-  $(DOM_CFLAGS) \
-  $(NULL)
-
-
-lib_LTLIBRARIES += libmathview_frontend_gmetadom.la
-
-libmathview_frontend_gmetadom_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
-libmathview_frontend_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
-
-libmathview_frontend_gmetadom_la_SOURCES = \
-  view/gmetadom_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_gmetadom_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/gmetadom \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(DOM_CFLAGS) \
-  $(NULL)
-
-libmathview_frontend_gmetadom_la_LIBADD = \
-  $(DOM_LIBS) \
-  libfrontend_gmetadom.la \
-  libmathview.la \
-  $(NULL)
-
-mathview_HEADERS += \
-  view/gmetadom_MathView.hh \
-  $(NULL)
-
-
-mathview_HEADERS += \
-  view/Init.hh \
-  $(NULL)
-
-if HAVE_GTK
-lib_LTLIBRARIES += libgtkmathview_gmetadom.la
-
-libgtkmathview_gmetadom_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/gmetadom \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(DOM_CFLAGS) \
-  $(NULL)
-
-libgtkmathview_gmetadom_la_SOURCES = \
-  widget/gtkmathview_gmetadom.cc \
-  widget/gtkmathview_marshal.c \
-  $(NULL)
-
-libgtkmathview_gmetadom_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
-libgtkmathview_gmetadom_la_LIBADD = \
-  $(GTK_LIBS) \
-  libmathview_backend_cairo.la \
-  libmathview_frontend_gmetadom.la \
-  $(NULL)
-endif # HAVE_GTK
-endif # HAVE_GMETADOM
-
 
 
 if HAVE_GTK
@@ -924,7 +821,7 @@ gtk_HEADERS = \
   widget/gtkmathview_custom_reader.h \
   widget/gtkmathview_libxml2_reader.h \
   widget/gtkmathview_libxml2.h \
-  widget/gtkmathview_gmetadom.h
+  $(NULL)
 
 noinst_HEADERS += \
   widget/gtkmathview_marshal.h \

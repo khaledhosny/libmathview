@@ -48,24 +48,6 @@ MathMLTableRowElement::construct()
 {
   if (dirtyStructure())
     {
-#if defined(HAVE_GMETADOM)
-      if (getDOMElement())
-	{
-	  ChildList children(getDOMElement(), MATHML_NS_URI, "mtd");
-	  unsigned n = children.get_length();
-
-	  std::vector< SmartPtr<MathMLElement> > newContent;
-	  newContent.reserve(n);
-	  for (unsigned i = 0; i < n; i++)
-	    {
-	      DOM::Node node = children.item(i);
-	      SmartPtr<MathMLElement> elem = getFormattingNode(node);
-	      assert(elem);
-	      newContent.push_back(elem);
-	    }
-	  swapContent(newContent);
-	}
-#endif
       
       std::for_each(content.begin(), content.end(), ConstructAdapter<MathMLElement>());
 

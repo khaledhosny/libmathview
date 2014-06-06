@@ -49,11 +49,6 @@ typedef libxml2_reader_MathView MathView;
 #define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_libxml2"
 #include "libxml2_MathView.hh"
 typedef libxml2_MathView MathView;
-#elif GTKMATHVIEW_USES_GMETADOM
-#include "gmetadom.hh"
-#define GTK_MATH_VIEW_WIDGET_NAME "GtkMathView_GMetaDOM"
-#include "gmetadom_MathView.hh"
-typedef gmetadom_MathView MathView;
 #endif
 
 #include "Init.hh"
@@ -589,33 +584,12 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 #endif
 }
 
-#if GTKMATHVIEW_USES_GMETADOM
-
-static void
-gtk_math_view_release_document_resources(GtkMathView* math_view)
-{
-  g_return_if_fail(math_view != NULL);
-
-  GdomeException exc = 0;
-
-  if (math_view->current_elem != NULL)
-    {
-      gdome_el_unref(math_view->current_elem, &exc);
-      g_assert(exc == 0);
-      math_view->current_elem = NULL;
-    }
-}
-
-#else
-
 static void
 gtk_math_view_release_document_resources(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
   math_view->current_elem = NULL;
 }
-
-#endif
 
 static void
 gtk_math_view_init(GtkMathView* math_view)
@@ -901,9 +875,6 @@ gtk_math_view_button_release_event(GtkWidget* widget, GdkEventButton* event)
 
   if (event->button == 1)
     {
-#if GTKMATHVIEW_USES_GMETADOM
-      GdomeException exc = 0;
-#endif
       GtkMathViewModelId elem = NULL;
 
       GTKMATHVIEW_METHOD_NAME(get_element_at)(math_view, (gint) event->x, (gint) event->y, &elem, NULL, NULL);
@@ -928,14 +899,6 @@ gtk_math_view_button_release_event(GtkWidget* widget, GdkEventButton* event)
       if (math_view->select_state == SELECT_STATE_YES)      
 	g_signal_emit(GTK_OBJECT(math_view), select_end_signal, 0, &me);
       
-#if GTKMATHVIEW_USES_GMETADOM
-      if (elem != NULL)
-	{
-	  gdome_el_unref(elem, &exc);
-	  g_assert(exc == 0);
-	}
-#endif // GTKMATHVIEW_USES_GMETADOM
-
       math_view->button_pressed = FALSE;
       math_view->select_state = SELECT_STATE_NO;
     }
@@ -961,9 +924,6 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
   if (event->is_hint || (event->window != widget->window))
     gdk_window_get_pointer(widget->window, &x, &y, &mods);
 
-#if GTKMATHVIEW_USES_GMETADOM
-  GdomeException exc = 0;
-#endif
   GtkMathViewModelId elem = NULL;
 
   GTKMATHVIEW_METHOD_NAME(get_element_at)(math_view, x, y, &elem, NULL, NULL);
@@ -991,34 +951,10 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
 
   if (math_view->current_elem != elem)
     {
-#if GTKMATHVIEW_USES_GMETADOM
-      if (math_view->current_elem != NULL)
-	{
-	  gdome_el_unref(math_view->current_elem, &exc);
-	  g_assert(exc == 0);
-	}
-#endif // GTKMATHVIEW_USES_GMETADOM
-
       math_view->current_elem = elem;
-
-#if GTKMATHVIEW_USES_GMETADOM
-      if (math_view->current_elem != NULL)
-	{
-	  gdome_el_ref(math_view->current_elem, &exc);
-	  g_assert(exc == 0);
-	}
-#endif // GTKMATHVIEW_USES_GMETADOM
 
       g_signal_emit(GTK_OBJECT(math_view), element_over_signal, 0, &me);
     }
-
-#if GTKMATHVIEW_USES_GMETADOM
-  if (elem != NULL)
-    {
-      gdome_el_unref(elem, &exc);
-      g_assert(exc == 0);
-    }
-#endif // GTKMATHVIEW_USES_GMETADOM
 
   return FALSE;
 }
@@ -1134,65 +1070,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 }
 
-#if GTKMATHVIEW_USES_GMETADOM
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(name != NULL, FALSE);
-
-  gtk_math_view_release_document_resources(math_view);
-  const bool res = math_view->view->loadURI(name);
-  gtk_math_view_paint(math_view);
-  return res;
-}
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_buffer)(GtkMathView* math_view, const gchar* buffer)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(buffer != NULL, FALSE);
-
-  gtk_math_view_release_document_resources(math_view);
-  const bool res = math_view->view->loadBuffer(buffer);
-  gtk_math_view_paint(math_view);
-  return res;
-}
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_document)(GtkMathView* math_view, GdomeDocument* doc)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(doc != NULL, FALSE);
-
-  gtk_math_view_release_document_resources(math_view);
-  const bool res = math_view->view->loadDocument(DOM::Document(doc));
-  gtk_math_view_paint(math_view);
-  return res;
-}
-
-extern "C" gboolean
-GTKMATHVIEW_METHOD_NAME(load_root)(GtkMathView* math_view, GtkMathViewModelId elem)
-{
-  g_return_val_if_fail(math_view != NULL, FALSE);
-  g_return_val_if_fail(math_view->view != NULL, FALSE);
-
-  gtk_math_view_release_document_resources(math_view);
-  const bool res = math_view->view->loadRootElement(DOM::Element(elem));
-  gtk_math_view_paint(math_view);
-  return res;
-}
-
-extern "C" GdomeDocument*
-GTKMATHVIEW_METHOD_NAME(get_document)(GtkMathView* math_view)
-{
-  g_return_val_if_fail(math_view != NULL, NULL);
-  g_return_val_if_fail(math_view->view != NULL, NULL);
-  return reinterpret_cast<GdomeDocument*>(math_view->view->getDocument().gdome_object());
-}
-
-#elif GTKMATHVIEW_USES_LIBXML2
+#if GTKMATHVIEW_USES_LIBXML2
 
 extern "C" gboolean
 GTKMATHVIEW_METHOD_NAME(load_uri)(GtkMathView* math_view, const gchar* name)

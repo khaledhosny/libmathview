@@ -256,28 +256,6 @@ AC_ARG_ENABLE(
 AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes"])
 
 dnl =============================================================================
-dnl GMetaDOM support
-dnl =============================================================================
-
-AC_ARG_ENABLE(
-  gmetadom,
-  [  --enable-gmetadom[=ARG]  enable the GMetaDOM frontend [default=auto]],
-  enable_gmetadom=$enableval,
-  enable_gmetadom="no"
-)
-have_gmetadom=false
-if test "$enable_gmetadom" = "yes" -o "$enable_gmetadom" = "auto"; then
-  PKG_CHECK_MODULES(DOM, [gdome2-cpp-smart >= 0.1.8], have_gmetadom=true, :)
-fi
-if test "$enable_gmetadom" = "yes" -a "$have_gmetadom" != "true"; then
-  AC_MSG_WARN([GMetaDOM support requested but gdome2-cpp-smart could not be found])
-fi
-if $have_gmetadom; then
-  AC_DEFINE(HAVE_GMETADOM,1,[Define to 1 if gmetadom is installed])
-fi
-AM_CONDITIONAL(HAVE_GMETADOM, $have_gmetadom)
-
-dnl =============================================================================
 
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
 CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
@@ -296,13 +274,11 @@ AC_CONFIG_FILES([
  mathview-frontend-custom-reader.pc
  mathview-frontend-libxml2-reader.pc
  mathview-frontend-libxml2.pc
- mathview-frontend-gmetadom.pc
  mathview-backend-cairo.pc
  mathview-backend-qt.pc
  gtkmathview-custom-reader.pc
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc
- gtkmathview-gmetadom.pc
 ])
 AC_OUTPUT
 
@@ -311,7 +287,6 @@ cat <<EOF
 GtkMathView ${PACKAGE_VERSION}
 
 Frontend:
-  GMetaDOM            ${have_gmetadom}
   libxml2             ${have_libxml2}
   libxml2 reader      ${have_libxml2_reader}
   custom reader       ${enable_custom_reader}

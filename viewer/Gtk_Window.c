@@ -466,13 +466,10 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
     xmlFree(link);
 
 #if 0
-  GdomeElement* action = find_action_element(event->id);
+  xmlElement* action = find_action_element(event->id);
   if (action != NULL) 
     {
-      GdomeException exc = 0;
       gtk_math_view_decor_default_cursor_set(cursor, TRUE, action, TRUE, -1, FALSE);
-      gdome_el_unref(action, &exc);
-      g_assert(exc == 0);
     }
 #endif
 }

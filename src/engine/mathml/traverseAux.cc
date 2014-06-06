@@ -162,40 +162,6 @@ findActionElement(const SmartPtr<MathMLElement>& elem)
 }
 #endif
 
-#if defined(HAVE_GMETADOM)
-
-#if 0
-DOM::Element
-findDOMNode(const SmartPtr<MathMLElement>& elem)
-{
-  SmartPtr<MathMLElement> elemP(elem);
-
-  while (elemP && !elemP->getDOMElement())
-    elemP = smart_cast<MathMLElement>(elemP->getParent());
-
-  if (elemP) return elemP->getDOMElement();
-  else return DOM::Element(0);
-}
-
-SmartPtr<MathMLElement>
-findMathMLElement(const SmartPtr<const MathMLView>& view, const DOM::Element& node)
-{
-  if (SmartPtr<MathMLElement> elem = smart_cast<MathMLElement>(view->getLinker()->get(node)))
-    {
-      while (SmartPtr<MathMLRowElement> row = smart_cast<MathMLRowElement>(elem))
-	{
-	  if (row->getSize() != 1) break;
-	  elem = row->getChild(0);
-	}
-      return elem;
-    }
-  else
-    return 0;
-}
-#endif
-
-#endif // HAVE_GMETADOM
-
 SmartPtr<MathMLElement>
 findRightmostChild(const SmartPtr<MathMLElement>& elem)
 {

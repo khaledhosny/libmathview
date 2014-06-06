@@ -1,33 +1,10 @@
 
 NULL =
 
-noinst_PROGRAMS =
-if HAVE_GMETADOM
-noinst_PROGRAMS += dumpEntitiesTable
-
-entitiesTable.inc: $(CONFIGDIR)/entities-table.xml dumpEntitiesTable
-	$(AM_V_GEN)./dumpEntitiesTable $< >$@
-
-else
-entitiesTable.inc:
-	cp $(top_srcdir)/auto/entitiesTable.inc_ entitiesTable.inc
-endif
-
-dumpEntitiesTable_SOURCES = dumpEntitiesTable.cc
-dumpEntitiesTable_LDADD = @DOM_LIBS@
-dumpEntitiesTable_CPPFLAGS = \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/gmetadom \
-  -I$(top_builddir) \
-  $(DOM_CFLAGS) \
-  $(NULL)
-
-
 AUTOFILES = \
   token.dec \
   token.def \
   config.dirs \
-  entitiesTable.inc \
   $(NULL)
 
 EXTRA_DIST = \
@@ -38,10 +15,10 @@ EXTRA_DIST = \
   Char.hh.in \
   token.dec \
   token.def \
-  entitiesTable.inc_ \
+  entitiesTable.inc \
   $(NULL)
 
-DISTCLEANFILES = config.dirs entitiesTable.inc Char.hh
+DISTCLEANFILES = config.dirs Char.hh
 MAINTAINERCLEANFILES = token.dec token.def
 
 mathviewdir = $(pkgincludedir)/MathView
