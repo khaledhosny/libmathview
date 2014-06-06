@@ -249,11 +249,11 @@ dnl ============================================================================
 
 AC_ARG_ENABLE(
   custom-reader,
-  [  --enable-custom-reader[=ARG] enable the custom reader frontend [default=auto]],
+  [  --enable-custom-reader[=ARG] enable the custom reader frontend [default=yes]],
   enable_custom_reader=$enableval,
-  enable_custom_reader="auto"
+  enable_custom_reader="yes"
 )
-AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes" -o "$enable_custom_reader" = "auto"])
+AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes"])
 
 dnl =============================================================================
 dnl GMetaDOM support
