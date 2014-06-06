@@ -26,10 +26,8 @@
 
 typedef struct _EntitiesTableEntry EntitiesTableEntry;
 struct _EntitiesTableEntry {
-    char *name;
-    char *value;
-    char *publicID;
-    char *systemID;
+    const char* name;
+    const char* value;
 };
 
 const EntitiesTableEntry* getMathMLEntities(void);

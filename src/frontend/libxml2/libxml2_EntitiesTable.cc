@@ -28,7 +28,7 @@
 
 static const EntitiesTableEntry mathmlEntities[] = {
 #include "entitiesTable.inc"
-  { NULL, NULL, NULL, NULL }
+  { NULL, NULL }
 };
 
 const EntitiesTableEntry*
