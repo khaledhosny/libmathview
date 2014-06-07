@@ -24,11 +24,12 @@
 #define __RGBColor_hh__
 
 #include "gmv_defines.h"
-#include "Char.hh"
+
+#include <cstdint>
 
 struct GMV_MathView_EXPORT RGBColor
 {
-  RGBColor(UChar8 r = 0, UChar8 g = 0, UChar8 b = 0, UChar8 a = 0xff)
+  RGBColor(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0, uint8_t a = 0xff)
     : red(r), green(g), blue(b), alpha(a)
   { }
 
@@ -59,10 +60,10 @@ struct GMV_MathView_EXPORT RGBColor
 
   bool transparent(void) const { return alpha == 0; }
 
-  UChar8 red;
-  UChar8 green;
-  UChar8 blue;
-  UChar8 alpha;
+  uint8_t red;
+  uint8_t green;
+  uint8_t blue;
+  uint8_t alpha;
 };
 
 #endif // __RGBColor_hh__
