@@ -66,24 +66,6 @@ AC_CHECK_HEADERS(unistd.h)
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
-AC_C_CHAR_UNSIGNED
-AC_CHECK_SIZEOF(unsigned char, 1)
-AC_CHECK_SIZEOF(unsigned short, 2)
-AC_CHECK_SIZEOF(unsigned int, 4)
-AC_CHECK_SIZEOF(unsigned long, 4)
-AC_CHECK_SIZEOF(unsigned long long, 8)
-AC_CHECK_SIZEOF(wchar_t, 8)
-if test "x$ac_cv_c_char_unsigned" = "xyes"; then
-   AC_SUBST(CHAR_UNSIGNED, "1")
-else
-   AC_SUBST(CHAR_UNSIGNED, "0")
-fi
-AC_SUBST(GTKMATHVIEW_SIZEOF_CHAR, "$ac_cv_sizeof_unsigned_char")
-AC_SUBST(GTKMATHVIEW_SIZEOF_SHORT, "$ac_cv_sizeof_unsigned_short")
-AC_SUBST(GTKMATHVIEW_SIZEOF_INT, "$ac_cv_sizeof_unsigned_int")
-AC_SUBST(GTKMATHVIEW_SIZEOF_LONG, "$ac_cv_sizeof_unsigned_long")
-AC_SUBST(GTKMATHVIEW_SIZEOF_LONG_LONG, "$ac_cv_sizeof_unsigned_long_long")
-AC_SUBST(GTKMATHVIEW_SIZEOF_WCHAR_T, "$ac_cv_sizeof_wchar_t")
 
 AC_LANG_PUSH(C++)
 
@@ -266,7 +248,6 @@ AC_CONFIG_FILES([
  config/gtkmathview.conf.xml
  scripts/Makefile
  auto/Makefile
- auto/Char.hh
  src/Makefile
  viewer/Makefile
  doc/Makefile

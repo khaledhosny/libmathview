@@ -12,18 +12,15 @@ EXTRA_DIST = \
   list-to-def.xsl \
   token-list.xml \
   stretchy.list \
-  Char.hh.in \
   token.dec \
   token.def \
   entitiesTable.inc \
   $(NULL)
 
-DISTCLEANFILES = config.dirs Char.hh
+DISTCLEANFILES = config.dirs
 MAINTAINERCLEANFILES = token.dec token.def
 
 mathviewdir = $(pkgincludedir)/MathView
-mathview_HEADERS = \
-  Char.hh
 
 noinst_HEADERS = $(AUTOFILES)
 

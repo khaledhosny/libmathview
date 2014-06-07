@@ -61,6 +61,7 @@ mathview_HEADERS += \
   common/AbstractLogger.hh \
   common/BoundingBox.hh \
   common/BoundingBoxAux.hh \
+  common/Char.hh \
   common/Configuration.hh \
   common/Length.hh \
   common/LengthAux.hh \
