@@ -91,6 +91,10 @@ create_surface(const String filename, double width, double height)
 #ifdef CAIRO_HAS_PS_SURFACE
     else if (extension == "ps")
       surface = cairo_ps_surface_create(filename.c_str(), width, height);
+    else if (extension == "eps") {
+      surface = cairo_ps_surface_create(filename.c_str(), width, height);
+      cairo_ps_surface_set_eps(surface, true);
+    }
 #endif
     else
       g_print("can't output files of format: %s\n", extension.c_str());
