@@ -71,29 +71,31 @@ static GOptionEntry entries[] = {
 };
 
 static cairo_surface_t*
-create_surface(const char* filename, double width, double height)
+create_surface(const String filename, double width, double height)
 {
   cairo_surface_t* surface = NULL;
-  const char *extension = strrchr(filename, '.');
-  if (extension)
+  std::string::size_type n = filename.find(".");
+  if (n != std::string::npos && n < filename.length() - 1)
   {
-    extension++;
-    if (strcasecmp(extension, "png") == 0)
+    const String extension = filename.substr(n + 1);
+    if (extension == "png")
       surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
 #ifdef CAIRO_HAS_SVG_SURFACE
-    else if (strcasecmp(extension, "svg") == 0)
-      surface = cairo_svg_surface_create(filename, width, height);
+    else if (extension == "svg")
+      surface = cairo_svg_surface_create(filename.c_str(), width, height);
 #endif
 #ifdef CAIRO_HAS_PDF_SURFACE
-    else if (strcasecmp(extension, "pdf") == 0)
-      surface = cairo_pdf_surface_create(filename, width, height);
+    else if (extension == "pdf")
+      surface = cairo_pdf_surface_create(filename.c_str(), width, height);
 #endif
 #ifdef CAIRO_HAS_PS_SURFACE
-    else if (strcasecmp(extension, "ps") == 0)
-      surface = cairo_ps_surface_create(filename, width, height);
+    else if (extension == "ps")
+      surface = cairo_ps_surface_create(filename.c_str(), width, height);
 #endif
     else
-      g_print("can't output files of format: %s\n", extension);
+      g_print("can't output files of format: %s\n", extension.c_str());
+  } else {
+      g_print("can't output files without extension\n");
   }
 
   return surface;
@@ -118,8 +120,8 @@ main(int argc, char *argv[])
     exit(1);
   }
 
-  const char* input_file = remaining_args[0];
-  const char* output_file = remaining_args[1];
+  const String input_file = remaining_args[0];
+  const String output_file = remaining_args[1];
 
   const char* configPath = getenv("GTKMATHVIEWCONF");
   SmartPtr<AbstractLogger> logger = Logger::create();
@@ -164,7 +166,7 @@ main(int argc, char *argv[])
     view->render(*rc, scaled::zero(), -box.height);
 
     if (cairo_surface_get_type(surface) == CAIRO_SURFACE_TYPE_IMAGE)
-      cairo_surface_write_to_png(surface, output_file);
+      cairo_surface_write_to_png(surface, output_file.c_str());
 
     cairo_destroy(cr);
     cairo_surface_destroy(surface);

@@ -38,6 +38,7 @@ public:
 
   virtual void unload(void);
   bool loadURI(const char*);
+  bool loadURI(const String&);
   bool loadBuffer(const char*);
   bool loadDocument(xmlDoc*);
   bool loadRootElement(xmlElement*);

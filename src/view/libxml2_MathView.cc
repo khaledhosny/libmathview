@@ -57,6 +57,12 @@ libxml2_MathView::unload()
 }
 
 bool
+libxml2_MathView::loadURI(const String& name)
+{
+  return loadURI(name.c_str());
+}
+
+bool
 libxml2_MathView::loadURI(const char* name)
 {
   assert(name);
