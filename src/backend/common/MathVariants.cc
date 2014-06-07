@@ -25,7 +25,7 @@
 
 typedef struct TableEntry
 {
-  Char16 normal;
+  Char32 normal;
   Char32 variant;
 } TableEntry;
 

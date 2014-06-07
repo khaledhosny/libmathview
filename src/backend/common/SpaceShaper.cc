@@ -33,7 +33,7 @@
 
 struct FixedSpaceData
 {
-  Char16 ch;
+  Char32 ch;
   int space;
 } fixedSpaceMap[] = {
   { 0x0009, 9 * 8 }, // Tab
