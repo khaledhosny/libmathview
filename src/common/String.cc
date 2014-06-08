@@ -105,10 +105,10 @@ DESTofSOURCE(const SOURCE_STRING& s)
   return res;
 }
 
-UTF8String
-UTF8StringOfUCS4String(const UCS4String& s)
-{ return DESTofSOURCE<gchar, gunichar, UTF8String, UCS4String, &g_ucs4_to_utf8>(s); }
+String
+StringOfUCS4String(const UCS4String& s)
+{ return DESTofSOURCE<gchar, gunichar, String, UCS4String, &g_ucs4_to_utf8>(s); }
 
 UCS4String
-UCS4StringOfUTF8String(const UTF8String& s)
-{ return DESTofSOURCE<gunichar, gchar, UCS4String, UTF8String, &g_utf8_to_ucs4>(s); }
+UCS4StringOfString(const String& s)
+{ return DESTofSOURCE<gunichar, gchar, UCS4String, String, &g_utf8_to_ucs4>(s); }
