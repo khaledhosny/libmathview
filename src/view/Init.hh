@@ -23,10 +23,20 @@
 #ifndef __Init_hh__
 #define __Init_hh__
 
-#include "Utils.hh"
+#include <unistd.h>
+
 #include "AbstractLogger.hh"
 #include "Configuration.hh"
 #include "MathMLOperatorDictionary.hh"
+
+inline bool
+fileExists(const String& fileName)
+{
+  if (access (fileName.c_str(), F_OK) == 0)
+    return true;
+
+  return false;
+}
 
 template <typename MathView> SmartPtr<Configuration>
 initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
@@ -34,23 +44,23 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
   SmartPtr<Configuration> configuration = Configuration::create();
 
   bool res = false;
-  if (MathViewNS::fileExists(MathView::getDefaultConfigurationPath().c_str()))
+  if (fileExists(MathView::getDefaultConfigurationPath()))
     res |= MathView::loadConfiguration(logger, configuration, MathView::getDefaultConfigurationPath());
 
   for (std::vector<String>::const_iterator p = Configuration::getConfigurationPaths().begin();
        p != Configuration::getConfigurationPaths().end();
        p++)
-    if (MathViewNS::fileExists(p->c_str()))
+    if (fileExists(*p))
       res |= MathView::loadConfiguration(logger, configuration, *p);
     else
       logger->out(LOG_WARNING, "configuration file %s explicitly specified but not found", p->c_str());
 
-  if (MathViewNS::fileExists("gtkmathview.conf.xml"))
+  if (fileExists("gtkmathview.conf.xml"))
     res |= MathView::loadConfiguration(logger, configuration, "gtkmathview.conf.xml");
 
   if (confPath != NULL)
     {
-    if (MathViewNS::fileExists(confPath))
+    if (fileExists(confPath))
       res |= MathView::loadConfiguration(logger, configuration, confPath);
     else
       logger->out(LOG_WARNING, "configuration file %s explicitly specified but not found", confPath);
@@ -75,7 +85,7 @@ initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Co
 	 dit != paths.end();
 	 dit++)
       {
-	if (MathViewNS::fileExists((*dit).c_str()))
+	if (fileExists(*dit))
 	  {
 	    logger->out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
 	    if (!MathView::loadOperatorDictionary(logger, dictionary, (*dit).c_str()))
@@ -87,9 +97,9 @@ initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Co
   else
     {
       bool res = false;
-      if (MathViewNS::fileExists(MathView::getDefaultOperatorDictionaryPath().c_str()))
+      if (fileExists(MathView::getDefaultOperatorDictionaryPath()))
 	res |= MathView::loadOperatorDictionary(logger, dictionary, MathView::getDefaultOperatorDictionaryPath());
-      if (MathViewNS::fileExists("config/dictionary.xml"))
+      if (fileExists("config/dictionary.xml"))
 	res |= MathView::loadOperatorDictionary(logger, dictionary, "config/dictionary.xml");
     }
 

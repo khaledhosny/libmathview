@@ -52,7 +52,6 @@ libcommon_la_SOURCES = \
   common/String.cc \
   common/StringAux.cc \
   common/StringHash.cc \
-  common/Utils.cc \
   common/ValueConversion.cc \
   common/token.cc \
   $(NULL)
@@ -80,7 +79,6 @@ mathview_HEADERS += \
   common/String.hh \
   common/StringAux.hh \
   common/StringHash.hh \
-  common/Utils.hh \
   common/Value.hh \
   common/ValueConversion.hh \
   common/Variant.hh \
