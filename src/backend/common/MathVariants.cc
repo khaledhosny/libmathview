@@ -21,7 +21,7 @@
 // <http://www.gnu.org/licenses/>.
 
 
-#include <Char.hh>
+#include <String.hh>
 
 typedef struct TableEntry
 {

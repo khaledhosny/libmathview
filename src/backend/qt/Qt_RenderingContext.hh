@@ -23,7 +23,6 @@
 #ifndef __Qt_RenderingContext_hh__
 #define __Qt_RenderingContext_hh__
 
-#include "Char.hh"
 #include "SmartPtr.hh"
 #include "RGBColor.hh"
 #include "Rectangle.hh"

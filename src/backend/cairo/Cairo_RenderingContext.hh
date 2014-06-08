@@ -26,7 +26,6 @@
 
 #include <cairo/cairo.h>
 
-#include "Char.hh"
 #include "SmartPtr.hh"
 #include "RGBColor.hh"
 #include "Rectangle.hh"

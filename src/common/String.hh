@@ -23,10 +23,13 @@
 #ifndef __String_hh__
 #define __String_hh__
 
+#include <cstdint>
 #include <string>
 
 #include "gmv_defines.h"
-#include "Char.hh"
+
+typedef char Char;
+typedef uint32_t Char32;
 
 typedef std::basic_string<Char> String;
 typedef std::basic_string<Char> UTF8String;

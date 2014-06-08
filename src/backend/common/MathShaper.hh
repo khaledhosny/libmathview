@@ -24,8 +24,8 @@
 #ifndef __MathShaper_hh__
 #define __MathShaper_hh__
 
-#include "Char.hh"
 #include "Shaper.hh"
+#include "String.hh"
 #include "MathFont.hh"
 
 class GMV_MathView_EXPORT MathShaper : public Shaper
