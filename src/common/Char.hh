@@ -22,7 +22,6 @@
 #include <cstdint>
 
 typedef char Char;
-typedef char Char8;
 typedef uint32_t Char32;
 
 #endif // __Char_hh__

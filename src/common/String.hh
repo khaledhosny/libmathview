@@ -29,7 +29,7 @@
 #include "Char.hh"
 
 typedef std::basic_string<Char> String;
-typedef std::basic_string<Char8> UTF8String;
+typedef std::basic_string<Char> UTF8String;
 typedef std::basic_string<Char32> UCS4String;
 
 inline GMV_MathView_EXPORT bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
