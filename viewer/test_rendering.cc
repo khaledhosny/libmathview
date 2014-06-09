@@ -85,11 +85,11 @@ int main(int argc, char *argv[]) {
 
   g_signal_connect(GTK_OBJECT(window),
 		   "expose_event",
-		   (GtkSignalFunc) expose, NULL);
+		   G_CALLBACK(expose), NULL);
 
   g_signal_connect(GTK_OBJECT(window), 
 		   "delete_event", 
-		   (GtkSignalFunc) gtk_main_quit, NULL);
+		   G_CALLBACK(gtk_main_quit), NULL);
 
   const char* configPath = getenv("GTKMATHVIEWCONF");
 

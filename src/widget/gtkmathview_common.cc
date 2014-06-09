@@ -265,7 +265,7 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
 
-  if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
+  if (!gtk_widget_get_mapped(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
   cairo_t *cr = gdk_cairo_create(widget->window);
 
@@ -290,7 +290,7 @@ gtk_math_view_paint(GtkMathView* math_view)
   GtkMathViewClass* math_view_class = GTK_MATH_VIEW_CLASS(G_OBJECT_GET_CLASS(G_OBJECT(math_view)));
   g_return_if_fail(math_view_class != NULL);
 
-  if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
+  if (!gtk_widget_get_mapped(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
   GtkWidget* widget = GTK_WIDGET(math_view);
   
@@ -309,7 +309,7 @@ gtk_math_view_paint(GtkMathView* math_view)
     }
 
   rc->setStyle(Cairo_RenderingContext::SELECTED_STYLE);
-  if (GTK_WIDGET_HAS_FOCUS(math_view))
+  if (gtk_widget_has_focus(GTK_WIDGET(math_view)))
     {
       rc->setForegroundColor(RGBColorOfGdkColor(widget->style->text[GTK_STATE_SELECTED]));
       rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->base[GTK_STATE_SELECTED]));
@@ -462,7 +462,7 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
   math_view_class->element_over = gtk_math_view_element_over;
   math_view_class->set_scroll_adjustments = gtk_math_view_set_adjustments;
 
-  parent_class = (GtkWidgetClass*) gtk_type_class(gtk_widget_get_type());
+  parent_class = (GtkWidgetClass*) g_type_class_ref(gtk_widget_get_type());
 
 #if 0
   gobject_class->set_property = gtk_math_view_set_property;
@@ -610,7 +610,7 @@ gtk_math_view_init(GtkMathView* math_view)
   math_view->top_x = math_view->top_y = 0;
   math_view->old_top_x = math_view->old_top_y = 0;
 
-  GtkMathViewClass* math_view_class = GTK_MATH_VIEW_CLASS(gtk_type_class(gtk_math_view_get_type()));
+  GtkMathViewClass* math_view_class = GTK_MATH_VIEW_CLASS(g_type_class_ref(gtk_math_view_get_type()));
   g_assert(math_view_class != NULL);
 
   SmartPtr<MathView> view = MathView::create(math_view_class->logger);
@@ -642,7 +642,7 @@ gtk_math_view_init(GtkMathView* math_view)
 extern "C" GtkWidget*
 GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment* hadj, GtkAdjustment* vadj)
 {
-  GtkMathView* math_view = (GtkMathView*) gtk_type_new(GTKMATHVIEW_METHOD_NAME(get_type)());
+  GtkMathView* math_view = (GtkMathView*) g_object_new(GTKMATHVIEW_METHOD_NAME(get_type)(), NULL);
   g_return_val_if_fail(math_view != NULL, NULL);
   GTKMATHVIEW_METHOD_NAME(set_adjustments)(math_view, hadj, vadj);
   return GTK_WIDGET(math_view);
@@ -680,13 +680,13 @@ gtk_math_view_destroy(GtkObject* object)
 
   if (math_view->hadjustment != NULL)
     {
-      gtk_object_unref(GTK_OBJECT(math_view->hadjustment));
+      g_object_unref(math_view->hadjustment);
       math_view->hadjustment = NULL;
     }
 
   if (math_view->vadjustment != NULL)
     {
-      gtk_object_unref(GTK_OBJECT(math_view->vadjustment));
+      g_object_unref(math_view->vadjustment);
       math_view->vadjustment = NULL;
     }
 
@@ -742,7 +742,8 @@ gtk_math_view_realize(GtkWidget* widget)
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_MATH_VIEW (widget));
 
-  GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED | GTK_CAN_FOCUS);
+  gtk_widget_set_realized(widget, TRUE);
+  gtk_widget_set_can_focus(widget, TRUE);
 
   attributes.x = widget->allocation.x;
   attributes.y = widget->allocation.y;
@@ -801,7 +802,7 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
     }
 
   widget->allocation = *allocation;
-  if (GTK_WIDGET_REALIZED(widget))
+  if (gtk_widget_get_realized(widget))
     {
       gdk_window_move_resize(widget->window,
 			     allocation->x, allocation->y,
@@ -1196,16 +1197,16 @@ GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
     {
       if (math_view->hadjustment != NULL)
 	{
-	  gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->hadjustment), math_view);
-	  gtk_object_unref(GTK_OBJECT(math_view->hadjustment));
+	  g_signal_handlers_disconnect_matched(math_view->hadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, math_view);
+	  g_object_unref(math_view->hadjustment);
 	}
 
       math_view->hadjustment = hadj;
 
       if (hadj != NULL)
 	{
-	  gtk_object_ref(GTK_OBJECT(math_view->hadjustment));
-	  gtk_object_sink(GTK_OBJECT(math_view->hadjustment));
+	  g_object_ref(math_view->hadjustment);
+	  g_object_ref_sink(math_view->hadjustment);
 	  
 	  math_view->hsignal = 
 	    g_signal_connect(GTK_OBJECT(hadj), 
@@ -1219,16 +1220,16 @@ GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
     {
       if (math_view->vadjustment != NULL)
 	{
-	  gtk_signal_disconnect_by_data(GTK_OBJECT(math_view->vadjustment), math_view);
-	  gtk_object_unref(GTK_OBJECT(math_view->vadjustment));
+	  g_signal_handlers_disconnect_matched(math_view->hadjustment, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, math_view);
+	  g_object_unref(math_view->vadjustment);
 	}
 
       math_view->vadjustment = vadj;
 
       if (vadj != NULL)
 	{
-	  gtk_object_ref(GTK_OBJECT(math_view->vadjustment));
-	  gtk_object_sink(GTK_OBJECT(math_view->vadjustment));
+	  g_object_ref(math_view->vadjustment);
+	  g_object_ref_sink(math_view->vadjustment);
 	  
 	  math_view->vsignal =
 	    g_signal_connect(GTK_OBJECT(vadj), 

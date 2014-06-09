@@ -38,7 +38,7 @@ main(int argc, char *argv[])
 
   g_signal_connect(GTK_OBJECT(window), 
 		   "delete_event", 
-		   (GtkSignalFunc) gtk_main_quit, NULL);
+		   G_CALLBACK(gtk_main_quit), NULL);
 
   math_view = gtk_math_view_new(NULL, NULL);
   gtk_math_view_load_uri(GTK_MATH_VIEW(math_view), argv[1]);

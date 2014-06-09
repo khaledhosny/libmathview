@@ -132,7 +132,7 @@ GTKMATHVIEW_METHOD_NAME(decor_default_cursor_new)(GtkMathView* math_view)
   GtkMathViewDefaultCursorDecorator* cursor = g_new(GtkMathViewDefaultCursorDecorator, 1);
   g_assert(cursor != NULL);
   cursor->math_view = math_view;
-  gtk_widget_ref(GTK_WIDGET(math_view));
+  g_object_ref(GTK_WIDGET(math_view));
   cursor->enabled = FALSE;
   cursor->element = 0;
   cursor->index = -1;
@@ -148,7 +148,7 @@ extern "C" void
 GTKMATHVIEW_METHOD_NAME(decor_default_cursor_free)(GtkMathViewDefaultCursorDecorator* cursor)
 {
   g_return_if_fail(cursor != NULL);
-  gtk_widget_unref(GTK_WIDGET(cursor->math_view));
+  g_object_unref(GTK_WIDGET(cursor->math_view));
 
   g_signal_handler_disconnect(cursor->math_view, cursor->handler_id);
 

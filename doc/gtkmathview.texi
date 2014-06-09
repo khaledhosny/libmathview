@@ -1259,7 +1259,7 @@ object.  It is normally used as a runtime check before casting
 @var{object} to the @code{GtkMathView} type.
 @end defmac
 
-@deftypefn {Method} GtkType gtk_math_view_get_type ()
+@deftypefn {Method} GType gtk_math_view_get_type ()
 allocates a new Gtk type for the class @code{GtkMathView}. Used
 internally.
 @end deftypefn

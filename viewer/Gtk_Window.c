@@ -150,7 +150,7 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height, gint l
   
   g_signal_connect(GTK_OBJECT(window), 
 		  "delete_event", 
-		  (GtkSignalFunc) gtk_main_quit, NULL);
+		  G_CALLBACK(gtk_main_quit), NULL);
   
   create_widget_set();
   g_assert(main_area != NULL);

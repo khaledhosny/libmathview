@@ -31,9 +31,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_TYPE_MATH_VIEW         (gtk_math_view_get_type())
-#define GTK_MATH_VIEW(obj)         GTK_CHECK_CAST(obj, GTK_TYPE_MATH_VIEW, GtkMathView)
-#define GTK_MATH_VIEW_CLASS(klass) GTK_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
-#define GTK_IS_MATH_VIEW(obj)      GTK_CHECK_TYPE(obj, GTK_TYPE_MATH_VIEW)
+#define GTK_MATH_VIEW(obj)         G_TYPE_CHECK_INSTANCE_CAST(obj, GTK_TYPE_MATH_VIEW, GtkMathView)
+#define GTK_MATH_VIEW_CLASS(klass) G_TYPE_CHECK_CLASS_CAST(klass, GTK_TYPE_MATH_VIEW, GtkMathViewClass)
+#define GTK_IS_MATH_VIEW(obj)      G_TYPE_CHECK_INSTANCE_TYPE(obj, GTK_TYPE_MATH_VIEW)
 
   typedef GdkPoint GtkMathViewPoint;
 
@@ -77,7 +77,7 @@ extern "C" {
   typedef void (*GtkMathViewSelectAbortSignal)(GtkMathView*);
   typedef void (*GtkMathViewDecorateSignal)(GtkMathView*, cairo_t*, gpointer);
 
-  GtkType    GTKMATHVIEW_METHOD_NAME(get_type)(void);
+  GType      GTKMATHVIEW_METHOD_NAME(get_type)(void);
   GtkWidget* GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
   gboolean   GTKMATHVIEW_METHOD_NAME(freeze)(GtkMathView*);
   gboolean   GTKMATHVIEW_METHOD_NAME(thaw)(GtkMathView*);

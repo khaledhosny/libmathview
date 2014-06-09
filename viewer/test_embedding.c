@@ -44,7 +44,7 @@ main(int argc, char *argv[])
 
   g_signal_connect(GTK_OBJECT(window), 
 		   "delete_event", 
-		   (GtkSignalFunc) gtk_main_quit, NULL);
+		    G_CALLBACK(gtk_main_quit), NULL);
 
   buffer = gtk_text_buffer_new(NULL);
   gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), "This kind of annotation is useful when something other than the \
