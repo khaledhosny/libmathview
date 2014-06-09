@@ -31,8 +31,6 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
 
 #include "gtkmathview_marshal.h"
 

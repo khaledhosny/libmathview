@@ -24,7 +24,7 @@
 #ifndef __gtkmathview_common_h__
 #define __gtkmathview_common_h__
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
