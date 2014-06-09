@@ -26,7 +26,7 @@
 #include "Area.hh"
 #include "Rectangle.hh"
 
-class GMV_MathView_EXPORT SearchingContext
+class SearchingContext
 {
 public:
   SearchingContext(const scaled& x, const scaled& y) : x0(x), y0(y) { }

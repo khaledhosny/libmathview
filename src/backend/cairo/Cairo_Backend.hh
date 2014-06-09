@@ -25,7 +25,7 @@
 
 #include "Backend.hh"
 
-class GMV_BackEnd_EXPORT Cairo_Backend : public Backend
+class Cairo_Backend : public Backend
 {
 protected:
   Cairo_Backend(cairo_scaled_font_t* f);

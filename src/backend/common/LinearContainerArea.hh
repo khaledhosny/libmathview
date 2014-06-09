@@ -27,7 +27,7 @@
 
 #include "ContainerArea.hh"
 
-class GMV_MathView_EXPORT LinearContainerArea : public ContainerArea
+class LinearContainerArea : public ContainerArea
 {
 protected:
   LinearContainerArea(const std::vector<AreaRef>& c) : content(c) { }

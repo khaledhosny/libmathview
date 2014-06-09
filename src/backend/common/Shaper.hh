@@ -25,7 +25,7 @@
 
 #include "Area.hh"
 
-class GMV_MathView_EXPORT Shaper : public Object
+class Shaper : public Object
 {
 protected:
   Shaper(void) { }

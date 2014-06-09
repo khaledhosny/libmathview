@@ -23,8 +23,6 @@
 #ifndef __MathVariant_hh__
 #define __MathVariant_hh__
 
-#include "gmv_defines.h"
-
 enum MathVariant
   {
     NORMAL_VARIANT,
@@ -43,7 +41,7 @@ enum MathVariant
     MONOSPACE_VARIANT
   };
 
-inline GMV_MathView_EXPORT bool
+inline bool
 validMathVariant(MathVariant id)
 { return id >= NORMAL_VARIANT && id <= MONOSPACE_VARIANT; }
 

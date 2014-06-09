@@ -44,7 +44,7 @@
 #include "VerticalSpaceArea.hh"
 #include "CombinedGlyphArea.hh"
 
-class GMV_MathView_EXPORT AreaFactory : public Object
+class AreaFactory : public Object
 {
 protected:
   AreaFactory(void) { }

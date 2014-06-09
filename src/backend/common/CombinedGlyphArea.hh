@@ -27,7 +27,7 @@
 #include "ContainerArea.hh"
 #include "BoundingBox.hh"
 
-class GMV_MathView_EXPORT CombinedGlyphArea : public ContainerArea
+class CombinedGlyphArea : public ContainerArea
 {
 protected:
   CombinedGlyphArea(const AreaRef& , const AreaRef&, const AreaRef&,

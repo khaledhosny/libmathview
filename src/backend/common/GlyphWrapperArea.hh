@@ -25,7 +25,7 @@
 
 #include "BinContainerArea.hh"
 
-class GMV_MathView_EXPORT GlyphWrapperArea : public BinContainerArea
+class GlyphWrapperArea : public BinContainerArea
 {
 protected:
   GlyphWrapperArea(const AreaRef& area, CharIndex l)

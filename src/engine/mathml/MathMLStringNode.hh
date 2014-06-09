@@ -26,7 +26,7 @@
 #include "Area.hh"
 #include "MathMLTextNode.hh"
 
-class GMV_MathView_EXPORT MathMLStringNode: public MathMLTextNode
+class MathMLStringNode: public MathMLTextNode
 {
 protected:
   MathMLStringNode(const String&);

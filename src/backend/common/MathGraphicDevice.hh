@@ -28,7 +28,7 @@
 #include "GraphicDevice.hh"
 #include "MathFont.hh"
 
-class GMV_MathView_EXPORT MathGraphicDevice : public GraphicDevice
+class MathGraphicDevice : public GraphicDevice
 {
 protected:
   MathGraphicDevice(const SmartPtr<MathFont>& font);

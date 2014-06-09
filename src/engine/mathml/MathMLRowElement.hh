@@ -27,7 +27,7 @@
 #include "MathMLLinearContainerElement.hh"
 #include "token.hh"
 
-class GMV_MathView_EXPORT MathMLRowElement
+class MathMLRowElement
   : public MathMLLinearContainerElement, public MathMLEmbellishment
 {
 protected:

@@ -28,7 +28,7 @@
 
 #include "BoundingBox.hh"
 
-GMV_MathView_EXPORT std::string toString(const BoundingBox&);
-GMV_MathView_EXPORT std::ostream& operator<<(std::ostream&, const BoundingBox&);
+std::string toString(const BoundingBox&);
+std::ostream& operator<<(std::ostream&, const BoundingBox&);
 
 #endif // __BoundingBoxAux_hh__

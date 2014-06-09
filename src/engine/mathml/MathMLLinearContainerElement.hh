@@ -28,7 +28,7 @@
 #include "MathMLContainerElement.hh"
 #include "LinearContainerTemplate.hh"
 
-class GMV_MathView_EXPORT MathMLLinearContainerElement : public MathMLContainerElement
+class MathMLLinearContainerElement : public MathMLContainerElement
 {
 protected:
   MathMLLinearContainerElement(const SmartPtr<class MathMLNamespaceContext>&);

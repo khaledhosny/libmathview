@@ -31,7 +31,7 @@
 #include "Object.hh"
 #include "SmartPtr.hh"
 
-class GMV_MathView_EXPORT ShaperManager : public Object
+class ShaperManager : public Object
 {
 protected:
   ShaperManager(void);

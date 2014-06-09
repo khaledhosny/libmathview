@@ -27,7 +27,7 @@
 
 #include <QRawFont>
 
-class GMV_BackEnd_EXPORT Qt_Backend : public Backend
+class Qt_Backend : public Backend
 {
 protected:
     Qt_Backend(QRawFont& rawFont);

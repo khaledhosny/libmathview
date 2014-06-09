@@ -26,7 +26,7 @@
 #include "RGBColor.hh"
 #include "BinContainerArea.hh"
 
-class GMV_MathView_EXPORT ColorArea : public BinContainerArea
+class ColorArea : public BinContainerArea
 {
 protected:
   ColorArea(const AreaRef& area, const RGBColor& c) : BinContainerArea(area), color(c) { }

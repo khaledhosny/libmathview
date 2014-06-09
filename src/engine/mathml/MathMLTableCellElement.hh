@@ -26,7 +26,7 @@
 #include "token.hh"
 #include "MathMLNormalizingContainerElement.hh"
 
-class GMV_MathView_EXPORT MathMLTableCellElement : public MathMLNormalizingContainerElement
+class MathMLTableCellElement : public MathMLNormalizingContainerElement
 {
 protected:
   MathMLTableCellElement(const SmartPtr<class MathMLNamespaceContext>&);

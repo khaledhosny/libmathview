@@ -29,7 +29,7 @@
 #include "WeakPtr.hh"
 #include "Area.hh"
 
-class GMV_MathView_EXPORT Element : public Node
+class Element : public Node
 {
 protected:
   Element(const SmartPtr<class NamespaceContext>&);

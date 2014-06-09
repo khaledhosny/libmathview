@@ -30,7 +30,7 @@
 // Area.hh moved down here for Win32 build
 #include "Area.hh"
 
-class GMV_MathView_EXPORT View : public Object
+class View : public Object
 {
 protected:
   View(const SmartPtr<class AbstractLogger>&);

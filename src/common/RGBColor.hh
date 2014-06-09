@@ -23,11 +23,9 @@
 #ifndef __RGBColor_hh__
 #define __RGBColor_hh__
 
-#include "gmv_defines.h"
-
 #include <cstdint>
 
-struct GMV_MathView_EXPORT RGBColor
+struct RGBColor
 {
   RGBColor(uint8_t r = 0, uint8_t g = 0, uint8_t b = 0, uint8_t a = 0xff)
     : red(r), green(g), blue(b), alpha(a)

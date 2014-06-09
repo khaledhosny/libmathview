@@ -28,7 +28,7 @@
 
 enum LogLevelId { LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG };
 
-class GMV_MathView_EXPORT AbstractLogger : public Object
+class AbstractLogger : public Object
 {
 protected:
   AbstractLogger(void);

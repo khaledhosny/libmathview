@@ -27,7 +27,7 @@
 #include "MathMLTokenElement.hh"
 #include "token.hh"
 
-class GMV_MathView_EXPORT MathMLOperatorElement
+class MathMLOperatorElement
   : public MathMLTokenElement, public MathMLEmbellishment
 {
 protected:

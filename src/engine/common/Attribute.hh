@@ -29,7 +29,7 @@
 #include "String.hh"
 #include "AttributeSignature.hh"
 
-class GMV_MathView_EXPORT Attribute : public Object
+class Attribute : public Object
 {
 protected:
   Attribute(const class AttributeSignature&, const String&);

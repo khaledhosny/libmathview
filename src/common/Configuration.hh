@@ -34,7 +34,7 @@
 #include <unordered_map>
 #include "Length.hh"
 
-class GMV_MathView_EXPORT Configuration : public Object
+class Configuration : public Object
 {
 protected:
   Configuration(void);

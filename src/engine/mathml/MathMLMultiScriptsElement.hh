@@ -28,7 +28,7 @@
 #include "BinContainerTemplate.hh"
 #include "LinearContainerTemplate.hh"
 
-class GMV_MathView_EXPORT MathMLMultiScriptsElement
+class MathMLMultiScriptsElement
   : public MathMLContainerElement, public MathMLEmbellishment
 {
 protected:

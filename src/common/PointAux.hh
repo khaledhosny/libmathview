@@ -28,7 +28,7 @@
 
 #include "Point.hh"
 
-GMV_MathView_EXPORT std::string toString(const Point&);
-GMV_MathView_EXPORT std::ostream& operator<<(std::ostream&, const Point&);
+std::string toString(const Point&);
+std::ostream& operator<<(std::ostream&, const Point&);
 
 #endif // __PointAux_hh__

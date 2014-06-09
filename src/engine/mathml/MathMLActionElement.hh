@@ -26,7 +26,7 @@
 #include "MathMLEmbellishment.hh"
 #include "MathMLLinearContainerElement.hh"
 
-class GMV_MathView_EXPORT MathMLActionElement
+class MathMLActionElement
   : public MathMLLinearContainerElement, public MathMLEmbellishment
 {
 protected:

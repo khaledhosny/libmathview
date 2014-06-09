@@ -25,7 +25,7 @@
 
 #include "MathMLTextNode.hh"
 
-class GMV_MathView_EXPORT MathMLSpaceNode : public MathMLTextNode
+class MathMLSpaceNode : public MathMLTextNode
 {
 protected:
   MathMLSpaceNode(int);

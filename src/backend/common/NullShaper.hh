@@ -25,7 +25,7 @@
 
 #include "Shaper.hh"
 
-class GMV_MathView_EXPORT NullShaper : public Shaper
+class NullShaper : public Shaper
 {
 protected:
   NullShaper(void);

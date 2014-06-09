@@ -25,7 +25,7 @@
 
 #include "MathMLElement.hh"
 
-class GMV_MathView_EXPORT MathMLAlignGroupElement : public MathMLElement
+class MathMLAlignGroupElement : public MathMLElement
 {
 protected:
   MathMLAlignGroupElement(const SmartPtr<class MathMLNamespaceContext>&);

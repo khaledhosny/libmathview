@@ -23,10 +23,8 @@
 #ifndef __SparseMap_hh__
 #define __SparseMap_hh__
 
-#include "gmv_defines.h"
-
 template <class T, int M, int N>
-class GMV_MathView_EXPORT SparseMap
+class SparseMap
 {
 public:
   SparseMap(void)

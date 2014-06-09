@@ -26,7 +26,7 @@
 #include "TemplateElementValidator.hh"
 
 template <class Model>
-class GMV_MathView_EXPORT TemplateElementIterator : public TemplateElementValidator<Model>
+class TemplateElementIterator : public TemplateElementValidator<Model>
 {
 public:
   TemplateElementIterator(const typename Model::Element& root, const String& ns = "*", const String& n = "*")

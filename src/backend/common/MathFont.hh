@@ -29,7 +29,7 @@
 #include "MathTable.hh"
 #include "stdio.h"
 
-class GMV_MathView_EXPORT MathFont : public Object
+class MathFont : public Object
 {
 protected:
   MathFont(void);

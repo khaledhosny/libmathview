@@ -26,7 +26,7 @@
 #include "SimpleArea.hh"
 #include "BoundingBox.hh"
 
-class GMV_MathView_EXPORT HorizontalSpaceArea : public SimpleArea
+class HorizontalSpaceArea : public SimpleArea
 {
 protected:
   HorizontalSpaceArea(const scaled& w) : width(w) { }

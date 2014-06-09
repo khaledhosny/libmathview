@@ -27,7 +27,7 @@
 
 // base class for MathML elements that infer an mrow when the number of
 // children is not 1
-class GMV_MathView_EXPORT MathMLNormalizingContainerElement : public MathMLBinContainerElement
+class MathMLNormalizingContainerElement : public MathMLBinContainerElement
 {
 protected:
   MathMLNormalizingContainerElement(const SmartPtr<class MathMLNamespaceContext>&);

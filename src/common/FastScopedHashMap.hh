@@ -23,10 +23,8 @@
 #ifndef __FastScopedHashMap_hh__
 #define __FastScopedHashMap_hh__
 
-#include "gmv_defines.h"
-
 template <int MAX, class T>
-class GMV_MathView_EXPORT FastScopedHashMap
+class FastScopedHashMap
 {
 public:
   FastScopedHashMap(void) : env(0)

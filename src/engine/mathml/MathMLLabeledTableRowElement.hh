@@ -26,7 +26,7 @@
 #include "MathMLTableRowElement.hh"
 #include "BinContainerTemplate.hh"
 
-class GMV_MathView_EXPORT MathMLLabeledTableRowElement : public MathMLTableRowElement
+class MathMLLabeledTableRowElement : public MathMLTableRowElement
 {
 protected:
   MathMLLabeledTableRowElement(const SmartPtr<class MathMLNamespaceContext>&);

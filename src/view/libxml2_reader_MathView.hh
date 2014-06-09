@@ -27,7 +27,7 @@
 
 #include "View.hh"
 
-class GMV_FrontEnd_EXPORT libxml2_reader_MathView : public View
+class libxml2_reader_MathView : public View
 {
 protected:
   libxml2_reader_MathView(const SmartPtr<class AbstractLogger>&);

@@ -29,7 +29,7 @@
 #include <unordered_map>
 #include "Object.hh"
 
-class GMV_MathView_EXPORT MathMLOperatorDictionary : public Object
+class MathMLOperatorDictionary : public Object
 {
 protected:
   MathMLOperatorDictionary(void);

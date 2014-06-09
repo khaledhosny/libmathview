@@ -29,7 +29,7 @@
 
 // base class for token element. Token elemens can contain character data
 // and a very limited set of other MathML elements (e.g. <malignmark>)
-class GMV_MathView_EXPORT MathMLTokenElement : public MathMLElement
+class MathMLTokenElement : public MathMLElement
 {
 protected:
   MathMLTokenElement(const SmartPtr<class MathMLNamespaceContext>&);

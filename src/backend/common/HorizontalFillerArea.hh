@@ -25,7 +25,7 @@
 
 #include "FillerArea.hh"
 
-class GMV_MathView_EXPORT HorizontalFillerArea : public FillerArea
+class HorizontalFillerArea : public FillerArea
 {
 protected:
   HorizontalFillerArea(void) { }

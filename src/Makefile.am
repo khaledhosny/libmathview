@@ -15,7 +15,6 @@ CLEANFILES = $(NULL)
 
 lib_LTLIBRARIES += libmathview.la
 
-libmathview_la_CPPFLAGS = -DGMV_MathView_DLL
 libmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 
 libmathview_la_SOURCES = dummy.cc
@@ -33,7 +32,6 @@ libmathview_la_LIBADD = \
 noinst_LTLIBRARIES += libcommon.la
 
 libcommon_la_CPPFLAGS = $(NULL)
-libcommon_la_CPPFLAGS += -DGMV_MathView_DLL
 libcommon_la_LIBADD = \
   $(GLIB_LIBS) \
   $(NULL)
@@ -84,7 +82,6 @@ mathview_HEADERS += \
   common/WeakPtr.hh \
   common/defs.h \
   common/fixed.hh \
-  common/gmv_defines.h \
   common/scaled.hh \
   common/scaledAux.hh \
   $(NULL)
@@ -109,8 +106,6 @@ libcommon_la_CPPFLAGS += \
 
 noinst_LTLIBRARIES += libengine_common.la
 
-libengine_common_la_CPPFLAGS = -DGMV_MathView_DLL
-
 libengine_common_la_SOURCES = \
   engine/common/Attribute.cc \
   engine/common/AttributeSet.cc \
@@ -121,7 +116,7 @@ libengine_common_la_SOURCES = \
   engine/common/Element.cc \
   $(NULL)
 
-libengine_common_la_CPPFLAGS += \
+libengine_common_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -151,8 +146,6 @@ noinst_HEADERS += \
 
 
 noinst_LTLIBRARIES += libengine_mathml.la
-
-libengine_mathml_la_CPPFLAGS = -DGMV_MathView_DLL
 
 libengine_mathml_la_SOURCES = \
   engine/mathml/MathMLActionElement.cc \
@@ -204,7 +197,7 @@ libengine_mathml_la_SOURCES = \
   engine/mathml/traverseAux.cc \
   $(NULL)
 
-libengine_mathml_la_CPPFLAGS += \
+libengine_mathml_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -272,8 +265,6 @@ noinst_HEADERS += \
 
 noinst_LTLIBRARIES += libbackend_common.la
 
-libbackend_common_la_CPPFLAGS = -DGMV_MathView_DLL
-
 libbackend_common_la_SOURCES = \
   backend/common/Area.cc \
   backend/common/AreaFactory.cc \
@@ -318,7 +309,7 @@ libbackend_common_la_SOURCES = \
   backend/common/WrapperArea.cc \
   $(NULL)
 
-libbackend_common_la_CPPFLAGS += \
+libbackend_common_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -382,15 +373,13 @@ mathview_HEADERS += \
 if HAVE_CAIRO
 lib_LTLIBRARIES += libmathview_backend_cairo.la
 
-libmathview_backend_cairo_la_CPPFLAGS = -DGMV_BackEnd_DLL
-
 libmathview_backend_cairo_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_backend_cairo_la_LIBADD = \
   $(CAIRO_LIBS) \
   $(NULL)
 
-libmathview_backend_cairo_la_CPPFLAGS += \
+libmathview_backend_cairo_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -428,15 +417,13 @@ endif # HAVE_CAIRO
 if HAVE_QT
 lib_LTLIBRARIES += libmathview_backend_qt.la
 
-libmathview_backend_qt_la_CPPFLAGS = -DGMV_BackEnd_DLL
-
 libmathview_backend_qt_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_backend_qt_la_LIBADD = \
   $(QT_LIBS) \
   $(NULL)
 
-libmathview_backend_qt_la_CPPFLAGS += \
+libmathview_backend_qt_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -474,8 +461,6 @@ endif # HAVE_QT
 
 noinst_LTLIBRARIES += libfrontend_common.la
 
-libfrontend_common_la_CPPFLAGS = -DGMV_MathView_DLL
-
 libfrontend_common_la_SOURCES = \
   frontend/common/Builder.cc \
   $(NULL)
@@ -500,7 +485,7 @@ mathview_HEADERS += \
   frontend/common/TemplateElementIterator.hh \
   $(NULL)
 
-libfrontend_common_la_CPPFLAGS += \
+libfrontend_common_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -511,8 +496,6 @@ libfrontend_common_la_CPPFLAGS += \
 
 if HAVE_CUSTOM_READER
 noinst_LTLIBRARIES += libfrontend_custom_reader.la
-
-libfrontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
 
 libfrontend_custom_reader_la_SOURCES = \
   frontend/custom_reader/customXmlReader.cc \
@@ -529,7 +512,7 @@ noinst_HEADERS += \
   frontend/custom_reader/custom_reader_Builder.hh \
   $(NULL)
 
-libfrontend_custom_reader_la_CPPFLAGS += \
+libfrontend_custom_reader_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -541,15 +524,13 @@ libfrontend_custom_reader_la_CPPFLAGS += \
 
 lib_LTLIBRARIES += libmathview_frontend_custom_reader.la
 
-libmathview_frontend_custom_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
 libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 
 libmathview_frontend_custom_reader_la_SOURCES = \
   view/custom_reader_MathView.cc \
   $(NULL)
 
-libmathview_frontend_custom_reader_la_CPPFLAGS += \
+libmathview_frontend_custom_reader_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/common \
@@ -573,7 +554,6 @@ if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_custom_reader.la
 
 libgtkmathview_custom_reader_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
   -I$(top_builddir)/auto \
   -I$(top_builddir)/src/widget \
   -I$(top_srcdir)/src/common \
@@ -606,8 +586,6 @@ endif # HAVE_CUSTOM_READER
 if HAVE_LIBXML2_READER
 noinst_LTLIBRARIES += libfrontend_libxml2_reader.la
 
-libfrontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
 libfrontend_libxml2_reader_la_LIBADD = \
   $(XML_LIBS) \
   $(NULL)
@@ -625,7 +603,7 @@ noinst_HEADERS += \
   frontend/libxml2_reader/libxml2_reader_Setup.hh \
   $(NULL)
 
-libfrontend_libxml2_reader_la_CPPFLAGS += \
+libfrontend_libxml2_reader_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \
@@ -638,15 +616,13 @@ libfrontend_libxml2_reader_la_CPPFLAGS += \
 
 lib_LTLIBRARIES += libmathview_frontend_libxml2_reader.la
 
-libmathview_frontend_libxml2_reader_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
 libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 
 libmathview_frontend_libxml2_reader_la_SOURCES = \
   view/libxml2_reader_MathView.cc \
   $(NULL)
 
-libmathview_frontend_libxml2_reader_la_CPPFLAGS += \
+libmathview_frontend_libxml2_reader_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/common \
@@ -672,7 +648,6 @@ if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
 
 libgtkmathview_libxml2_reader_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
   -I$(top_builddir)/auto \
   -I$(top_builddir)/src/widget \
   -I$(top_srcdir)/src/common \
@@ -704,8 +679,6 @@ endif # HAVE_LIBXML2_READER
 if HAVE_LIBXML2
 noinst_LTLIBRARIES += libfrontend_libxml2.la
 
-libfrontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
 libfrontend_libxml2_la_LIBADD = \
   $(XML_LIBS) \
   $(NULL)
@@ -724,7 +697,7 @@ mathview_HEADERS += \
   frontend/libxml2/libxml2_Model.hh \
   $(NULL)
 
-libfrontend_libxml2_la_CPPFLAGS += \
+libfrontend_libxml2_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/auto \
   -I$(top_srcdir)/src/common \
@@ -738,15 +711,13 @@ libfrontend_libxml2_la_CPPFLAGS += \
 
 lib_LTLIBRARIES += libmathview_frontend_libxml2.la
 
-libmathview_frontend_libxml2_la_CPPFLAGS = -DGMV_FrontEnd_DLL
-
 libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 
 libmathview_frontend_libxml2_la_SOURCES = \
   view/libxml2_MathView.cc \
   $(NULL)
 
-libmathview_frontend_libxml2_la_CPPFLAGS += \
+libmathview_frontend_libxml2_la_CPPFLAGS = \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/frontend/common \
@@ -772,7 +743,6 @@ if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_libxml2.la
 
 libgtkmathview_libxml2_la_CPPFLAGS = \
-  -DGMV_Widget_DLL \
   -I$(top_builddir)/auto \
   -I$(top_builddir)/src/widget \
   -I$(top_srcdir)/src/common \

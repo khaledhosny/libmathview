@@ -25,7 +25,7 @@
 
 #include "SimpleArea.hh"
 
-class GMV_MathView_EXPORT VerticalSpaceArea : public SimpleArea
+class VerticalSpaceArea : public SimpleArea
 {
 protected:
   VerticalSpaceArea(scaled h, scaled d) : height(h), depth(d) { }

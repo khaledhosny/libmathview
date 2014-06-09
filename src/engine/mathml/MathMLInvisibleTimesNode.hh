@@ -25,7 +25,7 @@
 
 #include "MathMLTextNode.hh"
 
-class GMV_MathView_EXPORT MathMLInvisibleTimesNode : public MathMLTextNode
+class MathMLInvisibleTimesNode : public MathMLTextNode
 {
 protected:
   MathMLInvisibleTimesNode(void) { }

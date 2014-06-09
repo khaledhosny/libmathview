@@ -30,7 +30,7 @@
 #include "MathVariant.hh"
 #include "FastScopedHashMap.hh"
 
-class GMV_MathView_EXPORT FormattingContext
+class FormattingContext
 {
 public:
   FormattingContext(const SmartPtr<class MathGraphicDevice>&);

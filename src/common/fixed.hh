@@ -25,12 +25,10 @@
 
 #include <limits>
 
-#include "gmv_defines.h"
-
 namespace math_view {
 
 template<typename T = int, int precision = std::numeric_limits<T>::digits / 2>
-GMV_MathView_EXPORT class fixed
+class fixed
 {
 public:
   fixed(void) : value(0) { }
@@ -90,14 +88,14 @@ private:
 };
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 abs(const fixed<T,p>& f)
 { 
   return fixed<T,p>((f.value > 0) ? f.value : -f.value, true);
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 trunc(const fixed<T,p>& f)
 {
   if (f.value > 0) return fixed<T,p>(f.value & ~(fixed<T,p>::one().value - 1), true);
@@ -105,7 +103,7 @@ trunc(const fixed<T,p>& f)
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 round(const fixed<T,p>& f)
 {
   if (f.value > 0) return trunc(f + fixed<T,p>::half());
@@ -113,7 +111,7 @@ round(const fixed<T,p>& f)
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 ceil(const fixed<T,p>& f)
 {
   if (f.value > 0) return round(f + fixed<T,p>::half());
@@ -121,7 +119,7 @@ ceil(const fixed<T,p>& f)
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 floor(const fixed<T,p>& f)
 {
   if (f.value > 0) return trunc(f);
@@ -129,22 +127,22 @@ floor(const fixed<T,p>& f)
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator+(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return fixed<T,p>(f1.value + f2.value, true); }
 
 template <typename T, int p> 
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator-(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return fixed<T,p>(f1.value - f2.value, true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator-(const fixed<T,p>& f)
 { return fixed<T,p>(-f.value, true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(const fixed<T,p>& f1, const fixed<T,p>& f2) 
 { 
   T a = f1.value >> (p / 2);
@@ -155,52 +153,52 @@ operator*(const fixed<T,p>& f1, const fixed<T,p>& f2)
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(const fixed<T,p>& f, int v) 
 { return fixed<T,p>(f.value * v, true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(const fixed<T,p>& f, float v)
 { return fixed<T,p>(static_cast<T>(f.value * v), true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(const fixed<T,p>& f, double v) 
 { return fixed<T,p>(static_cast<T>(f.value * v), true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator/(const fixed<T,p>& f, int v)
 { return fixed<T,p>(f.value / v, true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator/(const fixed<T,p>& f, float v)
 { return fixed<T,p>(static_cast<T>(f.value / v), true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator/(const fixed<T,p>& f, double v)
 { return fixed<T,p>(static_cast<T>(f.value / v), true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(int v, const fixed<T,p>& f) 
 { return fixed<T,p>(f.value * v, true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(float v, const fixed<T,p>& f)
 { return fixed<T,p>(static_cast<T>(f.value * v), true); }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>
+inline fixed<T,p>
 operator*(double v, const fixed<T,p>& f) 
 { return fixed<T,p>(static_cast<T>(f.value * v), true); }
 
 template<typename S, int p> 
-inline GMV_MathView_EXPORT fixed<S,p>&
+inline fixed<S,p>&
 operator+=(fixed<S,p>& f1, const fixed<S,p>& f2)
 {
   f1.value += f2.value;
@@ -208,7 +206,7 @@ operator+=(fixed<S,p>& f1, const fixed<S,p>& f2)
 }
 
 template<typename S, int p> 
-inline GMV_MathView_EXPORT fixed<S,p>&
+inline fixed<S,p>&
 operator-=(fixed<S,p>& f1, const fixed<S,p>& f2)
 {
   f1.value -= f2.value;
@@ -216,7 +214,7 @@ operator-=(fixed<S,p>& f1, const fixed<S,p>& f2)
 }
 
 template<typename S, int p>
-inline GMV_MathView_EXPORT fixed<S,p>&
+inline fixed<S,p>&
 operator*=(fixed<S,p>& f, int v)
 {
   f.value *= v;
@@ -224,7 +222,7 @@ operator*=(fixed<S,p>& f, int v)
 }
 
 template<typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>&
+inline fixed<T,p>&
 operator*=(fixed<T,p>& f, float v)
 {
   f.value = static_cast<T>(f.value * v);
@@ -232,7 +230,7 @@ operator*=(fixed<T,p>& f, float v)
 }
 
 template<typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>&
+inline fixed<T,p>&
 operator*=(fixed<T,p>& f, double v)
 {
   f.value = static_cast<T>(f.value * v);
@@ -240,7 +238,7 @@ operator*=(fixed<T,p>& f, double v)
 }
 
 template<typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>&
+inline fixed<T,p>&
 operator/=(const fixed<T,p>& f, int v)
 {
   f.value /= v;
@@ -248,7 +246,7 @@ operator/=(const fixed<T,p>& f, int v)
 }
 
 template<typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>&
+inline fixed<T,p>&
 operator/=(const fixed<T,p>& f, float v)
 {
   f.value = static_cast<T>(f.value / v);
@@ -256,7 +254,7 @@ operator/=(const fixed<T,p>& f, float v)
 }
 
 template<typename T, int p>
-inline GMV_MathView_EXPORT fixed<T,p>&
+inline fixed<T,p>&
 operator/=(const fixed<T,p>& f, double v)
 {
   f.value = static_cast<T>(f.value / v);
@@ -264,32 +262,32 @@ operator/=(const fixed<T,p>& f, double v)
 }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT bool
+inline bool
 operator==(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value == f2.value; }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT bool
+inline bool
 operator!=(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value != f2.value; }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT bool
+inline bool
 operator<(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value < f2.value; }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT bool
+inline bool
 operator>(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value > f2.value; }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT bool
+inline bool
 operator<=(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value <= f2.value; }
 
 template <typename T, int p>
-inline GMV_MathView_EXPORT bool
+inline bool
 operator>=(const fixed<T,p>& f1, const fixed<T,p>& f2)
 { return f1.value >= f2.value; }
 

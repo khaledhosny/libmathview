@@ -26,23 +26,21 @@
 #include <cstdint>
 #include <string>
 
-#include "gmv_defines.h"
-
 typedef char Char;
 typedef uint32_t Char32;
 
 typedef std::basic_string<Char> String;
 typedef std::basic_string<Char32> UCS4String;
 
-inline GMV_MathView_EXPORT bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
+inline bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
 
-GMV_MathView_EXPORT String trimSpacesLeft(const String&);
-GMV_MathView_EXPORT String trimSpacesRight(const String&);
-GMV_MathView_EXPORT String collapseSpaces(const String&);
-GMV_MathView_EXPORT String deleteSpaces(const String&);
-GMV_MathView_EXPORT String toLowerCase(const String&);
+String trimSpacesLeft(const String&);
+String trimSpacesRight(const String&);
+String collapseSpaces(const String&);
+String deleteSpaces(const String&);
+String toLowerCase(const String&);
 
-GMV_MathView_EXPORT String StringOfUCS4String(const UCS4String&);
-GMV_MathView_EXPORT UCS4String UCS4StringOfString(const String&);
+String StringOfUCS4String(const UCS4String&);
+UCS4String UCS4StringOfString(const String&);
 
 #endif // __String_hh__

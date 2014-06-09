@@ -23,10 +23,8 @@
 #ifndef __TemplateElementValidator_hh__
 #define __TemplateElementValidator_hh__
 
-#include "gmv_defines.h"
-
 template <class Model>
-class GMV_MathView_EXPORT TemplateElementValidator
+class TemplateElementValidator
 {
 public:
   TemplateElementValidator(const String& ns = "*", const String& n = "*")

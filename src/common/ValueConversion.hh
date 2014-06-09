@@ -31,26 +31,26 @@
 #include "RGBColor.hh"
 #include "String.hh"
 
-GMV_MathView_EXPORT bool IsEmpty(const SmartPtr<Value>&);
-GMV_MathView_EXPORT bool IsTokenId(const SmartPtr<Value>&);
-GMV_MathView_EXPORT bool IsSequence(const SmartPtr<Value>&);
-GMV_MathView_EXPORT bool IsLength(const SmartPtr<Value>&);
-GMV_MathView_EXPORT bool IsRGBColor(const SmartPtr<Value>&);
-GMV_MathView_EXPORT bool IsNumber(const SmartPtr<Value>&);
+bool IsEmpty(const SmartPtr<Value>&);
+bool IsTokenId(const SmartPtr<Value>&);
+bool IsSequence(const SmartPtr<Value>&);
+bool IsLength(const SmartPtr<Value>&);
+bool IsRGBColor(const SmartPtr<Value>&);
+bool IsNumber(const SmartPtr<Value>&);
 
-GMV_MathView_EXPORT bool ToBoolean(const SmartPtr<Value>&);
-GMV_MathView_EXPORT int ToInteger(const SmartPtr<Value>&);
-GMV_MathView_EXPORT float ToNumber(const SmartPtr<Value>&);
-GMV_MathView_EXPORT String ToString(const SmartPtr<Value>&);
-GMV_MathView_EXPORT SmartPtr<ValueSequence> ToSequence(const SmartPtr<Value>&);
-GMV_MathView_EXPORT RGBColor ToRGBColor(const SmartPtr<Value>&);
-GMV_MathView_EXPORT RGBColor ToRGB(const SmartPtr<Value>&);
-GMV_MathView_EXPORT TokenId ToTokenId(const SmartPtr<Value>&);
-GMV_MathView_EXPORT Length::Unit toUnitId(TokenId);
-GMV_MathView_EXPORT Length::Unit toUnitId(const SmartPtr<Value>&);
-GMV_MathView_EXPORT Length ToLength(const SmartPtr<Value>&);
-GMV_MathView_EXPORT RGBColor ToRGBColor(const SmartPtr<Value>&);
+bool ToBoolean(const SmartPtr<Value>&);
+int ToInteger(const SmartPtr<Value>&);
+float ToNumber(const SmartPtr<Value>&);
+String ToString(const SmartPtr<Value>&);
+SmartPtr<ValueSequence> ToSequence(const SmartPtr<Value>&);
+RGBColor ToRGBColor(const SmartPtr<Value>&);
+RGBColor ToRGB(const SmartPtr<Value>&);
+TokenId ToTokenId(const SmartPtr<Value>&);
+Length::Unit toUnitId(TokenId);
+Length::Unit toUnitId(const SmartPtr<Value>&);
+Length ToLength(const SmartPtr<Value>&);
+RGBColor ToRGBColor(const SmartPtr<Value>&);
 
-GMV_MathView_EXPORT SmartPtr<Value> GetComponent(const SmartPtr<Value>&, int = -1, int = -1);
+SmartPtr<Value> GetComponent(const SmartPtr<Value>&, int = -1, int = -1);
 
 #endif // __ValueConversion_hh__

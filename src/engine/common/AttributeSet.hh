@@ -27,7 +27,7 @@
 
 #include "Attribute.hh"
 
-class GMV_MathView_EXPORT AttributeSet : public Object
+class AttributeSet : public Object
 {
 protected:
   AttributeSet(void);

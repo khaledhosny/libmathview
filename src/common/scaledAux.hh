@@ -28,11 +28,11 @@
 
 #include "scaled.hh"
 
-inline GMV_MathView_EXPORT std::ostream&
+inline std::ostream&
 operator<<(std::ostream& os, const scaled& v)
 { return os << v.getValue(); }
 
-inline GMV_MathView_EXPORT std::string
+inline std::string
 toString(const scaled& v)
 {
   std::ostringstream os;

@@ -27,6 +27,6 @@
 
 #include "AreaId.hh"
 
-GMV_MathView_EXPORT std::ostream& operator<<(std::ostream&, const AreaId&);
+std::ostream& operator<<(std::ostream&, const AreaId&);
 
 #endif // __AreaIdAux_hh__

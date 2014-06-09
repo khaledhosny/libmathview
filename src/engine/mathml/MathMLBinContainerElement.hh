@@ -27,7 +27,7 @@
 #include "BinContainerTemplate.hh"
 
 // base class for every non-empty MathML container element
-class GMV_MathView_EXPORT MathMLBinContainerElement : public MathMLContainerElement
+class MathMLBinContainerElement : public MathMLContainerElement
 {
 protected:
   MathMLBinContainerElement(const SmartPtr<class MathMLNamespaceContext>& view);

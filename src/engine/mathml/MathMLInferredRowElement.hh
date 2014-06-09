@@ -25,7 +25,7 @@
 
 #include "MathMLRowElement.hh"
 
-class GMV_MathView_EXPORT MathMLInferredRowElement : public MathMLRowElement
+class MathMLInferredRowElement : public MathMLRowElement
 {
 protected:
   MathMLInferredRowElement(const SmartPtr<class MathMLNamespaceContext>&);

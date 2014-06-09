@@ -28,7 +28,7 @@
 #include "String.hh"
 #include "MathFont.hh"
 
-class GMV_MathView_EXPORT MathShaper : public Shaper
+class MathShaper : public Shaper
 {
 protected:
   MathShaper(const SmartPtr<MathFont>& font);

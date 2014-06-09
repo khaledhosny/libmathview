@@ -25,7 +25,7 @@
 
 #include "NamespaceContext.hh"
 
-class GMV_MathView_EXPORT MathMLNamespaceContext : public NamespaceContext
+class MathMLNamespaceContext : public NamespaceContext
 {
 protected:
   MathMLNamespaceContext(const SmartPtr<class View>&,

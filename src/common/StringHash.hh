@@ -27,12 +27,12 @@
 
 #include "String.hh"
 
-struct GMV_MathView_EXPORT StringHash : public std::unary_function<String, size_t>
+struct StringHash : public std::unary_function<String, size_t>
 {
   size_t operator()(const String&) const;
 };
 
-struct GMV_MathView_EXPORT StringEq : public std::binary_function<String, String, bool>
+struct StringEq : public std::binary_function<String, String, bool>
 {
   bool operator()(const String& s1, const String& s2) const
   { return s1 == s2; }

@@ -23,9 +23,7 @@
 #ifndef __RenderingContext_hh__
 #define __RenderingContext_hh__
 
-#include "gmv_defines.h"
-
-class GMV_MathView_EXPORT RenderingContext
+class RenderingContext
 {
 public:
   RenderingContext(void) { }
