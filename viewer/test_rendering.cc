@@ -45,32 +45,34 @@ typedef libxml2_MathView MathView;
 SmartPtr<AbstractLogger> logger;
 SmartPtr<MathView> view;
 GtkWidget* window = 0;
-GdkPixmap* pixmap = 0;
-cairo_t* cr = 0;
+cairo_surface_t* surface = 0;
 
 extern "C" gboolean
 expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
 {
-  printf("expose %p\n", pixmap);
-
   const gint width = widget->allocation.width;
   const gint height = widget->allocation.height;
-  if (!pixmap)
+  if (!surface)
     {
       const BoundingBox box = view->getBoundingBox();
-      pixmap = gdk_pixmap_new(widget->window, width, height, -1);
-      // needed to cleanup the pixmap
-      gdk_draw_rectangle(pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
+      surface = gdk_window_create_similar_surface(widget->window, CAIRO_CONTENT_COLOR, width, height);
+      cairo_t *cr2 = cairo_create(surface);
+      // needed to cleanup the surface
+      cairo_set_source_rgb(cr2, 1, 1, 1);
+      cairo_rectangle(cr2, 0, 0, width, height);
+      cairo_fill(cr2);
       Cairo_RenderingContext* rc = new Cairo_RenderingContext();
-      cr = gdk_cairo_create(pixmap);
-      rc->setCairo(cr);
+      rc->setCairo(cr2);
       view->render(*rc, scaled::zero(), -box.height);
     }
 
-  gdk_draw_pixmap(widget->window,
-		  widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		  pixmap,
-		  0, 0, 0, 0, width, height);
+  cairo_t *cr = gdk_cairo_create(widget->window);
+
+  cairo_set_source_surface(cr, surface, 0, 0);
+  cairo_rectangle(cr, 0, 0, width, height);
+  cairo_fill(cr);
+
+  cairo_destroy(cr);
 
   return TRUE;
 }

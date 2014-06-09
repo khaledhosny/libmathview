@@ -110,8 +110,7 @@ struct _GtkMathView
   GtkWidget      parent;
 
   GtkWidget* 	 area;
-  GdkPixmap*     pixmap;
-  cairo_t*       context;
+  cairo_surface_t* surface;
 
   guint 	 hsignal; // what is this for?
   guint 	 vsignal; // what is this for?
@@ -270,18 +269,19 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
 
   if (!GTK_WIDGET_MAPPED(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
-  if (math_view->pixmap != NULL)
-    gdk_draw_pixmap(widget->window,
-		    widget->style->fg_gc[GTK_WIDGET_STATE(widget)],
-		    math_view->pixmap,
-		    x0, y0, x0, y0, width, height);
-  else
-    gdk_draw_rectangle(widget->window,
-		       widget->style->white_gc,
-		       TRUE,
-		       x0, y0, width, height);
+  cairo_t *cr = gdk_cairo_create(widget->window);
 
-  g_signal_emit(GTK_OBJECT(math_view), decorate_over_signal, 0, widget->window);
+  if (math_view->surface != NULL)
+    cairo_set_source_surface(cr, math_view->surface, 0, 0);
+  else
+    cairo_set_source_rgb(cr, 1, 1, 1);
+
+  cairo_rectangle(cr, x0, y0, width, height);
+  cairo_fill(cr);
+
+  g_signal_emit(GTK_OBJECT(math_view), decorate_over_signal, 0, cr);
+
+  cairo_destroy(cr);
 }
 
 static void
@@ -304,11 +304,10 @@ gtk_math_view_paint(GtkMathView* math_view)
   Cairo_RenderingContext* rc = math_view->renderingContext;
   g_return_if_fail(rc != 0);
 
-  if (math_view->pixmap == NULL)
+  if (math_view->surface == NULL)
     {
-      math_view->pixmap = gdk_pixmap_new(widget->window, width, height, -1);
-      math_view->context = gdk_cairo_create(math_view->pixmap);
-      rc->setCairo(math_view->context);
+      math_view->surface = gdk_window_create_similar_surface(widget->window, CAIRO_CONTENT_COLOR, width, height);
+      rc->setCairo(cairo_create(math_view->surface));
     }
 
   rc->setStyle(Cairo_RenderingContext::SELECTED_STYLE);
@@ -326,17 +325,21 @@ gtk_math_view_paint(GtkMathView* math_view)
   rc->setForegroundColor(RGBColorOfGdkColor(widget->style->fg[GTK_STATE_NORMAL]));
   rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->bg[GTK_STATE_NORMAL]));
 
-  gdk_draw_rectangle(math_view->pixmap, widget->style->white_gc, TRUE, 0, 0, width, height);
+  cairo_t *cr = cairo_create(math_view->surface);
+  cairo_set_source_rgb(cr, 1, 1, 1);
+  cairo_paint(cr);
 
   // WARNING: setAvailableWidth must be invoked BEFORE any coordinate conversion
   math_view->view->setAvailableWidth(Cairo_RenderingContext::fromCairoX(width));
   gint x = 0;
   gint y = 0;
   to_view_coords(math_view, &x, &y);
-  g_signal_emit(GTK_OBJECT(math_view), decorate_under_signal, 0, math_view->pixmap);
+  g_signal_emit(GTK_OBJECT(math_view), decorate_under_signal, 0, cr);
   math_view->view->render(*rc,
 			  Cairo_RenderingContext::fromCairoX(-x),
 			  Cairo_RenderingContext::fromCairoY(-y));
+
+  cairo_destroy(cr);
 
   gtk_math_view_update(math_view, 0, 0, width, height);
 }
@@ -596,7 +599,7 @@ gtk_math_view_init(GtkMathView* math_view)
 {
   g_return_if_fail(math_view != NULL);
 
-  math_view->pixmap          = NULL;
+  math_view->surface         = NULL;
   math_view->view            = 0;
   math_view->renderingContext = 0;
   math_view->backend         = 0;
@@ -689,16 +692,10 @@ gtk_math_view_destroy(GtkObject* object)
       math_view->vadjustment = NULL;
     }
 
-  if (math_view->pixmap != NULL)
+  if (math_view->surface != NULL)
     {
-      g_object_unref(G_OBJECT(math_view->pixmap));
-      math_view->pixmap = NULL;
-    }
-
-  if (math_view->context != NULL)
-    {
-      cairo_destroy(math_view->context);
-      math_view->context = NULL;
+      cairo_surface_destroy(math_view->surface);
+      math_view->surface = NULL;
     }
 
   gtk_math_view_release_document_resources(math_view);
@@ -799,16 +796,10 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
   
-  if (math_view->pixmap != NULL)
+  if (math_view->surface != NULL)
     {
-      g_object_unref(math_view->pixmap);
-      math_view->pixmap = NULL;
-    }
-
-  if (math_view->context != NULL)
-    {
-      cairo_destroy(math_view->context);
-      math_view->context = NULL;
+      cairo_surface_destroy(math_view->surface);
+      math_view->surface = NULL;
     }
 
   widget->allocation = *allocation;
@@ -971,7 +962,7 @@ gtk_math_view_expose_event(GtkWidget* widget,
 
   // It may be that the first expose event the double-buffer has not
   // been allocated yet. In this case the paint method should be used
-  if (math_view->pixmap == NULL)
+  if (math_view->surface == NULL)
     gtk_math_view_paint(math_view);
   else
     GTKMATHVIEW_METHOD_NAME(update)(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
@@ -1175,12 +1166,12 @@ GTKMATHVIEW_METHOD_NAME(unload)(GtkMathView* math_view)
   gtk_math_view_paint(math_view);
 }
 
-extern "C" GdkPixmap*
+extern "C" cairo_surface_t*
 GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView* math_view)
 {
   g_return_val_if_fail(math_view != NULL, NULL);
 
-  return math_view->pixmap;
+  return math_view->surface;
 }
 
 extern "C" void

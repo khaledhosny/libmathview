@@ -32,7 +32,10 @@ Cairo_RenderingContext::Cairo_RenderingContext(void)
 { }
 
 Cairo_RenderingContext::~Cairo_RenderingContext()
-{ }
+{
+  if (cairo_context)
+    cairo_destroy(cairo_context);
+}
 
 void
 Cairo_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const

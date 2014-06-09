@@ -36,16 +36,13 @@ typedef struct _GtkMathViewDefaultCursorDecorator {
 // make the caret stem width relative to font size not caret height, as the
 // later is variable in our case and gives us variable and often ugly carets
 static void
-draw_insertion_cursor(GtkMathView* math_view, GdkDrawable *drawable,
+draw_insertion_cursor(GtkMathView* math_view, cairo_t* cr,
 		      double x, double y, double height,
 		      GtkTextDirection direction)
 {
-  cairo_t* cr;
   GdkColor *cursor_color;
   double stem_width, offset, cursor_aspect_ratio;
   int font_size;
-
-  cr = gdk_cairo_create(drawable);
 
   gtk_widget_style_get(GTK_WIDGET(math_view),
 	               "cursor-aspect-ratio",
@@ -69,27 +66,28 @@ draw_insertion_cursor(GtkMathView* math_view, GdkDrawable *drawable,
 
   cairo_rectangle(cr, x - offset, y, stem_width, height);
   cairo_fill(cr);
-  cairo_destroy(cr);
 }
 
 extern "C" void
-default_cursor_handler(GtkMathView* math_view, GdkDrawable* drawable,
+default_cursor_handler(GtkMathView* math_view, cairo_t* cr,
 		       GtkMathViewDefaultCursorDecorator* cursor)
 {
   g_return_if_fail(math_view != NULL);
-  g_return_if_fail(drawable != NULL);
+  g_return_if_fail(cr != NULL);
   g_return_if_fail(cursor != NULL);
 
   if (cursor->enabled && cursor->element != NULL)
     {
+      cairo_reference(cr);
       GtkMathViewPoint focus_orig;
       GtkMathViewBoundingBox focus_box;
       if (!GTKMATHVIEW_METHOD_NAME(get_element_extents)(math_view, cursor->element, &focus_orig, &focus_box))
 	return;
 
+      GdkWindow* window = gtk_widget_get_window(GTK_WIDGET(math_view));
       if (cursor->draw_focus)
 	gtk_paint_focus(GTK_WIDGET(math_view)->style,
-			drawable,
+			window,
 			GTK_STATE_NORMAL,
 			NULL,
 			GTK_WIDGET(math_view),
@@ -118,10 +116,11 @@ default_cursor_handler(GtkMathView* math_view, GdkDrawable* drawable,
 	  double y = focus_orig.y - focus_box.height;
 	  double height = focus_box.height + focus_box.depth;
 
-	  draw_insertion_cursor(math_view, drawable,
+	  draw_insertion_cursor(math_view, cr,
 				x, y, height,
 				GTK_TEXT_DIR_LTR);
 
+	  cairo_destroy(cr);
 	}
     }
 }

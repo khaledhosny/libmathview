@@ -75,7 +75,7 @@ extern "C" {
 
   typedef void (*GtkMathViewModelSignal)(GtkMathView*, const GtkMathViewModelEvent*);
   typedef void (*GtkMathViewSelectAbortSignal)(GtkMathView*);
-  typedef void (*GtkMathViewDecorateSignal)(GtkMathView*, GdkDrawable*, gpointer);
+  typedef void (*GtkMathViewDecorateSignal)(GtkMathView*, cairo_t*, gpointer);
 
   GtkType    GTKMATHVIEW_METHOD_NAME(get_type)(void);
   GtkWidget* GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment*, GtkAdjustment*);
@@ -119,7 +119,7 @@ extern "C" {
   void       GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView*, gint, gint);
   void       GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView*, GtkAdjustment*, GtkAdjustment*);
   void       GTKMATHVIEW_METHOD_NAME(get_adjustments)(GtkMathView*, GtkAdjustment**, GtkAdjustment**);
-  GdkPixmap* GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView*);
+  cairo_surface_t* GTKMATHVIEW_METHOD_NAME(get_buffer)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_font_size)(GtkMathView*, guint);
   guint      GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint);

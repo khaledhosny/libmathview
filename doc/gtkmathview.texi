@@ -1374,8 +1374,8 @@ return a pointer to the horizontal adjustment of the @var{widget}.
 return a pointer to the vertical adjustment of the @var{widget}.
 @end deftypefn
 
-@deftypefn {Method} GdkPixmap* gtk_math_view_get_buffer (GtkMathView* @var{widget})
-return a pointer to the internal @code{GdkPixmap} used by the
+@deftypefn {Method} cairo_surface_t* gtk_math_view_get_buffer (GtkMathView* @var{widget})
+return a pointer to the internal Cairo surface used by the
 @var{widget} as the backbuffer.
 @end deftypefn
 
