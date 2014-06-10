@@ -465,9 +465,6 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 {
   g_return_if_fail(math_view_class != NULL);
 
-#if 0
-  GObjectClass* gobject_class = G_OBJECT_CLASS(math_view_class);
-#endif
   GtkObjectClass* object_class = (GtkObjectClass*) math_view_class;
   GtkWidgetClass* widget_class = (GtkWidgetClass*) math_view_class;
 	
@@ -480,11 +477,6 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
   math_view_class->set_scroll_adjustments = gtk_math_view_set_adjustments;
 
   parent_class = (GtkWidgetClass*) g_type_class_ref(gtk_widget_get_type());
-
-#if 0
-  gobject_class->set_property = gtk_math_view_set_property;
-  gobject_class->get_property = gtk_math_view_get_property;
-#endif
 
   object_class->destroy = gtk_math_view_destroy;
 
@@ -578,28 +570,6 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 		 NULL, NULL, 
 		 g_cclosure_marshal_VOID__POINTER,
 		 G_TYPE_NONE, 1, G_TYPE_POINTER);
-
-#if 0	
-  g_object_class_install_property(gobject_class,
-				  PROP_DEFAULT_FONT_SIZE,
-				  g_param_spec_int("font_size",
-						   "Font Size",
-						   "The default font size",
-						   -1,
-						   100,
-						   -1,
-						   G_PARAM_READWRITE));
-
-  g_object_class_install_property(gobject_class,
-				  PROP_LOG_VERBOSITY,
-				  g_param_spec_int("log_verbosity",
-						   "Logger verbosity",
-						   "Verbosity level of the logger",
-						   LOG_ERROR,
-						   LOG_DEBUG,
-						   LOG_ERROR,
-						   G_PARAM_READWRITE));
-#endif
 }
 
 static void
