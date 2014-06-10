@@ -229,14 +229,6 @@ GUI_run()
 }
 
 static void
-store_filename(GtkFileSelection* selector, GtkWidget* user_data)
-{
-  const gchar* selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION(user_data));
-  if (selected_filename != NULL)
-    GUI_load_document(selected_filename);
-}
-
-static void
 on_file_close(GtkWidget* widget, gpointer data)
 {
   GUI_unload_document();
@@ -253,32 +245,21 @@ on_file_reopen(GtkWidget* widget, gpointer data)
 static void
 on_file_open(GtkWidget* widget, gpointer data)
 {
-  GtkWidget* fs = gtk_file_selection_new("Open File");
+  GtkWidget* dialog;
+  dialog = gtk_file_chooser_dialog_new("Open File",
+                                       window,
+                                       GTK_FILE_CHOOSER_ACTION_OPEN,
+                                       "_Cancel", GTK_RESPONSE_CANCEL,
+                                       "_Open", GTK_RESPONSE_ACCEPT,
+                                       NULL);
 
-  g_signal_connect (GTK_FILE_SELECTION(fs)->ok_button,
-		      "clicked", 
-		      GTK_SIGNAL_FUNC(store_filename), (gpointer) fs);
-                             
-  /* Ensure that the dialog box is destroyed when the user clicks a button. */
-     
-  g_signal_connect_swapped(GTK_FILE_SELECTION(fs)->ok_button,
-			     "clicked", 
-			     G_CALLBACK(gtk_widget_destroy),
-			     (gpointer) fs);
-
-  /* gtk_signal_connect_object(GTK_FILE_SELECTION(fs)->cancel_button,
-			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
-			     (gpointer) fs);
-			     */
-
-  g_signal_connect_swapped(GTK_FILE_SELECTION(fs)->cancel_button,
-		  "clicked",
-		  G_CALLBACK(gtk_widget_destroy),
-		  (gpointer) fs);
-     
-  /* Display that dialog */
-     
-  gtk_widget_show (fs);
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+    char* filename;
+    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    GUI_load_document(filename);
+    g_free(filename);
+  }
+  gtk_widget_destroy(dialog);
 }
 
 static void
