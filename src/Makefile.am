@@ -117,6 +117,8 @@ libengine_common_la_SOURCES = \
   $(NULL)
 
 libengine_common_la_CPPFLAGS = \
+  -DPKGDATADIR=\""$(pkgdatadir)"\" \
+  -DPKGSYSCONFDIR=\""$(sysconfdir)/@PACKAGE@"\" \
   -I$(top_builddir)/auto \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/engine/common \

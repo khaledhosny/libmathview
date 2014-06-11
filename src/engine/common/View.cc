@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include "defs.h"
-#include "config.dirs"
 
 #include "Clock.hh"
 #include "View.hh"

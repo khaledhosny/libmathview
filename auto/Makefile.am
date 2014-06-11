@@ -4,7 +4,6 @@ NULL =
 AUTOFILES = \
   token.dec \
   token.def \
-  config.dirs \
   $(NULL)
 
 EXTRA_DIST = \
@@ -17,7 +16,7 @@ EXTRA_DIST = \
   entitiesTable.inc \
   $(NULL)
 
-DISTCLEANFILES = config.dirs
+DISTCLEANFILES = $(NULL)
 MAINTAINERCLEANFILES = token.dec token.def
 
 mathviewdir = $(pkgincludedir)/MathView
@@ -32,19 +31,5 @@ token.dec: token-list.xml list-to-dec.xsl
 
 token.def: token-list.xml list-to-def.xsl
 	$(AM_V_GEN)$(XSLTPROC) $(srcdir)/list-to-def.xsl $< >$@
-
-.PHONY: config.dirs
-config.dirs:
-	$(AM_V_GEN)( \
-	echo "#define PKGDATADIR \"$(pkgdatadir)\"" >$@.maybe; \
-	echo "#define PKGSYSCONFDIR \"$(sysconfdir)/@PACKAGE@\"" >>$@.maybe; \
-	if test ! \( -e $@ \); then \
-	  mv $@.maybe $@; \
-	elif ! diff $@.maybe $@ >/dev/null; then \
-	  mv $@.maybe $@; \
-	else \
-	  rm $@.maybe; \
-	fi \
-	)
 
 -include $(top_srcdir)/git.mk
