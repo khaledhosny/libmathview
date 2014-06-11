@@ -157,11 +157,11 @@ AC_ARG_ENABLE(
 )
 have_gtk=false
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
-  PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.2.1], have_gtk=true, :)
+  PKG_CHECK_MODULES(GTK, [gtk+-3.0], have_gtk=true, :)
   GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 fi
 if test "$enable_gtk" = "yes" -a "$have_gtk" != "true"; then
-  AC_MSG_ERROR([GTK+ support requested but gtk+-2.0 could not be found])
+  AC_MSG_ERROR([GTK+ support requested but gtk+-3.0 could not be found])
 fi
 if $have_gtk; then
   AC_DEFINE(HAVE_GTK, 1, [Define to 1 if GTK+ is installed])

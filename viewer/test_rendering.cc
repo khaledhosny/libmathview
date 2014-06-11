@@ -48,7 +48,7 @@ GtkWidget* window = 0;
 cairo_surface_t* surface = 0;
 
 extern "C" gboolean
-expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
+draw(GtkWidget* widget, cairo_t *cr)
 {
   GdkWindow* window = gtk_widget_get_window(widget);
   GtkAllocation allocation;
@@ -70,13 +70,9 @@ expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
       view->render(*rc, scaled::zero(), -box.height);
     }
 
-  cairo_t *cr = gdk_cairo_create(window);
-
   cairo_set_source_surface(cr, surface, 0, 0);
   cairo_rectangle(cr, 0, 0, width, height);
   cairo_fill(cr);
-
-  cairo_destroy(cr);
 
   return TRUE;
 }
@@ -88,8 +84,8 @@ int main(int argc, char *argv[]) {
   gtk_widget_show  (window);
 
   g_signal_connect(window,
-		   "expose_event",
-		   G_CALLBACK(expose), NULL);
+		   "draw",
+		   G_CALLBACK(draw), NULL);
 
   g_signal_connect(window,
 		   "delete_event", 

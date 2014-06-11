@@ -88,9 +88,8 @@ default_cursor_handler(GtkMathView* math_view, cairo_t* cr,
       GdkWindow* window = gtk_widget_get_window(GTK_WIDGET(math_view));
       if (cursor->draw_focus)
 	gtk_paint_focus(style,
-			window,
+			cr,
 			GTK_STATE_NORMAL,
-			NULL,
 			GTK_WIDGET(math_view),
 			"?",
 			focus_orig.x,

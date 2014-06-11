@@ -111,34 +111,6 @@ load_error_msg(const char* name)
 }
 #endif
 
-/* FIXME: remove when porting to GTK 3 */
-static guint
-gtk_builder_add_from_resource (GtkBuilder   *builder,
-                               const gchar  *resource_path,
-                               GError      **error)
-{
-  GError *tmp_error;
-  GBytes *data;
-
-  tmp_error = NULL;
-
-  data = g_resources_lookup_data (resource_path, 0, &tmp_error);
-  if (data == NULL)
-    {
-      g_propagate_error (error, tmp_error);
-      return 0;
-    }
-
-  gtk_builder_add_from_string (builder, g_bytes_get_data (data, NULL), g_bytes_get_size (data), &tmp_error);
-  if (tmp_error != NULL)
-    {
-      g_propagate_error (error, tmp_error);
-      return 0;
-    }
-
-  return 1;
-}
-
 void
 GUI_init(int* argc, char*** argv, char* title, gint logLevel)
 {
@@ -389,7 +361,7 @@ on_set_font_size(GtkWidget* widget, gpointer data)
 {
   GtkWidget* dialog;
   GtkWidget* spin;
-  GtkObject* adj;
+  GtkAdjustment* adj;
 
   dialog = gtk_dialog_new_with_buttons("Set default font size",
                                        window,

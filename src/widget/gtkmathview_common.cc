@@ -85,10 +85,6 @@ struct _GtkMathViewClass
 {
   GtkWidgetClass parent_class;
 
-  void (*set_scroll_adjustments) (GtkMathView *math_view,
-				  GtkAdjustment *hadjustment,
-				  GtkAdjustment *vadjustment);
-
   GtkMathViewModelSignal click;
   GtkMathViewModelSignal select_begin;
   GtkMathViewModelSignal select_over;
@@ -151,20 +147,18 @@ static void gtk_math_view_set_property(GObject*, guint, const GValue*, GParamSpe
 static void gtk_math_view_get_property(GObject*, guint, GValue*, GParamSpec*);
 #endif
 
-/* GtkObject functions */
-
-static void gtk_math_view_destroy(GtkObject*);
-
 /* GtkWidget functions */
 
-static gboolean gtk_math_view_expose_event(GtkWidget*, GdkEventExpose*);
+static gboolean gtk_math_view_draw(GtkWidget*, cairo_t*);
 static gboolean gtk_math_view_button_press_event(GtkWidget*, GdkEventButton*);
 static gboolean gtk_math_view_button_release_event(GtkWidget*, GdkEventButton*);
 static gboolean gtk_math_view_motion_notify_event(GtkWidget*, GdkEventMotion*);
 static gboolean gtk_math_view_focus_in_event(GtkWidget*, GdkEventFocus*);
 static gboolean gtk_math_view_focus_out_event(GtkWidget*, GdkEventFocus*);
 static void     gtk_math_view_realize(GtkWidget*);
-static void     gtk_math_view_size_request(GtkWidget*, GtkRequisition*);
+static void     gtk_math_view_destroy(GtkWidget*);
+static void     gtk_math_view_get_preferred_height(GtkWidget*, gint*, gint*);
+static void     gtk_math_view_get_preferred_width(GtkWidget*, gint*, gint*);
 static void     gtk_math_view_size_allocate(GtkWidget*, GtkAllocation*);
 
 /* GtkMathView Signals */
@@ -342,9 +336,9 @@ gtk_math_view_paint(GtkMathView* math_view)
 			  Cairo_RenderingContext::fromCairoX(-x),
 			  Cairo_RenderingContext::fromCairoY(-y));
 
-  cairo_destroy(cr);
-
   gtk_math_view_update(math_view, 0, 0, width, height);
+
+  cairo_destroy(cr);
 }
 
 static void
@@ -465,8 +459,8 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
 {
   g_return_if_fail(math_view_class != NULL);
 
-  GtkObjectClass* object_class = (GtkObjectClass*) math_view_class;
-  GtkWidgetClass* widget_class = (GtkWidgetClass*) math_view_class;
+  GObjectClass* object_class = G_OBJECT_CLASS(math_view_class);
+  GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(math_view_class);
 	
   math_view_class->click = gtk_math_view_click;
   math_view_class->select_begin = gtk_math_view_select_begin;
@@ -474,15 +468,14 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
   math_view_class->select_end = gtk_math_view_select_end;
   math_view_class->select_abort = gtk_math_view_select_abort;
   math_view_class->element_over = gtk_math_view_element_over;
-  math_view_class->set_scroll_adjustments = gtk_math_view_set_adjustments;
 
-  parent_class = (GtkWidgetClass*) g_type_class_ref(gtk_widget_get_type());
-
-  object_class->destroy = gtk_math_view_destroy;
+  parent_class = GTK_WIDGET_CLASS(g_type_class_ref(gtk_widget_get_type()));
 
   widget_class->realize = gtk_math_view_realize;
-  widget_class->expose_event = gtk_math_view_expose_event;
-  widget_class->size_request = gtk_math_view_size_request;
+  widget_class->destroy = gtk_math_view_destroy;
+  widget_class->draw = gtk_math_view_draw;
+  widget_class->get_preferred_width = gtk_math_view_get_preferred_width;
+  widget_class->get_preferred_height = gtk_math_view_get_preferred_height;
   widget_class->size_allocate = gtk_math_view_size_allocate;
   widget_class->button_press_event = gtk_math_view_button_press_event;
   widget_class->button_release_event = gtk_math_view_button_release_event;
@@ -490,15 +483,6 @@ gtk_math_view_class_init(GtkMathViewClass* math_view_class)
   widget_class->focus_in_event = gtk_math_view_focus_in_event;
   widget_class->focus_out_event = gtk_math_view_focus_out_event;
 
-  widget_class->set_scroll_adjustments_signal = 
-    g_signal_new("set_scroll_adjustments",
-		 G_OBJECT_CLASS_TYPE(object_class),
-		 G_SIGNAL_RUN_LAST,
-		 G_STRUCT_OFFSET(GtkMathViewClass,set_scroll_adjustments),
-		 NULL, NULL,
-		 gtkmathview_marshal_VOID__POINTER_POINTER,
-		 G_TYPE_NONE , 2, GTK_TYPE_ADJUSTMENT, GTK_TYPE_ADJUSTMENT); 
-	
   click_signal = 
     g_signal_new("click",
 		 G_OBJECT_CLASS_TYPE(object_class),
@@ -636,14 +620,14 @@ GTKMATHVIEW_METHOD_NAME(new)(GtkAdjustment* hadj, GtkAdjustment* vadj)
 }
 
 static void
-gtk_math_view_destroy(GtkObject* object)
+gtk_math_view_destroy(GtkWidget* widget)
 {
   GtkMathView* math_view;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(object));
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(widget));
 
-  math_view = GTK_MATH_VIEW(object);
+  math_view = GTK_MATH_VIEW(widget);
   g_assert(math_view != NULL);
 
   if (math_view->view)
@@ -685,8 +669,8 @@ gtk_math_view_destroy(GtkObject* object)
 
   gtk_math_view_release_document_resources(math_view);
 
-  if (GTK_OBJECT_CLASS(parent_class)->destroy != NULL)
-    (*GTK_OBJECT_CLASS(parent_class)->destroy)(object);
+  if (GTK_WIDGET_CLASS(parent_class)->destroy != NULL)
+    GTK_WIDGET_CLASS(parent_class)->destroy(widget);
 }
 
 extern "C" gboolean
@@ -752,9 +736,8 @@ gtk_math_view_realize(GtkWidget* widget)
     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK |
     GDK_POINTER_MOTION_HINT_MASK;
   attributes.visual = gtk_widget_get_visual (widget);
-  attributes.colormap = gtk_widget_get_colormap (widget);
 
-  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
+  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
   parent = gtk_widget_get_parent(widget);
   window = gdk_window_new(gtk_widget_get_window(parent), &attributes, attributes_mask);
   gdk_window_set_user_data(window, widget);
@@ -767,10 +750,9 @@ gtk_math_view_realize(GtkWidget* widget)
 }
 
 static void
-gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
+gtk_math_view_get_preferred_width(GtkWidget* widget, gint* minimal, gint* natural)
 {
   g_return_if_fail(widget != NULL);
-  g_return_if_fail(requisition != NULL);
   g_return_if_fail(GTK_IS_MATH_VIEW(widget));
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
@@ -779,8 +761,23 @@ gtk_math_view_size_request(GtkWidget* widget, GtkRequisition* requisition)
 
   if (BoundingBox box = math_view->view->getBoundingBox())
     {
-      requisition->width = Cairo_RenderingContext::toCairoPixels(box.horizontalExtent());
-      requisition->height = Cairo_RenderingContext::toCairoPixels(box.verticalExtent());
+      *minimal = *natural = Cairo_RenderingContext::toCairoPixels(box.horizontalExtent());
+    }
+}
+
+static void
+gtk_math_view_get_preferred_height(GtkWidget* widget, gint* minimal, gint* natural)
+{
+  g_return_if_fail(widget != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(widget));
+
+  GtkMathView* math_view = GTK_MATH_VIEW(widget);
+  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(math_view->view != 0);
+
+  if (BoundingBox box = math_view->view->getBoundingBox())
+    {
+      *minimal = *natural = Cairo_RenderingContext::toCairoPixels(box.verticalExtent());
     }
 }
 
@@ -950,21 +947,20 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
 }
 
 static gint
-gtk_math_view_expose_event(GtkWidget* widget,
-			   GdkEventExpose* event)
+gtk_math_view_draw(GtkWidget* widget,
+		   cairo_t *cr)
 {
   g_return_val_if_fail(widget != NULL, FALSE);
-  g_return_val_if_fail(event != NULL, FALSE);
   g_return_val_if_fail(GTK_IS_MATH_VIEW(widget), FALSE);
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
 
   // It may be that the first expose event the double-buffer has not
-  // been allocated yet. In this case the paint method should be used
+  // been allocated yet. In this case the paint method should be used first.
   if (math_view->surface == NULL)
     gtk_math_view_paint(math_view);
   else
-    GTKMATHVIEW_METHOD_NAME(update)(math_view, event->area.x, event->area.y, event->area.width, event->area.height);
+    GTKMATHVIEW_METHOD_NAME(update)(math_view, NULL);
 
   return FALSE;
 }
