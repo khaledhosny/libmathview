@@ -915,7 +915,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
   // using GDK hints is convenient since this handler is rather heavy
   // this way we notify GDK when we are ready to process another event
   if (event->is_hint || (event->window != window))
-    gdk_window_get_pointer(window, &x, &y, &mods);
+    gdk_window_get_device_position(window, event->device, &x, &y, &mods);
 
   GtkMathViewModelId elem = NULL;
 
