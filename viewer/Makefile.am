@@ -2,9 +2,26 @@
 NULL =
 
 bin_PROGRAMS = $(NULL)
+EXTRA_DIST = $(NULL)
+BUILT_SOURCES = $(NULL)
+
 if HAVE_GTK
 if HAVE_LIBXML2
 bin_PROGRAMS += mml-view-gtk
+EXTRA_DIST += \
+  mml-view.gresource.xml \
+  mml-view-gtk.ui \
+  $(NULL)
+
+mathview-resources.c: mathview.gresource.xml mml-view-gtk.ui
+	$(AM_V_GEN)glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name mathview $(srcdir)/mathview.gresource.xml
+
+mathview-resources.h: mathview.gresource.xml mml-view-gtk.ui
+	$(AM_V_GEN)glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name mathview $(srcdir)/mathview.gresource.xml
+
+MATHVIEW_RESOURCES = mathview-resources.c mathview-resources.h
+
+BUILT_SOURCES += $(MATHVIEW_RESOURCES) $(TYPES_SOURCE)
 endif
 endif
 
@@ -59,9 +76,7 @@ endif
 if HAVE_GTK
 noinst_HEADERS = Gtk_Window.h
 
-mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c
-
-
+mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c $(MATHVIEW_RESOURCES)
 mml_view_gtk_LDADD = \
   $(GTK_LIBS) \
   $(top_builddir)/src/libgtkmathview_libxml2.la \

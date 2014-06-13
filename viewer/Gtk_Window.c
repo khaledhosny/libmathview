@@ -32,13 +32,13 @@
 
 #include "Gtk_Window.h"
 
-static GtkWidget* window;
+static GtkBuilder* builder;
+static GtkWindow* window;
 static GtkWidget* main_area;
-static GtkWidget* scrolled_area;
 static GtkWidget* status_bar;
 static GdkCursor* normal_cursor;
 static GdkCursor* link_cursor;  
-static gboolean   semantic_selection = FALSE;
+static gboolean   is_semantic_selection = FALSE;
 
 static gchar* doc_name = NULL;
 static xmlElement* first_selected = NULL;
@@ -47,51 +47,23 @@ static GtkMathViewDefaultCursorDecorator* cursor = NULL;
 
 static guint statusbar_context;
 
-static void create_widget_set(void);
-static GtkWidget* get_main_menu(void);
-static void file_open(GtkWidget*, gpointer);
-static void file_re_open(GtkWidget*, gpointer);
-static void file_close(GtkWidget*, gpointer);
-static void options_set_font_size(GtkWidget*, gpointer);
-static void options_change_font_size(GtkWidget*, gboolean);
-static void options_verbosity(GtkWidget*, guint);
-static void options_selection(GtkWidget*, gboolean);
-static void selection_delete(GtkWidget*, gpointer);
-static void selection_parent(GtkWidget*, gpointer);
-static void selection_reset(GtkWidget*, gpointer);
+static void setup_widgets(void);
+static void on_file_open(GtkWidget*, gpointer);
+static void on_file_reopen(GtkWidget*, gpointer);
+static void on_file_close(GtkWidget*, gpointer);
+static void on_set_font_size(GtkWidget*, gpointer);
+static void on_larger_font_size(GtkWidget*, gpointer);
+static void on_smaller_font_size(GtkWidget*, gpointer);
+static void on_errors_verbosity(GtkWidget*, gpointer);
+static void on_warnings_verbosity(GtkWidget*, gpointer);
+static void on_info_verbosity(GtkWidget*, gpointer);
+static void on_debug_verbosity(GtkWidget*, gpointer);
+static void on_semantics_selection(GtkWidget*, gpointer);
+static void on_structure_selection(GtkWidget*, gpointer);
+static void on_selection_delete(GtkWidget*, gpointer);
+static void on_selection_parent(GtkWidget*, gpointer);
+static void on_selection_reset(GtkWidget*, gpointer);
 static void help_about(GtkWidget*, gpointer);
-
-static GtkItemFactoryEntry menu_items[] = {
-  { "/_File",                          NULL,         NULL,          0, "<Branch>", 0 },
-  { "/File/_Open...",                  "<control>O", file_open,     0, NULL, 0 },
-  { "/File/_Reopen",                   NULL,         file_re_open,  0, NULL, 0 },
-  { "/File/_Close",                    "<control>W", file_close,    0, NULL, 0 },
-  { "/File/sep1",                      NULL,         NULL,          0, "<Separator>", 0 },
-  { "/File/_Quit",                     "<control>Q", gtk_main_quit, 0, NULL, 0 },
-
-  { "/_Selection",                     NULL, NULL,                  0,  "<Branch>", 0 },
-  { "/Selection/Reset",                NULL, selection_reset,       0, NULL, 0 },
-  { "/Selection/Delete",               NULL, selection_delete,      0, NULL, 0 },
-  { "/Selection/Select Parent",        NULL, selection_parent,      0, NULL, 0 },
-
-  { "/_Options",                       NULL, NULL,                  0,  "<Branch>", 0 },
-  { "/Options/Default _Font Size",     NULL, NULL,                  0,  "<Branch>", 0 },
-  { "/Options/Default Font Size/Set...", NULL, options_set_font_size, 0,  NULL, 0 },
-  { "/Options/Default Font Size/sep1", NULL, NULL,                  0,  "<Separator>", 0 },
-  { "/Options/Default Font Size/Larger", "<control>2", options_change_font_size, TRUE, NULL, 0 },
-  { "/Options/Default Font Size/Smaller", "<control>1", options_change_font_size, FALSE, NULL, 0 },
-  { "/Options/Verbosity",              NULL, NULL,                  0,  "<Branch>", 0 },
-  { "/Options/Verbosity/_Errors",      NULL, options_verbosity,     0,  "<RadioItem>", 0 },
-  { "/Options/Verbosity/_Warnings",    NULL, options_verbosity,     1,  "/Options/Verbosity/Errors", 0 },
-  { "/Options/Verbosity/_Info",        NULL, options_verbosity,     2,  "/Options/Verbosity/Errors", 0 },
-  { "/Options/Verbosity/_Debug",       NULL, options_verbosity,     3,  "/Options/Verbosity/Errors", 0 },
-  { "/Options/sep1",                   NULL, NULL,                  0,  "<Separator>", 0 },
-  { "/Options/Selection/Structure",    NULL, options_selection,     0,  "<RadioItem>", 0 },
-  { "/Options/Selection/Semantics",    NULL, options_selection,     1,  "/Options/Selection/Structure", 0 },
-
-  { "/_Help" ,        NULL,         NULL,          0, "<Branch>", 0 },
-  { "/Help/About...", NULL,         help_about,    0, NULL, 0 }
-};
 
 #if 0
 static void
@@ -139,25 +111,62 @@ load_error_msg(const char* name)
 }
 #endif
 
+/* FIXME: remove when porting to GTK 3 */
+static guint
+gtk_builder_add_from_resource (GtkBuilder   *builder,
+                               const gchar  *resource_path,
+                               GError      **error)
+{
+  GError *tmp_error;
+  GBytes *data;
+
+  tmp_error = NULL;
+
+  data = g_resources_lookup_data (resource_path, 0, &tmp_error);
+  if (data == NULL)
+    {
+      g_propagate_error (error, tmp_error);
+      return 0;
+    }
+
+  gtk_builder_add_from_string (builder, g_bytes_get_data (data, NULL), g_bytes_get_size (data), &tmp_error);
+  if (tmp_error != NULL)
+    {
+      g_propagate_error (error, tmp_error);
+      return 0;
+    }
+
+  return 1;
+}
+
 void
-GUI_init(int* argc, char*** argv, char* title, guint width, guint height, gint logLevel)
+GUI_init(int* argc, char*** argv, char* title, gint logLevel)
 {
   gtk_init(argc, argv);
 
-  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title(GTK_WINDOW(window), title);
-  gtk_window_set_default_size(GTK_WINDOW(window), width, height);
+  GError* error = NULL;
+
+  builder = gtk_builder_new();
+  gtk_builder_add_from_resource(builder, "/org/mathview/mml-view-gtk.ui", &error);
+  if (error) {
+    g_warning("Couldn't load builder file: %s", error->message);
+    g_error_free(error);
+  }
+
+  gtk_builder_connect_signals(builder, NULL);
+
+  window = GTK_WINDOW(gtk_builder_get_object(builder, "mml-view-window"));
+
+  gtk_window_set_title(window, title);
   
   g_signal_connect(window,
 		  "delete_event", 
 		  G_CALLBACK(gtk_main_quit), NULL);
   
-  create_widget_set();
+  setup_widgets();
   g_assert(main_area != NULL);
   g_assert(GTK_IS_MATH_VIEW(main_area));
   gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), logLevel);
-
-  gtk_widget_show(window);
 
   normal_cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
   link_cursor = gdk_cursor_new(GDK_HAND2);
@@ -228,13 +237,13 @@ store_filename(GtkFileSelection* selector, GtkWidget* user_data)
 }
 
 static void
-file_close(GtkWidget* widget, gpointer data)
+on_file_close(GtkWidget* widget, gpointer data)
 {
   GUI_unload_document();
 }
 
 static void
-file_re_open(GtkWidget* widget, gpointer data)
+on_file_reopen(GtkWidget* widget, gpointer data)
 {
   if (doc_name != NULL) {
     GUI_load_document(doc_name);
@@ -242,7 +251,7 @@ file_re_open(GtkWidget* widget, gpointer data)
 }
 
 static void
-file_open(GtkWidget* widget, gpointer data)
+on_file_open(GtkWidget* widget, gpointer data)
 {
   GtkWidget* fs = gtk_file_selection_new("Open File");
 
@@ -273,16 +282,41 @@ file_open(GtkWidget* widget, gpointer data)
 }
 
 static void
-options_verbosity(GtkWidget* widget, guint level)
+on_errors_verbosity(GtkWidget* widget, gpointer data)
 {
-  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), level);
+  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 0);
 }
 
 static void
-options_selection(GtkWidget* widget, gboolean semantic)
+on_warnings_verbosity(GtkWidget* widget, gpointer data)
 {
-  semantic_selection = semantic;
-  selection_reset(widget, NULL);
+  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 1);
+}
+
+static void
+on_info_verbosity(GtkWidget* widget, gpointer data)
+{
+  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 2);
+}
+
+static void
+on_debug_verbosity(GtkWidget* widget, gpointer data)
+{
+  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 3);
+}
+
+static void
+on_semantics_selection(GtkWidget* widget, gpointer data)
+{
+  is_semantic_selection = TRUE;
+  on_selection_reset(widget, NULL);
+}
+
+static void
+on_structure_selection(GtkWidget* widget, gpointer data)
+{
+  is_semantic_selection = FALSE;
+  on_selection_reset(widget, NULL);
 }
 
 static void
@@ -295,7 +329,7 @@ delete_element(xmlElement* elem)
 }
 
 static void
-selection_delete(GtkWidget* widget, gpointer data)
+on_selection_delete(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
     {
@@ -307,7 +341,7 @@ selection_delete(GtkWidget* widget, gpointer data)
 }
 
 static void
-selection_parent(GtkWidget* widget, gpointer data)
+on_selection_parent(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
     {
@@ -318,7 +352,7 @@ selection_parent(GtkWidget* widget, gpointer data)
 }
 
 static void
-selection_reset(GtkWidget* widget, gpointer data)
+on_selection_reset(GtkWidget* widget, gpointer data)
 {
   if (root_selected != NULL)
     {
@@ -331,7 +365,7 @@ static void
 help_about(GtkWidget* widget, gpointer data)
 {
 
-  gtk_show_about_dialog(GTK_WINDOW(window),
+  gtk_show_about_dialog(window,
                         "program-name", "MathML Viewer",
                         "copyright", "Copyright (C) 2000-2004 Luca Padovani",
                         NULL);
@@ -348,7 +382,7 @@ change_default_font_size(GtkDialog *dialog, gint response_id, gpointer data)
 }
 
 static void
-options_change_font_size(GtkWidget* widget, gboolean larger)
+change_font_size(gboolean larger)
 {
   gfloat size = gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area));
   if (larger) size = size / 0.71;
@@ -358,14 +392,26 @@ options_change_font_size(GtkWidget* widget, gboolean larger)
 }
 
 static void
-options_set_font_size(GtkWidget* widget, gpointer data)
+on_larger_font_size(GtkWidget* widget, gpointer data)
+{
+  change_font_size(TRUE);
+}
+
+static void
+on_smaller_font_size(GtkWidget* widget, gpointer data)
+{
+  change_font_size(FALSE);
+}
+
+static void
+on_set_font_size(GtkWidget* widget, gpointer data)
 {
   GtkWidget* dialog;
   GtkWidget* spin;
   GtkObject* adj;
 
   dialog = gtk_dialog_new_with_buttons("Set default font size",
-                                       GTK_WINDOW(window),
+                                       window,
                                        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                        "_OK", GTK_RESPONSE_ACCEPT,
                                        "_Cancel", GTK_RESPONSE_REJECT,
@@ -456,7 +502,7 @@ select_begin(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 	  root_selected = NULL;
 	}
 
-      if (semantic_selection)
+      if (is_semantic_selection)
 	{
 	  xmlElement* new_elem = find_xref_element(event->id);
           first_selected = root_selected = new_elem;
@@ -541,7 +587,7 @@ select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 	  root_selected = NULL;
 	}
 
-      if (semantic_selection)
+      if (is_semantic_selection)
 	{
 	  xmlElement* new_root = find_common_ancestor(first_selected, event->id);
 	  if (new_root != NULL)
@@ -703,27 +749,79 @@ cursor_blink(GtkMathViewDefaultCursorDecorator* cursor)
 }
 
 static void
-create_widget_set()
+setup_widgets()
 {
-  GtkWidget* main_vbox;
-  GtkWidget* menu_bar;
+  GtkWidget* scrolled_area;
+  GtkWidget* file_open;
+  GtkWidget* file_close;
+  GtkWidget* file_reopen;
+  GtkWidget* quit;
+  GtkWidget* set_font_size;
+  GtkWidget* larger_font_size;
+  GtkWidget* smaller_font_size;
+  GtkWidget* selection_reset;
+  GtkWidget* selection_delete;
+  GtkWidget* selection_parent;
+  GtkWidget* semantics_selection;
+  GtkWidget* structure_selection;
+  GtkWidget* errors_verbosity;
+  GtkWidget* warnings_verbosity;
+  GtkWidget* info_verbosity;
+  GtkWidget* debug_verbosity;
+  GtkWidget* about;
 
-  main_vbox = gtk_vbox_new(FALSE, 1);
-  gtk_container_border_width(GTK_CONTAINER(main_vbox), 1);
-  gtk_container_add(GTK_CONTAINER(window), main_vbox);
-  gtk_widget_show(main_vbox);
+  file_open = GTK_WIDGET(gtk_builder_get_object(builder, "fileopen"));
+  g_signal_connect(file_open, "activate", G_CALLBACK(on_file_open), NULL);
 
-  menu_bar = get_main_menu();
-  gtk_box_pack_start(GTK_BOX(main_vbox), menu_bar, FALSE, TRUE, 0);
-  gtk_widget_show(menu_bar);
+  file_close = GTK_WIDGET(gtk_builder_get_object(builder, "fileclose"));
+  g_signal_connect(file_close, "activate", G_CALLBACK(on_file_close), NULL);
 
-  scrolled_area = gtk_scrolled_window_new(NULL, NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_area),
-				 GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-  gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_area),
-				      GTK_SHADOW_IN);
-  gtk_widget_show(scrolled_area);
-  gtk_box_pack_start(GTK_BOX(main_vbox), scrolled_area, TRUE, TRUE, 0);
+  file_reopen = GTK_WIDGET(gtk_builder_get_object(builder, "filereopen"));
+  g_signal_connect(file_reopen, "activate", G_CALLBACK(on_file_reopen), NULL);
+
+  quit = GTK_WIDGET(gtk_builder_get_object(builder, "quit"));
+  g_signal_connect(quit, "activate", G_CALLBACK(gtk_main_quit), NULL);
+
+  selection_reset = GTK_WIDGET(gtk_builder_get_object(builder, "selectionreset"));
+  g_signal_connect(selection_reset, "activate", G_CALLBACK(on_selection_reset), NULL);
+
+  selection_delete = GTK_WIDGET(gtk_builder_get_object(builder, "selectiondelete"));
+  g_signal_connect(selection_delete, "activate", G_CALLBACK(on_selection_delete), NULL);
+
+  selection_parent = GTK_WIDGET(gtk_builder_get_object(builder, "selectionparent"));
+  g_signal_connect(selection_parent, "activate", G_CALLBACK(on_selection_parent), NULL);
+
+  set_font_size = GTK_WIDGET(gtk_builder_get_object(builder, "setfontsize"));
+  g_signal_connect(set_font_size, "activate", G_CALLBACK(on_set_font_size), NULL);
+
+  larger_font_size = GTK_WIDGET(gtk_builder_get_object(builder, "largerfontsize"));
+  g_signal_connect(larger_font_size, "activate", G_CALLBACK(on_larger_font_size), NULL);
+
+  smaller_font_size = GTK_WIDGET(gtk_builder_get_object(builder, "smallerfontsize"));
+  g_signal_connect(smaller_font_size, "activate", G_CALLBACK(on_smaller_font_size), NULL);
+
+  errors_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "errorsverbosity"));
+  g_signal_connect(errors_verbosity, "activate", G_CALLBACK(on_errors_verbosity), NULL);
+
+  warnings_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "warningsverbosity"));
+  g_signal_connect(warnings_verbosity, "activate", G_CALLBACK(on_warnings_verbosity), NULL);
+
+  info_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "infoverbosity"));
+  g_signal_connect(info_verbosity, "activate", G_CALLBACK(on_info_verbosity), NULL);
+
+  debug_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "debugverbosity"));
+  g_signal_connect(debug_verbosity, "activate", G_CALLBACK(on_debug_verbosity), NULL);
+
+  semantics_selection = GTK_WIDGET(gtk_builder_get_object(builder, "semanticsselection"));
+  g_signal_connect(semantics_selection, "activate", G_CALLBACK(on_semantics_selection), NULL);
+
+  structure_selection = GTK_WIDGET(gtk_builder_get_object(builder, "structureselection"));
+  g_signal_connect(structure_selection, "activate", G_CALLBACK(on_structure_selection), NULL);
+
+  about = GTK_WIDGET(gtk_builder_get_object(builder, "about"));
+  g_signal_connect(about, "activate", G_CALLBACK(help_about), NULL);
+
+  scrolled_area = GTK_WIDGET(gtk_builder_get_object(builder, "scrolledwindow"));
 
   main_area = gtk_math_view_new(NULL, NULL);
   gtk_widget_show(main_area);
@@ -763,29 +861,6 @@ create_widget_set()
   cursor = gtk_math_view_decor_default_cursor_new(GTK_MATH_VIEW(main_area));
   g_timeout_add(500, (GSourceFunc) cursor_blink, cursor);
 
-  status_bar = gtk_statusbar_new();
-  gtk_widget_show(status_bar);
-  gtk_box_pack_start(GTK_BOX(main_vbox), status_bar, FALSE, TRUE, 0);
+  status_bar = GTK_WIDGET(gtk_builder_get_object(builder, "statusbar"));
   statusbar_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_bar), "filename");
-
-  gtk_widget_show(main_vbox);
-}
-
-GtkWidget*
-get_main_menu()
-{
-  GtkItemFactory* item_factory;
-  GtkAccelGroup* accel_group;
-
-  gint nmenu_items = sizeof(menu_items) / sizeof(menu_items[0]);
-
-  accel_group = gtk_accel_group_new();
-
-  item_factory = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-
-  gtk_item_factory_create_items(item_factory, nmenu_items, menu_items, NULL);
-
-  gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
-
-  return gtk_item_factory_get_widget(item_factory, "<main>");
 }

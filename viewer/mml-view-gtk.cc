@@ -79,7 +79,7 @@ main(int argc, char* argv[])
   g_option_context_free(ctxt);
 
   const gchar* file = argv[1];
-  GUI_init(&argc, &argv, appName, 500, 600, option_verbose);
+  GUI_init(&argc, &argv, appName, option_verbose);
   if (GUI_load_document(file) < 0)
     printf("fatal error: cannot load document `%s'\n", file);
   GUI_run();

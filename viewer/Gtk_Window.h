@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
   /* initGUI: some initialization stuff, creates the main window, sets it with a title */
-  void GUI_init(int*, char***, char*, guint, guint, gint);
+  void GUI_init(int*, char***, char*, gint);
   void GUI_uninit(void);
 
   int  GUI_load_document(const char*);

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/mathview">
+    <file preprocess="xml-stripblanks">mml-view-gtk.ui</file>
+  </gresource>
+</gresources>
