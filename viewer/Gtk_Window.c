@@ -111,7 +111,7 @@ quick_message(const char* msg)
 
   /* Ensure that the dialog box is destroyed when the user clicks ok. */
      
-  /* g_signal_connect_object(GTK_OBJECT (okay_button), 
+  /* g_signal_connect_object(okay_button,
 		  "clicked",
 		  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
 		  dialog,0);
@@ -119,7 +119,7 @@ quick_message(const char* msg)
 		     okay_button);
 		     */
   
-  g_signal_connect_swapped(GTK_OBJECT(okay_button),
+  g_signal_connect_swapped(okay_button,
 		  "clicked",
 		  G_CALLBACK(gtk_widget_destroy),
 		  dialog);
@@ -148,7 +148,7 @@ GUI_init(int* argc, char*** argv, char* title, guint width, guint height, gint l
   gtk_window_set_title(GTK_WINDOW(window), title);
   gtk_window_set_default_size(GTK_WINDOW(window), width, height);
   
-  g_signal_connect(GTK_OBJECT(window), 
+  g_signal_connect(window,
 		  "delete_event", 
 		  G_CALLBACK(gtk_main_quit), NULL);
   
@@ -246,23 +246,23 @@ file_open(GtkWidget* widget, gpointer data)
 {
   GtkWidget* fs = gtk_file_selection_new("Open File");
 
-  g_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
+  g_signal_connect (GTK_FILE_SELECTION(fs)->ok_button,
 		      "clicked", 
 		      GTK_SIGNAL_FUNC(store_filename), (gpointer) fs);
                              
   /* Ensure that the dialog box is destroyed when the user clicks a button. */
      
-  g_signal_connect_swapped(GTK_OBJECT (GTK_FILE_SELECTION(fs)->ok_button),
+  g_signal_connect_swapped(GTK_FILE_SELECTION(fs)->ok_button,
 			     "clicked", 
 			     G_CALLBACK(gtk_widget_destroy),
 			     (gpointer) fs);
 
-  /* gtk_signal_connect_object(GTK_OBJECT (GTK_FILE_SELECTION(fs)->cancel_button),
+  /* gtk_signal_connect_object(GTK_FILE_SELECTION(fs)->cancel_button,
 			     "clicked", GTK_SIGNAL_FUNC (gtk_widget_destroy),
 			     (gpointer) fs);
 			     */
 
-  g_signal_connect_swapped(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button),
+  g_signal_connect_swapped(GTK_FILE_SELECTION(fs)->cancel_button,
 		  "clicked",
 		  G_CALLBACK(gtk_widget_destroy),
 		  (gpointer) fs);
@@ -375,7 +375,7 @@ options_set_font_size(GtkWidget* widget, gpointer data)
   spin = gtk_spin_button_new (GTK_ADJUSTMENT(adj), 1, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spin), TRUE);
 
-  g_signal_connect(GTK_OBJECT(dialog),
+  g_signal_connect(dialog,
 		  "response",
 		  G_CALLBACK(change_default_font_size),
 		  (gpointer) spin);
@@ -730,32 +730,32 @@ create_widget_set()
   gtk_container_add(GTK_CONTAINER(scrolled_area), main_area);
   gtk_widget_set_double_buffered(main_area, FALSE);
 
-  g_signal_connect(GTK_OBJECT (main_area),
+  g_signal_connect(main_area,
 		   "select_begin", 
 		   G_CALLBACK(select_begin),
 		   (gpointer) main_area);
 
-  g_signal_connect(GTK_OBJECT (main_area),
+  g_signal_connect(main_area,
 		   "select_over", 
 		   G_CALLBACK(select_over),
 		   (gpointer) main_area);
 
-  g_signal_connect(GTK_OBJECT (main_area),
+  g_signal_connect(main_area,
 		   "select_end", 
 		   G_CALLBACK(select_end),
 		   (gpointer) main_area);
  
-  g_signal_connect(GTK_OBJECT (main_area),
+  g_signal_connect(main_area,
 		   "select_abort", 
 		   G_CALLBACK(select_abort),
 		   (gpointer) main_area);
 
-  g_signal_connect(GTK_OBJECT (main_area),
+  g_signal_connect(main_area,
 		   "element_over", 
 		   G_CALLBACK(element_over),
 		   (gpointer) main_area);
   
-  g_signal_connect(GTK_OBJECT (main_area),
+  g_signal_connect(main_area,
 		   "click", 
 		   G_CALLBACK(click),
 		   (gpointer) main_area);

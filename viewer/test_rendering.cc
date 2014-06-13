@@ -87,11 +87,11 @@ int main(int argc, char *argv[]) {
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_show  (window);
 
-  g_signal_connect(GTK_OBJECT(window),
+  g_signal_connect(window,
 		   "expose_event",
 		   G_CALLBACK(expose), NULL);
 
-  g_signal_connect(GTK_OBJECT(window), 
+  g_signal_connect(window,
 		   "delete_event", 
 		   G_CALLBACK(gtk_main_quit), NULL);
 

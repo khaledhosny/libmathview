@@ -278,7 +278,7 @@ gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint 
   cairo_rectangle(cr, x0, y0, width, height);
   cairo_fill(cr);
 
-  g_signal_emit(GTK_OBJECT(math_view), decorate_over_signal, 0, cr);
+  g_signal_emit(math_view, decorate_over_signal, 0, cr);
 
   cairo_destroy(cr);
 }
@@ -337,7 +337,7 @@ gtk_math_view_paint(GtkMathView* math_view)
   gint x = 0;
   gint y = 0;
   to_view_coords(math_view, &x, &y);
-  g_signal_emit(GTK_OBJECT(math_view), decorate_under_signal, 0, cr);
+  g_signal_emit(math_view, decorate_under_signal, 0, cr);
   math_view->view->render(*rc,
 			  Cairo_RenderingContext::fromCairoX(-x),
 			  Cairo_RenderingContext::fromCairoY(-y));
@@ -846,7 +846,7 @@ gtk_math_view_button_press_event(GtkWidget* widget, GdkEventButton* event)
   else if (math_view->select_state == SELECT_STATE_YES)
     {
       math_view->select_state = SELECT_STATE_ABORT;
-      g_signal_emit(GTK_OBJECT(math_view), select_abort_signal, 0);
+      g_signal_emit(math_view, select_abort_signal, 0);
     }
   
   return FALSE;
@@ -882,11 +882,11 @@ gtk_math_view_button_release_event(GtkWidget* widget, GdkEventButton* event)
 	{
 	  // the mouse should have not moved more than one pixel in each direction
 	  // and the time elapsed from the press event should be no more than 250ms
-	  g_signal_emit(GTK_OBJECT(math_view), click_signal, 0, &me);
+	  g_signal_emit(math_view, click_signal, 0, &me);
 	}
 
       if (math_view->select_state == SELECT_STATE_YES)      
-	g_signal_emit(GTK_OBJECT(math_view), select_end_signal, 0, &me);
+	g_signal_emit(math_view, select_end_signal, 0, &me);
       
       math_view->button_pressed = FALSE;
       math_view->select_state = SELECT_STATE_NO;
@@ -932,18 +932,18 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
     {
       if (math_view->select_state == SELECT_STATE_NO)
 	{
-	  g_signal_emit(GTK_OBJECT(math_view), select_begin_signal, 0, &me);
+	  g_signal_emit(math_view, select_begin_signal, 0, &me);
 	  math_view->select_state = SELECT_STATE_YES;
 	}
       else if (math_view->select_state == SELECT_STATE_YES && math_view->current_elem != elem)
-	g_signal_emit(GTK_OBJECT(math_view), select_over_signal, 0, &me);
+	g_signal_emit(math_view, select_over_signal, 0, &me);
     }
 
   if (math_view->current_elem != elem)
     {
       math_view->current_elem = elem;
 
-      g_signal_emit(GTK_OBJECT(math_view), element_over_signal, 0, &me);
+      g_signal_emit(math_view, element_over_signal, 0, &me);
     }
 
   return FALSE;
@@ -1216,7 +1216,7 @@ GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
 	  g_object_ref_sink(math_view->hadjustment);
 	  
 	  math_view->hsignal = 
-	    g_signal_connect(GTK_OBJECT(hadj), 
+	    g_signal_connect(hadj,
 			     "value_changed",
 			     G_CALLBACK(hadjustment_value_changed),
 			     math_view);
@@ -1239,7 +1239,7 @@ GTKMATHVIEW_METHOD_NAME(set_adjustments)(GtkMathView* math_view,
 	  g_object_ref_sink(math_view->vadjustment);
 	  
 	  math_view->vsignal =
-	    g_signal_connect(GTK_OBJECT(vadj), 
+	    g_signal_connect(vadj,
 			     "value_changed",
 			     G_CALLBACK(vadjustment_value_changed),
 			     math_view);
