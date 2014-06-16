@@ -5,7 +5,6 @@ SCRIPTDIR = ../scripts
 TARGETS = \
   dictionary.xml \
   mathml-entities.dtd \
-  entities-table.xml \
   $(NULL)
 
 # to be run in the source tree with make -f Makefile.slow
@@ -19,11 +18,6 @@ dictionary.xml: makeDictionary dictionary.in mathml-entities.dtd
 	$(XSLTPROC) $(SCRIPTDIR)/copy.xsl - >$@ \
 	)
 
-mathml-entities.dtd: entities-table.in
+mathml-entities.dtd: htmlmathml.json
 	@echo Making DTD for the MathML entities...
-	$(SCRIPTDIR)/makeEntitiesTableDTD <$< >$@
-
-entities-table.xml: entities-table.in
-	@echo Making entities table...
-	$(SCRIPTDIR)/makeEntitiesTable <$<  >$@
-
+	$(SCRIPTDIR)/dumpEntitiesTableDTD $< > $@

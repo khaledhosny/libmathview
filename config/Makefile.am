@@ -12,9 +12,6 @@ EXTRA_DIST = \
   dictionary.xml \
   dictionary-local.xml \
   dictionary-combining.xml \
-  entities-table.in \
-  entities-table.dtd \
-  entities-table.xml \
   gtkmathview.conf.xml.in \
   gtkmathview.conf.dtd \
   gtkmathview.conf.xml \
@@ -31,8 +28,6 @@ pkgdata_DATA = \
   dictionary.xml \
   dictionary-local.xml \
   dictionary-combining.xml \
-  entities-table.dtd \
-  entities-table.xml \
   gtkmathview.conf.dtd \
   $(NULL)
 
