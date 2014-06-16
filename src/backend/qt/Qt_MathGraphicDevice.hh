@@ -35,11 +35,11 @@ protected:
 public:
     static SmartPtr<Qt_MathGraphicDevice> create(const SmartPtr<class MathFont>&);
 
-    virtual void setFactory(const SmartPtr<class Qt_AreaFactory>&);
+    virtual void setFactory(const SmartPtr<class AreaFactory>&);
     virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
 
 private:
-    SmartPtr<class Qt_AreaFactory> area_factory;
+    SmartPtr<class AreaFactory> factory;
 };
 
 #endif // __Qt_MathGraphicDevice_hh__

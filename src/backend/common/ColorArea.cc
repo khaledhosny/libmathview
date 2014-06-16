@@ -23,9 +23,24 @@
 #include <config.h>
 
 #include "ColorArea.hh"
+#include "RenderingContext.hh"
 
 AreaRef
 ColorArea::clone(const AreaRef& area) const
 {
   return create(area, getColor());
+}
+
+void
+ColorArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
+{
+  if (context.getStyle() == RenderingContext::NORMAL_STYLE)
+    {
+      RGBColor oldColor = context.getForegroundColor();
+      context.setForegroundColor(getColor());
+      getChild()->render(context, x, y);
+      context.setForegroundColor(oldColor);
+    }
+  else
+    getChild()->render(context, x, y);
 }

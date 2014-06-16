@@ -20,23 +20,23 @@
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Cairo_InkArea_hh__
-#define __Cairo_InkArea_hh__
+#ifndef __BackgroundArea_hh__
+#define __BackgroundArea_hh__
 
-#include "InkArea.hh"
+#include "ColorArea.hh"
 
-class Cairo_InkArea : public InkArea
+class BackgroundArea : public ColorArea
 {
 protected:
-  Cairo_InkArea(const AreaRef& area) : InkArea(area) { }
-  virtual ~Cairo_InkArea() { }
+  BackgroundArea(const AreaRef& area, const RGBColor& c) : ColorArea(area, c) { }
+  virtual ~BackgroundArea() { }
 
 public:
-  static SmartPtr<Cairo_InkArea> create(const AreaRef& area)
-  { return new Cairo_InkArea(area); }
-  virtual AreaRef clone(const AreaRef& area) const { return create(area); }
+  static SmartPtr<BackgroundArea> create(const AreaRef& area, const RGBColor& c)
+  { return new BackgroundArea(area, c); }
+  AreaRef clone(const AreaRef& area) const { return create(area, getColor()); }
 
-  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
+  void render(RenderingContext&, const scaled&, const scaled&) const;
 };
 
-#endif // __Cairo_InkArea_hh__
+#endif // __BackgroundArea_hh__

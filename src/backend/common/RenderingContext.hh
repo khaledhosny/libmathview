@@ -45,6 +45,10 @@ public:
   void setStyle(ColorStyle s) { style = s; }
   ColorStyle getStyle(void) const { return style; }
 
+  virtual void fill(const scaled&, const scaled&, const BoundingBox&) const = 0;
+  virtual double toDevicePixels(const scaled&) = 0;
+  virtual scaled fromDevicePixels(double) = 0;
+
 private:
   struct ContextData
   {

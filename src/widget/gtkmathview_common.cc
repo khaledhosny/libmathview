@@ -60,7 +60,7 @@ typedef libxml2_MathView MathView;
 #include "MathGraphicDevice.hh"
 #include "Cairo_Backend.hh"
 #include "Cairo_RenderingContext.hh"
-#include "Cairo_WrapperArea.hh"
+#include "WrapperArea.hh"
 #include "GObjectPtr.hh"
 
 #define CLICK_SPACE_RANGE 1
@@ -195,11 +195,11 @@ RGBColorOfGdkRGBA(const GdkRGBA c)
   return RGBColor(c.red * 0xff, c.green * 0xff, c.blue * 0xff, c.alpha * 0xff);
 }
 
-static SmartPtr<const Cairo_WrapperArea>
+static SmartPtr<const WrapperArea>
 findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
 {
   if (SmartPtr<Element> elem = math_view->view->elementOfModelElement(node))
-    if (SmartPtr<const Cairo_WrapperArea> area = smart_cast<const Cairo_WrapperArea>(elem->getArea()))
+    if (SmartPtr<const WrapperArea> area = smart_cast<const WrapperArea>(elem->getArea()))
       return area;
   return 0;
 }
@@ -1323,7 +1323,7 @@ GTKMATHVIEW_METHOD_NAME(select)(GtkMathView* math_view, GtkMathViewModelId elem)
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  if (SmartPtr<const Cairo_WrapperArea> area = findGtkWrapperArea(math_view, elem))
+  if (SmartPtr<const WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(1);
       gtk_math_view_paint(math_view);
@@ -1340,7 +1340,7 @@ GTKMATHVIEW_METHOD_NAME(unselect)(GtkMathView* math_view, GtkMathViewModelId ele
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  if (SmartPtr<const Cairo_WrapperArea> area = findGtkWrapperArea(math_view, elem))
+  if (SmartPtr<const WrapperArea> area = findGtkWrapperArea(math_view, elem))
     {
       area->setSelected(0);
       gtk_math_view_paint(math_view);
@@ -1357,7 +1357,7 @@ GTKMATHVIEW_METHOD_NAME(is_selected)(GtkMathView* math_view, GtkMathViewModelId 
   g_return_val_if_fail(math_view->view != NULL, FALSE);
   g_return_val_if_fail(elem != NULL, FALSE);
 
-  if (SmartPtr<const Cairo_WrapperArea> area = findGtkWrapperArea(math_view, elem))
+  if (SmartPtr<const WrapperArea> area = findGtkWrapperArea(math_view, elem))
     return area->getSelected();
   else
     return FALSE;

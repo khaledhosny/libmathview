@@ -25,16 +25,6 @@
 #include "AreaFactory.hh"
 
 AreaRef
-AreaFactory::background(const AreaRef& base, const RGBColor& c) const
-{
-  std::vector<AreaRef> o;
-  o.reserve(2);
-  o.push_back(color(ink(base), c));
-  o.push_back(base);
-  return overlapArray(o);
-}
-
-AreaRef
 AreaFactory::horizontalLine(const scaled& thickness, const RGBColor& c) const
 {
   const scaled halfThickness = thickness / 2;

@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#include "Qt_AreaFactory.hh"
+#include "AreaFactory.hh"
 #include "Qt_MathGraphicDevice.hh"
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
@@ -41,15 +41,15 @@ Qt_MathGraphicDevice::create(const SmartPtr<MathFont>& font)
 }
 
 void
-Qt_MathGraphicDevice::setFactory(const SmartPtr<Qt_AreaFactory>& f)
+Qt_MathGraphicDevice::setFactory(const SmartPtr<AreaFactory>& f)
 {
     MathGraphicDevice::setFactory(f);
-    area_factory = f;
+    factory = f;
 }
 
 AreaRef
 Qt_MathGraphicDevice::wrapper(const FormattingContext& context,
                               const AreaRef& base) const
 {
-    return area_factory->wrapper(base, base->box(), context.getMathMLElement());
+    return factory->wrapper(base, base->box(), context.getMathMLElement());
 }

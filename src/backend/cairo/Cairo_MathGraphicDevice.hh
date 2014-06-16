@@ -35,11 +35,11 @@ protected:
 public:
   static SmartPtr<Cairo_MathGraphicDevice> create(const SmartPtr<class MathFont>&);
 
-  virtual void setFactory(const SmartPtr<class Cairo_AreaFactory>&);
+  virtual void setFactory(const SmartPtr<class AreaFactory>&);
   virtual AreaRef wrapper(const FormattingContext&, const AreaRef&) const;
 
 private:
-  SmartPtr<class Cairo_AreaFactory> cairo_factory;
+  SmartPtr<class AreaFactory> factory;
 };
 
 #endif // __Cairo_MathGraphicDevice_hh__

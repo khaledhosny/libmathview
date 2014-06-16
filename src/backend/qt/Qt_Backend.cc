@@ -29,8 +29,8 @@
 #include <QByteArray>
 #include <QDebug>
 
+#include "AreaFactory.hh"
 #include "Qt_Backend.hh"
-#include "Qt_AreaFactory.hh"
 #include "Qt_MathGraphicDevice.hh"
 #include "Qt_Shaper.hh"
 #include "ShaperManager.hh"
@@ -38,7 +38,7 @@
 
 Qt_Backend::Qt_Backend(QRawFont& rawFont)
 {
-    SmartPtr<Qt_AreaFactory> factory = Qt_AreaFactory::create();
+    SmartPtr<AreaFactory> factory = AreaFactory::create();
     SmartPtr<MathFont> mathFont = MathFont::create();
 
     QByteArray table = rawFont.fontTable("MATH");

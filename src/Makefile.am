@@ -273,6 +273,7 @@ libbackend_common_la_SOURCES = \
   backend/common/AreaId.cc \
   backend/common/AreaIdAux.cc \
   backend/common/Backend.cc \
+  backend/common/BackgroundArea.cc \
   backend/common/BinContainerArea.cc \
   backend/common/BoxArea.cc \
   backend/common/BoxedLayoutArea.cc \
@@ -328,6 +329,7 @@ mathview_HEADERS += \
   backend/common/AreaId.hh \
   backend/common/AreaIdAux.hh \
   backend/common/Backend.hh \
+  backend/common/BackgroundArea.hh \
   backend/common/BinContainerArea.hh \
   backend/common/BoxArea.hh \
   backend/common/BoxedLayoutArea.hh \
@@ -391,24 +393,15 @@ libmathview_backend_cairo_la_CPPFLAGS = \
   $(NULL)
 
 libmathview_backend_cairo_la_SOURCES = \
-  backend/cairo/Cairo_AreaFactory.hh \
   backend/cairo/Cairo_Backend.cc \
-  backend/cairo/Cairo_BackgroundArea.cc \
-  backend/cairo/Cairo_BackgroundArea.hh \
-  backend/cairo/Cairo_ColorArea.cc \
-  backend/cairo/Cairo_ColorArea.hh \
   backend/cairo/Cairo_GlyphArea.cc \
   backend/cairo/Cairo_GlyphArea.hh \
-  backend/cairo/Cairo_InkArea.cc \
-  backend/cairo/Cairo_InkArea.hh \
   backend/cairo/Cairo_MathGraphicDevice.cc \
   backend/cairo/Cairo_MathGraphicDevice.hh \
   backend/cairo/Cairo_RenderingContext.cc \
   backend/cairo/Cairo_RenderingContext.hh \
   backend/cairo/Cairo_Shaper.cc \
   backend/cairo/Cairo_Shaper.hh \
-  backend/cairo/Cairo_WrapperArea.cc \
-  backend/cairo/Cairo_WrapperArea.hh \
   $(NULL)
 
 mathview_HEADERS += \
@@ -435,14 +428,7 @@ libmathview_backend_qt_la_CPPFLAGS = \
   $(NULL)
 
 libmathview_backend_qt_la_SOURCES = \
-  backend/qt/Qt_AreaFactory.hh \
   backend/qt/Qt_Backend.cc \
-  backend/qt/Qt_BackgroundArea.cc \
-  backend/qt/Qt_BackgroundArea.hh \
-  backend/qt/Qt_ColorArea.cc \
-  backend/qt/Qt_ColorArea.hh \
-  backend/qt/Qt_InkArea.cc \
-  backend/qt/Qt_InkArea.hh \
   backend/qt/Qt_MathGraphicDevice.cc \
   backend/qt/Qt_MathGraphicDevice.hh \
   backend/qt/Qt_Shaper.cc \
@@ -451,8 +437,6 @@ libmathview_backend_qt_la_SOURCES = \
   backend/qt/Qt_GlyphArea.hh \
   backend/qt/Qt_RenderingContext.cc \
   backend/qt/Qt_RenderingContext.hh \
-  backend/qt/Qt_WrapperArea.cc \
-  backend/qt/Qt_WrapperArea.hh \
   $(NULL)
 
 mathview_HEADERS += \

@@ -34,6 +34,8 @@ protected:
 public:
   static SmartPtr<InkArea> create(const AreaRef& area) { return new InkArea(area); }
   virtual AreaRef clone(const AreaRef&) const;
+
+  void render(RenderingContext&, const scaled&, const scaled&) const;
 };
 
 #endif // __InkArea_hh__

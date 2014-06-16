@@ -2,7 +2,7 @@
 //
 // This file is part of GtkMathView, a flexible, high-quality rendering
 // engine for MathML documents.
-//
+// 
 // GtkMathView is free software; you can redistribute it and/or modify it
 // either under the terms of the GNU Lesser General Public License version
 // 3 as published by the Free Software Foundation (the "LGPL") or, at your
@@ -15,32 +15,33 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the LGPL or
 // the GPL for more details.
-//
+// 
 // You should have received a copy of the LGPL and of the GPL along with
 // this program in the files COPYING-LGPL-3 and COPYING-GPL-2; if not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef __Qt_BackgroundArea_hh__
-#define __Qt_BackgroundArea_hh__
+#include <config.h>
 
-#include "ColorArea.hh"
+#include "BackgroundArea.hh"
+#include "RenderingContext.hh"
 
-class Qt_BackgroundArea : public ColorArea
+void
+BackgroundArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
 {
-protected:
-    Qt_BackgroundArea(const AreaRef& area, const RGBColor& c) : ColorArea(area, c) { }
-    virtual ~Qt_BackgroundArea() { }
-
-public:
-    static SmartPtr<Qt_BackgroundArea> create(const AreaRef& area, const RGBColor& c)
+  if (context.getStyle() == RenderingContext::NORMAL_STYLE)
     {
-        return new Qt_BackgroundArea(area, c);
-    }
-    virtual AreaRef clone(const AreaRef& area) const {
-        return create(area, getColor());
-    }
+      RGBColor old_foregroundColor = context.getForegroundColor();
+      RGBColor old_backgroundColor = context.getBackgroundColor();
 
-    virtual void render(RenderingContext&, const scaled&, const scaled&) const;
-};
+      context.setForegroundColor(getColor());
+      context.setBackgroundColor(getColor());
+      context.fill(x, y, box());
+      context.setForegroundColor(old_foregroundColor);
 
-#endif // __Qt_BackgroundArea_hh__
+      getChild()->render(context, x, y);
+
+      context.setBackgroundColor(old_backgroundColor);
+    }
+  else
+    getChild()->render(context, x, y);
+}

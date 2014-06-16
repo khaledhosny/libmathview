@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#include "Cairo_AreaFactory.hh"
+#include "AreaFactory.hh"
 #include "Cairo_MathGraphicDevice.hh"
 #include "MathMLElement.hh"
 #include "FormattingContext.hh"
@@ -39,15 +39,15 @@ Cairo_MathGraphicDevice::create(const SmartPtr<MathFont>& font)
 { return new Cairo_MathGraphicDevice(font); }
 
 void
-Cairo_MathGraphicDevice::setFactory(const SmartPtr<Cairo_AreaFactory>& f)
+Cairo_MathGraphicDevice::setFactory(const SmartPtr<AreaFactory>& f)
 {
   MathGraphicDevice::setFactory(f);
-  cairo_factory = f;
+  factory = f;
 }
 
 AreaRef
 Cairo_MathGraphicDevice::wrapper(const FormattingContext& context,
                                const AreaRef& base) const
 {
-  return cairo_factory->wrapper(base, base->box(), context.getMathMLElement());
+  return factory->wrapper(base, base->box(), context.getMathMLElement());
 }

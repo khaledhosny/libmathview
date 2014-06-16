@@ -22,15 +22,63 @@
 
 #include <config.h>
 
-#include "WrapperArea.hh"
 #include "Element.hh"
+#include "RenderingContext.hh"
+#include "SearchingContext.hh"
+#include "WrapperArea.hh"
 
 WrapperArea::WrapperArea(const AreaRef& area, const BoundingBox& b, const SmartPtr<Element>& el)
-  : BoxArea(area, b), element(el)
+  : BoxArea(area, b), element(el),  selected(0)
 { }
 
 WrapperArea::~WrapperArea()
 { }
+
+SmartPtr<WrapperArea>
+WrapperArea::create(const AreaRef& area, const BoundingBox& b, const SmartPtr<class Element>& el)
+{ return new WrapperArea(area, b, el); }
+
+AreaRef
+WrapperArea::clone(const AreaRef& area) const
+{ return create(area, box(), getElement()); }
+
+void
+WrapperArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
+{
+  RenderingContext::ColorStyle old_style = context.getStyle();
+
+  switch (old_style)
+    {
+    case RenderingContext::NORMAL_STYLE:
+      if (selected == 1) context.setStyle(RenderingContext::SELECTED_STYLE);
+      break;
+    case RenderingContext::SELECTED_STYLE:
+      if (selected == -1) context.setStyle(RenderingContext::NORMAL_STYLE);
+      break;
+    default:
+      break;
+    }
+
+  if (old_style != context.getStyle())
+    {
+      RGBColor old_foregroundColor = context.getForegroundColor();
+      RGBColor backgroundColor = context.getBackgroundColor();
+      context.setForegroundColor(backgroundColor);
+
+      BoundingBox areaBox = box();
+      const scaled margin = context.fromDevicePixels(1);
+      areaBox.width += margin * 2;
+      areaBox.height += margin;
+      areaBox.depth += margin;
+      context.fill(x - margin, y, areaBox);
+
+      context.setForegroundColor(old_foregroundColor);
+    }
+
+  getChild()->render(context, x, y);
+
+  context.setStyle(old_style);
+}
 
 SmartPtr<Element>
 WrapperArea::getElement() const

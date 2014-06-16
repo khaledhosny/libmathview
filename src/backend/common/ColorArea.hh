@@ -36,6 +36,8 @@ public:
   static SmartPtr<ColorArea> create(const AreaRef& area, const RGBColor& c) { return new ColorArea(area, c); }
   virtual AreaRef clone(const AreaRef&) const;
 
+  void render(RenderingContext&, const scaled&, const scaled&) const;
+
   RGBColor getColor(void) const { return color; }
 
 private:

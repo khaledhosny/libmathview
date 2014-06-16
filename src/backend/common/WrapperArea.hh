@@ -33,10 +33,19 @@ protected:
   virtual ~WrapperArea();
 
 public:
+  static SmartPtr<WrapperArea> create(const AreaRef&, const BoundingBox&, const SmartPtr<class Element>&);
+  virtual AreaRef clone(const AreaRef&) const;
+
+  virtual void render(RenderingContext&, const scaled&, const scaled&) const;
+
+  int getSelected(void) const { return selected; }
+  void setSelected(int n) const { selected = n; }
+
   virtual SmartPtr<class Element> getElement(void) const;
 
 private:
   WeakPtr<class Element> element;
+  mutable int selected;
 };
 
 #endif // __WrapperArea_hh__

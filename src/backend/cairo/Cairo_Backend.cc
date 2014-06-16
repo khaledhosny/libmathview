@@ -28,8 +28,8 @@
 
 #include <map>
 
+#include "AreaFactory.hh"
 #include "Cairo_Backend.hh"
-#include "Cairo_AreaFactory.hh"
 #include "Cairo_MathGraphicDevice.hh"
 #include "Cairo_Shaper.hh"
 #include "ShaperManager.hh"
@@ -39,7 +39,7 @@
 
 Cairo_Backend::Cairo_Backend(cairo_scaled_font_t* font)
 {
-  SmartPtr<Cairo_AreaFactory> factory = Cairo_AreaFactory::create();
+  SmartPtr<AreaFactory> factory = AreaFactory::create();
   SmartPtr<MathFont> mathfont = MathFont::create();
 
   FT_Byte *table = NULL;

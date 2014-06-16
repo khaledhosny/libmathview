@@ -23,7 +23,14 @@
 #include <config.h>
 
 #include "InkArea.hh"
+#include "RenderingContext.hh"
 
 AreaRef
 InkArea::clone(const AreaRef& area) const
 { return create(area); }
+
+void
+InkArea::render(RenderingContext& context, const scaled& x, const scaled& y) const
+{
+  context.fill(x, y, box());
+}

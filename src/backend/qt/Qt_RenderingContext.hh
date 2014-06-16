@@ -48,6 +48,15 @@ public:
     void fill(const scaled&, const scaled&, const BoundingBox&) const;
     void draw(const scaled&, const scaled&, const QGlyphRun& glyphs) const;
 
+    virtual double toDevicePixels(const scaled& s)
+    {
+        return Qt_RenderingContext::toQtPixels(s);
+    }
+    virtual scaled fromDevicePixels(double s)
+    {
+        return Qt_RenderingContext::fromQtPixels(s);
+    }
+
     static qreal toQtPixels(const scaled& s)
     {
         return s.toDouble();

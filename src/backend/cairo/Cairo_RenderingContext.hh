@@ -42,6 +42,11 @@ public:
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
   void draw(const scaled&, const scaled&, cairo_scaled_font_t*, unsigned) const;
 
+  virtual double toDevicePixels(const scaled& s)
+  { return Cairo_RenderingContext::toCairoPixels(s); }
+  virtual scaled fromDevicePixels(double s)
+  { return Cairo_RenderingContext::fromCairoPixels(s); }
+
   static double toCairoPixels(const scaled& s)
   { return (s * (72.27 / 72.0)).toDouble(); }
   static scaled fromCairoPixels(double s)

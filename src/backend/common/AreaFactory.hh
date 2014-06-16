@@ -23,6 +23,7 @@
 #ifndef __AreaFactory_hh__
 #define __AreaFactory_hh__
 
+#include "BackgroundArea.hh"
 #include "BoxArea.hh"
 #include "BoxedLayoutArea.hh"
 #include "ColorArea.hh"
@@ -42,6 +43,7 @@
 #include "VerticalArrayArea.hh"
 #include "VerticalFillerArea.hh"
 #include "VerticalSpaceArea.hh"
+#include "WrapperArea.hh"
 #include "CombinedGlyphArea.hh"
 
 class AreaFactory : public Object
@@ -60,6 +62,8 @@ public:
   { return BoxArea::create(area, box); }
   virtual SmartPtr<ColorArea> color(const AreaRef& area, const RGBColor& color) const
   { return ColorArea::create(area, color); }
+  virtual AreaRef background(const AreaRef& area, const RGBColor& color) const
+  { return BackgroundArea::create(area, color); }
   virtual SmartPtr<HideArea> hide(const AreaRef& area) const
   { return HideArea::create(area); }
   virtual SmartPtr<HorizontalArrayArea> horizontalArray(const std::vector<AreaRef>& content) const
@@ -95,9 +99,10 @@ public:
 						    const scaled& dx, const scaled& dy,
 						    const scaled& dxUnder) const
   { return CombinedGlyphArea::create(base, accent, under, dx, dy, dxUnder); }
+  virtual SmartPtr<WrapperArea> wrapper(const AreaRef& area, const BoundingBox& box, const SmartPtr<class Element>& el) const
+  { return WrapperArea::create(area, box, el); }
 
   // macro areas
-  virtual AreaRef background(const AreaRef& area, const RGBColor& color) const;
   virtual AreaRef horizontalLine(const scaled& thickness, const RGBColor& color) const;
   virtual AreaRef fixedHorizontalLine(const scaled& thickness, const scaled& length, const RGBColor& color) const;
   virtual AreaRef verticalLine(const scaled& thickness, const RGBColor& color) const;
