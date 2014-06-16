@@ -32,7 +32,6 @@
 #include "Qt_RenderingContext.hh"
 
 Qt_RenderingContext::Qt_RenderingContext(void)
-    : style(NORMAL_STYLE)
 { }
 
 Qt_RenderingContext::~Qt_RenderingContext()

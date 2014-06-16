@@ -28,7 +28,6 @@
 #include "Cairo_RenderingContext.hh"
 
 Cairo_RenderingContext::Cairo_RenderingContext(void)
-  : style(NORMAL_STYLE)
 { }
 
 Cairo_RenderingContext::~Cairo_RenderingContext()

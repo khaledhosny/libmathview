@@ -44,15 +44,15 @@ Cairo_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y)
 {
   Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
 
-  Cairo_RenderingContext::ColorStyle old_style = context.getStyle();
+  RenderingContext::ColorStyle old_style = context.getStyle();
 
   switch (old_style)
     {
-    case Cairo_RenderingContext::NORMAL_STYLE:
-      if (selected == 1) context.setStyle(Cairo_RenderingContext::SELECTED_STYLE);
+    case RenderingContext::NORMAL_STYLE:
+      if (selected == 1) context.setStyle(RenderingContext::SELECTED_STYLE);
       break;
-    case Cairo_RenderingContext::SELECTED_STYLE:
-      if (selected == -1) context.setStyle(Cairo_RenderingContext::NORMAL_STYLE);
+    case RenderingContext::SELECTED_STYLE:
+      if (selected == -1) context.setStyle(RenderingContext::NORMAL_STYLE);
       break;
     default:
       break;

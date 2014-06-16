@@ -27,32 +27,17 @@
 #include <cairo/cairo.h>
 
 #include "SmartPtr.hh"
-#include "RGBColor.hh"
 #include "Rectangle.hh"
 #include "RenderingContext.hh"
 
 class Cairo_RenderingContext : public RenderingContext
 {
-protected:
-  enum ColorIndex { FOREGROUND_INDEX, BACKGROUND_INDEX, MAX_INDEX };
-
 public:
-  enum ColorStyle { NORMAL_STYLE, SELECTED_STYLE, MAX_STYLE };
-
   Cairo_RenderingContext(void);
   virtual ~Cairo_RenderingContext();
 
-  void setForegroundColor(const RGBColor& c) { data[getStyle()].setColor(FOREGROUND_INDEX, c); }
-  void setBackgroundColor(const RGBColor& c) { data[getStyle()].setColor(BACKGROUND_INDEX, c); }
-
-  RGBColor getForegroundColor(void) const { return data[getStyle()].getColor(FOREGROUND_INDEX); }
-  RGBColor getBackgroundColor(void) const { return data[getStyle()].getColor(BACKGROUND_INDEX); }
-
   void setCairo(cairo_t* cr) { cairo_context = cr; }
   cairo_t* getCairo(void) const { return cairo_context; }
-
-  void setStyle(ColorStyle s) { style = s; }
-  ColorStyle getStyle(void) const { return style; }
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
   void draw(const scaled&, const scaled&, cairo_scaled_font_t*, unsigned) const;
@@ -73,20 +58,6 @@ public:
   { return fromCairoPixels(-y); }
 
 private:
-  struct ContextData
-  {
-    RGBColor color[MAX_INDEX];
-    
-    void setColor(ColorIndex index, const RGBColor& c)
-    { color[index] = c; }
-
-    RGBColor getColor(ColorIndex index) const
-    { return color[index]; }
-  };
-
-  ColorStyle style;
-  ContextData data[MAX_STYLE];
-
   cairo_t* cairo_context;
 };
 

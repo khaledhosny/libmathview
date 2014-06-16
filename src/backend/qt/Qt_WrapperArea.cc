@@ -48,15 +48,15 @@ Qt_WrapperArea::render(RenderingContext& c, const scaled& x, const scaled& y) co
 {
     Qt_RenderingContext& context = dynamic_cast<Qt_RenderingContext&>(c);
 
-    Qt_RenderingContext::ColorStyle old_style = context.getStyle();
+    RenderingContext::ColorStyle old_style = context.getStyle();
 
     switch (old_style)
     {
-    case Qt_RenderingContext::NORMAL_STYLE:
-        if (selected == 1) context.setStyle(Qt_RenderingContext::SELECTED_STYLE);
+    case RenderingContext::NORMAL_STYLE:
+        if (selected == 1) context.setStyle(RenderingContext::SELECTED_STYLE);
         break;
-    case Qt_RenderingContext::SELECTED_STYLE:
-        if (selected == -1) context.setStyle(Qt_RenderingContext::NORMAL_STYLE);
+    case RenderingContext::SELECTED_STYLE:
+        if (selected == -1) context.setStyle(RenderingContext::NORMAL_STYLE);
         break;
     default:
         break;

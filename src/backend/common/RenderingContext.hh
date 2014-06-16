@@ -23,11 +23,42 @@
 #ifndef __RenderingContext_hh__
 #define __RenderingContext_hh__
 
+#include "RGBColor.hh"
+
 class RenderingContext
 {
+protected:
+  enum ColorIndex { FOREGROUND_INDEX, BACKGROUND_INDEX, MAX_INDEX };
+
 public:
-  RenderingContext(void) { }
+  enum ColorStyle { NORMAL_STYLE, SELECTED_STYLE, MAX_STYLE };
+
+  RenderingContext(void) : style(NORMAL_STYLE) { }
   virtual ~RenderingContext() { }
+
+  void setForegroundColor(const RGBColor& c) { data[getStyle()].setColor(FOREGROUND_INDEX, c); }
+  void setBackgroundColor(const RGBColor& c) { data[getStyle()].setColor(BACKGROUND_INDEX, c); }
+
+  RGBColor getForegroundColor(void) const { return data[getStyle()].getColor(FOREGROUND_INDEX); }
+  RGBColor getBackgroundColor(void) const { return data[getStyle()].getColor(BACKGROUND_INDEX); }
+
+  void setStyle(ColorStyle s) { style = s; }
+  ColorStyle getStyle(void) const { return style; }
+
+private:
+  struct ContextData
+  {
+    RGBColor color[MAX_INDEX];
+
+    void setColor(ColorIndex index, const RGBColor& c)
+    { color[index] = c; }
+
+    RGBColor getColor(ColorIndex index) const
+    { return color[index]; }
+  };
+
+  ColorStyle style;
+  ContextData data[MAX_STYLE];
 };
 
 #endif // __RenderingContext_hh__

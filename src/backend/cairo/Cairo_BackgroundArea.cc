@@ -30,7 +30,7 @@ Cairo_BackgroundArea::render(RenderingContext& c, const scaled& x, const scaled&
 {
   Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
 
-  if (context.getStyle() == Cairo_RenderingContext::NORMAL_STYLE)
+  if (context.getStyle() == RenderingContext::NORMAL_STYLE)
     {
       RGBColor old_foregroundColor = context.getForegroundColor();
       RGBColor old_backgroundColor = context.getBackgroundColor();

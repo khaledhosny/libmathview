@@ -30,7 +30,7 @@ Qt_ColorArea::render(RenderingContext& c, const scaled& x, const scaled& y) cons
 {
     Qt_RenderingContext& context = dynamic_cast<Qt_RenderingContext&>(c);
 
-    if (context.getStyle() == Qt_RenderingContext::NORMAL_STYLE)
+    if (context.getStyle() == RenderingContext::NORMAL_STYLE)
     {
         RGBColor oldColor = context.getForegroundColor();
         context.setForegroundColor(getColor());
