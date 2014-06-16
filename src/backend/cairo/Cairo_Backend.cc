@@ -30,8 +30,8 @@
 
 #include "AreaFactory.hh"
 #include "Cairo_Backend.hh"
-#include "Cairo_MathGraphicDevice.hh"
 #include "Cairo_Shaper.hh"
+#include "MathGraphicDevice.hh"
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
 
@@ -61,7 +61,7 @@ Cairo_Backend::Cairo_Backend(cairo_scaled_font_t* font)
 
   cairo_ft_scaled_font_unlock_face(font);
 
-  SmartPtr<Cairo_MathGraphicDevice> mgd = Cairo_MathGraphicDevice::create(mathfont);
+  SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(mathfont);
 
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);

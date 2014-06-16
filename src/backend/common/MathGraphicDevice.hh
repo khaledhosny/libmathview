@@ -35,6 +35,8 @@ protected:
   virtual ~MathGraphicDevice();
 
 public:
+  static SmartPtr<MathGraphicDevice> create(const SmartPtr<class MathFont>&);
+
   virtual void clearCache(void) const;
 
   // Length evaluation, fundamental properties

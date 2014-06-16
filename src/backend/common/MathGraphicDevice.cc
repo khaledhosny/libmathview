@@ -41,6 +41,10 @@ MathGraphicDevice::MathGraphicDevice(const SmartPtr<MathFont>& font)
 MathGraphicDevice::~MathGraphicDevice()
 { }
 
+SmartPtr<MathGraphicDevice>
+MathGraphicDevice::create(const SmartPtr<MathFont>& font)
+{ return new MathGraphicDevice(font); }
+
 scaled
 MathGraphicDevice::getConstant(const FormattingContext& context,
                                MathConstant constant) const
@@ -124,9 +128,9 @@ MathGraphicDevice::defaultLineThickness(const FormattingContext& context) const
 }
 
 AreaRef
-MathGraphicDevice::wrapper(const FormattingContext&, const AreaRef& area) const
+MathGraphicDevice::wrapper(const FormattingContext& context, const AreaRef& area) const
 {
-  return getFactory()->box(area, area->box());
+  return getFactory()->wrapper(area, area->box(), context.getMathMLElement());
 }
 
 AreaRef

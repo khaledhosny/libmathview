@@ -396,8 +396,6 @@ libmathview_backend_cairo_la_SOURCES = \
   backend/cairo/Cairo_Backend.cc \
   backend/cairo/Cairo_GlyphArea.cc \
   backend/cairo/Cairo_GlyphArea.hh \
-  backend/cairo/Cairo_MathGraphicDevice.cc \
-  backend/cairo/Cairo_MathGraphicDevice.hh \
   backend/cairo/Cairo_RenderingContext.cc \
   backend/cairo/Cairo_RenderingContext.hh \
   backend/cairo/Cairo_Shaper.cc \
@@ -429,8 +427,6 @@ libmathview_backend_qt_la_CPPFLAGS = \
 
 libmathview_backend_qt_la_SOURCES = \
   backend/qt/Qt_Backend.cc \
-  backend/qt/Qt_MathGraphicDevice.cc \
-  backend/qt/Qt_MathGraphicDevice.hh \
   backend/qt/Qt_Shaper.cc \
   backend/qt/Qt_Shaper.hh \
   backend/qt/Qt_GlyphArea.cc \

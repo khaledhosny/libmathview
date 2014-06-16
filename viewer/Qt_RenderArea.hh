@@ -29,7 +29,7 @@
 #include "Configuration.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "Qt_Backend.hh"
-#include "Qt_MathGraphicDevice.hh"
+#include "MathGraphicDevice.hh"
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
 #include "Qt_RenderingContext.hh"

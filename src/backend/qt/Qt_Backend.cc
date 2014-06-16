@@ -30,8 +30,8 @@
 #include <QDebug>
 
 #include "AreaFactory.hh"
+#include "MathGraphicDevice.hh"
 #include "Qt_Backend.hh"
-#include "Qt_MathGraphicDevice.hh"
 #include "Qt_Shaper.hh"
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
@@ -51,7 +51,7 @@ Qt_Backend::Qt_Backend(QRawFont& rawFont)
     }
     mathFont->setUnitsPerEM(rawFont.unitsPerEm());
 
-    SmartPtr<Qt_MathGraphicDevice> mgd = Qt_MathGraphicDevice::create(mathFont);
+    SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(mathFont);
 
     mgd->setFactory(factory);
     setMathGraphicDevice(mgd);

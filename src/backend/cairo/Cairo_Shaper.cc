@@ -24,9 +24,9 @@
 #include <config.h>
 
 #include "Cairo_GlyphArea.hh"
-#include "Cairo_MathGraphicDevice.hh"
-#include "Cairo_Shaper.hh"
 #include "Cairo_RenderingContext.hh"
+#include "Cairo_Shaper.hh"
+#include "MathGraphicDevice.hh"
 #include "ShapingContext.hh"
 
 Cairo_Shaper::Cairo_Shaper(cairo_scaled_font_t* f,
