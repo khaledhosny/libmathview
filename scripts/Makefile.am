@@ -6,7 +6,8 @@ noinst_SCRIPTS = \
   stretchy \
   makekeywords \
   applylicence \
-  makeEntitiesTable
+  makeEntitiesTable \
+  dumpEntitiesTable
 
 EXTRA_DIST = \
   $(noinst_SCRIPTS) \

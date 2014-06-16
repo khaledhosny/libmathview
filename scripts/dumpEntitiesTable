@@ -1,0 +1,10 @@
+import json
+import sys
+
+f = open(sys.argv[1])
+entities = json.load(f)['characters']
+
+for entity in entities:
+    value = "".join([r"\x%02x" %(ord(c)) for c in entities[entity].encode("utf8")])
+    assert(value)
+    sys.stdout.write('{ "%s", "%s" },\n' %(entity, value))

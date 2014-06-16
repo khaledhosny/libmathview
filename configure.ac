@@ -94,6 +94,7 @@ AC_LANG([C])
 PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1],,[AC_MSG_ERROR(could not find GLIB)])
 
 AM_MISSING_PROG([XSLTPROC], [xsltproc])
+AM_MISSING_PROG([PYTHON], [python2])
 
 dnl =============================================================================
 dnl Qt support
