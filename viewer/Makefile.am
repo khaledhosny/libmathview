@@ -78,6 +78,7 @@ noinst_HEADERS = Gtk_Window.h
 
 mml_view_gtk_SOURCES = mml-view-gtk.cc Gtk_Window.c $(MATHVIEW_RESOURCES)
 mml_view_gtk_LDADD = \
+  $(XML_LIBS) \
   $(GTK_LIBS) \
   $(top_builddir)/src/libgtkmathview_libxml2.la \
   $(NULL)
