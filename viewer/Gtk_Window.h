@@ -31,15 +31,7 @@ extern "C" {
 #endif
 
   /* initGUI: some initialization stuff, creates the main window, sets it with a title */
-  void GUI_init(int*, char***, char*, gint);
-  void GUI_uninit(void);
-
-  int  GUI_load_document(const char*);
-  void GUI_unload_document(void);
-  void GUI_dump_entities(void);
-
-  /* main: this is the main event loop, to be called when the program is ready to run */
-  void GUI_run(void);
+  void GUI_init(int*, char***, char*, char*, gint);
 
 #ifdef __cplusplus
 }

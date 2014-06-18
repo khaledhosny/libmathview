@@ -34,86 +34,41 @@
 
 static GtkBuilder* builder;
 static GtkWindow* window;
-static GtkWidget* main_area;
-static GtkWidget* status_bar;
-static GdkCursor* normal_cursor;
-static GdkCursor* link_cursor;  
+static GtkMathView* math_view;
 static gboolean   is_semantic_selection = FALSE;
 
 static gchar* doc_name = NULL;
 static xmlElement* first_selected = NULL;
 static xmlElement* root_selected = NULL;
-static GtkMathViewDefaultCursorDecorator* cursor = NULL;
 
-static guint statusbar_context;
+static GtkMathView* setup_widgets(void);
+static gboolean load_document(GtkMathView*, char*);
+static void unload_document(GtkMathView* view);
 
-static void setup_widgets(void);
-static void on_file_open(GtkWidget*, gpointer);
-static void on_file_reopen(GtkWidget*, gpointer);
-static void on_file_close(GtkWidget*, gpointer);
-static void on_set_font_size(GtkWidget*, gpointer);
-static void on_larger_font_size(GtkWidget*, gpointer);
-static void on_smaller_font_size(GtkWidget*, gpointer);
-static void on_errors_verbosity(GtkWidget*, gpointer);
-static void on_warnings_verbosity(GtkWidget*, gpointer);
-static void on_info_verbosity(GtkWidget*, gpointer);
-static void on_debug_verbosity(GtkWidget*, gpointer);
-static void on_semantics_selection(GtkWidget*, gpointer);
-static void on_structure_selection(GtkWidget*, gpointer);
-static void on_selection_delete(GtkWidget*, gpointer);
-static void on_selection_parent(GtkWidget*, gpointer);
-static void on_selection_reset(GtkWidget*, gpointer);
-static void help_about(GtkWidget*, gpointer);
+static gboolean cursor_blink(GtkMathViewDefaultCursorDecorator*);
 
-#if 0
-static void
-quick_message(const char* msg)
-{
-  GtkWidget* dialog;
-  GtkWidget* label;
-  GtkWidget* okay_button;
-     
-  /* Create the widgets */
-     
-  dialog = gtk_dialog_new();
-  label = gtk_label_new (msg);
-  okay_button = gtk_button_new_with_label("OK");
-
-  gtk_widget_set_usize(dialog, 300, 100);
-
-  /* Ensure that the dialog box is destroyed when the user clicks ok. */
-     
-  /* g_signal_connect_object(okay_button,
-		  "clicked",
-		  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-		  dialog,0);
-  gtk_container_add (GTK_CONTAINER (gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-		     okay_button);
-		     */
-  
-  g_signal_connect_swapped(okay_button,
-		  "clicked",
-		  G_CALLBACK(gtk_widget_destroy),
-		  dialog);
-  
-  /* Add the label, and show everything we've added to the dialog. */
-  
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
-  gtk_widget_show_all (dialog);
-}
-
-static void
-load_error_msg(const char* name)
-{
-  char* msg = g_strdup_printf("Could not load\n`%s'", name);
-  quick_message(msg);
-  g_free(msg);
-}
-#endif
+static void on_file_open(GtkWidget*, GtkMathView*);
+static void on_file_reopen(GtkWidget*, GtkMathView*);
+static void on_file_close(GtkWidget*, GtkMathView*);
+static void on_set_font_size(GtkWidget*, GtkMathView*);
+static void on_larger_font_size(GtkWidget*, GtkMathView*);
+static void on_smaller_font_size(GtkWidget*, GtkMathView*);
+static void on_errors_verbosity(GtkWidget*, GtkMathView*);
+static void on_warnings_verbosity(GtkWidget*, GtkMathView*);
+static void on_info_verbosity(GtkWidget*, GtkMathView*);
+static void on_debug_verbosity(GtkWidget*, GtkMathView*);
+static void on_semantics_selection(GtkWidget*, GtkMathView*);
+static void on_structure_selection(GtkWidget*, GtkMathView*);
+static void on_selection_delete(GtkWidget*, GtkMathView*);
+static void on_selection_parent(GtkWidget*, GtkMathView*);
+static void on_selection_reset(GtkWidget*, GtkMathView*);
+static void help_about(GtkWidget*, GtkMathView*);
 
 void
-GUI_init(int* argc, char*** argv, char* title, gint logLevel)
+GUI_init(int* argc, char*** argv, char* title, char* file, gint logLevel)
 {
+  GtkMathView* view;
+
   gtk_init(argc, argv);
 
   GError* error = NULL;
@@ -131,91 +86,81 @@ GUI_init(int* argc, char*** argv, char* title, gint logLevel)
 
   gtk_window_set_title(window, title);
   
-  g_signal_connect(window,
-		  "delete_event", 
-		  G_CALLBACK(gtk_main_quit), NULL);
+  g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
   
-  setup_widgets();
-  g_assert(main_area != NULL);
-  g_assert(GTK_IS_MATH_VIEW(main_area));
-  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), logLevel);
+  view = setup_widgets();
+  g_assert(view != NULL);
+  g_assert(GTK_IS_MATH_VIEW(view));
+  gtk_math_view_set_log_verbosity(view, logLevel);
 
-  normal_cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
-  link_cursor = gdk_cursor_new(GDK_HAND2);
+  if (load_document(view, file) < 0)
+    printf("fatal error: cannot load document `%s'\n", file);
 }
 
-void
-GUI_uninit()
+static gboolean
+load_document(GtkMathView* view, char* name)
 {
-  /*gtk_widget_unref(GTK_WIDGET(window));*/
-}
+  g_return_val_if_fail(name != NULL, FALSE);
+  g_return_val_if_fail(view != NULL, FALSE);
+  g_return_val_if_fail(GTK_IS_MATH_VIEW(view), FALSE);
 
-int
-GUI_load_document(const char* name)
-{
-  GtkMathView* math_view;
+  GtkStatusbar* status_bar;
+  guint statusbar_context;
 
-  g_return_val_if_fail(name != NULL, -1);
-  g_return_val_if_fail(main_area != NULL, -1);
-  g_return_val_if_fail(GTK_IS_MATH_VIEW(main_area), -1);
-
-  math_view = GTK_MATH_VIEW(main_area);
-
-  gtk_math_view_load_uri(math_view, name);
+  gtk_math_view_load_uri(view, name);
 
   if (name != doc_name) {
     if (doc_name != NULL) g_free(doc_name);
     doc_name = g_strdup(name);
   }
 
-  gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
+  status_bar = GTK_STATUSBAR(gtk_builder_get_object(builder, "statusbar"));
+  statusbar_context = gtk_statusbar_get_context_id(status_bar, "filename");
+
+  gtk_statusbar_pop(status_bar, statusbar_context);
   if (strlen(name) > 40) name += strlen(name) - 40;
-  gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, name);
+  gtk_statusbar_push(status_bar, statusbar_context, name);
     
-  return 0;
+  return TRUE;
 }
 
-void
-GUI_unload_document()
+static void
+unload_document(GtkMathView* view)
 {
-  GtkMathView* math_view;
+  g_return_if_fail(view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(view));
 
-  g_return_if_fail(main_area != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(main_area));
+  GtkStatusbar* status_bar;
+  guint statusbar_context;
 
-  math_view = GTK_MATH_VIEW(main_area);
-
-  gtk_math_view_unload(math_view);
+  gtk_math_view_unload(view);
 
   if (doc_name != NULL) g_free(doc_name);
   doc_name = NULL;
 
-  gtk_statusbar_pop(GTK_STATUSBAR(status_bar), statusbar_context);
-  gtk_statusbar_push(GTK_STATUSBAR(status_bar), statusbar_context, "");
-}
+  status_bar = GTK_STATUSBAR(gtk_builder_get_object(builder, "statusbar"));
+  statusbar_context = gtk_statusbar_get_context_id(status_bar, "filename");
 
-void
-GUI_run()
-{
-  gtk_main();
+  gtk_statusbar_pop(status_bar, statusbar_context);
+  gtk_statusbar_push(status_bar, statusbar_context, "");
 }
 
 static void
-on_file_close(GtkWidget* widget, gpointer data)
+on_file_close(GtkWidget* widget, GtkMathView* view)
 {
-  GUI_unload_document();
+  unload_document(view);
 }
 
 static void
-on_file_reopen(GtkWidget* widget, gpointer data)
+on_file_reopen(GtkWidget* widget, GtkMathView* view)
 {
   if (doc_name != NULL) {
-    GUI_load_document(doc_name);
+    load_document(view, doc_name);
   }
 }
 
 static void
-on_file_open(GtkWidget* widget, gpointer data)
+on_file_open(GtkWidget* widget, GtkMathView* view)
 {
   GtkWidget* dialog;
   dialog = gtk_file_chooser_dialog_new("Open File",
@@ -228,94 +173,94 @@ on_file_open(GtkWidget* widget, gpointer data)
   if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
     char* filename;
     filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-    GUI_load_document(filename);
+    load_document(view, filename);
     g_free(filename);
   }
   gtk_widget_destroy(dialog);
 }
 
 static void
-on_errors_verbosity(GtkWidget* widget, gpointer data)
+on_errors_verbosity(GtkWidget* widget, GtkMathView* view)
 {
-  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 0);
+  gtk_math_view_set_log_verbosity(view, 0);
 }
 
 static void
-on_warnings_verbosity(GtkWidget* widget, gpointer data)
+on_warnings_verbosity(GtkWidget* widget, GtkMathView* view)
 {
-  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 1);
+  gtk_math_view_set_log_verbosity(view, 1);
 }
 
 static void
-on_info_verbosity(GtkWidget* widget, gpointer data)
+on_info_verbosity(GtkWidget* widget, GtkMathView* view)
 {
-  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 2);
+  gtk_math_view_set_log_verbosity(view, 2);
 }
 
 static void
-on_debug_verbosity(GtkWidget* widget, gpointer data)
+on_debug_verbosity(GtkWidget* widget, GtkMathView* view)
 {
-  gtk_math_view_set_log_verbosity(GTK_MATH_VIEW(main_area), 3);
+  gtk_math_view_set_log_verbosity(view, 3);
 }
 
 static void
-on_semantics_selection(GtkWidget* widget, gpointer data)
+on_semantics_selection(GtkWidget* widget, GtkMathView* view)
 {
   is_semantic_selection = TRUE;
-  on_selection_reset(widget, NULL);
+  on_selection_reset(widget, view);
 }
 
 static void
-on_structure_selection(GtkWidget* widget, gpointer data)
+on_structure_selection(GtkWidget* widget, GtkMathView* view)
 {
   is_semantic_selection = FALSE;
-  on_selection_reset(widget, NULL);
+  on_selection_reset(widget, view);
 }
 
 static void
-delete_element(xmlElement* elem)
+delete_element(GtkMathView* view, xmlElement* elem)
 {
   xmlNodePtr node = (xmlNodePtr) elem;
-  gtk_math_view_structure_changed(GTK_MATH_VIEW(main_area), (GtkMathViewModelId) node->parent);
+  gtk_math_view_structure_changed(view, (GtkMathViewModelId) node->parent);
   xmlUnlinkNode(node);
   xmlFreeNode(node);
 }
 
 static void
-on_selection_delete(GtkWidget* widget, gpointer data)
+on_selection_delete(GtkWidget* widget, GtkMathView* view)
 {
   if (root_selected != NULL)
     {
-      gtk_math_view_freeze(GTK_MATH_VIEW(main_area));
-      delete_element(root_selected);
+      gtk_math_view_freeze(view);
+      delete_element(view, root_selected);
       root_selected = NULL;
-      gtk_math_view_thaw(GTK_MATH_VIEW(main_area));
+      gtk_math_view_thaw(view);
     }
 }
 
 static void
-on_selection_parent(GtkWidget* widget, gpointer data)
+on_selection_parent(GtkWidget* widget, GtkMathView* view)
 {
   if (root_selected != NULL)
     {
       xmlElement* parent = (xmlElement*) ((xmlNodePtr) root_selected)->parent;
       root_selected = parent;
-      gtk_math_view_select(GTK_MATH_VIEW(main_area), root_selected);
+      gtk_math_view_select(view, root_selected);
     }
 }
 
 static void
-on_selection_reset(GtkWidget* widget, gpointer data)
+on_selection_reset(GtkWidget* widget, GtkMathView* view)
 {
   if (root_selected != NULL)
     {
-      gtk_math_view_unselect(GTK_MATH_VIEW(main_area), root_selected);
+      gtk_math_view_unselect(view, root_selected);
       root_selected = NULL;
     }
 }
 
 static void
-help_about(GtkWidget* widget, gpointer data)
+help_about(GtkWidget* widget, GtkMathView* view)
 {
 
   gtk_show_about_dialog(window,
@@ -325,39 +270,38 @@ help_about(GtkWidget* widget, gpointer data)
 }
 
 static void
-change_default_font_size(GtkDialog *dialog, gint response_id, gpointer data)
+change_default_font_size(GtkDialog *dialog, gint response_id, GtkSpinButton* spin)
 {
-  g_return_if_fail(data != NULL);
-  GtkSpinButton* spin = (GtkSpinButton*) data;
+  g_return_if_fail(spin != NULL);
   if (response_id == GTK_RESPONSE_ACCEPT)
-    gtk_math_view_set_font_size(GTK_MATH_VIEW(main_area), gtk_spin_button_get_value_as_int(spin));
+    gtk_math_view_set_font_size(math_view, gtk_spin_button_get_value_as_int(spin));
   gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 static void
-change_font_size(gboolean larger)
+change_font_size(GtkMathView* view, gboolean larger)
 {
-  gfloat size = gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area));
+  gfloat size = gtk_math_view_get_font_size (view);
   if (larger) size = size / 0.71;
   else size = size * 0.71;
   if (size < 1) size = 1;
-  gtk_math_view_set_font_size (GTK_MATH_VIEW(main_area), (gint) size + 0.5);
+  gtk_math_view_set_font_size (view, (gint) size + 0.5);
 }
 
 static void
-on_larger_font_size(GtkWidget* widget, gpointer data)
+on_larger_font_size(GtkWidget* widget, GtkMathView* view)
 {
-  change_font_size(TRUE);
+  change_font_size(view, TRUE);
 }
 
 static void
-on_smaller_font_size(GtkWidget* widget, gpointer data)
+on_smaller_font_size(GtkWidget* widget, GtkMathView* view)
 {
-  change_font_size(FALSE);
+  change_font_size(view, FALSE);
 }
 
 static void
-on_set_font_size(GtkWidget* widget, gpointer data)
+on_set_font_size(GtkWidget* widget, GtkMathView* view)
 {
   GtkWidget* dialog;
   GtkWidget* spin;
@@ -370,14 +314,11 @@ on_set_font_size(GtkWidget* widget, gpointer data)
                                        "_Cancel", GTK_RESPONSE_REJECT,
                                        NULL);
 
-  adj = gtk_adjustment_new (gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area)), 1, 200, 1, 1, 0);
+  adj = gtk_adjustment_new (gtk_math_view_get_font_size (view), 1, 200, 1, 1, 0);
   spin = gtk_spin_button_new (GTK_ADJUSTMENT(adj), 1, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spin), TRUE);
 
-  g_signal_connect(dialog,
-		  "response",
-		  G_CALLBACK(change_default_font_size),
-		  (gpointer) spin);
+  g_signal_connect(dialog, "response", G_CALLBACK(change_default_font_size), spin);
 
   GtkContainer* content_area = GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
   gtk_container_set_border_width(content_area, 5);
@@ -405,19 +346,23 @@ find_hyperlink(xmlElement* elem, const gchar* name)
 }
 
 static void
-element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
+element_over(GtkMathView* view, const GtkMathViewModelEvent* event)
 {
-  xmlChar* link = NULL;
-
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(view));
   g_return_if_fail(event != NULL);
+
+  xmlChar* link = NULL;
+  GdkCursor* cursor;
 
   link = find_hyperlink(event->id, "href");
   if (link != NULL)
-    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(math_view)), link_cursor);
+    cursor = gdk_cursor_new(GDK_HAND2);
   else
-    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(math_view)), normal_cursor);
+    cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
+
+  gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(view)), cursor);
+  g_object_unref(cursor);
 
   if (link != NULL)
     xmlFree(link);
@@ -439,19 +384,19 @@ find_xref_element(xmlElement* elem)
 }
 
 static void
-select_begin(GtkMathView* math_view, const GtkMathViewModelEvent* event)
+select_begin(GtkMathView* view, const GtkMathViewModelEvent* event)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(view));
   g_return_if_fail(event != NULL);
 
   if (event->id != NULL)
     {
-      gtk_math_view_freeze(math_view);
+      gtk_math_view_freeze(view);
 
       if (root_selected != NULL)
 	{
-	  gtk_math_view_unselect(math_view, root_selected);
+	  gtk_math_view_unselect(view, root_selected);
 	  root_selected = NULL;
 	}
 
@@ -466,9 +411,9 @@ select_begin(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 	}
 
       if (root_selected != NULL)
-	gtk_math_view_select(math_view, root_selected);
+	gtk_math_view_select(view, root_selected);
 
-      gtk_math_view_thaw(math_view);
+      gtk_math_view_thaw(view);
     }
 }
 
@@ -524,19 +469,19 @@ find_common_ancestor(xmlElement* first, xmlElement* last)
 }
 
 static void
-select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
+select_over(GtkMathView* view, const GtkMathViewModelEvent* event)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(view));
   g_return_if_fail(event != NULL);
 
   if (first_selected != NULL && event->id != NULL)
     {
-      gtk_math_view_freeze(math_view);
+      gtk_math_view_freeze(view);
 
       if (root_selected != NULL)
 	{
-	  gtk_math_view_unselect(math_view, root_selected);
+	  gtk_math_view_unselect(view, root_selected);
 	  root_selected = NULL;
 	}
 
@@ -551,21 +496,21 @@ select_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       else
         root_selected = find_common_ancestor(first_selected, event->id);
 
-      while (root_selected != NULL && !gtk_math_view_select(math_view, root_selected))
+      while (root_selected != NULL && !gtk_math_view_select(view, root_selected))
 	{
 	  xmlElement* new_root = (xmlElement*) ((xmlNodePtr) root_selected)->parent;
 	  root_selected = new_root;
 	}
 
-      gtk_math_view_thaw(math_view);
+      gtk_math_view_thaw(view);
     }
 }
 
 static void
-select_end(GtkMathView* math_view, const GtkMathViewModelEvent* event)
+select_end(GtkMathView* view, const GtkMathViewModelEvent* event)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(view));
   g_return_if_fail(event != NULL);
 
   if (first_selected != NULL)
@@ -575,10 +520,10 @@ select_end(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 }
 
 static void
-select_abort(GtkMathView* math_view)
+select_abort(GtkMathView* view)
 {
-  g_return_if_fail(math_view != NULL);
-  g_return_if_fail(GTK_IS_MATH_VIEW(math_view));
+  g_return_if_fail(view != NULL);
+  g_return_if_fail(GTK_IS_MATH_VIEW(view));
 
   if (first_selected != NULL)
     {
@@ -587,9 +532,9 @@ select_abort(GtkMathView* math_view)
 
   if (root_selected != NULL)
     {
-      gtk_math_view_freeze(math_view);
-      gtk_math_view_unselect(math_view, root_selected);
-      gtk_math_view_thaw(math_view);
+      gtk_math_view_freeze(view);
+      gtk_math_view_unselect(view, root_selected);
+      gtk_math_view_thaw(view);
       root_selected = NULL;
     }
 }
@@ -629,25 +574,27 @@ action_toggle(xmlElement* elem)
 }
 
 static void
-click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
+click(GtkMathView* view, const GtkMathViewModelEvent* event)
 {
-  gint index;
-  xmlElement* elem;
-
-  gint w, h;
-  gtk_math_view_get_size(math_view, &w, &h);
-  printf("click signal %d %d\n", w, h);
-
-  g_return_if_fail(math_view != NULL);
+  g_return_if_fail(view != NULL);
   g_return_if_fail(event != NULL);
 
-#if 1
+  gint index;
+  xmlElement* elem;
+  GtkMathViewDefaultCursorDecorator* cursor;
+
+  gint w, h;
+  gtk_math_view_get_size(view, &w, &h);
+  printf("click signal %d %d\n", w, h);
+
+  cursor = gtk_math_view_decor_default_cursor_new(view);
+  g_timeout_add(500, (GSourceFunc) cursor_blink, cursor);
+
   index = -1;
-  if (gtk_math_view_get_char_at(math_view, event->x, event->y, &elem, &index, NULL, NULL))
+  if (gtk_math_view_get_char_at(view, event->x, event->y, &elem, &index, NULL, NULL))
     gtk_math_view_decor_default_cursor_set(cursor, TRUE, event->id, TRUE, index, TRUE);
   else
     gtk_math_view_decor_default_cursor_set(cursor, FALSE, NULL, FALSE, -1, FALSE);
-#endif
 
   if (event->id != NULL)
     {
@@ -668,19 +615,19 @@ click(GtkMathView* math_view, const GtkMathViewModelEvent* event)
       printf("action? %p\n", action);
       if (action != NULL)
 	{
-	  gtk_math_view_freeze(math_view);
+	  gtk_math_view_freeze(view);
 	  action_toggle(action);
-          gtk_math_view_attribute_changed(math_view, event->id, (GtkMathViewModelString) "selection");
-	  gtk_math_view_thaw(math_view);
+          gtk_math_view_attribute_changed(view, event->id, (GtkMathViewModelString) "selection");
+	  gtk_math_view_thaw(view);
 	  return;
 	}
     }
 
   if (root_selected != NULL)
     {
-      gtk_math_view_freeze(math_view);
-      gtk_math_view_unselect(math_view, root_selected);
-      gtk_math_view_thaw(math_view);
+      gtk_math_view_freeze(view);
+      gtk_math_view_unselect(view, root_selected);
+      gtk_math_view_thaw(view);
       root_selected = NULL;
     }
 }
@@ -701,7 +648,7 @@ cursor_blink(GtkMathViewDefaultCursorDecorator* cursor)
   return TRUE;
 }
 
-static void
+static GtkMathView*
 setup_widgets()
 {
   GtkWidget* scrolled_area;
@@ -723,97 +670,71 @@ setup_widgets()
   GtkWidget* debug_verbosity;
   GtkWidget* about;
 
+  math_view = GTK_MATH_VIEW(gtk_math_view_new(NULL, NULL));
+
   file_open = GTK_WIDGET(gtk_builder_get_object(builder, "fileopen"));
-  g_signal_connect(file_open, "activate", G_CALLBACK(on_file_open), NULL);
+  g_signal_connect(file_open, "activate", G_CALLBACK(on_file_open), math_view);
 
   file_close = GTK_WIDGET(gtk_builder_get_object(builder, "fileclose"));
-  g_signal_connect(file_close, "activate", G_CALLBACK(on_file_close), NULL);
+  g_signal_connect(file_close, "activate", G_CALLBACK(on_file_close), math_view);
 
   file_reopen = GTK_WIDGET(gtk_builder_get_object(builder, "filereopen"));
-  g_signal_connect(file_reopen, "activate", G_CALLBACK(on_file_reopen), NULL);
+  g_signal_connect(file_reopen, "activate", G_CALLBACK(on_file_reopen), math_view);
 
   quit = GTK_WIDGET(gtk_builder_get_object(builder, "quit"));
-  g_signal_connect(quit, "activate", G_CALLBACK(gtk_main_quit), NULL);
+  g_signal_connect(quit, "activate", G_CALLBACK(gtk_main_quit), math_view);
 
   selection_reset = GTK_WIDGET(gtk_builder_get_object(builder, "selectionreset"));
-  g_signal_connect(selection_reset, "activate", G_CALLBACK(on_selection_reset), NULL);
+  g_signal_connect(selection_reset, "activate", G_CALLBACK(on_selection_reset), math_view);
 
   selection_delete = GTK_WIDGET(gtk_builder_get_object(builder, "selectiondelete"));
-  g_signal_connect(selection_delete, "activate", G_CALLBACK(on_selection_delete), NULL);
+  g_signal_connect(selection_delete, "activate", G_CALLBACK(on_selection_delete), math_view);
 
   selection_parent = GTK_WIDGET(gtk_builder_get_object(builder, "selectionparent"));
-  g_signal_connect(selection_parent, "activate", G_CALLBACK(on_selection_parent), NULL);
+  g_signal_connect(selection_parent, "activate", G_CALLBACK(on_selection_parent), math_view);
 
   set_font_size = GTK_WIDGET(gtk_builder_get_object(builder, "setfontsize"));
-  g_signal_connect(set_font_size, "activate", G_CALLBACK(on_set_font_size), NULL);
+  g_signal_connect(set_font_size, "activate", G_CALLBACK(on_set_font_size), math_view);
 
   larger_font_size = GTK_WIDGET(gtk_builder_get_object(builder, "largerfontsize"));
-  g_signal_connect(larger_font_size, "activate", G_CALLBACK(on_larger_font_size), NULL);
+  g_signal_connect(larger_font_size, "activate", G_CALLBACK(on_larger_font_size), math_view);
 
   smaller_font_size = GTK_WIDGET(gtk_builder_get_object(builder, "smallerfontsize"));
-  g_signal_connect(smaller_font_size, "activate", G_CALLBACK(on_smaller_font_size), NULL);
+  g_signal_connect(smaller_font_size, "activate", G_CALLBACK(on_smaller_font_size), math_view);
 
   errors_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "errorsverbosity"));
-  g_signal_connect(errors_verbosity, "activate", G_CALLBACK(on_errors_verbosity), NULL);
+  g_signal_connect(errors_verbosity, "activate", G_CALLBACK(on_errors_verbosity), math_view);
 
   warnings_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "warningsverbosity"));
-  g_signal_connect(warnings_verbosity, "activate", G_CALLBACK(on_warnings_verbosity), NULL);
+  g_signal_connect(warnings_verbosity, "activate", G_CALLBACK(on_warnings_verbosity), math_view);
 
   info_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "infoverbosity"));
-  g_signal_connect(info_verbosity, "activate", G_CALLBACK(on_info_verbosity), NULL);
+  g_signal_connect(info_verbosity, "activate", G_CALLBACK(on_info_verbosity), math_view);
 
   debug_verbosity = GTK_WIDGET(gtk_builder_get_object(builder, "debugverbosity"));
-  g_signal_connect(debug_verbosity, "activate", G_CALLBACK(on_debug_verbosity), NULL);
+  g_signal_connect(debug_verbosity, "activate", G_CALLBACK(on_debug_verbosity), math_view);
 
   semantics_selection = GTK_WIDGET(gtk_builder_get_object(builder, "semanticsselection"));
-  g_signal_connect(semantics_selection, "activate", G_CALLBACK(on_semantics_selection), NULL);
+  g_signal_connect(semantics_selection, "activate", G_CALLBACK(on_semantics_selection), math_view);
 
   structure_selection = GTK_WIDGET(gtk_builder_get_object(builder, "structureselection"));
-  g_signal_connect(structure_selection, "activate", G_CALLBACK(on_structure_selection), NULL);
+  g_signal_connect(structure_selection, "activate", G_CALLBACK(on_structure_selection), math_view);
 
   about = GTK_WIDGET(gtk_builder_get_object(builder, "about"));
-  g_signal_connect(about, "activate", G_CALLBACK(help_about), NULL);
+  g_signal_connect(about, "activate", G_CALLBACK(help_about), math_view);
 
   scrolled_area = GTK_WIDGET(gtk_builder_get_object(builder, "scrolledwindow"));
 
-  main_area = gtk_math_view_new(NULL, NULL);
-  gtk_widget_show(main_area);
-  gtk_container_add(GTK_CONTAINER(scrolled_area), main_area);
-  gtk_widget_set_double_buffered(main_area, FALSE);
+  gtk_container_add(GTK_CONTAINER(scrolled_area), GTK_WIDGET(math_view));
+  gtk_widget_set_double_buffered(GTK_WIDGET(math_view), FALSE);
+  gtk_widget_show(GTK_WIDGET(math_view));
 
-  g_signal_connect(main_area,
-		   "select_begin", 
-		   G_CALLBACK(select_begin),
-		   (gpointer) main_area);
+  g_signal_connect(math_view, "select_begin", G_CALLBACK(select_begin), NULL);
+  g_signal_connect(math_view, "select_over", G_CALLBACK(select_over), NULL);
+  g_signal_connect(math_view, "select_end", G_CALLBACK(select_end), NULL);
+  g_signal_connect(math_view, "select_abort", G_CALLBACK(select_abort), NULL);
+  g_signal_connect(math_view, "element_over", G_CALLBACK(element_over), NULL);
+  g_signal_connect(math_view, "click", G_CALLBACK(click), NULL);
 
-  g_signal_connect(main_area,
-		   "select_over", 
-		   G_CALLBACK(select_over),
-		   (gpointer) main_area);
-
-  g_signal_connect(main_area,
-		   "select_end", 
-		   G_CALLBACK(select_end),
-		   (gpointer) main_area);
- 
-  g_signal_connect(main_area,
-		   "select_abort", 
-		   G_CALLBACK(select_abort),
-		   (gpointer) main_area);
-
-  g_signal_connect(main_area,
-		   "element_over", 
-		   G_CALLBACK(element_over),
-		   (gpointer) main_area);
-  
-  g_signal_connect(main_area,
-		   "click", 
-		   G_CALLBACK(click),
-		   (gpointer) main_area);
-
-  cursor = gtk_math_view_decor_default_cursor_new(GTK_MATH_VIEW(main_area));
-  g_timeout_add(500, (GSourceFunc) cursor_blink, cursor);
-
-  status_bar = GTK_WIDGET(gtk_builder_get_object(builder, "statusbar"));
-  statusbar_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_bar), "filename");
+  return math_view;
 }
