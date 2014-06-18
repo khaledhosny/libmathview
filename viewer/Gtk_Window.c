@@ -115,7 +115,7 @@ quick_message(const char* msg)
 		  "clicked",
 		  GTK_SIGNAL_FUNC(gtk_widget_destroy), 
 		  dialog,0);
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
+  gtk_container_add (GTK_CONTAINER (gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
 		     okay_button);
 		     */
   
@@ -330,35 +330,21 @@ selection_reset(GtkWidget* widget, gpointer data)
 static void
 help_about(GtkWidget* widget, gpointer data)
 {
-  GtkWidget* dialog;
-  GtkWidget* label;
-  GtkWidget* ok;
 
-  dialog = gtk_dialog_new();
-  label = gtk_label_new("\n    MathML Viewer    \n    Copyright (C) 2000-2004 Luca Padovani    \n");
-  ok = gtk_button_new_with_label("Close");
-
-  /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog); */
-
-  g_signal_connect_swapped(GTK_OBJECT(ok),
-		  "clicked",
-		  G_CALLBACK(gtk_widget_destroy),
-		  (gpointer) dialog);
-  
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
-		     ok);
-
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
-
-  gtk_widget_show_all (dialog);
+  gtk_show_about_dialog(GTK_WINDOW(window),
+                        "program-name", "MathML Viewer",
+                        "copyright", "Copyright (C) 2000-2004 Luca Padovani",
+                        NULL);
 }
 
 static void
-change_default_font_size(GtkSpinButton* widget, GtkSpinButton* spin)
+change_default_font_size(GtkDialog *dialog, gint response_id, gpointer data)
 {
-  g_return_if_fail(spin != NULL);
-  gtk_math_view_set_font_size( GTK_MATH_VIEW(main_area), gtk_spin_button_get_value_as_int(spin));
+  g_return_if_fail(data != NULL);
+  GtkSpinButton* spin = (GtkSpinButton*) data;
+  if (response_id == GTK_RESPONSE_ACCEPT)
+    gtk_math_view_set_font_size(GTK_MATH_VIEW(main_area), gtk_spin_button_get_value_as_int(spin));
+  gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 static void
@@ -375,56 +361,28 @@ static void
 options_set_font_size(GtkWidget* widget, gpointer data)
 {
   GtkWidget* dialog;
-  GtkWidget* label;
-  GtkWidget* ok;
-  GtkWidget* cancel;
   GtkWidget* spin;
   GtkObject* adj;
 
-  dialog = gtk_dialog_new();
-  label = gtk_label_new("Default font size:");
-  ok = gtk_button_new_with_label("OK");
-  cancel = gtk_button_new_with_label("Cancel");
+  dialog = gtk_dialog_new_with_buttons("Set default font size",
+                                       GTK_WINDOW(window),
+                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                       "_OK", GTK_RESPONSE_ACCEPT,
+                                       "_Cancel", GTK_RESPONSE_REJECT,
+                                       NULL);
 
-  adj = gtk_adjustment_new (gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area)), 1, 200, 1, 1, 1);
+  adj = gtk_adjustment_new (gtk_math_view_get_font_size (GTK_MATH_VIEW(main_area)), 1, 200, 1, 1, 0);
   spin = gtk_spin_button_new (GTK_ADJUSTMENT(adj), 1, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spin), TRUE);
 
-  /* gtk_signal_connect (GTK_OBJECT (ok), "clicked",
-		      GTK_SIGNAL_FUNC (change_default_font_size), (gpointer) spin); */
-
-  g_signal_connect(GTK_OBJECT(ok),
-		  "clicked",
+  g_signal_connect(GTK_OBJECT(dialog),
+		  "response",
 		  G_CALLBACK(change_default_font_size),
 		  (gpointer) spin);
 
-  /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog); */
-
-  g_signal_connect_swapped(GTK_OBJECT (ok), 
-		  "clicked",
-		  G_CALLBACK(gtk_widget_destroy), 
-		  (gpointer) dialog);
-
-
-  /* gtk_signal_connect_object (GTK_OBJECT (ok), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog);*/
-
-  /* gtk_signal_connect_object (GTK_OBJECT (cancel), "clicked",
-			     GTK_SIGNAL_FUNC (gtk_widget_destroy), (gpointer) dialog); */
-  
-  g_signal_connect_swapped(GTK_OBJECT (cancel),
-		  "clicked",
-		  G_CALLBACK(gtk_widget_destroy), 
-		  (gpointer) dialog);
-
-
-  gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 5);
-
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), ok);
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), cancel);
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), label);
-  gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), spin);
+  GtkContainer* content_area = GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
+  gtk_container_set_border_width(content_area, 5);
+  gtk_container_add(content_area, spin);
 
   gtk_widget_show_all (dialog);
 }
@@ -458,9 +416,9 @@ element_over(GtkMathView* math_view, const GtkMathViewModelEvent* event)
 
   link = find_hyperlink(event->id, "href");
   if (link != NULL)
-    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, link_cursor);
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(math_view)), link_cursor);
   else
-    gdk_window_set_cursor(GTK_WIDGET(math_view)->window, normal_cursor);
+    gdk_window_set_cursor(gtk_widget_get_window(GTK_WIDGET(math_view)), normal_cursor);
 
   if (link != NULL)
     xmlFree(link);

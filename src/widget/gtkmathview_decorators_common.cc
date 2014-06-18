@@ -84,9 +84,10 @@ default_cursor_handler(GtkMathView* math_view, cairo_t* cr,
       if (!GTKMATHVIEW_METHOD_NAME(get_element_extents)(math_view, cursor->element, &focus_orig, &focus_box))
 	return;
 
+      GtkStyle* style = gtk_widget_get_style(GTK_WIDGET(math_view));
       GdkWindow* window = gtk_widget_get_window(GTK_WIDGET(math_view));
       if (cursor->draw_focus)
-	gtk_paint_focus(GTK_WIDGET(math_view)->style,
+	gtk_paint_focus(style,
 			window,
 			GTK_STATE_NORMAL,
 			NULL,

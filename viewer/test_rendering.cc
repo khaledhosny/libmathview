@@ -50,12 +50,16 @@ cairo_surface_t* surface = 0;
 extern "C" gboolean
 expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
 {
-  const gint width = widget->allocation.width;
-  const gint height = widget->allocation.height;
+  GdkWindow* window = gtk_widget_get_window(widget);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+
+  const gint width = allocation.width;
+  const gint height = allocation.height;
   if (!surface)
     {
       const BoundingBox box = view->getBoundingBox();
-      surface = gdk_window_create_similar_surface(widget->window, CAIRO_CONTENT_COLOR, width, height);
+      surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR, width, height);
       cairo_t *cr2 = cairo_create(surface);
       // needed to cleanup the surface
       cairo_set_source_rgb(cr2, 1, 1, 1);
@@ -66,7 +70,7 @@ expose(GtkWidget* widget, GdkEventExpose *event, gpointer user_data)
       view->render(*rc, scaled::zero(), -box.height);
     }
 
-  cairo_t *cr = gdk_cairo_create(widget->window);
+  cairo_t *cr = gdk_cairo_create(window);
 
   cairo_set_source_surface(cr, surface, 0, 0);
   cairo_rectangle(cr, 0, 0, width, height);

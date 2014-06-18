@@ -264,10 +264,11 @@ static void
 gtk_math_view_update(GtkMathView* math_view, gint x0, gint y0, gint width, gint height)
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
+  GdkWindow* window = gtk_widget_get_window(widget);
 
   if (!gtk_widget_get_mapped(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
-  cairo_t *cr = gdk_cairo_create(widget->window);
+  cairo_t *cr = gdk_cairo_create(window);
 
   if (math_view->surface != NULL)
     cairo_set_source_surface(cr, math_view->surface, 0, 0);
@@ -293,35 +294,39 @@ gtk_math_view_paint(GtkMathView* math_view)
   if (!gtk_widget_get_mapped(GTK_WIDGET(math_view)) || math_view->freeze_counter > 0) return;
 
   GtkWidget* widget = GTK_WIDGET(math_view);
+  GdkWindow* window = gtk_widget_get_window(widget);
+  GtkStyle* style = gtk_widget_get_style(widget);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
   
   setup_adjustments(math_view);
 
-  const gint width = widget->allocation.width;
-  const gint height = widget->allocation.height;
+  const gint width = allocation.width;
+  const gint height = allocation.height;
 
   Cairo_RenderingContext* rc = math_view->renderingContext;
   g_return_if_fail(rc != 0);
 
   if (math_view->surface == NULL)
     {
-      math_view->surface = gdk_window_create_similar_surface(widget->window, CAIRO_CONTENT_COLOR, width, height);
+      math_view->surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR, width, height);
       rc->setCairo(cairo_create(math_view->surface));
     }
 
   rc->setStyle(Cairo_RenderingContext::SELECTED_STYLE);
   if (gtk_widget_has_focus(GTK_WIDGET(math_view)))
     {
-      rc->setForegroundColor(RGBColorOfGdkColor(widget->style->text[GTK_STATE_SELECTED]));
-      rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->base[GTK_STATE_SELECTED]));
+      rc->setForegroundColor(RGBColorOfGdkColor(style->text[GTK_STATE_SELECTED]));
+      rc->setBackgroundColor(RGBColorOfGdkColor(style->base[GTK_STATE_SELECTED]));
     }
   else
     {
-      rc->setForegroundColor(RGBColorOfGdkColor(widget->style->text[GTK_STATE_ACTIVE]));
-      rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->base[GTK_STATE_ACTIVE]));
+      rc->setForegroundColor(RGBColorOfGdkColor(style->text[GTK_STATE_ACTIVE]));
+      rc->setBackgroundColor(RGBColorOfGdkColor(style->base[GTK_STATE_ACTIVE]));
     }
   rc->setStyle(Cairo_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(RGBColorOfGdkColor(widget->style->fg[GTK_STATE_NORMAL]));
-  rc->setBackgroundColor(RGBColorOfGdkColor(widget->style->bg[GTK_STATE_NORMAL]));
+  rc->setForegroundColor(RGBColorOfGdkColor(style->fg[GTK_STATE_NORMAL]));
+  rc->setBackgroundColor(RGBColorOfGdkColor(style->bg[GTK_STATE_NORMAL]));
 
   cairo_t *cr = cairo_create(math_view->surface);
   cairo_set_source_rgb(cr, 1, 1, 1);
@@ -348,11 +353,17 @@ hadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   g_return_if_fail(adj != NULL);
   g_return_if_fail(math_view != NULL);
 
-  if (adj->value > adj->upper - adj->page_size) adj->value = adj->upper - adj->page_size;
-  if (adj->value < adj->lower) adj->value = adj->lower;
+  gdouble value = gtk_adjustment_get_value(adj);
+  gdouble upper = gtk_adjustment_get_upper(adj);
+  gdouble lower = gtk_adjustment_get_lower(adj);
+  gdouble page_size = gtk_adjustment_get_page_size(adj);
+  if (value > upper - page_size)
+    gtk_adjustment_set_value(adj, upper - page_size);
+  if (value < lower)
+    gtk_adjustment_set_value(adj, lower);
 
   math_view->old_top_x = math_view->top_x;
-  math_view->top_x = static_cast<int>(adj->value);
+  math_view->top_x = static_cast<int>(value);
 
   if (math_view->old_top_x != math_view->top_x)
     gtk_math_view_paint(math_view);
@@ -364,11 +375,17 @@ vadjustment_value_changed(GtkAdjustment* adj, GtkMathView* math_view)
   g_return_if_fail(adj != NULL);
   g_return_if_fail(math_view != NULL);
 
-  if (adj->value > adj->upper - adj->page_size) adj->value = adj->upper - adj->page_size;
-  if (adj->value < adj->lower) adj->value = adj->lower;
+  gdouble value = gtk_adjustment_get_value(adj);
+  gdouble upper = gtk_adjustment_get_upper(adj);
+  gdouble lower = gtk_adjustment_get_lower(adj);
+  gdouble page_size = gtk_adjustment_get_page_size(adj);
+  if (value > upper - page_size)
+    gtk_adjustment_set_value(adj, upper - page_size);
+  if (value < lower)
+    gtk_adjustment_set_value(adj, lower);
 
   math_view->old_top_y = math_view->top_y;
-  math_view->top_y = static_cast<int>(adj->value);
+  math_view->top_y = static_cast<int>(value);
 
   if (math_view->old_top_y != math_view->top_y)
     gtk_math_view_paint(math_view);
@@ -727,16 +744,23 @@ extern "C" void
 GTKMATHVIEW_METHOD_NAME(update)(GtkMathView* math_view, GdkRectangle* rect)
 {
   GtkWidget* widget = GTK_WIDGET(math_view);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+
   if (rect)
     gtk_math_view_update(math_view, rect->x, rect->y, rect->width, rect->height);
   else
-    gtk_math_view_update(math_view, 0, 0, widget->allocation.width, widget->allocation.height);
+    gtk_math_view_update(math_view, 0, 0, allocation.width, allocation.height);
 }
 
 static void
 gtk_math_view_realize(GtkWidget* widget)
 {
+  GtkWidget* parent;
   GdkWindowAttr attributes;
+  GdkWindow* window;
+  GtkStyle* style;
+  GtkAllocation allocation;
   gint attributes_mask;
 
   g_return_if_fail (widget != NULL);
@@ -745,10 +769,12 @@ gtk_math_view_realize(GtkWidget* widget)
   gtk_widget_set_realized(widget, TRUE);
   gtk_widget_set_can_focus(widget, TRUE);
 
-  attributes.x = widget->allocation.x;
-  attributes.y = widget->allocation.y;
-  attributes.width = widget->allocation.width;
-  attributes.height = widget->allocation.height;
+  gtk_widget_get_allocation(widget, &allocation);
+
+  attributes.x = allocation.x;
+  attributes.y = allocation.y;
+  attributes.width = allocation.width;
+  attributes.height = allocation.height;
   attributes.wclass = GDK_INPUT_OUTPUT;
   attributes.window_type = GDK_WINDOW_CHILD;
   attributes.event_mask = gtk_widget_get_events (widget) | 
@@ -759,13 +785,15 @@ gtk_math_view_realize(GtkWidget* widget)
   attributes.colormap = gtk_widget_get_colormap (widget);
 
   attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-  widget->window = gdk_window_new (widget->parent->window, &attributes, attributes_mask);
+  parent = gtk_widget_get_parent(widget);
+  window = gdk_window_new(gtk_widget_get_window(parent), &attributes, attributes_mask);
+  gdk_window_set_user_data(window, widget);
 
-  widget->style = gtk_style_attach (widget->style, widget->window);
+  style = gtk_widget_get_style(widget);
+  gtk_style_set_background(style, window, GTK_STATE_ACTIVE);
 
-  gdk_window_set_user_data (widget->window, widget);
-
-  gtk_style_set_background (widget->style, widget->window, GTK_STATE_ACTIVE);
+  gtk_widget_set_window(widget, window);
+  gtk_widget_style_attach(widget);
 }
 
 static void
@@ -801,10 +829,11 @@ gtk_math_view_size_allocate(GtkWidget* widget, GtkAllocation* allocation)
       math_view->surface = NULL;
     }
 
-  widget->allocation = *allocation;
+  gtk_widget_set_allocation (widget, allocation);
+
   if (gtk_widget_get_realized(widget))
     {
-      gdk_window_move_resize(widget->window,
+      gdk_window_move_resize(gtk_widget_get_window(widget),
 			     allocation->x, allocation->y,
 			     allocation->width, allocation->height);
 
@@ -904,6 +933,7 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
   g_return_val_if_fail(GTK_IS_MATH_VIEW(widget), FALSE);
 
   GtkMathView* math_view = GTK_MATH_VIEW(widget);
+  GdkWindow* window = gtk_widget_get_window(widget);
   g_return_val_if_fail(math_view->view, FALSE);
 
   GdkModifierType mods;
@@ -911,8 +941,8 @@ gtk_math_view_motion_notify_event(GtkWidget* widget, GdkEventMotion* event)
   gint y = (gint) event->y;
   // using GDK hints is convenient since this handler is rather heavy
   // this way we notify GDK when we are ready to process another event
-  if (event->is_hint || (event->window != widget->window))
-    gdk_window_get_pointer(widget->window, &x, &y, &mods);
+  if (event->is_hint || (event->window != window))
+    gdk_window_get_pointer(window, &x, &y, &mods);
 
   GtkMathViewModelId elem = NULL;
 
@@ -1016,15 +1046,19 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
 {
   g_return_if_fail(adj != NULL);
 
-  adj->lower = 0.0;
-  adj->page_size = page_size;
-  adj->step_increment = 10;
-  adj->page_increment = page_size;
-  adj->upper = size;
-  if (adj->upper < 0) adj->upper = 0.0;
+  if (size < 0)
+    size = 0.0;
 
-  if (adj->value > adj->upper - page_size) {
-    adj->value = std::max(0.0, adj->upper - page_size);
+  gtk_adjustment_set_lower (adj, 0.0);
+  gtk_adjustment_set_page_size (adj, page_size);
+  gtk_adjustment_set_step_increment (adj, 10);
+  gtk_adjustment_set_page_increment (adj, page_size);
+  gtk_adjustment_set_upper (adj, size);
+
+  gdouble value = gtk_adjustment_get_value(adj);
+
+  if (value > size - page_size) {
+    gtk_adjustment_set_value(adj, std::max(0.0, static_cast<double>(size - page_size)));
     gtk_adjustment_value_changed(adj);
   }
 
@@ -1039,8 +1073,11 @@ setup_adjustments(GtkMathView* math_view)
 
   const BoundingBox box = math_view->view->getBoundingBox();
 
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(GTK_WIDGET(math_view), &allocation);
+
   if (math_view->hadjustment != NULL) {
-    const gint page_width = GTK_WIDGET(math_view)->allocation.width;
+    const gint page_width = allocation.width;
     const gint width = box.defined() ? Cairo_RenderingContext::toCairoPixels(box.width) : page_width;
     
     if (math_view->top_x > width - page_width)
@@ -1050,7 +1087,7 @@ setup_adjustments(GtkMathView* math_view)
   }
 
   if (math_view->vadjustment != NULL) {
-    const gint page_height = GTK_WIDGET(math_view)->allocation.height;
+    const gint page_height = allocation.height;
     const gint height = box.defined() ? Cairo_RenderingContext::toCairoPixels(box.verticalExtent()) : page_height;
 
     if (math_view->top_y > height - page_height)
@@ -1359,8 +1396,13 @@ GTKMATHVIEW_METHOD_NAME(get_size)(GtkMathView* math_view, gint* width, gint* hei
 {
   g_return_if_fail(math_view != NULL);
 
-  if (width) *width = GTK_WIDGET(math_view)->allocation.width;
-  if (height) *height = GTK_WIDGET(math_view)->allocation.height;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(GTK_WIDGET(math_view), &allocation);
+
+  if (width)
+    *width = allocation.width;
+  if (height)
+    *height = allocation.height;
 }
 
 extern "C" gboolean
@@ -1570,8 +1612,12 @@ extern "C" void
 GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView* math_view, gint* x, gint* y)
 {
   g_return_if_fail(math_view != NULL);
-  if (x != NULL) *x = math_view->vadjustment ? Cairo_RenderingContext::toCairoPixels(math_view->hadjustment->value) : 0;
-  if (y != NULL) *y = math_view->hadjustment ? Cairo_RenderingContext::toCairoPixels(math_view->vadjustment->value) : 0;
+  gdouble h_value = gtk_adjustment_get_value(math_view->hadjustment);
+  gdouble v_value = gtk_adjustment_get_value(math_view->vadjustment);
+  if (x != NULL)
+    *x = math_view->vadjustment ? Cairo_RenderingContext::toCairoPixels(h_value) : 0;
+  if (y != NULL)
+    *y = math_view->hadjustment ? Cairo_RenderingContext::toCairoPixels(v_value) : 0;
 }
 
 extern "C" void
@@ -1581,8 +1627,8 @@ GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView* math_view, gint x, gint y)
   g_return_if_fail(math_view->vadjustment != NULL);
   g_return_if_fail(math_view->hadjustment != NULL);
 
-  math_view->hadjustment->value = x;
-  math_view->vadjustment->value = y;
+  gtk_adjustment_set_value(math_view->hadjustment, x);
+  gtk_adjustment_set_value(math_view->vadjustment, y);
 
   gtk_adjustment_value_changed(math_view->hadjustment);
   gtk_adjustment_value_changed(math_view->vadjustment);
