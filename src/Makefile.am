@@ -31,7 +31,6 @@ libmathview_la_LIBADD = \
 
 noinst_LTLIBRARIES += libcommon.la
 
-libcommon_la_CPPFLAGS = $(NULL)
 libcommon_la_LIBADD = \
   $(GLIB_LIBS) \
   $(NULL)
@@ -97,11 +96,6 @@ noinst_HEADERS += \
   common/token.hh \
   $(NULL)
 
-libcommon_la_CPPFLAGS += \
-  -I$(top_builddir)/auto \
-  $(GLIB_CFLAGS) \
-  $(NULL)
-
 
 
 noinst_LTLIBRARIES += libengine_common.la
@@ -114,17 +108,6 @@ libengine_common_la_SOURCES = \
   engine/common/View.cc \
   engine/common/Node.cc \
   engine/common/Element.cc \
-  $(NULL)
-
-libengine_common_la_CPPFLAGS = \
-  -DPKGDATADIR=\""$(pkgdatadir)"\" \
-  -DPKGSYSCONFDIR=\""$(sysconfdir)/@PACKAGE@"\" \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/backend/common \
   $(NULL)
 
 mathview_HEADERS += \
@@ -197,14 +180,6 @@ libengine_mathml_la_SOURCES = \
   engine/mathml/MathMLmathElement.cc \
   engine/mathml/mathVariantAux.cc \
   engine/mathml/traverseAux.cc \
-  $(NULL)
-
-libengine_mathml_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/backend/common \
   $(NULL)
 
 mathview_HEADERS += \
@@ -312,14 +287,6 @@ libbackend_common_la_SOURCES = \
   backend/common/WrapperArea.cc \
   $(NULL)
 
-libbackend_common_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(NULL)
-
 libbackend_common_la_LIBADD = \
   $(NULL)
 
@@ -383,15 +350,6 @@ libmathview_backend_cairo_la_LIBADD = \
   $(CAIRO_LIBS) \
   $(NULL)
 
-libmathview_backend_cairo_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(CAIRO_CFLAGS) \
-  $(NULL)
-
 libmathview_backend_cairo_la_SOURCES = \
   backend/cairo/Cairo_Backend.cc \
   backend/cairo/Cairo_GlyphArea.cc \
@@ -414,15 +372,6 @@ libmathview_backend_qt_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
 
 libmathview_backend_qt_la_LIBADD = \
   $(QT_LIBS) \
-  $(NULL)
-
-libmathview_backend_qt_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(QT_CFLAGS) -fPIC \
   $(NULL)
 
 libmathview_backend_qt_la_SOURCES = \
@@ -467,14 +416,6 @@ mathview_HEADERS += \
   frontend/common/TemplateElementIterator.hh \
   $(NULL)
 
-libfrontend_common_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(NULL)
-
 
 if HAVE_CUSTOM_READER
 noinst_LTLIBRARIES += libfrontend_custom_reader.la
@@ -494,15 +435,6 @@ noinst_HEADERS += \
   frontend/custom_reader/custom_reader_Builder.hh \
   $(NULL)
 
-libfrontend_custom_reader_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/backend/common \
-  $(NULL)
-
 
 lib_LTLIBRARIES += libmathview_frontend_custom_reader.la
 
@@ -510,16 +442,6 @@ libmathview_frontend_custom_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION_
 
 libmathview_frontend_custom_reader_la_SOURCES = \
   view/custom_reader_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_custom_reader_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/custom_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
   $(NULL)
 
 libmathview_frontend_custom_reader_la_LIBADD = \
@@ -534,21 +456,6 @@ mathview_HEADERS += \
 
 if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_custom_reader.la
-
-libgtkmathview_custom_reader_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/custom_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(NULL)
 
 libgtkmathview_custom_reader_la_SOURCES = \
   widget/gtkmathview_custom_reader.cc \
@@ -585,16 +492,6 @@ noinst_HEADERS += \
   frontend/libxml2_reader/libxml2_reader_Setup.hh \
   $(NULL)
 
-libfrontend_libxml2_reader_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
-  $(NULL)
-
 
 lib_LTLIBRARIES += libmathview_frontend_libxml2_reader.la
 
@@ -602,17 +499,6 @@ libmathview_frontend_libxml2_reader_la_LDFLAGS = -version-info @MATHVIEW_VERSION
 
 libmathview_frontend_libxml2_reader_la_SOURCES = \
   view/libxml2_reader_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_libxml2_reader_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
   $(NULL)
 
 libmathview_frontend_libxml2_reader_la_LIBADD = \
@@ -628,21 +514,6 @@ mathview_HEADERS += \
 
 if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_libxml2_reader.la
-
-libgtkmathview_libxml2_reader_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2_reader \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(NULL)
 
 libgtkmathview_libxml2_reader_la_SOURCES = \
   widget/gtkmathview_libxml2_reader.cc \
@@ -679,17 +550,6 @@ mathview_HEADERS += \
   frontend/libxml2/libxml2_Model.hh \
   $(NULL)
 
-libfrontend_libxml2_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
-  $(NULL)
-
 
 lib_LTLIBRARIES += libmathview_frontend_libxml2.la
 
@@ -697,17 +557,6 @@ libmathview_frontend_libxml2_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ 
 
 libmathview_frontend_libxml2_la_SOURCES = \
   view/libxml2_MathView.cc \
-  $(NULL)
-
-libmathview_frontend_libxml2_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2 \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  $(XML_CFLAGS) \
   $(NULL)
 
 libmathview_frontend_libxml2_la_LIBADD = \
@@ -723,21 +572,6 @@ mathview_HEADERS += \
 
 if HAVE_GTK
 lib_LTLIBRARIES += libgtkmathview_libxml2.la
-
-libgtkmathview_libxml2_la_CPPFLAGS = \
-  -I$(top_builddir)/auto \
-  -I$(top_builddir)/src/widget \
-  -I$(top_srcdir)/src/common \
-  -I$(top_srcdir)/src/frontend/common \
-  -I$(top_srcdir)/src/frontend/libxml2 \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
-  -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/view \
-  $(GTK_CFLAGS) \
-  $(XML_CFLAGS) \
-  $(NULL)
 
 libgtkmathview_libxml2_la_SOURCES = \
   widget/gtkmathview_libxml2.cc \
@@ -794,5 +628,27 @@ widget/gtkmathview_marshal.c: widget/marshal.list
 
 endif # HAVE_GTK
 
+AM_CPPFLAGS = \
+  -I$(top_builddir)/auto \
+  -I$(top_builddir)/src/widget \
+  -I$(top_srcdir)/auto \
+  -I$(top_srcdir)/src/common \
+  -I$(top_srcdir)/src/view \
+  -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/engine/common \
+  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/frontend/common \
+  -I$(top_srcdir)/src/frontend/custom_reader \
+  -I$(top_srcdir)/src/frontend/libxml2 \
+  -I$(top_srcdir)/src/frontend/libxml2_reader \
+  $(CAIRO_CFLAGS) \
+  $(GLIB_CFLAGS) \
+  $(GTK_CFLAGS) \
+  $(QT_CFLAGS) -fPIC \
+  $(XML_CFLAGS) \
+  -DPKGDATADIR=\""$(pkgdatadir)"\" \
+  -DPKGSYSCONFDIR=\""$(sysconfdir)/@PACKAGE@"\" \
+  $(NULL)
 
 -include $(top_srcdir)/git.mk
