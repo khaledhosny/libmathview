@@ -33,27 +33,6 @@ if HAVE_CUSTOM_READER
 pkgconfig_DATA += gtkmathview-custom-reader.pc
 endif
 
-SCRIPTDIR = ./scripts
-
-backup:
-	tar cvfz ../@PACKAGE@-@PACKAGE_VERSION@-`date|tr ' ' '_'|tr ':' '_'`.tar.gz .
-
-cleanbak:
-	-rm -f `find . -name "*~"`
-
-lc:
-	@( \
-	CFILES=`find $(top_srcdir) -name "*.c"`; \
-	HFILES=`find $(top_srcdir) -name "*.h"`; \
-	CCFILES=`find $(top_srcdir) -name "*.cc"`; \
-	HHFILES=`find $(top_srcdir) -name "*.hh"`; \
-	ICCFILES=`find $(top_srcdir) -name "*.icc"`; \
-	wc -l $$CFILES $$HFILES $$CCFILES $$HHFILES $$ICCFILES | tail -n 1 \
-	)
-
-distdiff:
-	diff -r src/ @PACKAGE@-@PACKAGE_VERSION@/src/ | grep '.\(cc\|hh\)$$'
-
 MAINTAINERCLEANFILES = \
 		       $(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \
 		       $(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN) \
