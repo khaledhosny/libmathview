@@ -190,8 +190,10 @@ static guint decorate_over_signal = 0;
 /* auxiliary C++ functions */
 
 static RGBColor
-RGBColorOfGdkColor(const GdkColor& c)
-{ return RGBColor(c.red >> 8, c.green >> 8, c.blue >> 8); }
+RGBColorOfGdkRGBA(const GdkRGBA c)
+{
+  return RGBColor(c.red * 0xff, c.green * 0xff, c.blue * 0xff, c.alpha * 0xff);
+}
 
 static SmartPtr<const Cairo_WrapperArea>
 findGtkWrapperArea(GtkMathView* math_view, GtkMathViewModelId node)
@@ -289,7 +291,7 @@ gtk_math_view_paint(GtkMathView* math_view)
 
   GtkWidget* widget = GTK_WIDGET(math_view);
   GdkWindow* window = gtk_widget_get_window(widget);
-  GtkStyle* style = gtk_widget_get_style(widget);
+  GtkStyleContext* context = gtk_widget_get_style_context(widget);
   GtkAllocation allocation;
   gtk_widget_get_allocation(widget, &allocation);
   
@@ -307,20 +309,27 @@ gtk_math_view_paint(GtkMathView* math_view)
       rc->setCairo(cairo_create(math_view->surface));
     }
 
+  GdkRGBA fore, back;
   rc->setStyle(Cairo_RenderingContext::SELECTED_STYLE);
   if (gtk_widget_has_focus(GTK_WIDGET(math_view)))
     {
-      rc->setForegroundColor(RGBColorOfGdkColor(style->text[GTK_STATE_SELECTED]));
-      rc->setBackgroundColor(RGBColorOfGdkColor(style->base[GTK_STATE_SELECTED]));
+      gtk_style_context_get_color(context, GTK_STATE_FLAG_SELECTED, &fore);
+      gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED, &back);
     }
   else
     {
-      rc->setForegroundColor(RGBColorOfGdkColor(style->text[GTK_STATE_ACTIVE]));
-      rc->setBackgroundColor(RGBColorOfGdkColor(style->base[GTK_STATE_ACTIVE]));
+      gtk_style_context_get_color(context, GTK_STATE_FLAG_ACTIVE, &fore);
+      gtk_style_context_get_background_color(context, GTK_STATE_FLAG_ACTIVE, &back);
     }
+  rc->setForegroundColor(RGBColorOfGdkRGBA(fore));
+  rc->setBackgroundColor(RGBColorOfGdkRGBA(back));
+
   rc->setStyle(Cairo_RenderingContext::NORMAL_STYLE);
-  rc->setForegroundColor(RGBColorOfGdkColor(style->fg[GTK_STATE_NORMAL]));
-  rc->setBackgroundColor(RGBColorOfGdkColor(style->bg[GTK_STATE_NORMAL]));
+
+  gtk_style_context_get_color(context, GTK_STATE_FLAG_NORMAL, &fore);
+  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_NORMAL, &back);
+  rc->setForegroundColor(RGBColorOfGdkRGBA(fore));
+  rc->setBackgroundColor(RGBColorOfGdkRGBA(back));
 
   cairo_t *cr = cairo_create(math_view->surface);
   cairo_set_source_rgb(cr, 1, 1, 1);
@@ -713,7 +722,6 @@ gtk_math_view_realize(GtkWidget* widget)
   GtkWidget* parent;
   GdkWindowAttr attributes;
   GdkWindow* window;
-  GtkStyle* style;
   GtkAllocation allocation;
   gint attributes_mask;
 
@@ -742,11 +750,9 @@ gtk_math_view_realize(GtkWidget* widget)
   window = gdk_window_new(gtk_widget_get_window(parent), &attributes, attributes_mask);
   gdk_window_set_user_data(window, widget);
 
-  style = gtk_widget_get_style(widget);
-  gtk_style_set_background(style, window, GTK_STATE_ACTIVE);
+  gtk_style_context_set_background(gtk_widget_get_style_context(widget), window);
 
   gtk_widget_set_window(widget, window);
-  gtk_widget_style_attach(widget);
 }
 
 static void
