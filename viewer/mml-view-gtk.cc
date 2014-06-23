@@ -30,8 +30,6 @@
 #include "defs.h"
 #include "gtkmathview_libxml2.h"
 
-static gboolean    is_semantic_selection = FALSE;
-
 static gboolean cursor_blink (GtkMathViewDefaultCursorDecorator*);
 
 static xmlNodePtr
@@ -86,13 +84,6 @@ element_over (GtkMathView                 *view,
 #endif
 }
 
-static xmlElement*
-find_xref_element (xmlElement *elem)
-{
-  xmlNodePtr node = find_node_with_attribute ((xmlNodePtr) elem, BAD_CAST("xref"));
-  return (xmlElement*) node;
-}
-
 static void
 select_begin (GtkMathView                 *view,
               const GtkMathViewModelEvent *event)
@@ -111,21 +102,10 @@ select_begin (GtkMathView                 *view,
       if (root_selected != NULL)
         {
           gtk_math_view_unselect (view, root_selected);
-          root_selected = NULL;
         }
 
-      if (is_semantic_selection)
-        {
-          xmlElement *new_elem = find_xref_element (event->id);
-          first_selected = root_selected = new_elem;
-        }
-      else
-        {
-          first_selected = root_selected = event->id;
-        }
-
-      if (root_selected != NULL)
-        gtk_math_view_select (view, root_selected);
+      first_selected = root_selected = event->id;
+      gtk_math_view_select (view, root_selected);
 
       g_object_set_data (G_OBJECT (view), "root-selected", root_selected);
       g_object_set_data (G_OBJECT (view), "first-selected", first_selected);
@@ -204,19 +184,9 @@ select_over (GtkMathView                 *view,
       if (root_selected != NULL)
         {
           gtk_math_view_unselect (view, root_selected);
-          root_selected = NULL;
         }
 
-      if (is_semantic_selection)
-        {
-          xmlElement *new_root = find_common_ancestor (first_selected, event->id);
-          if (new_root != NULL)
-            root_selected = find_xref_element (new_root);
-          else
-            root_selected = NULL;
-        }
-      else
-        root_selected = find_common_ancestor (first_selected, event->id);
+      root_selected = find_common_ancestor (first_selected, event->id);
 
       while (root_selected != NULL && !gtk_math_view_select (view, root_selected))
         {
