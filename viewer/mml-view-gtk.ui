@@ -16,6 +16,7 @@
       <item>
         <attribute name='label' translatable='yes'>_Quit</attribute>
         <attribute name='action'>app.quit</attribute>
+	<attribute name="accel">&lt;Primary&gt;q</attribute>
       </item>
     </section>
   </menu>
@@ -34,6 +35,7 @@
         <item>
           <attribute name='label' translatable='yes'>_Select parent</attribute>
           <attribute name='action'>win.select-parent</attribute>
+	  <attribute name="accel">&lt;Primary&gt;p</attribute>
         </item>
       </section>
     </submenu>
@@ -43,10 +45,12 @@
         <item>
           <attribute name='label' translatable='yes'>Zoom _In</attribute>
           <attribute name='action'>win.zoom-in</attribute>
+	  <attribute name="accel">&lt;Primary&gt;equal</attribute>
         </item>
         <item>
           <attribute name='label' translatable='yes'>Zoom _Out</attribute>
           <attribute name='action'>win.zoom-out</attribute>
+	  <attribute name="accel">&lt;Primary&gt;minus</attribute>
         </item>
       </section>
     </submenu>
