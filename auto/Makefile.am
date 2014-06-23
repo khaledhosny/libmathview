@@ -8,7 +8,6 @@ AUTOFILES = \
   $(NULL)
 
 EXTRA_DIST = \
-  htmlmathml.json \
   unicode.xml \
   list-to-dec.xsl \
   list-to-def.xsl \
