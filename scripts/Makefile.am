@@ -7,7 +7,8 @@ noinst_SCRIPTS = \
   makekeywords \
   applylicence \
   dumpEntitiesTable \
-  dumpEntitiesTableDTD
+  dumpEntitiesTableDTD \
+  dumpOperatorDictionary
 
 EXTRA_DIST = \
   $(noinst_SCRIPTS) \

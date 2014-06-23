@@ -1,0 +1,47 @@
+from lxml import etree
+import sys
+
+space_map = (
+    "0em",
+    "veryverythinmathspace",
+    "verythinmathspace",
+    "thinmathspace",
+    "mediummathspace",
+    "thickmathspace",
+    "verythickmathspace",
+    "veryverythickmathspace",
+)
+
+def getOperators(tree):
+    root = tree.getroot()
+    operators = {}
+    for operator in root.findall(".//operator-dictionary"):
+        character = operator.getparent()
+        dec = character.get("dec")
+        value = ""
+        for d in dec.split("-"):
+            d = int(d)
+            value += "&#x%04X;" %(d)
+        operators[value] = operator
+
+    return operators
+
+def dumpOperators(tree, fd):
+    operators = getOperators(tree)
+    fd.write('<?xml version="1.0"?>\n')
+    fd.write('<dictionary>\n')
+    for key in sorted(operators.keys()):
+        operator = operators[key]
+        fd.write(' <operator')
+        fd.write(' name="%s"' %(key))
+        for attribute, value in operator.items():
+            if attribute in ("lspace", "rspace"):
+                value = space_map[int(value)]
+            fd.write(' %s="%s"' %(attribute, value))
+        fd.write('/>')
+        fd.write('\n')
+    fd.write('</dictionary>\n')
+
+if __name__ == "__main__":
+    doc = etree.parse(sys.argv[1])
+    dumpOperators(doc, sys.stdout)

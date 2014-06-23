@@ -2,6 +2,7 @@
 NULL =
 
 AUTOFILES = \
+  dictionary.xml \
   entitiesTable.inc \
   token.dec \
   token.def \
@@ -17,6 +18,10 @@ EXTRA_DIST = \
   token.def \
   $(NULL)
 
+pkgdata_DATA = \
+  dictionary.xml \
+  $(NULL)
+
 DISTCLEANFILES = entitiesTable.inc $(NULL)
 MAINTAINERCLEANFILES = token.dec token.def
 
@@ -29,6 +34,9 @@ CONFIGDIR = $(top_srcdir)/config
 
 entitiesTable.inc: unicode.xml $(SCRIPTDIR)/dumpEntitiesTable
 	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpEntitiesTable $< > $@
+
+dictionary.xml: unicode.xml $(SCRIPTDIR)/dumpOperatorDictionary
+	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpOperatorDictionary $< > $@
 
 token.dec: token-list.xml list-to-dec.xsl
 	$(AM_V_GEN)$(XSLTPROC) $(srcdir)/list-to-dec.xsl $< >$@
