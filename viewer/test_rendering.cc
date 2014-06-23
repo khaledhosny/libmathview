@@ -65,8 +65,7 @@ draw(GtkWidget* widget, cairo_t *cr)
       cairo_set_source_rgb(cr2, 1, 1, 1);
       cairo_rectangle(cr2, 0, 0, width, height);
       cairo_fill(cr2);
-      Cairo_RenderingContext* rc = new Cairo_RenderingContext();
-      rc->setCairo(cr2);
+      Cairo_RenderingContext* rc = new Cairo_RenderingContext(cr2);
       view->render(*rc, scaled::zero(), -box.height);
     }
 

@@ -27,46 +27,44 @@
 
 #include "Cairo_RenderingContext.hh"
 
-Cairo_RenderingContext::Cairo_RenderingContext(void)
+Cairo_RenderingContext::Cairo_RenderingContext(cairo_t* cr)
+  : m_cr(cr)
 { }
 
 Cairo_RenderingContext::~Cairo_RenderingContext()
 {
-  if (cairo_context)
-    cairo_destroy(cairo_context);
+  cairo_destroy(m_cr);
 }
 
 void
 Cairo_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& box) const
 {
-  cairo_t* cr = getCairo();
-  cairo_save(cr);
+  cairo_save(m_cr);
 
   RGBColor fg = getForegroundColor();
-  cairo_set_source_rgba(cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
-  cairo_rectangle(cr,
+  cairo_set_source_rgba(m_cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_rectangle(m_cr,
                   toCairoX(x),
                   toCairoY(y + box.height),
                   toCairoPixels(box.width),
                   toCairoPixels(box.height + box.depth));
-  cairo_fill(cr);
+  cairo_fill(m_cr);
 
-  cairo_restore(cr);
+  cairo_restore(m_cr);
 }
 
 void
 Cairo_RenderingContext::draw(const scaled& x, const scaled& y, cairo_scaled_font_t* font,
                              unsigned glyph) const
 {
-  cairo_t* cr = getCairo();
-  cairo_save(cr);
+  cairo_save(m_cr);
 
   RGBColor fg = getForegroundColor();
-  cairo_set_scaled_font(cr, font);
-  cairo_set_source_rgba(cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
+  cairo_set_scaled_font(m_cr, font);
+  cairo_set_source_rgba(m_cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
 
   cairo_glyph_t glyphs[1] = { { glyph, toCairoX(x), toCairoY(y) } };
-  cairo_show_glyphs(cr, glyphs, 1);
+  cairo_show_glyphs(m_cr, glyphs, 1);
 
-  cairo_restore(cr);
+  cairo_restore(m_cr);
 }

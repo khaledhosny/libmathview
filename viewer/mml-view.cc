@@ -164,8 +164,7 @@ main(int argc, char *argv[])
   if (surface)
   {
     cairo_t* cr = cairo_create(surface);
-    Cairo_RenderingContext* rc = new Cairo_RenderingContext();
-    rc->setCairo(cr);
+    Cairo_RenderingContext* rc = new Cairo_RenderingContext(cr);
 
     view->render(*rc, scaled::zero(), -box.height);
 

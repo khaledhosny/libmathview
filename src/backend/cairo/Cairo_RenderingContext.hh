@@ -33,11 +33,8 @@
 class Cairo_RenderingContext : public RenderingContext
 {
 public:
-  Cairo_RenderingContext(void);
+  Cairo_RenderingContext(cairo_t* cr = 0);
   virtual ~Cairo_RenderingContext();
-
-  void setCairo(cairo_t* cr) { cairo_context = cr; }
-  cairo_t* getCairo(void) const { return cairo_context; }
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
   void draw(const scaled&, const scaled&, cairo_scaled_font_t*, unsigned) const;
@@ -63,7 +60,7 @@ public:
   { return fromCairoPixels(-y); }
 
 private:
-  cairo_t* cairo_context;
+  cairo_t* m_cr;
 };
 
 #endif // __Cairo_RenderingContext_hh__

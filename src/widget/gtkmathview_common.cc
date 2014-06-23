@@ -300,14 +300,14 @@ gtk_math_view_paint(GtkMathView* math_view)
   const gint width = allocation.width;
   const gint height = allocation.height;
 
-  Cairo_RenderingContext* rc = math_view->renderingContext;
-  g_return_if_fail(rc != 0);
-
   if (math_view->surface == NULL)
     {
       math_view->surface = gdk_window_create_similar_surface(window, CAIRO_CONTENT_COLOR, width, height);
-      rc->setCairo(cairo_create(math_view->surface));
+      math_view->renderingContext = new Cairo_RenderingContext(cairo_create(math_view->surface));
     }
+
+  Cairo_RenderingContext* rc = math_view->renderingContext;
+  g_return_if_fail(rc != 0);
 
   GdkRGBA fore, back;
   rc->setStyle(RenderingContext::SELECTED_STYLE);
@@ -615,8 +615,6 @@ gtk_math_view_init(GtkMathView* math_view)
   view->setDefaultFontSize(fontsize);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, backend->getMathGraphicDevice()));
-
-  math_view->renderingContext = new Cairo_RenderingContext();
 }
 
 extern "C" GtkWidget*
