@@ -28,7 +28,7 @@ noinst_HEADERS = $(AUTOFILES)
 SCRIPTDIR = $(top_srcdir)/scripts
 CONFIGDIR = $(top_srcdir)/config
 
-entitiesTable.inc: htmlmathml.json $(SCRIPTDIR)/dumpEntitiesTable
+entitiesTable.inc: unicode.xml $(SCRIPTDIR)/dumpEntitiesTable
 	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpEntitiesTable $< > $@
 
 token.dec: token-list.xml list-to-dec.xsl

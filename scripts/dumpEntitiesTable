@@ -1,10 +1,39 @@
-import json
+from lxml import etree
 import sys
 
-f = open(sys.argv[1])
-entities = json.load(f)['characters']
+def getSets(tree, names):
+    root = tree.getroot()
+    sets = set()
+    for group in root.findall(".//group"):
+        if group.get("name") in names:
+            for child in group:
+                sets.add(child.get("name"))
 
-for entity in entities:
-    value = "".join([r"\x%02x" %(ord(c)) for c in entities[entity].encode("utf8")])
-    assert(value)
-    sys.stdout.write('{ "%s", "%s" },\n' %(entity, value))
+    return sets
+
+def getEntities(tree, sets):
+    root = tree.getroot()
+    entities = {}
+    for s in sets:
+        for entity in root.findall(".//entity[@set='%s']" %s):
+            character = entity.getparent()
+            dec = character.get("dec")
+            value = ""
+            for d in dec.split("-"):
+                value += unichr(int(d))
+            entities[entity.get("id")] = value
+
+    return entities
+
+def dumpEntities(tree, fd):
+    sets = getSets(tree, ("mathml", "html5"))
+    entities = getEntities(tree, sets)
+
+    for entity in sorted(entities.keys()):
+        value = "".join([r"\x%02x" %(ord(b)) for b in entities[entity].encode("utf8")])
+        assert(value)
+        fd.write('{ "%s", "%s" },\n' %(entity, value))
+
+if __name__ == "__main__":
+    doc = etree.parse(sys.argv[1])
+    dumpEntities(doc, sys.stdout)
