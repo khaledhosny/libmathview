@@ -31,8 +31,6 @@
 #include "gtkmathview_libxml2.h"
 
 static gboolean    is_semantic_selection = FALSE;
-static xmlElement *first_selected = NULL;
-static xmlElement *root_selected = NULL;
 
 static gboolean cursor_blink (GtkMathViewDefaultCursorDecorator*);
 
@@ -105,6 +103,9 @@ select_begin (GtkMathView                 *view,
 
   if (event->id != NULL)
     {
+      xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+      xmlElement *first_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "first-selected"));
+
       gtk_math_view_freeze (view);
 
       if (root_selected != NULL)
@@ -125,6 +126,9 @@ select_begin (GtkMathView                 *view,
 
       if (root_selected != NULL)
         gtk_math_view_select (view, root_selected);
+
+      g_object_set_data (G_OBJECT (view), "root-selected", root_selected);
+      g_object_set_data (G_OBJECT (view), "first-selected", first_selected);
 
       gtk_math_view_thaw (view);
     }
@@ -190,6 +194,9 @@ select_over (GtkMathView                 *view,
   g_return_if_fail (GTK_IS_MATH_VIEW (view));
   g_return_if_fail (event != NULL);
 
+  xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+  xmlElement *first_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "first-selected"));
+
   if (first_selected != NULL && event->id != NULL)
     {
       gtk_math_view_freeze (view);
@@ -219,6 +226,9 @@ select_over (GtkMathView                 *view,
 
       gtk_math_view_thaw (view);
     }
+
+  g_object_set_data (G_OBJECT (view), "root-selected", root_selected);
+  g_object_set_data (G_OBJECT (view), "first-selected", first_selected);
 }
 
 static void
@@ -229,9 +239,11 @@ select_end (GtkMathView                 *view,
   g_return_if_fail (GTK_IS_MATH_VIEW (view));
   g_return_if_fail (event != NULL);
 
+  xmlElement *first_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "first-selected"));
+
   if (first_selected != NULL)
     {
-      first_selected = NULL;
+      g_object_set_data (G_OBJECT (view), "first-selected", NULL);
     }
 }
 
@@ -241,9 +253,12 @@ select_abort (GtkMathView *view)
   g_return_if_fail (view != NULL);
   g_return_if_fail (GTK_IS_MATH_VIEW (view));
 
+  xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+  xmlElement *first_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "first-selected"));
+
   if (first_selected != NULL)
     {
-      first_selected = NULL;
+      g_object_set_data (G_OBJECT (view), "first-selected", NULL);
     }
 
   if (root_selected != NULL)
@@ -251,8 +266,9 @@ select_abort (GtkMathView *view)
       gtk_math_view_freeze (view);
       gtk_math_view_unselect (view, root_selected);
       gtk_math_view_thaw (view);
-      root_selected = NULL;
+      g_object_set_data (G_OBJECT (view), "root-selected", NULL);
     }
+
 }
 
 static xmlElement*
@@ -301,6 +317,8 @@ click (GtkMathView                 *view,
   xmlElement *elem;
   GtkMathViewDefaultCursorDecorator *cursor;
 
+  xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+
   gint w, h;
   gtk_math_view_get_size (view, &w, &h);
   g_debug ("click signal %d %d\n", w, h);
@@ -346,7 +364,7 @@ click (GtkMathView                 *view,
       gtk_math_view_freeze (view);
       gtk_math_view_unselect (view, root_selected);
       gtk_math_view_thaw (view);
-      root_selected = NULL;
+      g_object_set_data (G_OBJECT (view), "root-selected", NULL);
     }
 }
 
@@ -372,10 +390,12 @@ window_selection_reset (GSimpleAction *action,
                         gpointer       user_data)
 {
   GtkMathView *view = GTK_MATH_VIEW (user_data);
+  xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+
   if (root_selected != NULL)
     {
       gtk_math_view_unselect (view, root_selected);
-      root_selected = NULL;
+      g_object_set_data (G_OBJECT (view), "root-selected", NULL);
     }
 }
 
@@ -395,11 +415,13 @@ window_selection_delete (GSimpleAction *action,
                          gpointer       user_data)
 {
   GtkMathView *view = GTK_MATH_VIEW (user_data);
+  xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+
   if (root_selected != NULL)
     {
       gtk_math_view_freeze (view);
       delete_element (view, root_selected);
-      root_selected = NULL;
+      g_object_set_data (G_OBJECT (view), "root-selected", NULL);
       gtk_math_view_thaw (view);
     }
 }
@@ -410,11 +432,13 @@ window_select_parent (GSimpleAction *action,
                       gpointer       user_data)
 {
   GtkMathView *view = GTK_MATH_VIEW (user_data);
+  xmlElement *root_selected = static_cast<xmlElement*>(g_object_get_data (G_OBJECT (view), "root-selected"));
+
   if (root_selected != NULL)
     {
       xmlElement *parent = (xmlElement*) ((xmlNodePtr) root_selected)->parent;
-      root_selected = parent;
-      gtk_math_view_select (view, root_selected);
+      g_object_set_data (G_OBJECT (view), "root-selected", parent);
+      gtk_math_view_select (view, parent);
     }
 }
 
@@ -455,6 +479,9 @@ mml_view_new_window (GApplication *app,
 
   window = gtk_application_window_new (GTK_APPLICATION (app));
   view = gtk_math_view_new (NULL, NULL);
+
+  g_object_set_data (G_OBJECT (view), "root-selected", NULL);
+  g_object_set_data (G_OBJECT (view), "first-selected", NULL);
 
   GActionEntry entries[] = {
     { "selection-reset", window_selection_reset, NULL, NULL, NULL, 0 },
