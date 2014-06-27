@@ -40,19 +40,19 @@ public:
 
   virtual AreaRef format(class FormattingContext&);
 
-  bool         IsStretchy(void) const { return stretchy != 0; }
-  bool         IsAccent(void) const { return accent != 0; }
-  bool         ForcedFence(void) const { return forcedFence != 0; }
-  bool         IsFence(void) const { return fence != 0; }
-  bool         ForcedSeparator(void) const { return forcedSeparator != 0; }
-  bool         IsSeparator(void) const { return separator != 0; }
-  bool         ForcedSymmetric(void) const { return forcedSymmetric != 0; }
-  bool         IsSymmetric(void) const { return symmetric != 0; }
-  bool         HasInfiniteMaxSize(void) const { return infiniteMaxSize != 0; }
-  bool         HasMovableLimits(void) const { return movableLimits != 0; }
-  void         SetFence(void) { forcedFence = fence = 1; }
-  void         SetSeparator(void) { forcedSeparator = separator = 1; }
-  void         ResetSymmetric(void) { forcedSymmetric = 1; symmetric = 0; }
+  bool         IsStretchy(void) const { return stretchy; }
+  bool         IsAccent(void) const { return accent; }
+  bool         ForcedFence(void) const { return forcedFence; }
+  bool         IsFence(void) const { return fence; }
+  bool         ForcedSeparator(void) const { return forcedSeparator; }
+  bool         IsSeparator(void) const { return separator; }
+  bool         ForcedSymmetric(void) const { return forcedSymmetric; }
+  bool         IsSymmetric(void) const { return symmetric; }
+  bool         HasInfiniteMaxSize(void) const { return infiniteMaxSize; }
+  bool         HasMovableLimits(void) const { return movableLimits; }
+  void         SetFence(void) { forcedFence = fence = true; }
+  void         SetSeparator(void) { forcedSeparator = separator = true; }
+  void         ResetSymmetric(void) { forcedSymmetric = true; symmetric = false; }
 
   scaled       getLeftPadding(void) const { return lSpace; }
   scaled       getRightPadding(void) const { return rSpace; }
@@ -64,17 +64,17 @@ private:
   SmartPtr<Value> getOperatorAttributeValue(const class AttributeSignature&, const SmartPtr<class AttributeSet>&) const;
   void parseLimitValue(const SmartPtr<Value>&, const class FormattingContext&, float&, scaled&);
 
-  unsigned largeOp : 1;
-  unsigned forcedFence : 1;
-  unsigned fence : 1;
-  unsigned forcedSeparator : 1;
-  unsigned separator : 1;
-  unsigned forcedSymmetric : 1;
-  unsigned symmetric : 1;
-  unsigned stretchy : 1;
-  unsigned infiniteMaxSize : 1; // if != 0 => no max size contraint
-  unsigned movableLimits : 1;
-  unsigned accent : 1;
+  bool largeOp;
+  bool forcedFence;
+  bool fence;
+  bool forcedSeparator;
+  bool separator;
+  bool forcedSymmetric;
+  bool symmetric;
+  bool stretchy;
+  bool infiniteMaxSize; // if != 0 => no max size contraint
+  bool movableLimits;
+  bool accent;
   scaled lSpace;
   scaled rSpace;
 };

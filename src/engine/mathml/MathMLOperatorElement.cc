@@ -44,8 +44,8 @@
 MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceContext>& context)
   : MathMLTokenElement(context)
 {
-  fence = separator = stretchy = symmetric = infiniteMaxSize = accent = movableLimits = 0;
-  forcedFence = forcedSeparator = forcedSymmetric = 0;
+  fence = separator = stretchy = symmetric = infiniteMaxSize = accent = movableLimits = false;
+  forcedFence = forcedSeparator = forcedSymmetric = false;
 }
 
 MathMLOperatorElement::~MathMLOperatorElement()
@@ -86,10 +86,10 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
       else defaults = 0;
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, fence, defaults))
-	fence = ToBoolean(value) ? 1 : 0;
+	fence = ToBoolean(value);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, separator, defaults))
-	separator = ToBoolean(value) ? 1 : 0;
+	separator = ToBoolean(value);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, lspace, defaults))
 	{
@@ -112,10 +112,10 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 	assert(false);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, stretchy, defaults))
-	stretchy = ToBoolean(value) ? 1 : 0;
+	stretchy = ToBoolean(value);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, symmetric, defaults))
-	symmetric = ToBoolean(value) ? 1 : 0;
+	symmetric = ToBoolean(value);
 
       float maxMultiplier = 0.0f;
       scaled maxSize;
@@ -135,17 +135,17 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 	assert(false);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, movablelimits, defaults))
-	movableLimits = ToBoolean(value) ? 1 : 0;
+	movableLimits = ToBoolean(value);
       else
 	assert(false);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, accent, defaults))
-	accent = ToBoolean(value) ? 1 : 0;
+	accent = ToBoolean(value);
       else
 	assert(false);
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop, defaults))
-	largeOp = ToBoolean(value) ? 1 : 0;
+	largeOp = ToBoolean(value);
 
       AreaRef res;
       if (stretchy && this == ctxt.getStretchOperator())
