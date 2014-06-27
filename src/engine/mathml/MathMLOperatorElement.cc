@@ -44,7 +44,7 @@
 MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceContext>& context)
   : MathMLTokenElement(context)
 {
-  fence = separator = stretchy = symmetric = infiniteMaxSize = accent = movableLimits = false;
+  fence = separator = stretchy = symmetric = accent = movableLimits = false;
   forcedFence = forcedSeparator = forcedSymmetric = false;
 }
 

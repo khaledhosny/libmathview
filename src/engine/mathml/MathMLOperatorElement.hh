@@ -48,7 +48,6 @@ public:
   bool         IsSeparator(void) const { return separator; }
   bool         ForcedSymmetric(void) const { return forcedSymmetric; }
   bool         IsSymmetric(void) const { return symmetric; }
-  bool         HasInfiniteMaxSize(void) const { return infiniteMaxSize; }
   bool         HasMovableLimits(void) const { return movableLimits; }
   void         SetFence(void) { forcedFence = fence = true; }
   void         SetSeparator(void) { forcedSeparator = separator = true; }
@@ -72,7 +71,6 @@ private:
   bool forcedSymmetric;
   bool symmetric;
   bool stretchy;
-  bool infiniteMaxSize; // if != 0 => no max size contraint
   bool movableLimits;
   bool accent;
   scaled lSpace;
