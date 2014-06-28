@@ -34,17 +34,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <section name="default">
     <key name="font-size">12pt</key>
-    <section name="color">
-      <key name="foreground">#000000</key>
-      <key name="background">#ffffff</key>
-    </section>
-    <section name="link-color">
-      <key name="foreground">#32648b</key>
-      <key name="background">#ffffff</key>
-    </section>
-    <section name="select-color">
-      <key name="foreground">#000000</key>
-      <key name="background">#ff6a6a</key>
-    </section>
   </section>
 </math-engine-configuration>
