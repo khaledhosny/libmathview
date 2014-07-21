@@ -53,7 +53,6 @@ noinst_PROGRAMS += test_loading_reader
 endif
 endif
 
-if HAVE_QT
 mml_view_qt_SOURCES = mml-view-qt.cc Qt_RenderArea.cc moc_Qt_RenderArea.cc
 mml_view_qt_LDADD = \
   $(QT_LIBS) \
@@ -63,9 +62,7 @@ mml_view_qt_LDADD = \
   $(top_builddir)/src/libmathview_backend_qt.la \
   $(top_builddir)/src/libmathview_frontend_libxml2.la \
   $(NULL)
-endif
 
-if HAVE_CAIRO
 mml_view_SOURCES = mml-view.cc
 mml_view_LDADD = \
   $(XML_LIBS) \
@@ -75,9 +72,7 @@ mml_view_LDADD = \
   $(top_builddir)/src/libmathview_backend_cairo.la \
   $(top_builddir)/src/libmathview_frontend_libxml2.la \
   $(NULL)
-endif
 
-if HAVE_GTK
 mml_view_gtk_SOURCES = mml-view-gtk.cc $(MATHVIEW_RESOURCES)
 mml_view_gtk_LDADD = \
   $(XML_LIBS) \
@@ -127,7 +122,6 @@ test_loading_reader_LDADD = \
   $(GTK_LIBS) \
   $(top_builddir)/src/libgtkmathview_libxml2_reader.la \
   $(NULL)
-endif
 
 AM_CPPFLAGS = \
   -I$(top_builddir)/auto/ \
