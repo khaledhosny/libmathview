@@ -7,8 +7,8 @@ datarootdir=@datarootdir@
 datadir=@datadir@
 
 Name: GtkMathView
-Description: MathML rendering engine (GTK+ backend)
+Description: MathML rendering engine (Cairo backend)
 Version: @PACKAGE_VERSION@
-Requires: glib-2.0 mathview-core
+Requires: mathview-core
 Libs: -L${libdir} -lmathview_backend_cairo
 Cflags: -I${includedir}/@PACKAGE@

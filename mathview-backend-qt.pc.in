@@ -9,6 +9,6 @@ datadir=@datadir@
 Name: GtkMathView
 Description: MathML rendering engine (Qt backend)
 Version: @PACKAGE_VERSION@
-Requires: glib-2.0 mathview-core
+Requires: mathview-core
 Libs: -L${libdir} -lmathview_backend_qt
 Cflags: -I${includedir}/@PACKAGE@

@@ -34,12 +34,16 @@ noinst_PROGRAMS += test_building
 noinst_PROGRAMS += test_rendering
 endif
 if HAVE_CAIRO
+if HAVE_GLIB
 bin_PROGRAMS += mml-view
 endif
+endif
 if HAVE_QT
+if HAVE_GLIB
 moc_%.cc: %.hh
 	$(MOC) $< -o $@
 bin_PROGRAMS += mml-view-qt
+endif
 endif
 endif
 

@@ -9,7 +9,7 @@ datadir=@datadir@
 Name: MathView
 Description: A rendering engine for MathML markup (libxml2 frontend)
 Version: @PACKAGE_VERSION@
-Requires: glib-2.0 libxml-2.0
+Requires: libxml-2.0
 Libs: @XML_LIBS@ -L${libdir} -lmathview_frontend_libxml2 -lmathview
 Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@
 

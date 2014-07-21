@@ -9,7 +9,6 @@ datadir=@datadir@
 Name: MathView
 Description: MathML rendering engine (core)
 Version: @PACKAGE_VERSION@
-Requires: glib-2.0
 Libs: -L${libdir} -lmathview
 Cflags: -I${includedir}/@PACKAGE@
 

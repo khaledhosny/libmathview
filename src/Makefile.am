@@ -31,10 +31,6 @@ libmathview_la_LIBADD = \
 
 noinst_LTLIBRARIES += libcommon.la
 
-libcommon_la_LIBADD = \
-  $(GLIB_LIBS) \
-  $(NULL)
-
 libcommon_la_SOURCES = \
   common/AbstractLogger.cc \
   common/BoundingBox.cc \
@@ -643,7 +639,6 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/frontend/libxml2 \
   -I$(top_srcdir)/src/frontend/libxml2_reader \
   $(CAIRO_CFLAGS) \
-  $(GLIB_CFLAGS) \
   $(GTK_CFLAGS) \
   $(QT_CFLAGS) -fPIC \
   $(XML_CFLAGS) \

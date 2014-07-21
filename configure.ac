@@ -91,8 +91,6 @@ AC_LANG_POP(C++)
 
 AC_LANG([C])
 
-PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1],,[AC_MSG_ERROR(could not find GLIB)])
-
 AM_MISSING_PROG([XSLTPROC], [xsltproc])
 AM_MISSING_PROG([PYTHON], [python2])
 
@@ -169,6 +167,41 @@ if $have_gtk; then
 fi
 AM_CONDITIONAL(HAVE_GTK, $have_gtk)
 AC_SUBST(GLIB_GENMARSHAL)
+
+AC_ARG_ENABLE(
+  glib,
+  [  --enable-glib[=ARG]  enable GLIB widget and viewer [default=auto]],
+  enable_glib=$enableval,
+  enable_glib="auto"
+)
+have_glib=false
+if test "$enable_glib" = "auto" -o "$enable_glib" = "yes"; then
+  PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1], have_glib=true, :)
+fi
+if test "$enable_glib" = "yes" -a "$have_glib" != "true"; then
+  AC_MSG_ERROR([GLib support requested but glib-2.0 could not be found])
+fi
+if $have_glib; then
+  AC_DEFINE(HAVE_GLIB, 1, [Define to 1 if GLib is installed])
+fi
+AM_CONDITIONAL(HAVE_GLIB, $have_glib)
+
+dnl =============================================================================
+dnl Viewers
+dnl =============================================================================
+
+have_qt_viewer=false
+have_cairo_viewer=false
+
+if $have_glib; then
+  if $have_cairo; then
+    have_cairo_viewer=true
+  fi
+
+  if $have_qt; then
+    have_qt_viewer=true
+  fi
+fi
 
 dnl =============================================================================
 dnl libxml2 support
@@ -278,7 +311,8 @@ Backend:
   Qt                  ${have_qt}
 
 Viewer:
+  Cairo               ${have_cairo_viewer}
   GTK+                ${have_gtk}
-  Qt                  ${have_qt}
+  Qt                  ${have_qt_viewer}
 
 EOF

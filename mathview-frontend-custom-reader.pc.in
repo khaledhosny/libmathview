@@ -9,7 +9,7 @@ datadir=@datadir@
 Name: MathView
 Description: MathML rendering engine (custom frontend)
 Version: @PACKAGE_VERSION@
-Requires: glib-2.0 mathview-core
+Requires: mathview-core
 Libs: -L${libdir} -lmathview_frontend_custom_reader
 Cflags: -I${includedir}/@PACKAGE@
 
