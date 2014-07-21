@@ -34,11 +34,6 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 
-#include <stdio.h>
-#include <string.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
 int
 main(int argc, char *argv[])
 {
