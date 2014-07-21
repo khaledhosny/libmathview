@@ -30,49 +30,39 @@
 #include "Configuration.hh"
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QMainWindow>
 #include <QVBoxLayout>
 
-#include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-static char **remaining_args = NULL;
-static GOptionEntry entries[] = {
-    { G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &remaining_args, NULL, "[FILE...]" },
-    { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL }
-};
 
 int
 main(int argc, char *argv[])
 {
-    GError *error = NULL;
-    GOptionContext *context = g_option_context_new(NULL);
-    g_option_context_add_main_entries(context, entries, NULL);
+    QApplication a(argc, argv);
+    QApplication::setApplicationName("mml-view-qt");
+    QApplication::setApplicationVersion(PACKAGE_VERSION);
 
-    if (!g_option_context_parse(context, &argc, &argv, &error))
-    {
-        g_print("option parsing failed: %s\n", error->message);
-        exit(1);
-    }
+    QCommandLineParser parser;
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("input", "MathML file to view.");
+    parser.process(a);
 
-    if (remaining_args == NULL)
-    {
-        g_print("no input file specified\n");
-        exit(1);
-    }
+    const QStringList args = parser.positionalArguments();
 
-    const char* input_file = remaining_args[0];
+    const QString input_file = args.at(0);
 
     const char* configPath = getenv("GTKMATHVIEWCONF");
     SmartPtr<AbstractLogger> logger = Logger::create();
     SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
 
-    QApplication a( argc, argv );
     QMainWindow w;
     Qt_RenderArea* ra = new Qt_RenderArea(logger, configuration);
-    ra->loadURI(input_file);
+    ra->loadURI(input_file.toUtf8());
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(ra);
     QWidget* window = new QWidget();

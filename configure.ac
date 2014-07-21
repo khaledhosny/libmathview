@@ -190,16 +190,11 @@ dnl ============================================================================
 dnl Viewers
 dnl =============================================================================
 
-have_qt_viewer=false
 have_cairo_viewer=false
 
 if $have_glib; then
   if $have_cairo; then
     have_cairo_viewer=true
-  fi
-
-  if $have_qt; then
-    have_qt_viewer=true
   fi
 fi
 
@@ -313,6 +308,6 @@ Backend:
 Viewer:
   Cairo               ${have_cairo_viewer}
   GTK+                ${have_gtk}
-  Qt                  ${have_qt_viewer}
+  Qt                  ${have_qt}
 
 EOF

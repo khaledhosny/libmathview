@@ -39,11 +39,9 @@ bin_PROGRAMS += mml-view
 endif
 endif
 if HAVE_QT
-if HAVE_GLIB
 moc_%.cc: %.hh
 	$(MOC) $< -o $@
 bin_PROGRAMS += mml-view-qt
-endif
 endif
 endif
 
@@ -57,7 +55,6 @@ mml_view_qt_SOURCES = mml-view-qt.cc Qt_RenderArea.cc moc_Qt_RenderArea.cc
 mml_view_qt_LDADD = \
   $(QT_LIBS) \
   $(XML_LIBS) \
-  $(GLIB_LIBS) \
   $(top_builddir)/src/libmathview.la \
   $(top_builddir)/src/libmathview_backend_qt.la \
   $(top_builddir)/src/libmathview_frontend_libxml2.la \
