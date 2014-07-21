@@ -22,7 +22,7 @@
 
 #include <config.h>
 
-#include <glib.h>
+#include <utf8.h>
 #include <cctype>
 
 #include "String.hh"
@@ -91,24 +91,18 @@ toLowerCase(const String& s)
   return res;
 }
 
-template <typename DEST_CHAR, typename SOURCE_CHAR, typename DEST_STRING, typename SOURCE_STRING, 
-	  DEST_CHAR* (*f)(const SOURCE_CHAR*, glong, glong*, glong*, GError**)>
-DEST_STRING
-DESTofSOURCE(const SOURCE_STRING& s)
-{
-  g_assert(sizeof(DEST_CHAR) == sizeof(typename DEST_STRING::value_type));
-  g_assert(sizeof(SOURCE_CHAR) == sizeof(typename SOURCE_STRING::value_type));
-  glong length;
-  DEST_CHAR* destBuffer = f((const SOURCE_CHAR*) s.data(), s.length(), NULL, &length, NULL);
-  DEST_STRING res((const typename DEST_STRING::value_type*) destBuffer, length);
-  g_free(destBuffer);
-  return res;
-}
-
 String
 StringOfUCS4String(const UCS4String& s)
-{ return DESTofSOURCE<gchar, gunichar, String, UCS4String, &g_ucs4_to_utf8>(s); }
+{
+  String result;
+  utf8::utf32to8(s.data(), s.data() + s.length(), back_inserter(result));
+  return result;
+}
 
 UCS4String
 UCS4StringOfString(const String& s)
-{ return DESTofSOURCE<gunichar, gchar, UCS4String, String, &g_utf8_to_ucs4>(s); }
+{
+  UCS4String result;
+  utf8::utf8to32(s.data(), s.data() + s.length(), back_inserter(result));
+  return result;
+}
