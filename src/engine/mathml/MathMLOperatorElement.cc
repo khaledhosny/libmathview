@@ -44,7 +44,7 @@
 MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceContext>& context)
   : MathMLTokenElement(context)
 {
-  fence = separator = stretchy = symmetric = accent = movableLimits = false;
+  fence = separator = stretchy = symmetric = accent = movableLimits = largeOp = false;
   forcedFence = forcedSeparator = forcedSymmetric = false;
 }
 
@@ -147,11 +147,13 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop, defaults))
 	largeOp = ToBoolean(value);
 
+      // Just make large operators stretchy for now. We might want to handle them a bit differently (like TeX) later, though.
+      if (largeOp)
+        stretchy = true;
+
       AreaRef res;
       if (stretchy && this == ctxt.getStretchOperator())
 	{
-	  // is it a good place to handle largeOp here???
-
 	  //std::cerr << "FOUND STRETCHY OP" << std::endl;
 
 	  // before stretchying the operator need to be formatted at
