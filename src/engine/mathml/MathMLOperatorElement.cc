@@ -179,38 +179,45 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 
 	  // ...however, there may be some contraints over the size of the stretchable
 	  // operator. 
-	  const scaled minV = minBox.height + minBox.depth;
-	  const scaled minH = minBox.width;
-	  
-	  // std::cerr << "minV = " << minV << " minH = " << minH << std::endl;
-	  // std::cerr << "minSize = " << minSize << " maxMult = " << minMultiplier << std::endl;
+          if (h != scaled::zero())
+            {
+	      const scaled minV = minBox.width;
+	      // std::cerr << "minV = " << minV << std::endl;
 
-	  if (minMultiplier > 0)
-	    {
-	      v = std::max(v, minV * minMultiplier);
-	      h = std::max(h, minH * minMultiplier);
-	    }
-	  else
-	    {
-	      v = std::max(v, minSize);
-	      h = std::max(h, minSize);
-	    }
+	      // std::cerr << "minSize = " << minSize << " minMult = " << minMultiplier << std::endl;
+	      if (minMultiplier > 0)
+	        v = std::max(v, minV * minMultiplier);
+	      else
+	        v = std::max(v, minSize);
+	      // std::cerr << "after min constraint v = " << v << std::endl;
 
-	  // std::cerr << "after min constraint v = " << v << " h = " << h << std::endl;
-	  // std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
+	      // std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
+	      if (minMultiplier > 0)
+	        v = std::max(v, minV * minMultiplier);
+	      else
+	        v = std::max(v, minSize);
+	      // std::cerr << "after max constraint v = " << v << std::endl;
+            }
 
-	  if (maxMultiplier > 0)
-	    {
-	      v = std::min(v, minV * maxMultiplier);
-	      h = std::min(h, minH * maxMultiplier);
-	    }
-	  else
-	    {
-	      v = std::min(v, maxSize);
-	      h = std::min(h, maxSize);
-	    }
+          if (h != scaled::zero())
+            {
+	      // std::cerr << " minH = " << minH << std::endl;
 
-	  // std::cerr << "after max constraint v = " << v << " h = " << h << std::endl;
+	      // std::cerr << "minSize = " << minSize << " minMult = " << minMultiplier << std::endl;
+	      const scaled minH = minBox.width;
+	      if (minMultiplier > 0)
+	        h = std::max(h, minH * minMultiplier);
+	      else
+	        h = std::max(h, minSize);
+	      // std::cerr << "after min constraint h = " << h << std::endl;
+
+	      // std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
+	      if (minMultiplier > 0)
+	        h = std::max(h, minH * minMultiplier);
+	      else
+	        h = std::max(h, minSize);
+	      // std::cerr << "after max constraint h = " << h << std::endl;
+            }
 
 	  ctxt.setStretchV(v);
 	  ctxt.setStretchH(h);
