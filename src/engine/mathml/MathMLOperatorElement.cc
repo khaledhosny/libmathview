@@ -169,9 +169,9 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 
 	  // ...however, there may be some contraints over the size of the stretchable
 	  // operator. 
-          if (h != scaled::zero())
+          if (v != scaled::zero())
             {
-	      const scaled minV = minBox.width;
+	      const scaled minV = minBox.height + minBox.depth;
 
 	      if (minMultiplier > 0)
 	        v = std::max(v, minV * minMultiplier);
