@@ -13,7 +13,6 @@ EXTRA_DIST = \
   list-to-dec.xsl \
   list-to-def.xsl \
   token-list.xml \
-  stretchy.list \
   token.dec \
   token.def \
   $(NULL)
