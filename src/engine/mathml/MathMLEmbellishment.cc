@@ -36,6 +36,8 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
 					 const AreaRef& area) const
 {
   assert(elem);
+  scaled leftPadding = scaled::zero();
+  scaled rightPadding = scaled::zero();
   if (SmartPtr<MathMLOperatorElement> top = elem->getCoreOperatorTop())
     {
       // left/right paddings are calculated during formatting, so these
@@ -46,19 +48,18 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
       // dirtyLayout flag is reset only after the formatEmbellishment
       // method is called
       // assert(!top->dirtyLayout());
-      scaled leftPadding = top->getLeftPadding();
-      scaled rightPadding = top->getRightPadding();
-      if (leftPadding != scaled::zero() || rightPadding != scaled::zero())
-	{
-	  std::vector<AreaRef> row;
-	  row.reserve(3);
-	  row.push_back(context.MGD()->getFactory()->horizontalSpace(leftPadding));
-	  row.push_back(area);
-	  row.push_back(context.MGD()->getFactory()->horizontalSpace(rightPadding));
-	  return context.MGD()->getFactory()->horizontalArray(row);
-	}
-      else
-	return area;
+      leftPadding = top->getLeftPadding();
+      rightPadding = top->getRightPadding();
+    }
+
+  if (leftPadding != scaled::zero() || rightPadding != scaled::zero())
+    {
+      std::vector<AreaRef> row;
+      row.reserve(3);
+      row.push_back(context.MGD()->getFactory()->horizontalSpace(leftPadding));
+      row.push_back(area);
+      row.push_back(context.MGD()->getFactory()->horizontalSpace(rightPadding));
+      return context.MGD()->getFactory()->horizontalArray(row);
     }
   else
     return area;
