@@ -29,7 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   <section name="dictionary">
     <key name="path">@prefix@/share/gtkmathview/dictionary.xml</key>
-    <key name="path">@prefix@/share/gtkmathview/dictionary-local.xml</key>
   </section>
 
   <section name="default">

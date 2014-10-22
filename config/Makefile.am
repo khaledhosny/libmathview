@@ -7,7 +7,6 @@ MAINTERNERCLEANFILES = \
 
 EXTRA_DIST = \
   dictionary.dtd \
-  dictionary-local.xml \
   gtkmathview.conf.xml.in \
   gtkmathview.conf.dtd \
   gtkmathview.conf.xml \
@@ -20,7 +19,6 @@ pkgsysconf_DATA = \
 
 pkgdata_DATA = \
   dictionary.dtd \
-  dictionary-local.xml \
   gtkmathview.conf.dtd \
   $(NULL)
 
