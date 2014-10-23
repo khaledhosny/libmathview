@@ -481,6 +481,8 @@ mml_view_new_window (GApplication *app,
   g_signal_connect (view, "element_over", G_CALLBACK (element_over), NULL);
   g_signal_connect (view, "click", G_CALLBACK (click), NULL);
 
+  gtk_math_view_set_font_size (GTK_MATH_VIEW (view), 24);
+
   gtk_widget_set_double_buffered (GTK_WIDGET (view), FALSE);
   gtk_container_add (GTK_CONTAINER (window), view);
   gtk_widget_show_all (window);
