@@ -23,11 +23,13 @@
 #ifndef __MathMLOperatorDictionary_hh__
 #define __MathMLOperatorDictionary_hh__
 
+#include "AttributeSignature.hh"
 #include "SmartPtr.hh"
 #include "String.hh"
 #include "StringHash.hh"
 #include <unordered_map>
 #include "Object.hh"
+#include "operatorDictionary.hh"
 
 class MathMLOperatorDictionary : public Object
 {
@@ -47,6 +49,9 @@ public:
 
 private:
   void unload(void);
+  void getAttribute(const char*,
+                    const AttributeSignature&,
+                    const SmartPtr<AttributeSet>&);
 
   struct FormDefaults
   {

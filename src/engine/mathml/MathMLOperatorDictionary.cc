@@ -26,14 +26,58 @@
 #include "StringAux.hh"
 #include "Attribute.hh"
 #include "AbstractLogger.hh"
+#include "MathMLAttributeSignatures.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "AttributeSet.hh"
 
 MathMLOperatorDictionary::MathMLOperatorDictionary()
-{ }
+{
+#include "operatorDictionary.cc"
+  for (int i = 0; i < len; i++)
+    {
+      OperatorDictionaryEntry entry = dictionary[i];
+      String form(entry.form);
+      String opName(entry.name);
+      FormDefaults& formDefaults = items[opName];
+      SmartPtr<AttributeSet> defaults = AttributeSet::create();
+
+      getAttribute(entry.accent, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
+      getAttribute(entry.fence, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
+      getAttribute(entry.form, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
+      getAttribute(entry.largeop, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
+      getAttribute(entry.lspace, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
+    //getAttribute(entry.maxsize, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
+    //getAttribute(entry.minsize, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
+      getAttribute(entry.movablelimits, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
+      getAttribute(entry.rspace, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
+      getAttribute(entry.separator, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
+      getAttribute(entry.stretchy, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
+      getAttribute(entry.symmetric, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
+
+      if (form == "prefix")
+        formDefaults.prefix = defaults;
+      else if (form == "infix")
+        formDefaults.infix = defaults;
+      else if (form == "postfix")
+        formDefaults.postfix = defaults;
+      //else
+      //  logger.out(LOG_WARNING,
+      //           "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
+      //           escape(UCS4StringOfString(opName)).c_str());
+    }
+}
 
 MathMLOperatorDictionary::~MathMLOperatorDictionary()
 { unload(); }
+
+void
+MathMLOperatorDictionary::getAttribute(const char* value,
+                                       const AttributeSignature& signature,
+                                       const SmartPtr<AttributeSet>& aList)
+{
+  if (value)
+    aList->set(Attribute::create(signature, value));
+}
 
 void
 MathMLOperatorDictionary::add(const AbstractLogger& logger,
