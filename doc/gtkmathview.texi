@@ -79,7 +79,6 @@ translation approved by the Free Software Foundation.
 @menu
 * Overview::                    General information about GtkMathView.
 * Usage::                       Compiling and installation instructions.
-* Source Document::             
 * Interactivity Support::       
 * Sample Application::          
 * C++ Interface::               Summary of the C++ interface.
@@ -112,7 +111,6 @@ Interactivity Support
 C++ Interface
 
 * Lengths::                     About Lengths
-* Points, Boxes, Rectangles::   Points, Boxes, Rectangles
 
 Tools
 
@@ -243,7 +241,7 @@ operator dictionary and general configuration) along with their DTDs.
 @end itemize
 
 
-@node     Compile and Link, Configuration, Installing, Usage
+@node     Compile and Link, Installing, Usage
 @comment  node-name,  next,  previous,  up
 @section  Compile and Link
 
@@ -259,7 +257,7 @@ with the command:
 
 @command{gcc -o appname *.o `gtkmathview-config --libs`}
 
-@node     Configuration,  , Compile and Link, Usage
+@node     onfiguration, Compile and Link, Usage
 @section  Configuration
 
 The widget can be configured after instantiation by using the
@@ -467,14 +465,14 @@ whose URI is specified in @code{name} inside the widget.
 @example
 static int
 load_document(const char* name)
-{
+@{
   GtkMathView* math_view = GTK_MATH_VIEW(main_area);
 
   g_return_val_if_fail(name != NULL, -1);
   g_return_val_if_fail(math_view != NULL, -1);
 
   return gtk_math_view_load_uri(math_view, name);
-}
+@}
 @end example
 
 The @code{click} function will be responsible for handling
@@ -486,16 +484,16 @@ three arguments: the GtkMathView widget that has generated the signal
 @example
 static void
 click(GtkMathView* math_view, GdomeElement* elem, gint state)
-{
+@{
   g_return_if_fail(math_view != NULL);
 
   printf("*** click signal: %p %x\n", elem, state);
 
   if (elem != NULL)
-    {
+    @{
       /* do something with the element */
-    }
-}
+    @}
+@}
 @end example
 
 The implementation of the selection mechanism is slightly more
@@ -518,7 +516,7 @@ overlaps with the new one.
 @example
 static void
 select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
-{
+@{
   gtk_math_view_freeze(math_view);
 
   if (root_selected != NULL)
@@ -530,7 +528,7 @@ select_begin(GtkMathView* math_view, GdomeElement* elem, gint state)
     gtk_math_view_select(math_view, elem);
 
   gtk_math_view_thaw(math_view);
-}
+@}
 @end example
 
 Next we have to handle the signal emitted as the user drags the mouse
@@ -545,7 +543,7 @@ unspecified here.
 @example
 static void
 select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
-{
+@{
   gtk_math_view_freeze(math_view);
 
   if (root_selected != NULL)
@@ -557,7 +555,7 @@ select_over(GtkMathView* math_view, GdomeElement* elem, gint state)
     gtk_math_view_select(math_view, elem);
 
   gtk_math_view_thaw(math_view);
-}
+@}
 @end example
 
 Note that the sample code does not implement any mechanism for
@@ -579,7 +577,7 @@ finally transferred to GTK+.
 
 @example
 main(int argc, char *argv[])
-{
+@{
   gtk_init(&argc, &argv);
 
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -617,11 +615,11 @@ main(int argc, char *argv[])
   load_document(argv[1]);
 
   gtk_main();
-}
+@}
 @end example
 
 @strong{A note on memory management.} It is important to mention that
-the objects of the DOM implementation (\code{Gdome2}) used in the
+the objects of the DOM implementation (@code{Gdome2}) used in the
 sample code are subject to a memory management system that is based on
 reference counting. This means that every time a pointer to a DOM
 object (like a @code{GdomeElement*} in the example) is stored in some
@@ -1232,9 +1230,7 @@ it allows viewing MathML documents. A document is referenced by means
 of a URL or just a file name.
 
 
-@node       , mathmlviewer, Tools
-
-@node     Bugs,  , Tools, Top
+@node     Bugs, Tools, Top
 @comment  node-name,  next,  previous,  up
 @chapter  Bugs and Contributions
 @noindent
