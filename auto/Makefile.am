@@ -18,10 +18,6 @@ EXTRA_DIST = \
   token.def \
   $(NULL)
 
-pkgdata_DATA = \
-  dictionary.xml \
-  $(NULL)
-
 DISTCLEANFILES = \
   entitiesTable.inc \
   operatorDictionary.cc \
