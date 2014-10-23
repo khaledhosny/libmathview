@@ -80,8 +80,3 @@ libxml2_reader_MathView::loadConfiguration(const SmartPtr<AbstractLogger>& logge
 					   const SmartPtr<Configuration>& configuration, const String& path)
 { return libxml2_reader_Setup::loadConfiguration(*logger, *configuration, path); }
 
-bool
-libxml2_reader_MathView::loadOperatorDictionary(const SmartPtr<AbstractLogger>& logger,
-						const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path)
-{ return libxml2_reader_Setup::loadOperatorDictionary(*logger, *dictionary, path); }
-

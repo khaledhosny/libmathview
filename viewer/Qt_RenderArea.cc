@@ -38,7 +38,7 @@ Qt_RenderArea::Qt_RenderArea(SmartPtr<AbstractLogger> logger,
     m_rawFont = QRawFont::fromFont(QFont(fontname.c_str(), fontsize));
     m_backend = Qt_Backend::create(m_rawFont);
     m_device = m_backend->getMathGraphicDevice();
-    m_dictionary = initOperatorDictionary<MathView>(logger, configuration);
+    m_dictionary = MathMLOperatorDictionary::create();
     m_view = MathView::create(logger);
     m_view->setOperatorDictionary(m_dictionary);
     m_view->setMathMLNamespaceContext(MathMLNamespaceContext::create(m_view, m_device));

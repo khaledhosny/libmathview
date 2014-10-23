@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 
   SmartPtr<Backend> backend = Cairo_Backend::create(cairo_font);
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
-  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
+  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
 
   view = MathView::create(logger);
   view->setOperatorDictionary(dictionary);

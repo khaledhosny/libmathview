@@ -434,7 +434,7 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   configuration->ref();
   math_view_class->configuration = configuration;
 
-  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
+  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
   dictionary->ref();
   math_view_class->dictionary = dictionary;
 }

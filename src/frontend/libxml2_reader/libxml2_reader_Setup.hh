@@ -28,7 +28,6 @@
 struct libxml2_reader_Setup
 {
   static bool loadConfiguration(const class AbstractLogger&, class Configuration&, const String&);
-  static bool loadOperatorDictionary(const class AbstractLogger&, class MathMLOperatorDictionary&, const String&);
 };
 
 #endif // __libxml2_reader_Setup_hh__

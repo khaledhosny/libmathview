@@ -68,7 +68,7 @@ MathMLOperatorDictionary::MathMLOperatorDictionary()
 }
 
 MathMLOperatorDictionary::~MathMLOperatorDictionary()
-{ unload(); }
+{ }
 
 void
 MathMLOperatorDictionary::getAttribute(const char* value,
@@ -78,28 +78,6 @@ MathMLOperatorDictionary::getAttribute(const char* value,
   if (value)
     aList->set(Attribute::create(signature, value));
 }
-
-void
-MathMLOperatorDictionary::add(const AbstractLogger& logger,
-			      const String& opName, const String& form,
-			      const SmartPtr<AttributeSet>& defaults)
-{
-  FormDefaults& formDefaults = items[opName];
-  if (form == "prefix")
-    formDefaults.prefix = defaults;
-  else if (form == "infix")
-    formDefaults.infix = defaults;
-  else if (form == "postfix")
-    formDefaults.postfix = defaults;
-  else
-    logger.out(LOG_WARNING, 
-	       "invalid `form' attribute for entry `%s' in operator dictionary (ignored)",
-	       escape(UCS4StringOfString(opName)).c_str());
-}
-
-void
-MathMLOperatorDictionary::unload()
-{ }
 
 void
 MathMLOperatorDictionary::search(const String& opName,

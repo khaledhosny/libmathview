@@ -28,15 +28,6 @@
 #include "TemplateSetup.hh"
 
 bool
-libxml2_Setup::loadOperatorDictionary(const class AbstractLogger& logger,
-				      MathMLOperatorDictionary& dictionary, const String& path)
-{
-  return TemplateSetup<libxml2_Model>::load<MathMLOperatorDictionary, true>(logger, dictionary,
-									    "operator dictionary",
-									    "dictionary", path);
-}
-
-bool
 libxml2_Setup::loadConfiguration(const class AbstractLogger& logger,
 				 Configuration& conf, const String& path)
 {

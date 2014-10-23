@@ -27,7 +27,6 @@
 
 #include "AbstractLogger.hh"
 #include "Configuration.hh"
-#include "MathMLOperatorDictionary.hh"
 
 inline bool
 fileExists(const String& fileName)
@@ -73,37 +72,6 @@ initConfiguration(SmartPtr<AbstractLogger>& logger, const char* confPath)
     logger->out(LOG_WARNING, "configuration file version (%s) differs from binary version (%s)",
 		    confVersion.c_str(), Configuration::getBinaryVersion());
   return configuration;
-}
-
-template <typename MathView> SmartPtr<MathMLOperatorDictionary>
-initOperatorDictionary(const SmartPtr<AbstractLogger>& logger, const SmartPtr<Configuration> configuration)
-{
-  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
-  std::vector<String> paths = configuration->getStringList("dictionary/path");
-  if (!paths.empty())
-    for (std::vector<String>::const_iterator dit = paths.begin();
-	 dit != paths.end();
-	 dit++)
-      {
-	if (fileExists(*dit))
-	  {
-	    logger->out(LOG_DEBUG, "loading dictionary `%s'", (*dit).c_str());
-	    if (!MathView::loadOperatorDictionary(logger, dictionary, (*dit).c_str()))
-	      logger->out(LOG_WARNING, "could not load `%s'", (*dit).c_str());
-	  }
-	else
-	  logger->out(LOG_WARNING, "dictionary `%s' does not exist", (*dit).c_str());
-      }
-  else
-    {
-      bool res = false;
-      if (fileExists(MathView::getDefaultOperatorDictionaryPath()))
-	res |= MathView::loadOperatorDictionary(logger, dictionary, MathView::getDefaultOperatorDictionaryPath());
-      if (fileExists("config/dictionary.xml"))
-	res |= MathView::loadOperatorDictionary(logger, dictionary, "config/dictionary.xml");
-    }
-
-  return dictionary;
 }
 
 #endif // __Init_hh__

@@ -26,11 +26,6 @@
 
 #include "Configuration.hh"
 #include "ValueConversion.hh"
-#include "Attribute.hh"
-#include "AttributeSet.hh"
-#include "AttributeSignature.hh"
-#include "MathMLAttributeSignatures.hh"
-#include "MathMLOperatorDictionary.hh"
 
 template <typename Model>
 struct TemplateSetup
@@ -72,50 +67,6 @@ struct TemplateSetup
   static void
   parse(const AbstractLogger& logger, Configuration& conf, const typename Model::Element& node)
   { parse(logger, conf, node, ""); }
-
-  static void
-  getAttribute(const typename Model::Element& node, const AttributeSignature& signature,
-	       const SmartPtr<AttributeSet>& aList)
-  {
-    assert(aList);
-
-    const String attrVal = Model::getAttribute(node, signature.name);
-    if (attrVal.empty()) return;
-
-    aList->set(Attribute::create(signature, attrVal));
-  }
-
-  static void
-  parse(const AbstractLogger& logger, MathMLOperatorDictionary& dictionary, const typename Model::Element& root)
-  {
-    for (typename Model::ElementIterator iter(root, "*", "operator"); iter.more(); iter.next())
-      {
-	typename Model::Element elem = iter.element();
-	const String opName = Model::getAttribute(elem, "name");
-      
-	if (!opName.empty())
-	  {
-	    SmartPtr<AttributeSet> defaults = AttributeSet::create();
-	  
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, form), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, fence), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, separator), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, lspace), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, rspace), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, stretchy), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, symmetric), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, maxsize), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, minsize), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, largeop), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, movablelimits), defaults);
-	    getAttribute(elem, ATTRIBUTE_SIGNATURE(MathML, Operator, accent), defaults);
-	  
-	    dictionary.add(logger, opName, Model::getAttribute(elem, "form"), defaults);
-	  } 
-	else
-	  logger.out(LOG_WARNING, "operator dictionary: could not find operator name");
-      }
-  }
 
   template <class Class, bool subst>
   static bool

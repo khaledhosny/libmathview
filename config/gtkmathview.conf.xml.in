@@ -27,10 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <key name="verbosity">0</key>
   </section>
 
-  <section name="dictionary">
-    <key name="path">@prefix@/share/gtkmathview/dictionary.xml</key>
-  </section>
-
   <section name="default">
     <key name="font-size">12pt</key>
   </section>
