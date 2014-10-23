@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 NULL =
 
-EXTRA_DIST = BUGS HISTORY LICENSE ANNOUNCEMENT CONTRIBUTORS config.h.in
+EXTRA_DIST = BUGS HISTORY LICENSE CONTRIBUTORS config.h.in
 SUBDIRS = scripts auto src doc viewer
 
 pkgconfigdir = $(libdir)/pkgconfig
