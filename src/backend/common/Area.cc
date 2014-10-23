@@ -52,7 +52,7 @@ Area::indexOfPosition(const scaled&, const scaled&, CharIndex&) const
 { return false; }
 
 bool
-Area::positionOfIndex(CharIndex, class Point*, BoundingBox*) const
+Area::positionOfIndex(CharIndex, struct Point*, BoundingBox*) const
 { return false; }
 
 SmartPtr<Element>

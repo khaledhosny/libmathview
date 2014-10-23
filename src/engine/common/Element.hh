@@ -48,10 +48,10 @@ public:
   unsigned getDepth(void) const;
 
   void setAttribute(const SmartPtr<class Attribute>&);
-  void removeAttribute(const class AttributeSignature&);
-  SmartPtr<class Attribute> getAttribute(const class AttributeSignature&) const;
-  SmartPtr<class Value> getAttributeValue(const class AttributeSignature&) const;
-  SmartPtr<class Value> getAttributeValueNoDefault(const class AttributeSignature&) const;
+  void removeAttribute(const struct AttributeSignature&);
+  SmartPtr<class Attribute> getAttribute(const struct AttributeSignature&) const;
+  SmartPtr<class Value> getAttributeValue(const struct AttributeSignature&) const;
+  SmartPtr<class Value> getAttributeValueNoDefault(const struct AttributeSignature&) const;
 
   void setArea(const AreaRef& a) { area = a; }
   AreaRef getArea(void) const { return area; }

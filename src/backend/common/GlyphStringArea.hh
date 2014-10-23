@@ -42,7 +42,7 @@ public:
   virtual CharIndex length(void) const;
   virtual CharIndex lengthTo(AreaIndex) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+  virtual bool positionOfIndex(CharIndex, struct Point*, BoundingBox*) const;
   const UCS4String& getSource() const { return source; }
   
   virtual SmartPtr<const class GlyphStringArea> getGlyphStringArea(void) const;  

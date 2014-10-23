@@ -60,7 +60,7 @@ public:
 
 private:
   TokenId inferOperatorForm(void);
-  SmartPtr<Value> getOperatorAttributeValue(const class AttributeSignature&, const SmartPtr<class AttributeSet>&) const;
+  SmartPtr<Value> getOperatorAttributeValue(const struct AttributeSignature&, const SmartPtr<class AttributeSet>&) const;
   void parseLimitValue(const SmartPtr<Value>&, const class FormattingContext&, float&, scaled&);
 
   bool largeOp;

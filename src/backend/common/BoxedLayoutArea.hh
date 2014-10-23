@@ -60,7 +60,7 @@ public:
   virtual scaled rightEdge(void) const;
   virtual AreaIndex size(void) const { return content.size(); }
   virtual AreaRef node(AreaIndex) const;
-  virtual void origin(AreaIndex, class Point&) const;
+  virtual void origin(AreaIndex, struct Point&) const;
   virtual CharIndex lengthTo(AreaIndex) const;
   //virtual AreaRef replace(unsigned, const AreaRef&) const;
 
