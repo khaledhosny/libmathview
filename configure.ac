@@ -273,8 +273,6 @@ CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
 
 AC_CONFIG_FILES([
  Makefile
- config/Makefile
- config/gtkmathview.conf.xml
  scripts/Makefile
  auto/Makefile
  src/Makefile

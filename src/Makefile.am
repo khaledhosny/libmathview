@@ -36,7 +36,6 @@ libcommon_la_SOURCES = \
   common/BoundingBox.cc \
   common/BoundingBoxAux.cc \
   common/Clock.cc \
-  common/Configuration.cc \
   common/LengthAux.cc \
   common/Logger.cc \
   common/PointAux.cc \
@@ -53,7 +52,6 @@ mathview_HEADERS += \
   common/AbstractLogger.hh \
   common/BoundingBox.hh \
   common/BoundingBoxAux.hh \
-  common/Configuration.hh \
   common/Length.hh \
   common/LengthAux.hh \
   common/Logger.hh \
@@ -402,7 +400,6 @@ noinst_HEADERS += \
   frontend/common/TemplateReaderNodeIterator.hh \
   frontend/common/TemplateReaderElementIterator.hh \
   frontend/common/TemplateReaderRefinementContext.hh \
-  frontend/common/TemplateSetup.hh \
   frontend/common/Reader.hh \
   $(NULL)
 
@@ -478,14 +475,12 @@ libfrontend_libxml2_reader_la_LIBADD = \
 libfrontend_libxml2_reader_la_SOURCES = \
   frontend/libxml2_reader/libxmlXmlReader.cc \
   frontend/libxml2_reader/libxml2_reader_Builder.cc \
-  frontend/libxml2_reader/libxml2_reader_Setup.cc \
   $(NULL)
 
 noinst_HEADERS += \
   frontend/libxml2_reader/libxmlXmlReader.hh \
   frontend/libxml2_reader/libxml2_reader_Model.hh \
   frontend/libxml2_reader/libxml2_reader_Builder.hh \
-  frontend/libxml2_reader/libxml2_reader_Setup.hh \
   $(NULL)
 
 
@@ -536,9 +531,7 @@ libfrontend_libxml2_la_SOURCES = \
   frontend/libxml2/libxml2_EntitiesTable.cc \
   frontend/libxml2/libxml2_EntitiesTable.hh \
   frontend/libxml2/libxml2_Model.cc \
-  frontend/libxml2/libxml2_Setup.cc \
   frontend/libxml2/libxml2_Builder.cc \
-  frontend/libxml2/libxml2_Setup.hh \
   frontend/libxml2/libxml2_Builder.hh \
   $(NULL)
 

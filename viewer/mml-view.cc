@@ -41,9 +41,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include "defs.h"
 #include "Logger.hh"
-#include "Init.hh"
-#include "Configuration.hh"
 #include "libxml2_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "Cairo_Backend.hh"
@@ -127,9 +126,7 @@ main(int argc, char *argv[])
   const String input_file = remaining_args[0];
   const String output_file = remaining_args[1];
 
-  const char* configPath = getenv("GTKMATHVIEWCONF");
   SmartPtr<AbstractLogger> logger = Logger::create();
-  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
 
   FcResult result;
   FcPattern* pattern = FcPatternCreate();

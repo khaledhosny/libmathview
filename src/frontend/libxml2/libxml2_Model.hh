@@ -60,14 +60,14 @@ struct libxml2_Model
   static Element asElement(const Node& n) { return (n && n->type == XML_ELEMENT_NODE) ? (xmlElement*) n : 0; }
 
   // methods for querying nodes
-  // MUST be available for TemplateBuilder and TemplateSetup to work
+  // MUST be available for TemplateBuilder to work
   static unsigned getNodeType(const Node& n) { return n->type; }
   static String getNodeName(const Node&);
   static String getNodeValue(const Node&);
   static String getNodeNamespaceURI(const Node&);
 
   // methods for querying elements
-  // MUST be available for TemplateBuilder and TemplateSetup to work
+  // MUST be available for TemplateBuilder to work
   static String getElementValue(const Element&);
   static String getAttribute(const Element&, const String&);
   // MUST be implemented if the default RefinementContext is used

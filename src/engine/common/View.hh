@@ -42,10 +42,6 @@ public:
   bool freeze(void);
   bool thaw(void);
 
-  // configuration stuff
-  static String getDefaultConfigurationPath(void);
-  static String getDefaultOperatorDictionaryPath(void);
-
   SmartPtr<class AbstractLogger> getLogger(void) const;
   void setOperatorDictionary(const SmartPtr<class MathMLOperatorDictionary>&);
   SmartPtr<class MathMLOperatorDictionary> getOperatorDictionary(void) const;

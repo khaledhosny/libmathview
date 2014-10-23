@@ -21,28 +21,22 @@
 // <http://www.gnu.org/licenses/>.
 
 #include "Qt_RenderArea.hh"
-#include "Init.hh"
-
 #include <QPainter>
 #include <QRawFont>
 #include <QDebug>
 
 Qt_RenderArea::Qt_RenderArea(SmartPtr<AbstractLogger> logger,
-                       SmartPtr<Configuration> configuration,
                        QWidget* parent)
     : QWidget(parent)
 {
-    const String fontname = configuration->getString(logger, "default/font-family", DEFAULT_FONT_FAMILY);
-    const int fontsize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
-
-    m_rawFont = QRawFont::fromFont(QFont(fontname.c_str(), fontsize));
+    m_rawFont = QRawFont::fromFont(QFont(DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE));
     m_backend = Qt_Backend::create(m_rawFont);
     m_device = m_backend->getMathGraphicDevice();
     m_dictionary = MathMLOperatorDictionary::create();
     m_view = MathView::create(logger);
     m_view->setOperatorDictionary(m_dictionary);
     m_view->setMathMLNamespaceContext(MathMLNamespaceContext::create(m_view, m_device));
-    m_view->setDefaultFontSize(fontsize);
+    m_view->setDefaultFontSize(DEFAULT_FONT_SIZE);
 }
 
 Qt_RenderArea::~Qt_RenderArea()

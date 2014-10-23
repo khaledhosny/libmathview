@@ -124,7 +124,6 @@ extern "C" {
   guint      GTKMATHVIEW_METHOD_NAME(get_font_size)(GtkMathView*);
   void       GTKMATHVIEW_METHOD_NAME(set_log_verbosity)(GtkMathView*, gint);
   gint       GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView*);
-  void       GTKMATHVIEW_METHOD_NAME(add_configuration_path)(const gchar*);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

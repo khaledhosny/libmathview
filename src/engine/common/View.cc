@@ -60,18 +60,6 @@ View::thaw()
   return --freezeCounter == 0;
 }
 
-String
-View::getDefaultConfigurationPath()
-{
-return PKGSYSCONFDIR"/gtkmathview.conf.xml"; 
-}
-
-String
-View::getDefaultOperatorDictionaryPath()
-{ 
-return PKGDATADIR"/dictionary.xml"; 
-}
-
 SmartPtr<AbstractLogger>
 View::getLogger() const
 { return logger; }
