@@ -28,9 +28,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include "defs.h"
 #include "Logger.hh"
-#include "Init.hh"
-#include "Configuration.hh"
 #include "libxml2_MathView.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "Cairo_Backend.hh"
@@ -90,29 +89,23 @@ int main(int argc, char *argv[]) {
 		   "delete_event", 
 		   G_CALLBACK(gtk_main_quit), NULL);
 
-  const char* configPath = getenv("GTKMATHVIEWCONF");
-
   logger = Logger::create();
-  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
-
-  const String fontname = configuration->getString(logger, "default/font-family", DEFAULT_FONT_FAMILY);
-  const int fontsize = configuration->getInt(logger, "default/font-size", DEFAULT_FONT_SIZE);
 
   GObjectPtr<PangoContext> pango_context = gtk_widget_create_pango_context(window);
   PangoFontDescription* description = pango_font_description_new();
-  pango_font_description_set_family(description, fontname.c_str());
-  pango_font_description_set_size(description, fontsize * PANGO_SCALE);
+  pango_font_description_set_family(description, DEFAULT_FONT_FAMILY);
+  pango_font_description_set_size(description, DEFAULT_FONT_SIZE * PANGO_SCALE);
   PangoFont* font = pango_context_load_font(pango_context, description);
   cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
 
   SmartPtr<Backend> backend = Cairo_Backend::create(cairo_font);
   SmartPtr<MathGraphicDevice> mgd = backend->getMathGraphicDevice();
-  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
+  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
 
   view = MathView::create(logger);
   view->setOperatorDictionary(dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, mgd));
-  //view->setDefaultFontSize(static_cast<unsigned>(fontSize));
+  //view->setDefaultFontSize(static_cast<unsigned>(DEFAULT_FONT_SIZE));
 
   FormattingContext context(mgd);
 

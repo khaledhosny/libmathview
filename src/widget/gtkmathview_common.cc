@@ -49,9 +49,7 @@ typedef libxml2_reader_MathView MathView;
 typedef libxml2_MathView MathView;
 #endif
 
-#include "Init.hh"
 #include "Logger.hh"
-#include "Configuration.hh"
 #include "Point.hh"
 #include "Rectangle.hh"
 #include "MathMLElement.hh"
@@ -95,7 +93,6 @@ struct _GtkMathViewClass
   GtkMathViewDecorateSignal decorate_over;
 
   AbstractLogger* logger;
-  Configuration* configuration;
   MathMLOperatorDictionary* dictionary;
 };
 
@@ -430,11 +427,7 @@ gtk_math_view_base_class_init(GtkMathViewClass* math_view_class)
   logger->ref();
   math_view_class->logger = logger;
 
-  SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, getenv("GTKMATHVIEWCONF"));
-  configuration->ref();
-  math_view_class->configuration = configuration;
-
-  SmartPtr<MathMLOperatorDictionary> dictionary = initOperatorDictionary<MathView>(logger, configuration);
+  SmartPtr<MathMLOperatorDictionary> dictionary = MathMLOperatorDictionary::create();
   dictionary->ref();
   math_view_class->dictionary = dictionary;
 }
@@ -454,12 +447,6 @@ gtk_math_view_base_class_finalize(GtkMathViewClass* math_view_class)
     {
       math_view_class->logger->unref();
       math_view_class->logger = 0;
-    }
-
-  if (math_view_class->configuration)
-    {
-      math_view_class->configuration->unref();
-      math_view_class->configuration = 0;
     }
 }
 
@@ -597,13 +584,10 @@ gtk_math_view_init(GtkMathView* math_view)
   view->ref();
   math_view->view = view;
 
-  String fontname = math_view_class->configuration->getString(math_view_class->logger, "default/font-family", DEFAULT_FONT_FAMILY);
-  int fontsize = math_view_class->configuration->getInt(math_view_class->logger, "default/font-size", DEFAULT_FONT_SIZE);
-
   GObjectPtr<PangoContext> pango_context = gtk_widget_create_pango_context(GTK_WIDGET(math_view));
   PangoFontDescription* description = pango_font_description_new();
-  pango_font_description_set_family(description, fontname.c_str());
-  pango_font_description_set_size(description, fontsize * PANGO_SCALE);
+  pango_font_description_set_family(description, DEFAULT_FONT_FAMILY);
+  pango_font_description_set_size(description, DEFAULT_FONT_SIZE * PANGO_SCALE);
 
   PangoFont* font = pango_context_load_font(pango_context, description);
   cairo_scaled_font_t* cairo_font = pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT(font));
@@ -612,7 +596,7 @@ gtk_math_view_init(GtkMathView* math_view)
   backend->ref();
   math_view->backend = backend;
 
-  view->setDefaultFontSize(fontsize);
+  view->setDefaultFontSize(DEFAULT_FONT_SIZE);
   view->setOperatorDictionary(math_view_class->dictionary);
   view->setMathMLNamespaceContext(MathMLNamespaceContext::create(view, backend->getMathGraphicDevice()));
 }
@@ -1619,11 +1603,4 @@ GTKMATHVIEW_METHOD_NAME(get_log_verbosity)(GtkMathView* math_view)
   g_return_val_if_fail(math_view != NULL, LOG_ERROR);
   g_return_val_if_fail(math_view->view != 0, LOG_ERROR);
   return math_view->view->getLogger()->getLogLevel();
-}
-
-extern "C" void
-GTKMATHVIEW_METHOD_NAME(add_configuration_path)(const gchar* path)
-{
-  g_return_if_fail(path != NULL);
-  Configuration::addConfigurationPath(path);
 }

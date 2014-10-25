@@ -44,16 +44,12 @@
 MathMLOperatorElement::MathMLOperatorElement(const SmartPtr<MathMLNamespaceContext>& context)
   : MathMLTokenElement(context)
 {
-  fence = separator = stretchy = symmetric = accent = movableLimits = false;
+  fence = separator = stretchy = symmetric = accent = movableLimits = largeOp = false;
   forcedFence = forcedSeparator = forcedSymmetric = false;
 }
 
 MathMLOperatorElement::~MathMLOperatorElement()
 { }
-
-// #include <iostream>
-// #include "scaledAux.hh"
-// #include "BoundingBoxAux.hh"
 
 AreaRef
 MathMLOperatorElement::format(FormattingContext& ctxt)
@@ -147,13 +143,13 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, largeop, defaults))
 	largeOp = ToBoolean(value);
 
+      // Just make large operators stretchy for now. We might want to handle them a bit differently (like TeX) later, though.
+      if (largeOp)
+        stretchy = true;
+
       AreaRef res;
       if (stretchy && this == ctxt.getStretchOperator())
 	{
-	  // is it a good place to handle largeOp here???
-
-	  //std::cerr << "FOUND STRETCHY OP" << std::endl;
-
 	  // before stretchying the operator need to be formatted at
 	  // least once
 	  AreaRef minArea = getArea();
@@ -165,56 +161,47 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 	  const scaled height = ctxt.getStretchToHeight() - axis;
 	  const scaled depth = ctxt.getStretchToDepth() + axis;
 
-	  // std::cerr << "minimum area bounding box = " << minBox << " height = " << height + axis << " axis = " << axis << std::endl;
-
 	  // Here we have to calculate the desired size of the stretchable symbol.
 	  // If symmetric == true the we have to stretch to cover the maximum among
 	  // height and depth, otherwise we just stretch to ascent + descent
 	  scaled v = std::max(scaled::zero(), symmetric ? (2 * std::max(height, depth)) : (height + depth));
 	  scaled h = std::max(scaled::zero(), ctxt.getStretchToWidth());
 
-	  // std::cerr << "desired V = " << v << " H = " << h << std::endl;
-
 	  // ...however, there may be some contraints over the size of the stretchable
 	  // operator. 
-	  const scaled minV = minBox.height + minBox.depth;
-	  const scaled minH = minBox.width;
-	  
-	  // std::cerr << "minV = " << minV << " minH = " << minH << std::endl;
-	  // std::cerr << "minSize = " << minSize << " maxMult = " << minMultiplier << std::endl;
+          if (v != scaled::zero())
+            {
+	      const scaled minV = minBox.height + minBox.depth;
 
-	  if (minMultiplier > 0)
-	    {
-	      v = std::max(v, minV * minMultiplier);
-	      h = std::max(h, minH * minMultiplier);
-	    }
-	  else
-	    {
-	      v = std::max(v, minSize);
-	      h = std::max(h, minSize);
-	    }
+	      if (minMultiplier > 0)
+	        v = std::max(v, minV * minMultiplier);
+	      else
+	        v = std::max(v, minSize);
 
-	  // std::cerr << "after min constraint v = " << v << " h = " << h << std::endl;
-	  // std::cerr << "maxSize = " << maxSize << " maxMult = " << maxMultiplier << std::endl;
+	      if (minMultiplier > 0)
+	        v = std::max(v, minV * minMultiplier);
+	      else
+	        v = std::max(v, minSize);
+            }
 
-	  if (maxMultiplier > 0)
-	    {
-	      v = std::min(v, minV * maxMultiplier);
-	      h = std::min(h, minH * maxMultiplier);
-	    }
-	  else
-	    {
-	      v = std::min(v, maxSize);
-	      h = std::min(h, maxSize);
-	    }
+          if (h != scaled::zero())
+            {
+	      const scaled minH = minBox.width;
 
-	  // std::cerr << "after max constraint v = " << v << " h = " << h << std::endl;
+	      if (minMultiplier > 0)
+	        h = std::max(h, minH * minMultiplier);
+	      else
+	        h = std::max(h, minSize);
+
+	      if (minMultiplier > 0)
+	        h = std::max(h, minH * minMultiplier);
+	      else
+	        h = std::max(h, minSize);
+            }
 
 	  ctxt.setStretchV(v);
 	  ctxt.setStretchH(h);
 	  
-	  // std::cerr << "stretch by V = " << v << " H = " << h << std::endl;
-
 	  res = formatAux(ctxt);
 	  
 	  BoundingBox opBox = res->box();
@@ -231,8 +218,6 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
 	}
       else
 	res = formatAux(ctxt);
-
-      //std::cerr << "formatting operator, is top? " << (getCoreOperatorTop() != 0) << " has dirty something" << dirtyAttribute() << dirtyLayout() << std::endl;
 
       res = formatEmbellishment(this, ctxt, res);
       setArea(ctxt.MGD()->wrapper(ctxt, res));

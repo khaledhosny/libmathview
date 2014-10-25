@@ -454,11 +454,11 @@ mml_view_new_window (GApplication *app,
   g_object_set_data (G_OBJECT (view), "first-selected", NULL);
 
   GActionEntry entries[] = {
-    { "selection-reset", window_selection_reset, NULL, NULL, NULL, 0 },
-    { "selection-delete", window_selection_delete, NULL, NULL, NULL, 0 },
-    { "select-parent", window_select_parent, NULL, NULL, NULL, 0 },
-    { "zoom-in", window_zoom_in, NULL, NULL, NULL, 0 },
-    { "zoom-out", window_zoom_out, NULL, NULL, NULL, 0 },
+    { "selection-reset", window_selection_reset, NULL, NULL, NULL, { 0 } },
+    { "selection-delete", window_selection_delete, NULL, NULL, NULL, { 0 } },
+    { "select-parent", window_select_parent, NULL, NULL, NULL, { 0 } },
+    { "zoom-in", window_zoom_in, NULL, NULL, NULL, { 0 } },
+    { "zoom-out", window_zoom_out, NULL, NULL, NULL, { 0 } },
   };
 
   g_action_map_add_action_entries (G_ACTION_MAP (window), entries, G_N_ELEMENTS (entries), view);
@@ -480,6 +480,8 @@ mml_view_new_window (GApplication *app,
   g_signal_connect (view, "select_abort", G_CALLBACK (select_abort), NULL);
   g_signal_connect (view, "element_over", G_CALLBACK (element_over), NULL);
   g_signal_connect (view, "click", G_CALLBACK (click), NULL);
+
+  gtk_math_view_set_font_size (GTK_MATH_VIEW (view), 24);
 
   gtk_widget_set_double_buffered (GTK_WIDGET (view), FALSE);
   gtk_container_add (GTK_CONTAINER (window), view);
@@ -561,9 +563,9 @@ mml_view_startup (GApplication *application)
   GtkBuilder* builder;
 
   GActionEntry entries[] = {
-    { "open", open_activated, NULL, NULL, NULL, 0 },
-    { "about", about_activated, NULL, NULL, NULL, 0 },
-    { "quit", quit_activated, NULL, NULL, NULL, 0 },
+    { "open", open_activated, NULL, NULL, NULL, { 0 } },
+    { "about", about_activated, NULL, NULL, NULL, { 0 } },
+    { "quit", quit_activated, NULL, NULL, NULL, { 0 } },
   };
 
   g_action_map_add_action_entries (G_ACTION_MAP (application), entries, G_N_ELEMENTS (entries), application);

@@ -92,7 +92,7 @@ CombinedGlyphArea::node(AreaIndex) const
 }
 
 void
-CombinedGlyphArea::origin(AreaIndex, class Point&) const
+CombinedGlyphArea::origin(AreaIndex, struct Point&) const
 {
   // cannot have children
   assert(false);
@@ -143,7 +143,7 @@ CombinedGlyphArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& 
 }
 
 bool 
-CombinedGlyphArea::positionOfIndex(CharIndex index, class Point*, BoundingBox* b) const
+CombinedGlyphArea::positionOfIndex(CharIndex index, struct Point*, BoundingBox* b) const
 {
   if (index == 0 && index < length())
   {

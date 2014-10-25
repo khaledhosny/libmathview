@@ -26,7 +26,6 @@
 #include "libxml2_MathView.hh"
 
 #include "Logger.hh"
-#include "Configuration.hh"
 #include "MathMLOperatorDictionary.hh"
 #include "Qt_Backend.hh"
 #include "MathGraphicDevice.hh"
@@ -44,7 +43,6 @@ class Qt_RenderArea : public QWidget
     Q_OBJECT
 public:
     Qt_RenderArea(SmartPtr<AbstractLogger> logger,
-               SmartPtr<Configuration> configuration,
                QWidget* parent = 0);
     virtual ~Qt_RenderArea();
     void loadURI(const char* mml_file);

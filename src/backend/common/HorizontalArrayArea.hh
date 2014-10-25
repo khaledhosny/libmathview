@@ -42,7 +42,7 @@ public:
   virtual scaled rightEdge(void) const;
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
   virtual void strength(int&, int&, int&) const;
-  virtual void origin(AreaIndex, class Point&) const;
+  virtual void origin(AreaIndex, struct Point&) const;
   virtual scaled getStep(void) const;
 
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;

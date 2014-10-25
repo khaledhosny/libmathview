@@ -34,7 +34,7 @@ protected:
 
 public:
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+  virtual bool positionOfIndex(CharIndex, struct Point*, BoundingBox*) const;
   virtual bool searchByIndex(AreaId&, CharIndex) const;
 
   virtual SmartPtr<const class GlyphArea> getGlyphArea(void) const;

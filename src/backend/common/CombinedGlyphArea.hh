@@ -51,7 +51,7 @@ public:
   virtual scaled rightEdge(void) const;
   virtual void strength(int&, int&, int&) const;
   virtual AreaRef node(AreaIndex) const;
-  virtual void origin(AreaIndex, class Point&) const;
+  virtual void origin(AreaIndex, struct Point&) const;
   virtual CharIndex lengthTo(AreaIndex) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
@@ -59,7 +59,7 @@ public:
   virtual bool searchByIndex(class AreaId&, CharIndex) const;
 
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+  virtual bool positionOfIndex(CharIndex, struct Point*, BoundingBox*) const;
 
   virtual SmartPtr<const class GlyphArea> getGlyphArea(void) const;
   virtual SmartPtr<const class GlyphStringArea> getGlyphStringArea(void) const;  

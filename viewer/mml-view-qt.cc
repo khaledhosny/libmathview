@@ -25,9 +25,7 @@
 #include <config.h>
 
 #include "Qt_RenderArea.hh"
-#include "Init.hh"
 #include "Logger.hh"
-#include "Configuration.hh"
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -51,12 +49,10 @@ main(int argc, char *argv[])
 
     const QString input_file = args.at(0);
 
-    const char* configPath = getenv("GTKMATHVIEWCONF");
     SmartPtr<AbstractLogger> logger = Logger::create();
-    SmartPtr<Configuration> configuration = initConfiguration<MathView>(logger, configPath);
 
     QMainWindow w;
-    Qt_RenderArea* ra = new Qt_RenderArea(logger, configuration);
+    Qt_RenderArea* ra = new Qt_RenderArea(logger);
     ra->loadURI(input_file.toUtf8());
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(ra);

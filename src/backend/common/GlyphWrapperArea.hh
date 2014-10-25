@@ -41,9 +41,9 @@ public:
   virtual CharIndex length(void) const { return contentLength; }
   virtual CharIndex lengthTo(AreaIndex) const;
   virtual AreaRef node(AreaIndex) const;
-  virtual void origin(AreaIndex, class Point&) const;
+  virtual void origin(AreaIndex, struct Point&) const;
   virtual bool indexOfPosition(const scaled&, const scaled&, CharIndex&) const;
-  virtual bool positionOfIndex(CharIndex, class Point*, BoundingBox*) const;
+  virtual bool positionOfIndex(CharIndex, struct Point*, BoundingBox*) const;
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByCoords(class AreaId&, const scaled&, const scaled&) const;
   virtual bool searchByIndex(class AreaId&, CharIndex) const;

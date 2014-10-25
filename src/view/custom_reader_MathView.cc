@@ -23,7 +23,6 @@
 #include <config.h>
 
 #include "AbstractLogger.hh"
-#include "Configuration.hh"
 #include "custom_reader_MathView.hh"
 #include "custom_reader_Builder.hh"
 

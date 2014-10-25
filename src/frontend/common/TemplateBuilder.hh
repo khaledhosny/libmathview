@@ -45,14 +45,13 @@ protected:
   getElement(const typename Model::Element& el) const
   {
     SmartPtr<typename ElementBuilder::type> elem;
-    if (elem = smart_cast<typename ElementBuilder::type>(this->linkerAssoc(el)))
+    elem = smart_cast<typename ElementBuilder::type>(this->linkerAssoc(el));
+    if (elem)
       return elem;
-    else
-      {
-	elem = ElementBuilder::type::create(ElementBuilder::getContext(*this));
-	this->linkerAdd(el, elem);
-	return elem;
-      }
+
+    elem = ElementBuilder::type::create(ElementBuilder::getContext(*this));
+    this->linkerAdd(el, elem);
+    return elem;
   }
 
   template <typename ElementBuilder>

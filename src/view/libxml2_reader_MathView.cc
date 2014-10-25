@@ -26,7 +26,6 @@
 
 #include "libxml2_reader_MathView.hh"
 #include "libxml2_reader_Builder.hh"
-#include "libxml2_reader_Setup.hh"
 
 libxml2_reader_MathView::libxml2_reader_MathView(const SmartPtr<AbstractLogger>& logger)
   : View(logger)
@@ -74,14 +73,4 @@ libxml2_reader_MathView::notifyStructureChanged(void*) const
 bool
 libxml2_reader_MathView::notifyAttributeChanged(void*, const xmlChar*) const
 { return false; }
-
-bool
-libxml2_reader_MathView::loadConfiguration(const SmartPtr<AbstractLogger>& logger,
-					   const SmartPtr<Configuration>& configuration, const String& path)
-{ return libxml2_reader_Setup::loadConfiguration(*logger, *configuration, path); }
-
-bool
-libxml2_reader_MathView::loadOperatorDictionary(const SmartPtr<AbstractLogger>& logger,
-						const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path)
-{ return libxml2_reader_Setup::loadOperatorDictionary(*logger, *dictionary, path); }
 

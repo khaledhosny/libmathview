@@ -1,17 +1,11 @@
 
 noinst_SCRIPTS = \
-  applylicence.pl \
-  cutlicence.pl \
   mklicence.pl \
-  stretchy \
-  makekeywords \
-  applylicence \
   dumpEntitiesTable \
   dumpOperatorDictionary
 
 EXTRA_DIST = \
-  $(noinst_SCRIPTS) \
-  copy.xsl
+  $(noinst_SCRIPTS)
 
 
 -include $(top_srcdir)/git.mk

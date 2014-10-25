@@ -25,7 +25,6 @@
 #include "AbstractLogger.hh"
 #include "libxml2_MathView.hh"
 #include "libxml2_Model.hh"
-#include "libxml2_Setup.hh"
 #include "libxml2_Builder.hh"
 
 libxml2_MathView::libxml2_MathView(const SmartPtr<AbstractLogger>& logger)
@@ -175,14 +174,4 @@ libxml2_MathView::notifyAttributeChanged(xmlElement* el, const xmlChar* name) co
   else
     return false;
 }
-
-bool
-libxml2_MathView::loadConfiguration(const SmartPtr<AbstractLogger>& logger, 
-				    const SmartPtr<Configuration>& configuration, const String& path)
-{ return libxml2_Setup::loadConfiguration(*logger, *configuration, path); }
-
-bool
-libxml2_MathView::loadOperatorDictionary(const SmartPtr<AbstractLogger>& logger,
-					 const SmartPtr<MathMLOperatorDictionary>& dictionary, const String& path)
-{ return libxml2_Setup::loadOperatorDictionary(*logger, *dictionary, path); }
 

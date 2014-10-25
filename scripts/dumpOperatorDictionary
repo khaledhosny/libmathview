@@ -21,27 +21,48 @@ def getOperators(tree):
         value = ""
         for d in dec.split("-"):
             d = int(d)
-            value += "&#x%04X;" %(d)
+            c = unichr(d)
+            value += "".join([r"\x%02x" %(ord(b)) for b in c.encode("utf8")])
         operators[value] = operator
 
     return operators
 
-def dumpOperators(tree, fd):
+def dumpOperators(tree, fd, header):
     operators = getOperators(tree)
-    fd.write('<?xml version="1.0"?>\n')
-    fd.write('<dictionary>\n')
+    attributes = set()
     for key in sorted(operators.keys()):
         operator = operators[key]
-        fd.write(' <operator')
-        fd.write(' name="%s"' %(key))
-        for attribute, value in operator.items():
-            if attribute in ("lspace", "rspace"):
-                value = space_map[int(value)]
-            fd.write(' %s="%s"' %(attribute, value))
-        fd.write('/>')
-        fd.write('\n')
-    fd.write('</dictionary>\n')
+        for attribute in operator.keys():
+            attributes.add(attribute)
+
+    text = ""
+    for key in sorted(operators.keys()):
+        operator = operators[key]
+        text += '  { "%s"' % key
+        for attribute in sorted(attributes):
+            value = operator.get(attribute, None)
+            if value is not None:
+                if attribute in ("lspace", "rspace"):
+                    value = space_map[int(value)]
+                text += ', "%s"' % value
+            else:
+                text += ', NULL'
+        text += ' },'
+        text += '\n'
+
+    if header:
+        fd.write('typedef struct {\n')
+        fd.write('  const char* name;\n')
+        for attribute in sorted(attributes):
+            fd.write('  const char* %s;\n' % attribute)
+        fd.write('} OperatorDictionaryEntry;\n')
+    else:
+        fd.write('int len = %d;\n' % len(operators.keys()))
+        fd.write('static const OperatorDictionaryEntry dictionary[] = {\n');
+        fd.write(text)
+        fd.write('};\n')
 
 if __name__ == "__main__":
+    parser = etree.XMLParser(resolve_entities=True)
     doc = etree.parse(sys.argv[1])
-    dumpOperators(doc, sys.stdout)
+    dumpOperators(doc, sys.stdout, sys.argv[2] == "h")

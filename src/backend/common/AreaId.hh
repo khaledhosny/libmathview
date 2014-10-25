@@ -43,8 +43,8 @@ public:
   void clear(void) { pathV.clear(); areaV.clear(); originV.clear(); lengthV.clear(); }
 
   AreaRef getArea(int = -1) const;
-  void getOrigin(class Point&, int = 0, int = -1) const;
-  void accumulateOrigin(class Point&, int = 0, int = -1) const;
+  void getOrigin(struct Point&, int = 0, int = -1) const;
+  void accumulateOrigin(struct Point&, int = 0, int = -1) const;
   CharIndex getLength(int = 0, int = -1) const;
 
   typedef std::vector<AreaIndex> PathVector;
@@ -61,7 +61,7 @@ protected:
   AreaId(const AreaRef& r, const PathVector::const_iterator& begin, const PathVector::const_iterator& end)
     : root(r), pathV(begin, end) { }
 
-  void accumulateOriginAux(const OriginVector::const_iterator&, const OriginVector::const_iterator&, class Point&) const;
+  void accumulateOriginAux(const OriginVector::const_iterator&, const OriginVector::const_iterator&, struct Point&) const;
   void accumulateLengthAux(const LengthVector::const_iterator&, const LengthVector::const_iterator&, CharIndex&) const;
 
 private:

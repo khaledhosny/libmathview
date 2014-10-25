@@ -48,12 +48,12 @@ MathShaper::shape(ShapingContext& context) const
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
           scaled span = (context.getVSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
-          variantId = mathFont->getVariant(glyphId, span, false);
+          variantId = mathFont->getVariant(variantId, span, false);
         }
       if (glyphArea->box().horizontalExtent() < context.getHSpan())
         {
           scaled span = (context.getHSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
-          variantId = mathFont->getVariant(glyphId, span, true);
+          variantId = mathFont->getVariant(variantId, span, true);
         }
 
       if (variantId != glyphId)

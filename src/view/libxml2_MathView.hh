@@ -50,9 +50,6 @@ public:
 
   xmlDoc* getDocument(void) const { return currentDoc; }
 
-  static bool loadConfiguration(const SmartPtr<class AbstractLogger>&, const SmartPtr<class Configuration>&, const String&);
-  static bool loadOperatorDictionary(const SmartPtr<class AbstractLogger>&, const SmartPtr<class MathMLOperatorDictionary>&, const String&);
-
 protected:
   xmlDoc* currentDoc;
   bool docOwner;

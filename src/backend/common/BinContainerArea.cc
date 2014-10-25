@@ -105,7 +105,7 @@ BinContainerArea::node(AreaIndex i) const
 }
 
 void
-BinContainerArea::origin(AreaIndex i, class Point&) const
+BinContainerArea::origin(AreaIndex i, struct Point&) const
 {
   assert(i == 0);
 }
@@ -129,7 +129,7 @@ BinContainerArea::indexOfPosition(const scaled& x, const scaled& y, CharIndex& i
 { return child->indexOfPosition(x, y, index); }
 
 bool
-BinContainerArea::positionOfIndex(CharIndex index, class Point* p, BoundingBox* b) const
+BinContainerArea::positionOfIndex(CharIndex index, struct Point* p, BoundingBox* b) const
 { return child->positionOfIndex(index, p, b); }
 
 CharIndex

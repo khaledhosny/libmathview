@@ -35,7 +35,7 @@ public:
   TemplateReaderRefinementContext(void) { }
 
   SmartPtr<Attribute>
-  get(const class AttributeSignature& sig) const
+  get(const struct AttributeSignature& sig) const
   {
     for (typename std::list<Context>::const_iterator p = context.begin(); p != context.end(); p++)
       {

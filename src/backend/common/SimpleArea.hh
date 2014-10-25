@@ -38,7 +38,7 @@ public:
   virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual void      strength(int&, int&, int&) const;
   virtual AreaRef   node(AreaIndex) const;
-  virtual void      origin(AreaIndex, class Point&) const;
+  virtual void      origin(AreaIndex, struct Point&) const;
   virtual CharIndex lengthTo(AreaIndex) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
