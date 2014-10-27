@@ -3,12 +3,12 @@
   <mstyle mathsize="48pt">
     <mrow>
       <mover accent="true">
-        <mi><mchar name="alpha"/></mi>
+        <mi>&alpha;</mi>
         <mo>&#x0307;</mo>
       </mover>
       <mo>,</mo>
       <mover accent="true">
-        <mi><mchar name="beta"/></mi>
+        <mi>&beta;</mi>
 	<mpadded lspace="+.2em"><mo>&#x0307;</mo></mpadded>
       </mover>
     </mrow>

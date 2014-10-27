@@ -1,7 +1,7 @@
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mo><mchar name="conint"/></mo>
+      <mo>&conint;</mo>
     </mrow>
     <mo>=</mo>
     <mrow>

@@ -5,7 +5,7 @@
         <mo>lim</mo>
         <mrow>
           <mi>x</mi>
-  	  <mo><mchar name="RightArrow"/></mo>
+  	  <mo>&RightArrow;</mo>
 	  <msub>
  	    <mi>x</mi>
 	    <mn>0</mn>
