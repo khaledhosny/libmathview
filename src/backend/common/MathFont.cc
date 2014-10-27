@@ -24,26 +24,28 @@
 
 #include "MathFont.hh"
 
-MathFont::MathFont()
-  : tableData(0)
-  , unitsPerEM(0)
-{ }
+MathFont::MathFont(const hb_font_t* font)
+{
+  hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(font));
+  m_table = hb_face_reference_table(const_cast<hb_face_t*>(face), HB_TAG('M','A','T','H'));
+}
 
 MathFont::~MathFont()
 {
-  delete [] tableData;
+  hb_blob_destroy(const_cast<hb_blob_t*>(m_table));
 }
 
 SmartPtr<MathFont>
-MathFont::create()
+MathFont::create(const hb_font_t* font)
 {
-  return new MathFont();
+  return new MathFont(font);
 }
 
 int
 MathFont::getConstant(MathConstant constant) const
 {
   int value = 0;
+  const char* tableData = hb_blob_get_data(const_cast<hb_blob_t*>(m_table), NULL);
   if (tableData)
     {
       const uint16_t* constants = (const uint16_t*)(tableData + SWAP(((const MathTableHeader*)tableData)->mathConstants));
@@ -96,6 +98,7 @@ MathFont::getVariant(int glyph, scaled size, bool horiz)
 {
   int variant = glyph;
 
+  const char* tableData = hb_blob_get_data(const_cast<hb_blob_t*>(m_table), NULL);
   if (tableData)
     {
       uint16_t offset = SWAP(((const MathTableHeader*)tableData)->mathVariants);

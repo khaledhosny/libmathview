@@ -22,6 +22,7 @@
 // <http://www.gnu.org/licenses/>.
 
 #include <config.h>
+#include <hb-ft.h>
 
 #include <vector>
 
@@ -29,16 +30,28 @@
 #include "MathShaper.hh"
 #include "ShapingContext.hh"
 
-MathShaper::MathShaper(const SmartPtr<MathFont>& font)
-  : mathFont(font)
-{ }
+MathShaper::MathShaper(const hb_font_t* font)
+  : m_font(font)
+{
+  m_mathfont = MathFont::create(font);
+}
 
 MathShaper::~MathShaper()
 { }
 
+unsigned
+MathShaper::shapeChar(Char32 ch) const
+{
+  hb_codepoint_t glyph;
+  hb_font_get_glyph(const_cast<hb_font_t*>(m_font), ch, 0, &glyph);
+  return glyph;
+}
+
 void
 MathShaper::shape(ShapingContext& context) const
 {
+  hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(m_font));
+  int upem = hb_face_get_upem(face);
   for (unsigned n = context.chunkSize(); n > 0; n--)
     {
       unsigned glyphId = shapeChar(context.thisChar());
@@ -47,13 +60,13 @@ MathShaper::shape(ShapingContext& context) const
 
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
-          scaled span = (context.getVSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
-          variantId = mathFont->getVariant(variantId, span, false);
+          scaled span = (context.getVSpan() * upem).getValue() / context.getSize().getValue();
+          variantId = m_mathfont->getVariant(variantId, span, false);
         }
       if (glyphArea->box().horizontalExtent() < context.getHSpan())
         {
-          scaled span = (context.getHSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
-          variantId = mathFont->getVariant(variantId, span, true);
+          scaled span = (context.getHSpan() * upem).getValue() / context.getSize().getValue();
+          variantId = m_mathfont->getVariant(variantId, span, true);
         }
 
       if (variantId != glyphId)

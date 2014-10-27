@@ -31,21 +31,20 @@
 class Cairo_Shaper : public MathShaper
 {
 protected:
-  Cairo_Shaper(cairo_scaled_font_t*, const SmartPtr<class MathFont>&);
+  Cairo_Shaper(const cairo_scaled_font_t*, const hb_font_t*);
   virtual ~Cairo_Shaper();
 
 public:
-  static SmartPtr<Cairo_Shaper> create(cairo_scaled_font_t* f, const SmartPtr<class MathFont>& mf)
-  { return new Cairo_Shaper(f, mf); }
+  static SmartPtr<Cairo_Shaper> create(const cairo_scaled_font_t* font, const hb_font_t* hb_font)
+  { return new Cairo_Shaper(font, hb_font); }
 
   virtual bool isDefaultShaper(void) const { return true; }
 
 protected:
   virtual AreaRef getGlyphArea(unsigned, const scaled&) const;
-  virtual unsigned shapeChar(Char32) const;
 
 private:
-  cairo_scaled_font_t* font;
+  const cairo_scaled_font_t* m_font;
 };
 
 #endif // __Cairo_Shaper_hh__

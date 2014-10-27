@@ -24,7 +24,7 @@
 #include <config.h>
 
 #include <cairo-ft.h>
-#include FT_TRUETYPE_TABLES_H
+#include <hb-ft.h>
 
 #include <map>
 
@@ -35,38 +35,21 @@
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
 
-#define MATH_TAG  0X4D415448
-
 Cairo_Backend::Cairo_Backend(cairo_scaled_font_t* font)
 {
   SmartPtr<AreaFactory> factory = AreaFactory::create();
-  SmartPtr<MathFont> mathfont = MathFont::create();
 
-  FT_Byte *table = NULL;
-  FT_Face face = cairo_ft_scaled_font_lock_face(font);
-
-  FT_ULong length = 0;
-  FT_Error error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, NULL, &length);
-  if (!error)
-    {
-      table = new FT_Byte[length];
-      error = FT_Load_Sfnt_Table(face, MATH_TAG, 0, table, &length);
-      if (error)
-        delete [] table;
-      else
-        mathfont->setData(table);
-    }
-
-  mathfont->setUnitsPerEM(face->units_per_EM);
+  FT_Face face = cairo_ft_scaled_font_lock_face(const_cast<cairo_scaled_font_t*>(font));
+  hb_font_t *hb_font = hb_ft_font_create(face, NULL);
 
   cairo_ft_scaled_font_unlock_face(font);
 
-  SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(mathfont);
+  SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(hb_font);
 
   mgd->setFactory(factory);
   setMathGraphicDevice(mgd);
 
-  getShaperManager()->registerShaper(Cairo_Shaper::create(font, mathfont));
+  getShaperManager()->registerShaper(Cairo_Shaper::create(font, hb_font));
   getShaperManager()->registerShaper(SpaceShaper::create());
 }
 

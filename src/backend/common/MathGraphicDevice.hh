@@ -31,11 +31,11 @@
 class MathGraphicDevice : public GraphicDevice
 {
 protected:
-  MathGraphicDevice(const SmartPtr<MathFont>& font);
+  MathGraphicDevice(const hb_font_t* font);
   virtual ~MathGraphicDevice();
 
 public:
-  static SmartPtr<MathGraphicDevice> create(const SmartPtr<class MathFont>&);
+  static SmartPtr<MathGraphicDevice> create(const hb_font_t* font);
 
   virtual void clearCache(void) const;
 
@@ -110,7 +110,8 @@ protected:
 private:
   scaled getConstant(const class FormattingContext&, MathConstant) const;
   scaled getRuleThickness(const class FormattingContext&, MathConstant) const;
-  SmartPtr<class MathFont> mathFont;
+  SmartPtr<class MathFont> m_mathfont;
+  const hb_font_t* m_font;
 };
 
 #endif // __MathGraphicDevice_hh__

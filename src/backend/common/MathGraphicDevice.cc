@@ -34,15 +34,17 @@
 #include "Area.hh"
 #include "GlyphArea.hh"
 
-MathGraphicDevice::MathGraphicDevice(const SmartPtr<MathFont>& font)
-  : mathFont(font)
-{ }
+MathGraphicDevice::MathGraphicDevice(const hb_font_t* font)
+  : m_font(font)
+{
+  m_mathfont = MathFont::create(font);
+}
 
 MathGraphicDevice::~MathGraphicDevice()
 { }
 
 SmartPtr<MathGraphicDevice>
-MathGraphicDevice::create(const SmartPtr<MathFont>& font)
+MathGraphicDevice::create(const hb_font_t* font)
 { return new MathGraphicDevice(font); }
 
 scaled
@@ -83,7 +85,10 @@ MathGraphicDevice::getConstant(const FormattingContext& context,
         }
     }
 
-  scaled value = mathFont->getConstant(constant);
+  scaled value = m_mathfont->getConstant(constant);
+  hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(m_font));
+  int upem = hb_face_get_upem(face);
+
   // scale the non-percent constants
   switch (constant)
     {
@@ -92,7 +97,7 @@ MathGraphicDevice::getConstant(const FormattingContext& context,
       case radicalDegreeBottomRaisePercent:
         break;
       default:
-        value = (value * context.getSize()) / mathFont->getUnitsPerEM();
+        value = (value * context.getSize()) / upem;
         break;
     }
 

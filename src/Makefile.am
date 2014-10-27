@@ -282,6 +282,7 @@ libbackend_common_la_SOURCES = \
   $(NULL)
 
 libbackend_common_la_LIBADD = \
+  $(HARFBUZZ_LIBS) \
   $(NULL)
 
 mathview_HEADERS += \
@@ -633,6 +634,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/frontend/libxml2_reader \
   $(CAIRO_CFLAGS) \
   $(GTK_CFLAGS) \
+  $(HARFBUZZ_CFLAGS) \
   $(QT_CFLAGS) -fPIC \
   $(XML_CFLAGS) \
   -DPKGDATADIR=\""$(pkgdatadir)"\" \
