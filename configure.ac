@@ -95,6 +95,12 @@ AM_MISSING_PROG([XSLTPROC], [xsltproc])
 AM_MISSING_PROG([PYTHON], [python2])
 
 dnl =============================================================================
+dnl HarfBuzz
+dnl =============================================================================
+
+PKG_CHECK_MODULES(HARFBUZZ, harfbuzz, :, AC_MSG_ERROR(could not find HarfBuzz))
+
+dnl =============================================================================
 dnl Qt support
 dnl =============================================================================
 
@@ -135,6 +141,8 @@ AC_ARG_ENABLE(
 have_cairo=false
 if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
   PKG_CHECK_MODULES(CAIRO, cairo-fc, have_cairo=true, :)
+  dnl check for harfbuzz-ft when it is split into a separate library
+  dnl PKG_CHECK_MODULES(HARFBUZZFT, harfbuzz-ft, :, AC_MSG_ERROR(could not find HarfBuzz/FreeType integration))
 fi
 if test "$enable_cairo" = "yes" -a "$have_cairo" != "true"; then
   AC_MSG_ERROR([Cairo support requested but cairo could not found])
