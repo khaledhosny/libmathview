@@ -30,6 +30,10 @@
 #include "MathShaper.hh"
 #include "ShapingContext.hh"
 
+enum class VariationSelector : Char32 {
+  ONE = 0XFE00
+};
+
 MathShaper::MathShaper(const hb_font_t* font)
   : m_font(font)
 {
@@ -40,10 +44,10 @@ MathShaper::~MathShaper()
 { }
 
 unsigned
-MathShaper::shapeChar(Char32 ch) const
+MathShaper::shapeChar(Char32 ch, Char32 vs) const
 {
   hb_codepoint_t glyph;
-  hb_font_get_glyph(const_cast<hb_font_t*>(m_font), ch, 0, &glyph);
+  hb_font_get_glyph(const_cast<hb_font_t*>(m_font), ch, vs, &glyph);
   return glyph;
 }
 
@@ -52,11 +56,22 @@ MathShaper::shape(ShapingContext& context) const
 {
   hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(m_font));
   int upem = hb_face_get_upem(face);
-  for (unsigned n = context.chunkSize(); n > 0; n--)
+  for (unsigned i = context.chunkSize(); i > 0;)
     {
-      unsigned glyphId = shapeChar(context.thisChar());
-      unsigned variantId = glyphId;
+      unsigned glyphId, variantId, n;
+      if (context.nextChar() == static_cast<Char32>(VariationSelector::ONE))
+        {
+          glyphId = shapeChar(context.thisChar(), context.nextChar());
+          n = 2;
+        }
+      else
+        {
+          glyphId = shapeChar(context.thisChar());
+          n = 1;
+        }
+
       AreaRef glyphArea = getGlyphArea(glyphId, context.getSize());
+      variantId = glyphId;
 
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
@@ -72,7 +87,8 @@ MathShaper::shape(ShapingContext& context) const
       if (variantId != glyphId)
         glyphArea = getGlyphArea(variantId, context.getSize());
 
-      context.pushArea(1, glyphArea);
+      context.pushArea(n, glyphArea);
+      i -= n;
     }
 }
 
