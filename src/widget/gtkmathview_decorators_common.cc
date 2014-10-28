@@ -66,7 +66,9 @@ draw_insertion_cursor(GtkMathView* math_view, cairo_t* cr,
       color.alpha = 1;
 
       gdk_cairo_set_source_rgba(cr, &color);
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
       gdk_color_free(cursor_color);
+G_GNUC_END_IGNORE_DEPRECATIONS
     }
 
   font_size = GTKMATHVIEW_METHOD_NAME(get_font_size)(math_view);
