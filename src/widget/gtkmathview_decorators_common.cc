@@ -43,7 +43,7 @@ draw_insertion_cursor(GtkMathView* math_view, cairo_t* cr,
   GtkStyleContext *context;
   GdkColor *cursor_color;
   GdkRGBA color;
-  double stem_width, offset, cursor_aspect_ratio;
+  gfloat stem_width, offset, cursor_aspect_ratio;
   int font_size;
 
   context = gtk_widget_get_style_context (GTK_WIDGET(math_view));
