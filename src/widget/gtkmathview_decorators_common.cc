@@ -42,6 +42,7 @@ draw_insertion_cursor(GtkMathView* math_view, cairo_t* cr,
 {
   GtkStyleContext *context;
   GdkColor *cursor_color;
+  GdkRGBA color;
   double stem_width, offset, cursor_aspect_ratio;
   int font_size;
 
@@ -59,17 +60,23 @@ draw_insertion_cursor(GtkMathView* math_view, cairo_t* cr,
 
   if (cursor_color)
     {
-      GdkRGBA color;
       color.red = cursor_color->red / 65535.0;
       color.green = cursor_color->green / 65535.0;
       color.blue = cursor_color->blue / 65535.0;
       color.alpha = 1;
 
-      gdk_cairo_set_source_rgba(cr, &color);
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
       gdk_color_free(cursor_color);
 G_GNUC_END_IGNORE_DEPRECATIONS
     }
+  else
+    {
+      gtk_style_context_get_color(context,
+                                  GTK_STATE_FLAG_NORMAL,
+                                  &color);
+    }
+
+  gdk_cairo_set_source_rgba(cr, &color);
 
   font_size = GTKMATHVIEW_METHOD_NAME(get_font_size)(math_view);
   stem_width = font_size * cursor_aspect_ratio + 1;
