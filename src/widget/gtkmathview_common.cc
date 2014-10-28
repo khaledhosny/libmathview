@@ -289,6 +289,7 @@ gtk_math_view_paint(GtkMathView* math_view)
   GtkWidget* widget = GTK_WIDGET(math_view);
   GdkWindow* window = gtk_widget_get_window(widget);
   GtkStyleContext* context = gtk_widget_get_style_context(widget);
+  gtk_style_context_add_class(context, GTK_STYLE_CLASS_VIEW);
   GtkAllocation allocation;
   gtk_widget_get_allocation(widget, &allocation);
   
