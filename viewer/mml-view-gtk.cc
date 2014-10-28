@@ -483,7 +483,6 @@ mml_view_new_window (GApplication *app,
 
   gtk_math_view_set_font_size (GTK_MATH_VIEW (view), 24);
 
-  gtk_widget_set_double_buffered (GTK_WIDGET (view), FALSE);
   gtk_container_add (GTK_CONTAINER (window), view);
   gtk_widget_show_all (window);
 }
