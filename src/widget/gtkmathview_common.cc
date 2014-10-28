@@ -308,16 +308,8 @@ gtk_math_view_paint(GtkMathView* math_view)
   g_return_if_fail(rc != 0);
 
   GdkRGBA fore, back;
-  if (gtk_widget_has_focus(GTK_WIDGET(math_view)))
-    {
-      gtk_style_context_get_color(context, GTK_STATE_FLAG_SELECTED, &fore);
-      gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED, &back);
-    }
-  else
-    {
-      gtk_style_context_get_color(context, GTK_STATE_FLAG_ACTIVE, &fore);
-      gtk_style_context_get_background_color(context, GTK_STATE_FLAG_ACTIVE, &back);
-    }
+  gtk_style_context_get_color(context, GTK_STATE_FLAG_SELECTED, &fore);
+  gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED, &back);
   rc->setStyle(RenderingContext::SELECTED_STYLE);
   rc->setForegroundColor(RGBColorOfGdkRGBA(fore));
   rc->setBackgroundColor(RGBColorOfGdkRGBA(back));
