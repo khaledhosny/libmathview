@@ -33,7 +33,7 @@
 class Cairo_RenderingContext : public RenderingContext
 {
 public:
-  Cairo_RenderingContext(cairo_t* cr = 0);
+  Cairo_RenderingContext(cairo_t* cr);
   virtual ~Cairo_RenderingContext();
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
