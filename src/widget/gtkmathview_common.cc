@@ -209,7 +209,7 @@ from_view_coords(GtkMathView* math_view, GtkMathViewPoint* point)
   g_return_if_fail(math_view != NULL);
   g_return_if_fail(point != NULL);
   point->x -= math_view->top_x;
-  point->y -= math_view->top_y - Cairo_RenderingContext::toCairoPixels(math_view->view->getBoundingBox().height);
+  point->y -= math_view->top_y - math_view->view->getBoundingBox().height.toDouble();
 }
 
 static void
@@ -219,7 +219,7 @@ to_view_coords(GtkMathView* math_view, gint* x, gint* y)
   g_return_if_fail(x != NULL);
   g_return_if_fail(y != NULL);
   *x += math_view->top_x;
-  *y += math_view->top_y - Cairo_RenderingContext::toCairoPixels(math_view->view->getBoundingBox().height);
+  *y += math_view->top_y - math_view->view->getBoundingBox().height.toDouble();
 }
 
 /* GObject implementation */
@@ -325,14 +325,12 @@ gtk_math_view_paint(GtkMathView* math_view)
   cairo_paint(cr);
 
   // WARNING: setAvailableWidth must be invoked BEFORE any coordinate conversion
-  math_view->view->setAvailableWidth(Cairo_RenderingContext::fromCairoX(width));
+  math_view->view->setAvailableWidth(scaled(width));
   gint x = 0;
   gint y = 0;
   to_view_coords(math_view, &x, &y);
   g_signal_emit(math_view, decorate_under_signal, 0, cr);
-  math_view->view->render(*rc,
-			  Cairo_RenderingContext::fromCairoX(-x),
-			  Cairo_RenderingContext::fromCairoY(-y));
+  math_view->view->render(*rc, scaled(-x), scaled(y));
 
   gtk_math_view_update(math_view, 0, 0, width, height);
 
@@ -741,7 +739,7 @@ gtk_math_view_get_preferred_width(GtkWidget* widget, gint* minimal, gint* natura
 
   if (BoundingBox box = math_view->view->getBoundingBox())
     {
-      *minimal = *natural = Cairo_RenderingContext::toCairoPixels(box.horizontalExtent());
+      *minimal = *natural = box.horizontalExtent().toDouble();
     }
 }
 
@@ -757,7 +755,7 @@ gtk_math_view_get_preferred_height(GtkWidget* widget, gint* minimal, gint* natur
 
   if (BoundingBox box = math_view->view->getBoundingBox())
     {
-      *minimal = *natural = Cairo_RenderingContext::toCairoPixels(box.verticalExtent());
+      *minimal = *natural = box.verticalExtent().toDouble();
     }
 }
 
@@ -1024,7 +1022,7 @@ setup_adjustments(GtkMathView* math_view)
 
   if (math_view->hadjustment != NULL) {
     const gint page_width = allocation.width;
-    const gint width = box.defined() ? Cairo_RenderingContext::toCairoPixels(box.width) : page_width;
+    const gint width = box.defined() ? box.width.toDouble() : page_width;
     
     if (math_view->top_x > width - page_width)
       math_view->top_x = std::max(0, width - page_width);
@@ -1034,7 +1032,7 @@ setup_adjustments(GtkMathView* math_view)
 
   if (math_view->vadjustment != NULL) {
     const gint page_height = allocation.height;
-    const gint height = box.defined() ? Cairo_RenderingContext::toCairoPixels(box.verticalExtent()) : page_height;
+    const gint height = box.defined() ? box.verticalExtent().toDouble() : page_height;
 
     if (math_view->top_y > height - page_height)
       math_view->old_top_y = math_view->top_y = std::max(0, height - page_height);
@@ -1360,9 +1358,9 @@ GTKMATHVIEW_METHOD_NAME(get_bounding_box)(GtkMathView* math_view, GtkMathViewBou
     {
       if (result_box)
 	{
-	  result_box->width = Cairo_RenderingContext::toCairoPixels(box.width);
-	  result_box->height = Cairo_RenderingContext::toCairoPixels(box.height);
-	  result_box->depth = Cairo_RenderingContext::toCairoPixels(box.depth);
+	  result_box->width = box.width.toDouble();
+	  result_box->height = box.height.toDouble();
+	  result_box->depth = box.depth.toDouble();
 	}
 
       return TRUE;
@@ -1382,8 +1380,7 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y,
   Point elemOrig;
   BoundingBox elemBox;
   to_view_coords(math_view, &x, &y);
-  if (SmartPtr<Element> elem = math_view->view->getElementAt(Cairo_RenderingContext::fromCairoX(x),
-							     Cairo_RenderingContext::fromCairoY(y),
+  if (SmartPtr<Element> elem = math_view->view->getElementAt(scaled(x), -scaled(y),
 							     result_orig ? &elemOrig : 0,
 							     result_box ? &elemBox : 0))
     if (GtkMathViewModelId el = math_view->view->modelElementOfElement(elem))
@@ -1392,16 +1389,16 @@ GTKMATHVIEW_METHOD_NAME(get_element_at)(GtkMathView* math_view, gint x, gint y,
 
 	if (result_orig)
 	  {
-	    result_orig->x = Cairo_RenderingContext::toCairoX(elemOrig.x);
-	    result_orig->y = Cairo_RenderingContext::toCairoY(elemOrig.y);
+	    result_orig->x = elemOrig.x.toDouble();
+	    result_orig->y = -elemOrig.y.toDouble();
 	    from_view_coords(math_view, result_orig);
 	  }
 
 	if (result_box)
 	  {
-	    result_box->width = Cairo_RenderingContext::toCairoPixels(elemBox.width);
-	    result_box->height = Cairo_RenderingContext::toCairoPixels(elemBox.height);
-	    result_box->depth = Cairo_RenderingContext::toCairoPixels(elemBox.depth);
+	    result_box->width = elemBox.width.toDouble();
+	    result_box->height = elemBox.height.toDouble();
+	    result_box->depth = elemBox.depth.toDouble();
 	  }
 	
 	return TRUE;
@@ -1435,16 +1432,16 @@ GTKMATHVIEW_METHOD_NAME(get_element_extents_ref)(GtkMathView* math_view, GtkMath
 	{
 	  if (result_orig)
 	    {
-	      result_orig->x = Cairo_RenderingContext::toCairoX(elemOrig.x);
-	      result_orig->y = Cairo_RenderingContext::toCairoY(elemOrig.y);
+	      result_orig->x = elemOrig.x.toDouble();
+	      result_orig->y = -elemOrig.y.toDouble();
 	      from_view_coords(math_view, result_orig);
 	    }
 	  
 	  if (result_box)
 	    {
-	      result_box->width = Cairo_RenderingContext::toCairoPixels(elemBox.width);
-	      result_box->height = Cairo_RenderingContext::toCairoPixels(elemBox.height);
-	      result_box->depth = Cairo_RenderingContext::toCairoPixels(elemBox.depth);
+	      result_box->width = elemBox.width.toDouble();
+	      result_box->height = elemBox.height.toDouble();
+	      result_box->depth = elemBox.depth.toDouble();
 	    }
 	  
 	  return TRUE;
@@ -1472,9 +1469,7 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
   Point charOrig;
   BoundingBox charBox;
   to_view_coords(math_view, &x, &y);
-  if (SmartPtr<Element> elem = math_view->view->getCharAt(Cairo_RenderingContext::fromCairoX(x),
-							  Cairo_RenderingContext::fromCairoY(y),
-							  charIndex,
+  if (SmartPtr<Element> elem = math_view->view->getCharAt(scaled(x), -scaled(y), charIndex,
 							  result_orig ? &charOrig : 0,
 							  result_box ? &charBox : 0))
     if (GtkMathViewModelId el = math_view->view->modelElementOfElement(elem))
@@ -1485,16 +1480,16 @@ GTKMATHVIEW_METHOD_NAME(get_char_at)(GtkMathView* math_view, gint x, gint y,
 
 	if (result_orig)
 	  {
-	    result_orig->x = Cairo_RenderingContext::toCairoX(charOrig.x);
-	    result_orig->y = Cairo_RenderingContext::toCairoY(charOrig.y);
+	    result_orig->x = charOrig.x.toDouble();
+	    result_orig->y = -charOrig.y.toDouble();
 	    from_view_coords(math_view, result_orig);
 	  }
 	
 	if (result_box)
 	  {
-	    result_box->width = Cairo_RenderingContext::toCairoPixels(charBox.width);
-	    result_box->height = Cairo_RenderingContext::toCairoPixels(charBox.height);
-	    result_box->depth = Cairo_RenderingContext::toCairoPixels(charBox.depth);
+	    result_box->width = charBox.width.toDouble();
+	    result_box->height = charBox.height.toDouble();
+	    result_box->depth = charBox.depth.toDouble();
 	  }
 	
 	return TRUE;
@@ -1528,16 +1523,16 @@ GTKMATHVIEW_METHOD_NAME(get_char_extents_ref)(GtkMathView* math_view, GtkMathVie
 	{
 	  if (result_orig)
 	    {
-	      result_orig->x = Cairo_RenderingContext::toCairoX(charOrig.x);
-	      result_orig->y = Cairo_RenderingContext::toCairoY(charOrig.y);
+	      result_orig->x = charOrig.x.toDouble();
+	      result_orig->y = -charOrig.y.toDouble();
 	      from_view_coords(math_view, result_orig);
 	    }
 	  
 	  if (result_box)
 	    {
-	      result_box->width = Cairo_RenderingContext::toCairoPixels(charBox.width);
-	      result_box->height = Cairo_RenderingContext::toCairoPixels(charBox.height);
-	      result_box->depth = Cairo_RenderingContext::toCairoPixels(charBox.depth);
+	      result_box->width = charBox.width.toDouble();
+	      result_box->height = charBox.height.toDouble();
+	      result_box->depth = charBox.depth.toDouble();
 	    }
 	
 	  return TRUE;
@@ -1561,9 +1556,9 @@ GTKMATHVIEW_METHOD_NAME(get_top)(GtkMathView* math_view, gint* x, gint* y)
   gdouble h_value = gtk_adjustment_get_value(math_view->hadjustment);
   gdouble v_value = gtk_adjustment_get_value(math_view->vadjustment);
   if (x != NULL)
-    *x = math_view->vadjustment ? Cairo_RenderingContext::toCairoPixels(h_value) : 0;
+    *x = math_view->vadjustment ? h_value : 0;
   if (y != NULL)
-    *y = math_view->hadjustment ? Cairo_RenderingContext::toCairoPixels(v_value) : 0;
+    *y = math_view->hadjustment ? v_value : 0;
 }
 
 extern "C" void

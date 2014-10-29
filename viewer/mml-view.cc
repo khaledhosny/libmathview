@@ -155,8 +155,8 @@ main(int argc, char *argv[])
   view->loadURI(input_file);
 
   const BoundingBox box = view->getBoundingBox();
-  double width = Cairo_RenderingContext::toCairoPixels(box.horizontalExtent());
-  double height = Cairo_RenderingContext::toCairoPixels(box.verticalExtent());
+  double width = box.horizontalExtent().toDouble();
+  double height = box.verticalExtent().toDouble();
   cairo_surface_t* surface = create_surface(output_file, width, height);
   if (surface)
   {

@@ -38,13 +38,10 @@ Cairo_Shaper::Cairo_Shaper(const cairo_scaled_font_t* font,
 Cairo_Shaper::~Cairo_Shaper()
 { }
 
-// FIXME
-#define DPI 72.0
-
 AreaRef
 Cairo_Shaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
 {
-  double size = sp_size.toDouble() * (DPI / 72.0);
+  double size = sp_size.toDouble();
   cairo_font_face_t* face = cairo_scaled_font_get_font_face(const_cast<cairo_scaled_font_t*>(m_font));
   cairo_matrix_t matrix, ctm;
   cairo_matrix_init_scale (&matrix, size, size);

@@ -66,7 +66,7 @@ WrapperArea::render(RenderingContext& context, const scaled& x, const scaled& y)
       context.setForegroundColor(backgroundColor);
 
       BoundingBox areaBox = box();
-      const scaled margin = context.fromDevicePixels(1);
+      const scaled margin(1);
       areaBox.width += margin * 2;
       areaBox.height += margin;
       areaBox.depth += margin;

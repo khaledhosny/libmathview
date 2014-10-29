@@ -35,12 +35,10 @@ Cairo_GlyphArea::Cairo_GlyphArea(cairo_scaled_font_t* f, unsigned g)
   cairo_text_extents_t extents;
   cairo_scaled_font_glyph_extents(font, glyphs, 1, &extents);
 
-  bbox = BoundingBox(Cairo_RenderingContext::fromCairoPixels(extents.x_advance),
-                     Cairo_RenderingContext::fromCairoPixels(-extents.y_bearing),
-                     Cairo_RenderingContext::fromCairoPixels(extents.y_bearing + extents.height));
+  bbox = BoundingBox(scaled(extents.x_advance), scaled(-extents.y_bearing), scaled(extents.y_bearing + extents.height));
 
-  lbearing = Cairo_RenderingContext::fromCairoPixels(extents.x_bearing);
-  rbearing = Cairo_RenderingContext::fromCairoPixels(extents.x_bearing + extents.x_advance);
+  lbearing = scaled(extents.x_bearing);
+  rbearing = scaled(extents.x_bearing + extents.x_advance);
 }
 
 Cairo_GlyphArea::~Cairo_GlyphArea()
