@@ -293,8 +293,15 @@ click (GtkMathView                 *view,
   gtk_math_view_get_size (view, &w, &h);
   g_debug ("click signal %d %d\n", w, h);
 
+  guint timer = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (view), "cursor-timer"));
+  if (timer)
+    g_source_remove (timer);
+
   cursor = gtk_math_view_decor_default_cursor_new (view);
-  g_timeout_add (500, (GSourceFunc) cursor_blink, cursor);
+  timer = g_timeout_add_full (G_PRIORITY_DEFAULT, 500,
+                              (GSourceFunc) cursor_blink, cursor,
+                              (GDestroyNotify) gtk_math_view_decor_default_cursor_free);
+  g_object_set_data (G_OBJECT (view), "cursor-timer", GUINT_TO_POINTER (timer));
 
   index = -1;
   if (gtk_math_view_get_char_at (view, event->x, event->y, &elem, &index, NULL, NULL))
