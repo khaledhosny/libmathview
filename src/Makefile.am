@@ -22,8 +22,7 @@ libmathview_la_SOURCES = dummy.cc
 libmathview_la_LIBADD = \
   libbackend_common.la \
   libfrontend_common.la \
-  libengine_mathml.la \
-  libengine_common.la \
+  libengine.la \
   libcommon.la \
   $(NULL)
 
@@ -92,145 +91,132 @@ noinst_HEADERS += \
 
 
 
-noinst_LTLIBRARIES += libengine_common.la
+noinst_LTLIBRARIES += libengine.la
 
-libengine_common_la_SOURCES = \
-  engine/common/Attribute.cc \
-  engine/common/AttributeSet.cc \
-  engine/common/AttributeSignature.cc \
-  engine/common/NamespaceContext.cc \
-  engine/common/View.cc \
-  engine/common/Node.cc \
-  engine/common/Element.cc \
+libengine_la_SOURCES = \
+  engine/Attribute.cc \
+  engine/AttributeSet.cc \
+  engine/AttributeSignature.cc \
+  engine/Element.cc \
+  engine/MathMLActionElement.cc \
+  engine/MathMLAlignGroupElement.cc \
+  engine/MathMLAlignMarkElement.cc \
+  engine/MathMLAttributeSignatures.cc \
+  engine/MathMLBinContainerElement.cc \
+  engine/MathMLContainerElement.cc \
+  engine/MathMLDummyElement.cc \
+  engine/MathMLElement.cc \
+  engine/MathMLEmbellishment.cc \
+  engine/MathMLEncloseElement.cc \
+  engine/MathMLErrorElement.cc \
+  engine/MathMLFractionElement.cc \
+  engine/MathMLFunctionApplicationNode.cc \
+  engine/MathMLGlyphNode.cc \
+  engine/MathMLIdentifierElement.cc \
+  engine/MathMLInferredRowElement.cc \
+  engine/MathMLInvisibleTimesNode.cc \
+  engine/MathMLLinearContainerElement.cc \
+  engine/MathMLMarkNode.cc \
+  engine/MathMLmathElement.cc \
+  engine/MathMLMultiScriptsElement.cc \
+  engine/MathMLNamespaceContext.cc \
+  engine/MathMLNode.cc \
+  engine/MathMLNormalizingContainerElement.cc \
+  engine/MathMLNumberElement.cc \
+  engine/MathMLOperatorDictionary.cc \
+  engine/MathMLOperatorElement.cc \
+  engine/MathMLPaddedElement.cc \
+  engine/MathMLPhantomElement.cc \
+  engine/MathMLRadicalElement.cc \
+  engine/MathMLRowElement.cc \
+  engine/MathMLScriptElement.cc \
+  engine/MathMLSpaceElement.cc \
+  engine/MathMLStringLitElement.cc \
+  engine/MathMLStringNode.cc \
+  engine/MathMLStyleElement.cc \
+  engine/MathMLTableCellElement.cc \
+  engine/MathMLTableContentFactory.cc \
+  engine/MathMLTableElement.cc \
+  engine/MathMLTableFormatter.cc \
+  engine/MathMLTextElement.cc \
+  engine/MathMLTextNode.cc \
+  engine/MathMLTokenElement.cc \
+  engine/MathMLUnderOverElement.cc \
+  engine/MathMLValueConversion.cc \
+  engine/mathVariantAux.cc \
+  engine/NamespaceContext.cc \
+  engine/Node.cc \
+  engine/traverseAux.cc \
+  engine/View.cc \
   $(NULL)
 
 mathview_HEADERS += \
-  engine/common/NamespaceContext.hh \
-  engine/common/Element.hh \
-  engine/common/Node.hh \
-  engine/common/View.hh \
+  engine/Element.hh \
+  engine/MathMLElement.hh \
+  engine/MathMLNamespaceContext.hh \
+  engine/MathMLOperatorDictionary.hh \
+  engine/NamespaceContext.hh \
+  engine/Node.hh \
+  engine/View.hh \
   $(NULL)
 
 noinst_HEADERS += \
-  engine/common/Adapters.hh \
-  engine/common/Attribute.hh \
-  engine/common/AttributeSet.hh \
-  engine/common/AttributeSignature.hh \
-  engine/common/BinContainerTemplate.hh \
-  engine/common/CommonStringParsers.hh \
-  engine/common/ElementFactory.hh \
-  engine/common/LinearContainerTemplate.hh \
-  $(NULL)
-
-
-
-noinst_LTLIBRARIES += libengine_mathml.la
-
-libengine_mathml_la_SOURCES = \
-  engine/mathml/MathMLActionElement.cc \
-  engine/mathml/MathMLAlignGroupElement.cc \
-  engine/mathml/MathMLAlignMarkElement.cc \
-  engine/mathml/MathMLAttributeSignatures.cc \
-  engine/mathml/MathMLBinContainerElement.cc \
-  engine/mathml/MathMLContainerElement.cc \
-  engine/mathml/MathMLDummyElement.cc \
-  engine/mathml/MathMLElement.cc \
-  engine/mathml/MathMLEmbellishment.cc \
-  engine/mathml/MathMLEncloseElement.cc \
-  engine/mathml/MathMLErrorElement.cc \
-  engine/mathml/MathMLFractionElement.cc \
-  engine/mathml/MathMLFunctionApplicationNode.cc \
-  engine/mathml/MathMLGlyphNode.cc \
-  engine/mathml/MathMLIdentifierElement.cc \
-  engine/mathml/MathMLInferredRowElement.cc \
-  engine/mathml/MathMLInvisibleTimesNode.cc \
-  engine/mathml/MathMLLinearContainerElement.cc \
-  engine/mathml/MathMLMarkNode.cc \
-  engine/mathml/MathMLMultiScriptsElement.cc \
-  engine/mathml/MathMLNamespaceContext.cc \
-  engine/mathml/MathMLNode.cc \
-  engine/mathml/MathMLNormalizingContainerElement.cc \
-  engine/mathml/MathMLNumberElement.cc \
-  engine/mathml/MathMLOperatorDictionary.cc \
-  engine/mathml/MathMLOperatorElement.cc \
-  engine/mathml/MathMLPaddedElement.cc \
-  engine/mathml/MathMLPhantomElement.cc \
-  engine/mathml/MathMLRadicalElement.cc \
-  engine/mathml/MathMLRowElement.cc \
-  engine/mathml/MathMLScriptElement.cc \
-  engine/mathml/MathMLSpaceElement.cc \
-  engine/mathml/MathMLStringLitElement.cc \
-  engine/mathml/MathMLStringNode.cc \
-  engine/mathml/MathMLStyleElement.cc \
-  engine/mathml/MathMLTableCellElement.cc \
-  engine/mathml/MathMLTableContentFactory.cc \
-  engine/mathml/MathMLTableElement.cc \
-  engine/mathml/MathMLTableFormatter.cc \
-  engine/mathml/MathMLTextElement.cc \
-  engine/mathml/MathMLTextNode.cc \
-  engine/mathml/MathMLTokenElement.cc \
-  engine/mathml/MathMLUnderOverElement.cc \
-  engine/mathml/MathMLValueConversion.cc \
-  engine/mathml/MathMLmathElement.cc \
-  engine/mathml/mathVariantAux.cc \
-  engine/mathml/traverseAux.cc \
-  $(NULL)
-
-mathview_HEADERS += \
-  engine/mathml/MathMLNamespaceContext.hh \
-  engine/mathml/MathMLOperatorDictionary.hh \
-  engine/mathml/MathMLElement.hh \
-  $(NULL)
-
-noinst_HEADERS += \
-  engine/mathml/MathML.hh \
-  engine/mathml/MathMLActionElement.hh \
-  engine/mathml/MathMLAdapters.hh \
-  engine/mathml/MathMLAlignGroupElement.hh \
-  engine/mathml/MathMLAlignMarkElement.hh \
-  engine/mathml/MathMLAttributeParsers.hh \
-  engine/mathml/MathMLAttributeParsers.hh \
-  engine/mathml/MathMLAttributeSignatures.hh \
-  engine/mathml/MathMLBinContainerElement.hh \
-  engine/mathml/MathMLContainerElement.hh \
-  engine/mathml/MathMLDummyElement.hh \
-  engine/mathml/MathMLEmbellishment.hh \
-  engine/mathml/MathMLEncloseElement.hh \
-  engine/mathml/MathMLErrorElement.hh \
-  engine/mathml/MathMLFractionElement.hh \
-  engine/mathml/MathMLFunctionApplicationNode.hh \
-  engine/mathml/MathMLGlyphNode.hh \
-  engine/mathml/MathMLIdentifierElement.hh \
-  engine/mathml/MathMLInferredRowElement.hh \
-  engine/mathml/MathMLInvisibleTimesNode.hh \
-  engine/mathml/MathMLLinearContainerElement.hh \
-  engine/mathml/MathMLMarkNode.hh \
-  engine/mathml/MathMLMultiScriptsElement.hh \
-  engine/mathml/MathMLNode.hh \
-  engine/mathml/MathMLNormalizingContainerElement.hh \
-  engine/mathml/MathMLNumberElement.hh \
-  engine/mathml/MathMLOperatorElement.hh \
-  engine/mathml/MathMLPaddedElement.hh \
-  engine/mathml/MathMLPhantomElement.hh \
-  engine/mathml/MathMLRadicalElement.hh \
-  engine/mathml/MathMLRowElement.hh \
-  engine/mathml/MathMLScriptElement.hh \
-  engine/mathml/MathMLSpaceElement.hh \
-  engine/mathml/MathMLStringLitElement.hh \
-  engine/mathml/MathMLStringNode.hh \
-  engine/mathml/MathMLStyleElement.hh \
-  engine/mathml/MathMLTableCellElement.hh \
-  engine/mathml/MathMLTableContentFactory.hh \
-  engine/mathml/MathMLTableElement.hh \
-  engine/mathml/MathMLTableFormatter.hh \
-  engine/mathml/MathMLTextElement.hh \
-  engine/mathml/MathMLTextNode.hh \
-  engine/mathml/MathMLTokenElement.hh \
-  engine/mathml/MathMLUnderOverElement.hh \
-  engine/mathml/MathMLValueConversion.hh \
-  engine/mathml/MathMLmathElement.hh \
-  engine/mathml/mathVariantAux.hh \
-  engine/mathml/traverseAux.hh \
+  engine/Adapters.hh \
+  engine/Attribute.hh \
+  engine/AttributeSet.hh \
+  engine/AttributeSignature.hh \
+  engine/BinContainerTemplate.hh \
+  engine/CommonStringParsers.hh \
+  engine/ElementFactory.hh \
+  engine/LinearContainerTemplate.hh \
+  engine/MathMLActionElement.hh \
+  engine/MathMLAdapters.hh \
+  engine/MathMLAlignGroupElement.hh \
+  engine/MathMLAlignMarkElement.hh \
+  engine/MathMLAttributeParsers.hh \
+  engine/MathMLAttributeParsers.hh \
+  engine/MathMLAttributeSignatures.hh \
+  engine/MathMLBinContainerElement.hh \
+  engine/MathMLContainerElement.hh \
+  engine/MathMLDummyElement.hh \
+  engine/MathMLEmbellishment.hh \
+  engine/MathMLEncloseElement.hh \
+  engine/MathMLErrorElement.hh \
+  engine/MathMLFractionElement.hh \
+  engine/MathMLFunctionApplicationNode.hh \
+  engine/MathMLGlyphNode.hh \
+  engine/MathML.hh \
+  engine/MathMLIdentifierElement.hh \
+  engine/MathMLInferredRowElement.hh \
+  engine/MathMLInvisibleTimesNode.hh \
+  engine/MathMLLinearContainerElement.hh \
+  engine/MathMLMarkNode.hh \
+  engine/MathMLmathElement.hh \
+  engine/MathMLMultiScriptsElement.hh \
+  engine/MathMLNode.hh \
+  engine/MathMLNormalizingContainerElement.hh \
+  engine/MathMLNumberElement.hh \
+  engine/MathMLOperatorElement.hh \
+  engine/MathMLPaddedElement.hh \
+  engine/MathMLPhantomElement.hh \
+  engine/MathMLRadicalElement.hh \
+  engine/MathMLRowElement.hh \
+  engine/MathMLScriptElement.hh \
+  engine/MathMLSpaceElement.hh \
+  engine/MathMLStringLitElement.hh \
+  engine/MathMLStringNode.hh \
+  engine/MathMLStyleElement.hh \
+  engine/MathMLTableCellElement.hh \
+  engine/MathMLTableContentFactory.hh \
+  engine/MathMLTableElement.hh \
+  engine/MathMLTableFormatter.hh \
+  engine/MathMLTextElement.hh \
+  engine/MathMLTextNode.hh \
+  engine/MathMLTokenElement.hh \
+  engine/MathMLUnderOverElement.hh \
+  engine/MathMLValueConversion.hh \
+  engine/mathVariantAux.hh \
+  engine/traverseAux.hh \
   $(NULL)
 
 
@@ -626,8 +612,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/cairo \
   -I$(top_srcdir)/src/backend/common \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/engine \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/frontend/custom_reader \
   -I$(top_srcdir)/src/frontend/libxml2 \

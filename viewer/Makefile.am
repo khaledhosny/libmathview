@@ -123,8 +123,7 @@ test_loading_reader_LDADD = \
 AM_CPPFLAGS = \
   -I$(top_builddir)/auto/ \
   -I$(top_srcdir)/src/common/ \
-  -I$(top_srcdir)/src/engine/common \
-  -I$(top_srcdir)/src/engine/mathml \
+  -I$(top_srcdir)/src/engine \
   -I$(top_srcdir)/src/widget \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/common/ \
