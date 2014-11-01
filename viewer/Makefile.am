@@ -133,6 +133,7 @@ AM_CPPFLAGS = \
   $(QT_CFLAGS) -fPIC \
   $(GLIB_CFLAGS) \
   $(GTK_CFLAGS) \
+  $(HARFBUZZ_CFLAGS) \
   $(XML_CFLAGS) \
   $(NULL)
 
