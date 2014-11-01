@@ -20,7 +20,7 @@ def getEntities(tree, sets):
             dec = character.get("dec")
             value = ""
             for d in dec.split("-"):
-                value += unichr(int(d))
+                value += (r"\U%08x" % int(d)).decode('unicode-escape')
             entities[entity.get("id")] = value
 
     return entities
