@@ -27,6 +27,7 @@ AM_PROG_LIBTOOL
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 PKG_PROG_PKG_CONFIG([0.20])
 AM_MISSING_PROG([XSLTPROC], [xsltproc])
 AM_MISSING_PROG([PYTHON], [python2])
@@ -216,7 +217,7 @@ AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes"])
 dnl =============================================================================
 
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
-CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
+CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter"
 
 AC_CONFIG_FILES([
  Makefile
