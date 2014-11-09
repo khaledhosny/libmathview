@@ -24,75 +24,21 @@ AC_SUBST(MATHVIEW_VERSION_INFO)
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
-dnl config.h top and bottom
-AH_TOP([
-/* Copyright (C) 2000-2007, Luca Padovani <padovani@sti.uniurb.it>.
- *
- * This file is part of GtkMathView, a flexible, high-quality rendering
- * engine for MathML documents.
- * 
- * GtkMathView is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- * 
- * GtkMathView is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#ifndef config_h
-#define config_h
-])
-
-AH_BOTTOM([
-#endif /* config_h */
-])
-
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
-AC_PROG_LN_S
-AC_ISC_POSIX
-
-dnl Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS(unistd.h)
-
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_BIGENDIAN
-
-AC_LANG_PUSH(C++)
-
-AC_MSG_CHECKING([whether the C++ compiler supports the standard character traits])
-AC_TRY_LINK(
-	[#include <string>],
-	[
-		std::basic_string<char> s1;
-		std::basic_string<wchar_t> s2;
-		std::basic_string<wchar_t> s3;
-		s2 = s3;
-	],
-	[
-		AC_DEFINE(STD_TRAITS,1,[Define to 1 if standard traits for char and wchar_t are provided])
-		AC_MSG_RESULT(yes)
-	],
-	[
-		AC_MSG_RESULT(no)
-	]
-)
-
-AC_LANG_POP(C++)
-
-AC_LANG([C])
-
+AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+PKG_PROG_PKG_CONFIG([0.20])
 AM_MISSING_PROG([XSLTPROC], [xsltproc])
 AM_MISSING_PROG([PYTHON], [python2])
+
+AC_C_BIGENDIAN
+
+dnl =============================================================================
+dnl HarfBuzz
+dnl =============================================================================
+
+PKG_CHECK_MODULES(HARFBUZZ, harfbuzz, :, AC_MSG_ERROR(could not find HarfBuzz))
 
 dnl =============================================================================
 dnl Qt support
@@ -135,6 +81,8 @@ AC_ARG_ENABLE(
 have_cairo=false
 if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
   PKG_CHECK_MODULES(CAIRO, cairo-fc, have_cairo=true, :)
+  dnl check for harfbuzz-ft when it is split into a separate library
+  dnl PKG_CHECK_MODULES(HARFBUZZFT, harfbuzz-ft, :, AC_MSG_ERROR(could not find HarfBuzz/FreeType integration))
 fi
 if test "$enable_cairo" = "yes" -a "$have_cairo" != "true"; then
   AC_MSG_ERROR([Cairo support requested but cairo could not found])
@@ -269,7 +217,7 @@ AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes"])
 dnl =============================================================================
 
 CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
-CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -std=c++11"
+CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter"
 
 AC_CONFIG_FILES([
  Makefile

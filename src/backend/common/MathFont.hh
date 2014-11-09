@@ -23,6 +23,8 @@
 #ifndef __MathFont_hh__
 #define __MathFont_hh__
 
+#include <hb.h>
+
 #include "Object.hh"
 #include "SmartPtr.hh"
 #include "scaled.hh"
@@ -32,21 +34,16 @@
 class MathFont : public Object
 {
 protected:
-  MathFont(void);
+  MathFont(const hb_font_t*);
   virtual ~MathFont();
 
 public:
-  static SmartPtr<MathFont> create(void);
-  virtual int getConstant(MathConstant) const;
-  virtual int getUnitsPerEM(void) const { return unitsPerEM; }
-  virtual unsigned getVariant(int, scaled, bool);
-
-  virtual void setData(unsigned char* data) { tableData = data; }
-  virtual void setUnitsPerEM(int em) { unitsPerEM = em; }
+  static SmartPtr<MathFont> create(const hb_font_t*);
+  int getConstant(MathConstant) const;
+  unsigned getVariant(int, scaled, bool);
 
 private:
-  unsigned char* tableData;
-  int unitsPerEM;
+  const hb_blob_t* m_table;
 };
 
 #endif // __MathFont_hh__

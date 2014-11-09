@@ -24,6 +24,8 @@
 #ifndef __MathShaper_hh__
 #define __MathShaper_hh__
 
+#include <hb.h>
+
 #include "Shaper.hh"
 #include "String.hh"
 #include "MathFont.hh"
@@ -31,7 +33,7 @@
 class MathShaper : public Shaper
 {
 protected:
-  MathShaper(const SmartPtr<MathFont>& font);
+  MathShaper(const hb_font_t* font);
   virtual ~MathShaper();
 
 public:
@@ -48,10 +50,11 @@ public:
 
 protected:
   virtual AreaRef getGlyphArea(unsigned, const scaled&) const = 0;
-  virtual unsigned shapeChar(Char32) const = 0;
+  virtual unsigned shapeChar(Char32, Char32 = 0) const;
 
 private:
-  SmartPtr<class MathFont> mathFont;
+  SmartPtr<class MathFont> m_mathfont;
+  const hb_font_t* m_font;
 };
 
 #endif // __MathShaper_hh__

@@ -33,31 +33,11 @@
 class Cairo_RenderingContext : public RenderingContext
 {
 public:
-  Cairo_RenderingContext(cairo_t* cr = 0);
+  Cairo_RenderingContext(cairo_t* cr);
   virtual ~Cairo_RenderingContext();
 
   void fill(const scaled&, const scaled&, const BoundingBox&) const;
   void draw(const scaled&, const scaled&, cairo_scaled_font_t*, unsigned) const;
-
-  virtual double toDevicePixels(const scaled& s)
-  { return Cairo_RenderingContext::toCairoPixels(s); }
-  virtual scaled fromDevicePixels(double s)
-  { return Cairo_RenderingContext::fromCairoPixels(s); }
-
-  static double toCairoPixels(const scaled& s)
-  { return (s * (72.27 / 72.0)).toDouble(); }
-  static scaled fromCairoPixels(double s)
-  { return scaled(s * (72.0 / 72.27)); }
-
-  static double toCairoX(const scaled& x)
-  { return toCairoPixels(x); }
-  static double toCairoY(const scaled& y)
-  { return toCairoPixels(-y); }
-
-  static scaled fromCairoX(double x)
-  { return fromCairoPixels(x); }
-  static scaled fromCairoY(double y)
-  { return fromCairoPixels(-y); }
 
 private:
   cairo_t* m_cr;

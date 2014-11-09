@@ -93,7 +93,6 @@
   <item id="MATHSIZE" literal="mathsize"/>
   <item id="MATHVARIANT" literal="mathvariant"/>
   <item id="MAXSIZE" literal="maxsize"/>
-  <item id="MCHAR" literal="mchar"/>
   <item id="MEDIUM" literal="medium"/>
   <item id="MEDIUMMATHSPACE" literal="mediummathspace"/>
   <item id="MENCLOSE" literal="menclose"/>

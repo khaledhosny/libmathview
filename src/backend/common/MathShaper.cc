@@ -22,6 +22,7 @@
 // <http://www.gnu.org/licenses/>.
 
 #include <config.h>
+#include <hb-ft.h>
 
 #include <vector>
 
@@ -29,37 +30,65 @@
 #include "MathShaper.hh"
 #include "ShapingContext.hh"
 
-MathShaper::MathShaper(const SmartPtr<MathFont>& font)
-  : mathFont(font)
-{ }
+enum class VariationSelector : Char32 {
+  ONE = 0XFE00
+};
+
+MathShaper::MathShaper(const hb_font_t* font)
+  : m_font(font)
+{
+  m_mathfont = MathFont::create(font);
+}
 
 MathShaper::~MathShaper()
 { }
 
+unsigned
+MathShaper::shapeChar(Char32 ch, Char32 vs) const
+{
+  hb_codepoint_t glyph;
+  hb_font_get_glyph(const_cast<hb_font_t*>(m_font), ch, vs, &glyph);
+  return glyph;
+}
+
 void
 MathShaper::shape(ShapingContext& context) const
 {
-  for (unsigned n = context.chunkSize(); n > 0; n--)
+  hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(m_font));
+  int upem = hb_face_get_upem(face);
+  for (unsigned i = context.chunkSize(); i > 0;)
     {
-      unsigned glyphId = shapeChar(context.thisChar());
-      unsigned variantId = glyphId;
+      unsigned glyphId, variantId, n;
+      if (context.nextChar() == static_cast<Char32>(VariationSelector::ONE))
+        {
+          glyphId = shapeChar(context.thisChar(), context.nextChar());
+          n = 2;
+        }
+      else
+        {
+          glyphId = shapeChar(context.thisChar());
+          n = 1;
+        }
+
       AreaRef glyphArea = getGlyphArea(glyphId, context.getSize());
+      variantId = glyphId;
 
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
-          scaled span = (context.getVSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
-          variantId = mathFont->getVariant(variantId, span, false);
+          scaled span = (context.getVSpan() * upem).getValue() / context.getSize().getValue();
+          variantId = m_mathfont->getVariant(variantId, span, false);
         }
       if (glyphArea->box().horizontalExtent() < context.getHSpan())
         {
-          scaled span = (context.getHSpan() * mathFont->getUnitsPerEM()).getValue() / context.getSize().getValue();
-          variantId = mathFont->getVariant(variantId, span, true);
+          scaled span = (context.getHSpan() * upem).getValue() / context.getSize().getValue();
+          variantId = m_mathfont->getVariant(variantId, span, true);
         }
 
       if (variantId != glyphId)
         glyphArea = getGlyphArea(variantId, context.getSize());
 
-      context.pushArea(1, glyphArea);
+      context.pushArea(n, glyphArea);
+      i -= n;
     }
 }
 

@@ -43,11 +43,7 @@ Cairo_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox
 
   RGBColor fg = getForegroundColor();
   cairo_set_source_rgba(m_cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
-  cairo_rectangle(m_cr,
-                  toCairoX(x),
-                  toCairoY(y + box.height),
-                  toCairoPixels(box.width),
-                  toCairoPixels(box.height + box.depth));
+  cairo_rectangle(m_cr, x.toDouble(), -(y + box.height).toDouble(), box.width.toDouble(), (box.height + box.depth).toDouble());
   cairo_fill(m_cr);
 
   cairo_restore(m_cr);
@@ -63,7 +59,7 @@ Cairo_RenderingContext::draw(const scaled& x, const scaled& y, cairo_scaled_font
   cairo_set_scaled_font(m_cr, font);
   cairo_set_source_rgba(m_cr, fg.red / 255., fg.green / 255., fg.blue / 255., fg.alpha / 255.);
 
-  cairo_glyph_t glyphs[1] = { { glyph, toCairoX(x), toCairoY(y) } };
+  cairo_glyph_t glyphs[1] = { { glyph, x.toDouble(), -y.toDouble() } };
   cairo_show_glyphs(m_cr, glyphs, 1);
 
   cairo_restore(m_cr);
