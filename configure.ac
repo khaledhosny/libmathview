@@ -216,8 +216,8 @@ AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes"])
 
 dnl =============================================================================
 
-CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter"
-CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter"
+CFLAGS="$CFLAGS -W -Wall -Wno-unused-parameter -Wno-sign-compare"
+CXXFLAGS="$CXXFLAGS -W -Wall -Wno-unused-parameter -Wno-sign-compare"
 
 AC_CONFIG_FILES([
  Makefile
