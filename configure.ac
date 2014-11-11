@@ -44,12 +44,10 @@ dnl ============================================================================
 dnl Qt support
 dnl =============================================================================
 
-AC_ARG_ENABLE(
-  qt,
-  [  --enable-qt[=ARG]  enable Qt backend [default=auto]],
-  enable_qt=$enableval,
-  enable_qt="auto"
-)
+AC_ARG_ENABLE(qt,
+	[AS_HELP_STRING([--enable-qt=@<:@yes/no/auto@:>@],
+			[enable Qt backend @<:@default=auto@:>@])],,
+	[enable_qt="auto"])
 have_qt=false
 if test "$enable_qt" = "auto" -o "$enable_qt" = "yes"; then
   PKG_CHECK_MODULES([QT], [Qt5Core >= 5 Qt5Widgets Qt5Gui], [
@@ -72,12 +70,10 @@ dnl ============================================================================
 dnl Cairo support
 dnl =============================================================================
 
-AC_ARG_ENABLE(
-  cairo,
-  [  --enable-cairo[=ARG]  enable Cairo backend [default=auto]],
-  enable_cairo=$enableval,
-  enable_cairo="auto"
-)
+AC_ARG_ENABLE(cairo,
+	[AS_HELP_STRING([--enable-cairo=@<:@yes/no/auto@:>@],
+			[enable Cairo backend @<:@default=auto@:>@])],,
+	[enable_cairo="auto"])
 have_cairo=false
 if test "$enable_cairo" = "auto" -o "$enable_cairo" = "yes"; then
   PKG_CHECK_MODULES(CAIRO, cairo-fc, have_cairo=true, :)
@@ -96,12 +92,10 @@ dnl ============================================================================
 dnl GTK+ support
 dnl =============================================================================
 
-AC_ARG_ENABLE(
-  gtk,
-  [  --enable-gtk[=ARG]  enable GTK widget and viewer [default=auto]],
-  enable_gtk=$enableval,
-  enable_gtk="auto"
-)
+AC_ARG_ENABLE(gtk,
+	[AS_HELP_STRING([--enable-gtk=@<:@yes/no/auto@:>@],
+			[enable GTK widget and viewer @<:@default=auto@:>@])],,
+	[enable_gtk="auto"])
 have_gtk=false
 if test "$enable_gtk" = "auto" -o "$enable_gtk" = "yes"; then
   PKG_CHECK_MODULES(GTK, [gtk+-3.0], have_gtk=true, :)
@@ -116,12 +110,10 @@ fi
 AM_CONDITIONAL(HAVE_GTK, $have_gtk)
 AC_SUBST(GLIB_GENMARSHAL)
 
-AC_ARG_ENABLE(
-  glib,
-  [  --enable-glib[=ARG]  enable GLIB widget and viewer [default=auto]],
-  enable_glib=$enableval,
-  enable_glib="auto"
-)
+AC_ARG_ENABLE(glib,
+	[AS_HELP_STRING([--enable-glib=@<:@yes/no/auto@:>@],
+			[enable GLIB widget and viewer @<:@default=auto@:>@])],,
+	[enable_glib="auto"])
 have_glib=false
 if test "$enable_glib" = "auto" -o "$enable_glib" = "yes"; then
   PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.2.1], have_glib=true, :)
@@ -150,18 +142,14 @@ dnl ============================================================================
 dnl libxml2 support
 dnl =============================================================================
 
-AC_ARG_ENABLE(
-  libxml2,
-  [  --enable-libxml2[=ARG]   enable the libxml2 frontend [default=auto]],
-  enable_libxml2=$enableval,
-  enable_libxml2="auto"
-)
-AC_ARG_ENABLE(
-  libxml2-reader,
-  [  --enable-libxml2-reader[=ARG] enable the libxml2 reader frontend [default=auto]],
-  enable_libxml2_reader=$enableval,
-  enable_libxml2_reader="auto"
-)
+AC_ARG_ENABLE(libxml2,
+	[AS_HELP_STRING([--enable-libxml2=@<:@yes/no/auto@:>@],
+			[enable the libxml2 frontend @<:@default=auto@:>@])],,
+	[enable_libxml2="auto"])
+AC_ARG_ENABLE(libxml2-reader,
+	[AS_HELP_STRING([--enable-libxml2-reader=@<:@yes/no/auto@:>@],
+			[enable the libxml2 reader frontend @<:@default=auto@:>@])],,
+	[enable_libxml2_reader="auto"])
 have_libxml2=false
 if test "$enable_libxml2" = "auto" -o "$enable_libxml2" = "yes"; then
   PKG_CHECK_MODULES(XML, [libxml-2.0 >= 2.6.7], have_libxml2=true, :)
@@ -206,12 +194,10 @@ dnl ============================================================================
 dnl Custom XML reader support
 dnl =============================================================================
 
-AC_ARG_ENABLE(
-  custom-reader,
-  [  --enable-custom-reader[=ARG] enable the custom reader frontend [default=yes]],
-  enable_custom_reader=$enableval,
-  enable_custom_reader="yes"
-)
+AC_ARG_ENABLE(custom-reader,
+	[AS_HELP_STRING([--enable-custom-reader=@<:@yes/no@:>@],
+			[enable the custom reader frontend @<:@default=yes@:>@])],,
+	[enable_custom_reader="yes"])
 AM_CONDITIONAL(HAVE_CUSTOM_READER, [test "$enable_custom_reader" = "yes"])
 
 dnl =============================================================================
