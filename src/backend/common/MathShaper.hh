@@ -50,7 +50,6 @@ public:
 
 protected:
   virtual AreaRef getGlyphArea(unsigned, const scaled&) const = 0;
-  virtual unsigned shapeChar(Char32, Char32 = 0) const;
 
 private:
   SmartPtr<class MathFont> m_mathfont;

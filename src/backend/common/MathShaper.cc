@@ -27,12 +27,9 @@
 #include <vector>
 
 #include "Area.hh"
+#include "AreaFactory.hh"
 #include "MathShaper.hh"
 #include "ShapingContext.hh"
-
-enum class VariationSelector : Char32 {
-  ONE = 0XFE00
-};
 
 MathShaper::MathShaper(const hb_font_t* font)
   : m_font(font)
@@ -43,43 +40,46 @@ MathShaper::MathShaper(const hb_font_t* font)
 MathShaper::~MathShaper()
 { }
 
-unsigned
-MathShaper::shapeChar(Char32 ch, Char32 vs) const
-{
-  hb_codepoint_t glyph;
-  hb_font_get_glyph(const_cast<hb_font_t*>(m_font), ch, vs, &glyph);
-  return glyph;
-}
-
 void
 MathShaper::shape(ShapingContext& context) const
 {
-  hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(m_font));
+  hb_font_t* font = const_cast<hb_font_t*>(m_font);
+  hb_face_t* face = hb_font_get_face(font);
   int upem = hb_face_get_upem(face);
-  for (unsigned i = context.chunkSize(); i > 0;)
+
+  UCS4String source = context.getSource();
+  hb_buffer_t* buffer = hb_buffer_create();
+
+  hb_buffer_set_direction(buffer, HB_DIRECTION_LTR);
+  hb_buffer_set_script(buffer, hb_script_from_string("Math", -1));
+  hb_buffer_add_utf32(buffer, source.c_str(), source.length(), 0, source.length());
+  hb_shape(font, buffer, NULL, 0);
+
+  unsigned len = hb_buffer_get_length(buffer);
+  hb_glyph_info_t* glyphs = hb_buffer_get_glyph_infos(buffer, NULL);
+
+  const SmartPtr<AreaFactory> factory = context.getFactory();
+  std::vector<AreaRef> areaV;
+
+  for (unsigned i = 0; i < len; i++)
     {
-      unsigned glyphId, variantId, n;
-      if (context.nextChar() == static_cast<Char32>(VariationSelector::ONE))
-        {
-          glyphId = shapeChar(context.thisChar(), context.nextChar());
-          n = 2;
-        }
-      else
-        {
-          glyphId = shapeChar(context.thisChar());
-          n = 1;
-        }
+      unsigned variantId, glyphId;
+
+      glyphId = glyphs[i].codepoint;
 
       AreaRef glyphArea = getGlyphArea(glyphId, context.getSize());
       variantId = glyphId;
 
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
+          assert(len == 1);
           scaled span = (context.getVSpan() * upem).getValue() / context.getSize().getValue();
           variantId = m_mathfont->getVariant(variantId, span, false);
         }
+
       if (glyphArea->box().horizontalExtent() < context.getHSpan())
         {
+          assert(len == 1);
           scaled span = (context.getHSpan() * upem).getValue() / context.getSize().getValue();
           variantId = m_mathfont->getVariant(variantId, span, true);
         }
@@ -87,9 +87,12 @@ MathShaper::shape(ShapingContext& context) const
       if (variantId != glyphId)
         glyphArea = getGlyphArea(variantId, context.getSize());
 
-      context.pushArea(n, glyphArea);
-      i -= n;
+      areaV.push_back(glyphArea);
     }
+
+  context.pushArea(source.length(), factory->horizontalArray(areaV));
+
+  hb_buffer_destroy(buffer);
 }
 
 bool
