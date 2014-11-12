@@ -3,11 +3,11 @@
     <mrow>
       <mo minsize="2">&#x222b;</mo>
       <mrow>
-        <mi fontweight="bold" fontstyle="normal">B</mi>
+        <mi mathvariant="bold">B</mi>
 	<mo>&InvisibleTimes;</mo>
 	<mrow>
-	  <mo fontstyle="italic" rspace="veryverythinmathspace">d</mo>
-	  <mi fontweight="bold" fontstyle="normal">s</mi>
+	  <mo mathvariant="italic" rspace="veryverythinmathspace">d</mo>
+	  <mi mathvariant="bold">s</mi>
 	</mrow>
       </mrow>
     </mrow>
@@ -23,14 +23,14 @@
       </msub>
       <mfrac>
         <mrow>
-	  <mo fontstyle="italic" rspace="veryverythinmathspace">d</mo>
+	  <mo mathvariant="italic" rspace="veryverythinmathspace">d</mo>
 	  <msub>
-	    <mi fontweight="bold" fontstyle="normal">&Phi;</mi>
+	    <mi mathvariant="bold">&Phi;</mi>
 	    <mi>E</mi>
 	  </msub>
 	</mrow>
         <mrow>
-	  <mo fontstyle="italic" rspace="veryverythinmathspace">d</mo>
+	  <mo mathvariant="italic" rspace="veryverythinmathspace">d</mo>
 	  <mi>t</mi>
 	</mrow>
       </mfrac>

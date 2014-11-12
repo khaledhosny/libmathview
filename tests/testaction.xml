@@ -31,7 +31,7 @@
    </mrow>
    <mtable frame="solid" framespacing=".5em .5em"><mtr><mtd><mtext>...</mtext></mtd></mtr></mtable>
   </maction>
-  <mo fontstyle="italic">d</mo>
+  <mo mathvariant="italic">d</mo>
   <mi>x</mi>
   <mo>=</mo>
   <mrow>

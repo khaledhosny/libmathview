@@ -14,7 +14,7 @@
                 <mtable equalcolumns="false" frame="dashed" columnlines="solid">
 	          <mtr>
 		    <mi>una</mi>
-		    <mi fontweight="bold">tabella</mi>
+		    <mi mathvariant="bold-italic">tabella</mi>
 		    <mi>annidata</mi>
 		  </mtr>
 	        </mtable>
