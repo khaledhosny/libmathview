@@ -67,13 +67,6 @@ static mapType map[] =
   MAP_NAME(monospace)
 };
 
-Char32
-mapMathVariant(MathVariant variant, Char32 ch)
-{
-  assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
-  return map[variant - NORMAL_VARIANT](ch);
-}
-
 void
 mapMathVariant(MathVariant variant, UCS4String& str)
 {
