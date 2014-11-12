@@ -5,25 +5,11 @@
       <mo>(</mo>
       <mrow>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-      </mrow>
-      <mo>)</mo>
-    </mrow>
-    <mo>+</mo>
-    <mrow>
-      <mo>(</mo>
-      <mrow>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
       </mrow>
       <mo>)</mo>
@@ -33,23 +19,11 @@
       <mo>(</mo>
       <mrow>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
-        <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
       </mrow>
       <mo>)</mo>
@@ -59,11 +33,37 @@
       <mo>(</mo>
       <mrow>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
-	<mo>*</mo>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+      </mrow>
+      <mo>)</mo>
+    </mrow>
+    <mo>+</mo>
+    <mrow>
+      <mo>(</mo>
+      <mrow>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
+        <mn>1</mn>
+	<mo>&#x2217;</mo>
         <mn>1</mn>
       </mrow>
       <mo>)</mo>
