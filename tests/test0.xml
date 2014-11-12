@@ -10,7 +10,7 @@
       </mtd>
       <mtd>
         <mrow>	  
-	  <mi fontstyle="italic">f'</mi>
+	  <msup><mi fontstyle="italic">f</mi><mo>&#x2032;</mo></msup>
 	  <mo>&ApplyFunction;</mo>
 	  <mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
 	</mrow>
