@@ -35,7 +35,7 @@
 	      <mo>)</mo>
 	    </mrow>
 	  </maction>
-	  <mo>-</mo>
+	  <mo>&#x2212;</mo>
 	  <mn>1234</mn>
 	</mrow>
       </mtd>
@@ -61,7 +61,7 @@
 	    </mrow>
 	    <mo>)</mo>
 	  </mrow>	
-	  <mo>-</mo>
+	  <mo>&#x2212;</mo>
 	  <mn>1234</mn>
 	</mrow>
       </mtd>
