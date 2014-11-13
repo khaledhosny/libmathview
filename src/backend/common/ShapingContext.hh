@@ -53,6 +53,7 @@ public:
   scaled getHSpan(void) const { return m_hSpan; }
   unsigned chunkSize(void) const;
   unsigned getShaperId(void) const;
+  int getScriptLevel(void) const { return m_ctxt.getScriptLevel(); }
 
   unsigned nAreas(void) const { return m_res.size(); }
   AreaRef popArea(CharIndex&);
