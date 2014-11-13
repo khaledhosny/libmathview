@@ -30,8 +30,8 @@
 #include "Qt_GlyphArea.hh"
 #include "Qt_RenderingContext.hh"
 
-Qt_GlyphArea::Qt_GlyphArea(unsigned glyph, QRawFont& rawFont, qreal size)
-    : m_rawFont(rawFont)
+Qt_GlyphArea::Qt_GlyphArea(unsigned glyph, const QRawFont& templateRawFont, qreal size)
+    : m_rawFont(templateRawFont)
 {
     m_glyphRun.setGlyphIndexes(QVector<quint32>() << glyph);
     m_glyphRun.setPositions(QVector<QPointF>() << QPointF(0,0));

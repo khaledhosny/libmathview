@@ -30,11 +30,11 @@
 class Qt_Backend : public Backend
 {
 protected:
-    Qt_Backend(QRawFont& rawFont);
+    Qt_Backend(const QRawFont& rawFont);
     virtual ~Qt_Backend();
 
 public:
-    static SmartPtr<Qt_Backend> create(QRawFont& rawFont);
+    static SmartPtr<Qt_Backend> create(const QRawFont& rawFont);
 };
 
 #endif // __Qt_Backend_hh__

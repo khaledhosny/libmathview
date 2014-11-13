@@ -33,14 +33,14 @@ class MathFont;
 class Qt_Shaper : public MathShaper
 {
 protected:
-    Qt_Shaper(QRawFont& rawFont, const SmartPtr<MathFont>& mathFont);
+    Qt_Shaper(const QRawFont& rawFont, const hb_font_t*);
     virtual ~Qt_Shaper();
 
 public:
-    static SmartPtr<Qt_Shaper> create(QRawFont& rawFont,
-                                      const SmartPtr<class MathFont>& mathFont)
+    static SmartPtr<Qt_Shaper> create(const QRawFont& rawFont,
+                                      const hb_font_t* hb_font)
     {
-        return new Qt_Shaper(rawFont, mathFont);
+        return new Qt_Shaper(rawFont, hb_font);
     }
 
     virtual bool isDefaultShaper(void) const
@@ -50,10 +50,9 @@ public:
 
 protected:
     virtual AreaRef getGlyphArea(unsigned, const scaled&) const;
-    virtual unsigned shapeChar(Char32) const;
 
 private:
-    QRawFont& m_rawFont;
+    const QRawFont& m_rawFont;
 };
 
 #endif // __Qt_Shaper_hh__

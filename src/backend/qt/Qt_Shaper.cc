@@ -32,34 +32,17 @@
 #include "Qt_GlyphArea.hh"
 #include "Qt_Shaper.hh"
 #include "Qt_RenderingContext.hh"
+#include "MathGraphicDevice.hh"
 #include "ShapingContext.hh"
 #include <cstdio>
 
-Qt_Shaper::Qt_Shaper(QRawFont& rawFont,
-                     const SmartPtr<MathFont>& mathFont)
-    : MathShaper(mathFont)
+Qt_Shaper::Qt_Shaper(const QRawFont& rawFont,
+                     const hb_font_t* hb_font)
+    : MathShaper(hb_font)
     , m_rawFont(rawFont)
 {}
 
 Qt_Shaper::~Qt_Shaper() {}
-
-unsigned
-Qt_Shaper::shapeChar(Char32 ch) const
-{
-    QString str;
-    if (QChar::requiresSurrogates(ch)) {
-        str.push_back(QChar::highSurrogate(ch));
-        str.push_back(QChar::lowSurrogate(ch));
-    } else {
-        str.push_back(QChar(ch));
-    }
-    QVector<quint32> chars = m_rawFont.glyphIndexesForString(str);
-    if (chars.size() != 1) {
-        qDebug() << "wrong vector size:" << chars.size();
-        return 0;
-    }
-    return chars[0];
-}
 
 AreaRef
 Qt_Shaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const

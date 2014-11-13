@@ -21,6 +21,7 @@
 // <http://www.gnu.org/licenses/>.
 
 #include "Qt_RenderArea.hh"
+#include "defs.h"
 #include <QPainter>
 #include <QRawFont>
 #include <QDebug>
@@ -55,8 +56,7 @@ void Qt_RenderArea::loadURI(const char* mml_file) {
 }
 
 void Qt_RenderArea::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);
-
-    m_rc.setPainter(&painter);
+    QPainter p(this);
+    m_rc.setPainter(&p);
     m_view->render(m_rc, scaled::zero(), -m_view->getBoundingBox().height);
 }

@@ -31,7 +31,7 @@
 #include <QDebug>
 #include "Qt_RenderingContext.hh"
 
-Qt_RenderingContext::Qt_RenderingContext(void)
+Qt_RenderingContext::Qt_RenderingContext()
 { }
 
 Qt_RenderingContext::~Qt_RenderingContext()
