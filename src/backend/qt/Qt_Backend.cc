@@ -28,6 +28,9 @@
 #include <QRawFont>
 #include <QByteArray>
 #include <QDebug>
+#include<private/qrawfont_p.h>
+#include<private/qfontengine_p.h>
+#include<private/qharfbuzzng_p.h>
 
 #include "AreaFactory.hh"
 #include "MathGraphicDevice.hh"
@@ -36,27 +39,18 @@
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
 
-Qt_Backend::Qt_Backend(QRawFont& rawFont)
+Qt_Backend::Qt_Backend(const QRawFont& rawFont)
 {
     SmartPtr<AreaFactory> factory = AreaFactory::create();
-    SmartPtr<MathFont> mathFont = MathFont::create();
 
-    QByteArray table = rawFont.fontTable("MATH");
-    if (table.size() > 0) {
-        unsigned char* data = new unsigned char[table.size()+1];
-        memcpy(data, (unsigned char*)table.constData(), table.size());
-        mathFont->setData(data);
-    } else {
-        qDebug() << "no MATH table found in font" << rawFont.familyName();
-    }
-    mathFont->setUnitsPerEM(rawFont.unitsPerEm());
+    hb_font_t *hb_font = (hb_font_t*)QRawFontPrivate::get(rawFont)->fontEngine->harfbuzzFont();
 
-    SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(mathFont);
+    SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(hb_font);
 
     mgd->setFactory(factory);
     setMathGraphicDevice(mgd);
 
-    getShaperManager()->registerShaper(Qt_Shaper::create(rawFont, mathFont));
+    getShaperManager()->registerShaper(Qt_Shaper::create(rawFont, hb_font));
     getShaperManager()->registerShaper(SpaceShaper::create());
 }
 
@@ -66,7 +60,7 @@ Qt_Backend::~Qt_Backend()
 }
 
 SmartPtr<Qt_Backend>
-Qt_Backend::create(QRawFont& rawFont)
+Qt_Backend::create(const QRawFont& rawFont)
 {
     return new Qt_Backend(rawFont);
 }
