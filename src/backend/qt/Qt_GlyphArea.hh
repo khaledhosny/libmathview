@@ -33,15 +33,15 @@ class RenderingContext;
 class Qt_GlyphArea : public GlyphArea
 {
 protected:
-    Qt_GlyphArea(unsigned glyph, QRawFont& rawFont, qreal size);
+    Qt_GlyphArea(unsigned glyph, const QRawFont &templateRawFont, qreal size);
     virtual ~Qt_GlyphArea();
 
 public:
     static SmartPtr<Qt_GlyphArea> create(unsigned glyph,
-                                         QRawFont& rawFont,
+                                         const QRawFont& templateRawFont,
                                          qreal size)
     {
-        return new Qt_GlyphArea(glyph, rawFont, size);
+        return new Qt_GlyphArea(glyph, templateRawFont, size);
     }
 
     virtual BoundingBox box() const;

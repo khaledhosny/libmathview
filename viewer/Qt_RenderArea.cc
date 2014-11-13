@@ -21,6 +21,7 @@
 // <http://www.gnu.org/licenses/>.
 
 #include "Qt_RenderArea.hh"
+#include "defs.h"
 #include <QPainter>
 #include <QRawFont>
 #include <QDebug>
