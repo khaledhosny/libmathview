@@ -76,7 +76,10 @@ MathMLOperatorDictionary::getAttribute(const char* value,
                                        const SmartPtr<AttributeSet>& aList)
 {
   if (value)
-    aList->set(Attribute::create(signature, value));
+    {
+      SmartPtr<Attribute> attribute = Attribute::create(signature, value);
+      aList->set(attribute);
+    }
 }
 
 void
