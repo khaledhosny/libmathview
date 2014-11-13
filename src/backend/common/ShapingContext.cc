@@ -35,16 +35,16 @@ ShapingContext::ShapingContext(const SmartPtr<Element>& el,
 			       const scaled& sz,
 			       MathVariant mv, bool mm,
 			       const scaled& v, const scaled& h)
-  : element(el), factory(f), source(src), spec(s), size(sz), mathVariant(mv), mathMode(mm), vSpan(v), hSpan(h), index(0)
+  : m_element(el), m_factory(f), m_source(src), m_spec(s), m_size(sz), m_mathVariant(mv), m_mathMode(mm), m_vSpan(v), m_hSpan(h), m_index(0)
 { }
 
 SmartPtr<Element>
 ShapingContext::getElement() const
-{ return element; }
+{ return m_element; }
 
 SmartPtr<AreaFactory>
 ShapingContext::getFactory() const
-{ return factory; }
+{ return m_factory; }
 
 unsigned
 ShapingContext::chunkSize() const
@@ -54,11 +54,11 @@ ShapingContext::chunkSize() const
   else
     {
       unsigned n = 1;
-      unsigned si = spec[index].getShaperId();
-      unsigned fi = spec[index].getFontId();
-      while (index + n < spec.size()
-	     && spec[index + n].getShaperId() == si
-	     && spec[index + n].getFontId() == fi) n++;
+      unsigned si = m_spec[m_index].getShaperId();
+      unsigned fi = m_spec[m_index].getFontId();
+      while (m_index + n < m_spec.size()
+	     && m_spec[m_index + n].getShaperId() == si
+	     && m_spec[m_index + n].getFontId() == fi) n++;
       return n;
     }
 }
@@ -67,21 +67,21 @@ unsigned
 ShapingContext::getShaperId() const
 {
   assert(!done());
-  return spec[index].getShaperId();
+  return m_spec[m_index].getShaperId();
 }
 
 const GlyphSpec&
 ShapingContext::getSpec(int n) const
 {
-  assert(index + n < spec.size());
-  return spec[index + n];
+  assert(m_index + n < m_spec.size());
+  return m_spec[m_index + n];
 }
 
 const Char32*
 ShapingContext::data() const
 {
   assert(!done());
-  return source.data() + index;
+  return m_source.data() + m_index;
 }
 
 AreaRef
@@ -90,67 +90,67 @@ ShapingContext::area() const
   //
 
 #if 0
-    if (res.size() == 1) 
-      return res[0];
+    if (m_res.size() == 1) 
+      return m_res[0];
     else
 #endif
 
-    return factory->glyphString(res, res_n, source);
+    return m_factory->glyphString(m_res, m_res_n, m_source);
 }
 
 Char32
 ShapingContext::prevChar() const
 {
-  return (index > 0) ? source[index - 1] : 0;
+  return (m_index > 0) ? m_source[m_index - 1] : 0;
 }
 
 Char32
 ShapingContext::thisChar() const
 {
-  return (index < source.length()) ? source[index] : 0;
+  return (m_index < m_source.length()) ? m_source[m_index] : 0;
 }
 
 Char32
 ShapingContext::nextChar() const
 {
-  return (index + 1 < source.length()) ? source[index + 1] : 0;
+  return (m_index + 1 < m_source.length()) ? m_source[m_index + 1] : 0;
 }
 
 UCS4String
 ShapingContext::prevString() const
 {
-  return source.substr(0, index);
+  return m_source.substr(0, m_index);
 }
 
 UCS4String
 ShapingContext::prevString(UCS4String::size_type l) const
 {
-  if (l > index) l = index;
-  return source.substr(index - l, l);
+  if (l > m_index) l = m_index;
+  return m_source.substr(m_index - l, l);
 }
 
 UCS4String
 ShapingContext::nextString() const
 {
-  return source.substr(index, source.length() - index);
+  return m_source.substr(m_index, m_source.length() - m_index);
 }
 
 UCS4String
 ShapingContext::nextString(UCS4String::size_type l) const
 {
-  if (l > source.length() - index) l = source.length() - index;
-  return source.substr(index, l);
+  if (l > m_source.length() - m_index) l = m_source.length() - m_index;
+  return m_source.substr(m_index, l);
 }
 
 AreaRef
 ShapingContext::popArea(CharIndex& n)
 {
   assert(!empty());
-  n = res_n.back();
-  res_n.pop_back();
-  index -= n;
-  AreaRef area = res.back();
-  res.pop_back();
+  n = m_res_n.back();
+  m_res_n.pop_back();
+  m_index -= n;
+  AreaRef area = m_res.back();
+  m_res.pop_back();
   return area;
 }
 
@@ -158,10 +158,10 @@ void
 ShapingContext::pushArea(CharIndex n, const AreaRef& area)
 {
   assert(area);
-  assert(index + n <= source.length());
-  index += n;
-  res_n.push_back(n);
-  res.push_back(area);
+  assert(m_index + n <= m_source.length());
+  m_index += n;
+  m_res_n.push_back(n);
+  m_res.push_back(area);
 }
 
 AreaRef
@@ -169,12 +169,12 @@ ShapingContext::getArea(int i) const
 {
   if (i >= 0)
     {
-      assert(i < res.size());
-      return res[i];
+      assert(i < m_res.size());
+      return m_res[i];
     }
   else
     {
-      assert(-i <= res.size());
-      return res[res.size() + i];
+      assert(-i <= m_res.size());
+      return m_res[m_res.size() + i];
     }
 }

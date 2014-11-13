@@ -42,26 +42,26 @@ public:
 		 bool,
 		 const scaled& = 0, const scaled& = 0);
 
-  MathVariant getMathVariant(void) const { return mathVariant; }
-  bool inMathMode(void) const { return mathMode; }
+  MathVariant getMathVariant(void) const { return m_mathVariant; }
+  bool inMathMode(void) const { return m_mathMode; }
   SmartPtr<class Element> getElement(void) const;
   SmartPtr<class AreaFactory> getFactory(void) const;
-  UCS4String getSource(void) const { return source; }
-  bool done(void) const { return index == source.length(); }
-  bool empty(void) const { return res.empty(); }
-  scaled getSize(void) const { return size; }
-  scaled getVSpan(void) const { return vSpan; }
-  scaled getHSpan(void) const { return hSpan; }
+  UCS4String getSource(void) const { return m_source; }
+  bool done(void) const { return m_index == m_source.length(); }
+  bool empty(void) const { return m_res.empty(); }
+  scaled getSize(void) const { return m_size; }
+  scaled getVSpan(void) const { return m_vSpan; }
+  scaled getHSpan(void) const { return m_hSpan; }
   unsigned chunkSize(void) const;
   unsigned getShaperId(void) const;
 
-  unsigned nAreas(void) const { return res.size(); }
+  unsigned nAreas(void) const { return m_res.size(); }
   AreaRef popArea(CharIndex&);
   void pushArea(CharIndex, const AreaRef&);
   AreaRef getArea(int = -1) const;
   AreaRef area(void) const;
 
-  unsigned getIndex(void) const { return index; }
+  unsigned getIndex(void) const { return m_index; }
 
   const Char32* data(void) const;
   const GlyphSpec& getSpec(int = 0) const;
@@ -74,18 +74,18 @@ public:
   UCS4String nextString(UCS4String::size_type) const;
 
 private:
-  SmartPtr<class Element> element;
-  SmartPtr<class AreaFactory> factory;
-  UCS4String source;
-  std::vector<GlyphSpec> spec;
-  scaled size;
-  MathVariant mathVariant;
-  bool mathMode;
-  scaled vSpan;
-  scaled hSpan;
-  UCS4String::size_type index;
-  std::vector<CharIndex> res_n;
-  std::vector<AreaRef> res;
+  SmartPtr<class Element> m_element;
+  SmartPtr<class AreaFactory> m_factory;
+  UCS4String m_source;
+  std::vector<GlyphSpec> m_spec;
+  scaled m_size;
+  MathVariant m_mathVariant;
+  bool m_mathMode;
+  scaled m_vSpan;
+  scaled m_hSpan;
+  UCS4String::size_type m_index;
+  std::vector<CharIndex> m_res_n;
+  std::vector<AreaRef> m_res;
 };
 
 #endif // __ShapingContext_hh__
