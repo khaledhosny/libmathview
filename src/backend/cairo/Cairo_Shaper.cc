@@ -48,6 +48,7 @@ Cairo_Shaper::getGlyphArea(unsigned glyph, const scaled& sp_size) const
   cairo_matrix_init_identity (&ctm);
   cairo_font_options_t* options = cairo_font_options_create();
   cairo_scaled_font_t* font = cairo_scaled_font_create(face, &matrix, &ctm, options);
+  cairo_font_options_destroy(options);
 
   return Cairo_GlyphArea::create(font, glyph);
 }

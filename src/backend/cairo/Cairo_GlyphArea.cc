@@ -29,11 +29,11 @@
 #include "Cairo_RenderingContext.hh"
 
 Cairo_GlyphArea::Cairo_GlyphArea(cairo_scaled_font_t* f, unsigned g)
-  : font(f), glyph(g)
+  : m_font(f), m_glyph(g)
 {
-  cairo_glyph_t glyphs[1] = { { glyph, 0, 0 } };
+  cairo_glyph_t glyphs[1] = { { m_glyph, 0, 0 } };
   cairo_text_extents_t extents;
-  cairo_scaled_font_glyph_extents(font, glyphs, 1, &extents);
+  cairo_scaled_font_glyph_extents(m_font, glyphs, 1, &extents);
 
   bbox = BoundingBox(scaled(extents.x_advance), scaled(-extents.y_bearing), scaled(extents.y_bearing + extents.height));
 
@@ -42,11 +42,13 @@ Cairo_GlyphArea::Cairo_GlyphArea(cairo_scaled_font_t* f, unsigned g)
 }
 
 Cairo_GlyphArea::~Cairo_GlyphArea()
-{ }
+{
+  cairo_scaled_font_destroy(m_font);
+}
 
 void
 Cairo_GlyphArea::render(RenderingContext& c, const scaled& x, const scaled& y) const
 {
   Cairo_RenderingContext& context = dynamic_cast<Cairo_RenderingContext&>(c);
-  context.draw(x, y, font, glyph);
+  context.draw(x, y, m_font, m_glyph);
 }

@@ -44,8 +44,8 @@ public:
   virtual void render(class RenderingContext&, const scaled&, const scaled&) const;
 
 private:
-  cairo_scaled_font_t* font;
-  unsigned glyph;
+  cairo_scaled_font_t* m_font;
+  unsigned m_glyph;
   BoundingBox bbox;
   scaled lbearing;
   scaled rbearing;
