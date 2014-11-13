@@ -25,31 +25,30 @@
 
 #include <vector>
 
-#include "String.hh"
-#include "GlyphSpec.hh"
 #include "Area.hh"
+#include "FormattingContext.hh"
+#include "GlyphSpec.hh"
+#include "MathGraphicDevice.hh"
 #include "MathVariant.hh"
+#include "MathMLElement.hh"
+#include "String.hh"
 
 class ShapingContext
 {
 public:
-  ShapingContext(const SmartPtr<class Element>&,
-		 const SmartPtr<class AreaFactory>&,
+  ShapingContext(const FormattingContext&,
 		 const UCS4String&,
-		 const std::vector<GlyphSpec>&,
-		 const scaled&,
-		 MathVariant,
-		 bool,
+                 const std::vector<GlyphSpec>&,
 		 const scaled& = 0, const scaled& = 0);
 
-  MathVariant getMathVariant(void) const { return m_mathVariant; }
-  bool inMathMode(void) const { return m_mathMode; }
-  SmartPtr<class Element> getElement(void) const;
-  SmartPtr<class AreaFactory> getFactory(void) const;
+  MathVariant getMathVariant(void) const { return m_ctxt.getVariant(); }
+  bool inMathMode(void) const { return m_ctxt.getMathMode(); }
+  SmartPtr<class Element> getElement(void) const { return m_ctxt.getMathMLElement(); }
+  SmartPtr<class AreaFactory> getFactory(void) const { return m_ctxt.MGD()->getFactory(); }
   UCS4String getSource(void) const { return m_source; }
   bool done(void) const { return m_index == m_source.length(); }
   bool empty(void) const { return m_res.empty(); }
-  scaled getSize(void) const { return m_size; }
+  scaled getSize(void) const { return m_ctxt.getSize(); }
   scaled getVSpan(void) const { return m_vSpan; }
   scaled getHSpan(void) const { return m_hSpan; }
   unsigned chunkSize(void) const;
@@ -74,13 +73,9 @@ public:
   UCS4String nextString(UCS4String::size_type) const;
 
 private:
-  SmartPtr<class Element> m_element;
-  SmartPtr<class AreaFactory> m_factory;
+  const FormattingContext& m_ctxt;
   UCS4String m_source;
   std::vector<GlyphSpec> m_spec;
-  scaled m_size;
-  MathVariant m_mathVariant;
-  bool m_mathMode;
   scaled m_vSpan;
   scaled m_hSpan;
   UCS4String::size_type m_index;

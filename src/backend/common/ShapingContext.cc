@@ -28,23 +28,12 @@
 #include "AreaFactory.hh"
 #include "ShapingContext.hh"
 
-ShapingContext::ShapingContext(const SmartPtr<Element>& el,
-			       const SmartPtr<AreaFactory>& f,
+ShapingContext::ShapingContext(const FormattingContext& c,
 			       const UCS4String& src,
 			       const std::vector<GlyphSpec>& s,
-			       const scaled& sz,
-			       MathVariant mv, bool mm,
 			       const scaled& v, const scaled& h)
-  : m_element(el), m_factory(f), m_source(src), m_spec(s), m_size(sz), m_mathVariant(mv), m_mathMode(mm), m_vSpan(v), m_hSpan(h), m_index(0)
+  : m_ctxt(c), m_source(src), m_spec(s), m_vSpan(v), m_hSpan(h), m_index(0)
 { }
-
-SmartPtr<Element>
-ShapingContext::getElement() const
-{ return m_element; }
-
-SmartPtr<AreaFactory>
-ShapingContext::getFactory() const
-{ return m_factory; }
 
 unsigned
 ShapingContext::chunkSize() const
@@ -95,7 +84,7 @@ ShapingContext::area() const
     else
 #endif
 
-    return m_factory->glyphString(m_res, m_res_n, m_source);
+    return getFactory()->glyphString(m_res, m_res_n, m_source);
 }
 
 Char32

@@ -94,8 +94,7 @@ ShaperManager::shape(const FormattingContext& ctxt,
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(map(source[i]));
-  ShapingContext context(ctxt.getMathMLElement(), ctxt.MGD()->getFactory(), source, spec,
-			 ctxt.getSize(), ctxt.getVariant(), ctxt.getMathMode());
+  ShapingContext context(ctxt, source, spec);
   return shapeAux(context);
 }
 
@@ -117,8 +116,7 @@ ShaperManager::shapeStretchy(const FormattingContext& ctxt,
   spec.reserve(source.length());
   for (unsigned i = 0; i < source.length(); i++)
     spec.push_back(mapStretchy(source[i]));
-  ShapingContext context(ctxt.getMathMLElement(), ctxt.MGD()->getFactory(), source, spec,
-			 ctxt.getSize(), ctxt.getVariant(), ctxt.getMathMode(), vSpan, hSpan);
+  ShapingContext context(ctxt, source, spec, vSpan, hSpan);
   return shapeAux(context);
 }
 
