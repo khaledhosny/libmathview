@@ -1,7 +1,6 @@
 MathView Qt Port
 
-To build this you need qt5 with harfbuzz enabled and private headers,
-on OSX it is Qt>= 5.3.0, on Linux/BSD/Windows it is Qt>=5.4.0
+To build this you need qt5.
 
 Build & Install Guide on OSX
 
@@ -20,8 +19,6 @@ cd libmathview (root-of-git-repo)
 ./autogen.sh
 mkdir build install
 cd build
-CPPFLAGS="-I/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/5.3.2/QtGui \
--I/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/5.3.2/QtCore" \
 HARFBUZZ_CFLAGS="-I/usr/local/include/freetype2/ -I/usr/local/include/harfbuzz" \
 PKG_CONFIG_PATH=/usr/local/opt/qt5/lib/pkgconfig/ \
 ../configure \
