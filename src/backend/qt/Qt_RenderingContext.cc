@@ -46,8 +46,8 @@ Qt_RenderingContext::fill(const scaled& x, const scaled& y, const BoundingBox& b
     m_painter->fillRect(QRectF(toQtX(x), toQtY(y+box.height),
                         toQtPixels(box.width), toQtPixels(box.height+box.depth)),
                         QColor(fg.red, fg.green, fg.blue, fg.alpha));
-    qDebug() << "rect " << "\n" << "QRectF: "
-             << QRectF(toQtX(x), toQtY(y+box.height), toQtPixels(box.width), toQtPixels(box.height+box.depth));
+    //qDebug() << "rect " << "\n" << "QRectF: "
+    //         << QRectF(toQtX(x), toQtY(y+box.height), toQtPixels(box.width), toQtPixels(box.height+box.depth));
     m_painter->restore();
 }
 
@@ -59,10 +59,10 @@ Qt_RenderingContext::draw(const scaled& x, const scaled& y, const QGlyphRun& gly
     RGBColor fg = getForegroundColor();
     m_painter->setPen(QColor(fg.red, fg.green, fg.blue, fg.alpha));
     m_painter->drawGlyphRun(QPointF(toQtX(x), toQtY(y)), glyphs);
-    qDebug() << "glyph " << glyphs.glyphIndexes()[0] << "\n"
-             << "x: " << toQtX(x) << "\ty: " << toQtY(y)
-             << "QRectF: " << glyphs.boundingRect()
-             << "Size: " << glyphs.rawFont().pixelSize();
+    //qDebug() << "glyph " << glyphs.glyphIndexes()[0] << "\n"
+    //         << "x: " << toQtX(x) << "\ty: " << toQtY(y)
+    //         << "QRectF: " << glyphs.boundingRect()
+    //         << "Size: " << glyphs.rawFont().pixelSize();
 
     m_painter->restore();
 }

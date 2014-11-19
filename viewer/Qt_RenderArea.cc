@@ -50,7 +50,7 @@ void Qt_RenderArea::loadURI(const char* mml_file) {
     const BoundingBox box = m_view->getBoundingBox();
     qreal width = Qt_RenderingContext::toQtPixels(box.horizontalExtent());
     qreal height = Qt_RenderingContext::toQtPixels(box.verticalExtent());
-    qDebug() << width << height;
+    //qDebug() << width << height;
     setMinimumSize(QSizeF(width, height).toSize());
     repaint();
 }
