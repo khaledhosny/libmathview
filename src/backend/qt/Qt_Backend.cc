@@ -28,9 +28,7 @@
 #include <QRawFont>
 #include <QByteArray>
 #include <QDebug>
-#include<private/qrawfont_p.h>
-#include<private/qfontengine_p.h>
-#include<private/qharfbuzzng_p.h>
+#include <hb-ot.h>
 
 #include "AreaFactory.hh"
 #include "MathGraphicDevice.hh"
@@ -39,11 +37,31 @@
 #include "ShaperManager.hh"
 #include "SpaceShaper.hh"
 
+static hb_blob_t *
+reference_table(hb_face_t *, hb_tag_t tag, void *user_data)
+{
+  QRawFont *rawFont = reinterpret_cast<QRawFont*>(user_data);
+  char tagstr[5] = {0};
+  hb_tag_to_string(tag, tagstr);
+
+  QByteArray table = rawFont->fontTable(tagstr);
+  if (table.isEmpty())
+    return NULL;
+
+  return hb_blob_create(table.constData(), table.size(), HB_MEMORY_MODE_DUPLICATE, NULL, NULL);
+}
+
 Qt_Backend::Qt_Backend(const QRawFont& rawFont)
 {
     SmartPtr<AreaFactory> factory = AreaFactory::create();
 
-    hb_font_t *hb_font = (hb_font_t*)QRawFontPrivate::get(rawFont)->fontEngine->harfbuzzFont();
+    hb_face_t *hb_face = hb_face_create_for_tables(reference_table, (void*)(&rawFont), NULL);
+    hb_face_set_index(hb_face, 0);
+    hb_face_set_upem(hb_face, rawFont.unitsPerEm());
+    hb_font_t *hb_font = hb_font_create(hb_face);
+    hb_face_destroy(hb_face);
+
+    hb_ot_font_set_funcs(hb_font);
 
     SmartPtr<MathGraphicDevice> mgd = MathGraphicDevice::create(hb_font);
 
