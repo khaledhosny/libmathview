@@ -22,7 +22,7 @@
 // <http://www.gnu.org/licenses/>.
 
 #include <config.h>
-#include <hb-ft.h>
+#include <hb.h>
 
 #include <vector>
 

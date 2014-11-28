@@ -17,7 +17,7 @@ cd libmathview (root-of-git-repo)
 ./autogen.sh
 mkdir build install
 cd build
-HARFBUZZ_CFLAGS="-I/usr/local/include/freetype2/ -I/usr/local/include/harfbuzz" \
+HARFBUZZ_CFLAGS="-I/usr/local/include/harfbuzz" \
 PKG_CONFIG_PATH=/usr/local/opt/qt5/lib/pkgconfig/ \
 ../configure \
 --prefix=`pwd`/../install --enable-qt=yes --enable-libxml2=yes \
