@@ -1,4 +1,8 @@
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:
+    from xml.etree import ElementTree as etree
+
 import sys
 
 space_map = (
@@ -15,15 +19,15 @@ space_map = (
 def getOperators(tree):
     root = tree.getroot()
     operators = {}
-    for operator in root.findall(".//operator-dictionary"):
-        character = operator.getparent()
-        dec = character.get("dec")
-        value = ""
-        for d in dec.split("-"):
-            d = int(d)
-            c = unichr(d)
-            value += "".join([r"\x%02x" %(ord(b)) for b in c.encode("utf8")])
-        operators[value] = operator
+    for character in root.findall(".//character"):
+        for operator in character.findall(".//operator-dictionary"):
+            dec = character.get("dec")
+            value = ""
+            for d in dec.split("-"):
+                d = int(d)
+                c = unichr(d)
+                value += "".join([r"\x%02x" %(ord(b)) for b in c.encode("utf8")])
+            operators[value] = operator
 
     return operators
 
@@ -63,6 +67,5 @@ def dumpOperators(tree, fd, header):
         fd.write('};\n')
 
 if __name__ == "__main__":
-    parser = etree.XMLParser(resolve_entities=True)
     doc = etree.parse(sys.argv[1])
     dumpOperators(doc, sys.stdout, sys.argv[2] == "h")

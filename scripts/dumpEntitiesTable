@@ -1,4 +1,8 @@
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:
+    from xml.etree import ElementTree as etree
+
 import sys
 
 def getSets(tree, names):
@@ -14,14 +18,14 @@ def getSets(tree, names):
 def getEntities(tree, sets):
     root = tree.getroot()
     entities = {}
-    for s in sets:
-        for entity in root.findall(".//entity[@set='%s']" %s):
-            character = entity.getparent()
-            dec = character.get("dec")
-            value = ""
-            for d in dec.split("-"):
-                value += (r"\U%08x" % int(d)).decode('unicode-escape')
-            entities[entity.get("id")] = value
+    for character in root.findall(".//character"):
+        for s in sets:
+            for entity in character.findall(".//entity[@set='%s']" % s):
+                dec = character.get("dec")
+                value = ""
+                for d in dec.split("-"):
+                    value += (r"\U%08x" % int(d)).decode('unicode-escape')
+                entities[entity.get("id")] = value
 
     return entities
 
