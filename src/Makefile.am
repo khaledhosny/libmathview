@@ -561,6 +561,27 @@ libgtkmathview_libxml2_la_LIBADD = \
   libmathview_frontend_libxml2.la \
   $(NULL)
 endif # HAVE_GTK
+
+if HAVE_QT
+moc_%.cc: %.hh
+	$(MOC) $< -o $@
+
+lib_LTLIBRARIES += libmathview_widget_qt.la
+libmathview_widget_qt_la_SOURCES = \
+  widget/QMathView.cc \
+  widget/moc_QMathView.cc \
+  $(NULL)
+
+libmathview_widget_qt_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@
+libmathview_widget_qt_la_LIBADD = \
+  $(QT_LIBS) \
+  $(NULL)
+
+qtdir = $(includedir)/$(PACKAGE)/
+qt_HEADERS = \
+  widget/QMathView.hh \
+  $(NULL)
+endif # HAVE_QT
 endif # HAVE_LIBXML2
 
 
@@ -611,6 +632,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/cairo \
+  -I$(top_srcdir)/src/backend/qt \
   -I$(top_srcdir)/src/backend \
   -I$(top_srcdir)/src/engine \
   -I$(top_srcdir)/src/frontend/common \

@@ -25,6 +25,9 @@ pkgconfig_DATA += mathview-backend-qt.pc
 endif
 if HAVE_LIBXML2
 pkgconfig_DATA += gtkmathview-libxml2.pc
+if HAVE_QT
+pkgconfig_DATA += mathview-widget-qt.pc
+endif
 endif
 if HAVE_LIBXML2_READER
 pkgconfig_DATA += gtkmathview-libxml2-reader.pc

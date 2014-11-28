@@ -1,0 +1,15 @@
+# This is a comment
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: MathView
+Description: MathML rendering engine QPainter-based widgets
+Version: @PACKAGE_VERSION@
+Requires: Qt5Widgets mathview-core mathview-backend-qt mathview-frontend-libxml2
+Libs: @XML_LIBS@ -L${libdir} -lmathview_widget_qt
+Cflags: @XML_CFLAGS@ -I${includedir}/@PACKAGE@
+

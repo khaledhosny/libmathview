@@ -217,6 +217,7 @@ AC_CONFIG_FILES([
  mathview-frontend-libxml2.pc
  mathview-backend-cairo.pc
  mathview-backend-qt.pc
+ mathview-widget-qt.pc
  gtkmathview-custom-reader.pc
  gtkmathview-libxml2-reader.pc
  gtkmathview-libxml2.pc
