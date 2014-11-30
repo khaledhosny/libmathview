@@ -1,0 +1,18 @@
+try:
+    from lxml import etree
+except ImportError:
+    from xml.etree import ElementTree as etree
+
+import sys
+
+def dumpTokens(tree, fd, declare):
+    root = tree.getroot()
+    for token in sorted(root.findall('.//item')):
+        if declare:
+            fd.write('  T_%s,\n' % token.get('id'))
+        else:
+            fd.write('  { T_%s, "%s" },\n' % (token.get('id'), token.get('literal')))
+
+if __name__ == '__main__':
+    doc = etree.parse(sys.argv[1])
+    dumpTokens(doc, sys.stdout, sys.argv[2] == 'h')
