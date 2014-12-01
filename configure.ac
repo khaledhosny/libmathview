@@ -84,6 +84,13 @@ if test "$enable_cairo" = "yes" -a "$have_cairo" != "true"; then
 fi
 if $have_cairo; then
   AC_DEFINE(HAVE_CAIRO, 1, [Define to 1 if Cairo is installed])
+  _save_libs="$LIBS"
+  _save_cflags="$CFLAGS"
+  LIBS="$LIBS $CAIRO_LIBS"
+  CFLAGS="$CFLAGS $CAIRO_CFLAGS"
+  AC_CHECK_FUNCS(cairo_scaled_font_get_table)
+  LIBS="$_save_libs"
+  CFLAGS="$_save_cflags"
 fi
 AM_CONDITIONAL(HAVE_CAIRO, $have_cairo)
 
