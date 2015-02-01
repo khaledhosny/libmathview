@@ -108,7 +108,7 @@ findStretchyOperator(const SmartPtr<MathMLElement>& elem)
   if (elem)
     if (SmartPtr<MathMLOperatorElement> coreOp = elem->getCoreOperator())
       if (coreOp->IsStretchy()) return coreOp;
-  return 0;
+  return nullptr;
 }
 
 #if 0
@@ -190,7 +190,7 @@ SmartPtr<MathMLElement>
 findRightSibling(const SmartPtr<MathMLElement>& elem)
 {
   if (!elem)
-    return 0;
+    return nullptr;
   else if (SmartPtr<MathMLRowElement> row = elem->getParent<MathMLRowElement>())
     {
       auto p = std::find(row->getContent().begin(), row->getContent().end(), elem);
@@ -206,7 +206,7 @@ SmartPtr<MathMLElement>
 findLeftSibling(const SmartPtr<MathMLElement>& elem)
 {
   if (!elem)
-    return 0;
+    return nullptr;
   else if (SmartPtr<MathMLRowElement> row = elem->getParent<MathMLRowElement>())
     {
       auto p = std::find(row->getContent().begin(), row->getContent().end(), elem);

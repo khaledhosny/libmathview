@@ -41,8 +41,8 @@ MathMLBinContainerElement::format(FormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
-      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : 0);
+      AreaRef res = getChild() ? getChild()->format(ctxt) : nullptr;
+      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : nullptr);
       ctxt.pop();
 
       resetDirtyLayout();

@@ -89,7 +89,7 @@ SmartPtr<Attribute>
 AttributeSet::get(const AttributeId& id) const
 {
   auto p = content.find(id);
-  return (p != content.end()) ? p->second : 0;
+  return (p != content.end()) ? p->second : nullptr;
 }
 
 bool

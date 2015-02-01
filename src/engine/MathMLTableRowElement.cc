@@ -140,7 +140,7 @@ MathMLTableRowElement::IsInside(const scaled& x, const scaled& y) const
 SmartPtr<MathMLElement>
 MathMLTableRowElement::GetLabel(void) const
 {
-  return 0;
+  return nullptr;
 }
 
 void

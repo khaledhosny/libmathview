@@ -48,7 +48,7 @@ FormattingContext::FormattingContext(const SmartPtr<MathGraphicDevice>& md)
     setMathSpace(ZERO_SPACE + i, Length(i / 18.0, Length::EM_UNIT));
 
   setAvailableWidth(scaled::zero());
-  setStretchOperator(0);
+  setStretchOperator(nullptr);
   setStretchToWidth(scaled::zero());
   setStretchToHeight(scaled::zero());
   setStretchToDepth(scaled::zero());

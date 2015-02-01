@@ -79,7 +79,7 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
       else if (infix) defaults = infix;
       else if (postfix) defaults = postfix;
       else if (prefix) defaults = prefix;
-      else defaults = 0;
+      else defaults = nullptr;
 
       if (SmartPtr<Value> value = GET_OPERATOR_ATTRIBUTE_VALUE(MathML, Operator, fence, defaults))
 	fence = ToBoolean(value);
@@ -287,7 +287,7 @@ MathMLOperatorElement::getOperatorAttributeValue(const AttributeSignature& signa
     return value;
   
   assert(false);
-  return 0;
+  return nullptr;
 }
 
 TokenId

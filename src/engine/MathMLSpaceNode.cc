@@ -36,7 +36,7 @@ AreaRef
 MathMLSpaceNode::format(FormattingContext&)
 {
   assert(false);
-  return 0;
+  return nullptr;
 }
 
 unsigned

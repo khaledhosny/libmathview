@@ -60,6 +60,6 @@ smart_cast(const SmartPtr<P>& p)
 template <class Q, class R>
 bool
 is_a(const SmartPtr<R>& p)
-{ return dynamic_cast<Q*>(p.ptr) != 0; }
+{ return dynamic_cast<Q*>(p.ptr) != nullptr; }
 
 #endif // __SmartPtr_hh__

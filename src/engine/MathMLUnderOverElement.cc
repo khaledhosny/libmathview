@@ -48,9 +48,9 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
       bool accent = false;
       bool accentUnder = false;
 
-      const SmartPtr<MathMLOperatorElement> baseOp = getBase() ? getBase()->getCoreOperator() : 0;
-      const SmartPtr<MathMLOperatorElement> underOp = getUnderScript() ? getUnderScript()->getCoreOperator() : 0;
-      const SmartPtr<MathMLOperatorElement> overOp = getOverScript() ? getOverScript()->getCoreOperator() : 0;
+      const SmartPtr<MathMLOperatorElement> baseOp = getBase() ? getBase()->getCoreOperator() : nullptr;
+      const SmartPtr<MathMLOperatorElement> underOp = getUnderScript() ? getUnderScript()->getCoreOperator() : nullptr;
+      const SmartPtr<MathMLOperatorElement> overOp = getOverScript() ? getOverScript()->getCoreOperator() : nullptr;
 
       if (SmartPtr<Value> value = GET_ATTRIBUTE_VALUE(MathML, UnderOver, accentunder))
 	accentUnder = ToBoolean(value);
@@ -69,17 +69,17 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
       ctxt.push(this);
       ctxt.setDisplayStyle(false);
       if (!accentUnder) ctxt.addScriptLevel(1);
-      AreaRef underArea = getUnderScript() ? getUnderScript()->format(ctxt) : 0;
+      AreaRef underArea = getUnderScript() ? getUnderScript()->format(ctxt) : nullptr;
       ctxt.pop();
 
       ctxt.push(this);
       ctxt.setDisplayStyle(false);
       if (!accent) ctxt.addScriptLevel(1);
-      AreaRef overArea = getOverScript() ? getOverScript()->format(ctxt) : 0;
+      AreaRef overArea = getOverScript() ? getOverScript()->format(ctxt) : nullptr;
       ctxt.pop();
 
       ctxt.push(this);
-      AreaRef baseArea = getBase() ? getBase()->format(ctxt) : 0;
+      AreaRef baseArea = getBase() ? getBase()->format(ctxt) : nullptr;
       ctxt.pop();
 
       AreaRef res;
@@ -150,7 +150,7 @@ MathMLUnderOverElement::format(FormattingContext& ctxt)
 SmartPtr<MathMLOperatorElement>
 MathMLUnderOverElement::getCoreOperator()
 {
-  return getBase() ? getBase()->getCoreOperator() : 0;
+  return getBase() ? getBase()->getCoreOperator() : nullptr;
 }
 
 void

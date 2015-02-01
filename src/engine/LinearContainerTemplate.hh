@@ -40,7 +40,7 @@ public:
   {
     if (size != content.size())
       {
-	for (unsigned i = size; i < content.size(); i++) setChild(elem, i, 0);
+	for (unsigned i = size; i < content.size(); i++) setChild(elem, i, nullptr);
 	content.resize(size);
 	elem->setDirtyLayout();
       }

@@ -63,7 +63,7 @@ public:
 	NativeType v = Scanner::parse(p, next);
 	return Variant<NativeType>::create(v);
       }
-    return 0;
+    return nullptr;
   }
 };
 
@@ -84,7 +84,7 @@ public:
 	if (TokenSet_Boolean::has(id))
 	  return Variant<bool>::create(id == T_TRUE);
       }
-    return 0;
+    return nullptr;
   }
 };
 
@@ -111,7 +111,7 @@ public:
 	      return Variant<Length>::create(Length(v, toUnitId(id)));
 	  }
       }
-    return 0;
+    return nullptr;
   }  
 };
 
@@ -141,7 +141,7 @@ public:
     if (ScanKeywordToken::scan(p, end, next))
       return Variant<String>::create(Scan::toString(p, next));
     else
-      return 0;
+      return nullptr;
   }
 };
 
@@ -161,7 +161,7 @@ public:
 	TokenId id = ScanToken::parse(p, next);
 	if (TokenSet::has(id)) return Variant<TokenId>::create(id);
       }
-    return 0;
+    return nullptr;
   }
 };
 
@@ -230,7 +230,7 @@ public:
     if (parseInSequence(begin, end, next, content))
       return Variant<std::vector< SmartPtr<Value> > >::create(content);
     else
-      return 0;
+      return nullptr;
   }
 };
 
@@ -276,7 +276,7 @@ public:
 	return Variant< std::vector< SmartPtr<Value> > >::create(content);
       }
     else
-      return 0;
+      return nullptr;
   }
 };
 
@@ -297,7 +297,7 @@ public:
     if (ScanRGBColor::scan(p, end, next))
       return Variant<RGBColor>::create(ScanRGBColor::parse(p, next));
     else
-      return 0;
+      return nullptr;
   }
 };
 

@@ -37,7 +37,7 @@ struct Entry
 static Entry token[] =
   {
 #include "token.def"
-    { T__NOTVALID, 0 }
+    { T__NOTVALID, nullptr }
   };
 
 typedef std::unordered_map<String,TokenId,StringHash,StringEq> Map;

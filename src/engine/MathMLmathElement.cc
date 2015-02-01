@@ -48,7 +48,7 @@ MathMLmathElement::format(FormattingContext& ctxt)
       assert(value);
       ctxt.setDisplayStyle(ToTokenId(value) == T_BLOCK);
 
-      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : nullptr;
       if (res) res = ctxt.MGD()->wrapper(ctxt, res);
       setArea(res);
 

@@ -36,5 +36,5 @@ AreaRef
 MathMLMarkNode::format(FormattingContext&)
 {
   assert(false);
-  return 0;
+  return nullptr;
 }

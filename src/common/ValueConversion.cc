@@ -209,6 +209,6 @@ GetComponent(const SmartPtr<Value>& value, int i, int j)
 	return GetComponent(vSeq->getValue(std::min(i, static_cast<int>(vSeq->getSize() - 1))), j, -1);
       }
   else
-    return 0;
+    return nullptr;
 }
 

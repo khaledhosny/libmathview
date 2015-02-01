@@ -38,11 +38,11 @@
 
 ShaperManager::ShaperManager(void)
   : nextShaperId(0)
-  , errorShaper(0)
+  , errorShaper(nullptr)
 {
   errorShaper = NullShaper::create();
   for (auto & elem : shaper)
-    elem = 0;
+    elem = nullptr;
 }
 
 ShaperManager::~ShaperManager()
@@ -186,7 +186,7 @@ ShaperManager::mapStretchy(Char32 ch) const
 
 SmartPtr<class Shaper>
 ShaperManager::getShaper(unsigned si) const
-{ return (si < nextShaperId) ? shaper[si] : 0; }
+{ return (si < nextShaperId) ? shaper[si] : nullptr; }
 
 AreaRef
 ShaperManager::compose(const FormattingContext& context,
@@ -220,8 +220,8 @@ ShaperManager::compose(const FormattingContext& context,
     dy = base->box().height + script->box().depth;
   }
 
-  const AreaRef over = overScript ? script : NULL;
-  const AreaRef under = overScript ? NULL : script;
+  const AreaRef over = overScript ? script : nullptr;
+  const AreaRef under = overScript ? nullptr : script;
    
   return context.MGD()->getFactory()->combinedGlyph(base, over, under,
 					    	    dx, dy, dxUnder);

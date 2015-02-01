@@ -65,11 +65,11 @@ MathShaper::shape(ShapingContext& context) const
     }
   else
     {
-      hb_shape(font, buffer, NULL, 0);
+      hb_shape(font, buffer, nullptr, 0);
     }
 
   unsigned len = hb_buffer_get_length(buffer);
-  hb_glyph_info_t* glyphs = hb_buffer_get_glyph_infos(buffer, NULL);
+  hb_glyph_info_t* glyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
 
   const SmartPtr<AreaFactory> factory = context.getFactory();
   std::vector<AreaRef> areaV;

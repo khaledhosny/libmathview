@@ -73,7 +73,7 @@ private:
     AreaRef getArea(void) const { return content->getArea(); }
     BoundingBox getBoundingBox(void) const { return getArea()->box(); }
     SmartPtr<MathMLTableCellElement> getContent(void) const { return content; }
-    bool isNull(void) const { return content == 0; }
+    bool isNull(void) const { return content == nullptr; }
     operator bool(void) const { return !isNull(); }
     unsigned getColumnSpan(void) const { return content ? content->getColumnSpan() * 2 - 1 : 0; }
     unsigned getRowSpan(void) const { return content ? content->getRowSpan() * 2 - 1 : 0; }

@@ -93,7 +93,7 @@ MathMLScriptElement::format(FormattingContext& ctxt)
 SmartPtr<class MathMLOperatorElement>
 MathMLScriptElement::getCoreOperator()
 {
-  return getBase() ? getBase()->getCoreOperator() : 0;
+  return getBase() ? getBase()->getCoreOperator() : nullptr;
 }
 
 void

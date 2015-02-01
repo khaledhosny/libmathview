@@ -77,7 +77,7 @@ MathMLSpaceElement::format(FormattingContext& ctxt)
 	lineBreak = false;
 
       if (lineBreak)
-	setArea(0);
+	setArea(nullptr);
       else
 	{
 	  AreaRef res = ctxt.MGD()->getFactory()->box(ctxt.MGD()->getFactory()->horizontalSpace(scaled::zero()), BoundingBox(width, height, depth));

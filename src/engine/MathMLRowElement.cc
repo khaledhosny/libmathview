@@ -75,7 +75,7 @@ MathMLRowElement::format(FormattingContext& ctxt)
 		row.push_back(elemArea);
 		// WARNING: we can check for IsStretchy only *after* format because it is
 		// at that time that the flags in the operator get set (see MathMLOperatorElement)
-		if (coreOp && !coreOp->IsStretchy()) coreOp = 0;
+		if (coreOp && !coreOp->IsStretchy()) coreOp = nullptr;
 		stretchy = stretchy || coreOp;
 		erow.push_back(coreOp);
 	      }
@@ -100,7 +100,7 @@ MathMLRowElement::format(FormattingContext& ctxt)
 		(*op)->setDirtyLayout();
 		row[i] = getChild(i)->format(ctxt);
 	      }
-	  ctxt.setStretchOperator(0);
+	  ctxt.setStretchOperator(nullptr);
 
 	  if (row.size() == 1) res = row[0];
 	  else res = ctxt.MGD()->getFactory()->horizontalArray(row);
@@ -151,14 +151,14 @@ MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
 SmartPtr<class MathMLOperatorElement>
 MathMLRowElement::getCoreOperator()
 {
-  SmartPtr<MathMLElement> candidate = 0;
+  SmartPtr<MathMLElement> candidate = nullptr;
 
   for (const auto & elem : content)
     if (elem && !elem->IsSpaceLike())
       {
       if (!candidate) candidate = elem;
-      else return 0;
+      else return nullptr;
       }
 
-  return candidate ? candidate->getCoreOperator() : 0;
+  return candidate ? candidate->getCoreOperator() : nullptr;
 }

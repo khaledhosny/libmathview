@@ -42,7 +42,7 @@ static MathVariantAttributes vattr[] = {
   { T_SANS_SERIF_ITALIC, "sans-serif",    T_NORMAL,    T_ITALIC },
   { T_MONOSPACE,         "monospace",     T_NORMAL,    T_NORMAL },
   
-  { T__NOTVALID,         0,               T__NOTVALID, T__NOTVALID }
+  { T__NOTVALID,         nullptr,               T__NOTVALID, T__NOTVALID }
 };
 
 const MathVariantAttributes&

@@ -43,8 +43,8 @@ MathMLErrorElement::format(FormattingContext& ctxt)
       ctxt.push(this);
       if (ctxt.getColor() == RGBColor::RED()) ctxt.setColor(RGBColor::BLUE());
       else ctxt.setColor(RGBColor::RED());
-      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
-      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : 0);
+      AreaRef res = getChild() ? getChild()->format(ctxt) : nullptr;
+      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : nullptr);
       ctxt.pop();
       resetDirtyLayout();
     }

@@ -48,7 +48,7 @@ MathMLPaddedElement::format(FormattingContext& ctxt)
     {
       ctxt.push(this);
 
-      if (AreaRef childArea = getChild() ? getChild()->format(ctxt) : 0)
+      if (AreaRef childArea = getChild() ? getChild()->format(ctxt) : nullptr)
 	{
 	  const BoundingBox childBox = childArea->box();
 	  const scaled lspace = evalLengthDimension(ctxt, GET_ATTRIBUTE_VALUE(MathML, Padded, lspace), T_LSPACE, scaled::zero(), childBox);
@@ -75,7 +75,7 @@ MathMLPaddedElement::format(FormattingContext& ctxt)
 	  setArea(res);
 	}
       else
-	setArea(0);
+	setArea(nullptr);
 
       resetDirtyLayout();
     }
@@ -203,5 +203,5 @@ MathMLPaddedElement::evalLengthDimension(const FormattingContext& ctxt,
 SmartPtr<MathMLOperatorElement>
 MathMLPaddedElement::getCoreOperator()
 {
-  return getChild() ? getChild()->getCoreOperator() : 0;
+  return getChild() ? getChild()->getCoreOperator() : nullptr;
 }

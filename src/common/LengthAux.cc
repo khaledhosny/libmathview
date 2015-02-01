@@ -58,7 +58,7 @@ static const char* unitName[] = {
   "thickspace",
   "verythickspace",
   "veryverythickspace",
-  0
+  nullptr
 };
 
 std::string

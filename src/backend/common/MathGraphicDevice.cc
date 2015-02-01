@@ -164,7 +164,7 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
 {
   CachedShapedStretchyStringKey key(str, context.getVariant(), context.getSize(),
                                     context.getStretchH(), context.getStretchV());
-  std::pair<ShapedStretchyStringCache::iterator, bool> r = stretchyStringCache.insert(std::make_pair(key, AreaRef(0)));
+  std::pair<ShapedStretchyStringCache::iterator, bool> r = stretchyStringCache.insert(std::make_pair(key, AreaRef(nullptr)));
   if (r.second)
     {
       r.first->second = getShaperManager()->shapeStretchy(context,
@@ -182,7 +182,7 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
 {
   CachedShapedStringKey key(str, context.getVariant(), context.getSize());
 
-  std::pair<ShapedStringCache::iterator, bool> r = stringCache.insert(std::make_pair(key, AreaRef(0)));
+  std::pair<ShapedStringCache::iterator, bool> r = stringCache.insert(std::make_pair(key, AreaRef(nullptr)));
   if (r.second)
     {
       r.first->second = getShaperManager()->shape(context, str);
@@ -529,11 +529,11 @@ MathGraphicDevice::underOver(const FormattingContext& context,
                              const AreaRef& underScript, bool accentUnder,
                              const AreaRef& overScript, bool accent) const
 {
-  SmartPtr<const GlyphStringArea> baseStringArea = base ? base->getGlyphStringArea() : NULL;
+  SmartPtr<const GlyphStringArea> baseStringArea = base ? base->getGlyphStringArea() : nullptr;
   SmartPtr<const GlyphStringArea> overStringArea = overScript ? overScript->getGlyphStringArea()
-                                                                : NULL;
+                                                                : nullptr;
   SmartPtr<const GlyphStringArea> underStringArea = underScript ?
-                                                    underScript->getGlyphStringArea() : NULL;
+                                                    underScript->getGlyphStringArea() : nullptr;
 
   if (baseStringArea)
   {
@@ -570,7 +570,7 @@ MathGraphicDevice::underOver(const FormattingContext& context,
           //we have that the overScript is a single char
           //but the underScript isn't a single char
           else
-            res = underOver(context, res, underScript, accentUnder, NULL, accent);
+            res = underOver(context, res, underScript, accentUnder, nullptr, accent);
 
           return res;
         }
@@ -580,7 +580,7 @@ MathGraphicDevice::underOver(const FormattingContext& context,
           res = shaperManager->compose(context,
                                        base, baseSource,
                                        underScript, underSource, false);
-          res = underOver(context, res, NULL, accentUnder, overScript, accent);
+          res = underOver(context, res, nullptr, accentUnder, overScript, accent);
 
           return res;
         }
@@ -643,7 +643,7 @@ MathGraphicDevice::enclose(const FormattingContext& context,
                            const String& notation) const
 {
   if (notation == "radical")
-    return radical(context, base, 0);
+    return radical(context, base, nullptr);
   else
     {
       std::vector<AreaRef> c;

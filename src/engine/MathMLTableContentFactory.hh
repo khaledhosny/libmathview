@@ -49,15 +49,15 @@ protected:
 private:    
   struct Slot
   {
-    Slot(const SmartPtr<MathMLTableCellElement>& el = 0, bool s = false)
+    Slot(const SmartPtr<MathMLTableCellElement>& el = nullptr, bool s = false)
       : child(el), spanned(s) { }
 
-    void init(const SmartPtr<MathMLTableCellElement>& el = 0, bool s = false)
+    void init(const SmartPtr<MathMLTableCellElement>& el = nullptr, bool s = false)
     { child = el; spanned = s; }
 
     bool free(void) const { return !child; }
     SmartPtr<MathMLTableCellElement> getChild(void) const
-    { return !spanned ? child : 0; }
+    { return !spanned ? child : nullptr; }
 
   private:
     SmartPtr<MathMLTableCellElement> child;

@@ -42,7 +42,7 @@ MathMLNormalizingContainerElement::format(FormattingContext& ctxt)
   if (dirtyLayout())
     {
       ctxt.push(this);
-      AreaRef res = getChild() ? getChild()->format(ctxt) : 0;
+      AreaRef res = getChild() ? getChild()->format(ctxt) : nullptr;
       if (res) res = ctxt.MGD()->wrapper(ctxt, res);
       setArea(res);
       ctxt.pop();

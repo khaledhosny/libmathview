@@ -141,5 +141,5 @@ MathMLFractionElement::resetFlagDown(Flags f)
 SmartPtr<MathMLOperatorElement>
 MathMLFractionElement::getCoreOperator()
 {
-  return getNumerator() ? getNumerator()->getCoreOperator() : 0;
+  return getNumerator() ? getNumerator()->getCoreOperator() : nullptr;
 }

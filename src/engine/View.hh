@@ -55,25 +55,25 @@ public:
   void resetRootElement(void);
   BoundingBox getBoundingBox(void) const;
 
-  SmartPtr<class Element> getElementAt(const scaled&, const scaled&, Point* = 0, BoundingBox* = 0) const;
-  bool getElementExtents(const SmartPtr<class Element>&, const SmartPtr<class Element>&, Point* = 0, BoundingBox* = 0) const;
-  bool getElementExtents(const SmartPtr<class Element>&, Point* = 0, BoundingBox* = 0) const;
+  SmartPtr<class Element> getElementAt(const scaled&, const scaled&, Point* = nullptr, BoundingBox* = nullptr) const;
+  bool getElementExtents(const SmartPtr<class Element>&, const SmartPtr<class Element>&, Point* = nullptr, BoundingBox* = nullptr) const;
+  bool getElementExtents(const SmartPtr<class Element>&, Point* = nullptr, BoundingBox* = nullptr) const;
   bool getElementLength(const SmartPtr<class Element>&, CharIndex&) const;
   bool getElementOrigin(const SmartPtr<class Element>& elem, Point& p) const
-  { return getElementExtents(elem, &p, 0); }
+  { return getElementExtents(elem, &p, nullptr); }
   bool getElementOrigin(const SmartPtr<class Element>& refElem, const SmartPtr<class Element>& elem, Point& p) const
-  { return getElementExtents(refElem, elem, &p, 0); }
+  { return getElementExtents(refElem, elem, &p, nullptr); }
   bool getElementBoundingBox(const SmartPtr<class Element>& elem, BoundingBox& b) const
-  { return getElementExtents(elem, 0, &b); }
+  { return getElementExtents(elem, nullptr, &b); }
 
-  SmartPtr<class Element> getCharAt(const scaled&, const scaled&, CharIndex&, Point* = 0, BoundingBox* = 0) const;
+  SmartPtr<class Element> getCharAt(const scaled&, const scaled&, CharIndex&, Point* = nullptr, BoundingBox* = nullptr) const;
   bool getCharExtents(const SmartPtr<class Element>&, const SmartPtr<class Element>&, CharIndex,
-		      Point* = 0, BoundingBox* = 0) const;
-  bool getCharExtents(const SmartPtr<class Element>&, CharIndex, Point* = 0, BoundingBox* = 0) const;
+		      Point* = nullptr, BoundingBox* = nullptr) const;
+  bool getCharExtents(const SmartPtr<class Element>&, CharIndex, Point* = nullptr, BoundingBox* = nullptr) const;
   bool getCharOrigin(const SmartPtr<class Element>& elem, CharIndex index, Point& p) const
-  { return getCharExtents(elem, index, &p, 0); }
+  { return getCharExtents(elem, index, &p, nullptr); }
   bool getCharBoundingBox(const SmartPtr<class Element>& elem, CharIndex index, BoundingBox& b) const
-  { return getCharExtents(elem, index, 0, &b); }
+  { return getCharExtents(elem, index, nullptr, &b); }
 
   void render(class RenderingContext&, const scaled&, const scaled&) const;
 

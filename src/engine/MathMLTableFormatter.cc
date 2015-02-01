@@ -278,7 +278,7 @@ MathMLTableFormatter::formatLines(const FormattingContext& ctxt,
       content.push_back(BoxedLayoutArea::XYArea(right, top, vline));
     }
 
-  return content.empty() ? 0 : ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
+  return content.empty() ? nullptr : ctxt.MGD()->getFactory()->boxedLayout(getBoundingBox(), content);
 }
 
 scaled

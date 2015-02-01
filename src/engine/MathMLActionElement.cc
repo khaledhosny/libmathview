@@ -91,5 +91,5 @@ MathMLActionElement::getCoreOperator()
   if (selection < getSize())
     if (SmartPtr<MathMLElement> elem = getChild(selection))
       return elem->getCoreOperator();
-  return 0;
+  return nullptr;
 }

@@ -88,7 +88,7 @@ MathMLOperatorDictionary::search(const String& opName,
 				 SmartPtr<AttributeSet>& infix,
 				 SmartPtr<AttributeSet>& postfix) const
 {
-  prefix = infix = postfix = 0;
+  prefix = infix = postfix = nullptr;
 
   auto p = items.find(opName);
   if (p != items.end())

@@ -192,4 +192,4 @@ MathMLTableElement::setDirtyAttributeD()
 
 void
 MathMLTableElement::invalidateFormatter()
-{ tableFormatter = 0; }
+{ tableFormatter = nullptr; }

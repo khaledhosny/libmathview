@@ -46,7 +46,7 @@ void Clock::Start()
   start.tv_sec = st.wSecond;
   start.tv_usec = st.wMilliseconds;  
 #else
-  gettimeofday(&start, NULL);
+  gettimeofday(&start, nullptr);
 #endif
 }
 
@@ -58,7 +58,7 @@ void Clock::Stop()
   stop.tv_sec = st.wSecond;
   stop.tv_usec = st.wMilliseconds;  
 #else
-  gettimeofday(&stop, NULL);
+  gettimeofday(&stop, nullptr);
 #endif
 }
 

@@ -73,7 +73,7 @@ MathMLTableContentFactory::setChild(unsigned i, unsigned j,
 
 SmartPtr<MathMLTableCellElement>
 MathMLTableContentFactory::getChild(unsigned i, unsigned j) const
-{ return (i < rows.size()) ? rows[i].getChild(j) : 0; }
+{ return (i < rows.size()) ? rows[i].getChild(j) : nullptr; }
 
 void
 MathMLTableContentFactory::setLabelChild(unsigned i,
@@ -85,7 +85,7 @@ MathMLTableContentFactory::setLabelChild(unsigned i,
 
 SmartPtr<MathMLTableCellElement>
 MathMLTableContentFactory::getLabelChild(unsigned i) const
-{ return (i < rows.size()) ? rows[i].getLabelChild() : 0; }
+{ return (i < rows.size()) ? rows[i].getLabelChild() : nullptr; }
 
 void
 MathMLTableContentFactory::getContent(std::vector<SmartPtr<MathMLTableCellElement> >& cells,
@@ -153,7 +153,7 @@ MathMLTableContentFactory::Row::setSpanningChild(unsigned j, unsigned columnSpan
 
 SmartPtr<MathMLTableCellElement>
 MathMLTableContentFactory::Row::getChild(unsigned j) const
-{ return (j < content.size()) ? content[j].getChild() : 0; }
+{ return (j < content.size()) ? content[j].getChild() : nullptr; }
 
 void
 MathMLTableContentFactory::Row::setLabelChild(const SmartPtr<MathMLTableCellElement>& child)

@@ -108,7 +108,7 @@ MathMLStyleElement::format(FormattingContext& ctxt)
 	ATTRIBUTE_ID(MathML, Style, negativethinmathspace),
 	ATTRIBUTE_ID(MathML, Style, negativeverythinmathspace),
 	ATTRIBUTE_ID(MathML, Style, negativeveryverythinmathspace),
-	0,
+	nullptr,
 	ATTRIBUTE_ID(MathML, Style, veryverythinmathspace),
 	ATTRIBUTE_ID(MathML, Style, verythinmathspace),
 	ATTRIBUTE_ID(MathML, Style, thinmathspace),
@@ -167,5 +167,5 @@ MathMLStyleElement::setDirtyAttribute()
 SmartPtr<MathMLOperatorElement>
 MathMLStyleElement::getCoreOperator()
 {
-  return getChild() ? getChild()->getCoreOperator() : 0;
+  return getChild() ? getChild()->getCoreOperator() : nullptr;
 }

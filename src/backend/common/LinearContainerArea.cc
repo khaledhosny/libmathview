@@ -100,13 +100,13 @@ LinearContainerArea::lengthTo(AreaIndex i) const
 SmartPtr<const GlyphStringArea>
 LinearContainerArea::getGlyphStringArea() const
 {
-  SmartPtr<const GlyphStringArea> ptr = NULL;
+  SmartPtr<const GlyphStringArea> ptr = nullptr;
   for (const auto & elem : content)
   {
     if (!ptr && elem->getGlyphStringArea())
       ptr = elem->getGlyphStringArea();
     else if (ptr && elem->getGlyphStringArea())
-      { ptr = NULL;
+      { ptr = nullptr;
 	return ptr;
       }
   }
@@ -117,13 +117,13 @@ LinearContainerArea::getGlyphStringArea() const
 SmartPtr<const GlyphArea> 
 LinearContainerArea::getGlyphArea() const
 {
-  SmartPtr<const GlyphArea> ptr = NULL;
+  SmartPtr<const GlyphArea> ptr = nullptr;
   for (const auto & elem : content)
   {
     if (!ptr && elem->getGlyphArea())
       ptr = elem->getGlyphArea();
     else if (ptr && elem->getGlyphArea())
-      { ptr = NULL;
+      { ptr = nullptr;
 	return ptr;
       }
  }

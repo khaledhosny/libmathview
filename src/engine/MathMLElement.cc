@@ -46,7 +46,7 @@ MathMLElement::IsSpaceLike() const
 SmartPtr<MathMLOperatorElement>
 MathMLElement::getCoreOperator()
 {
-  return 0;
+  return nullptr;
 }
 
 SmartPtr<MathMLOperatorElement>
@@ -58,7 +58,7 @@ MathMLElement::getCoreOperatorTop()
       if (!parent || parent->getCoreOperator() != coreOp)
 	return coreOp;
     }
-  return 0;
+  return nullptr;
 }
 
 SmartPtr<MathMLNamespaceContext>

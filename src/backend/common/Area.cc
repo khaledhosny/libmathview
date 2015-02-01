@@ -57,7 +57,7 @@ Area::positionOfIndex(CharIndex, struct Point*, BoundingBox*) const
 
 SmartPtr<Element>
 Area::getElement() const
-{ return 0; }
+{ return nullptr; }
 
 scaled
 Area::getStep() const
@@ -65,9 +65,9 @@ Area::getStep() const
 
 SmartPtr<const GlyphStringArea> 
 Area::getGlyphStringArea() const
-{ return 0; }
+{ return nullptr; }
 
 SmartPtr<const GlyphArea>
 Area::getGlyphArea() const
-{ return 0; }
+{ return nullptr; }
 

@@ -84,7 +84,7 @@ Element::getDepth() const
 SmartPtr<Attribute>
 Element::getAttribute(const AttributeSignature& signature) const
 {
-  return attributes ? attributes->get(ATTRIBUTE_ID_OF_SIGNATURE(signature)) : 0;
+  return attributes ? attributes->get(ATTRIBUTE_ID_OF_SIGNATURE(signature)) : nullptr;
 }
 
 void
@@ -108,7 +108,7 @@ Element::getAttributeValueNoDefault(const AttributeSignature& signature) const
   if (SmartPtr<Attribute> attr = getAttribute(signature))
     return attr->getValue();
   else
-    return 0;
+    return nullptr;
 }
 
 SmartPtr<Value>
@@ -220,7 +220,7 @@ Element::format(class FormattingContext&)
 {
   if (dirtyLayout())
     {
-      setArea(0);
+      setArea(nullptr);
       resetDirtyLayout();
     }
 

@@ -91,12 +91,12 @@ View::getBuilder() const
 AreaRef
 View::formatElement(const SmartPtr<Element>& elem) const
 {
-  if (!elem) return 0;
+  if (!elem) return nullptr;
 
   if (elem->dirtyLayout())
     {
-      const SmartPtr<MathGraphicDevice> mgd = mathmlContext ? mathmlContext->getGraphicDevice() : 0;
-      assert(mgd != 0);
+      const SmartPtr<MathGraphicDevice> mgd = mathmlContext ? mathmlContext->getGraphicDevice() : nullptr;
+      assert(mgd != nullptr);
       FormattingContext ctxt(mgd);
       Length defaultSize(getDefaultFontSize(), Length::PT_UNIT);
       scaled l = mgd->evaluate(ctxt, defaultSize, scaled::zero());
@@ -137,7 +137,7 @@ View::getRootElement() const
 void
 View::resetRootElement()
 {
-  rootElement = 0;
+  rootElement = nullptr;
 }
 
 AreaRef
@@ -172,7 +172,7 @@ View::getElementAt(const scaled& x, const scaled& y, Point* elemOrigin, Bounding
 	  }
     }
 
-  return 0;
+  return nullptr;
 }
 
 bool
@@ -251,7 +251,7 @@ View::getCharAt(const scaled& x, const scaled& y, CharIndex& index, Point* charO
 		if (charOrig || charBox)
 		  {
 		    if (!deepArea->positionOfIndex(deepIndex, charOrig, charBox))
-		      return 0;
+		      return nullptr;
 		  }
 		
 		return elem;
@@ -259,7 +259,7 @@ View::getCharAt(const scaled& x, const scaled& y, CharIndex& index, Point* charO
 	  }
     }
 
-  return 0;
+  return nullptr;
 }
 
 bool

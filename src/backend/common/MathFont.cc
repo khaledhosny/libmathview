@@ -45,7 +45,7 @@ int
 MathFont::getConstant(MathConstant constant) const
 {
   int value = 0;
-  const char* tableData = hb_blob_get_data(const_cast<hb_blob_t*>(m_table), NULL);
+  const char* tableData = hb_blob_get_data(const_cast<hb_blob_t*>(m_table), nullptr);
   if (tableData)
     {
       const uint16_t* constants = (const uint16_t*)(tableData + SWAP(((const MathTableHeader*)tableData)->mathConstants));
@@ -98,7 +98,7 @@ MathFont::getVariant(int glyph, scaled size, bool horiz)
 {
   int variant = glyph;
 
-  const char* tableData = hb_blob_get_data(const_cast<hb_blob_t*>(m_table), NULL);
+  const char* tableData = hb_blob_get_data(const_cast<hb_blob_t*>(m_table), nullptr);
   if (tableData)
     {
       uint16_t offset = SWAP(((const MathTableHeader*)tableData)->mathVariants);

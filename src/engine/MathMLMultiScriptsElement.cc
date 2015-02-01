@@ -51,7 +51,7 @@ MathMLMultiScriptsElement::formatScripts(FormattingContext& ctxt,
        p != end;
        p++)
     if (*p) area.push_back((*p)->format(ctxt));
-    else area.push_back(0);
+    else area.push_back(nullptr);
 #else
   // the following is nicer but doesn't work if there's a NULL child
   // Two solutions:
@@ -205,7 +205,7 @@ MathMLMultiScriptsElement::DoLayout(const class FormattingContext& ctxt)
 SmartPtr<MathMLOperatorElement>
 MathMLMultiScriptsElement::getCoreOperator()
 {
-  return getBase() ? getBase()->getCoreOperator() : 0;
+  return getBase() ? getBase()->getCoreOperator() : nullptr;
 }
 
 void

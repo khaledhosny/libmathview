@@ -54,9 +54,9 @@ MathMLEncloseElement::format(FormattingContext& ctxt)
 	    res = ctxt.MGD()->enclose(ctxt, res, ToString(type->getValue(i)));
 	}
       else
-	res = 0;
+	res = nullptr;
 
-      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : 0);
+      setArea(res ? ctxt.MGD()->wrapper(ctxt, res) : nullptr);
       ctxt.pop();
       resetDirtyLayout();
     }
