@@ -126,7 +126,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/engine \
   -I$(top_srcdir)/src/widget \
   -I$(top_srcdir)/src/view \
-  -I$(top_srcdir)/src/backend/common/ \
+  -I$(top_srcdir)/src/backend \
   -I$(top_srcdir)/src/backend/cairo/ \
   -I$(top_srcdir)/src/backend/qt/ \
   $(CAIRO_CFLAGS) \

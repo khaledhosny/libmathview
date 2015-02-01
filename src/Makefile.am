@@ -20,7 +20,7 @@ libmathview_la_LDFLAGS = -version-info @MATHVIEW_VERSION_INFO@ -no-undefined
 libmathview_la_SOURCES = dummy.cc
 
 libmathview_la_LIBADD = \
-  libbackend_common.la \
+  libbackend.la \
   libfrontend_common.la \
   libengine.la \
   libcommon.la \
@@ -220,106 +220,106 @@ noinst_HEADERS += \
   $(NULL)
 
 
-noinst_LTLIBRARIES += libbackend_common.la
+noinst_LTLIBRARIES += libbackend.la
 
-libbackend_common_la_SOURCES = \
-  backend/common/Area.cc \
-  backend/common/AreaFactory.cc \
-  backend/common/AreaId.cc \
-  backend/common/AreaIdAux.cc \
-  backend/common/Backend.cc \
-  backend/common/BackgroundArea.cc \
-  backend/common/BinContainerArea.cc \
-  backend/common/BoxArea.cc \
-  backend/common/BoxedLayoutArea.cc \
-  backend/common/ColorArea.cc \
-  backend/common/CombinedGlyphArea.cc \
-  backend/common/FormattingContext.cc \
-  backend/common/GlyphArea.cc \
-  backend/common/GlyphStringArea.cc \
-  backend/common/GlyphWrapperArea.cc \
-  backend/common/GraphicDevice.cc \
-  backend/common/HideArea.cc \
-  backend/common/HorizontalArrayArea.cc \
-  backend/common/HorizontalFillerArea.cc \
-  backend/common/HorizontalSpaceArea.cc \
-  backend/common/IdArea.cc \
-  backend/common/IgnoreArea.cc	\
-  backend/common/InkArea.cc \
-  backend/common/LinearContainerArea.cc \
-  backend/common/MathFont.cc \
-  backend/common/MathGraphicDevice.cc \
-  backend/common/MathShaper.cc \
-  backend/common/MathVariantMap.cc \
-  backend/common/MathVariants.cc \
-  backend/common/NullShaper.cc \
-  backend/common/OverlapArrayArea.cc \
-  backend/common/Shaper.cc \
-  backend/common/ShaperManager.cc \
-  backend/common/ShapingContext.cc \
-  backend/common/ShiftArea.cc \
-  backend/common/SimpleArea.cc \
-  backend/common/SpaceShaper.cc \
-  backend/common/StepArea.cc \
-  backend/common/VerticalArrayArea.cc \
-  backend/common/VerticalFillerArea.cc \
-  backend/common/VerticalSpaceArea.cc \
-  backend/common/WrapperArea.cc \
+libbackend_la_SOURCES = \
+  backend/Area.cc \
+  backend/AreaFactory.cc \
+  backend/AreaId.cc \
+  backend/AreaIdAux.cc \
+  backend/Backend.cc \
+  backend/BackgroundArea.cc \
+  backend/BinContainerArea.cc \
+  backend/BoxArea.cc \
+  backend/BoxedLayoutArea.cc \
+  backend/ColorArea.cc \
+  backend/CombinedGlyphArea.cc \
+  backend/FormattingContext.cc \
+  backend/GlyphArea.cc \
+  backend/GlyphStringArea.cc \
+  backend/GlyphWrapperArea.cc \
+  backend/GraphicDevice.cc \
+  backend/HideArea.cc \
+  backend/HorizontalArrayArea.cc \
+  backend/HorizontalFillerArea.cc \
+  backend/HorizontalSpaceArea.cc \
+  backend/IdArea.cc \
+  backend/IgnoreArea.cc	\
+  backend/InkArea.cc \
+  backend/LinearContainerArea.cc \
+  backend/MathFont.cc \
+  backend/MathGraphicDevice.cc \
+  backend/MathShaper.cc \
+  backend/MathVariantMap.cc \
+  backend/MathVariants.cc \
+  backend/NullShaper.cc \
+  backend/OverlapArrayArea.cc \
+  backend/Shaper.cc \
+  backend/ShaperManager.cc \
+  backend/ShapingContext.cc \
+  backend/ShiftArea.cc \
+  backend/SimpleArea.cc \
+  backend/SpaceShaper.cc \
+  backend/StepArea.cc \
+  backend/VerticalArrayArea.cc \
+  backend/VerticalFillerArea.cc \
+  backend/VerticalSpaceArea.cc \
+  backend/WrapperArea.cc \
   $(NULL)
 
-libbackend_common_la_LIBADD = \
+libbackend_la_LIBADD = \
   $(HARFBUZZ_LIBS) \
   $(NULL)
 
 mathview_HEADERS += \
-  backend/common/Area.hh \
-  backend/common/AreaFactory.hh \
-  backend/common/AreaId.hh \
-  backend/common/AreaIdAux.hh \
-  backend/common/Backend.hh \
-  backend/common/BackgroundArea.hh \
-  backend/common/BinContainerArea.hh \
-  backend/common/BoxArea.hh \
-  backend/common/BoxedLayoutArea.hh \
-  backend/common/CachedShapedString.hh \
-  backend/common/ColorArea.hh	\
-  backend/common/CombinedGlyphArea.hh \
-  backend/common/ContainerArea.hh \
-  backend/common/FillerArea.hh \
-  backend/common/FormattingContext.hh \
-  backend/common/GlyphArea.hh \
-  backend/common/GlyphSpec.hh \
-  backend/common/GlyphStringArea.hh \
-  backend/common/GlyphWrapperArea.hh \
-  backend/common/GraphicDevice.hh \
-  backend/common/HideArea.hh \
-  backend/common/HorizontalArrayArea.hh \
-  backend/common/HorizontalFillerArea.hh \
-  backend/common/HorizontalSpaceArea.hh \
-  backend/common/IdArea.hh \
-  backend/common/IgnoreArea.hh	\
-  backend/common/InkArea.hh \
-  backend/common/LinearContainerArea.hh \
-  backend/common/MathFont.hh \
-  backend/common/MathGraphicDevice.hh \
-  backend/common/MathShaper.hh \
-  backend/common/MathTable.hh \
-  backend/common/MathVariantMap.hh \
-  backend/common/NullShaper.hh \
-  backend/common/OverlapArrayArea.hh \
-  backend/common/RenderingContext.hh \
-  backend/common/SearchingContext.hh \
-  backend/common/Shaper.hh \
-  backend/common/ShaperManager.hh \
-  backend/common/ShapingContext.hh \
-  backend/common/ShiftArea.hh \
-  backend/common/SimpleArea.hh \
-  backend/common/SpaceShaper.hh \
-  backend/common/StepArea.hh \
-  backend/common/VerticalArrayArea.hh \
-  backend/common/VerticalFillerArea.hh \
-  backend/common/VerticalSpaceArea.hh \
-  backend/common/WrapperArea.hh \
+  backend/Area.hh \
+  backend/AreaFactory.hh \
+  backend/AreaId.hh \
+  backend/AreaIdAux.hh \
+  backend/Backend.hh \
+  backend/BackgroundArea.hh \
+  backend/BinContainerArea.hh \
+  backend/BoxArea.hh \
+  backend/BoxedLayoutArea.hh \
+  backend/CachedShapedString.hh \
+  backend/ColorArea.hh	\
+  backend/CombinedGlyphArea.hh \
+  backend/ContainerArea.hh \
+  backend/FillerArea.hh \
+  backend/FormattingContext.hh \
+  backend/GlyphArea.hh \
+  backend/GlyphSpec.hh \
+  backend/GlyphStringArea.hh \
+  backend/GlyphWrapperArea.hh \
+  backend/GraphicDevice.hh \
+  backend/HideArea.hh \
+  backend/HorizontalArrayArea.hh \
+  backend/HorizontalFillerArea.hh \
+  backend/HorizontalSpaceArea.hh \
+  backend/IdArea.hh \
+  backend/IgnoreArea.hh	\
+  backend/InkArea.hh \
+  backend/LinearContainerArea.hh \
+  backend/MathFont.hh \
+  backend/MathGraphicDevice.hh \
+  backend/MathShaper.hh \
+  backend/MathTable.hh \
+  backend/MathVariantMap.hh \
+  backend/NullShaper.hh \
+  backend/OverlapArrayArea.hh \
+  backend/RenderingContext.hh \
+  backend/SearchingContext.hh \
+  backend/Shaper.hh \
+  backend/ShaperManager.hh \
+  backend/ShapingContext.hh \
+  backend/ShiftArea.hh \
+  backend/SimpleArea.hh \
+  backend/SpaceShaper.hh \
+  backend/StepArea.hh \
+  backend/VerticalArrayArea.hh \
+  backend/VerticalFillerArea.hh \
+  backend/VerticalSpaceArea.hh \
+  backend/WrapperArea.hh \
   $(NULL)
 
 if HAVE_CAIRO
@@ -611,7 +611,7 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/common \
   -I$(top_srcdir)/src/view \
   -I$(top_srcdir)/src/backend/cairo \
-  -I$(top_srcdir)/src/backend/common \
+  -I$(top_srcdir)/src/backend \
   -I$(top_srcdir)/src/engine \
   -I$(top_srcdir)/src/frontend/common \
   -I$(top_srcdir)/src/frontend/custom_reader \
