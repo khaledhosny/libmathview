@@ -41,7 +41,7 @@ GlyphStringArea::lengthTo(AreaIndex index) const
 {
   assert(index >= 0 && index < content.size());
   CharIndex acc = 0;
-  for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.begin() + index; p++)
+  for (auto p = counters.begin(); p != counters.begin() + index; p++)
     acc += *p;
   return acc;
 }
@@ -52,7 +52,7 @@ GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, CharIndex& i
   const BoundingBox bbox = box();
   index = 0;
   scaled x = x0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+  for (auto p = content.begin(); p != content.end(); p++)
     {
       const BoundingBox pbox((*p)->box().width, bbox.height, bbox.depth);
       if (Rectangle(scaled::zero(), scaled::zero(), pbox).isInside(x, y))
@@ -84,7 +84,7 @@ GlyphStringArea::indexOfPosition(const scaled& x0, const scaled& y, CharIndex& i
 bool
 GlyphStringArea::positionOfIndex(CharIndex index, Point* point, BoundingBox* b) const
 {
-  for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.end(); p++)
+  for (auto p = counters.begin(); p != counters.end(); p++)
     if (index < *p)
       {
 	if (content[p - counters.begin()]->positionOfIndex(index, point, b))

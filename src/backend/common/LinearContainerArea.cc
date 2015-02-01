@@ -39,7 +39,7 @@ LinearContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
     return true;
   else
     {
-      for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+      for (auto p = content.begin(); p != content.end(); p++)
 	{
 	  id.append(p - content.begin(), *p);
 	  if ((*p)->searchByArea(id, area)) return true;
@@ -52,7 +52,7 @@ LinearContainerArea::searchByArea(AreaId& id, const AreaRef& area) const
 bool
 LinearContainerArea::searchByIndex(AreaId& id, CharIndex index) const
 {
-  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+  for (auto p = content.begin(); p != content.end(); p++)
     {
       id.append(p - content.begin(), *p);
       if ((*p)->searchByIndex(id, index)) return true;
@@ -92,7 +92,7 @@ LinearContainerArea::lengthTo(AreaIndex i) const
 {
   assert(i >= 0 && i < content.size());
   CharIndex length = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.begin() + i; p++)
+  for (auto p = content.begin(); p != content.begin() + i; p++)
     length += (*p)->length();
   return length;
 }

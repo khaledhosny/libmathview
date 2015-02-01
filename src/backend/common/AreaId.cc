@@ -136,7 +136,7 @@ void
 AreaId::validateAreas() const
 {
   AreaRef prev = root;
-  PathVector::const_iterator p = pathV.begin() + areaV.size();
+  auto p = pathV.begin() + areaV.size();
   while (p < pathV.end())
     {
       areaV.push_back(prev->node(*p));
@@ -158,7 +158,7 @@ AreaId::validateOrigins() const
   validateAreas();
 
   AreaRef prev = root;
-  PathVector::const_iterator p = pathV.begin() + originV.size();
+  auto p = pathV.begin() + originV.size();
   AreaVector::const_iterator q = areaV.begin() + originV.size();
   while (p < pathV.end())
     {
@@ -185,7 +185,7 @@ AreaId::validateLengths() const
   validateAreas();
 
   AreaRef prev = root;
-  PathVector::const_iterator p = pathV.begin() + lengthV.size();
+  auto p = pathV.begin() + lengthV.size();
   AreaVector::const_iterator q = areaV.begin() + lengthV.size();
   while (p < pathV.end())
     {

@@ -193,8 +193,7 @@ findRightSibling(const SmartPtr<MathMLElement>& elem)
     return 0;
   else if (SmartPtr<MathMLRowElement> row = elem->getParent<MathMLRowElement>())
     {
-      std::vector< SmartPtr<MathMLElement> >::const_iterator p =
-	std::find(row->getContent().begin(), row->getContent().end(), elem);
+      auto p = std::find(row->getContent().begin(), row->getContent().end(), elem);
       assert(p != row->getContent().end());
       if (p + 1 != row->getContent().end()) return findLeftmostChild(*(p + 1));
       else return findRightSibling(row);
@@ -210,8 +209,7 @@ findLeftSibling(const SmartPtr<MathMLElement>& elem)
     return 0;
   else if (SmartPtr<MathMLRowElement> row = elem->getParent<MathMLRowElement>())
     {
-      std::vector< SmartPtr<MathMLElement> >::const_iterator p =
-	std::find(row->getContent().begin(), row->getContent().end(), elem);
+      auto p = std::find(row->getContent().begin(), row->getContent().end(), elem);
       assert(p != row->getContent().end());
       if (p != row->getContent().begin()) return findRightmostChild(*(p - 1));
       else return findLeftSibling(row);

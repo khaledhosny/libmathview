@@ -61,7 +61,7 @@ tokenIdOfString(const String& s)
       initialized = true;
     }
 
-  Map::iterator p = map.find(s);
+  auto p = map.find(s);
   return (p != map.end()) ? (*p).second : T__NOTVALID;
 }
 

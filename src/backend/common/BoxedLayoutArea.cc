@@ -42,7 +42,7 @@ BoxedLayoutArea::searchByArea(AreaId& id, const AreaRef& area) const
     return true;
   else
     {
-      for (std::vector<XYArea>::const_iterator p = content.begin();
+      for (auto p = content.begin();
 	   p != content.end();
 	   p++)
 	{
@@ -60,7 +60,7 @@ BoxedLayoutArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) co
 {
   // See OverlapArrayArea for the reason why the search must be done
   // from the last to the first area
-  for (std::vector<XYArea>::const_reverse_iterator p = content.rbegin();
+  for (auto p = content.rbegin();
        p != content.rend();
        p++)
     {
@@ -74,7 +74,7 @@ BoxedLayoutArea::searchByCoords(AreaId& id, const scaled& x, const scaled& y) co
 bool
 BoxedLayoutArea::searchByIndex(AreaId& id, CharIndex index) const
 {
-  for (std::vector<XYArea>::const_iterator p = content.begin();
+  for (auto p = content.begin();
        p != content.end();
        p++)
     {
@@ -142,7 +142,7 @@ BoxedLayoutArea::lengthTo(AreaIndex i) const
 {
   assert(i >= 0 && i < content.size());
   CharIndex length = 0;
-  for (std::vector<XYArea>::const_iterator p = content.begin(); p != content.begin() + i; p++)
+  for (auto p = content.begin(); p != content.begin() + i; p++)
     length += p->area->length();
   return length;
 }

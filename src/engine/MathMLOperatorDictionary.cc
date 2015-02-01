@@ -90,7 +90,7 @@ MathMLOperatorDictionary::search(const String& opName,
 {
   prefix = infix = postfix = 0;
 
-  Dictionary::const_iterator p = items.find(opName);
+  auto p = items.find(opName);
   if (p != items.end())
     {
       prefix = (*p).second.prefix;

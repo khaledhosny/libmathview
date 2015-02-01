@@ -488,8 +488,8 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
   std::vector<AreaRef> h;
   h.reserve(subScripts.size() + preSubScripts.size() + 1);
 
-  std::vector<AreaRef>::const_reverse_iterator preP = preSubScripts.rbegin();
-  std::vector<AreaRef>::const_reverse_iterator preQ = preSuperScripts.rbegin();
+  auto preP = preSubScripts.rbegin();
+  auto preQ = preSuperScripts.rbegin();
   for (; preP != preSubScripts.rend(); preP++, preQ++)
     {
       std::vector<AreaRef> o;
@@ -505,8 +505,8 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
 
   h.push_back(base);
 
-  std::vector<AreaRef>::const_iterator postP = subScripts.begin();
-  std::vector<AreaRef>::const_iterator postQ = superScripts.begin();
+  auto postP = subScripts.begin();
+  auto postQ = superScripts.begin();
   for (; postP != subScripts.end(); postP++, postQ++)
     {
       std::vector<AreaRef> o;

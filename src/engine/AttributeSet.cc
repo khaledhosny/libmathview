@@ -53,7 +53,7 @@ AttributeSet::set(const SmartPtr<Attribute>& attr)
 #if 1
   // this version should be slightly more efficient
   // see Scott Meyers' book on effective STL
-  Map::iterator lb = content.lower_bound(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()));
+  auto lb = content.lower_bound(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()));
   if (lb != content.end() && !(content.key_comp()(ATTRIBUTE_ID_OF_SIGNATURE(attr->getSignature()), lb->first)))
     {
       if (!attr->equal(lb->second))
@@ -88,14 +88,14 @@ AttributeSet::set(const SmartPtr<Attribute>& attr)
 SmartPtr<Attribute>
 AttributeSet::get(const AttributeId& id) const
 {
-  Map::const_iterator p = content.find(id);
+  auto p = content.find(id);
   return (p != content.end()) ? p->second : 0;
 }
 
 bool
 AttributeSet::remove(const AttributeId& id)
 {
-  Map::iterator p = content.find(id);
+  auto p = content.find(id);
   if (p != content.end())
     {
       content.erase(p);
