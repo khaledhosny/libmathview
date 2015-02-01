@@ -62,17 +62,15 @@ MathMLRowElement::format(FormattingContext& ctxt)
       erow.reserve(getSize());
       std::vector<AreaRef> row;
       row.reserve(getSize());
-      for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
-	   elem != content.end();
-	   elem++)
-	if (*elem)
+      for (const auto & elem : content)
+	if (elem)
 	  {
-	    SmartPtr<MathMLOperatorElement> coreOp = (*elem)->getCoreOperatorTop();
+	    SmartPtr<MathMLOperatorElement> coreOp = elem->getCoreOperatorTop();
 	    /* if we have an operator we must force reformatting cause we want to
 	     * get the minimum size operator
 	     */
-	    if (coreOp) (*elem)->setDirtyLayout();
-	    if (AreaRef elemArea = (*elem)->format(ctxt))
+	    if (coreOp) elem->setDirtyLayout();
+	    if (AreaRef elemArea = elem->format(ctxt))
 	      {
 		row.push_back(elemArea);
 		// WARNING: we can check for IsStretchy only *after* format because it is
@@ -134,12 +132,10 @@ MathMLRowElement::GetOperatorForm(const SmartPtr<MathMLElement>& eOp) const
 
   unsigned rowLength = 0;
   unsigned position  = 0;
-  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    if (*elem && !(*elem)->IsSpaceLike())
+  for (const auto & elem : content)
+    if (elem && !elem->IsSpaceLike())
       {
-	if (*elem == eOp) position = rowLength;
+	if (elem == eOp) position = rowLength;
 	rowLength++;
       }
     
@@ -157,12 +153,10 @@ MathMLRowElement::getCoreOperator()
 {
   SmartPtr<MathMLElement> candidate = 0;
 
-  for (std::vector< SmartPtr<MathMLElement> >::const_iterator elem = content.begin();
-       elem != content.end();
-       elem++)
-    if ((*elem) && !(*elem)->IsSpaceLike())
+  for (const auto & elem : content)
+    if (elem && !elem->IsSpaceLike())
       {
-      if (!candidate) candidate = *elem;
+      if (!candidate) candidate = elem;
       else return 0;
       }
 

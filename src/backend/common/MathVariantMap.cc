@@ -73,6 +73,6 @@ mapMathVariant(MathVariant variant, UCS4String& str)
   assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
   mapType m = map[variant - NORMAL_VARIANT];
 
-  for (UCS4String::iterator p = str.begin(); p != str.end(); p++)
-    *p = m(*p);
+  for (auto & elem : str)
+    elem = m(elem);
 }

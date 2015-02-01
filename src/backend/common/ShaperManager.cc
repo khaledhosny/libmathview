@@ -41,8 +41,8 @@ ShaperManager::ShaperManager(void)
   , errorShaper(0)
 {
   errorShaper = NullShaper::create();
-  for (unsigned i = 0; i < MAX_SHAPERS; i++)
-    shaper[i] = 0;
+  for (auto & elem : shaper)
+    elem = 0;
 }
 
 ShaperManager::~ShaperManager()
@@ -92,8 +92,8 @@ ShaperManager::shape(const FormattingContext& ctxt,
 
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
-  for (unsigned i = 0; i < source.length(); i++)
-    spec.push_back(map(source[i]));
+  for (auto & elem : source)
+    spec.push_back(map(elem));
   ShapingContext context(ctxt, source, spec);
   return shapeAux(context);
 }
@@ -114,8 +114,8 @@ ShaperManager::shapeStretchy(const FormattingContext& ctxt,
 
   std::vector<GlyphSpec> spec;
   spec.reserve(source.length());
-  for (unsigned i = 0; i < source.length(); i++)
-    spec.push_back(mapStretchy(source[i]));
+  for (auto & elem : source)
+    spec.push_back(mapStretchy(elem));
   ShapingContext context(ctxt, source, spec, vSpan, hSpan);
   return shapeAux(context);
 }

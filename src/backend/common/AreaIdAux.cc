@@ -27,10 +27,8 @@
 std::ostream&
 operator<<(std::ostream& os, const AreaId& box)
 {
-  for (AreaId::PathVector::const_iterator p = box.getPath().begin();
-       p != box.getPath().end();
-       p++)
-    os << "/" << (*p);
+  for (const auto & elem : box.getPath())
+    os << "/" << elem;
   return os;
 }
 

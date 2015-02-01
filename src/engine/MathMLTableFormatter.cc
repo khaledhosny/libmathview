@@ -404,17 +404,17 @@ MathMLTableFormatter::computeMinimumTableWidthT()
   sumScale = 0;
 
   scaled max = 0;                                                                                            
-  for (unsigned j = 0; j < columns.size(); j++)
+  for (auto & elem : columns)
     {
-      if (columns[j].isContentColumn())
+      if (elem.isContentColumn())
 	{
 	  numCol++;
-	  max = std::max(max, columns[j].getTempWidth());
+	  max = std::max(max, elem.getTempWidth());
 	}
-      else if (columns[j].getSpec() == Column::FIX)
-	sumFix += columns[j].getFixWidth();
-      else if (columns[j].getSpec() == Column::SCALE)
-	sumScale += columns[j].getScaleWidth();
+      else if (elem.getSpec() == Column::FIX)
+	sumFix += elem.getFixWidth();
+      else if (elem.getSpec() == Column::SCALE)
+	sumScale += elem.getScaleWidth();
     }	
     
   return std::max(numCol * max + sumFix, ((numCol * max) + sumFix) / (1 - sumScale));
@@ -434,13 +434,13 @@ MathMLTableFormatter::assignTableWidthT(const scaled& tableWidth)
   const scaled assignedWidth = sumFix + tableWidth * sumScale;
   const scaled availWidth = std::max(scaled::zero(), tableWidth - assignedWidth);
 	
-  for (unsigned j = 0; j < columns.size(); j++)
-    if (columns[j].isContentColumn())
-      columns[j].setWidth(availWidth / numCol);
-    else if (columns[j].getSpec() == Column::FIX)
-      columns[j].setWidth(columns[j].getFixWidth());
-    else if (columns[j].getSpec() == Column::SCALE)
-      columns[j].setWidth(tableWidth * columns[j].getScaleWidth());
+  for (auto & elem : columns)
+    if (elem.isContentColumn())
+      elem.setWidth(availWidth / numCol);
+    else if (elem.getSpec() == Column::FIX)
+      elem.setWidth(elem.getFixWidth());
+    else if (elem.getSpec() == Column::SCALE)
+      elem.setWidth(tableWidth * elem.getScaleWidth());
 }
 
 scaled
@@ -453,22 +453,22 @@ MathMLTableFormatter::computeMinimumTableWidthF()
 
   scaled max = 0;
 	
-  for (unsigned j = 0; j < columns.size(); j++)
-    if (columns[j].isContentColumn() && columns[j].getSpec() == Column::SCALE)
-      max = std::max(max, columns[j].getTempWidth() / columns[j].getScaleWidth());
+  for (auto & elem : columns)
+    if (elem.isContentColumn() && elem.getSpec() == Column::SCALE)
+      max = std::max(max, elem.getTempWidth() / elem.getScaleWidth());
 
-  for (unsigned j = 0; j < columns.size(); j++)
-    if (columns[j].isContentColumn()
-	&& columns[j].getSpec() != Column::FIX
-	&& columns[j].getSpec() != Column::SCALE)
+  for (auto & elem : columns)
+    if (elem.isContentColumn()
+	&& elem.getSpec() != Column::FIX
+	&& elem.getSpec() != Column::SCALE)
       {
-	sumCont += columns[j].getTempWidth();
+	sumCont += elem.getTempWidth();
 	numCol++;
       }
-    else if (columns[j].getSpec() == Column::FIX)
-      sumFix += columns[j].getFixWidth();
-    else if (columns[j].getSpec() == Column::SCALE)
-      sumScale += columns[j].getScaleWidth();
+    else if (elem.getSpec() == Column::FIX)
+      sumFix += elem.getFixWidth();
+    else if (elem.getSpec() == Column::SCALE)
+      sumScale += elem.getScaleWidth();
 
   return std::max(max, std::max(sumCont + sumFix, (sumCont + sumFix) / (1 - sumScale)));
 }
@@ -486,15 +486,15 @@ MathMLTableFormatter::assignTableWidthF(const scaled& tableWidth)
 	  << "extraWidth = " << extraWidth << std::endl;
 #endif
 
-  for (unsigned j = 0; j < columns.size(); j++)
-    if ((columns[j].isContentColumn()
-	 && columns[j].getSpec() != Column::FIX
-	 && columns[j].getSpec() != Column::SCALE))
-      columns[j].setWidth(columns[j].getTempWidth() + (extraWidth / numCol));
-    else if (columns[j].getSpec() == Column::FIX)
-      columns[j].setWidth(columns[j].getFixWidth());
-    else if (columns[j].getSpec() == Column::SCALE)
-      columns[j].setWidth(tableWidth * columns[j].getScaleWidth());
+  for (auto & elem : columns)
+    if ((elem.isContentColumn()
+	 && elem.getSpec() != Column::FIX
+	 && elem.getSpec() != Column::SCALE))
+      elem.setWidth(elem.getTempWidth() + (extraWidth / numCol));
+    else if (elem.getSpec() == Column::FIX)
+      elem.setWidth(elem.getFixWidth());
+    else if (elem.getSpec() == Column::SCALE)
+      elem.setWidth(tableWidth * elem.getScaleWidth());
 }
 
 void
@@ -593,40 +593,40 @@ MathMLTableFormatter::computeTableHeightDepthT()
   scaled sumContHD = 0;
   scaled max = 0;
 
-  for (unsigned i = 0; i < rows.size(); i++)
+  for (auto & elem : rows)
     {
-      if (rows[i].isContentRow())
+      if (elem.isContentRow())
 	{
 	  numRows++;
-	  max = std::max(max, rows[i].getTempHeight() + rows[i].getTempDepth());
-	  sumContHD += rows[i].getTempHeight() + rows[i].getTempDepth();
+	  max = std::max(max, elem.getTempHeight() + elem.getTempDepth());
+	  sumContHD += elem.getTempHeight() + elem.getTempDepth();
 	}
-      else if (rows[i].getSpec() == Row::FIX)
-	sumFixHD += rows[i].getFixHeight();
-      else if (rows[i].getSpec() == Row::SCALE)
-	sumScale += rows[i].getScaleHeight();
+      else if (elem.getSpec() == Row::FIX)
+	sumFixHD += elem.getFixHeight();
+      else if (elem.getSpec() == Row::SCALE)
+	sumScale += elem.getScaleHeight();
     }
 
   const scaled tableHeightDepth = std::max(numRows * max + sumFixHD, ((numRows * max) + sumFixHD) / (1 - sumScale));
   const scaled assignedHeightDepth = sumFixHD + tableHeightDepth * sumScale;
   const scaled availHeightDepth = std::max(scaled::zero(), tableHeightDepth - assignedHeightDepth);
 	
-  for (unsigned i = 0; i < rows.size(); i++)
-    if (rows[i].isContentRow())
+  for (auto & elem : rows)
+    if (elem.isContentRow())
       {
-	rows[i].setHeight(rows[i].getTempHeight());	
-	rows[i].setDepth(availHeightDepth / numRows - rows[i].getHeight());
+	elem.setHeight(elem.getTempHeight());	
+	elem.setDepth(availHeightDepth / numRows - elem.getHeight());
 	//std::cerr << "for row" << i << " HD = " << rows[i].getHeight() + rows[i].getDepth() << std::endl;
       }
-    else if (rows[i].getSpec() == Row::FIX)
+    else if (elem.getSpec() == Row::FIX)
       {
-	rows[i].setHeight(rows[i].getFixHeight());
-	rows[i].setDepth(0);
+	elem.setHeight(elem.getFixHeight());
+	elem.setDepth(0);
       }
-    else if (rows[i].getSpec() == Row::SCALE)
+    else if (elem.getSpec() == Row::SCALE)
       {
-	rows[i].setHeight(tableHeightDepth * rows[i].getScaleHeight());
-	rows[i].setDepth(0);
+	elem.setHeight(tableHeightDepth * elem.getScaleHeight());
+	elem.setDepth(0);
       }
 
   return tableHeightDepth;
@@ -638,31 +638,31 @@ MathMLTableFormatter::computeTableHeightDepthF()
   scaled sumContFix = 0;
   float sumScale = 0;
 
-  for (unsigned i = 0; i < rows.size(); i++)
-    if (rows[i].isContentRow() || rows[i].getSpec() == Row::FIX)
+  for (auto & elem : rows)
+    if (elem.isContentRow() || elem.getSpec() == Row::FIX)
       {
-	sumContFix += rows[i].getTempHeight() + rows[i].getTempDepth();
+	sumContFix += elem.getTempHeight() + elem.getTempDepth();
       }
-    else if (rows[i].getSpec() == Row::SCALE)
-      sumScale += rows[i].getScaleHeight();         
+    else if (elem.getSpec() == Row::SCALE)
+      sumScale += elem.getScaleHeight();         
 
   const scaled tableHeightDepth = std::max(sumContFix, sumContFix / (1 - sumScale));
 
-  for (unsigned i = 0; i < rows.size(); i++)
-    if (rows[i].isContentRow())
+  for (auto & elem : rows)
+    if (elem.isContentRow())
       {
-	rows[i].setHeight(rows[i].getTempHeight());
-	rows[i].setDepth(rows[i].getTempDepth());
+	elem.setHeight(elem.getTempHeight());
+	elem.setDepth(elem.getTempDepth());
       }
-    else if (rows[i].getSpec() == Row::FIX)
+    else if (elem.getSpec() == Row::FIX)
       {
-	rows[i].setHeight(rows[i].getFixHeight());
-	rows[i].setDepth(0);
+	elem.setHeight(elem.getFixHeight());
+	elem.setDepth(0);
       }
-    else if (rows[i].getSpec() == Row::SCALE)
+    else if (elem.getSpec() == Row::SCALE)
       {
-	rows[i].setHeight(tableHeightDepth * rows[i].getScaleHeight());
-	rows[i].setDepth(0);
+	elem.setHeight(tableHeightDepth * elem.getScaleHeight());
+	elem.setDepth(0);
       }
 
   return tableHeightDepth;
@@ -742,18 +742,18 @@ void
 MathMLTableFormatter::setDisplacements()
 {
   scaled v = getHeight();
-  for (unsigned i = 0; i < rows.size(); i++)
+  for (auto & elem : rows)
     {
-      rows[i].setDisplacement(v - rows[i].getHeight());
-      v -= rows[i].getVerticalExtent();
+      elem.setDisplacement(v - elem.getHeight());
+      v -= elem.getVerticalExtent();
       //std::cerr << "ROW[" << i << "].displacement = " << rows[i].getDisplacement() << std::endl;
     }
 
   scaled h = scaled::zero();
-  for (unsigned j = 0; j < columns.size(); j++)
+  for (auto & elem : columns)
     {
-      columns[j].setDisplacement(h);
-      h += columns[j].getWidth();
+      elem.setDisplacement(h);
+      h += elem.getWidth();
       //std::cerr << "COL[" << j << "].displacement = " << columns[j].getDisplacement() << std::endl;
     }
 }

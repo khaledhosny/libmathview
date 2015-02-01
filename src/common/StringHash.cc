@@ -28,9 +28,9 @@ size_t
 StringHash::operator()(const String& s) const
 {
   size_t h = 0;
-  for (String::const_iterator i = s.begin(); i != s.end(); i++)
+  for (const auto & elem : s)
     {
-      h = (h << 4) + *i;
+      h = (h << 4) + elem;
       if (size_t g = h & 0xf0000000)
 	{
 	  h = h ^ (g >> 24);

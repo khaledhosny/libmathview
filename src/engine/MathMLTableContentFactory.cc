@@ -94,8 +94,8 @@ MathMLTableContentFactory::getContent(std::vector<SmartPtr<MathMLTableCellElemen
 {
   numRows = rows.size();
   numColumns = 0;
-  for (std::vector<Row>::const_iterator p = rows.begin(); p != rows.end(); p++)
-    numColumns = std::max(numColumns, p->getSize());
+  for (const auto & elem : rows)
+    numColumns = std::max(numColumns, elem.getSize());
 
   cells.clear();
   labels.clear();
@@ -168,8 +168,6 @@ MathMLTableContentFactory::getSize(unsigned& nRows, unsigned& nColumns) const
 {
   nRows = rows.size();
   nColumns = 0;
-  for (std::vector<Row>::const_iterator p = rows.begin();
-       p != rows.end();
-       p++)
-    nColumns = std::max(nColumns, p->getSize());
+  for (const auto & elem : rows)
+    nColumns = std::max(nColumns, elem.getSize());
 }

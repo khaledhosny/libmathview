@@ -34,11 +34,9 @@ OverlapArrayArea::clone(const std::vector<AreaRef>& content) const
 void
 OverlapArrayArea::flattenAux(std::vector<AreaRef>& dest, const std::vector<AreaRef>& source)
 {
-  for (std::vector<AreaRef>::const_iterator p = source.begin();
-       p != source.end();
-       p++)
+  for (const auto & elem : source)
     {
-      AreaRef flattened = (*p)->flatten();
+      AreaRef flattened = elem->flatten();
       if (SmartPtr<const OverlapArrayArea> harea = smart_cast<const OverlapArrayArea>(flattened))
 	flattenAux(dest, harea->content);
       else
@@ -61,10 +59,8 @@ BoundingBox
 OverlapArrayArea::box() const
 {
   BoundingBox bbox;
-  for (std::vector< AreaRef >::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    bbox.overlap((*p)->box());
+  for (const auto & elem : content)
+    bbox.overlap(elem->box());
   return bbox;
 }
 
@@ -72,12 +68,10 @@ void
 OverlapArrayArea::strength(int& w, int& h, int& d) const
 {
   w = h = d = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
       int pw, ph, pd;
-      (*p)->strength(pw, ph, pd);
+      elem->strength(pw, ph, pd);
       w = std::max(w, pw);
       h = std::max(h, ph);
       d = std::max(d, pd);
@@ -89,10 +83,8 @@ OverlapArrayArea::fit(const scaled& width, const scaled& height, const scaled& d
 {
   std::vector<AreaRef> newContent;
   newContent.reserve(content.size());
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    newContent.push_back((*p)->fit(width, height, depth));
+  for (const auto & elem : content)
+    newContent.push_back(elem->fit(width, height, depth));
   if (newContent == content)
     return this;
   else

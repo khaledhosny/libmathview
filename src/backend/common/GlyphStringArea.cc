@@ -31,8 +31,8 @@ GlyphStringArea::length() const
 {
   CharIndex l = 0;
   // FIXME: this can be rewritten with an accumulator
-  for (std::vector<CharIndex>::const_iterator p = counters.begin(); p != counters.end(); p++)
-    l += *p;
+  for (const auto & elem : counters)
+    l += elem;
   return l;
 }
 

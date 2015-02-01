@@ -31,10 +31,8 @@
 void
 BoxedLayoutArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
 {
-  for (std::vector<XYArea>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    p->area->render(context, x + p->dx, y + p->dy);
+  for (const auto & elem : content)
+    elem.area->render(context, x + elem.dx, y + elem.dy);
 }
 
 bool
@@ -112,12 +110,10 @@ BoxedLayoutArea::fit(const scaled& width, const scaled& height, const scaled& de
 {
   std::vector<XYArea> newContent;
   newContent.reserve(content.size());
-  for (std::vector<XYArea>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
-      BoundingBox pbox = p->area->box();
-      newContent.push_back(XYArea(p->dx, p->dy, p->area->fit(pbox.width, pbox.height, pbox.depth)));
+      BoundingBox pbox = elem.area->box();
+      newContent.push_back(XYArea(elem.dx, elem.dy, elem.area->fit(pbox.width, pbox.height, pbox.depth)));
     }
 
   if (newContent == content)

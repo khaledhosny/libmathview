@@ -465,15 +465,15 @@ MathGraphicDevice::multiScripts(const FormattingContext& context,
   BoundingBox subScriptsBox;
   BoundingBox superScriptsBox;
 
-  for (std::vector<AreaRef>::const_iterator p = subScripts.begin(); p != subScripts.end(); p++)
-    if (*p) subScriptsBox.append((*p)->box());
-  for (std::vector<AreaRef>::const_iterator p = preSubScripts.begin(); p != preSubScripts.end(); p++)
-    if (*p) subScriptsBox.append((*p)->box());
+  for (const auto & subScript : subScripts)
+    if (subScript) subScriptsBox.append(subScript->box());
+  for (const auto & preSubScript : preSubScripts)
+    if (preSubScript) subScriptsBox.append(preSubScript->box());
 
-  for (std::vector<AreaRef>::const_iterator p = superScripts.begin(); p != superScripts.end(); p++)
-    if (*p) superScriptsBox.append((*p)->box());
-  for (std::vector<AreaRef>::const_iterator p = preSuperScripts.begin(); p != preSuperScripts.end(); p++)
-    if (*p) superScriptsBox.append((*p)->box());
+  for (const auto & superScript : superScripts)
+    if (superScript) superScriptsBox.append(superScript->box());
+  for (const auto & preSuperScript : preSuperScripts)
+    if (preSuperScript) superScriptsBox.append(preSuperScript->box());
 
   scaled subScriptShift;
   scaled superScriptShift;

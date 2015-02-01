@@ -100,10 +100,8 @@ MathMLTokenElement::formatAux(FormattingContext& ctxt)
   std::transform(content.begin(), content.end(), std::back_inserter(c),
 		 std::bind2nd(FormatAdapter<FormattingContext,MathMLTextNode,AreaRef>(), &ctxt));
 #else
-  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    c.push_back((*p)->format(ctxt));
+  for (const auto & elem : content)
+    c.push_back(elem->format(ctxt));
 #endif
 
   AreaRef res;
@@ -178,12 +176,10 @@ String
 MathMLTokenElement::GetRawContent() const
 {
   String res;
-  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = content.begin();
-       i != content.end();
-       i++)
+  for (const auto & elem : content)
     {
-      assert(*i);
-      res += (*i)->GetRawContent();
+      assert(elem);
+      res += elem->GetRawContent();
     }
 
   return res;
@@ -194,12 +190,10 @@ MathMLTokenElement::GetLogicalContentLength() const
 {
   unsigned len = 0;
 
-  for (std::vector< SmartPtr<MathMLTextNode> >::const_iterator i = content.begin();
-       i != content.end();
-       i++)
+  for (const auto & elem : content)
     {
-      assert(*i);
-      len += (*i)->GetLogicalContentLength();
+      assert(elem);
+      len += elem->GetLogicalContentLength();
     }
 
   return len;

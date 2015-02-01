@@ -75,9 +75,9 @@ deleteSpaces(const String& s)
 {
   String res;
   res.reserve(s.length());
-  for (String::const_iterator i = s.begin(); i != s.end(); i++)
-    if (!isXmlSpace(*i))
-      res.push_back(*i);
+  for (const auto & elem : s)
+    if (!isXmlSpace(elem))
+      res.push_back(elem);
   return res;
 }
 
@@ -86,8 +86,8 @@ toLowerCase(const String& s)
 {
   String res;
   res.reserve(s.length());
-  for (String::const_iterator i = s.begin(); i != s.end(); i++)
-    res.push_back(tolower(*i));
+  for (const auto & elem : s)
+    res.push_back(tolower(elem));
   return res;
 }
 

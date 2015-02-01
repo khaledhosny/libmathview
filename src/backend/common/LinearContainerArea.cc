@@ -28,10 +28,8 @@
 void
 LinearContainerArea::render(class RenderingContext& context, const scaled& x, const scaled& y) const
 {
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    (*p)->render(context, x, y);
+  for (const auto & elem : content)
+    elem->render(context, x, y);
 }
 
 bool
@@ -68,10 +66,8 @@ scaled
 LinearContainerArea::leftEdge(void) const
 {
   scaled edge = scaled::max();
-  for (std::vector< AreaRef >::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    edge = std::min(edge, (*p)->leftEdge());
+  for (const auto & elem : content)
+    edge = std::min(edge, elem->leftEdge());
   return edge;
 }
 
@@ -79,10 +75,8 @@ scaled
 LinearContainerArea::rightEdge(void) const
 {
   scaled edge = scaled::min();
-  for (std::vector< AreaRef >::const_iterator p = content.begin();
-       p != content.end();
-       p++)
-    edge = std::max(edge, (*p)->rightEdge());
+  for (const auto & elem : content)
+    edge = std::max(edge, elem->rightEdge());
   return edge;
 }
 
@@ -107,11 +101,11 @@ SmartPtr<const GlyphStringArea>
 LinearContainerArea::getGlyphStringArea() const
 {
   SmartPtr<const GlyphStringArea> ptr = NULL;
-  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+  for (const auto & elem : content)
   {
-    if (!ptr && (((*p)->getGlyphStringArea())))  
-      ptr = (*p)->getGlyphStringArea(); 	
-    else if (ptr && (((*p)->getGlyphStringArea())))
+    if (!ptr && elem->getGlyphStringArea())
+      ptr = elem->getGlyphStringArea();
+    else if (ptr && elem->getGlyphStringArea())
       { ptr = NULL;
 	return ptr;
       }
@@ -124,11 +118,11 @@ SmartPtr<const GlyphArea>
 LinearContainerArea::getGlyphArea() const
 {
   SmartPtr<const GlyphArea> ptr = NULL;
-  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
+  for (const auto & elem : content)
   {
-    if (!ptr && (((*p)->getGlyphArea())))
-      ptr = (*p)->getGlyphArea();
-    else if (ptr && (((*p)->getGlyphArea()))) 
+    if (!ptr && elem->getGlyphArea())
+      ptr = elem->getGlyphArea();
+    else if (ptr && elem->getGlyphArea())
       { ptr = NULL;
 	return ptr;
       }

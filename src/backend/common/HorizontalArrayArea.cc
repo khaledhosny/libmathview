@@ -35,11 +35,9 @@ HorizontalArrayArea::create(const std::vector<AreaRef>& children)
 void
 HorizontalArrayArea::flattenAux(std::vector<AreaRef>& dest, const std::vector<AreaRef>& source)
 {
-  for (std::vector<AreaRef>::const_iterator p = source.begin();
-       p != source.end();
-       p++)
+  for (const auto & elem : source)
     {
-      AreaRef flattened = (*p)->flatten();
+      AreaRef flattened = elem->flatten();
       if (SmartPtr<const HorizontalArrayArea> harea = smart_cast<const HorizontalArrayArea>(flattened))
 	flattenAux(dest, harea->content);
       else
@@ -63,12 +61,10 @@ HorizontalArrayArea::box() const
 {
   BoundingBox bbox;
   scaled step = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
-      bbox.append((*p)->box());
-      const scaled childStep = (*p)->getStep();
+      bbox.append(elem->box());
+      const scaled childStep = elem->getStep();
       bbox.height -= childStep;
       bbox.depth += childStep;
       step += childStep;
@@ -85,13 +81,11 @@ HorizontalArrayArea::render(class RenderingContext& context, const scaled& x0, c
 {
   scaled x = x0;
   scaled y = y0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
-      (*p)->render(context, x, y);
-      x += (*p)->box().horizontalExtent();
-      y += (*p)->getStep();
+      elem->render(context, x, y);
+      x += elem->box().horizontalExtent();
+      y += elem->getStep();
     }
 }
 
@@ -117,13 +111,11 @@ HorizontalArrayArea::leftEdge() const
 {
   scaled edge = scaled::max();
   scaled d = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
-      scaled pedge = (*p)->leftEdge();
+      scaled pedge = elem->leftEdge();
       if (pedge < scaled::max()) edge = std::min(edge, d + pedge);
-      d += (*p)->box().horizontalExtent();
+      d += elem->box().horizontalExtent();
     }
   return edge;
 }
@@ -133,13 +125,11 @@ HorizontalArrayArea::rightEdge() const
 {
   scaled edge = scaled::min();
   scaled d = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
-      scaled pedge = (*p)->rightEdge();
+      scaled pedge = elem->rightEdge();
       if (pedge > scaled::min()) edge = std::max(edge, d + pedge);
-      d += (*p)->box().horizontalExtent();
+      d += elem->box().horizontalExtent();
     }
   return edge;
 }
@@ -174,14 +164,12 @@ void
 HorizontalArrayArea::strength(int& w, int& h, int& d) const
 {
   w = h = d = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
       int pw;
       int ph;
       int pd;
-      (*p)->strength(pw, ph, pd);
+      elem->strength(pw, ph, pd);
       w += pw;
       h = std::max(h, ph);
       d = std::max(d, pd);
@@ -197,20 +185,18 @@ HorizontalArrayArea::fit(const scaled& width, const scaled& height, const scaled
 
   std::vector<AreaRef> newContent;
   newContent.reserve(content.size());
-  for (std::vector<AreaRef>::const_iterator p = content.begin();
-       p != content.end();
-       p++)
+  for (const auto & elem : content)
     {
       int pw, ph, pd;
-      (*p)->strength(pw, ph, pd);
-      BoundingBox pbox = (*p)->box();
+      elem->strength(pw, ph, pd);
+      BoundingBox pbox = elem->box();
 
       if (sw == 0 || pw == 0)
-	newContent.push_back((*p)->fit(pbox.width, height, depth));
+	newContent.push_back(elem->fit(pbox.width, height, depth));
       else
 	{
 	  scaled pwidth = (std::max(pbox.width, width - box0.width) * pw) / sw;
-	  newContent.push_back((*p)->fit(pwidth, height, depth));
+	  newContent.push_back(elem->fit(pwidth, height, depth));
 	}
     }
 
@@ -235,7 +221,7 @@ scaled
 HorizontalArrayArea::getStep() const
 {
   scaled step = 0;
-  for (std::vector<AreaRef>::const_iterator p = content.begin(); p != content.end(); p++)
-    step += (*p)->getStep();
+  for (const auto & elem : content)
+    step += elem->getStep();
   return step;
 }
