@@ -64,37 +64,6 @@ LinearContainerArea::searchByIndex(AreaId& id, CharIndex index) const
   return false;
 }
 
-#if 0
-AreaRef
-LinearContainerArea::replace(const ReplacementContext& context) const
-{
-  if (AreaRef newArea = context.get())
-    return newArea;
-  else
-    {
-      std::vector<AreaRef> newContent;
-      newContent.reserve(content.size());
-      for (std::vector<AreaRef>::const_iterator p = content.begin();
-	   p != content.end();
-	   p++)
-	{
-	  ReplacementContext newContext(context, p - content.begin());
-	  newContent.push_back(content[p - content.begin()]->replace(newContext));
-	}
-      if (content == newContent)
-	return this;
-      else
-	{
-	  SmartPtr<Area> thisCloned = this->clone();
-	  SmartPtr<LinearContainerArea> newArea = smart_cast<LinearContainerArea>(thisCloned);
-	  assert(newArea);
-	  newArea->content = newContent;
-	  return newArea;
-	}
-    }
-}
-#endif
-
 scaled
 LinearContainerArea::leftEdge(void) const
 {

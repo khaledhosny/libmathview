@@ -33,7 +33,6 @@ protected:
 
 public:
   virtual AreaRef fit(const scaled&, const scaled&, const scaled&) const;
-  //virtual AreaRef replace(const class ReplacementContext&) const;
 
   virtual void      render(class RenderingContext&, const scaled&, const scaled&) const;
   virtual void      strength(int&, int&, int&) const;

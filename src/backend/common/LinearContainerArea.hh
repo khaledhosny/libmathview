@@ -42,7 +42,6 @@ public:
   virtual AreaIndex size(void) const { return content.size(); }
   virtual AreaRef node(AreaIndex) const;
   virtual CharIndex lengthTo(AreaIndex) const;
-  //virtual AreaRef replace(const class ReplacementContext&) const;
 
   virtual bool searchByArea(class AreaId&, const AreaRef&) const;
   virtual bool searchByIndex(class AreaId&, CharIndex) const;
