@@ -61,7 +61,6 @@ def dumpOperators(tree, fd, header):
             fd.write('  const char* %s;\n' % attribute)
         fd.write('} OperatorDictionaryEntry;\n')
     else:
-        fd.write('int len = %d;\n' % len(operators.keys()))
         fd.write('static const OperatorDictionaryEntry dictionary[] = {\n');
         fd.write(text)
         fd.write('};\n')

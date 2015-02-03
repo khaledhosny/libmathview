@@ -33,9 +33,8 @@
 MathMLOperatorDictionary::MathMLOperatorDictionary()
 {
 #include "operatorDictionary.cc"
-  for (int i = 0; i < len; i++)
+  for (auto & entry : dictionary)
     {
-      OperatorDictionaryEntry entry = dictionary[i];
       String form(entry.form);
       String opName(entry.name);
       FormDefaults& formDefaults = items[opName];
