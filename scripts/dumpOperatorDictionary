@@ -27,7 +27,9 @@ def getOperators(tree):
                 d = int(d)
                 c = unichr(d)
                 value += "".join([r"\x%02x" %(ord(b)) for b in c.encode("utf8")])
-            operators[value] = operator
+            if not value in operators:
+                operators[value] = []
+            operators[value].append(operator)
 
     return operators
 
@@ -35,24 +37,24 @@ def dumpOperators(tree, fd, header):
     operators = getOperators(tree)
     attributes = set()
     for key in sorted(operators.keys()):
-        operator = operators[key]
-        for attribute in operator.keys():
-            attributes.add(attribute)
+        for operator in operators[key]:
+            for attribute in operator.keys():
+                attributes.add(attribute)
 
     text = ""
     for key in sorted(operators.keys()):
-        operator = operators[key]
-        text += '  { "%s"' % key
-        for attribute in sorted(attributes):
-            value = operator.get(attribute, None)
-            if value is not None:
-                if attribute in ("lspace", "rspace"):
-                    value = space_map[int(value)]
-                text += ', "%s"' % value
-            else:
-                text += ', NULL'
-        text += ' },'
-        text += '\n'
+        for operator in operators[key]:
+            text += '  { "%s"' % key
+            for attribute in sorted(attributes):
+                value = operator.get(attribute, None)
+                if value is not None:
+                    if attribute in ("lspace", "rspace"):
+                        value = space_map[int(value)]
+                    text += ', "%s"' % value
+                else:
+                    text += ', NULL'
+            text += ' },'
+            text += '\n'
 
     if header:
         fd.write('typedef struct {\n')
