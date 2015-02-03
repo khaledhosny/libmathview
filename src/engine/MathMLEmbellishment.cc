@@ -26,9 +26,19 @@
 
 #include "AreaFactory.hh"
 #include "MathMLEmbellishment.hh"
+#include "MathMLFractionElement.hh"
 #include "MathMLOperatorElement.hh"
 #include "MathGraphicDevice.hh"
 #include "FormattingContext.hh"
+#include "traverseAux.hh"
+
+inline bool
+isOperator(const SmartPtr<MathMLElement>& elem)
+{
+  if (elem && elem->getCoreOperatorTop())
+    return true;
+  return false;
+}
 
 AreaRef
 MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
@@ -50,6 +60,19 @@ MathMLEmbellishment::formatEmbellishment(const SmartPtr<MathMLElement>& elem,
       // assert(!top->dirtyLayout());
       leftPadding = top->getLeftPadding();
       rightPadding = top->getRightPadding();
+    }
+  else if (is_a<MathMLFractionElement>(elem) && context.getScriptLevel() <= 0)
+    {
+      // TeX math spacing rule (The TeXBook, p. 181) adds differnt spaces
+      // between fractions (Inner in the table) and other nodes, but we ignore
+      // operators here as they should be handled by the operator dictionary
+      // above. The rest of the rules just add thin space in display and text
+      // styles, so that is what we do here.
+      scaled thinspace = context.MGD()->evaluate(context, Length(1, Length::THIN_SPACE), scaled::zero());
+      if (!isOperator(findLeftSibling(elem)))
+        leftPadding = thinspace;
+      if (!isOperator(findRightSibling(elem)))
+        rightPadding = thinspace;
     }
 
   if (leftPadding != scaled::zero() || rightPadding != scaled::zero())
