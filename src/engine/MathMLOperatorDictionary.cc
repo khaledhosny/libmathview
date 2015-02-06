@@ -32,7 +32,10 @@
 
 MathMLOperatorDictionary::MathMLOperatorDictionary()
 {
+  static const OperatorDictionaryEntry dictionary[] = {
 #include "operatorDictionary.cc"
+  };
+
   for (auto & entry : dictionary)
     {
       String form(entry.form);

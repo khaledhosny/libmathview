@@ -61,11 +61,10 @@ def dumpOperators(tree, fd, header):
         fd.write('  const char* name;\n')
         for attribute in sorted(attributes):
             fd.write('  const char* %s;\n' % attribute)
-        fd.write('} OperatorDictionaryEntry;\n')
+        fd.write('} OperatorDictionaryEntry;')
     else:
-        fd.write('static const OperatorDictionaryEntry dictionary[] = {\n');
         fd.write(text)
-        fd.write('};\n')
+    fd.write("\n")
 
 if __name__ == "__main__":
     doc = etree.parse(sys.argv[1])
