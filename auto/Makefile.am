@@ -19,7 +19,6 @@ EXTRA_DIST = \
 DISTCLEANFILES = \
   entitiesTable.inc \
   operatorDictionary.cc \
-  operatorDictionary.hh \
   $(NULL)
 
 MAINTAINERCLEANFILES = token.dec token.def
@@ -34,11 +33,8 @@ CONFIGDIR = $(top_srcdir)/config
 entitiesTable.inc: unicode.xml $(SCRIPTDIR)/dumpEntitiesTable
 	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpEntitiesTable $< > $@
 
-operatorDictionary.hh: unicode.xml $(SCRIPTDIR)/dumpOperatorDictionary
-	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpOperatorDictionary $< h > $@
-
 operatorDictionary.cc: unicode.xml $(SCRIPTDIR)/dumpOperatorDictionary
-	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpOperatorDictionary $< c > $@
+	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpOperatorDictionary $< > $@
 
 token.dec: token-list.xml $(SCRIPTDIR)/dumpTokenList
 	$(AM_V_GEN)$(PYTHON) $(SCRIPTDIR)/dumpTokenList $< h > $@

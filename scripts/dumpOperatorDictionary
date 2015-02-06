@@ -33,19 +33,17 @@ def getOperators(tree):
 
     return operators
 
-def dumpOperators(tree, fd, header):
-    operators = getOperators(tree)
-    attributes = set()
-    for key in sorted(operators.keys()):
-        for operator in operators[key]:
-            for attribute in operator.keys():
-                attributes.add(attribute)
+attributes = ("accent", "fence", "form", "largeop", "linebreakstyle",
+              "lspace", "movablelimits", "priority", "rspace", "separator",
+              "stretchy", "symmetric")
 
+def dumpOperators(tree, fd):
+    operators = getOperators(tree)
     text = ""
     for key in sorted(operators.keys()):
         for operator in operators[key]:
             text += '  { "%s"' % key
-            for attribute in sorted(attributes):
+            for attribute in attributes:
                 value = operator.get(attribute, None)
                 if value is not None:
                     if attribute in ("lspace", "rspace"):
@@ -56,16 +54,9 @@ def dumpOperators(tree, fd, header):
             text += ' },'
             text += '\n'
 
-    if header:
-        fd.write('typedef struct {\n')
-        fd.write('  const char* name;\n')
-        for attribute in sorted(attributes):
-            fd.write('  const char* %s;\n' % attribute)
-        fd.write('} OperatorDictionaryEntry;')
-    else:
-        fd.write(text)
+    fd.write(text)
     fd.write("\n")
 
 if __name__ == "__main__":
     doc = etree.parse(sys.argv[1])
-    dumpOperators(doc, sys.stdout, sys.argv[2] == "h")
+    dumpOperators(doc, sys.stdout)

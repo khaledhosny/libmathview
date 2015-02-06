@@ -30,12 +30,26 @@
 #include "MathMLOperatorDictionary.hh"
 #include "AttributeSet.hh"
 
+struct OperatorDictionaryEntry {
+  const char* name;
+  const char* accent;
+  const char* fence;
+  const char* form;
+  const char* largeop;
+  const char* linebreakstyle;
+  const char* lspace;
+  const char* movablelimits;
+  const char* priority;
+  const char* rspace;
+  const char* separator;
+  const char* stretchy;
+  const char* symmetric;
+} dictionary[] = {
+#include "operatorDictionary.cc"
+};
+
 MathMLOperatorDictionary::MathMLOperatorDictionary()
 {
-  static const OperatorDictionaryEntry dictionary[] = {
-#include "operatorDictionary.cc"
-  };
-
   for (auto & entry : dictionary)
     {
       String form(entry.form);

@@ -29,7 +29,6 @@
 #include "StringHash.hh"
 #include <unordered_map>
 #include "Object.hh"
-#include "operatorDictionary.hh"
 
 class MathMLOperatorDictionary : public Object
 {
