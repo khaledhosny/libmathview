@@ -4,7 +4,6 @@ NULL =
 AUTOFILES = \
   entitiesTable.inc \
   operatorDictionary.cc \
-  operatorDictionary.hh \
   token.dec \
   token.def \
   $(NULL)
