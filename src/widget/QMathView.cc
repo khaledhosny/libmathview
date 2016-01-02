@@ -34,41 +34,34 @@
 
 #include <QPainter>
 #include <QRawFont>
-#include <QDebug>
 
 typedef libxml2_MathView MathView;
 
 class QMathViewLogger : public AbstractLogger
 {
 public:
-    QMathViewLogger(QDebug& error, QDebug& warning, QDebug& info, QDebug& debug)
+    QMathViewLogger(const QLoggingCategory& category)
         : AbstractLogger()
-        , m_error(error)
-        , m_warning(warning)
-        , m_info(info)
-        , m_debug(debug)
+        , m_category(category)
     {}
     ~QMathViewLogger(){}
 
 protected:
     virtual void outString(const String& str) const {
         QString log = QString::fromStdString(str);
-        if (log.startsWith("[MathView] *** Error")) {
-            m_error << log;
-        } else if (log.startsWith("[MathView] *** Warning")) {
-            m_warning << log;
-        } else if (log.startsWith("[MathView] *** Info")) {
-            m_info << log;
-        } else if (log.startsWith("[MathView] *** Debug")) {
-            m_debug << log;
+        if (m_category.isCriticalEnabled() && log.startsWith("[MathView] *** Error")) {
+            qCCritical(m_category) << log;
+        } else if (m_category.isWarningEnabled() && log.startsWith("[MathView] *** Warning")) {
+            qCWarning(m_category) << log;
+        } else if (m_category.isInfoEnabled() && log.startsWith("[MathView] *** Info")) {
+            qCInfo(m_category) << log;
+        } else if (m_category.isDebugEnabled() && log.startsWith("[MathView] *** Debug")) {
+            qCDebug(m_category) << log;
         }
     }
 
 private:
-    QDebug& m_error;
-    QDebug& m_warning;
-    QDebug& m_info;
-    QDebug& m_debug;
+    const QLoggingCategory& m_category;
 };
 
 class QMathViewPrivate
@@ -83,13 +76,12 @@ public:
     QRawFont m_rawFont;
 };
 
-QMathView::QMathView(const QFont& font,
-                     QDebug& error, QDebug& warning, QDebug& info, QDebug& debug)
+QMathView::QMathView(const QFont& font, const QLoggingCategory& category)
     : d(new QMathViewPrivate())
 {
     d->m_rawFont = QRawFont::fromFont(font);
     d->m_backend = Qt_Backend::create(d->m_rawFont);
-    d->m_view = MathView::create(new QMathViewLogger(error, warning, info, debug));
+    d->m_view = MathView::create(new QMathViewLogger(category));
     d->m_view->setOperatorDictionary(MathMLOperatorDictionary::create());
     d->m_view->setMathMLNamespaceContext(MathMLNamespaceContext::create(
         d->m_view, d->m_backend->getMathGraphicDevice()

@@ -24,7 +24,7 @@
 #define QMathView_hh
 
 #include <QtCore/QSizeF>
-#include <QDebug>
+#include <QLoggingCategory>
 
 class QMathViewPrivate;
 class QPainter;
@@ -32,8 +32,7 @@ class QPainter;
 class QMathView
 {
 public:
-    QMathView(const QFont& font,
-              QDebug& error, QDebug& warning, QDebug& info, QDebug& debug);
+    QMathView(const QFont& font, const QLoggingCategory& category);
     ~QMathView();
     void loadURI(const char* mathml_url);
     void loadBuffer(const char* mathml_buf);
