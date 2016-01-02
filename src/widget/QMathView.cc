@@ -31,6 +31,7 @@
 #include "MathMLNamespaceContext.hh"
 #include "FormattingContext.hh"
 #include "Qt_RenderingContext.hh"
+#include "RGBColor.hh"
 
 #include <QPainter>
 #include <QRawFont>
@@ -74,6 +75,8 @@ public:
     SmartPtr<MathView> m_view;
     Qt_RenderingContext m_rc;
     QRawFont m_rawFont;
+    RGBColor m_foregroundColor;
+    RGBColor m_backgroundColor;
 };
 
 QMathView::QMathView(const QFont& font, const QLoggingCategory& category)
@@ -101,6 +104,16 @@ void QMathView::loadURI(const char* mathml_url) {
 
 void QMathView::loadBuffer(const char* mathml_buf) {
     d->m_view->loadBuffer(mathml_buf);
+}
+
+void QMathView::setForegroundColor(const QColor& color) {
+    d->m_foregroundColor = RGBColor(color.red(), color.green(), color.blue(), color.alpha());
+    d->m_rc.setForegroundColor(d->m_foregroundColor);
+}
+
+void QMathView::setBackgroundColor(const QColor& color) {
+    d->m_backgroundColor = RGBColor(color.red(), color.green(), color.blue(), color.alpha());
+    d->m_rc.setBackgroundColor(d->m_backgroundColor);
 }
 
 void QMathView::setFont(const QFont& font) {

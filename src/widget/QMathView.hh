@@ -25,6 +25,7 @@
 
 #include <QtCore/QSizeF>
 #include <QLoggingCategory>
+#include <QColor>
 
 class QMathViewPrivate;
 class QPainter;
@@ -36,6 +37,8 @@ public:
     ~QMathView();
     void loadURI(const char* mathml_url);
     void loadBuffer(const char* mathml_buf);
+    void setForegroundColor(const QColor& color);
+    void setBackgroundColor(const QColor& color);
     void setFont(const QFont& font);
     void update(QPainter* painter);
     QSizeF sizeF() const;
