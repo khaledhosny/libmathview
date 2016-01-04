@@ -1,3 +1,6 @@
+sudo: required # for Trusty
+dist: trusty
+
 language: cpp
 
 compiler:
@@ -5,18 +8,14 @@ compiler:
         - clang
 
 before_install:
-      # - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa # for Qt5
-        - sudo add-apt-repository --yes ppa:mapnik/nightly-trunk # for HarfBuzz and GCC
+        - sudo add-apt-repository --yes ppa:gnome3-team/gnome3-staging # for recent HarfBuzz
         - sudo apt-get update -qq
-        - sudo apt-get install -qq libxml2-dev libcairo2-dev libharfbuzz-dev libgtk-3-dev
-      # - sudo apt-get install -qq qtbase5-dev # Qt5, but our backend requires a recent HarfBuzz
-        - test "$CXX" = "g++" && sudo apt-get install -qq g++-4.8 || true
-
-install:
-        - test "$CXX" = "g++" && export CXX="g++-4.8" || true
-        - ./autogen.sh
+        - sudo apt-get install -qq libxml2-dev libharfbuzz-dev
+                                   libcairo2-dev libgtk-3-dev
+                                   qtbase5-dev qt5-default
 
 script:
+        - ./autogen.sh
         - ./configure
         - make
 
