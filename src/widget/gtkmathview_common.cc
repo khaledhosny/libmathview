@@ -1003,10 +1003,14 @@ setup_adjustment(GtkAdjustment* adj, gfloat size, gfloat page_size)
 
   if (value > size - page_size) {
     gtk_adjustment_set_value(adj, std::max(0.0, static_cast<double>(size - page_size)));
+#if !GTK_CHECK_VERSION(3,18,0)
     gtk_adjustment_value_changed(adj);
+#endif
   }
 
+#if !GTK_CHECK_VERSION(3,18,0)
   gtk_adjustment_changed(adj);
+#endif
 }
 
 static void
@@ -1571,8 +1575,10 @@ GTKMATHVIEW_METHOD_NAME(set_top)(GtkMathView* math_view, gint x, gint y)
   gtk_adjustment_set_value(math_view->hadjustment, x);
   gtk_adjustment_set_value(math_view->vadjustment, y);
 
+#if !GTK_CHECK_VERSION(3,18,0)
   gtk_adjustment_value_changed(math_view->hadjustment);
   gtk_adjustment_value_changed(math_view->vadjustment);
+#endif
 }
 
 extern "C" void
