@@ -61,15 +61,20 @@ element_over (GtkMathView                 *view,
   g_return_if_fail (event != NULL);
 
   xmlChar *link = NULL;
+  GdkDisplay *display;
+  GdkWindow *window;
   GdkCursor *cursor;
+
+  display = gtk_widget_get_display (GTK_WIDGET (view));
+  window = gtk_widget_get_window (GTK_WIDGET (view));
 
   link = find_hyperlink (event->id, "href");
   if (link != NULL)
-    cursor = gdk_cursor_new (GDK_HAND2);
+    cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
   else
-    cursor = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+    cursor = gdk_cursor_new_for_display (display, GDK_TOP_LEFT_ARROW);
 
-  gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (view)), cursor);
+  gdk_window_set_cursor (window, cursor);
   g_object_unref (cursor);
 
   if (link != NULL)
