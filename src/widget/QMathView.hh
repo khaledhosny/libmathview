@@ -23,9 +23,10 @@
 #ifndef QMathView_hh
 #define QMathView_hh
 
-#include <QtCore/QSizeF>
+#include <QSizeF>
 #include <QLoggingCategory>
 #include <QColor>
+#include <QtGlobal>
 
 class QMathViewPrivate;
 class QPainter;
@@ -33,7 +34,11 @@ class QPainter;
 class QMathView
 {
 public:
+#if QT_VERSION >= 0x050300
     QMathView(const QFont& font, const QLoggingCategory& category);
+#else
+    QMathView(const QFont& font, QLoggingCategory& category);
+#endif
     ~QMathView();
     void loadURI(const char* mathml_url);
     void loadBuffer(const char* mathml_buf);

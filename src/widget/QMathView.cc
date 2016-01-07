@@ -41,7 +41,11 @@ typedef libxml2_MathView MathView;
 class QMathViewLogger : public AbstractLogger
 {
 public:
+#if QT_VERSION >= 0x050300
     QMathViewLogger(const QLoggingCategory& category)
+#else
+    QMathViewLogger(QLoggingCategory& category)
+#endif
         : AbstractLogger()
         , m_category(category)
     {}
@@ -54,15 +58,24 @@ protected:
             qCCritical(m_category) << log;
         } else if (m_category.isWarningEnabled() && log.startsWith("[MathView] *** Warning")) {
             qCWarning(m_category) << log;
+#if QT_VERSION >= 0x050500
         } else if (m_category.isInfoEnabled() && log.startsWith("[MathView] *** Info")) {
             qCInfo(m_category) << log;
+#else
+        } else if (m_category.isDebugEnabled() && log.startsWith("[MathView] *** Info")) {
+            qCDebug(m_category) << log;
+#endif
         } else if (m_category.isDebugEnabled() && log.startsWith("[MathView] *** Debug")) {
             qCDebug(m_category) << log;
         }
     }
 
 private:
+#if QT_VERSION >= 0x050300
     const QLoggingCategory& m_category;
+#else
+    QLoggingCategory& m_category;
+#endif
 };
 
 class QMathViewPrivate
@@ -79,7 +92,11 @@ public:
     RGBColor m_backgroundColor;
 };
 
+#if QT_VERSION >= 0x050300
 QMathView::QMathView(const QFont& font, const QLoggingCategory& category)
+#else
+QMathView::QMathView(const QFont& font, QLoggingCategory& category)
+#endif
     : d(new QMathViewPrivate())
 {
     d->m_rawFont = QRawFont::fromFont(font);
@@ -123,6 +140,7 @@ void QMathView::setFont(const QFont& font) {
         d->m_view, d->m_backend->getMathGraphicDevice()
     ));
 }
+
 void QMathView::update(QPainter* painter) {
     d->m_rc.setPainter(painter);
     d->m_view->render(d->m_rc, scaled::zero(), -d->m_view->getBoundingBox().height);
