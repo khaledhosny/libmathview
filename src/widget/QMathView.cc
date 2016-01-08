@@ -43,9 +43,11 @@ class QMathViewLogger : public AbstractLogger
 public:
 #if QT_VERSION >= 0x050300
     QMathViewLogger(const QLoggingCategory& category)
-#else
-    QMathViewLogger(QLoggingCategory& category)
+    : AbstractLogger()
+    , m_category(category)
+    {}
 #endif
+    QMathViewLogger(QLoggingCategory& category)
         : AbstractLogger()
         , m_category(category)
     {}
@@ -94,9 +96,19 @@ public:
 
 #if QT_VERSION >= 0x050300
 QMathView::QMathView(const QFont& font, const QLoggingCategory& category)
-#else
-QMathView::QMathView(const QFont& font, QLoggingCategory& category)
+    : d(new QMathViewPrivate())
+{
+    d->m_rawFont = QRawFont::fromFont(font);
+    d->m_backend = Qt_Backend::create(d->m_rawFont);
+    d->m_view = MathView::create(new QMathViewLogger(category));
+    d->m_view->setOperatorDictionary(MathMLOperatorDictionary::create());
+    d->m_view->setMathMLNamespaceContext(MathMLNamespaceContext::create(
+        d->m_view, d->m_backend->getMathGraphicDevice()
+    ));
+    d->m_view->setDefaultFontSize(DEFAULT_FONT_SIZE);
+}
 #endif
+QMathView::QMathView(const QFont& font, QLoggingCategory& category)
     : d(new QMathViewPrivate())
 {
     d->m_rawFont = QRawFont::fromFont(font);
