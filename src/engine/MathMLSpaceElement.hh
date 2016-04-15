@@ -44,7 +44,6 @@ public:
 
 private:
   bool    lineBreak;
-  bool    autoLineBreak; // valid if lineBreaking == true
   TokenId breakability; // valid if auto == false
 };
 
