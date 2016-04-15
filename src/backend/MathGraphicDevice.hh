@@ -26,7 +26,8 @@
 
 #include "String.hh"
 #include "GraphicDevice.hh"
-#include "MathFont.hh"
+
+#include "hb-ot.h"
 
 class MathGraphicDevice : public GraphicDevice
 {
@@ -108,9 +109,8 @@ protected:
                                     scaled& v, scaled& u) const;
 
 private:
-  scaled getConstant(const class FormattingContext&, MathConstant) const;
-  scaled getRuleThickness(const class FormattingContext&, MathConstant) const;
-  SmartPtr<class MathFont> m_mathfont;
+  scaled getConstant(const class FormattingContext&, hb_ot_math_constant_t) const;
+  scaled getRuleThickness(const class FormattingContext&, hb_ot_math_constant_t) const;
   const hb_font_t* m_font;
 };
 

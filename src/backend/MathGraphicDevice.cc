@@ -25,6 +25,8 @@
 
 #include <cassert>
 
+#include <hb-ot.h>
+
 #include "AreaFactory.hh"
 #include "MathGraphicDevice.hh"
 #include "MathMLElement.hh"
@@ -36,9 +38,7 @@
 
 MathGraphicDevice::MathGraphicDevice(const hb_font_t* font)
   : m_font(font)
-{
-  m_mathfont = MathFont::create(font);
-}
+{ }
 
 MathGraphicDevice::~MathGraphicDevice()
 { }
@@ -49,52 +49,52 @@ MathGraphicDevice::create(const hb_font_t* font)
 
 scaled
 MathGraphicDevice::getConstant(const FormattingContext& context,
-                               MathConstant constant) const
+                               hb_ot_math_constant_t constant) const
 {
   if (context.getDisplayStyle())
     {
       // switch to display style version of the requested constant
       switch (constant)
         {
-          case stackTopShiftUp:
-            constant = stackTopDisplayStyleShiftUp;
+          case HB_OT_MATH_CONSTANT_STACK_TOP_SHIFT_UP:
+            constant = HB_OT_MATH_CONSTANT_STACK_TOP_DISPLAY_STYLE_SHIFT_UP;
             break;
-          case stackBottomShiftDown:
-            constant = stackBottomDisplayStyleShiftDown;
+          case HB_OT_MATH_CONSTANT_STACK_BOTTOM_SHIFT_DOWN:
+            constant = HB_OT_MATH_CONSTANT_STACK_BOTTOM_DISPLAY_STYLE_SHIFT_DOWN;
             break;
-          case stackGapMin:
-            constant = stackDisplayStyleGapMin;
+          case HB_OT_MATH_CONSTANT_STACK_GAP_MIN:
+            constant = HB_OT_MATH_CONSTANT_STACK_DISPLAY_STYLE_GAP_MIN;
             break;
-          case fractionNumeratorShiftUp:
-            constant = fractionNumeratorDisplayStyleShiftUp;
+          case HB_OT_MATH_CONSTANT_FRACTION_NUMERATOR_SHIFT_UP:
+            constant = HB_OT_MATH_CONSTANT_FRACTION_NUMERATOR_DISPLAY_STYLE_SHIFT_UP;
             break;
-          case fractionDenominatorShiftDown:
-            constant = fractionDenominatorDisplayStyleShiftDown;
+          case HB_OT_MATH_CONSTANT_FRACTION_DENOMINATOR_SHIFT_DOWN:
+            constant = HB_OT_MATH_CONSTANT_FRACTION_DENOMINATOR_DISPLAY_STYLE_SHIFT_DOWN;
             break;
-          case fractionNumeratorGapMin:
-            constant = fractionNumeratorDisplayStyleGapMin;
+          case HB_OT_MATH_CONSTANT_FRACTION_NUMERATOR_GAP_MIN:
+            constant = HB_OT_MATH_CONSTANT_FRACTION_NUM_DISPLAY_STYLE_GAP_MIN;
             break;
-          case fractionDenominatorGapMin:
-            constant = fractionDenominatorDisplayStyleGapMin;
+          case HB_OT_MATH_CONSTANT_FRACTION_DENOMINATOR_GAP_MIN:
+            constant = HB_OT_MATH_CONSTANT_FRACTION_DENOM_DISPLAY_STYLE_GAP_MIN;
             break;
-          case radicalVerticalGap:
-            constant = radicalDisplayStyleVerticalGap;
+          case HB_OT_MATH_CONSTANT_RADICAL_VERTICAL_GAP:
+            constant = HB_OT_MATH_CONSTANT_RADICAL_DISPLAY_STYLE_VERTICAL_GAP;
             break;
           default:
             break;
         }
     }
 
-  scaled value = m_mathfont->getConstant(constant);
+  scaled value = hb_ot_layout_get_math_constant((hb_font_t*) m_font, constant);
   hb_face_t* face = hb_font_get_face(const_cast<hb_font_t*>(m_font));
   int upem = hb_face_get_upem(face);
 
   // scale the non-percent constants
   switch (constant)
     {
-      case scriptPercentScaleDown:
-      case scriptScriptPercentScaleDown:
-      case radicalDegreeBottomRaisePercent:
+      case HB_OT_MATH_CONSTANT_SCRIPT_PERCENT_SCALE_DOWN:
+      case HB_OT_MATH_CONSTANT_SCRIPT_SCRIPT_PERCENT_SCALE_DOWN:
+      case HB_OT_MATH_CONSTANT_RADICAL_DEGREE_BOTTOM_RAISE_PERCENT:
         break;
       default:
         value = (value * context.getSize()) / upem;
@@ -106,7 +106,7 @@ MathGraphicDevice::getConstant(const FormattingContext& context,
 
 scaled
 MathGraphicDevice::getRuleThickness(const FormattingContext& context,
-                                    MathConstant constant) const
+                                    hb_ot_math_constant_t constant) const
 {
   // at least 1px thick
   return std::max(getConstant(context, constant), scaled(72.27f / dpi(context)));
@@ -116,20 +116,20 @@ scaled
 MathGraphicDevice::ex(const FormattingContext& context) const
 {
   // XXX
-  return getConstant(context, accentBaseHeight);
+  return getConstant(context, HB_OT_MATH_CONSTANT_ACCENT_BASE_HEIGHT);
 }
 
 scaled
 MathGraphicDevice::axis(const FormattingContext& context) const
 {
-  return getConstant(context, axisHeight);
+  return getConstant(context, HB_OT_MATH_CONSTANT_AXIS_HEIGHT);
 }
 
 scaled
 MathGraphicDevice::defaultLineThickness(const FormattingContext& context) const
 {
   // XXX
-  return getRuleThickness(context, fractionRuleThickness);
+  return getRuleThickness(context, HB_OT_MATH_CONSTANT_FRACTION_RULE_THICKNESS);
 }
 
 AreaRef
@@ -228,7 +228,7 @@ MathGraphicDevice::fraction(const FormattingContext& context,
                             const AreaRef& denominator,
                             const Length& lineThickness) const
 {
-  const scaled RULE = getRuleThickness(context, fractionRuleThickness);
+  const scaled RULE = getRuleThickness(context, HB_OT_MATH_CONSTANT_FRACTION_RULE_THICKNESS);
   const scaled AXIS = axis(context);
   const scaled ruleThickness = evaluate(context, lineThickness, RULE);
 
@@ -239,9 +239,9 @@ MathGraphicDevice::fraction(const FormattingContext& context,
 
   if (ruleThickness == scaled::zero())
     {
-      scaled shift_up = getConstant(context, stackTopShiftUp);
-      scaled shift_down = getConstant(context, stackBottomShiftDown);
-      scaled clr = getConstant(context, stackGapMin);
+      scaled shift_up = getConstant(context, HB_OT_MATH_CONSTANT_STACK_TOP_SHIFT_UP);
+      scaled shift_down = getConstant(context, HB_OT_MATH_CONSTANT_STACK_BOTTOM_SHIFT_DOWN);
+      scaled clr = getConstant(context, HB_OT_MATH_CONSTANT_STACK_GAP_MIN);
       scaled delta = (clr - ((shift_up - n.depth) - (d.height - shift_down))) / 2;
       if (delta > scaled::zero())
         {
@@ -256,16 +256,16 @@ MathGraphicDevice::fraction(const FormattingContext& context,
     }
   else
     {
-      scaled shift_up = getConstant(context, fractionNumeratorShiftUp);
-      scaled shift_down = getConstant(context, fractionDenominatorShiftDown);
+      scaled shift_up = getConstant(context, HB_OT_MATH_CONSTANT_FRACTION_NUMERATOR_SHIFT_UP);
+      scaled shift_down = getConstant(context, HB_OT_MATH_CONSTANT_FRACTION_DENOMINATOR_SHIFT_DOWN);
       scaled delta = ruleThickness / 2;
 
-      scaled clr1 = getConstant(context, fractionNumeratorGapMin);
+      scaled clr1 = getConstant(context, HB_OT_MATH_CONSTANT_FRACTION_NUMERATOR_GAP_MIN);
       scaled delta1 = clr1 - ((shift_up - n.depth) - (AXIS + delta));
       if (delta1 > scaled::zero())
         shift_up = shift_up + delta1;
 
-      scaled clr2 = getConstant(context, fractionDenominatorGapMin);
+      scaled clr2 = getConstant(context, HB_OT_MATH_CONSTANT_FRACTION_DENOMINATOR_GAP_MIN);
       scaled delta2 = clr2 - ((AXIS - delta) - (d.height - shift_down));
       if (delta2 > scaled::zero())
         shift_down = shift_down + delta2;
@@ -304,9 +304,9 @@ MathGraphicDevice::radical(const FormattingContext& context,
                            const AreaRef& base,
                            const AreaRef& index) const
 {
-  const scaled RULE = getRuleThickness(context, radicalRuleThickness);
-  const scaled GAP = getConstant(context, radicalVerticalGap);
-  const scaled KERN = getConstant(context, radicalExtraAscender);
+  const scaled RULE = getRuleThickness(context, HB_OT_MATH_CONSTANT_RADICAL_RULE_THICKNESS);
+  const scaled GAP = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_VERTICAL_GAP);
+  const scaled KERN = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_EXTRA_ASCENDER);
   const UCS4String root(1, 0x221a);
   const BoundingBox baseBox = base->box();
   const AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + GAP + RULE, baseBox.depth);
@@ -330,9 +330,9 @@ MathGraphicDevice::radical(const FormattingContext& context,
   h.reserve(index ? 5 : 2);
   if (index)
     {
-      const scaled KERN_BEFORE = getConstant(context, radicalKernBeforeDegree);
-      const scaled KERN_AFTER = getConstant(context, radicalKernAfterDegree);
-      const scaled RAISE = getConstant(context, radicalDegreeBottomRaisePercent);
+      const scaled KERN_BEFORE = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_KERN_BEFORE_DEGREE);
+      const scaled KERN_AFTER = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_KERN_AFTER_DEGREE);
+      const scaled RAISE = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_DEGREE_BOTTOM_RAISE_PERCENT);
 
       scaled shift = baseArea->box().verticalExtent() * RAISE / 100;
       h.push_back(getFactory()->horizontalSpace(KERN_BEFORE));
@@ -358,10 +358,10 @@ MathGraphicDevice::calculateDefaultScriptShift(const FormattingContext& context,
 
   const scaled EX = ex(context);
   const scaled AXIS = axis(context);
-  const scaled SUB_TOP_MAX = getConstant(context, subscriptTopMax);
-  const scaled SUB_GAP_MIN = getConstant(context, subSuperscriptGapMin);
-  const scaled SUP_BOT_MIN = getConstant(context, superscriptBottomMin);
-  const scaled SUP_BOT_MAX = getConstant(context, superscriptBottomMaxWithSubscript);
+  const scaled SUB_TOP_MAX = getConstant(context, HB_OT_MATH_CONSTANT_SUBSCRIPT_TOP_MAX);
+  const scaled SUB_GAP_MIN = getConstant(context, HB_OT_MATH_CONSTANT_SUB_SUPERSCRIPT_GAP_MIN);
+  const scaled SUP_BOT_MIN = getConstant(context, HB_OT_MATH_CONSTANT_SUPERSCRIPT_BOTTOM_MIN);
+  const scaled SUP_BOT_MAX = getConstant(context, HB_OT_MATH_CONSTANT_SUPERSCRIPT_BOTTOM_MAX_WITH_SUBSCRIPT);
 
   u = std::max(EX, baseBox.height - AXIS);
   v = std::max(AXIS, baseBox.depth + AXIS);
