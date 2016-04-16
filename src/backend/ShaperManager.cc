@@ -151,7 +151,7 @@ ShaperManager::unregisterShapers()
 }
 
 GlyphSpec
-ShaperManager::registerChar(Char32 ch, const GlyphSpec& spec)
+ShaperManager::registerChar(char32_t ch, const GlyphSpec& spec)
 {
   assert(ch <= BIGGEST_CHAR);
   GlyphSpec oldSpec = glyphSpec[ch];
@@ -161,7 +161,7 @@ ShaperManager::registerChar(Char32 ch, const GlyphSpec& spec)
 }
 
 GlyphSpec
-ShaperManager::registerStretchyChar(Char32 ch, const GlyphSpec& spec)
+ShaperManager::registerStretchyChar(char32_t ch, const GlyphSpec& spec)
 {
   assert(ch <= BIGGEST_CHAR);
   GlyphSpec oldSpec = glyphSpec[ch];
@@ -171,14 +171,14 @@ ShaperManager::registerStretchyChar(Char32 ch, const GlyphSpec& spec)
 }
 
 const GlyphSpec&
-ShaperManager::map(Char32 ch) const
+ShaperManager::map(char32_t ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch];
 }
 
 const GlyphSpec&
-ShaperManager::mapStretchy(Char32 ch) const
+ShaperManager::mapStretchy(char32_t ch) const
 {
   assert(ch <= BIGGEST_CHAR);
   return glyphSpec[ch | STRETCHY_FLAG];

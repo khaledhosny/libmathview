@@ -28,9 +28,9 @@
 #include "MathVariantMap.hh"
 
 #define MAP_NAME(n) map_variant_##n
-#define DECLARE_MAP(n) Char32 MAP_NAME(n)(Char32);
+#define DECLARE_MAP(n) char32_t MAP_NAME(n)(char32_t);
 
-typedef Char32 (*mapType)(Char32);
+typedef char32_t (*mapType)(char32_t);
 
 DECLARE_MAP(bold)
 DECLARE_MAP(italic)
@@ -46,7 +46,7 @@ DECLARE_MAP(sans_serif_italic)
 DECLARE_MAP(sans_serif_bold_italic)
 DECLARE_MAP(monospace)
 
-static Char32 map_variant_normal(Char32 ch)
+static char32_t map_variant_normal(char32_t ch)
 { return ch; }
 
 static mapType map[] =

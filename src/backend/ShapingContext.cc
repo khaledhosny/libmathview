@@ -66,7 +66,7 @@ ShapingContext::getSpec(int n) const
   return m_spec[m_index + n];
 }
 
-const Char32*
+const char32_t*
 ShapingContext::data() const
 {
   assert(!done());
@@ -87,19 +87,19 @@ ShapingContext::area() const
     return getFactory()->glyphString(m_res, m_res_n, m_source);
 }
 
-Char32
+char32_t
 ShapingContext::prevChar() const
 {
   return (m_index > 0) ? m_source[m_index - 1] : 0;
 }
 
-Char32
+char32_t
 ShapingContext::thisChar() const
 {
   return (m_index < m_source.length()) ? m_source[m_index] : 0;
 }
 
-Char32
+char32_t
 ShapingContext::nextChar() const
 {
   return (m_index + 1 < m_source.length()) ? m_source[m_index + 1] : 0;

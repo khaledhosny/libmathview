@@ -63,11 +63,11 @@ public:
 
   unsigned getIndex(void) const { return m_index; }
 
-  const Char32* data(void) const;
+  const char32_t* data(void) const;
   const GlyphSpec& getSpec(int = 0) const;
-  Char32 prevChar(void) const;
-  Char32 thisChar(void) const;
-  Char32 nextChar(void) const;
+  char32_t prevChar(void) const;
+  char32_t thisChar(void) const;
+  char32_t nextChar(void) const;
   UCS4String prevString(void) const;
   UCS4String prevString(UCS4String::size_type) const;
   UCS4String nextString(void) const;

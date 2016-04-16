@@ -132,7 +132,7 @@ typedef ParseSeq<ParseOptionalSign, ParseSeq<ParseUnsignedNumber, ParseDimension
 typedef ParseSeq<ParseOptionalSign, ParseSeq<ParseUnsignedNumber, ParseDimension> > Parse_MathML_Padded_depth;
 
 // Fenced
-typedef Parse<ScanAny,Char> ParseCharacter;
+typedef Parse<ScanAny,char> ParseCharacter;
 typedef ParseString Parse_MathML_Fenced_open;
 typedef ParseString Parse_MathML_Fenced_close;
 //typedef ParseZeroOrOne<ParseOneOrMore<ParseCharacter> > Parse_MathML_Fenced_separators;

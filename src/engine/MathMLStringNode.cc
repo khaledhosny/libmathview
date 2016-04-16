@@ -30,7 +30,7 @@
 #include "MathGraphicDevice.hh"
 
 inline bool
-isCombining(Char32 ch)
+isCombining(char32_t ch)
 {
   return (ch >= 0x0300 && ch <= 0x0362) || (ch >= 0x20d0 && ch <= 0x20e8);
 }

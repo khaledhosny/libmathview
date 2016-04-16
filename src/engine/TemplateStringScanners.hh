@@ -59,7 +59,7 @@ public:
       return false;
   }
 
-  static inline Char
+  static inline char
   parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator&)
   {
     return *begin;

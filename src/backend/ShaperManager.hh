@@ -48,16 +48,16 @@ public:
   
   unsigned registerShaper(const SmartPtr<class Shaper>&);
   void unregisterShapers(void);
-  GlyphSpec registerChar(Char32 ch, const GlyphSpec& spec);
-  GlyphSpec registerStretchyChar(Char32 ch, const GlyphSpec& spec);
+  GlyphSpec registerChar(char32_t ch, const GlyphSpec& spec);
+  GlyphSpec registerStretchyChar(char32_t ch, const GlyphSpec& spec);
   AreaRef compose(const FormattingContext& context,
 	          const AreaRef base, const UCS4String baseSource,
 	          const AreaRef script, const UCS4String scriptSource,
 	          bool overScript);
 
 private:
-  const GlyphSpec& map(Char32 ch) const;
-  const GlyphSpec& mapStretchy(Char32 ch) const;
+  const GlyphSpec& map(char32_t ch) const;
+  const GlyphSpec& mapStretchy(char32_t ch) const;
   SmartPtr<const class Area> shapeAux(class ShapingContext&) const;
   SmartPtr<class Shaper> getShaper(unsigned) const;
 
@@ -66,7 +66,7 @@ private:
   static const unsigned LOW_BITS = 8;
   static const unsigned STRETCHY_BIT = LOW_BITS + HIGH_BITS;
   static const unsigned STRETCHY_FLAG = 1 << STRETCHY_BIT;
-  static const Char32 BIGGEST_CHAR = (1 << (HIGH_BITS + 1 + LOW_BITS)) - 1;
+  static const char32_t BIGGEST_CHAR = (1 << (HIGH_BITS + 1 + LOW_BITS)) - 1;
 
   SparseMap<GlyphSpec, HIGH_BITS + 1, LOW_BITS> glyphSpec;
 

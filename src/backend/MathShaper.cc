@@ -50,7 +50,7 @@ MathShaper::shape(ShapingContext& context) const
 
   hb_buffer_set_direction(buffer, HB_DIRECTION_LTR);
   hb_buffer_set_script(buffer, hb_script_from_string("Math", -1));
-  hb_buffer_add_utf32(buffer, source.c_str(), source.length(), 0, source.length());
+  hb_buffer_add_utf32(buffer, (const uint32_t*) source.data(), source.length(), 0, source.length());
 
   int scriptLevel = context.getScriptLevel();
   if (scriptLevel > 0)

@@ -25,8 +25,8 @@
 
 typedef struct TableEntry
 {
-  Char32 normal;
-  Char32 variant;
+  char32_t normal;
+  char32_t variant;
 } TableEntry;
 
 
@@ -155,9 +155,9 @@ static TableEntry bold_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_bold
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0030 and ch <= 0x0039) return bold_table[ch - 0x0030].variant;
   if (ch >= 0x0041 and ch <= 0x005A) return bold_table[ch - 0x0037].variant;
@@ -292,9 +292,9 @@ static TableEntry italic_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_italic
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return italic_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return italic_table[ch - 0x0047].variant;
@@ -428,9 +428,9 @@ static TableEntry bold_italic_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_bold_italic
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return bold_italic_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return bold_italic_table[ch - 0x0047].variant;
@@ -504,9 +504,9 @@ static TableEntry script_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_script
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return script_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return script_table[ch - 0x0047].variant;
@@ -570,9 +570,9 @@ static TableEntry bold_script_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_bold_script
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return bold_script_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return bold_script_table[ch - 0x0047].variant;
@@ -636,9 +636,9 @@ static TableEntry fraktur_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_fraktur
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return fraktur_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return fraktur_table[ch - 0x0047].variant;
@@ -712,9 +712,9 @@ static TableEntry double_struck_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_double_struck
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0030 and ch <= 0x0039) return double_struck_table[ch - 0x0030].variant;
   if (ch >= 0x0041 and ch <= 0x005A) return double_struck_table[ch - 0x0037].variant;
@@ -779,9 +779,9 @@ static TableEntry bold_fraktur_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_bold_fraktur
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return bold_fraktur_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return bold_fraktur_table[ch - 0x0047].variant;
@@ -855,9 +855,9 @@ static TableEntry sans_serif_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_sans_serif
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0030 and ch <= 0x0039) return sans_serif_table[ch - 0x0030].variant;
   if (ch >= 0x0041 and ch <= 0x005A) return sans_serif_table[ch - 0x0037].variant;
@@ -990,9 +990,9 @@ static TableEntry bold_sans_serif_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_bold_sans_serif
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0030 and ch <= 0x0039) return bold_sans_serif_table[ch - 0x0030].variant;
   if (ch >= 0x0041 and ch <= 0x005A) return bold_sans_serif_table[ch - 0x0037].variant;
@@ -1067,9 +1067,9 @@ static TableEntry sans_serif_italic_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_sans_serif_italic
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return sans_serif_italic_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return sans_serif_italic_table[ch - 0x0047].variant;
@@ -1191,9 +1191,9 @@ static TableEntry sans_serif_bold_italic_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_sans_serif_bold_italic
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0041 and ch <= 0x005A) return sans_serif_bold_italic_table[ch - 0x0041].variant;
   if (ch >= 0x0061 and ch <= 0x007A) return sans_serif_bold_italic_table[ch - 0x0047].variant;
@@ -1277,9 +1277,9 @@ static TableEntry monospace_table[] =
   { 0, 0 }
 };
 
-Char32
+char32_t
 map_variant_monospace
-(Char32 ch)
+(char32_t ch)
 {
   if (ch >= 0x0030 and ch <= 0x0039) return monospace_table[ch - 0x0030].variant;
   if (ch >= 0x0041 and ch <= 0x005A) return monospace_table[ch - 0x0037].variant;

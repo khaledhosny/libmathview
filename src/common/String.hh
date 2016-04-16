@@ -26,11 +26,8 @@
 #include <cstdint>
 #include <string>
 
-typedef char Char;
-typedef uint32_t Char32;
-
-typedef std::basic_string<Char> String;
-typedef std::basic_string<Char32> UCS4String;
+typedef std::basic_string<char> String;
+typedef std::basic_string<char32_t> UCS4String;
 
 inline bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
 
