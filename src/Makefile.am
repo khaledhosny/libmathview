@@ -247,7 +247,6 @@ libbackend_la_SOURCES = \
   backend/IgnoreArea.cc	\
   backend/InkArea.cc \
   backend/LinearContainerArea.cc \
-  backend/MathFont.cc \
   backend/MathGraphicDevice.cc \
   backend/MathShaper.cc \
   backend/MathVariantMap.cc \
@@ -300,7 +299,6 @@ mathview_HEADERS += \
   backend/IgnoreArea.hh	\
   backend/InkArea.hh \
   backend/LinearContainerArea.hh \
-  backend/MathFont.hh \
   backend/MathGraphicDevice.hh \
   backend/MathShaper.hh \
   backend/MathTable.hh \

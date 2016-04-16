@@ -28,8 +28,6 @@
 
 #include <QRawFont>
 
-class MathFont;
-
 class Qt_Shaper : public MathShaper
 {
 protected:
