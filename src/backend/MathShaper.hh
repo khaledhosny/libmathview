@@ -28,7 +28,6 @@
 
 #include "Shaper.hh"
 #include "String.hh"
-#include "MathFont.hh"
 
 class MathShaper : public Shaper
 {
@@ -52,7 +51,6 @@ protected:
   virtual AreaRef getGlyphArea(unsigned, const scaled&) const = 0;
 
 private:
-  SmartPtr<class MathFont> m_mathfont;
   const hb_font_t* m_font;
 };
 

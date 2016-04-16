@@ -33,9 +33,7 @@
 
 MathShaper::MathShaper(const hb_font_t* font)
   : m_font(font)
-{
-  m_mathfont = MathFont::create(font);
-}
+{ }
 
 MathShaper::~MathShaper()
 { }
@@ -76,31 +74,46 @@ MathShaper::shape(ShapingContext& context) const
 
   for (unsigned i = 0; i < len; i++)
     {
-      unsigned variantId, glyphId;
-
-      glyphId = glyphs[i].codepoint;
-
+      hb_codepoint_t glyphId = glyphs[i].codepoint;
       AreaRef glyphArea = getGlyphArea(glyphId, context.getSize());
-      variantId = glyphId;
 
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
           assert(len == 1);
           scaled span = (context.getVSpan() * upem).getValue() / context.getSize().getValue();
-          variantId = m_mathfont->getVariant(variantId, span, false);
+          hb_ot_shape_math_stretchy(font, buffer, false, span.toInt());
+          unsigned stretchyLen = hb_buffer_get_length(buffer);
+          hb_glyph_info_t* stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
+          hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
+          for (unsigned int j = 0; j < stretchyLen; j++)
+            {
+              hb_codepoint_t id = stretchyGlyphs[j].codepoint;
+              hb_position_t advance = stretchyPositions[j].y_advance;
+              AreaRef area = getGlyphArea(id, context.getSize());
+              areaV.push_back(area);
+            }
         }
-
-      if (glyphArea->box().horizontalExtent() < context.getHSpan())
+      else if (glyphArea->box().horizontalExtent() < context.getHSpan())
         {
           assert(len == 1);
           scaled span = (context.getHSpan() * upem).getValue() / context.getSize().getValue();
-          variantId = m_mathfont->getVariant(variantId, span, true);
+          hb_ot_shape_math_stretchy(font, buffer, true, span.toInt());
+          unsigned stretchyLen = hb_buffer_get_length(buffer);
+          hb_glyph_info_t * stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
+          hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
+          for (unsigned int j = 0; j < stretchyLen; j++)
+            {
+              hb_codepoint_t id = stretchyGlyphs[j].codepoint;
+              hb_position_t advance = stretchyPositions[j].x_advance;
+              AreaRef area = getGlyphArea(id, context.getSize());
+              areaV.push_back(area);
+            }
+        }
+      else
+        {
+          areaV.push_back(glyphArea);
         }
 
-      if (variantId != glyphId)
-        glyphArea = getGlyphArea(variantId, context.getSize());
-
-      areaV.push_back(glyphArea);
     }
 
   context.pushArea(source.length(), factory->horizontalArray(areaV));
