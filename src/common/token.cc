@@ -31,7 +31,7 @@
 struct Entry
 {
   TokenId id;
-  const char* literal;
+  const char32_t* literal;
 };
 
 static Entry token[] =
@@ -40,17 +40,17 @@ static Entry token[] =
     { T__NOTVALID, nullptr }
   };
 
-typedef std::unordered_map<std::string,TokenId,StringHash,StringEq> Map;
+typedef std::unordered_map<std::u32string,TokenId,std::hash<std::u32string>> Map;
 static Map map;
 
 TokenId
-tokenIdOfString(const std::string& s)
+tokenIdOfString(const std::u32string &s)
 {
   static bool initialized = false;
   if (!initialized)
     {
       for (unsigned i = 1; token[i].literal; i++)
-	map[std::string(token[i].literal)] = token[i].id;
+        map[std::u32string(token[i].literal)] = token[i].id;
       initialized = true;
     }
 

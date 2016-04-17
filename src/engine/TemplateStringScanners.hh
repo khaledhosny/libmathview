@@ -296,7 +296,7 @@ public:
   static TokenId
   parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
-    return tokenIdOfString(Scan::toString(begin, end));
+    return tokenIdOfString(std::u32string(begin, end));
   }
 };
 
