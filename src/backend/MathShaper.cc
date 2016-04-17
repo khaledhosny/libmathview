@@ -85,11 +85,19 @@ MathShaper::shape(ShapingContext& context) const
           hb_glyph_info_t* stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
           hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
           std::vector<AreaRef> areas;
+          scaled advance;
           for (unsigned int i = 0; i < stretchyLen; i++)
             {
               hb_codepoint_t id = stretchyGlyphs[i].codepoint;
-              hb_position_t advance = stretchyPositions[i].y_advance;
+              scaled offset = stretchyPositions[i].y_offset;
+              scaled shift = offset - advance;
+              if (shift != scaled::zero())
+                {
+                  advance += shift;
+                  areas.push_back(factory->verticalSpace(shift / upem * context.getSize(), 0));
+                }
               areas.push_back(getGlyphArea(id, context.getSize()));
+              advance += scaled((areas.back()->box().verticalExtent() * upem).getValue() / context.getSize().getValue());
             }
           area = factory->verticalArray(areas, 0);
         }
@@ -101,11 +109,19 @@ MathShaper::shape(ShapingContext& context) const
           hb_glyph_info_t * stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
           hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
           std::vector<AreaRef> areas;
+          scaled advance;
           for (unsigned int i = 0; i < stretchyLen; i++)
             {
               hb_codepoint_t id = stretchyGlyphs[i].codepoint;
-              hb_position_t advance = stretchyPositions[i].x_advance;
+              scaled offset = stretchyPositions[i].x_offset;
+              scaled shift = offset - advance;
+              if (shift != scaled::zero())
+                {
+                  advance += shift;
+                  areas.push_back(factory->horizontalSpace(shift / upem * context.getSize()));
+                }
               areas.push_back(getGlyphArea(id, context.getSize()));
+              advance += scaled((areas.back()->box().horizontalExtent() * upem).getValue() / context.getSize().getValue());
             }
           area = factory->horizontalArray(areas);
         }
@@ -116,12 +132,11 @@ MathShaper::shape(ShapingContext& context) const
     }
   else
     {
-      std::vector<AreaRef> areas;
+      std::vector<AreaRef> areas(len);
       for (unsigned int i = 0; i < len; i++)
         {
           hb_codepoint_t id = glyphs[i].codepoint;
-          AreaRef area = getGlyphArea(id, context.getSize());
-          areas.push_back(area);
+          areas[i] = getGlyphArea(id, context.getSize());
         }
       area = factory->horizontalArray(areas);
     }
