@@ -70,53 +70,63 @@ MathShaper::shape(ShapingContext& context) const
   hb_glyph_info_t* glyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
 
   const SmartPtr<AreaFactory> factory = context.getFactory();
-  std::vector<AreaRef> areaV;
+  AreaRef area;
 
-  for (unsigned i = 0; i < len; i++)
+  if (len == 1)
     {
-      hb_codepoint_t glyphId = glyphs[i].codepoint;
+      hb_codepoint_t glyphId = glyphs[0].codepoint;
       AreaRef glyphArea = getGlyphArea(glyphId, context.getSize());
 
       if (glyphArea->box().verticalExtent() < context.getVSpan())
         {
-          assert(len == 1);
           scaled span = (context.getVSpan() * upem).getValue() / context.getSize().getValue();
           hb_ot_shape_math_stretchy(font, buffer, false, span.toInt());
           unsigned stretchyLen = hb_buffer_get_length(buffer);
           hb_glyph_info_t* stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
           hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
-          for (unsigned int j = 0; j < stretchyLen; j++)
+          std::vector<AreaRef> areas;
+          for (unsigned int i = 0; i < stretchyLen; i++)
             {
-              hb_codepoint_t id = stretchyGlyphs[j].codepoint;
-              hb_position_t advance = stretchyPositions[j].y_advance;
-              AreaRef area = getGlyphArea(id, context.getSize());
-              areaV.push_back(area);
+              hb_codepoint_t id = stretchyGlyphs[i].codepoint;
+              hb_position_t advance = stretchyPositions[i].y_advance;
+              areas.push_back(getGlyphArea(id, context.getSize()));
             }
+          area = factory->verticalArray(areas, 0);
         }
       else if (glyphArea->box().horizontalExtent() < context.getHSpan())
         {
-          assert(len == 1);
           scaled span = (context.getHSpan() * upem).getValue() / context.getSize().getValue();
           hb_ot_shape_math_stretchy(font, buffer, true, span.toInt());
           unsigned stretchyLen = hb_buffer_get_length(buffer);
           hb_glyph_info_t * stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
           hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
-          for (unsigned int j = 0; j < stretchyLen; j++)
+          std::vector<AreaRef> areas;
+          for (unsigned int i = 0; i < stretchyLen; i++)
             {
-              hb_codepoint_t id = stretchyGlyphs[j].codepoint;
-              hb_position_t advance = stretchyPositions[j].x_advance;
-              AreaRef area = getGlyphArea(id, context.getSize());
-              areaV.push_back(area);
+              hb_codepoint_t id = stretchyGlyphs[i].codepoint;
+              hb_position_t advance = stretchyPositions[i].x_advance;
+              areas.push_back(getGlyphArea(id, context.getSize()));
             }
+          area = factory->horizontalArray(areas);
         }
       else
         {
-          areaV.push_back(glyphArea);
+          area = glyphArea;
         }
-
+    }
+  else
+    {
+      std::vector<AreaRef> areas;
+      for (unsigned int i = 0; i < len; i++)
+        {
+          hb_codepoint_t id = glyphs[i].codepoint;
+          AreaRef area = getGlyphArea(id, context.getSize());
+          areas.push_back(area);
+        }
+      area = factory->horizontalArray(areas);
     }
 
-  context.pushArea(source.length(), factory->horizontalArray(areaV));
+  context.pushArea(source.length(), area);
 
   hb_buffer_destroy(buffer);
 }
