@@ -51,7 +51,7 @@ AbstractLogger::out(LogLevelId id, const char* fmt, ...) const
 
   if (id <= logLevel)
     {
-      String res;
+      std::string res;
 
       static char buffer[256];
       snprintf(buffer, 256, "[MathView] *** %s[%d:%d]: ", msg[id], id, logLevel);

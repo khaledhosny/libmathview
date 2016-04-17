@@ -35,7 +35,7 @@ isCombining(char32_t ch)
   return (ch >= 0x0300 && ch <= 0x0362) || (ch >= 0x20d0 && ch <= 0x20e8);
 }
 
-MathMLStringNode::MathMLStringNode(const String& c)
+MathMLStringNode::MathMLStringNode(const std::string& c)
   : content(c)
 { }
 
@@ -49,10 +49,10 @@ MathMLStringNode::format(FormattingContext& ctxt)
 unsigned
 MathMLStringNode::GetLogicalContentLength() const
 {
-  UCS4String s = UCS4StringOfString(content);
+  std::u32string s = UCS4StringOfString(content);
 
   unsigned length = 0;
-  for (UCS4String::const_iterator i = s.begin(); i != s.end(); i++)
+  for (std::u32string::const_iterator i = s.begin(); i != s.end(); i++)
     {
       if (!isCombining(*i) || i == s.begin())
 	length++;
@@ -61,6 +61,6 @@ MathMLStringNode::GetLogicalContentLength() const
   return length;
 }
 
-String
+std::string
 MathMLStringNode::GetRawContent() const
 { return content; }

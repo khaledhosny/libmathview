@@ -52,8 +52,8 @@ MathMLOperatorDictionary::MathMLOperatorDictionary()
 {
   for (auto & entry : dictionary)
     {
-      String form(entry.form);
-      String opName(entry.name);
+      std::string form(entry.form);
+      std::string opName(entry.name);
       FormDefaults& formDefaults = items[opName];
       SmartPtr<AttributeSet> defaults = AttributeSet::create();
 
@@ -99,7 +99,7 @@ MathMLOperatorDictionary::getAttribute(const char* value,
 }
 
 void
-MathMLOperatorDictionary::search(const String& opName,
+MathMLOperatorDictionary::search(const std::string& opName,
 				 SmartPtr<AttributeSet>& prefix,
 				 SmartPtr<AttributeSet>& infix,
 				 SmartPtr<AttributeSet>& postfix) const

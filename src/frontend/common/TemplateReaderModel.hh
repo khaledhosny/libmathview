@@ -43,7 +43,7 @@ struct TemplateReaderModel
   typedef TemplateReaderNodeIterator<Reader> NodeIterator;
   typedef TemplateReaderElementIterator<Reader> ElementIterator;
 
-  static SmartPtr<Reader> document(const class AbstractLogger&, const String& path, bool subst = false)
+  static SmartPtr<Reader> document(const class AbstractLogger&, const std::string& path, bool subst = false)
   { return Reader::create(path, subst); }
 
   static SmartPtr<Reader> getDocumentElement(const SmartPtr<Reader>& reader) { return reader; }
@@ -53,19 +53,19 @@ struct TemplateReaderModel
   static SmartPtr<Reader> asElement(const SmartPtr<Reader>& reader) { return reader; }
 
   static unsigned getNodeType(const SmartPtr<Reader>& reader) { return reader->getNodeType(); }
-  static String getNodeName(const SmartPtr<Reader>& reader) { return reader->getNodeName(); }
-  static String getNodeValue(const SmartPtr<Reader>& reader) { return reader->getNodeValue(); }
-  static String getNodeNamespaceURI(const SmartPtr<Reader>& reader) { return reader->getNodeNamespaceURI(); }
+  static std::string getNodeName(const SmartPtr<Reader>& reader) { return reader->getNodeName(); }
+  static std::string getNodeValue(const SmartPtr<Reader>& reader) { return reader->getNodeValue(); }
+  static std::string getNodeNamespaceURI(const SmartPtr<Reader>& reader) { return reader->getNodeNamespaceURI(); }
   
-  static String getElementValue(const SmartPtr<Reader>& reader)
+  static std::string getElementValue(const SmartPtr<Reader>& reader)
   {
-    String value;
+    std::string value;
     for (NodeIterator iter(reader); iter.more(); iter.next())
       if (reader->getNodeType() == TEXT_NODE) value += reader->getNodeValue();
     return value;
   }
-  static String getAttribute(const SmartPtr<Reader>& reader, const String& name) { return reader->getAttribute(name); }
-  static bool hasAttribute(const SmartPtr<Reader>& reader, const String& name) { return reader->hasAttribute(name); }
+  static std::string getAttribute(const SmartPtr<Reader>& reader, const std::string& name) { return reader->getAttribute(name); }
+  static bool hasAttribute(const SmartPtr<Reader>& reader, const std::string& name) { return reader->hasAttribute(name); }
 
   struct Hash
   {

@@ -99,13 +99,13 @@ ToInteger(const SmartPtr<Value>& value)
   return int();
 }
 
-String
+std::string
 ToString(const SmartPtr<Value>& value)
 {
-  if (SmartPtr< Variant<String> > v = smart_cast< Variant<String> >(value))
+  if (SmartPtr< Variant<std::string> > v = smart_cast< Variant<std::string> >(value))
     return v->getValue();
   assert(false);
-  return String();
+  return std::string();
 }
 
 Length

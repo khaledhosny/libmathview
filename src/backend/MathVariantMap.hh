@@ -26,6 +26,6 @@
 #include "String.hh"
 #include "MathVariant.hh"
 
-void mapMathVariant(MathVariant, UCS4String&);
+void mapMathVariant(MathVariant, std::u32string&);
 
 #endif // __MathVariantMap_hh__

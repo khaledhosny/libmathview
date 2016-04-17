@@ -27,14 +27,14 @@
 #include "Value.hh"
 #include "SmartPtr.hh"
 
-typedef SmartPtr<Value> (*AttributeParser)(const UCS4String::const_iterator&,
-					   const UCS4String::const_iterator&,
-					   UCS4String::const_iterator&);
+typedef SmartPtr<Value> (*AttributeParser)(const std::u32string::const_iterator&,
+					   const std::u32string::const_iterator&,
+					   std::u32string::const_iterator&);
 
 struct AttributeSignature
 {
-  String name;
-  String fullName;
+  std::string name;
+  std::string fullName;
   AttributeParser parser;
   bool fromElement;
   bool fromContext;
@@ -44,7 +44,7 @@ struct AttributeSignature
   mutable SmartPtr<Value> defaultValue;
 
   SmartPtr<Value> getDefaultValue(void) const;
-  SmartPtr<Value> parseValue(const String&) const;
+  SmartPtr<Value> parseValue(const std::string&) const;
 };
 
 typedef const AttributeSignature* AttributeId;

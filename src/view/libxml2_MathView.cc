@@ -56,7 +56,7 @@ libxml2_MathView::unload()
 }
 
 bool
-libxml2_MathView::loadURI(const String& name)
+libxml2_MathView::loadURI(const std::string& name)
 {
   return loadURI(name.c_str());
 }

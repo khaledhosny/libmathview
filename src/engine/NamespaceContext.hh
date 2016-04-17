@@ -31,15 +31,15 @@
 class NamespaceContext : public Object
 {
 protected:
-  NamespaceContext(const String&, const SmartPtr<class View>&);
+  NamespaceContext(const std::string&, const SmartPtr<class View>&);
   virtual ~NamespaceContext();
 
 public:
-  String getNamespaceURI(void) const { return namespaceURI; }
+  std::string getNamespaceURI(void) const { return namespaceURI; }
   SmartPtr<class View> getView(void) const;
 
 private:
-  const String namespaceURI;
+  const std::string namespaceURI;
   WeakPtr<class View> view;
 };
 

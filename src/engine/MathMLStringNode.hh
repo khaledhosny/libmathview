@@ -29,20 +29,20 @@
 class MathMLStringNode: public MathMLTextNode
 {
 protected:
-  MathMLStringNode(const String&);
+  MathMLStringNode(const std::string&);
   virtual ~MathMLStringNode();
 
 public:
-  static SmartPtr<MathMLStringNode> create(const String& s)
+  static SmartPtr<MathMLStringNode> create(const std::string& s)
   { return new MathMLStringNode(s); }
 
   virtual AreaRef  format(class FormattingContext&);
 
   virtual unsigned GetLogicalContentLength(void) const;
-  virtual String   GetRawContent(void) const;
+  virtual std::string GetRawContent(void) const;
 
 private:
-  String content;
+  std::string content;
 };
 
 #endif // MathMLStringNode_hh

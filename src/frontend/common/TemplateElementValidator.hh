@@ -27,7 +27,7 @@ template <class Model>
 class TemplateElementValidator
 {
 public:
-  TemplateElementValidator(const String& ns = "*", const String& n = "*")
+  TemplateElementValidator(const std::string& ns = "*", const std::string& n = "*")
     : namespaceURI(ns), name(n)
   { }
 
@@ -40,8 +40,8 @@ public:
   }
 
 private:
-  String namespaceURI;
-  String name;
+  std::string namespaceURI;
+  std::string name;
 };
 
 #endif // __TemplateElementValidator_hh__

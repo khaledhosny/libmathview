@@ -89,7 +89,7 @@ protected:
   {
     static struct
     {
-      String tag;
+      std::string tag;
       MathMLUpdateMethod update;
     } mathml_tab[] = {
       { "math",          &TemplateBuilder::template updateElement<MathML_math_ElementBuilder> },
@@ -142,9 +142,9 @@ protected:
   SmartPtr<MathMLElement>
   update_MathML_mfenced_Element(const typename Model::Element& el) const
   {
-    String open = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, open)));
-    String close = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, close)));
-    String separators = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, separators)));
+    std::string open = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, open)));
+    std::string close = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, close)));
+    std::string separators = ToString(getAttributeValue(el, ATTRIBUTE_SIGNATURE(MathML, Fenced, separators)));
 
     std::vector<SmartPtr<MathMLElement> > content;
     getChildMathMLElements(el, content);
@@ -218,7 +218,7 @@ protected:
       {
 	if (Model::getNodeName(Model::asNode(e)) == "annotation-xml")
 	  {
-	    String encoding = Model::getAttribute(e, "encoding");
+	    std::string encoding = Model::getAttribute(e, "encoding");
 	    if (encoding == "MathML-Presentation")
 	      return getMathMLElement(typename Model::ElementIterator(e, MATHML_NS_URI).element());
 	  }
@@ -233,9 +233,9 @@ protected:
   {
     assert(el);
     
-    String alt        = Model::getAttribute(el, "alt");
-    String fontFamily = Model::getAttribute(el, "fontfamily");
-    String index      = Model::getAttribute(el, "index");
+    std::string alt        = Model::getAttribute(el, "alt");
+    std::string fontFamily = Model::getAttribute(el, "fontfamily");
+    std::string index      = Model::getAttribute(el, "index");
     
     if (alt.empty() || fontFamily.empty() || index.empty())
       {
@@ -251,7 +251,7 @@ protected:
   {
     assert(el);
     
-    const String edge = Model::getAttribute(el, "edge");
+    const std::string edge = Model::getAttribute(el, "edge");
     
     TokenId align = T__NOTVALID;
     
@@ -776,7 +776,7 @@ protected:
 	  const SmartPtr<Value> rowColumnAlign = builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, columnalign));
 	  const SmartPtr<Value> rowGroupAlign = builder.getAttributeValue(row, ATTRIBUTE_SIGNATURE(MathML, TableRow, groupalign));
 
-	  const String name = Model::getNodeName(Model::asNode(row));
+	  const std::string name = Model::getNodeName(Model::asNode(row));
 	  if (name == "mtr" || name == "mlabeledtr")
 	    {
 	      unsigned columnIndex = 0;
@@ -866,7 +866,7 @@ protected:
 	{
 	  typename Model::Element node = iter.element();
 	  assert(node);
-	  const String nodeName = Model::getNodeName(Model::asNode(node));
+	  const std::string nodeName = Model::getNodeName(Model::asNode(node));
 	  if (nodeName == "mprescripts")
 	    {
 	      if (preScripts)
@@ -1004,7 +1004,7 @@ protected:
 	  case Model::TEXT_NODE:
 	    {
 	      // ok, we have a chunk of text
-	      String s = collapseSpaces(Model::getNodeValue(n));
+	      std::string s = collapseSpaces(Model::getNodeValue(n));
 	      iter.next();
 
 	      // ...but spaces at the at the beginning (end) are deleted only if this
@@ -1020,7 +1020,7 @@ protected:
 	    {	    
 	      if (Model::getNodeNamespaceURI(n) == MATHML_NS_URI)
 		{
-		  const String nodeName = Model::getNodeName(n);
+		  const std::string nodeName = Model::getNodeName(n);
 		  if (nodeName == "mglyph")
 		    content.push_back(update_MathML_mglyph_Node(Model::asElement(n)));
 		  else if (nodeName == "malignmark")
@@ -1039,7 +1039,7 @@ protected:
   }
 
   SmartPtr<MathMLTextNode>
-  createMathMLTextNode(const String& content) const
+  createMathMLTextNode(const std::string& content) const
   {
     if (content == MathMLFunctionApplicationNode::getContent())
       return MathMLFunctionApplicationNode::create();
@@ -1070,7 +1070,7 @@ public:
   {
     if (typename Model::Element root = this->getRootModelElement())
       {
-	const String ns = Model::getNodeNamespaceURI(Model::asNode(root));
+	const std::string ns = Model::getNodeNamespaceURI(Model::asNode(root));
 	if (ns == MATHML_NS_URI) return getMathMLElement(root);
       }
     return 0;
@@ -1078,7 +1078,7 @@ public:
 
 private:
   typedef SmartPtr<class MathMLElement> (TemplateBuilder::* MathMLUpdateMethod)(const typename Model::Element&) const;
-  typedef std::unordered_map<String, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
+  typedef std::unordered_map<std::string, MathMLUpdateMethod, StringHash, StringEq> MathMLBuilderMap;
   static MathMLBuilderMap mathmlMap;
   static bool mathmlMapInitialized;
   mutable RefinementContext refinementContext;

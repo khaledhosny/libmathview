@@ -50,7 +50,7 @@ libxmlXmlReader::getNodeType() const
   return xmlTextReaderNodeType(reader);
 }
 
-String
+std::string
 libxmlXmlReader::getNodeName() const
 {
   assert(valid());
@@ -60,14 +60,14 @@ libxmlXmlReader::getNodeName() const
     return fromReaderString(xmlTextReaderConstName(reader));
 }
 
-String
+std::string
 libxmlXmlReader::getNodeValue() const
 {
   assert(valid());
   return fromReaderString(xmlTextReaderConstValue(reader));
 }
 
-String
+std::string
 libxmlXmlReader::getNodeNamespaceURI() const
 {
   assert(valid());
@@ -82,7 +82,7 @@ libxmlXmlReader::getAttributeCount() const
 }
 
 void
-libxmlXmlReader::getAttribute(int index, String& namespaceURI, String& name, String& value) const
+libxmlXmlReader::getAttribute(int index, std::string& namespaceURI, std::string& name, std::string& value) const
 {
   assert(valid());
   int res = xmlTextReaderMoveToAttributeNo(reader, index);
@@ -96,22 +96,22 @@ libxmlXmlReader::getAttribute(int index, String& namespaceURI, String& name, Str
   xmlTextReaderMoveToElement(reader);
 }
 
-String
-libxmlXmlReader::getAttribute(const String& name) const
+std::string
+libxmlXmlReader::getAttribute(const std::string& name) const
 {
   assert(valid());
   if (xmlTextReaderMoveToAttribute(reader, toReaderString(name.c_str())))
     {
-      String res = fromReaderString(xmlTextReaderConstValue(reader));
+      std::string res = fromReaderString(xmlTextReaderConstValue(reader));
       xmlTextReaderMoveToElement(reader);
       return res;
     }
   else
-    return String();
+    return std::string();
 }
 
 bool
-libxmlXmlReader::hasAttribute(const String& name) const
+libxmlXmlReader::hasAttribute(const std::string& name) const
 {
   assert(valid());
   if (xmlTextReaderMoveToAttribute(reader, toReaderString(name.c_str())))

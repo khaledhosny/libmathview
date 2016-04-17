@@ -39,21 +39,21 @@ customXmlReader::~customXmlReader()
   user_data = 0;
 }
 
-String
+std::string
 customXmlReader::fromReaderString(char* str) const
 {
   if (str)
     {
-      String res(str);
+      std::string res(str);
       (*reader->free_string)(str);
       return res;
     }
   else
-    return String();
+    return std::string();
 }
 
 void
-customXmlReader::getAttribute(int index, String& namespaceURI, String& name, String& value) const
+customXmlReader::getAttribute(int index, std::string& namespaceURI, std::string& name, std::string& value) const
 {
   char* c_namespaceURI;
   char* c_name;

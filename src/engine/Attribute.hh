@@ -32,21 +32,21 @@
 class Attribute : public Object
 {
 protected:
-  Attribute(const struct AttributeSignature&, const String&);
+  Attribute(const struct AttributeSignature&, const std::string&);
   virtual ~Attribute();
 
 public:
-  static SmartPtr<Attribute> create(const struct AttributeSignature& sig, const String& value)
+  static SmartPtr<Attribute> create(const struct AttributeSignature& sig, const std::string& value)
   { return new Attribute(sig, value); }
 
   const struct AttributeSignature& getSignature(void) const { return signature; }
-  String getUnparsedValue(void) const { return unparsedValue; }
+  std::string getUnparsedValue(void) const { return unparsedValue; }
   SmartPtr<Value> getValue(void) const;
   bool equal(const SmartPtr<Attribute>&) const;
 
 private:
   const struct AttributeSignature& signature;
-  String unparsedValue;
+  std::string unparsedValue;
   mutable SmartPtr<Value> value;
 };
 

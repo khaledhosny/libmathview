@@ -36,7 +36,7 @@ protected:
 public:
   virtual AreaRef format(class FormattingContext&) = 0;
 
-  virtual String   GetRawContent(void) const { return String(); }
+  virtual std::string GetRawContent(void) const { return std::string(); }
   virtual unsigned GetLogicalContentLength(void) const { return 0; }
 };
 

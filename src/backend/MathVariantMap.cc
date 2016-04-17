@@ -68,7 +68,7 @@ static mapType map[] =
 };
 
 void
-mapMathVariant(MathVariant variant, UCS4String& str)
+mapMathVariant(MathVariant variant, std::u32string& str)
 {
   assert(variant >= NORMAL_VARIANT && variant <= MONOSPACE_VARIANT);
   mapType m = map[variant - NORMAL_VARIANT];

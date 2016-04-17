@@ -32,7 +32,7 @@ enum TokenId
   };
 
 TokenId tokenIdOfString(const char*);
-TokenId tokenIdOfString(const String&);
+TokenId tokenIdOfString(const std::string&);
 const char* stringOfTokenId(TokenId);
 
 #endif // __token_hh__

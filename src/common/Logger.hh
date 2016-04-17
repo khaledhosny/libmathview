@@ -37,7 +37,7 @@ public:
   { return new Logger(); }
 
 protected:
-  virtual void outString(const String&) const;
+  virtual void outString(const std::string&) const;
 };
 
 #endif // _-Logger_hh__

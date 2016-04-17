@@ -29,7 +29,7 @@ template <class Model>
 class TemplateElementIterator : public TemplateElementValidator<Model>
 {
 public:
-  TemplateElementIterator(const typename Model::Element& root, const String& ns = "*", const String& n = "*")
+  TemplateElementIterator(const typename Model::Element& root, const std::string& ns = "*", const std::string& n = "*")
     : TemplateElementValidator<Model>(ns, n),
       currentElement(findValidNodeForward(Model::getFirstChild(Model::asNode(root))))
   { assert(root); }

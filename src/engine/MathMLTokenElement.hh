@@ -41,7 +41,7 @@ public:
   SmartPtr<class MathMLTextNode> getChild(unsigned i) const { return content.getChild(i); }
   void setChild(unsigned i, const SmartPtr<class MathMLTextNode>& child) { content.setChild(this, i, child); }
   void appendChild(const SmartPtr<class MathMLTextNode>& child) { content.appendChild(this, child); }
-  void append(const String&);
+  void append(const std::string&);
   void swapContent(std::vector< SmartPtr<MathMLTextNode> >& newContent) { content.swapContent(this, newContent); }
   const std::vector< SmartPtr<class MathMLTextNode> >& getContent(void) const { return content.getContent(); }
 
@@ -49,7 +49,7 @@ public:
 
   bool           IsNonMarking(void) const;
 
-  String         GetRawContent(void) const;
+  std::string    GetRawContent(void) const;
   unsigned       GetLogicalContentLength(void) const;
   unsigned getContentLength(void) const;
 

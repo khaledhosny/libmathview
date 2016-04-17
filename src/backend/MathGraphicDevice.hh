@@ -48,9 +48,9 @@ public:
 
   // token formatting
 
-  AreaRef string(const class FormattingContext&, const String& str) const;
+  AreaRef string(const class FormattingContext&, const std::string& str) const;
   virtual AreaRef glyph(const class FormattingContext&,
-                        const String& alt, const String& fontFamily,
+                        const std::string& alt, const std::string& fontFamily,
                         unsigned long index) const;
 
   // layout schemata
@@ -81,7 +81,7 @@ public:
                             const AreaRef& overScript, bool accent) const;
   virtual AreaRef enclose(const class FormattingContext&,
                           const AreaRef& base,
-                          const String& notation) const;
+                          const std::string& notation) const;
 
   // extra methods
 
@@ -89,10 +89,10 @@ public:
   virtual AreaRef dummy(const class FormattingContext& context) const;
 
 protected:
-  AreaRef stretchedString(const class FormattingContext&, const String& str) const;
-  AreaRef unstretchedString(const class FormattingContext&, const String& str) const;
+  AreaRef stretchedString(const class FormattingContext&, const std::string& str) const;
+  AreaRef unstretchedString(const class FormattingContext&, const std::string& str) const;
   AreaRef stretchStringV(const class FormattingContext&,
-                         const String& str,
+                         const std::string& str,
                          const scaled& height,
                          const scaled& depth) const;
   virtual void calculateDefaultScriptShift(const class FormattingContext&,

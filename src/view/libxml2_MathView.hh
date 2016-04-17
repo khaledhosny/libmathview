@@ -38,7 +38,7 @@ public:
 
   virtual void unload(void);
   bool loadURI(const char*);
-  bool loadURI(const String&);
+  bool loadURI(const std::string&);
   bool loadBuffer(const char*);
   bool loadDocument(xmlDoc*);
   bool loadRootElement(xmlElement*);

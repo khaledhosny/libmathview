@@ -70,13 +70,13 @@ static GOptionEntry entries[] = {
 };
 
 static cairo_surface_t*
-create_surface(const String filename, double width, double height)
+create_surface(const std::string filename, double width, double height)
 {
   cairo_surface_t* surface = NULL;
   std::string::size_type n = filename.find(".");
   if (n != std::string::npos && n < filename.length() - 1)
   {
-    const String extension = filename.substr(n + 1);
+    const std::string extension = filename.substr(n + 1);
     if (extension == "png")
       surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
 #ifdef CAIRO_HAS_SVG_SURFACE
@@ -123,8 +123,8 @@ main(int argc, char *argv[])
     exit(1);
   }
 
-  const String input_file = remaining_args[0];
-  const String output_file = remaining_args[1];
+  const std::string input_file = remaining_args[0];
+  const std::string output_file = remaining_args[1];
 
   SmartPtr<AbstractLogger> logger = Logger::create();
 

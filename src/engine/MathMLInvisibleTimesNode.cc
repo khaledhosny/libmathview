@@ -30,11 +30,11 @@
 #include "MathGraphicDevice.hh"
 #include "traverseAux.hh"
 
-String
+std::string
 MathMLInvisibleTimesNode::getSpace(const FormattingContext& ctxt)
 {
-  static const String noSpace = StringOfUCS4String(UCS4String(1, 0x200b));
-  static const String someSpace = StringOfUCS4String(UCS4String(1, 0x205f));
+  static const std::string noSpace = StringOfUCS4String(std::u32string(1, 0x200b));
+  static const std::string someSpace = StringOfUCS4String(std::u32string(1, 0x205f));
 
   // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getMathMLElement()))
@@ -69,13 +69,13 @@ AreaRef
 MathMLInvisibleTimesNode::format(FormattingContext& ctxt)
 { return ctxt.MGD()->string(ctxt, getSpace(ctxt)); }
 
-String
+std::string
 MathMLInvisibleTimesNode::getContent()
 {
-  static const String content = StringOfUCS4String(UCS4String(1, 0x2062));
+  static const std::string content = StringOfUCS4String(std::u32string(1, 0x2062));
   return content;
 }
 
-String
+std::string
 MathMLInvisibleTimesNode::GetRawContent() const
 { return getContent(); }

@@ -80,9 +80,9 @@ ShaperManager::shapeAux(ShapingContext& context) const
 
 AreaRef
 ShaperManager::shape(const FormattingContext& ctxt,
-		     const String& str) const
+                     const std::string& str) const
 {
-  UCS4String source = UCS4StringOfString(str);
+  std::u32string source = UCS4StringOfString(str);
 #if 0
   // XXX: We might want to handle math variant differently for text mode, e.g.
   // by using font styles instead so that we get proper text kerning and so on.
@@ -100,11 +100,11 @@ ShaperManager::shape(const FormattingContext& ctxt,
 
 AreaRef
 ShaperManager::shapeStretchy(const FormattingContext& ctxt,
-			     const String& str,
+			     const std::string& str,
 			     const scaled& vSpan,
 			     const scaled& hSpan) const
 {
-  UCS4String source = UCS4StringOfString(str);
+  std::u32string source = UCS4StringOfString(str);
 #if 0
   // XXX: does it make sense to do math variant mapping for stretchy
   // characters?
@@ -190,9 +190,9 @@ ShaperManager::getShaper(unsigned si) const
 
 AreaRef
 ShaperManager::compose(const FormattingContext& context,
-		       const AreaRef base, const UCS4String baseSource,
-	       	       const AreaRef script, const UCS4String scriptSource,
-	       	       bool overScript)
+		       const AreaRef base, const std::u32string baseSource,
+		       const AreaRef script, const std::u32string scriptSource,
+		       bool overScript)
 {
   scaled dx = scaled::zero();
   scaled dy = scaled::zero();

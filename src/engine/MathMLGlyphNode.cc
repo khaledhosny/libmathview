@@ -28,7 +28,7 @@
 #include "FormattingContext.hh"
 #include "MathGraphicDevice.hh"
 
-MathMLGlyphNode::MathMLGlyphNode(const String& f, const String& i, const String& a)
+MathMLGlyphNode::MathMLGlyphNode(const std::string& f, const std::string& i, const std::string& a)
   : family(f), index(i), alt(a)
 { }
 

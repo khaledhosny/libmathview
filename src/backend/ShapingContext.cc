@@ -29,7 +29,7 @@
 #include "ShapingContext.hh"
 
 ShapingContext::ShapingContext(const FormattingContext& c,
-			       const UCS4String& src,
+			       const std::u32string& src,
 			       const std::vector<GlyphSpec>& s,
 			       const scaled& v, const scaled& h)
   : m_ctxt(c), m_source(src), m_spec(s), m_vSpan(v), m_hSpan(h), m_index(0)
@@ -105,27 +105,27 @@ ShapingContext::nextChar() const
   return (m_index + 1 < m_source.length()) ? m_source[m_index + 1] : 0;
 }
 
-UCS4String
+std::u32string
 ShapingContext::prevString() const
 {
   return m_source.substr(0, m_index);
 }
 
-UCS4String
-ShapingContext::prevString(UCS4String::size_type l) const
+std::u32string
+ShapingContext::prevString(std::u32string::size_type l) const
 {
   if (l > m_index) l = m_index;
   return m_source.substr(m_index - l, l);
 }
 
-UCS4String
+std::u32string
 ShapingContext::nextString() const
 {
   return m_source.substr(m_index, m_source.length() - m_index);
 }
 
-UCS4String
-ShapingContext::nextString(UCS4String::size_type l) const
+std::u32string
+ShapingContext::nextString(std::u32string::size_type l) const
 {
   if (l > m_source.length() - m_index) l = m_source.length() - m_index;
   return m_source.substr(m_index, l);

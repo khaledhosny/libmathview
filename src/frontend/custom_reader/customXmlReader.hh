@@ -47,15 +47,15 @@ public:
   bool more(void) const { return (*reader->more)(user_data); }
 
   int getNodeType(void) const { return (*reader->get_node_type)(user_data); }
-  String getNodeName(void) const { return fromReaderString((*reader->get_node_name)(user_data)); }
-  String getNodeValue(void) const { return fromReaderString((*reader->get_node_value)(user_data)); }
-  String getNodeNamespaceURI(void) const { return fromReaderString((*reader->get_node_namespace_uri)(user_data)); }
+  std::string getNodeName(void) const { return fromReaderString((*reader->get_node_name)(user_data)); }
+  std::string getNodeValue(void) const { return fromReaderString((*reader->get_node_value)(user_data)); }
+  std::string getNodeNamespaceURI(void) const { return fromReaderString((*reader->get_node_namespace_uri)(user_data)); }
   void* getNodeId(void) const { return (*reader->get_node_id)(user_data); }
 
   int getAttributeCount(void) const { return (*reader->get_attribute_count)(user_data); }
-  void getAttribute(int index, String&, String&, String&) const;
-  String getAttribute(const String& name) const { return fromReaderString((*reader->get_attribute)(user_data, name.c_str())); }
-  bool hasAttribute(const String& name) const { return (*reader->has_attribute)(user_data, name.c_str()); }
+  void getAttribute(int index, std::string&, std::string&, std::string&) const;
+  std::string getAttribute(const std::string& name) const { return fromReaderString((*reader->get_attribute)(user_data, name.c_str())); }
+  bool hasAttribute(const std::string& name) const { return (*reader->has_attribute)(user_data, name.c_str()); }
 
   void reset(void) { (*reader->reset)(user_data); }
   void moveToFirstChild(void) { (*reader->move_to_first_child)(user_data); }
@@ -63,7 +63,7 @@ public:
   void moveToParentNode(void) { (*reader->move_to_parent_node)(user_data); }
 
 protected:
-  String fromReaderString(char*) const;
+  std::string fromReaderString(char*) const;
 
 private:
   const c_customXmlReader* reader;

@@ -45,7 +45,7 @@ MathShaper::shape(ShapingContext& context) const
   hb_face_t* face = hb_font_get_face(font);
   int upem = hb_face_get_upem(face);
 
-  UCS4String source = context.getSource();
+  std::u32string source = context.getSource();
   hb_buffer_t* buffer = hb_buffer_create();
 
   hb_buffer_set_direction(buffer, HB_DIRECTION_LTR);

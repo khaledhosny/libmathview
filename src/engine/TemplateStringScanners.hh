@@ -29,16 +29,16 @@
 class Scan
 {
 public:
-  static UCS4String::value_type
-  toChar(const UCS4String::const_iterator& begin, const UCS4String::const_iterator&)
+  static std::u32string::value_type
+  toChar(const std::u32string::const_iterator& begin, const std::u32string::const_iterator&)
   {
     return *begin;
   }
 
-  static String
-  toString(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  static std::string
+  toString(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
-    return StringOfUCS4String(UCS4String(begin, end));
+    return StringOfUCS4String(std::u32string(begin, end));
   }
 };
 
@@ -48,7 +48,7 @@ class ScanAny : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
     if (begin != end)
       {
@@ -60,7 +60,7 @@ public:
   }
 
   static inline char
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator&)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator&)
   {
     return *begin;
   }
@@ -72,7 +72,7 @@ class ScanSpace : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
     if (begin != end && isXmlSpace(*begin))
       {
@@ -86,12 +86,12 @@ public:
 
 // ScanLiteral: character
 
-template <UCS4String::value_type c>
+template <std::u32string::value_type c>
 class ScanLiteral : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
     if (begin != end && *begin == c)
       {
@@ -105,12 +105,12 @@ public:
 
 // ScanRange: range of characters
 
-template <UCS4String::value_type first, UCS4String::value_type last>
+template <std::u32string::value_type first, std::u32string::value_type last>
 class ScanRange : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
     if (begin != end && *begin >= first && *begin <= last)
       {
@@ -129,9 +129,9 @@ class ScanSeq : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     if (E1::scan(begin, end, p))
       return E2::scan(p, end, next);
     else
@@ -146,9 +146,9 @@ class ScanRep : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p = begin;
+    std::u32string::const_iterator p = begin;
     unsigned n;
     for (n = 0; n < n0 && E::scan(p, end, next); n++)
       p = next;
@@ -163,11 +163,11 @@ class ScanChoice : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
     if (E1::scan(begin, end, next))
       {
-	UCS4String::const_iterator next2;
+	std::u32string::const_iterator next2;
 	if (E2::scan(begin, end, next2))
 	  next = std::max(next, next2);
 	return true;
@@ -184,7 +184,7 @@ class ScanZeroOrOne : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
     if (E::scan(begin, end, next))
       return true;
@@ -203,9 +203,9 @@ class ScanOneOrMore : public Scan
 {
 public:
   static inline bool
-  scan(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end, UCS4String::const_iterator& next)
+  scan(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end, std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p = begin;
+    std::u32string::const_iterator p = begin;
     while (E::scan(p, end, next))
       p = next;
 
@@ -255,7 +255,7 @@ class ScanSign : public ScanZeroOrOne<ScanPlusOrMinus>
 {
 public:
   static int
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     if (begin != end)
       return (*begin == '+') ? 1 : -1;
@@ -268,10 +268,10 @@ class ScanUnsignedInteger : public ScanOneOrMore<ScanDecDigit>
 {
 public:
   static int
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     int v = 0;
-    for (UCS4String::const_iterator p = begin; p != end; p++)
+    for (std::u32string::const_iterator p = begin; p != end; p++)
       v = v * 10 + *p - '0';
     return v;
   }
@@ -281,7 +281,7 @@ class ScanInteger : public ScanSeq<ScanOptionalMinus,ScanUnsignedInteger>
 {
 public:
   static int
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     if (*begin == '-')
       return -ScanUnsignedInteger::parse(begin + 1, end);
@@ -294,7 +294,7 @@ class ScanToken : public ScanChoice<ScanKeywordToken,ScanSpecialToken>
 {
 public:
   static TokenId
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     return tokenIdOfString(Scan::toString(begin, end));
   }
@@ -304,7 +304,7 @@ class ScanRGBColor : public ScanRGBColorValue
 {
 private:
   static unsigned
-  hexOfChar(UCS4String::value_type ch)
+  hexOfChar(std::u32string::value_type ch)
   {
     if (ch >= '0' && ch <= '9') return ch - '0';
     else if (ch >= 'A' && ch <= 'F') return ch - 'A' + 10;
@@ -313,7 +313,7 @@ private:
 
 public:
   static RGBColor
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     switch (end - begin)
       {
@@ -348,13 +348,13 @@ class ScanUnsignedNumber : public ScanChoice<ScanSeq<ScanUnsignedInteger,ScanDec
 {
 public:
   static float
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     bool decimal = false; // true if decimal point found
     unsigned n = 0;       // number of digits after decimal point
 
     float v = float();
-    UCS4String::const_iterator p = begin;
+    std::u32string::const_iterator p = begin;
     while (p != end)
       {
 	if (*p == '.')
@@ -377,7 +377,7 @@ class ScanNumber : public ScanSeq<ScanOptionalMinus,ScanUnsignedNumber>
 {
 public:
   static float
-  parse(const UCS4String::const_iterator& begin, const UCS4String::const_iterator& end)
+  parse(const std::u32string::const_iterator& begin, const std::u32string::const_iterator& end)
   {
     if (*begin == '-')
       return -ScanUnsignedNumber::parse(begin + 1, end);

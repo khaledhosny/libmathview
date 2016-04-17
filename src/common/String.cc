@@ -27,35 +27,35 @@
 
 #include "String.hh"
 
-String
-trimSpacesLeft(const String& s)
+std::string
+trimSpacesLeft(const std::string& s)
 {
-  String::const_iterator i = s.begin();
+  std::string::const_iterator i = s.begin();
   while (i != s.end() && isXmlSpace(*i)) i++;
   if (i != s.begin())
-    return String(i, s.end());
+    return std::string(i, s.end());
   else
     return s;
 }
 
-String
-trimSpacesRight(const String& s)
+std::string
+trimSpacesRight(const std::string& s)
 {
-  String::const_iterator i = s.end();
+  std::string::const_iterator i = s.end();
   while (i != s.begin() && isXmlSpace(*(i - 1))) i--;
   if (i != s.end())
-    return String(s.begin(), i);
+    return std::string(s.begin(), i);
   else
     return s;
 }
 
-String
-collapseSpaces(const String& s)
+std::string
+collapseSpaces(const std::string& s)
 {
-  String res;
+  std::string res;
   res.reserve(s.length());
 
-  String::const_iterator i = s.begin();
+  std::string::const_iterator i = s.begin();
   while (i != s.end())
     if (isXmlSpace(*i))
       {
@@ -70,10 +70,10 @@ collapseSpaces(const String& s)
   return res;
 }
 
-String
-deleteSpaces(const String& s)
+std::string
+deleteSpaces(const std::string& s)
 {
-  String res;
+  std::string res;
   res.reserve(s.length());
   for (const auto & elem : s)
     if (!isXmlSpace(elem))
@@ -81,28 +81,28 @@ deleteSpaces(const String& s)
   return res;
 }
 
-String
-toLowerCase(const String& s)
+std::string
+toLowerCase(const std::string& s)
 {
-  String res;
+  std::string res;
   res.reserve(s.length());
   for (const auto & elem : s)
     res.push_back(tolower(elem));
   return res;
 }
 
-String
-StringOfUCS4String(const UCS4String& s)
+std::string
+StringOfUCS4String(const std::u32string& s)
 {
-  String result;
+  std::string result;
   utf8::utf32to8(s.data(), s.data() + s.length(), back_inserter(result));
   return result;
 }
 
-UCS4String
-UCS4StringOfString(const String& s)
+std::u32string
+UCS4StringOfString(const std::string& s)
 {
-  UCS4String result;
+  std::u32string result;
   utf8::utf8to32(s.data(), s.data() + s.length(), back_inserter(result));
   return result;
 }

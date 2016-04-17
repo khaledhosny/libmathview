@@ -41,7 +41,7 @@ bool IsNumber(const SmartPtr<Value>&);
 bool ToBoolean(const SmartPtr<Value>&);
 int ToInteger(const SmartPtr<Value>&);
 float ToNumber(const SmartPtr<Value>&);
-String ToString(const SmartPtr<Value>&);
+std::string ToString(const SmartPtr<Value>&);
 SmartPtr<ValueSequence> ToSequence(const SmartPtr<Value>&);
 RGBColor ToRGBColor(const SmartPtr<Value>&);
 RGBColor ToRGB(const SmartPtr<Value>&);

@@ -44,7 +44,7 @@ public:
   static SmartPtr<libxmlXmlReader> create(xmlTextReaderPtr r)
   { return new libxmlXmlReader(r); }
 
-  static SmartPtr<libxmlXmlReader> create(const String& path, bool subst = false)
+  static SmartPtr<libxmlXmlReader> create(const std::string& path, bool subst = false)
   { 
     if (xmlTextReaderPtr reader = xmlNewTextReaderFilename(path.c_str()))
       {
@@ -59,15 +59,15 @@ public:
   bool more(void) const;
 
   int getNodeType(void) const;
-  String getNodeName(void) const;
-  String getNodeValue(void) const;
-  String getNodeNamespaceURI(void) const;
+  std::string getNodeName(void) const;
+  std::string getNodeValue(void) const;
+  std::string getNodeNamespaceURI(void) const;
   size_t getNodeId(void) const { return 0; }
 
   int getAttributeCount(void) const;
-  void getAttribute(int, String&, String&, String&) const;
-  String getAttribute(const String&) const;
-  bool hasAttribute(const String&) const;
+  void getAttribute(int, std::string&, std::string&, std::string&) const;
+  std::string getAttribute(const std::string&) const;
+  bool hasAttribute(const std::string&) const;
 
   void reset(void);
   void moveToFirstChild(void);
@@ -76,8 +76,8 @@ public:
 
 protected:
   bool valid(void) const { return fresh && error == 1; }
-  static String fromReaderString(const xmlChar* str) { return reinterpret_cast<const String::value_type*>(str); }
-  static const xmlChar* toReaderString(const String& str) { return BAD_CAST(str.c_str()); }
+  static std::string fromReaderString(const xmlChar* str) { return reinterpret_cast<const std::string::value_type*>(str); }
+  static const xmlChar* toReaderString(const std::string& str) { return BAD_CAST(str.c_str()); }
 
 private:
   xmlTextReaderPtr reader;

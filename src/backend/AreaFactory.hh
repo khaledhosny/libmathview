@@ -68,7 +68,7 @@ public:
   { return HideArea::create(area); }
   virtual SmartPtr<HorizontalArrayArea> horizontalArray(const std::vector<AreaRef>& content) const
   { return HorizontalArrayArea::create(content); }
-  virtual SmartPtr<GlyphStringArea> glyphString(const std::vector<AreaRef>& content, const std::vector<CharIndex>& counters, UCS4String s) const
+  virtual SmartPtr<GlyphStringArea> glyphString(const std::vector<AreaRef>& content, const std::vector<CharIndex>& counters, std::u32string s) const
   { return GlyphStringArea::create(content, counters, s); }
   virtual SmartPtr<VerticalArrayArea> verticalArray(const std::vector<AreaRef>& content, AreaIndex ref) const
   { return VerticalArrayArea::create(content, ref); }

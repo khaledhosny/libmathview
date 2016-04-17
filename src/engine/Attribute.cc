@@ -27,7 +27,7 @@
 #include "Attribute.hh"
 #include "AttributeSignature.hh"
 
-Attribute::Attribute(const AttributeSignature& sig, const String& v)
+Attribute::Attribute(const AttributeSignature& sig, const std::string& v)
   : signature(sig), unparsedValue(v)
 { }
 

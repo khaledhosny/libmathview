@@ -26,18 +26,15 @@
 #include <cstdint>
 #include <string>
 
-typedef std::basic_string<char> String;
-typedef std::basic_string<char32_t> UCS4String;
-
 inline bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d || ch == 0x20; }
 
-String trimSpacesLeft(const String&);
-String trimSpacesRight(const String&);
-String collapseSpaces(const String&);
-String deleteSpaces(const String&);
-String toLowerCase(const String&);
+std::string trimSpacesLeft(const std::string&);
+std::string trimSpacesRight(const std::string&);
+std::string collapseSpaces(const std::string&);
+std::string deleteSpaces(const std::string&);
+std::string toLowerCase(const std::string&);
 
-String StringOfUCS4String(const UCS4String&);
-UCS4String UCS4StringOfString(const String&);
+std::string StringOfUCS4String(const std::u32string&);
+std::u32string UCS4StringOfString(const std::string&);
 
 #endif // __String_hh__

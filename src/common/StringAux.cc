@@ -28,10 +28,10 @@
 #include "StringAux.hh"
 
 std::string
-escape(const UCS4String& s)
+escape(const std::u32string& s)
 {
   std::ostringstream os;
-  UCS4String::const_iterator i = s.begin();
+  std::u32string::const_iterator i = s.begin();
   while (i != s.end())
     {
       if (*i >= std::numeric_limits<char>::min() && *i <= std::numeric_limits<char>::max())
@@ -52,6 +52,6 @@ escape(const UCS4String& s)
 }
 
 std::ostream&
-operator<<(std::ostream& os, const UCS4String& s)
+operator<<(std::ostream& os, const std::u32string& s)
 { return os << escape(s); }
 

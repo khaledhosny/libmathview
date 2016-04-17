@@ -39,7 +39,7 @@ protected:
 public:
   static SmartPtr<MathMLOperatorDictionary> create(void) { return new MathMLOperatorDictionary; }
 
-  void search(const String&,
+  void search(const std::string&,
 	      SmartPtr<class AttributeSet>&,
 	      SmartPtr<class AttributeSet>&,
 	      SmartPtr<class AttributeSet>&) const;
@@ -56,7 +56,7 @@ private:
     SmartPtr<class AttributeSet> postfix;
   };
 
-  typedef std::unordered_map<String,FormDefaults,StringHash,StringEq> Dictionary;
+  typedef std::unordered_map<std::string,FormDefaults,StringHash,StringEq> Dictionary;
   Dictionary items;
 };
 

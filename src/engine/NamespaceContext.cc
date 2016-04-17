@@ -26,8 +26,8 @@
 #include "NamespaceContext.hh"
 #include "Element.hh"
 
-NamespaceContext::NamespaceContext(const String& ns,
-				   const SmartPtr<View>& v)
+NamespaceContext::NamespaceContext(const std::string& ns,
+                                   const SmartPtr<View>& v)
   : namespaceURI(ns), view(v)
 { }
 

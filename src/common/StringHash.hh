@@ -27,14 +27,14 @@
 
 #include "String.hh"
 
-struct StringHash : public std::unary_function<String, size_t>
+struct StringHash : public std::unary_function<std::string, size_t>
 {
-  size_t operator()(const String&) const;
+  size_t operator()(const std::string&) const;
 };
 
-struct StringEq : public std::binary_function<String, String, bool>
+struct StringEq : public std::binary_function<std::string, std::string, bool>
 {
-  bool operator()(const String& s1, const String& s2) const
+  bool operator()(const std::string& s1, const std::string& s2) const
   { return s1 == s2; }
 };
 

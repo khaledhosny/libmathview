@@ -46,8 +46,8 @@ struct libxml2_Model
 
   // method for parsing a model
   // MUST be available
-  static xmlDoc* document(const class AbstractLogger&, const String&, bool = false);
-  static xmlDoc* documentFromBuffer(const class AbstractLogger&, const String&, bool = false);
+  static xmlDoc* document(const class AbstractLogger&, const std::string&, bool = false);
+  static xmlDoc* documentFromBuffer(const class AbstractLogger&, const std::string&, bool = false);
 
   // method for freeing a document
   // MUST be available, may be noop
@@ -62,16 +62,16 @@ struct libxml2_Model
   // methods for querying nodes
   // MUST be available for TemplateBuilder to work
   static unsigned getNodeType(const Node& n) { return n->type; }
-  static String getNodeName(const Node&);
-  static String getNodeValue(const Node&);
-  static String getNodeNamespaceURI(const Node&);
+  static std::string getNodeName(const Node&);
+  static std::string getNodeValue(const Node&);
+  static std::string getNodeNamespaceURI(const Node&);
 
   // methods for querying elements
   // MUST be available for TemplateBuilder to work
-  static String getElementValue(const Element&);
-  static String getAttribute(const Element&, const String&);
+  static std::string getElementValue(const Element&);
+  static std::string getAttribute(const Element&, const std::string&);
   // MUST be implemented if the default RefinementContext is used
-  static bool hasAttribute(const Element&, const String&);
+  static bool hasAttribute(const Element&, const std::string&);
 
   // methods for navigating the model
   // must be available if the default iterators are used
@@ -81,8 +81,8 @@ struct libxml2_Model
   { return n->children; }
 
   // auxiliary conversion functions from/to libxml2 strings
-  static String fromModelString(const xmlChar* str) { return reinterpret_cast<const String::value_type*>(str); }
-  static const xmlChar* toModelString(const String& str) { return BAD_CAST(str.c_str()); }
+  static std::string fromModelString(const xmlChar* str) { return reinterpret_cast<const std::string::value_type*>(str); }
+  static const xmlChar* toModelString(const std::string& str) { return BAD_CAST(str.c_str()); }
 
   // MUST be available if the default linker is used
   struct Hash

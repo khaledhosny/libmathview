@@ -28,13 +28,13 @@
 
 struct CachedShapedStringKey
 {
-  CachedShapedStringKey(const String& s, MathVariant v, const scaled& sz)
+  CachedShapedStringKey(const std::string& s, MathVariant v, const scaled& sz)
     : source(s), variant(v), size(sz) { }
 
   bool operator==(const CachedShapedStringKey& key) const
   { return source == key.source && variant == key.variant && size == key.size; }
 
-  String source;
+  std::string source;
   MathVariant variant;
   scaled size;
 };
@@ -47,7 +47,7 @@ struct CachedShapedStringKeyHash
 
 struct CachedShapedStretchyStringKey : public CachedShapedStringKey
 {
-  CachedShapedStretchyStringKey(const String& s,
+  CachedShapedStretchyStringKey(const std::string& s,
 				MathVariant v,
 				const scaled& sz,
 				const scaled& sh,

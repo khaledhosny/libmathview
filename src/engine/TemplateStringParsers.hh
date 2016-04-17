@@ -38,9 +38,9 @@ public:
   static inline bool sequence(void) { return false; }
 
   static bool
-  parseInSequence(const UCS4String::const_iterator&,
-		  const UCS4String::const_iterator&,
-		  UCS4String::const_iterator&,
+  parseInSequence(const std::u32string::const_iterator&,
+		  const std::u32string::const_iterator&,
+		  std::u32string::const_iterator&,
 		  std::vector< SmartPtr<Value> >&)
   {
     assert(false);
@@ -52,11 +52,11 @@ class Parse : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     ScanSpaces::scan(begin, end, p);
     if (Scanner::scan(p, end, next))
       {
@@ -72,11 +72,11 @@ class Parse<ScanToken, bool>
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     ScanSpaces::scan(begin, end, p);
     if (ScanToken::scan(p, end, next))
       {
@@ -92,11 +92,11 @@ class ParseLength : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     ScanSpaces::scan(begin, end, p);
     if (ScanNumber::scan(p, end, next))
       {
@@ -119,12 +119,12 @@ class ParseString : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
     next = end;
-    return Variant<String>::create(Scan::toString(begin, end));
+    return Variant<std::string>::create(Scan::toString(begin, end));
   }
 };
 
@@ -132,14 +132,14 @@ class ParseKeyword : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     ScanSpaces::scan(begin, end, p);
     if (ScanKeywordToken::scan(p, end, next))
-      return Variant<String>::create(Scan::toString(p, next));
+      return Variant<std::string>::create(Scan::toString(p, next));
     else
       return nullptr;
   }
@@ -150,11 +150,11 @@ class ParseTokenSet : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     ScanSpaces::scan(begin, end, p);
     if (ScanToken::scan(p, end, next))
       {
@@ -174,9 +174,9 @@ class ParseChoice : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
     if (SmartPtr<Value> v = P1::parse(begin, end, next))
       return v;
@@ -192,12 +192,12 @@ public:
   static inline bool sequence(void) { return true; }
 
   static bool
-  parseInSequence(const UCS4String::const_iterator& begin,
-		  const UCS4String::const_iterator& end,
-		  UCS4String::const_iterator& next,
+  parseInSequence(const std::u32string::const_iterator& begin,
+		  const std::u32string::const_iterator& end,
+		  std::u32string::const_iterator& next,
 		  std::vector< SmartPtr<Value> >& content)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     if (P1::sequence())
       {
 	if (!P1::parseInSequence(begin, end, p, content))
@@ -222,9 +222,9 @@ public:
   }
 
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
     std::vector< SmartPtr<Value> > content;
     if (parseInSequence(begin, end, next, content))
@@ -239,9 +239,9 @@ class ParseZeroOrOne : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
     if (SmartPtr<Value> v = P::parse(begin, end, next))
       return v;
@@ -258,11 +258,11 @@ class ParseOneOrMore : public ParseBin
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p = begin;
+    std::u32string::const_iterator p = begin;
     std::vector< SmartPtr<Value> > content;
     while (SmartPtr<Value> v = P::parse(p, end, next))
       {
@@ -288,11 +288,11 @@ class ParseRGBColor
 {
 public:
   static SmartPtr<Value>
-  parse(const UCS4String::const_iterator& begin,
-	const UCS4String::const_iterator& end,
-	UCS4String::const_iterator& next)
+  parse(const std::u32string::const_iterator& begin,
+	const std::u32string::const_iterator& end,
+	std::u32string::const_iterator& next)
   {
-    UCS4String::const_iterator p;
+    std::u32string::const_iterator p;
     ScanSpaces::scan(begin, end, p);
     if (ScanRGBColor::scan(p, end, next))
       return Variant<RGBColor>::create(ScanRGBColor::parse(p, next));

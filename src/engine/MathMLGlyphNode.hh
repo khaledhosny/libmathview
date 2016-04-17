@@ -28,11 +28,11 @@
 class MathMLGlyphNode : public MathMLTextNode
 {
 protected:
-  MathMLGlyphNode(const String&, const String&, const String&);
+  MathMLGlyphNode(const std::string&, const std::string&, const std::string&);
   virtual ~MathMLGlyphNode();
 
 public:
-  static SmartPtr<MathMLGlyphNode> create(const String& family, const String& index, const String& alt)
+  static SmartPtr<MathMLGlyphNode> create(const std::string& family, const std::string& index, const std::string& alt)
   { return new MathMLGlyphNode(family, index, alt); }
 
   virtual AreaRef format(class FormattingContext&);
@@ -40,9 +40,9 @@ public:
   virtual unsigned GetLogicalContentLength(void) const;
 
 private:
-  String family;
-  String index;
-  String alt;
+  std::string family;
+  std::string index;
+  std::string alt;
 };
 
 #endif // __MathMLGlyphNode_hh__

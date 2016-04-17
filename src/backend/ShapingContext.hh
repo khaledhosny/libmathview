@@ -37,7 +37,7 @@ class ShapingContext
 {
 public:
   ShapingContext(const FormattingContext&,
-		 const UCS4String&,
+                 const std::u32string&,
                  const std::vector<GlyphSpec>&,
 		 const scaled& = 0, const scaled& = 0);
 
@@ -45,7 +45,7 @@ public:
   bool inMathMode(void) const { return m_ctxt.getMathMode(); }
   SmartPtr<class Element> getElement(void) const { return m_ctxt.getMathMLElement(); }
   SmartPtr<class AreaFactory> getFactory(void) const { return m_ctxt.MGD()->getFactory(); }
-  UCS4String getSource(void) const { return m_source; }
+  std::u32string getSource(void) const { return m_source; }
   bool done(void) const { return m_index == m_source.length(); }
   bool empty(void) const { return m_res.empty(); }
   scaled getSize(void) const { return m_ctxt.getSize(); }
@@ -68,18 +68,18 @@ public:
   char32_t prevChar(void) const;
   char32_t thisChar(void) const;
   char32_t nextChar(void) const;
-  UCS4String prevString(void) const;
-  UCS4String prevString(UCS4String::size_type) const;
-  UCS4String nextString(void) const;
-  UCS4String nextString(UCS4String::size_type) const;
+  std::u32string prevString(void) const;
+  std::u32string prevString(std::u32string::size_type) const;
+  std::u32string nextString(void) const;
+  std::u32string nextString(std::u32string::size_type) const;
 
 private:
   const FormattingContext& m_ctxt;
-  UCS4String m_source;
+  std::u32string m_source;
   std::vector<GlyphSpec> m_spec;
   scaled m_vSpan;
   scaled m_hSpan;
-  UCS4String::size_type m_index;
+  std::u32string::size_type m_index;
   std::vector<CharIndex> m_res_n;
   std::vector<AreaRef> m_res;
 };

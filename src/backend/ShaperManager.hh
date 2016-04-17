@@ -41,9 +41,9 @@ public:
   static SmartPtr<ShaperManager> create(void);
 
   SmartPtr<const class Area> shape(const class FormattingContext&,
-				   const String&) const;
+                                   const std::string&) const;
   SmartPtr<const class Area> shapeStretchy(const class FormattingContext&,
-					   const String&,
+                                           const std::string&,
 					   const scaled& = 0, const scaled& = 0) const;
   
   unsigned registerShaper(const SmartPtr<class Shaper>&);
@@ -51,8 +51,8 @@ public:
   GlyphSpec registerChar(char32_t ch, const GlyphSpec& spec);
   GlyphSpec registerStretchyChar(char32_t ch, const GlyphSpec& spec);
   AreaRef compose(const FormattingContext& context,
-	          const AreaRef base, const UCS4String baseSource,
-	          const AreaRef script, const UCS4String scriptSource,
+                  const AreaRef base, const std::u32string baseSource,
+                  const AreaRef script, const std::u32string scriptSource,
 	          bool overScript);
 
 private:

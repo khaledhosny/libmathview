@@ -29,11 +29,11 @@
 #include "MathGraphicDevice.hh"
 #include "traverseAux.hh"
 
-String
+std::string
 MathMLFunctionApplicationNode::getSpace(const FormattingContext& ctxt)
 {
-  static const String noSpace = StringOfUCS4String(UCS4String(1, 0x200b));
-  static const String someSpace = StringOfUCS4String(UCS4String(1, 0x205f));
+  static const std::string noSpace = StringOfUCS4String(std::u32string(1, 0x200b));
+  static const std::string someSpace = StringOfUCS4String(std::u32string(1, 0x205f));
 
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getMathMLElement()))
     {
@@ -57,13 +57,13 @@ AreaRef
 MathMLFunctionApplicationNode::format(FormattingContext& ctxt)
 { return ctxt.MGD()->string(ctxt, getSpace(ctxt)); }
 
-String
+std::string
 MathMLFunctionApplicationNode::getContent()
 {
-  static const String content = StringOfUCS4String(UCS4String(1, 0x2061));
+  static const std::string content = StringOfUCS4String(std::u32string(1, 0x2061));
   return content;
 }
 
-String
+std::string
 MathMLFunctionApplicationNode::GetRawContent() const
 { return getContent(); }

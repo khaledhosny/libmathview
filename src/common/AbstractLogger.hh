@@ -41,7 +41,7 @@ public:
   void out(LogLevelId, const char*, ...) const;
 
 protected:
-  virtual void outString(const String&) const = 0;
+  virtual void outString(const std::string&) const = 0;
 
 private:
   mutable LogLevelId logLevel;  

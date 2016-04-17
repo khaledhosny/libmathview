@@ -40,24 +40,24 @@ static Entry token[] =
     { T__NOTVALID, nullptr }
   };
 
-typedef std::unordered_map<String,TokenId,StringHash,StringEq> Map;
+typedef std::unordered_map<std::string,TokenId,StringHash,StringEq> Map;
 static Map map;
 
 TokenId
 tokenIdOfString(const char* s)
 {
   assert(s);
-  return tokenIdOfString(String(s));
+  return tokenIdOfString(std::string(s));
 }
 
 TokenId
-tokenIdOfString(const String& s)
+tokenIdOfString(const std::string& s)
 {
   static bool initialized = false;
   if (!initialized)
     {
       for (unsigned i = 1; token[i].literal; i++)
-	map[String(token[i].literal)] = token[i].id;
+	map[std::string(token[i].literal)] = token[i].id;
       initialized = true;
     }
 

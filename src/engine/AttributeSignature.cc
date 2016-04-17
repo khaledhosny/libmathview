@@ -36,10 +36,10 @@ AttributeSignature::getDefaultValue() const
 }
 
 SmartPtr<Value>
-AttributeSignature::parseValue(const String& v) const
+AttributeSignature::parseValue(const std::string& v) const
 {
   assert(parser);
-  UCS4String s = UCS4StringOfString(v);
-  UCS4String::const_iterator next;
+  std::u32string s = UCS4StringOfString(v);
+  std::u32string::const_iterator next;
   return parser(s.begin(), s.end(), next);
 }

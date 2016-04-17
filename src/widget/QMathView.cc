@@ -54,7 +54,7 @@ public:
     ~QMathViewLogger(){}
 
 protected:
-    virtual void outString(const String& str) const {
+    virtual void outString(const std::string& str) const {
         QString log = QString::fromStdString(str);
         if (m_category.isCriticalEnabled() && log.startsWith("[MathView] *** Error")) {
             qCCritical(m_category) << log;

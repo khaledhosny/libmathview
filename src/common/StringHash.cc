@@ -25,7 +25,7 @@
 #include "StringHash.hh"
 
 size_t
-StringHash::operator()(const String& s) const
+StringHash::operator()(const std::string& s) const
 {
   size_t h = 0;
   for (const auto & elem : s)

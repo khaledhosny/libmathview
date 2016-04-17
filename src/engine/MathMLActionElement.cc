@@ -55,7 +55,7 @@ MathMLActionElement::format(FormattingContext& ctxt)
 
       if (SmartPtr<Value> vAction = GET_ATTRIBUTE_VALUE(MathML, Action, actiontype))
 	{
-	  String action = ToString(vAction);
+	  std::string action = ToString(vAction);
 
 	  if (action == "toggle")
 	    {

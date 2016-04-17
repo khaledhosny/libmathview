@@ -141,7 +141,7 @@ MathGraphicDevice::wrapper(const FormattingContext& context, const AreaRef& area
 AreaRef
 MathGraphicDevice::dummy(const FormattingContext& context) const
 {
-  return getFactory()->color(unstretchedString(context, StringOfUCS4String(UCS4String(1, 0xfffd))), RGBColor::RED());
+  return getFactory()->color(unstretchedString(context, StringOfUCS4String(std::u32string(1, 0xfffd))), RGBColor::RED());
 }
 
 #include "CachedShapedString.hh"
@@ -160,7 +160,7 @@ MathGraphicDevice::clearCache() const
 }
 
 AreaRef
-MathGraphicDevice::stretchedString(const FormattingContext& context, const String& str) const
+MathGraphicDevice::stretchedString(const FormattingContext& context, const std::string& str) const
 {
   CachedShapedStretchyStringKey key(str, context.getVariant(), context.getSize(),
                                     context.getStretchH(), context.getStretchV());
@@ -178,7 +178,7 @@ MathGraphicDevice::stretchedString(const FormattingContext& context, const Strin
 }
 
 AreaRef
-MathGraphicDevice::unstretchedString(const FormattingContext& context, const String& str) const
+MathGraphicDevice::unstretchedString(const FormattingContext& context, const std::string& str) const
 {
   CachedShapedStringKey key(str, context.getVariant(), context.getSize());
 
@@ -194,7 +194,7 @@ MathGraphicDevice::unstretchedString(const FormattingContext& context, const Str
 
 AreaRef
 MathGraphicDevice::string(const FormattingContext& context,
-                          const String& str) const
+                          const std::string& str) const
 {
   if (str.length() == 0)
     return dummy(context);
@@ -206,7 +206,7 @@ MathGraphicDevice::string(const FormattingContext& context,
 
 AreaRef
 MathGraphicDevice::stretchStringV(const FormattingContext& context,
-                                  const String& str,
+                                  const std::string& str,
                                   const scaled& height,
                                   const scaled& depth) const
 {
@@ -215,8 +215,8 @@ MathGraphicDevice::stretchStringV(const FormattingContext& context,
 
 AreaRef
 MathGraphicDevice::glyph(const FormattingContext& /*context*/,
-                         const String& /*alt*/,
-                         const String& /*fontFamily*/,
+                         const std::string& /*alt*/,
+                         const std::string& /*fontFamily*/,
                          unsigned long /*index*/) const
 {
   assert(false);
@@ -307,7 +307,7 @@ MathGraphicDevice::radical(const FormattingContext& context,
   const scaled RULE = getRuleThickness(context, HB_OT_MATH_CONSTANT_RADICAL_RULE_THICKNESS);
   const scaled GAP = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_VERTICAL_GAP);
   const scaled KERN = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_EXTRA_ASCENDER);
-  const UCS4String root(1, 0x221a);
+  const std::u32string root(1, 0x221a);
   const BoundingBox baseBox = base->box();
   const AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + GAP + RULE, baseBox.depth);
   const BoundingBox rootBox = rootArea->box();
@@ -537,9 +537,9 @@ MathGraphicDevice::underOver(const FormattingContext& context,
 
   if (baseStringArea)
   {
-    UCS4String baseSource;
-    UCS4String overSource;
-    UCS4String underSource;
+    std::u32string baseSource;
+    std::u32string overSource;
+    std::u32string underSource;
     AreaRef res;
 
     //controls if overScript and/or underScript are very sinlge character
@@ -640,7 +640,7 @@ MathGraphicDevice::underOver(const FormattingContext& context,
 AreaRef
 MathGraphicDevice::enclose(const FormattingContext& context,
                            const AreaRef& base,
-                           const String& notation) const
+                           const std::string& notation) const
 {
   if (notation == "radical")
     return radical(context, base, nullptr);

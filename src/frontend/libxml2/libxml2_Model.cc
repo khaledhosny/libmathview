@@ -52,7 +52,7 @@ entity_resolver(void* ctxt, const xmlChar *name) {
 }
 
 xmlDoc*
-libxml2_Model::document(const AbstractLogger& logger, const String& path, bool subst)
+libxml2_Model::document(const AbstractLogger& logger, const std::string& path, bool subst)
 {
   Clock perf;
   perf.Start();
@@ -79,7 +79,7 @@ libxml2_Model::document(const AbstractLogger& logger, const String& path, bool s
 }
 
 xmlDoc*
-libxml2_Model::documentFromBuffer(const AbstractLogger& logger, const String& buffer, bool subst)
+libxml2_Model::documentFromBuffer(const AbstractLogger& logger, const std::string& buffer, bool subst)
 {
   Clock perf;
   perf.Start();
@@ -118,21 +118,21 @@ libxml2_Model::getDocumentElement(const Document& doc)
   return reinterpret_cast<xmlElement*>(xmlDocGetRootElement(doc));
 }
 
-String
-libxml2_Model::getAttribute(const Element& el, const String& name)
+std::string
+libxml2_Model::getAttribute(const Element& el, const std::string& name)
 {
   assert(el);
   if (xmlChar* res = xmlGetProp((xmlNode*) el, toModelString(name)))
     {
-      String _res(fromModelString(res));
+      std::string _res(fromModelString(res));
       xmlFree(res);
       return _res;
     }
   else
-    return String();
+    return std::string();
 }
 
-String
+std::string
 libxml2_Model::getNodeName(const Node& n)
 {
   assert(n);
@@ -140,25 +140,25 @@ libxml2_Model::getNodeName(const Node& n)
   return fromModelString(n->name);
 }
 
-String
+std::string
 libxml2_Model::getNodeValue(const Node& n)
 {
   assert(n);
   if (xmlChar* res = xmlNodeGetContent(n))
     {
-      String _res(fromModelString(res));
+      std::string _res(fromModelString(res));
       xmlFree(res);
       return _res;
     }
   else
-    return String();
+    return std::string();
 }
 
-String
+std::string
 libxml2_Model::getElementValue(const Element& el)
 { return getNodeValue(asNode(el)); }
 
-String
+std::string
 libxml2_Model::getNodeNamespaceURI(const Node& n)
 {
   assert(n);
@@ -168,11 +168,11 @@ libxml2_Model::getNodeNamespaceURI(const Node& n)
       return fromModelString(n->ns->href);
     }
   else
-    return String();
+    return std::string();
 }
 
 bool
-libxml2_Model::hasAttribute(const Element& el, const String& name)
+libxml2_Model::hasAttribute(const Element& el, const std::string& name)
 {
   assert(el);
   return xmlHasProp((xmlNode*) el, toModelString(name));

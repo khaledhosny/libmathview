@@ -43,7 +43,7 @@ public:
 	
 	if (SmartPtr<Attribute> attr = c.attributes->get(ATTRIBUTE_ID_OF_SIGNATURE(sig)))
 	  return attr;
-	else if (const String* rawValue = c.get(sig.name))
+	else if (const std::string* rawValue = c.get(sig.name))
 	  {
 	    SmartPtr<Attribute> attr = Attribute::create(sig, *rawValue);
 	    c.attributes->set(attr);
@@ -70,28 +70,28 @@ public:
 private:
   struct Context
   {
-    typedef std::pair<String, String> RawAttribute;
+    typedef std::pair<std::string, std::string> RawAttribute;
 
     Context(const SmartPtr<Reader>& reader) : attributes(AttributeSet::create())
     {
       for (int index = 0; index < reader->getAttributeCount(); index++)
 	{
-	  String namespaceURI;
-	  String name;
-	  String value;
+	  std::string namespaceURI;
+	  std::string name;
+	  std::string value;
 	  reader->getAttribute(index, namespaceURI, name, value);
 	  if (namespaceURI.empty()) rawAttributes.push_back(RawAttribute(name, value));
 	}
     }
 
-    const String* get(const String& name) const
+    const std::string* get(const std::string& name) const
     {
       for (std::vector<RawAttribute>::const_iterator p = rawAttributes.begin(); p != rawAttributes.end(); p++)
 	if (p->first == name) return &p->second;
       return 0;
     }
 
-    std::vector<std::pair<String, String> > rawAttributes;
+    std::vector<std::pair<std::string, std::string> > rawAttributes;
     SmartPtr<AttributeSet> attributes;
   };
 

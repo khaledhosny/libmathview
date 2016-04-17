@@ -26,7 +26,7 @@
 template <class Reader>
 struct TemplateReaderElementIterator
 {
-  TemplateReaderElementIterator(const SmartPtr<Reader>& r, const String& ns = "*", const String& n = "*")
+  TemplateReaderElementIterator(const SmartPtr<Reader>& r, const std::string& ns = "*", const std::string& n = "*")
     : namespaceURI(ns), name(n), reader(r)
   {
     reader->moveToFirstChild();
@@ -55,8 +55,8 @@ protected:
   void findValidNode()
   { while (reader->more() && !valid()) reader->moveToNextSibling(); }
 
-  String namespaceURI;
-  String name;
+  std::string namespaceURI;
+  std::string name;
   SmartPtr<Reader> reader;
 };
 

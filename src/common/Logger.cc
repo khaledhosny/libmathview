@@ -27,7 +27,7 @@
 #include "Logger.hh"
 
 void
-Logger::outString(const String& s) const
+Logger::outString(const std::string& s) const
 {
   std::cerr << s << std::endl;
 }

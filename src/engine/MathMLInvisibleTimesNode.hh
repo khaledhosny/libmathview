@@ -35,13 +35,13 @@ public:
   static SmartPtr<MathMLInvisibleTimesNode> create(void)
   { return SmartPtr<MathMLInvisibleTimesNode>(new MathMLInvisibleTimesNode()); }
 
-  static String getContent(void);
+  static std::string getContent(void);
   virtual AreaRef format(class FormattingContext&);
   virtual unsigned GetLogicalContentLength(void) const { return 1; }
-  virtual String GetRawContent(void) const;
+  virtual std::string GetRawContent(void) const;
 
 private:
-  static String getSpace(const class FormattingContext&);
+  static std::string getSpace(const class FormattingContext&);
 };
 
 #endif // __MathMLInvisibleTimesNode_hh__

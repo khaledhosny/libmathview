@@ -50,7 +50,7 @@ MathMLTokenElement::~MathMLTokenElement()
 { }
 
 void
-MathMLTokenElement::append(const String& s)
+MathMLTokenElement::append(const std::string& s)
 {
   content.appendChild(this, MathMLStringNode::create(s));
 }
@@ -172,10 +172,10 @@ MathMLTokenElement::AddItalicCorrection()
 }
 #endif
 
-String
+std::string
 MathMLTokenElement::GetRawContent() const
 {
-  String res;
+  std::string res;
   for (const auto & elem : content)
     {
       assert(elem);

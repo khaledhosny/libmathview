@@ -68,7 +68,7 @@ MathMLOperatorElement::format(FormattingContext& ctxt)
       SmartPtr<AttributeSet> infix;
       SmartPtr<AttributeSet> postfix;
 
-      String operatorName = GetRawContent();
+      std::string operatorName = GetRawContent();
       if (SmartPtr<MathMLOperatorDictionary> dictionary = getNamespaceContext()->getView()->getOperatorDictionary())
 	dictionary->search(operatorName, prefix, infix, postfix);
 

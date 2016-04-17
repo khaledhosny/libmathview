@@ -27,8 +27,8 @@
 
 #include "String.hh"
 
-std::string escape(const UCS4String&);
-std::ostream& operator<<(std::ostream&, const UCS4String&);
+std::string escape(const std::u32string&);
+std::ostream& operator<<(std::ostream&, const std::u32string&);
 
 #endif // __StringAux_hh__
 

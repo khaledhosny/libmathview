@@ -29,7 +29,7 @@
 class ElementFactory : public Object
 {
 public:
-  virtual SmartPtr<class Element> createElement(const String&) const = 0;
+  virtual SmartPtr<class Element> createElement(const std::string&) const = 0;
   //virtual SmartPtr<class Element> createAdapter(const String&) const = 0;
 };
 
