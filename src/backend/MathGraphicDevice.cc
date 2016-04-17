@@ -141,7 +141,7 @@ MathGraphicDevice::wrapper(const FormattingContext& context, const AreaRef& area
 AreaRef
 MathGraphicDevice::dummy(const FormattingContext& context) const
 {
-  return getFactory()->color(unstretchedString(context, StringOfUCS4String(std::u32string(1, 0xfffd))), RGBColor::RED());
+  return getFactory()->color(unstretchedString(context, u8"\ufffd"), RGBColor::RED());
 }
 
 #include "CachedShapedString.hh"
@@ -307,9 +307,8 @@ MathGraphicDevice::radical(const FormattingContext& context,
   const scaled RULE = getRuleThickness(context, HB_OT_MATH_CONSTANT_RADICAL_RULE_THICKNESS);
   const scaled GAP = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_VERTICAL_GAP);
   const scaled KERN = getConstant(context, HB_OT_MATH_CONSTANT_RADICAL_EXTRA_ASCENDER);
-  const std::u32string root(1, 0x221a);
   const BoundingBox baseBox = base->box();
-  const AreaRef rootArea = stretchStringV(context, StringOfUCS4String(root), baseBox.height + GAP + RULE, baseBox.depth);
+  const AreaRef rootArea = stretchStringV(context, u8"\u221a", baseBox.height + GAP + RULE, baseBox.depth);
   const BoundingBox rootBox = rootArea->box();
 
   scaled clr = GAP;

@@ -33,8 +33,8 @@
 std::string
 MathMLInvisibleTimesNode::getSpace(const FormattingContext& ctxt)
 {
-  static const std::string noSpace = StringOfUCS4String(std::u32string(1, 0x200b));
-  static const std::string someSpace = StringOfUCS4String(std::u32string(1, 0x205f));
+  static const std::string noSpace = u8"\u200b";
+  static const std::string someSpace = u8"\u205f";
 
   // THESE CONSTANTS SHOULD BE CHECKED ON SOME MANUAL
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getMathMLElement()))
@@ -72,7 +72,7 @@ MathMLInvisibleTimesNode::format(FormattingContext& ctxt)
 std::string
 MathMLInvisibleTimesNode::getContent()
 {
-  static const std::string content = StringOfUCS4String(std::u32string(1, 0x2062));
+  static const std::string content = u8"\u2062";
   return content;
 }
 

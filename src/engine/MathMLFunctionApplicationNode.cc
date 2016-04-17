@@ -32,8 +32,8 @@
 std::string
 MathMLFunctionApplicationNode::getSpace(const FormattingContext& ctxt)
 {
-  static const std::string noSpace = StringOfUCS4String(std::u32string(1, 0x200b));
-  static const std::string someSpace = StringOfUCS4String(std::u32string(1, 0x205f));
+  static const std::string noSpace = u8"\u200b";
+  static const std::string someSpace = u8"\u205f";
 
   if (SmartPtr<MathMLOperatorElement> op = smart_cast<MathMLOperatorElement>(ctxt.getMathMLElement()))
     {
@@ -60,7 +60,7 @@ MathMLFunctionApplicationNode::format(FormattingContext& ctxt)
 std::string
 MathMLFunctionApplicationNode::getContent()
 {
-  static const std::string content = StringOfUCS4String(std::u32string(1, 0x2061));
+  static const std::string content = u8"\u2061";
   return content;
 }
 
