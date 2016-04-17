@@ -82,8 +82,6 @@ noinst_HEADERS += \
   common/CharTraits.hh \
   common/Clock.hh \
   common/GObjectPtr.hh \
-  common/TemplateStringScanners.hh \
-  common/TemplateStringParsers.hh \
   common/TokenSet.hh \
   common/for_each_if.h \
   common/token.hh \
@@ -215,6 +213,8 @@ noinst_HEADERS += \
   engine/MathMLTokenElement.hh \
   engine/MathMLUnderOverElement.hh \
   engine/MathMLValueConversion.hh \
+  engine/TemplateStringScanners.hh \
+  engine/TemplateStringParsers.hh \
   engine/mathVariantAux.hh \
   engine/traverseAux.hh \
   $(NULL)
