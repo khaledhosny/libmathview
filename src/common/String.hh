@@ -31,7 +31,6 @@ inline bool isXmlSpace(char ch) { return ch == 0x09 || ch == 0x0a || ch == 0x0d 
 std::string trimSpacesLeft(const std::string&);
 std::string trimSpacesRight(const std::string&);
 std::string collapseSpaces(const std::string&);
-std::string deleteSpaces(const std::string&);
 std::string toLowerCase(const std::string&);
 
 std::string StringOfUCS4String(const std::u32string&);

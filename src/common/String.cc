@@ -71,17 +71,6 @@ collapseSpaces(const std::string& s)
 }
 
 std::string
-deleteSpaces(const std::string& s)
-{
-  std::string res;
-  res.reserve(s.length());
-  for (const auto & elem : s)
-    if (!isXmlSpace(elem))
-      res.push_back(elem);
-  return res;
-}
-
-std::string
 toLowerCase(const std::string& s)
 {
   std::string res;
