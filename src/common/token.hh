@@ -31,8 +31,6 @@ enum TokenId
     T__NOTVALID
   };
 
-TokenId tokenIdOfString(const char*);
 TokenId tokenIdOfString(const std::string&);
-const char* stringOfTokenId(TokenId);
 
 #endif // __token_hh__

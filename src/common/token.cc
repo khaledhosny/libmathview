@@ -44,13 +44,6 @@ typedef std::unordered_map<std::string,TokenId,StringHash,StringEq> Map;
 static Map map;
 
 TokenId
-tokenIdOfString(const char* s)
-{
-  assert(s);
-  return tokenIdOfString(std::string(s));
-}
-
-TokenId
 tokenIdOfString(const std::string& s)
 {
   static bool initialized = false;
@@ -63,11 +56,4 @@ tokenIdOfString(const std::string& s)
 
   auto p = map.find(s);
   return (p != map.end()) ? (*p).second : T__NOTVALID;
-}
-
-const char*
-stringOfTokenId(TokenId id)
-{
-  assert(id >= 0 && id < sizeof(token) / sizeof(Entry));
-  return token[id].literal;
 }
