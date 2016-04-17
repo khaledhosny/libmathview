@@ -57,7 +57,6 @@ MathShaper::shape(ShapingContext& context) const
     {
       hb_feature_t features[] = {
         { HB_TAG('s','s','t','y'), scriptLevel, 0, (unsigned)-1 },
-        { 0, 0, 0, 0 }
       };
       hb_shape(font, buffer, features, 1);
     }
@@ -106,7 +105,7 @@ MathShaper::shape(ShapingContext& context) const
           scaled span = (context.getHSpan() * upem).getValue() / context.getSize().getValue();
           hb_ot_shape_math_stretchy(font, buffer, true, span.toInt());
           unsigned stretchyLen = hb_buffer_get_length(buffer);
-          hb_glyph_info_t * stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
+          hb_glyph_info_t* stretchyGlyphs = hb_buffer_get_glyph_infos(buffer, nullptr);
           hb_glyph_position_t* stretchyPositions = hb_buffer_get_glyph_positions(buffer, nullptr);
           std::vector<AreaRef> areas;
           scaled advance;
